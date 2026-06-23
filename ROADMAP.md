@@ -53,6 +53,24 @@ Project-specific release and checkpoint checks (not in RUNBOOK):
 - [Secret scan / browser smoke / API probe / deploy check]
 - [Docs updated / migration applied / service restarted]
 
+## Documentation Check
+
+Documentation is part of done. When a task changes durable project state, update
+the docs that describe that state before appending the verification row.
+
+Check these docs before marking work complete:
+
+| If the task changed... | Update or confirm |
+|---|---|
+| Product purpose, workflows, routes, data model, architecture, invariants, privacy/safety boundaries | `BLUEPRINT.md` |
+| Current phase, current goal, next tasks, blockers, backlog, proof of work | `ROADMAP.md` |
+| Setup, install, run, test, build, deploy, recovery, environment, operations | `RUNBOOK.md` |
+| User-facing usage, demo steps, handoff, public instructions | `README.md` |
+| Agent rules, authority order, read/edit scope, verification contract | `AGENTS.md` |
+
+If no docs need edits, record `Docs checked; no update needed` in the final
+response and in the verification row's `Remaining gap` field.
+
 ## Verification Log
 
 Append a row when a task changes durable project state. Use actual results, not stale claims.
@@ -60,4 +78,3 @@ Append a row when a task changes durable project state. Use actual results, not 
 | Date | Task | Proof | Result | Remaining gap |
 |---|---|---|---|---|
 | [YYYY-MM-DD] | [task] | `[command]` or manual check | [pass/fail] | [none/gap] |
-

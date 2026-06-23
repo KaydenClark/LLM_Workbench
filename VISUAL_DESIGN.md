@@ -4,7 +4,7 @@
 **Status:** active  
 **Use when:** starting a new UI, dashboard, site, game menu, or visual project unless the project has a stronger brand guide.
 
-This is Kayden's preferred default color palette. The Command Information Center dashboard is the current working reference for the intended dark-mode feel.
+This is a reusable default color palette for dark-mode interfaces. Treat it as a starting point, then adapt it to the product's brand, audience, and domain.
 
 ## Authority
 
@@ -35,7 +35,7 @@ Use this order when design guidance conflicts:
 | Medium Jungle | `#4DAA57` | Success, healthy status, positive movement |
 | Cerulean | `#3A7CA5` | Primary action, links, selected state |
 | Old Gold | `#E0BD3E` | Warnings, highlights, attention without danger |
-| Rose Punch | `#CF4F84` | Personal/social/music/media accents |
+| Rose Punch | `#CF4F84` | Community, social, media, or creative accents |
 | Blaze Orange | `#FF6201` | High-energy CTA, active automation, hot status |
 | Vibrant Turquoise | `#1ABCBD` | Fresh data, live state, sync/connection status |
 

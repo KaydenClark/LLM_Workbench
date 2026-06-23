@@ -65,9 +65,41 @@ Default responsibilities:
 - validate inputs at boundaries;
 - use explicit error handling and visible empty/error states;
 - append to the `ROADMAP.md` Verification Log when state changes (mandatory);
-- update `BLUEPRINT.md` and `RUNBOOK.md` when the task directly touches their content (best-effort);
+- update any project docs that would become stale because of the change;
 - write exploratory or scratch work only in the final response or comments; never commit it;
 - leave the project easier for the next agent to verify.
+
+## Documentation Ownership
+
+Documentation is part of the work, not a follow-up role. Unless the current task
+explicitly assigns a separate documentation owner, the agent making the change
+owns the documentation for that change.
+
+In a single-agent run:
+
+- the working agent is the documentation owner;
+- update the docs before reporting the task done;
+- if no docs need changes, say `Docs checked; no update needed` in the final response with a short reason.
+
+In a manager/subagent run:
+
+- each subagent reports whether its lane changed any documented behavior, command, file, route, data shape, or workflow;
+- the manager owns final documentation integration before the run is marked done;
+- no task is complete until documentation impact is either updated or explicitly marked `Docs checked; no update needed`.
+
+Use this routing when deciding what to update:
+
+| Change type | Documentation to check |
+|---|---|
+| Purpose, product behavior, architecture, data model, routes, invariants, safety boundary | `BLUEPRINT.md` |
+| Current state, active goal, next tasks, blockers, proof of completed work | `ROADMAP.md` |
+| Install, run, test, build, deploy, recovery, environment, operations | `RUNBOOK.md` |
+| User-facing setup, usage, demo, handoff, public instructions | `README.md` |
+| Agent rules, scope, authority, verification policy | `AGENTS.md` |
+
+Do not leave stale docs because the task "was code-only." If the change alters
+what a future agent or user would believe from the docs, update the docs in the
+same task.
 
 ## Verification And Proof
 
@@ -87,7 +119,10 @@ Every completed task leaves proof in two places:
 - Final response: what changed, why, risks, how verified.
 - `ROADMAP.md` Verification Log: **mandatory** — append one row when state changed. This is the only required durable write.
 
-Updating `BLUEPRINT.md` and `RUNBOOK.md` is best-effort: do it when the task directly touches their content.
+Documentation updates are mandatory when the change would otherwise make docs
+stale. If documentation was checked and did not need edits, say so in the final
+response and, for durable state changes, in the `ROADMAP.md` Verification Log
+remaining-gap field.
 
 Use command results, browser checks, API probes, screenshots, or documented manual checks. Do not use stale counts or unsupported claims.
 
@@ -101,7 +136,7 @@ Load only what the task requires:
 - **Feature, refactor, or unknown-scope bug:** Read `BLUEPRINT.md` and `ROADMAP.md`.
 - **Onboarding, setup, or architecture work:** Read all three (`BLUEPRINT.md`, `ROADMAP.md`, `RUNBOOK.md`).
 - **Any task that involves running verification:** Also open `RUNBOOK.md` → Test And Build for commands.
-- **Any task that creates or changes a UI/visual surface:** Read `/Users/kayden/GPT_OS/templates/VISUAL_DESIGN.md` unless the project has a stronger brand guide.
+- **Any task that creates or changes a UI/visual surface:** Read `VISUAL_DESIGN.md` from this project, or the nearest project-local visual guide, unless the project has a stronger brand guide.
 
 Then for every task:
 

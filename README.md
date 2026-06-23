@@ -10,8 +10,8 @@ guardrails instead of relying on chat history or one-off instructions.
 
 ## What This Contains
 
-- `AGENTS.md` - agent behavior, authority order, read/edit scope, TDD rules, and
-  proof-of-done requirements.
+- `AGENTS.md` - agent behavior, authority order, read/edit scope, TDD rules,
+  documentation ownership, and proof-of-done requirements.
 - `BLUEPRINT.md` - stable project identity, architecture, invariants, and
   safety boundaries.
 - `ROADMAP.md` - current state, next work, blockers, backlog, and verification
@@ -22,6 +22,7 @@ guardrails instead of relying on chat history or one-off instructions.
   and icon guidance.
 - `team templates/` - optional manager, subagent, and taskboard templates for
   multi-agent workflows.
+- `LICENSE` - MIT license for reuse and adaptation.
 
 ## How To Use It
 
@@ -29,8 +30,14 @@ guardrails instead of relying on chat history or one-off instructions.
 2. Replace bracketed placeholders with project-specific paths, commands, and
    rules.
 3. Keep `ROADMAP.md` current as work changes state.
-4. Require every completed agent task to leave proof in the final response and
+4. Treat documentation as part of the task owner's work; no task is done while
+   the docs still describe the old state.
+5. Require every completed agent task to leave proof in the final response and
    in the verification log.
 
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
+
+## License
+
+MIT. See `LICENSE`.
