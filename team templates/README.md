@@ -23,6 +23,14 @@ These sit *alongside* a project's own harness (`AGENTS.md`, `BLUEPRINT.md`, `ROA
 5. **Review & integrate.** The manager checks each subagent's proof (does not trust claims), integrates, and resolves any conflict.
 6. **Decide.** When *Done when* holds and no task is open, the manager reports up and stops.
 
+## The one shared-write surface
+
+Partitioning makes the *code* lanes disjoint, but `TASKBOARD.md` is written by everyone — so it is the one place the lanes overlap, and the one place writes can collide. Keep it safe without adding machinery:
+
+- Every writer **re-reads `TASKBOARD.md` immediately before appending** and appends **only its own row**. If the file changed since it was read, rebase the new row onto the latest version rather than overwriting.
+- No one edits another agent's row. The manager resolves any append conflict.
+- Subagents log proof to `TASKBOARD.md` **only** — they do not write the project's `ROADMAP.md`. At run end the manager transcribes the final integrated result into the project `ROADMAP.md` Verification Log, so there is exactly one durable project record and one author for it.
+
 ## Scale assumptions (read before scaling up)
 
 This set is tuned for **≤3 subagents, a few hours, a human nearby**. If you move to many agents or unattended multi-hour runs, you will need the things deliberately left out here — a claimable one-file-per-task queue, heartbeats, attempt caps, and a separate auditor contract. Don't bolt those on prematurely; they cost more than they're worth at this size.

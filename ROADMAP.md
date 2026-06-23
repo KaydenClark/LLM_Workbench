@@ -25,9 +25,11 @@ Done when:
 
 ## Next Tasks
 
-1. **[Task name]** - [specific outcome]. Proof: `[COMMAND_OR_CHECK]`.
-2. **[Task name]** - [specific outcome]. Proof: `[COMMAND_OR_CHECK]`.
-3. **[Task name]** - [specific outcome]. Proof: `[COMMAND_OR_CHECK]`.
+Work top to bottom. Tick a box only once its proof exists (a Verification Log row or a named manual check). This list is the live progress ledger — keep it accurate across the session, especially after a context summary.
+
+- [ ] **[Task name]** - [specific outcome]. Proof: `[COMMAND_OR_CHECK]`.
+- [ ] **[Task name]** - [specific outcome]. Proof: `[COMMAND_OR_CHECK]`.
+- [ ] **[Task name]** - [specific outcome]. Proof: `[COMMAND_OR_CHECK]`.
 
 ## Blocked Or Deferred
 

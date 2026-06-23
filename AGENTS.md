@@ -128,6 +128,20 @@ Use command results, browser checks, API probes, screenshots, or documented manu
 
 Never claim work is complete unless verification ran. If it could not run, say exactly why and record the gap in `ROADMAP.md`.
 
+## Staying On Track
+
+Long sessions drift: early instructions lose ground to whatever was said most recently, and after a context summary the original goal can quietly change shape. Counter it deliberately.
+
+- Re-read `ROADMAP.md` (Current Goal + Next Tasks) at the start of each task, and again after any context compaction or summary. Reconcile your plan against it before continuing.
+- Keep the `ROADMAP.md` Next Tasks checkboxes current as you go. Tick a box only once its proof exists. The checklist is your durable progress ledger — trust it over memory.
+- For a large or open-ended exploration, delegate it to a subagent so the main thread stays anchored to the goal instead of filling with search output.
+
+## When To Ask, Proceed, Or Stop
+
+- **Proceed** without asking on low-risk, reversible decisions inside scope. Record the decision in the relevant doc.
+- **Ask one focused question first** when a missing answer would change the architecture, data model, a public contract, or a safety boundary — or when acting could destroy data or leave the repo broken.
+- **Stop and surface** rather than retrying forever: if the same change fails verification twice, report what you tried, the failure, and where you are stuck. Do not loop on the same fix.
+
 ## Day-One Checklist
 
 Load only what the task requires:
@@ -165,5 +179,5 @@ Keep the response concise. Flag uncertainty instead of hiding it.
 - Do not add paid services unless the user explicitly approves them.
 - Do not leave unexplained TODOs or placeholder logic.
 - Do not treat prior session notes or ROADMAP history as current truth without verifying source state.
-- Do not rewrite existing rows in `ROADMAP.md`; only append new rows. If two tasks run concurrently, each appends its own row independently.
+- Do not rewrite existing rows in `ROADMAP.md`; only append new rows. A shared file written by two agents at once is itself an overlap: re-read the log immediately before appending, append only your own row, and if the file changed since you read it, rebase your row onto the latest version. In a manager/subagent run, subagents log proof to `TASKBOARD.md` and the manager transcribes the final integrated result here — see `team templates/`.
 - Do not skip the TDD test-skip reason; name it explicitly in the response rather than claiming "not practical" without justification.
