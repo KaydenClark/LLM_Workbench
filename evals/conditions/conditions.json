@@ -1,0 +1,28 @@
+{
+  "_comment": "A condition = which instruction files get injected into the task repo before the agent runs. 'git' conditions read files from a ref so any past/future template version is testable with no copy-paste. The runner writes a CLAUDE.md importing 'entry' so Claude Code loads it.",
+  "conditions": {
+    "c0_none": {
+      "source": "none",
+      "label": "control / no template"
+    },
+    "c1_generic": {
+      "source": "file",
+      "label": "representative generic template",
+      "files": { "CLAUDE.md": "conditions/c1_generic_CLAUDE.md" }
+    },
+    "c2_ours_main": {
+      "source": "git",
+      "label": "our harness @ main",
+      "ref": "origin/main",
+      "entry": "AGENTS.md",
+      "files": ["AGENTS.md", "BLUEPRINT.md", "ROADMAP.md", "RUNBOOK.md", "VISUAL_DESIGN.md"]
+    },
+    "c3_ours_v2": {
+      "source": "git",
+      "label": "our harness @ harness-template-upgrades-v2",
+      "ref": "origin/claude/harness-template-upgrades-v2",
+      "entry": "AGENTS.md",
+      "files": ["AGENTS.md", "BLUEPRINT.md", "ROADMAP.md", "RUNBOOK.md", "VISUAL_DESIGN.md"]
+    }
+  }
+}
