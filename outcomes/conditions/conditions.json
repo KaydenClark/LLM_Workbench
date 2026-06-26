@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "control:none": {
+      "type": "none",
+      "label": "control / no template"
+    },
+    "control:single-file": {
+      "type": "inline",
+      "label": "generic single-file agent instructions",
+      "files": {
+        "AGENTS.md": "# Agent Instructions\n\n- Follow the existing code style.\n- Run relevant tests before finishing.\n- Ask before risky changes.\n",
+        "CLAUDE.md": "# Agent Instructions\n\n- Follow the existing code style.\n- Run relevant tests before finishing.\n- Ask before risky changes.\n"
+      }
+    },
+    "workbench:local": {
+      "type": "path",
+      "label": "LLM Workbench local template",
+      "root": "../..",
+      "files": [
+        "AGENTS.md",
+        "BLUEPRINT.md",
+        "ROADMAP.md",
+        "RUNBOOK.md",
+        "README.md",
+        "VISUAL_DESIGN.md",
+        "team templates/MANAGER.md",
+        "team templates/README.md",
+        "team templates/SUBAGENT.md",
+        "team templates/TASKBOARD.md"
+      ],
+      "claudeImport": true
+    }
+  }
+}
+

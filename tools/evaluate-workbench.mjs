@@ -132,15 +132,16 @@ export const RUBRIC = [
     ]
   },
   {
-    id: 'visual_accessibility',
-    label: 'Visual and accessibility guidance',
+    id: 'visual_workflow',
+    label: 'Visual workflow guidance',
     weight: 6,
     checks: [
-      { label: 'visual guide', requireFiles: ['VISUAL_DESIGN.md'] },
-      { label: 'palette roles', files: ['VISUAL_DESIGN.md'], patterns: ['Palette', 'Role'] },
-      { label: 'accessibility', files: ['VISUAL_DESIGN.md'], patterns: ['Accessibility', 'WCAG AA'] },
-      { label: 'no color alone', files: ['VISUAL_DESIGN.md'], patterns: ['color alone'] },
-      { label: 'icon guidance', files: ['VISUAL_DESIGN.md'], patterns: ['Iconography', 'emoji'] }
+      { label: 'visual work process', files: ['AGENTS.md', 'README.md'], patterns: ['Visual Work|Visual-design starters'] },
+      { label: 'project-specific direction', files: ['AGENTS.md', 'README.md'], patterns: ['project-local design|original product prompt|brand requirements'] },
+      { label: 'clarifying visual question', files: ['AGENTS.md'], patterns: ['ask one focused question'] },
+      { label: 'accessibility', files: ['AGENTS.md'], patterns: ['accessibility', 'WCAG AA'] },
+      { label: 'no color alone', files: ['AGENTS.md'], patterns: ['color alone'] },
+      { label: 'icon guidance', files: ['AGENTS.md'], patterns: ['icons instead of emoji|recognizable icons'] }
     ]
   }
 ];

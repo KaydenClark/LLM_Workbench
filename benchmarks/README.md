@@ -1,6 +1,9 @@
 # Workbench Benchmark
 
-This folder is the evidence layer for LLM Workbench. Its job is to keep the template from becoming a nicer-sounding prompt with no proof.
+This folder defines the benchmark protocol and records benchmark results for LLM
+Workbench. The static evaluator lives in `tools/evaluate-workbench.mjs`; the
+real task-trial runner lives in `tools/run-outcome-trials.mjs` and is documented
+in `outcomes/README.md`.
 
 ## Scientific Method
 
@@ -37,7 +40,7 @@ The workbench should not claim "better than every outside template" until those 
 - long-session goal drift;
 - multi-agent write collisions;
 - missing safety/privacy boundaries;
-- UI work without accessibility or icon guidance.
+- UI work without project-specific visual direction, accessibility, or icon guidance.
 
 This is not a claim that every agent will obey every instruction. It proves that the candidate gives the agent the required guidance and proof hooks. Behavior still needs task trials.
 
@@ -49,7 +52,9 @@ Use this when you need stronger proof for a boss, team, or release decision.
 2. Run each task under at least two conditions: no template, baseline/simple template, and current LLM Workbench.
 3. Use the same repo snapshot, same task prompt, same agent/model family, and same time budget for each condition.
 4. Score outcomes from committed artifacts, not agent claims.
-5. Record results in `benchmarks/RESULTS.md`.
+5. Run the trials with `tools/run-outcome-trials.mjs`.
+6. Score the JSONL rows with `tools/score-outcome-trials.mjs`.
+7. Record real-agent results in `benchmarks/RESULTS.md`.
 
 Outcome metrics:
 
@@ -69,9 +74,15 @@ Decision rule:
 
 ## Current Branch Finding
 
-As of 2026-06-23, GitHub has two branches: `main` and `claude/harness-template-upgrades-v2`.
+As of 2026-06-23, the reviewed GitHub branches were `main`,
+`claude/harness-template-upgrades-v2`, `claude/harness-eval-framework`, and
+`codex/workbench-evaluation-harness`.
 
-`claude/harness-template-upgrades-v2` is better than `main` because it adds coverage for:
+`codex/workbench-evaluation-harness` is the strongest base today because it
+combines the upgraded template coverage from `claude/harness-template-upgrades-v2`
+with a static evaluator and now has an outcome-trial harness.
+
+`claude/harness-template-upgrades-v2` improved on `main` because it adds coverage for:
 
 - long-session drift and context-summary recovery;
 - `ROADMAP.md` checkbox progress as a live ledger;
@@ -80,6 +91,9 @@ As of 2026-06-23, GitHub has two branches: `main` and `claude/harness-template-u
 - shared `TASKBOARD.md` write-collision handling;
 - single-author durable `ROADMAP.md` transcription in manager/subagent runs;
 - Claude Code loading note;
-- visual accessibility requirements.
+- visual workflow requirements that start from the project prompt, user context,
+  or an explicit design template instead of bundling one default visual style.
 
-That is a measurable improvement because each item maps to a rubric criterion and to a real observed failure mode in agent work.
+That is a measurable static improvement because each item maps to a rubric
+criterion and to a real observed failure mode in agent work. It is not yet a
+real-world outcome claim until real agents are run through the outcome trials.

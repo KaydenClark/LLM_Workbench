@@ -18,14 +18,24 @@ guardrails instead of relying on chat history or one-off instructions.
   log.
 - `RUNBOOK.md` - setup, run, test, build, troubleshooting, and recovery
   commands.
-- `VISUAL_DESIGN.md` - shared visual standards for UI work, including palette
-  and icon guidance.
 - `team templates/` - optional manager, subagent, and taskboard templates for
   multi-agent workflows.
 - `benchmarks/` - evaluation protocol and results log for proving template
   improvements over time.
+- `outcomes/` - controlled task-trial fixtures, conditions, and self-tests for
+  measuring real agent outcomes.
+- `research templates/` - lightweight folder-per-investigation workflow for
+  durable research reports.
 - `tools/evaluate-workbench.mjs` - static rubric scorer for local folders and
   GitHub branches.
+- `tools/run-outcome-trials.mjs` - runs the same task under multiple instruction
+  conditions and records scored result rows.
+- `tools/score-outcome-trials.mjs` - summarizes outcome-trial rows with lifts
+  against a chosen baseline.
+- `tools/context-pack.mjs` - dependency-free prompt packer inspired by
+  `simonw/files-to-prompt`.
+- `tools/new-research-project.mjs` - creates a Simon-style research folder with
+  `notes.md` and `README.md`.
 - `LICENSE` - MIT license for reuse and adaptation.
 
 ## How To Use It
@@ -41,6 +51,11 @@ guardrails instead of relying on chat history or one-off instructions.
 
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
+
+Visual-design starters are intentionally separate from this workbench. Use a
+project-local design brief, a reusable design template, or the original product
+prompt as input for UI work; do not force every project into one default visual
+style.
 
 Note for Claude Code: it reads `CLAUDE.md`, not `AGENTS.md`, by default. Add a
 one-line `CLAUDE.md` containing `@AGENTS.md` (an import), or run `/init` in the
@@ -61,8 +76,57 @@ node tools/evaluate-workbench.mjs --github KaydenClark/LLM_Workbench --branches 
 ```
 
 The scorer proves coverage of the expected control surfaces. For stronger
-evidence, use `benchmarks/README.md` to run controlled task trials and record
-outcomes in `benchmarks/RESULTS.md`.
+evidence, use `outcomes/README.md` to run controlled task trials and record
+outcomes. The included mock-agent self-test verifies the harness itself; it is
+not evidence that real agents improve.
+
+```bash
+node tools/test-outcome-trials.mjs
+```
+
+To prove real-world improvement, run `tools/run-outcome-trials.mjs` with the
+same real agent command across controls, external templates, and LLM Workbench,
+then score the JSONL result file with `tools/score-outcome-trials.mjs`.
+
+## Context And Research Workflow
+
+Use this when you want to package project files for a model or run a durable
+research investigation instead of leaving the work trapped in chat history.
+
+Package selected files into Markdown:
+
+```bash
+node tools/context-pack.mjs AGENTS.md BLUEPRINT.md ROADMAP.md RUNBOOK.md \
+  --markdown --line-numbers \
+  --output context.md
+```
+
+Package a larger folder into Claude XML-style documents:
+
+```bash
+node tools/context-pack.mjs . --cxml --extension md --ignore "context.md"
+```
+
+Start a new research folder:
+
+```bash
+node tools/new-research-project.mjs \
+  --root research \
+  --slug agent-context-packing \
+  --title "Agent Context Packing" \
+  --question "How should agents package project context?"
+```
+
+This pattern is adapted from Simon Willison's
+[`files-to-prompt`](https://github.com/simonw/files-to-prompt) and
+[`research`](https://github.com/simonw/research): gather the right files, keep
+running notes, and turn the final investigation into a source-backed README.
+
+Verify these local tools:
+
+```bash
+node tools/test-context-tools.mjs
+```
 
 ## License
 

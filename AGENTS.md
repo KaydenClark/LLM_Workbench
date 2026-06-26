@@ -136,6 +136,17 @@ Long sessions drift: early instructions lose ground to whatever was said most re
 - Keep the `ROADMAP.md` Next Tasks checkboxes current as you go. Tick a box only once its proof exists. The checklist is your durable progress ledger — trust it over memory.
 - For a large or open-ended exploration, delegate it to a subagent so the main thread stays anchored to the goal instead of filling with search output.
 
+## Visual Work
+
+For UI, site, dashboard, game-menu, or other visual work:
+
+- Do not force a shared house style unless the user or project explicitly provides one.
+- Start from the current request, original product prompt, project-local design docs, screenshots, brand requirements, and audience context.
+- If important visual direction is missing and it changes the product outcome, ask one focused question; otherwise make a reasonable assumption and state it.
+- If a reusable visual template is provided, adapt it to the product rather than copying it unchanged into every project.
+- Preserve accessibility: meet WCAG AA contrast where practical, never encode state with color alone, and use recognizable icons instead of emoji for interface controls.
+- Verify the built visual surface with screenshots, browser checks, or another concrete review path when available.
+
 ## When To Ask, Proceed, Or Stop
 
 - **Proceed** without asking on low-risk, reversible decisions inside scope. Record the decision in the relevant doc.
@@ -150,7 +161,7 @@ Load only what the task requires:
 - **Feature, refactor, or unknown-scope bug:** Read `BLUEPRINT.md` and `ROADMAP.md`.
 - **Onboarding, setup, or architecture work:** Read all three (`BLUEPRINT.md`, `ROADMAP.md`, `RUNBOOK.md`).
 - **Any task that involves running verification:** Also open `RUNBOOK.md` → Test And Build for commands.
-- **Any task that creates or changes a UI/visual surface:** Read `VISUAL_DESIGN.md` from this project, or the nearest project-local visual guide, unless the project has a stronger brand guide.
+- **Any task that creates or changes a UI/visual surface:** Read the project-local design brief, screenshots, brand guide, reusable visual template, or original product prompt before choosing a visual direction.
 
 Then for every task:
 
