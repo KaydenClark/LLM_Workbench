@@ -22,6 +22,10 @@ guardrails instead of relying on chat history or one-off instructions.
   and icon guidance.
 - `team templates/` - optional manager, subagent, and taskboard templates for
   multi-agent workflows.
+- `benchmarks/` - evaluation protocol and results log for proving template
+  improvements over time.
+- `tools/evaluate-workbench.mjs` - static rubric scorer for local folders and
+  GitHub branches.
 - `LICENSE` - MIT license for reuse and adaptation.
 
 ## How To Use It
@@ -41,6 +45,24 @@ or any other agent that reads repository instructions.
 Note for Claude Code: it reads `CLAUDE.md`, not `AGENTS.md`, by default. Add a
 one-line `CLAUDE.md` containing `@AGENTS.md` (an import), or run `/init` in the
 target repo, so these rules load automatically.
+
+## How To Test Improvements
+
+Run the static evaluator before merging template changes:
+
+```bash
+node tools/evaluate-workbench.mjs --path . --include-controls
+```
+
+Compare GitHub branches:
+
+```bash
+node tools/evaluate-workbench.mjs --github KaydenClark/LLM_Workbench --branches main,branch-name --include-controls
+```
+
+The scorer proves coverage of the expected control surfaces. For stronger
+evidence, use `benchmarks/README.md` to run controlled task trials and record
+outcomes in `benchmarks/RESULTS.md`.
 
 ## License
 
