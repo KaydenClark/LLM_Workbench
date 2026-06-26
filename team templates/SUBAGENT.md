@@ -47,7 +47,7 @@ For a behavior change, use red/green/refactor:
 
 If a test is impractical, run a concrete manual check instead and **name the specific reason** (e.g. "no test harness for this UI interaction," "credential unavailable in this session"). "Not practical" without a reason is not acceptable.
 
-Then append **one proof row** to the `TASKBOARD.md` proof log, tagged with your agent id. Never rewrite another agent's row.
+Then append **one proof row** to the `TASKBOARD.md` proof log, tagged with your agent id. Write to `TASKBOARD.md` only — not the project `ROADMAP.md`; the manager transcribes the final result there. Re-read `TASKBOARD.md` immediately before appending so you build on the latest version, and never rewrite another agent's row.
 
 Never report a task done unless verification actually ran and documentation
 impact is accounted for. If verification could not run, say exactly why and

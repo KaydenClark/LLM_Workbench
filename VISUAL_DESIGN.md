@@ -49,6 +49,12 @@ Use this order when design guidance conflicts:
 - Avoid using all accents at equal weight on the same screen; the result should feel controlled, not noisy.
 - Keep red, yellow, and green tied to state unless the user asks for a more expressive palette.
 
+## Accessibility
+
+- This is a dark-mode default. For light mode or another theme, keep each color's role and re-derive tints that hold the same contrast — do not reuse these dark-surface hexes on a light background.
+- Meet WCAG AA: body text ≥ 4.5:1 against its background; large text, icons, and UI strokes ≥ 3:1. `#F7F7F7` on `#0A0A0A` and `#191919` passes. Verify any text-on-accent or accent-on-dark pairing before shipping — several accents above fail AA for body text and are intended for fills, borders, and status, not small text.
+- Never encode state with color alone. Pair it with an icon, label, or shape so colorblind users and low-contrast displays still get the signal.
+
 ## Iconography
 
 - Do not use emoji as icons in apps, dashboards, sites, tools, or game UI.

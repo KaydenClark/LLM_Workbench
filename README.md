@@ -38,6 +38,10 @@ guardrails instead of relying on chat history or one-off instructions.
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
 
+Note for Claude Code: it reads `CLAUDE.md`, not `AGENTS.md`, by default. Add a
+one-line `CLAUDE.md` containing `@AGENTS.md` (an import), or run `/init` in the
+target repo, so these rules load automatically.
+
 ## License
 
 MIT. See `LICENSE`.

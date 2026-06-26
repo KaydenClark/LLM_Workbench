@@ -63,6 +63,7 @@ If proof is missing or weak, send the task back. Mark its status `needs-rework`,
 - Update final docs before integration is done. At minimum, check `BLUEPRINT.md`, `ROADMAP.md`, `RUNBOOK.md`, `README.md`, and `AGENTS.md` against the integrated result.
 - After integrating all lanes, run the **full** verification suite (`RUNBOOK.md` → Test And Build). Subagents run the fast check; the full suite is your gate.
 - Append your own proof row for the integration result.
+- Transcribe the final integrated result into the project's `ROADMAP.md` Verification Log. Subagents write proof to `TASKBOARD.md` only; you are the single author of the durable project record, so it never has competing concurrent writers. Resolve any append collision on `TASKBOARD.md` here too.
 
 ### 6. Decide
 

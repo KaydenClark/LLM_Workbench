@@ -140,6 +140,16 @@ Expected healthy state:
 
 - [process, endpoint, scheduler, or deployment check]
 
+## Version Control
+
+Conventions for commits and pull requests in this project.
+
+- Branch from the default branch; do not commit directly to it. Branch names: `[CONVENTION, e.g. type/short-description]`.
+- Commit messages: `[CONVENTION, e.g. imperative subject ≤ 72 chars, the "why" in the body]`. One logical change per commit.
+- Run `git status` before committing. Never commit secrets, `.env` files, local databases, logs, build output, or generated artifacts.
+- Open a pull request when the task is complete and verified. The PR description states what changed, why, and how it was verified — mirror the `ROADMAP.md` Verification Log row.
+- Do not rewrite published history or force-push shared branches unless the user explicitly approves.
+
 ## Troubleshooting
 
 | Symptom | Likely cause | Check | Fix |
