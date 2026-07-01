@@ -1,8 +1,8 @@
 # evals/ — the measurement apparatus
 
 This turns "the template feels better" into a number with a confidence interval.
-Read [`../EVALUATION.md`](../EVALUATION.md) for the *why* (hypotheses, validity
-threats, statistics). This file is the *how*.
+Read [`../RUNBOOK.md`](../RUNBOOK.md) -> Evaluation And Benchmarking for the
+*why* (hypotheses, validity threats, statistics). This file is the *how*.
 
 ## What's here
 

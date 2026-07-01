@@ -12,7 +12,11 @@ It is deliberately lightweight. There is no task queue, no locking, no heartbeat
 | `SUBAGENT.md` | each subagent | How to execute one assigned task inside its lane, verify it, and report back. The quality bar. |
 | `TASKBOARD.md` | shared (manager writes assignments, subagents append proof) | The single live coordination artifact: goal, assignments, and proof log. |
 
-These sit *alongside* a project's own harness (`AGENTS.md`, `BLUEPRINT.md`, `ROADMAP.md`, `RUNBOOK.md`), not instead of it. The team files say **who does what and how they coordinate**; the project files say **what the project is and how to verify it**. When they conflict, the project's `AGENTS.md` authority order wins.
+These sit *alongside* a project's own harness (`AGENTS.md`, `BLUEPRINT.md`,
+`TASKBOARD.md`, `RUNBOOK.md`), not instead of it. The team files say **who does
+what and how they coordinate**; the project files say **what the project is,
+what is next, and how to verify it**. When they conflict, the project's
+`AGENTS.md` authority order wins.
 
 ## How a run works
 
@@ -29,7 +33,10 @@ Partitioning makes the *code* lanes disjoint, but `TASKBOARD.md` is written by e
 
 - Every writer **re-reads `TASKBOARD.md` immediately before appending** and appends **only its own row**. If the file changed since it was read, rebase the new row onto the latest version rather than overwriting.
 - No one edits another agent's row. The manager resolves any append conflict.
-- Subagents log proof to `TASKBOARD.md` **only** — they do not write the project's `ROADMAP.md`. At run end the manager transcribes the final integrated result into the project `ROADMAP.md` Verification Log, so there is exactly one durable project record and one author for it.
+- Subagents log proof to the team `TASKBOARD.md` **only**. At run end the
+  manager transcribes the final integrated result into the project root
+  `TASKBOARD.md` proof log, so there is exactly one durable project record and
+  one author for it.
 
 ## Scale assumptions (read before scaling up)
 

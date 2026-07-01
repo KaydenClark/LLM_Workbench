@@ -1,14 +1,17 @@
 # [PROJECT_NAME] - Blueprint
 
-**Last reviewed:** [YYYY-MM-DD] ← update whenever any section content changes  
-**Status:** [blank / active / partial / stale]  
+**Last reviewed:** [YYYY-MM-DD]
+**Status:** [blank / active / partial / stale]
 **Source root:** `[ABSOLUTE_PROJECT_PATH]`
 
-This is the stable reference for what the project is. Keep it factual, source-backed, and short. **Delete any section with no real content rather than leaving placeholders** — a placeholder looks like data and isn't.
+This is the stable reference for what the project is. Keep it factual,
+source-backed, and short. Delete sections that do not apply instead of leaving
+placeholders that look like facts.
 
 ## What This Project Is
 
-[One paragraph describing the app/service/tool, who uses it, and what problem it solves.]
+[One paragraph describing the app/service/tool, who uses it, and what problem it
+solves.]
 
 Core promise:
 
@@ -39,6 +42,21 @@ The most important quality bar is:
 
 - [correctness / speed / reliability / privacy / ease of use / other]
 
+## Direction And Build Order
+
+Use this section for stable product direction and sequencing logic. Put the
+current executable task queue in `TASKBOARD.md`, not here.
+
+Current phase:
+
+- [phase name and what it means]
+
+Build order:
+
+1. [Phase or milestone] - [why this comes first]
+2. [Phase or milestone] - [why this comes next]
+3. [Phase or milestone] - [why this is later]
+
 ## Architecture
 
 | Layer | Choice | Source / Notes |
@@ -63,9 +81,9 @@ Architecture constraints:
 [PROJECT_ROOT]/
 ├── [path]/        <- [purpose]
 ├── [path]/        <- [purpose]
-├── AGENTS.md      <- agent behavior and edit/read scope
-├── BLUEPRINT.md   <- stable project definition
-├── ROADMAP.md     <- active work plan and proof log
+├── AGENTS.md      <- agent behavior and read/edit scope
+├── BLUEPRINT.md   <- stable project definition and direction
+├── TASKBOARD.md   <- live task queue, blockers, proof log
 └── RUNBOOK.md     <- setup, operation, verification, recovery
 ```
 
@@ -125,7 +143,8 @@ Rules:
 
 ## Known Risks
 
-List only stable architectural risks that future agents must stay aware of. Immediate blockers belong in `ROADMAP.md` → Blocked Or Deferred instead.
+List stable architectural or product risks that future agents must stay aware
+of. Immediate blockers belong in `TASKBOARD.md` -> Blocked.
 
 | Risk | Impact | Mitigation / owner |
 |---|---|---|
@@ -149,4 +168,5 @@ The project is healthy when:
 - empty, error, and degraded states do not crash;
 - secrets and local data are not exposed in committed or built output.
 
-Verification commands live in `RUNBOOK.md`. Proof of past runs lives in the `ROADMAP.md` Verification Log.
+Verification commands live in `RUNBOOK.md`. Current task status and proof
+history live in `TASKBOARD.md`.

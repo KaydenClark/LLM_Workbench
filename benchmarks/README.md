@@ -17,7 +17,7 @@ Hypotheses:
 Controls:
 
 - `control:no-template` - an empty project instruction set.
-- `control:single-instruction-file` - one generic instruction file with no blueprint, roadmap, runbook, team workflow, or proof log.
+- `control:single-instruction-file` - one generic instruction file with no blueprint, taskboard, runbook, team workflow, or proof log.
 - External templates can be scored by copying their files into a folder and running the same evaluator, or by extending the evaluator to fetch that repository's instruction files.
 
 External references to compare against:
@@ -40,7 +40,8 @@ The workbench should not claim "better than every outside template" until those 
 - long-session goal drift;
 - multi-agent write collisions;
 - missing safety/privacy boundaries;
-- UI work without project-specific visual direction, accessibility, or icon guidance.
+- visual work that ignores project-specific direction, asset licensing, or the
+  no-emoji-as-icons preference.
 
 This is not a claim that every agent will obey every instruction. It proves that the candidate gives the agent the required guidance and proof hooks. Behavior still needs task trials.
 
@@ -85,14 +86,15 @@ with a static evaluator and now has an outcome-trial harness.
 `claude/harness-template-upgrades-v2` improved on `main` because it adds coverage for:
 
 - long-session drift and context-summary recovery;
-- `ROADMAP.md` checkbox progress as a live ledger;
+- `TASKBOARD.md` status lanes as the live work queue and proof ledger;
 - proceed/ask/stop decision boundaries;
 - version-control expectations;
 - shared `TASKBOARD.md` write-collision handling;
-- single-author durable `ROADMAP.md` transcription in manager/subagent runs;
+- single-author durable `TASKBOARD.md` proof transcription in manager/subagent runs;
 - Claude Code loading note;
-- visual workflow requirements that start from the project prompt, user context,
-  or an explicit design template instead of bundling one default visual style.
+- lightweight visual and asset guardrails that start from project context, search
+  for license-safe assets, and avoid emoji-as-icons instead of bundling one
+  default visual style.
 
 That is a measurable static improvement because each item maps to a rubric
 criterion and to a real observed failure mode in agent work. It is not yet a

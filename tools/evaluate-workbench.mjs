@@ -12,7 +12,7 @@ export const RUBRIC = [
     checks: [
       { label: 'agent instructions', requireFiles: ['AGENTS.md'] },
       { label: 'stable blueprint', requireFiles: ['BLUEPRINT.md'] },
-      { label: 'active roadmap', requireFiles: ['ROADMAP.md'] },
+      { label: 'active taskboard', requireFiles: ['TASKBOARD.md'] },
       { label: 'operator runbook', requireFiles: ['RUNBOOK.md'] },
       { label: 'user-facing readme', requireFiles: ['README.md'] }
     ]
@@ -45,11 +45,11 @@ export const RUBRIC = [
     label: 'Active work state',
     weight: 9,
     checks: [
-      { label: 'current state', files: ['ROADMAP.md'], patterns: ['Current State'] },
-      { label: 'current goal', files: ['ROADMAP.md'], patterns: ['Current Goal'] },
-      { label: 'checkable next tasks', files: ['ROADMAP.md'], patterns: ['Next Tasks', '\\[ \\]'] },
-      { label: 'blocked/deferred', files: ['ROADMAP.md'], patterns: ['Blocked Or Deferred'] },
-      { label: 'verification log', files: ['ROADMAP.md'], patterns: ['Verification Log', 'Remaining gap'] }
+      { label: 'current focus', files: ['TASKBOARD.md'], patterns: ['Current focus'] },
+      { label: 'ready queue', files: ['TASKBOARD.md'], patterns: ['Ready', 'ready'] },
+      { label: 'status values', files: ['TASKBOARD.md'], patterns: ['Status Values', 'in-progress', 'blocked'] },
+      { label: 'blocked/deferred lanes', files: ['TASKBOARD.md'], patterns: ['Blocked', 'Deferred'] },
+      { label: 'proof log', files: ['TASKBOARD.md'], patterns: ['Proof Log', 'Remaining gap'] }
     ]
   },
   {
@@ -72,8 +72,9 @@ export const RUBRIC = [
       { label: 'red/green workflow', files: ['AGENTS.md'], patterns: ['red/green/refactor|Red/Green', 'failing test'] },
       { label: 'specific skip reason', files: ['AGENTS.md'], patterns: ['test is impractical|tests are impractical', 'specific reason|name the specific reason'] },
       { label: 'targeted and full verification', files: ['AGENTS.md'], patterns: ['targeted test', 'full verification suite'] },
+      { label: 'meaningful coverage policy', files: ['RUNBOOK.md'], patterns: ['Test Coverage Policy', 'deletes? a meaningful line|accidentally deletes?|meaningful line', 'stale|bloat'] },
       { label: 'final response proof', files: ['AGENTS.md'], patterns: ['Final response', 'proof'] },
-      { label: 'durable verification log', files: ['AGENTS.md', 'ROADMAP.md'], patterns: ['Verification Log'] }
+      { label: 'durable proof log', files: ['AGENTS.md', 'TASKBOARD.md'], patterns: ['Proof Log|proof log'] }
     ]
   },
   {
@@ -83,8 +84,8 @@ export const RUBRIC = [
     checks: [
       { label: 'docs are part of done', files: ['AGENTS.md'], patterns: ['Documentation is part of the work|Documentation is part of done'] },
       { label: 'documentation owner', files: ['AGENTS.md'], patterns: ['documentation owner'] },
-      { label: 'doc routing table', files: ['AGENTS.md', 'ROADMAP.md'], patterns: ['BLUEPRINT\\.md', 'ROADMAP\\.md', 'RUNBOOK\\.md', 'README\\.md'] },
-      { label: 'no-update note', files: ['AGENTS.md', 'ROADMAP.md'], patterns: ['Docs checked; no update needed'] }
+      { label: 'doc routing table', files: ['AGENTS.md', 'TASKBOARD.md'], patterns: ['BLUEPRINT\\.md', 'TASKBOARD\\.md', 'RUNBOOK\\.md', 'README\\.md'] },
+      { label: 'no-update note', files: ['AGENTS.md', 'TASKBOARD.md'], patterns: ['Docs checked; no update needed'] }
     ]
   },
   {
@@ -92,10 +93,10 @@ export const RUBRIC = [
     label: 'Long-session drift control',
     weight: 8,
     checks: [
-      { label: 'staying on track section', files: ['AGENTS.md'], patterns: ['Staying On Track'] },
-      { label: 're-read roadmap', files: ['AGENTS.md'], patterns: ['Re-read `ROADMAP\\.md`'] },
-      { label: 'context compaction', files: ['AGENTS.md', 'ROADMAP.md'], patterns: ['context compaction|context summary'] },
-      { label: 'progress ledger checkboxes', files: ['AGENTS.md', 'ROADMAP.md'], patterns: ['progress ledger', '\\[ \\]'] }
+      { label: 'long session section', files: ['AGENTS.md'], patterns: ['Long Session Control'] },
+      { label: 're-read taskboard', files: ['AGENTS.md'], patterns: ['Re-read `BLUEPRINT\\.md` and `TASKBOARD\\.md`'] },
+      { label: 'context recovery', files: ['AGENTS.md', 'TASKBOARD.md'], patterns: ['context summary|long interruption|Long Session Control'] },
+      { label: 'progress ledger statuses', files: ['AGENTS.md', 'TASKBOARD.md'], patterns: ['proof rows|Proof Log', 'ready|in-progress|blocked'] }
     ]
   },
   {
@@ -105,9 +106,9 @@ export const RUBRIC = [
     checks: [
       { label: 'manager instructions', requireFiles: ['team templates/MANAGER.md'] },
       { label: 'subagent instructions', requireFiles: ['team templates/SUBAGENT.md'] },
-      { label: 'taskboard', requireFiles: ['team templates/TASKBOARD.md'] },
+      { label: 'team taskboard', requireFiles: ['team templates/TASKBOARD.md'] },
       { label: 'non-overlapping lanes', files: ['team templates/MANAGER.md', 'team templates/TASKBOARD.md'], patterns: ['No two open tasks|no two open tasks|do not overlap'] },
-      { label: 'single durable writer', files: ['AGENTS.md', 'team templates/MANAGER.md', 'team templates/README.md'], patterns: ['single author|single durable|Subagents log proof to `TASKBOARD\\.md`'] }
+      { label: 'single durable writer', files: ['AGENTS.md', 'team templates/MANAGER.md', 'team templates/README.md'], patterns: ['single author|single durable|Subagents log proof.*TASKBOARD\\.md'] }
     ]
   },
   {
@@ -132,16 +133,15 @@ export const RUBRIC = [
     ]
   },
   {
-    id: 'visual_workflow',
-    label: 'Visual workflow guidance',
+    id: 'asset_workflow',
+    label: 'Visual and asset guardrails',
     weight: 6,
     checks: [
-      { label: 'visual work process', files: ['AGENTS.md', 'README.md'], patterns: ['Visual Work|Visual-design starters'] },
+      { label: 'no bundled house style', files: ['AGENTS.md', 'README.md'], patterns: ['does not define a house visual style|Do not force a shared visual style'] },
       { label: 'project-specific direction', files: ['AGENTS.md', 'README.md'], patterns: ['project-local design|original product prompt|brand requirements'] },
-      { label: 'clarifying visual question', files: ['AGENTS.md'], patterns: ['ask one focused question'] },
-      { label: 'accessibility', files: ['AGENTS.md'], patterns: ['accessibility', 'WCAG AA'] },
-      { label: 'no color alone', files: ['AGENTS.md'], patterns: ['color alone'] },
-      { label: 'icon guidance', files: ['AGENTS.md'], patterns: ['icons instead of emoji|recognizable icons'] }
+      { label: 'license-safe asset search', files: ['AGENTS.md', 'README.md'], patterns: ['license-safe free assets'] },
+      { label: 'asset attribution', files: ['AGENTS.md', 'README.md'], patterns: ['source URL|license|author|attribution'] },
+      { label: 'avoid emoji icons', files: ['AGENTS.md', 'README.md'], patterns: ['avoid emoji'] }
     ]
   }
 ];

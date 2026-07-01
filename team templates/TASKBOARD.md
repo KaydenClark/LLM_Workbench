@@ -42,7 +42,7 @@ Tasks that cannot proceed. Surface these to the user; do not retry indefinitely.
 
 ## Proof Log
 
-Append one row when a task changes durable project state. Tag it with your agent id. Use actual results, not claims. Include the documentation result. Re-read this file immediately before appending so you build on the latest version; never rewrite an existing row. This board is the subagents' only durable write target — the manager copies the final result into the project `ROADMAP.md`.
+Append one row when a task changes durable project state. Tag it with your agent id. Use actual results, not claims. Include the documentation result. Re-read this file immediately before appending so you build on the latest version; never rewrite an existing row. This board is the subagents' only durable write target; the manager copies the final result into the project root `TASKBOARD.md`.
 
 | Date | Agent | Task | Proof (command or named manual check) | Documentation | Result | Remaining gap |
 |---|---|---|---|---|---|---|

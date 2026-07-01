@@ -13,7 +13,7 @@ When instructions conflict, use this order:
 1. Current user request.
 2. The project's `AGENTS.md`.
 3. Source code and tests (trust them over docs when they conflict).
-4. `BLUEPRINT.md`, then `ROADMAP.md`, then `RUNBOOK.md`.
+4. `BLUEPRINT.md`, then the project root `TASKBOARD.md`, then `RUNBOOK.md`.
 5. This file and `TASKBOARD.md`.
 
 If docs and code disagree, trust verified code, flag the drift, and have it corrected as part of the work.
@@ -22,7 +22,8 @@ If docs and code disagree, trust verified code, flag the drift, and have it corr
 
 ### 1. Frame
 
-- Read the goal and the relevant project docs (`BLUEPRINT.md`, `ROADMAP.md`, `RUNBOOK.md` → Test And Build).
+- Read the goal and the relevant project docs (`BLUEPRINT.md`, project root
+  `TASKBOARD.md`, `RUNBOOK.md` -> Test And Build).
 - Restate the goal in **one sentence** at the top of `TASKBOARD.md`.
 - Write the global **Done when** — the concrete, checkable conditions that end the run.
 - Include documentation in **Done when**: affected docs are updated, or the board says `Docs checked; no update needed`.
@@ -60,10 +61,16 @@ If proof is missing or weak, send the task back. Mark its status `needs-rework`,
 ### 5. Integrate
 
 - Bring the lane's changes together. Because lanes were disjoint, conflicts should be rare; if one happens, you partitioned wrong — sequence the work and re-run.
-- Update final docs before integration is done. At minimum, check `BLUEPRINT.md`, `ROADMAP.md`, `RUNBOOK.md`, `README.md`, and `AGENTS.md` against the integrated result.
+- Update final docs before integration is done. At minimum, check
+  `BLUEPRINT.md`, the project root `TASKBOARD.md`, `RUNBOOK.md`, `README.md`,
+  and `AGENTS.md` against the integrated result.
 - After integrating all lanes, run the **full** verification suite (`RUNBOOK.md` → Test And Build). Subagents run the fast check; the full suite is your gate.
 - Append your own proof row for the integration result.
-- Transcribe the final integrated result into the project's `ROADMAP.md` Verification Log. Subagents write proof to `TASKBOARD.md` only; you are the single author of the durable project record, so it never has competing concurrent writers. Resolve any append collision on `TASKBOARD.md` here too.
+- Transcribe the final integrated result into the project root `TASKBOARD.md`
+  proof log. Subagents write proof to the team `TASKBOARD.md` only; you are the
+  single author of the durable project record, so it never has competing
+  concurrent writers. Resolve any append collision on the team `TASKBOARD.md`
+  here too.
 
 ### 6. Decide
 

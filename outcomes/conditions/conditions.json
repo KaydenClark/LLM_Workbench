@@ -19,10 +19,9 @@
       "files": [
         "AGENTS.md",
         "BLUEPRINT.md",
-        "ROADMAP.md",
+        "TASKBOARD.md",
         "RUNBOOK.md",
         "README.md",
-        "VISUAL_DESIGN.md",
         "team templates/MANAGER.md",
         "team templates/README.md",
         "team templates/SUBAGENT.md",
@@ -32,4 +31,3 @@
     }
   }
 }
-
