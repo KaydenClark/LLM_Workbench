@@ -1,12 +1,11 @@
-# [PROJECT_NAME] - Taskboard
+# LLM Workbench - Taskboard
 
-**Current focus:** [one sentence describing the current useful outcome]  
-**Owner:** [user / agent / team]  
-**Last updated:** [YYYY-MM-DD]
+**Current focus:** Close the gaps between the current harness and the founding intent: one-prompt bootstrap and a true executive interface.
+**Owner:** Kayden (executive); agents execute
+**Last updated:** 2026-07-01
 
-This is the live work queue and proof ledger. Agents use it to decide what to
-work on next. Keep strategy and long-term direction in `BLUEPRINT.md`; keep
-commands and verification procedures in `RUNBOOK.md`.
+This is the live work queue and proof ledger for the workbench repo itself.
+Strategy and direction live in `BLUEPRINT.md`; commands live in `RUNBOOK.md`.
 
 ## How To Use This Board
 
@@ -37,39 +36,38 @@ Do not rewrite existing proof rows. Append only.
 
 | ID | Priority | Task | Source / why now | Touches | Proof required | Docs impact | Owner | Status | Last update |
 |---|---:|---|---|---|---|---|---|---|---|
-| T-001 | 1 | [specific task] | [source] | `[path]` | `[command/check]` | [docs to update or check] | [agent/user] | ready | [YYYY-MM-DD] |
+| T-002 | 1 | Write `templates/GENESIS.md`: phased one-prompt bootstrap protocol (prompt -> BLUEPRINT -> architecture -> scaffold -> AGENTS scopes -> RUNBOOK -> seeded TASKBOARD), incl. what the agent decides alone vs. asks, and what a finished bootstrap must prove | Founding intent: "a model should take a prompt like this one and build out a new project on its own"; harness review 2026-07-01 | `templates/` | `node tools/test-evaluate-workbench.mjs`; dry-run bootstrap of a toy project | README, BLUEPRINT | agent | ready | 2026-07-01 |
+| T-003 | 2 | Executive interface: add standing five-line executive brief + pending-decision queue (options, recommendation, cost) to the taskboard template, and an escalation-language contract (product tradeoffs, never code-level failures) to the agents template | Founding intent: owner never reads code; harness review 2026-07-01 | `templates/`, root docs | evaluator rubric updated + self-tests pass | README, both AGENTS/TASKBOARD (root + templates) | agent | ready | 2026-07-01 |
+| T-004 | 3 | Product-truth acceptance: require a <1-minute demo artifact (screenshot, recording, preview URL, or one-command demo) as a proof-log column for milestone tasks | executive can't accept work via test output alone | `templates/TASKBOARD.md`, `templates/AGENTS.md` | self-tests pass | templates + root docs | agent | ready | 2026-07-01 |
+| T-005 | 4 | Lifecycle hardening: stale-claim reclaim rule, proof-log archival policy (`TASKBOARD_ARCHIVE.md` past ~30 rows), and `Generated from LLM_Workbench vX` version stamps + upgrade note | long-running projects will hit all three | `templates/` | self-tests pass | templates, README | agent | ready | 2026-07-01 |
+| T-006 | 5 | Decide fate of `codex/structured-metadata-guardrails`: rebase its YAML frontmatter + machine-readable scopes onto the v2 layout, or extract the ideas and close it | branch targets deleted ROADMAP layout; drift risk (BLUEPRINT Known Risks) | `templates/`, `tools/evaluate-workbench.mjs` | evaluator self-test passes both dialects or branch closed | BLUEPRINT decision row | agent + owner decision | ready | 2026-07-01 |
+| T-007 | 6 | Mechanical scope enforcement: optional `.claude/settings.json` template (deny secrets/build output; allowlist from filled edit scope), generated during bootstrap | prose scope is honor-system; hooks make it mechanical | `templates/` | manual check: settings file validates in Claude Code | README, GENESIS | agent | ready | 2026-07-01 |
+| T-008 | 7 | Feedback loop: `HARNESS_FEEDBACK` convention for downstream projects + a harvest task here; template changes validated via `evals/` before "better" claims | closes the "ruleset updates the ruleset" loop | `templates/`, `evals/` | evals selftest passes | README, RUNBOOK | agent | ready | 2026-07-01 |
+| T-009 | 8 | Add a blank `templates/README.md` product template (root README is the workbench's own, not copyable) | copy instructions currently point at a non-template README | `templates/` | evaluator on `templates/` passes | README | agent | ready | 2026-07-01 |
 
 ## In Progress
 
 | ID | Priority | Task | Owner | Started | Touches | Current note | Proof required | Status |
 |---|---:|---|---|---|---|---|---|---|
-| [ID] | [n] | [task] | [owner] | [YYYY-MM-DD HH:MM] | `[path]` | [short note] | `[command/check]` | in-progress |
+| T-001 | 0 | Repo-home migration + dogfooding: merge Workbench_v2, make the local folder the repo home, split blank templates into `templates/`, write real root control docs | claude | 2026-07-01 | root docs, `templates/` | implementation done; gated on owner merging PR #5 (v2) then the dogfood PR | `node tools/test-*.mjs` all pass; evaluator scores root and `templates/` | gated |
 
 ## Blocked
 
-Use this lane for roadblocks, slowdowns, and risks that affect current or
-near-term work. If a blocker becomes a stable architectural risk, summarize it
-in `BLUEPRINT.md`.
-
 | ID | Task / area | Blocked on | Evidence | Next action | Owner | Status |
 |---|---|---|---|---|---|---|
-| [ID] | [task/area] | [blocker] | [command/log/manual check] | [next concrete action] | [owner] | blocked |
+| - | none | | | | | |
 
 ## Deferred
 
-Valid work that should not be started yet.
-
 | ID | Task | Deferred until | Why it matters | Revisit trigger |
 |---|---|---|---|---|
-| [ID] | [task] | [condition] | [reason] | [trigger] |
+| T-010 | Real (API-spending) eval comparison runs across template versions | GENESIS + executive interface land | outcome evidence beats rubric evidence | two or more template versions worth comparing |
 
 ## Done
 
-Completed task summary. Detailed evidence belongs in the proof log below.
-
 | ID | Task | Completed | Result | Proof row |
 |---|---|---|---|---|
-| [ID] | [task] | [YYYY-MM-DD] | [pass/fail/partial] | [row reference] |
+| - | none yet on this board (see git history for pre-board work) | | | |
 
 ## Documentation Check
 
@@ -77,11 +75,12 @@ Documentation is part of done. Before marking a task complete, check:
 
 | If the task changed... | Update or confirm |
 |---|---|
-| Product purpose, workflows, routes, data model, architecture, invariants, privacy/safety boundaries | `BLUEPRINT.md` |
+| Purpose, product shape, architecture, invariants, decisions | `BLUEPRINT.md` |
 | Task queue, blockers, deferred work, proof of completed work | `TASKBOARD.md` |
-| Setup, install, run, test, build, deploy, recovery, environment, operations, evaluation procedure | `RUNBOOK.md` |
-| User-facing setup, usage, demo, handoff, public instructions | `README.md` |
+| Commands, verification, version-control conventions | `RUNBOOK.md` |
+| Public-facing usage, template descriptions, copy instructions | `README.md` |
 | Agent rules, scope, authority, verification policy | `AGENTS.md` |
+| Harness design itself | the matching file in `templates/` |
 
 If no docs need edits, record `Docs checked; no update needed` in the final
 response and in the proof row's `Docs` field.
@@ -93,4 +92,4 @@ verification evidence. Use actual results, not stale claims.
 
 | Date | Task ID | Agent | Proof | Result | Docs | Remaining gap |
 |---|---|---|---|---|---|---|
-| [YYYY-MM-DD] | [ID] | [agent] | `[command]` or named manual check | [pass/fail/partial] | [updated / no update needed] | [none/gap] |
+| 2026-07-01 | T-001 | claude (Fable 5) | `node tools/test-evaluate-workbench.mjs` + context/outcome self-tests + `node tools/evaluate-workbench.mjs --path templates --include-controls` | pass - all self-tests ok; root dogfood docs score 100/100; templates score 85 vs controls 0 and 2 (gap tracked as T-009) | root docs written; README updated; templates moved to `templates/` | PR #5 and dogfood PR need owner merge; T-006 branch decision open |

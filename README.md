@@ -10,18 +10,26 @@ of relying on chat history or one-off instructions.
 
 ## Core Files
 
-- `AGENTS.md` - agent behavior, authority order, read/edit scope, task-selection
-  loop, documentation ownership, and proof rules.
-- `BLUEPRINT.md` - stable project identity, product direction, architecture,
-  invariants, safety boundaries, and preserved decisions.
-- `TASKBOARD.md` - live task queue, blocked/deferred lanes, current handoff, and
-  proof log.
-- `RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery, and
-  evaluation procedure.
-- `README.md` - human-facing overview and usage.
+The blank, copyable templates live in `templates/`:
+
+- `templates/AGENTS.md` - agent behavior, authority order, read/edit scope,
+  task-selection loop, documentation ownership, and proof rules.
+- `templates/BLUEPRINT.md` - stable project identity, product direction,
+  architecture, invariants, safety boundaries, and preserved decisions.
+- `templates/TASKBOARD.md` - live task queue, blocked/deferred lanes, current
+  handoff, and proof log.
+- `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
+  and evaluation procedure.
 
 `ROADMAP.md` is no longer part of the default harness. Put stable product
 direction in `BLUEPRINT.md` and executable next work in `TASKBOARD.md`.
+
+## This Repo Dogfoods Its Own Harness
+
+The root-level `AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`, and `RUNBOOK.md`
+are not templates. They are the real, filled control docs that govern work on
+the workbench itself, and they double as a living example of what filled-out
+docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
@@ -45,8 +53,9 @@ direction in `BLUEPRINT.md` and executable next work in `TASKBOARD.md`.
 
 ## How To Use It
 
-1. Copy `AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`, `RUNBOOK.md`, and
-   `README.md` into the target project.
+1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
+   `templates/TASKBOARD.md`, and `templates/RUNBOOK.md` into the target
+   project root.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items.
 3. Keep `BLUEPRINT.md` stable and source-backed.
@@ -76,8 +85,12 @@ Run the static evaluator before merging template changes:
 
 ```bash
 node tools/test-evaluate-workbench.mjs
+node tools/evaluate-workbench.mjs --path templates --include-controls
 node tools/evaluate-workbench.mjs --path . --include-controls
 ```
+
+The first `--path` run scores the blank templates; the second scores this
+repo's own filled root docs (the dogfood check).
 
 Compare GitHub branches:
 

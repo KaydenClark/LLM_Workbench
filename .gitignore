@@ -8,3 +8,9 @@ evals/results/_pipeline_selftest.jsonl
 # Real run outputs are committed deliberately, not ignored, so the ledger has
 # provenance — but scratch/temp runs can be prefixed tmp_ to skip them:
 evals/results/tmp_*.jsonl
+
+# macOS
+.DS_Store
+
+# Local-only reference material (owner decides if/when to publish)
+research papers/
