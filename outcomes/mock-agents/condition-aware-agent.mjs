@@ -6,7 +6,7 @@ import path from 'node:path';
 const repo = process.env.OUTCOME_TASK_REPO ?? process.cwd();
 const hasWorkbench = fs.existsSync(path.join(repo, 'AGENTS.md')) &&
   fs.existsSync(path.join(repo, 'BLUEPRINT.md')) &&
-  fs.existsSync(path.join(repo, 'ROADMAP.md')) &&
+  fs.existsSync(path.join(repo, 'TASKBOARD.md')) &&
   fs.existsSync(path.join(repo, 'RUNBOOK.md'));
 
 if (hasWorkbench) {
@@ -49,4 +49,3 @@ fs.writeFileSync(path.join(repo, 'tests/test_discount.mjs'), [
 ].join('\n'));
 
 console.log('All tests pass. Done.');
-

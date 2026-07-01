@@ -15,14 +15,14 @@
       "label": "our harness @ main",
       "ref": "origin/main",
       "entry": "AGENTS.md",
-      "files": ["AGENTS.md", "BLUEPRINT.md", "ROADMAP.md", "RUNBOOK.md", "VISUAL_DESIGN.md"]
+      "files": ["AGENTS.md", "BLUEPRINT.md", "TASKBOARD.md", "RUNBOOK.md"]
     },
     "c3_ours_v2": {
       "source": "git",
       "label": "our harness @ harness-template-upgrades-v2",
       "ref": "origin/claude/harness-template-upgrades-v2",
       "entry": "AGENTS.md",
-      "files": ["AGENTS.md", "BLUEPRINT.md", "ROADMAP.md", "RUNBOOK.md", "VISUAL_DESIGN.md"]
+      "files": ["AGENTS.md", "BLUEPRINT.md", "TASKBOARD.md", "RUNBOOK.md"]
     }
   }
 }

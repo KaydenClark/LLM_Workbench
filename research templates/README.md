@@ -30,10 +30,9 @@ node tools/new-research-project.mjs \
 ## Package Context For A Model
 
 ```bash
-node tools/context-pack.mjs AGENTS.md BLUEPRINT.md ROADMAP.md RUNBOOK.md \
+node tools/context-pack.mjs AGENTS.md BLUEPRINT.md TASKBOARD.md RUNBOOK.md \
   --markdown --line-numbers \
   --output research/agent-context-packing/context.md
 ```
 
 Use `--cxml` when sending a larger bundle to Claude-style long-context prompts.
-

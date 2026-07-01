@@ -11,7 +11,7 @@ Take the task the manager assigned you, make the smallest correct change inside 
 1. Current user / manager request for your task.
 2. The project's `AGENTS.md`.
 3. Source code and tests (trust them over docs when they conflict).
-4. `BLUEPRINT.md`, then `ROADMAP.md`, then `RUNBOOK.md`.
+4. `BLUEPRINT.md`, then the project root `TASKBOARD.md`, then `RUNBOOK.md`.
 5. `TASKBOARD.md`.
 
 If docs and code disagree, trust verified code, flag the drift in your report, and do not silently "fix" the doc unless your task covers it.
@@ -47,7 +47,11 @@ For a behavior change, use red/green/refactor:
 
 If a test is impractical, run a concrete manual check instead and **name the specific reason** (e.g. "no test harness for this UI interaction," "credential unavailable in this session"). "Not practical" without a reason is not acceptable.
 
-Then append **one proof row** to the `TASKBOARD.md` proof log, tagged with your agent id. Write to `TASKBOARD.md` only — not the project `ROADMAP.md`; the manager transcribes the final result there. Re-read `TASKBOARD.md` immediately before appending so you build on the latest version, and never rewrite another agent's row.
+Then append **one proof row** to the team `TASKBOARD.md` proof log, tagged with
+your agent id. Write to the team `TASKBOARD.md` only; the manager transcribes
+the final result to the project root `TASKBOARD.md`. Re-read the team
+`TASKBOARD.md` immediately before appending so you build on the latest version,
+and never rewrite another agent's row.
 
 Never report a task done unless verification actually ran and documentation
 impact is accounted for. If verification could not run, say exactly why and
