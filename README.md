@@ -20,6 +20,9 @@ The blank, copyable templates live in `templates/`:
   handoff, and proof log.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
+- `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
+  founding prompt into the four filled control docs plus a smallest-running
+  scaffold. Run once at project start, then delete or archive.
 
 `ROADMAP.md` is no longer part of the default harness. Put stable product
 direction in `BLUEPRINT.md` and executable next work in `TASKBOARD.md`.
@@ -69,6 +72,16 @@ or any other agent that reads repository instructions.
 
 For Claude Code, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
 `/init` in the target repo, so these rules load automatically.
+
+### One-Prompt Bootstrap
+
+To start a project from a single founding prompt instead of filling the docs by
+hand, copy `templates/GENESIS.md` alongside the four control docs and hand the
+agent the prompt plus GENESIS. GENESIS walks the agent through framing the
+prompt, writing `BLUEPRINT.md`, choosing an architecture, scaffolding the
+smallest thing that runs, filling `AGENTS.md` scopes and `RUNBOOK.md` commands,
+and seeding `TASKBOARD.md` - then defines what a finished bootstrap must prove.
+GENESIS runs once; after handoff the four control docs govern.
 
 ## Visual And Asset Guidance
 
