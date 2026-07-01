@@ -1,3 +1,18 @@
+---
+doc_type: roadmap
+version: 1
+project_name: "[PROJECT_NAME]"
+status: template
+current_goal: "[CURRENT_GOAL]"
+proof_log: "Verification Log"
+last_reviewed: "[YYYY-MM-DD]"
+tracks:
+  - current_state
+  - next_tasks
+  - blockers
+  - verification
+---
+
 # [PROJECT_NAME] - Roadmap
 
 **Current phase:** [phase name]  
@@ -76,7 +91,11 @@ response and in the verification row's `Remaining gap` field.
 ## Verification Log
 
 Append a row when a task changes durable project state. Use actual results, not stale claims.
+Each proof cell should include the command or named manual check, exit code or
+observed result, artifact/log/trace path when available, and coverage scope.
 
 | Date | Task | Proof | Result | Remaining gap |
 |---|---|---|---|---|
-| [YYYY-MM-DD] | [task] | `[command]` or manual check | [pass/fail] | [none/gap] |
+| [YYYY-MM-DD] | [task] | `[command]` or manual check; exit/result: [code/result]; artifact/trace: [path or n/a]; coverage: [scope] | [pass/fail] | [none/gap] |
+| 2026-07-01 | Add structured metadata, Claude bridge, prompt-injection guardrails, and measurable benchmark criteria | `node tools/test-evaluate-workbench.mjs` red failed before the new rubric existed with "structured metadata should be present"; `node tools/test-evaluate-workbench.mjs`; `node tools/test-context-tools.mjs`; `node tools/test-outcome-trials.mjs`; `node tools/evaluate-workbench.mjs --path . --include-controls`; exit/result: pass; artifact/trace: n/a; coverage: evaluator, context tools, outcome trial harness, static benchmark rubric | pass; local 124/124, no-template 0/124, single-instruction control 2/124 | Real-agent task trials remain the next causal proof step. |
+| 2026-06-26 | Add meaningful test coverage policy to the workbench runbook and rubric | `node tools/test-evaluate-workbench.mjs` red failed before the `RUNBOOK.md` policy; `node tools/test-evaluate-workbench.mjs`; `node tools/test-context-tools.mjs`; `node tools/test-outcome-trials.mjs`; `node tools/evaluate-workbench.mjs --path . --include-controls` | pass; local workbench 100/100, no-template 0/100, single-instruction control 2/100 | Real-agent outcome trials remain the next causal proof step; docs updated in `RUNBOOK.md` and `benchmarks/RESULTS.md`. |

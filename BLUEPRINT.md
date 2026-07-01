@@ -1,3 +1,17 @@
+---
+doc_type: blueprint
+version: 1
+project_name: "[PROJECT_NAME]"
+status: template
+source_root: "[ABSOLUTE_PROJECT_PATH]"
+last_reviewed: "[YYYY-MM-DD]"
+tracks:
+  - architecture
+  - contracts
+  - invariants
+  - trust_boundaries
+---
+
 # [PROJECT_NAME] - Blueprint
 
 **Last reviewed:** [YYYY-MM-DD] ← update whenever any section content changes  
@@ -68,6 +82,12 @@ Architecture constraints:
 ├── ROADMAP.md     <- active work plan and proof log
 └── RUNBOOK.md     <- setup, operation, verification, recovery
 ```
+
+Machine-use directory index:
+
+| Path | Purpose | Owner | Agent editable? | Generated? | Sensitive? | Criticality | Proof source |
+|---|---|---|---|---|---|---|---|
+| `[path/]` | [purpose] | [owner] | [yes/no] | [yes/no] | [yes/no] | [low/medium/high] | [file/test/check] |
 
 ## Main Contracts
 

@@ -18,6 +18,33 @@ export const RUBRIC = [
     ]
   },
   {
+    id: 'structured_metadata',
+    label: 'Structured metadata',
+    weight: 8,
+    checks: [
+      {
+        label: 'agent front matter',
+        frontMatterFiles: ['AGENTS.md'],
+        requiredKeys: ['doc_type', 'version', 'project_name', 'status', 'applies_to', 'owners', 'writable_roots', 'forbidden_paths', 'quality_gates', 'requires_review_for']
+      },
+      {
+        label: 'blueprint front matter',
+        frontMatterFiles: ['BLUEPRINT.md'],
+        requiredKeys: ['doc_type', 'version', 'project_name', 'status', 'source_root', 'last_reviewed', 'tracks']
+      },
+      {
+        label: 'roadmap front matter',
+        frontMatterFiles: ['ROADMAP.md'],
+        requiredKeys: ['doc_type', 'version', 'project_name', 'status', 'current_goal', 'proof_log', 'last_reviewed', 'tracks']
+      },
+      {
+        label: 'runbook front matter',
+        frontMatterFiles: ['RUNBOOK.md'],
+        requiredKeys: ['doc_type', 'version', 'project_name', 'status', 'environment', 'runtime_owner', 'verification_commands', 'guardrails']
+      }
+    ]
+  },
+  {
     id: 'authority_scope',
     label: 'Authority, read, and edit scope',
     weight: 10,
@@ -72,6 +99,7 @@ export const RUBRIC = [
       { label: 'red/green workflow', files: ['AGENTS.md'], patterns: ['red/green/refactor|Red/Green', 'failing test'] },
       { label: 'specific skip reason', files: ['AGENTS.md'], patterns: ['test is impractical|tests are impractical', 'specific reason|name the specific reason'] },
       { label: 'targeted and full verification', files: ['AGENTS.md'], patterns: ['targeted test', 'full verification suite'] },
+      { label: 'meaningful coverage policy', files: ['RUNBOOK.md'], patterns: ['Test Coverage Policy', 'deletes? a meaningful line|accidentally deletes?|meaningful line', 'pointless|bloat|stale'] },
       { label: 'final response proof', files: ['AGENTS.md'], patterns: ['Final response', 'proof'] },
       { label: 'durable verification log', files: ['AGENTS.md', 'ROADMAP.md'], patterns: ['Verification Log'] }
     ]
@@ -122,13 +150,38 @@ export const RUBRIC = [
     ]
   },
   {
+    id: 'guardrails',
+    label: 'Prompt-injection and guardrails',
+    weight: 8,
+    checks: [
+      { label: 'prompt-injection boundary', files: ['AGENTS.md'], patterns: ['Prompt-Injection Boundary', 'untrusted evidence|untrusted input', 'Approved instruction files|approved instruction files'] },
+      { label: 'guardrail ladder', files: ['RUNBOOK.md'], patterns: ['Harness Guardrails', 'Input guardrails', 'Tool guardrails', 'Output guardrails', 'Approval guardrails'] },
+      { label: 'forbidden path policy', files: ['AGENTS.md', 'RUNBOOK.md'], patterns: ['forbidden_paths|forbidden paths', 'destructive operations|destructive changes|production deploys'] },
+      { label: 'CI/CD security defaults', files: ['RUNBOOK.md'], patterns: ['CI/CD security defaults', 'read-only', 'OIDC', 'self-hosted runners', 'artifact|provenance'] },
+      { label: 'traceable proof fields', files: ['ROADMAP.md', 'RUNBOOK.md'], patterns: ['exit code|observed result', 'artifact/log/trace|artifact or trace', 'coverage scope'] }
+    ]
+  },
+  {
     id: 'portability',
     label: 'Tool portability',
-    weight: 5,
+    weight: 7,
     checks: [
       { label: 'plain markdown', files: ['README.md'], patterns: ['plain Markdown'] },
       { label: 'multi-agent compatibility', files: ['README.md'], patterns: ['Codex, Claude|Codex|Claude'] },
-      { label: 'Claude Code import note', files: ['README.md'], patterns: ['Claude Code', '@AGENTS\\.md|/init'] }
+      { label: 'Claude Code import note', files: ['README.md'], patterns: ['Claude Code', '@AGENTS\\.md|/init'] },
+      { label: 'Claude bridge file', requireFiles: ['CLAUDE.md'] },
+      { label: 'Claude bridge imports AGENTS', files: ['CLAUDE.md'], patterns: ['@AGENTS\\.md'] }
+    ]
+  },
+  {
+    id: 'benchmark_evidence',
+    label: 'Benchmark evidence discipline',
+    weight: 6,
+    checks: [
+      { label: 'metadata hypothesis', files: ['benchmarks/README.md'], patterns: ['H5: Machine-checkable metadata', 'YAML front matter'] },
+      { label: 'guardrail hypothesis', files: ['benchmarks/README.md'], patterns: ['H6: Policy needs guardrails', 'Prompt-injection boundaries|prompt-injection boundaries'] },
+      { label: 'evaluator-first claim rule', files: ['benchmarks/README.md'], patterns: ['New claims must become evaluator checks', 'template\\s+improvements'] },
+      { label: 'research-backed checklist', files: ['README.md', 'benchmarks/README.md'], patterns: ['research-backed', 'CLAUDE\\.md', 'traceable proof'] }
     ]
   },
   {
@@ -259,11 +312,34 @@ function checkPassed(files, check) {
   if (check.requireFiles) {
     return check.requireFiles.every((file) => Object.hasOwn(files, file));
   }
+  if (check.frontMatterFiles) {
+    return check.frontMatterFiles.every((file) => {
+      const frontMatter = parseFrontMatter(files[file] ?? '');
+      if (!frontMatter.exists) return false;
+      return (check.requiredKeys ?? []).every((key) => frontMatter.keys.has(key));
+    });
+  }
   const required = check.files ?? Object.keys(files);
   if (required.length === 0) return false;
   const haystack = required.map((file) => files[file] ?? '').join('\n');
   if (!haystack.trim()) return false;
   return (check.patterns ?? []).every((pattern) => new RegExp(pattern, 'im').test(haystack));
+}
+
+function parseFrontMatter(content) {
+  const normalized = content.replace(/^\uFEFF/, '');
+  const lines = normalized.split(/\r?\n/);
+  if (lines[0]?.trim() !== '---') return { exists: false, keys: new Set() };
+
+  const keys = new Set();
+  for (let index = 1; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (line.trim() === '---') return { exists: true, keys };
+    const match = line.match(/^([A-Za-z_][A-Za-z0-9_-]*):/);
+    if (match) keys.add(match[1]);
+  }
+
+  return { exists: false, keys: new Set() };
 }
 
 function totalWeight() {

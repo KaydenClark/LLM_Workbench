@@ -12,6 +12,7 @@ guardrails instead of relying on chat history or one-off instructions.
 
 - `AGENTS.md` - agent behavior, authority order, read/edit scope, TDD rules,
   documentation ownership, and proof-of-done requirements.
+- `CLAUDE.md` - a thin Claude Code bridge that imports `AGENTS.md`.
 - `BLUEPRINT.md` - stable project identity, architecture, invariants, and
   safety boundaries.
 - `ROADMAP.md` - current state, next work, blockers, backlog, and verification
@@ -49,17 +50,19 @@ guardrails instead of relying on chat history or one-off instructions.
 5. Require every completed agent task to leave proof in the final response and
    in the verification log.
 
-The templates are intentionally plain Markdown so they work with Codex, Claude,
-or any other agent that reads repository instructions.
+The templates are intentionally plain Markdown with small YAML front matter
+blocks. Humans can read them normally, while a harness or evaluator can parse
+the metadata for writable roots, forbidden paths, review triggers, quality
+gates, ownership, and proof expectations.
 
 Visual-design starters are intentionally separate from this workbench. Use a
 project-local design brief, a reusable design template, or the original product
 prompt as input for UI work; do not force every project into one default visual
 style.
 
-Note for Claude Code: it reads `CLAUDE.md`, not `AGENTS.md`, by default. Add a
-one-line `CLAUDE.md` containing `@AGENTS.md` (an import), or run `/init` in the
-target repo, so these rules load automatically.
+Note for Claude Code: it reads `CLAUDE.md`, not `AGENTS.md`, by default. Copy
+the included `CLAUDE.md` bridge, or run `/init` in the target repo and import
+`@AGENTS.md`, so these rules load automatically.
 
 ## How To Test Improvements
 
@@ -79,6 +82,10 @@ The scorer proves coverage of the expected control surfaces. For stronger
 evidence, use `outcomes/README.md` to run controlled task trials and record
 outcomes. The included mock-agent self-test verifies the harness itself; it is
 not evidence that real agents improve.
+
+The evaluator also checks research-backed template claims: parseable YAML front
+matter, Claude bridge coverage, prompt-injection boundaries, guardrail guidance,
+CI/CD security defaults, and traceable proof expectations.
 
 ```bash
 node tools/test-outcome-trials.mjs

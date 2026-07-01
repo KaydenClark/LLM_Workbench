@@ -13,6 +13,8 @@ Hypotheses:
 - **H2: Better than a single instruction file.** A project with the workbench covers more failure modes than a generic `AGENTS.md`/`CLAUDE.md` style file that only says to follow style and run tests.
 - **H3: Improving over time.** A new branch is better only when it increases measured coverage or fixes a named failure mode without reducing other rubric areas.
 - **H4: Useful in the real world.** Static coverage is necessary but not sufficient; the stronger proof is controlled task trials that compare agent outcomes with and without the workbench.
+- **H5: Machine-checkable metadata.** YAML front matter improves the template only when it is parsed by the evaluator or harness for ownership, writable roots, forbidden paths, quality gates, and review triggers.
+- **H6: Policy needs guardrails.** Prompt-injection boundaries, tool guardrails, CI/CD security defaults, and traceable proof fields reduce avoidable agent failures only when they are explicit and verifiable.
 
 Controls:
 
@@ -41,8 +43,29 @@ The workbench should not claim "better than every outside template" until those 
 - multi-agent write collisions;
 - missing safety/privacy boundaries;
 - UI work without project-specific visual direction, accessibility, or icon guidance.
+- unparseable or missing YAML front matter on core control docs;
+- missing Claude bridge coverage for repositories that use Claude Code;
+- missing prompt-injection boundaries, guardrail ladder, CI/CD security defaults, or traceable proof fields.
 
 This is not a claim that every agent will obey every instruction. It proves that the candidate gives the agent the required guidance and proof hooks. Behavior still needs task trials.
+
+## Research-Backed Checks
+
+New claims must become evaluator checks before they are treated as template
+improvements. A branch should not claim that YAML headers, guardrails, or
+traceability improve the harness unless the static rubric verifies the expected
+control surfaces and outcome trials can later test agent behavior.
+
+Current measurable checks:
+
+- core control docs contain YAML front matter with required metadata keys;
+- `CLAUDE.md` imports `AGENTS.md` as the shared instruction source;
+- `AGENTS.md` defines an instruction and prompt-injection boundary;
+- `RUNBOOK.md` defines input, tool, output, and approval guardrails;
+- `RUNBOOK.md` records CI/CD security defaults for tokens, OIDC, untrusted code,
+  and artifact or provenance checks;
+- `ROADMAP.md` proof rows ask for command/result, artifact or trace path, and
+  coverage scope.
 
 ## Task-Trial Protocol
 
