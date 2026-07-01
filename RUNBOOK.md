@@ -1,124 +1,91 @@
-# [PROJECT_NAME] - Runbook
+# LLM Workbench - Runbook
 
-**Last reviewed:** [YYYY-MM-DD]
-**Runtime owner:** [user / agent / service owner]
-**Environment:** [local / LAN / staging / production]
+**Last reviewed:** 2026-07-01
+**Runtime owner:** Kayden
+**Environment:** local (macOS); public repo `github.com/KaydenClark/LLM_Workbench`
 
-This file explains how to operate, verify, recover, and evaluate the project. It
-should be boring, exact, and executable.
+This file explains how to operate, verify, and evaluate the workbench repo
+itself. It should be boring, exact, and executable.
 
 ## Prerequisites
 
 Required tools:
 
-- [tool and version]
-- [tool and version]
+- Node.js >= 18 (zero npm dependencies; nothing to install)
+- Python 3.9+ (stdlib only, for `evals/`)
+- git, and the `gh` CLI for PR workflows
 
 Required accounts/services:
 
-- [service]
-- [service]
+- GitHub (repo `KaydenClark/LLM_Workbench`)
 
-Required local files:
-
-- `[path]` - [purpose / how to create safely]
-
-## Environment Configuration
-
-Create local config from the example:
-
-```bash
-[COPY_ENV_COMMAND]
-```
-
-Required variables:
-
-| Variable | Purpose | Secret? | Example / Notes |
-|---|---|---|---|
-| `[ENV_VAR]` | [purpose] | [yes/no] | [placeholder only] |
-
-Rules:
-
-- Do not commit real `.env` files, tokens, local databases, logs, or private
-  data.
-- Keep secrets server-side or local-only.
-- Prefer degraded states over fake data when an external source is unavailable.
+There is no environment configuration and no `.env`.
 
 ## Install
 
+Nothing to install. Clone and go:
+
 ```bash
-[INSTALL_COMMAND]
+git clone https://github.com/KaydenClark/LLM_Workbench.git
 ```
 
-Expected result:
-
-- [what success looks like]
+Expected result: all `tools/` scripts run directly on Node >= 18 with zero
+npm dependencies.
 
 ## Run Locally
 
+There is no server. "Running" this project means running the evaluator and
+self-tests directly:
+
 ```bash
-[RUN_COMMAND]
+node tools/evaluate-workbench.mjs --path templates --include-controls
 ```
 
-Open:
-
-- [local URL, CLI command, or service endpoint]
-
-Expected result:
-
-- [health response / visible UI / log line]
+Expected result: a Markdown score table where the templates beat both control
+candidates.
 
 ## Test And Build
 
-Fast check:
+Fast check (run for any change to `tools/`, `templates/`, or root docs):
 
 ```bash
-[FAST_TEST_COMMAND]
+node tools/test-evaluate-workbench.mjs
 ```
 
 Full verification:
 
 ```bash
-[FULL_TEST_COMMAND]
-[BUILD_COMMAND]
-[LINT_OR_AUDIT_COMMAND]
+node tools/test-evaluate-workbench.mjs
+node tools/test-context-tools.mjs
+node tools/test-outcome-trials.mjs
+node tools/evaluate-workbench.mjs --path templates --include-controls
 ```
 
 Expected result:
 
-- [pass condition without hardcoding stale counts unless recently verified in
-  `TASKBOARD.md`]
+- each test script prints an `ok -` line and exits 0;
+- the evaluator self-test reports the repo-root score (dogfood docs) >= 90;
+- the `--path templates` run shows the blank templates beating both control
+  candidates.
 
 ### Test Coverage Policy
 
-Treat tests as the project specification, not as a comfort signal. The suite
-should be strong enough that if someone accidentally deletes a meaningful line,
-branch, route, data contract, workflow step, validation rule, or bug fix, at
-least one test or documented manual check fails.
-
-Coverage rules:
-
-- Prefer red/green TDD: write or update the failing test first, confirm the
-  expected failure, then implement the smallest fix.
-- Run every relevant existing test before judging the suite.
-- Keep tests that prove behavior a user, API consumer, operator, or future
-  maintainer depends on.
-- Improve tests that assert the wrong level, hide real failures, rely on stale
-  fixtures, overuse snapshots, or pass without checking meaningful behavior.
-- Remove tests that are stale, duplicated without adding a boundary, or pure
-  bloat.
-- If behavior cannot be tested in the current harness, record the exact reason
-  and use the strongest concrete manual check available.
+Treat the self-tests as the specification of the evaluator and trial tooling.
+The suite should be strong enough that if someone accidentally deletes a
+meaningful line of `tools/` or `evals/` code, or a rubric-relevant section of
+the control docs, at least one self-test fails. If a meaningful behavior
+changes, a self-test must change with it. Remove tests that are stale or pure
+bloat. If behavior cannot be tested in the current harness, record the exact
+reason and use the strongest concrete manual check available.
 
 ## Evaluation And Benchmarking
 
-Use this section to prove whether the workbench or project process is improving.
-The goal is evidence, not taste.
+Use this section to prove whether a harness change is an improvement. The goal
+is evidence, not taste.
 
 ### Claims To Test
 
-The harness or process is only worth calling better when it can support at least
-one of these claims:
+A template version is only worth calling better when it supports at least one:
 
 1. Better than no project instructions.
 2. Better than a representative generic instruction file.
@@ -126,136 +93,75 @@ one of these claims:
 
 ### Evaluation Design
 
-Use controlled conditions:
-
 | Condition | What the agent gets | Purpose |
 |---|---|---|
 | `c0_none` | no project instructions | baseline |
-| `c1_generic` | a generic `AGENTS.md` / `CLAUDE.md` style file | common alternative |
-| `c2_current` | current project or template docs | current candidate |
+| `c1_generic` | a generic single instruction file | common alternative |
+| `c2_current` | current templates | current candidate |
 | `c3_candidate` | proposed branch or changed docs | improvement test |
 
-Score task outcomes, not how good the docs feel. Useful dimensions:
+Score task outcomes (correctness, scope adherence, verification honesty, docs
+upkeep), not how good the docs feel.
 
-| Dimension | What it measures |
-|---|---|
-| Correctness | hidden or independent acceptance check passes |
-| Scope adherence | changed files stay inside the task allowlist |
-| Verification honesty | final claims match independently rerun checks |
-| Docs upkeep | stale docs were updated or explicitly marked unchanged |
+### Commands
 
-Run multiple trials per condition when using stochastic agents. Report effect
-size and confidence interval when possible. Do not claim broad proof from one
-run.
-
-### Workbench Evaluation Commands
-
-For this template repo, the static evaluator checks control-surface coverage:
+Static rubric (free, fast):
 
 ```bash
-node tools/test-evaluate-workbench.mjs
 node tools/evaluate-workbench.mjs --path . --include-controls
+node tools/evaluate-workbench.mjs --path templates --include-controls
+node tools/evaluate-workbench.mjs --github KaydenClark/LLM_Workbench \
+  --branches main,BRANCH_NAME --include-controls
 ```
 
-The runnable trial framework lives in `evals/`:
+Runnable trial framework (pipeline self-test is free):
 
 ```bash
 python3 evals/results/_make_selftest.py
 python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 ```
 
-Real comparison runs may spend API budget. Size the run first and record the
-model, conditions, task suite, trial count, and result path before making claims.
-
-## Data Operations
-
-Use this section only if the project has seed data, migrations, imports, local
-databases, or generated feeds.
-
-Seed/import:
-
-```bash
-[SEED_OR_IMPORT_COMMAND]
-```
-
-Migration:
-
-```bash
-[MIGRATION_COMMAND]
-```
-
-Backup/restore:
-
-```bash
-[BACKUP_OR_RESTORE_COMMAND]
-```
-
-Safety rules:
-
-- [what data this command may modify]
-- [what it must never modify]
-- [how to verify counts/schema/output]
-
-## Deployment Or Startup
-
-Use this section only if the project has deployment, LaunchAgent, cron,
-scheduler, or service startup behavior.
-
-Start/restart:
-
-```bash
-[START_OR_RESTART_COMMAND]
-```
-
-Stop:
-
-```bash
-[STOP_COMMAND]
-```
-
-Logs:
-
-```bash
-[LOG_COMMAND]
-```
-
-Expected healthy state:
-
-- [process, endpoint, scheduler, or deployment check]
+Real comparison runs spend API budget. Size the run first and record the model,
+conditions, task suite, trial count, and result path in the `TASKBOARD.md`
+proof log before making claims.
 
 ## Version Control
 
-Conventions for commits and pull requests in this project.
-
-- Branch from the default branch; do not commit directly to it. Branch names:
-  `[CONVENTION, e.g. type/short-description]`.
-- Commit messages: `[CONVENTION, e.g. imperative subject <= 72 chars, the why
-  in the body]`. One logical change per commit.
-- Run `git status` before committing.
-- Never commit secrets, `.env` files, local databases, logs, build output, or
-  generated artifacts.
-- Open a pull request when the task is complete and verified. The PR description
-  states what changed, why, risks, and how it was verified.
-- Do not rewrite published history or force-push shared branches unless the user
-  explicitly approves.
+- Branch from `main`; do not commit directly to it. Branch names:
+  `claude/short-description`, `codex/short-description`, or
+  `backup/description` for local-state snapshots.
+- Commit messages: imperative subject <= 72 chars; the why in the body. One
+  logical change per commit.
+- Agents open pull requests; **the owner merges them**. No agent self-merge.
+- PR descriptions state what changed, why, risks, and how it was verified.
+- Never commit secrets, `.env` files, or `research papers/` (local-only).
+- Do not rewrite published history or force-push shared branches without
+  explicit owner approval.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Check | Fix |
 |---|---|---|---|
-| [Symptom] | [cause] | `[command/check]` | [fix] |
+| evaluator self-test fails with score < 90 | root dogfood docs lost a rubric section | `node tools/evaluate-workbench.mjs --path .` and read the `missing` column | restore the missing section in the root doc |
+| self-test passes locally but templates score low | change landed at root but not in `templates/` (or vice versa) | `node tools/evaluate-workbench.mjs --path templates` | apply the Dogfood Boundary rule: land in both |
+| `evals/score.py` errors on results file | stale or hand-edited JSONL | regenerate with `_make_selftest.py` | never hand-edit results |
 
 ## Recovery And Rollback
 
 If a change fails:
 
 1. Identify the touched files and failing command.
-2. Revert only the smallest change needed, preserving user work.
+2. Revert only the smallest change needed (`git checkout -- <file>` or revert
+   commit), preserving unrelated work.
 3. Rerun the failing verification command.
 4. Update `TASKBOARD.md` with the result and remaining gap.
 
-Do not delete data, reset databases, rewrite history, or rotate secrets unless
-the user explicitly approves that action.
+Do not delete data (result ledgers, benchmark records), remove branches, or
+rewrite history unless the owner explicitly approves that action.
+
+The pre-migration local state (before this folder became the repo home) is
+preserved on branch `backup/local-pre-v2-migration`; the YAML-frontmatter
+harness dialect is preserved on `codex/structured-metadata-guardrails`.
 
 ## Operational Proof
 
