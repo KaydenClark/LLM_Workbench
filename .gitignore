@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+
+# Generated eval artifacts (regenerate with the scripts; never commit as "data")
+evals/results/_pipeline_selftest.jsonl
+
+# Real run outputs are committed deliberately, not ignored, so the ledger has
+# provenance — but scratch/temp runs can be prefixed tmp_ to skip them:
+evals/results/tmp_*.jsonl
