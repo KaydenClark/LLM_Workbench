@@ -28,6 +28,10 @@ The blank, copyable templates live in `templates/`:
 - `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
   founding prompt into the four filled control docs plus a smallest-running
   scaffold. Run once at project start, then delete or archive.
+- `templates/HARNESS_FEEDBACK.md` - the return channel from a downstream project
+  back to this harness: an append-only log of where the harness rules themselves
+  were unclear, wrong, or slow, so lessons can flow back and be validated via
+  `evals/` before shipping as "better".
 - `templates/.claude/settings.json` - optional Claude Code permission file that
   makes the `AGENTS.md` edit scope *mechanical* (deny secrets, allow writable
   roots, ask on review-required actions). See `templates/.claude/README.md` for
@@ -110,6 +114,13 @@ sections, keep the project's filled-in specifics, bump the stamp, re-verify, and
 record the upgrade in the proof log. Long-running projects should also archive
 their proof log into `TASKBOARD_ARCHIVE.md` once it passes ~30 rows, and reclaim
 stale `claimed`/`in-progress` tasks per `AGENTS.md` -> Long Session Control.
+
+The upgrade path is a loop, not a one-way copy. Downstream projects record where
+the harness helped or hurt in their `HARNESS_FEEDBACK.md`; those lessons are
+harvested back here, turned into template changes, and validated with `evals/`
+before shipping as a new harness version. A template change is only called
+"better" when the evidence supports it - see `RUNBOOK.md` -> Evaluation And
+Benchmarking. This is the "ruleset that updates the ruleset".
 
 ## Visual And Asset Guidance
 

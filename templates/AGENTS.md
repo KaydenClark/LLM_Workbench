@@ -171,6 +171,15 @@ date, then either take it over or move it back to `ready`. Never silently discar
 a prior agent's committed work - if a branch exists, continue from it or record
 why you are not.
 
+## Harness Feedback
+
+These control docs came from a reusable harness (LLM Workbench). When a harness
+rule itself is unclear, wrong, missing, or slows the work down, do not silently
+work around it: log it in `HARNESS_FEEDBACK.md` (append-only) with the doc,
+section, and a proposed change. That is the return channel that lets the harness
+improve. Keep it separate from `TASKBOARD.md`, which tracks this project's own
+work; if a harness gap is also blocking you now, log both and link them.
+
 ## Visual And Asset Work
 
 Do not force a shared visual style from this template. Use the project prompt,
