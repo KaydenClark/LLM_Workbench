@@ -22,6 +22,9 @@ The blank, copyable templates live in `templates/`:
   for the owner who never reads code.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
+- `templates/README.md` - a blank, user-facing product README for the target
+  project (points readers at the four control docs). The root README you are
+  reading is the workbench's own and is not meant to be copied.
 - `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
   founding prompt into the four filled control docs plus a smallest-running
   scaffold. Run once at project start, then delete or archive.
@@ -59,8 +62,8 @@ docs look like. Copy from `templates/`, not from the root.
 ## How To Use It
 
 1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
-   `templates/TASKBOARD.md`, and `templates/RUNBOOK.md` into the target
-   project root.
+   `templates/TASKBOARD.md`, `templates/RUNBOOK.md`, and `templates/README.md`
+   into the target project root.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items.
 3. Keep `BLUEPRINT.md` stable and source-backed.
