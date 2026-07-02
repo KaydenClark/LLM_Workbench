@@ -28,6 +28,11 @@ The blank, copyable templates live in `templates/`:
 - `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
   founding prompt into the four filled control docs plus a smallest-running
   scaffold. Run once at project start, then delete or archive.
+- `templates/.claude/settings.json` - optional Claude Code permission file that
+  makes the `AGENTS.md` edit scope *mechanical* (deny secrets, allow writable
+  roots, ask on review-required actions). See `templates/.claude/README.md` for
+  the scope-to-permission mapping. Omit it if the project does not use Claude
+  Code; the prose scope still governs every agent.
 
 `ROADMAP.md` is no longer part of the default harness. Put stable product
 direction in `BLUEPRINT.md` and executable next work in `TASKBOARD.md`.
@@ -65,7 +70,8 @@ docs look like. Copy from `templates/`, not from the root.
    `templates/TASKBOARD.md`, `templates/RUNBOOK.md`, and `templates/README.md`
    into the target project root.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
-   and task items.
+   and task items. For Claude Code, also copy `templates/.claude/settings.json`
+   and fill it from the same edit scope to enforce the boundary mechanically.
 3. Keep `BLUEPRINT.md` stable and source-backed.
 4. Keep `TASKBOARD.md` current as work changes state.
 5. Treat documentation as part of the task owner's work.
