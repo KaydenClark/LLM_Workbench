@@ -125,6 +125,24 @@ Real comparison runs spend API budget. Size the run first and record the model,
 conditions, task suite, trial count, and result path in the `TASKBOARD.md`
 proof log before making claims.
 
+### Harness Feedback Loop
+
+Downstream projects built from `templates/` carry a `HARNESS_FEEDBACK.md` return
+channel: an append-only log of where the harness rules themselves were unclear,
+wrong, or slow. This repo is the harvest destination, so it has no
+`HARNESS_FEEDBACK.md` of its own; instead:
+
+1. Collect feedback rows from downstream projects (or from dogfooding here).
+2. Triage each into a concrete template change and open a `TASKBOARD.md` task.
+3. Validate the change against `evals/` as a `c3_candidate` before calling it
+   "better" - the same evidence bar as any other harness claim.
+4. Ship it as a new harness version (bump `BLUEPRINT.md` -> Harness version) and
+   note it so downstream projects can upgrade.
+
+The standing harvest task lives in `TASKBOARD.md` (Deferred until the first
+downstream project reports feedback). This closes the loop the founding intent
+calls for: the ruleset updates the ruleset, on evidence, not taste.
+
 ## Version Control
 
 - Branch from `main`; do not commit directly to it. Branch names:

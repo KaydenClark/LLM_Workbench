@@ -23,6 +23,10 @@ before changing anything:
 - [`RUNBOOK.md`](RUNBOOK.md) - how to set up, run, test, build, and recover this
   project, plus the verification commands that gate "done".
 
+- [`HARNESS_FEEDBACK.md`](HARNESS_FEEDBACK.md) - the return channel to the
+  reusable harness these docs came from: log where the harness rules themselves
+  are unclear, wrong, or slow the work down, so they can be improved upstream.
+
 If this project was bootstrapped from a single founding prompt, the one-time
 protocol that produced these docs is preserved in [`GENESIS.md`](GENESIS.md).
 It runs once at project start; after handoff, the four control docs above

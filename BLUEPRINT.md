@@ -95,9 +95,12 @@ Build order:
 1. Dogfood the harness in this repo (done 2026-07-01) - credibility first.
 2. Genesis protocol - a model can bootstrap a filled project from one prompt.
 3. Executive interface - brief, decision queue, escalation contract.
-4. Lifecycle hardening - stale claims, log archival, template versioning.
+4. Lifecycle hardening - stale claims, log archival, template versioning (done
+   2026-07-01, T-005).
 5. Feedback loop - downstream projects feed harness lessons back here, and
-   evals validate template changes before they ship.
+   evals validate template changes before they ship (convention shipped
+   2026-07-01, T-008; first real harvest deferred to T-011 when a downstream
+   project reports feedback).
 
 The executable task queue lives in `TASKBOARD.md`.
 
@@ -202,6 +205,7 @@ Rules:
 | Add an executive interface (five-line brief + pending-decision queue) to the taskboard, plus an escalation-language contract in the agents doc | keeps the owner at executive altitude: a glance shows project state, and technical blockers reach the owner as product tradeoffs, never code-level failures | 2026-07-01 / TASKBOARD T-003 |
 | Require a <1-minute demo artifact (Demo column) for milestone tasks | the executive accepts work on product truth, not passing tests alone; a fast demo is the cheapest honest signal that the product does what was asked | 2026-07-01 / TASKBOARD T-004 |
 | Close `codex/structured-metadata-guardrails` (PR #4); extract only its machine-readable scope idea | the branch's YAML frontmatter + guardrails were written against the retired root-ROADMAP layout, so rebasing meant porting a dead layout for little gain; the durable idea (declarative `writable_roots`/`forbidden_paths`/`requires_review_for` scope keys) is folded into T-007's mechanical scope enforcement instead | 2026-07-01 / D-001, TASKBOARD T-006 |
+| Add a `HARNESS_FEEDBACK.md` return channel to templates + a standing evals-validated harvest task here | closes the founding-intent loop ("the ruleset that updates the ruleset"): downstream projects log where harness rules fail, lessons are harvested back and validated via `evals/` as a `c3_candidate` before shipping as "better", so harness changes rest on evidence not taste. Root is the harvest destination, so it carries no `HARNESS_FEEDBACK.md` of its own | 2026-07-01 / TASKBOARD T-008 |
 | Add lifecycle hardening to templates: stale-claim reclaim rule, proof-log archival to `TASKBOARD_ARCHIVE.md` past ~30 rows, and `Generated from LLM Workbench vX` version stamps + an Upgrading The Harness note | long-running downstream projects hit all three - abandoned claims, unbounded proof logs, and silent harness drift; the stamp lets a project tell when it is behind. This repo is the version *source* (v2.1), so its own docs carry the version in BLUEPRINT rather than a per-doc `Generated from` stamp | 2026-07-01 / TASKBOARD T-005 |
 | Ship `.claude/settings.json` scope enforcement as a template only; exempt this repo's own root from a live config | the template is the product; adding a live agent config to the governing repo is a self-modification the owner did not request, and the workbench has no secrets and legitimately edits nearly every path, so mechanical deny-rules would protect little while risking the running agent's own permission flow. The prose scope in root `AGENTS.md` plus `research papers/` being untracked already cover the real forbidden paths | 2026-07-01 / TASKBOARD T-007 |
 

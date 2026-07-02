@@ -170,6 +170,15 @@ python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 Real comparison runs may spend API budget. Size the run first and record the
 model, conditions, task suite, trial count, and result path before making claims.
 
+### Harness Feedback Loop
+
+This project's `HARNESS_FEEDBACK.md` is the return channel to the upstream
+harness. Lessons logged there feed harness changes, which must clear the same
+bar as any other "better" claim: a proposed template change is `c3_candidate`
+above, tested against the current docs on the same task suite before it ships.
+Feedback flows out; validated improvements flow back in as a harness upgrade
+(Upgrading The Harness, above). Taste alone never closes the loop; evidence does.
+
 ## Data Operations
 
 Use this section only if the project has seed data, migrations, imports, local
