@@ -185,7 +185,7 @@ Rules:
 
 | Risk | Impact | Mitigation / owner |
 |---|---|---|
-| `codex/structured-metadata-guardrails` branch adds YAML frontmatter on the old ROADMAP layout | divergent harness dialects; merge conflicts | rebase or fold into v2 deliberately (TASKBOARD T-006) |
+| ~~`codex/structured-metadata-guardrails` branch adds YAML frontmatter on the old ROADMAP layout~~ (resolved 2026-07-01, D-001) | divergent harness dialects; merge conflicts | closed: PR #4 targeted the retired ROADMAP layout; its one portable idea (machine-readable scope keys) was extracted into T-007, and the branch was closed rather than carried forward |
 | Template quality claims outpace eval evidence | harness cargo-culting | RUNBOOK evaluation policy; evals/ before "better" claims |
 | Root docs and templates/ drift apart | dogfood stops matching the product | Dogfood Boundary rule in `AGENTS.md`; evaluator self-test scores root |
 
@@ -200,6 +200,7 @@ Rules:
 | Add `GENESIS.md` one-prompt bootstrap protocol to `templates/` | moves the harness toward the founding intent that a model can build a filled project from one prompt; keeps bootstrap as a one-time protocol distinct from the standing control docs | 2026-07-01 / TASKBOARD T-002 |
 | Add an executive interface (five-line brief + pending-decision queue) to the taskboard, plus an escalation-language contract in the agents doc | keeps the owner at executive altitude: a glance shows project state, and technical blockers reach the owner as product tradeoffs, never code-level failures | 2026-07-01 / TASKBOARD T-003 |
 | Require a <1-minute demo artifact (Demo column) for milestone tasks | the executive accepts work on product truth, not passing tests alone; a fast demo is the cheapest honest signal that the product does what was asked | 2026-07-01 / TASKBOARD T-004 |
+| Close `codex/structured-metadata-guardrails` (PR #4); extract only its machine-readable scope idea | the branch's YAML frontmatter + guardrails were written against the retired root-ROADMAP layout, so rebasing meant porting a dead layout for little gain; the durable idea (declarative `writable_roots`/`forbidden_paths`/`requires_review_for` scope keys) is folded into T-007's mechanical scope enforcement instead | 2026-07-01 / D-001, TASKBOARD T-006 |
 
 ## Health Criteria
 
