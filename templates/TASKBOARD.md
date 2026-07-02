@@ -8,6 +8,27 @@ This is the live work queue and proof ledger. Agents use it to decide what to
 work on next. Keep strategy and long-term direction in `BLUEPRINT.md`; keep
 commands and verification procedures in `RUNBOOK.md`.
 
+## Executive Brief
+
+Five lines for the owner who never reads code. Refresh it at the end of each work
+session so a glance answers "where does this project stand?"
+
+- **Shipping now:** [current useful outcome in one line]
+- **Health:** [green / yellow / red + one-phrase why]
+- **Decision needed:** [top item from Pending Decisions, or "none"]
+- **Blocked on:** [top blocker, or "nothing"]
+- **Next milestone:** [nearest milestone + rough when]
+
+## Pending Decisions
+
+Decisions only the owner should make. Agents surface tradeoffs here as product
+choices - options, a recommendation, and the cost of choosing - and do not decide
+them alone. Keep code-level detail out of this queue.
+
+| ID | Decision | Options | Recommendation | Cost / impact | Owner | Status |
+|---|---|---|---|---|---|---|
+| [ID] | [decision in product terms] | [option A / option B] | [recommended option + one-line why] | [time, money, risk, or lock-in] | [owner] | open |
+
 ## How To Use This Board
 
 1. Read `BLUEPRINT.md` for context.
@@ -89,8 +110,10 @@ response and in the proof row's `Docs` field.
 ## Proof Log
 
 Append a row when a task changes durable project state or produces durable
-verification evidence. Use actual results, not stale claims.
+verification evidence. Use actual results, not stale claims. Milestone tasks
+must fill the Demo column with a <1-minute demo artifact (screenshot, recording,
+preview URL, or one-command demo); non-milestone rows may use `n/a`.
 
-| Date | Task ID | Agent | Proof | Result | Docs | Remaining gap |
-|---|---|---|---|---|---|---|
-| [YYYY-MM-DD] | [ID] | [agent] | `[command]` or named manual check | [pass/fail/partial] | [updated / no update needed] | [none/gap] |
+| Date | Task ID | Agent | Proof | Demo | Result | Docs | Remaining gap |
+|---|---|---|---|---|---|---|---|
+| [YYYY-MM-DD] | [ID] | [agent] | `[command]` or named manual check | [demo artifact link/command, or n/a] | [pass/fail/partial] | [updated / no update needed] | [none/gap] |

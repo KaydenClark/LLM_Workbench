@@ -17,9 +17,14 @@ The blank, copyable templates live in `templates/`:
 - `templates/BLUEPRINT.md` - stable project identity, product direction,
   architecture, invariants, safety boundaries, and preserved decisions.
 - `templates/TASKBOARD.md` - live task queue, blocked/deferred lanes, current
-  handoff, and proof log.
+  handoff, and proof log, plus an executive interface: a standing five-line
+  executive brief and a pending-decision queue (options, recommendation, cost)
+  for the owner who never reads code.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
+- `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
+  founding prompt into the four filled control docs plus a smallest-running
+  scaffold. Run once at project start, then delete or archive.
 
 `ROADMAP.md` is no longer part of the default harness. Put stable product
 direction in `BLUEPRINT.md` and executable next work in `TASKBOARD.md`.
@@ -62,13 +67,26 @@ docs look like. Copy from `templates/`, not from the root.
 4. Keep `TASKBOARD.md` current as work changes state.
 5. Treat documentation as part of the task owner's work.
 6. Require every completed agent task to leave proof in the final response and
-   in the `TASKBOARD.md` proof log.
+   in the `TASKBOARD.md` proof log. For milestone tasks, also require a
+   <1-minute demo artifact (screenshot, recording, preview URL, or one-command
+   demo) in the proof log's Demo column, so the owner can accept work on product
+   truth, not just passing tests.
 
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
 
 For Claude Code, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
 `/init` in the target repo, so these rules load automatically.
+
+### One-Prompt Bootstrap
+
+To start a project from a single founding prompt instead of filling the docs by
+hand, copy `templates/GENESIS.md` alongside the four control docs and hand the
+agent the prompt plus GENESIS. GENESIS walks the agent through framing the
+prompt, writing `BLUEPRINT.md`, choosing an architecture, scaffolding the
+smallest thing that runs, filling `AGENTS.md` scopes and `RUNBOOK.md` commands,
+and seeding `TASKBOARD.md` - then defines what a finished bootstrap must prove.
+GENESIS runs once; after handoff the four control docs govern.
 
 ## Visual And Asset Guidance
 

@@ -142,6 +142,12 @@ Use command results, browser checks, API probes, screenshots, run reports, or
 documented manual checks. Do not claim code or docs are verified unless the
 check actually ran.
 
+Milestone tasks are not accepted on passing tests alone. A milestone task must
+also produce a demo artifact the owner can check in under a minute - a
+screenshot, a short recording, a preview URL, or a one-command demo - recorded
+in the `TASKBOARD.md` proof log's Demo column. Tests prove the code runs; the
+demo proves the product does what the owner asked.
+
 ## Long Session Control
 
 Long sessions drift. Counter it deliberately:
@@ -174,6 +180,12 @@ When visual work needs assets:
   model, public contract, safety boundary, or destructive risk.
 - Stop and surface rather than retrying indefinitely after repeated verification
   failure or unclear scope expansion.
+
+Escalations to the owner are phrased as product tradeoffs, not tool- or
+code-level failures. Give the options, a recommendation, and the cost of each
+path, and record the open decision in `TASKBOARD.md` -> Pending Decisions. The
+owner should be able to choose without reading code; translate any technical
+blocker into the product or timeline choice it forces.
 
 ## Day-One Checklist
 

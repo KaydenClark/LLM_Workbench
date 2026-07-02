@@ -37,4 +37,32 @@ assert.ok(
   'local workbench should document the meaningful coverage policy'
 );
 
+const executiveInterface = localEvaluation.breakdown.find((item) => item.id === 'executive_interface');
+assert.ok(executiveInterface, 'executive interface criterion should be present in the rubric');
+assert.equal(
+  executiveInterface.missing.length,
+  0,
+  `local workbench should satisfy the executive interface criterion, missing: ${executiveInterface.missing.join(', ')}`
+);
+
+const singleFileExec = scoreWorkbench(singleFile.files).breakdown.find((item) => item.id === 'executive_interface');
+assert.ok(
+  singleFileExec && singleFileExec.score === 0,
+  'a bare instruction file should score zero on the executive interface criterion'
+);
+
+const productAcceptance = localEvaluation.breakdown.find((item) => item.id === 'product_acceptance');
+assert.ok(productAcceptance, 'product acceptance criterion should be present in the rubric');
+assert.equal(
+  productAcceptance.missing.length,
+  0,
+  `local workbench should satisfy the product acceptance criterion, missing: ${productAcceptance.missing.join(', ')}`
+);
+
+const singleFileProduct = scoreWorkbench(singleFile.files).breakdown.find((item) => item.id === 'product_acceptance');
+assert.ok(
+  singleFileProduct && singleFileProduct.score === 0,
+  'a bare instruction file should score zero on the product acceptance criterion'
+);
+
 console.log(`ok - evaluator self-test passed; local score ${localScore}, single-file baseline ${singleFileScore}`);

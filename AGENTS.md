@@ -151,6 +151,12 @@ Never claim a template change improves agent outcomes from taste alone. That
 claim requires evidence from `evals/` or `outcomes/` per `RUNBOOK.md` ->
 Evaluation And Benchmarking.
 
+Milestone tasks are not accepted on passing tests alone. A milestone task must
+also produce a demo artifact the owner can check in under a minute - a
+screenshot, a short recording, a preview URL, or a one-command demo - recorded
+in the `TASKBOARD.md` proof log's Demo column. Tests prove the code runs; the
+demo proves the product does what the owner asked.
+
 ## Long Session Control
 
 - Re-read `BLUEPRINT.md` and `TASKBOARD.md` after any context summary or long
@@ -167,7 +173,9 @@ Evaluation And Benchmarking.
 - Ask one focused question when a missing answer changes the harness design,
   the public file layout, a template contract, or a safety boundary.
 - Escalations to the owner are phrased as product tradeoffs with options and a
-  recommendation, not as tool- or code-level failures.
+  recommendation, not as tool- or code-level failures. Record open decisions in
+  `TASKBOARD.md` -> Pending Decisions and surface the top one in the Executive
+  Brief, so the owner can choose without reading code.
 - Agents open pull requests; the owner merges them. Do not merge your own PR.
 
 ## Output Format
