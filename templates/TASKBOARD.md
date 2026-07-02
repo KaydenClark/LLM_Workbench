@@ -1,5 +1,8 @@
 # [PROJECT_NAME] - Taskboard
 
+> Generated from LLM Workbench v[HARNESS_VERSION]. See `RUNBOOK.md` ->
+> Upgrading The Harness.
+
 **Current focus:** [one sentence describing the current useful outcome]  
 **Owner:** [user / agent / team]  
 **Last updated:** [YYYY-MM-DD]
@@ -53,6 +56,10 @@ Do not rewrite existing proof rows. Append only.
 | `blocked` | Cannot proceed until the blocker is resolved. |
 | `deferred` | Valid work, intentionally not next. |
 | `done` | Proof exists and docs impact is resolved. |
+
+A `claimed` or `in-progress` task that has gone stale (no update past
+`[STALE_THRESHOLD]`, default one working day) may be reclaimed per the reclaim
+rule in `AGENTS.md` -> Long Session Control.
 
 ## Ready
 
@@ -113,6 +120,13 @@ Append a row when a task changes durable project state or produces durable
 verification evidence. Use actual results, not stale claims. Milestone tasks
 must fill the Demo column with a <1-minute demo artifact (screenshot, recording,
 preview URL, or one-command demo); non-milestone rows may use `n/a`.
+
+**Archival policy.** The proof log is append-only, but it should not grow without
+bound. When it passes ~30 rows, move the oldest rows (keep the most recent ~30
+here) into `TASKBOARD_ARCHIVE.md`, preserving them verbatim under a dated
+heading. `TASKBOARD_ARCHIVE.md` is append-only too - archiving relocates history,
+it never rewrites or deletes it. The `Done` table may be trimmed the same way,
+leaving a pointer to the archive.
 
 | Date | Task ID | Agent | Proof | Demo | Result | Docs | Remaining gap |
 |---|---|---|---|---|---|---|---|
