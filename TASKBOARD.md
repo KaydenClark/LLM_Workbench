@@ -7,6 +7,26 @@
 This is the live work queue and proof ledger for the workbench repo itself.
 Strategy and direction live in `BLUEPRINT.md`; commands live in `RUNBOOK.md`.
 
+## Executive Brief
+
+Five lines for the owner who never reads code. Refreshed each work session.
+
+- **Shipping now:** One-prompt bootstrap (`GENESIS.md`) and this executive interface for the harness itself.
+- **Health:** green - all self-tests pass; root dogfood docs score full rubric.
+- **Decision needed:** D-001, the fate of the `codex/structured-metadata-guardrails` branch (see Pending Decisions).
+- **Blocked on:** nothing; PRs #7 and the executive-interface PR await owner merge in branch order.
+- **Next milestone:** lifecycle hardening (T-005) after the executive interface lands.
+
+## Pending Decisions
+
+Decisions only the owner should make. Agents surface tradeoffs here as product
+choices - options, a recommendation, and the cost of choosing - and do not decide
+them alone. Keep code-level detail out of this queue.
+
+| ID | Decision | Options | Recommendation | Cost / impact | Owner | Status |
+|---|---|---|---|---|---|---|
+| D-001 | What to do with the older `codex/structured-metadata-guardrails` harness dialect (YAML frontmatter on the retired ROADMAP layout) | (A) rebase its ideas onto the current templates; (B) extract the useful ideas and close the branch | (B) extract and close - the layout it targets is gone, so carrying it forward is ongoing drift risk for little gain | (A) costs rework to port a dead layout; (B) loses the branch's standalone history | Kayden | open |
+
 ## How To Use This Board
 
 1. Read `BLUEPRINT.md` for context.
@@ -36,7 +56,6 @@ Do not rewrite existing proof rows. Append only.
 
 | ID | Priority | Task | Source / why now | Touches | Proof required | Docs impact | Owner | Status | Last update |
 |---|---:|---|---|---|---|---|---|---|---|
-| T-003 | 2 | Executive interface: add standing five-line executive brief + pending-decision queue (options, recommendation, cost) to the taskboard template, and an escalation-language contract (product tradeoffs, never code-level failures) to the agents template | Founding intent: owner never reads code; harness review 2026-07-01 | `templates/`, root docs | evaluator rubric updated + self-tests pass | README, both AGENTS/TASKBOARD (root + templates) | agent | ready | 2026-07-01 |
 | T-004 | 3 | Product-truth acceptance: require a <1-minute demo artifact (screenshot, recording, preview URL, or one-command demo) as a proof-log column for milestone tasks | executive can't accept work via test output alone | `templates/TASKBOARD.md`, `templates/AGENTS.md` | self-tests pass | templates + root docs | agent | ready | 2026-07-01 |
 | T-005 | 4 | Lifecycle hardening: stale-claim reclaim rule, proof-log archival policy (`TASKBOARD_ARCHIVE.md` past ~30 rows), and `Generated from LLM_Workbench vX` version stamps + upgrade note | long-running projects will hit all three | `templates/` | self-tests pass | templates, README | agent | ready | 2026-07-01 |
 | T-006 | 5 | Decide fate of `codex/structured-metadata-guardrails`: rebase its YAML frontmatter + machine-readable scopes onto the v2 layout, or extract the ideas and close it | branch targets deleted ROADMAP layout; drift risk (BLUEPRINT Known Risks) | `templates/`, `tools/evaluate-workbench.mjs` | evaluator self-test passes both dialects or branch closed | BLUEPRINT decision row | agent + owner decision | ready | 2026-07-01 |
@@ -49,7 +68,8 @@ Do not rewrite existing proof rows. Append only.
 | ID | Priority | Task | Owner | Started | Touches | Current note | Proof required | Status |
 |---|---:|---|---|---|---|---|---|---|
 | T-001 | 0 | Repo-home migration + dogfooding: merge Workbench_v2, make the local folder the repo home, split blank templates into `templates/`, write real root control docs | claude | 2026-07-01 | root docs, `templates/` | implementation done; gated on owner merging PR #5 (v2) then the dogfood PR | `node tools/test-*.mjs` all pass; evaluator scores root and `templates/` | gated |
-| T-002 | 1 | Write `templates/GENESIS.md`: phased one-prompt bootstrap protocol (prompt -> BLUEPRINT -> architecture -> scaffold -> AGENTS scopes -> RUNBOOK -> seeded TASKBOARD), incl. decide-alone vs. ask boundaries and finished-bootstrap acceptance | claude | 2026-07-01 | `templates/`, README, BLUEPRINT | impl + proof done; pushed to `claude/genesis-bootstrap` and PR opened via GitHub API (base `claude/dogfood-taskboard`); owner merges | `node tools/test-evaluate-workbench.mjs`; dry-run bootstrap of a toy project | gated |
+| T-002 | 1 | Write `templates/GENESIS.md`: phased one-prompt bootstrap protocol (prompt -> BLUEPRINT -> architecture -> scaffold -> AGENTS scopes -> RUNBOOK -> seeded TASKBOARD), incl. decide-alone vs. ask boundaries and finished-bootstrap acceptance | claude | 2026-07-01 | `templates/`, README, BLUEPRINT | impl + proof done; pushed to `claude/genesis-bootstrap` and PR #7 opened via GitHub API (base `claude/dogfood-taskboard`); owner merges | `node tools/test-evaluate-workbench.mjs`; dry-run bootstrap of a toy project | gated |
+| T-003 | 2 | Executive interface: add standing five-line executive brief + pending-decision queue (options, recommendation, cost) to the taskboard template, and an escalation-language contract (product tradeoffs, never code-level failures) to the agents template | claude | 2026-07-01 | `templates/`, root docs, evaluator | impl + proof done; pushed to `claude/executive-interface` and PR opened via GitHub API (base `claude/genesis-bootstrap`); owner merges | evaluator rubric updated + self-tests pass | gated |
 
 ## Blocked
 
@@ -94,3 +114,4 @@ verification evidence. Use actual results, not stale claims.
 |---|---|---|---|---|---|---|
 | 2026-07-01 | T-001 | claude (Fable 5) | `node tools/test-evaluate-workbench.mjs` + context/outcome self-tests + `node tools/evaluate-workbench.mjs --path templates --include-controls` | pass - all self-tests ok; root dogfood docs score 100/100; templates score 85 vs controls 0 and 2 (gap tracked as T-009) | root docs written; README updated; templates moved to `templates/` | PR #5 and dogfood PR need owner merge; T-006 branch decision open |
 | 2026-07-01 | T-002 | claude (Opus 4.8) | `node tools/test-evaluate-workbench.mjs` (+ context/outcome self-tests) all ok; root score 100/100; templates score 85 (unchanged by GENESIS add). Toy dry-run bootstrap of a C<->F CLI: `node src/cli.mjs c 100` -> `212F`, `node --test` pass, four filled control docs scored 85/100 vs controls 0 and 2 | added `templates/GENESIS.md`; README + BLUEPRINT updated | dry-run did a targeted (not exhaustive) placeholder fill; optional BLUEPRINT/RUNBOOK sub-rows left bracketed per GENESIS Phase 7. Pushed to `claude/genesis-bootstrap` and PR opened via GitHub API (base `claude/dogfood-taskboard`); owner merges |
+| 2026-07-01 | T-003 | claude (Opus 4.8) | red/green: added failing `executive_interface` self-test assertion (confirmed fail: criterion absent), then implemented rubric criterion + brief/decision-queue/escalation sections. `node tools/test-evaluate-workbench.mjs` (+ context/outcome self-tests) all ok; root score 108/108; templates 93/108 (up from 85, new criterion satisfied); controls 0 and 2 | added Executive Brief + Pending Decisions to root & template TASKBOARD; escalation contract to template AGENTS (root already had it, tied to queue); README + BLUEPRINT updated; evaluator rubric + self-test updated | total rubric weight now 108 (was 100); pre-existing templates gaps remain (README/team-templates/portability, T-009). Pushed to `claude/executive-interface` and PR opened via GitHub API (base `claude/genesis-bootstrap`); owner merges |

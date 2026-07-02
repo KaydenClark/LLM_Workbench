@@ -89,6 +89,17 @@ export const RUBRIC = [
     ]
   },
   {
+    id: 'executive_interface',
+    label: 'Executive interface',
+    weight: 8,
+    checks: [
+      { label: 'standing executive brief', files: ['TASKBOARD.md'], patterns: ['Executive Brief'] },
+      { label: 'pending-decision queue', files: ['TASKBOARD.md'], patterns: ['Pending Decisions|Decision Queue'] },
+      { label: 'decisions carry options, recommendation, cost', files: ['TASKBOARD.md'], patterns: ['Options', 'Recommendation', 'Cost'] },
+      { label: 'escalation language contract', files: ['AGENTS.md'], patterns: ['product tradeoffs', 'code-level'] }
+    ]
+  },
+  {
     id: 'drift_control',
     label: 'Long-session drift control',
     weight: 8,

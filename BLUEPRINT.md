@@ -65,7 +65,9 @@ When the harness is working, a downstream project has:
 - `BLUEPRINT.md` - stable project identity, direction, architecture,
   invariants, safety boundaries, preserved decisions;
 - `TASKBOARD.md` - live task queue with status lanes and an append-only proof
-  log;
+  log, fronted by an executive interface: a standing five-line executive brief
+  and a pending-decision queue (options, recommendation, cost) that keep the
+  owner at executive altitude;
 - `RUNBOOK.md` - setup, run, test, build, recovery, and evaluation procedure.
 
 Optionally, a project can start from `GENESIS.md` - a one-time bootstrap protocol
@@ -191,6 +193,7 @@ Rules:
 | Preserve the founding prompt verbatim in BLUEPRINT | drift-checks against the owner's actual words, not paraphrases | 2026-07-01 |
 | Zero-dependency tooling | templates must be adoptable without installs | 2026-06 / repo inception |
 | Add `GENESIS.md` one-prompt bootstrap protocol to `templates/` | moves the harness toward the founding intent that a model can build a filled project from one prompt; keeps bootstrap as a one-time protocol distinct from the standing control docs | 2026-07-01 / TASKBOARD T-002 |
+| Add an executive interface (five-line brief + pending-decision queue) to the taskboard, plus an escalation-language contract in the agents doc | keeps the owner at executive altitude: a glance shows project state, and technical blockers reach the owner as product tradeoffs, never code-level failures | 2026-07-01 / TASKBOARD T-003 |
 
 ## Health Criteria
 

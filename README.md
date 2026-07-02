@@ -17,7 +17,9 @@ The blank, copyable templates live in `templates/`:
 - `templates/BLUEPRINT.md` - stable project identity, product direction,
   architecture, invariants, safety boundaries, and preserved decisions.
 - `templates/TASKBOARD.md` - live task queue, blocked/deferred lanes, current
-  handoff, and proof log.
+  handoff, and proof log, plus an executive interface: a standing five-line
+  executive brief and a pending-decision queue (options, recommendation, cost)
+  for the owner who never reads code.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
 - `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a

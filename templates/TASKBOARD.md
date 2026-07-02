@@ -8,6 +8,27 @@ This is the live work queue and proof ledger. Agents use it to decide what to
 work on next. Keep strategy and long-term direction in `BLUEPRINT.md`; keep
 commands and verification procedures in `RUNBOOK.md`.
 
+## Executive Brief
+
+Five lines for the owner who never reads code. Refresh it at the end of each work
+session so a glance answers "where does this project stand?"
+
+- **Shipping now:** [current useful outcome in one line]
+- **Health:** [green / yellow / red + one-phrase why]
+- **Decision needed:** [top item from Pending Decisions, or "none"]
+- **Blocked on:** [top blocker, or "nothing"]
+- **Next milestone:** [nearest milestone + rough when]
+
+## Pending Decisions
+
+Decisions only the owner should make. Agents surface tradeoffs here as product
+choices - options, a recommendation, and the cost of choosing - and do not decide
+them alone. Keep code-level detail out of this queue.
+
+| ID | Decision | Options | Recommendation | Cost / impact | Owner | Status |
+|---|---|---|---|---|---|---|
+| [ID] | [decision in product terms] | [option A / option B] | [recommended option + one-line why] | [time, money, risk, or lock-in] | [owner] | open |
+
 ## How To Use This Board
 
 1. Read `BLUEPRINT.md` for context.

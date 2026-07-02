@@ -167,7 +167,9 @@ Evaluation And Benchmarking.
 - Ask one focused question when a missing answer changes the harness design,
   the public file layout, a template contract, or a safety boundary.
 - Escalations to the owner are phrased as product tradeoffs with options and a
-  recommendation, not as tool- or code-level failures.
+  recommendation, not as tool- or code-level failures. Record open decisions in
+  `TASKBOARD.md` -> Pending Decisions and surface the top one in the Executive
+  Brief, so the owner can choose without reading code.
 - Agents open pull requests; the owner merges them. Do not merge your own PR.
 
 ## Output Format

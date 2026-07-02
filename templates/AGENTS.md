@@ -175,6 +175,12 @@ When visual work needs assets:
 - Stop and surface rather than retrying indefinitely after repeated verification
   failure or unclear scope expansion.
 
+Escalations to the owner are phrased as product tradeoffs, not tool- or
+code-level failures. Give the options, a recommendation, and the cost of each
+path, and record the open decision in `TASKBOARD.md` -> Pending Decisions. The
+owner should be able to choose without reading code; translate any technical
+blocker into the product or timeline choice it forces.
+
 ## Day-One Checklist
 
 Load only what the task requires:
