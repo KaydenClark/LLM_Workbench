@@ -68,6 +68,10 @@ When the harness is working, a downstream project has:
   log;
 - `RUNBOOK.md` - setup, run, test, build, recovery, and evaluation procedure.
 
+Optionally, a project can start from `GENESIS.md` - a one-time bootstrap protocol
+that turns a single founding prompt into the four filled control docs plus a
+smallest-running scaffold, then hands off to the normal work loop.
+
 The most important quality bar is: **verification honesty** - what the docs
 claim must match what independently rerun checks show.
 
@@ -186,6 +190,7 @@ Rules:
 | Dogfood split: real docs at root, blank product in `templates/` | the harness must govern its own repo or it has no credibility; the product must stay copy-ready | 2026-07-01 / this migration |
 | Preserve the founding prompt verbatim in BLUEPRINT | drift-checks against the owner's actual words, not paraphrases | 2026-07-01 |
 | Zero-dependency tooling | templates must be adoptable without installs | 2026-06 / repo inception |
+| Add `GENESIS.md` one-prompt bootstrap protocol to `templates/` | moves the harness toward the founding intent that a model can build a filled project from one prompt; keeps bootstrap as a one-time protocol distinct from the standing control docs | 2026-07-01 / TASKBOARD T-002 |
 
 ## Health Criteria
 
