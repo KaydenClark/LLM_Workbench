@@ -28,6 +28,10 @@ The blank, copyable templates live in `templates/`:
 - `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
   founding prompt into the four filled control docs plus a smallest-running
   scaffold. Run once at project start, then delete or archive.
+- `templates/ADOPTION.md` - migration protocol for an existing project (often on
+  an older or foreign harness): observe the repo, map the old docs into the v2
+  layout without losing content, verify on the existing test suite. The
+  existing-project counterpart to `GENESIS.md`; run once, then archive.
 - `templates/HARNESS_FEEDBACK.md` - the return channel from a downstream project
   back to this harness: an append-only log of where the harness rules themselves
   were unclear, wrong, or slow, so lessons can flow back and be validated via
@@ -100,6 +104,18 @@ prompt, writing `BLUEPRINT.md`, choosing an architecture, scaffolding the
 smallest thing that runs, filling `AGENTS.md` scopes and `RUNBOOK.md` commands,
 and seeding `TASKBOARD.md` - then defines what a finished bootstrap must prove.
 GENESIS runs once; after handoff the four control docs govern.
+
+### Adopting Into An Existing Project
+
+For a project that already exists - real code, history, and often an older or
+foreign harness (`ROADMAP.md`, policy docs, a prior `AGENTS.md`) - use
+`templates/ADOPTION.md`, not GENESIS. Copy it alongside the four control docs and
+point the agent at the repo. ADOPTION inventories the existing docs and
+classifies each (port into a v2 doc, fold into `AGENTS.md`, keep as project-local,
+or archive), maps the old harness into the v2 layout **without losing content**,
+derives the edit scope from the real directory tree, and verifies against the
+project's existing test suite instead of a scaffold. It runs once, then is
+archived; retired docs are preserved as history, never silently deleted.
 
 ## Versioning And Upgrades
 
