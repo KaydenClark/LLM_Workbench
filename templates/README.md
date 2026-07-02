@@ -1,5 +1,8 @@
 # [PROJECT_NAME]
 
+> Generated from LLM Workbench v[HARNESS_VERSION]. See `RUNBOOK.md` ->
+> Upgrading The Harness.
+
 [ONE-SENTENCE DESCRIPTION OF WHAT THIS PROJECT DOES AND FOR WHOM.]
 
 [OPTIONAL: a short paragraph of context - the problem it solves, who uses it,

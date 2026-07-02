@@ -1,5 +1,8 @@
 # [PROJECT_NAME] - Genesis (Bootstrap Protocol)
 
+> Part of LLM Workbench v[HARNESS_VERSION]. Stamp the four control docs with this
+> same version during handoff (Phase 7).
+
 This file is the one-prompt bootstrap protocol. It tells an agent how to turn a
 single founding prompt into a project that already has filled-out control docs:
 `AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`, and `RUNBOOK.md`.
@@ -151,7 +154,10 @@ Output: a board the normal work loop can pick up immediately.
 
 ### Phase 7 - Handoff
 
-Delete unfilled placeholders. Run the full verification suite once more. If
+Set the `Generated from LLM Workbench v[HARNESS_VERSION]` stamp at the top of each
+control doc to the workbench version you copied from, so the project can later
+tell when it is behind. Delete unfilled placeholders. Run the full verification
+suite once more. If
 `GENESIS.md` was copied into the project, either delete it or move it to an
 archive note, so no one mistakes the one-time protocol for a standing rule.
 

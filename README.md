@@ -97,6 +97,20 @@ smallest thing that runs, filling `AGENTS.md` scopes and `RUNBOOK.md` commands,
 and seeding `TASKBOARD.md` - then defines what a finished bootstrap must prove.
 GENESIS runs once; after handoff the four control docs govern.
 
+## Versioning And Upgrades
+
+Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
+stamp so a downstream project can tell which harness version it is running. The
+current harness version is **v2.1** (recorded in `BLUEPRINT.md`); this repo is the
+source, so its own docs are not stamped.
+
+To pull later harness improvements into a downstream project, follow that
+project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template
+sections, keep the project's filled-in specifics, bump the stamp, re-verify, and
+record the upgrade in the proof log. Long-running projects should also archive
+their proof log into `TASKBOARD_ARCHIVE.md` once it passes ~30 rows, and reclaim
+stale `claimed`/`in-progress` tasks per `AGENTS.md` -> Long Session Control.
+
 ## Visual And Asset Guidance
 
 This workbench does not define a house visual style. Use project-local design
