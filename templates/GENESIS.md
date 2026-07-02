@@ -122,7 +122,15 @@ until set:
 Confirm the read-scope, secrets boundary, authority order, and verification
 contract match this project's reality. Keep the generic safety rules intact.
 
-Output: an `AGENTS.md` whose scope answers are concrete, not bracketed.
+Then make the boundary mechanical, not just prose. If `.claude/settings.json`
+was copied in, fill it from the scope you just drew: writable roots -> `allow`,
+forbidden paths (secrets, credentials, build output) -> `deny`, review-required
+actions (schema/migrations, `git push`, destructive commands) -> `ask`. See
+`.claude/README.md` for the mapping. If the project will not use Claude Code,
+delete `.claude/` and rely on the prose scope alone.
+
+Output: an `AGENTS.md` whose scope answers are concrete, not bracketed, and a
+filled `.claude/settings.json` (or a deliberate decision to omit it).
 
 ### Phase 5 - RUNBOOK (make it operable)
 
@@ -157,6 +165,8 @@ Do not call bootstrap done on vibes. All of the following must hold:
       remaining `[BRACKETED]` placeholders** in required sections.
 - [ ] The founding prompt is preserved verbatim somewhere durable.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
+- [ ] `.claude/settings.json` is filled from that scope (deny secrets, allow
+      writable roots), or `.claude/` was deliberately omitted with a reason.
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
