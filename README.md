@@ -67,7 +67,10 @@ docs look like. Copy from `templates/`, not from the root.
 4. Keep `TASKBOARD.md` current as work changes state.
 5. Treat documentation as part of the task owner's work.
 6. Require every completed agent task to leave proof in the final response and
-   in the `TASKBOARD.md` proof log.
+   in the `TASKBOARD.md` proof log. For milestone tasks, also require a
+   <1-minute demo artifact (screenshot, recording, preview URL, or one-command
+   demo) in the proof log's Demo column, so the owner can accept work on product
+   truth, not just passing tests.
 
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.

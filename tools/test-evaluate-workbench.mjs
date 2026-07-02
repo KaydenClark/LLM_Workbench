@@ -51,4 +51,18 @@ assert.ok(
   'a bare instruction file should score zero on the executive interface criterion'
 );
 
+const productAcceptance = localEvaluation.breakdown.find((item) => item.id === 'product_acceptance');
+assert.ok(productAcceptance, 'product acceptance criterion should be present in the rubric');
+assert.equal(
+  productAcceptance.missing.length,
+  0,
+  `local workbench should satisfy the product acceptance criterion, missing: ${productAcceptance.missing.join(', ')}`
+);
+
+const singleFileProduct = scoreWorkbench(singleFile.files).breakdown.find((item) => item.id === 'product_acceptance');
+assert.ok(
+  singleFileProduct && singleFileProduct.score === 0,
+  'a bare instruction file should score zero on the product acceptance criterion'
+);
+
 console.log(`ok - evaluator self-test passed; local score ${localScore}, single-file baseline ${singleFileScore}`);

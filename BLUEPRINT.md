@@ -74,6 +74,11 @@ Optionally, a project can start from `GENESIS.md` - a one-time bootstrap protoco
 that turns a single founding prompt into the four filled control docs plus a
 smallest-running scaffold, then hands off to the normal work loop.
 
+Milestone tasks additionally require a <1-minute demo artifact (screenshot,
+recording, preview URL, or one-command demo) recorded in the taskboard proof
+log's Demo column, so the owner accepts work on product truth, not test output
+alone.
+
 The most important quality bar is: **verification honesty** - what the docs
 claim must match what independently rerun checks show.
 
@@ -194,6 +199,7 @@ Rules:
 | Zero-dependency tooling | templates must be adoptable without installs | 2026-06 / repo inception |
 | Add `GENESIS.md` one-prompt bootstrap protocol to `templates/` | moves the harness toward the founding intent that a model can build a filled project from one prompt; keeps bootstrap as a one-time protocol distinct from the standing control docs | 2026-07-01 / TASKBOARD T-002 |
 | Add an executive interface (five-line brief + pending-decision queue) to the taskboard, plus an escalation-language contract in the agents doc | keeps the owner at executive altitude: a glance shows project state, and technical blockers reach the owner as product tradeoffs, never code-level failures | 2026-07-01 / TASKBOARD T-003 |
+| Require a <1-minute demo artifact (Demo column) for milestone tasks | the executive accepts work on product truth, not passing tests alone; a fast demo is the cheapest honest signal that the product does what was asked | 2026-07-01 / TASKBOARD T-004 |
 
 ## Health Criteria
 

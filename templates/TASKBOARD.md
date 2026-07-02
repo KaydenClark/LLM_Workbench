@@ -110,8 +110,10 @@ response and in the proof row's `Docs` field.
 ## Proof Log
 
 Append a row when a task changes durable project state or produces durable
-verification evidence. Use actual results, not stale claims.
+verification evidence. Use actual results, not stale claims. Milestone tasks
+must fill the Demo column with a <1-minute demo artifact (screenshot, recording,
+preview URL, or one-command demo); non-milestone rows may use `n/a`.
 
-| Date | Task ID | Agent | Proof | Result | Docs | Remaining gap |
-|---|---|---|---|---|---|---|
-| [YYYY-MM-DD] | [ID] | [agent] | `[command]` or named manual check | [pass/fail/partial] | [updated / no update needed] | [none/gap] |
+| Date | Task ID | Agent | Proof | Demo | Result | Docs | Remaining gap |
+|---|---|---|---|---|---|---|---|
+| [YYYY-MM-DD] | [ID] | [agent] | `[command]` or named manual check | [demo artifact link/command, or n/a] | [pass/fail/partial] | [updated / no update needed] | [none/gap] |

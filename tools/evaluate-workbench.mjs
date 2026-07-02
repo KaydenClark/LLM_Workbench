@@ -100,6 +100,16 @@ export const RUBRIC = [
     ]
   },
   {
+    id: 'product_acceptance',
+    label: 'Product-truth acceptance',
+    weight: 5,
+    checks: [
+      { label: 'demo artifact column', files: ['TASKBOARD.md'], patterns: ['Demo'] },
+      { label: 'demo artifact defined', files: ['TASKBOARD.md', 'AGENTS.md'], patterns: ['demo artifact', 'screenshot|recording|preview URL|one-command'] },
+      { label: 'milestone acceptance rule', files: ['AGENTS.md'], patterns: ['milestone', 'demo'] }
+    ]
+  },
+  {
     id: 'drift_control',
     label: 'Long-session drift control',
     weight: 8,
