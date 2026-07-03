@@ -145,12 +145,21 @@ calls for: the ruleset updates the ruleset, on evidence, not taste.
 
 ## Version Control
 
-- Branch from `main`; do not commit directly to it. Branch names:
-  `claude/short-description`, `codex/short-description`, or
+- Branch from `main`; do not commit directly to `main` or `integration`. Branch
+  names: `claude/short-description`, `codex/short-description`, or
   `backup/description` for local-state snapshots.
 - Commit messages: imperative subject <= 72 chars; the why in the body. One
   logical change per commit.
-- Agents open pull requests; **the owner merges them**. No agent self-merge.
+- **Default PR target is `integration`, not `main`.** When asked to commit and
+  open a PR without a named target branch: create a new task branch for the
+  work, then open the PR into `integration`. If the user names a target branch,
+  use that instead.
+- `integration` is the bridge between `main` and in-flight work. **Only the
+  owner merges `integration` -> `main`.** Below that line, agents may merge and
+  organize task branches into `integration` when it is reasonable and safe -
+  this is the one place agent self-merge is allowed. Never merge into `main`.
+- Open a PR (not a silent push) even when you will merge it into `integration`,
+  so the change has a reviewable record.
 - PR descriptions state what changed, why, risks, and how it was verified.
 - Never commit secrets, `.env` files, or `research papers/` (local-only).
 - Do not rewrite published history or force-push shared branches without

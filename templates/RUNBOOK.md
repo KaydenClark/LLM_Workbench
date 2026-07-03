@@ -239,15 +239,27 @@ Expected healthy state:
 
 Conventions for commits and pull requests in this project.
 
-- Branch from the default branch; do not commit directly to it. Branch names:
-  `[CONVENTION, e.g. type/short-description]`.
+- Branch from `[DEFAULT_BRANCH, e.g. main]`; do not commit directly to it or to
+  the integration bridge below. Branch names: `[CONVENTION, e.g.
+  type/short-description]`.
 - Commit messages: `[CONVENTION, e.g. imperative subject <= 72 chars, the why
   in the body]`. One logical change per commit.
 - Run `git status` before committing.
 - Never commit secrets, `.env` files, local databases, logs, build output, or
   generated artifacts.
-- Open a pull request when the task is complete and verified. The PR description
-  states what changed, why, risks, and how it was verified.
+- **Default PR target is `[INTEGRATION_BRANCH, e.g. integration]`, not
+  `[DEFAULT_BRANCH]`.** When asked to commit and open a PR without a named
+  target: create a new task branch, then open the PR into the integration
+  branch. If the user names a target branch, use that instead.
+- `[INTEGRATION_BRANCH]` is a staging bridge between task work and
+  `[DEFAULT_BRANCH]`. **Only the owner merges the integration branch ->
+  `[DEFAULT_BRANCH]`.** Below that line, the agent may merge and organize task
+  branches into the integration branch when it is reasonable and safe; the agent
+  never merges into `[DEFAULT_BRANCH]`.
+- Open a pull request when the task is complete and verified, even for a change
+  you will merge into the integration branch yourself, so it has a reviewable
+  record. The PR description states what changed, why, risks, and how it was
+  verified.
 - Do not rewrite published history or force-push shared branches unless the user
   explicitly approves.
 

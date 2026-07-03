@@ -176,7 +176,11 @@ demo proves the product does what the owner asked.
   recommendation, not as tool- or code-level failures. Record open decisions in
   `TASKBOARD.md` -> Pending Decisions and surface the top one in the Executive
   Brief, so the owner can choose without reading code.
-- Agents open pull requests; the owner merges them. Do not merge your own PR.
+- Branch and PR flow: branch per task; the default PR target is `integration`,
+  not `main` (see `RUNBOOK.md` -> Version Control). Agents may merge task
+  branches into `integration` when safe; only the owner merges `integration` ->
+  `main`. Never merge into `main`, and never merge a PR the user asked to keep
+  open for review.
 
 ## Output Format
 
