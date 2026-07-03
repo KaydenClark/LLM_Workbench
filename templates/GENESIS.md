@@ -11,6 +11,11 @@ Read this once, run it once. Genesis is a starting gun, not a standing rule. Whe
 bootstrap is finished, the four control docs govern; this file can be deleted or
 kept as a record of how the project began.
 
+**Green-field only.** If the target already exists - real code, history, or a
+prior set of `AGENTS`/`ROADMAP`/policy docs - use `ADOPTION.md` instead. Genesis
+scaffolds from a prompt; Adoption migrates an existing repo into the same four
+control docs.
+
 ## What Genesis Is For
 
 The owner should be able to hand an agent a prompt like "build me a [KIND OF

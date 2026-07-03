@@ -29,8 +29,9 @@ before changing anything:
 
 If this project was bootstrapped from a single founding prompt, the one-time
 protocol that produced these docs is preserved in [`GENESIS.md`](GENESIS.md).
-It runs once at project start; after handoff, the four control docs above
-govern.
+If instead the harness was adopted into an existing project, that one-time
+migration protocol is [`ADOPTION.md`](ADOPTION.md). Either runs once at start;
+after handoff, the four control docs above govern.
 
 ## Getting Started
 
