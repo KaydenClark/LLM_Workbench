@@ -22,9 +22,25 @@ The blank, copyable templates live in `templates/`:
   for the owner who never reads code.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
+- `templates/README.md` - a blank, user-facing product README for the target
+  project (points readers at the four control docs). The root README you are
+  reading is the workbench's own and is not meant to be copied.
 - `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
   founding prompt into the four filled control docs plus a smallest-running
   scaffold. Run once at project start, then delete or archive.
+- `templates/ADOPTION.md` - migration protocol for an existing project (often on
+  an older or foreign harness): observe the repo, map the old docs into the v2
+  layout without losing content, verify on the existing test suite. The
+  existing-project counterpart to `GENESIS.md`; run once, then archive.
+- `templates/HARNESS_FEEDBACK.md` - the return channel from a downstream project
+  back to this harness: an append-only log of where the harness rules themselves
+  were unclear, wrong, or slow, so lessons can flow back and be validated via
+  `evals/` before shipping as "better".
+- `templates/.claude/settings.json` - optional Claude Code permission file that
+  makes the `AGENTS.md` edit scope *mechanical* (deny secrets, allow writable
+  roots, ask on review-required actions). See `templates/.claude/README.md` for
+  the scope-to-permission mapping. Omit it if the project does not use Claude
+  Code; the prose scope still governs every agent.
 
 `ROADMAP.md` is no longer part of the default harness. Put stable product
 direction in `BLUEPRINT.md` and executable next work in `TASKBOARD.md`.
@@ -59,10 +75,11 @@ docs look like. Copy from `templates/`, not from the root.
 ## How To Use It
 
 1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
-   `templates/TASKBOARD.md`, and `templates/RUNBOOK.md` into the target
-   project root.
+   `templates/TASKBOARD.md`, `templates/RUNBOOK.md`, and `templates/README.md`
+   into the target project root.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
-   and task items.
+   and task items. For Claude Code, also copy `templates/.claude/settings.json`
+   and fill it from the same edit scope to enforce the boundary mechanically.
 3. Keep `BLUEPRINT.md` stable and source-backed.
 4. Keep `TASKBOARD.md` current as work changes state.
 5. Treat documentation as part of the task owner's work.
@@ -87,6 +104,39 @@ prompt, writing `BLUEPRINT.md`, choosing an architecture, scaffolding the
 smallest thing that runs, filling `AGENTS.md` scopes and `RUNBOOK.md` commands,
 and seeding `TASKBOARD.md` - then defines what a finished bootstrap must prove.
 GENESIS runs once; after handoff the four control docs govern.
+
+### Adopting Into An Existing Project
+
+For a project that already exists - real code, history, and often an older or
+foreign harness (`ROADMAP.md`, policy docs, a prior `AGENTS.md`) - use
+`templates/ADOPTION.md`, not GENESIS. Copy it alongside the four control docs and
+point the agent at the repo. ADOPTION inventories the existing docs and
+classifies each (port into a v2 doc, fold into `AGENTS.md`, keep as project-local,
+or archive), maps the old harness into the v2 layout **without losing content**,
+derives the edit scope from the real directory tree, and verifies against the
+project's existing test suite instead of a scaffold. It runs once, then is
+archived; retired docs are preserved as history, never silently deleted.
+
+## Versioning And Upgrades
+
+Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
+stamp so a downstream project can tell which harness version it is running. The
+current harness version is **v2.1** (recorded in `BLUEPRINT.md`); this repo is the
+source, so its own docs are not stamped.
+
+To pull later harness improvements into a downstream project, follow that
+project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template
+sections, keep the project's filled-in specifics, bump the stamp, re-verify, and
+record the upgrade in the proof log. Long-running projects should also archive
+their proof log into `TASKBOARD_ARCHIVE.md` once it passes ~30 rows, and reclaim
+stale `claimed`/`in-progress` tasks per `AGENTS.md` -> Long Session Control.
+
+The upgrade path is a loop, not a one-way copy. Downstream projects record where
+the harness helped or hurt in their `HARNESS_FEEDBACK.md`; those lessons are
+harvested back here, turned into template changes, and validated with `evals/`
+before shipping as a new harness version. A template change is only called
+"better" when the evidence supports it - see `RUNBOOK.md` -> Evaluation And
+Benchmarking. This is the "ruleset that updates the ruleset".
 
 ## Visual And Asset Guidance
 

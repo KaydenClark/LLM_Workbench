@@ -1,5 +1,8 @@
 # [PROJECT_NAME] - Agent Instructions
 
+> Generated from LLM Workbench v[HARNESS_VERSION]. To pull later harness
+> improvements into this project, see `RUNBOOK.md` -> Upgrading The Harness.
+
 This file controls how agents behave in this project. It should answer four
 questions quickly:
 
@@ -159,6 +162,23 @@ Long sessions drift. Counter it deliberately:
 - Append proof rows; do not rewrite existing proof history.
 - If the same verification fails twice and the next step is not clearly safe,
   stop, record the blocker, and surface the decision needed.
+
+**Reclaiming stale claims.** A `claimed` or `in-progress` task whose `Last
+update` is older than `[STALE_THRESHOLD]` (default: one working day) with no
+committed progress is stale and may be reclaimed. To reclaim: confirm no branch
+or commit is advancing it, note the reclaim in the task's `Current note` with the
+date, then either take it over or move it back to `ready`. Never silently discard
+a prior agent's committed work - if a branch exists, continue from it or record
+why you are not.
+
+## Harness Feedback
+
+These control docs came from a reusable harness (LLM Workbench). When a harness
+rule itself is unclear, wrong, missing, or slows the work down, do not silently
+work around it: log it in `HARNESS_FEEDBACK.md` (append-only) with the doc,
+section, and a proposed change. That is the return channel that lets the harness
+improve. Keep it separate from `TASKBOARD.md`, which tracks this project's own
+work; if a harness gap is also blocking you now, log both and link them.
 
 ## Visual And Asset Work
 

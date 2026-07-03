@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./credentials/**)",
+      "Read(./**/*.pem)",
+      "Read(./**/*.key)",
+      "Edit(./.env)",
+      "Edit(./.env.*)",
+      "Edit(./secrets/**)",
+      "Edit(./credentials/**)",
+      "Write(./secrets/**)",
+      "Edit(./[BUILD_OUTPUT_DIR]/**)",
+      "Write(./[BUILD_OUTPUT_DIR]/**)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(rm -rf:*)",
+      "Edit(./[SCHEMA_OR_MIGRATIONS_DIR]/**)"
+    ],
+    "allow": [
+      "Edit(./[PRIMARY_SOURCE_DIR]/**)",
+      "Edit(./[TEST_DIR]/**)",
+      "Edit(./AGENTS.md)",
+      "Edit(./BLUEPRINT.md)",
+      "Edit(./TASKBOARD.md)",
+      "Edit(./RUNBOOK.md)",
+      "Edit(./README.md)",
+      "Bash([TEST_COMMAND])",
+      "Bash([BUILD_COMMAND])"
+    ]
+  }
+}

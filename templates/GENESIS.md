@@ -1,5 +1,8 @@
 # [PROJECT_NAME] - Genesis (Bootstrap Protocol)
 
+> Part of LLM Workbench v[HARNESS_VERSION]. Stamp the four control docs with this
+> same version during handoff (Phase 7).
+
 This file is the one-prompt bootstrap protocol. It tells an agent how to turn a
 single founding prompt into a project that already has filled-out control docs:
 `AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`, and `RUNBOOK.md`.
@@ -7,6 +10,11 @@ single founding prompt into a project that already has filled-out control docs:
 Read this once, run it once. Genesis is a starting gun, not a standing rule. When
 bootstrap is finished, the four control docs govern; this file can be deleted or
 kept as a record of how the project began.
+
+**Green-field only.** If the target already exists - real code, history, or a
+prior set of `AGENTS`/`ROADMAP`/policy docs - use `ADOPTION.md` instead. Genesis
+scaffolds from a prompt; Adoption migrates an existing repo into the same four
+control docs.
 
 ## What Genesis Is For
 
@@ -122,7 +130,15 @@ until set:
 Confirm the read-scope, secrets boundary, authority order, and verification
 contract match this project's reality. Keep the generic safety rules intact.
 
-Output: an `AGENTS.md` whose scope answers are concrete, not bracketed.
+Then make the boundary mechanical, not just prose. If `.claude/settings.json`
+was copied in, fill it from the scope you just drew: writable roots -> `allow`,
+forbidden paths (secrets, credentials, build output) -> `deny`, review-required
+actions (schema/migrations, `git push`, destructive commands) -> `ask`. See
+`.claude/README.md` for the mapping. If the project will not use Claude Code,
+delete `.claude/` and rely on the prose scope alone.
+
+Output: an `AGENTS.md` whose scope answers are concrete, not bracketed, and a
+filled `.claude/settings.json` (or a deliberate decision to omit it).
 
 ### Phase 5 - RUNBOOK (make it operable)
 
@@ -143,7 +159,10 @@ Output: a board the normal work loop can pick up immediately.
 
 ### Phase 7 - Handoff
 
-Delete unfilled placeholders. Run the full verification suite once more. If
+Set the `Generated from LLM Workbench v[HARNESS_VERSION]` stamp at the top of each
+control doc to the workbench version you copied from, so the project can later
+tell when it is behind. Delete unfilled placeholders. Run the full verification
+suite once more. If
 `GENESIS.md` was copied into the project, either delete it or move it to an
 archive note, so no one mistakes the one-time protocol for a standing rule.
 
@@ -157,6 +176,8 @@ Do not call bootstrap done on vibes. All of the following must hold:
       remaining `[BRACKETED]` placeholders** in required sections.
 - [ ] The founding prompt is preserved verbatim somewhere durable.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
+- [ ] `.claude/settings.json` is filled from that scope (deny secrets, allow
+      writable roots), or `.claude/` was deliberately omitted with a reason.
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).

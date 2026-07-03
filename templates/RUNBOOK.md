@@ -1,5 +1,8 @@
 # [PROJECT_NAME] - Runbook
 
+> Generated from LLM Workbench v[HARNESS_VERSION]. See Upgrading The Harness
+> below.
+
 **Last reviewed:** [YYYY-MM-DD]
 **Runtime owner:** [user / agent / service owner]
 **Environment:** [local / LAN / staging / production]
@@ -167,6 +170,15 @@ python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 Real comparison runs may spend API budget. Size the run first and record the
 model, conditions, task suite, trial count, and result path before making claims.
 
+### Harness Feedback Loop
+
+This project's `HARNESS_FEEDBACK.md` is the return channel to the upstream
+harness. Lessons logged there feed harness changes, which must clear the same
+bar as any other "better" claim: a proposed template change is `c3_candidate`
+above, tested against the current docs on the same task suite before it ships.
+Feedback flows out; validated improvements flow back in as a harness upgrade
+(Upgrading The Harness, above). Taste alone never closes the loop; evidence does.
+
 ## Data Operations
 
 Use this section only if the project has seed data, migrations, imports, local
@@ -238,6 +250,27 @@ Conventions for commits and pull requests in this project.
   states what changed, why, risks, and how it was verified.
 - Do not rewrite published history or force-push shared branches unless the user
   explicitly approves.
+
+## Upgrading The Harness
+
+These control docs were generated from a specific LLM Workbench version, recorded
+in the `Generated from LLM Workbench v[HARNESS_VERSION]` stamp at the top of each
+doc. That stamp lets you tell when the project is running an older harness than
+the current one.
+
+To upgrade:
+
+1. Check the LLM Workbench repo's releases/changelog for what changed since
+   `v[HARNESS_VERSION]`.
+2. Re-copy only the changed template sections; keep this project's filled-in
+   specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
+3. Update each doc's version stamp to the new version.
+4. Re-run the full verification suite (below) and record the upgrade as a
+   proof-log row in `TASKBOARD.md`.
+
+Treat a harness upgrade like any other change: smallest correct diff, verified,
+with proof. If a downstream lesson should flow *back* to the harness, capture it
+per the project's `HARNESS_FEEDBACK` convention.
 
 ## Troubleshooting
 
