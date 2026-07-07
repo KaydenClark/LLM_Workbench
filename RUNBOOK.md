@@ -125,14 +125,41 @@ Real comparison runs spend API budget. Size the run first and record the model,
 conditions, task suite, trial count, and result path in the `TASKBOARD.md`
 proof log before making claims.
 
+### Harness Feedback Loop
+
+Downstream projects built from `templates/` carry a `HARNESS_FEEDBACK.md` return
+channel: an append-only log of where the harness rules themselves were unclear,
+wrong, or slow. This repo is the harvest destination, so it has no
+`HARNESS_FEEDBACK.md` of its own; instead:
+
+1. Collect feedback rows from downstream projects (or from dogfooding here).
+2. Triage each into a concrete template change and open a `TASKBOARD.md` task.
+3. Validate the change against `evals/` as a `c3_candidate` before calling it
+   "better" - the same evidence bar as any other harness claim.
+4. Ship it as a new harness version (bump `BLUEPRINT.md` -> Harness version) and
+   note it so downstream projects can upgrade.
+
+The standing harvest task lives in `TASKBOARD.md` (Deferred until the first
+downstream project reports feedback). This closes the loop the founding intent
+calls for: the ruleset updates the ruleset, on evidence, not taste.
+
 ## Version Control
 
-- Branch from `main`; do not commit directly to it. Branch names:
-  `claude/short-description`, `codex/short-description`, or
+- Branch from `main`; do not commit directly to `main` or `integration`. Branch
+  names: `claude/short-description`, `codex/short-description`, or
   `backup/description` for local-state snapshots.
 - Commit messages: imperative subject <= 72 chars; the why in the body. One
   logical change per commit.
-- Agents open pull requests; **the owner merges them**. No agent self-merge.
+- **Default PR target is `integration`, not `main`.** When asked to commit and
+  open a PR without a named target branch: create a new task branch for the
+  work, then open the PR into `integration`. If the user names a target branch,
+  use that instead.
+- `integration` is the bridge between `main` and in-flight work. **Only the
+  owner merges `integration` -> `main`.** Below that line, agents may merge and
+  organize task branches into `integration` when it is reasonable and safe -
+  this is the one place agent self-merge is allowed. Never merge into `main`.
+- Open a PR (not a silent push) even when you will merge it into `integration`,
+  so the change has a reviewable record.
 - PR descriptions state what changed, why, risks, and how it was verified.
 - Never commit secrets, `.env` files, or `research papers/` (local-only).
 - Do not rewrite published history or force-push shared branches without

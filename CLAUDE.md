@@ -10,5 +10,7 @@ and other agents follow the same source of truth.
 
 - This repo dogfoods its own harness: root docs are real, `templates/` is the
   blank product. Never fill `templates/` with this repo's specifics.
-- Open PRs with `gh`; the owner merges. The permission layer will (correctly)
-  block self-merges.
+- Open PRs with `gh`. The default target is `integration`, not `main`: branch
+  per task, PR into `integration`, and you may merge those below-`integration`
+  PRs when safe. Only the owner merges `integration` -> `main`; the permission
+  layer will (correctly) block any attempt to merge into `main`.

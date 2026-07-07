@@ -1,5 +1,8 @@
 # [PROJECT_NAME] - Blueprint
 
+> Generated from LLM Workbench v[HARNESS_VERSION]. See `RUNBOOK.md` ->
+> Upgrading The Harness.
+
 **Last reviewed:** [YYYY-MM-DD]
 **Status:** [blank / active / partial / stale]
 **Source root:** `[ABSOLUTE_PROJECT_PATH]`
