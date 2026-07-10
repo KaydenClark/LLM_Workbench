@@ -2,7 +2,7 @@
 
 **Current focus:** Close the gaps between the current harness and the founding intent: one-prompt bootstrap and a true executive interface.
 **Owner:** Kayden (executive); agents execute
-**Last updated:** 2026-07-01
+**Last updated:** 2026-07-10
 
 This is the live work queue and proof ledger for the workbench repo itself.
 Strategy and direction live in `BLUEPRINT.md`; commands live in `RUNBOOK.md`.
@@ -11,11 +11,11 @@ Strategy and direction live in `BLUEPRINT.md`; commands live in `RUNBOOK.md`.
 
 Five lines for the owner who never reads code. Refreshed each work session.
 
-- **Shipping now:** the `integration` branch is live as the bridge between task work and `main`; it carries all of T-005-T-009 + T-012 (the five previously-stranded task branches, D-002) on top of current `main`. Plus T-013 - a new branch/PR-flow rule: default PR target is `integration`, owner-only merges `integration` -> `main`.
-- **Health:** green - all three self-tests pass on `integration`; root dogfood docs score full rubric (113/113); blank templates score 105/113 (remaining 8-pt gap is the team-coordination templates, tracked separately).
-- **Decision needed:** none open. D-001 resolved 2026-07-01; D-002 resolved 2026-07-03 by consolidating the five branches onto `integration`.
+- **Shipping now:** T-014 preserves the July 8 Mac harness review as durable evidence and routes its findings into the current Workbench/GPT_OS queues.
+- **Health:** green enough for GPT_OS to begin its OpenBrain P1 - self-tests pass, the duplicate T-008 queue state is reconciled, and remaining feedback/readability improvements are normal backlog.
+- **Decision needed:** none open. Kayden directed agents to preserve the harness review and keep controls slim/readable without optimizing for a hard token target.
 - **Blocked on:** one owner action - merge `integration` -> `main` to land all consolidated work. Agents no longer merge to `main`; that step is owner-only by rule (T-013).
-- **Next milestone:** apply `ADOPTION.md` to a real existing project (first target: `Little_Local_World`), which becomes the harness's first downstream customer and first `HARNESS_FEEDBACK` source (T-011).
+- **Next milestone:** harvest the routed downstream feedback through T-011 while GPT_OS begins its OpenBrain P1 independently.
 
 ## Pending Decisions
 
@@ -57,7 +57,8 @@ Do not rewrite existing proof rows. Append only.
 
 | ID | Priority | Task | Source / why now | Touches | Proof required | Docs impact | Owner | Status | Last update |
 |---|---:|---|---|---|---|---|---|---|---|
-| T-008 | 7 | Feedback loop: `HARNESS_FEEDBACK` convention for downstream projects + a harvest task here; template changes validated via `evals/` before "better" claims | closes the "ruleset updates the ruleset" loop | `templates/`, `evals/` | evals selftest passes | README, RUNBOOK | agent | ready | 2026-07-01 |
+| T-011 | 1 | Harvest downstream `HARNESS_FEEDBACK.md` rows and validate selected changes through `evals/` | The deferred trigger has fired: the July 8 review identified four `new` feedback rows, including the Mac sandbox handoff gap | Downstream feedback evidence, `templates/`, `evals/` | Each row triaged to ship/defer/reject with evidence; selected changes pass evals/self-tests | README/RUNBOOK/templates as required | agent | ready | 2026-07-10 |
+| T-015 | 4 | Add practical control-surface readability and contradiction guardrails | GPT_OS should stay slim/readable, but Kayden does not need a hard token target | evaluator/self-tests plus template proof-log policy | Deterministic stale-status/contradiction checks and a maintainable size/readability warning; no fuzzy enforcement that penalizes required safety rules | Evaluator, templates, root dogfood docs if adopted | agent | ready | 2026-07-10 |
 
 ## In Progress
 
@@ -79,12 +80,12 @@ Do not rewrite existing proof rows. Append only.
 | ID | Task | Deferred until | Why it matters | Revisit trigger |
 |---|---|---|---|---|
 | T-010 | Real (API-spending) eval comparison runs across template versions | GENESIS + executive interface land | outcome evidence beats rubric evidence | two or more template versions worth comparing |
-| T-011 | Standing harvest: collect downstream `HARNESS_FEEDBACK.md` rows, triage each into a template change validated via `evals/` (`c3_candidate`) before shipping as a new harness version | a downstream project reports harness feedback | closes the "ruleset updates the ruleset" loop on evidence, not taste | first `HARNESS_FEEDBACK` row arrives from any project using the harness |
 
 ## Done
 
 | ID | Task | Completed | Result | Proof row |
 |---|---|---|---|---|
+| T-014 | Preserve and harvest the July 8 Mac harness review | 2026-07-10 | Preserved the review unchanged; routed checkout/adoption findings to GPT_OS F-001/T-008, feedback and sandbox protocol findings to T-011, context/readability findings to T-015, and CI repetition to owning projects | 2026-07-10 / T-014 completion |
 | T-013 | Branch/PR-flow rule: default PR target is `integration`, owner-only merge to `main` (+ create the `integration` bridge) | 2026-07-03 | Added the rule to root `RUNBOOK.md` (Version Control), `AGENTS.md` (When To Ask), and `CLAUDE.md`, plus the generic form in `templates/RUNBOOK.md`. Created + pushed `integration` (= `main` + consolidated D-002 work). Agents branch per task and PR into `integration`; only the owner merges `integration` -> `main`; agents may merge below the bridge when safe. | 2026-07-03 / T-013 |
 | T-006 | Decide fate of `codex/structured-metadata-guardrails` (D-001) | 2026-07-01 | Chose extract + close. PR #4 targeted the retired root-ROADMAP layout; extracted its one portable idea (declarative scope keys) into T-007 and closed the branch. No template dialect resurrected. | 2026-07-01 / T-006 |
 | T-009 | Add a blank `templates/README.md` product template | 2026-07-01 | Added a generic, `[BRACKETED]` product README pointing readers at the four control docs; updated root README copy instructions. Blank templates score 98 -> 105/113. | 2026-07-01 / T-009 |
@@ -119,6 +120,8 @@ cell only, no claim was rewritten).
 
 | Date | Task ID | Agent | Proof | Demo | Result | Docs | Remaining gap |
 |---|---|---|---|---|---|---|---|
+| 2026-07-10 | T-014 completion | Codex | Preserved `HARNESS_REVIEW_MAC_2026-07-08.md` unchanged and mapped M1/M5/M7 to GPT_OS cleanup/rollout, M2/M6/M8 to T-011, M4 to T-015, and M3 to owning-project CI work. Workbench self-tests pass. | review file plus taskboard mapping | pass | Updated Workbench `TASKBOARD.md`; no template behavior changed | T-011 and T-015 remain non-blocking backlog; GPT_OS may begin OpenBrain. |
+| 2026-07-10 | T-014 intake | Codex | Kept `HARNESS_REVIEW_MAC_2026-07-08.md` as required evidence, promoted the triggered harvest task, removed the duplicate Ready T-008 state, and queued practical readability guards. | n/a | pass | Updated Workbench `TASKBOARD.md` only | The review still needs to enter Workbench Git history during T-014; no template behavior changed in this intake. |
 | 2026-07-01 | T-001 | claude (Fable 5) | `node tools/test-evaluate-workbench.mjs` + context/outcome self-tests + `node tools/evaluate-workbench.mjs --path templates --include-controls` | n/a (pre-Demo-column migration) | pass - all self-tests ok; root dogfood docs score 100/100; templates score 85 vs controls 0 and 2 (gap tracked as T-009) | root docs written; README updated; templates moved to `templates/` | PR #5 and dogfood PR need owner merge; T-006 branch decision open |
 | 2026-07-01 | T-002 | claude (Opus 4.8) | `node tools/test-evaluate-workbench.mjs` (+ context/outcome self-tests) all ok; root score 100/100; templates score 85 (unchanged by GENESIS add). Toy dry-run bootstrap of a C<->F CLI: `node src/cli.mjs c 100` -> `212F`, `node --test` pass, four filled control docs scored 85/100 vs controls 0 and 2 | one-command: `node src/cli.mjs c 100` -> `212F` (toy bootstrap demo) | added `templates/GENESIS.md`; README + BLUEPRINT updated | dry-run did a targeted (not exhaustive) placeholder fill; optional BLUEPRINT/RUNBOOK sub-rows left bracketed per GENESIS Phase 7. Pushed to `claude/genesis-bootstrap` and PR opened via GitHub API (base `claude/dogfood-taskboard`); owner merges |
 | 2026-07-01 | T-003 | claude (Opus 4.8) | red/green: added failing `executive_interface` self-test assertion (confirmed fail: criterion absent), then implemented rubric criterion + brief/decision-queue/escalation sections. `node tools/test-evaluate-workbench.mjs` (+ context/outcome self-tests) all ok; root score 108/108; templates 93/108 (up from 85, new criterion satisfied); controls 0 and 2 | one-command: `node tools/evaluate-workbench.mjs --path . --include-controls` -> root 108/108 | added Executive Brief + Pending Decisions to root & template TASKBOARD; escalation contract to template AGENTS (root already had it, tied to queue); README + BLUEPRINT updated; evaluator rubric + self-test updated | total rubric weight now 108 (was 100); pre-existing templates gaps remain (README/team-templates/portability, T-009). Pushed to `claude/executive-interface` and PR opened via GitHub API (base `claude/genesis-bootstrap`); owner merges |
