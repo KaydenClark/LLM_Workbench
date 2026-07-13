@@ -71,6 +71,8 @@ docs look like. Copy from `templates/`, not from the root.
   outcome evidence; it also ranks the next improvements.
 - `tools/spec-workbench.mjs` - zero-dependency spec retrieval, lifecycle,
   deterministic catalog/dashboard rendering, and drift diagnosis.
+- `tools/feedback-automation.mjs` - canonical downstream feedback discovery,
+  deduplication, one-candidate locking, and fail-closed decision classification.
 - `tools/run-outcome-trials.mjs` and `tools/score-outcome-trials.mjs` -
   lightweight outcome-trial runner and scorer.
 - `tools/context-pack.mjs` - dependency-free prompt packer inspired by
@@ -188,6 +190,9 @@ Verify the local helper tools:
 ```bash
 node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
+node tools/test-eval-runner.mjs
+node tools/test-feedback-automation.mjs
+python3 evals/tasks/task_b_path_safety/test_grade.py
 ```
 
 ## Context And Research Workflow

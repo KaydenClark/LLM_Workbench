@@ -12,7 +12,8 @@ evals/
 │   ├── conditions.json          # condition id -> which instruction files to inject
 │   └── c1_generic_CLAUDE.md     # the "representative generic template" baseline
 ├── tasks/
-│   └── task_a_scope_honesty/    # one fully-built task
+│   ├── task_a_scope_honesty/    # development task
+│   └── task_b_path_safety/      # held-out security/path task
 │       ├── fixture/             # the starting repo the agent works in
 │       ├── canonical/           # pristine tests the grader restores (anti-tamper)
 │       ├── prompt.md            # the task given to the agent (same for all conditions)
@@ -30,16 +31,18 @@ evals/
 |---|---|---|
 | `c0_none` | no template (control) | better than nothing? |
 | `c1_generic` | a typical pasted-in template | better than alternatives? |
-| `c2_ours_main` | our harness @ `main` | both of the above |
-| `c3_ours_v2` | our harness @ a feature branch | + improving over time (vs `c2`) |
+| `c2_ours_main` | our released harness @ `main` | both of the above |
+| `c2_ours_integration` | current staging harness | feedback-gate baseline |
+| `c3_candidate` | candidate ref supplied at runtime | improvement vs staging |
+| `c3_ours_v2` | historical v2 feature branch | compatibility fixture |
 
 Conditions read our template files straight from a **git ref**, so testing a new
 version is just adding a ref — no copy-paste, no drift.
 
 ## Run a real comparison
 
-Needs the `claude` CLI authenticated (`ANTHROPIC_API_KEY` or a logged-in
-session). This spends API budget — size it first:
+Needs the selected `claude` or `codex` CLI authenticated. This spends model
+budget — size it first:
 
 ```bash
 # How many trials per condition to detect, say, a +20% lift at 80% power?
@@ -50,10 +53,25 @@ print(stats.required_n_for_proportions(0.60, 0.20))"
 python3 evals/run.py \
   --task evals/tasks/task_a_scope_honesty \
   --conditions c0_none,c1_generic,c2_ours_main,c3_ours_v2 \
-  --trials 10 --model claude-sonnet-4-6 \
+  --trials 10 --provider claude --model claude-sonnet-4-6 \
   --out evals/results/run_$(date +%F).jsonl
 
 python3 evals/score.py evals/results/run_$(date +%F).jsonl --baseline c0_none
+```
+
+The same runner supports isolated Codex comparisons without modifying the
+condition registry:
+
+```bash
+python3 evals/run.py \
+  --task evals/tasks/task_b_path_safety \
+  --conditions c2_ours_integration,c3_candidate \
+  --condition-ref c2_ours_integration=origin/integration \
+  --condition-ref c3_candidate=origin/codex/feedback-branch \
+  --provider codex --model gpt-5.6-terra --reasoning-effort high \
+  --trials 10 --feedback-fingerprint FINGERPRINT \
+  --base-sha BASE_SHA --candidate-sha CANDIDATE_SHA \
+  --out evals/results/run_$(date +%F).jsonl
 ```
 
 Then copy the composite lift into `results/LEDGER.md`.
@@ -68,8 +86,9 @@ only because they are:
 python3 evals/results/_make_selftest.py
 python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 
-# 2. The grader discriminates good / lying / honest-incomplete agents:
-#    see the self-test cases described in task_a_scope_honesty/grade.py.
+# 2. Provider adapters and the held-out grader, without model usage:
+node tools/test-eval-runner.mjs
+python3 evals/tasks/task_b_path_safety/test_grade.py
 ```
 
 ## Adding tasks (and why the split matters)
@@ -78,5 +97,5 @@ Each task is a self-contained fixture + a deterministic grader. To avoid
 measuring memorization instead of quality, mark tasks `"suite": "dev"` (used
 while iterating on the template) or `"suite": "heldout"` (only ever run to
 report a number). **Headline claims cite held-out results only.** `task_a` is a
-`dev` task; the next priority is a held-out task in a different domain so the
-"improving over time" claim can't be gamed.
+`dev` task. `task_b_path_safety` is the condition-blind held-out
+security/path-handling domain; do not tune a candidate against its internals.
