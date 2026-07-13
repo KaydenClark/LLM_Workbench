@@ -363,11 +363,17 @@ function checkRender(root, relative, startMarker, endMarker, expected, issues) {
   }
   const content = fs.readFileSync(filePath, 'utf8');
   try {
-    const actual = regionBody(content, startMarker, endMarker);
-    if (actual !== expected) issues.push(issue('render-drift', `${relative} generated region is stale`));
+    const actual = normalizeLineEndings(regionBody(content, startMarker, endMarker));
+    if (actual !== normalizeLineEndings(expected)) {
+      issues.push(issue('render-drift', `${relative} generated region is stale`));
+    }
   } catch (error) {
     issues.push(issue('broken-render-target', `${relative}: ${error.message}`));
   }
+}
+
+function normalizeLineEndings(value) {
+  return value.replaceAll('\r\n', '\n');
 }
 
 function regionBody(content, startMarker, endMarker) {

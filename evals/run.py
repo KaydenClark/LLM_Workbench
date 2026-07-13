@@ -94,8 +94,11 @@ def run_agent(repo: Path, prompt: str, provider: str, model: str,
               reasoning_effort: str, output_file: Path) -> str:
     """Invoke one supported headless provider and return its final message."""
     if provider == "claude":
-        cmd = ["claude", "-p", prompt, "--output-format", "json",
-               "--dangerously-skip-permissions"]
+        cmd = provider_command(
+            "claude",
+            ["-p", prompt, "--output-format", "json",
+             "--dangerously-skip-permissions"]
+        )
         if model:
             cmd += ["--model", model]
         proc = subprocess.run(cmd, cwd=str(repo), capture_output=True, text=True)
@@ -106,10 +109,10 @@ def run_agent(repo: Path, prompt: str, provider: str, model: str,
         except json.JSONDecodeError:
             return proc.stdout
 
-    cmd = [
-        "codex", "exec", "--ephemeral", "--ignore-user-config",
-        "--sandbox", "workspace-write", "--output-last-message", str(output_file)
-    ]
+    cmd = provider_command("codex", [
+        "exec", "--ephemeral", "--ignore-user-config", "--sandbox",
+        "workspace-write", "--output-last-message", str(output_file)
+    ])
     if model:
         cmd += ["--model", model]
     if reasoning_effort:
@@ -125,9 +128,18 @@ def run_agent(repo: Path, prompt: str, provider: str, model: str,
     return proc.stdout
 
 
+def provider_command(provider: str, args: list[str]) -> list[str]:
+    """Resolve provider shims safely, including Windows batch launchers."""
+    executable = shutil.which(provider) or provider
+    if os.name == "nt" and Path(executable).suffix.lower() in {".bat", ".cmd"}:
+        return [os.environ.get("COMSPEC", "cmd.exe"), "/d", "/s", "/c",
+                executable, *args]
+    return [executable, *args]
+
+
 def grade(task_dir: Path, repo: Path, transcript_file: Path) -> dict:
     grader = task_dir / "grade.py"
-    out = sh(["python3", str(grader), "--repo", str(repo),
+    out = sh([sys.executable, str(grader), "--repo", str(repo),
               "--transcript", str(transcript_file)], check=False)
     try:
         return json.loads(out.stdout)
