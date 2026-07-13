@@ -88,6 +88,11 @@ assert.deepEqual(
   { verdict: 'blocked', reason: 'network unavailable', alert: true }
 );
 
+const moduleUrl = new URL('./feedback-automation.mjs', import.meta.url).href;
+execFileSync(process.execPath, ['--input-type=module', '-e', `import '${moduleUrl}'`], {
+  encoding: 'utf8'
+});
+
 console.log('ok - feedback discovery, ranking, locking, injection resistance, and decisions passed');
 
 function makeRepo(name, origin, feedback) {

@@ -202,7 +202,7 @@ function splitCsv(value) {
   return value ? value.split(',').map((item) => item.trim()).filter(Boolean) : [];
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
     main(process.argv.slice(2));
   } catch (error) {
