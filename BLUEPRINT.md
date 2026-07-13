@@ -66,7 +66,7 @@ be changed only through a later spec linked by supersession.
 | [S-003 - Prospective Dungeon Friends Pilot](specs/S-003-dungeon-friends-pilot/SPEC.md) | Evaluate v2.3 progressive disclosure in Dungeon Friends only after separate owner authorization. | planned |
 | [S-004 - Safe Direct Claim](specs/S-004-safe-direct-claim/SPEC.md) | Prevent direct claim calls from bypassing a ticket's declared blockers. | complete |
 | [S-005 - Bootstrap Documentation Alignment](specs/S-005-bootstrap-doc-alignment/SPEC.md) | Remove stale four-control-doc and Taskboard-proof wording from bootstrap and adoption guidance. | complete |
-| [S-006 - Automated Harness Feedback Gate](specs/S-006-feedback-automation/SPEC.md) | Build and operate a one-candidate Terra/Sol feedback loop with independent evidence gates. | active |
+| [S-006 - Automated Harness Feedback Gate](specs/S-006-feedback-automation/SPEC.md) | Build and operate a one-candidate Terra/Sol feedback loop with independent evidence gates. | complete |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
