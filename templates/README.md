@@ -15,11 +15,12 @@ before changing anything:
 
 - [`AGENTS.md`](AGENTS.md) - how agents behave here: authority order, read/edit
   scope, the task-selection loop, documentation ownership, and proof rules.
-- [`BLUEPRINT.md`](BLUEPRINT.md) - what this project is: identity, direction,
-  architecture, invariants, and preserved decisions. Stable and source-backed.
-- [`TASKBOARD.md`](TASKBOARD.md) - the live work queue and append-only proof
-  log. Its **Executive Brief** (top of the file) is the one-glance status for
-  anyone who does not want to read code.
+- [`BLUEPRINT.md`](BLUEPRINT.md) - compact product map, cross-cutting
+  architecture/invariants, non-goals, and spec catalog.
+- [`TASKBOARD.md`](TASKBOARD.md) - active spec projection: current slice, owner,
+  blocker, latest event, and next gate.
+- [`specs/S-###-slug/SPEC.md`](SPEC.md) - on-demand capability truth,
+  acceptance, decisions, verification, append-only evidence, and completion.
 - [`RUNBOOK.md`](RUNBOOK.md) - how to set up, run, test, build, and recover this
   project, plus the verification commands that gate "done".
 
@@ -31,7 +32,7 @@ If this project was bootstrapped from a single founding prompt, the one-time
 protocol that produced these docs is preserved in [`GENESIS.md`](GENESIS.md).
 If instead the harness was adopted into an existing project, that one-time
 migration protocol is [`ADOPTION.md`](ADOPTION.md). Either runs once at start;
-after handoff, the four control docs above govern.
+after handoff, AGENTS plus the progressive spec flow above govern.
 
 ## Getting Started
 
@@ -54,16 +55,15 @@ For **Claude Code**, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
 `/init` in this repo, so the rules load automatically. Other agents should be
 pointed at `AGENTS.md` as their entry point.
 
-Every completed agent task must leave proof in its final response and in the
-`TASKBOARD.md` proof log. Milestone tasks additionally require a short demo
+Every completed ticket must leave proof in its final response and owning spec's
+append-only evidence log. Milestone specs additionally require a short demo
 artifact (screenshot, recording, preview URL, or one-command demo) so work is
 accepted on product truth, not passing tests alone.
 
 ## Project Status
 
-See the **Executive Brief** at the top of [`TASKBOARD.md`](TASKBOARD.md) for the
-current shipping state, health, any decision the owner needs to make, blockers,
-and the next milestone.
+See [`TASKBOARD.md`](TASKBOARD.md) for active execution state and
+[`BLUEPRINT.md`](BLUEPRINT.md) for the durable spec catalog.
 
 ## License
 

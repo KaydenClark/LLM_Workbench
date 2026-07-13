@@ -26,8 +26,12 @@ assert.ok(localScore > singleFileScore, 'local workbench should beat the simple 
 const activeWorkState = localEvaluation.breakdown.find((item) => item.id === 'active_work_state');
 assert.ok(activeWorkState, 'active work state should be present in the rubric');
 assert.ok(
-  !activeWorkState.missing.includes('ready queue'),
-  'local workbench should use TASKBOARD.md as the ready task queue'
+  !activeWorkState.missing.includes('hot spec projection'),
+  'local workbench should use TASKBOARD.md as the active spec projection'
+);
+assert.ok(
+  !activeWorkState.missing.includes('stable spec lifecycle'),
+  'local workbench should keep durable capability truth in stable specs'
 );
 
 const verificationContract = localEvaluation.breakdown.find((item) => item.id === 'verification_contract');

@@ -2,8 +2,8 @@
 
 LLM Workbench is a reusable control-doc template for AI-agent projects. It gives
 a new or existing repository the files an agent needs before it starts changing
-code: behavior rules, read/edit boundaries, project identity, task queue,
-operating commands, verification rules, and durable proof.
+code: always-on operating rules, a compact product map, on-demand capability
+specs, a hot execution projection, operational commands, and durable proof.
 
 Use it when you want agents to work from the same local source of truth instead
 of relying on chat history or one-off instructions.
@@ -14,16 +14,17 @@ The blank, copyable templates live in `templates/`:
 
 - `templates/AGENTS.md` - agent behavior, authority order, read/edit scope,
   task-selection loop, documentation ownership, and proof rules.
-- `templates/BLUEPRINT.md` - stable project identity, product direction,
-  architecture, invariants, safety boundaries, and preserved decisions.
-- `templates/TASKBOARD.md` - live task queue, blocked/deferred lanes, current
-  handoff, and proof log, plus an executive interface: a standing five-line
-  executive brief and a pending-decision queue (options, recommendation, cost)
-  for the owner who never reads code.
+- `templates/BLUEPRINT.md` - compact product map, cross-cutting architecture and
+  invariants, non-goals, and generated spec catalog.
+- `templates/TASKBOARD.md` - hot projection of active specs only: current slice,
+  owner, blocker, latest event, and next gate.
+- `templates/SPEC.md` - concise on-demand capability work packet. Copy it to a
+  stable `specs/S-###-slug/SPEC.md`; it owns detailed requirements, decisions,
+  acceptance, evidence, completion, and supersession.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
 - `templates/README.md` - a blank, user-facing product README for the target
-  project (points readers at the four control docs). The root README you are
+  project (points readers at the control surfaces). The root README you are
   reading is the workbench's own and is not meant to be copied.
 - `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
   founding prompt into the four filled control docs plus a smallest-running
@@ -42,8 +43,9 @@ The blank, copyable templates live in `templates/`:
   the scope-to-permission mapping. Omit it if the project does not use Claude
   Code; the prose scope still governs every agent.
 
-`ROADMAP.md` is no longer part of the default harness. Put stable product
-direction in `BLUEPRINT.md` and executable next work in `TASKBOARD.md`.
+`ROADMAP.md` is not part of the harness. Put cross-cutting direction in
+`BLUEPRINT.md`, capability truth in specs, and only active execution state in
+`TASKBOARD.md`.
 
 ## This Repo Dogfoods Its Own Harness
 
@@ -64,6 +66,11 @@ docs look like. Copy from `templates/`, not from the root.
   durable research reports.
 - `tools/evaluate-workbench.mjs` - static rubric scorer for local folders and
   GitHub branches.
+- `tools/audit-guardrails.mjs` - deliberately hard 100-point drift audit across
+  the static contract, freshness/consistency, benchmark discipline, and real
+  outcome evidence; it also ranks the next improvements.
+- `tools/spec-workbench.mjs` - zero-dependency spec retrieval, lifecycle,
+  deterministic catalog/dashboard rendering, and drift diagnosis.
 - `tools/run-outcome-trials.mjs` and `tools/score-outcome-trials.mjs` -
   lightweight outcome-trial runner and scorer.
 - `tools/context-pack.mjs` - dependency-free prompt packer inspired by
@@ -75,19 +82,17 @@ docs look like. Copy from `templates/`, not from the root.
 ## How To Use It
 
 1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
-   `templates/TASKBOARD.md`, `templates/RUNBOOK.md`, and `templates/README.md`
-   into the target project root.
+   `templates/TASKBOARD.md`, `templates/RUNBOOK.md`, `templates/README.md`, and
+   `templates/SPEC.md` into the target project; create `specs/` for stable work
+   packets and copy `tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items. For Claude Code, also copy `templates/.claude/settings.json`
    and fill it from the same edit scope to enforce the boundary mechanically.
-3. Keep `BLUEPRINT.md` stable and source-backed.
-4. Keep `TASKBOARD.md` current as work changes state.
-5. Treat documentation as part of the task owner's work.
-6. Require every completed agent task to leave proof in the final response and
-   in the `TASKBOARD.md` proof log. For milestone tasks, also require a
-   <1-minute demo artifact (screenshot, recording, preview URL, or one-command
-   demo) in the proof log's Demo column, so the owner can accept work on product
-   truth, not just passing tests.
+3. Keep `AGENTS.md` as the always-loaded operating system; normal selection runs
+   `spec-workbench next` and loads one returned spec.
+4. Keep Blueprint product-level, Taskboard hot, and detailed truth in specs.
+5. Append proof to the owning spec and require a <1-minute demo artifact for
+   milestones so acceptance rests on product truth, not passing tests alone.
 
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
@@ -98,18 +103,19 @@ For Claude Code, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
 ### One-Prompt Bootstrap
 
 To start a project from a single founding prompt instead of filling the docs by
-hand, copy `templates/GENESIS.md` alongside the four control docs and hand the
+hand, copy `templates/GENESIS.md` alongside the control templates and hand the
 agent the prompt plus GENESIS. GENESIS walks the agent through framing the
 prompt, writing `BLUEPRINT.md`, choosing an architecture, scaffolding the
 smallest thing that runs, filling `AGENTS.md` scopes and `RUNBOOK.md` commands,
-and seeding `TASKBOARD.md` - then defines what a finished bootstrap must prove.
-GENESIS runs once; after handoff the four control docs govern.
+and seeding the first stable spec plus hot projection - then defines what a
+finished bootstrap must prove.
+GENESIS runs once; after handoff AGENTS plus the progressive spec flow govern.
 
 ### Adopting Into An Existing Project
 
 For a project that already exists - real code, history, and often an older or
 foreign harness (`ROADMAP.md`, policy docs, a prior `AGENTS.md`) - use
-`templates/ADOPTION.md`, not GENESIS. Copy it alongside the four control docs and
+`templates/ADOPTION.md`, not GENESIS. Copy it alongside the control templates and
 point the agent at the repo. ADOPTION inventories the existing docs and
 classifies each (port into a v2 doc, fold into `AGENTS.md`, keep as project-local,
 or archive), maps the old harness into the v2 layout **without losing content**,
@@ -121,15 +127,14 @@ archived; retired docs are preserved as history, never silently deleted.
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v2.1** (recorded in `BLUEPRINT.md`); this repo is the
+current harness version is **v2.3** (recorded in `BLUEPRINT.md`); this repo is the
 source, so its own docs are not stamped.
 
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template
 sections, keep the project's filled-in specifics, bump the stamp, re-verify, and
-record the upgrade in the proof log. Long-running projects should also archive
-their proof log into `TASKBOARD_ARCHIVE.md` once it passes ~30 rows, and reclaim
-stale `claimed`/`in-progress` tasks per `AGENTS.md` -> Long Session Control.
+record the upgrade in a dedicated spec. Completed spec evidence remains at its
+stable path; stale claims are diagnosed per `AGENTS.md` -> Long Session Control.
 
 The upgrade path is a loop, not a one-way copy. Downstream projects record where
 the harness helped or hurt in their `HARNESS_FEEDBACK.md`; those lessons are
@@ -153,6 +158,8 @@ Run the static evaluator before merging template changes:
 
 ```bash
 node tools/test-evaluate-workbench.mjs
+node tools/test-guardrail-audit.mjs
+node tools/audit-guardrails.mjs --path .
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node tools/evaluate-workbench.mjs --path . --include-controls
 ```
@@ -170,6 +177,11 @@ node tools/evaluate-workbench.mjs --github KaydenClark/LLM_Workbench \
 The static scorer proves coverage of expected control surfaces. For stronger
 evidence, use `RUNBOOK.md` -> Evaluation And Benchmarking plus `evals/` or
 `outcomes/` to run controlled task trials and record outcomes.
+
+For harness changes, capture the guardrail score before editing and report the
+before/after score afterward. The 100-point score is a deliberately hard north
+star, not the release gate; green regression tests show that the current system
+still works, while benchmark movement shows whether it is improving.
 
 Verify the local helper tools:
 

@@ -1,6 +1,6 @@
 # LLM Workbench - Runbook
 
-**Last reviewed:** 2026-07-01
+**Last reviewed:** 2026-07-10
 **Runtime owner:** Kayden
 **Environment:** local (macOS); public repo `github.com/KaydenClark/LLM_Workbench`
 
@@ -55,10 +55,13 @@ node tools/test-evaluate-workbench.mjs
 Full verification:
 
 ```bash
+node tools/test-spec-workbench.mjs
 node tools/test-evaluate-workbench.mjs
+node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
 node tools/evaluate-workbench.mjs --path templates --include-controls
+node tools/spec-workbench.mjs doctor
 ```
 
 Expected result:
@@ -67,6 +70,29 @@ Expected result:
 - the evaluator self-test reports the repo-root score (dogfood docs) >= 90;
 - the `--path templates` run shows the blank templates beating both control
   candidates.
+- spec doctor reports no duplicate IDs, invalid/contradictory states, stale
+  claims, missing evidence, broken links, or generated-region drift.
+
+### Spec Lifecycle And Retrieval
+
+```bash
+node tools/spec-workbench.mjs next --json
+node tools/spec-workbench.mjs show S-001
+node tools/spec-workbench.mjs claim S-001 --agent codex
+node tools/spec-workbench.mjs close S-001 \
+  --proof "[NAMED VERIFICATION]" \
+  --docs "[DOCS UPDATED OR Docs checked; no update needed + reason]" \
+  --remaining-gap "[GAP OR none]"
+node tools/spec-workbench.mjs complete S-001
+node tools/spec-workbench.mjs render
+node tools/spec-workbench.mjs doctor
+```
+
+`next` returns one eligible ready ticket. `show` loads one stable work packet.
+Writes use a temporary file plus rename and fail closed on ambiguous state.
+`render` updates only the marked Blueprint catalog and hot Taskboard regions.
+`complete` requires every slice done, acceptance boxes checked, completion result
+recorded, and evidence present; render then removes the spec from the hot board.
 
 ### Test Coverage Policy
 
@@ -82,6 +108,28 @@ reason and use the strongest concrete manual check available.
 
 Use this section to prove whether a harness change is an improvement. The goal
 is evidence, not taste.
+
+### Guardrail North-Star Audit
+
+The static evaluator answers whether required control surfaces exist. The
+guardrail audit asks the harder question: how far has the whole harness drifted
+from an evidence-backed ideal?
+
+```bash
+node tools/audit-guardrails.mjs --path .
+node tools/test-guardrail-audit.mjs
+```
+
+The audit holds a stable 100-point scale across four layers: static contract,
+drift resistance, benchmark discipline, and real outcome evidence. Capture the
+guardrail audit baseline before editing any harness rule, then record the
+before/after score and remaining recommendations in the owning spec and
+`benchmarks/RESULTS.md`.
+
+100/100 is the deliberately hard north star, not the release gate. Regression
+tests remain the minimum ship gate. Never weaken or reweight criteria to create
+score movement, and never translate static score movement into an agent-outcome
+claim without repeated task trials.
 
 ### Claims To Test
 
@@ -122,8 +170,8 @@ python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 ```
 
 Real comparison runs spend API budget. Size the run first and record the model,
-conditions, task suite, trial count, and result path in the `TASKBOARD.md`
-proof log before making claims.
+conditions, task suite, trial count, and result path in the owning spec before
+making claims.
 
 ### Harness Feedback Loop
 
@@ -133,37 +181,28 @@ wrong, or slow. This repo is the harvest destination, so it has no
 `HARNESS_FEEDBACK.md` of its own; instead:
 
 1. Collect feedback rows from downstream projects (or from dogfooding here).
-2. Triage each into a concrete template change and open a `TASKBOARD.md` task.
+2. Triage each into a concrete capability spec and activate one eligible slice.
 3. Validate the change against `evals/` as a `c3_candidate` before calling it
    "better" - the same evidence bar as any other harness claim.
 4. Ship it as a new harness version (bump `BLUEPRINT.md` -> Harness version) and
    note it so downstream projects can upgrade.
 
-The standing harvest task lives in `TASKBOARD.md` (Deferred until the first
-downstream project reports feedback). This closes the loop the founding intent
-calls for: the ruleset updates the ruleset, on evidence, not taste.
+Future harvest work becomes a spec when it is refined and authorized. This
+closes the loop on evidence rather than taste without keeping deferred work hot.
 
-## Version Control
+## Version-Control Procedures
 
-- Branch from `main`; do not commit directly to `main` or `integration`. Branch
-  names: `claude/short-description`, `codex/short-description`, or
-  `backup/description` for local-state snapshots.
-- Commit messages: imperative subject <= 72 chars; the why in the body. One
-  logical change per commit.
-- **Default PR target is `integration`, not `main`.** When asked to commit and
-  open a PR without a named target branch: create a new task branch for the
-  work, then open the PR into `integration`. If the user names a target branch,
-  use that instead.
-- `integration` is the bridge between `main` and in-flight work. **Only the
-  owner merges `integration` -> `main`.** Below that line, agents may merge and
-  organize task branches into `integration` when it is reasonable and safe -
-  this is the one place agent self-merge is allowed. Never merge into `main`.
-- Open a PR (not a silent push) even when you will merge it into `integration`,
-  so the change has a reviewable record.
-- PR descriptions state what changed, why, risks, and how it was verified.
-- Never commit secrets, `.env` files, or `research papers/` (local-only).
-- Do not rewrite published history or force-push shared branches without
-  explicit owner approval.
+Policy and authority live in `AGENTS.md` -> Git Rules. Operational commands:
+
+```bash
+git status --short --branch
+git switch -c codex/short-description main
+git diff --check
+gh pr create --base integration --fill
+```
+
+Before creating a branch or PR, verify the live base and preserve dirty work.
+PR descriptions state what changed, why, risks, and verification.
 
 ## Troubleshooting
 
@@ -181,7 +220,7 @@ If a change fails:
 2. Revert only the smallest change needed (`git checkout -- <file>` or revert
    commit), preserving unrelated work.
 3. Rerun the failing verification command.
-4. Update `TASKBOARD.md` with the result and remaining gap.
+4. Update the owning spec with the result and remaining gap, then render.
 
 Do not delete data (result ledgers, benchmark records), remove branches, or
 rewrite history unless the owner explicitly approves that action.
@@ -192,6 +231,5 @@ harness dialect is preserved on `codex/structured-metadata-guardrails`.
 
 ## Operational Proof
 
-If a command in this runbook changed durable project state, append a row to the
-`TASKBOARD.md` proof log. For routine local runs that do not change state, a
-final response note is enough.
+If a command changed durable project state, append evidence to the owning spec.
+For routine read-only runs, a final response note is enough.
