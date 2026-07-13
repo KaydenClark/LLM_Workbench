@@ -72,6 +72,9 @@ next begins.
 
 1. Branch from a clean commit. Confirm the existing test/build commands run
    green *as found* - you need a known-good baseline before touching anything.
+   If the host cannot write Git metadata, record the blocker; do not force the
+   Git operation or fabricate its proof. Continue only permitted, reversible
+   document work and verification, then hand branch operations to the owner.
 2. List every existing harness/steer doc and classify each:
    - **Port** - real content that maps into a v2 doc (direction, tasks, rules).
    - **Fold** - a policy/checklist doc whose rules belong inside `AGENTS.md`.

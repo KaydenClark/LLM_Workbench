@@ -125,6 +125,10 @@ derives the edit scope from the real directory tree, and verifies against the
 project's existing test suite instead of a scaffold. It runs once, then is
 archived; retired docs are preserved as history, never silently deleted.
 
+If the host cannot write Git metadata, record the blocker instead of forcing the
+operation or claiming Git proof. Limit the run to permitted, reversible document
+work and verification, then hand branch operations to the owner.
+
 ## Versioning And Upgrades
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
