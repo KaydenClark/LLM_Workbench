@@ -62,10 +62,11 @@ be changed only through a later spec linked by supersession.
 | Spec | Description | Status |
 |---|---|---|
 | [S-001 - Spec-Centered Progressive Disclosure](specs/S-001-progressive-disclosure/SPEC.md) | Make AGENTS the operating system while specs hold durable capability truth and the hot board projects active work only. | complete |
-| [S-002 - Held-Out Second-Domain Evaluation](specs/S-002-heldout-evaluation/SPEC.md) | Add a condition-blind held-out task before spending on repeated c0/c1/c2/c3 outcome trials. | planned |
+| [S-002 - Held-Out Second-Domain Evaluation](specs/S-002-heldout-evaluation/SPEC.md) | Add a condition-blind held-out task before spending on repeated c0/c1/c2/c3 outcome trials. | complete |
 | [S-003 - Prospective Dungeon Friends Pilot](specs/S-003-dungeon-friends-pilot/SPEC.md) | Evaluate v2.3 progressive disclosure in Dungeon Friends only after separate owner authorization. | planned |
 | [S-004 - Safe Direct Claim](specs/S-004-safe-direct-claim/SPEC.md) | Prevent direct claim calls from bypassing a ticket's declared blockers. | complete |
 | [S-005 - Bootstrap Documentation Alignment](specs/S-005-bootstrap-doc-alignment/SPEC.md) | Remove stale four-control-doc and Taskboard-proof wording from bootstrap and adoption guidance. | complete |
+| [S-006 - Automated Harness Feedback Gate](specs/S-006-feedback-automation/SPEC.md) | Build and operate a one-candidate Terra/Sol feedback loop with independent evidence gates. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health

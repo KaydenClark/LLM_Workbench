@@ -88,6 +88,9 @@ node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
+node tools/test-eval-runner.mjs
+node tools/test-feedback-automation.mjs
+python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node tools/spec-workbench.mjs doctor
 ```
@@ -131,8 +134,9 @@ Taskboard or rewrite append-only spec evidence rows.
 
 ## Git Rules
 
-- Branch per spec/ticket from `main`; prefixes: `codex/`, `claude/`, or
-  `backup/`. Never commit directly to `main` or `integration`.
+- Branch per spec/ticket from the current PR target; the default staging base is
+  `integration`. Prefixes: `codex/`, `claude/`, or `backup/`. Never commit
+  directly to `main` or `integration`.
 - Default PR target is `integration`. Agents may merge below `integration` when
   safe; only the owner merges `integration` into `main`.
 - Never merge a PR left open for review. Never force-push shared history without

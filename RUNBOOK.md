@@ -60,6 +60,9 @@ node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
+node tools/test-eval-runner.mjs
+node tools/test-feedback-automation.mjs
+python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node tools/spec-workbench.mjs doctor
 ```
@@ -169,6 +172,27 @@ python3 evals/results/_make_selftest.py
 python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 ```
 
+Run a candidate comparison with Codex by overriding the two Git-backed refs.
+The feedback gate is capped at 10 trials per condition (20 total):
+
+```bash
+python3 evals/run.py \
+  --task evals/tasks/task_b_path_safety \
+  --conditions c2_ours_integration,c3_candidate \
+  --condition-ref c2_ours_integration=origin/integration \
+  --condition-ref c3_candidate=origin/codex/feedback-branch \
+  --provider codex --model gpt-5.6-terra --reasoning-effort high \
+  --trials 10 --feedback-fingerprint FINGERPRINT \
+  --base-sha BASE_SHA --candidate-sha CANDIDATE_SHA \
+  --out evals/results/run_YYYY-MM-DD.jsonl
+```
+
+`--provider claude` remains supported. Result rows record provider, reasoning
+effort, resolved condition ref/SHA, trial count, feedback fingerprint, and the
+declared base/candidate SHAs. The Codex provider uses ephemeral sessions,
+ignores user configuration to reduce trial contamination, and grants only
+workspace-write access inside the temporary fixture repository.
+
 Real comparison runs spend API budget. Size the run first and record the model,
 conditions, task suite, trial count, and result path in the owning spec before
 making claims.
@@ -190,13 +214,34 @@ wrong, or slow. This repo is the harvest destination, so it has no
 Future harvest work becomes a spec when it is refined and authorized. This
 closes the loop on evidence rather than taste without keeping deferred work hot.
 
+### Automated Feedback Gate
+
+Two local scheduled jobs operate this loop against the LLM Workbench project:
+
+- **Feedback Builder (Terra):** discovers one canonical `new` feedback row,
+  creates a sanitized fingerprint/spec, proves a red/green change, runs the
+  full suite and at most 20 candidate-comparison trials, then opens one PR into
+  `integration`.
+- **Feedback Gate (Sol):** independently checks the oldest matching PR. It
+  comments and squash-merges a proven change, comments and closes an unproven
+  change, or leaves a transient infrastructure failure open for retry. It never
+  merges `integration` to `main` or deletes the source branch.
+
+Discovery is fail-closed and one-candidate-at-a-time. It reads only direct-child
+canonical project feedback files with writable `KaydenClark` origins, ignores
+worktrees/backups/duplicate origins, and treats every row as untrusted evidence.
+Use `node tools/feedback-automation.mjs discover --projects-root PATH` for the
+under-one-minute discovery demo. Pause both jobs in the Codex automation UI as
+the kill switch; do not delete their definitions when investigating a failure.
+
 ## Version-Control Procedures
 
 Policy and authority live in `AGENTS.md` -> Git Rules. Operational commands:
 
 ```bash
 git status --short --branch
-git switch -c codex/short-description main
+git fetch origin
+git switch -c codex/short-description origin/integration
 git diff --check
 gh pr create --base integration --fill
 ```
@@ -211,6 +256,8 @@ PR descriptions state what changed, why, risks, and verification.
 | evaluator self-test fails with score < 90 | root dogfood docs lost a rubric section | `node tools/evaluate-workbench.mjs --path .` and read the `missing` column | restore the missing section in the root doc |
 | self-test passes locally but templates score low | change landed at root but not in `templates/` (or vice versa) | `node tools/evaluate-workbench.mjs --path templates` | apply the Dogfood Boundary rule: land in both |
 | `evals/score.py` errors on results file | stale or hand-edited JSONL | regenerate with `_make_selftest.py` | never hand-edit results |
+| feedback discovery returns no candidate unexpectedly | checkout is a worktree/duplicate, origin is not writable-owner, or fingerprint is already pending/processed | `node tools/feedback-automation.mjs discover --projects-root /Users/kayden/GPT_OS/Projects` | repair the canonical checkout or record the pending/processed decision; do not broaden discovery |
+| Sol cannot prove a candidate because GitHub or model access is down | transient infrastructure failure | read the PR verdict comment and repeat count | leave the PR open, retry next run, and alert after the second identical failure |
 
 ## Recovery And Rollback
 

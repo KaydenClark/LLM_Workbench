@@ -17,6 +17,20 @@
       "entry": "AGENTS.md",
       "files": ["AGENTS.md", "BLUEPRINT.md", "TASKBOARD.md", "RUNBOOK.md"]
     },
+    "c2_ours_integration": {
+      "source": "git",
+      "label": "our harness @ integration",
+      "ref": "origin/integration",
+      "entry": "AGENTS.md",
+      "files": ["AGENTS.md", "BLUEPRINT.md", "TASKBOARD.md", "RUNBOOK.md"]
+    },
+    "c3_candidate": {
+      "source": "git",
+      "label": "candidate harness branch",
+      "ref": "origin/integration",
+      "entry": "AGENTS.md",
+      "files": ["AGENTS.md", "BLUEPRINT.md", "TASKBOARD.md", "RUNBOOK.md"]
+    },
     "c3_ours_v2": {
       "source": "git",
       "label": "our harness @ harness-template-upgrades-v2",

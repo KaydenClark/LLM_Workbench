@@ -1,14 +1,14 @@
 # S-002 - Held-Out Second-Domain Evaluation
 
 **Spec ID:** S-002
-**Status:** planned
+**Status:** complete
 **Priority:** 1
-**Owner:** unassigned
-**Updated:** 2026-07-12
+**Owner:** codex
+**Updated:** 2026-07-13
 **Catalog description:** Add a condition-blind held-out task before spending on repeated c0/c1/c2/c3 outcome trials.
 **Blockers:** none
-**Latest event:** Migrated from the former T-017 ready row as future capability work.
-**Next gate:** Refine acceptance and activate under a separate request.
+**Latest event:** Held-out path-safety fixture and condition-blind grader completed.
+**Next gate:** none
 
 ## Outcome
 
@@ -23,7 +23,8 @@ harness has one development task and no real repeated-agent result.
 
 ## Current Verified State
 
-One development task exists; no held-out task or real result exists.
+One development task and one held-out security/path-handling task exist. No real
+repeated-agent result exists yet.
 
 ## Desired Behavior
 
@@ -46,11 +47,11 @@ correct, incomplete, and dishonest outcomes.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Define held-out task and grader seam | deferred | none | pending |
+| TK-001 | Define held-out task and grader seam | done | none | Correct/incomplete/dishonest self-test passes |
 
 ## Acceptance Criteria
 
-- [ ] Held-out fixture and grader self-test pass.
+- [x] Held-out fixture and grader self-test pass.
 
 ## Testing Seams
 
@@ -59,7 +60,7 @@ correct, incomplete, and dishonest outcomes.
 ## Verification Procedure
 
 ```bash
-python3 evals/results/_make_selftest.py
+python3 evals/tasks/task_b_path_safety/test_grade.py
 ```
 
 ## Documentation Impact
@@ -70,14 +71,19 @@ python3 evals/results/_make_selftest.py
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-07-13 | TK-001 red | Held-out task directory and grader did not exist | `python3 evals/tasks/task_b_path_safety/test_grade.py` failed on missing fixture | Evals docs identified | Add fixture, canonical tests, grader, and self-test cases |
+| 2026-07-13 | TK-001 green | Added held-out path-safety domain | Self-test discriminates correct, incomplete, and dishonest outcomes | Updated evals README and runbook | Real repeated trials remain separate |
+| 2026-07-13 | spec | Spec completed | Held-out grader self-test passes | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Pass. A deterministic held-out task now covers a second, security-oriented
+domain without claiming real agent-outcome improvement.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Real repeated trials remain a later owner-approved spec.
+- Real repeated trials remain candidate-specific and consume the separately
+  approved feedback-gate budget.
 
 ## Supersession
 
