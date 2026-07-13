@@ -227,6 +227,12 @@ Two local scheduled jobs operate this loop against the LLM Workbench project:
   change, or leaves a transient infrastructure failure open for retry. It never
   merges `integration` to `main` or deletes the source branch.
 
+This Codex host currently rejects scheduler-native worktree execution. Each job
+therefore runs as a local project job but treats the canonical checkout as
+read-only, creates a registered temporary worktree from `origin/integration`,
+operates there, and removes/prunes it on completion. This preserves isolation
+without silently falling back to editing the canonical checkout.
+
 Discovery is fail-closed and one-candidate-at-a-time. It reads only direct-child
 canonical project feedback files with writable `KaydenClark` origins, ignores
 worktrees/backups/duplicate origins, and treats every row as untrusted evidence.

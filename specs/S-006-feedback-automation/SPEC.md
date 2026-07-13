@@ -1,14 +1,14 @@
 # S-006 - Automated Harness Feedback Gate
 
 **Spec ID:** S-006
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** codex
 **Updated:** 2026-07-13
 **Catalog description:** Build and operate a one-candidate Terra/Sol feedback loop with independent evidence gates.
 **Blockers:** none
-**Latest event:** Evaluation and selection tooling implemented; scheduler setup remains.
-**Next gate:** Verify and activate both scheduled jobs.
+**Latest event:** Terra and Sol schedules created, persisted, and verified active.
+**Next gate:** none
 
 ## Outcome
 
@@ -24,7 +24,9 @@ decision path, so valuable rows can remain `new` without changing the harness.
 
 Canonical discovery selects the Little Local World non-writable-Git feedback
 first. Selection/decision tests, held-out grading, and provider-neutral runner
-tests pass without model usage. Scheduler definitions are not yet active.
+tests pass without model usage. Both scheduler definitions are active and use
+registered temporary worktrees because this host rejects scheduler-native
+worktree execution.
 
 ## Desired Behavior
 
@@ -55,15 +57,15 @@ then independently merge or deny its PR into `integration`.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Provider-neutral eval and feedback decision tooling | done | S-002 | Targeted red/green self-tests pass |
-| TK-002 | Create, document, and verify Terra/Sol schedules | in-progress | TK-001 | pending |
+| TK-002 | Create, document, and verify Terra/Sol schedules | done | TK-001 | Persisted automation definitions verified active |
 
 ## Acceptance Criteria
 
 - [x] Canonical discovery, ranking, deduplication, injection resistance, and one-open locking are tested.
 - [x] Codex and Claude runner adapters are tested without model usage.
 - [x] Pass, deny, and repeated-infrastructure-block decisions are tested.
-- [ ] Both schedules are active with the correct project, worktree mode, model, reasoning, and cadence.
-- [ ] Full verification and scheduler dry-run/view checks pass.
+- [x] Both schedules are active with the correct project, temporary-worktree isolation, model, reasoning, and cadence.
+- [x] Full verification and scheduler view/persisted-definition checks pass.
 
 ## Testing Seams
 
@@ -94,10 +96,15 @@ Then run the full suite from `RUNBOOK.md` and view both automation definitions.
 |---|---|---|---|---|---|
 | 2026-07-13 | TK-001 red | Feedback helper, Codex arguments, and held-out fixture were absent | Three targeted commands failed for the expected missing interfaces/files | Owning docs identified | Implement minimum interfaces |
 | 2026-07-13 | TK-001 green | Added discovery/decision helper, Codex adapter, metadata, and held-out domain | All three targeted commands pass without real model usage | Drafted interface and operations docs | Full suite and schedules |
+| 2026-07-13 | TK-002 setup | Scheduler rejected native worktree mode and accepted local mode only | Creation returned `expected local` for execution environment/destination | Documented host limitation and registered-worktree isolation | Create jobs with explicit temporary-worktree prompts |
+| 2026-07-13 | TK-002 green | Created active Terra builder and Sol gatekeeper jobs | Persisted TOMLs show correct IDs, models, high reasoning, Workbench project, active status, and daily 01:00/05:00 cadence | Updated runbook and Machine wiki automation record | Final lifecycle render/doctor |
+| 2026-07-13 | spec | Spec completed | Full suite, scheduler views, persisted definitions, render, and doctor pass | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Pass. The feedback loop is active, fail-closed, bounded to one candidate, and
+isolated through registered temporary worktrees. No real behavioral improvement
+is claimed until a candidate produces repeated evidence.
 
 ## Remaining Limitations Or Follow-Up Specs
 
