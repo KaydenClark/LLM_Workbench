@@ -5,6 +5,29 @@ Workbench. The static evaluator lives in `tools/evaluate-workbench.mjs`; the
 real task-trial runner lives in `tools/run-outcome-trials.mjs` and is documented
 in `outcomes/README.md`.
 
+## Guardrail North-Star Audit
+
+Run the deliberately hard, repo-wide audit with:
+
+```bash
+node tools/audit-guardrails.mjs --path .
+```
+
+It reports a stable score out of 100 and ranked improvements across four
+layers:
+
+| Layer | Points | What it prevents |
+|---|---:|---|
+| Static guardrail contract | 20 | missing control surfaces |
+| Drift resistance | 25 | stale, contradictory, or duplicated control state |
+| Benchmark discipline | 25 | calling green regressions or nicer prose an improvement |
+| Outcome evidence | 30 | claiming better agent behavior without repeated comparative trials |
+
+Capture the baseline before a harness change and append the before/after score
+to `RESULTS.md`. The 100-point score is a deliberately hard north star, not the
+release gate. Regression checks remain the minimum ship gate. Do not lower the
+bar to make the number rise; the recommendations are the work queue.
+
 ## Scientific Method
 
 Hypotheses:

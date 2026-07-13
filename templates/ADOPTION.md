@@ -1,6 +1,6 @@
 # [PROJECT_NAME] - Adoption (Migration Protocol)
 
-> Part of LLM Workbench v[HARNESS_VERSION]. Stamp the four control docs with this
+> Part of LLM Workbench v[HARNESS_VERSION]. Stamp the copied control docs with this
 > same version during handoff (Phase 7).
 
 This file is the one-time protocol for adopting the harness into a project that
@@ -11,7 +11,7 @@ whatever harness is already there.
 
 Use Adoption (not Genesis) when the target has real code, history, or existing
 `AGENTS`/`ROADMAP`/policy docs. Read this once, run it once, then delete or
-archive it; afterward the four control docs govern.
+archive it; afterward AGENTS plus the progressive spec flow govern.
 
 ## What Adoption Is For
 
@@ -109,7 +109,9 @@ This is the heart of Adoption: move content into the v2 layout without losing it
 Typical mappings (adjust to the actual dialect):
 
 - **Combined roadmap/plan doc** -> stable direction into `BLUEPRINT.md`; the live
-  queue and any in-flight work into `TASKBOARD.md` (Ready / In Progress / Done).
+  queue into planned specs, then project only active in-flight slices into
+  `TASKBOARD.md`. Preserve old completed proof in a cold archive; do not
+  manufacture a spec for every historical task.
 - **Policy / checklist / "unattended work" docs** -> fold their still-live rules
   into `AGENTS.md` (authority, scope, verification, safety); retire the originals.
 - **Existing `AGENTS`/`CLAUDE`** -> reconcile into the v2 `AGENTS.md` and the thin
@@ -149,7 +151,7 @@ Output: a `RUNBOOK.md` that reproduces the project's existing green run.
 
 Port the existing live work into `TASKBOARD.md`: set **Current focus** to the
 real nearest outcome, carry in-flight and ready items into the lanes, and migrate
-completed-work proof into the proof log (or archive). Add a first proof-log row
+completed-work proof into a cold archive. Add a first spec evidence row
 recording that Adoption ran and what moved where.
 
 Output: a board that reflects the project's actual state and the migration.
@@ -181,7 +183,7 @@ the old harness is preserved as history, not a competing rulebook.
       paste or reference the result.
 - [ ] `TASKBOARD.md` has a real `Current focus` and the project's actual in-flight
       and ready work, with migrated proof history.
-- [ ] Retired docs are archived (not deleted), and a proof-log row records that
+- [ ] Retired docs are archived (not deleted), and a spec evidence row records that
       Adoption ran.
 
 If any box is unchecked, adoption is `in-progress`, not `done`. State which box

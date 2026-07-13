@@ -33,11 +33,11 @@ export const RUBRIC = [
     label: 'Project model and contracts',
     weight: 8,
     checks: [
-      { label: 'project promise', files: ['BLUEPRINT.md'], patterns: ['What This Project Is', 'Core promise'] },
-      { label: 'architecture table', files: ['BLUEPRINT.md'], patterns: ['Architecture', 'Runtime', 'Testing'] },
-      { label: 'contracts', files: ['BLUEPRINT.md'], patterns: ['Main Contracts', 'Routes / Screens|API Endpoints|Commands'] },
-      { label: 'invariants', files: ['BLUEPRINT.md'], patterns: ['Core Logic And Invariants'] },
-      { label: 'safety boundaries', files: ['BLUEPRINT.md'], patterns: ['Trust, Privacy, And Safety Boundaries'] }
+      { label: 'project promise', files: ['BLUEPRINT.md'], patterns: ['Product Map', 'Core promise'] },
+      { label: 'architecture table', files: ['BLUEPRINT.md'], patterns: ['Architecture And Invariants', 'Layer'] },
+      { label: 'contracts', files: ['BLUEPRINT.md'], patterns: ['Spec Catalog', 'Capability record|capability-specific'] },
+      { label: 'invariants', files: ['BLUEPRINT.md'], patterns: ['Invariants', 'Source and tests|Implementation truth'] },
+      { label: 'safety boundaries', files: ['BLUEPRINT.md'], patterns: ['Non-Goals', 'privacy|safety'] }
     ]
   },
   {
@@ -46,10 +46,10 @@ export const RUBRIC = [
     weight: 9,
     checks: [
       { label: 'current focus', files: ['TASKBOARD.md'], patterns: ['Current focus'] },
-      { label: 'ready queue', files: ['TASKBOARD.md'], patterns: ['Ready', 'ready'] },
-      { label: 'status values', files: ['TASKBOARD.md'], patterns: ['Status Values', 'in-progress', 'blocked'] },
-      { label: 'blocked/deferred lanes', files: ['TASKBOARD.md'], patterns: ['Blocked', 'Deferred'] },
-      { label: 'proof log', files: ['TASKBOARD.md'], patterns: ['Proof Log', 'Remaining gap'] }
+      { label: 'hot spec projection', files: ['TASKBOARD.md'], patterns: ['Active Specs', 'hot-specs:start', 'Current slice'] },
+      { label: 'active execution fields', files: ['TASKBOARD.md'], patterns: ['Owner', 'Blocker', 'Latest meaningful event', 'Next gate'] },
+      { label: 'stable spec lifecycle', patterns: ['Spec ID', 'Vertical Implementation Slices', 'Acceptance Criteria', 'Supersession'] },
+      { label: 'spec evidence log', patterns: ['Append-Only Evidence And Execution Log', 'Remaining gap'] }
     ]
   },
   {
@@ -74,7 +74,7 @@ export const RUBRIC = [
       { label: 'targeted and full verification', files: ['AGENTS.md'], patterns: ['targeted test', 'full verification suite'] },
       { label: 'meaningful coverage policy', files: ['RUNBOOK.md'], patterns: ['Test Coverage Policy', 'deletes? a meaningful line|accidentally deletes?|meaningful line', 'stale|bloat'] },
       { label: 'final response proof', files: ['AGENTS.md'], patterns: ['Final response', 'proof'] },
-      { label: 'durable proof log', files: ['AGENTS.md', 'TASKBOARD.md'], patterns: ['Proof Log|proof log'] }
+      { label: 'durable proof log', patterns: ['append-only spec evidence|Append-Only Evidence And Execution Log'] }
     ]
   },
   {
@@ -93,9 +93,9 @@ export const RUBRIC = [
     label: 'Executive interface',
     weight: 8,
     checks: [
-      { label: 'standing executive brief', files: ['TASKBOARD.md'], patterns: ['Executive Brief'] },
-      { label: 'pending-decision queue', files: ['TASKBOARD.md'], patterns: ['Pending Decisions|Decision Queue'] },
-      { label: 'decisions carry options, recommendation, cost', files: ['TASKBOARD.md'], patterns: ['Options', 'Recommendation', 'Cost'] },
+      { label: 'standing active dashboard', files: ['TASKBOARD.md'], patterns: ['Active Specs', 'Current focus'] },
+      { label: 'pending-decision queue', files: ['TASKBOARD.md'], patterns: ['Owner Decisions'] },
+      { label: 'decisions carry options, recommendation, cost', patterns: ['Options', 'Recommendation', 'Cost'] },
       { label: 'escalation language contract', files: ['AGENTS.md'], patterns: ['product tradeoffs', 'code-level'] }
     ]
   },
@@ -104,8 +104,8 @@ export const RUBRIC = [
     label: 'Product-truth acceptance',
     weight: 5,
     checks: [
-      { label: 'demo artifact column', files: ['TASKBOARD.md'], patterns: ['Demo'] },
-      { label: 'demo artifact defined', files: ['TASKBOARD.md', 'AGENTS.md'], patterns: ['demo artifact', 'screenshot|recording|preview URL|one-command'] },
+      { label: 'spec acceptance gates', patterns: ['Acceptance Criteria', 'Completion Result'] },
+      { label: 'demo artifact defined', files: ['AGENTS.md'], patterns: ['demo artifact', 'screenshot|recording|preview URL|one-command'] },
       { label: 'milestone acceptance rule', files: ['AGENTS.md'], patterns: ['milestone', 'demo'] }
     ]
   },
@@ -115,9 +115,9 @@ export const RUBRIC = [
     weight: 8,
     checks: [
       { label: 'long session section', files: ['AGENTS.md'], patterns: ['Long Session Control'] },
-      { label: 're-read taskboard', files: ['AGENTS.md'], patterns: ['Re-read `BLUEPRINT\\.md` and `TASKBOARD\\.md`'] },
+      { label: 'reload assigned work', files: ['AGENTS.md'], patterns: ['rerun `doctor`, `next`, and', 'assigned spec'] },
       { label: 'context recovery', files: ['AGENTS.md', 'TASKBOARD.md'], patterns: ['context summary|long interruption|Long Session Control'] },
-      { label: 'progress ledger statuses', files: ['AGENTS.md', 'TASKBOARD.md'], patterns: ['proof rows|Proof Log', 'ready|in-progress|blocked'] }
+      { label: 'progress ledger statuses', patterns: ['append-only evidence|Append-Only Evidence', 'ready|in-progress|blocked'] }
     ]
   },
   {

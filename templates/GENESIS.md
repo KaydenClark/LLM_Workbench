@@ -1,6 +1,6 @@
 # [PROJECT_NAME] - Genesis (Bootstrap Protocol)
 
-> Part of LLM Workbench v[HARNESS_VERSION]. Stamp the four control docs with this
+> Part of LLM Workbench v[HARNESS_VERSION]. Stamp the copied control docs with this
 > same version during handoff (Phase 7).
 
 This file is the one-prompt bootstrap protocol. It tells an agent how to turn a
@@ -8,7 +8,7 @@ single founding prompt into a project that already has filled-out control docs:
 `AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`, and `RUNBOOK.md`.
 
 Read this once, run it once. Genesis is a starting gun, not a standing rule. When
-bootstrap is finished, the four control docs govern; this file can be deleted or
+bootstrap is finished, AGENTS plus the progressive spec flow govern; this file can be deleted or
 kept as a record of how the project began.
 
 **Green-field only.** If the target already exists - real code, history, or a
@@ -25,7 +25,7 @@ that produces those docs, plus the smallest real scaffold that proves the projec
 runs.
 
 Genesis does **not** try to finish the product. It produces a credible skeleton
-and a seeded task queue so normal work (the loop in `AGENTS.md`) can take over.
+and a seeded capability spec/hot projection so normal work can take over.
 
 ## Inputs
 
@@ -153,7 +153,7 @@ Output: a `RUNBOOK.md` a new agent can follow to reproduce a green run.
 Fill `TASKBOARD.md` with the honest next few tasks toward the promise, not the
 whole roadmap. Set **Current focus** to the nearest useful outcome. Seed 3-7
 `ready` tasks with priorities, required proof, and docs impact. Add the first
-proof-log row recording that Genesis ran and what it produced.
+first spec evidence row recording that Genesis ran and what it produced.
 
 Output: a board the normal work loop can pick up immediately.
 
@@ -166,7 +166,9 @@ suite once more. If
 `GENESIS.md` was copied into the project, either delete it or move it to an
 archive note, so no one mistakes the one-time protocol for a standing rule.
 
-Output: a clean repo where the four control docs are the source of truth.
+Output: a clean repo where each class of truth has one owner: AGENTS for work
+rules, Blueprint for product direction, Taskboard for hot state, specs for
+capability detail/evidence, Runbook for procedures, and source/tests for behavior.
 
 ## What A Finished Bootstrap Must Prove
 
@@ -183,7 +185,7 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] `TASKBOARD.md` has a `Current focus` and at least three actionable `ready`
       tasks with proof requirements.
-- [ ] A first proof-log row records that Genesis ran, with the actual run result.
+- [ ] A first spec evidence row records that Genesis ran, with the actual result.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box
 failed and why.
