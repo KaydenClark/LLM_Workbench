@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'eval-runner-'));
 const bin = path.join(temp, 'bin');
+const python = process.platform === 'win32' ? 'python' : 'python3';
 fs.mkdirSync(bin);
 
 try {
@@ -78,14 +79,23 @@ process.stdout.write(JSON.stringify({result: 'Incomplete; tests did not run.'}))
 console.log('ok - provider-neutral eval runner passed without model usage');
 
 function run(args, extraEnv) {
-  execFileSync('python3', ['evals/run.py', ...args], {
+  execFileSync(python, ['evals/run.py', ...args], {
     cwd: root,
     encoding: 'utf8',
-    env: { ...process.env, PATH: `${bin}:${process.env.PATH}`, ...extraEnv }
+    env: { ...process.env, PATH: `${bin}${path.delimiter}${process.env.PATH}`, ...extraEnv }
   });
 }
 
 function writeExecutable(name, content) {
+  if (process.platform === 'win32') {
+    const script = path.join(bin, `${name}.cjs`);
+    fs.writeFileSync(script, content.replace(/^#![^\n]*\n/, ''));
+    fs.writeFileSync(
+      path.join(bin, `${name}.cmd`),
+      `@echo off\r\nnode "%~dp0${name}.cjs" %*\r\n`
+    );
+    return;
+  }
   const file = path.join(bin, name);
   fs.writeFileSync(file, content);
   fs.chmodSync(file, 0o755);

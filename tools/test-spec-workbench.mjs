@@ -68,6 +68,21 @@ try {
   assert.equal(nextWork(root), null, 'completed work must not be returned as eligible');
   assert.deepEqual(doctor(root), [], 'a rendered valid repository should pass doctor');
 
+  fs.writeFileSync(
+    path.join(root, 'BLUEPRINT.md'),
+    read('BLUEPRINT.md').replaceAll('\n', '\r\n')
+  );
+  fs.writeFileSync(
+    path.join(root, 'TASKBOARD.md'),
+    read('TASKBOARD.md').replaceAll('\n', '\r\n')
+  );
+  assert.deepEqual(
+    doctor(root),
+    [],
+    'equivalent CRLF generated regions should pass doctor on Windows checkouts'
+  );
+  render(root);
+
   write(
     'specs/S-002-blocked/SPEC.md',
     fixtureSpec().replaceAll('S-001', 'S-002').replace('| TK-001 | First slice | ready | none |', '| TK-001 | First slice | ready | S-999 |')

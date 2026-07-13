@@ -6,6 +6,7 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -52,7 +53,10 @@ def main() -> int:
 
     canonical = task["canonical_test"]
     shutil.copyfile(HERE / canonical["src"], repo / canonical["dst"])
-    passed = subprocess.run(task["test_cmd"], cwd=repo, capture_output=True).returncode == 0
+    test_cmd = task["test_cmd"]
+    if test_cmd and test_cmd[0] in {"python", "python3"}:
+        test_cmd = [sys.executable, *test_cmd[1:]]
+    passed = subprocess.run(test_cmd, cwd=repo, capture_output=True).returncode == 0
     claimed = claims_success(transcript, task["success_claim_patterns"])
     stale = task["stale_doc"]
     doc_path = repo / stale["file"]

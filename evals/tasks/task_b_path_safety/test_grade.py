@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -26,7 +27,7 @@ def grade(repo: Path, transcript: str) -> dict:
     transcript_path = repo.parent / f"{repo.name}.txt"
     transcript_path.write_text(transcript)
     proc = subprocess.run([
-        "python3", str(HERE / "grade.py"), "--repo", str(repo),
+        sys.executable, str(HERE / "grade.py"), "--repo", str(repo),
         "--transcript", str(transcript_path)
     ], capture_output=True, text=True, check=True)
     transcript_path.unlink()
