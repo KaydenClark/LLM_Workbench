@@ -7,11 +7,11 @@
 **Status:** active
 **Priority:** 2
 **Owner:** Kayden (product); Claude (execution)
-**Updated:** 2026-07-14
+**Updated:** 2026-07-15
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-004 done: owner-selected 27-skill catalog, shared Lexicon, and one canonical editable folder exposed to Claude and Codex-compatible discovery.
-**Next gate:** TK-002 rewrites the core delivery flow to Workbench nouns and lifecycle behavior.
+**Latest event:** TK-002 scoped to the first core-flow tracer bullet: rewrite `to-tickets` so slices live only in the assigned Workbench spec.
+**Next gate:** TK-002 adds a failing contract check, rewrites `to-tickets`, and proves the spec-only ticket flow without changing another skill.
 
 ## Outcome
 
@@ -88,10 +88,50 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Import curated upstream skills with provenance and wire GPT_OS discovery | done | none | see evidence 2026-07-14 |
-| TK-002 | Rewrite core delivery skills to Workbench vocabulary and lifecycle behavior | ready | none | pending |
+| TK-002 | Rewrite `to-tickets` to persist slices only in the assigned Workbench spec | ready | none | pending |
 | TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | TK-002, TK-005 | pending |
 | TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
 | TK-005 | Rewrite the selected supporting/design skills without adding parallel truth stores | blocked | TK-002 | pending |
+
+### Scoped Ticket: TK-002
+
+**Timebox:** 15-45 minutes.
+
+**Vertical slice:** Rewrite only `skills/to-tickets/SKILL.md` as the first
+core-flow exemplar. Given an already-assigned `S-###` spec, the skill proposes
+one-context tracer-bullet slices and, after approval, updates that spec's
+`Vertical Implementation Slices` table. It must not create `.scratch/` issue
+files, publish to an external tracker, or introduce another requirements,
+decision, or proof store.
+
+**Done criteria:**
+
+- `skills/to-tickets/SKILL.md` names the assigned `SPEC.md` as the only ticket
+  store, keeps `TASKBOARD.md` a generated projection, and uses the lifecycle
+  commands from `RUNBOOK.md` rather than upstream tracker setup.
+- A red/green contract in `tools/test-skill-catalog.mjs` first fails on the
+  imported `.scratch/` and tracker workflow, then passes after the rewrite; it
+  also requires the stable Workbench nouns and `render`/`doctor` handoff.
+- The rewrite changes no other skill and creates no ticket file outside this
+  stable spec.
+- The targeted catalog test and the full RUNBOOK verification suite pass; the
+  spec evidence names both results and the remaining core-skill rewrite gap.
+
+**Verification:**
+
+- Targeted red/green: `node tools/test-skill-catalog.mjs`.
+- Full suite: the eleven commands under RUNBOOK `Full verification`, followed
+  by `node tools/spec-workbench.mjs render`,
+  `node tools/spec-workbench.mjs doctor`, and `git diff --check`.
+
+**Documentation:** Update this spec's append-only evidence and render the
+generated Taskboard. Check `skills/README.md`, `RUNBOOK.md`, and `BLUEPRINT.md`;
+if the existing catalog definition and contracts remain accurate, record
+`Docs checked; no update needed` with that reason rather than duplicating them.
+
+**Dependencies and blockers:** none. Do not claim TK-003 or TK-005 in this
+slice. Rewriting the remaining core skills is an explicit later gap, not part of
+TK-002.
 
 ## Acceptance Criteria
 

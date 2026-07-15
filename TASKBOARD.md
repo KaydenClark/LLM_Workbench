@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-002: Rewrite core delivery skills to Workbench vocabulary and lifecycle behavior (ready) | Kayden (product); Claude (execution) | none | TK-004 done: owner-selected 27-skill catalog, shared Lexicon, and one canonical editable folder exposed to Claude and Codex-compatible discovery. | TK-002 rewrites the core delivery flow to Workbench nouns and lifecycle behavior. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-002: Rewrite `to-tickets` to persist slices only in the assigned Workbench spec (ready) | Kayden (product); Claude (execution) | none | TK-002 scoped to the first core-flow tracer bullet: rewrite `to-tickets` so slices live only in the assigned Workbench spec. | TK-002 adds a failing contract check, rewrites `to-tickets`, and proves the spec-only ticket flow without changing another skill. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
