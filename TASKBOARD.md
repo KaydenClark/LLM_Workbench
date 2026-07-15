@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| none | No active slice | unassigned | none | All completed specs are cold. | Activate a planned spec explicitly. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Router skill replacing ask-matt; verify discovery in fresh session (ready) | Kayden (product); Claude (execution) | none | TK-001 done: 28 skills imported from mattpocock/skills (MIT) with provenance README; GPT_OS discovery wired via `.claude/skills` symlink. | Owner supplies rewrite direction; TK-002 rewrites the core-flow skills to Workbench nouns. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
