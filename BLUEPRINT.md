@@ -23,9 +23,9 @@ Core promise:
   rules live in `AGENTS.md`.
 - **Progressive disclosure:** the hot board selects one spec/ticket; detailed
   capability truth loads from its stable `SPEC.md` only on demand.
-- **Single ownership:** product direction belongs here, execution state on the
-  hot board, capability truth and evidence in specs, procedures in `RUNBOOK.md`,
-  and behavior in source/tests.
+- **Single ownership:** product direction belongs here, shared definitions in
+  `LEXICON.md`, execution state on the hot board, capability truth and evidence
+  in specs, procedures in `RUNBOOK.md`, and behavior in source/tests.
 - **Evidence over taste:** deterministic checks are the release gate; repeated
   controlled trials are required for agent-outcome claims.
 - **Portable by default:** plain Markdown and zero-dependency local commands
@@ -37,6 +37,7 @@ Core promise:
 |---|---|---|
 | Agent operating system | `AGENTS.md` | Always loaded; owns how agents work. |
 | Product map | `BLUEPRINT.md` | Compact direction, architecture, invariants, and spec catalog; no live task narration. |
+| Shared language | `LEXICON.md` | On demand; owns accepted project-wide definitions without requirements or live state. |
 | Execution projection | `TASKBOARD.md` | Active specs only: current slice, owner, blocker, event, next gate. |
 | Capability record | `specs/S-###-slug/SPEC.md` | Stable path; owns requirements, decisions, acceptance, verification, evidence, and completion. |
 | Procedures | `RUNBOOK.md` | Commands, troubleshooting, recovery, and operational detail. |

@@ -17,6 +17,8 @@ before changing anything:
   scope, the task-selection loop, documentation ownership, and proof rules.
 - [`BLUEPRINT.md`](BLUEPRINT.md) - compact product map, cross-cutting
   architecture/invariants, non-goals, and spec catalog.
+- [`LEXICON.md`](LEXICON.md) - accepted project-wide terms and definitions;
+  consult it when shared language could be ambiguous.
 - [`TASKBOARD.md`](TASKBOARD.md) - active spec projection: current slice, owner,
   blocker, latest event, and next gate.
 - [`specs/S-###-slug/SPEC.md`](SPEC.md) - on-demand capability truth,

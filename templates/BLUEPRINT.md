@@ -38,6 +38,9 @@ Rules that span multiple capabilities:
 
 Source and tests remain implementation truth. Put capability-specific
 requirements and decisions in its stable spec, not here.
+Put accepted project-wide definitions in `LEXICON.md`; the Blueprint helps
+participants recover the design concept but is not itself the design concept or
+the project glossary.
 
 ## Non-Goals
 

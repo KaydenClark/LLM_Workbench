@@ -10,8 +10,8 @@
 **Updated:** 2026-07-14
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-001 done: 28 skills imported from mattpocock/skills (MIT) with provenance README; GPT_OS discovery wired via `.claude/skills` symlink.
-**Next gate:** Owner supplies rewrite direction; TK-002 rewrites the core-flow skills to Workbench nouns.
+**Latest event:** TK-004 done: owner-selected 27-skill catalog, shared Lexicon, and one canonical editable folder exposed to Claude and Codex-compatible discovery.
+**Next gate:** TK-002 rewrites the core delivery flow to Workbench nouns and lifecycle behavior.
 
 ## Outcome
 
@@ -30,30 +30,44 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 ## Current Verified State
 
-- 28 upstream skills imported unmodified to `skills/` (see `skills/README.md`
-  disposition table); 12 author-personal/superseded skills excluded.
-- Imported text still references upstream conventions (`docs/agents/`,
+- `skills/` contains exactly the 27 entries in the owner-approved catalog: 25
+  selected upstream baselines, the Workbench-owned `ask-workbench` router, and
+  the native `update-harness` skill.
+- Most imported text still references upstream conventions (`docs/agents/`,
   `CONTEXT.md`, `.scratch/`, GitHub issue trackers) that conflict with the
   Workbench truth-routing contract; rewrites pending.
-- GPT_OS root discovers the folder via `.claude/skills` symlink; discovery in a
-  fresh Claude Code session not yet verified.
+- GPT_OS exposes the same tracked folder through `.claude/skills` and
+  `.agents/skills`; the untouched upstream snapshot and installer lock are
+  preserved at `.agents/upstream-matt-skills-2026-07-14/`.
+- Root and template `LEXICON.md` files now own accepted shared definitions,
+  seeded with the owner's definition of design concept.
+- Filesystem discovery is verified; fresh Claude and Codex session listings are
+  still an owner-checkable runtime gate.
 
 ## Desired Behavior
 
 - Core-flow skills operate on `BLUEPRINT.md`, `specs/S-###-slug/SPEC.md`,
   `TASKBOARD.md`, and `RUNBOOK.md` with no parallel truth files.
-- A router skill (rewritten `ask-matt`) maps situations to skills.
+- `LEXICON.md` owns accepted cross-capability terms without becoming an
+  always-loaded requirements or decision file.
+- `ask-workbench` maps situations to the smallest suitable skill or flow.
 - Skills are distributed to projects through the harness upgrade path.
 
 ## Decisions And Contracts
 
-- Canonical skill source lives in this repo at `skills/`; projects consume via
-  `.claude/skills` symlink or copy. `.agents/skills/` in GPT_OS stays an
-  untracked upstream reference snapshot only.
+- Canonical skill source lives in this repo at `skills/`; GPT_OS points both
+  `.claude/skills` and `.agents/skills` at it. Downstream projects consume a
+  symlink or copied rewritten subset through the harness upgrade path.
+- `skills/README.md` owns the selected names, definitions, and rewrite lanes;
+  `tools/test-skill-catalog.mjs` fails when the catalog and folders diverge.
+- The untouched upstream snapshot stays outside live discovery at
+  `.agents/upstream-matt-skills-2026-07-14/`.
 - Upstream license is MIT; provenance and attribution recorded in
   `skills/README.md`.
 - Until rewritten, imported skills' upstream conventions are not in effect in
   Workbench projects (see `skills/README.md`).
+- `LEXICON.md` owns shared definitions. `BLUEPRINT.md` helps participants
+  reconstruct the design concept but is not the design concept or glossary.
 - BLUEPRINT keeps its name and design-concept role; the Pocock per-feature
   "spec/PRD" maps to `S-###` specs and tickets, not to BLUEPRINT.
 
@@ -65,7 +79,7 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 ## Dependencies And Blockers
 
-- TK-002 blocked on owner rewrite direction (Kayden has notes to supply).
+- none; the owner supplied the selected roster and initial definitions.
 
 ## Vertical Implementation Slices
 
@@ -74,34 +88,47 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Import curated upstream skills with provenance and wire GPT_OS discovery | done | none | see evidence 2026-07-14 |
-| TK-002 | Rewrite core-flow skills to Workbench vocabulary per owner direction | blocked | owner direction | pending |
-| TK-003 | Router skill replacing ask-matt; verify discovery in fresh session | ready | none | pending |
+| TK-002 | Rewrite core delivery skills to Workbench vocabulary and lifecycle behavior | ready | none | pending |
+| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | TK-002, TK-005 | pending |
+| TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
+| TK-005 | Rewrite the selected supporting/design skills without adding parallel truth stores | blocked | TK-002 | pending |
 
 ## Acceptance Criteria
 
+- [x] The selected catalog and physical skill folders match exactly.
+- [x] GPT_OS `.claude/skills` and `.agents/skills` resolve to the tracked
+      Workbench skill folder; the upstream snapshot remains preserved.
+- [x] Root and template Lexicons preserve the owner's design-concept definition
+      and the Workbench truth-routing boundary.
 - [ ] Core-flow skills reference only Workbench control-doc nouns (no
       `docs/agents/`, `.scratch/`, `CONTEXT.md` writes).
 - [ ] A fresh Claude Code session in GPT_OS lists the skills as invocable.
-- [ ] Router skill routes the main flow (grill → to-spec → to-tickets →
+- [ ] A fresh Codex session in GPT_OS lists the same canonical skills.
+- [x] Router skill routes the main flow (grill → to-spec → to-tickets →
       implement → review) using Workbench names.
-- [ ] `skills/README.md` disposition table matches the folder contents.
+- [x] `skills/README.md` selected catalog matches the folder contents.
 
 ## Testing Seams
 
-- Static: grep imported/rewritten skills for forbidden upstream nouns.
-- Runtime: fresh-session skill listing in GPT_OS (manual, owner-checkable).
+- Static: selected catalog/folder/Lexicon self-test plus forbidden-noun scan.
+- Runtime: both discovery symlinks resolve to the canonical folder; fresh-session
+  skill listings remain manual, owner-checkable gates.
 
 ## Verification Procedure
 
 ```bash
-ls skills | wc -l   # matches README disposition count (28 + README)
+node tools/test-skill-catalog.mjs
+readlink /Users/kayden/GPT_OS/.claude/skills
+readlink /Users/kayden/GPT_OS/.agents/skills
 grep -rl "docs/agents\|\.scratch/" skills/<rewritten-skill>/  # empty after TK-002
 node tools/spec-workbench.mjs doctor
 ```
 
 ## Documentation Impact
 
-- `skills/README.md` owns provenance/disposition (done).
+- `skills/README.md` owns provenance, selected definitions, and rewrite lanes.
+- Root/template `LEXICON.md` own shared-definition structure.
+- Root/template controls point to the Lexicon and catalog self-test.
 - Machine wiki GPT_OS page notes the new skills surface after rollout (TK-003).
 - RUNBOOK/BLUEPRINT references updated when skills become part of the shipped
   harness contract (TK-002+).
@@ -111,6 +138,7 @@ node tools/spec-workbench.mjs doctor
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-14 | TK-001 | Imported 28 skills from mattpocock/skills (MIT) into `skills/` with provenance README; linked `GPT_OS/.claude/skills` -> `workbench templates/skills` | `ls skills | wc -l` = 29 (28 + README); full suite + doctor green (see PR) | skills/README.md added | Fresh-session discovery unverified (TK-003); rewrites pending (TK-002) |
+| 2026-07-14 | TK-004 | Corrected the earlier count: the import contained 27 upstream folders plus native `update-harness`; reconciled that intake to the owner's 25 selected upstream baselines plus `ask-workbench` and `update-harness`; made the tracked folder canonical for both discovery paths; added root/template Lexicons | `node tools/test-skill-catalog.mjs` passed; both `readlink` calls resolve to `workbench templates/skills`; upstream snapshot and lock preserved | README, AGENTS, BLUEPRINT, RUNBOOK, GENESIS, ADOPTION, HARNESS_FEEDBACK, LEXICON, S-011 updated in root/templates as applicable | Core and supporting skill rewrites plus fresh-session listings remain |
 
 ## Completion Result
 

@@ -5,7 +5,8 @@
 
 This file is the one-prompt bootstrap protocol. It tells an agent how to turn a
 single founding prompt into a project that already has filled-out control docs:
-`AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`, and `RUNBOOK.md`.
+`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, `RUNBOOK.md`, and a
+first stable `SPEC.md`.
 
 Read this once, run it once. Genesis is a starting gun, not a standing rule. When
 bootstrap is finished, AGENTS plus the progressive spec flow govern; this file can be deleted or
@@ -13,8 +14,8 @@ kept as a record of how the project began.
 
 **Green-field only.** If the target already exists - real code, history, or a
 prior set of `AGENTS`/`ROADMAP`/policy docs - use `ADOPTION.md` instead. Genesis
-scaffolds from a prompt; Adoption migrates an existing repo into the same four
-control docs.
+scaffolds from a prompt; Adoption migrates an existing repo into the same
+control surfaces.
 
 ## What Genesis Is For
 
@@ -96,6 +97,14 @@ Fill `BLUEPRINT.md` from the template. It anchors everything after it.
 Output: a `BLUEPRINT.md` a stranger could read to learn what the project is for.
 Architecture is still `[TBD]` at this point.
 
+Seed `LEXICON.md` with terms whose meanings the founding prompt or owner has
+already established. Do not invent definitions merely to fill the table. The
+Blueprint helps participants recover the design concept; the Lexicon owns the
+accepted meanings of the words they use to discuss it.
+
+Output: a `LEXICON.md` with the Workbench terms intact and any genuinely shared
+project terms defined.
+
 ### Phase 2 - Architecture
 
 Decide the stack and record it in `BLUEPRINT.md` -> Architecture and Design
@@ -148,14 +157,15 @@ must be one you executed and saw succeed, not an aspiration.
 
 Output: a `RUNBOOK.md` a new agent can follow to reproduce a green run.
 
-### Phase 6 - Seed the TASKBOARD
+### Phase 6 - Seed the first spec and hot projection
 
-Fill `TASKBOARD.md` with the honest next few tasks toward the promise, not the
-whole roadmap. Set **Current focus** to the nearest useful outcome. Seed 3-7
-`ready` tasks with priorities, required proof, and docs impact. Add the first
-first spec evidence row recording that Genesis ran and what it produced.
+Create one stable `specs/S-001-<slug>/SPEC.md` for the nearest coherent
+capability. Put 1-3 one-context tracer-bullet tickets in its implementation
+table, record the Genesis result in its evidence log, then render
+`TASKBOARD.md` from the spec metadata.
 
-Output: a board the normal work loop can pick up immediately.
+Output: one durable capability record plus a hot projection the normal work
+loop can pick up immediately.
 
 ### Phase 7 - Handoff
 
@@ -167,15 +177,17 @@ suite once more. If
 archive note, so no one mistakes the one-time protocol for a standing rule.
 
 Output: a clean repo where each class of truth has one owner: AGENTS for work
-rules, Blueprint for product direction, Taskboard for hot state, specs for
-capability detail/evidence, Runbook for procedures, and source/tests for behavior.
+rules, Blueprint for product direction, Lexicon for shared definitions,
+Taskboard for hot state, specs for capability detail/evidence, Runbook for
+procedures, and source/tests for behavior.
 
 ## What A Finished Bootstrap Must Prove
 
 Do not call bootstrap done on vibes. All of the following must hold:
 
-- [ ] `BLUEPRINT.md`, `AGENTS.md`, `RUNBOOK.md`, `TASKBOARD.md` exist with **no
-      remaining `[BRACKETED]` placeholders** in required sections.
+- [ ] `BLUEPRINT.md`, `LEXICON.md`, `AGENTS.md`, `RUNBOOK.md`, and
+      `TASKBOARD.md` exist with **no remaining `[BRACKETED]` placeholders** in
+      required sections.
 - [ ] The founding prompt is preserved verbatim somewhere durable.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
 - [ ] `.claude/settings.json` is filled from that scope (deny secrets, allow
@@ -183,9 +195,9 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
-- [ ] `TASKBOARD.md` has a `Current focus` and at least three actionable `ready`
-      tasks with proof requirements.
-- [ ] A first spec evidence row records that Genesis ran, with the actual result.
+- [ ] A stable first spec contains at least one actionable `ready` ticket with
+      proof requirements, and `TASKBOARD.md` projects it.
+- [ ] The first spec evidence row records that Genesis ran, with the actual result.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box
 failed and why.

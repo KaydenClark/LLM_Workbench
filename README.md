@@ -16,6 +16,9 @@ The blank, copyable templates live in `templates/`:
   task-selection loop, documentation ownership, and proof rules.
 - `templates/BLUEPRINT.md` - compact product map, cross-cutting architecture and
   invariants, non-goals, and generated spec catalog.
+- `templates/LEXICON.md` - on-demand shared vocabulary: accepted project terms,
+  concise definitions, and distinctions that prevent agents and humans from
+  silently using the same word differently.
 - `templates/TASKBOARD.md` - hot projection of active specs only: current slice,
   owner, blocker, latest event, and next gate.
 - `templates/SPEC.md` - concise on-demand capability work packet. Copy it to a
@@ -27,7 +30,7 @@ The blank, copyable templates live in `templates/`:
   project (points readers at the control surfaces). The root README you are
   reading is the workbench's own and is not meant to be copied.
 - `templates/GENESIS.md` - one-prompt bootstrap protocol: how an agent turns a
-  founding prompt into the four filled control docs plus a smallest-running
+  founding prompt into the filled control surfaces plus a smallest-running
   scaffold. Run once at project start, then delete or archive.
 - `templates/ADOPTION.md` - migration protocol for an existing project (often on
   an older or foreign harness): observe the repo, map the old docs into the v2
@@ -49,13 +52,16 @@ The blank, copyable templates live in `templates/`:
 
 ## This Repo Dogfoods Its Own Harness
 
-The root-level `AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`, and `RUNBOOK.md`
+The root-level `AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, and `RUNBOOK.md`
 are not templates. They are the real, filled control docs that govern work on
 the workbench itself, and they double as a living example of what filled-out
 docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
+- `skills/` - canonical owner-editable skill library and selected definition
+  catalog. GPT_OS exposes this folder through both Claude and Codex-compatible
+  discovery paths.
 - `team templates/` - optional manager/subagent coordination templates for
   small multi-agent runs.
 - `benchmarks/` - static-rubric scoring docs and result summaries.
@@ -71,6 +77,8 @@ docs look like. Copy from `templates/`, not from the root.
   outcome evidence; it also ranks the next improvements.
 - `tools/spec-workbench.mjs` - zero-dependency spec retrieval, lifecycle,
   deterministic catalog/dashboard rendering, and drift diagnosis.
+- `tools/test-skill-catalog.mjs` - fails when the selected skill definitions,
+  physical folders, router name, or root/template Lexicons drift apart.
 - `tools/feedback-automation.mjs` - canonical downstream feedback discovery,
   deduplication, one-candidate locking, and fail-closed decision classification.
 - `tools/run-outcome-trials.mjs` and `tools/score-outcome-trials.mjs` -
@@ -84,15 +92,16 @@ docs look like. Copy from `templates/`, not from the root.
 ## How To Use It
 
 1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
-   `templates/TASKBOARD.md`, `templates/RUNBOOK.md`, `templates/README.md`, and
-   `templates/SPEC.md` into the target project; create `specs/` for stable work
+   `templates/LEXICON.md`, `templates/TASKBOARD.md`, `templates/RUNBOOK.md`,
+   `templates/README.md`, and `templates/SPEC.md` into the target project; create `specs/` for stable work
    packets and copy `tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items. For Claude Code, also copy `templates/.claude/settings.json`
    and fill it from the same edit scope to enforce the boundary mechanically.
 3. Keep `AGENTS.md` as the always-loaded operating system; normal selection runs
    `spec-workbench next` and loads one returned spec.
-4. Keep Blueprint product-level, Taskboard hot, and detailed truth in specs.
+4. Keep Blueprint product-level, Lexicon definition-only, Taskboard hot, and
+   detailed capability truth in specs.
 5. Append proof to the owning spec and require a <1-minute demo artifact for
    milestones so acceptance rests on product truth, not passing tests alone.
 
@@ -193,6 +202,7 @@ Verify the local helper tools:
 
 ```bash
 node tools/test-context-tools.mjs
+node tools/test-skill-catalog.mjs
 node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
@@ -204,7 +214,7 @@ python3 evals/tasks/task_b_path_safety/test_grade.py
 Package selected files into Markdown:
 
 ```bash
-node tools/context-pack.mjs AGENTS.md BLUEPRINT.md TASKBOARD.md RUNBOOK.md \
+node tools/context-pack.mjs AGENTS.md BLUEPRINT.md LEXICON.md TASKBOARD.md RUNBOOK.md \
   --markdown --line-numbers \
   --output context.md
 ```
