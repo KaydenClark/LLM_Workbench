@@ -30,6 +30,10 @@ Before starting, capture:
 
 - **Target repo:** `[ABSOLUTE_PROJECT_PATH]`, at a known clean commit (branch
   from it; never migrate on a dirty tree).
+- **Source provenance:** source remote, ref, and resolved commit used for the
+  adoption. Record these exact values in the owning spec together with the
+  self-tests actually executed and a vendored-helper checksum when adoption
+  copies a helper into the project.
 - **Existing harness inventory:** every doc that currently steers agents or
   humans - e.g. `AGENTS.md`, `CLAUDE.md`, `ROADMAP.md`, `README.md`, `RUNBOOK`,
   and any policy/checklist/design files. List them before changing any.
@@ -75,6 +79,9 @@ next begins.
    If the host cannot write Git metadata, record the blocker; do not force the
    Git operation or fabricate its proof. Continue only permitted, reversible
    document work and verification, then hand branch operations to the owner.
+   Record the source remote, ref, resolved commit, executed baseline checks, and
+   any applicable vendored-helper checksum in the owning spec before changing
+   the harness.
 2. List every existing harness/steer doc and classify each:
    - **Port** - real content that maps into a v2 doc (direction, tasks, rules).
    - **Fold** - a policy/checklist doc whose rules belong inside `AGENTS.md`.
@@ -148,6 +155,12 @@ prerequisites, install, run, test/build, and the full verification suite. Every
 command must be one that works in this repo today, not an aspiration inherited
 from an old doc.
 
+Also record the exact fresh-clone verification commands in the project's
+`RUNBOOK.md`: clone the recorded remote into a disposable path, check out the
+recorded ref or resolved commit, rerun the documented self-tests, and verify any
+vendored-helper checksum. Keep project-specific values in that Runbook and the
+owning spec rather than filling them into this generic protocol.
+
 Output: a `RUNBOOK.md` that reproduces the project's existing green run.
 
 ### Phase 6 - Seed the TASKBOARD
@@ -184,6 +197,9 @@ the old harness is preserved as history, not a competing rulebook.
       with a reason.
 - [ ] The full verification suite runs green and matches the Phase 0 baseline;
       paste or reference the result.
+- [ ] The owning spec records the source remote, ref, resolved commit, executed
+      self-tests, and any applicable vendored-helper checksum; the project's
+      `RUNBOOK.md` retains the exact fresh-clone verification commands.
 - [ ] `TASKBOARD.md` has a real `Current focus` and the project's actual in-flight
       and ready work, with migrated proof history.
 - [ ] Retired docs are archived (not deleted), and a spec evidence row records that
