@@ -31,9 +31,9 @@ is preserved but not invocable.
 | `wayfinder` | Reduce fog in work too large to specify by resolving one investigation decision at a time toward a named destination. | Supporting rewrite | Pending rewrite |
 | `prototype` | Build a reversible, runnable artifact that answers one design question and records the resulting decision. | Core rewrite | Pending rewrite |
 | `research` | Investigate a question against primary sources and return cited findings, creating a durable artifact only when the task needs one. | Core rewrite | Pending rewrite |
-| `implement` | Claim one eligible slice, use red-green-refactor, review it, update proof and docs, then safely commit and push the task branch. | Core rewrite | Pending rewrite |
+| `implement` | Claim one eligible slice, use red-green-refactor, review it, update proof and docs, then safely commit and push the task branch. | Core rewrite | Active |
 | `tdd` | Drive one behavior at an agreed public seam through a red-green-refactor loop with durable tests. | Core rewrite | Pending rewrite |
-| `code-review` | Review a diff separately against repository standards and the owning Workbench spec, reporting actionable findings first. | Core rewrite | Pending rewrite |
+| `code-review` | Review a diff separately against repository standards and the owning Workbench spec, reporting actionable findings first. | Core rewrite | Active |
 | `diagnosing-bugs` | Establish a tight reproduction loop, prove the root cause, and enter fix mode only when the user requested a fix. | Core rewrite | Pending rewrite |
 | `handoff` | Preserve only the context a fresh session still needs, linking to existing specs, proof, commits, and files instead of duplicating them. | Core rewrite | Pending rewrite |
 | `teach` | Teach a topic through a stateful sequence of small lessons grounded in the learner's purpose and prior understanding. | Supporting rewrite | Pending rewrite |

@@ -246,6 +246,62 @@ assertIncludesAll(router, [
   '`/update-harness`'
 ], 'ask-workbench');
 
+for (const name of ['implement', 'code-review']) {
+  assert.equal(
+    rows.find((row) => row.name === name)?.availability,
+    'Active',
+    `${name} must remain active with its TK-009 Workbench rewrite`
+  );
+}
+
+const implement = read('skills/implement/SKILL.md');
+assertIncludesAll(implement, [
+  'assigned stable `SPEC.md`',
+  'one eligible ticket',
+  'node tools/spec-workbench.mjs next --json',
+  'node tools/spec-workbench.mjs show S-###',
+  'node tools/spec-workbench.mjs claim S-### --agent NAME',
+  'red/green/refactor',
+  'project-owned verification',
+  'owning documentation',
+  'node tools/spec-workbench.mjs close S-###',
+  'truthful checkpoint',
+  'commit and push',
+  '`integration`'
+], 'implement');
+
+const codeReview = read('skills/code-review/SKILL.md');
+assertIncludesAll(codeReview, [
+  'fixed diff',
+  '`BASE_SHA`',
+  '`HEAD_SHA`',
+  'git diff --no-ext-diff "$BASE_SHA" "$HEAD_SHA" --',
+  'nearest `AGENTS.md`',
+  'assigned stable `SPEC.md`',
+  'Findings first',
+  'review-only',
+  'separately authorized'
+], 'code-review');
+
+for (const [pattern, label] of [
+  [/CONTEXT\.md/, 'parallel context file'],
+  [/docs\/agents/, 'parallel agent configuration'],
+  [/\.scratch\//, 'scratch truth store'],
+  [/\bADR'?s?\b/i, 'parallel decision record'],
+  [/\bPRD\b/i, 'parallel requirements record'],
+  [/\btracker\b/i, 'parallel work tracker'],
+  [/\bproof store\b/i, 'parallel proof store']
+]) {
+  assert.doesNotMatch(`${implement}\n${codeReview}`, pattern,
+    `the delivery pair must not depend on a ${label}`);
+}
+
+assertIncludesAll(router, [
+  '`/implement`',
+  '`/code-review`',
+  'to-tickets -> implement -> code-review'
+], 'ask-workbench delivery flow');
+
 for (const name of pendingNames) {
   assert.ok(!router.includes(`/${name}`),
     `ask-workbench must not route users to pending skill ${name}`);

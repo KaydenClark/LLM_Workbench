@@ -19,11 +19,13 @@ Default routes:
 - settled conversation needs updates to existing documentation: `/to-docs`;
 - settled conversation needs a durable work packet: `/to-spec`;
 - a spec needs executable slices: `/to-tickets`;
+- one eligible spec slice is ready for delivery: `/implement`;
+- a fixed implementation diff needs independent findings: `/code-review`;
 - skill authoring rules are needed: `/writing-great-skills`.
 
 The main delivery flow is:
 
-`grill-me -> to-docs or to-spec -> to-tickets`
+`grill-me -> to-docs or to-spec -> to-tickets -> implement -> code-review`
 
 The selected catalog also preserves pending rewrites outside live discovery.
 Recommend only entries marked `Active` in the catalog.

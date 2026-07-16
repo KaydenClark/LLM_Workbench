@@ -10,8 +10,8 @@
 **Updated:** 2026-07-16
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** The 30-skill owner catalog is preserved, while 19 unfinished imports are fail-closed outside live discovery pending Workbench rewrites.
-**Next gate:** Rewrite and promote the first pending delivery pair under TK-009; Kayden authentication remains the separate Claude runtime gate.
+**Latest event:** TK-009 closed with proof.
+**Next gate:** Complete TK-003.
 
 ## Outcome
 
@@ -32,8 +32,8 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 - The catalog contains 30 owner-approved entries after retiring
   `grill-with-docs` and adding native `sitrep`, `to-docs`, `genesis`, and
-  `adoption` entrypoints. Eleven reviewed entries are live in `skills/`.
-- Nineteen imported baselines still reference upstream conventions that
+  `adoption` entrypoints. Thirteen reviewed entries are live in `skills/`.
+- Seventeen imported baselines still reference upstream conventions that
   conflict with the Workbench truth-routing contract. Their source is
   preserved in `skills-pending/`, outside live discovery, until rewritten.
 - GPT_OS exposes the same tracked folder through `.claude/skills` and
@@ -110,7 +110,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-006 | Add Sitrep and split settled documentation/spec capture from grilling | done | none | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
 | TK-007 | Add callable Genesis and Adoption entrypoints with remote-first recovery and distinct update routing | done | none | targeted catalog contract red at 28 vs 30, then green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and diff check passed |
 | TK-008 | Preserve upstream notice and fail-close unfinished imported skills outside live discovery | done | none | Targeted catalog red/green; full Runbook suite; fresh Codex active/pending discovery; template evaluator 106.6/113; live guardrail 78/100; render, doctor, and diff check passed |
-| TK-009 | Rewrite and promote pending `implement` and `code-review` as the next delivery-flow pair | ready | none | pending |
+| TK-009 | Rewrite and promote pending `implement` and `code-review` as the next delivery-flow pair | done | none | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 |
 
 ### Scoped Ticket: TK-002
 
@@ -244,12 +244,12 @@ their contract tests pass.
       Workbench skill folder; the upstream snapshot remains preserved.
 - [x] Root and template Lexicons preserve the owner's design-concept definition
       and the Workbench truth-routing boundary.
-- [ ] Core-flow skills reference only Workbench control-doc nouns (no
+- [x] Core-flow skills reference only Workbench control-doc nouns (no
       `docs/agents/`, `.scratch/`, `CONTEXT.md` writes).
 - [ ] A fresh Claude Code session in GPT_OS lists the skills as invocable.
 - [x] A fresh Codex session in GPT_OS lists the same canonical skills after the
       Genesis and Adoption additions.
-- [ ] Router skill routes Sitrep plus the full flow (grill → to-docs or to-spec
+- [x] Router skill routes Sitrep plus the full flow (grill → to-docs or to-spec
       → to-tickets → implement → review) using only active Workbench skills.
 - [x] `skills/README.md` selected catalog matches the folder contents after
       Sitrep/documentation routing lands.
@@ -297,6 +297,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-16 | TK-007 | Added thin `genesis` and `adoption` entrypoints over the existing protocols; Genesis owns greenfield setup, Adoption owns first migration only, and `update-harness` owns routine upgrades. Both entrypoints require remote-first checkpoints and stop automation at `integration`. | Catalog contract failed red at 28 vs 30, then passed green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and `git diff --check` passed | Updated skill catalog/router, two new skills, S-011, and generated Taskboard; protocol detail remains in existing Genesis/Adoption templates | Fresh discovery must be rerun for the expanded 30-skill catalog; Claude remains blocked on owner authentication; other imported rewrite lanes remain |
 | 2026-07-16 | TK-003 discovery audit after TK-007 | A fresh ephemeral Codex session exposed `genesis`, `adoption`, `update-harness`, `sitrep`, and `to-docs`, excluded retired `grill-with-docs`, and correctly distinguished the three project-lifecycle routes. | `codex exec --ephemeral --sandbox read-only --cd /Users/kayden/GPT_OS` exited 0 against pushed commit `5b60ab5`; both discovery links resolve through the compatibility alias to canonical `Workbench Factory/skills` | Updated S-011 and generated Taskboard only; no credential or runtime configuration changed | Claude discovery remains blocked until Kayden authenticates; remaining imported rewrite lanes and downstream distribution still follow |
 | 2026-07-16 | TK-008 | Retained Matt Pocock's MIT copyright and permission notice verbatim; split the selected catalog into 11 reviewed live skills and 19 preserved pending rewrites; removed pending routes; changed `update-harness` and the project Blueprint to the canonical Factory path; fixed EOF hygiene | Catalog test failed red on missing availability, then passed with exact notice, active/pending parity, forbidden live-routing, canonical-path, and EOF assertions; complete Runbook suite passed; template evaluator 106.6/113; live guardrail 78/100; fresh ephemeral Codex reported all 11 active entries discoverable and `implement`, `code-review`, and `domain-modeling` absent (`ACTIVE_OK`); render, doctor, and diff check passed | Updated README, skills catalog, router, Blueprint, S-011, generated Taskboard, and tracked third-party notice | TK-009 restores `implement` and `code-review` after rewrite; later tickets promote the other pending skills; Claude remains owner-auth blocked |
+| 2026-07-16 | TK-009 | Ticket closed | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 | Updated implement, code-review, skills catalog/router, S-011, generated TASKBOARD, and benchmarks/RESULTS; RUNBOOK and BLUEPRINT checked with no update needed because their lifecycle and shipped-skill ownership remain accurate | Seventeen pending rewrites remain; Claude discovery remains blocked on owner authentication; real repeated outcome evidence remains unrun |
 
 ## Completion Result
 
@@ -304,8 +305,8 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Nineteen selected upstream baselines remain safely preserved but unavailable
-  under `skills-pending/`; promotion is test-gated and begins with TK-009.
+- Seventeen selected upstream baselines remain safely preserved but unavailable
+  under `skills-pending/`; later promotions remain test-gated.
 - Claude discovery remains blocked until the owner authenticates; no credential
   configuration is changed by this spec.
 - Distribution to existing projects follows via `update-harness` after the
