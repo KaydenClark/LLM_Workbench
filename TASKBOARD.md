@@ -1,8 +1,8 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** S-006 - verify and activate the Terra/Sol feedback schedules.
+**Current focus:** No active spec; S-013 completed with verified automation run-outcome proof.
 **Owner:** Kayden (executive); agents execute assigned slices
-**Last updated:** 2026-07-13
+**Last updated:** 2026-07-16
 
 This dashboard contains current execution state only. Use
 `node tools/spec-workbench.mjs next` to select work and `show S-###` to load its

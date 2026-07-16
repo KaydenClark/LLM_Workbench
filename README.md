@@ -80,7 +80,8 @@ docs look like. Copy from `templates/`, not from the root.
 - `tools/test-skill-catalog.mjs` - fails when the selected skill definitions,
   physical folders, router name, or root/template Lexicons drift apart.
 - `tools/feedback-automation.mjs` - canonical downstream feedback discovery,
-  deduplication, one-candidate locking, and fail-closed decision classification.
+  deduplication, one-candidate locking, fail-closed gate decisions, and
+  normalized automation-run outcomes.
 - `tools/run-outcome-trials.mjs` and `tools/score-outcome-trials.mjs` -
   lightweight outcome-trial runner and scorer.
 - `tools/context-pack.mjs` - dependency-free prompt packer inspired by
@@ -214,6 +215,15 @@ node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 ```
+
+Automation adapters can pass a JSON file to
+`node tools/feedback-automation.mjs run-outcome --input FILE` and receive one
+normalized JSON result. Categories are exactly `actionable`, `worked`, `idle`,
+`owner_gate`, `collision`, and `infrastructure_error`. `idle` additionally
+requires `verifiedIdle: true`; only verified idle increments the streak, while
+actionable/worked reset it and interruption categories preserve it. The
+Workbench publishes this portable seam; GPT_OS owns the tracked scheduler
+adapter that consumes it.
 
 ## Context And Research Workflow
 
