@@ -275,7 +275,7 @@ assertIncludesAll(codeReview, [
   'fixed diff',
   '`BASE_SHA`',
   '`HEAD_SHA`',
-  'git diff --no-ext-diff "$BASE_SHA" "$HEAD_SHA" --',
+  'git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --',
   'nearest `AGENTS.md`',
   'assigned stable `SPEC.md`',
   'Findings first',
@@ -320,3 +320,4 @@ for (const relative of ['skills/sitrep/SKILL.md', 'skills/to-docs/SKILL.md']) {
 }
 
 console.log('ok - selected active/pending skill catalog, licenses, routing, and lexicon are aligned');
+await import('./test-delivery-skills.mjs');

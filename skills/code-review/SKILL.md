@@ -23,7 +23,7 @@ Confirm both commits exist, record the commit list, and capture the exact diff:
 git rev-parse --verify "${BASE_SHA}^{commit}"
 git rev-parse --verify "${HEAD_SHA}^{commit}"
 git log --oneline "${BASE_SHA}..${HEAD_SHA}"
-git diff --no-ext-diff "$BASE_SHA" "$HEAD_SHA" --
+git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --
 ```
 
 Stop with a clear result when the range is empty. The review is pinned when both

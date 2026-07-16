@@ -41,20 +41,36 @@ Run focused checks during the loop. Finish with every project-owned verification
 command required by `RUNBOOK.md`. The behavior is driven when the expected red
 and green results are named and the full required gate is green.
 
-## 3. Review and document
+## 3. Document and checkpoint
 
-Run `/code-review` as a separate review task against the fixed delivery diff.
-Resolve in-scope findings through the same red/green loop and repeat the review.
-Update the owning documentation named by `AGENTS.md`; append capability proof to
-the assigned spec and keep `TASKBOARD.md` a generated projection.
+Update the owning documentation named by `AGENTS.md`; keep capability state and
+proof in the assigned spec and keep `TASKBOARD.md` a generated projection. Run
+the required verification and create a truthful in-progress checkpoint while
+the ticket remains in progress; commit and push it, then compare the local SHA
+with the remote branch SHA.
 
-This step is complete when the fixed diff has no unresolved in-scope finding,
-every durable change has one documentation owner, and the spec evidence names
-the actual verification.
+Record the comparison base as `BASE_SHA` and the remotely verified checkpoint as
+`HEAD_SHA`. This step is complete only when the remote is the recovery point for
+the exact code, tests, documentation, and in-progress spec state under review.
 
-## 4. Close and recover remotely
+## 4. Review the immutable checkpoint
 
-Close the ticket only after its acceptance and proof are true:
+Run `/code-review` as a separate review task against `BASE_SHA` and `HEAD_SHA`.
+That fixed immutable-SHA review must inspect the pushed commit, not later
+working-tree state.
+
+Resolve each in-scope finding through the same red/green loop. Update its owning
+documentation, create and push a new truthful checkpoint, verify the new remote
+SHA, and re-review the newly fixed `BASE_SHA` to `HEAD_SHA` range. Repeat until
+the exact-head review is green with no unresolved in-scope finding.
+
+If review cannot finish, leave the ticket in progress and yield only after its
+latest truthful checkpoint is remotely recoverable.
+
+## 5. Close and recover remotely
+
+Only after the exact-head review is green, close the ticket with its acceptance
+and proof:
 
 ```bash
 node tools/spec-workbench.mjs close S-### \
@@ -65,10 +81,9 @@ node tools/spec-workbench.mjs render
 node tools/spec-workbench.mjs doctor
 ```
 
-Create a truthful checkpoint, commit and push the task branch, then verify the
-remote branch resolves to the local commit. If the ticket remains incomplete,
-leave its status truthful, record the blocker or remaining gap, and push that
-checkpoint before yielding.
+Commit the close evidence and generated projection, make the final push, and
+verify the remote branch resolves to that local commit. If the ticket remains
+incomplete, its in-progress checkpoint is the handoff; closing is not truthful.
 
 Automated delivery stops at `integration` after the repository's review
 gates pass. The owner controls promotion from integration to the release branch.
