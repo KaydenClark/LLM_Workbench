@@ -10,8 +10,8 @@
 **Updated:** 2026-07-16
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-006 closed with proof.
-**Next gate:** Complete TK-003.
+**Latest event:** Fresh Codex discovery passed; Claude discovery is blocked before skill loading by an expired owner OAuth session.
+**Next gate:** Kayden authenticates Claude, then rerun the non-persistent Claude discovery probes and complete TK-003.
 
 ## Outcome
 
@@ -40,8 +40,10 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
   preserved at `.agents/upstream-matt-skills-2026-07-14/`.
 - Root and template `LEXICON.md` files now own accepted shared definitions,
   seeded with the owner's definition of design concept.
-- Filesystem discovery is verified; fresh Claude and Codex session listings are
-  still an owner-checkable runtime gate.
+- Filesystem discovery and a fresh ephemeral Codex session are verified against
+  the canonical Factory skills. Claude is logged out, so its non-persistent
+  discovery probe stops at authentication before skill loading; reauthentication
+  remains an owner-controlled credential gate.
 
 ## Desired Behavior
 
@@ -93,7 +95,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Import curated upstream skills with provenance and wire GPT_OS discovery | done | none | see evidence 2026-07-14 |
 | TK-002 | Rewrite `to-tickets` to persist slices only in the assigned Workbench spec | done | none | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed |
-| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | TK-002, TK-005, TK-006 | pending |
+| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | Owner Claude authentication | Fresh Codex discovery and dry-run passed; Claude OAuth expired before skill loading |
 | TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
 | TK-005 | Rewrite the grilling discipline and its Desktop-facing entry points | done | none | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
 | TK-006 | Add Sitrep and split settled documentation/spec capture from grilling | done | none | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
@@ -194,7 +196,7 @@ the overlapping `grill-with-docs` wrapper.
 - [ ] Core-flow skills reference only Workbench control-doc nouns (no
       `docs/agents/`, `.scratch/`, `CONTEXT.md` writes).
 - [ ] A fresh Claude Code session in GPT_OS lists the skills as invocable.
-- [ ] A fresh Codex session in GPT_OS lists the same canonical skills.
+- [x] A fresh Codex session in GPT_OS lists the same canonical skills.
 - [x] Router skill routes Sitrep plus the main flow (grill → to-docs or to-spec
       → to-tickets → implement → review) using Workbench names.
 - [x] `skills/README.md` selected catalog matches the folder contents after
@@ -236,6 +238,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-15 | TK-005 review | Independent standards/spec review findings addressed | Linked the design-concept definition to LEXICON, removed wrapper duplication, strengthened parallel-layer guards; final RUNBOOK suite, both discovery symlinks, render, doctor, and git diff --check passed | S-011 evidence updated; other owning docs remain accurate | TK-006 remaining rewrites; TK-003 fresh-session discovery and behavior proof |
 | 2026-07-15 | S-011 owner simplification review | Restored Matt's compact `grilling` and `grill-me` behavior, reduced `grill-with-docs` to its Workbench-specific delta, pruned duplicated router and `to-tickets` rules, and changed catalog tests to enforce behavior rather than the removed framework terms | Targeted catalog test failed red on the old behavior and passed green after the correction; full RUNBOOK suite passed; template evaluator remained 106.6/113; render, doctor, and git diff --check passed | Updated S-011's current TK-005 criteria and evidence; skills README, BLUEPRINT, LEXICON, and RUNBOOK checked with no update needed because their ownership and catalog definitions remain accurate | Prompt contracts are verified, but fresh-session behavior remains TK-003 |
 | 2026-07-16 | TK-006 | Ticket closed | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed | Updated skills README, ask-workbench, grilling, to-spec, new sitrep/to-docs skills, S-011, and generated TASKBOARD | Remaining imported skill rewrites and fresh Claude/Codex discovery; Genesis and Adoption callable entries remain a later authorized slice |
+| 2026-07-16 | TK-003 discovery audit | Fresh ephemeral Codex discovered and dry-ran `sitrep` and `to-docs`; the retired `grill-with-docs` was absent. Claude stopped before skill loading because the owner's OAuth session is expired. | Canonical alias and both discovery symlinks resolve to `Workbench Factory/skills`; catalog count 28; `codex exec --ephemeral --sandbox read-only` exited 0; `claude --print --no-session-persistence --permission-mode plan --tools ''` exited 1 with expired OAuth; `claude auth status` reports `loggedIn: false` | Updated S-011 and generated Taskboard only; no credential or runtime configuration changed | Kayden authenticates Claude, then rerun `/sitrep` and `/to-docs`; remaining imported skill rewrites and downstream distribution still follow |
 
 ## Completion Result
 
