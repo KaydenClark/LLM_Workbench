@@ -1,6 +1,6 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** S-011 remains active but blocked on owner Claude authentication; no agent ticket is currently eligible.
+**Current focus:** S-014/TK-001 is ready to reconcile main ancestry into integration through an audited merge PR.
 **Owner:** Kayden (executive); agents execute assigned slices
 **Last updated:** 2026-07-16
 

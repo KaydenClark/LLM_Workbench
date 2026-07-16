@@ -36,8 +36,9 @@ without weakening either repository's release boundary.
 - Their merge base is `debd8b6339582d00d061e5b4bcf5f79bcf3c39be`.
   `origin/main` is not currently an ancestor of `origin/integration`; the only
   main-only commit is the prior integration promotion merge `dd1ed32`.
-- No open Workbench pull request exists, and the current integration SHA has no
-  GitHub commit status. CIC therefore cannot see a ready candidate yet.
+- No `integration` to `main` promotion PR exists. Draft planning PR #30 is open
+  from this Planner branch into `integration`, and the current integration SHA
+  has no GitHub commit status. CIC therefore cannot see a ready candidate yet.
 - The integration checkpoint is the already-audited safe harness checkpoint
   selected for release preparation. S-011 separately remains active: thirteen
   reviewed skills are live, seventeen imported baselines remain isolated under
