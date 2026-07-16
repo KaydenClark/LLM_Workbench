@@ -16,9 +16,10 @@ archive it; afterward AGENTS plus the progressive spec flow govern.
 ## What Adoption Is For
 
 The owner should be able to point an agent at an existing repo - with its own
-code, tests, and a prior harness - and get back the four v2 control docs
-(`AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`, `RUNBOOK.md`) that describe **what
-is actually true**, with none of the project's real content lost in the move.
+code, tests, and a prior harness - and get back the v2 control surfaces
+(`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, `RUNBOOK.md`, and
+stable specs) that describe **what is actually true**, with none of the
+project's real content lost in the move.
 
 Adoption does **not** rewrite the product or "clean up" the code. It documents
 observed reality, migrates existing intent and history into the v2 layout, and
@@ -104,6 +105,13 @@ log the drift in Design Decisions.
 Output: a `BLUEPRINT.md` that matches the running project, not the aspirational
 old one.
 
+Port accepted project-wide definitions from existing glossaries, design docs,
+and source vocabulary into `LEXICON.md`. Keep scoped terms in their owning spec
+until they become shared. Do not treat an old decision log as a glossary.
+
+Output: a `LEXICON.md` that records established meanings without duplicating
+requirements or architecture decisions.
+
 ### Phase 2 - Document the real architecture
 
 Fill `BLUEPRINT.md` -> Architecture and Design Decisions from what is actually
@@ -126,10 +134,13 @@ Typical mappings (adjust to the actual dialect):
   into `AGENTS.md` (authority, scope, verification, safety); retire the originals.
 - **Existing `AGENTS`/`CLAUDE`** -> reconcile into the v2 `AGENTS.md` and the thin
   `CLAUDE.md` bridge; keep any rule still true, drop what the code disproved.
+- **Glossary / ubiquitous-language / context docs** -> accepted shared
+  definitions into `LEXICON.md`; scoped decisions into the owning spec; archive
+  the superseded container after verifying nothing was lost.
 - **Design / visual docs** -> keep as project-local references; link, do not fold.
 
-Preserve history: copy real task and proof records into `TASKBOARD.md` (or
-`TASKBOARD_ARCHIVE.md` if large) rather than discarding them.
+Preserve history in a cold archive or the owning stable spec. Do not copy
+completed proof into the hot `TASKBOARD.md` projection.
 
 Output: v2 docs carrying the old harness's live content; a list of retired docs.
 
@@ -163,14 +174,15 @@ owning spec rather than filling them into this generic protocol.
 
 Output: a `RUNBOOK.md` that reproduces the project's existing green run.
 
-### Phase 6 - Seed the TASKBOARD
+### Phase 6 - Seed specs and render the TASKBOARD
 
-Port the existing live work into `TASKBOARD.md`: set **Current focus** to the
-real nearest outcome, carry in-flight and ready items into the lanes, and migrate
-completed-work proof into a cold archive. Add a first spec evidence row
-recording that Adoption ran and what moved where.
+Port coherent live capabilities into stable specs. Put only one-context active
+slices in their implementation tables, preserve completed history in the owning
+spec or a cold archive, and render `TASKBOARD.md` from active spec metadata. Add
+an evidence row recording that Adoption ran and what moved where.
 
-Output: a board that reflects the project's actual state and the migration.
+Output: stable capability records plus a hot projection that reflects the
+project's actual state and the migration.
 
 ### Phase 7 - Retire the old harness and handoff
 
@@ -181,13 +193,14 @@ stamp on each v2 control doc. Delete unfilled placeholders. Re-run the full
 verification suite and confirm it still matches the Phase 0 baseline. If
 `ADOPTION.md` was copied in, delete or archive it.
 
-Output: a repo where the four v2 control docs are the single source of truth and
-the old harness is preserved as history, not a competing rulebook.
+Output: a repo where each v2 control surface owns one class of truth and the old
+harness is preserved as history, not a competing rulebook.
 
 ## What A Finished Adoption Must Prove
 
-- [ ] `BLUEPRINT.md`, `AGENTS.md`, `RUNBOOK.md`, `TASKBOARD.md` exist with **no
-      remaining `[BRACKETED]` placeholders** in required sections.
+- [ ] `BLUEPRINT.md`, `LEXICON.md`, `AGENTS.md`, `RUNBOOK.md`, and
+      `TASKBOARD.md` exist with **no remaining `[BRACKETED]` placeholders** in
+      required sections.
 - [ ] Every existing harness doc was classified port / fold / keep / retire, and
       no ported doc's live content was lost.
 - [ ] `BLUEPRINT.md` matches the running code where the old docs disagreed;
@@ -197,11 +210,12 @@ the old harness is preserved as history, not a competing rulebook.
       with a reason.
 - [ ] The full verification suite runs green and matches the Phase 0 baseline;
       paste or reference the result.
+- [ ] Stable specs contain the project's actual in-flight and ready work;
+      `TASKBOARD.md` projects only the hot state and contains no completed proof
+      archive.
 - [ ] The owning spec records the source remote, ref, resolved commit, executed
       self-tests, and any applicable vendored-helper checksum; the project's
       `RUNBOOK.md` retains the exact fresh-clone verification commands.
-- [ ] `TASKBOARD.md` has a real `Current focus` and the project's actual in-flight
-      and ready work, with migrated proof history.
 - [ ] Retired docs are archived (not deleted), and a spec evidence row records that
       Adoption ran.
 

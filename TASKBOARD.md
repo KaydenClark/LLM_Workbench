@@ -1,6 +1,6 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** No active spec; S-013 completed with verified automation run-outcome proof.
+**Current focus:** S-011 remains active but blocked on owner Claude authentication; no agent ticket is currently eligible.
 **Owner:** Kayden (executive); agents execute assigned slices
 **Last updated:** 2026-07-16
 
@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| none | No active slice | unassigned | none | All completed specs are cold. | Activate a planned spec explicitly. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-009 exact-head delivery audit repair passed. | Complete TK-003. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

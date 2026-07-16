@@ -4,8 +4,8 @@
 > Upgrading The Harness.
 
 This is the return channel from this project back to the LLM Workbench harness.
-When the control docs themselves (`AGENTS.md`, `BLUEPRINT.md`, `TASKBOARD.md`,
-`RUNBOOK.md`, `GENESIS.md`) are unclear, wrong, missing guidance, or actively
+When the control docs themselves (`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`,
+`TASKBOARD.md`, `RUNBOOK.md`, `GENESIS.md`) are unclear, wrong, missing guidance, or actively
 slow the work down, record it here instead of silently working around it. The
 owner carries these lessons back to LLM Workbench, where a change is validated
 against `evals/` before it ships as "better".

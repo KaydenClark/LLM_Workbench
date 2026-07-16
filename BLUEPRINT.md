@@ -3,7 +3,7 @@
 **Last reviewed:** 2026-07-12
 **Status:** active
 **Harness version:** v2.3
-**Source root:** `/Users/kayden/GPT_OS/workbench templates`
+**Source root:** `/Users/kayden/GPT_OS/Workbench Factory`
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
 ## Product Map
@@ -23,9 +23,9 @@ Core promise:
   rules live in `AGENTS.md`.
 - **Progressive disclosure:** the hot board selects one spec/ticket; detailed
   capability truth loads from its stable `SPEC.md` only on demand.
-- **Single ownership:** product direction belongs here, execution state on the
-  hot board, capability truth and evidence in specs, procedures in `RUNBOOK.md`,
-  and behavior in source/tests.
+- **Single ownership:** product direction belongs here, shared definitions in
+  `LEXICON.md`, execution state on the hot board, capability truth and evidence
+  in specs, procedures in `RUNBOOK.md`, and behavior in source/tests.
 - **Evidence over taste:** deterministic checks are the release gate; repeated
   controlled trials are required for agent-outcome claims.
 - **Portable by default:** plain Markdown and zero-dependency local commands
@@ -37,6 +37,7 @@ Core promise:
 |---|---|---|
 | Agent operating system | `AGENTS.md` | Always loaded; owns how agents work. |
 | Product map | `BLUEPRINT.md` | Compact direction, architecture, invariants, and spec catalog; no live task narration. |
+| Shared language | `LEXICON.md` | On demand; owns accepted project-wide definitions without requirements or live state. |
 | Execution projection | `TASKBOARD.md` | Active specs only: current slice, owner, blocker, event, next gate. |
 | Capability record | `specs/S-###-slug/SPEC.md` | Stable path; owns requirements, decisions, acceptance, verification, evidence, and completion. |
 | Procedures | `RUNBOOK.md` | Commands, troubleshooting, recovery, and operational detail. |
@@ -71,6 +72,7 @@ be changed only through a later spec linked by supersession.
 | [S-008 - Windows Verification Portability](specs/S-008-windows-verification-portability/SPEC.md) | Keep context output, spec-doctor, and eval-runner verification stable across Windows and POSIX hosts. | complete |
 | [S-009 - Git-Write Constrained Adoption](specs/S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
 | [S-010 - Canonical Evaluator Entry Detection](specs/S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
+| [S-011 - Agent Skills Adoption](specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | active |
 | [S-012 - Reproducible Adoption Provenance](specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
 | [S-013 - Standardized Automation Run Outcomes](specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
 <!-- spec-catalog:end -->
