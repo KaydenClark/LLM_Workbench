@@ -6,12 +6,12 @@
 **Spec ID:** S-011
 **Status:** active
 **Priority:** 2
-**Owner:** terra
+**Owner:** Kayden (product); Codex (execution)
 **Updated:** 2026-07-15
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Complete TK-003.
+**Latest event:** TK-005 closed with proof.
+**Next gate:** Refine and claim one bounded TK-006 rewrite slice.
 
 ## Outcome
 
@@ -89,9 +89,10 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Import curated upstream skills with provenance and wire GPT_OS discovery | done | none | see evidence 2026-07-14 |
 | TK-002 | Rewrite `to-tickets` to persist slices only in the assigned Workbench spec | done | none | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed |
-| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | TK-002, TK-005 | pending |
+| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | TK-002, TK-005, TK-006 | pending |
 | TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
-| TK-005 | Rewrite the selected supporting/design skills without adding parallel truth stores | blocked | TK-002 | pending |
+| TK-005 | Rewrite the grilling discipline and its Desktop-facing entry points | done | none | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
+| TK-006 | Rewrite the remaining selected skills in bounded follow-on slices | ready | none | pending |
 
 ### Scoped Ticket: TK-002
 
@@ -132,6 +133,35 @@ if the existing catalog definition and contracts remain accurate, record
 **Dependencies and blockers:** none. Do not claim TK-003 or TK-005 in this
 slice. Rewriting the remaining core skills is an explicit later gap, not part of
 TK-002.
+
+### Scoped Ticket: TK-005
+
+**Vertical slice:** Rewrite `grilling`, `grill-me`, and `grill-with-docs` as one
+usable question-first flow. The flow develops a shared design concept in chat,
+minimizes owner typing, researches discoverable facts, and routes only settled
+truth to existing Workbench owners.
+
+**Done criteria:**
+
+- The core discipline asks one concise decision question at a time, leads with
+  a recommendation, offers low-effort answer choices when useful, and waits for
+  the owner's answer before advancing.
+- The interview researches repository facts, tracks decisions, assumptions,
+  contradictions, and open questions, then asks for explicit confirmation of a
+  coherent design-concept summary before any planning or implementation.
+- `grill-me` works directly in a Desktop chat with natural-language or voice
+  answers and creates no durable artifact.
+- `grill-with-docs` uses the same interview behavior and, after agreement,
+  routes project-wide definitions to `LEXICON.md`, cross-cutting direction to
+  `BLUEPRINT.md`, and scoped decisions to the assigned `SPEC.md`. It creates no
+  parallel context, ADR, tracker, or glossary layer.
+- `tools/test-skill-catalog.mjs` fails on the imported behavior before the
+  rewrite and passes afterward. The full RUNBOOK suite, render, doctor, and
+  `git diff --check` pass.
+
+**Documentation:** Update this spec's evidence and render `TASKBOARD.md`.
+Check the catalog, Blueprint, Lexicon, and Runbook for drift; update only the
+owning surface.
 
 ## Acceptance Criteria
 
@@ -180,6 +210,8 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-14 | TK-001 | Imported 28 skills from mattpocock/skills (MIT) into `skills/` with provenance README; linked `GPT_OS/.claude/skills` -> `workbench templates/skills` | `ls skills | wc -l` = 29 (28 + README); full suite + doctor green (see PR) | skills/README.md added | Fresh-session discovery unverified (TK-003); rewrites pending (TK-002) |
 | 2026-07-14 | TK-004 | Corrected the earlier count: the import contained 27 upstream folders plus native `update-harness`; reconciled that intake to the owner's 25 selected upstream baselines plus `ask-workbench` and `update-harness`; made the tracked folder canonical for both discovery paths; added root/template Lexicons | `node tools/test-skill-catalog.mjs` passed; both `readlink` calls resolve to `workbench templates/skills`; upstream snapshot and lock preserved | README, AGENTS, BLUEPRINT, RUNBOOK, GENESIS, ADOPTION, HARNESS_FEEDBACK, LEXICON, S-011 updated in root/templates as applicable | Core and supporting skill rewrites plus fresh-session listings remain |
 | 2026-07-15 | TK-002 | Ticket closed | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed | Docs checked; no update needed: skills/README.md, RUNBOOK.md, and BLUEPRINT.md already state the catalog, lifecycle, and active S-011 contract accurately | Rewrite remaining core and supporting skills (TK-005); fresh Claude and Codex discovery remains owner-checkable (TK-003) |
+| 2026-07-15 | TK-005 | Ticket closed | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed | Updated the three grilling skills and S-011; skills README, BLUEPRINT, LEXICON, and RUNBOOK checked with no update needed because their ownership and catalog definitions remain accurate | TK-006 remaining rewrites; TK-003 fresh-session discovery and behavior proof |
+| 2026-07-15 | TK-005 review | Independent standards/spec review findings addressed | Linked the design-concept definition to LEXICON, removed wrapper duplication, strengthened parallel-layer guards; final RUNBOOK suite, both discovery symlinks, render, doctor, and git diff --check passed | S-011 evidence updated; other owning docs remain accurate | TK-006 remaining rewrites; TK-003 fresh-session discovery and behavior proof |
 
 ## Completion Result
 
@@ -189,8 +221,8 @@ Pending.
 
 - Symlinked `.claude/skills` discovery must be confirmed in a new session; the
   fallback is copying the folder.
-- Distribution to existing projects follows via `update-harness` once TK-002
-  lands.
+- Distribution to existing projects follows via `update-harness` after TK-006
+  completes the selected rewrites.
 
 ## Supersession
 

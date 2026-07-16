@@ -7,6 +7,11 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = path.join(root, 'skills');
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
+const assertIncludesAll = (content, requiredTerms, label) => {
+  for (const term of requiredTerms) {
+    assert.ok(content.includes(term), `${label} must use ${term}`);
+  }
+};
 
 const catalog = read('skills/README.md');
 const catalogRegion = catalog.match(
@@ -74,16 +79,61 @@ for (const forbidden of [
   assert.ok(!toTickets.includes(forbidden),
     `to-tickets must not retain the imported ${forbidden} workflow`);
 }
-for (const required of [
+assertIncludesAll(toTickets, [
   'assigned `SPEC.md`',
   '`Vertical Implementation Slices`',
   '`TASKBOARD.md` is a generated projection',
   '`RUNBOOK.md`',
   'node tools/spec-workbench.mjs render',
   'node tools/spec-workbench.mjs doctor'
+], 'to-tickets');
+
+const grilling = read('skills/grilling/SKILL.md');
+const grillMe = read('skills/grill-me/SKILL.md');
+const grillWithDocs = read('skills/grill-with-docs/SKILL.md');
+const grillingBundle = `${grilling}\n${grillMe}\n${grillWithDocs}`;
+
+for (const [pattern, label] of [
+  [/Run a `\/grilling` session/, 'slash-command-only wrapper'],
+  [/\/domain-modeling/, 'imported domain-modeling invocation'],
+  [/CONTEXT\.md/, 'parallel context file'],
+  [/docs\/agents/, 'parallel agent configuration'],
+  [/docs\/adr/, 'parallel decision directory'],
+  [/\bADR'?s?\b/i, 'parallel ADR layer'],
+  [/\btracker\b/i, 'parallel tracker layer'],
+  [/\bglossary\b/i, 'parallel glossary layer']
 ]) {
-  assert.ok(toTickets.includes(required),
-    `to-tickets must use the Workbench ${required} contract`);
+  assert.doesNotMatch(grillingBundle, pattern,
+    `the grilling flow must not depend on a ${label}`);
 }
+
+assertIncludesAll(grilling, [
+  'shared design concept',
+  '`LEXICON.md`',
+  'one concise decision question at a time',
+  'recommended answer first',
+  'decision ledger',
+  'explicit confirmation',
+  'Remain in interview mode',
+  'durable documentation'
+], 'grilling');
+assert.match(grilling, /choice,\s+yes\/no, or a correction/,
+  'grilling must offer a low-effort answer cue');
+
+assertIncludesAll(grillMe, [
+  '`grilling` discipline',
+  'Desktop chat',
+  'voice or natural language',
+  'terminal'
+], 'grill-me');
+
+assertIncludesAll(grillWithDocs, [
+  'after explicit confirmation',
+  '`LEXICON.md`',
+  '`BLUEPRINT.md`',
+  'assigned `SPEC.md`',
+  '`TASKBOARD.md`',
+  '`RUNBOOK.md`'
+], 'grill-with-docs');
 
 console.log('ok - selected skill catalog, folders, and shared lexicon are aligned');

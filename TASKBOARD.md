@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | terra | TK-002, TK-005 | TK-002 closed with proof. | Complete TK-003. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-006: Rewrite the remaining selected skills in bounded follow-on slices (ready) | Kayden (product); Codex (execution) | none | TK-005 closed with proof. | Refine and claim one bounded TK-006 rewrite slice. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
