@@ -73,6 +73,7 @@ be changed only through a later spec linked by supersession.
 | [S-009 - Git-Write Constrained Adoption](specs/S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
 | [S-010 - Canonical Evaluator Entry Detection](specs/S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
 | [S-011 - Agent Skills Adoption](specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | active |
+| [S-012 - Reproducible Adoption Provenance](specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health

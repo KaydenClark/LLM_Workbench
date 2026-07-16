@@ -138,6 +138,12 @@ If the host cannot write Git metadata, record the blocker instead of forcing the
 operation or claiming Git proof. Limit the run to permitted, reversible document
 work and verification, then hand branch operations to the owner.
 
+A completed adoption must also survive an independent fresh-clone verification.
+Record the source remote, ref, and resolved commit plus executed self-tests and
+any applicable vendored-helper checksum in the owning spec. Put the exact clone,
+checkout, self-test, and checksum commands in the adopted project's `RUNBOOK.md`
+so a cold reviewer can reproduce the proof without the original checkout or chat.
+
 ## Versioning And Upgrades
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
