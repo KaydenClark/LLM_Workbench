@@ -1,6 +1,6 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** S-014/TK-001 is reconciling main ancestry on a verified feature branch before independent audit and integration review.
+**Current focus:** S-014/TK-002 is in progress: finish the final docs-only integration transition, then independently audit and status the resulting exact candidate SHA.
 **Owner:** Kayden (executive); agents execute assigned slices
 **Last updated:** 2026-07-16
 
@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-001: Reconcile main ancestry into integration through an audited merge PR (in-progress) | codex-engineer | none | TK-001 ancestry-only merge candidate is fully verified; remote checkpoint and independent audit remain. | Independently audit the pushed PR #31 checkpoint, then complete integration review; TK-001 remains in progress. |
+| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-002: Audit exact integration and publish the evidence-bound release-gate status (in-progress) | Auditor TK-002 | none | TK-001 completed through audited PR #31 at exact head `490ad58`; merge `a9fb9f9` landed the ancestry reconciliation on integration. | Land this final docs-only transition, then independently audit the resulting exact `origin/integration` SHA and publish its evidence-bound release status without moving the candidate. |
 | [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-009 exact-head delivery audit repair passed. | Complete TK-003. |
 <!-- hot-specs:end -->
 
