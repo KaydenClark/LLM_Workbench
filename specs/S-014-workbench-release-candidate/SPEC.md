@@ -6,12 +6,12 @@
 **Spec ID:** S-014
 **Status:** active
 **Priority:** 0
-**Owner:** Captain
+**Owner:** codex-engineer
 **Updated:** 2026-07-16
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
 **Blockers:** none
-**Latest event:** Release-candidate plan captured from exact remote branch evidence.
-**Next gate:** Engineer claims TK-001 and reconciles main ancestry through an audited PR into integration.
+**Latest event:** TK-001 ancestry-only merge candidate is fully verified; remote checkpoint and independent audit remain.
+**Next gate:** Independently audit the pushed PR #31 checkpoint, then complete integration review; TK-001 remains in progress.
 
 ## Outcome
 
@@ -31,14 +31,16 @@ without weakening either repository's release boundary.
 ## Current Verified State
 
 - `origin/integration` is exact commit
-  `6943c106acb8de56d55599ece4fcf29a59da4f41`; `origin/main` is exact commit
+  `5f2c400125f399a1029cdbfa04068bff31fc1a00`; `origin/main` is exact commit
   `dd1ed326a1d55e1f2303aa233cc4d1bf6a0a4270`.
 - Their merge base is `debd8b6339582d00d061e5b4bcf5f79bcf3c39be`.
-  `origin/main` is not currently an ancestor of `origin/integration`; the only
-  main-only commit is the prior integration promotion merge `dd1ed32`.
-- No `integration` to `main` promotion PR exists. Draft planning PR #30 is open
-  from this Planner branch into `integration`, and the current integration SHA
-  has no GitHub commit status. CIC therefore cannot see a ready candidate yet.
+  `origin/main` is not yet an ancestor of remote `origin/integration`; the only
+  main-only commit is the prior integration promotion merge `dd1ed32`. Candidate
+  merge `88b6f7e` has exact `dd1ed32` as its second parent, leaves its first-parent
+  tree unchanged, and makes main an ancestor on the feature branch.
+- No `integration` to `main` promotion PR exists. Planning PR #30 merged S-014
+  into `integration` at `5f2c400`; the current integration SHA has no GitHub
+  commit status. CIC therefore cannot see a ready candidate yet.
 - The integration checkpoint is the already-audited safe harness checkpoint
   selected for release preparation. S-011 separately remains active: thirteen
   reviewed skills are live, seventeen imported baselines remain isolated under
@@ -129,7 +131,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Reconcile main ancestry into integration through an audited merge PR | ready | none | pending |
+| TK-001 | Reconcile main ancestry into integration through an audited merge PR | in-progress | none | pending |
 | TK-002 | Audit exact integration and publish the evidence-bound release-gate status | ready | TK-001 | pending |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
@@ -279,6 +281,8 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 |---|---|---|---|---|---|
 | 2026-07-16 | plan | Captured S-014 from exact remote refs and CIC's completed fixed release contract | `origin/integration` `6943c10`; `origin/main` `dd1ed32`; merge-base `debd8b6`; ancestry check false as expected; no open PRs; no integration commit status; pre-change doctor green and `next` empty | Added S-014; Blueprint catalog and generated Taskboard rendered | Execute TK-001, TK-002, and TK-003 in order; no release mutation performed by Planner |
 | 2026-07-16 | plan verification | Verified the planning-only work packet and generated projections | Complete RUNBOOK suite passed; root evaluator self-test 113/113; templates 106.6/113; guardrail self-test green at its current 68/100 fixture; render, doctor, and `git diff --check` passed | Docs checked; no additional update needed because S-014 owns the new capability and the generated Blueprint/Taskboard project it | Commit, push, and open the draft planning PR to `integration` |
+| 2026-07-16 | TK-001 reconciliation candidate | Claimed TK-001 from exact integration `5f2c400`, checkpointed the claim, and merged exact main `dd1ed32` with real merge commit `88b6f7e` | Pre-merge ancestry check failed as expected; merge used `ort`, reported no conflicts, retained the first-parent tree exactly, recorded exact main as second parent, and made main an ancestor of the candidate; live guardrail baseline 78/100 | Updated S-014 current state/evidence and generated Taskboard; RUNBOOK/README/templates checked with no change needed because no operational or harness behavior changed | Full verification, remote checkpoint, draft PR, and independent exact-diff audit remain; TK-001 stays in progress |
+| 2026-07-16 | TK-001 candidate verification | Verified the ancestry-only candidate without changing harness behavior or weakening gates | Complete RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; live guardrail remained 78/100 with only pre-existing real-outcome gaps; held-out path grader, eval runner, render, doctor, and diff checks passed; gitleaks scanned 62 commits plus the directory and found no leaks | S-014 and generated Taskboard own the current state; RUNBOOK, README, templates, skills, and benchmarks checked with no update needed because the reconciliation changes ancestry only | Push the verified checkpoint, open a draft PR to `integration`, and obtain independent immutable-diff audit; TK-001 remains in progress |
 
 ## Completion Result
 
