@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | Fresh Codex discovery passed for the expanded 30-skill catalog; Claude remains blocked before skill loading by owner authentication. | Kayden authenticates Claude, then rerun the non-persistent Claude discovery probes and complete TK-003. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-009: Rewrite and promote pending `implement` and `code-review` as the next delivery-flow pair (ready) | codex | none | The 30-skill owner catalog is preserved, while 19 unfinished imports are fail-closed outside live discovery pending Workbench rewrites. | Rewrite and promote the first pending delivery pair under TK-009; Kayden authentication remains the separate Claude runtime gate. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

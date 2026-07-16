@@ -17,19 +17,13 @@ Default routes:
 - unclear idea or unresolved product decisions: `/grill-me`;
 - concise live orientation: `/sitrep`;
 - settled conversation needs updates to existing documentation: `/to-docs`;
-- shared project terms are unclear: `/ubiquitous-language` or
-  `/domain-modeling`;
 - settled conversation needs a durable work packet: `/to-spec`;
 - a spec needs executable slices: `/to-tickets`;
-- one eligible slice is ready to build: `/implement`;
-- the route to a large destination is still foggy: `/wayfinder`;
-- a runnable answer is needed before deciding: `/prototype`;
-- a hard bug lacks a proven cause: `/diagnosing-bugs`;
-- a diff needs independent standards/spec review: `/code-review`;
-- the project is difficult for agents to change safely:
-  `/improve-codebase-architecture`;
-- the current session needs to continue elsewhere: `/handoff`.
+- skill authoring rules are needed: `/writing-great-skills`.
 
 The main delivery flow is:
 
-`grill-me -> to-docs or to-spec -> to-tickets -> implement -> code-review`
+`grill-me -> to-docs or to-spec -> to-tickets`
+
+The selected catalog also preserves pending rewrites outside live discovery.
+Recommend only entries marked `Active` in the catalog.

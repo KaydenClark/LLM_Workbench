@@ -22,4 +22,3 @@ and what should happen next? Use the smallest sufficient scope.
 Create no durable artifact by default. If the investigation discovers stable
 knowledge worth keeping, perform a separate `/to-docs` step within the current
 authority; never copy live ticket state into a Wiki note.
-

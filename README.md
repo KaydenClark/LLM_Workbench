@@ -59,9 +59,10 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - canonical owner-editable skill library and selected definition
-  catalog. GPT_OS exposes this folder through both Claude and Codex-compatible
-  discovery paths.
+- `skills/` - canonical live, owner-editable skill discovery library. GPT_OS
+  exposes this folder through both Claude and Codex-compatible discovery paths.
+- `skills-pending/` - preserved selected baselines that remain non-invocable
+  until their Workbench rewrites pass review.
 - `team templates/` - optional manager/subagent coordination templates for
   small multi-agent runs.
 - `benchmarks/` - static-rubric scoring docs and result summaries.

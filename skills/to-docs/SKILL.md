@@ -31,4 +31,3 @@ Run the owning documentation checks. For a spec-backed change, finish with
 `node tools/spec-workbench.mjs render` and
 `node tools/spec-workbench.mjs doctor`. If no owner changed, report exactly
 `Docs checked; no update needed` with the reason.
-

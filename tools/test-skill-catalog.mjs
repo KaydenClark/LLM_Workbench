@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = path.join(root, 'skills');
+const pendingSkillsRoot = path.join(root, 'skills-pending');
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
   for (const term of requiredTerms) {
@@ -27,7 +28,8 @@ const rows = catalogRegion[1]
     return {
       name: cells[1].replaceAll('`', ''),
       definition: cells[2],
-      lane: cells[3]
+      lane: cells[3],
+      availability: cells[4]
     };
   });
 
@@ -38,19 +40,37 @@ for (const row of rows) {
   assert.ok(row.definition.length >= 20, `${row.name} needs a useful definition`);
   assert.match(row.lane, /^(Native|Core rewrite|Supporting rewrite|Reference)$/,
     `${row.name} needs a recognized rewrite lane`);
+  assert.match(row.availability, /^(Active|Pending rewrite)$/,
+    `${row.name} needs an explicit discovery availability`);
 }
 
 const catalogNames = rows.map((row) => row.name).sort();
+const activeNames = rows.filter((row) => row.availability === 'Active')
+  .map((row) => row.name).sort();
+const pendingNames = rows.filter((row) => row.availability === 'Pending rewrite')
+  .map((row) => row.name).sort();
 const directoryNames = fs.readdirSync(skillsRoot, { withFileTypes: true })
   .filter((entry) => entry.isDirectory() || entry.isSymbolicLink())
   .map((entry) => entry.name)
   .sort();
-assert.deepEqual(directoryNames, catalogNames,
-  'the editable skill folders must exactly match the selected catalog');
+const pendingDirectoryNames = fs.readdirSync(pendingSkillsRoot, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory() || entry.isSymbolicLink())
+  .map((entry) => entry.name)
+  .sort();
+assert.deepEqual(directoryNames, activeNames,
+  'live discovery must contain exactly the active selected skills');
+assert.deepEqual(pendingDirectoryNames, pendingNames,
+  'pending source folders must contain exactly the selected skills awaiting rewrite');
+assert.deepEqual([...directoryNames, ...pendingDirectoryNames].sort(), catalogNames,
+  'active and pending source folders together must preserve the 30-skill owner catalog');
 
-for (const name of catalogNames) {
+for (const name of activeNames) {
   assert.ok(fs.existsSync(path.join(skillsRoot, name, 'SKILL.md')),
-    `${name} must contain SKILL.md`);
+    `${name} must contain a live SKILL.md`);
+}
+for (const name of pendingNames) {
+  assert.ok(fs.existsSync(path.join(pendingSkillsRoot, name, 'SKILL.md')),
+    `${name} must preserve its pending source`);
 }
 
 assert.ok(catalogNames.includes('ask-workbench'), 'the Workbench router must be selected');
@@ -62,6 +82,33 @@ for (const removed of ['ask-matt', 'claude-handoff', 'qa', 'triage']) {
 }
 assert.ok(!catalogNames.includes('grill-with-docs'),
   'grill-with-docs must be retired in favor of grilling followed by to-docs');
+
+const importedNotice = read('THIRD_PARTY_NOTICES.md');
+assertIncludesAll(importedNotice, [
+  'Copyright (c) 2026 Matt Pocock',
+  'Permission is hereby granted, free of charge, to any person obtaining a copy',
+  'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND'
+], 'THIRD_PARTY_NOTICES.md');
+assert.match(catalog, /\[tracked third-party notice\]\(\.\.\/THIRD_PARTY_NOTICES\.md\)/,
+  'skill provenance must link the tracked upstream license notice');
+
+const forbiddenLivePatterns = [
+  /CONTEXT\.md/,
+  /docs\/agents/,
+  /\.scratch\//,
+  /docs\/adr/,
+  /\bADR'?s?\b/i,
+  /\bissue tracker\b/i,
+  /UBIQUITOUS_LANGUAGE\.md/,
+  /learning-records\//
+];
+for (const name of activeNames) {
+  const skill = read(`skills/${name}/SKILL.md`);
+  for (const pattern of forbiddenLivePatterns) {
+    assert.doesNotMatch(skill, pattern,
+      `${name} must not expose unfinished parallel truth-routing instructions`);
+  }
+}
 
 for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
   const lexicon = read(relative);
@@ -199,4 +246,21 @@ assertIncludesAll(router, [
   '`/update-harness`'
 ], 'ask-workbench');
 
-console.log('ok - selected skill catalog, folders, and shared lexicon are aligned');
+for (const name of pendingNames) {
+  assert.ok(!router.includes(`/${name}`),
+    `ask-workbench must not route users to pending skill ${name}`);
+}
+
+const updateHarness = read('skills/update-harness/SKILL.md');
+assert.match(updateHarness, /\/Users\/kayden\/GPT_OS\/Workbench Factory/,
+  'update-harness must use the canonical Workbench Factory path');
+assert.doesNotMatch(updateHarness, /\/Users\/kayden\/GPT_OS\/workbench templates/,
+  'update-harness must not use the compatibility alias as canonical source');
+
+for (const relative of ['skills/sitrep/SKILL.md', 'skills/to-docs/SKILL.md']) {
+  const content = read(relative);
+  assert.ok(content.endsWith('\n') && !content.endsWith('\n\n'),
+    `${relative} must end with exactly one newline`);
+}
+
+console.log('ok - selected active/pending skill catalog, licenses, routing, and lexicon are aligned');

@@ -18,7 +18,7 @@ canonical source confirms it exists.
 
 Canonical Workbench source on this machine:
 
-`/Users/kayden/GPT_OS/workbench templates`
+`/Users/kayden/GPT_OS/Workbench Factory`
 
 ## 1. Establish authority and source truth
 

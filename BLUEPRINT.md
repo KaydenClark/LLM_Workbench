@@ -3,7 +3,7 @@
 **Last reviewed:** 2026-07-12
 **Status:** active
 **Harness version:** v2.3
-**Source root:** `/Users/kayden/GPT_OS/workbench templates`
+**Source root:** `/Users/kayden/GPT_OS/Workbench Factory`
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
 ## Product Map
