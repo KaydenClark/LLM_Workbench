@@ -6,12 +6,12 @@
 **Spec ID:** S-014
 **Status:** active
 **Priority:** 0
-**Owner:** Captain
+**Owner:** codex-engineer
 **Updated:** 2026-07-16
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
 **Blockers:** none
-**Latest event:** Release-candidate plan captured from exact remote branch evidence.
-**Next gate:** Engineer claims TK-001 and reconciles main ancestry through an audited PR into integration.
+**Latest event:** TK-001 claimed by codex-engineer.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 ## Outcome
 
@@ -129,7 +129,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Reconcile main ancestry into integration through an audited merge PR | ready | none | pending |
+| TK-001 | Reconcile main ancestry into integration through an audited merge PR | in-progress | none | pending |
 | TK-002 | Audit exact integration and publish the evidence-bound release-gate status | ready | TK-001 | pending |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
