@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { parseMarkdownTableRow } from './markdown-table.mjs';
 
 const IMPACT_WEIGHT = { high: 3, medium: 2, low: 1 };
 const RUN_OUTCOME_CATEGORIES = new Set([
@@ -22,13 +23,37 @@ const STOP_WORDS = new Set([
 
 export function parseFeedbackRows(markdown, source) {
   const rows = [];
-  for (const line of markdown.split(/\r?\n/)) {
-    if (!line.trim().startsWith('|')) continue;
-    const cells = line.trim().slice(1, -1).split('|').map(cleanCell);
-    if (cells.length !== 6 || cells[0] === 'Date' || cells.every((cell) => /^-+$/.test(cell))) continue;
+  let inFeedbackTable = false;
+  const lines = markdown.split(/\r?\n/);
+  for (const [index, line] of lines.entries()) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith('|')) {
+      if (inFeedbackTable) inFeedbackTable = false;
+      continue;
+    }
+    if (!trimmed.endsWith('|')) {
+      if (inFeedbackTable) throw malformedFeedbackRow(index + 1, 'row must end with |');
+      continue;
+    }
+
+    const cells = parseMarkdownTableRow(trimmed).map(cleanCell);
+    if (isFeedbackHeader(cells)) {
+      inFeedbackTable = true;
+      continue;
+    }
+    if (!inFeedbackTable) continue;
+    if (cells.length !== 6) {
+      throw malformedFeedbackRow(index + 1, `expected 6 columns, found ${cells.length}`);
+    }
+    if (cells.every((cell) => /^-+$/.test(cell))) continue;
+
     const [date, docSection, whatHappened, impactText, proposedChange, statusText] = cells;
     const status = normalize(statusText);
-    if (status !== 'new' || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+    if (status !== 'new') continue;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      if (/^\[YYYY-MM-DD\]$/.test(date)) continue;
+      throw malformedFeedbackRow(index + 1, `invalid date ${date || '(empty)'}`);
+    }
     const impact = Object.keys(IMPACT_WEIGHT).find((value) => normalize(impactText).startsWith(value)) ?? 'low';
     const normalized = [source.repo, date, docSection, whatHappened, proposedChange]
       .map(normalize)
@@ -48,6 +73,15 @@ export function parseFeedbackRows(markdown, source) {
     });
   }
   return rows;
+}
+
+function isFeedbackHeader(cells) {
+  return cells.length === 6
+    && cells.map(normalize).join('|') === 'date|doc / section|what happened|impact|proposed change|status';
+}
+
+function malformedFeedbackRow(line, detail) {
+  return new Error(`HARNESS_FEEDBACK line ${line} is malformed: ${detail}`);
 }
 
 export function discoverFeedback(projectsRoot) {

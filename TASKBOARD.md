@@ -1,6 +1,6 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** S-014/TK-002 is in progress under Captain: run one read-only Auditor task, then a separate Engineer Publisher task only after PASS.
+**Current focus:** S-014/TK-002 remains in progress with REQUEST CHANGES: independently audit the escaped-table parser repair before restarting release evidence work.
 **Owner:** Kayden (executive); agents execute assigned slices
 **Last updated:** 2026-07-16
 
@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-002: Coordinate separate exact-head audit and evidence publication tasks (in-progress) | Captain (TK-002 coordination) | none | TK-002 authority is split into separate read-only Auditor and Engineer Publisher tasks under Captain coordination. | Land this final docs-only transition; Captain then assigns the exact integration audit, and only a PASS may trigger a separate Engineer task to publish unchanged evidence and status. |
+| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-002: Coordinate separate exact-head audit and evidence publication tasks (in-progress) | Captain (TK-002 coordination) | parser repair audit | Draft parser-repair PR #33 is ready for an independent exact-head audit after REQUEST CHANGES on integration `bb5d9c1`. | Independently audit the parser-repair PR exact head; only a green merged integration head may restart the TK-002 Auditor/Publisher gate. |
 | [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-009 exact-head delivery audit repair passed. | Complete TK-003. |
 <!-- hot-specs:end -->
 
