@@ -9,9 +9,9 @@
 **Owner:** Captain (TK-002 coordination)
 **Updated:** 2026-07-16
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** none
-**Latest event:** TK-002 authority is split into separate read-only Auditor and Engineer Publisher tasks under Captain coordination.
-**Next gate:** Land this final docs-only transition; Captain then assigns the exact integration audit, and only a PASS may trigger a separate Engineer task to publish unchanged evidence and status.
+**Blockers:** Exact-head audit returned REQUEST CHANGES for escaped Markdown table parsing.
+**Latest event:** The TK-002 audit rejected exact integration `bb5d9c1`; an Engineer parser repair is under review.
+**Next gate:** Independently audit the parser-repair PR exact head; only a green merged integration head may restart the TK-002 Auditor/Publisher gate.
 
 ## Outcome
 
@@ -31,7 +31,7 @@ without weakening either repository's release boundary.
 ## Current Verified State
 
 - `origin/integration` is exact commit
-  `a9fb9f921011c1893e4d468ca5f6f15e5bc6b313`; `origin/main` is exact commit
+  `bb5d9c1136e096e9d26cf8a9e5f1710d1d2d614f`; `origin/main` is exact commit
   `dd1ed326a1d55e1f2303aa233cc4d1bf6a0a4270`.
 - Audited PR #31 used exact head
   `490ad580d7b0c679bf6411d3d22696022b58515e`. Its ancestry merge
@@ -39,11 +39,11 @@ without weakening either repository's release boundary.
   as its second parent and preserves the integration-side tree. GitHub merged
   PR #31 to integration as `a9fb9f9`; `git merge-base --is-ancestor` now
   confirms that main is an ancestor of integration.
-- No `integration` to `main` promotion PR exists. Integration `a9fb9f9` has no
-  GitHub commit status, so CIC remains fail-closed. This docs transition is the
-  last planned integration content mutation before the exact-SHA release gate;
-  later audit evidence is attached through GitHub status and a durable HTTPS
-  target without changing the audited candidate tree or branch head.
+- No `integration` to `main` promotion PR exists. Integration `bb5d9c1` has no
+  GitHub commit status, so CIC remains fail-closed. Its exact-head audit returned
+  REQUEST CHANGES because escaped pipes were split as Markdown table delimiters
+  in the spec lifecycle and feedback automation paths. The repair must enter
+  integration through a separately reviewed PR before a fresh release audit.
 - The integration checkpoint is the already-audited safe harness checkpoint
   selected for release preparation. S-011 separately remains active: thirteen
   reviewed skills are live, seventeen imported baselines remain isolated under
@@ -105,6 +105,9 @@ without weakening either repository's release boundary.
   status with evidence is allowed, but absence or failure must remain fail-closed.
 - Any later integration commit invalidates the candidate naturally: the new SHA
   has no inherited success status and requires a new exact-head audit.
+- Escaped Markdown table cells are release-critical data. Spec lifecycle and
+  feedback automation parsing must preserve escaped pipes and backslashes,
+  reject malformed active rows explicitly, and avoid partial persistence.
 - This TK-001-to-TK-002 docs transition is the last planned integration content
   mutation before release-gate publication. TK-002 must resolve and pin the
   exact integration SHA after this transition lands; its GitHub status and HTTPS
@@ -151,7 +154,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile main ancestry into integration through an audited merge PR | done | none | PR #31 head `490ad58`; ancestry merge `88b6f7e`; integration merge `a9fb9f9` |
-| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | in-progress | none | pending Auditor verdict, then separately authorized Engineer publication |
+| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | in-progress | parser repair audit | REQUEST CHANGES; repair PR must pass independent audit before a fresh exact-integration audit |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
 ### Scoped Ticket: TK-001
@@ -319,6 +322,8 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-07-16 | TK-001 candidate verification | Verified the ancestry-only candidate without changing harness behavior or weakening gates | Complete RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; live guardrail remained 78/100 with only pre-existing real-outcome gaps; held-out path grader, eval runner, render, doctor, and diff checks passed; gitleaks scanned 62 commits plus the directory and found no leaks | S-014 and generated Taskboard own the current state; RUNBOOK, README, templates, skills, and benchmarks checked with no update needed because the reconciliation changes ancestry only | Push the verified checkpoint, open a draft PR to `integration`, and obtain independent immutable-diff audit; TK-001 remains in progress |
 | 2026-07-16 | TK-001 completion and TK-002 handoff | Closed the audited ancestry reconciliation and assigned exact-head release evidence work | PR #31 merged exact reviewed head `490ad58`; ancestry merge `88b6f7e` records exact main `dd1ed32`; integration merge is `a9fb9f9`; remote refs match, main ancestry passes, integration has zero statuses, and no promotion PR exists; complete RUNBOOK suite, root evaluator 113/113, templates 106.6/113, render, doctor, `next`, diff, and gitleaks directory checks passed | Updated S-014 and generated Taskboard only; this transition is the last planned integration content mutation before the exact-SHA gate | Merge this docs-only transition, then independently audit the resulting exact integration SHA and attach status plus durable HTTPS evidence without moving it; TK-002 is in progress |
 | 2026-07-16 | TK-002 role-authority repair | Split the combined audit/publication handoff into two separately authorized Captain assignments | Captain, Auditor, and Engineer role contracts inspected; full RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; render, doctor, `next`, diff, and gitleaks directory checks passed | Updated S-014 and generated Taskboard only; no release status, evidence comment, promotion PR, audit file, or protected ref changed | Push the repaired PR #32 checkpoint; after it lands, Captain assigns the read-only Auditor first and authorizes the Engineer Publisher only on PASS |
+| 2026-07-16 | TK-002 parser repair candidate | Exact-head audit of integration `bb5d9c1` returned REQUEST CHANGES after escaped pipes were treated as table delimiters; added one escape-aware parser shared by spec lifecycle and feedback automation | Focused red tests reproduced broken `node test \| tee proof.log` round-trip and dropped escaped HARNESS_FEEDBACK pipeline; focused green tests preserve pipes/backslashes, reject malformed rows explicitly, and prove rejected spec mutation has no partial persistence | Updated S-014 and generated Taskboard; RUNBOOK, README, templates, and skills checked with no change needed because the existing commands and public harness contract remain accurate | Run the full verification gate, publish the repair PR, then obtain an independent exact-head audit; TK-002 remains in progress and no success status or promotion PR may be created |
+| 2026-07-16 | TK-002 parser repair verification | Verified the repair candidate without advancing the release gate | Complete RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; live guardrail remained 78/100 with only pre-existing real-outcome gaps; render, doctor, `next`, and diff checks passed | Docs checked; no additional update needed beyond S-014 and generated Taskboard because operational commands and public controls are unchanged | Commit and push the candidate, open a draft PR to integration, and obtain an independent exact-head audit |
 
 ## Completion Result
 
