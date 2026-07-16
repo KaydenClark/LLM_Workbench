@@ -10,8 +10,8 @@
 **Updated:** 2026-07-16
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-007 closed with callable Genesis, one-time Adoption, and routine update routing separated.
-**Next gate:** Rerun fresh Codex and Claude discovery for the 30-skill catalog; Claude remains an owner-auth gate.
+**Latest event:** Fresh Codex discovery passed for the expanded 30-skill catalog; Claude remains blocked before skill loading by owner authentication.
+**Next gate:** Kayden authenticates Claude, then rerun the non-persistent Claude discovery probes and complete TK-003.
 
 ## Outcome
 
@@ -221,7 +221,7 @@ the only routine harness-update route.
 - [ ] Core-flow skills reference only Workbench control-doc nouns (no
       `docs/agents/`, `.scratch/`, `CONTEXT.md` writes).
 - [ ] A fresh Claude Code session in GPT_OS lists the skills as invocable.
-- [ ] A fresh Codex session in GPT_OS lists the same canonical skills after the
+- [x] A fresh Codex session in GPT_OS lists the same canonical skills after the
       Genesis and Adoption additions.
 - [x] Router skill routes Sitrep plus the main flow (grill → to-docs or to-spec
       → to-tickets → implement → review) using Workbench names.
@@ -268,6 +268,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-16 | TK-006 | Ticket closed | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed | Updated skills README, ask-workbench, grilling, to-spec, new sitrep/to-docs skills, S-011, and generated TASKBOARD | Remaining imported skill rewrites and fresh Claude/Codex discovery; Genesis and Adoption callable entries remain a later authorized slice |
 | 2026-07-16 | TK-003 discovery audit | Fresh ephemeral Codex discovered and dry-ran `sitrep` and `to-docs`; the retired `grill-with-docs` was absent. Claude stopped before skill loading because the owner's OAuth session is expired. | Canonical alias and both discovery symlinks resolve to `Workbench Factory/skills`; catalog count 28; `codex exec --ephemeral --sandbox read-only` exited 0; `claude --print --no-session-persistence --permission-mode plan --tools ''` exited 1 with expired OAuth; `claude auth status` reports `loggedIn: false` | Updated S-011 and generated Taskboard only; no credential or runtime configuration changed | Kayden authenticates Claude, then rerun `/sitrep` and `/to-docs`; remaining imported skill rewrites and downstream distribution still follow |
 | 2026-07-16 | TK-007 | Added thin `genesis` and `adoption` entrypoints over the existing protocols; Genesis owns greenfield setup, Adoption owns first migration only, and `update-harness` owns routine upgrades. Both entrypoints require remote-first checkpoints and stop automation at `integration`. | Catalog contract failed red at 28 vs 30, then passed green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and `git diff --check` passed | Updated skill catalog/router, two new skills, S-011, and generated Taskboard; protocol detail remains in existing Genesis/Adoption templates | Fresh discovery must be rerun for the expanded 30-skill catalog; Claude remains blocked on owner authentication; other imported rewrite lanes remain |
+| 2026-07-16 | TK-003 discovery audit after TK-007 | A fresh ephemeral Codex session exposed `genesis`, `adoption`, `update-harness`, `sitrep`, and `to-docs`, excluded retired `grill-with-docs`, and correctly distinguished the three project-lifecycle routes. | `codex exec --ephemeral --sandbox read-only --cd /Users/kayden/GPT_OS` exited 0 against pushed commit `5b60ab5`; both discovery links resolve through the compatibility alias to canonical `Workbench Factory/skills` | Updated S-011 and generated Taskboard only; no credential or runtime configuration changed | Claude discovery remains blocked until Kayden authenticates; remaining imported rewrite lanes and downstream distribution still follow |
 
 ## Completion Result
 
