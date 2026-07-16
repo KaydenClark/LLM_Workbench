@@ -18,7 +18,8 @@ belongs to the Workbench rather than the upstream workflow.
 | `ask-workbench` | Route a situation to the smallest appropriate Workbench skill or flow when the owner does not remember the command. | Native |
 | `grilling` | Ask one decision question at a time, include a recommended answer, research discoverable facts, and stop before implementation. | Core rewrite |
 | `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite |
-| `grill-with-docs` | Run a repo-aware grilling session and capture settled shared terms and durable decisions in Workbench-owned files. | Core rewrite |
+| `sitrep` | Give a smallest-scope conversational situation report, dispatching read-only Scout research only when the live evidence is insufficient. | Native |
+| `to-docs` | Route settled conversation truth into existing Workbench documentation owners without restarting discovery or creating another store. | Native |
 | `to-spec` | Synthesize an already-settled conversation into one stable `S-###/SPEC.md` capability record without restarting the interview. | Core rewrite |
 | `to-tickets` | Break a spec into one-context tracer-bullet slices with explicit blockers inside the spec's implementation table. | Core rewrite |
 | `wayfinder` | Reduce fog in work too large to specify by resolving one investigation decision at a time toward a named destination. | Supporting rewrite |
@@ -60,8 +61,10 @@ reference material only. In particular, it must not create `CONTEXT.md`,
 
 The upstream baselines came from
 [`mattpocock/skills`](https://github.com/mattpocock/skills) under the MIT
-license. `ask-workbench` is the Workbench-owned successor to `ask-matt`, and
-`update-harness` was authored in this repository. The untouched local snapshot
+license. `ask-workbench` is the Workbench-owned successor to `ask-matt`;
+`sitrep`, `to-docs`, and `update-harness` were authored in this repository.
+`to-docs` replaces the retired `grill-with-docs` wrapper so interviewing and
+persistence remain separate. The untouched local snapshot
 is retained outside the live discovery path at
 `GPT_OS/.agents/upstream-matt-skills-2026-07-14/` for comparison.
 

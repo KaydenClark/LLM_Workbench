@@ -9,4 +9,8 @@ Ask the questions one at a time, waiting for feedback on each question before co
 
 If a fact can be found by exploring the environment (filesystem, tools, etc.), look it up rather than asking me. The decisions, though, are mine — put each one to me and wait for my answer.
 
-Do not act on it until I confirm we have reached a shared understanding.
+Do not act on it until I confirm we have reached a shared understanding. Keep
+grilling until I use the exact passphrase `make it so` (case-insensitive,
+ignoring surrounding punctuation). Similar confirmation or implementation
+phrases do not stop the interview. When I use it, summarize the locked scope and
+proceed only within the standing project authority and safety boundaries.

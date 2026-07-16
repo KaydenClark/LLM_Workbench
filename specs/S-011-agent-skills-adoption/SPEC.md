@@ -6,12 +6,12 @@
 **Spec ID:** S-011
 **Status:** active
 **Priority:** 2
-**Owner:** Kayden (product); Codex (execution)
-**Updated:** 2026-07-15
+**Owner:** codex
+**Updated:** 2026-07-16
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** Owner simplification review removed runtime-specific and duplicated skill scaffolding.
-**Next gate:** Refine and claim one bounded TK-006 rewrite slice.
+**Latest event:** TK-006 closed with proof.
+**Next gate:** Complete TK-003.
 
 ## Outcome
 
@@ -30,9 +30,8 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 ## Current Verified State
 
-- `skills/` contains exactly the 27 entries in the owner-approved catalog: 25
-  selected upstream baselines, the Workbench-owned `ask-workbench` router, and
-  the native `update-harness` skill.
+- `skills/` is expanding from the 27-entry imported catalog to 28 owner-approved
+  entries by retiring `grill-with-docs` and adding native `sitrep` and `to-docs`.
 - Most imported text still references upstream conventions (`docs/agents/`,
   `CONTEXT.md`, `.scratch/`, GitHub issue trackers) that conflict with the
   Workbench truth-routing contract; rewrites pending.
@@ -51,6 +50,8 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 - `LEXICON.md` owns accepted cross-capability terms without becoming an
   always-loaded requirements or decision file.
 - `ask-workbench` maps situations to the smallest suitable skill or flow.
+- Sitrep stays conversational and read-only; documentation persistence is a
+  separate `to-docs` action.
 - Skills are distributed to projects through the harness upgrade path.
 
 ## Decisions And Contracts
@@ -70,6 +71,9 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
   reconstruct the design concept but is not the design concept or glossary.
 - BLUEPRINT keeps its name and design-concept role; the Pocock per-feature
   "spec/PRD" maps to `S-###` specs and tickets, not to BLUEPRINT.
+- Grilling ends only on Kayden's exact `make it so` passphrase. `to-docs` owns
+  persistence after settled conversation; the combined `grill-with-docs`
+  wrapper is retired.
 
 ## Non-Goals
 
@@ -92,7 +96,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | TK-002, TK-005, TK-006 | pending |
 | TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
 | TK-005 | Rewrite the grilling discipline and its Desktop-facing entry points | done | none | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
-| TK-006 | Rewrite the remaining selected skills in bounded follow-on slices | ready | none | pending |
+| TK-006 | Add Sitrep and split settled documentation/spec capture from grilling | done | none | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
 
 ### Scoped Ticket: TK-002
 
@@ -161,6 +165,25 @@ discoverable facts, and routes only settled truth to existing Workbench owners.
 Check the catalog, Blueprint, Lexicon, and Runbook for drift; update only the
 owning surface.
 
+### Scoped Ticket: TK-006
+
+**Vertical slice:** Add native `sitrep` and `to-docs`, rewrite `to-spec` into the
+Workbench lifecycle, add the exact grilling authorization passphrase, and retire
+the overlapping `grill-with-docs` wrapper.
+
+**Done criteria:**
+
+- Sitrep is conversation-only, read-only, smallest-scope, and delegates Scout
+  only when evidence is insufficient.
+- `to-docs` routes settled truth to existing owners and never creates another
+  tracker or document layer.
+- `to-spec` creates or updates one stable Workbench spec, renders, and runs
+  doctor without publishing to an external tracker.
+- Grilling stops only for the exact `make it so` passphrase; the catalog and
+  router contain `sitrep` and `to-docs` but no `grill-with-docs`.
+- The red/green catalog test, full Runbook suite, render, doctor, and diff check
+  pass. Static scores remain diagnostics rather than outcome claims.
+
 ## Acceptance Criteria
 
 - [x] The selected catalog and physical skill folders match exactly.
@@ -172,9 +195,10 @@ owning surface.
       `docs/agents/`, `.scratch/`, `CONTEXT.md` writes).
 - [ ] A fresh Claude Code session in GPT_OS lists the skills as invocable.
 - [ ] A fresh Codex session in GPT_OS lists the same canonical skills.
-- [x] Router skill routes the main flow (grill → to-spec → to-tickets →
-      implement → review) using Workbench names.
-- [x] `skills/README.md` selected catalog matches the folder contents.
+- [x] Router skill routes Sitrep plus the main flow (grill → to-docs or to-spec
+      → to-tickets → implement → review) using Workbench names.
+- [x] `skills/README.md` selected catalog matches the folder contents after
+      Sitrep/documentation routing lands.
 
 ## Testing Seams
 
@@ -211,6 +235,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-15 | TK-005 | Ticket closed | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed | Updated the three grilling skills and S-011; skills README, BLUEPRINT, LEXICON, and RUNBOOK checked with no update needed because their ownership and catalog definitions remain accurate | TK-006 remaining rewrites; TK-003 fresh-session discovery and behavior proof |
 | 2026-07-15 | TK-005 review | Independent standards/spec review findings addressed | Linked the design-concept definition to LEXICON, removed wrapper duplication, strengthened parallel-layer guards; final RUNBOOK suite, both discovery symlinks, render, doctor, and git diff --check passed | S-011 evidence updated; other owning docs remain accurate | TK-006 remaining rewrites; TK-003 fresh-session discovery and behavior proof |
 | 2026-07-15 | S-011 owner simplification review | Restored Matt's compact `grilling` and `grill-me` behavior, reduced `grill-with-docs` to its Workbench-specific delta, pruned duplicated router and `to-tickets` rules, and changed catalog tests to enforce behavior rather than the removed framework terms | Targeted catalog test failed red on the old behavior and passed green after the correction; full RUNBOOK suite passed; template evaluator remained 106.6/113; render, doctor, and git diff --check passed | Updated S-011's current TK-005 criteria and evidence; skills README, BLUEPRINT, LEXICON, and RUNBOOK checked with no update needed because their ownership and catalog definitions remain accurate | Prompt contracts are verified, but fresh-session behavior remains TK-003 |
+| 2026-07-16 | TK-006 | Ticket closed | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed | Updated skills README, ask-workbench, grilling, to-spec, new sitrep/to-docs skills, S-011, and generated TASKBOARD | Remaining imported skill rewrites and fresh Claude/Codex discovery; Genesis and Adoption callable entries remain a later authorized slice |
 
 ## Completion Result
 

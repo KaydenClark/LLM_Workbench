@@ -12,6 +12,8 @@ to ask before starting the recommended skill.
 Default routes:
 
 - unclear idea or unresolved product decisions: `/grill-me`;
+- concise live orientation: `/sitrep`;
+- settled conversation needs updates to existing documentation: `/to-docs`;
 - shared project terms are unclear: `/ubiquitous-language` or
   `/domain-modeling`;
 - settled conversation needs a durable work packet: `/to-spec`;
@@ -27,4 +29,4 @@ Default routes:
 
 The main delivery flow is:
 
-`grill-me -> to-spec -> to-tickets -> implement -> code-review`
+`grill-me -> to-docs or to-spec -> to-tickets -> implement -> code-review`
