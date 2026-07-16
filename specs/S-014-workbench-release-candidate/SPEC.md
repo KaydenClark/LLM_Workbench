@@ -6,12 +6,12 @@
 **Spec ID:** S-014
 **Status:** active
 **Priority:** 0
-**Owner:** codex-engineer
+**Owner:** Captain (TK-002 coordination)
 **Updated:** 2026-07-16
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
 **Blockers:** none
-**Latest event:** TK-001 ancestry-only merge candidate is fully verified; remote checkpoint and independent audit remain.
-**Next gate:** Independently audit the pushed PR #31 checkpoint, then complete integration review; TK-001 remains in progress.
+**Latest event:** TK-002 authority is split into separate read-only Auditor and Engineer Publisher tasks under Captain coordination.
+**Next gate:** Land this final docs-only transition; Captain then assigns the exact integration audit, and only a PASS may trigger a separate Engineer task to publish unchanged evidence and status.
 
 ## Outcome
 
@@ -31,16 +31,19 @@ without weakening either repository's release boundary.
 ## Current Verified State
 
 - `origin/integration` is exact commit
-  `5f2c400125f399a1029cdbfa04068bff31fc1a00`; `origin/main` is exact commit
+  `a9fb9f921011c1893e4d468ca5f6f15e5bc6b313`; `origin/main` is exact commit
   `dd1ed326a1d55e1f2303aa233cc4d1bf6a0a4270`.
-- Their merge base is `debd8b6339582d00d061e5b4bcf5f79bcf3c39be`.
-  `origin/main` is not yet an ancestor of remote `origin/integration`; the only
-  main-only commit is the prior integration promotion merge `dd1ed32`. Candidate
-  merge `88b6f7e` has exact `dd1ed32` as its second parent, leaves its first-parent
-  tree unchanged, and makes main an ancestor on the feature branch.
-- No `integration` to `main` promotion PR exists. Planning PR #30 merged S-014
-  into `integration` at `5f2c400`; the current integration SHA has no GitHub
-  commit status. CIC therefore cannot see a ready candidate yet.
+- Audited PR #31 used exact head
+  `490ad580d7b0c679bf6411d3d22696022b58515e`. Its ancestry merge
+  `88b6f7e0a9edc25e45778a8c04cce59f5c570f6c` records exact main `dd1ed32`
+  as its second parent and preserves the integration-side tree. GitHub merged
+  PR #31 to integration as `a9fb9f9`; `git merge-base --is-ancestor` now
+  confirms that main is an ancestor of integration.
+- No `integration` to `main` promotion PR exists. Integration `a9fb9f9` has no
+  GitHub commit status, so CIC remains fail-closed. This docs transition is the
+  last planned integration content mutation before the exact-SHA release gate;
+  later audit evidence is attached through GitHub status and a durable HTTPS
+  target without changing the audited candidate tree or branch head.
 - The integration checkpoint is the already-audited safe harness checkpoint
   selected for release preparation. S-011 separately remains active: thirteen
   reviewed skills are live, seventeen imported baselines remain isolated under
@@ -61,8 +64,10 @@ without weakening either repository's release boundary.
 - Run the complete Workbench verification suite on the reconciliation branch
   and again on the exact resulting remote integration head.
 - Give an independent Auditor a fresh, immutable exact-integration review.
-- Publish `gptos/workbench-release-gate: success` only on the exact SHA that
-  passed that review, with a durable HTTPS evidence URL and concise summary.
+- After the Auditor returns PASS without external changes, have Captain assign
+  a separate Engineer Publisher task to recheck the immutable candidate and
+  publish `gptos/workbench-release-gate: success` with the Auditor's unchanged
+  verdict, durable HTTPS evidence URL, and concise summary.
 - Open or preserve exactly one non-draft `integration` to `main` pull request
   whose exact head/base match the audited integration and current main SHAs.
 - Leave that promotion PR open. Kayden remains the only release authority and
@@ -77,9 +82,17 @@ without weakening either repository's release boundary.
 - The reconciliation is not complete until
   `git merge-base --is-ancestor origin/main origin/integration` succeeds after
   the audited PR lands and the full suite is green on the resulting exact head.
-- TK-002 starts only after TK-001. Its Auditor uses a fresh registered worktree
-  or clean clone at the immutable remote integration SHA and remains read-only
-  while reviewing source, tests, controls, branch identity, and full-suite proof.
+- Captain coordinates TK-002 as two separate role invocations. First, a
+  read-only Auditor uses a fresh registered worktree or clean clone at the
+  immutable remote integration SHA, reviews source, tests, controls, branch
+  identity, and full-suite proof, then returns its verdict and evidence without
+  editing audited files or changing external state.
+- Only after an Auditor PASS may Captain authorize a separate Engineer task as
+  Publisher. The Engineer rechecks that integration SHA, main SHA, ancestry,
+  and promotion-PR state are unchanged, then posts the Auditor's evidence to a
+  durable HTTPS target and attaches the exact release status. The Engineer may
+  not rewrite the verdict, alter audit files, move either branch, or combine
+  publication with the audit role.
 - A success status is evidence, not a scheduling flag. It may be published only
   after the exact-head audit passes with no unresolved finding. The status
   target must be a durable HTTPS permalink containing the audited SHA, commands,
@@ -92,6 +105,10 @@ without weakening either repository's release boundary.
   status with evidence is allowed, but absence or failure must remain fail-closed.
 - Any later integration commit invalidates the candidate naturally: the new SHA
   has no inherited success status and requires a new exact-head audit.
+- This TK-001-to-TK-002 docs transition is the last planned integration content
+  mutation before release-gate publication. TK-002 must resolve and pin the
+  exact integration SHA after this transition lands; its GitHub status and HTTPS
+  evidence target annotate that immutable SHA and do not move the candidate.
 - TK-003 queries GitHub before mutation. If no matching promotion PR exists, it
   opens one non-draft PR with head `integration`, base `main`, and a body that
   requires merge-commit semantics. If exactly one exact matching PR already
@@ -115,6 +132,8 @@ without weakening either repository's release boundary.
   permissions solely to manufacture release evidence.
 - Changing CIC, its fixed release contract, or its mobile interface.
 - Publishing a success status before the exact-head independent audit finishes.
+- Letting the Auditor publish external evidence/status, or letting the Engineer
+  Publisher reinterpret the verdict or edit the audited candidate.
 
 ## Dependencies And Blockers
 
@@ -131,8 +150,8 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Reconcile main ancestry into integration through an audited merge PR | in-progress | none | pending |
-| TK-002 | Audit exact integration and publish the evidence-bound release-gate status | ready | TK-001 | pending |
+| TK-001 | Reconcile main ancestry into integration through an audited merge PR | done | none | PR #31 head `490ad58`; ancestry merge `88b6f7e`; integration merge `a9fb9f9` |
+| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | in-progress | none | pending Auditor verdict, then separately authorized Engineer publication |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
 ### Scoped Ticket: TK-001
@@ -168,29 +187,41 @@ git diff --check
 
 ### Scoped Ticket: TK-002
 
-**Vertical slice:** Give a separate read-only Auditor the immutable post-TK-001
-integration SHA, rerun the complete suite from a fresh worktree, publish durable
-GitHub evidence, and attach the fixed success context only if every exact-head
-gate passes.
+**Vertical slice:** Captain first assigns a read-only Auditor the immutable
+post-transition integration SHA and receives its evidence-backed verdict with
+no external changes. Only after PASS, Captain assigns a separate Engineer as
+Publisher to recheck the unchanged candidate and post the exact verdict,
+durable HTTPS evidence, and fixed success context.
 
 **Done criteria:**
 
 - The audit records the exact local and remote integration SHA, clean worktree,
   exact main SHA, successful ancestry check, full suite, and release-scope diff.
-- The evidence permalink is HTTPS and states the exact SHA, command results,
-  Auditor identity, no-merge boundary, and S-011 Claude/pending-skill limitation.
+- The Auditor returns prioritized findings or PASS, commands/results, identity,
+  limitations, and residual risk in chat; it changes no audited file, GitHub
+  comment, commit status, pull request, branch, or other external state.
+- The separately authorized Engineer Publisher rechecks the exact integration
+  and main SHAs, ancestry, and promotion-PR state against the Auditor handoff
+  before any write. Drift stops publication and returns the candidate to audit.
+- The Publisher creates an HTTPS evidence permalink that preserves the
+  Auditor's verdict and states the exact SHA, command results, Auditor identity,
+  no-merge boundary, and S-011 Claude/pending-skill limitation without altering
+  audit files or the candidate.
 - GitHub's combined status for that exact integration SHA contains one latest
   `gptos/workbench-release-gate` success with the same evidence URL and concise
   Auditor summary.
 - No status success exists for a failed, changed, or unaudited SHA. No PR is
   opened and no branch is merged by this ticket.
 
-**Verification:** Full RUNBOOK suite plus literal GitHub status JSON inspection:
+**Verification:** The Auditor runs the full RUNBOOK suite and returns the
+read-only evidence packet. The separate Engineer Publisher then repeats the
+identity and safety reads immediately before publication:
 
 ```bash
 git rev-parse HEAD origin/integration
 git status --short
 git merge-base --is-ancestor origin/main origin/integration
+gh pr list --state open --base main --head integration --json number,isDraft,headRefOid,baseRefName,headRefName,url
 gh api repos/KaydenClark/LLM_Workbench/commits/$(git rev-parse origin/integration)/status
 ```
 
@@ -221,9 +252,9 @@ gh api repos/KaydenClark/LLM_Workbench/commits/$(git rev-parse origin/integratio
 
 ## Acceptance Criteria
 
-- [ ] Current `origin/main` becomes an ancestor of `origin/integration` through
+- [x] Current `origin/main` becomes an ancestor of `origin/integration` through
       an audited merge PR without history rewriting or direct protected-branch writes.
-- [ ] The complete Workbench suite passes on the reconciliation head and exact
+- [x] The complete Workbench suite passes on the reconciliation head and exact
       resulting remote integration head.
 - [ ] A separate Auditor reviews the immutable post-reconciliation integration
       SHA from a clean worktree with no unresolved finding.
@@ -245,7 +276,10 @@ gh api repos/KaydenClark/LLM_Workbench/commits/$(git rev-parse origin/integratio
 - Git ancestry: literal `merge-base --is-ancestor` before and after TK-001.
 - Harness health: every command in RUNBOOK Full verification at the candidate SHA.
 - Independent audit: fresh worktree identity, clean state, fixed diff, and
-  exact-head rerun owned by a separate Auditor task.
+  exact-head rerun owned by one read-only Auditor task with no external writes.
+- Publication authority: a later, separate Engineer task rechecks unchanged
+  identity/ancestry/PR state, preserves the Auditor verdict, and alone writes
+  the durable HTTPS evidence and exact-SHA status.
 - Status contract: GitHub combined-status JSON for the immutable integration SHA.
 - PR contract: GitHub list/detail JSON proving exactly one open non-draft fixed PR.
 - CIC compatibility: read-only candidate inspection against the fixed public
@@ -283,6 +317,8 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-07-16 | plan verification | Verified the planning-only work packet and generated projections | Complete RUNBOOK suite passed; root evaluator self-test 113/113; templates 106.6/113; guardrail self-test green at its current 68/100 fixture; render, doctor, and `git diff --check` passed | Docs checked; no additional update needed because S-014 owns the new capability and the generated Blueprint/Taskboard project it | Commit, push, and open the draft planning PR to `integration` |
 | 2026-07-16 | TK-001 reconciliation candidate | Claimed TK-001 from exact integration `5f2c400`, checkpointed the claim, and merged exact main `dd1ed32` with real merge commit `88b6f7e` | Pre-merge ancestry check failed as expected; merge used `ort`, reported no conflicts, retained the first-parent tree exactly, recorded exact main as second parent, and made main an ancestor of the candidate; live guardrail baseline 78/100 | Updated S-014 current state/evidence and generated Taskboard; RUNBOOK/README/templates checked with no change needed because no operational or harness behavior changed | Full verification, remote checkpoint, draft PR, and independent exact-diff audit remain; TK-001 stays in progress |
 | 2026-07-16 | TK-001 candidate verification | Verified the ancestry-only candidate without changing harness behavior or weakening gates | Complete RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; live guardrail remained 78/100 with only pre-existing real-outcome gaps; held-out path grader, eval runner, render, doctor, and diff checks passed; gitleaks scanned 62 commits plus the directory and found no leaks | S-014 and generated Taskboard own the current state; RUNBOOK, README, templates, skills, and benchmarks checked with no update needed because the reconciliation changes ancestry only | Push the verified checkpoint, open a draft PR to `integration`, and obtain independent immutable-diff audit; TK-001 remains in progress |
+| 2026-07-16 | TK-001 completion and TK-002 handoff | Closed the audited ancestry reconciliation and assigned exact-head release evidence work | PR #31 merged exact reviewed head `490ad58`; ancestry merge `88b6f7e` records exact main `dd1ed32`; integration merge is `a9fb9f9`; remote refs match, main ancestry passes, integration has zero statuses, and no promotion PR exists; complete RUNBOOK suite, root evaluator 113/113, templates 106.6/113, render, doctor, `next`, diff, and gitleaks directory checks passed | Updated S-014 and generated Taskboard only; this transition is the last planned integration content mutation before the exact-SHA gate | Merge this docs-only transition, then independently audit the resulting exact integration SHA and attach status plus durable HTTPS evidence without moving it; TK-002 is in progress |
+| 2026-07-16 | TK-002 role-authority repair | Split the combined audit/publication handoff into two separately authorized Captain assignments | Captain, Auditor, and Engineer role contracts inspected; full RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; render, doctor, `next`, diff, and gitleaks directory checks passed | Updated S-014 and generated Taskboard only; no release status, evidence comment, promotion PR, audit file, or protected ref changed | Push the repaired PR #32 checkpoint; after it lands, Captain assigns the read-only Auditor first and authorizes the Engineer Publisher only on PASS |
 
 ## Completion Result
 

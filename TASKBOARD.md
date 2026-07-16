@@ -1,6 +1,6 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** S-014/TK-001 is reconciling main ancestry on a verified feature branch before independent audit and integration review.
+**Current focus:** S-014/TK-002 is in progress under Captain: run one read-only Auditor task, then a separate Engineer Publisher task only after PASS.
 **Owner:** Kayden (executive); agents execute assigned slices
 **Last updated:** 2026-07-16
 
@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-001: Reconcile main ancestry into integration through an audited merge PR (in-progress) | codex-engineer | none | TK-001 ancestry-only merge candidate is fully verified; remote checkpoint and independent audit remain. | Independently audit the pushed PR #31 checkpoint, then complete integration review; TK-001 remains in progress. |
+| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-002: Coordinate separate exact-head audit and evidence publication tasks (in-progress) | Captain (TK-002 coordination) | none | TK-002 authority is split into separate read-only Auditor and Engineer Publisher tasks under Captain coordination. | Land this final docs-only transition; Captain then assigns the exact integration audit, and only a PASS may trigger a separate Engineer task to publish unchanged evidence and status. |
 | [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-009 exact-head delivery audit repair passed. | Complete TK-003. |
 <!-- hot-specs:end -->
 
