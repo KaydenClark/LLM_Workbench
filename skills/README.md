@@ -16,6 +16,8 @@ belongs to the Workbench rather than the upstream workflow.
 | Skill | Definition | Rewrite lane |
 |---|---|---|
 | `ask-workbench` | Route a situation to the smallest appropriate Workbench skill or flow when the owner does not remember the command. | Native |
+| `genesis` | Create a new greenfield project from its founding prompt, establish a private remote recovery boundary, and hand off a verified Workbench scaffold. | Native |
+| `adoption` | Migrate an existing project into the Workbench once while preserving code, history, project truth, provenance, and remote recovery. | Native |
 | `grilling` | Ask one decision question at a time, include a recommended answer, research discoverable facts, and stop before implementation. | Core rewrite |
 | `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite |
 | `sitrep` | Give a smallest-scope conversational situation report, dispatching read-only Scout research only when the live evidence is insufficient. | Native |
@@ -63,8 +65,10 @@ The upstream baselines came from
 [`mattpocock/skills`](https://github.com/mattpocock/skills) under the MIT
 license. `ask-workbench` is the Workbench-owned successor to `ask-matt`;
 `sitrep`, `to-docs`, and `update-harness` were authored in this repository.
-`to-docs` replaces the retired `grill-with-docs` wrapper so interviewing and
-persistence remain separate. The untouched local snapshot
+`genesis` and `adoption` are callable entrypoints for the existing one-time
+bootstrap protocols; routine migrations between harness versions remain owned
+by `update-harness`. `to-docs` replaces the retired `grill-with-docs` wrapper so
+interviewing and persistence remain separate. The untouched local snapshot
 is retained outside the live discovery path at
 `GPT_OS/.agents/upstream-matt-skills-2026-07-14/` for comparison.
 

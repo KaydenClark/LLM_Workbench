@@ -10,8 +10,8 @@
 **Updated:** 2026-07-16
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** Fresh Codex discovery passed; Claude discovery is blocked before skill loading by an expired owner OAuth session.
-**Next gate:** Kayden authenticates Claude, then rerun the non-persistent Claude discovery probes and complete TK-003.
+**Latest event:** TK-007 closed with callable Genesis, one-time Adoption, and routine update routing separated.
+**Next gate:** Rerun fresh Codex and Claude discovery for the 30-skill catalog; Claude remains an owner-auth gate.
 
 ## Outcome
 
@@ -30,8 +30,9 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 ## Current Verified State
 
-- `skills/` is expanding from the 27-entry imported catalog to 28 owner-approved
-  entries by retiring `grill-with-docs` and adding native `sitrep` and `to-docs`.
+- `skills/` contains 30 owner-approved entries after retiring
+  `grill-with-docs` and adding native `sitrep`, `to-docs`, `genesis`, and
+  `adoption` entrypoints.
 - Most imported text still references upstream conventions (`docs/agents/`,
   `CONTEXT.md`, `.scratch/`, GitHub issue trackers) that conflict with the
   Workbench truth-routing contract; rewrites pending.
@@ -55,6 +56,8 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 - Sitrep stays conversational and read-only; documentation persistence is a
   separate `to-docs` action.
 - Skills are distributed to projects through the harness upgrade path.
+- Genesis is the callable greenfield bootstrap; Adoption is the callable
+  one-time existing-project migration; routine changes use `update-harness`.
 
 ## Decisions And Contracts
 
@@ -76,6 +79,9 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 - Grilling ends only on Kayden's exact `make it so` passphrase. `to-docs` owns
   persistence after settled conversation; the combined `grill-with-docs`
   wrapper is retired.
+- Genesis and Adoption remain thin entrypoints over the existing template
+  protocols. Both establish remote recovery; Adoption never doubles as the
+  routine harness updater.
 
 ## Non-Goals
 
@@ -99,6 +105,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
 | TK-005 | Rewrite the grilling discipline and its Desktop-facing entry points | done | none | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
 | TK-006 | Add Sitrep and split settled documentation/spec capture from grilling | done | none | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
+| TK-007 | Add callable Genesis and Adoption entrypoints with remote-first recovery and distinct update routing | done | none | targeted catalog contract red at 28 vs 30, then green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and diff check passed |
 
 ### Scoped Ticket: TK-002
 
@@ -186,6 +193,24 @@ the overlapping `grill-with-docs` wrapper.
 - The red/green catalog test, full Runbook suite, render, doctor, and diff check
   pass. Static scores remain diagnostics rather than outcome claims.
 
+### Scoped Ticket: TK-007
+
+**Vertical slice:** Add two thin native entrypoints over the existing Genesis
+and Adoption protocols. Genesis handles a new greenfield project; Adoption
+handles the first migration of an existing project; `update-harness` remains
+the only routine harness-update route.
+
+**Done criteria:**
+
+- The catalog, folders, and router expose `genesis` and `adoption` distinctly.
+- Both skills require remote-first checkpoint recovery, default to private when
+  authorized to create a missing remote, stop at `integration`, and never infer
+  public visibility, credential changes, or remote-history rewrites.
+- The skills delegate detailed migration behavior to `templates/GENESIS.md` and
+  `templates/ADOPTION.md` instead of copying those protocols.
+- A red/green catalog contract and the full Runbook suite pass; render, doctor,
+  and `git diff --check` remain green.
+
 ## Acceptance Criteria
 
 - [x] The selected catalog and physical skill folders match exactly.
@@ -196,11 +221,14 @@ the overlapping `grill-with-docs` wrapper.
 - [ ] Core-flow skills reference only Workbench control-doc nouns (no
       `docs/agents/`, `.scratch/`, `CONTEXT.md` writes).
 - [ ] A fresh Claude Code session in GPT_OS lists the skills as invocable.
-- [x] A fresh Codex session in GPT_OS lists the same canonical skills.
+- [ ] A fresh Codex session in GPT_OS lists the same canonical skills after the
+      Genesis and Adoption additions.
 - [x] Router skill routes Sitrep plus the main flow (grill → to-docs or to-spec
       → to-tickets → implement → review) using Workbench names.
 - [x] `skills/README.md` selected catalog matches the folder contents after
       Sitrep/documentation routing lands.
+- [x] Genesis, first-time Adoption, and routine `update-harness` are separate
+      callable routes with no overlapping lifecycle authority.
 
 ## Testing Seams
 
@@ -239,6 +267,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-15 | S-011 owner simplification review | Restored Matt's compact `grilling` and `grill-me` behavior, reduced `grill-with-docs` to its Workbench-specific delta, pruned duplicated router and `to-tickets` rules, and changed catalog tests to enforce behavior rather than the removed framework terms | Targeted catalog test failed red on the old behavior and passed green after the correction; full RUNBOOK suite passed; template evaluator remained 106.6/113; render, doctor, and git diff --check passed | Updated S-011's current TK-005 criteria and evidence; skills README, BLUEPRINT, LEXICON, and RUNBOOK checked with no update needed because their ownership and catalog definitions remain accurate | Prompt contracts are verified, but fresh-session behavior remains TK-003 |
 | 2026-07-16 | TK-006 | Ticket closed | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed | Updated skills README, ask-workbench, grilling, to-spec, new sitrep/to-docs skills, S-011, and generated TASKBOARD | Remaining imported skill rewrites and fresh Claude/Codex discovery; Genesis and Adoption callable entries remain a later authorized slice |
 | 2026-07-16 | TK-003 discovery audit | Fresh ephemeral Codex discovered and dry-ran `sitrep` and `to-docs`; the retired `grill-with-docs` was absent. Claude stopped before skill loading because the owner's OAuth session is expired. | Canonical alias and both discovery symlinks resolve to `Workbench Factory/skills`; catalog count 28; `codex exec --ephemeral --sandbox read-only` exited 0; `claude --print --no-session-persistence --permission-mode plan --tools ''` exited 1 with expired OAuth; `claude auth status` reports `loggedIn: false` | Updated S-011 and generated Taskboard only; no credential or runtime configuration changed | Kayden authenticates Claude, then rerun `/sitrep` and `/to-docs`; remaining imported skill rewrites and downstream distribution still follow |
+| 2026-07-16 | TK-007 | Added thin `genesis` and `adoption` entrypoints over the existing protocols; Genesis owns greenfield setup, Adoption owns first migration only, and `update-harness` owns routine upgrades. Both entrypoints require remote-first checkpoints and stop automation at `integration`. | Catalog contract failed red at 28 vs 30, then passed green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and `git diff --check` passed | Updated skill catalog/router, two new skills, S-011, and generated Taskboard; protocol detail remains in existing Genesis/Adoption templates | Fresh discovery must be rerun for the expanded 30-skill catalog; Claude remains blocked on owner authentication; other imported rewrite lanes remain |
 
 ## Completion Result
 

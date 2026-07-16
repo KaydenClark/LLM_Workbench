@@ -11,6 +11,9 @@ to ask before starting the recommended skill.
 
 Default routes:
 
+- new greenfield project from a founding prompt: `/genesis`;
+- existing project adopts the Workbench for the first time: `/adoption`;
+- routine harness update for an adopted project: `/update-harness`;
 - unclear idea or unresolved product decisions: `/grill-me`;
 - concise live orientation: `/sitrep`;
 - settled conversation needs updates to existing documentation: `/to-docs`;

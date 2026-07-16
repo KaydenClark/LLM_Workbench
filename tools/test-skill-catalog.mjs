@@ -31,7 +31,7 @@ const rows = catalogRegion[1]
     };
   });
 
-assert.equal(rows.length, 28, 'the owner-selected catalog must contain 28 skills');
+assert.equal(rows.length, 30, 'the owner-selected catalog must contain 30 skills');
 assert.equal(new Set(rows.map((row) => row.name)).size, rows.length,
   'the selected skill catalog must not contain duplicate names');
 for (const row of rows) {
@@ -54,7 +54,7 @@ for (const name of catalogNames) {
 }
 
 assert.ok(catalogNames.includes('ask-workbench'), 'the Workbench router must be selected');
-for (const required of ['sitrep', 'to-docs', 'to-spec']) {
+for (const required of ['adoption', 'genesis', 'sitrep', 'to-docs', 'to-spec']) {
   assert.ok(catalogNames.includes(required), `${required} must be selected`);
 }
 for (const removed of ['ask-matt', 'claude-handoff', 'qa', 'triage']) {
@@ -168,5 +168,35 @@ assertIncludesAll(toSpec, [
 for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for-agent']) {
   assert.ok(!toSpec.includes(forbidden), `to-spec must not retain ${forbidden}`);
 }
+
+const genesis = read('skills/genesis/SKILL.md');
+assertIncludesAll(genesis, [
+  '`templates/GENESIS.md`',
+  'greenfield',
+  'founding prompt',
+  'private remote',
+  '`integration`',
+  'commit and push'
+], 'genesis');
+
+const adoption = read('skills/adoption/SKILL.md');
+assertIncludesAll(adoption, [
+  '`templates/ADOPTION.md`',
+  'one-time',
+  'existing project',
+  '`/update-harness`',
+  'private remote',
+  'commit and push'
+], 'adoption');
+
+const router = read('skills/ask-workbench/SKILL.md');
+assertIncludesAll(router, [
+  'new greenfield project',
+  '`/genesis`',
+  'existing project adopts the Workbench for the first time',
+  '`/adoption`',
+  'routine harness update',
+  '`/update-harness`'
+], 'ask-workbench');
 
 console.log('ok - selected skill catalog, folders, and shared lexicon are aligned');
