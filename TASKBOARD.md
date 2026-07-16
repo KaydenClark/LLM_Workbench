@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-002: Rewrite `to-tickets` to persist slices only in the assigned Workbench spec (ready) | Kayden (product); Claude (execution) | none | TK-002 scoped to the first core-flow tracer bullet: rewrite `to-tickets` so slices live only in the assigned Workbench spec. | TK-002 adds a failing contract check, rewrites `to-tickets`, and proves the spec-only ticket flow without changing another skill. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | terra | TK-002, TK-005 | TK-002 closed with proof. | Complete TK-003. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

@@ -63,4 +63,27 @@ for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
   );
 }
 
+const toTickets = read('skills/to-tickets/SKILL.md');
+for (const forbidden of [
+  '.scratch/',
+  'configured tracker',
+  'setup-matt-pocock-skills',
+  'GitHub, Linear',
+  'local-ticket-template'
+]) {
+  assert.ok(!toTickets.includes(forbidden),
+    `to-tickets must not retain the imported ${forbidden} workflow`);
+}
+for (const required of [
+  'assigned `SPEC.md`',
+  '`Vertical Implementation Slices`',
+  '`TASKBOARD.md` is a generated projection',
+  '`RUNBOOK.md`',
+  'node tools/spec-workbench.mjs render',
+  'node tools/spec-workbench.mjs doctor'
+]) {
+  assert.ok(toTickets.includes(required),
+    `to-tickets must use the Workbench ${required} contract`);
+}
+
 console.log('ok - selected skill catalog, folders, and shared lexicon are aligned');

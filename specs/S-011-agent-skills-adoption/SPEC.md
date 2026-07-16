@@ -6,12 +6,12 @@
 **Spec ID:** S-011
 **Status:** active
 **Priority:** 2
-**Owner:** Kayden (product); Claude (execution)
+**Owner:** terra
 **Updated:** 2026-07-15
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-002 scoped to the first core-flow tracer bullet: rewrite `to-tickets` so slices live only in the assigned Workbench spec.
-**Next gate:** TK-002 adds a failing contract check, rewrites `to-tickets`, and proves the spec-only ticket flow without changing another skill.
+**Latest event:** TK-002 closed with proof.
+**Next gate:** Complete TK-003.
 
 ## Outcome
 
@@ -88,7 +88,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Import curated upstream skills with provenance and wire GPT_OS discovery | done | none | see evidence 2026-07-14 |
-| TK-002 | Rewrite `to-tickets` to persist slices only in the assigned Workbench spec | ready | none | pending |
+| TK-002 | Rewrite `to-tickets` to persist slices only in the assigned Workbench spec | done | none | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed |
 | TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | TK-002, TK-005 | pending |
 | TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
 | TK-005 | Rewrite the selected supporting/design skills without adding parallel truth stores | blocked | TK-002 | pending |
@@ -179,6 +179,7 @@ node tools/spec-workbench.mjs doctor
 |---|---|---|---|---|---|
 | 2026-07-14 | TK-001 | Imported 28 skills from mattpocock/skills (MIT) into `skills/` with provenance README; linked `GPT_OS/.claude/skills` -> `workbench templates/skills` | `ls skills | wc -l` = 29 (28 + README); full suite + doctor green (see PR) | skills/README.md added | Fresh-session discovery unverified (TK-003); rewrites pending (TK-002) |
 | 2026-07-14 | TK-004 | Corrected the earlier count: the import contained 27 upstream folders plus native `update-harness`; reconciled that intake to the owner's 25 selected upstream baselines plus `ask-workbench` and `update-harness`; made the tracked folder canonical for both discovery paths; added root/template Lexicons | `node tools/test-skill-catalog.mjs` passed; both `readlink` calls resolve to `workbench templates/skills`; upstream snapshot and lock preserved | README, AGENTS, BLUEPRINT, RUNBOOK, GENESIS, ADOPTION, HARNESS_FEEDBACK, LEXICON, S-011 updated in root/templates as applicable | Core and supporting skill rewrites plus fresh-session listings remain |
+| 2026-07-15 | TK-002 | Ticket closed | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed | Docs checked; no update needed: skills/README.md, RUNBOOK.md, and BLUEPRINT.md already state the catalog, lifecycle, and active S-011 contract accurately | Rewrite remaining core and supporting skills (TK-005); fresh Claude and Codex discovery remains owner-checkable (TK-003) |
 
 ## Completion Result
 
