@@ -14,3 +14,11 @@ evals/results/tmp_*.jsonl
 
 # Local-only reference material (owner decides if/when to publish)
 research papers/
+
+# Agent skills (installed via the `skills` CLI) — regenerable, machine-specific.
+# Restore with: npx skills@latest experimental_install
+# skills-lock.json is intentionally NOT ignored so installs stay reproducible.
+/.agent/skills/
+/agent/skills/
+/.agents/
+/.claude/skills/
