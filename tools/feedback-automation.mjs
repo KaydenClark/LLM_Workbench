@@ -6,6 +6,14 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const IMPACT_WEIGHT = { high: 3, medium: 2, low: 1 };
+const RUN_OUTCOME_CATEGORIES = new Set([
+  'actionable',
+  'worked',
+  'idle',
+  'owner_gate',
+  'collision',
+  'infrastructure_error'
+]);
 const EXCLUDED_NAME = /(?:^|[-_])(backup|copy|worktree|worktrees|t\d{2,})$/i;
 const STOP_WORDS = new Set([
   'a', 'an', 'and', 'as', 'at', 'be', 'by', 'for', 'from', 'in', 'into', 'is',
@@ -125,6 +133,36 @@ export function classifyDecision(evidence = {}) {
   };
 }
 
+export function transitionRunOutcome(input = {}) {
+  const category = String(input.category ?? '');
+  if (!RUN_OUTCOME_CATEGORIES.has(category)) {
+    throw new Error(`category must be one of: ${[...RUN_OUTCOME_CATEGORIES].join(', ')}`);
+  }
+  if (typeof input.reason !== 'string' || !input.reason.trim()) {
+    throw new Error('reason must be a non-empty string');
+  }
+  const reason = input.reason.trim();
+  const previousIdleCount = input.previousIdleCount ?? 0;
+  if (!Number.isInteger(previousIdleCount) || previousIdleCount < 0) {
+    throw new Error('previousIdleCount must be a non-negative integer');
+  }
+  if (category === 'idle' && input.verifiedIdle !== true) {
+    throw new Error('idle requires verifiedIdle=true');
+  }
+
+  const idleCount = category === 'idle'
+    ? previousIdleCount + 1
+    : ['actionable', 'worked'].includes(category)
+      ? 0
+      : previousIdleCount;
+  return {
+    category,
+    reason,
+    idleCount,
+    pauseRecommended: category === 'idle' && idleCount >= 2
+  };
+}
+
 function cleanCell(value) {
   return value.trim().replace(/`/g, '');
 }
@@ -195,7 +233,13 @@ function main(argv) {
     process.stdout.write(`${JSON.stringify(classifyDecision(evidence), null, 2)}\n`);
     return;
   }
-  throw new Error('usage: feedback-automation.mjs discover --projects-root PATH [--pending CSV] [--processed CSV] | decision --input FILE');
+  if (command === 'run-outcome') {
+    if (!options.input) throw new Error('run-outcome requires --input');
+    const input = JSON.parse(fs.readFileSync(options.input, 'utf8'));
+    process.stdout.write(`${JSON.stringify(transitionRunOutcome(input), null, 2)}\n`);
+    return;
+  }
+  throw new Error('usage: feedback-automation.mjs discover --projects-root PATH [--pending CSV] [--processed CSV] | decision --input FILE | run-outcome --input FILE');
 }
 
 function splitCsv(value) {

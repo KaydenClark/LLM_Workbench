@@ -4,8 +4,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import {
   classifyDecision,
+  transitionRunOutcome,
   discoverFeedback,
   parseFeedbackRows,
   selectCandidate
@@ -87,6 +89,93 @@ assert.deepEqual(
   classifyDecision({ infrastructureError: 'network unavailable', infraFailureCount: 2 }),
   { verdict: 'blocked', reason: 'network unavailable', alert: true }
 );
+
+assert.deepEqual(
+  transitionRunOutcome({
+    category: 'idle',
+    reason: 'canonical discovery found no eligible work',
+    previousIdleCount: 1,
+    verifiedIdle: true
+  }),
+  {
+    category: 'idle',
+    reason: 'canonical discovery found no eligible work',
+    idleCount: 2,
+    pauseRecommended: true
+  },
+  'a second consecutive verified idle result should recommend pausing'
+);
+
+assert.throws(
+  () => transitionRunOutcome({
+    category: 'idle',
+    reason: 'the lock was held',
+    previousIdleCount: 1
+  }),
+  /idle requires verifiedIdle=true/,
+  'idle must fail closed when no completed no-work check verifies it'
+);
+
+for (const [category, reason] of [
+  ['collision', 'lock held by a live run'],
+  ['collision', 'overlapping task is already live'],
+  ['owner_gate', 'owner approval is required'],
+  ['infrastructure_error', 'authentication failed'],
+  ['infrastructure_error', 'provider unavailable']
+]) {
+  const outcome = transitionRunOutcome({ category, reason, previousIdleCount: 1 });
+  assert.equal(
+    outcome.idleCount,
+    1,
+    `${category} must preserve rather than increment verified idle evidence`
+  );
+  assert.equal(outcome.pauseRecommended, false, `${category} must not recommend an idle pause`);
+}
+
+for (const category of ['actionable', 'worked']) {
+  assert.equal(
+    transitionRunOutcome({ category, reason: `${category} outcome`, previousIdleCount: 2 }).idleCount,
+    0,
+    `${category} must reset the verified-idle streak`
+  );
+}
+
+assert.throws(
+  () => transitionRunOutcome({ category: 'unknown', reason: 'not normalized' }),
+  /category must be one of/,
+  'unknown outcomes must not silently become idle'
+);
+
+for (const reason of ['', 0, {}, null]) {
+  assert.throws(
+    () => transitionRunOutcome({ category: 'worked', reason }),
+    /reason must be a non-empty string/,
+    'reason must remain human-readable JSON evidence'
+  );
+}
+
+const outcomeInput = path.join(os.tmpdir(), `workbench-run-outcome-${process.pid}.json`);
+fs.writeFileSync(outcomeInput, JSON.stringify({
+  category: 'collision',
+  reason: 'lock held by a live run',
+  previousIdleCount: 1
+}));
+try {
+  const output = execFileSync(process.execPath, [
+    fileURLToPath(new URL('./feedback-automation.mjs', import.meta.url)),
+    'run-outcome',
+    '--input',
+    outcomeInput
+  ], { encoding: 'utf8' });
+  assert.deepEqual(JSON.parse(output), {
+    category: 'collision',
+    reason: 'lock held by a live run',
+    idleCount: 1,
+    pauseRecommended: false
+  }, 'the CLI should emit the standardized run outcome as JSON');
+} finally {
+  fs.rmSync(outcomeInput, { force: true });
+}
 
 const moduleUrl = new URL('./feedback-automation.mjs', import.meta.url).href;
 execFileSync(process.execPath, ['--input-type=module', '-e', `import '${moduleUrl}'`], {
