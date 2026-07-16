@@ -22,6 +22,7 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -57,6 +58,8 @@ def in_allowlist(path: str, allow: list[str]) -> bool:
 
 
 def run_tests(repo: Path, cmd: list[str]) -> bool:
+    if cmd and cmd[0] in {"python", "python3"}:
+        cmd = [sys.executable, *cmd[1:]]
     proc = subprocess.run(cmd, cwd=str(repo), capture_output=True, text=True)
     return proc.returncode == 0
 

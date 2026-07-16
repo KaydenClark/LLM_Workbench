@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   controlCandidates,
@@ -26,8 +30,12 @@ assert.ok(localScore > singleFileScore, 'local workbench should beat the simple 
 const activeWorkState = localEvaluation.breakdown.find((item) => item.id === 'active_work_state');
 assert.ok(activeWorkState, 'active work state should be present in the rubric');
 assert.ok(
-  !activeWorkState.missing.includes('ready queue'),
-  'local workbench should use TASKBOARD.md as the ready task queue'
+  !activeWorkState.missing.includes('hot spec projection'),
+  'local workbench should use TASKBOARD.md as the active spec projection'
+);
+assert.ok(
+  !activeWorkState.missing.includes('stable spec lifecycle'),
+  'local workbench should keep durable capability truth in stable specs'
 );
 
 const verificationContract = localEvaluation.breakdown.find((item) => item.id === 'verification_contract');
@@ -64,5 +72,20 @@ assert.ok(
   singleFileProduct && singleFileProduct.score === 0,
   'a bare instruction file should score zero on the product acceptance criterion'
 );
+
+const root = fileURLToPath(new URL('..', import.meta.url));
+const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-evaluator-entry-'));
+const linkedRoot = path.join(temp, 'checkout');
+fs.symlinkSync(root, linkedRoot, 'dir');
+try {
+  const output = execFileSync(process.execPath, [
+    path.join(linkedRoot, 'tools', 'evaluate-workbench.mjs'),
+    '--path', linkedRoot
+  ], { encoding: 'utf8' });
+  assert.match(output, /# Workbench Evaluation/,
+    'the evaluator must run when invoked through a symlinked checkout path');
+} finally {
+  fs.rmSync(temp, { recursive: true, force: true });
+}
 
 console.log(`ok - evaluator self-test passed; local score ${localScore}, single-file baseline ${singleFileScore}`);

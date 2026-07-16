@@ -1,175 +1,67 @@
 # [PROJECT_NAME] - Blueprint
 
-> Generated from LLM Workbench v[HARNESS_VERSION]. See `RUNBOOK.md` ->
-> Upgrading The Harness.
+> Generated from LLM Workbench v[HARNESS_VERSION].
 
 **Last reviewed:** [YYYY-MM-DD]
-**Status:** [blank / active / partial / stale]
+**Status:** [active / partial / stale]
 **Source root:** `[ABSOLUTE_PROJECT_PATH]`
 
-This is the stable reference for what the project is. Keep it factual,
-source-backed, and short. Delete sections that do not apply instead of leaving
-placeholders that look like facts.
+## Product Map
 
-## What This Project Is
-
-[One paragraph describing the app/service/tool, who uses it, and what problem it
-solves.]
+[One paragraph: what this product is, who it serves, and the problem it solves.]
 
 Core promise:
 
-> [Concrete user-facing promise in plain language.]
+> [Concrete user-facing promise.]
 
-Primary users:
+## Goals And Pillars
 
-- [User/persona]
-- [User/persona]
+- **[Pillar]:** [stable product direction]
+- **[Pillar]:** [stable product direction]
+- **[Pillar]:** [stable product direction]
+
+## Cross-Cutting Architecture And Invariants
+
+| Layer / concern | Choice | Invariant / source |
+|---|---|---|
+| Runtime | [RUNTIME] | [constraint/source] |
+| Product surface | [FRONTEND_API_CLI_OR_OTHER] | [constraint/source] |
+| Data/storage | [STORAGE_OR_NONE] | [constraint/source] |
+| Testing | [TEST_STACK] | [constraint/source] |
+| Deployment/runtime | [DEPLOYMENT_OR_NONE] | [constraint/source] |
+
+Rules that span multiple capabilities:
+
+- [Invariant]
+- [Privacy/safety boundary]
+- [Architecture decision future specs must preserve]
+
+Source and tests remain implementation truth. Put capability-specific
+requirements and decisions in its stable spec, not here.
+Put accepted project-wide definitions in `LEXICON.md`; the Blueprint helps
+participants recover the design concept but is not itself the design concept or
+the project glossary.
 
 ## Non-Goals
 
-This project is not trying to:
-
-- [Non-goal]
 - [Non-goal]
 - [Non-goal]
 
-## Current Product Shape
+## Spec Catalog
 
-When the project is working, a user can:
+The generated catalog links every durable capability record, including completed
+history. Human-authored product prose stays outside the markers.
 
-- [Workflow or capability]
-- [Workflow or capability]
-- [Workflow or capability]
-
-The most important quality bar is:
-
-- [correctness / speed / reliability / privacy / ease of use / other]
-
-## Direction And Build Order
-
-Use this section for stable product direction and sequencing logic. Put the
-current executable task queue in `TASKBOARD.md`, not here.
-
-Current phase:
-
-- [phase name and what it means]
-
-Build order:
-
-1. [Phase or milestone] - [why this comes first]
-2. [Phase or milestone] - [why this comes next]
-3. [Phase or milestone] - [why this is later]
-
-## Architecture
-
-| Layer | Choice | Source / Notes |
+<!-- spec-catalog:start -->
+| Spec | Description | Status |
 |---|---|---|
-| Runtime | [RUNTIME] | [version/source] |
-| Frontend | [FRONTEND_OR_NONE] | [notes] |
-| Backend | [BACKEND_OR_NONE] | [notes] |
-| Database/storage | [STORAGE_OR_NONE] | [notes] |
-| Auth | [AUTH_OR_NONE] | [notes] |
-| Testing | [TEST_STACK] | [notes] |
-| Deployment/runtime | [DEPLOYMENT_OR_NONE] | [notes] |
+| [S-001 - Capability](specs/S-001-capability/SPEC.md) | [Short catalog description] | planned |
+<!-- spec-catalog:end -->
 
-Architecture constraints:
+## Cross-Cutting Health
 
-- [Constraint]
-- [Constraint]
-- [Constraint]
-
-## Directory Map
-
-```text
-[PROJECT_ROOT]/
-├── [path]/        <- [purpose]
-├── [path]/        <- [purpose]
-├── AGENTS.md      <- agent behavior and read/edit scope
-├── BLUEPRINT.md   <- stable project definition and direction
-├── TASKBOARD.md   <- live task queue, blockers, proof log
-└── RUNBOOK.md     <- setup, operation, verification, recovery
-```
-
-## Main Contracts
-
-Use only the sections that apply. Delete irrelevant sections.
-
-### Routes / Screens
-
-| Route or screen | Purpose | Status | Source |
-|---|---|---|---|
-| `[ROUTE_OR_SCREEN]` | [purpose] | [working/partial/missing] | [file/test] |
-
-### API Endpoints
-
-| Method | Path | Auth | Purpose | Status | Source |
-|---|---|---|---|---|---|
-| `[METHOD]` | `[PATH]` | [yes/no] | [purpose] | [working/partial/missing] | [file/test] |
-
-### Commands
-
-| Command | Purpose | Required for done? |
-|---|---|---|
-| `[COMMAND]` | [purpose] | [yes/no] |
-
-### Data Model
-
-| Entity | Key fields | Stored where | Notes |
-|---|---|---|---|
-| `[ENTITY]` | `[FIELDS]` | [table/file/service] | [notes] |
-
-## Core Logic And Invariants
-
-[Describe the most important domain logic and where it lives.]
-
-Rules:
-
-- [Invariant]
-- [Invariant]
-- [Invariant]
-
-Do not duplicate this logic in:
-
-- [places where reimplementation would cause bugs]
-
-## Trust, Privacy, And Safety Boundaries
-
-Sensitive data:
-
-- [secret/private/local data type]
-
-Rules:
-
-- [what must stay local / ignored / encrypted / redacted]
-- [what must never be logged or committed]
-- [what requires explicit user approval]
-
-## Known Risks
-
-List stable architectural or product risks that future agents must stay aware
-of. Immediate blockers belong in `TASKBOARD.md` -> Blocked.
-
-| Risk | Impact | Mitigation / owner |
-|---|---|---|
-| [Risk] | [impact] | [mitigation] |
-
-## Design Decisions
-
-Record only decisions that future agents must preserve.
-
-| Decision | Rationale | Date / Source |
-|---|---|---|
-| [Decision] | [why] | [YYYY-MM-DD / source] |
-
-## Health Criteria
-
-The project is healthy when:
-
-- [baseline test command] passes;
-- [build/type/lint command] passes when relevant;
-- the primary user workflow succeeds end-to-end;
-- empty, error, and degraded states do not crash;
-- secrets and local data are not exposed in committed or built output.
-
-Verification commands live in `RUNBOOK.md`. Current task status and proof
-history live in `TASKBOARD.md`.
+- `[BASELINE_TEST_COMMAND]` passes;
+- `[BUILD_LINT_OR_AUDIT_COMMAND]` passes when relevant;
+- the primary workflow succeeds end to end;
+- secrets and private data stay out of committed output;
+- spec doctor/render checks report no lifecycle, link, or projection drift.

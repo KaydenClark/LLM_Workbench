@@ -147,7 +147,7 @@ function addLineNumbers(content) {
 }
 
 function renderFile(file, base, args, index) {
-  const relative = path.relative(base, file) || path.basename(file);
+  const relative = portablePath(path.relative(base, file) || path.basename(file));
   let content;
   try {
     content = fs.readFileSync(file, 'utf8');
@@ -176,6 +176,10 @@ function renderFile(file, base, args, index) {
   }
 
   return [relative, '---', content, '---'].join('\n');
+}
+
+function portablePath(value) {
+  return value.split(path.sep).join('/');
 }
 
 function escapeXml(value) {
