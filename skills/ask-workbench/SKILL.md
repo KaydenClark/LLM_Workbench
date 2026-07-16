@@ -4,18 +4,10 @@ description: Route a situation to the smallest appropriate Workbench skill or fl
 disable-model-invocation: true
 ---
 
-# Ask Workbench
-
-Use this when the owner knows what they want to accomplish but does not remember
-which skill starts the right flow.
-
-1. Read the selected definitions in [`../README.md`](../README.md).
-2. Inspect the current request and the repository's live control surfaces.
-3. Recommend one starting skill and, when useful, the short sequence that
-   follows it. Explain the fit in one or two sentences.
-4. Ask at most one question only when two routes would produce materially
-   different work. Otherwise make the recommendation immediately.
-5. Do not invoke the recommended skill until the owner asks to proceed.
+Use the selected catalog in [`../README.md`](../README.md) to recommend one
+starting skill and, when useful, the short sequence after it. Ask one question
+only when two routes would produce materially different work. Wait for the user
+to ask before starting the recommended skill.
 
 Default routes:
 
@@ -36,7 +28,3 @@ Default routes:
 The main delivery flow is:
 
 `grill-me -> to-spec -> to-tickets -> implement -> code-review`
-
-Supporting skills may join that flow, but they never create a second tracker or
-truth layer. `LEXICON.md`, `BLUEPRINT.md`, the owning `SPEC.md`, `TASKBOARD.md`,
-and `RUNBOOK.md` retain their documented ownership.

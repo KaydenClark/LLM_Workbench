@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-006: Rewrite the remaining selected skills in bounded follow-on slices (ready) | Kayden (product); Codex (execution) | none | TK-005 closed with proof. | Refine and claim one bounded TK-006 rewrite slice. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-006: Rewrite the remaining selected skills in bounded follow-on slices (ready) | Kayden (product); Codex (execution) | none | Owner simplification review removed runtime-specific and duplicated skill scaffolding. | Refine and claim one bounded TK-006 rewrite slice. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

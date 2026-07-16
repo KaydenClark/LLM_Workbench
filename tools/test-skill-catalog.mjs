@@ -82,11 +82,12 @@ for (const forbidden of [
 assertIncludesAll(toTickets, [
   'assigned `SPEC.md`',
   '`Vertical Implementation Slices`',
-  '`TASKBOARD.md` is a generated projection',
   '`RUNBOOK.md`',
   'node tools/spec-workbench.mjs render',
   'node tools/spec-workbench.mjs doctor'
 ], 'to-tickets');
+assert.match(toTickets, /`TASKBOARD\.md` is a generated\s+projection/,
+  'to-tickets must treat TASKBOARD.md as a generated projection');
 
 const grilling = read('skills/grilling/SKILL.md');
 const grillMe = read('skills/grill-me/SKILL.md');
@@ -94,7 +95,6 @@ const grillWithDocs = read('skills/grill-with-docs/SKILL.md');
 const grillingBundle = `${grilling}\n${grillMe}\n${grillWithDocs}`;
 
 for (const [pattern, label] of [
-  [/Run a `\/grilling` session/, 'slash-command-only wrapper'],
   [/\/domain-modeling/, 'imported domain-modeling invocation'],
   [/CONTEXT\.md/, 'parallel context file'],
   [/docs\/agents/, 'parallel agent configuration'],
@@ -107,33 +107,31 @@ for (const [pattern, label] of [
     `the grilling flow must not depend on a ${label}`);
 }
 
-assertIncludesAll(grilling, [
-  'shared design concept',
-  '`LEXICON.md`',
-  'one concise decision question at a time',
-  'recommended answer first',
-  'decision ledger',
-  'explicit confirmation',
-  'Remain in interview mode',
-  'durable documentation'
-], 'grilling');
-assert.match(grilling, /choice,\s+yes\/no, or a correction/,
-  'grilling must offer a low-effort answer cue');
+assert.match(grilling, /Grill the user relentlessly/,
+  'grilling must preserve its relentless leading behavior');
+assert.match(grilling, /each branch of the decision tree/,
+  'grilling must resolve the decision tree branch by branch');
+assert.match(grilling, /For each question, provide your recommended answer/,
+  'grilling must attach a recommendation to every question');
+assert.match(grilling, /questions one at a time, waiting for feedback/,
+  'grilling must ask one question and wait before continuing');
+assert.match(grilling, /fact can be found by exploring the environment/,
+  'grilling must research discoverable facts');
+assert.match(grilling, /decisions, though, are mine/,
+  'grilling must leave owner decisions to the user');
+assert.match(grilling, /Do not act on it until I confirm/,
+  'grilling must wait for confirmation before acting');
 
-assertIncludesAll(grillMe, [
-  '`grilling` discipline',
-  'Desktop chat',
-  'voice or natural language',
-  'terminal'
-], 'grill-me');
+assert.match(grillMe, /Run a `\/grilling` session\./,
+  'grill-me must remain a thin grilling wrapper');
+assert.doesNotMatch(grillingBundle, /Desktop chat|voice|terminal|\bCLI\b/i,
+  'the grilling flow must remain runtime-agnostic');
 
 assertIncludesAll(grillWithDocs, [
-  'after explicit confirmation',
+  'After the user confirms',
   '`LEXICON.md`',
   '`BLUEPRINT.md`',
-  'assigned `SPEC.md`',
-  '`TASKBOARD.md`',
-  '`RUNBOOK.md`'
+  '`SPEC.md`'
 ], 'grill-with-docs');
 
 console.log('ok - selected skill catalog, folders, and shared lexicon are aligned');

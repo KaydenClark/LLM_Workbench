@@ -1,26 +1,14 @@
 ---
 name: grill-with-docs
-description: Sharpen a design through a recommendation-led interview, then route the confirmed understanding into existing Workbench documentation owners.
+description: Run grilling, then capture confirmed decisions in existing Workbench docs.
 disable-model-invocation: true
 ---
 
-# Grill With Docs
-
-Apply the core `grilling` discipline in the current chat. Keep tentative
-language and unresolved choices in the conversation during the interview.
-
-Only **after explicit confirmation** of the shared design concept, route each
-settled truth to its existing owner:
+Run a `/grilling` session. After the user confirms the shared understanding,
+write only settled decisions to their existing Workbench owners:
 
 - accepted project-wide definitions -> `LEXICON.md`;
-- product direction, cross-cutting architecture, invariants, and non-goals ->
-  `BLUEPRINT.md`;
-- capability-scoped intent, requirements, decisions, acceptance, and owner
-  gates -> the assigned `SPEC.md`;
-- active status -> `TASKBOARD.md`, refreshed as a generated projection with
-  the lifecycle commands in `RUNBOOK.md`.
+- cross-cutting product direction -> `BLUEPRINT.md`;
+- capability decisions -> the assigned `SPEC.md`.
 
-State the proposed destinations, update only the owners affected by the
-confirmed decisions, and run the documentation checks those owners require. If
-capability decisions need a new spec and none is assigned, recommend the
-`to-spec` entry point as the next step instead of inventing an unowned file.
+If no spec is assigned, recommend `/to-spec` instead of creating one here.

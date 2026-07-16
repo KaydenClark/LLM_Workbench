@@ -10,7 +10,7 @@
 **Updated:** 2026-07-15
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-005 closed with proof.
+**Latest event:** Owner simplification review removed runtime-specific and duplicated skill scaffolding.
 **Next gate:** Refine and claim one bounded TK-006 rewrite slice.
 
 ## Outcome
@@ -137,21 +137,19 @@ TK-002.
 ### Scoped Ticket: TK-005
 
 **Vertical slice:** Rewrite `grilling`, `grill-me`, and `grill-with-docs` as one
-usable question-first flow. The flow develops a shared design concept in chat,
-minimizes owner typing, researches discoverable facts, and routes only settled
-truth to existing Workbench owners.
+usable question-first flow. The flow reaches shared understanding, researches
+discoverable facts, and routes only settled truth to existing Workbench owners.
 
 **Done criteria:**
 
-- The core discipline asks one concise decision question at a time, leads with
-  a recommendation, offers low-effort answer choices when useful, and waits for
-  the owner's answer before advancing.
-- The interview researches repository facts, tracks decisions, assumptions,
-  contradictions, and open questions, then asks for explicit confirmation of a
-  coherent design-concept summary before any planning or implementation.
-- `grill-me` works directly in a Desktop chat with natural-language or voice
-  answers and creates no durable artifact.
-- `grill-with-docs` uses the same interview behavior and, after agreement,
+- The core discipline walks every relevant decision-tree branch in dependency
+  order, provides a recommended answer for each question, and asks one question
+  at a time while waiting for the owner's answer.
+- The interview researches discoverable facts, leaves decisions to the owner,
+  and takes no action until the owner confirms shared understanding.
+- `grill-me` remains a thin, runtime-agnostic wrapper and creates no durable
+  artifact.
+- `grill-with-docs` uses the same interview behavior and, after confirmation,
   routes project-wide definitions to `LEXICON.md`, cross-cutting direction to
   `BLUEPRINT.md`, and scoped decisions to the assigned `SPEC.md`. It creates no
   parallel context, ADR, tracker, or glossary layer.
@@ -212,6 +210,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-15 | TK-002 | Ticket closed | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed | Docs checked; no update needed: skills/README.md, RUNBOOK.md, and BLUEPRINT.md already state the catalog, lifecycle, and active S-011 contract accurately | Rewrite remaining core and supporting skills (TK-005); fresh Claude and Codex discovery remains owner-checkable (TK-003) |
 | 2026-07-15 | TK-005 | Ticket closed | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed | Updated the three grilling skills and S-011; skills README, BLUEPRINT, LEXICON, and RUNBOOK checked with no update needed because their ownership and catalog definitions remain accurate | TK-006 remaining rewrites; TK-003 fresh-session discovery and behavior proof |
 | 2026-07-15 | TK-005 review | Independent standards/spec review findings addressed | Linked the design-concept definition to LEXICON, removed wrapper duplication, strengthened parallel-layer guards; final RUNBOOK suite, both discovery symlinks, render, doctor, and git diff --check passed | S-011 evidence updated; other owning docs remain accurate | TK-006 remaining rewrites; TK-003 fresh-session discovery and behavior proof |
+| 2026-07-15 | S-011 owner simplification review | Restored Matt's compact `grilling` and `grill-me` behavior, reduced `grill-with-docs` to its Workbench-specific delta, pruned duplicated router and `to-tickets` rules, and changed catalog tests to enforce behavior rather than the removed framework terms | Targeted catalog test failed red on the old behavior and passed green after the correction; full RUNBOOK suite passed; template evaluator remained 106.6/113; render, doctor, and git diff --check passed | Updated S-011's current TK-005 criteria and evidence; skills README, BLUEPRINT, LEXICON, and RUNBOOK checked with no update needed because their ownership and catalog definitions remain accurate | Prompt contracts are verified, but fresh-session behavior remains TK-003 |
 
 ## Completion Result
 
