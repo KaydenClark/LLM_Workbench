@@ -240,6 +240,46 @@ Use `node tools/feedback-automation.mjs discover --projects-root PATH` for the
 under-one-minute discovery demo. Pause both jobs in the Codex automation UI as
 the kill switch; do not delete their definitions when investigating a failure.
 
+### Automation Run Outcomes
+
+After a scheduled run has enough evidence to describe what happened, write an
+input JSON file and normalize it through the portable Workbench seam:
+
+```json
+{
+  "category": "idle",
+  "reason": "canonical discovery completed with no eligible work",
+  "previousIdleCount": 1,
+  "verifiedIdle": true
+}
+```
+
+```bash
+node tools/feedback-automation.mjs run-outcome --input FILE
+```
+
+The command emits JSON with `category`, `reason`, `idleCount`, and
+`pauseRecommended`. Apply the state transition exactly once per completed run:
+
+| Category | Idle-count transition | Example |
+|---|---|---|
+| `idle` | increment; requires `verifiedIdle: true` | canonical discovery completed and found no eligible work |
+| `actionable` | reset to zero | eligible work is available but not yet performed |
+| `worked` | reset to zero | the run completed useful work |
+| `collision` | preserve | lock held or a live run already owns the slice |
+| `owner_gate` | preserve | owner approval, authority, or action is required |
+| `infrastructure_error` | preserve | authentication, provider, network, or runtime failed |
+
+Recommend pausing only when the current result is the second consecutive
+verified idle result. Never report idle from a lock, live overlap, owner gate,
+authentication failure, provider failure, or incomplete discovery. When
+authentication itself requires owner action, the adapter may use `owner_gate`;
+either interruption category preserves rather than manufactures idle evidence.
+
+`Scheduled/workbench-v1-rollout` is not tracked in this repository. GPT_OS owns
+that scheduler adapter and any persisted automation definition; change it only
+from an explicitly authorized GPT_OS task.
+
 ## Version-Control Procedures
 
 Policy and authority live in `AGENTS.md` -> Git Rules. Operational commands:
@@ -263,6 +303,7 @@ PR descriptions state what changed, why, risks, and verification.
 | self-test passes locally but templates score low | change landed at root but not in `templates/` (or vice versa) | `node tools/evaluate-workbench.mjs --path templates` | apply the Dogfood Boundary rule: land in both |
 | `evals/score.py` errors on results file | stale or hand-edited JSONL | regenerate with `_make_selftest.py` | never hand-edit results |
 | feedback discovery returns no candidate unexpectedly | checkout is a worktree/duplicate, origin is not writable-owner, or fingerprint is already pending/processed | `node tools/feedback-automation.mjs discover --projects-root /Users/kayden/GPT_OS/Projects` | repair the canonical checkout or record the pending/processed decision; do not broaden discovery |
+| an automation pauses after a lock, owner gate, or provider failure | the scheduler counted an interruption as idle | inspect the latest `run-outcome` JSON and prior verified-idle count | emit `collision`, `owner_gate`, or `infrastructure_error`; preserve the idle count and retry or wait for the proper wake event |
 | Sol cannot prove a candidate because GitHub or model access is down | transient infrastructure failure | read the PR verdict comment and repeat count | leave the PR open, retry next run, and alert after the second identical failure |
 
 ## Recovery And Rollback
