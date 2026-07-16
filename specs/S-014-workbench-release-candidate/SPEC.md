@@ -11,7 +11,7 @@
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
 **Blockers:** none
 **Latest event:** TK-001 ancestry-only merge candidate is fully verified; remote checkpoint and independent audit remain.
-**Next gate:** Push the verified exact candidate and open a draft PR for independent audit.
+**Next gate:** Independently audit the pushed PR #31 checkpoint, then complete integration review; TK-001 remains in progress.
 
 ## Outcome
 

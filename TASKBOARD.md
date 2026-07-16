@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-001: Reconcile main ancestry into integration through an audited merge PR (in-progress) | codex-engineer | none | TK-001 ancestry-only merge candidate is fully verified; remote checkpoint and independent audit remain. | Push the verified exact candidate and open a draft PR for independent audit. |
+| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-001: Reconcile main ancestry into integration through an audited merge PR (in-progress) | codex-engineer | none | TK-001 ancestry-only merge candidate is fully verified; remote checkpoint and independent audit remain. | Independently audit the pushed PR #31 checkpoint, then complete integration review; TK-001 remains in progress. |
 | [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-009 exact-head delivery audit repair passed. | Complete TK-003. |
 <!-- hot-specs:end -->
 
