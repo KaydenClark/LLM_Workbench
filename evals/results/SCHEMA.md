@@ -35,7 +35,8 @@ Rules that keep the data trustworthy:
   apparatus fixtures. Missing or unknown classes fail closed as `unclassified`
   and cannot enter the claim-facing totals. Aliases such as `dev`, `held-out`,
   `real`, or `real_agent` are non-canonical and are rejected rather than
-  normalized.
+  normalized. The task definition's `suite` field is registry metadata; it
+  never substitutes for an omitted row-level `task_class`.
 - **Scores are produced by the task's deterministic grader**, not by hand.
 - Files prefixed `_` (e.g. `_pipeline_selftest.jsonl`) are synthetic fixtures
   for testing the analysis code. They are **not** evaluation evidence and must

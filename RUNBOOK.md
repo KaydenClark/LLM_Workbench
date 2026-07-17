@@ -179,7 +179,8 @@ preserves task/evidence class, sample size, uncertainty, provider/model/reasonin
 metadata, and resolved ref/SHA. Input paths are resolved and deduplicated before
 loading. Its claim-facing composite includes only exact `real-agent` rows from
 exact `development` or `heldout` tasks; aliases, synthetic rows, and unknowns
-fail closed out of those totals. Candidate lifts use only same-task complete
+fail closed out of those totals. `suite` never substitutes for a missing
+row-level `task_class`. Candidate lifts use only same-task complete
 baseline/candidate cells, weight each comparable task equally, and explicitly
 exclude incomplete tasks or suppress an empty comparison. Run
 `python3 evals/test_score.py` before generating the under-one-minute synthetic

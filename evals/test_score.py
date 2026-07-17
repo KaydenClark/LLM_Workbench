@@ -155,6 +155,23 @@ class MultiTaskReportTests(unittest.TestCase):
         self.assertNotIn("alias_dev", real_section)
         self.assertNotIn("unknown_task", real_section)
 
+    def test_suite_does_not_substitute_for_missing_task_class(self) -> None:
+        rows = [
+            row("suite_only", "development", "real-agent", condition, 0, value)
+            for condition, value in (("c0_none", 0.0), ("c3_candidate", 1.0))
+        ]
+        for item in rows:
+            del item["task_class"]
+            item["suite"] = "development"
+
+        report = score.render(rows, "c0_none")
+
+        self.assertIn("Eligible real-agent evidence rows: **0**", report)
+        self.assertIn("Non-canonical task class: **2**", report)
+        real_section = report.split("## Real-agent composite comparison", 1)[1]
+        self.assertIn("No eligible real-agent rows", real_section)
+        self.assertNotIn("### `c3_candidate` vs `c0_none`", real_section)
+
     def test_equal_task_headline_is_not_trial_weighted(self) -> None:
         rows = []
         for trial in range(10):

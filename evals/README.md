@@ -76,8 +76,9 @@ Synthetic fixtures and legacy/unclassified rows stay visible for apparatus
 debugging but are mechanically excluded from the claim-facing real-agent
 totals. This is fail-closed: only the exact `real-agent` evidence class paired
 with the exact `development` or `heldout` task class is eligible; aliases and
-omissions remain excluded. Overlapping input globs are resolved and deduplicated
-before rows load.
+omissions remain excluded. A task definition or legacy row-level `suite` value
+does not substitute for the required `task_class`. Overlapping input globs are
+resolved and deduplicated before rows load.
 
 Each claim-facing condition lift uses only tasks that contain both that
 condition and the selected baseline. The report lists incomplete tasks, weights

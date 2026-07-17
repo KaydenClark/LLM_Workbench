@@ -81,7 +81,7 @@ def row_composite(row: dict, dims: list[str]) -> float | None:
 
 
 def task_class(row: dict) -> str:
-    value = row.get("task_class", row.get("suite"))
+    value = row.get("task_class")
     return (
         value
         if isinstance(value, str) and value in {"development", "heldout"}
