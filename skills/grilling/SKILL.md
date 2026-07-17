@@ -12,5 +12,23 @@ If a fact can be found by exploring the environment (filesystem, tools, etc.), l
 Do not act on it until I confirm we have reached a shared understanding. Keep
 grilling until I use the exact passphrase `make it so` (case-insensitive,
 ignoring surrounding punctuation). Similar confirmation or implementation
-phrases do not stop the interview. When I use it, summarize the locked scope and
-proceed only within the standing project authority and safety boundaries.
+phrases do not stop the interview.
+
+When I use it:
+
+1. Summarize and lock the agreed scope.
+2. Run `to-spec` to persist the settled capability in its stable `SPEC.md`.
+3. Run `to-tickets` to add dependency-aware slices to that spec. The passphrase
+   authorizes the agreed decomposition, so do not pause for redundant approval;
+   preserve unresolved owner decisions as blockers.
+4. Render and verify the generated `TASKBOARD.md`.
+5. Report the durable spec and ticket paths.
+6. Use the runtime's available scheduler, following the project's `RUNBOOK.md`,
+   to schedule an agent to begin the eligible Taskboard tickets one at a time.
+   If scheduling is unavailable, report the blocker visibly and do not fall
+   back to implementing the tickets here.
+7. Report the scheduling result and stop the current chat.
+
+`make it so` authorizes durable planning and scheduling. It does not authorize
+implementation in the current chat. Perform this handoff only within the
+standing project authority and safety boundaries.

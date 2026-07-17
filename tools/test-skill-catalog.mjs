@@ -174,6 +174,22 @@ assert.match(grilling, /Do not act on it until I confirm/,
   'grilling must wait for confirmation before acting');
 assert.match(grilling, /exact passphrase `make it so`/,
   'grilling must use the owner authorization passphrase');
+assertIncludesAll(grilling, [
+  '`to-spec`',
+  '`to-tickets`',
+  '`TASKBOARD.md`',
+  'available scheduler',
+  'stop the current chat'
+], 'grilling make-it-so handoff');
+assert.match(
+  grilling,
+  /`to-spec`[\s\S]*`to-tickets`[\s\S]*`TASKBOARD\.md`[\s\S]*available scheduler[\s\S]*stop the current chat/,
+  'make it so must persist, decompose, schedule, and then stop in that order'
+);
+assert.match(grilling, /does not authorize\s+implementation in the current chat/,
+  'make it so must not turn the grilling chat into an implementation session');
+assert.match(grilling, /scheduling is unavailable[\s\S]*report the blocker/,
+  'grilling must fail visibly when the runtime cannot schedule an agent');
 
 assert.match(grillMe, /Run a `\/grilling` session\./,
   'grill-me must remain a thin grilling wrapper');

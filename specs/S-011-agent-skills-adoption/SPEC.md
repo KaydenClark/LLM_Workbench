@@ -7,11 +7,11 @@
 **Status:** active
 **Priority:** 2
 **Owner:** codex
-**Updated:** 2026-07-16
+**Updated:** 2026-07-17
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-009 exact-head delivery audit repair passed.
-**Next gate:** Complete TK-003.
+**Latest event:** TK-010 claimed by codex.
+**Next gate:** Close TK-010 with verification and documentation proof.
 
 ## Outcome
 
@@ -111,6 +111,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-007 | Add callable Genesis and Adoption entrypoints with remote-first recovery and distinct update routing | done | none | targeted catalog contract red at 28 vs 30, then green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and diff check passed |
 | TK-008 | Preserve upstream notice and fail-close unfinished imported skills outside live discovery | done | none | Targeted catalog red/green; full Runbook suite; fresh Codex active/pending discovery; template evaluator 106.6/113; live guardrail 78/100; render, doctor, and diff check passed |
 | TK-009 | Rewrite and promote pending `implement` and `code-review` as the next delivery-flow pair | done | none | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 |
+| TK-010 | Route `make it so` through durable planning and scheduled Taskboard execution | in-progress | none | pending |
 
 ### Scoped Ticket: TK-002
 
@@ -235,6 +236,30 @@ their contract tests pass.
 - Targeted red/green contracts and the complete Runbook suite pass before both
   folders move from `skills-pending/` to `skills/` and the router restores the
   delivery links.
+
+### Scoped Ticket: TK-010
+
+**Vertical slice:** Change the grilling passphrase handoff so the current chat
+locks the scope, persists one spec, decomposes it into Taskboard tickets,
+schedules an agent to begin eligible tickets, and then stops. It must not
+implement those tickets in the grilling chat.
+
+**Done criteria:**
+
+- `make it so` runs the settled-conversation flow through `to-spec`, then
+  `to-tickets`, then the generated `TASKBOARD.md`.
+- The passphrase authorizes the agreed decomposition without a redundant
+  approval pause; unresolved owner decisions remain blockers.
+- The runtime uses its available scheduler to assign an agent to eligible
+  Taskboard tickets. If scheduling is unavailable, it reports that blocker and
+  still does not implement the tickets in the current chat.
+- The current chat stops after reporting the durable spec, tickets, and
+  scheduling result.
+- A red/green catalog contract, the complete Runbook suite, render, doctor, and
+  `git diff --check` pass.
+
+**Documentation:** Update the grilling skill, catalog definition, this spec,
+and generated Taskboard. Check the router and Runbook for drift.
 
 ## Acceptance Criteria
 

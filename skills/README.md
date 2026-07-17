@@ -22,7 +22,7 @@ is preserved but not invocable.
 | `ask-workbench` | Route a situation to the smallest appropriate Workbench skill or flow when the owner does not remember the command. | Native | Active |
 | `genesis` | Create a new greenfield project from its founding prompt, establish a private remote recovery boundary, and hand off a verified Workbench scaffold. | Native | Active |
 | `adoption` | Migrate an existing project into the Workbench once while preserving code, history, project truth, provenance, and remote recovery. | Native | Active |
-| `grilling` | Ask one decision question at a time, include a recommended answer, research discoverable facts, and stop before implementation. | Core rewrite | Active |
+| `grilling` | Ask one decision question at a time, then use `make it so` to persist the settled scope, create Taskboard tickets, schedule agent execution, and stop before implementation. | Core rewrite | Active |
 | `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite | Active |
 | `sitrep` | Give a smallest-scope conversational situation report, dispatching read-only Scout research only when the live evidence is insufficient. | Native | Active |
 | `to-docs` | Route settled conversation truth into existing Workbench documentation owners without restarting discovery or creating another store. | Native | Active |
