@@ -18,7 +18,10 @@ projection, not a second tracker.
    closing proof. Prefer an independent first tracer bullet; use expand-contract
    when a wide refactor cannot stay green by vertical slice.
 3. Present the proposed table and ask for approval before changing durable
-   work state. Confirm that slice size and blocking edges are right.
+   work state. Confirm that slice size and blocking edges are right. When the
+   caller supplies explicit prior authorization through grilling's exact
+   `make it so` passphrase, treat that as approval of the agreed decomposition
+   and do not ask again; preserve any unresolved owner decision as a blocker.
 4. After approval, update only the assigned spec's `Vertical Implementation Slices`
    table. Preserve completed rows and append-only evidence. Keep unresolved
    owner decisions visible as blockers. Create no parallel ticket or proof store.

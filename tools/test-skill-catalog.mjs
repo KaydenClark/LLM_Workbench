@@ -140,6 +140,11 @@ assertIncludesAll(toTickets, [
 ], 'to-tickets');
 assert.match(toTickets, /`TASKBOARD\.md` is a generated\s+projection/,
   'to-tickets must treat TASKBOARD.md as a generated projection');
+assert.match(
+  toTickets,
+  /explicit prior authorization[\s\S]*`make it so`[\s\S]*do not ask again/,
+  'to-tickets must honor the grilling passphrase without a redundant approval pause'
+);
 
 const grilling = read('skills/grilling/SKILL.md');
 const grillMe = read('skills/grill-me/SKILL.md');
