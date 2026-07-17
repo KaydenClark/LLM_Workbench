@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-010: Route `make it so` through durable planning and scheduled Taskboard execution (in-progress) | codex | none | TK-010 claimed by codex. | Close TK-010 with verification and documentation proof. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-010 closed with proof. | Complete TK-003. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

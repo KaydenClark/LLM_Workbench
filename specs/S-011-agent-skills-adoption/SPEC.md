@@ -10,8 +10,8 @@
 **Updated:** 2026-07-17
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-010 claimed by codex.
-**Next gate:** Close TK-010 with verification and documentation proof.
+**Latest event:** TK-010 closed with proof.
+**Next gate:** Complete TK-003.
 
 ## Outcome
 
@@ -111,7 +111,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-007 | Add callable Genesis and Adoption entrypoints with remote-first recovery and distinct update routing | done | none | targeted catalog contract red at 28 vs 30, then green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and diff check passed |
 | TK-008 | Preserve upstream notice and fail-close unfinished imported skills outside live discovery | done | none | Targeted catalog red/green; full Runbook suite; fresh Codex active/pending discovery; template evaluator 106.6/113; live guardrail 78/100; render, doctor, and diff check passed |
 | TK-009 | Rewrite and promote pending `implement` and `code-review` as the next delivery-flow pair | done | none | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 |
-| TK-010 | Route `make it so` through durable planning and scheduled Taskboard execution | in-progress | none | pending |
+| TK-010 | Route `make it so` through durable planning and scheduled Taskboard execution | done | none | Red/green skill-catalog handoff and prior-authorization contracts; complete RUNBOOK suite; templates 106.6/113; fixed-SHA review 053396f..ea48eca found no remaining issues; render, doctor, and git diff --check passed |
 
 ### Scoped Ticket: TK-002
 
@@ -324,6 +324,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-16 | TK-008 | Retained Matt Pocock's MIT copyright and permission notice verbatim; split the selected catalog into 11 reviewed live skills and 19 preserved pending rewrites; removed pending routes; changed `update-harness` and the project Blueprint to the canonical Factory path; fixed EOF hygiene | Catalog test failed red on missing availability, then passed with exact notice, active/pending parity, forbidden live-routing, canonical-path, and EOF assertions; complete Runbook suite passed; template evaluator 106.6/113; live guardrail 78/100; fresh ephemeral Codex reported all 11 active entries discoverable and `implement`, `code-review`, and `domain-modeling` absent (`ACTIVE_OK`); render, doctor, and diff check passed | Updated README, skills catalog, router, Blueprint, S-011, generated Taskboard, and tracked third-party notice | TK-009 restores `implement` and `code-review` after rewrite; later tickets promote the other pending skills; Claude remains owner-auth blocked |
 | 2026-07-16 | TK-009 | Ticket closed | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 | Updated implement, code-review, skills catalog/router, S-011, generated TASKBOARD, and benchmarks/RESULTS; RUNBOOK and BLUEPRINT checked with no update needed because their lifecycle and shipped-skill ownership remain accurate | Seventeen pending rewrites remain; Claude discovery remains blocked on owner authentication; real repeated outcome evidence remains unrun |
 | 2026-07-16 | TK-009 review | Closed independent audit gaps: disabled Git text conversion during fixed-SHA review, required a remotely verified in-progress checkpoint before review and a new checkpoint plus re-review after fixes, and corrected the manual Taskboard focus for blocked S-011 | Red: the hostile textconv helper wrote its marker and the delivery-order contract could not find the in-progress checkpoint, 0/2 passed. Green: delivery contracts 2/2; complete Runbook suite; fresh ephemeral Codex returned `DELIVERY_REPAIR_OK`; root 113/113; templates 106.6/113; guardrail 78->78/100; gitleaks Git-history and directory scans found no leaks | Updated `code-review`, `implement`, delivery/catalog tests, S-011, and the manual Taskboard current-focus header; generated projection rendered from the spec | Seventeen pending rewrites remain; Claude discovery remains owner-auth blocked; real repeated outcome evidence remains unrun |
+| 2026-07-17 | TK-010 | Ticket closed | Red/green skill-catalog handoff and prior-authorization contracts; complete RUNBOOK suite; templates 106.6/113; fixed-SHA review 053396f..ea48eca found no remaining issues; render, doctor, and git diff --check passed | Updated grilling, to-tickets, skill catalog, S-011, and generated TASKBOARD; Docs checked; no update needed for RUNBOOK or router because existing scheduler authority and flow routing remain accurate | Scheduler execution remains runtime-dependent and must report a visible blocker when unavailable |
 
 ## Completion Result
 
