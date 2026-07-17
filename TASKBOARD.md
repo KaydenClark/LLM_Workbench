@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-017](specs/S-017-controlled-outcome-measurement/SPEC.md) | TK-004: Execute the preregistered repeated real-agent comparison (blocked) | codex-engineer | Kayden bounded model/API spend approval | TK-003 closed with proof. | Kayden approves the bounded TK-004 model/API spend. |
+| [S-017](specs/S-017-controlled-outcome-measurement/SPEC.md) | TK-005: Record the bounded release claim or inconclusive result in the evidence ledger (blocked) | codex-engineer | TK-004 | Kayden declined paid Workbench model trials for now; the no-spend apparatus remains available. | Revisit a preregistered run plan only after Kayden explicitly reopens paid trials. |
 | [S-018](specs/S-018-versioned-delivery-rollout/SPEC.md) | TK-002: Define the deterministic release-manifest schema and non-skill package inputs (ready) | unassigned | none | Auditor remediation replaced the cross-spec ticket deadlock with a supported dependency on completed S-011. | Claim TK-002 and define the deterministic release manifest before changing release automation. |
 | [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-011: Rewrite the domain and interface design pack (ready) | codex | none | Auditor remediation made S-011 own its skill-component schema and removed the unsupported cross-spec ticket blocker. | Claim TK-011; TK-003 remains independently owner-blocked. |
 | [S-020](specs/S-020-spec-native-team-coordination/SPEC.md) | TK-001: Rewrite the manager template around Captain, roles, one owning spec, and one writer (ready) | unassigned | none | Canon harvest identified the tracked team templates as contradictory to the v2.3 spec lifecycle. | Claim TK-001 and replace the manager contract without changing runtime tooling. |
@@ -22,10 +22,10 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 
 ## Owner Decisions
 
-- **S-011/TK-003:** Kayden authenticates Claude before the final cross-agent
-  discovery proof. This does not block TK-011 through TK-015.
-- **S-017/TK-004:** after TK-003 proves the no-spend reporting seam, Kayden
-  approves or declines the bounded model/API trial budget.
+No unresolved owner choice currently blocks an active Workbench spec. Kayden
+approved the bounded Claude authentication/discovery proof for S-011/TK-003;
+that interactive sign-in remains an owner action. Kayden declined paid model
+trials for S-017/TK-004, which is now deferred until explicitly reopened.
 
 Resolved decisions move into their owning specs; this section remains a hot
 projection rather than a durable decision archive.

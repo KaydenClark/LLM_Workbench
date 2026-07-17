@@ -9,9 +9,9 @@
 **Owner:** codex-engineer
 **Updated:** 2026-07-17
 **Catalog description:** Turn the existing trial runners and held-out graders into repeatable, uncertainty-aware evidence about real agent outcomes.
-**Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Kayden approves the bounded TK-004 model/API spend.
+**Blockers:** TK-004 paid model/API trial is intentionally deferred by Kayden.
+**Latest event:** Kayden declined paid Workbench model trials for now; the no-spend apparatus remains available.
+**Next gate:** Revisit a preregistered run plan only after Kayden explicitly reopens paid trials.
 
 ## Outcome
 
@@ -81,7 +81,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-001 | Provide the portable outcome-trial runner, scorer, and synthetic honesty fixture | done | none | `node tools/test-outcome-trials.mjs` |
 | TK-002 | Provide provider-neutral Git-ref trials, held-out grading, and statistical seams | done | S-002 | eval-runner self-test, pipeline self-test, and held-out grader |
 | TK-003 | Aggregate multiple tasks into an uncertainty-aware no-spend report | done | none | Exact-head Auditor green at 89451c5; python3 evals/test_score.py (11 tests); complete Runbook suite; 96-row synthetic report; root 113/113; templates 106.6/113; guardrail 78/100; no provider/model use |
-| TK-004 | Execute the preregistered repeated real-agent comparison | blocked | Kayden bounded model/API spend approval | pending |
+| TK-004 | Execute the preregistered repeated real-agent comparison | deferred | Kayden declined paid model/API trials for now | pending |
 | TK-005 | Record the bounded release claim or inconclusive result in the evidence ledger | blocked | TK-004 | pending |
 
 ### Scoped Ticket: TK-003
@@ -178,6 +178,7 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | 2026-07-17 | TK-003 Auditor remediation | Restricted claim totals to exact canonical evidence/task classes, replaced pooled headline lift with same-task equal-task stratification and explicit incomplete-cell suppression, and deduplicated resolved input paths | Red: expanded `python3 evals/test_score.py` produced 7 failures and 2 errors on aliases, trial imbalance, missing cells, duplicate patterns, and absent statistical validation; an added malformed-class edge then exposed a `TypeError`; green: all 10 tests pass; complete Runbook suite, held-out grader, 96-row no-spend report, root 113/113, templates 106.6/113, guardrail 78/100, doctor, and diff check pass | Updated scorer/statistics, regression tests, result schema, eval usage, RUNBOOK, benchmark ledger, and this spec | Remediated exact-head Auditor rerun remains before TK-003 close; TK-004 remains owner-gated for model/API spend |
 | 2026-07-17 | TK-003 final Auditor remediation | Removed the legacy `suite` fallback so only an explicit canonical row-level `task_class` can enter claim totals | Red: the new suite-only regression admitted 2 rows and rendered a candidate headline; green: all 11 scorer tests pass; complete Runbook suite, 96-row no-spend report, root 113/113, templates 106.6/113, guardrail 78/100, render, doctor, and diff check pass | Updated scorer, regression tests, result schema, eval usage, RUNBOOK, benchmark ledger, and this spec | Final exact-head Auditor rerun remains before TK-003 close; TK-004 remains owner-gated for model/API spend |
 | 2026-07-17 | TK-003 | Ticket closed | Exact-head Auditor green at 89451c5; python3 evals/test_score.py (11 tests); complete Runbook suite; 96-row synthetic report; root 113/113; templates 106.6/113; guardrail 78/100; no provider/model use | Updated RUNBOOK.md, evals/README.md, evals/results/SCHEMA.md, benchmarks/RESULTS.md, S-017 evidence, and rendered TASKBOARD.md | No real-agent/model-spend run; TK-004 remains blocked on owner model/API spend approval |
+| 2026-07-17 | owner decision checkpoint | Kayden declined paid Workbench model trials for now. | Conversation decision only; no provider/model invocation or spend occurred. | S-017 and generated Taskboard updated. | Reopen only with a preregistered plan, cost estimate, and explicit new approval. |
 
 ## Completion Result
 
