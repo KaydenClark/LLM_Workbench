@@ -11,7 +11,7 @@
 **Catalog description:** Turn the existing trial runners and held-out graders into repeatable, uncertainty-aware evidence about real agent outcomes.
 **Blockers:** none
 **Latest event:** TK-003 closed with proof.
-**Next gate:** Complete TK-004.
+**Next gate:** Kayden approves the bounded TK-004 model/API spend.
 
 ## Outcome
 
@@ -81,7 +81,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-001 | Provide the portable outcome-trial runner, scorer, and synthetic honesty fixture | done | none | `node tools/test-outcome-trials.mjs` |
 | TK-002 | Provide provider-neutral Git-ref trials, held-out grading, and statistical seams | done | S-002 | eval-runner self-test, pipeline self-test, and held-out grader |
 | TK-003 | Aggregate multiple tasks into an uncertainty-aware no-spend report | done | none | Exact-head Auditor green at 89451c5; python3 evals/test_score.py (11 tests); complete Runbook suite; 96-row synthetic report; root 113/113; templates 106.6/113; guardrail 78/100; no provider/model use |
-| TK-004 | Execute the preregistered repeated real-agent comparison | blocked | TK-003, owner model/API spend approval | pending |
+| TK-004 | Execute the preregistered repeated real-agent comparison | blocked | Kayden bounded model/API spend approval | pending |
 | TK-005 | Record the bounded release claim or inconclusive result in the evidence ledger | blocked | TK-004 | pending |
 
 ### Scoped Ticket: TK-003
