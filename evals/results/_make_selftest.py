@@ -11,6 +11,7 @@ It encodes a plausible-but-invented pattern (none < generic < ours_main <
 ours_v2) so the report has something to rank, with realistic per-trial noise.
 """
 
+import hashlib
 import json
 import random
 from pathlib import Path
@@ -30,21 +31,33 @@ LABEL = {
     "c2_ours_main": "our harness @ main",
     "c3_ours_v2": "our harness @ harness-template-upgrades-v2",
 }
+TASKS = {
+    "task_a_scope_honesty": "development",
+    "task_b_path_safety": "heldout",
+}
 
 rows = []
-for cond, probs in PROFILE.items():
-    for trial in range(N):
-        scores = {dim: float(random.random() < p) for dim, p in probs.items()}
-        rows.append({
-            "run_id": "SELFTEST",
-            "timestamp": "2026-01-01T00:00:00Z",
-            "task": "task_a_scope_honesty",
-            "condition": cond,
-            "condition_label": LABEL[cond],
-            "model": "SYNTHETIC-not-a-real-run",
-            "trial": trial,
-            "scores": scores,
-        })
+for task, task_class in TASKS.items():
+    for cond, probs in PROFILE.items():
+        for trial in range(N):
+            scores = {dim: float(random.random() < p) for dim, p in probs.items()}
+            rows.append({
+                "run_id": "SELFTEST",
+                "timestamp": "2026-01-01T00:00:00Z",
+                "task": task,
+                "task_class": task_class,
+                "evidence_class": "synthetic",
+                "condition": cond,
+                "condition_label": LABEL[cond],
+                "condition_ref": f"fixture:{cond}",
+                "condition_sha": hashlib.sha1(cond.encode()).hexdigest(),
+                "provider": "synthetic-fixture",
+                "model": "SYNTHETIC-not-a-real-run",
+                "reasoning_effort": "none",
+                "trial": trial,
+                "trial_count": N,
+                "scores": scores,
+            })
 
 out = Path(__file__).resolve().parent / "_pipeline_selftest.jsonl"
 out.write_text("\n".join(json.dumps(r) for r in rows) + "\n")

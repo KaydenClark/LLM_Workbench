@@ -25,6 +25,12 @@ The included mock agent is only a self-test for the harness. It proves the
 runner, grader, and scorer can detect outcome differences. It does not prove
 that a real LLM behaves better with the workbench.
 
+For the registered development/held-out evaluation tasks, use
+`evals/score.py` instead. It combines multiple JSONL files, reports per-task
+sample sizes and uncertainty, and mechanically excludes synthetic or
+unclassified rows from real-agent totals. This lightweight `outcomes/` scorer
+remains the portable single-task demonstration seam.
+
 ## Run The Self-Test
 
 ```bash
@@ -59,4 +65,3 @@ node tools/score-outcome-trials.mjs \
 Add a condition to `outcomes/conditions/conditions.json` with `"type": "path"`
 and a file list. That lets an external `AGENTS.md`, `CLAUDE.md`, or Cursor-rule
 style template compete against LLM Workbench on the same task suite.
-

@@ -175,6 +175,12 @@ def main() -> int:
     preflight(args.provider)
     task_dir = Path(args.task).resolve()
     task = json.loads((task_dir / "task.json").read_text())
+    task_class = {
+        "dev": "development",
+        "development": "development",
+        "heldout": "heldout",
+        "held-out": "heldout",
+    }.get(str(task.get("suite", "")).lower(), "unclassified")
     prompt = (task_dir / task["prompt_file"]).read_text()
     ref_overrides = {}
     for item in args.condition_ref:
@@ -214,6 +220,8 @@ def main() -> int:
                     "run_id": run_id,
                     "timestamp": dt.datetime.utcnow().isoformat() + "Z",
                     "task": task["id"],
+                    "task_class": task_class,
+                    "evidence_class": "real-agent",
                     "condition": cond_id,
                     "condition_label": cond.get("label", cond_id),
                     "condition_ref": cond.get("ref"),

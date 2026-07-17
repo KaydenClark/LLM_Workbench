@@ -33,7 +33,9 @@ def load_rows(patterns: list[str]) -> list[dict]:
                 for line in fh:
                     line = line.strip()
                     if line:
-                        rows.append(json.loads(line))
+                        row = json.loads(line)
+                        row["_source_file"] = path
+                        rows.append(row)
     return rows
 
 
@@ -64,6 +66,155 @@ def composite(rows: list[dict], dims: list[str]) -> dict[str, list[float]]:
     return out
 
 
+def row_composite(row: dict, dims: list[str]) -> float | None:
+    scores = [
+        float(row["scores"][dim])
+        for dim in dims
+        if dim in row.get("scores", {})
+    ]
+    return sum(scores) / len(scores) if scores else None
+
+
+def task_class(row: dict) -> str:
+    value = str(row.get("task_class", row.get("suite", ""))).strip().lower()
+    if value in {"dev", "development"}:
+        return "development"
+    if value in {"heldout", "held-out"}:
+        return "heldout"
+    return value or "unclassified"
+
+
+def evidence_class(row: dict) -> str:
+    source = Path(str(row.get("_source_file", ""))).name
+    run_id = str(row.get("run_id", "")).upper()
+    model = str(row.get("model", "")).upper()
+    explicit = str(row.get("evidence_class", "")).strip().lower()
+    if (
+        explicit == "synthetic"
+        or source.startswith("_")
+        or run_id == "SELFTEST"
+        or model.startswith("SYNTHETIC")
+    ):
+        return "synthetic"
+    if explicit in {"real", "real-agent", "real_agent"}:
+        return "real-agent"
+    return "unclassified"
+
+
+def joined_metadata(rows: list[dict], key: str) -> str:
+    values = sorted({
+        str(row.get(key, "")).strip()
+        for row in rows
+        if str(row.get(key, "")).strip()
+    })
+    return ", ".join(values) if values else "—"
+
+
+def ref_metadata(rows: list[dict]) -> str:
+    refs = []
+    for row in rows:
+        ref = str(row.get("condition_ref", "")).strip()
+        sha = str(row.get("condition_sha", "")).strip()
+        value = ref or "—"
+        if sha:
+            value += f"@{sha[:12]}"
+        if value not in refs:
+            refs.append(value)
+    return ", ".join(sorted(refs)) if refs else "—"
+
+
+def per_task_rows(rows: list[dict]) -> dict[tuple[str, str, str, str], list[dict]]:
+    grouped: dict[tuple[str, str, str, str], list[dict]] = collections.defaultdict(list)
+    for row in rows:
+        grouped[(
+            str(row.get("task", "unclassified")),
+            task_class(row),
+            evidence_class(row),
+            str(row["condition"]),
+        )].append(row)
+    return grouped
+
+
+def render_task_outcomes(rows: list[dict], dims: list[str], baseline: str) -> list[str]:
+    grouped = per_task_rows(rows)
+    out = [
+        "## Per-task composite outcomes\n",
+        "These rows preserve task and evidence class. Synthetic and unclassified "
+        "rows remain visible as apparatus diagnostics but cannot enter real-agent totals.\n",
+        "| Task | Task class | Evidence class | Condition | n | Composite mean | "
+        "95% CI | Lift vs baseline (95% CI) | Provider | Model | Reasoning | Ref@SHA |",
+        "|---|---|---|---|---:|---:|---|---|---|---|---|---|",
+    ]
+    for key in sorted(grouped):
+        task, task_kind, evidence_kind, condition = key
+        group_rows = grouped[key]
+        values = [
+            value for row in group_rows
+            if (value := row_composite(row, dims)) is not None
+        ]
+        if not values:
+            mean_text = interval_text = "—"
+        else:
+            interval = stats.bootstrap_mean(values)
+            mean_text = f"{interval.mean:.2f}"
+            interval_text = f"[{interval.ci_low:.2f}, {interval.ci_high:.2f}]"
+        if condition == baseline:
+            lift_text = "baseline"
+        else:
+            base_rows = grouped.get((task, task_kind, evidence_kind, baseline), [])
+            base = [
+                value for row in base_rows
+                if (value := row_composite(row, dims)) is not None
+            ]
+            lift_text = stats.bootstrap_diff(values, base).summary() if values and base else "—"
+        out.append(
+            f"| `{task}` | {task_kind} | {evidence_kind} | `{condition}` | "
+            f"{len(values)} | {mean_text} | {interval_text} | {lift_text} | "
+            f"{joined_metadata(group_rows, 'provider')} | "
+            f"{joined_metadata(group_rows, 'model')} | "
+            f"{joined_metadata(group_rows, 'reasoning_effort')} | "
+            f"{ref_metadata(group_rows)} |"
+        )
+    out.append("")
+    return out
+
+
+def render_real_comparison(rows: list[dict], dims: list[str], baseline: str) -> list[str]:
+    real_rows = [row for row in rows if evidence_class(row) == "real-agent"]
+    out = ["## Real-agent composite comparison\n"]
+    if not real_rows:
+        out.append(
+            "No eligible real-agent rows. Synthetic and unclassified rows are "
+            "mechanically excluded from this section.\n"
+        )
+        return out
+    groups = composite(real_rows, dims)
+    conditions = sorted(groups)
+    out.extend([
+        "Only rows explicitly classified as `real-agent` enter this claim-facing table.\n",
+        "| Condition | n | Composite mean | 95% CI | Lift vs baseline (95% CI) |",
+        "|---|---:|---:|---|---|",
+    ])
+    base = groups.get(baseline, [])
+    for condition in conditions:
+        values = groups[condition]
+        interval = stats.bootstrap_mean(values)
+        if condition == baseline:
+            lift = "baseline"
+        elif base:
+            lift = stats.bootstrap_diff(values, base).summary()
+        else:
+            lift = "—"
+        out.append(
+            f"| `{condition}` | {len(values)} | {interval.mean:.2f} | "
+            f"[{interval.ci_low:.2f}, {interval.ci_high:.2f}] | {lift} |"
+        )
+    if baseline not in groups:
+        out.append(f"\n> Baseline `{baseline}` is absent from eligible real-agent rows.")
+    out.append("")
+    return out
+
+
 def render(rows: list[dict], baseline: str) -> str:
     dims = dimensions(rows)
     conditions = sorted({r["condition"] for r in rows})
@@ -81,12 +232,39 @@ def render(rows: list[dict], baseline: str) -> str:
                ", ".join(f"{c}={n_trials[c]}" for c in conditions))
     out.append("")
 
+    evidence_counts = collections.Counter(evidence_class(row) for row in rows)
+    real_rows = [row for row in rows if evidence_class(row) == "real-agent"]
+    out.append("## Evidence inventory\n")
+    out.append("| Evidence class | Rows | Tasks | Conditions |")
+    out.append("|---|---:|---:|---:|")
+    for kind in ("real-agent", "synthetic", "unclassified"):
+        classified = [row for row in rows if evidence_class(row) == kind]
+        out.append(
+            f"| {kind} | {len(classified)} | "
+            f"{len({row.get('task') for row in classified})} | "
+            f"{len({row.get('condition') for row in classified})} |"
+        )
+    out.append("")
+    out.append(f"Real-agent evidence rows: **{len(real_rows)}**")
+    out.append(
+        "Excluded from real-agent totals: "
+        f"**{evidence_counts['synthetic']} synthetic**, "
+        f"**{evidence_counts['unclassified']} unclassified**"
+    )
+    out.append("")
+    out.extend(render_task_outcomes(rows, dims, baseline))
+    out.extend(render_real_comparison(rows, dims, baseline))
+
     if baseline not in conditions:
         out.append(f"> **Baseline `{baseline}` not present in data** — cannot compute lifts.")
         return "\n".join(out)
 
     # Per-dimension means table
     out.append("## Mean score by dimension\n")
+    out.append(
+        "> Apparatus diagnostic over every input row. This table is not a "
+        "real-agent evidence claim unless every row is eligible above.\n"
+    )
     header = "| Condition | " + " | ".join(dims) + " | composite |"
     sep = "|" + "---|" * (len(dims) + 2)
     out.append(header)
@@ -131,9 +309,11 @@ def render(rows: list[dict], baseline: str) -> str:
 
     out.append("## How to read this\n")
     out.append(
-        "- **composite** is the headline: mean of all dimensions per trial. "
-        "If a condition's composite lift CI excludes 0, that template version "
-        "beats the baseline on this task suite for this model.\n"
+        "- **Real-agent composite** is the claim-facing headline: mean of all "
+        "dimensions per eligible real-agent trial. Synthetic and unclassified "
+        "rows never enter it.\n"
+        "- The all-row composite remains an apparatus diagnostic so fixture and "
+        "legacy single-file scoring stays inspectable.\n"
         "- Dimensions are reported separately so a win on one axis "
         "(e.g. verification_honesty) is never hidden inside an average.\n"
         "- Significance here is statistical, not practical: pair it with the "

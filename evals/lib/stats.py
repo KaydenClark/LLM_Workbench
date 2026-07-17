@@ -118,6 +118,41 @@ class DiffCI:
         )
 
 
+@dataclass
+class MeanCI:
+    mean: float
+    ci_low: float
+    ci_high: float
+    n: int
+
+    def summary(self) -> str:
+        return (
+            f"{self.mean:.3f} "
+            f"(95% CI [{self.ci_low:.3f}, {self.ci_high:.3f}], n={self.n})"
+        )
+
+
+def bootstrap_mean(
+    observations: list[float],
+    iters: int = 10000,
+    seed: int = 0,
+) -> MeanCI:
+    """95% bootstrap CI for one sample mean."""
+    if not observations:
+        raise ValueError("at least one observation is required")
+    rng = random.Random(seed)
+    means = []
+    for _ in range(iters):
+        means.append(mean([
+            observations[rng.randrange(len(observations))]
+            for _ in observations
+        ]))
+    means.sort()
+    lo = means[int(0.025 * iters)]
+    hi = means[int(0.975 * iters)]
+    return MeanCI(mean(observations), lo, hi, len(observations))
+
+
 def bootstrap_diff(
     treatment: list[float],
     control: list[float],

@@ -92,6 +92,7 @@ node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
+python3 evals/test_score.py
 node tools/test-feedback-automation.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls

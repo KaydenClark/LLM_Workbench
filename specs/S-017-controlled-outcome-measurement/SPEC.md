@@ -6,12 +6,12 @@
 **Spec ID:** S-017
 **Status:** active
 **Priority:** 0
-**Owner:** unassigned
+**Owner:** codex-engineer
 **Updated:** 2026-07-17
 **Catalog description:** Turn the existing trial runners and held-out graders into repeatable, uncertainty-aware evidence about real agent outcomes.
 **Blockers:** none
-**Latest event:** Canon harvest separated the implemented apparatus from the missing real repeated evidence.
-**Next gate:** Claim TK-003 and add a deterministic multi-task uncertainty report before any paid run.
+**Latest event:** TK-003 implementation and no-spend fixture proof are green at a local checkpoint.
+**Next gate:** Push the immutable TK-003 checkpoint and run the exact-head Auditor before close.
 
 ## Outcome
 
@@ -80,7 +80,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Provide the portable outcome-trial runner, scorer, and synthetic honesty fixture | done | none | `node tools/test-outcome-trials.mjs` |
 | TK-002 | Provide provider-neutral Git-ref trials, held-out grading, and statistical seams | done | S-002 | eval-runner self-test, pipeline self-test, and held-out grader |
-| TK-003 | Aggregate multiple tasks into an uncertainty-aware no-spend report | ready | none | pending |
+| TK-003 | Aggregate multiple tasks into an uncertainty-aware no-spend report | in-progress | none | `python3 evals/test_score.py`; 96-row synthetic multi-task report; full Runbook suite |
 | TK-004 | Execute the preregistered repeated real-agent comparison | blocked | TK-003, owner model/API spend approval | pending |
 | TK-005 | Record the bounded release claim or inconclusive result in the evidence ledger | blocked | TK-004 | pending |
 
@@ -137,8 +137,8 @@ No additional owner gate after TK-004 unless the result changes public product c
 
 - [x] The repository has deterministic outcome runners, scorers, provider adapters,
       and at least one development plus one held-out task.
-- [ ] One report aggregates multiple tasks with sample size and uncertainty.
-- [ ] Synthetic results are mechanically excluded from real-evidence claims.
+- [x] One report aggregates multiple tasks with sample size and uncertainty.
+- [x] Synthetic results are mechanically excluded from real-evidence claims.
 - [ ] A preregistered repeated real-agent comparison runs at the approved budget.
 - [ ] The evidence ledger records a bounded positive, negative, or inconclusive result.
 - [ ] No release claim exceeds the measured tasks, agents, conditions, or uncertainty.
@@ -155,6 +155,7 @@ No additional owner gate after TK-004 unless the result changes public product c
 ```bash
 node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
+python3 evals/test_score.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 python3 evals/results/_make_selftest.py
 python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
@@ -173,6 +174,7 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-17 | canon harvest | Separated implemented trial apparatus from the unfulfilled real-evidence outcome | Existing outcome, eval-runner, pipeline, held-out, evaluator, guardrail, render, doctor, and complete Runbook checks passed | Added S-017 and linked the coverage matrix | TK-003 through TK-005 remain |
+| 2026-07-17 | TK-003 | Added deterministic multi-task reporting with per-task class, sample size, bootstrap intervals, reproducibility metadata, and fail-closed real-agent totals | Red: `python3 evals/test_score.py` failed 3 assertions because the report lacked classification and exclusion; green: 3 tests pass; provider-neutral runner, held-out grader, 96-row synthetic report, complete Runbook suite, root 113/113, templates 106.6/113, guardrail 78/100, render, doctor, and diff check pass without provider use | Updated AGENTS, RUNBOOK, evals/outcomes usage, result schema, benchmark ledger, and this spec | Exact-head Auditor remains before TK-003 close; TK-004 still requires owner model/API spend approval |
 
 ## Completion Result
 

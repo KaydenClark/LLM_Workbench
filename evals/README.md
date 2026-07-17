@@ -59,6 +59,24 @@ python3 evals/run.py \
 python3 evals/score.py evals/results/run_$(date +%F).jsonl --baseline c0_none
 ```
 
+`score.py` accepts one or more result files or globs. One report preserves each
+task/condition/class row, sample size, bootstrap interval, provider, model,
+reasoning effort, and resolved ref/SHA, then builds a separate composite from
+only rows explicitly classified as `real-agent`:
+
+```bash
+python3 evals/score.py \
+  evals/results/run_task_a_*.jsonl \
+  evals/results/run_task_b_*.jsonl \
+  --baseline c0_none \
+  --report evals/results/report_multi_task.md
+```
+
+Synthetic fixtures and legacy/unclassified rows stay visible for apparatus
+debugging but are mechanically excluded from the claim-facing real-agent
+totals. This is fail-closed: an omitted evidence class never becomes real
+evidence by inference.
+
 The same runner supports isolated Codex comparisons without modifying the
 condition registry:
 
@@ -83,6 +101,7 @@ only because they are:
 
 ```bash
 # 1. The analysis pipeline, on clearly-labelled SYNTHETIC data (not evidence):
+python3 evals/test_score.py
 python3 evals/results/_make_selftest.py
 python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 

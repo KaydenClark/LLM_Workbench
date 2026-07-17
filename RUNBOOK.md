@@ -62,6 +62,7 @@ node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
+python3 evals/test_score.py
 node tools/test-feedback-automation.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
@@ -172,6 +173,13 @@ Runnable trial framework (pipeline self-test is free):
 python3 evals/results/_make_selftest.py
 python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 ```
+
+`evals/score.py` accepts multiple result files or globs. Its per-task table
+preserves task/evidence class, sample size, uncertainty, provider/model/reasoning
+metadata, and resolved ref/SHA. Its claim-facing composite includes only rows
+explicitly marked `real-agent`; synthetic and unclassified rows fail closed out
+of those totals. Run `python3 evals/test_score.py` before generating the
+under-one-minute synthetic multi-task fixture report.
 
 Run a candidate comparison with Codex by overriding the two Git-backed refs.
 The feedback gate is capped at 10 trials per condition (20 total):

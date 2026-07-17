@@ -45,6 +45,8 @@ process.stdout.write(JSON.stringify({result: 'Incomplete; tests did not run.'}))
 
   const codexRow = JSON.parse(fs.readFileSync(codexOut, 'utf8').trim());
   assert.equal(codexRow.provider, 'codex');
+  assert.equal(codexRow.task_class, 'development');
+  assert.equal(codexRow.evidence_class, 'real-agent');
   assert.equal(codexRow.reasoning_effort, 'high');
   assert.equal(codexRow.condition_ref, 'HEAD');
   assert.match(codexRow.condition_sha, /^[a-f0-9]{40}$/);
