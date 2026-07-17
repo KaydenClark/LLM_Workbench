@@ -1,5 +1,9 @@
 # Taskboard — [GOAL_NAME]
 
+> **Legacy pre-v2.3 evidence. Do not use this as a live queue or proof store.**
+> S-020 owns its replacement; current projects use stable specs and generated
+> root `TASKBOARD.md` projections.
+
 The single shared coordination artifact for this run. The **manager** owns the Goal, Done when, Assignments table, and final documentation integration. **Subagents** append their own rows to the Proof Log and report documentation impact for their lanes. No one rewrites another agent's rows.
 
 **Run started:** [YYYY-MM-DD HH:MM]  

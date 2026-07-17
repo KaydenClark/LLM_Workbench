@@ -63,8 +63,9 @@ docs look like. Copy from `templates/`, not from the root.
   exposes this folder through both Claude and Codex-compatible discovery paths.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
   until their Workbench rewrites pass review.
-- `team templates/` - optional manager/subagent coordination templates for
-  small multi-agent runs.
+- `team templates/` - legacy pre-v2.3 manager/subagent coordination evidence.
+  Do not copy it into a current project until S-020 replaces its duplicate
+  Taskboard/proof-log model with spec-native role coordination.
 - `benchmarks/` - static-rubric scoring docs and result summaries.
 - `outcomes/` - controlled task-trial fixtures and self-tests.
 - `evals/` - runnable comparison framework for measuring whether template
@@ -89,6 +90,8 @@ docs look like. Copy from `templates/`, not from the root.
   `simonw/files-to-prompt`.
 - `tools/new-research-project.mjs` - creates a Simon-style research folder with
   `notes.md` and `README.md`.
+- `docs/BLUEPRINT_TO_SPEC_COVERAGE.md` - source-backed map from every current
+  product capability to its stable owning spec.
 - `LICENSE` - MIT license for reuse and adaptation.
 
 ## How To Use It

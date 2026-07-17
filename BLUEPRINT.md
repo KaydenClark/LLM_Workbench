@@ -1,6 +1,6 @@
 # LLM Workbench - Blueprint
 
-**Last reviewed:** 2026-07-12
+**Last reviewed:** 2026-07-17
 **Status:** active
 **Harness version:** v2.3
 **Source root:** `/Users/kayden/GPT_OS/Workbench Factory`
@@ -28,6 +28,8 @@ Core promise:
   in specs, procedures in `RUNBOOK.md`, and behavior in source/tests.
 - **Evidence over taste:** deterministic checks are the release gate; repeated
   controlled trials are required for agent-outcome claims.
+- **Reusable workflows:** Genesis, Adoption, named skills, feedback harvest,
+  evaluation, and release/rollout are product capabilities rather than chat-only process.
 - **Portable by default:** plain Markdown and zero-dependency local commands
   work with Codex, Claude Code, Gemini CLI, and ordinary command-line workflows.
 
@@ -48,12 +50,26 @@ metadata. Human-authored prose stays outside those regions. Completed specs
 remain at their stable path, disappear from the hot board immediately, and may
 be changed only through a later spec linked by supersession.
 
+## Capability Portfolio
+
+The reusable product includes the core control surface and lifecycle tooling,
+greenfield and existing-project entry paths, curated workflow skills, static and
+outcome evaluation, feedback harvest, public delivery, downstream rollout, and
+bounded context/research support. Optional team coordination must follow the
+same spec-native truth and writer rules.
+
+The complete source-backed mapping lives in
+[`docs/BLUEPRINT_TO_SPEC_COVERAGE.md`](docs/BLUEPRINT_TO_SPEC_COVERAGE.md).
+That matrix is a planning audit, not a second work queue; stable specs remain the
+capability and ticket owners.
+
 ## Non-Goals
 
 - A hosted tracker, database, paid service, broad MCP server, or general project
   management app.
 - Personal task management or replacement of Command Information Center.
 - A permanent Done lane or proof archive in startup context.
+- A second durable team Taskboard, proof ledger, or coordination truth store.
 - Retrofitting every historical task into a manufactured spec.
 - Claiming better agent outcomes from smaller context alone.
 
@@ -64,7 +80,7 @@ be changed only through a later spec linked by supersession.
 |---|---|---|
 | [S-001 - Spec-Centered Progressive Disclosure](specs/S-001-progressive-disclosure/SPEC.md) | Make AGENTS the operating system while specs hold durable capability truth and the hot board projects active work only. | complete |
 | [S-002 - Held-Out Second-Domain Evaluation](specs/S-002-heldout-evaluation/SPEC.md) | Add a condition-blind held-out task before spending on repeated c0/c1/c2/c3 outcome trials. | complete |
-| [S-003 - Prospective Dungeon Friends Pilot](specs/S-003-dungeon-friends-pilot/SPEC.md) | Evaluate v2.3 progressive disclosure in Dungeon Friends only after separate owner authorization. | planned |
+| [S-003 - Prospective Dungeon Friends Pilot](specs/S-003-dungeon-friends-pilot/SPEC.md) | Run a later preregistered Dungeon Friends pilot through the completed outcome-measurement apparatus and project-owned acceptance. | planned |
 | [S-004 - Safe Direct Claim](specs/S-004-safe-direct-claim/SPEC.md) | Prevent direct claim calls from bypassing a ticket's declared blockers. | complete |
 | [S-005 - Bootstrap Documentation Alignment](specs/S-005-bootstrap-doc-alignment/SPEC.md) | Remove stale four-control-doc and Taskboard-proof wording from bootstrap and adoption guidance. | complete |
 | [S-006 - Automated Harness Feedback Gate](specs/S-006-feedback-automation/SPEC.md) | Build and operate a one-candidate Terra/Sol feedback loop with independent evidence gates. | complete |
@@ -75,6 +91,13 @@ be changed only through a later spec linked by supersession.
 | [S-011 - Agent Skills Adoption](specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | active |
 | [S-012 - Reproducible Adoption Provenance](specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
 | [S-013 - Standardized Automation Run Outcomes](specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
+| [S-014 - Workbench Release Candidate](specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | complete |
+| [S-015 - Project Bootstrap And Adoption](specs/S-015-bootstrap-adoption/SPEC.md) | Give greenfield and existing projects distinct, recoverable paths into the reusable Workbench harness. | complete |
+| [S-016 - Static Evaluation And Guardrail Audit](specs/S-016-static-evaluation-guardrails/SPEC.md) | Score harness control coverage and diagnose evidence drift without mistaking static health for agent outcomes. | complete |
+| [S-017 - Controlled Agent Outcome Measurement](specs/S-017-controlled-outcome-measurement/SPEC.md) | Turn the existing trial runners and held-out graders into repeatable, uncertainty-aware evidence about real agent outcomes. | active |
+| [S-018 - Versioned Delivery And Downstream Rollout](specs/S-018-versioned-delivery-rollout/SPEC.md) | Publish exact, reviewable Workbench releases and prove downstream upgrades against a deterministic package manifest. | active |
+| [S-019 - Context Packaging And Research Workspaces](specs/S-019-context-research-tools/SPEC.md) | Package selected repository context safely and scaffold durable question-focused research without adding dependencies. | complete |
+| [S-020 - Spec-Native Team Coordination](specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
@@ -87,3 +110,6 @@ be changed only through a later spec linked by supersession.
 - harness changes record baseline, after-state, limitations, and documentation
   impact without weakening audit criteria;
 - published version changes occur only after behavior is proven.
+- release identity, exact source, limitations, and downstream provenance remain
+  reproducible from a clean clone;
+- real agent-outcome claims require repeated controlled evidence with uncertainty.

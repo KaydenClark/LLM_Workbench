@@ -49,12 +49,18 @@ try {
     'a spec must not complete before its ticket and acceptance gates'
   );
 
-  closeTicket(root, 'S-001', {
-    proof: 'fixture command passed',
+  const closed = closeTicket(root, 'S-001', {
+    proof: 'node test | tee proof.log',
     docs: 'Docs checked; no update needed',
     remainingGap: 'none',
     date: '2026-07-12'
   });
+  assert.equal(closed.tickets[0].proof, 'node test | tee proof.log', 'ticket proof should round-trip a literal pipe');
+  assert.equal(
+    read('specs/S-001-fixture/SPEC.md').split('node test \\| tee proof.log').length - 1,
+    2,
+    'ticket proof and appended evidence should persist escaped Markdown pipes'
+  );
   let completedCandidate = read('specs/S-001-fixture/SPEC.md')
     .replace('- [ ] Expected behavior is verified.', '- [x] Expected behavior is verified.')
     .replace('## Completion Result\n\nPending.', '## Completion Result\n\nPass: fixture lifecycle completed.');
@@ -106,9 +112,31 @@ try {
 
   fs.writeFileSync(
     path.join(root, 'specs/S-001-fixture/SPEC.md'),
-    validCompleted.replace('fixture command passed', 'pending')
+    validCompleted.replace('node test \\| tee proof.log', 'pending')
   );
   assert.ok(doctor(root).some((issue) => issue.code === 'missing-evidence'));
+  fs.writeFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), validCompleted);
+
+  const malformed = validCompleted.replace(
+    '| TK-001 | First slice | done | none | node test \\| tee proof.log |',
+    '| TK-001 | First slice | in-progress | none | broken | extra |'
+  );
+  fs.writeFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), malformed);
+  assert.throws(
+    () => closeTicket(root, 'S-001', {
+      proof: 'must not persist',
+      docs: 'Docs checked; no update needed',
+      remainingGap: 'none',
+      date: '2026-07-12'
+    }),
+    /malformed ticket row/,
+    'malformed ticket rows should be reported explicitly'
+  );
+  assert.equal(
+    read('specs/S-001-fixture/SPEC.md'),
+    malformed,
+    'a rejected malformed row must not partially persist a close operation'
+  );
   fs.writeFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), validCompleted);
 
   fs.writeFileSync(

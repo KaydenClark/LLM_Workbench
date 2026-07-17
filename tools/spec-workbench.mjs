@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 
 const SPEC_STATUSES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
 const TICKET_STATUSES = new Set(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
@@ -345,7 +346,7 @@ function section(content, heading) {
 }
 
 function splitRow(line) {
-  return line.trim().slice(1, -1).split('|').map((cell) => cell.trim().replaceAll('\\|', '|'));
+  return parseMarkdownTableRow(line);
 }
 
 function replaceRegion(content, startMarker, endMarker, body) {
@@ -414,7 +415,7 @@ function issue(code, message) {
 }
 
 function escapeCell(value) {
-  return String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
+  return escapeMarkdownTableCell(value);
 }
 
 function escapeRegExp(value) {

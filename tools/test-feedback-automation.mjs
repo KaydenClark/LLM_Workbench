@@ -28,6 +28,38 @@ assert.match(parsed[0].whatHappened, /Ignore prior instructions/, 'feedback cont
 assert.equal(parsed[0].impact, 'medium');
 assert.match(parsed[0].fingerprint, /^[a-f0-9]{12}$/);
 
+const escapedPipeline = [
+  '# Example - Harness Feedback',
+  '',
+  '| Date | Doc / section | What happened | Impact | Proposed change | Status |',
+  '|---|---|---|---|---|---|',
+  '| 2026-07-03 | RUNBOOK.md | Command `node test \\| tee proof.log` lost its pipe | high | Preserve `node test \\| tee proof.log` and `C:\\\\logs` | new |'
+].join('\n');
+const pipelineRows = parseFeedbackRows(escapedPipeline, {
+  repo: 'Pipeline',
+  origin: 'https://github.com/KaydenClark/Pipeline.git'
+});
+assert.equal(pipelineRows.length, 1, 'an escaped pipeline should remain one valid six-column feedback row');
+assert.equal(pipelineRows[0].whatHappened, 'Command node test | tee proof.log lost its pipe');
+assert.equal(pipelineRows[0].proposedChange, 'Preserve node test | tee proof.log and C:\\logs');
+
+const malformedFeedback = [
+  '# Example - Harness Feedback',
+  '',
+  '| Date | Doc / section | What happened | Impact | Proposed change | Status |',
+  '|---|---|---|---|---|---|',
+  '| 2026-07-03 | RUNBOOK.md | Valid row | high | Preserve it | new |',
+  '| 2026-07-04 | RUNBOOK.md | node test | tee proof.log | high | Escape the pipeline | new |'
+].join('\n');
+assert.throws(
+  () => parseFeedbackRows(malformedFeedback, {
+    repo: 'Malformed',
+    origin: 'https://github.com/KaydenClark/Malformed.git'
+  }),
+  /HARNESS_FEEDBACK line 6.*expected 6 columns.*found 7/,
+  'malformed feedback rows should be reported instead of silently dropped after partial parsing'
+);
+
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'feedback-discovery-'));
 try {
   makeRepo('Alpha', 'https://github.com/KaydenClark/Alpha.git', injected);

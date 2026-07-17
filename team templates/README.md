@@ -1,5 +1,9 @@
 # Team Templates — Manager + Subagents
 
+> **Legacy pre-v2.3 evidence. Do not adopt this folder into a current project.**
+> It still uses a duplicate Taskboard/proof-log model that conflicts with the
+> stable-spec lifecycle. S-020 owns its replacement.
+
 A coordination layer for a **small, short-lived team**: 1 manager agent and 1–3 subagents, working for a few hours toward one goal.
 
 It is deliberately lightweight. There is no task queue, no locking, no heartbeats. At this scale you avoid collisions by **partitioning the work before you launch**, not by coordinating at runtime. The manager owns the partition; each subagent stays in its lane; one shared file holds the assignments and the proof.

@@ -10,8 +10,8 @@
 **Updated:** 2026-07-17
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** TK-010 closed with proof.
-**Next gate:** Complete TK-003.
+**Latest event:** Canon harvest decomposed all seventeen pending rewrites and downstream packaging while preserving the Claude authentication gate.
+**Next gate:** Claim TK-011; TK-003 remains independently owner-blocked.
 
 ## Outcome
 
@@ -112,6 +112,99 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-008 | Preserve upstream notice and fail-close unfinished imported skills outside live discovery | done | none | Targeted catalog red/green; full Runbook suite; fresh Codex active/pending discovery; template evaluator 106.6/113; live guardrail 78/100; render, doctor, and diff check passed |
 | TK-009 | Rewrite and promote pending `implement` and `code-review` as the next delivery-flow pair | done | none | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 |
 | TK-010 | Route `make it so` through durable planning and scheduled Taskboard execution | done | none | Red/green skill-catalog handoff and prior-authorization contracts; complete RUNBOOK suite; templates 106.6/113; fixed-SHA review 053396f..ea48eca found no remaining issues; render, doctor, and git diff --check passed |
+| TK-011 | Rewrite the domain and interface design pack | ready | none | pending |
+| TK-012 | Rewrite the test, diagnosis, and conflict-recovery pack | ready | none | pending |
+| TK-013 | Rewrite the architecture and repository-enforcement pack | ready | none | pending |
+| TK-014 | Rewrite the research, navigation, continuity, and workflow-discovery pack | ready | none | pending |
+| TK-015 | Rewrite the guided teaching and human-in-the-loop wizard pack | ready | none | pending |
+| TK-016 | Package the complete reviewed catalog for deterministic downstream upgrades | blocked | TK-003, TK-011, TK-012, TK-013, TK-014, TK-015 | pending |
+
+### Planned Ticket: TK-011
+
+**Vertical outcome:** Promote `domain-modeling`, `ubiquitous-language`,
+`codebase-design`, `design-an-interface`, and `prototype` as one coherent design
+flow that routes shared terms to Lexicon and scoped decisions to the owning spec.
+
+**Done criteria:** Each skill has a distinct entry condition and output, no
+parallel PRD/ADR/context store, router links only after all focused contracts
+pass, and all five move from pending to live together without changing unrelated skills.
+
+**Required proof:** Targeted baseline-red/candidate-green catalog tests, a fresh
+ephemeral Codex routing probe, full Runbook verification, evaluator, guardrail,
+render, doctor, and diff check. No owner gate.
+
+### Planned Ticket: TK-012
+
+**Vertical outcome:** Promote `tdd`, `diagnosing-bugs`, and
+`resolving-merge-conflicts` as the shared red/green, root-cause, and intent-
+preserving recovery flow.
+
+**Done criteria:** Diagnose remains read-only unless fix mode is requested; TDD
+uses an agreed public seam; conflict resolution preserves both compatible
+intents and escalates product choices; no skill bypasses project verification.
+
+**Required proof:** Focused behavior-contract tests for each entry point, one
+temporary repository fixture covering diagnosis and conflict intent, fresh
+Codex discovery, full Runbook verification, render, doctor, and diff check. No owner gate.
+
+### Planned Ticket: TK-013
+
+**Vertical outcome:** Promote `improve-codebase-architecture`,
+`setup-pre-commit`, and `setup-ts-deep-modules` as opt-in architecture and
+repository enforcement behaviors.
+
+**Done criteria:** Architecture work proposes bounded evidence-backed changes;
+pre-commit setup derives checks from the project Runbook; TypeScript boundaries
+activate only after the project explicitly chooses that architecture; no skill
+assumes a package manager or rewrites broad source by default.
+
+**Required proof:** Focused static contracts, disposable repository fixtures for
+supported and rejected setups, fresh Codex discovery, full Runbook verification,
+render, doctor, and diff check. Product architecture choices remain project-owner gates.
+
+### Planned Ticket: TK-014
+
+**Vertical outcome:** Promote `research`, `wayfinder`, `handoff`, and `loop-me`
+as a flow for reducing uncertainty, preserving only necessary continuity, and
+turning a repeated workflow into a settled spec.
+
+**Done criteria:** Research prefers primary sources and creates durable output
+only when needed; Wayfinder resolves one decision at a time; Handoff links to
+canonical artifacts instead of copying them; Loop-me ends at a Workbench spec
+and does not implement in the discovery chat.
+
+**Required proof:** Focused catalog contracts, fixture outputs with no parallel
+truth files, fresh Codex discovery, full Runbook verification, evaluator,
+render, doctor, and diff check. No owner gate.
+
+### Planned Ticket: TK-015
+
+**Vertical outcome:** Promote `teach` and `wizard` as distinct guided human
+flows for learning and repeatable setup that cannot be safely automated end to end.
+
+**Done criteria:** Teach adapts small lessons to learner purpose without
+inventing completion evidence; Wizard generates a reviewable script, validates
+inputs, checkpoints recovery, and pauses at credentials, destructive changes,
+paid services, or subjective choices.
+
+**Required proof:** Focused static and script-safety fixtures, fresh Codex
+discovery, full Runbook verification, evaluator, render, doctor, and diff check.
+Human decisions remain explicit gates inside the generated workflow.
+
+### Planned Ticket: TK-016
+
+**Vertical outcome:** Produce one deterministic distribution manifest and
+upgrade proof for the complete reviewed skill catalog without editing downstream
+projects from this repository.
+
+**Done criteria:** Active catalog, folders, licenses, checksums, required harness
+version, and discovery names are manifest-bound; pending entries are absent;
+`update-harness` can verify the package identity; Codex and Claude discovery are
+both proven against the same manifest before downstream rollout is declared ready.
+
+**Required proof:** Catalog and manifest tests, fresh Codex and Claude discovery,
+full Runbook verification, evaluator, guardrail, render, doctor, and a fresh-clone
+package check. **Owner gate:** Kayden must authenticate Claude for the Claude proof.
 
 ### Scoped Ticket: TK-002
 
@@ -325,6 +418,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-16 | TK-009 | Ticket closed | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 | Updated implement, code-review, skills catalog/router, S-011, generated TASKBOARD, and benchmarks/RESULTS; RUNBOOK and BLUEPRINT checked with no update needed because their lifecycle and shipped-skill ownership remain accurate | Seventeen pending rewrites remain; Claude discovery remains blocked on owner authentication; real repeated outcome evidence remains unrun |
 | 2026-07-16 | TK-009 review | Closed independent audit gaps: disabled Git text conversion during fixed-SHA review, required a remotely verified in-progress checkpoint before review and a new checkpoint plus re-review after fixes, and corrected the manual Taskboard focus for blocked S-011 | Red: the hostile textconv helper wrote its marker and the delivery-order contract could not find the in-progress checkpoint, 0/2 passed. Green: delivery contracts 2/2; complete Runbook suite; fresh ephemeral Codex returned `DELIVERY_REPAIR_OK`; root 113/113; templates 106.6/113; guardrail 78->78/100; gitleaks Git-history and directory scans found no leaks | Updated `code-review`, `implement`, delivery/catalog tests, S-011, and the manual Taskboard current-focus header; generated projection rendered from the spec | Seventeen pending rewrites remain; Claude discovery remains owner-auth blocked; real repeated outcome evidence remains unrun |
 | 2026-07-17 | TK-010 | Ticket closed | Red/green skill-catalog handoff and prior-authorization contracts; complete RUNBOOK suite; templates 106.6/113; fixed-SHA review 053396f..ea48eca found no remaining issues; render, doctor, and git diff --check passed | Updated grilling, to-tickets, skill catalog, S-011, and generated TASKBOARD; Docs checked; no update needed for RUNBOOK or router because existing scheduler authority and flow routing remain accurate | Scheduler execution remains runtime-dependent and must report a visible blocker when unavailable |
+| 2026-07-17 | canon harvest | Decomposed all seventeen pending skills into five coherent rewrite packs plus one deterministic distribution gate | Active/pending catalog, folders, current contracts, discovery evidence, and full-suite seams reviewed; no skill implementation performed | Updated S-011 tickets and Blueprint coverage; skills README remains the catalog owner | TK-011 through TK-016; TK-003 still needs owner Claude authentication |
 
 ## Completion Result
 

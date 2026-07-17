@@ -96,7 +96,7 @@ Decision rule:
 - A branch can replace `main` when it scores higher on the static rubric and does not introduce a new critical gap.
 - A template version can claim real-world improvement only after task trials show higher task success or lower rework at equal or better safety and documentation scores.
 
-## Current Branch Finding
+## Historical Branch Finding (2026-06-23)
 
 As of 2026-06-23, the reviewed GitHub branches were `main`,
 `claude/harness-template-upgrades-v2`, `claude/harness-eval-framework`, and

@@ -1,8 +1,8 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** S-011 remains active but blocked on owner Claude authentication; no agent ticket is currently eligible.
+**Current focus:** S-017/TK-003 is the smallest safe no-spend Engineer slice; S-018, S-011, and S-020 also have independent ready work.
 **Owner:** Kayden (executive); agents execute assigned slices
-**Last updated:** 2026-07-16
+**Last updated:** 2026-07-17
 
 This dashboard contains current execution state only. Use
 `node tools/spec-workbench.mjs next` to select work and `show S-###` to load its
@@ -14,10 +14,18 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-010 closed with proof. | Complete TK-003. |
+| [S-017](specs/S-017-controlled-outcome-measurement/SPEC.md) | TK-003: Aggregate multiple tasks into an uncertainty-aware no-spend report (ready) | unassigned | none | Canon harvest separated the implemented apparatus from the missing real repeated evidence. | Claim TK-003 and add a deterministic multi-task uncertainty report before any paid run. |
+| [S-018](specs/S-018-versioned-delivery-rollout/SPEC.md) | TK-002: Generate and verify a deterministic release manifest for the shipped package (ready) | unassigned | none | Canon harvest captured the shipped public package and isolated repeatable delivery and rollout gaps. | Claim TK-002 and define the deterministic release manifest before changing release automation. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-011: Rewrite the domain and interface design pack (ready) | codex | none | Canon harvest decomposed all seventeen pending rewrites and downstream packaging while preserving the Claude authentication gate. | Claim TK-011; TK-003 remains independently owner-blocked. |
+| [S-020](specs/S-020-spec-native-team-coordination/SPEC.md) | TK-001: Rewrite the manager template around Captain, roles, one owning spec, and one writer (ready) | unassigned | none | Canon harvest identified the tracked team templates as contradictory to the v2.3 spec lifecycle. | Claim TK-001 and replace the manager contract without changing runtime tooling. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
 
-No open owner decisions. New decisions stay here only while they block an
-active spec; the resolved decision moves into that spec.
+- **S-011/TK-003:** Kayden authenticates Claude before the final cross-agent
+  discovery proof. This does not block TK-011 through TK-015.
+- **S-017/TK-004:** after TK-003 proves the no-spend reporting seam, Kayden
+  approves or declines the bounded model/API trial budget.
+
+Resolved decisions move into their owning specs; this section remains a hot
+projection rather than a durable decision archive.
