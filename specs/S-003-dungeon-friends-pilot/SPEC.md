@@ -45,13 +45,19 @@ Kayden's subjective fun/replay verdict as a distinct owner gate.
 
 ## Non-Goals
 
-- Any Dungeon Friends work during S-001.
+- Implementing or upgrading Dungeon Friends from the Workbench repository.
+- Treating automated task scores as Kayden's fun, replay, or game-feel verdict.
+- Using uncommitted local scene state as a supposedly reproducible trial input.
 
 ## Dependencies And Blockers
 
 - S-001 complete.
 - S-017 complete.
-- One remotely recoverable Dungeon Friends candidate checkpoint and project-owned acceptance packet.
+- One remotely recoverable Dungeon Friends candidate commit linked from its
+  owning stable capability spec.
+- A project-owned acceptance packet that names the preserved local
+  `project.godot` scene override and proves the trial commit does not overwrite it.
+- S-017/TK-004 owner approval for the bounded model/API spend before TK-002.
 
 ## Vertical Implementation Slices
 
@@ -87,12 +93,26 @@ Kayden's subjective fun/replay verdict as a distinct owner gate.
 
 ## Testing Seams
 
-- To be defined after authorization.
+- **Identity seam:** exact Dungeon Friends candidate SHA, clean isolated trial
+  checkout, owning project spec, and unchanged canonical remote.
+- **Condition seam:** identical prompt, fixture, model family, permissions, time
+  budget, and deterministic grader across baseline and candidate.
+- **Measurement seam:** S-017's multi-task report records task class, sample size,
+  uncertainty, failures, and synthetic exclusion.
+- **Project-safety seam:** the project-owned acceptance packet proves the local
+  `project.godot` override remains outside trial mutation.
+- **Owner seam:** Workbench evidence and Kayden's separate fun/replay verdict are
+  linked but never collapsed into one automated score.
 
 ## Verification Procedure
 
 ```bash
-# Defined by the future authorized pilot.
+git -C /Users/kayden/GPT_OS/Projects/Dungeon_Friends_Game rev-parse HEAD
+git -C /Users/kayden/GPT_OS/Projects/Dungeon_Friends_Game status --short
+node tools/test-outcome-trials.mjs
+node tools/test-eval-runner.mjs
+python3 evals/tasks/task_b_path_safety/test_grade.py
+node tools/spec-workbench.mjs doctor
 ```
 
 ## Documentation Impact
@@ -104,6 +124,7 @@ Kayden's subjective fun/replay verdict as a distinct owner gate.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-17 | canon harvest | Removed the obsolete authorization blocker and decomposed the prospective pilot | Current portfolio authorization, S-017 plan, and project-ownership boundary reviewed | Updated S-003 only; no Dungeon Friends files were read or changed in this Planner lane | S-017 and a project-owned candidate checkpoint |
+| 2026-07-17 | audit remediation | Replaced future-authorization placeholders with concrete project, measurement, safety, and owner seams | S-003 dependencies checked against S-017 and the settled Dungeon Friends dirty-override boundary; render, doctor, full planning verification, and diff check passed | Updated S-003 only; no Dungeon Friends files were read or changed | S-017 completion, pushed project candidate, acceptance packet, and approved trial spend |
 
 ## Completion Result
 

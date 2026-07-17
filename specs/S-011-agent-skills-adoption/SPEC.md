@@ -10,7 +10,7 @@
 **Updated:** 2026-07-17
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** Canon harvest decomposed all seventeen pending rewrites and downstream packaging while preserving the Claude authentication gate.
+**Latest event:** Auditor remediation narrowed TK-016 to the skill-catalog input consumed by S-018 and removed duplicate manifest/upgrade ownership.
 **Next gate:** Claim TK-011; TK-003 remains independently owner-blocked.
 
 ## Outcome
@@ -55,7 +55,8 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 - `ask-workbench` maps situations to the smallest suitable skill or flow.
 - Sitrep stays conversational and read-only; documentation persistence is a
   separate `to-docs` action.
-- Skills are distributed to projects through the harness upgrade path.
+- S-011 produces the verified skill-catalog component consumed by S-018; S-018
+  alone owns the release manifest, `update-harness` verification, and downstream rollout.
 - Genesis is the callable greenfield bootstrap; Adoption is the callable
   one-time existing-project migration; routine changes use `update-harness`.
 
@@ -69,6 +70,8 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 - `skills/README.md` owns the selected names, definitions, rewrite lanes, and
   discovery availability; `tools/test-skill-catalog.mjs` fails when active or
   pending folders diverge from it.
+- S-018 owns release manifests and downstream upgrade proof. S-011/TK-016 emits
+  only the deterministic skill-catalog input in S-018/TK-002's schema.
 - The untouched upstream snapshot stays outside live discovery at
   `.agents/upstream-matt-skills-2026-07-14/`.
 - Upstream license is MIT; provenance links from `skills/README.md` to the
@@ -117,7 +120,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-013 | Rewrite the architecture and repository-enforcement pack | ready | none | pending |
 | TK-014 | Rewrite the research, navigation, continuity, and workflow-discovery pack | ready | none | pending |
 | TK-015 | Rewrite the guided teaching and human-in-the-loop wizard pack | ready | none | pending |
-| TK-016 | Package the complete reviewed catalog for deterministic downstream upgrades | blocked | TK-003, TK-011, TK-012, TK-013, TK-014, TK-015 | pending |
+| TK-016 | Emit the verified skill-catalog input for the S-018 release manifest | blocked | TK-003, TK-011, TK-012, TK-013, TK-014, TK-015, S-018/TK-002 | pending |
 
 ### Planned Ticket: TK-011
 
@@ -193,18 +196,20 @@ Human decisions remain explicit gates inside the generated workflow.
 
 ### Planned Ticket: TK-016
 
-**Vertical outcome:** Produce one deterministic distribution manifest and
-upgrade proof for the complete reviewed skill catalog without editing downstream
-projects from this repository.
+**Vertical outcome:** Emit one deterministic, schema-valid skill-catalog input
+for S-018's release manifest. This ticket ends at the Workbench-owned catalog
+boundary and performs no release, upgrade, or downstream project write.
 
-**Done criteria:** Active catalog, folders, licenses, checksums, required harness
-version, and discovery names are manifest-bound; pending entries are absent;
-`update-harness` can verify the package identity; Codex and Claude discovery are
-both proven against the same manifest before downstream rollout is declared ready.
+**Done criteria:** Active skill names, folders, availability, provenance,
+license reference, checksums, required harness version, and discovery names
+serialize into the component schema established by S-018/TK-002; pending entries
+are absent; Codex and Claude discovery resolve to the same component identity.
+S-011 does not assemble the release manifest or verify a downstream upgrade.
 
-**Required proof:** Catalog and manifest tests, fresh Codex and Claude discovery,
-full Runbook verification, evaluator, guardrail, render, doctor, and a fresh-clone
-package check. **Owner gate:** Kayden must authenticate Claude for the Claude proof.
+**Required proof:** Catalog/component schema tests, fresh Codex and Claude
+discovery, full Runbook verification, evaluator, guardrail, render, doctor, and
+diff check. S-018/TK-004 consumes this proof for manifest assembly and rollout.
+**Owner gate:** Kayden must authenticate Claude for the Claude proof.
 
 ### Scoped Ticket: TK-002
 
@@ -373,6 +378,8 @@ and generated Taskboard. Check the router and Runbook for drift.
       Sitrep/documentation routing lands.
 - [x] Genesis, first-time Adoption, and routine `update-harness` are separate
       callable routes with no overlapping lifecycle authority.
+- [ ] The complete reviewed catalog emits one schema-valid skill component for
+      S-018; S-011 does not assemble the release manifest or verify downstream rollout.
 
 ## Testing Seams
 
@@ -419,6 +426,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-16 | TK-009 review | Closed independent audit gaps: disabled Git text conversion during fixed-SHA review, required a remotely verified in-progress checkpoint before review and a new checkpoint plus re-review after fixes, and corrected the manual Taskboard focus for blocked S-011 | Red: the hostile textconv helper wrote its marker and the delivery-order contract could not find the in-progress checkpoint, 0/2 passed. Green: delivery contracts 2/2; complete Runbook suite; fresh ephemeral Codex returned `DELIVERY_REPAIR_OK`; root 113/113; templates 106.6/113; guardrail 78->78/100; gitleaks Git-history and directory scans found no leaks | Updated `code-review`, `implement`, delivery/catalog tests, S-011, and the manual Taskboard current-focus header; generated projection rendered from the spec | Seventeen pending rewrites remain; Claude discovery remains owner-auth blocked; real repeated outcome evidence remains unrun |
 | 2026-07-17 | TK-010 | Ticket closed | Red/green skill-catalog handoff and prior-authorization contracts; complete RUNBOOK suite; templates 106.6/113; fixed-SHA review 053396f..ea48eca found no remaining issues; render, doctor, and git diff --check passed | Updated grilling, to-tickets, skill catalog, S-011, and generated TASKBOARD; Docs checked; no update needed for RUNBOOK or router because existing scheduler authority and flow routing remain accurate | Scheduler execution remains runtime-dependent and must report a visible blocker when unavailable |
 | 2026-07-17 | canon harvest | Decomposed all seventeen pending skills into five coherent rewrite packs plus one deterministic distribution gate | Active/pending catalog, folders, current contracts, discovery evidence, and full-suite seams reviewed; no skill implementation performed | Updated S-011 tickets and Blueprint coverage; skills README remains the catalog owner | TK-011 through TK-016; TK-003 still needs owner Claude authentication |
+| 2026-07-17 | audit remediation | Removed duplicate release-manifest and upgrade ownership from TK-016 | S-011 and S-018 dependency graph reviewed; render, doctor, full planning verification, and diff check passed | S-011 now owns only the skill-catalog component; S-018 owns manifest and rollout | TK-016 waits on skill rewrites, Claude authentication, and S-018/TK-002 schema |
 
 ## Completion Result
 
@@ -430,8 +438,8 @@ Pending.
   under `skills-pending/`; later promotions remain test-gated.
 - Claude discovery remains blocked until the owner authenticates; no credential
   configuration is changed by this spec.
-- Distribution to existing projects follows via `update-harness` after the
-  required selected rewrites are active.
+- Distribution to existing projects is owned by S-018 after TK-016 supplies the
+  complete verified skill-catalog component.
 
 ## Supersession
 

@@ -10,7 +10,7 @@
 **Updated:** 2026-07-17
 **Catalog description:** Publish exact, reviewable Workbench releases and prove downstream upgrades against a deterministic package manifest.
 **Blockers:** none
-**Latest event:** Canon harvest captured the shipped public package and isolated repeatable delivery and rollout gaps.
+**Latest event:** Auditor remediation made S-018 the sole release-manifest and downstream-upgrade owner, with S-011/TK-016 as a typed skill-catalog input.
 **Next gate:** Claim TK-002 and define the deterministic release manifest before changing release automation.
 
 ## Outcome
@@ -77,6 +77,9 @@ verify both content and release mechanics before the next version.
   v2.3 release-candidate proof and history deviation.
 - [S-015](../S-015-bootstrap-adoption/SPEC.md) owns project entry paths.
 - [S-011](../S-011-agent-skills-adoption/SPEC.md) owns skill availability.
+- S-018/TK-002 defines the release-manifest and component schema.
+- S-011/TK-016 emits the verified skill-catalog component after that schema exists.
+- S-018/TK-004 alone assembles the complete manifest and verifies `update-harness`.
 
 ## Vertical Implementation Slices
 
@@ -85,23 +88,25 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Publish the bounded MIT package, v2.3 identity, and owner-only promotion path | done | none | public repository, README, LICENSE, and S-014 release evidence |
-| TK-002 | Generate and verify a deterministic release manifest for the shipped package | ready | none | pending |
+| TK-002 | Define the deterministic release-manifest schema and non-skill package inputs | ready | none | pending |
 | TK-003 | Fail closed on release tree, ancestry, merge-mode, or exact-status drift | blocked | TK-002 | pending |
-| TK-004 | Make update-harness record and verify the named release manifest | blocked | TK-002, TK-003 | pending |
+| TK-004 | Assemble the complete manifest and make update-harness verify it | blocked | TK-002, TK-003, S-011/TK-016 | pending |
 | TK-005 | Prove the release from a fresh clone and one project-owned downstream upgrade | blocked | TK-004 | pending |
 
 ### Scoped Ticket: TK-002
 
-**Vertical slice:** Add one zero-dependency manifest command and fixture that
-lists the public release files, version, source ref, resolved SHA, checksums,
-license identity, and verification commands without including machine-local or
-private GPT_OS material.
+**Vertical slice:** Add one zero-dependency manifest schema/generator and fixture
+for version, source ref, resolved SHA, non-skill shipped files, component inputs,
+checksums, license identity, and verification commands without including
+machine-local or private GPT_OS material.
 
 **Done criteria:**
 
 - A red fixture proves the current package has no deterministic manifest seam.
-- The manifest is stable across clean clones of the same commit and changes when
-  a shipped file changes.
+- The non-skill manifest and component schema are stable across clean clones of
+  the same commit and change when a shipped file or declared component changes.
+- The schema has one explicit skill-catalog component slot consumed by
+  S-011/TK-016; TK-002 does not rewrite or certify the skill catalog.
 - Private, ignored, local-symlink, result, log, credential, and downstream paths
   are absent by construction.
 - Targeted tests, the full Runbook suite, evaluator, guardrail audit, render,
@@ -127,15 +132,17 @@ doctor, and diff check. No protected branch, PR, status, or credential mutation.
 
 ### Scoped Ticket: TK-004
 
-**Vertical outcome:** Make `update-harness` require a named release manifest and
-record project-specific reconciliation, provenance, tests, and remaining drift.
+**Vertical outcome:** Assemble the non-skill inputs from TK-002 and the verified
+S-011/TK-016 skill component into the complete release manifest, then make
+`update-harness` require that identity and record project-specific
+reconciliation, provenance, tests, and remaining drift.
 
 **Done criteria:** The skill refuses an unknown or mismatched manifest; preserves
 filled project truth; updates only changed generic sections; records exact source
 SHA/checksums and project verification; stops at integration and never promotes
 to main or changes credentials.
 
-**Required proof:** Focused skill/catalog and manifest fixtures, a disposable
+**Required proof:** Focused component/manifest and update-harness fixtures, a disposable
 adopted-project upgrade dry run, fresh Codex discovery, full Runbook verification,
 render, doctor, and diff check. Downstream production deployment remains project-owned.
 
@@ -195,6 +202,7 @@ manifest and release-gate targeted tests.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-17 | canon harvest | Captured public delivery as a durable capability and routed the PR #34 history deviation into a repeatable release gate | Live refs, PR #34, exact integration status, tree identity, evaluator, guardrail, render, doctor, and complete Runbook checks inspected | Added S-018, updated Blueprint coverage, and corrected README delivery boundaries | TK-002 through TK-005 remain |
+| 2026-07-17 | audit remediation | Made S-018 the sole release-manifest, update-harness verification, and downstream-rollout owner | S-011/TK-016 narrowed to a typed skill-catalog input; dependency graph, render, doctor, full planning verification, and diff check passed | Updated S-011, S-018, coverage matrix, and generated projections | TK-002 schema precedes S-011/TK-016; TK-004 consumes both |
 
 ## Completion Result
 

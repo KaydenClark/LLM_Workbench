@@ -75,6 +75,21 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-002 | Add the stable four-layer guardrail audit and ranked recommendations | done | TK-001 | guardrail self-test and live audit |
 | TK-003 | Preserve canonical-path execution and branch identity | done | TK-001 | S-010 path-alias red/green proof and current evaluator self-test |
 
+### Historical Done Criteria And Demo
+
+- **TK-001 done criteria:** local folders and GitHub refs use the same explicit
+  rubric; no-template and single-file controls remain visible; root dogfood and
+  blank templates report separately. **Under-one-minute demo artifact:**
+  `node tools/evaluate-workbench.mjs --path templates --include-controls`.
+- **TK-002 done criteria:** the audit retains a stable 100-point scale, reports
+  evidence for all four layers, ranks remaining actions, and cannot award full
+  outcome points from static health. **Under-one-minute demo artifact:**
+  `node tools/audit-guardrails.mjs --path .`.
+- **TK-003 done criteria:** direct invocation through a canonicalized path still
+  runs the evaluator and branch/ref identity stays visible. **Under-one-minute
+  demo artifact:** `node tools/test-evaluate-workbench.mjs`, which includes the
+  temporary path-alias fixture.
+
 ## Acceptance Criteria
 
 - [x] Local paths and GitHub branches use the same deterministic rubric.
@@ -110,6 +125,7 @@ node tools/spec-workbench.mjs doctor
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-17 | canon harvest | Captured the implemented static measurement product as a stable capability | Evaluator, guardrail, template score, live audit, render, doctor, and complete Runbook checks passed | Added S-016 and corrected the benchmark branch section from current to historical | Real agent outcomes remain S-017 |
+| 2026-07-17 | audit remediation | Added historical done criteria and one-command demo artifacts for each completed evaluator slice | Template report, live audit, evaluator alias fixture, full planning verification, render, doctor, and diff check passed | Updated S-016 only; Runbook and benchmark commands remain accurate | Real repeated outcomes remain S-017 |
 
 ## Completion Result
 

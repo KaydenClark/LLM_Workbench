@@ -69,6 +69,19 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-001 | Package selected files as bounded Markdown or XML context | done | none | context-tools self-test |
 | TK-002 | Scaffold one durable research question with notes and final README | done | TK-001 | context-tools self-test |
 
+### Historical Done Criteria And Demo
+
+- **TK-001 done criteria:** explicit inputs render as Markdown or XML with
+  portable source names and optional line numbers while Gitignore, caller
+  exclusions, dependencies, builds, tests, and secret-like files remain out.
+  **Under-one-minute demo artifact:** `node tools/test-context-tools.mjs`
+  prints the green bounded-context result.
+- **TK-002 done criteria:** one command creates a slugged question folder with
+  `notes.md` and a question-bearing final `README.md`, without making research
+  canonical project memory. **Under-one-minute demo artifact:** the same
+  `node tools/test-context-tools.mjs` run creates and inspects the disposable
+  scaffold before reporting green.
+
 ## Acceptance Criteria
 
 - [x] Explicit files and folders can be rendered as Markdown or XML.
@@ -101,6 +114,7 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-17 | canon harvest | Captured implemented context and research helpers as a stable capability | Context-tools self-test, render, doctor, and complete Runbook checks passed | Added S-019 and Blueprint coverage mapping | none |
+| 2026-07-17 | audit remediation | Added historical done criteria and under-one-minute context/research demos | Context-tools self-test, full planning verification, render, doctor, and diff check passed | Updated S-019 only; README and research template commands remain accurate | none |
 
 ## Completion Result
 

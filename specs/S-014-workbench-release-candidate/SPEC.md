@@ -319,6 +319,7 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-07-16 | TK-002 completion | Independent audit passed on exact integration `60f6291` and the separate Publisher attached release status `50582189853` | GitHub combined status reports `gptos/workbench-release-gate: success` with durable PR #33 evidence | S-014 evidence and PR #34 body disclose limitations | Owner promotion only |
 | 2026-07-16 | TK-003 completion | Exact non-draft owner promotion PR #34 was opened and left unmerged to the owner | PR #34 named head `60f6291`, base `dd1ed32`, evidence status, and audit URL | PR body recorded merge and limitation contract | Kayden decision |
 | 2026-07-17 | spec closeout | Verified Kayden merged PR #34 and reconciled stale local spec state | Live GitHub PR, status, main/integration refs, tree equality, and commit parents inspected | Completed S-014; S-018 owns the single-parent history deviation and repeatable delivery | none |
+| 2026-07-17 | audit remediation | Routed PR #33's implemented parser behavior to cohesive capability owner S-021 without rewriting release evidence | S-021 acceptance maps the shared parser and both focused consumer suites; render, doctor, full planning verification, and diff check passed | S-014 remains the release record; S-021 owns persistence behavior | none |
 
 ## Completion Result
 
@@ -335,6 +336,8 @@ history was not rewritten.
   isolated pending rewrite. S-014 neither conceals nor resolves that work.
 - S-018 owns deterministic manifests, repeatable downstream rollout, and the
   release history/merge-mode gap observed on PR #34.
+- S-021 owns the escape-safe lifecycle and feedback table persistence capability
+  implemented and audited during PR #33.
 - CIC mobile approval/execution presentation is owned by CIC, not this repo.
 
 ## Supersession

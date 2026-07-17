@@ -90,6 +90,26 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-003 | Add mechanical Claude scope enforcement and constrained-Git fallback | done | TK-002 | permission template plus S-009 targeted proof |
 | TK-004 | Require fresh-clone provenance and distinct routine upgrade routing | done | TK-002 | S-012 targeted proof and live Genesis, Adoption, and update-harness catalog routes |
 
+### Historical Done Criteria And Demo
+
+- **TK-001 done criteria:** Genesis produces the six-file control surface, first
+  stable spec, generated hot projection, smallest-running scaffold, verification,
+  and remote recovery boundary. **Under-one-minute demo artifact:** inspect the
+  ordered checklist with
+  `rg -n 'AGENTS.md|BLUEPRINT.md|LEXICON.md|TASKBOARD.md|RUNBOOK.md|SPEC.md|remote' templates/GENESIS.md`.
+- **TK-002 done criteria:** Adoption inventories existing truth, ports it without
+  losing source/history, retires conflicting plans only after transfer, and runs
+  project-native verification. **Under-one-minute demo artifact:**
+  `node tools/test-adoption-git-write-fallback.mjs`.
+- **TK-003 done criteria:** optional Claude settings mechanically mirror edit
+  scope, while an unwritable Git host records the blocker and hands branch work
+  to the owner. **Under-one-minute demo artifact:** the same adoption test plus
+  JSON parsing of `templates/.claude/settings.json`.
+- **TK-004 done criteria:** the adopted project records source remote, ref,
+  resolved commit, self-tests, applicable helper checksum, and separate routine
+  `update-harness` routing. **Under-one-minute demo artifact:**
+  `node tools/test-adoption-git-write-fallback.mjs && node tools/test-skill-catalog.mjs`.
+
 ## Acceptance Criteria
 
 - [x] Greenfield and existing-project entry paths are distinct and documented.
@@ -131,6 +151,7 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-17 | canon harvest | Captured the implemented bootstrap and adoption product as one stable capability | Targeted adoption, skill-catalog, evaluator, render, doctor, and complete Runbook checks passed on the reconciled branch | Added S-015 and Blueprint coverage mapping; existing protocol docs remain canonical | none |
+| 2026-07-17 | audit remediation | Added historical done criteria and under-one-minute demo seams for every completed slice | Genesis scan, adoption fallback/provenance test, settings JSON parse, skill-catalog test, full planning verification, render, doctor, and diff check passed | Updated S-015 only; owning protocol docs remain accurate | none |
 
 ## Completion Result
 
