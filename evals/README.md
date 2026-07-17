@@ -74,8 +74,16 @@ python3 evals/score.py \
 
 Synthetic fixtures and legacy/unclassified rows stay visible for apparatus
 debugging but are mechanically excluded from the claim-facing real-agent
-totals. This is fail-closed: an omitted evidence class never becomes real
-evidence by inference.
+totals. This is fail-closed: only the exact `real-agent` evidence class paired
+with the exact `development` or `heldout` task class is eligible; aliases and
+omissions remain excluded. Overlapping input globs are resolved and deduplicated
+before rows load.
+
+Each claim-facing condition lift uses only tasks that contain both that
+condition and the selected baseline. The report lists incomplete tasks, weights
+each complete task equally regardless of its trial count, and suppresses the
+headline when no same-task comparison exists. The later pooled tables remain
+synthetic/legacy apparatus diagnostics and are never the claim-facing result.
 
 The same runner supports isolated Codex comparisons without modifying the
 condition registry:

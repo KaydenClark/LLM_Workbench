@@ -153,6 +153,60 @@ def bootstrap_mean(
     return MeanCI(mean(observations), lo, hi, len(observations))
 
 
+def bootstrap_stratified_diff(
+    treatment: dict[str, list[float]],
+    control: dict[str, list[float]],
+    iters: int = 10000,
+    seed: int = 0,
+) -> DiffCI:
+    """Equal-task mean difference with a two-stage task/observation bootstrap."""
+    tasks = sorted(treatment)
+    if not tasks or set(tasks) != set(control):
+        raise ValueError("treatment and control need the same non-empty task strata")
+    if iters < 1:
+        raise ValueError("iters must be at least 1")
+    for task in tasks:
+        for observations in (treatment[task], control[task]):
+            if not observations:
+                raise ValueError(f"task {task!r} needs at least one observation per condition")
+            if not all(math.isfinite(value) for value in observations):
+                raise ValueError(f"task {task!r} observations must be finite")
+
+    mean_treatment = mean([mean(treatment[task]) for task in tasks])
+    mean_control = mean([mean(control[task]) for task in tasks])
+    rng = random.Random(seed)
+    diffs = []
+    for _ in range(iters):
+        sampled_tasks = [tasks[rng.randrange(len(tasks))] for _ in tasks]
+        treatment_means = []
+        control_means = []
+        for task in sampled_tasks:
+            treatment_values = treatment[task]
+            control_values = control[task]
+            treatment_means.append(mean([
+                treatment_values[rng.randrange(len(treatment_values))]
+                for _ in treatment_values
+            ]))
+            control_means.append(mean([
+                control_values[rng.randrange(len(control_values))]
+                for _ in control_values
+            ]))
+        diffs.append(mean(treatment_means) - mean(control_means))
+
+    diffs.sort()
+    lo = diffs[int(0.025 * iters)]
+    hi = diffs[int(0.975 * iters)]
+    diff = mean_treatment - mean_control
+    return DiffCI(
+        mean_treatment,
+        mean_control,
+        diff,
+        lo,
+        hi,
+        significant=(lo > 0 or hi < 0),
+    )
+
+
 def bootstrap_diff(
     treatment: list[float],
     control: list[float],

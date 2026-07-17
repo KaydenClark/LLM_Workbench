@@ -10,8 +10,8 @@
 **Updated:** 2026-07-17
 **Catalog description:** Turn the existing trial runners and held-out graders into repeatable, uncertainty-aware evidence about real agent outcomes.
 **Blockers:** none
-**Latest event:** TK-003 implementation and no-spend fixture proof are green at a local checkpoint.
-**Next gate:** Push the immutable TK-003 checkpoint and run the exact-head Auditor before close.
+**Latest event:** TK-003 exact-head Auditor findings were remediated with canonical eligibility, same-task equal weighting, and input deduplication.
+**Next gate:** Push the remediated TK-003 checkpoint and rerun the exact-head Auditor before close.
 
 ## Outcome
 
@@ -80,7 +80,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Provide the portable outcome-trial runner, scorer, and synthetic honesty fixture | done | none | `node tools/test-outcome-trials.mjs` |
 | TK-002 | Provide provider-neutral Git-ref trials, held-out grading, and statistical seams | done | S-002 | eval-runner self-test, pipeline self-test, and held-out grader |
-| TK-003 | Aggregate multiple tasks into an uncertainty-aware no-spend report | in-progress | none | `python3 evals/test_score.py`; 96-row synthetic multi-task report; full Runbook suite |
+| TK-003 | Aggregate multiple tasks into an uncertainty-aware no-spend report | in-progress | none | 10 scorer regression tests; 96-row synthetic multi-task report; full Runbook suite |
 | TK-004 | Execute the preregistered repeated real-agent comparison | blocked | TK-003, owner model/API spend approval | pending |
 | TK-005 | Record the bounded release claim or inconclusive result in the evidence ledger | blocked | TK-004 | pending |
 
@@ -175,6 +175,7 @@ Then run the complete verification suite in `RUNBOOK.md`.
 |---|---|---|---|---|---|
 | 2026-07-17 | canon harvest | Separated implemented trial apparatus from the unfulfilled real-evidence outcome | Existing outcome, eval-runner, pipeline, held-out, evaluator, guardrail, render, doctor, and complete Runbook checks passed | Added S-017 and linked the coverage matrix | TK-003 through TK-005 remain |
 | 2026-07-17 | TK-003 | Added deterministic multi-task reporting with per-task class, sample size, bootstrap intervals, reproducibility metadata, and fail-closed real-agent totals | Red: `python3 evals/test_score.py` failed 3 assertions because the report lacked classification and exclusion; green: 3 tests pass; provider-neutral runner, held-out grader, 96-row synthetic report, complete Runbook suite, root 113/113, templates 106.6/113, guardrail 78/100, render, doctor, and diff check pass without provider use | Updated AGENTS, RUNBOOK, evals/outcomes usage, result schema, benchmark ledger, and this spec | Exact-head Auditor remains before TK-003 close; TK-004 still requires owner model/API spend approval |
+| 2026-07-17 | TK-003 Auditor remediation | Restricted claim totals to exact canonical evidence/task classes, replaced pooled headline lift with same-task equal-task stratification and explicit incomplete-cell suppression, and deduplicated resolved input paths | Red: expanded `python3 evals/test_score.py` produced 7 failures and 2 errors on aliases, trial imbalance, missing cells, duplicate patterns, and absent statistical validation; an added malformed-class edge then exposed a `TypeError`; green: all 10 tests pass; complete Runbook suite, held-out grader, 96-row no-spend report, root 113/113, templates 106.6/113, guardrail 78/100, doctor, and diff check pass | Updated scorer/statistics, regression tests, result schema, eval usage, RUNBOOK, benchmark ledger, and this spec | Remediated exact-head Auditor rerun remains before TK-003 close; TK-004 remains owner-gated for model/API spend |
 
 ## Completion Result
 

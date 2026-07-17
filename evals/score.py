@@ -2,9 +2,9 @@
 """Aggregate eval result rows into a statistical comparison report.
 
 Input: one or more JSONL files of trial results (see results/SCHEMA.md), each
-line one task x condition x trial. Output: a Markdown report comparing every
-condition against a baseline, per scoring dimension, with bootstrap CIs and a
-two-proportion test on the binary headline metric.
+line one task x condition x trial. Output: a Markdown report with per-task
+diagnostics plus a canonical, same-task, equal-task-weighted real-agent
+comparison with bootstrap CIs.
 
 Usage:
     python3 evals/score.py results/*.jsonl --baseline c0_none
@@ -27,14 +27,19 @@ import stats  # noqa: E402
 
 def load_rows(patterns: list[str]) -> list[dict]:
     rows: list[dict] = []
+    seen_paths: set[Path] = set()
     for pat in patterns:
         for path in sorted(glob.glob(pat)):
-            with open(path) as fh:
+            resolved = Path(path).resolve()
+            if resolved in seen_paths:
+                continue
+            seen_paths.add(resolved)
+            with resolved.open() as fh:
                 for line in fh:
                     line = line.strip()
                     if line:
                         row = json.loads(line)
-                        row["_source_file"] = path
+                        row["_source_file"] = str(resolved)
                         rows.append(row)
     return rows
 
@@ -76,19 +81,19 @@ def row_composite(row: dict, dims: list[str]) -> float | None:
 
 
 def task_class(row: dict) -> str:
-    value = str(row.get("task_class", row.get("suite", ""))).strip().lower()
-    if value in {"dev", "development"}:
-        return "development"
-    if value in {"heldout", "held-out"}:
-        return "heldout"
-    return value or "unclassified"
+    value = row.get("task_class", row.get("suite"))
+    return (
+        value
+        if isinstance(value, str) and value in {"development", "heldout"}
+        else "unclassified"
+    )
 
 
 def evidence_class(row: dict) -> str:
     source = Path(str(row.get("_source_file", ""))).name
     run_id = str(row.get("run_id", "")).upper()
     model = str(row.get("model", "")).upper()
-    explicit = str(row.get("evidence_class", "")).strip().lower()
+    explicit = row.get("evidence_class")
     if (
         explicit == "synthetic"
         or source.startswith("_")
@@ -96,9 +101,16 @@ def evidence_class(row: dict) -> str:
         or model.startswith("SYNTHETIC")
     ):
         return "synthetic"
-    if explicit in {"real", "real-agent", "real_agent"}:
+    if explicit == "real-agent":
         return "real-agent"
     return "unclassified"
+
+
+def eligible_real_row(row: dict) -> bool:
+    return (
+        evidence_class(row) == "real-agent"
+        and task_class(row) in {"development", "heldout"}
+    )
 
 
 def joined_metadata(rows: list[dict], key: str) -> str:
@@ -180,38 +192,92 @@ def render_task_outcomes(rows: list[dict], dims: list[str], baseline: str) -> li
 
 
 def render_real_comparison(rows: list[dict], dims: list[str], baseline: str) -> list[str]:
-    real_rows = [row for row in rows if evidence_class(row) == "real-agent"]
+    real_rows = [row for row in rows if eligible_real_row(row)]
     out = ["## Real-agent composite comparison\n"]
     if not real_rows:
         out.append(
-            "No eligible real-agent rows. Synthetic and unclassified rows are "
-            "mechanically excluded from this section.\n"
+            "No eligible real-agent rows. Synthetic, non-canonical evidence, and "
+            "non-canonical task classes are mechanically excluded from this section.\n"
         )
         return out
-    groups = composite(real_rows, dims)
-    conditions = sorted(groups)
-    out.extend([
-        "Only rows explicitly classified as `real-agent` enter this claim-facing table.\n",
-        "| Condition | n | Composite mean | 95% CI | Lift vs baseline (95% CI) |",
-        "|---|---:|---:|---|---|",
-    ])
-    base = groups.get(baseline, [])
+    task_conditions: dict[str, dict[str, list[float]]] = collections.defaultdict(
+        lambda: collections.defaultdict(list)
+    )
+    for row in real_rows:
+        value = row_composite(row, dims)
+        if value is not None:
+            task_conditions[str(row["task"])][str(row["condition"])].append(value)
+
+    conditions = sorted({
+        condition
+        for groups in task_conditions.values()
+        for condition in groups
+        if condition != baseline
+    })
+    out.append(
+        "Only canonical `real-agent` rows from `development` or `heldout` tasks "
+        "enter this claim-facing section. Each comparison uses same-task complete "
+        "cells and weights every comparable task equally.\n"
+    )
+    if not conditions:
+        out.append("No non-baseline condition is available for comparison.\n")
+        return out
+
+    tasks = sorted(task_conditions)
     for condition in conditions:
-        values = groups[condition]
-        interval = stats.bootstrap_mean(values)
-        if condition == baseline:
-            lift = "baseline"
-        elif base:
-            lift = stats.bootstrap_diff(values, base).summary()
-        else:
-            lift = "—"
+        comparable = [
+            task for task in tasks
+            if baseline in task_conditions[task]
+            and condition in task_conditions[task]
+        ]
+        excluded = []
+        for task in tasks:
+            missing = [
+                name for name in (baseline, condition)
+                if name not in task_conditions[task]
+            ]
+            if missing:
+                excluded.append(
+                    f"`{task}` (missing "
+                    + " and ".join(f"`{name}`" for name in missing)
+                    + ")"
+                )
+
+        out.append(f"### `{condition}` vs `{baseline}`\n")
         out.append(
-            f"| `{condition}` | {len(values)} | {interval.mean:.2f} | "
-            f"[{interval.ci_low:.2f}, {interval.ci_high:.2f}] | {lift} |"
+            f"- Comparable tasks: **{len(comparable)}** "
+            f"({', '.join(f'`{task}`' for task in comparable) or 'none'})"
         )
-    if baseline not in groups:
-        out.append(f"\n> Baseline `{baseline}` is absent from eligible real-agent rows.")
-    out.append("")
+        out.append(
+            f"- Excluded tasks: **{len(excluded)}** "
+            f"({'; '.join(excluded) or 'none'})"
+        )
+        if not comparable:
+            out.append(
+                f"- **Headline suppressed:** no task has both `{baseline}` and "
+                f"`{condition}` rows.\n"
+            )
+            continue
+
+        treatment = {
+            task: task_conditions[task][condition]
+            for task in comparable
+        }
+        control = {
+            task: task_conditions[task][baseline]
+            for task in comparable
+        }
+        comparison = stats.bootstrap_stratified_diff(treatment, control)
+        treatment_n = sum(len(values) for values in treatment.values())
+        control_n = sum(len(values) for values in control.values())
+        out.append(
+            f"- Samples: candidate n={treatment_n}; baseline n={control_n}"
+        )
+        out.append(
+            f"- Equal-task composite: **{comparison.mean_treatment:.3f} vs "
+            f"{comparison.mean_control:.3f}**"
+        )
+        out.append(f"- Task-stratified lift: {comparison.summary()}\n")
     return out
 
 
@@ -233,7 +299,12 @@ def render(rows: list[dict], baseline: str) -> str:
     out.append("")
 
     evidence_counts = collections.Counter(evidence_class(row) for row in rows)
-    real_rows = [row for row in rows if evidence_class(row) == "real-agent"]
+    real_rows = [row for row in rows if eligible_real_row(row)]
+    invalid_task_rows = [
+        row for row in rows
+        if evidence_class(row) == "real-agent"
+        and task_class(row) == "unclassified"
+    ]
     out.append("## Evidence inventory\n")
     out.append("| Evidence class | Rows | Tasks | Conditions |")
     out.append("|---|---:|---:|---:|")
@@ -245,12 +316,16 @@ def render(rows: list[dict], baseline: str) -> str:
             f"{len({row.get('condition') for row in classified})} |"
         )
     out.append("")
-    out.append(f"Real-agent evidence rows: **{len(real_rows)}**")
+    out.append(f"Eligible real-agent evidence rows: **{len(real_rows)}**")
     out.append(
         "Excluded from real-agent totals: "
         f"**{evidence_counts['synthetic']} synthetic**, "
         f"**{evidence_counts['unclassified']} unclassified**"
     )
+    out.append(
+        f"Non-canonical evidence class: **{evidence_counts['unclassified']}**"
+    )
+    out.append(f"Non-canonical task class: **{len(invalid_task_rows)}**")
     out.append("")
     out.extend(render_task_outcomes(rows, dims, baseline))
     out.extend(render_real_comparison(rows, dims, baseline))
@@ -282,6 +357,11 @@ def render(rows: list[dict], baseline: str) -> str:
 
     # Per-dimension lift vs baseline with bootstrap CI
     out.append(f"## Lift vs baseline `{baseline}` (95% bootstrap CI)\n")
+    out.append(
+        "> Apparatus diagnostic over every input row. It may contain synthetic "
+        "or unmatched task-condition cells and must not be cited as the "
+        "claim-facing lift; use the real-agent comparison above.\n"
+    )
     out.append("A CI that excludes 0 (`*`) means the difference is unlikely to be noise.\n")
     for d in dims + ["composite"]:
         groups = comp if d == "composite" else by_condition(rows, d)
@@ -309,9 +389,9 @@ def render(rows: list[dict], baseline: str) -> str:
 
     out.append("## How to read this\n")
     out.append(
-        "- **Real-agent composite** is the claim-facing headline: mean of all "
-        "dimensions per eligible real-agent trial. Synthetic and unclassified "
-        "rows never enter it.\n"
+        "- **Real-agent composite** is claim-facing only when it uses canonical "
+        "evidence/task classes and same-task complete condition cells. Every task "
+        "has equal weight regardless of trial count.\n"
         "- The all-row composite remains an apparatus diagnostic so fixture and "
         "legacy single-file scoring stays inspectable.\n"
         "- Dimensions are reported separately so a win on one axis "

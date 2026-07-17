@@ -176,10 +176,14 @@ python3 evals/score.py evals/results/_pipeline_selftest.jsonl --baseline c0_none
 
 `evals/score.py` accepts multiple result files or globs. Its per-task table
 preserves task/evidence class, sample size, uncertainty, provider/model/reasoning
-metadata, and resolved ref/SHA. Its claim-facing composite includes only rows
-explicitly marked `real-agent`; synthetic and unclassified rows fail closed out
-of those totals. Run `python3 evals/test_score.py` before generating the
-under-one-minute synthetic multi-task fixture report.
+metadata, and resolved ref/SHA. Input paths are resolved and deduplicated before
+loading. Its claim-facing composite includes only exact `real-agent` rows from
+exact `development` or `heldout` tasks; aliases, synthetic rows, and unknowns
+fail closed out of those totals. Candidate lifts use only same-task complete
+baseline/candidate cells, weight each comparable task equally, and explicitly
+exclude incomplete tasks or suppress an empty comparison. Run
+`python3 evals/test_score.py` before generating the under-one-minute synthetic
+multi-task fixture report.
 
 Run a candidate comparison with Codex by overriding the two Git-backed refs.
 The feedback gate is capped at 10 trials per condition (20 total):
