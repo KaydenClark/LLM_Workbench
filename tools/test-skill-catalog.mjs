@@ -193,18 +193,26 @@ assertIncludesAll(makeItSo, [
   '`to-spec`',
   '`to-tickets`',
   '`TASKBOARD.md`',
-  'available scheduler',
-  'stop the current chat'
+  '`/implement`',
+  'STATUS: PROMOTED'
 ], 'make-it-so');
 assert.match(
   makeItSo,
-  /`to-docs`[\s\S]*`to-spec`[\s\S]*`to-tickets`[\s\S]*available scheduler[\s\S]*stop the current chat/,
-  'make-it-so must promote, decompose, schedule, and then stop in that order'
+  /`to-docs`[\s\S]*`to-spec`[\s\S]*`to-tickets`[\s\S]*Commit and push the promoted[\s\S]*`\/implement`[\s\S]*STATUS: PROMOTED/,
+  'make-it-so must promote, decompose, push the plan, implement, and then close in that order'
 );
 assert.match(makeItSo, /invoke it explicitly/i,
   'make-it-so must be an explicit invocation, not a passphrase');
-assert.match(makeItSo, /does\s+not\s+authorize\s+implementation in the current chat/,
-  'make-it-so must not turn the chat into an implementation session');
+assert.match(makeItSo, /Never promote a `PROVISIONAL` notepad whose topic\s+does not match/,
+  'make-it-so must guard against promoting a stale notepad');
+assert.match(makeItSo, /Conversation fallback/,
+  'make-it-so must work outside a grilling via the conversation fallback');
+assert.match(makeItSo, /no\s+settled decisions to write, say so and stop/,
+  'make-it-so must refuse to authorize an empty decision set');
+assert.match(makeItSo, /authorizes durable planning, implementation, and remote\s+checkpoints/,
+  'make-it-so must authorize implementation with remote checkpoints');
+assert.match(makeItSo, /pushed commit, never\s+local-only progress/,
+  'make-it-so must forbid yielding with local-only progress');
 
 const brainstorm = read('skills/brainstorm/SKILL.md');
 assertIncludesAll(brainstorm, [
