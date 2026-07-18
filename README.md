@@ -79,6 +79,9 @@ docs look like. Copy from `templates/`, not from the root.
   outcome evidence; it also ranks the next improvements.
 - `tools/spec-workbench.mjs` - zero-dependency spec retrieval, lifecycle,
   deterministic catalog/dashboard rendering, and drift diagnosis.
+- `tools/release-manifest.mjs` - deterministic public-package manifest generator
+  for release provenance; it keeps the S-011 skill component opaque until that
+  spec emits its own verified identity.
 - `tools/test-skill-catalog.mjs` - fails when the selected skill definitions,
   physical folders, router name, or root/template Lexicons drift apart.
 - `tools/feedback-automation.mjs` - canonical downstream feedback discovery,
@@ -112,6 +115,22 @@ docs look like. Copy from `templates/`, not from the root.
 
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
+
+## Release Manifest
+
+Before a release-gate task, generate the tracked public non-skill package
+identity outside the checkout:
+
+```bash
+node tools/release-manifest.mjs --source-ref HEAD > /tmp/workbench-release-manifest.json
+```
+
+It records the version, resolved commit, MIT license checksum, explicit public
+controls/templates/tools and supporting package files, verification commands,
+and an opaque S-011 skill-component slot. Ignored files, local results, logs,
+credentials, downstream sources, and symlinks are not release inputs. The
+future release assembly supplies S-011's owned component with
+`--skill-component skills/PATH`; this command never interprets its schema.
 
 For Claude Code, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
 `/init` in the target repo, so these rules load automatically.

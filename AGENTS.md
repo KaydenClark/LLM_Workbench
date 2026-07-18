@@ -94,6 +94,7 @@ node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
 python3 evals/test_score.py
 node tools/test-feedback-automation.mjs
+node tools/test-release-manifest.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node tools/spec-workbench.mjs doctor

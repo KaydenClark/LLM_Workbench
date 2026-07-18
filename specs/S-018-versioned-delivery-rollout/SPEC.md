@@ -6,12 +6,12 @@
 **Spec ID:** S-018
 **Status:** active
 **Priority:** 1
-**Owner:** unassigned
-**Updated:** 2026-07-17
+**Owner:** codex-engineer
+**Updated:** 2026-07-18
 **Catalog description:** Publish exact, reviewable Workbench releases and prove downstream upgrades against a deterministic package manifest.
 **Blockers:** none
-**Latest event:** Auditor remediation replaced the cross-spec ticket deadlock with a supported dependency on completed S-011.
-**Next gate:** Claim TK-002 and define the deterministic release manifest before changing release automation.
+**Latest event:** TK-002 closed with proof.
+**Next gate:** Complete TK-003.
 
 ## Outcome
 
@@ -37,8 +37,9 @@ verify both content and release mechanics before the next version.
   release status, and owner promotion PR. Kayden merged PR #34.
 - Live `main` at `08ab78e` has the audited integration tree but not integration
   as a Git ancestor; the intended merge-history invariant therefore did not survive.
-- `update-harness` defines project reconciliation behavior, but no deterministic
-  release manifest currently binds all shipped files and provenance.
+- `tools/release-manifest.mjs` now binds tracked non-skill public package inputs
+  and an opaque S-011 component slot; complete skill assembly and downstream
+  verification remain future tickets.
 
 ## Desired Behavior
 
@@ -90,7 +91,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Publish the bounded MIT package, v2.3 identity, and owner-only promotion path | done | none | public repository, README, LICENSE, and S-014 release evidence |
-| TK-002 | Define the deterministic release-manifest schema and non-skill package inputs | ready | none | pending |
+| TK-002 | Define the deterministic release-manifest schema and non-skill package inputs | done | none | Red/green tools/test-release-manifest.mjs proves missing seam, clean-clone equality, tracked-file checksum drift, opaque S-011 component-reference drift, and private/log/local-symlink exclusion; complete RUNBOOK suite, template evaluator 106.6/113, guardrail 78/100, render/doctor, and diff check passed. |
 | TK-003 | Fail closed on release tree, ancestry, merge-mode, or exact-status drift | blocked | TK-002 | pending |
 | TK-004 | Assemble the complete manifest and make update-harness verify it | blocked | TK-002, TK-003, S-011 | pending |
 | TK-005 | Prove the release from a fresh clone and one project-owned downstream upgrade | blocked | TK-004 | pending |
@@ -206,6 +207,7 @@ manifest and release-gate targeted tests.
 | 2026-07-17 | canon harvest | Captured public delivery as a durable capability and routed the PR #34 history deviation into a repeatable release gate | Live refs, PR #34, exact integration status, tree identity, evaluator, guardrail, render, doctor, and complete Runbook checks inspected | Added S-018, updated Blueprint coverage, and corrected README delivery boundaries | TK-002 through TK-005 remain |
 | 2026-07-17 | audit remediation | Made S-018 the sole release-manifest, update-harness verification, and downstream-rollout owner | S-011/TK-016 narrowed to a typed skill-catalog input; dependency graph, render, doctor, full planning verification, and diff check passed | Updated S-011, S-018, coverage matrix, and generated projections | TK-002 schema precedes S-011/TK-016; TK-004 consumes both |
 | 2026-07-17 | blocker remediation | Replaced unsupported cross-spec ticket references with the supported completed-spec blocker S-011 | Existing lifecycle blocker semantics, next/claim self-test, render, doctor, and diff check passed | S-011 owns its component schema; S-018 owns envelope, manifest assembly, and rollout | Complete S-011 plus local TK-002 and TK-003 before TK-004 |
+| 2026-07-18 | TK-002 | Ticket closed | Red/green tools/test-release-manifest.mjs proves missing seam, clean-clone equality, tracked-file checksum drift, opaque S-011 component-reference drift, and private/log/local-symlink exclusion; complete RUNBOOK suite, template evaluator 106.6/113, guardrail 78/100, render/doctor, and diff check passed. | Updated release-manifest generator/test, AGENTS full-suite contract, RUNBOOK release commands, README public-package guidance, and S-018 evidence. | TK-003 must add the fail-closed release-history gate; TK-004 still waits for TK-003 and completed S-011 component. |
 
 ## Completion Result
 

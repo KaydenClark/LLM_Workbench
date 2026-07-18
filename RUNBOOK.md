@@ -64,6 +64,7 @@ node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
 python3 evals/test_score.py
 node tools/test-feedback-automation.mjs
+node tools/test-release-manifest.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node tools/spec-workbench.mjs doctor
@@ -98,6 +99,23 @@ Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates only the marked Blueprint catalog and hot Taskboard regions.
 `complete` requires every slice done, acceptance boxes checked, completion result
 recorded, and evidence present; render then removes the spec from the hot board.
+
+### Release Manifest
+
+Generate a deterministic public-package manifest for the exact checked-out
+commit without writing generated evidence into the repository:
+
+```bash
+node tools/release-manifest.mjs --source-ref HEAD > /tmp/workbench-release-manifest.json
+node tools/test-release-manifest.mjs
+```
+
+The manifest contains the harness version, source ref/SHA, MIT license identity,
+checksums for tracked non-skill package files, and the verification commands. It
+enumerates only explicit public roots and tracked files, rejects shipped symlinks,
+and keeps the future S-011 skill component as an opaque identity reference. Use
+`--skill-component skills/PATH` only after S-011 emits its owned component; this
+tool does not define or validate that component's internal schema.
 
 ### Test Coverage Policy
 
