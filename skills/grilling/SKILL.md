@@ -74,8 +74,8 @@ Keep grilling until I explicitly run one of these skills — do not stop on a
 lookalike phrase said in passing:
 
 - `/make-it-so` — I am done; confirm the approvals, promote the notepad's
-  locked decisions to canon, implement them, and push the results to the
-  remote.
+  locked decisions to canon, schedule or implement the resulting tickets, and
+  push the results to the remote.
 - `/checkpoint` — save and stop for now; commit the notepad to resume later.
 
 Only those invoked skills end the interview. Continue only within the standing
