@@ -23,7 +23,7 @@ is preserved but not invocable.
 | `genesis` | Create a new greenfield project from its founding prompt, establish a private remote recovery boundary, and hand off a verified Workbench scaffold. | Native | Active |
 | `adoption` | Migrate an existing project into the Workbench once while preserving code, history, project truth, provenance, and remote recovery. | Native | Active |
 | `grilling` | Run the question-at-a-time interview primitive, keeping a running notepad of every decision that `/make-it-so` promotes and `/checkpoint` saves. | Core rewrite | Active |
-| `make-it-so` | Finish a grilling session by promoting its notepad to canon via to-docs, to-spec, to-tickets, then schedule and stop; invoked explicitly, never from the phrase. | Native | Active |
+| `make-it-so` | Finish a grilling session by confirming approvals, promoting its notepad to canon via to-docs, to-spec, to-tickets, then implementing the tickets with every checkpoint pushed to the remote; invoked explicitly, never from the phrase. | Native | Active |
 | `brainstorm` | Run a grilling interview with a counter-argument lens so every recommendation is weighed against its strongest opposing case. | Native | Active |
 | `checkpoint` | Save an in-progress grilling notepad as a committed, resumable handoff for another workstation or agent. | Native | Active |
 | `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite | Active |
