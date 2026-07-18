@@ -7,7 +7,7 @@
 **Status:** active
 **Priority:** 2
 **Owner:** codex
-**Updated:** 2026-07-16
+**Updated:** 2026-07-17
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
 **Latest event:** TK-009 exact-head delivery audit repair passed.
@@ -238,7 +238,7 @@ their contract tests pass.
 
 ## Acceptance Criteria
 
-- [x] The selected 30-skill catalog matches the combined active and pending
+- [x] The selected 32-skill catalog matches the combined active and pending
       physical folders exactly; only reviewed entries are live-discovered.
 - [x] GPT_OS `.claude/skills` and `.agents/skills` resolve to the tracked
       Workbench skill folder; the upstream snapshot remains preserved.
@@ -299,6 +299,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-16 | TK-008 | Retained Matt Pocock's MIT copyright and permission notice verbatim; split the selected catalog into 11 reviewed live skills and 19 preserved pending rewrites; removed pending routes; changed `update-harness` and the project Blueprint to the canonical Factory path; fixed EOF hygiene | Catalog test failed red on missing availability, then passed with exact notice, active/pending parity, forbidden live-routing, canonical-path, and EOF assertions; complete Runbook suite passed; template evaluator 106.6/113; live guardrail 78/100; fresh ephemeral Codex reported all 11 active entries discoverable and `implement`, `code-review`, and `domain-modeling` absent (`ACTIVE_OK`); render, doctor, and diff check passed | Updated README, skills catalog, router, Blueprint, S-011, generated Taskboard, and tracked third-party notice | TK-009 restores `implement` and `code-review` after rewrite; later tickets promote the other pending skills; Claude remains owner-auth blocked |
 | 2026-07-16 | TK-009 | Ticket closed | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 | Updated implement, code-review, skills catalog/router, S-011, generated TASKBOARD, and benchmarks/RESULTS; RUNBOOK and BLUEPRINT checked with no update needed because their lifecycle and shipped-skill ownership remain accurate | Seventeen pending rewrites remain; Claude discovery remains blocked on owner authentication; real repeated outcome evidence remains unrun |
 | 2026-07-16 | TK-009 review | Closed independent audit gaps: disabled Git text conversion during fixed-SHA review, required a remotely verified in-progress checkpoint before review and a new checkpoint plus re-review after fixes, and corrected the manual Taskboard focus for blocked S-011 | Red: the hostile textconv helper wrote its marker and the delivery-order contract could not find the in-progress checkpoint, 0/2 passed. Green: delivery contracts 2/2; complete Runbook suite; fresh ephemeral Codex returned `DELIVERY_REPAIR_OK`; root 113/113; templates 106.6/113; guardrail 78->78/100; gitleaks Git-history and directory scans found no leaks | Updated `code-review`, `implement`, delivery/catalog tests, S-011, and the manual Taskboard current-focus header; generated projection rendered from the spec | Seventeen pending rewrites remain; Claude discovery remains owner-auth blocked; real repeated outcome evidence remains unrun |
+| 2026-07-17 | grilling-family redesign (Claude) | Split `grilling` into a notepad-keeping interview primitive; added explicit-invoke `make-it-so` (to-docs -> to-spec -> to-tickets -> schedule -> stop), `brainstorm`, and `checkpoint`; retired pending `handoff` in favor of `checkpoint`; the notepad lives in gitignored `.agents/grilling diary/`. | Catalog contract updated 30->32 and passed; skill-catalog, delivery, guardrail, evaluate-workbench, context-tools, spec-workbench, outcome-trials, eval-runner, feedback-automation, and templates-evaluator suites passed; the pre-existing S-014 stale-claim doctor warning is unrelated to this change | Updated skills `README.md` catalog, four skill files (grilling/make-it-so/brainstorm/checkpoint), retired `skills-pending/handoff`, `test-skill-catalog.mjs`, and this spec's catalog-count acceptance | A dedicated grilling-family spec could later own this contract; Claude discovery remains owner-auth blocked |
 
 ## Completion Result
 

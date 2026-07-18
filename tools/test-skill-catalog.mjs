@@ -33,7 +33,7 @@ const rows = catalogRegion[1]
     };
   });
 
-assert.equal(rows.length, 30, 'the owner-selected catalog must contain 30 skills');
+assert.equal(rows.length, 32, 'the owner-selected catalog must contain 32 skills');
 assert.equal(new Set(rows.map((row) => row.name)).size, rows.length,
   'the selected skill catalog must not contain duplicate names');
 for (const row of rows) {
@@ -62,7 +62,7 @@ assert.deepEqual(directoryNames, activeNames,
 assert.deepEqual(pendingDirectoryNames, pendingNames,
   'pending source folders must contain exactly the selected skills awaiting rewrite');
 assert.deepEqual([...directoryNames, ...pendingDirectoryNames].sort(), catalogNames,
-  'active and pending source folders together must preserve the 30-skill owner catalog');
+  'active and pending source folders together must preserve the 32-skill owner catalog');
 
 for (const name of activeNames) {
   assert.ok(fs.existsSync(path.join(skillsRoot, name, 'SKILL.md')),
@@ -172,13 +172,55 @@ assert.match(grilling, /decisions, though, are mine/,
   'grilling must leave owner decisions to the user');
 assert.match(grilling, /Do not act on it until I confirm/,
   'grilling must wait for confirmation before acting');
-assert.match(grilling, /exact passphrase `make it so`/,
-  'grilling must use the owner authorization passphrase');
+assert.match(grilling, /notepad/,
+  'grilling must keep a running notepad');
+assert.match(grilling, /\.agents\/grilling diary/,
+  'grilling must store the notepad in the grilling diary folder');
+assert.match(grilling, /\/make-it-so/,
+  'grilling must end via the make-it-so skill instead of a bare passphrase');
+assert.match(grilling, /\/checkpoint/,
+  'grilling must offer the checkpoint save-exit');
 
 assert.match(grillMe, /Run a `\/grilling` session\./,
   'grill-me must remain a thin grilling wrapper');
 assert.doesNotMatch(grillingBundle, /Desktop chat|voice|terminal|\bCLI\b/i,
   'the grilling flow must remain runtime-agnostic');
+
+const makeItSo = read('skills/make-it-so/SKILL.md');
+assertIncludesAll(makeItSo, [
+  'notepad',
+  '`to-docs`',
+  '`to-spec`',
+  '`to-tickets`',
+  '`TASKBOARD.md`',
+  'available scheduler',
+  'stop the current chat'
+], 'make-it-so');
+assert.match(
+  makeItSo,
+  /`to-docs`[\s\S]*`to-spec`[\s\S]*`to-tickets`[\s\S]*available scheduler[\s\S]*stop the current chat/,
+  'make-it-so must promote, decompose, schedule, and then stop in that order'
+);
+assert.match(makeItSo, /invoke it explicitly/i,
+  'make-it-so must be an explicit invocation, not a passphrase');
+assert.match(makeItSo, /does\s+not\s+authorize\s+implementation in the current chat/,
+  'make-it-so must not turn the chat into an implementation session');
+
+const brainstorm = read('skills/brainstorm/SKILL.md');
+assertIncludesAll(brainstorm, [
+  'Run a `/grilling` session',
+  'counter-argument',
+  'Do NOT promote'
+], 'brainstorm');
+
+const checkpoint = read('skills/checkpoint/SKILL.md');
+assertIncludesAll(checkpoint, [
+  'notepad',
+  'resume',
+  '`/make-it-so`'
+], 'checkpoint');
+assert.match(checkpoint, /PAUSED/,
+  'checkpoint must mark the notepad paused for resume');
 
 const toDocs = read('skills/to-docs/SKILL.md');
 assertIncludesAll(toDocs, [
