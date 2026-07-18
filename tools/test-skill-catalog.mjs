@@ -33,7 +33,7 @@ const rows = catalogRegion[1]
     };
   });
 
-assert.equal(rows.length, 32, 'the owner-selected catalog must contain 32 skills');
+assert.equal(rows.length, 34, 'the owner-selected catalog must contain 34 skills');
 assert.equal(new Set(rows.map((row) => row.name)).size, rows.length,
   'the selected skill catalog must not contain duplicate names');
 for (const row of rows) {
@@ -62,7 +62,7 @@ assert.deepEqual(directoryNames, activeNames,
 assert.deepEqual(pendingDirectoryNames, pendingNames,
   'pending source folders must contain exactly the selected skills awaiting rewrite');
 assert.deepEqual([...directoryNames, ...pendingDirectoryNames].sort(), catalogNames,
-  'active and pending source folders together must preserve the 32-skill owner catalog');
+  'active and pending source folders together must preserve the 34-skill owner catalog');
 
 for (const name of activeNames) {
   assert.ok(fs.existsSync(path.join(skillsRoot, name, 'SKILL.md')),
@@ -188,30 +188,46 @@ assert.doesNotMatch(grillingBundle, /Desktop chat|voice|terminal|\bCLI\b/i,
 
 const makeItSo = read('skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
-  'notepad',
-  '`to-docs`',
-  '`to-spec`',
-  '`to-tickets`',
-  '`TASKBOARD.md`',
-  'Schedule the eligible tickets',
+  '`/to-docs`',
+  '`/to-spec`',
+  '`/to-tickets`',
+  '`/save-plan`',
   '`/implement`',
+  '`/save-work`',
   'STATUS: PROMOTED'
 ], 'make-it-so');
 assert.match(
   makeItSo,
-  /`to-docs`[\s\S]*`to-spec`[\s\S]*`to-tickets`[\s\S]*Commit and push the promoted[\s\S]*Schedule the eligible tickets[\s\S]*STATUS: PROMOTED/,
-  'make-it-so must document, spec, ticket, push the plan, schedule, and then close in that order'
+  /`\/to-docs`[\s\S]*`\/to-spec`[\s\S]*`\/to-tickets`[\s\S]*`\/save-plan`[\s\S]*`\/implement`/,
+  'make-it-so must compose to-docs, to-spec, to-tickets, save-plan, implement in that order'
 );
-assert.match(makeItSo, /invoke it explicitly/i,
+assert.match(makeItSo, /Invoke explicitly; never fires from the phrase/,
   'make-it-so must be an explicit invocation, not a passphrase');
-assert.match(makeItSo, /Never refuse or complain because there is no\s+notepad/,
-  'make-it-so must treat a missing notepad as the normal standalone case');
-assert.match(makeItSo, /Never promote a `PROVISIONAL` notepad whose topic does not match/,
+assert.match(makeItSo, /a missing one is never an error/,
+  'make-it-so must treat a missing notepad as the normal case');
+assert.match(makeItSo, /a mismatched one is\s+named and ignored/,
   'make-it-so must guard against promoting a stale notepad');
-assert.match(makeItSo, /nothing has actually been settled, say so and stop/,
+assert.match(makeItSo, /Nothing settled → say so\s+and\s+stop/,
   'make-it-so must refuse to authorize an empty decision set');
-assert.match(makeItSo, /pushed commit, never\s+local-only progress/,
-  'make-it-so must forbid yielding with local-only progress');
+
+const savePlan = read('skills/save-plan/SKILL.md');
+assertIncludesAll(savePlan, [
+  '`TASKBOARD.md`',
+  '`RUNBOOK.md`',
+  'active portfolio',
+  'Verify the remote branch resolves to the pushed commit'
+], 'save-plan');
+assert.match(savePlan, /never sweep another agent/,
+  'save-plan must protect other writer lanes');
+
+const saveWork = read('skills/save-work/SKILL.md');
+assertIncludesAll(saveWork, [
+  '`RUNBOOK.md`',
+  'recovery point',
+  'truthful checkpoint commit'
+], 'save-work');
+assert.match(saveWork, /never a claim of\s+completion/,
+  'save-work must forbid claiming completion for incomplete work');
 
 const brainstorm = read('skills/brainstorm/SKILL.md');
 assertIncludesAll(brainstorm, [
