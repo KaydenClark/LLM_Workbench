@@ -1,24 +1,38 @@
 ---
 name: make-it-so
-description: Finish a grilling session by confirming its approvals, promoting the notepad into canonical docs and specs, then implementing the promoted tickets and pushing every result to the remote. Invoke it explicitly; it never fires from someone saying the phrase in passing. Runs to-docs, to-spec, to-tickets, then the implement loop until progress is remotely recoverable.
+description: Kayden's universal "approved — build it and save it" command, with or without a grilling session. Confirms pending approvals, promotes the settled decisions (grilling notepad or current conversation) into canonical docs and specs, implements the promoted tickets, and pushes every result to the remote. Invoke it explicitly; it never fires from someone saying the phrase in passing. Runs to-docs, to-spec, to-tickets, then the implement loop until progress is remotely recoverable.
 ---
 
-The finish exit for a grilling session, and the counterpart to `/checkpoint`.
+The universal execution authorization, and the counterpart to `/checkpoint`.
 Invoke it explicitly — it must never trigger just because someone said "make it
 so" in conversation.
 
 `make it so` is one authorization that covers the whole runway: it confirms
-every approval the grilling surfaced, locks the agreed scope, promotes the
-notepad to canon, and authorizes implementing the resulting tickets in this
-session with the results pushed to the remote. Do not pause for redundant
-re-approval between the steps below. Stop only for a decision the notepad never
-covered: destructive actions outside standing policy, paid services, credential
+every pending approval, locks the agreed scope, promotes the settled decisions
+to canon, and authorizes implementing the resulting tickets in this session
+with the results pushed to the remote. Do not pause for redundant re-approval
+between the steps below. Stop only for a decision that was never settled:
+destructive actions outside standing policy, paid services, credential
 changes, or genuinely new scope.
 
-Read the session notepad in `.agents/grilling diary/` (the newest `PROVISIONAL`
-one for this topic). The notepad is the source of truth, not the chat: if a
-compacted conversation and the notepad disagree, the notepad wins. Then, in
-order:
+## Resolve the input first
+
+The input is the settled decisions being approved. Resolve it in this order:
+
+1. **Matching grilling notepad.** If a `PROVISIONAL` notepad in
+   `.agents/grilling diary/` covers the topic under discussion, it is the
+   source of truth — the notepad wins over a compacted chat.
+2. **Stale notepad guard.** Never promote a `PROVISIONAL` notepad whose topic
+   does not match the current discussion. Name the mismatched notepad
+   visibly, leave it untouched, and continue with the conversation fallback.
+3. **Conversation fallback.** With no matching notepad, the settled decisions
+   of the current conversation are the input. Write them into a new notepad at
+   `.agents/grilling diary/<topic-slug>-<YYYY-MM-DD>.md` first — each decision
+   as a `[locked]` line, anything unsettled as `[open]` — so the promotion has
+   the same durable record a grilling would leave. If the conversation has no
+   settled decisions to write, say so and stop; there is nothing to authorize.
+
+Then, in order:
 
 1. Summarize and lock the agreed scope from the notepad.
 2. `to-docs` — route every `[locked]` decision that belongs in existing control
@@ -47,8 +61,8 @@ order:
     the work.
 
 `make it so` authorizes durable planning, implementation, and remote
-checkpoints from the notepad. It does not broaden standing project authority or
-safety boundaries: implementation runs under the same scope, verification, and
-git rules as any other slice. Scheduling to a later session is the fallback
-only when this environment truly cannot implement safely — and even then the
-promoted plan must already be pushed before yielding.
+checkpoints from the settled decisions. It does not broaden standing project
+authority or safety boundaries: implementation runs under the same scope,
+verification, and git rules as any other slice. Scheduling to a later session
+is the fallback only when this environment truly cannot implement safely — and
+even then the promoted plan must already be pushed before yielding.

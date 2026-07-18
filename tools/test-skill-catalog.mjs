@@ -203,6 +203,12 @@ assert.match(
 );
 assert.match(makeItSo, /invoke it explicitly/i,
   'make-it-so must be an explicit invocation, not a passphrase');
+assert.match(makeItSo, /Never promote a `PROVISIONAL` notepad whose topic\s+does not match/,
+  'make-it-so must guard against promoting a stale notepad');
+assert.match(makeItSo, /Conversation fallback/,
+  'make-it-so must work outside a grilling via the conversation fallback');
+assert.match(makeItSo, /no\s+settled decisions to write, say so and stop/,
+  'make-it-so must refuse to authorize an empty decision set');
 assert.match(makeItSo, /authorizes durable planning, implementation, and remote\s+checkpoints/,
   'make-it-so must authorize implementation with remote checkpoints');
 assert.match(makeItSo, /pushed commit, never\s+local-only progress/,
