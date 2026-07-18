@@ -10,7 +10,7 @@
 **Updated:** 2026-07-17
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** none
-**Latest event:** Auditor remediation made S-011 own its skill-component schema and removed the unsupported cross-spec ticket blocker.
+**Latest event:** The grilling-family redesign added an always-on interview notepad and explicit `/make-it-so` and `/checkpoint` exits while preserving S-011's skill-component schema boundary.
 **Next gate:** Claim TK-011; TK-003 remains independently owner-blocked.
 
 ## Outcome
@@ -30,10 +30,9 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 ## Current Verified State
 
-- The catalog contains 30 owner-approved entries after retiring
-  `grill-with-docs` and adding native `sitrep`, `to-docs`, `genesis`, and
-  `adoption` entrypoints. Thirteen reviewed entries are live in `skills/`.
-- Seventeen imported baselines still reference upstream conventions that
+- The catalog contains 32 owner-approved entries: 16 reviewed entries are live
+  in `skills/` and 16 preserved entries await rewrite in `skills-pending/`.
+- Sixteen imported baselines still reference upstream conventions that
   conflict with the Workbench truth-routing contract. Their source is
   preserved in `skills-pending/`, outside live discovery, until rewritten.
 - GPT_OS exposes the same tracked folder through `.claude/skills` and
@@ -84,9 +83,12 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
   reconstruct the design concept but is not the design concept or glossary.
 - BLUEPRINT keeps its name and design-concept role; the Pocock per-feature
   "spec/PRD" maps to `S-###` specs and tickets, not to BLUEPRINT.
-- Grilling ends only on Kayden's exact `make it so` passphrase. `to-docs` owns
-  persistence after settled conversation; the combined `grill-with-docs`
-  wrapper is retired.
+- `/grilling` always maintains a provisional notepad with stable question IDs
+  and `[open]`, `[tentative]`, or `[locked]` decisions. Only explicit
+  `/make-it-so` promotes it through `to-docs`, `to-spec`, `to-tickets`, and
+  scheduling before stopping; `/checkpoint` commits it for later resumption.
+  A bare `make it so` phrase never triggers that flow. `to-docs` remains the
+  documentation owner and the retired `grill-with-docs` wrapper remains absent.
 - Genesis and Adoption remain thin entrypoints over the existing template
   protocols. Both establish remote recovery; Adoption never doubles as the
   routine harness updater.
@@ -116,7 +118,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-007 | Add callable Genesis and Adoption entrypoints with remote-first recovery and distinct update routing | done | none | targeted catalog contract red at 28 vs 30, then green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and diff check passed |
 | TK-008 | Preserve upstream notice and fail-close unfinished imported skills outside live discovery | done | none | Targeted catalog red/green; full Runbook suite; fresh Codex active/pending discovery; template evaluator 106.6/113; live guardrail 78/100; render, doctor, and diff check passed |
 | TK-009 | Rewrite and promote pending `implement` and `code-review` as the next delivery-flow pair | done | none | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 |
-| TK-010 | Route `make it so` through durable planning and scheduled Taskboard execution | done | none | Red/green skill-catalog handoff and prior-authorization contracts; complete RUNBOOK suite; templates 106.6/113; fixed-SHA review 053396f..ea48eca found no remaining issues; render, doctor, and git diff --check passed |
+| TK-010 | Add explicit `/make-it-so` promotion and scheduling exit for the grilling notepad | done | none | Red/green catalog contract; complete RUNBOOK suite; templates 106.6/113; fixed-SHA review 053396f..ea48eca found no remaining issues; render, doctor, and git diff --check passed |
 | TK-011 | Rewrite the domain and interface design pack | ready | none | pending |
 | TK-012 | Rewrite the test, diagnosis, and conflict-recovery pack | ready | none | pending |
 | TK-013 | Rewrite the architecture and repository-enforcement pack | ready | none | pending |
@@ -169,14 +171,15 @@ render, doctor, and diff check. Product architecture choices remain project-owne
 
 ### Planned Ticket: TK-014
 
-**Vertical outcome:** Promote `research`, `wayfinder`, `handoff`, and `loop-me`
+**Vertical outcome:** Promote `research`, `wayfinder`, and `loop-me`
 as a flow for reducing uncertainty, preserving only necessary continuity, and
 turning a repeated workflow into a settled spec.
 
 **Done criteria:** Research prefers primary sources and creates durable output
-only when needed; Wayfinder resolves one decision at a time; Handoff links to
-canonical artifacts instead of copying them; Loop-me ends at a Workbench spec
-and does not implement in the discovery chat.
+only when needed; Wayfinder resolves one decision at a time; the active
+`/checkpoint` skill preserves a grilling notepad without copying canonical
+artifacts; Loop-me ends at a Workbench spec and does not implement in the
+discovery chat.
 
 **Required proof:** Focused catalog contracts, fixture outputs with no parallel
 truth files, fresh Codex discovery, full Runbook verification, evaluator,
@@ -257,9 +260,10 @@ TK-002.
 
 ### Scoped Ticket: TK-005
 
-**Vertical slice:** Rewrite `grilling`, `grill-me`, and `grill-with-docs` as one
-usable question-first flow. The flow reaches shared understanding, researches
-discoverable facts, and routes only settled truth to existing Workbench owners.
+**Vertical slice:** Rewrite `grilling` and `grill-me` as a usable question-first
+notepad interview flow. The flow reaches shared understanding, researches
+discoverable facts, and promotes only settled truth through explicit Workbench
+exits.
 
 **Done criteria:**
 
@@ -268,11 +272,9 @@ discoverable facts, and routes only settled truth to existing Workbench owners.
   at a time while waiting for the owner's answer.
 - The interview researches discoverable facts, leaves decisions to the owner,
   and takes no action until the owner confirms shared understanding.
-- `grill-me` remains a thin, runtime-agnostic wrapper and creates no durable
-  artifact.
-- `grill-with-docs` uses the same interview behavior and, after confirmation,
-  routes project-wide definitions to `LEXICON.md`, cross-cutting direction to
-  `BLUEPRINT.md`, and scoped decisions to the assigned `SPEC.md`. It creates no
+- `grill-me` remains a thin, runtime-agnostic wrapper over `grilling`.
+- `grilling` keeps its provisional diary outside canonical truth; only explicit
+  `/make-it-so` routes locked decisions to their existing owners. It creates no
   parallel context, ADR, tracker, or glossary layer.
 - `tools/test-skill-catalog.mjs` fails on the imported behavior before the
   rewrite and passes afterward. The full RUNBOOK suite, render, doctor, and
@@ -285,8 +287,8 @@ owning surface.
 ### Scoped Ticket: TK-006
 
 **Vertical slice:** Add native `sitrep` and `to-docs`, rewrite `to-spec` into the
-Workbench lifecycle, add the exact grilling authorization passphrase, and retire
-the overlapping `grill-with-docs` wrapper.
+Workbench lifecycle, add explicit grilling promotion and checkpoint exits, and
+retire the overlapping `grill-with-docs` wrapper.
 
 **Done criteria:**
 
@@ -296,8 +298,8 @@ the overlapping `grill-with-docs` wrapper.
   tracker or document layer.
 - `to-spec` creates or updates one stable Workbench spec, renders, and runs
   doctor without publishing to an external tracker.
-- Grilling stops only for the exact `make it so` passphrase; the catalog and
-  router contain `sitrep` and `to-docs` but no `grill-with-docs`.
+- Grilling keeps its diary until explicit `/make-it-so` or `/checkpoint`; the
+  catalog and router contain `sitrep` and `to-docs` but no `grill-with-docs`.
 - The red/green catalog test, full Runbook suite, render, doctor, and diff check
   pass. Static scores remain diagnostics rather than outcome claims.
 
@@ -341,17 +343,18 @@ their contract tests pass.
 
 ### Scoped Ticket: TK-010
 
-**Vertical slice:** Change the grilling passphrase handoff so the current chat
-locks the scope, persists one spec, decomposes it into Taskboard tickets,
+**Vertical slice:** Make `/make-it-so` the explicit grilling exit that promotes
+the running notepad, persists one spec, decomposes it into Taskboard tickets,
 schedules an agent to begin eligible tickets, and then stops. It must not
 implement those tickets in the grilling chat.
 
 **Done criteria:**
 
-- `make it so` runs the settled-conversation flow through `to-spec`, then
-  `to-tickets`, then the generated `TASKBOARD.md`.
-- The passphrase authorizes the agreed decomposition without a redundant
-  approval pause; unresolved owner decisions remain blockers.
+- Explicit `/make-it-so` runs the settled-notepad flow through `to-docs`, then
+  `to-spec`, `to-tickets`, and the generated `TASKBOARD.md`; it never fires
+  from the phrase in ordinary conversation.
+- The explicit skill invocation authorizes the agreed decomposition without a
+  redundant approval pause; unresolved owner decisions remain blockers.
 - The runtime uses its available scheduler to assign an agent to eligible
   Taskboard tickets. If scheduling is unavailable, it reports that blocker and
   still does not implement the tickets in the current chat.
@@ -365,7 +368,7 @@ and generated Taskboard. Check the router and Runbook for drift.
 
 ## Acceptance Criteria
 
-- [x] The selected 30-skill catalog matches the combined active and pending
+- [x] The selected 32-skill catalog matches the combined active and pending
       physical folders exactly; only reviewed entries are live-discovered.
 - [x] GPT_OS `.claude/skills` and `.agents/skills` resolve to the tracked
       Workbench skill folder; the upstream snapshot remains preserved.
@@ -433,6 +436,7 @@ node tools/spec-workbench.mjs doctor
 | 2026-07-17 | audit remediation | Removed duplicate release-manifest and upgrade ownership from TK-016 | S-011 and S-018 dependency graph reviewed; render, doctor, full planning verification, and diff check passed | S-011 now owns only the skill-catalog component; S-018 owns manifest and rollout | TK-016 waits on skill rewrites, Claude authentication, and S-018/TK-002 schema |
 | 2026-07-17 | blocker remediation | Removed the unsupported S-018/TK-002 cross-spec ticket blocker and assigned the component schema to S-011 | Existing lifecycle blocker semantics, next/claim self-test, render, doctor, and diff check passed | Updated S-011, S-018, coverage matrix, and generated Taskboard only | TK-016 waits only on S-011-local tickets; S-018 waits for completed S-011 |
 | 2026-07-17 | owner decision checkpoint | Kayden approved a bounded fresh Claude sign-in and cross-agent skill-discovery proof. | Conversation decision only; no credential was read, stored, or changed. | S-011 and generated Taskboard updated. | Kayden must complete the interactive sign-in before TK-003 proof can run. |
+| 2026-07-17 | grilling-family redesign (Claude) | Split `grilling` into a notepad-keeping interview primitive; added explicit-invoke `make-it-so` (to-docs -> to-spec -> to-tickets -> schedule -> stop), `brainstorm`, and `checkpoint`; retired pending `handoff` in favor of `checkpoint`; the notepad lives in gitignored `.agents/grilling diary/`. | Catalog contract updated 30->32 and passed; skill-catalog, delivery, guardrail, evaluate-workbench, context-tools, spec-workbench, outcome-trials, eval-runner, feedback-automation, and templates-evaluator suites passed; the pre-existing S-014 stale-claim doctor warning is unrelated to this change | Updated skills `README.md` catalog, four skill files (grilling/make-it-so/brainstorm/checkpoint), retired `skills-pending/handoff`, `test-skill-catalog.mjs`, and this spec's catalog-count acceptance | The S-011 component schema and its S-018 release-manifest boundary remain intact; Claude discovery remains owner-auth blocked |
 
 ## Completion Result
 
@@ -440,7 +444,7 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Seventeen selected upstream baselines remain safely preserved but unavailable
+- Sixteen selected upstream baselines remain safely preserved but unavailable
   under `skills-pending/`; later promotions remain test-gated.
 - Claude discovery remains blocked until the owner authenticates; no credential
   configuration is changed by this spec.

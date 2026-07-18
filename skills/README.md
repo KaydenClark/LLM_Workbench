@@ -22,7 +22,10 @@ is preserved but not invocable.
 | `ask-workbench` | Route a situation to the smallest appropriate Workbench skill or flow when the owner does not remember the command. | Native | Active |
 | `genesis` | Create a new greenfield project from its founding prompt, establish a private remote recovery boundary, and hand off a verified Workbench scaffold. | Native | Active |
 | `adoption` | Migrate an existing project into the Workbench once while preserving code, history, project truth, provenance, and remote recovery. | Native | Active |
-| `grilling` | Ask one decision question at a time, then use `make it so` to persist the settled scope, create Taskboard tickets, schedule agent execution, and stop before implementation. | Core rewrite | Active |
+| `grilling` | Run the question-at-a-time interview primitive, keeping a running notepad of every decision that `/make-it-so` promotes and `/checkpoint` saves. | Core rewrite | Active |
+| `make-it-so` | Finish a grilling session by promoting its notepad to canon via to-docs, to-spec, to-tickets, then schedule and stop; invoked explicitly, never from the phrase. | Native | Active |
+| `brainstorm` | Run a grilling interview with a counter-argument lens so every recommendation is weighed against its strongest opposing case. | Native | Active |
+| `checkpoint` | Save an in-progress grilling notepad as a committed, resumable handoff for another workstation or agent. | Native | Active |
 | `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite | Active |
 | `sitrep` | Give a smallest-scope conversational situation report, dispatching read-only Scout research only when the live evidence is insufficient. | Native | Active |
 | `to-docs` | Route settled conversation truth into existing Workbench documentation owners without restarting discovery or creating another store. | Native | Active |
@@ -35,7 +38,6 @@ is preserved but not invocable.
 | `tdd` | Drive one behavior at an agreed public seam through a red-green-refactor loop with durable tests. | Core rewrite | Pending rewrite |
 | `code-review` | Review a diff separately against repository standards and the owning Workbench spec, reporting actionable findings first. | Core rewrite | Active |
 | `diagnosing-bugs` | Establish a tight reproduction loop, prove the root cause, and enter fix mode only when the user requested a fix. | Core rewrite | Pending rewrite |
-| `handoff` | Preserve only the context a fresh session still needs, linking to existing specs, proof, commits, and files instead of duplicating them. | Core rewrite | Pending rewrite |
 | `teach` | Teach a topic through a stateful sequence of small lessons grounded in the learner's purpose and prior understanding. | Supporting rewrite | Pending rewrite |
 | `writing-great-skills` | Define the authoring vocabulary and pruning rules used to make Workbench skills predictable and maintainable. | Reference | Active |
 | `design-an-interface` | Generate and compare meaningfully different public interface shapes before choosing one to implement. | Supporting rewrite | Pending rewrite |
