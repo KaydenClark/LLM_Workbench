@@ -196,7 +196,8 @@ overlap rejection.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Until S-020 completes, do not copy `team templates/` into a v2.3 project.
+- The templates remain intentionally limited to one Captain and one to three
+  role lanes; larger or unattended teams need a separately specified system.
 
 ## Supersession
 
