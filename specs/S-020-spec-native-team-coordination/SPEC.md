@@ -10,8 +10,8 @@
 **Updated:** 2026-07-19
 **Catalog description:** Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer.
 **Blockers:** none
-**Latest event:** TK-001 claimed by claude.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -77,7 +77,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Rewrite the manager template around Captain, roles, one owning spec, and one writer | in-progress | none | pending |
+| TK-001 | Rewrite the manager template around Captain, roles, one owning spec, and one writer | done | none | Stale-contract scan of team templates now matches only SUBAGENT.md (TK-002 lane); MANAGER.md and README.md clean. Full Runbook suite green (all eight node self-tests, task_b grader, evaluator templates 106.6/113 beating both controls, doctor with only pre-existing S-014 stale-claim), git diff --check clean |
 | TK-002 | Rewrite subagent and temporary coordination guidance to remove parallel durable proof | blocked | TK-001 | pending |
 | TK-003 | Add a regression contract for role separation, disjoint lanes, and spec-owned evidence | blocked | TK-002 | pending |
 | TK-004 | Prove a two-lane bounded team demo and consolidate one durable checkpoint | blocked | TK-003 | pending |
@@ -177,6 +177,7 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-17 | canon harvest | Classified the optional team templates as live-source contradiction and created the modernization work packet | Stale-contract scan confirmed duplicate Taskboard and proof-log language; current evaluator, render, doctor, and complete Runbook checks inspected | Added S-020; README and team-template headers mark the current files legacy pending replacement | TK-001 through TK-004 remain |
+| 2026-07-19 | TK-001 | Ticket closed | Stale-contract scan of team templates now matches only SUBAGENT.md (TK-002 lane); MANAGER.md and README.md clean. Full Runbook suite green (all eight node self-tests, task_b grader, evaluator templates 106.6/113 beating both controls, doctor with only pre-existing S-014 stale-claim), git diff --check clean | team templates/MANAGER.md and README.md rewritten around Captain, one role per task, one owning spec as sole proof store, one single durable writer per lane; role contracts linked not copied | SUBAGENT.md and TASKBOARD.md remain legacy-marked until TK-002 |
 
 ## Completion Result
 
