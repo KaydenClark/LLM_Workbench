@@ -6,12 +6,12 @@
 **Spec ID:** S-020
 **Status:** active
 **Priority:** 2
-**Owner:** claude
+**Owner:** codex/s020-tk003
 **Updated:** 2026-07-19
 **Catalog description:** Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Complete TK-003.
+**Latest event:** TK-003 claimed by codex/s020-tk003.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 ## Outcome
 
@@ -83,7 +83,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Rewrite the manager template around Captain, roles, one owning spec, and one writer | done | none | Stale-contract scan of team templates now matches only SUBAGENT.md (TK-002 lane); MANAGER.md and README.md clean. Full Runbook suite green (all eight node self-tests, task_b grader, evaluator templates 106.6/113 beating both controls, doctor with only pre-existing S-014 stale-claim), git diff --check clean |
 | TK-002 | Rewrite subagent and temporary coordination guidance to remove parallel durable proof | done | TK-001 | Stale-language scan green: spec grep pattern matches nothing in team templates; remaining proof-log mentions are explicit prohibitions only. Disposable scratch fixture demonstrated write-lane rejection: overlapping Touches lanes rejected, Scout with an editable lane rejected, disjoint lanes accepted. Full Runbook suite green; evaluator root 113/113 with Team coordination satisfied by the rewritten templates, templates path 106.6/113 beating both controls; render and doctor clean apart from the pre-existing S-014 stale-claim; git diff --check clean |
-| TK-003 | Add a regression contract for role separation, disjoint lanes, and spec-owned evidence | blocked | TK-002 | pending |
+| TK-003 | Add a regression contract for role separation, disjoint lanes, and spec-owned evidence | in-progress | none | pending |
 | TK-004 | Prove a two-lane bounded team demo and consolidate one durable checkpoint | blocked | TK-003 | pending |
 
 ### Scoped Ticket: TK-001
