@@ -38,8 +38,8 @@ collisions the Workbench now prevents.
   notes with no proof log.
 - Remaining proof-log/duplicate-board language in the folder appears only as
   explicit prohibitions.
-- No focused test yet prevents the old coordination model from returning
-  (TK-003), and the two-lane demonstration is outstanding (TK-004).
+- `tools/test-team-coordination.mjs` prevents the retired coordination model
+  from returning; the two-lane demonstration remains outstanding (TK-004).
 
 ## Desired Behavior
 
