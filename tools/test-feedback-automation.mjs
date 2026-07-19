@@ -56,7 +56,7 @@ assert.throws(
     repo: 'Malformed',
     origin: 'https://github.com/KaydenClark/Malformed.git'
   }),
-  /HARNESS_FEEDBACK line 6.*expected 6 columns.*found 7/,
+  /Workbench Feedback line 6.*expected 6 columns.*found 7/,
   'malformed feedback rows should be reported instead of silently dropped after partial parsing'
 );
 
@@ -66,15 +66,27 @@ try {
   makeRepo('Alpha_backup', 'https://github.com/KaydenClark/Alpha.git', injected);
   makeRepo('Gamma', 'git@github.com:KaydenClark/Gamma.git', injected.replace('2026-07-01', '2026-07-03'));
   makeRepo('Beta', 'https://github.com/other/Beta.git', injected);
+  makeRepo('Delta', 'https://github.com/KaydenClark/Delta.git',
+    injected.replace('2026-07-01', '2026-07-04'), 'WORKBENCH_FEEDBACK.md');
+  makeRepo('Epsilon', 'https://github.com/KaydenClark/Epsilon.git',
+    injected.replace('2026-07-01', '2026-07-05'), 'WORKBENCH_FEEDBACK.md');
+  fs.writeFileSync(path.join(root, 'Epsilon', 'HARNESS_FEEDBACK.md'),
+    injected.replace('2026-07-01', '2026-07-06'));
   const worktree = path.join(root, 'Alpha_worktree');
   fs.mkdirSync(worktree);
   fs.writeFileSync(path.join(worktree, '.git'), 'gitdir: elsewhere\n');
   fs.writeFileSync(path.join(worktree, 'HARNESS_FEEDBACK.md'), injected);
 
   const found = discoverFeedback(root);
-  assert.equal(found.length, 2, 'discovery should exclude duplicates, worktrees, and non-owner origins');
+  assert.equal(found.length, 4, 'discovery should exclude duplicates, worktrees, and non-owner origins');
+  assert.ok(found.some((row) => row.repo === 'Delta'),
+    'a repo carrying only the renamed WORKBENCH_FEEDBACK.md must be discovered');
+  const epsilonRows = found.filter((row) => row.repo === 'Epsilon');
+  assert.equal(epsilonRows.length, 1, 'when both filenames exist, only one is read');
+  assert.match(epsilonRows[0].date, /2026-07-05/,
+    'WORKBENCH_FEEDBACK.md wins over the grandfathered HARNESS_FEEDBACK.md');
   assert.equal(found[0].repo, 'Alpha');
-  assert.equal(found[0].recurrence, 2, 'similar feedback across canonical projects should be grouped');
+  assert.equal(found[0].recurrence, 4, 'similar feedback across canonical projects should be grouped');
 
   assert.equal(selectCandidate(found, { pendingFingerprints: [found[0].fingerprint] }), null,
     'an open candidate must lock selection');
@@ -216,10 +228,10 @@ execFileSync(process.execPath, ['--input-type=module', '-e', `import '${moduleUr
 
 console.log('ok - feedback discovery, ranking, locking, injection resistance, and decisions passed');
 
-function makeRepo(name, origin, feedback) {
+function makeRepo(name, origin, feedback, filename = 'HARNESS_FEEDBACK.md') {
   const repo = path.join(root, name);
   fs.mkdirSync(repo);
   execFileSync('git', ['init', '-q'], { cwd: repo });
   execFileSync('git', ['remote', 'add', 'origin', origin], { cwd: repo });
-  fs.writeFileSync(path.join(repo, 'HARNESS_FEEDBACK.md'), feedback);
+  fs.writeFileSync(path.join(repo, filename), feedback);
 }

@@ -200,10 +200,11 @@ making claims.
 
 ### Harness Feedback Loop
 
-Downstream projects built from `templates/` carry a `HARNESS_FEEDBACK.md` return
-channel: an append-only log of where the harness rules themselves were unclear,
+Downstream projects built from `templates/` carry a `WORKBENCH_FEEDBACK.md` return
+channel (legacy copies named `HARNESS_FEEDBACK.md` are still discovered): an
+append-only log of where the harness rules themselves were unclear,
 wrong, or slow. This repo is the harvest destination, so it has no
-`HARNESS_FEEDBACK.md` of its own; instead:
+feedback file of its own; instead:
 
 1. Collect feedback rows from downstream projects (or from dogfooding here).
 2. Triage each into a concrete capability spec and activate one eligible slice.

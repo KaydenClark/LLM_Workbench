@@ -186,7 +186,7 @@ model, conditions, task suite, trial count, and result path before making claims
 
 ### Harness Feedback Loop
 
-This project's `HARNESS_FEEDBACK.md` is the return channel to the upstream
+This project's `WORKBENCH_FEEDBACK.md` is the return channel to the upstream
 harness. Lessons logged there feed harness changes, which must clear the same
 bar as any other "better" claim: a proposed template change is `c3_candidate`
 above, tested against the current docs on the same task suite before it ships.
@@ -281,7 +281,7 @@ To upgrade:
 
 Treat a harness upgrade like any other change: smallest correct diff, verified,
 with proof. If a downstream lesson should flow *back* to the harness, capture it
-per the project's `HARNESS_FEEDBACK` convention.
+per the project's `WORKBENCH_FEEDBACK` convention.
 
 ## Troubleshooting
 

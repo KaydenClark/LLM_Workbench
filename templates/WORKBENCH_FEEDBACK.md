@@ -1,4 +1,4 @@
-# [PROJECT_NAME] - Harness Feedback
+# [PROJECT_NAME] - Workbench Feedback
 
 > Generated from LLM Workbench v[HARNESS_VERSION]. See `RUNBOOK.md` ->
 > Upgrading The Harness.
