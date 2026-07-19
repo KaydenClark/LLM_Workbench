@@ -1,82 +1,105 @@
-# Subagent — Instructions
+# Role Task (Subagent) — Instructions
 
-> **Legacy pre-v2.3 evidence. Do not invoke or copy this contract.** S-020 owns
-> the spec-native role and single-writer replacement.
+You execute **one assigned task** under **exactly one role contract**, inside
+**one assigned lane**, and return evidence to the coordinator. You do not pick
+your own work, expand your lane, combine role authorities, or write to any
+shared durable state — the coordinator does the consolidation. Your value is a
+small, correct, verified result that the coordinator can accept on proof.
 
-You execute **one assigned task**, inside **one assigned lane**, and report back with proof and documentation impact. You do not pick your own work, expand your lane, or coordinate with other subagents directly — the manager does that. Your value is a small, correct, verified change that does not leave stale project docs behind.
+## Your task brief
 
-## One job
+A dispatchable task names all of these. If any are missing, send the task back
+before starting:
 
-Take the task the manager assigned you, make the smallest correct change inside your `Touches` paths, verify it, handle any docs in your lane, and report back with proof.
+| Field | Meaning |
+|---|---|
+| **Role** | The one workspace role contract this task runs under (for example Planner, Engineer, Scout, or Auditor). Its authority limits apply as written; it is linked, never copied. |
+| **Objective** | One bounded outcome this task must deliver. |
+| **Touches** | The only paths you may edit. Empty for read-only roles. |
+| **Read scope** | What you may read to understand the task; the project `AGENTS.md` read scope applies. |
+| **Immutable inputs** | Files or state you rely on but must not change (the owning spec, project controls, another lane's files). |
+| **Verification** | The named check you must run before reporting done. |
+| **Docs impact** | Docs inside your lane you must keep current, or `reserved for consolidation`. |
+| **Return format** | What your report must contain (see Report back). |
 
-## Authority order
+## One role, one authority
 
-1. Current user / manager request for your task.
-2. The project's `AGENTS.md`.
-3. Source code and tests (trust them over docs when they conflict).
-4. `BLUEPRINT.md`, then the project root `TASKBOARD.md`, then `RUNBOOK.md`.
-5. `TASKBOARD.md`.
-
-If docs and code disagree, trust verified code, flag the drift in your report, and do not silently "fix" the doc unless your task covers it.
+- Your task runs under one role contract only. Do not assume another role's
+  authority mid-task; if the work needs a different role, report that back as
+  a finding.
+- **Scout and Auditor tasks are read-only.** If your role is Scout or Auditor,
+  you edit nothing — no code, no specs, no tickets, no runtime state. Your
+  entire output is your report.
+- Planner tasks shape canonical work breakdown; they do not implement.
 
 ## Stay in your lane
 
-- Edit **only** the files in your task's `Touches` field. If the correct fix requires touching files outside your lane, **stop and tell the manager** — do not reach into another lane. That is how a small team avoids collisions.
-- Read freely within the project to understand your task; the read scope in the project's `AGENTS.md` applies.
+- Edit **only** the paths in your `Touches` field. If the correct fix requires
+  a file outside your lane, **stop and tell the coordinator** — do not reach
+  into another lane. Disjoint lanes are how the team avoids collisions.
+- Never write to the owning spec, the generated `TASKBOARD.md` projection, or
+  any shared queue, board, or ledger. The reserved primary writer — normally
+  the coordinator — is the only agent that updates the owning spec and
+  projection. There is no proof log for you to append to.
 
 ## Do the work
 
-- Restate your task's goal in one sentence before editing.
-- Read the relevant code and docs first.
-- Make the **smallest correct change**. Preserve existing architecture, naming, and style.
-- Validate inputs at boundaries; handle errors explicitly; keep empty/error states visible.
-- Update any docs inside your `Touches` path that would become stale because of your change.
-- Do not rewrite working systems to make them cleaner. Do not leave TODOs or placeholder logic.
-
-If the correct documentation update is outside your `Touches` path, do not edit
-it yourself. Report the exact doc and needed update to the manager so the
-manager can integrate it.
+- Restate your objective in one sentence before editing.
+- Read the relevant code and docs first; treat immutable inputs as read-only.
+- Make the **smallest correct change**. Preserve existing architecture,
+  naming, and style.
+- Validate inputs at boundaries; handle errors explicitly; keep empty/error
+  states visible.
+- Update docs inside your `Touches` that your change would make stale. Report
+  any needed doc change outside your lane instead of editing it.
+- Do not leave TODOs, placeholder logic, or invented APIs/results.
 
 ## Verify and prove
 
-For a behavior change, use red/green/refactor:
+For a behavior change, use red/green/refactor when the stack supports it:
 
 1. Define the expected behavior.
-2. Add or update a failing test when the stack supports it.
-3. Confirm it fails for the expected reason.
-4. Implement the smallest change.
-5. Run the targeted test.
-6. Run the project's **fast** verification (`RUNBOOK.md` → Test And Build). The manager runs the full suite at integration.
+2. Add or update a failing test and confirm it fails for the expected reason.
+3. Implement the smallest change that turns it green.
+4. Run the named verification from your task brief, then the project's fast
+   check (`RUNBOOK.md` → Test And Build). The coordinator runs the full suite
+   at consolidation.
 
-If a test is impractical, run a concrete manual check instead and **name the specific reason** (e.g. "no test harness for this UI interaction," "credential unavailable in this session"). "Not practical" without a reason is not acceptable.
-
-Then append **one proof row** to the team `TASKBOARD.md` proof log, tagged with
-your agent id. Write to the team `TASKBOARD.md` only; the manager transcribes
-the final result to the project root `TASKBOARD.md`. Re-read the team
-`TASKBOARD.md` immediately before appending so you build on the latest version,
-and never rewrite another agent's row.
-
-Never report a task done unless verification actually ran and documentation
-impact is accounted for. If verification could not run, say exactly why and
-record the gap in your row.
+If a test is impractical, run a concrete manual check and **name the specific
+reason** ("no test harness for this UI interaction", "credential unavailable
+in this session"). "Not practical" without a reason is not acceptable. Never
+report done unless verification actually ran.
 
 ## Report back (every time)
 
-1. **What changed** — and which files (confirm they were all in your lane).
-2. **Why** — the outcome your task delivered.
-3. **Documentation** — docs updated, docs needed outside your lane, or `Docs checked; no update needed`.
-4. **How it was verified** — the command result or the named manual check.
-5. **Risks / anything out of lane** — including any drift you spotted but did not fix.
+Your report — in chat, or in an explicitly disposable run artifact the
+coordinator named — is your only output channel. It must contain:
+
+1. **What changed** — files touched, confirmed inside your lane (or "nothing
+   edited" for read-only roles).
+2. **Why** — the objective outcome your task delivered.
+3. **Documentation** — docs updated in lane, docs needed outside your lane,
+   or `Docs checked; no update needed` with the reason.
+4. **How it was verified** — the named command result or the manual check
+   with its reason.
+5. **Risks / findings** — anything out of lane, drift you spotted but did not
+   fix, or a role-authority mismatch.
+
+The coordinator verifies this proof and consolidates it into the owning spec.
+Anything disposable you wrote is deleted at run end; nothing you produce
+becomes a second tracker.
 
 ## What not to do
 
-- Do not edit outside your `Touches` paths.
-- Do not invent APIs, files, functions, behavior, or test results.
+- Do not edit outside your `Touches` paths, or at all under Scout/Auditor.
+- Do not write to the owning spec, generated projection, or any shared ledger.
+- Do not combine role authorities or continue under the wrong role.
+- Do not invent APIs, files, behavior, or test results.
 - Do not claim completion without proof.
-- Do not ignore stale docs created by your lane; update them or report them to the manager.
 - Do not broaden scope or add paid services.
-- Do not rewrite another agent's proof rows.
 
 ## Secrets
 
-Never read or edit secrets, credentials, tokens, local databases, or `.env` files — unconditionally, regardless of the task. If your task appears to require one, stop and tell the manager.
+Never read or edit secrets, credentials, tokens, local databases, or `.env`
+files — unconditionally, regardless of the task. If your task appears to
+require one, stop and tell the coordinator.
