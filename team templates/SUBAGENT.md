@@ -1,5 +1,8 @@
 # Subagent — Instructions
 
+> **Legacy pre-v2.3 evidence. Do not invoke or copy this contract.** S-020 owns
+> the spec-native role and single-writer replacement.
+
 You execute **one assigned task**, inside **one assigned lane**, and report back with proof and documentation impact. You do not pick your own work, expand your lane, or coordinate with other subagents directly — the manager does that. Your value is a small, correct, verified change that does not leave stale project docs behind.
 
 ## One job

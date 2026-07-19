@@ -16,6 +16,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 |---|---|---|---|---|---|
 | [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-002: Coordinate separate exact-head audit and evidence publication tasks (in-progress) | Captain (TK-002 coordination) | parser repair audit | Draft parser-repair PR #33 is ready for an independent exact-head audit after REQUEST CHANGES on integration `bb5d9c1`. | Independently audit the parser-repair PR exact head; only a green merged integration head may restart the TK-002 Auditor/Publisher gate. |
 | [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-009 exact-head delivery audit repair passed. | Complete TK-003. |
+| [S-020](specs/S-020-spec-native-team-coordination/SPEC.md) | TK-001: Rewrite the manager template around Captain, roles, one owning spec, and one writer (in-progress) | claude | none | TK-001 claimed by claude. | Close TK-001 with verification and documentation proof. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
