@@ -10,8 +10,8 @@
 **Updated:** 2026-07-19
 **Catalog description:** Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer.
 **Blockers:** none
-**Latest event:** TK-003 claimed by codex/s020-tk003.
-**Next gate:** Close TK-003 with verification and documentation proof.
+**Latest event:** TK-003 closed with proof.
+**Next gate:** Complete TK-004.
 
 ## Outcome
 
@@ -83,7 +83,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Rewrite the manager template around Captain, roles, one owning spec, and one writer | done | none | Stale-contract scan of team templates now matches only SUBAGENT.md (TK-002 lane); MANAGER.md and README.md clean. Full Runbook suite green (all eight node self-tests, task_b grader, evaluator templates 106.6/113 beating both controls, doctor with only pre-existing S-014 stale-claim), git diff --check clean |
 | TK-002 | Rewrite subagent and temporary coordination guidance to remove parallel durable proof | done | TK-001 | Stale-language scan green: spec grep pattern matches nothing in team templates; remaining proof-log mentions are explicit prohibitions only. Disposable scratch fixture demonstrated write-lane rejection: overlapping Touches lanes rejected, Scout with an editable lane rejected, disjoint lanes accepted. Full Runbook suite green; evaluator root 113/113 with Team coordination satisfied by the rewritten templates, templates path 106.6/113 beating both controls; render and doctor clean apart from the pre-existing S-014 stale-claim; git diff --check clean |
-| TK-003 | Add a regression contract for role separation, disjoint lanes, and spec-owned evidence | in-progress | none | pending |
+| TK-003 | Add a regression contract for role separation, disjoint lanes, and spec-owned evidence | done | none | Red: test initially failed because the team-coordination contract module was absent; green: node tools/test-team-coordination.mjs rejects the retired duplicate Taskboard/proof-log and role-collapse fixture while accepting current templates. Guardrail audit 78/100; complete Runbook suite green; evaluator templates 106.6/113 beating controls; render, doctor only report pre-existing S-014 stale-claim; git diff --check clean. |
 | TK-004 | Prove a two-lane bounded team demo and consolidate one durable checkpoint | blocked | TK-003 | pending |
 
 ### Scoped Ticket: TK-001
@@ -183,6 +183,7 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | 2026-07-17 | canon harvest | Classified the optional team templates as live-source contradiction and created the modernization work packet | Stale-contract scan confirmed duplicate Taskboard and proof-log language; current evaluator, render, doctor, and complete Runbook checks inspected | Added S-020; README and team-template headers mark the current files legacy pending replacement | TK-001 through TK-004 remain |
 | 2026-07-19 | TK-001 | Ticket closed | Stale-contract scan of team templates now matches only SUBAGENT.md (TK-002 lane); MANAGER.md and README.md clean. Full Runbook suite green (all eight node self-tests, task_b grader, evaluator templates 106.6/113 beating both controls, doctor with only pre-existing S-014 stale-claim), git diff --check clean | team templates/MANAGER.md and README.md rewritten around Captain, one role per task, one owning spec as sole proof store, one single durable writer per lane; role contracts linked not copied | SUBAGENT.md and TASKBOARD.md remain legacy-marked until TK-002 |
 | 2026-07-19 | TK-002 | Ticket closed | Stale-language scan green: spec grep pattern matches nothing in team templates; remaining proof-log mentions are explicit prohibitions only. Disposable scratch fixture demonstrated write-lane rejection: overlapping Touches lanes rejected, Scout with an editable lane rejected, disjoint lanes accepted. Full Runbook suite green; evaluator root 113/113 with Team coordination satisfied by the rewritten templates, templates path 106.6/113 beating both controls; render and doctor clean apart from the pre-existing S-014 stale-claim; git diff --check clean | team templates/SUBAGENT.md rewritten as a one-role task contract with role, bounded objective, Touches, read scope, immutable inputs, verification, docs impact, and return format; Scout/Auditor read-only; TASKBOARD.md rewritten as an explicitly disposable coordinator-only run-notes sheet with no proof log; only the reserved primary writer updates the owning spec and projection | TK-003 regression contract and TK-004 two-lane demo remain |
+| 2026-07-19 | TK-003 | Ticket closed | Red: test initially failed because the team-coordination contract module was absent; green: node tools/test-team-coordination.mjs rejects the retired duplicate Taskboard/proof-log and role-collapse fixture while accepting current templates. Guardrail audit 78/100; complete Runbook suite green; evaluator templates 106.6/113 beating controls; render, doctor only report pre-existing S-014 stale-claim; git diff --check clean. | Updated RUNBOOK.md to include the focused contract in full verification; S-020 and generated TASKBOARD.md record the ticket lifecycle. | TK-004 two-lane demo remains. |
 
 ## Completion Result
 
