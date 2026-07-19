@@ -421,7 +421,7 @@ async function main() {
   else console.log(renderGuardrailReport(audit, { name: options.name ?? root }));
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href) {
   main().catch((error) => {
     console.error(error.message);
     process.exitCode = 1;

@@ -93,6 +93,7 @@ node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
+node tools/test-symlink-invocation.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node tools/spec-workbench.mjs doctor
