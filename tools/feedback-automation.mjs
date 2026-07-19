@@ -81,7 +81,7 @@ function isFeedbackHeader(cells) {
 }
 
 function malformedFeedbackRow(line, detail) {
-  return new Error(`HARNESS_FEEDBACK line ${line} is malformed: ${detail}`);
+  return new Error(`Workbench Feedback line ${line} is malformed: ${detail}`);
 }
 
 export function discoverFeedback(projectsRoot) {
@@ -95,8 +95,13 @@ export function discoverFeedback(projectsRoot) {
     if (EXCLUDED_NAME.test(entry.name)) continue;
     const repoPath = path.join(projectsRoot, entry.name);
     const gitPath = path.join(repoPath, '.git');
-    const feedbackPath = path.join(repoPath, 'HARNESS_FEEDBACK.md');
-    if (!fs.existsSync(gitPath) || !fs.statSync(gitPath).isDirectory() || !fs.existsSync(feedbackPath)) continue;
+    // Workbench Feedback is the current name (S-008); HARNESS_FEEDBACK.md is
+    // the grandfathered legacy filename downstream projects may still carry.
+    // When both exist, the renamed file wins.
+    const feedbackPath = ['WORKBENCH_FEEDBACK.md', 'HARNESS_FEEDBACK.md']
+      .map((name) => path.join(repoPath, name))
+      .find((candidate) => fs.existsSync(candidate));
+    if (!fs.existsSync(gitPath) || !fs.statSync(gitPath).isDirectory() || !feedbackPath) continue;
     const origin = git(repoPath, ['remote', 'get-url', 'origin']);
     const topLevel = git(repoPath, ['rev-parse', '--show-toplevel']);
     if (!origin || realPath(topLevel) !== realPath(repoPath) || !isWritableOwnerOrigin(origin)) continue;

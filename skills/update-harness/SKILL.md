@@ -73,7 +73,7 @@ For the spec-centered Workbench:
 - keep exact commands and recovery in `RUNBOOK.md`;
 - keep `CLAUDE.md` as the thin `@AGENTS.md` bridge;
 - preserve public setup in `README.md` and harness friction in
-  `HARNESS_FEEDBACK.md`;
+  `WORKBENCH_FEEDBACK.md` (legacy `HARNESS_FEEDBACK.md`);
 - copy the canonical `tools/spec-workbench.mjs` exactly when the local
   interface is part of the current harness.
 

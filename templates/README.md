@@ -29,7 +29,7 @@ before changing anything:
   memory for this project. It routes to the live controls above and to flat
   memory notes; it never duplicates live task state.
 
-- [`HARNESS_FEEDBACK.md`](HARNESS_FEEDBACK.md) - the return channel to the
+- [`WORKBENCH_FEEDBACK.md`](WORKBENCH_FEEDBACK.md) - Workbench Feedback, the return channel to the
   reusable harness these docs came from: log where the harness rules themselves
   are unclear, wrong, or slow the work down, so they can be improved upstream.
 

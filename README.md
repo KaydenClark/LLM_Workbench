@@ -36,7 +36,7 @@ The blank, copyable templates live in `templates/`:
   an older or foreign harness): observe the repo, map the old docs into the v2
   layout without losing content, verify on the existing test suite. The
   existing-project counterpart to `GENESIS.md`; run once, then archive.
-- `templates/HARNESS_FEEDBACK.md` - the return channel from a downstream project
+- `templates/WORKBENCH_FEEDBACK.md` - Workbench Feedback, the return channel from a downstream project
   back to this harness: an append-only log of where the harness rules themselves
   were unclear, wrong, or slow, so lessons can flow back and be validated via
   `evals/` before shipping as "better".
@@ -166,7 +166,7 @@ record the upgrade in a dedicated spec. Completed spec evidence remains at its
 stable path; stale claims are diagnosed per `AGENTS.md` -> Long Session Control.
 
 The upgrade path is a loop, not a one-way copy. Downstream projects record where
-the harness helped or hurt in their `HARNESS_FEEDBACK.md`; those lessons are
+the harness helped or hurt in their `WORKBENCH_FEEDBACK.md` (legacy copies may still be named `HARNESS_FEEDBACK.md`); those lessons are
 harvested back here, turned into template changes, and validated with `evals/`
 before shipping as a new harness version. A template change is only called
 "better" when the evidence supports it - see `RUNBOOK.md` -> Evaluation And
