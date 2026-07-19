@@ -10,8 +10,8 @@
 **Updated:** 2026-07-19
 **Catalog description:** Extract a storage-agnostic `notepad` primitive and reorganize the thinking/decision skill family (save, scribe, wayfinder, research, prototype) onto it, with GitHub Issues as the shared ticket substrate.
 **Blockers:** none
-**Latest event:** Promoted from the 2026-07-19 grilling+domain-modeling session (notepad `.agents/grilling diary/skill-family-refactor-2026-07-19.md`) on top of preserved codex phase-1 (commit 6965a32).
-**Next gate:** Claim TK-001 (notepad primitive) — the foundation the other slices reference.
+**Latest event:** Authored all five new skill files (notepad, research, prototype, scribe, wayfinder); research/prototype/scribe verified live via harness skill discovery. Catalog test not yet green (guard test encodes the retired contract).
+**Next gate:** Reconcile to green — rewrite `tools/test-skill-catalog.mjs` to the new contract (make-it-so pipeline, no `/checkpoint`, grilling→`/notepad`), rewire grilling, delete `/checkpoint`, reconcile `skills/README.md` catalog (+5/−1, count 38), add cross-repo root `LEXICON.md` rows; then close TK-001..006.
 
 ## Outcome
 
@@ -108,7 +108,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Extract non-invocable `notepad` primitive skill (format + Issue mechanics + lifecycle); point `grilling` at it, behavior unchanged | ready | none | pending |
+| TK-001 | Extract non-invocable `notepad` primitive skill (format + Issue mechanics + lifecycle); point `grilling` at it, behavior unchanged | in-progress | none | pending |
 | TK-002 | Consolidate `save`: delete `/checkpoint` skill, rename Checkpoint→save in root LEXICON, sweep refs; keep save-work/save-plan on one spine | ready | TK-001 | pending |
 | TK-003 | Add `scribe` capture-to-tickets skill (per-target container; promote clusters → to-spec/to-tickets behind one approval gate) | ready | TK-001 | pending |
 | TK-004 | Adopt `wayfinder` + GitHub Issues tracker integration (scope-routed; native-blocking frontier; maps graduate to specs and close) | ready | TK-001, TK-005, TK-006 | pending |
@@ -163,3 +163,4 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-19 | plan | Promoted the 2026-07-19 grilling design onto preserved codex phase-1 (6965a32); authored S-022 with six vertical slices | Plan-only: spec authored; render + doctor to run at save-plan; no code yet | LEXICON/doc edits scoped into their implementing tickets | Full implementation (TK-001..006) rides the Captain cadence |
+| 2026-07-19 | TK-001,003,004,005,006 | Authored 5 new skill files: `notepad` (primitive, non-invocable), `research` (light tier), `prototype` (disposable), `scribe` (capture-to-tickets), `wayfinder` (map). research/prototype/scribe confirmed live in-session by harness skill discovery | Skill files authored and surfaced by the harness; `node tools/test-skill-catalog.mjs` NOT green (see gap) — no false green claimed | 5 `skills/*/SKILL.md` added | Guard test `tools/test-skill-catalog.mjs` hard-codes the retired contract (requires grilling `.agents/grilling diary` + `/checkpoint`; make-it-so `available scheduler`/`stop the current chat`/no-implementation) and is already red against codex phase-1. Green requires: rewrite that guard test to the new contract; rewire grilling to reference `/notepad` and drop the diary/checkpoint lines; delete `skills/checkpoint/` and sweep refs in make-it-so/save-work; reconcile `skills/README.md` catalog (+5 Active, −checkpoint, count 32→38); add root `LEXICON.md` rows (cross-repo). TK-002 not started |
