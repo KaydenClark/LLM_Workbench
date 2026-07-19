@@ -1,33 +1,28 @@
 ---
 name: make-it-so
-description: Finish a grilling session by promoting its notepad into canonical docs and specs. Invoke it explicitly; it never fires from someone saying the phrase in passing. Runs to-docs, then to-spec, to-tickets, schedule, and stop.
+description: Kayden's "approved — build it and save it" authorization. Composes to-docs, to-spec, to-tickets, save-plan, and implement over what we decided. Invoke explicitly; never fires from the phrase said in passing.
 ---
 
-The finish exit for a grilling session, and the counterpart to `/checkpoint`.
-Invoke it explicitly — it must never trigger just because someone said "make it
-so" in conversation.
+Kayden has approved what we decided. Do not re-ask for approvals already
+given; stop only for something never settled — destructive actions, paid
+services, credentials, or new scope.
 
-Read the session notepad in `.agents/grilling diary/` (the newest `PROVISIONAL`
-one for this topic). The notepad is the source of truth, not the chat: if a
-compacted conversation and the notepad disagree, the notepad wins. Then, in
-order:
+The input is the settled decisions of this conversation. A matching
+`PROVISIONAL` decision notepad outranks a compacted chat; a mismatched one is
+named and ignored; a missing one is never an error. Nothing settled → say so
+and stop.
 
-1. Summarize and lock the agreed scope from the notepad.
-2. `to-docs` — route every `[locked]` decision that belongs in existing control
-   files to its owner.
-3. `to-spec` — create or update the stable `SPEC.md` for a new or changed
-   capability (skip when the outcome is documentation only).
-4. `to-tickets` — add dependency-aware slices to that spec. `make it so`
-   authorizes the decomposition, so do not pause for redundant approval.
-5. Carry every `[tentative]` and `[open]` item forward as an explicit blocker;
-   never silently promote or drop one.
-6. Render and verify the generated `TASKBOARD.md` when specs or tickets changed.
-7. Use the available scheduler, following the project `RUNBOOK.md`, to begin
-   eligible tickets one at a time; if scheduling is unavailable, report the
-   blocker visibly and do not fall back to implementing here.
-8. Mark the notepad `STATUS: PROMOTED — <date>`, report the durable doc/spec/
-   ticket paths, and stop the current chat.
+Run, in order:
 
-`make it so` authorizes durable planning and scheduling from the notepad. It does
-not authorize implementation in the current chat. Perform this handoff only
-within the standing project authority and safety boundaries.
+1. `/to-docs`
+2. `/to-spec` — skip when the outcome is documentation only
+3. `/to-tickets`
+4. `/save-plan` — the plan reaches the remote before implementation starts;
+   if this session dies here, nothing is lost and the Captain still discovers
+   the tickets.
+5. `/implement` — start the first eligible slice here, saving progress with
+   `/save-work` at every stopping point. Remaining slices ride the Captain
+   cadence.
+
+Mark a used notepad `STATUS: PROMOTED — <date>`, then report the doc/spec/
+ticket paths and the pushed commits that hold the work.

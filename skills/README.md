@@ -23,7 +23,9 @@ is preserved but not invocable.
 | `genesis` | Create a new greenfield project from its founding prompt, establish a private remote recovery boundary, and hand off a verified Workbench scaffold. | Native | Active |
 | `adoption` | Migrate an existing project into the Workbench once while preserving code, history, project truth, provenance, and remote recovery. | Native | Active |
 | `grilling` | Run the question-at-a-time interview primitive, keeping a running notepad of every decision that `/make-it-so` promotes and `/checkpoint` saves. | Core rewrite | Active |
-| `make-it-so` | Finish a grilling session by promoting its notepad to canon via to-docs, to-spec, to-tickets, then schedule and stop; invoked explicitly, never from the phrase. | Native | Active |
+| `make-it-so` | Kayden's "approved — build it and save it" authorization: composes to-docs, to-spec, to-tickets, save-plan, and implement over the settled decisions of the conversation; invoked explicitly, never from the phrase. | Native | Active |
+| `save-plan` | Commit and push the promoted planning state — control docs, specs, tickets, and the rendered Taskboard — so the plan is remotely recoverable and Captain-discoverable before execution starts. | Native | Active |
+| `save-work` | Commit and push the current implementation progress as a truthful checkpoint — complete or not — so work is never local-only. | Native | Active |
 | `brainstorm` | Run a grilling interview with a counter-argument lens so every recommendation is weighed against its strongest opposing case. | Native | Active |
 | `checkpoint` | Save an in-progress grilling notepad as a committed, resumable handoff for another workstation or agent. | Native | Active |
 | `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite | Active |
