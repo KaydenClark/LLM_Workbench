@@ -99,6 +99,7 @@ capability and ticket owners.
 | [S-019 - Context Packaging And Research Workspaces](specs/S-019-context-research-tools/SPEC.md) | Package selected repository context safely and scaffold durable question-focused research without adding dependencies. | complete |
 | [S-020 - Spec-Native Team Coordination](specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | active |
 | [S-021 - Escape-Safe Markdown Table Persistence](specs/S-021-escape-safe-table-persistence/SPEC.md) | Preserve escaped pipes and backslashes across spec lifecycle and feedback tables while rejecting malformed rows without partial writes. | complete |
+| [S-022 - Thinking/Decision Skill-Family Phase 2](specs/S-022-thinking-decision-skill-family/SPEC.md) | Extract a storage-agnostic `notepad` primitive and reorganize the thinking/decision skill family (save, scribe, wayfinder, research, prototype) onto it, with GitHub Issues as the shared ticket substrate. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
