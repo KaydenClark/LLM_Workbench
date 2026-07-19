@@ -73,8 +73,9 @@ the overlap, and gives large efforts a shared, resumable, promotable substrate.
 - **Notepads are Issue-native**, including freestanding grills; the local
   `.agents/grilling diary/` folder is retired as the notepad home. Durability is by
   construction, which is why the `/checkpoint` skill's push-the-notepad job is gone.
-- **`save` replaces `checkpoint` as the concept**; the standalone `/checkpoint`
-  skill is deleted and prose references are swept.
+- **`save` names the persistence verbs**; the standalone `/checkpoint` skill is
+  deleted, while **checkpoint** remains the established noun for a truthful
+  in-progress commit and push. This avoids a broad, low-value terminology churn.
 - **GitHub Issues is the ticket substrate**, scope-routed by repo; markdown is a
   documented fallback only. Maps/containers graduate into specs and then **close**
   (anti-duplication: a map must not become a second permanent task tracker beside
@@ -127,11 +128,11 @@ Tickets are temporary tracer bullets within this stable capability record.
 ## Acceptance Criteria
 
 - [ ] `notepad` exists as a non-invocable primitive; grilling/brainstorm/scribe reference it and add only stance.
-- [ ] `/checkpoint` skill is deleted; `save` is the concept; `/save-work` + `/save-plan` share one spine; refs swept.
+- [ ] `/checkpoint` skill is deleted; `/save-work` + `/save-plan` share one persistence spine; `checkpoint` remains the truthful in-progress-save noun.
 - [ ] `scribe` captures issues as per-target GitHub tickets and promotes them into specs behind one approval gate.
 - [ ] `wayfinder` charts scope-routed GitHub Issue maps with a native-blocking frontier; graduated maps close.
 - [ ] `/research` (light) and `/prototype` (disposable) exist standalone and back their wayfinder ticket types.
-- [ ] Root `LEXICON.md` carries `notepad`/`map`/`ticket`/`save`/`scribe` rows; `Checkpoint` term retired to `save`.
+- [ ] Root `LEXICON.md` carries `notepad`/`map`/`decision ticket`/`save`/`scribe`/`wayfinder` rows and clarifies the retained `Checkpoint` noun.
 - [ ] Skill-catalog and full Workbench verification pass.
 
 ## Testing Seams
@@ -154,7 +155,7 @@ Then run the complete verification suite in `RUNBOOK.md`.
 ## Documentation Impact
 
 - This spec owns the phase-2 skill-family capability, decisions, acceptance, and proof.
-- Root `LEXICON.md` (separate repo): add `notepad`/`map`/`ticket`/`save`/`scribe`; rename `Checkpoint`→`save`; each rides its implementing ticket.
+- Root `LEXICON.md` (separate repo): add `notepad`/`map`/`decision ticket`/`save`/`scribe`/`wayfinder`; retain and clarify `Checkpoint` as the truthful-save noun.
 - `skills/README.md` catalog updates per new/removed skill.
 - `checkpoint` skill removal sweeps references in `grilling`, `make-it-so`, `save-work`, and root `AGENTS.md` prose.
 
@@ -165,3 +166,4 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | 2026-07-19 | plan | Promoted the 2026-07-19 grilling design onto preserved codex phase-1 (6965a32); authored S-022 with six vertical slices | Plan-only: spec authored; render + doctor to run at save-plan; no code yet | LEXICON/doc edits scoped into their implementing tickets | Full implementation (TK-001..006) rides the Captain cadence |
 | 2026-07-19 | TK-001,003,004,005,006 | Authored 5 new skill files: `notepad` (primitive, non-invocable), `research` (light tier), `prototype` (disposable), `scribe` (capture-to-tickets), `wayfinder` (map). research/prototype/scribe confirmed live in-session by harness skill discovery | Skill files authored and surfaced by the harness; `node tools/test-skill-catalog.mjs` NOT green (see gap) — no false green claimed | 5 `skills/*/SKILL.md` added | Guard test hard-codes the retired contract and is red against codex phase-1; reconciliation still owed (next row) |
 | 2026-07-19 | TK-001,002,003,004,005,006 | Reconciliation slice: rewired `grilling` to run `/notepad` (dropped embedded format + `.agents/grilling diary` + `/checkpoint` exit); dropped `/checkpoint` from `brainstorm`; deleted `skills/checkpoint/`; promoted wayfinder/prototype/research from `skills-pending/` to active and fixed codex's `domain-modeling` Pending/Active drift; reconciled `skills/README.md` catalog to 35 skills; re-pointed `tools/test-skill-catalog.mjs` at the new contract (make-it-so pipeline, `/notepad`, no `/checkpoint` block) | GREEN: `node tools/test-skill-catalog.mjs` (2/2), `node tools/test-spec-workbench.mjs`, `render`, `doctor` all pass; grep confirms no dangling code reference to the deleted `skills/checkpoint` | grilling/brainstorm/README/test-skill-catalog updated; checkpoint + 3 pending sources removed; 5 skills authored | Not yet run: `/code-review` on the pushed range and full `RUNBOOK.md` suite (the close gate) — tickets stay open until then. TK-002 root `LEXICON.md` `Checkpoint`→`save` rename deferred pending a decision (checkpoint is the pervasive truthful-commit concept) |
+| 2026-07-19 | terminology decision | Retained **checkpoint** as the established noun for a truthful in-progress save while retiring only the `/checkpoint` skill; **save** names the `/save-plan` and `/save-work` actions. | Reviewed existing `AGENTS.md`, `implement`, `save-work`, and `save-plan` contracts: all depend on the noun, so renaming it would be churn without behavior value. | Root GPT_OS `LEXICON.md` now defines notepad, map, decision ticket, save, scribe, and wayfinder and clarifies the retained checkpoint noun. | GitHub-Issue/fallback lifecycle proof remains before S-022 closure. |
