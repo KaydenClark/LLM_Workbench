@@ -1,11 +1,11 @@
 ---
 name: grilling
-description: Grill the user relentlessly about a plan, decision, or idea, one question at a time, keeping a running notepad of every decision. A reusable primitive; end with /make-it-so to promote or /checkpoint to pause. Use when the user wants to stress-test thinking or uses any 'grill' trigger phrase.
+description: Grill the user relentlessly about a plan, decision, or idea, one question at a time, keeping a running notepad of every decision. A reusable primitive; end with /make-it-so to promote. Use when the user wants to stress-test thinking or uses any 'grill' trigger phrase.
 ---
 
 This is the core interview primitive. It runs the questioning and keeps a running
-notepad of the result. It never writes canonical files itself — the `/make-it-so`
-skill promotes the notepad, so `grilling` can also run on its own.
+notepad (see `/notepad`) of the result. It never writes canonical files itself —
+the `/make-it-so` skill promotes the notepad, so `grilling` can also run on its own.
 
 Grill the user relentlessly about every aspect of this until we reach a shared
 understanding. Walk down each branch of the decision tree, resolving dependencies
@@ -21,37 +21,17 @@ to me and wait for my answer.
 ## The notepad (start here, before asking anything)
 
 Keep a running notepad of the whole session so nothing is lost to a context
-compaction or a hand-off to another assistant. The notepad is the working record;
-it is not canonical until it is promoted.
+compaction or a hand-off to another assistant. Its format, storage, and lifecycle
+are owned by the `/notepad` primitive — **run a notepad; do not reinvent the record
+here.** The notepad is the working record; it is not canonical until `/make-it-so`
+promotes it.
 
 1. Explore enough to build the real decision tree.
-2. Create the notepad at `.agents/grilling diary/<topic-slug>-<YYYY-MM-DD>.md`
-   (use the current date; create the folder if missing). Header it exactly:
-   `STATUS: PROVISIONAL — not canonical until /make-it-so`
-3. Write the FULL planned question list up front, so I see the terrain before
-   answering. It is a best-effort map; it will flex.
-
-Format — stable IDs that are never renumbered, one status tag per line:
-
-```markdown
-# Grilling — <topic>
-STATUS: PROVISIONAL — not canonical until /make-it-so   |   Started <date>
-
-## Planned questions
-1. [open]      <question>
-2. [open]      <question>
-   2A. [open]  <sub-question / dependency of 2>
-3. [open]      <question>
-
-## Spawned branches
-```
-
-- A sub-question or dependency nests as `2A`, `2B` under its parent.
-- A NEW line of questioning I open appends to the bottom under
-  `## Spawned branches` as the next top-level number; never renumber the items
-  above it.
-- Tags: `[open]` (unasked/undecided), `[tentative]` (leaning, revisit),
-  `[locked]` (decided).
+2. Start a notepad (see `/notepad`) and write the FULL planned question list up
+   front, so I see the terrain before answering. It is a best-effort map; it will flex.
+3. Use the notepad's stable IDs and one status tag per line — `[open]`,
+   `[tentative]`, `[locked]` — exactly as `/notepad` specifies. Sub-questions nest
+   as `2A`, `2B`; a newly opened line appends at the bottom and never renumbers.
 
 ## During the interview
 
@@ -70,13 +50,13 @@ continue at the first `[open]` line. Never re-ask a `[locked]` question.
 
 ## Exits
 
-Keep grilling until I explicitly run one of these skills — do not stop on a
-lookalike phrase said in passing:
+Keep grilling until I explicitly run `/make-it-so` — do not stop on a lookalike
+phrase said in passing:
 
-- `/make-it-so` — I am done; confirm the approvals, promote the notepad's
-  locked decisions to canon, save the plan, and start implementation with
-  every result pushed to the remote.
-- `/checkpoint` — save and stop for now; commit the notepad to resume later.
+- `/make-it-so` — I am done; confirm the approvals, promote the notepad's locked
+  decisions to canon, save the plan, and start implementation with every result
+  pushed to the remote.
 
-Only those invoked skills end the interview. Continue only within the standing
-project authority and safety boundaries.
+You do not need a separate save-exit: the notepad persists on its own (see
+`/notepad`), so we can stop at any point and resume later straight from it.
+Continue only within the standing project authority and safety boundaries.

@@ -17,6 +17,6 @@ notepad exactly as `grilling` specifies, noting rejected alternatives as a short
 trailing `(considered: …)` on the relevant line so the reasoning survives.
 
 This is exploratory. Do NOT promote anything to canonical docs or specs. If I end
-with `/make-it-so`, promotion happens then; otherwise `/checkpoint` saves the
-notepad and we stop. Report the notepad path and a short synthesis of the settled
-direction and the live tensions.
+with `/make-it-so`, promotion happens then; otherwise the notepad persists on its
+own (see `/notepad`) and we simply stop. Report the notepad and a short synthesis
+of the settled direction and the live tensions.

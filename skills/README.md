@@ -22,20 +22,21 @@ is preserved but not invocable.
 | `ask-workbench` | Route a situation to the smallest appropriate Workbench skill or flow when the owner does not remember the command. | Native | Active |
 | `genesis` | Create a new greenfield project from its founding prompt, establish a private remote recovery boundary, and hand off a verified Workbench scaffold. | Native | Active |
 | `adoption` | Migrate an existing project into the Workbench once while preserving code, history, project truth, provenance, and remote recovery. | Native | Active |
-| `grilling` | Run the question-at-a-time interview primitive, keeping a running notepad of every decision that `/make-it-so` promotes and `/checkpoint` saves. | Core rewrite | Active |
+| `grilling` | Run the question-at-a-time interview primitive over a `/notepad`, keeping a running record of every decision that `/make-it-so` promotes. | Core rewrite | Active |
+| `notepad` | The non-invocable record primitive — a stable-ID entry list held as a GitHub Issue that grilling, brainstorm, and scribe run over. | Native | Active |
 | `make-it-so` | Kayden's "approved — build it and save it" authorization: composes to-docs, to-spec, to-tickets, save-plan, and implement over the settled decisions of the conversation; invoked explicitly, never from the phrase. | Native | Active |
 | `save-plan` | Commit and push the promoted planning state — control docs, specs, tickets, and the rendered Taskboard — so the plan is remotely recoverable and Captain-discoverable before execution starts. | Native | Active |
 | `save-work` | Commit and push the current implementation progress as a truthful checkpoint — complete or not — so work is never local-only. | Native | Active |
 | `brainstorm` | Run a grilling interview with a counter-argument lens so every recommendation is weighed against its strongest opposing case. | Native | Active |
-| `checkpoint` | Save an in-progress grilling notepad as a committed, resumable handoff for another workstation or agent. | Native | Active |
+| `scribe` | Dump issues one at a time into per-target tickets to act on later; a promote pass clusters them into specs. Zero questions back. | Native | Active |
 | `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite | Active |
 | `sitrep` | Give a smallest-scope conversational situation report, dispatching read-only Scout research only when the live evidence is insufficient. | Native | Active |
 | `to-docs` | Route settled conversation truth into existing Workbench documentation owners without restarting discovery or creating another store. | Native | Active |
 | `to-spec` | Synthesize an already-settled conversation into one stable `S-###/SPEC.md` capability record without restarting the interview. | Core rewrite | Active |
 | `to-tickets` | Break a spec into one-context tracer-bullet slices with explicit blockers inside the spec's implementation table. | Core rewrite | Active |
-| `wayfinder` | Reduce fog in work too large to specify by resolving one investigation decision at a time toward a named destination. | Supporting rewrite | Pending rewrite |
-| `prototype` | Build a reversible, runnable artifact that answers one design question and records the resulting decision. | Core rewrite | Pending rewrite |
-| `research` | Investigate a question against primary sources and return cited findings, creating a durable artifact only when the task needs one. | Core rewrite | Pending rewrite |
+| `wayfinder` | Plan work too big for one session as a map of decision tickets on GitHub Issues, resolved one at a time toward a named destination. | Supporting rewrite | Active |
+| `prototype` | Make a cheap, disposable artifact to react to when the question is how something should look or behave; the reaction is what survives. | Core rewrite | Active |
+| `research` | Answer one bounded question quickly from a few sources — the light tier beside deep-research; no fan-out, no report. | Core rewrite | Active |
 | `implement` | Claim one eligible slice, use red-green-refactor, review it, update proof and docs, then safely commit and push the task branch. | Core rewrite | Active |
 | `tdd` | Drive one behavior at an agreed public seam through a red-green-refactor loop with durable tests. | Core rewrite | Pending rewrite |
 | `code-review` | Review a diff separately against repository standards and the owning Workbench spec, reporting actionable findings first. | Core rewrite | Active |
@@ -49,7 +50,7 @@ is preserved but not invocable.
 | `setup-pre-commit` | Add project-appropriate commit-time checks without assuming one package manager, formatter, or full-suite policy fits every repository. | Supporting rewrite | Pending rewrite |
 | `setup-ts-deep-modules` | Add enforceable TypeScript package boundaries when a project has explicitly chosen the deep-module architecture. | Supporting rewrite | Pending rewrite |
 | `codebase-design` | Supply shared engineering vocabulary for modules, interfaces, seams, adapters, depth, leverage, and locality. | Supporting rewrite | Pending rewrite |
-| `domain-modeling` | Clarify domain concepts and relationships while routing shared definitions to the Lexicon and scoped decisions to the owning spec. | Supporting rewrite | Pending rewrite |
+| `domain-modeling` | Clarify domain concepts and relationships while routing shared definitions to the Lexicon and scoped decisions to the owning spec. | Supporting rewrite | Active |
 | `loop-me` | Discover a recurring workflow worth delegating and grill it until an implementable Workbench spec exists. | Supporting rewrite | Pending rewrite |
 | `wizard` | Build a human-guided script for repeatable setup or migration steps that cannot be safely automated end to end. | Supporting rewrite | Pending rewrite |
 | `update-harness` | Reconcile a project with the current Workbench contract while preserving project truth, provenance, and publication safety. | Native | Active |
