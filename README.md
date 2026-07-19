@@ -40,6 +40,10 @@ The blank, copyable templates live in `templates/`:
   back to this harness: an append-only log of where the harness rules themselves
   were unclear, wrong, or slow, so lessons can flow back and be validated via
   `evals/` before shipping as "better".
+- `templates/Wiki/` - the template Wiki (room brain): `MEMORY.project.md` and
+  `MEMORY.root.md` router variants plus the link conventions. Every
+  instantiated room copies a variant in as its mandatory `MEMORY.md`, so no
+  room is born without a brain. See `templates/Wiki/README.md`.
 - `templates/.claude/settings.json` - optional Claude Code permission file that
   makes the `AGENTS.md` edit scope *mechanical* (deny secrets, allow writable
   roots, ask on review-required actions). See `templates/.claude/README.md` for
@@ -95,7 +99,9 @@ docs look like. Copy from `templates/`, not from the root.
 
 1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
    `templates/LEXICON.md`, `templates/TASKBOARD.md`, `templates/RUNBOOK.md`,
-   `templates/README.md`, and `templates/SPEC.md` into the target project; create `specs/` for stable work
+   `templates/README.md`, and `templates/SPEC.md` into the target project; copy
+   `templates/Wiki/MEMORY.project.md` in as `MEMORY.md` (the room brain);
+   create `specs/` for stable work
    packets and copy `tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items. For Claude Code, also copy `templates/.claude/settings.json`

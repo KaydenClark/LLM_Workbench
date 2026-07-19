@@ -181,8 +181,16 @@ slices in their implementation tables, preserve completed history in the owning
 spec or a cold archive, and render `TASKBOARD.md` from active spec metadata. Add
 an evidence row recording that Adoption ran and what moved where.
 
+Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to the
+project root as `MEMORY.md`, fill its placeholders, route any durable memory
+notes that survived classification, and link the live controls. If this room
+lives inside a larger deployment vault, set the up-link to the deployment
+wiki's note for this room (see `templates/Wiki/README.md` for link
+conventions).
+
 Output: stable capability records plus a hot projection that reflects the
-project's actual state and the migration.
+project's actual state and the migration, and a `MEMORY.md` room brain that
+routes to them.
 
 ### Phase 7 - Retire the old harness and handoff
 
@@ -213,6 +221,8 @@ harness is preserved as history, not a competing rulebook.
 - [ ] Stable specs contain the project's actual in-flight and ready work;
       `TASKBOARD.md` projects only the hot state and contains no completed proof
       archive.
+- [ ] A `MEMORY.md` room brain exists (from `templates/Wiki/`), routes to the
+      live controls, and has no unfilled placeholders.
 - [ ] The owning spec records the source remote, ref, resolved commit, executed
       self-tests, and any applicable vendored-helper checksum; the project's
       `RUNBOOK.md` retains the exact fresh-clone verification commands.

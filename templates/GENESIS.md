@@ -157,15 +157,22 @@ must be one you executed and saw succeed, not an aspiration.
 
 Output: a `RUNBOOK.md` a new agent can follow to reproduce a green run.
 
-### Phase 6 - Seed the first spec and hot projection
+### Phase 6 - Seed the first spec, hot projection, and room brain
 
 Create one stable `specs/S-001-<slug>/SPEC.md` for the nearest coherent
 capability. Put 1-3 one-context tracer-bullet tickets in its implementation
 table, record the Genesis result in its evidence log, then render
 `TASKBOARD.md` from the spec metadata.
 
-Output: one durable capability record plus a hot projection the normal work
-loop can pick up immediately.
+Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to the
+project root as `MEMORY.md`, fill its placeholders, and link it to the live
+controls just created. If this room lives inside a larger deployment vault, set
+the up-link to the deployment wiki's note for this room. See
+`templates/Wiki/README.md` for the link conventions. A room is not bootstrapped
+without a brain.
+
+Output: one durable capability record, a hot projection the normal work loop
+can pick up immediately, and a `MEMORY.md` room brain that routes to both.
 
 ### Phase 7 - Handoff
 
@@ -197,6 +204,8 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] A stable first spec contains at least one actionable `ready` ticket with
       proof requirements, and `TASKBOARD.md` projects it.
+- [ ] A `MEMORY.md` room brain exists (from `templates/Wiki/`), routes to the
+      live controls, and has no unfilled placeholders.
 - [ ] The first spec evidence row records that Genesis ran, with the actual result.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box
