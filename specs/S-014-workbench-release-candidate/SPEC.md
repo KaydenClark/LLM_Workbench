@@ -7,11 +7,11 @@
 **Status:** active
 **Priority:** 0
 **Owner:** Captain (TK-002 coordination)
-**Updated:** 2026-07-16
+**Updated:** 2026-07-19
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** Exact-head audit returned REQUEST CHANGES for escaped Markdown table parsing.
-**Latest event:** Draft parser-repair PR #33 is ready for an independent exact-head audit after REQUEST CHANGES on integration `bb5d9c1`.
-**Next gate:** Independently audit the parser-repair PR exact head; only a green merged integration head may restart the TK-002 Auditor/Publisher gate.
+**Blockers:** Current `origin/main` is not an ancestor of current `origin/integration`; the current integration SHA has no independent audit, release-gate status, or promotion PR.
+**Latest event:** PR #33 merged, but later main and integration movement invalidated the historical candidate.
+**Next gate:** Scope and assign a new independently reviewed current-main reconciliation into integration; then assign a separate Auditor for the resulting exact integration SHA.
 
 ## Outcome
 
@@ -31,25 +31,26 @@ without weakening either repository's release boundary.
 ## Current Verified State
 
 - `origin/integration` is exact commit
-  `bb5d9c1136e096e9d26cf8a9e5f1710d1d2d614f`; `origin/main` is exact commit
-  `dd1ed326a1d55e1f2303aa233cc4d1bf6a0a4270`.
+  `259a24d257854ae5f28af1f34983a46092fef208`; `origin/main` is exact commit
+  `08ab78e5a59a68d2b04028fe71a2be488d5ae10e`. `git merge-base --is-ancestor
+  origin/main origin/integration` currently fails, so the prior reconciliation
+  is no longer a current release candidate.
 - Audited PR #31 used exact head
   `490ad580d7b0c679bf6411d3d22696022b58515e`. Its ancestry merge
   `88b6f7e0a9edc25e45778a8c04cce59f5c570f6c` records exact main `dd1ed32`
   as its second parent and preserves the integration-side tree. GitHub merged
   PR #31 to integration as `a9fb9f9`; `git merge-base --is-ancestor` now
   confirms that main is an ancestor of integration.
-- No `integration` to `main` promotion PR exists. Integration `bb5d9c1` has no
-  GitHub commit status, so CIC remains fail-closed. Its exact-head audit returned
-  REQUEST CHANGES because escaped pipes were split as Markdown table delimiters
-  in the spec lifecycle and feedback automation paths. The repair must enter
-  integration through a separately reviewed PR before a fresh release audit.
-- The integration checkpoint is the already-audited safe harness checkpoint
-  selected for release preparation. S-011 separately remains active: thirteen
-  reviewed skills are live, seventeen imported baselines remain isolated under
-  `skills-pending/`, and fresh Claude discovery is blocked on owner-controlled
-  Claude authentication. Those transparent limitations do not invalidate the
-  audited live checkpoint and are not silently promoted as completed work.
+- PR #33 merged its parser repair as `60f62917d4ed1ae8000478d62fab56a7afc54816`.
+  Its historical branch no longer supplies an audit for the current integration
+  SHA, and this control reconciliation does not independently audit that repair.
+  No `integration` to `main` promotion PR exists; current integration has no
+  GitHub release-gate status, so CIC remains fail-closed.
+- S-011 separately remains active: sixteen reviewed skills are live, sixteen
+  imported baselines remain isolated under `skills-pending/`, and fresh Claude
+  discovery remains unverified despite live authentication. These transparent
+  limitations do not alter the release gates and are not silently promoted as
+  completed work.
 - CIC's fixed contract accepts only `KaydenClark/LLM_Workbench`, source
   `integration`, destination `main`, exactly one open non-draft matching PR,
   current exact branch SHAs, `main` ancestry, GitHub mergeability, and a
@@ -154,7 +155,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile main ancestry into integration through an audited merge PR | done | none | PR #31 head `490ad58`; ancestry merge `88b6f7e`; integration merge `a9fb9f9` |
-| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | in-progress | parser repair audit | REQUEST CHANGES; repair PR must pass independent audit before a fresh exact-integration audit |
+| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | in-progress | current-main ancestry drift; current integration is unaudited | PR #33 merged historically, but `origin/main` is not an ancestor of current integration and no current release-gate status or promotion PR exists |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
 ### Scoped Ticket: TK-001
@@ -316,6 +317,7 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-07-19 | TK-002 control reconciliation | Replaced the stale pre-merge parser-repair state with live refs. PR #33 merged as `60f6291`, but current `origin/main` `08ab78e` is not an ancestor of current `origin/integration` `259a24d`; no promotion PR or release-gate status exists. This was identity/state reconciliation only, not an audit of PR #33. | `git fetch origin --prune`; `git rev-parse origin/main origin/integration`; `git merge-base --is-ancestor origin/main origin/integration` exited 1; GitHub confirmed PR #33 merged; current integration status is pending with no statuses; open promotion-PR query returned none; complete RUNBOOK suite, render, doctor, and `git diff --check` passed. | Updated S-014 and rendered Taskboard; RUNBOOK, README, templates, and skills checked with no update needed because no operational or harness behavior changed. | Captain must scope and assign a new independently reviewed current-main reconciliation; after it lands, a separate Auditor must audit that exact integration SHA before any Publisher/status action. |
 | 2026-07-16 | plan | Captured S-014 from exact remote refs and CIC's completed fixed release contract | `origin/integration` `6943c10`; `origin/main` `dd1ed32`; merge-base `debd8b6`; ancestry check false as expected; no open PRs; no integration commit status; pre-change doctor green and `next` empty | Added S-014; Blueprint catalog and generated Taskboard rendered | Execute TK-001, TK-002, and TK-003 in order; no release mutation performed by Planner |
 | 2026-07-16 | plan verification | Verified the planning-only work packet and generated projections | Complete RUNBOOK suite passed; root evaluator self-test 113/113; templates 106.6/113; guardrail self-test green at its current 68/100 fixture; render, doctor, and `git diff --check` passed | Docs checked; no additional update needed because S-014 owns the new capability and the generated Blueprint/Taskboard project it | Commit, push, and open the draft planning PR to `integration` |
 | 2026-07-16 | TK-001 reconciliation candidate | Claimed TK-001 from exact integration `5f2c400`, checkpointed the claim, and merged exact main `dd1ed32` with real merge commit `88b6f7e` | Pre-merge ancestry check failed as expected; merge used `ort`, reported no conflicts, retained the first-parent tree exactly, recorded exact main as second parent, and made main an ancestor of the candidate; live guardrail baseline 78/100 | Updated S-014 current state/evidence and generated Taskboard; RUNBOOK/README/templates checked with no change needed because no operational or harness behavior changed | Full verification, remote checkpoint, draft PR, and independent exact-diff audit remain; TK-001 stays in progress |
@@ -331,9 +333,9 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- S-011 remains active independently: owner Claude authentication is required
-  for its fresh Claude discovery gate, and seventeen imported skills remain
-  isolated pending rewrite. S-014 neither conceals nor resolves that work.
+- S-011 remains active independently: fresh Claude discovery proof is still
+  required, and sixteen imported skills remain isolated pending rewrite. S-014
+  neither conceals nor resolves that work.
 - CIC mobile approval/execution presentation is owned by CIC, not this repo.
 
 ## Supersession
