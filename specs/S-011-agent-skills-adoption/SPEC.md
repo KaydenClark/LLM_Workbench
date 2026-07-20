@@ -7,11 +7,11 @@
 **Status:** active
 **Priority:** 2
 **Owner:** codex
-**Updated:** 2026-07-17
+**Updated:** 2026-07-19
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
-**Blockers:** none
-**Latest event:** TK-009 exact-head delivery audit repair passed.
-**Next gate:** Complete TK-003.
+**Blockers:** TK-003 lacks reproducible fresh Claude skill-discovery proof.
+**Latest event:** Claude authentication is live; prior non-persistent discovery invocation supplied no prompt and cannot prove skill discovery.
+**Next gate:** Capture and record a valid fresh Claude Code discovery result without changing credentials or claiming unavailable skills.
 
 ## Outcome
 
@@ -30,10 +30,9 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 ## Current Verified State
 
-- The catalog contains 30 owner-approved entries after retiring
-  `grill-with-docs` and adding native `sitrep`, `to-docs`, `genesis`, and
-  `adoption` entrypoints. Thirteen reviewed entries are live in `skills/`.
-- Seventeen imported baselines still reference upstream conventions that
+- The catalog contains 32 owner-approved entries: sixteen reviewed entries are
+  live in `skills/` and sixteen imported baselines remain in `skills-pending/`.
+- The sixteen imported baselines still reference upstream conventions that
   conflict with the Workbench truth-routing contract. Their source is
   preserved in `skills-pending/`, outside live discovery, until rewritten.
 - GPT_OS exposes the same tracked folder through `.claude/skills` and
@@ -42,9 +41,9 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 - Root and template `LEXICON.md` files now own accepted shared definitions,
   seeded with the owner's definition of design concept.
 - Filesystem discovery and a fresh ephemeral Codex session are verified against
-  the canonical Factory skills. Claude is logged out, so its non-persistent
-  discovery probe stops at authentication before skill loading; reauthentication
-  remains an owner-controlled credential gate.
+  the canonical Factory skills. Claude authentication is live, but fresh Claude
+  skill discovery remains unproven: the earlier non-persistent invocation did
+  not supply a prompt, so it produced no discovery evidence.
 
 ## Desired Behavior
 
@@ -94,7 +93,8 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 ## Dependencies And Blockers
 
-- none; the owner supplied the selected roster and initial definitions.
+- TK-003 requires reproducible fresh Claude Code discovery output. Existing
+  authentication is verified; no credential change is required or authorized.
 
 ## Vertical Implementation Slices
 
@@ -104,7 +104,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Import curated upstream skills with provenance and wire GPT_OS discovery | done | none | see evidence 2026-07-14 |
 | TK-002 | Rewrite `to-tickets` to persist slices only in the assigned Workbench spec | done | none | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed |
-| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | Owner Claude authentication | Fresh Codex discovery and dry-run passed; Claude OAuth expired before skill loading |
+| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | Fresh Claude skill-discovery proof is absent | Claude authentication is live; the earlier non-persistent probe supplied no prompt and did not test discovery |
 | TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
 | TK-005 | Rewrite the grilling discipline and its Desktop-facing entry points | done | none | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
 | TK-006 | Add Sitrep and split settled documentation/spec capture from grilling | done | none | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
@@ -286,6 +286,7 @@ node tools/spec-workbench.mjs doctor
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-07-19 | TK-003 control reconciliation | Corrected stale catalog counts and the Claude gate: authentication is live, but no fresh Claude discovery result has been captured. The earlier non-persistent invocation supplied no prompt because `--tools` accepts variadic values, so it is not discovery evidence. | Counted sixteen active and sixteen pending folders; checked both GPT_OS discovery symlinks; `claude auth status` reported an existing first-party session without changing credentials; `claude --help` and the prior invocation error confirmed the missing-input failure; complete RUNBOOK suite, render, doctor, and `git diff --check` passed. | Updated S-011 and rendered Taskboard; `skills/README.md`, RUNBOOK, and BLUEPRINT checked with no update needed because their catalog and lifecycle ownership remain accurate. | Run and record a valid fresh Claude discovery session; do not close TK-003 from authentication alone. |
 | 2026-07-14 | TK-001 | Imported 28 skills from mattpocock/skills (MIT) into `skills/` with provenance README; linked `GPT_OS/.claude/skills` -> `workbench templates/skills` | `ls skills | wc -l` = 29 (28 + README); full suite + doctor green (see PR) | skills/README.md added | Fresh-session discovery unverified (TK-003); rewrites pending (TK-002) |
 | 2026-07-14 | TK-004 | Corrected the earlier count: the import contained 27 upstream folders plus native `update-harness`; reconciled that intake to the owner's 25 selected upstream baselines plus `ask-workbench` and `update-harness`; made the tracked folder canonical for both discovery paths; added root/template Lexicons | `node tools/test-skill-catalog.mjs` passed; both `readlink` calls resolve to `workbench templates/skills`; upstream snapshot and lock preserved | README, AGENTS, BLUEPRINT, RUNBOOK, GENESIS, ADOPTION, HARNESS_FEEDBACK, LEXICON, S-011 updated in root/templates as applicable | Core and supporting skill rewrites plus fresh-session listings remain |
 | 2026-07-15 | TK-002 | Ticket closed | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed | Docs checked; no update needed: skills/README.md, RUNBOOK.md, and BLUEPRINT.md already state the catalog, lifecycle, and active S-011 contract accurately | Rewrite remaining core and supporting skills (TK-005); fresh Claude and Codex discovery remains owner-checkable (TK-003) |
@@ -307,10 +308,10 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Seventeen selected upstream baselines remain safely preserved but unavailable
+- Sixteen selected upstream baselines remain safely preserved but unavailable
   under `skills-pending/`; later promotions remain test-gated.
-- Claude discovery remains blocked until the owner authenticates; no credential
-  configuration is changed by this spec.
+- Claude authentication is available, but fresh discovery remains unverified;
+  no credential configuration is changed by this spec.
 - Distribution to existing projects follows via `update-harness` after the
   required selected rewrites are active.
 
