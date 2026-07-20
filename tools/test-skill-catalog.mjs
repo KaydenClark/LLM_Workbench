@@ -176,6 +176,15 @@ assert.match(grilling, /notepad/,
   'grilling must keep a running notepad');
 assert.match(grilling, /\/notepad/,
   'grilling must run the notepad primitive rather than embed the record format');
+assert.match(grilling, /Settled-decision preflight/,
+  'grilling must check directly relevant settled decisions before planning new questions');
+const notepad = read('skills/notepad/SKILL.md');
+assert.match(notepad, /Settled context/,
+  'notepad must preserve inherited locked decisions beside new entries');
+assert.match(notepad, /canonical source/i,
+  'notepad must link inherited decisions to their canonical source');
+assert.match(notepad, /supersession/i,
+  'notepad must distinguish a new decision from an explicit supersession');
 assert.match(grilling, /\/make-it-so/,
   'grilling must end via the make-it-so skill instead of a bare passphrase');
 

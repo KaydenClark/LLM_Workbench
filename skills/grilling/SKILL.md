@@ -27,9 +27,12 @@ here.** The notepad is the working record; it is not canonical until `/make-it-s
 promotes it.
 
 1. Explore enough to build the real decision tree.
-2. Start a notepad (see `/notepad`) and write the FULL planned question list up
-   front, so I see the terrain before answering. It is a best-effort map; it will flex.
-3. Use the notepad's stable IDs and one status tag per line — `[open]`,
+2. Start a notepad and run its **Settled-decision preflight** before planning any
+   new question. Carry forward relevant locked decisions as settled context; do
+   not make the user answer them again.
+3. Write the FULL planned question list up front, so I see the terrain before
+   answering. It is a best-effort map; it will flex.
+4. Use the notepad's stable IDs and one status tag per line — `[open]`,
    `[tentative]`, `[locked]` — exactly as `/notepad` specifies. Sub-questions nest
    as `2A`, `2B`; a newly opened line appends at the bottom and never renumbers.
 

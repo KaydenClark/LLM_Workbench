@@ -58,11 +58,36 @@ STATUS: PROVISIONAL — not canonical until /make-it-so
   (decided). Flip the tag and append the one-line result the moment a line
   resolves, before moving on.
 
+## Settled-decision preflight
+
+Before writing a new `open` entry, reuse the smallest directly relevant source
+of settled truth:
+
+1. If this is a resume, read the existing notepad. Otherwise, read the relevant
+   canonical control or spec and any directly linked prior notepad or decision map.
+2. Record each relevant prior answer under `## Settled context` as a locked line
+   with its **canonical source**. For example:
+
+   ```markdown
+   ## Settled context
+   - [locked] OpenBrain remains derived; Git/Markdown own project truth.
+     Canonical source: `specs/S-005/SPEC.md`.
+   ```
+
+3. Add an `open` entry only when it is a genuinely new decision, a refinement
+   the earlier decision leaves open, or an explicit supersession. A supersession
+   names the prior canonical source and the new scope that reopens it.
+
+The preflight is complete only when no planned `open` entry repeats a settled
+decision without an explicit supersession. A user may always reopen a decision;
+otherwise, carry it forward rather than asking it again.
+
 ## Lifecycle
 
 1. **Create** at the start of the session, before the first entry.
-2. **Append/flip** one entry at a time as the session proceeds.
-3. **Resume** from the Issue after any compaction, model switch, or machine hop.
-4. **Promote** with `/make-it-so`, which reads the `locked` entries as settled
+2. **Preflight** settled decisions before creating a new `open` entry.
+3. **Append/flip** one entry at a time as the session proceeds.
+4. **Resume** from the Issue after any compaction, model switch, or machine hop.
+5. **Promote** with `/make-it-so`, which reads the `locked` entries as settled
    decisions and marks the notepad `STATUS: PROMOTED`. Promotion is the only path
    to canon; the notepad itself writes no canonical file.

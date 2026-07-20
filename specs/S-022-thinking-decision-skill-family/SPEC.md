@@ -82,6 +82,10 @@ the overlap, and gives large efforts a shared, resumable, promotable substrate.
   specs/`TASKBOARD.md`).
 - **`make-it-so` is input-agnostic** and unchanged: conversation, notepad, or a
   finished map are all "settled decisions."
+- **Settled-decision preflight.** Before a new notepad creates an `open` entry,
+  it reads the smallest relevant canonical control plus directly linked prior
+  decision records, carries applicable decisions as locked context with source
+  links, and asks again only for a new/refining/superseding decision.
 - **Two ticket generations are expected and are not duplication:** decision/capture
   tickets (wayfinder/scribe) close on graduation; fresh execution tickets are born
   under the spec.
@@ -140,6 +144,8 @@ Tickets are temporary tracer bullets within this stable capability record.
 - `tools/test-skill-catalog.mjs` — skill front-matter, references, and catalog integrity.
 - Notepad Issue mechanics against a throwaway test issue (create/append/resume/close round-trip).
 - Reference-integrity check that no skill re-embeds the notepad format.
+- Catalog regression proving grilling invokes the settled-decision preflight and
+  notepads retain inherited decisions with canonical-source links.
 - Fallback-path check that markdown tracker still resolves when Issues are unavailable.
 
 ## Verification Procedure
@@ -167,3 +173,5 @@ Then run the complete verification suite in `RUNBOOK.md`.
 | 2026-07-19 | TK-001,003,004,005,006 | Authored 5 new skill files: `notepad` (primitive, non-invocable), `research` (light tier), `prototype` (disposable), `scribe` (capture-to-tickets), `wayfinder` (map). research/prototype/scribe confirmed live in-session by harness skill discovery | Skill files authored and surfaced by the harness; `node tools/test-skill-catalog.mjs` NOT green (see gap) — no false green claimed | 5 `skills/*/SKILL.md` added | Guard test hard-codes the retired contract and is red against codex phase-1; reconciliation still owed (next row) |
 | 2026-07-19 | TK-001,002,003,004,005,006 | Reconciliation slice: rewired `grilling` to run `/notepad` (dropped embedded format + `.agents/grilling diary` + `/checkpoint` exit); dropped `/checkpoint` from `brainstorm`; deleted `skills/checkpoint/`; promoted wayfinder/prototype/research from `skills-pending/` to active and fixed codex's `domain-modeling` Pending/Active drift; reconciled `skills/README.md` catalog to 35 skills; re-pointed `tools/test-skill-catalog.mjs` at the new contract (make-it-so pipeline, `/notepad`, no `/checkpoint` block) | GREEN: `node tools/test-skill-catalog.mjs` (2/2), `node tools/test-spec-workbench.mjs`, `render`, `doctor` all pass; grep confirms no dangling code reference to the deleted `skills/checkpoint` | grilling/brainstorm/README/test-skill-catalog updated; checkpoint + 3 pending sources removed; 5 skills authored | Not yet run: `/code-review` on the pushed range and full `RUNBOOK.md` suite (the close gate) — tickets stay open until then. TK-002 root `LEXICON.md` `Checkpoint`→`save` rename deferred pending a decision (checkpoint is the pervasive truthful-commit concept) |
 | 2026-07-19 | terminology decision | Retained **checkpoint** as the established noun for a truthful in-progress save while retiring only the `/checkpoint` skill; **save** names the `/save-plan` and `/save-work` actions. | Reviewed existing `AGENTS.md`, `implement`, `save-work`, and `save-plan` contracts: all depend on the noun, so renaming it would be churn without behavior value. | Root GPT_OS `LEXICON.md` now defines notepad, map, decision ticket, save, scribe, and wayfinder and clarifies the retained checkpoint noun. | GitHub-Issue/fallback lifecycle proof remains before S-022 closure. |
+| 2026-07-20 | TK-001 | Added the settled-decision preflight: grilling invokes it before planning questions, and notepad records inherited locked decisions with their canonical sources. | Red: catalog test failed because neither skill had the guard. Green: pending focused and full Workbench verification. | Updated `grilling`, `notepad`, this spec, and the catalog regression. | Complete verification and immutable review before closing the existing S-022 tickets. |
+| 2026-07-20 | TK-001 | Verified the settled-decision preflight checkpoint. | Green: skill catalog, spec-workbench self-test, evaluator self-test, guardrail audit, context tools, outcome-trial harness, eval runner, feedback automation, path-safety grader, template evaluation (106.6/113), render, doctor, and `git diff --check`. `tools/test-symlink-invocation.mjs` is absent from this older S-022 branch, so that inherited full-suite command could not run. | No further documentation change. | Push and exact-head review; retain the unrelated missing-test baseline as a merge/reconciliation check. |
