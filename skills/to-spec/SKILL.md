@@ -19,8 +19,9 @@ implement the capability.
    decisions/contracts, non-goals, dependencies, acceptance, test seams,
    documentation impact, and append-only evidence structure.
 4. Seed `Vertical Implementation Slices` only with the smallest vertical tracer
-   bullet needed to make the capability schedulable. Use `/to-tickets` later for
-   detailed decomposition.
+   bullet needed to make the capability schedulable, cut with the
+   `/tracer-bullet` discipline so it pierces every layer of the stack. Use
+   `/to-tickets` later for detailed decomposition.
 5. Preserve project vocabulary from `LEXICON.md` and cross-cutting boundaries
    from `BLUEPRINT.md`. A spec owns one capability; it replaces neither.
 6. Run `node tools/spec-workbench.mjs render` and

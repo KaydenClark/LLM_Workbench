@@ -14,9 +14,11 @@ projection, not a second tracker.
 1. Read the assigned `SPEC.md` and the relevant source and tests. Do not select
    an unassigned spec.
 2. Propose vertical slices that each deliver a checkable behavior in one context.
-   Give each a short outcome-oriented title, real blockers, done criteria, and
-   closing proof. Prefer an independent first tracer bullet; use expand-contract
-   when a wide refactor cannot stay green by vertical slice.
+   Apply the `/tracer-bullet` discipline so each slice pierces every layer of the
+   project's stack rather than one layer. Give each a short outcome-oriented
+   title, real blockers, done criteria, and closing proof. Prefer an independent
+   first tracer bullet; use expand-contract when a wide refactor cannot stay
+   green by vertical slice.
 3. Present the proposed table and ask for approval before changing durable
    work state. Confirm that slice size and blocking edges are right.
 4. After approval, update only the assigned spec's `Vertical Implementation Slices`
