@@ -77,6 +77,7 @@ be changed only through a later spec linked by supersession.
 | [S-013 - Standardized Automation Run Outcomes](specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
 | [S-014 - Workbench Release Candidate](specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | active |
 | [S-020 - Spec-Native Team Coordination](specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
+| [S-022 - Thinking/Decision Skill-Family Phase 2](specs/S-022-thinking-decision-skill-family/SPEC.md) | Extract a storage-agnostic `notepad` primitive and reorganize the thinking/decision skill family (save, scribe, wayfinder, research, prototype) onto it, with GitHub Issues as the shared ticket substrate. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
