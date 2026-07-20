@@ -76,6 +76,8 @@ be changed only through a later spec linked by supersession.
 | [S-012 - Reproducible Adoption Provenance](specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
 | [S-013 - Standardized Automation Run Outcomes](specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
 | [S-014 - Workbench Release Candidate](specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | active |
+| [S-015 - Main-Into-Integration Reconciliation](specs/S-015-main-integration-reconciliation/SPEC.md) | Reconcile the current `main` head into `integration` through one audited merge PR so a release candidate can be audited, unblocking S-014/TK-002. | planned |
+| [S-016 - Grilling-Family Capability](specs/S-016-grilling-family/SPEC.md) | Give the grilling-family skills (grilling primitive, grill-me, make-it-so, brainstorm, checkpoint) a dedicated capability spec that owns their split, notepad contract, and family behavior tests. | planned |
 | [S-020 - Spec-Native Team Coordination](specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
 <!-- spec-catalog:end -->
 
