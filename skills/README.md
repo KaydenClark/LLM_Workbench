@@ -31,6 +31,7 @@ is preserved but not invocable.
 | `to-docs` | Route settled conversation truth into existing Workbench documentation owners without restarting discovery or creating another store. | Native | Active |
 | `to-spec` | Synthesize an already-settled conversation into one stable `S-###/SPEC.md` capability record without restarting the interview. | Core rewrite | Active |
 | `to-tickets` | Break a spec into one-context tracer-bullet slices with explicit blockers inside the spec's implementation table. | Core rewrite | Active |
+| `tracer-bullet` | Cut a capability into vertical tracer-bullet slices that each pierce every layer of a project's stack, then order, scope, and assign them. | Native | Active |
 | `wayfinder` | Reduce fog in work too large to specify by resolving one investigation decision at a time toward a named destination. | Supporting rewrite | Pending rewrite |
 | `prototype` | Build a reversible, runnable artifact that answers one design question and records the resulting decision. | Core rewrite | Pending rewrite |
 | `research` | Investigate a question against primary sources and return cited findings, creating a durable artifact only when the task needs one. | Core rewrite | Pending rewrite |
