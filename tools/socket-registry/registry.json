@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0",
+  "artifact": "foundry-socket-contract-registry",
+  "owner": "Foundry Sockets family (the Forge / KaydenClark/LLM_Workbench)",
+  "provenance": "S-014 TK-002 (Foundry Vertical Slice Model). Extracts core component C-003 (socket registry) from prose into a machine-resolvable contract.",
+  "note": "One record per K-### socket. Each record declares the module-agnostic contract only — capability + contract surface + the request/response/invariant contract — never the implementation. This artifact TRAVELS with the Sockets family. Instance binding rows (which module fills a socket here) live in the GPT_OS Project Source Registry and validate AGAINST this contract; they are not stored here. Recall (K-001) carries a derived mirror of the ID map, but this Git artifact is canonical and wins on disagreement.",
+  "sockets": {
+    "K-001": {
+      "socket": "recall",
+      "capability": "Derived, provenance-bearing memory/context retrieval over approved canon, plus capture-class storage for DB-native data. The Wiki remembers; the recall module recalls.",
+      "contractSurface": {
+        "protocol": "request/response",
+        "entrypoint": "recall.query",
+        "schemaPointer": "tools/socket-registry/schema.mjs#recall"
+      },
+      "contract": {
+        "request": {
+          "required": ["query"],
+          "optional": ["id"],
+          "fields": {
+            "query": "Natural-language recall request.",
+            "id": "Optional bare typed ID (e.g. K-003, P-010) to resolve to its current name, source, and provenance."
+          }
+        },
+        "response": {
+          "required": ["value", "source", "freshness"],
+          "fields": {
+            "value": "The recalled value.",
+            "source": "Provenance pointer to the canonical file/path/note the value derives from.",
+            "freshness": "One of fresh | stale | offline | unknown, carrying an asOf timestamp."
+          }
+        },
+        "invariants": [
+          "Every recall answer exposes source (provenance) and freshness; an answer without both is not contract-conformant.",
+          "Recall is a derived mirror. When a recall answer disagrees with the Git-canonical registry, the registry wins and the mirror is stale.",
+          "A consumer reaches recall ONLY through the declared entrypoint. Reading the recall module's files or database directly is a reach-around and is not a valid connection through this socket."
+        ]
+      },
+      "moduleAgnostic": true
+    }
+  }
+}

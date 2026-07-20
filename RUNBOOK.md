@@ -65,6 +65,7 @@ node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
+node tools/test-socket-contract.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node tools/spec-workbench.mjs doctor
@@ -99,6 +100,29 @@ Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates only the marked Blueprint catalog and hot Taskboard regions.
 `complete` requires every slice done, acceptance boxes checked, completion result
 recorded, and evidence present; render then removes the spec from the hot board.
+
+### Socket Contract Registry
+
+The Foundry socket contract registry (GPT_OS root spec S-014, C-003 extraction)
+travels with the Sockets family. `tools/socket-registry/registry.json` is the
+machine-readable contract artifact (one record per `K-###`),
+`tools/socket-registry/schema.mjs` is its schema, and `tools/socket-contract.mjs`
+is the validator — the successor to the instance-side `id-registry.mjs` (which
+validates the binding *table*; this validates the *contract*).
+
+```bash
+node tools/socket-contract.mjs validate            # schema-check the whole artifact
+node tools/socket-contract.mjs resolve K-001       # resolve a socket to its contract
+node tools/socket-contract.mjs check-binding  '{"socketId":"K-001","boundEntity":"P-010","access":"contract","entrypoint":"recall.query"}'
+node tools/socket-contract.mjs check-connection '{"socketId":"K-001","access":"contract","entrypoint":"recall.query"}'
+node tools/test-socket-contract.mjs                # red/green suite
+```
+
+An instance binding row (which module fills a socket here) is validated *against*
+this traveling contract with `check-binding`; a connection that reaches around
+the contract (filesystem/database access into the module) is rejected by
+`check-connection` — the no-reach-around hard gate that module legs (OpenBrain,
+CIC) import.
 
 ### Test Coverage Policy
 
