@@ -59,18 +59,16 @@ const pendingDirectoryNames = fs.readdirSync(pendingSkillsRoot, { withFileTypes:
   .sort();
 assert.deepEqual(directoryNames, activeNames,
   'live discovery must contain exactly the active selected skills');
-assert.deepEqual(pendingDirectoryNames, pendingNames,
-  'pending source folders must contain exactly the selected skills awaiting rewrite');
-assert.deepEqual([...directoryNames, ...pendingDirectoryNames].sort(), catalogNames,
-  'active and pending source folders together must preserve the 32-skill owner catalog');
+assert.deepEqual(pendingNames, [],
+  'the complete owner-selected catalog must be reviewed and active');
+assert.deepEqual(pendingDirectoryNames, [],
+  'no preserved baseline may remain in the pending discovery quarantine');
+assert.deepEqual(directoryNames, catalogNames,
+  'live discovery must contain the complete owner-selected catalog');
 
 for (const name of activeNames) {
   assert.ok(fs.existsSync(path.join(skillsRoot, name, 'SKILL.md')),
     `${name} must contain a live SKILL.md`);
-}
-for (const name of pendingNames) {
-  assert.ok(fs.existsSync(path.join(pendingSkillsRoot, name, 'SKILL.md')),
-    `${name} must preserve its pending source`);
 }
 
 assert.ok(catalogNames.includes('ask-workbench'), 'the Workbench router must be selected');
@@ -352,9 +350,12 @@ assertIncludesAll(router, [
   'to-tickets -> implement -> code-review'
 ], 'ask-workbench delivery flow');
 
-for (const name of pendingNames) {
-  assert.ok(!router.includes(`/${name}`),
-    `ask-workbench must not route users to pending skill ${name}`);
+for (const name of ['wayfinder', 'prototype', 'research', 'tdd', 'diagnosing-bugs',
+  'teach', 'design-an-interface', 'ubiquitous-language', 'resolving-merge-conflicts',
+  'improve-codebase-architecture', 'setup-pre-commit', 'setup-ts-deep-modules',
+  'codebase-design', 'domain-modeling', 'loop-me', 'wizard']) {
+  assert.equal(rows.find((row) => row.name === name)?.availability, 'Active',
+    `${name} must be active after its Workbench rewrite`);
 }
 
 const updateHarness = read('skills/update-harness/SKILL.md');

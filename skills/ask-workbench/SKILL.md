@@ -22,10 +22,17 @@ Default routes:
 - one eligible spec slice is ready for delivery: `/implement`;
 - a fixed implementation diff needs independent findings: `/code-review`;
 - skill authoring rules are needed: `/writing-great-skills`.
+- a large effort still has unresolved decisions: `/wayfinder`;
+- focused evidence is needed before a decision: `/research`;
+- a design question needs a cheap concrete artifact: `/prototype`;
+- shared language is ambiguous or conflicts: `/domain-modeling`;
+- one behavior needs a red-green-refactor loop: `/tdd`;
+- a defect needs root-cause evidence: `/diagnosing-bugs`;
+- a public API shape needs comparison: `/design-an-interface`;
+- a merge needs both intents preserved: `/resolving-merge-conflicts`.
 
 The main delivery flow is:
 
 `grill-me -> to-docs or to-spec -> to-tickets -> implement -> code-review`
 
-The selected catalog also preserves pending rewrites outside live discovery.
-Recommend only entries marked `Active` in the catalog.
+Recommend the smallest applicable entry marked `Active` in the catalog.

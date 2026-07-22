@@ -7,7 +7,7 @@
 **Status:** active
 **Priority:** 2
 **Owner:** codex
-**Updated:** 2026-07-19
+**Updated:** 2026-07-21
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
 **Blockers:** TK-003 lacks reproducible fresh Claude skill-discovery proof.
 **Latest event:** Claude authentication is live; prior non-persistent discovery invocation supplied no prompt and cannot prove skill discovery.
@@ -30,11 +30,10 @@ aren't yours you won't know how to fix them") and keeps one truth contract.
 
 ## Current Verified State
 
-- The catalog contains 32 owner-approved entries: sixteen reviewed entries are
-  live in `skills/` and sixteen imported baselines remain in `skills-pending/`.
-- The sixteen imported baselines still reference upstream conventions that
-  conflict with the Workbench truth-routing contract. Their source is
-  preserved in `skills-pending/`, outside live discovery, until rewritten.
+- The catalog contains 33 owner-approved, Workbench-reviewed entries, all live
+  in `skills/`; no pending discovery quarantine remains.
+- Every previously preserved baseline now routes durable truth through the
+  Workbench controls rather than an inherited parallel store.
 - GPT_OS exposes the same tracked folder through `.claude/skills` and
   `.agents/skills`; the untouched upstream snapshot and installer lock are
   preserved at `.agents/upstream-matt-skills-2026-07-14/`.
@@ -111,6 +110,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-007 | Add callable Genesis and Adoption entrypoints with remote-first recovery and distinct update routing | done | none | targeted catalog contract red at 28 vs 30, then green; complete Runbook suite, template evaluator 106.6/113, render, doctor, and diff check passed |
 | TK-008 | Preserve upstream notice and fail-close unfinished imported skills outside live discovery | done | none | Targeted catalog red/green; full Runbook suite; fresh Codex active/pending discovery; template evaluator 106.6/113; live guardrail 78/100; render, doctor, and diff check passed |
 | TK-009 | Rewrite and promote pending `implement` and `code-review` as the next delivery-flow pair | done | none | Pending-source catalog contract failed red on the imported delivery baseline and passed green after both rewrites; promoted catalog contract and complete Runbook suite passed; fresh ephemeral Codex returned DELIVERY_SKILLS_OK; root 113/113, templates 106.6/113, guardrail 78->78/100 |
+| TK-010 | Rewrite and promote the remaining sixteen pending skills | done | none | Red/green catalog contract; full RUNBOOK verification and fresh Codex discovery passed |
 
 ### Scoped Ticket: TK-002
 
@@ -286,6 +286,7 @@ node tools/spec-workbench.mjs doctor
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-07-21 | TK-010 | Rewrote and promoted all sixteen formerly pending skills, including the recovered Workbench-native domain-modeling discipline; removed unused upstream helper artifacts and expanded router coverage. | Red: catalog contract failed while all sixteen entries remained pending. Green: catalog contract passed after the catalog required 33 active entries and zero pending folders; full RUNBOOK suite passed; fresh ephemeral Codex discovered `wayfinder`, `domain-modeling`, `research`, `prototype`, `tdd`, and `diagnosing-bugs`. | Updated skill files, catalog, router, test contract, and this spec. | Claude discovery remains TK-003. |
 | 2026-07-19 | TK-003 control reconciliation | Corrected stale catalog counts and the Claude gate: authentication is live, but no fresh Claude discovery result has been captured. The earlier non-persistent invocation supplied no prompt because `--tools` accepts variadic values, so it is not discovery evidence. | Counted sixteen active and sixteen pending folders; checked both GPT_OS discovery symlinks; `claude auth status` reported an existing first-party session without changing credentials; `claude --help` and the prior invocation error confirmed the missing-input failure; complete RUNBOOK suite, render, doctor, and `git diff --check` passed. | Updated S-011 and rendered Taskboard; `skills/README.md`, RUNBOOK, and BLUEPRINT checked with no update needed because their catalog and lifecycle ownership remain accurate. | Run and record a valid fresh Claude discovery session; do not close TK-003 from authentication alone. |
 | 2026-07-14 | TK-001 | Imported 28 skills from mattpocock/skills (MIT) into `skills/` with provenance README; linked `GPT_OS/.claude/skills` -> `workbench templates/skills` | `ls skills | wc -l` = 29 (28 + README); full suite + doctor green (see PR) | skills/README.md added | Fresh-session discovery unverified (TK-003); rewrites pending (TK-002) |
 | 2026-07-14 | TK-004 | Corrected the earlier count: the import contained 27 upstream folders plus native `update-harness`; reconciled that intake to the owner's 25 selected upstream baselines plus `ask-workbench` and `update-harness`; made the tracked folder canonical for both discovery paths; added root/template Lexicons | `node tools/test-skill-catalog.mjs` passed; both `readlink` calls resolve to `workbench templates/skills`; upstream snapshot and lock preserved | README, AGENTS, BLUEPRINT, RUNBOOK, GENESIS, ADOPTION, HARNESS_FEEDBACK, LEXICON, S-011 updated in root/templates as applicable | Core and supporting skill rewrites plus fresh-session listings remain |
@@ -308,8 +309,8 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Sixteen selected upstream baselines remain safely preserved but unavailable
-  under `skills-pending/`; later promotions remain test-gated.
+- Fresh Codex discovery must confirm the expanded active surface; Claude
+  discovery remains the separate TK-003 gate.
 - Claude authentication is available, but fresh discovery remains unverified;
   no credential configuration is changed by this spec.
 - Distribution to existing projects follows via `update-harness` after the
