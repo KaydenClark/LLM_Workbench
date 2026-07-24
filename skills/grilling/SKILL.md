@@ -50,8 +50,13 @@ STATUS: PROVISIONAL — not canonical until /make-it-so   |   Started <date>
 - A NEW line of questioning I open appends to the bottom under
   `## Spawned branches` as the next top-level number; never renumber the items
   above it.
-- Tags: `[open]` (unasked/undecided), `[tentative]` (leaning, revisit),
-  `[locked]` (decided).
+- Tags, ordered by cost-to-reverse: `[open]` (unasked/undecided),
+  `[tentative]` (leaning, revisit before relying on it), `[soft-locked]`
+  (committed *direction* — a convention, metaphor, or design-language choice
+  that downstream work must stay consistent with, but reopening costs a
+  prototype, not a cascade; also covers a fixed concept whose English *name* is
+  still provisional, à la Stable ID), `[locked]` (decided; changing it breaks
+  dependent decisions).
 
 ## During the interview
 
