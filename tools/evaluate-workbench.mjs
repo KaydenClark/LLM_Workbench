@@ -22,7 +22,7 @@ export const RUBRIC = [
     label: 'Authority, read, and edit scope',
     weight: 10,
     checks: [
-      { label: 'authority order', files: ['AGENTS.md'], patterns: ['Authority Order'] },
+      { label: 'instruction precedence order', files: ['AGENTS.md'], patterns: ['Authority Order|Instruction Precedence'] },
       { label: 'read scope', files: ['AGENTS.md'], patterns: ['Read Scope'] },
       { label: 'edit scope', files: ['AGENTS.md'], patterns: ['Edit Scope'] },
       { label: 'secrets boundary', files: ['AGENTS.md'], patterns: ['secrets|credentials|tokens'] }
