@@ -28,6 +28,7 @@ to the Workbench rather than the upstream workflow.
 | `to-spec` | Synthesize an already-settled conversation into one stable `S-###/SPEC.md` capability record without restarting the interview. | Core rewrite | Active |
 | `to-tickets` | Break a spec into one-context tracer-bullet slices with explicit blockers inside the spec's implementation table. | Core rewrite | Active |
 | `tracer-bullet` | Cut a capability into vertical tracer-bullet slices that each pierce every layer of a project's stack, then order, scope, and assign them. | Native | Active |
+| `foundry-slice` | Cut a Foundry capability into vertical slices that each connect two Foundry layers through their socket contract, then decompose, order, and size the chain of single-repo tasks that realizes one. | Native | Active |
 | `wayfinder` | Reduce fog in work too large to specify by resolving one investigation decision at a time toward a named destination. | Supporting rewrite | Active |
 | `prototype` | Build a reversible, runnable artifact that answers one design question and records the resulting decision. | Core rewrite | Active |
 | `research` | Investigate a question against primary sources and return cited findings, creating a durable artifact only when the task needs one. | Core rewrite | Active |
