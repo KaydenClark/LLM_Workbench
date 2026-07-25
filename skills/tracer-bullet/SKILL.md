@@ -39,8 +39,8 @@ A sound tracer bullet:
 - **Demoable alone** — its proof is a check Kayden can run in under a minute.
 - **One context** — fits a single fresh context window; when it will not, cut a
   thinner behavior, not a horizontal shard.
-- **Real seam** — verified at a public seam, the way `/tdd` and `/implement`
-  drive behavior, not at internal wiring.
+- **Real seam** — verified at a public seam, the way `/tdd` drives behavior,
+  not at internal wiring.
 
 ## 3. Order by dependency, first bullet independent
 

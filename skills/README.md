@@ -33,7 +33,7 @@ to the Workbench rather than the upstream workflow.
 | `wayfinder` | Reduce fog in work too large to specify by resolving one investigation decision at a time toward a named destination. | Supporting rewrite | Active |
 | `prototype` | Build a reversible, runnable artifact that answers one design question and records the resulting decision. | Core rewrite | Active |
 | `research` | Investigate a question against primary sources and return cited findings, creating a durable artifact only when the task needs one. | Core rewrite | Active |
-| `implement` | Claim one eligible slice, use red-green-refactor, review it, update proof and docs, then safely commit and push the task branch. | Core rewrite | Active |
+| `save` | Move an artifact to its position on the Governance Plane — Intent, Canon, Actuality, Grounding, or Enduring Context — and make it durable there; plane-aware, payload-blind. | Native | Active |
 | `tdd` | Drive one behavior at an agreed public seam through a red-green-refactor loop with durable tests. | Core rewrite | Active |
 | `code-review` | Review a diff separately against repository standards and the owning Workbench spec, reporting actionable findings first. | Core rewrite | Active |
 | `diagnosing-bugs` | Establish a tight reproduction loop, prove the root cause, and enter fix mode only when the user requested a fix. | Core rewrite | Active |

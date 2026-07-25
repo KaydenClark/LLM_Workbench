@@ -18,7 +18,8 @@ Default routes:
 - settled conversation needs updates to existing documentation: `/to-docs`;
 - settled conversation needs a durable work packet: `/to-spec`;
 - a spec needs executable slices: `/to-tickets`;
-- one eligible spec slice is ready for delivery: `/implement`;
+- one eligible spec slice is ready for delivery: drive it with `/tdd`, review
+  it with `/code-review`, then make it durable with `/save`;
 - a fixed implementation diff needs independent findings: `/code-review`;
 - skill authoring rules are needed: `/writing-great-skills`.
 - a large effort still has unresolved decisions: `/wayfinder`;
@@ -32,6 +33,6 @@ Default routes:
 
 The main delivery flow is:
 
-`grill-me -> to-docs or to-spec -> to-tickets -> implement -> code-review`
+`grill-me -> to-docs or to-spec -> to-tickets -> tdd -> code-review -> save`
 
 Recommend the smallest applicable entry marked `Active` in the catalog.

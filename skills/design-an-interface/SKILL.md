@@ -11,5 +11,5 @@ not cosmetic variants. Compare them against clarity, safety, change cost, and
 testability; include a recommendation and the trade-off it accepts.
 
 Record the settled interface decision in the owning `SPEC.md` or
-`BLUEPRINT.md`, then hand the approved choice to `/implement`. Do not invent a
+`BLUEPRINT.md`, then hand the approved choice to the `/tdd` delivery loop. Do not invent a
 new requirements store.

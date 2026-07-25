@@ -15,5 +15,5 @@ For each session, choose one unblocked decision, use `/grilling`,
 `/research`, `/prototype`, or `/domain-modeling` as its shape requires, then
 record the conclusion and evidence in that spec. Render and doctor after a
 metadata change. Stop when the path is clear and hand execution to
-`/to-tickets` or `/implement`; do not turn route-finding into unapproved
+`/to-tickets` or the `/tdd` delivery loop; do not turn route-finding into unapproved
 delivery.

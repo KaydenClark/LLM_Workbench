@@ -67,24 +67,21 @@ test('code-review fixed diff disables a hostile textconv driver', () => {
   }
 });
 
-test('implement checkpoints and reviews before closing the ticket', () => {
-  const skill = read('skills/implement/SKILL.md');
-  const orderedContract = [
-    'truthful in-progress checkpoint',
-    'remotely verified checkpoint',
-    'fixed immutable-SHA review',
-    'new truthful checkpoint',
-    're-review',
-    'exact-head review is green',
-    'node tools/spec-workbench.mjs close S-###',
-    'final push'
+test('save keeps its plane table ordered from Intent to Enduring Context', () => {
+  const skill = read('skills/save/SKILL.md');
+  const orderedPlanes = [
+    '**Intent**',
+    '**Canon**',
+    '**Actuality**',
+    '**Grounding**',
+    '**Enduring Context**'
   ];
   let previous = -1;
 
-  for (const term of orderedContract) {
+  for (const term of orderedPlanes) {
     const current = skill.indexOf(term);
-    assert.ok(current >= 0, `implement must use ${term}`);
-    assert.ok(current > previous, `implement must place ${term} after the prior delivery gate`);
+    assert.ok(current >= 0, `save must map the ${term} plane`);
+    assert.ok(current > previous, `save must keep ${term} in the canonical plane order`);
     previous = current;
   }
 });

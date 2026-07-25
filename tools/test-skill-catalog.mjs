@@ -296,29 +296,33 @@ assertIncludesAll(router, [
   '`/update-harness`'
 ], 'ask-workbench');
 
-for (const name of ['implement', 'code-review']) {
-  assert.equal(
-    rows.find((row) => row.name === name)?.availability,
-    'Active',
-    `${name} must remain active with its TK-009 Workbench rewrite`
-  );
-}
+assert.equal(
+  rows.find((row) => row.name === 'code-review')?.availability,
+  'Active',
+  'code-review must remain active with its TK-009 Workbench rewrite'
+);
 
-const implement = read('skills/implement/SKILL.md');
-assertIncludesAll(implement, [
-  'assigned stable `SPEC.md`',
-  'one eligible ticket',
-  'node tools/spec-workbench.mjs next --json',
-  'node tools/spec-workbench.mjs show S-###',
-  'node tools/spec-workbench.mjs claim S-### --agent NAME',
-  'red/green/refactor',
-  'project-owned verification',
-  'owning documentation',
-  'node tools/spec-workbench.mjs close S-###',
-  'truthful checkpoint',
+assert.ok(!catalogNames.includes('implement'),
+  'implement is retired; the durability tail is the plane-aware save primitive');
+assert.ok(!fs.existsSync(path.join(skillsRoot, 'implement')),
+  'the retired implement skill must not remain in live discovery');
+
+const save = read('skills/save/SKILL.md');
+assertIncludesAll(save, [
+  'Governance Plane',
+  'plane-aware, not payload-aware',
+  '**Intent**',
+  '**Canon**',
+  '**Actuality**',
+  '**Grounding**',
+  '**Enduring Context**',
+  '$TMPDIR/.foundry/',
   'commit and push',
-  '`integration`'
-], 'implement');
+  'secrets',
+  'recovery point'
+], 'save');
+assert.doesNotMatch(save, /red\/green|refactor|spec-workbench\.mjs claim|spec-workbench\.mjs close/i,
+  'save must stay payload-blind: no ticket-driving or code-loop procedure belongs in it');
 
 const codeReview = read('skills/code-review/SKILL.md');
 assertIncludesAll(codeReview, [
@@ -342,14 +346,15 @@ for (const [pattern, label] of [
   [/\btracker\b/i, 'parallel work tracker'],
   [/\bproof store\b/i, 'parallel proof store']
 ]) {
-  assert.doesNotMatch(`${implement}\n${codeReview}`, pattern,
+  assert.doesNotMatch(`${save}\n${codeReview}`, pattern,
     `the delivery pair must not depend on a ${label}`);
 }
 
 assertIncludesAll(router, [
-  '`/implement`',
+  '`/tdd`',
   '`/code-review`',
-  'to-tickets -> implement -> code-review'
+  '`/save`',
+  'to-tickets -> tdd -> code-review -> save'
 ], 'ask-workbench delivery flow');
 
 for (const name of ['wayfinder', 'prototype', 'research', 'tdd', 'diagnosing-bugs',
