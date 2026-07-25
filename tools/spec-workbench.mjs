@@ -303,7 +303,10 @@ function publicSpec(spec) {
 function updateFields(content, values) {
   let result = content;
   for (const [name, value] of Object.entries(values)) {
-    const pattern = new RegExp(`^\\*\\*${escapeRegExp(name)}:\\*\\*\\s*.+$`, 'm');
+    const pattern = new RegExp(
+      `^\\*\\*${escapeRegExp(name)}:\\*\\*[^\\n]*(?:\\n(?!\\*\\*[^\\n]*:\\*\\*|##(?:\\s|$)|\\r?$)[^\\n]+)*`,
+      'm'
+    );
     if (!pattern.test(result)) throw new Error(`Missing field: ${name}`);
     result = result.replace(pattern, `**${name}:** ${value}`);
   }

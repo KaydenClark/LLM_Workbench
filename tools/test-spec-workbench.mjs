@@ -33,7 +33,12 @@ try {
     '<!-- hot-specs:start -->',
     '<!-- hot-specs:end -->'
   ].join('\n'));
-  write('specs/S-001-fixture/SPEC.md', fixtureSpec());
+  write(
+    'specs/S-001-fixture/SPEC.md',
+    fixtureSpec()
+      .replace('**Latest event:** Spec activated.', '**Latest event:** Spec activated.\nThis old event continuation must be replaced too.')
+      .replace('**Next gate:** Complete TK-001.', '**Next gate:** Complete TK-001.\nThis old gate continuation must be replaced too.')
+  );
 
   const next = nextWork(root);
   assert.equal(next.specId, 'S-001');
@@ -41,6 +46,7 @@ try {
 
   claimWork(root, 'S-001', { agent: 'codex', date: '2026-07-12' });
   assert.match(read('specs/S-001-fixture/SPEC.md'), /\| TK-001 \| First slice \| in-progress \|/);
+  assert.doesNotMatch(read('specs/S-001-fixture/SPEC.md'), /This old (event|gate) continuation must be replaced too\./);
   assert.equal(nextWork(root).status, 'in-progress', 'next should resume claimed work before selecting new work');
 
   assert.throws(
