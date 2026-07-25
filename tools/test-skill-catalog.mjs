@@ -53,7 +53,9 @@ const directoryNames = fs.readdirSync(skillsRoot, { withFileTypes: true })
   .filter((entry) => entry.isDirectory() || entry.isSymbolicLink())
   .map((entry) => entry.name)
   .sort();
-const pendingDirectoryNames = fs.readdirSync(pendingSkillsRoot, { withFileTypes: true })
+const pendingDirectoryNames = (fs.existsSync(pendingSkillsRoot)
+  ? fs.readdirSync(pendingSkillsRoot, { withFileTypes: true })
+  : [])
   .filter((entry) => entry.isDirectory() || entry.isSymbolicLink())
   .map((entry) => entry.name)
   .sort();
