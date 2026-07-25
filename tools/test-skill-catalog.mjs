@@ -189,18 +189,22 @@ assert.doesNotMatch(grillingBundle, /Desktop chat|voice|terminal|\bCLI\b/i,
 const makeItSo = read('skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
   'notepad',
-  '`to-docs`',
-  '`to-spec`',
-  '`to-tickets`',
-  '`TASKBOARD.md`',
-  '`/implement`',
-  'STATUS: PROMOTED'
+  '`/to-docs`',
+  '`/to-spec`',
+  '`/to-tickets`',
+  '`/tdd`',
+  '`/code-review`',
+  '`/save`'
 ], 'make-it-so');
 assert.match(
   makeItSo,
-  /`to-docs`[\s\S]*`to-spec`[\s\S]*`to-tickets`[\s\S]*Commit and push the promoted[\s\S]*`\/implement`[\s\S]*STATUS: PROMOTED/,
-  'make-it-so must promote, decompose, push the plan, implement, and then close in that order'
+  /`\/to-docs`[\s\S]*`\/to-spec`[\s\S]*`\/to-tickets`[\s\S]*`\/save`[\s\S]*`\/tdd`[\s\S]*`\/code-review`[\s\S]*`\/save`[\s\S]*Delete the notepad/,
+  'make-it-so must delegate promote, decompose, save the plan, deliver each ticket, and then destroy the notepad in that order'
 );
+assert.match(makeItSo, /disable-model-invocation: true/,
+  'make-it-so is owner-only and must carry the model-invocation flag');
+assert.doesNotMatch(makeItSo, /STATUS: PROMOTED/,
+  'make-it-so must delete the promoted notepad, never stamp it PROMOTED');
 assert.match(makeItSo, /invoke it explicitly/i,
   'make-it-so must be an explicit invocation, not a passphrase');
 assert.match(makeItSo, /Never promote a `PROVISIONAL` notepad whose topic\s+does not match/,
@@ -211,8 +215,6 @@ assert.match(makeItSo, /no\s+settled decisions to write, say so and stop/,
   'make-it-so must refuse to authorize an empty decision set');
 assert.match(makeItSo, /authorizes durable planning, implementation, and remote\s+checkpoints/,
   'make-it-so must authorize implementation with remote checkpoints');
-assert.match(makeItSo, /pushed commit, never\s+local-only progress/,
-  'make-it-so must forbid yielding with local-only progress');
 
 const brainstorm = read('skills/brainstorm/SKILL.md');
 assertIncludesAll(brainstorm, [

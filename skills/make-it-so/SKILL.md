@@ -33,37 +33,35 @@ The input is the settled decisions being approved. Resolve it in this order:
    the same durable record a grilling would leave. If the conversation has no
    settled decisions to write, say so and stop; there is nothing to authorize.
 
-Then, in order:
+## Delegate the runway
+
+Each named step is a real invocation of that skill — never restate or
+improvise its procedure here. In order:
 
 1. Summarize and lock the agreed scope from the notepad.
-2. `to-docs` — route every `[locked]` decision that belongs in existing control
-   files to its owner.
-3. `to-spec` — create or update the stable `SPEC.md` for a new or changed
-   capability (skip when the outcome is documentation only).
-4. `to-tickets` — add dependency-aware slices to that spec. `make it so`
-   authorizes the decomposition, so do not pause for redundant approval.
+2. `/to-docs` — route every `[locked]` decision that belongs in existing
+   control files to its owner.
+3. `/to-spec` — skip when the outcome is documentation only.
+4. `/to-tickets` — `make it so` authorizes the decomposition, so do not pause
+   for redundant approval.
 5. Carry every `[tentative]` and `[open]` item forward as an explicit blocker;
    never silently promote or drop one.
-6. Render and verify the generated `TASKBOARD.md` when specs or tickets changed.
-7. Commit and push the promoted docs, specs, and tickets before implementation
-   begins, following the project `RUNBOOK.md` version-control rules. The plan
-   itself must be remotely recoverable before any code changes.
-8. Implement the promoted tickets here, one at a time, using the `/implement`
-   contract: claim the slice, drive it red/green, update owning docs, make a
-   truthful checkpoint commit, push it, review, and close. Every stopping
-   point — done, blocked, or interrupted — is a pushed commit, never
-   local-only progress.
-9. If a ticket cannot proceed (blocked dependency, failing gate, missing
-   environment), record the blocker in the spec, push the truthful checkpoint,
-   and continue with the next eligible ticket; report every skipped slice
-   visibly at the end.
-10. Mark the notepad `STATUS: PROMOTED — <date>` and report the durable
-    doc/spec/ticket paths plus the pushed branches and commits that now hold
-    the work.
+6. `/save` (plane: Canon) — the promoted plan must be remotely recoverable
+   before implementation begins.
+7. For each promoted ticket, one at a time under the owning `AGENTS.md`
+   lifecycle: claim it, drive it with `/tdd`, review it with `/code-review`,
+   then `/save` (plane: Actuality). If a ticket cannot proceed, record the
+   blocker in the spec, `/save`, continue with the next eligible ticket, and
+   report every skipped slice visibly at the end.
+8. Delete the notepad. Promotion lands its cargo in canon; the Intent lane
+   holds only live work, so a promoted notepad is destroyed, never archived
+   or stamped.
+9. Report the durable doc/spec/ticket paths plus the pushed branches and
+   commits that now hold the work.
 
 `make it so` authorizes durable planning, implementation, and remote
 checkpoints from the settled decisions. It does not broaden standing project
 authority or safety boundaries: implementation runs under the same scope,
 verification, and git rules as any other slice. Scheduling to a later session
 is the fallback only when this environment truly cannot implement safely — and
-even then the promoted plan must already be pushed before yielding.
+even then the promoted plan must already be saved before yielding.
