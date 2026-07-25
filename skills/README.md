@@ -22,6 +22,7 @@ to the Workbench rather than the upstream workflow.
 | `make-it-so` | Confirm approvals and execute — with or without a grilling. Promotes the settled decisions (matching grilling notepad, else the current conversation) to canon via to-docs, to-spec, to-tickets, then implements the tickets with every checkpoint pushed to the remote; invoked explicitly, never from the phrase. | Native | Active |
 | `brainstorm` | Run a grilling interview with a counter-argument lens so every recommendation is weighed against its strongest opposing case. | Native | Active |
 | `checkpoint` | Save an in-progress grilling notepad as a committed, resumable handoff for another workstation or agent. | Native | Active |
+| `handoff` | Author a compaction of the current session into `$TMPDIR/.foundry/` so another context can continue — transfer, boundary, or spin-off — without promoting anything and without ending the session. | Native | Active |
 | `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite | Active |
 | `sitrep` | Give a smallest-scope conversational situation report, dispatching read-only Scout research only when the live evidence is insufficient. | Native | Active |
 | `to-docs` | Route settled conversation truth into existing Workbench documentation owners without restarting discovery or creating another store. | Native | Active |
