@@ -174,8 +174,8 @@ assert.match(grilling, /Do not act on it until I confirm/,
   'grilling must wait for confirmation before acting');
 assert.match(grilling, /notepad/,
   'grilling must keep a running notepad');
-assert.match(grilling, /\.agents\/grilling diary/,
-  'grilling must store the notepad in the grilling diary folder');
+assert.match(grilling, /\$TMPDIR\/\.foundry\//,
+  'grilling must store the notepad in the host-level Intent lane');
 assert.match(grilling, /\/make-it-so/,
   'grilling must end via the make-it-so skill instead of a bare passphrase');
 assert.match(grilling, /\/checkpoint/,
@@ -231,6 +231,18 @@ assertIncludesAll(checkpoint, [
 ], 'checkpoint');
 assert.match(checkpoint, /PAUSED/,
   'checkpoint must mark the notepad paused for resume');
+assert.match(checkpoint, /\$TMPDIR\/\.foundry\//,
+  'checkpoint must keep the notepad in the host-level Intent lane');
+assert.doesNotMatch(checkpoint, /commit a copy|tracked `handoffs\/`/,
+  'checkpoint must not commit the notepad into a tracked repo lane');
+for (const [doc, label] of [
+  [grilling, 'grilling'],
+  [makeItSo, 'make-it-so'],
+  [checkpoint, 'checkpoint']
+]) {
+  assert.doesNotMatch(doc, /\.agents\/grilling diary/,
+    `${label} must not reference the retired grilling diary lane`);
+}
 
 const toDocs = read('skills/to-docs/SKILL.md');
 assertIncludesAll(toDocs, [

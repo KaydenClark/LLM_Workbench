@@ -25,8 +25,11 @@ compaction or a hand-off to another assistant. The notepad is the working record
 it is not canonical until it is promoted.
 
 1. Explore enough to build the real decision tree.
-2. Create the notepad at `.agents/grilling diary/<topic-slug>-<YYYY-MM-DD>.md`
-   (use the current date; create the folder if missing). Header it exactly:
+2. Create the notepad in the Intent lane at
+   `$TMPDIR/.foundry/<topic-slug>-<YYYY-MM-DD>.md` (use the current date; create
+   the `.foundry` folder if missing). The lane is host-level, absolute,
+   gitignored, and outside every repo — the single home for notepads and
+   handoffs alike. Header it exactly:
    `STATUS: PROVISIONAL — not canonical until /make-it-so`
 3. Write the FULL planned question list up front, so I see the terrain before
    answering. It is a best-effort map; it will flex.

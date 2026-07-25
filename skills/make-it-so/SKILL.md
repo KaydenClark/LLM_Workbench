@@ -20,15 +20,15 @@ changes, or genuinely new scope.
 
 The input is the settled decisions being approved. Resolve it in this order:
 
-1. **Matching grilling notepad.** If a `PROVISIONAL` notepad in
-   `.agents/grilling diary/` covers the topic under discussion, it is the
+1. **Matching grilling notepad.** If a `PROVISIONAL` notepad in the Intent
+   lane (`$TMPDIR/.foundry/`) covers the topic under discussion, it is the
    source of truth — the notepad wins over a compacted chat.
 2. **Stale notepad guard.** Never promote a `PROVISIONAL` notepad whose topic
    does not match the current discussion. Name the mismatched notepad
    visibly, leave it untouched, and continue with the conversation fallback.
 3. **Conversation fallback.** With no matching notepad, the settled decisions
    of the current conversation are the input. Write them into a new notepad at
-   `.agents/grilling diary/<topic-slug>-<YYYY-MM-DD>.md` first — each decision
+   `$TMPDIR/.foundry/<topic-slug>-<YYYY-MM-DD>.md` first — each decision
    as a `[locked]` line, anything unsettled as `[open]` — so the promotion has
    the same durable record a grilling would leave. If the conversation has no
    settled decisions to write, say so and stop; there is nothing to authorize.
