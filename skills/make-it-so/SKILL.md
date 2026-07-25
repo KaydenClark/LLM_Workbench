@@ -1,6 +1,7 @@
 ---
 name: make-it-so
-description: Kayden's universal "approved — build it and save it" command, with or without a grilling session. Confirms pending approvals, promotes the settled decisions (grilling notepad or current conversation) into canonical docs and specs, implements the promoted tickets, and pushes every result to the remote. Invoke it explicitly; it never fires from someone saying the phrase in passing. Runs to-docs, to-spec, to-tickets, then the implement loop until progress is remotely recoverable.
+description: Kayden's universal "approved — build it and save it" command, with or without a grilling session. Confirms pending approvals, promotes the settled decisions (grilling notepad or current conversation) into canonical docs and specs, implements the promoted tickets, and pushes every result to the remote. Owner-only; the model must never invoke it.
+disable-model-invocation: true
 ---
 
 The universal execution authorization, and the counterpart to `/checkpoint`.

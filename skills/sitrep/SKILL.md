@@ -1,7 +1,6 @@
 ---
 name: sitrep
 description: Give a smallest-scope conversational situation report and investigate deeper only when the live evidence is insufficient.
-disable-model-invocation: true
 ---
 
 # Sitrep

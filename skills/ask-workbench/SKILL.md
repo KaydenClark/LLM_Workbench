@@ -1,7 +1,6 @@
 ---
 name: ask-workbench
 description: Route a situation to the smallest appropriate Workbench skill or flow.
-disable-model-invocation: true
 ---
 
 Use the selected catalog in [`../README.md`](../README.md) to recommend one

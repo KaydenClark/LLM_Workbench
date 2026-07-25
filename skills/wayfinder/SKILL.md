@@ -1,7 +1,6 @@
 ---
 name: wayfinder
 description: Chart a large, uncertain effort by resolving one decision at a time toward a named destination.
-disable-model-invocation: true
 ---
 
 # Wayfinder

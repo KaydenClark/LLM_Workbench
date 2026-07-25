@@ -1,7 +1,6 @@
 ---
 name: foundry-slice
 description: Cut a Foundry capability into vertical slices that each connect two Foundry layers through their socket contract, then decompose, order, and size the chain of single-repo tasks that realizes one.
-disable-model-invocation: true
 ---
 
 # Foundry Slice

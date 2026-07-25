@@ -1,7 +1,6 @@
 ---
 name: adoption
 description: Migrate an existing project into the Workbench once while preserving its code, history, project truth, and remote recovery point.
-disable-model-invocation: true
 ---
 
 Use Adoption only when an existing project is joining the Workbench for the
