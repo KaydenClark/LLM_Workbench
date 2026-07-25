@@ -21,6 +21,7 @@ note.
 
 - [[AGENTS]] - how agents work in this room
 - [[BLUEPRINT]] - what this room is: product map, architecture, non-goals
+- [[LEXICON]] - accepted shared language for this room
 - [[TASKBOARD]] - active work projection (current slice, owner, next gate)
 - [[RUNBOOK]] - install, run, test, and recovery commands
 - `specs/` - stable capability records and proof

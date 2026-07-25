@@ -5,6 +5,20 @@ loads from `BLUEPRINT.md` only for architecture work; shared definitions load
 from `LEXICON.md` when project language matters; current work comes from the
 spec tool and one assigned `SPEC.md`; commands live in `RUNBOOK.md`.
 
+## Navigation
+
+- [BLUEPRINT.md](BLUEPRINT.md) — product map, architecture, invariants, and the
+  spec catalog.
+- [LEXICON.md](LEXICON.md) — accepted shared vocabulary.
+- [TASKBOARD.md](TASKBOARD.md) — active work, ownership, blockers, and next
+  gates.
+- [RUNBOOK.md](RUNBOOK.md) — commands, troubleshooting, and recovery.
+- [MEMORY.md](MEMORY.md) — this room's durable routing context and the path
+  back to the wider GPT_OS workspace.
+
+Use `MEMORY.md` when the question crosses the Foundry boundary; it routes to
+the workspace memory rather than duplicating information owned elsewhere.
+
 ## Authority Order
 
 1. Current user request.

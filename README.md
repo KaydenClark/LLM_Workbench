@@ -8,6 +8,16 @@ specs, a hot execution projection, operational commands, and durable proof.
 Use it when you want agents to work from the same local source of truth instead
 of relying on chat history or one-off instructions.
 
+## Navigate This Foundry
+
+- [AGENTS.md](AGENTS.md) — operating rules and the local navigation entry point.
+- [BLUEPRINT.md](BLUEPRINT.md) — product map and stable spec catalog.
+- [LEXICON.md](LEXICON.md) — shared Workbench terms.
+- [TASKBOARD.md](TASKBOARD.md) — active execution state.
+- [RUNBOOK.md](RUNBOOK.md) — setup, verification, and recovery.
+- [MEMORY.md](MEMORY.md) — durable Foundry context and the route to the wider
+  GPT_OS workspace.
+
 ## Core Files
 
 The blank, copyable templates live in `templates/`:

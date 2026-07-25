@@ -7,6 +7,20 @@ This always-loaded file owns how agents work. Product detail loads from
 project language matters; executable work comes from the assigned stable
 `specs/S-###-slug/SPEC.md`; commands live in `RUNBOOK.md`.
 
+## Navigation
+
+- [BLUEPRINT.md](BLUEPRINT.md) — product map, architecture, invariants, and the
+  spec catalog.
+- [LEXICON.md](LEXICON.md) — accepted shared vocabulary.
+- [TASKBOARD.md](TASKBOARD.md) — active work, ownership, blockers, and next
+  gates.
+- [RUNBOOK.md](RUNBOOK.md) — commands, troubleshooting, and recovery.
+- [MEMORY.md](MEMORY.md) — this room's durable routing context and its path to
+  the wider workspace memory.
+
+Use `MEMORY.md` when the question crosses this project's boundary; it should
+route outward rather than duplicating information owned elsewhere.
+
 ## Authority Order
 
 1. Current user request.
