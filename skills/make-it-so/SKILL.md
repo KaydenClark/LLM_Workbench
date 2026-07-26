@@ -49,10 +49,14 @@ improvise its procedure here. In order:
 6. `/save` (plane: Canon) — the promoted plan must be remotely recoverable
    before implementation begins.
 7. For each promoted ticket, one at a time under the owning `AGENTS.md`
-   lifecycle: claim it, drive it with `/tdd`, review it with `/code-review`,
-   then `/save` (plane: Actuality). If a ticket cannot proceed, record the
-   blocker in the spec, `/save`, continue with the next eligible ticket, and
-   report every skipped slice visibly at the end.
+   lifecycle: run the launch preflight first when the room provides one
+   (GPT_OS: `node tools/preflight.mjs --spec S-### --ticket TK-###` for every
+   repository the ticket touches) — a failed preflight stops that launch as a
+   blocking owner report; recorded `ready` state or a sitrep is never
+   sufficient. Then claim it, drive it with `/tdd`, review it with
+   `/code-review`, then `/save` (plane: Actuality). If a ticket cannot
+   proceed, record the blocker in the spec, `/save`, continue with the next
+   eligible ticket, and report every skipped slice visibly at the end.
 8. Delete the notepad. Promotion lands its cargo in canon; the Intent lane
    holds only live work, so a promoted notepad is destroyed, never archived
    or stamped.
