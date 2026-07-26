@@ -85,3 +85,40 @@ test('save keeps its plane table ordered from Intent to Enduring Context', () =>
     previous = current;
   }
 });
+
+test('save states the Projection boundary rule and grows no Projection row', () => {
+  const skill = read('skills/save/SKILL.md');
+
+  assert.match(
+    skill,
+    /Projection is never saved — it is captured by Pawns and read by everyone\./,
+    'save must carry the DG-23D boundary rule; silence here is what lets a projection be committed as Canon by accident'
+  );
+
+  const planeRows = skill.split('\n').filter((line) => /^\| \*\*/.test(line));
+  assert.equal(planeRows.length, 5, 'the plane table must stay at five saveable planes');
+  assert.ok(
+    planeRows.every((row) => !row.includes('**Projection**')),
+    'Projection is a boundary rule, never a sixth plane row (DG-23B: agents read Projection and never write it)'
+  );
+});
+
+test('sitrep states that it reads Projection rather than writing it', () => {
+  const skill = read('skills/sitrep/SKILL.md');
+
+  assert.match(
+    skill,
+    /read of Projection/,
+    'sitrep must name the plane it reads'
+  );
+  assert.match(
+    skill,
+    /route but\s+never authorize/,
+    'sitrep must carry the route-never-authorize invariant (DG-23E)'
+  );
+  assert.match(
+    skill,
+    /Create no durable artifact by default/,
+    'sitrep must keep the no-durable-artifact rule (DG-23B)'
+  );
+});

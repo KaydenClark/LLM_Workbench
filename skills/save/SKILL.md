@@ -21,6 +21,13 @@ plane for the artifact. Never infer the plane from the payload.
 | **Grounding** (findings, receipts) | the owning spec's append-only evidence | append the evidence row, then commit and push it with its spec |
 | **Enduring Context** (durable vocabulary, structure) | the Wiki | update the owning note, then commit and push per the Wiki's rules |
 
+**Projection is never saved — it is captured by Pawns and read by everyone.**
+There is deliberately no sixth row. `render`, `project`, and `mirror` are
+deterministic verbs and the capture fires at a boundary, so a projection has no
+author to invoke `save`. A projection-shaped artifact — a rendered dashboard, a
+situation report, a status summary — does not become Canon by being saved into
+it. Stop and report the misroute.
+
 ## Boundaries
 
 - Canon and Actuality changes require explicit authorization — a Job Order or
