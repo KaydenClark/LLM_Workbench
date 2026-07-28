@@ -39,6 +39,7 @@ to the Workbench rather than the upstream workflow.
 | `diagnosing-bugs` | Establish a tight reproduction loop, prove the root cause, and enter fix mode only when the user requested a fix. | Core rewrite | Active |
 | `teach` | Teach a topic through a stateful sequence of small lessons grounded in the learner's purpose and prior understanding. | Supporting rewrite | Active |
 | `writing-great-skills` | Define the authoring vocabulary and pruning rules used to make Workbench skills predictable and maintainable. | Reference | Active |
+| `lexicon` | Use the project's `LEXICON.md` as the map: load it whole, speak its terms exactly, follow each term to the doc that owns it, and keep its open questions open. | Reference | Active |
 | `design-an-interface` | Generate and compare meaningfully different public interface shapes before choosing one to implement. | Supporting rewrite | Active |
 | `ubiquitous-language` | Extract, challenge, and normalize shared project terms, promoting accepted definitions into `LEXICON.md`. | Supporting rewrite | Active |
 | `resolving-merge-conflicts` | Reconstruct both intents in a merge conflict, preserve compatible behavior, verify the result, and surface irreconcilable product choices. | Supporting rewrite | Active |

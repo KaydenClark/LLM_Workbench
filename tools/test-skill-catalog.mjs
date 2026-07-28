@@ -33,7 +33,7 @@ const rows = catalogRegion[1]
     };
   });
 
-assert.equal(rows.length, 35, 'the owner-selected catalog must contain 35 skills');
+assert.equal(rows.length, 36, 'the owner-selected catalog must contain 36 skills');
 assert.equal(new Set(rows.map((row) => row.name)).size, rows.length,
   'the selected skill catalog must not contain duplicate names');
 for (const row of rows) {
