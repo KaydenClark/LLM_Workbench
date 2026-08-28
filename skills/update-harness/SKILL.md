@@ -16,9 +16,9 @@ Use `/update-harness [project path]`. If the path is omitted, use the current
 repository. Treat an explicitly requested version as the target only after the
 canonical source confirms it exists.
 
-Canonical Workbench source on this machine:
-
-`/Users/kayden/GPT_OS/Workbench Factory`
+Locate the canonical Workbench source named by the workspace controls (the
+Forge, currently `/Users/kayden/GPT_OS/Foundry/Sockets/Forge`) before reading
+its templates or lifecycle tooling.
 
 ## 1. Establish authority and source truth
 
