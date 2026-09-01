@@ -118,9 +118,10 @@ exact Workbench version stamps on the six stamped controls (the thin
 spec at a stable `workbench/specs/S-###-slug/SPEC.md` path, and no project-local
 `skills/` directory. It fails closed on symlinks, template placeholders, stubs,
 version drift, unstable spec paths, or structurally incomplete first specs.
-The `--genesis` readiness check must run from the complete versioned Workbench
-source bundle so its adjacent `templates/` placeholder vocabulary is available;
-a partial tool-only copy returns `invalid-source` instead of weakening checks.
+The `--genesis` readiness check carries the versioned placeholder vocabulary
+with the CLI, and its focused self-test proves that vocabulary exactly matches
+the shipped Genesis templates. Relocating the CLI and its declared helper
+modules therefore cannot weaken lowercase-placeholder detection.
 
 ### V3 Adoption migration check
 

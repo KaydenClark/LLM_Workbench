@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { nextWork } from './spec-workbench.mjs';
+import { genesisTemplateFiles, templatePlaceholders } from './template-placeholders.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(root, 'tools', 'workbench-layout.mjs');
@@ -87,6 +88,15 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
   for (const relative of ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('Wiki', 'MEMORY.project.md')]) {
     assert.match(fs.readFileSync(path.join(templateRoot, relative), 'utf8'), /workbench\/specs\//, `${relative} does not name the manifest-default spec lane`);
   }
+});
+
+test('the committed placeholder vocabulary exactly matches the shipped Genesis templates', () => {
+  const actual = new Set();
+  for (const name of genesisTemplateFiles) {
+    const content = fs.readFileSync(path.join(root, 'templates', name), 'utf8');
+    for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) actual.add(match[0]);
+  }
+  assert.deepEqual([...actual].sort(), [...templatePlaceholders].sort());
 });
 
 test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow', () => {
@@ -319,7 +329,7 @@ keep - [ ] as a checklist, route [[Room Note]], and define [Reference], [RFC], a
   }
 });
 
-test('Genesis validation fails closed when the shipped placeholder vocabulary is unavailable', () => {
+test('a relocated Genesis CLI retains its complete embedded placeholder vocabulary', () => {
   const project = fixture();
   const partialBundle = fixture();
   try {
@@ -333,14 +343,23 @@ test('Genesis validation fails closed when the shipped placeholder vocabulary is
     fs.copyFileSync(tool, relocatedTool);
     fs.copyFileSync(path.join(root, 'tools', 'spec-packet.mjs'), path.join(partialTools, 'spec-packet.mjs'));
     fs.copyFileSync(path.join(root, 'tools', 'markdown-table.mjs'), path.join(partialTools, 'markdown-table.mjs'));
+    fs.copyFileSync(path.join(root, 'tools', 'template-placeholders.mjs'), path.join(partialTools, 'template-placeholders.mjs'));
 
-    const validated = spawnSync(process.execPath, [fs.realpathSync(relocatedTool), 'validate', '--project', project, '--genesis'], {
+    const validated = spawnSync(process.execPath, [relocatedTool, 'validate', '--project', project, '--genesis'], {
       cwd: partialBundle,
       encoding: 'utf8'
     });
 
     assert.notEqual(validated.status, 0, `${validated.stdout}\n${validated.stderr}`);
-    assert.equal(JSON.parse(validated.stdout).error.code, 'invalid-source');
+    assert.equal(JSON.parse(validated.stdout).error.code, 'unfilled-control');
+
+    fs.writeFileSync(taskboard, fs.readFileSync(taskboard, 'utf8').replace('[current useful outcome]', 'One selected outcome'));
+    const filled = spawnSync(process.execPath, [relocatedTool, 'validate', '--project', project, '--genesis'], {
+      cwd: partialBundle,
+      encoding: 'utf8'
+    });
+    assert.equal(filled.status, 0, `${filled.stdout}\n${filled.stderr}`);
+    assert.equal(JSON.parse(filled.stdout).status, 'valid');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(partialBundle, { recursive: true, force: true });

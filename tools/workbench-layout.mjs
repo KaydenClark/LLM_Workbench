@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseSpecPacket } from './spec-packet.mjs';
+import { templatePlaceholders } from './template-placeholders.mjs';
 
 export const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -16,24 +17,7 @@ export const lanes = {
   feedback: 'workbench/feedback'
 };
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
-const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-
-function shippedTemplatePlaceholders() {
-  const placeholders = new Set();
-  const missing = [];
-  for (const name of [...controls.filter((control) => control !== 'CLAUDE.md'), 'SPEC.md']) {
-    const templatePath = path.join(sourceRoot, 'templates', name);
-    if (!fs.existsSync(templatePath)) {
-      missing.push(templatePath);
-      continue;
-    }
-    const content = fs.readFileSync(templatePath, 'utf8');
-    for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) placeholders.add(match[0]);
-  }
-  return { placeholders, missing };
-}
-
-const templateVocabulary = shippedTemplatePlaceholders();
+const templateVocabulary = new Set(templatePlaceholders);
 
 function lstatOrNull(target) {
   try {
@@ -71,7 +55,7 @@ function isSafeRelative(value) {
 
 function containsPlaceholder(content) {
   for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) {
-    if (templateVocabulary.placeholders.has(match[0])) return true;
+    if (templateVocabulary.has(match[0])) return true;
   }
   return false;
 }
@@ -231,11 +215,6 @@ export function validate(options, requireGenesis) {
   const project = path.resolve(options['--project']);
   const result = validateManifest(project);
   if (result.status !== 'valid' || !requireGenesis) return result;
-  if (templateVocabulary.missing.length > 0 || templateVocabulary.placeholders.size === 0) {
-    return fail('invalid-source', 'Genesis validation requires the complete versioned Workbench template source.', {
-      missing: templateVocabulary.missing
-    });
-  }
   for (const control of controls) {
     const controlIssue = validateGenesisControl(project, control, result.manifest.workbenchVersion);
     if (controlIssue) return controlIssue;
@@ -246,7 +225,7 @@ export function validate(options, requireGenesis) {
   return report('valid', { manifest: result.manifest, controls });
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href) {
   try {
     const [command, ...args] = process.argv.slice(2);
     let result;
