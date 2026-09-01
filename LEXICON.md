@@ -1,6 +1,6 @@
 # LLM Workbench - Lexicon
 
-**Last reviewed:** 2026-07-14
+**Last reviewed:** 2026-08-31
 **Status:** active
 
 This is the canonical lookup table for shared Workbench language. It helps the
@@ -34,6 +34,10 @@ specs, skills, or conversations.
 | **Ticket** | A temporary, one-context tracer-bullet slice inside a spec that produces independently verifiable progress. | It is execution structure, not durable capability history. |
 | **Hot projection** | The minimal current view of active, blocked, ready, or in-progress work generated from canonical specs. | `TASKBOARD.md` is a projection, not a second tracker or proof archive. |
 | **Seam** | A public boundary where behavior can be exercised and verified without depending on implementation details. | Specs agree important testing seams; tests and callers use the same boundary. |
+| **Support root** | The lowercase `workbench/` directory whose manifest declares durable support-record paths for a v3 project. | Root controls remain universally discoverable; the support root is not a second control plane. |
+| **Core skill bundle** | The closed set of 12 LLM Workbench setup, planning, and delivery skills available as a brand-new-install fallback. | It is not Kayden's private catalog, a generalized marketplace, or a project-local discovery tree. |
+| **Normal setup** | Presence-only skill reconciliation during Genesis or Adoption: install a missing core skill when safe and preserve anything already installed. | It never compares or replaces an existing skill and never mutates a foreign Git-owned skill root. |
+| **Explicit skill update** | A separately authorized operation that backs up differing installed core skills and synchronizes them to the exact checked-out LLM Workbench versions. | It is the only path that may replace an existing skill; routine setup cannot imply it. |
 
 ## Project-Specific Terms
 

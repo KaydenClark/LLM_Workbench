@@ -1,8 +1,8 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** S-014/TK-002 remains in progress with REQUEST CHANGES: independently audit the escaped-table parser repair before restarting release evidence work.
-**Owner:** Kayden (executive); agents execute assigned slices
-**Last updated:** 2026-07-16
+**Current focus:** S-021/TK-001 is the sole eligible slice; S-011 is blocked pending supersession and S-014 is blocked until the v3 integration candidate exists.
+**Owner:** unassigned
+**Last updated:** 2026-08-31
 
 This dashboard contains current execution state only. Use
 `node tools/spec-workbench.mjs next` to select work and `show S-###` to load its
@@ -14,8 +14,9 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-002: Coordinate separate exact-head audit and evidence publication tasks (in-progress) | Captain (TK-002 coordination) | current-main ancestry drift; current integration is unaudited | PR #33 merged, but later main and integration movement invalidated the historical candidate. | Scope and assign a new independently reviewed current-main reconciliation into integration; then assign a separate Auditor for the resulting exact integration SHA. |
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Fresh Claude skill-discovery proof is absent | Claude authentication is live; prior non-persistent discovery invocation supplied no prompt and cannot prove skill discovery. | Capture and record a valid fresh Claude Code discovery result without changing credentials or claiming unavailable skills. |
+| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-003: Open the sole non-draft integration-to-main owner promotion PR (ready) | unassigned | TK-002 | Live refs now satisfy main ancestry, but owner-approved S-021 intentionally makes integration mutable again and invalidates any pre-v3 candidate. | Complete S-021 on integration, then resume TK-002 against that exact immutable integration SHA. |
+| [S-021](specs/S-021-portable-workbench-v3/SPEC.md) | TK-001: A brand-new host installs only missing members of the 12-skill core without altering existing skills or foreign roots (ready) | unassigned | none | Owner-approved grilling decisions promoted into a schedulable v3 capability. | Claim TK-001 and establish the missing-only core-skill installation seam from the current red catalog baseline. |
+| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | unassigned | Fresh Claude skill-discovery proof is absent | S-021 was accepted as this spec's successor; S-011 is blocked from further execution while its implementation evidence remains intact. | Complete S-021, then mark S-011 superseded without reopening TK-003. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

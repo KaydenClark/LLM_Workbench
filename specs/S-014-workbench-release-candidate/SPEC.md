@@ -4,14 +4,14 @@
 > `specs/S-014-workbench-release-candidate/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-014
-**Status:** active
+**Status:** blocked
 **Priority:** 0
-**Owner:** Captain (TK-002 coordination)
-**Updated:** 2026-07-19
+**Owner:** unassigned
+**Updated:** 2026-08-31
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** Current `origin/main` is not an ancestor of current `origin/integration`; the current integration SHA has no independent audit, release-gate status, or promotion PR.
-**Latest event:** PR #33 merged, but later main and integration movement invalidated the historical candidate.
-**Next gate:** Scope and assign a new independently reviewed current-main reconciliation into integration; then assign a separate Auditor for the resulting exact integration SHA.
+**Blockers:** S-021 must land on integration before an immutable v3 release candidate can be audited and promoted.
+**Latest event:** Live refs now satisfy main ancestry, but owner-approved S-021 intentionally makes integration mutable again and invalidates any pre-v3 candidate.
+**Next gate:** Complete S-021 on integration, then resume TK-002 against that exact immutable integration SHA.
 
 ## Outcome
 
@@ -30,11 +30,13 @@ without weakening either repository's release boundary.
 
 ## Current Verified State
 
-- `origin/integration` is exact commit
-  `259a24d257854ae5f28af1f34983a46092fef208`; `origin/main` is exact commit
-  `08ab78e5a59a68d2b04028fe71a2be488d5ae10e`. `git merge-base --is-ancestor
-  origin/main origin/integration` currently fails, so the prior reconciliation
-  is no longer a current release candidate.
+- Refreshed `origin/integration` is exact commit
+  `9e6c71b81f38d0696ac01834076a20d428207bde`; `origin/main` is exact commit
+  `08ab78e5a59a68d2b04028fe71a2be488d5ae10e`. Integration is 46 commits ahead
+  and `git merge-base --is-ancestor origin/main origin/integration` succeeds.
+  There is still no open integration-to-main promotion PR. The new S-021 v3
+  work intentionally changes integration before release, so this head is not a
+  candidate to audit or annotate.
 - Audited PR #31 used exact head
   `490ad580d7b0c679bf6411d3d22696022b58515e`. Its ancestry merge
   `88b6f7e0a9edc25e45778a8c04cce59f5c570f6c` records exact main `dd1ed32`
@@ -46,11 +48,10 @@ without weakening either repository's release boundary.
   SHA, and this control reconciliation does not independently audit that repair.
   No `integration` to `main` promotion PR exists; current integration has no
   GitHub release-gate status, so CIC remains fail-closed.
-- S-011 separately remains active: sixteen reviewed skills are live, sixteen
-  imported baselines remain isolated under `skills-pending/`, and fresh Claude
-  discovery remains unverified despite live authentication. These transparent
-  limitations do not alter the release gates and are not silently promoted as
-  completed work.
+- S-011 is blocked pending supersession for skill ownership and distribution by
+  active S-021. Its historical implementation proof remains, while S-021 owns
+  the portable 12-skill missing-only install and v3 layout work that must
+  precede release.
 - CIC's fixed contract accepts only `KaydenClark/LLM_Workbench`, source
   `integration`, destination `main`, exactly one open non-draft matching PR,
   current exact branch SHAs, `main` ancestry, GitHub mergeability, and a
@@ -59,9 +60,8 @@ without weakening either repository's release boundary.
 
 ## Desired Behavior
 
-- Reconcile `main` into `integration` through a normal audited pull request so
-  the exact current main commit becomes an ancestor without rebasing, forcing,
-  or rewriting either protected branch.
+- Complete S-021 through the normal reviewed integration flow while preserving
+  the already-satisfied main-ancestry invariant.
 - Run the complete Workbench verification suite on the reconciliation branch
   and again on the exact resulting remote integration head.
 - Give an independent Auditor a fresh, immutable exact-integration review.
@@ -109,10 +109,10 @@ without weakening either repository's release boundary.
 - Escaped Markdown table cells are release-critical data. Spec lifecycle and
   feedback automation parsing must preserve escaped pipes and backslashes,
   reject malformed active rows explicitly, and avoid partial persistence.
-- This TK-001-to-TK-002 docs transition is the last planned integration content
-  mutation before release-gate publication. TK-002 must resolve and pin the
-  exact integration SHA after this transition lands; its GitHub status and HTTPS
-  evidence target annotate that immutable SHA and do not move the candidate.
+- S-021 is the last authorized product capability before this release gate
+  resumes. TK-002 must resolve and pin the exact integration SHA after S-021
+  lands; its GitHub status and HTTPS evidence target annotate that immutable SHA
+  and do not move the candidate.
 - TK-003 queries GitHub before mutation. If no matching promotion PR exists, it
   opens one non-draft PR with head `integration`, base `main`, and a body that
   requires merge-commit semantics. If exactly one exact matching PR already
@@ -128,8 +128,8 @@ without weakening either repository's release boundary.
 ## Non-Goals
 
 - Merging `integration` into `main` or approving the release on Kayden's behalf.
-- Finishing S-011, authenticating Claude, or promoting any of the seventeen
-  isolated pending skills.
+- Reopening S-011's private/project-local discovery contract or promoting
+  unrelated pending skills beyond S-021's locked 12-skill core.
 - Rewriting Workbench history, rebasing shared branches, force-pushing, or
   changing repository branch protections or merge settings.
 - Adding a GitHub Actions workflow, changing credentials, or broadening token
@@ -145,8 +145,9 @@ without weakening either repository's release boundary.
 - GitHub authentication used by the implementation tasks must already have the
   minimum existing permission needed for their specific PR, evidence, and
   commit-status mutations. Credential changes remain owner-controlled.
-- S-011 remains independent and may stay active while this release candidate is
-  prepared; its owner authentication gate is not a blocker for S-014.
+- S-021 is a blocking dependency because it deliberately changes the next
+  integration candidate. S-011's retired Claude-authentication gate is not a
+  release requirement.
 
 ## Vertical Implementation Slices
 
@@ -155,7 +156,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile main ancestry into integration through an audited merge PR | done | none | PR #31 head `490ad58`; ancestry merge `88b6f7e`; integration merge `a9fb9f9` |
-| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | in-progress | current-main ancestry drift; current integration is unaudited | PR #33 merged historically, but `origin/main` is not an ancestor of current integration and no current release-gate status or promotion PR exists |
+| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | blocked | S-021 | Current ancestry passes, but the candidate remains intentionally mutable until S-021 lands; no release-gate status or promotion PR exists |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
 ### Scoped Ticket: TK-001
@@ -272,8 +273,8 @@ gh api repos/KaydenClark/LLM_Workbench/commits/$(git rev-parse origin/integratio
       command, or merge mode.
 - [ ] The promotion PR remains open and `main` remains unchanged until Kayden
       approves and executes it through CIC.
-- [ ] S-011's owner Claude-authentication gate and seventeen isolated pending
-      skills remain explicit limitations, not false release completion claims.
+- [ ] S-021's exact v3 acceptance and residual limitations are carried into the
+      release evidence without reopening S-011's retired discovery gate.
 
 ## Testing Seams
 
@@ -326,6 +327,7 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-07-16 | TK-002 role-authority repair | Split the combined audit/publication handoff into two separately authorized Captain assignments | Captain, Auditor, and Engineer role contracts inspected; full RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; render, doctor, `next`, diff, and gitleaks directory checks passed | Updated S-014 and generated Taskboard only; no release status, evidence comment, promotion PR, audit file, or protected ref changed | Push the repaired PR #32 checkpoint; after it lands, Captain assigns the read-only Auditor first and authorizes the Engineer Publisher only on PASS |
 | 2026-07-16 | TK-002 parser repair candidate | Exact-head audit of integration `bb5d9c1` returned REQUEST CHANGES after escaped pipes were treated as table delimiters; added one escape-aware parser shared by spec lifecycle and feedback automation | Focused red tests reproduced broken `node test \| tee proof.log` round-trip and dropped escaped HARNESS_FEEDBACK pipeline; focused green tests preserve pipes/backslashes, reject malformed rows explicitly, and prove rejected spec mutation has no partial persistence | Updated S-014 and generated Taskboard; RUNBOOK, README, templates, and skills checked with no change needed because the existing commands and public harness contract remain accurate | Run the full verification gate, publish the repair PR, then obtain an independent exact-head audit; TK-002 remains in progress and no success status or promotion PR may be created |
 | 2026-07-16 | TK-002 parser repair verification | Verified the repair candidate without advancing the release gate and opened draft PR #33 to integration | Complete RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; live guardrail remained 78/100 with only pre-existing real-outcome gaps; render, doctor, `next`, diff, and gitleaks directory/commit-range checks passed | Docs checked; no additional update needed beyond S-014 and generated Taskboard because operational commands and public controls are unchanged | Obtain an independent exact-head audit of draft PR #33; TK-002 remains in progress |
+| 2026-08-31 | v3 dependency reconciliation | Refreshed live refs, confirmed main ancestry now passes, and blocked release publication on the owner-approved S-021 portable v3 capability | `git fetch origin --prune`; exact refs `08ab78e` and `9e6c71b`; ancestry exit 0; GitHub open-PR query found only obsolete PR #42 into integration and no integration-to-main PR | Updated S-014 current state, blocker, ticket status, and dependency; generated projections refreshed separately | Complete S-021, then restart immutable exact-head audit/publication at TK-002 |
 
 ## Completion Result
 
@@ -333,9 +335,9 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- S-011 remains active independently: fresh Claude discovery proof is still
-  required, and sixteen imported skills remain isolated pending rewrite. S-014
-  neither conceals nor resolves that work.
+- S-021 now owns the portable v3 layout and 12-skill contract. Its exact
+  completion proof and remaining limitations must be carried into the eventual
+  release evidence.
 - CIC mobile approval/execution presentation is owned by CIC, not this repo.
 
 ## Supersession

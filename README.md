@@ -63,8 +63,10 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - canonical live, owner-editable skill discovery library. GPT_OS
-  exposes this folder through both Claude and Codex-compatible discovery paths.
+- `skills/` - the currently active v2.3 skill source. Active S-021 replaces the
+  broad project-local discovery model with a closed 12-skill, missing-only
+  brand-new-install fallback; until that implementation lands, follow the
+  current catalog and do not claim v3 behavior.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
   until their Workbench rewrites pass review.
 - `team templates/` - optional manager/subagent coordination templates for
@@ -158,6 +160,11 @@ Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSIO
 stamp so a downstream project can tell which harness version it is running. The
 current harness version is **v2.3** (recorded in `BLUEPRINT.md`); this repo is the
 source, so its own docs are not stamped.
+
+The owner has accepted the v3 portable layout and skill-install direction in
+[`S-021`](specs/S-021-portable-workbench-v3/SPEC.md). It is active work, not a
+published release: v2.3 remains the truthful setup contract until every S-021
+acceptance gate and the downstream exact-head release check pass.
 
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template

@@ -1,9 +1,9 @@
 # LLM Workbench - Blueprint
 
-**Last reviewed:** 2026-07-12
+**Last reviewed:** 2026-08-31
 **Status:** active
 **Harness version:** v2.3
-**Source root:** `/Users/kayden/GPT_OS/Workbench Factory`
+**Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
 ## Product Map
@@ -31,6 +31,31 @@ Core promise:
 - **Portable by default:** plain Markdown and zero-dependency local commands
   work with Codex, Claude Code, Gemini CLI, and ordinary command-line workflows.
 
+## Accepted V3 Direction
+
+[S-021](specs/S-021-portable-workbench-v3/SPEC.md) owns the next major portable
+contract. It is intentionally an interim usability release while Foundry is
+unfinished, not a Foundry replacement or a general harness redesign.
+
+- The seven root controls remain universally discoverable. Durable support
+  records move behind one lowercase `workbench/manifest.json` authority with
+  declared specs, Wiki, grilling, handoff, and feedback lanes.
+- LLM Workbench carries exactly the closed 12-skill setup/planning/delivery
+  workflow. On a brand-new installation it supplies a required skill only when
+  that skill is missing from user-scoped discovery.
+- Existing installed skills are accepted by presence and remain untouched.
+  Exact synchronization occurs only after an explicit skill-update request and
+  creates a recoverable backup first.
+- Genesis creates v3 directly; Adoption and `update-harness` migrate legacy
+  layouts once and then retire dual support paths and project-local skill
+  shadows.
+- Procedures remain guidebook-first and task-sized. Code is reserved for
+  deterministic parsing, rendering, validation, and safe bounded file
+  operations rather than one monolithic lifecycle program.
+
+Version v2.3 remains the published behavior until S-021 acceptance and release
+proof are green. Do not advertise or stamp v3 into generated projects early.
+
 ## Architecture And Invariants
 
 | Layer | Owner | Invariant |
@@ -56,6 +81,9 @@ be changed only through a later spec linked by supersession.
 - A permanent Done lane or proof archive in startup context.
 - Retrofitting every historical task into a manufactured spec.
 - Claiming better agent outcomes from smaller context alone.
+- Importing Foundry FUIDs, Job Orders, flights, Claims, runtime orchestration,
+  CIC release controls, or other workspace-only machinery into the portable
+  Workbench.
 
 ## Spec Catalog
 
@@ -72,11 +100,12 @@ be changed only through a later spec linked by supersession.
 | [S-008 - Windows Verification Portability](specs/S-008-windows-verification-portability/SPEC.md) | Keep context output, spec-doctor, and eval-runner verification stable across Windows and POSIX hosts. | complete |
 | [S-009 - Git-Write Constrained Adoption](specs/S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
 | [S-010 - Canonical Evaluator Entry Detection](specs/S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
-| [S-011 - Agent Skills Adoption](specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | active |
+| [S-011 - Agent Skills Adoption](specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | blocked |
 | [S-012 - Reproducible Adoption Provenance](specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
 | [S-013 - Standardized Automation Run Outcomes](specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
-| [S-014 - Workbench Release Candidate](specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | active |
+| [S-014 - Workbench Release Candidate](specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | blocked |
 | [S-020 - Spec-Native Team Coordination](specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
+| [S-021 - Portable Workbench v3](specs/S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
