@@ -59,6 +59,7 @@ node tools/test-spec-workbench.mjs
 node tools/test-team-coordination.mjs
 node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
+node tools/test-core-skill-installer.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
@@ -79,6 +80,22 @@ Expected result:
   candidates.
 - spec doctor reports no duplicate IDs, invalid/contradictory states, stale
   claims, missing evidence, broken links, or generated-region drift.
+
+### Core-skill setup check
+
+The public source bundle is intentionally limited to the 12 skills in
+`skills/README.md`. Test the missing-only installer against a disposable user
+home without touching a real account:
+
+```bash
+node tools/core-skill-installer.mjs install --home /tmp/workbench-user-home
+node tools/test-core-skill-installer.mjs
+```
+
+The installer writes only missing core skill directories into
+`.agents/skills` and `.claude/skills`. It preserves existing names without a
+content comparison and blocks before mutation when either discovery root is
+Git-owned or a required skill path collides with a file or symlink.
 
 ### Spec Lifecycle And Retrieval
 

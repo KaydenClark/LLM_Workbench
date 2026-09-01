@@ -8,12 +8,12 @@
 **Spec ID:** S-021
 **Status:** active
 **Priority:** 0
-**Owner:** unassigned
-**Updated:** 2026-08-31
+**Owner:** codex
+**Updated:** 2026-09-01
 **Catalog description:** Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts.
 **Blockers:** none
-**Latest event:** Owner-approved grilling decisions promoted into a schedulable v3 capability.
-**Next gate:** Claim TK-001 and establish the missing-only core-skill installation seam from the current red catalog baseline.
+**Latest event:** TK-001 claimed by codex.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 ## Outcome
 
@@ -148,7 +148,7 @@ owner's request to prepare executable specs approves this dependency order.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | A brand-new host installs only missing members of the 12-skill core without altering existing skills or foreign roots | ready | none | pending |
+| TK-001 | A brand-new host installs only missing members of the 12-skill core without altering existing skills or foreign roots | in-progress | none | pending |
 | TK-002 | Genesis produces one fresh v3 project with seven root controls, manifest-backed support lanes, first spec, and green focused checks | ready | TK-001 | pending |
 | TK-003 | Adoption migrates one mixed existing project to v3 without losing records, history, project truth, or existing user skills | ready | TK-002 | pending |
 | TK-004 | An explicitly requested v2 upgrade backs up changed skills, synchronizes the core, migrates legacy paths once, and proves rollback | ready | TK-003 | pending |
