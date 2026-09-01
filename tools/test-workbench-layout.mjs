@@ -65,3 +65,22 @@ test('the validator rejects a traversing manifest lane', () => {
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
+
+test('the validator rejects a symlinked support lane', () => {
+  const project = fixture();
+  const outside = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    const wiki = path.join(project, 'workbench', 'wiki');
+    fs.rmSync(wiki, { recursive: true, force: true });
+    fs.symlinkSync(outside, wiki);
+
+    const validated = run('validate', '--project', project);
+
+    assert.notEqual(validated.status, 0);
+    assert.equal(validated.report.error.code, 'unsafe-lane');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(outside, { recursive: true, force: true });
+  }
+});

@@ -15,6 +15,15 @@ const lanes = {
 };
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 
+function lstatOrNull(target) {
+  try {
+    return fs.lstatSync(target);
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
 function report(status, details = {}) {
   return { status, ...details };
 }
@@ -68,7 +77,11 @@ function validateManifest(project) {
   }
   for (const lane of Object.values(manifest.lanes)) {
     if (!isSafeRelative(lane)) return fail('invalid-lane', `Manifest lane ${lane} is unsafe.`);
-    if (!fs.statSync(path.join(project, lane)).isDirectory()) {
+    const entry = lstatOrNull(path.join(project, lane));
+    if (entry?.isSymbolicLink() || !entry?.isDirectory()) {
+      return fail('unsafe-lane', `Manifest lane ${lane} must be an ordinary directory.`);
+    }
+    if (!entry.isDirectory()) {
       return fail('missing-lane', `Manifest lane ${lane} is missing.`);
     }
   }
@@ -86,12 +99,14 @@ function initialize(options) {
   const workbench = path.join(project, 'workbench');
   const manifestPath = path.join(workbench, 'manifest.json');
   if (fs.existsSync(manifestPath)) return fail('manifest-exists', `${manifestPath} already exists.`);
-  if (!fs.existsSync(project) || !fs.statSync(project).isDirectory()) {
+  const projectEntry = lstatOrNull(project);
+  if (!projectEntry || projectEntry.isSymbolicLink() || !projectEntry.isDirectory()) {
     return fail('invalid-project', `${project} must be an existing project directory.`);
   }
   for (const lane of Object.values(lanes)) {
     const target = path.join(project, lane);
-    if (fs.existsSync(target) && !fs.statSync(target).isDirectory()) {
+    const entry = lstatOrNull(target);
+    if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) {
       return fail('lane-collision', `${target} is not a directory.`);
     }
   }
