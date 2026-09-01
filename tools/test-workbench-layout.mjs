@@ -132,7 +132,7 @@ test('the validator rejects a traversing manifest lane', () => {
 
     const validated = run('validate', '--project', project);
 
-    assert.notEqual(validated.status, 0);
+    assert.notEqual(validated.status, 0, `${validated.stdout}\n${validated.stderr}`);
     assert.equal(validated.report.error.code, 'invalid-lane');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
@@ -239,6 +239,22 @@ test('Genesis validation rejects unstable and structurally incomplete first spec
       expected: 'invalid-first-spec',
       mutate(project) {
         const file = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8')
+          .replace(/^\*\*(?:Catalog description|Blockers|Latest event|Next gate):\*\*.*\n/gm, ''));
+      }
+    },
+    {
+      expected: 'invalid-first-spec',
+      mutate(project) {
+        const file = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8')
+          .replace('Prove one cold selection', 'Prove input | output selection'));
+      }
+    },
+    {
+      expected: 'invalid-first-spec',
+      mutate(project) {
+        const file = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
         fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('| TK-001 | Prove one cold selection | ready | none | pending |', '| TK-001 | Prove one cold selection | blocked | none | pending |'));
       }
     },
@@ -286,7 +302,12 @@ test('Genesis validation accepts legitimate filled Markdown bracket syntax', () 
 ## Bracket Examples
 
 Read array[0], run \`tool [--home USER_HOME]\`, follow [the guide](https://example.test),
-keep - [ ] as a checklist, route [[Room Note]], and define a [Reference]: https://example.test.
+keep - [ ] as a checklist, route [[Room Note]], and define [Reference], [RFC], and
+[API] labels below.
+
+[Reference]: https://example.test/reference
+[RFC]: https://example.test/rfc
+[API]: https://example.test/api
 `);
 
     const validated = run('validate', '--project', project, '--genesis');
@@ -295,5 +316,33 @@ keep - [ ] as a checklist, route [[Room Note]], and define a [Reference]: https:
     assert.equal(validated.report.status, 'valid');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('Genesis validation fails closed when the shipped placeholder vocabulary is unavailable', () => {
+  const project = fixture();
+  const partialBundle = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    completeGenesis(project);
+    const taskboard = path.join(project, 'TASKBOARD.md');
+    fs.writeFileSync(taskboard, fs.readFileSync(taskboard, 'utf8').replace('This is a filled TASKBOARD.md fixture.', '[current useful outcome]'));
+    const partialTools = path.join(partialBundle, 'tools');
+    fs.mkdirSync(partialTools);
+    const relocatedTool = path.join(partialTools, 'workbench-layout.mjs');
+    fs.copyFileSync(tool, relocatedTool);
+    fs.copyFileSync(path.join(root, 'tools', 'spec-packet.mjs'), path.join(partialTools, 'spec-packet.mjs'));
+    fs.copyFileSync(path.join(root, 'tools', 'markdown-table.mjs'), path.join(partialTools, 'markdown-table.mjs'));
+
+    const validated = spawnSync(process.execPath, [fs.realpathSync(relocatedTool), 'validate', '--project', project, '--genesis'], {
+      cwd: partialBundle,
+      encoding: 'utf8'
+    });
+
+    assert.notEqual(validated.status, 0, `${validated.stdout}\n${validated.stderr}`);
+    assert.equal(JSON.parse(validated.stdout).error.code, 'invalid-source');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(partialBundle, { recursive: true, force: true });
   }
 });

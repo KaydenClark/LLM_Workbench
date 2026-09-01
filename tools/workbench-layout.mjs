@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseSpecPacket } from './spec-packet.mjs';
 
 export const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -19,16 +20,20 @@ const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.
 
 function shippedTemplatePlaceholders() {
   const placeholders = new Set();
+  const missing = [];
   for (const name of [...controls.filter((control) => control !== 'CLAUDE.md'), 'SPEC.md']) {
     const templatePath = path.join(sourceRoot, 'templates', name);
-    if (!fs.existsSync(templatePath)) continue;
+    if (!fs.existsSync(templatePath)) {
+      missing.push(templatePath);
+      continue;
+    }
     const content = fs.readFileSync(templatePath, 'utf8');
     for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) placeholders.add(match[0]);
   }
-  return placeholders;
+  return { placeholders, missing };
 }
 
-const templatePlaceholders = shippedTemplatePlaceholders();
+const templateVocabulary = shippedTemplatePlaceholders();
 
 function lstatOrNull(target) {
   try {
@@ -66,9 +71,7 @@ function isSafeRelative(value) {
 
 function containsPlaceholder(content) {
   for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) {
-    const value = match[0];
-    if (templatePlaceholders.has(value)
-        || /^\[(?:[A-Z][A-Z0-9_ ]*|#+|0-9|YYYY-MM-DD)\]$/.test(value)) return true;
+    if (templateVocabulary.placeholders.has(match[0])) return true;
   }
   return false;
 }
@@ -119,16 +122,20 @@ function validateFirstSpec(project, expectedVersion) {
   }
   const content = fs.readFileSync(specPath, 'utf8');
   const requiredSections = ['Outcome', 'Vertical Implementation Slices', 'Acceptance Criteria', 'Completion Result'];
+  let packet;
+  try {
+    packet = parseSpecPacket(content, specPath, project);
+  } catch (error) {
+    return fail('invalid-first-spec', error.message, { specPath });
+  }
   const valid = !containsPlaceholder(content)
     && versionStamp(content) === expectedVersion
-    && new RegExp(`^# ${expectedId} - \\S`, 'm').test(content)
-    && new RegExp(`^\\*\\*Spec ID:\\*\\* ${expectedId}$`, 'm').test(content)
-    && /^\*\*Status:\*\* active$/m.test(content)
-    && /^\*\*Priority:\*\* [0-9]$/m.test(content)
-    && /^\*\*Owner:\*\* \S.+$/m.test(content)
-    && /^\*\*Updated:\*\* \d{4}-\d{2}-\d{2}$/m.test(content)
+    && packet.id === expectedId
+    && packet.relativePath === `${lanes.specs}/${entries[0].name}/SPEC.md`
+    && packet.status === 'active'
+    && Number.isInteger(packet.priority) && packet.priority >= 0 && packet.priority <= 9
+    && packet.tickets.some((ticket) => ticket.status === 'ready' && ticket.blockers === 'none')
     && requiredSections.every((section) => new RegExp(`^## ${section}$`, 'm').test(content))
-    && /^\| TK-\d{3} \| .+ \| ready \| none \| .+ \|$/m.test(content)
     && /^- \[ \] \S/m.test(content);
   if (!valid) {
     return fail('invalid-first-spec', 'The first spec is not an actionable version-matched Workbench packet.', { specPath });
@@ -224,6 +231,11 @@ export function validate(options, requireGenesis) {
   const project = path.resolve(options['--project']);
   const result = validateManifest(project);
   if (result.status !== 'valid' || !requireGenesis) return result;
+  if (templateVocabulary.missing.length > 0 || templateVocabulary.placeholders.size === 0) {
+    return fail('invalid-source', 'Genesis validation requires the complete versioned Workbench template source.', {
+      missing: templateVocabulary.missing
+    });
+  }
   for (const control of controls) {
     const controlIssue = validateGenesisControl(project, control, result.manifest.workbenchVersion);
     if (controlIssue) return controlIssue;
