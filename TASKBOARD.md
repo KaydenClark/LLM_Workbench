@@ -15,7 +15,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
 | [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-003: Open the sole non-draft integration-to-main owner promotion PR (ready) | unassigned | TK-002 | Live refs now satisfy main ancestry, but owner-approved S-021 intentionally makes integration mutable again and invalidates any pre-v3 candidate. | Complete S-021 on integration, then resume TK-002 against that exact immutable integration SHA. |
-| [S-021](specs/S-021-portable-workbench-v3/SPEC.md) | TK-002: Genesis produces one fresh v3 project with seven root controls, manifest-backed support lanes, first spec, and green focused checks (in-progress) | codex | TK-001 | TK-002 claimed by codex. | Close TK-002 with verification and documentation proof. |
+| [S-021](specs/S-021-portable-workbench-v3/SPEC.md) | TK-003: Adoption migrates one mixed existing project to v3 without losing records, history, project truth, or existing user skills (ready) | codex | TK-002 | TK-002 closed with proof. | Complete TK-003. |
 | [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | unassigned | Fresh Claude skill-discovery proof is absent | S-021 was accepted as this spec's successor; S-011 is blocked from further execution while its implementation evidence remains intact. | Complete S-021, then mark S-011 superseded without reopening TK-003. |
 <!-- hot-specs:end -->
 
