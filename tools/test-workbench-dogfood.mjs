@@ -17,7 +17,13 @@ assert.equal(fs.existsSync(path.join(root, 'workbench', 'specs', 'S-021-portable
   'S-021 must be recoverable at its manifest-declared stable path');
 assert.equal(validateManifest(root).status, 'valid', 'the dogfood manifest must validate');
 assert.deepEqual(doctor(root), [], 'doctor must resolve only the manifest-declared spec lane');
-assert.equal(nextWork(root), null, 'a completed workbench must expose no stale eligible ticket');
+const selected = nextWork(root);
+if (selected) {
+  assert.match(selected.path, /^workbench\/specs\/S-\d{3}-[^/]+\/SPEC\.md$/,
+    'active dogfood work must resolve from the manifest-declared spec lane');
+  assert.equal(fs.existsSync(path.join(root, selected.path)), true,
+    'the selected manifest-declared spec must exist');
+}
 const shown = spawnSync(process.execPath, ['tools/spec-workbench.mjs', 'show', 'S-021'], { cwd: root, encoding: 'utf8' });
 assert.equal(shown.status, 0, shown.stderr);
 assert.match(shown.stdout, /^# S-021 - Portable Workbench v3/m,

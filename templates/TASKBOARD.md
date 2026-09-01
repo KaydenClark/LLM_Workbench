@@ -15,7 +15,7 @@ Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-001](specs/S-001-capability/SPEC.md) | TK-001: [slice] (ready) | [owner] | none | [event] | [gate] |
+| [S-001](workbench/specs/S-001-capability/SPEC.md) | TK-001: [slice] (ready) | [owner] | none | [event] | [gate] |
 <!-- hot-specs:end -->
 
 Completed specs disappear from this projection immediately. Their requirements,

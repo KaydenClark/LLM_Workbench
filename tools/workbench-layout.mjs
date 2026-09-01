@@ -50,13 +50,71 @@ function isSafeRelative(value) {
     && !value.split('/').includes('..') && value.startsWith('workbench/');
 }
 
-function hasSpec(directory) {
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-    const candidate = path.join(directory, entry.name);
-    if (entry.isFile() && entry.name === 'SPEC.md') return true;
-    if (entry.isDirectory() && hasSpec(candidate)) return true;
+function containsPlaceholder(content) {
+  return /(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/.test(content);
+}
+
+function versionStamp(content) {
+  return content.match(/(?:Generated from|Part of) LLM Workbench (v\d+\.\d+\.\d+)/)?.[1] ?? null;
+}
+
+function validateGenesisControl(project, control, expectedVersion) {
+  const target = path.join(project, control);
+  const entry = lstatOrNull(target);
+  if (!entry || entry.isSymbolicLink() || !entry.isFile()) {
+    return fail('unsafe-control', `${control} must be an ordinary file.`, { control });
   }
-  return false;
+  const content = fs.readFileSync(target, 'utf8');
+  const trimmed = content.trim();
+  if (!trimmed || trimmed === control || containsPlaceholder(content)) {
+    return fail('unfilled-control', `${control} must be filled and contain no template placeholders.`, { control });
+  }
+  if (control === 'CLAUDE.md') {
+    if (trimmed !== '@AGENTS.md') {
+      return fail('unfilled-control', 'CLAUDE.md must load the filled AGENTS.md control.', { control });
+    }
+    return null;
+  }
+  if (!/^#\s+\S/m.test(content) || !/^##\s+\S/m.test(content)) {
+    return fail('unfilled-control', `${control} must contain filled control content.`, { control });
+  }
+  if (versionStamp(content) !== expectedVersion) {
+    return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control });
+  }
+  return null;
+}
+
+function validateFirstSpec(project, expectedVersion) {
+  const specsRoot = path.join(project, lanes.specs);
+  const entries = fs.readdirSync(specsRoot, { withFileTypes: true })
+    .filter((entry) => entry.name !== '.gitkeep');
+  if (entries.length === 0) return fail('missing-first-spec', 'Genesis must create a first spec in workbench/specs.');
+  if (entries.length !== 1 || !entries[0].isDirectory() || !/^S-\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entries[0].name)) {
+    return fail('invalid-first-spec', 'Genesis must create one stable S-###-slug/SPEC.md packet.');
+  }
+  const expectedId = entries[0].name.slice(0, 5);
+  const specPath = path.join(specsRoot, entries[0].name, 'SPEC.md');
+  const specEntry = lstatOrNull(specPath);
+  if (!specEntry || specEntry.isSymbolicLink() || !specEntry.isFile()) {
+    return fail('invalid-first-spec', 'The first spec must be an ordinary SPEC.md file.', { specPath });
+  }
+  const content = fs.readFileSync(specPath, 'utf8');
+  const requiredSections = ['Outcome', 'Vertical Implementation Slices', 'Acceptance Criteria', 'Completion Result'];
+  const valid = !containsPlaceholder(content)
+    && versionStamp(content) === expectedVersion
+    && new RegExp(`^# ${expectedId} - \\S`, 'm').test(content)
+    && new RegExp(`^\\*\\*Spec ID:\\*\\* ${expectedId}$`, 'm').test(content)
+    && /^\*\*Status:\*\* (?:planned|active|blocked|needs-review)$/m.test(content)
+    && /^\*\*Priority:\*\* [0-9]$/m.test(content)
+    && /^\*\*Owner:\*\* \S.+$/m.test(content)
+    && /^\*\*Updated:\*\* \d{4}-\d{2}-\d{2}$/m.test(content)
+    && requiredSections.every((section) => new RegExp(`^## ${section}$`, 'm').test(content))
+    && /^\| TK-\d{3} \| .+ \| (?:ready|in-progress|blocked) \| .+ \| .+ \|$/m.test(content)
+    && /^- \[ \] \S/m.test(content);
+  if (!valid) {
+    return fail('invalid-first-spec', 'The first spec is not an actionable version-matched Workbench packet.', { specPath });
+  }
+  return null;
 }
 
 export function validateManifest(project) {
@@ -148,9 +206,11 @@ export function validate(options, requireGenesis) {
   const result = validateManifest(project);
   if (result.status !== 'valid' || !requireGenesis) return result;
   for (const control of controls) {
-    if (!fs.existsSync(path.join(project, control))) return fail('missing-control', `${control} is missing.`);
+    const controlIssue = validateGenesisControl(project, control, result.manifest.workbenchVersion);
+    if (controlIssue) return controlIssue;
   }
-  if (!hasSpec(path.join(project, lanes.specs))) return fail('missing-first-spec', 'Genesis must create a first spec in workbench/specs.');
+  const specIssue = validateFirstSpec(project, result.manifest.workbenchVersion);
+  if (specIssue) return specIssue;
   if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'Genesis must not create a project-local skills directory.');
   return report('valid', { manifest: result.manifest, controls });
 }

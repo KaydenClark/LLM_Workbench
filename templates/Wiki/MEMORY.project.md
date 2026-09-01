@@ -23,7 +23,7 @@ note.
 - [[BLUEPRINT]] - what this room is: product map, architecture, non-goals
 - [[TASKBOARD]] - active work projection (current slice, owner, next gate)
 - [[RUNBOOK]] - install, run, test, and recovery commands
-- `specs/` - stable capability records and proof
+- `workbench/specs/` - stable capability records and proof
 
 Inside a shared deployment vault, qualify these links with the room path (e.g.
 `[[Projects/[PROJECT_NAME]/AGENTS|AGENTS]]`) - every room has an `AGENTS.md`,

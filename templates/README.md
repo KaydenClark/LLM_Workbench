@@ -21,7 +21,7 @@ before changing anything:
   consult it when shared language could be ambiguous.
 - [`TASKBOARD.md`](TASKBOARD.md) - active spec projection: current slice, owner,
   blocker, latest event, and next gate.
-- [`specs/S-###-slug/SPEC.md`](SPEC.md) - on-demand capability truth,
+- [`workbench/specs/S-###-slug/SPEC.md`](workbench/specs/S-###-slug/SPEC.md) - on-demand capability truth,
   acceptance, decisions, verification, append-only evidence, and completion.
 - [`RUNBOOK.md`](RUNBOOK.md) - how to set up, run, test, build, and recover this
   project, plus the verification commands that gate "done".

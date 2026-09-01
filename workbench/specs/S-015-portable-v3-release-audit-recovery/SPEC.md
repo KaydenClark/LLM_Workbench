@@ -6,12 +6,12 @@
 **Spec ID:** S-015
 **Status:** active
 **Priority:** 0
-**Owner:** unassigned
+**Owner:** codex
 **Updated:** 2026-09-01
 **Catalog description:** Make generated v3 controls and Genesis validation enforce one operable manifest-declared spec lane before release.
 **Blockers:** none
-**Latest event:** S-014's immutable `d80d14c` release audit rejected the candidate on stale template paths, permissive Genesis validation, and stale limitation accounting.
-**Next gate:** Claim TK-001 and drive the rejected public seams red/green.
+**Latest event:** TK-001 claimed by codex.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 ## Outcome
 
@@ -54,8 +54,9 @@ readiness claims.
   active root-spec guidance returns, while allowing bounded legacy migration
   language in Adoption.
 - `validate --genesis` accepts only ordinary, non-symlink root controls whose
-  content is filled, free of bracketed template placeholders, and stamped with
-  the manifest's exact Workbench version.
+  content is filled and free of bracketed template placeholders. The six
+  stamped controls must match the manifest's exact Workbench version; the thin
+  `CLAUDE.md` bridge remains exactly `@AGENTS.md`.
 - The first declared spec is an ordinary file at a stable `S-###-slug/SPEC.md`
   path and parses as an actionable Workbench packet with required identity,
   lifecycle, outcome, slice, acceptance, and completion sections.
@@ -104,7 +105,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | A cold Genesis project gets only manifest-routed controls and fails closed unless its controls and first spec are operable | ready | none | pending |
+| TK-001 | A cold Genesis project gets only manifest-routed controls and fails closed unless its controls and first spec are operable | in-progress | none | pending |
 
 ### TK-001 — Operable Manifest-Routed Genesis
 
@@ -177,6 +178,7 @@ independent fixed-SHA review.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-01 | plan | Promoted the immutable S-014 release-audit rejection into one linked recovery capability and one complete-path tracer bullet | Auditor `/root/s014_auditor` pinned `08ab78e..d80d14c`, confirmed live refs and ancestry, ran the complete RUNBOOK suite green, and returned three findings with no candidate or external writes | Added S-015; S-014 blocker and generated projections updated separately | Claim TK-001, drive focused red/green behavior, land the reviewed repair, then restart S-014 on the new exact integration SHA |
+| 2026-09-01 | TK-001 implementation candidate | Replaced active root-spec template authority with the manifest lane and made Genesis readiness validate ordinary filled controls, exact applicable version stamps, the thin Claude bridge, and one stable actionable first spec | Red: `node tools/test-workbench-layout.mjs` failed on stale template authority plus false-positive control/spec fixtures. Green: 6 focused layout tests, dogfood/spec lifecycle tests, the union 20-command AGENTS/Runbook suite, evaluator 113/113, templates 106.6/113, held-out grader, render/doctor, and `git diff --check` passed. Guardrail baseline from the rejected candidate and after-score both remained 68/100; no model-outcome claim was made. | Updated six active copy-ready templates, layout validator/tests, dogfood selection assertion, RUNBOOK behavior, S-014 blocker/count, S-015, and generated projections; README, skills, Lexicon, and S-021 checked with no update needed because their public contracts or immutable history remain accurate | Push this in-progress checkpoint and obtain an independent immutable-diff review before closing TK-001 |
 
 ## Completion Result
 

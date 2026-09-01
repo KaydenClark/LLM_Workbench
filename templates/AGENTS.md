@@ -5,7 +5,7 @@
 This always-loaded file owns how agents work. Product detail loads from
 `BLUEPRINT.md` only when needed; shared definitions load from `LEXICON.md` when
 project language matters; executable work comes from the assigned stable
-`specs/S-###-slug/SPEC.md`; commands live in `RUNBOOK.md`.
+`workbench/specs/S-###-slug/SPEC.md`; commands live in `RUNBOOK.md`.
 
 ## Authority Order
 
@@ -28,7 +28,7 @@ Stop and surface committed secrets, credentials, or tokens.
 
 ## Edit Scope
 
-- Writable: `[WRITABLE_ROOTS]`, root controls, and `specs/`
+- Writable: `[WRITABLE_ROOTS]`, root controls, and `workbench/specs/`
 - Forbidden: `[FORBIDDEN_PATHS]`
 - Review required: `[REQUIRES_REVIEW_FOR]`
 

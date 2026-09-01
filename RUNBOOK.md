@@ -112,8 +112,12 @@ node tools/workbench-layout.mjs validate --project /tmp/workbench-project
 node tools/test-workbench-layout.mjs
 ```
 
-`validate --genesis` additionally requires the seven root controls, one first
-spec under `workbench/specs/`, and no project-local `skills/` directory.
+`validate --genesis` additionally requires seven ordinary, filled root controls,
+exact Workbench version stamps on the six stamped controls (the thin
+`CLAUDE.md` remains exactly `@AGENTS.md`), one actionable version-matched first
+spec at a stable `workbench/specs/S-###-slug/SPEC.md` path, and no project-local
+`skills/` directory. It fails closed on symlinks, template placeholders, stubs,
+version drift, unstable spec paths, or structurally incomplete first specs.
 
 ### V3 Adoption migration check
 

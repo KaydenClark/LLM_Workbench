@@ -20,12 +20,71 @@ function run(...args) {
   return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
 }
 
+function markdownFiles(directory) {
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const candidate = path.join(directory, entry.name);
+    if (entry.isDirectory()) return markdownFiles(candidate);
+    return entry.isFile() && entry.name.endsWith('.md') ? [candidate] : [];
+  });
+}
+
 function completeGenesis(project) {
-  for (const control of controls) fs.writeFileSync(path.join(project, control), `${control}\n`);
+  for (const control of controls) {
+    const content = control === 'CLAUDE.md'
+      ? '@AGENTS.md\n'
+      : `# ${control}\n\n> Generated from LLM Workbench v3.0.0.\n\n## Purpose\n\nThis is a filled ${control} fixture.\n`;
+    fs.writeFileSync(path.join(project, control), content);
+  }
   const firstSpec = path.join(project, 'workbench', 'specs', 'S-001-first');
   fs.mkdirSync(firstSpec);
-  fs.writeFileSync(path.join(firstSpec, 'SPEC.md'), '# S-001\n');
+  fs.writeFileSync(path.join(firstSpec, 'SPEC.md'), `# S-001 - First Capability
+
+> Generated from LLM Workbench v3.0.0. Stable path
+> \`workbench/specs/S-001-first/SPEC.md\`; never move between status folders.
+
+**Spec ID:** S-001
+**Status:** active
+**Priority:** 0
+**Owner:** fixture
+**Updated:** 2026-09-01
+**Catalog description:** Prove one actionable Genesis capability.
+**Blockers:** none
+**Latest event:** Spec captured.
+**Next gate:** Claim TK-001.
+
+## Outcome
+
+One cold agent can select and claim the first ticket.
+
+## Vertical Implementation Slices
+
+| Ticket | Slice | Status | Blockers | Proof |
+|---|---|---|---|---|
+| TK-001 | Prove one cold selection | ready | none | pending |
+
+## Acceptance Criteria
+
+- [ ] The first ticket is selectable.
+
+## Completion Result
+
+Pending.
+`);
 }
+
+test('copy-ready v3 templates route active spec authority through workbench/specs', () => {
+  const templateRoot = path.join(root, 'templates');
+  const adoptionPath = path.join(templateRoot, 'ADOPTION.md');
+  for (const file of markdownFiles(templateRoot).filter((candidate) => candidate !== adoptionPath)) {
+    const relative = path.relative(templateRoot, file);
+    const content = fs.readFileSync(file, 'utf8');
+    assert.doesNotMatch(content, /(?<!workbench\/)specs\//, `${relative} contains retired root specs authority`);
+  }
+  assert.match(fs.readFileSync(adoptionPath, 'utf8'), /The migration moves[\s\S]{0,200}`specs\/`[\s\S]{0,200}manifest-declared lanes/);
+  for (const relative of ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('Wiki', 'MEMORY.project.md')]) {
+    assert.match(fs.readFileSync(path.join(templateRoot, relative), 'utf8'), /workbench\/specs\//, `${relative} does not name the manifest-default spec lane`);
+  }
+});
 
 test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow', () => {
   const project = fixture();
@@ -82,5 +141,109 @@ test('the validator rejects a symlinked support lane', () => {
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(outside, { recursive: true, force: true });
+  }
+});
+
+test('Genesis validation rejects symlinked and unfilled root controls', () => {
+  const scenarios = [
+    {
+      expected: 'unsafe-control',
+      mutate(project) {
+        const target = path.join(project, 'AGENTS.real.md');
+        fs.renameSync(path.join(project, 'AGENTS.md'), target);
+        fs.symlinkSync(target, path.join(project, 'AGENTS.md'));
+      }
+    },
+    {
+      expected: 'unfilled-control',
+      mutate(project) {
+        fs.writeFileSync(path.join(project, 'BLUEPRINT.md'), '# [PROJECT_NAME]\n');
+      }
+    },
+    {
+      expected: 'unfilled-control',
+      mutate(project) {
+        fs.writeFileSync(path.join(project, 'README.md'), 'README.md\n');
+      }
+    },
+    {
+      expected: 'unfilled-control',
+      mutate(project) {
+        fs.writeFileSync(path.join(project, 'TASKBOARD.md'), '# Taskboard\n\n> Generated from LLM Workbench v3.0.0.\n\n## Focus\n\n[current useful outcome]\n');
+      }
+    },
+    {
+      expected: 'version-mismatch',
+      mutate(project) {
+        const file = path.join(project, 'RUNBOOK.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('v3.0.0', 'v2.3.0'));
+      }
+    }
+  ];
+
+  for (const scenario of scenarios) {
+    const project = fixture();
+    try {
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+      completeGenesis(project);
+      scenario.mutate(project);
+
+      const validated = run('validate', '--project', project, '--genesis');
+
+      assert.notEqual(validated.status, 0);
+      assert.equal(validated.report.error.code, scenario.expected);
+    } finally {
+      fs.rmSync(project, { recursive: true, force: true });
+    }
+  }
+});
+
+test('Genesis validation rejects unstable and structurally incomplete first specs', () => {
+  const scenarios = [
+    {
+      expected: 'invalid-first-spec',
+      mutate(project) {
+        const stable = path.join(project, 'workbench', 'specs', 'S-001-first');
+        const unstable = path.join(project, 'workbench', 'specs', 'first');
+        fs.renameSync(stable, unstable);
+      }
+    },
+    {
+      expected: 'invalid-first-spec',
+      mutate(project) {
+        fs.writeFileSync(path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md'), '# S-001\n');
+      }
+    },
+    {
+      expected: 'invalid-first-spec',
+      mutate(project) {
+        const file = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('v3.0.0', 'v2.3.0'));
+      }
+    },
+    {
+      expected: 'invalid-first-spec',
+      mutate(project) {
+        const directory = path.join(project, 'workbench', 'specs', 'S-001-first');
+        fs.renameSync(path.join(directory, 'SPEC.md'), path.join(directory, 'SPEC.real.md'));
+        fs.symlinkSync('SPEC.real.md', path.join(directory, 'SPEC.md'));
+      }
+    }
+  ];
+
+  for (const scenario of scenarios) {
+    const project = fixture();
+    try {
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+      completeGenesis(project);
+      scenario.mutate(project);
+
+      const validated = run('validate', '--project', project, '--genesis');
+
+      assert.notEqual(validated.status, 0);
+      assert.equal(validated.report.error.code, scenario.expected);
+    } finally {
+      fs.rmSync(project, { recursive: true, force: true });
+    }
   }
 });
