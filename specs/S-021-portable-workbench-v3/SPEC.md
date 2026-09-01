@@ -12,8 +12,8 @@
 **Updated:** 2026-09-01
 **Catalog description:** Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts.
 **Blockers:** none
-**Latest event:** TK-004 claimed by codex.
-**Next gate:** Close TK-004 with verification and documentation proof.
+**Latest event:** TK-004 closed with proof.
+**Next gate:** Complete TK-005.
 
 ## Outcome
 
@@ -151,7 +151,7 @@ owner's request to prepare executable specs approves this dependency order.
 | TK-001 | A brand-new host installs only missing members of the 12-skill core without altering existing skills or foreign roots | done | none | Red: node tools/test-core-skill-installer.mjs failed before helper; green: focused installer/catalog tests and complete Runbook suite passed |
 | TK-002 | Genesis produces one fresh v3 project with seven root controls, manifest-backed support lanes, first spec, and green focused checks | done | TK-001 | Red: node tools/test-workbench-layout.mjs failed before layout helper; green: fresh Genesis, traversal, and symlink fixtures plus complete Runbook suite passed |
 | TK-003 | Adoption migrates one mixed existing project to v3 without losing records, history, project truth, or existing user skills | done | TK-002 | Red: node tools/test-workbench-adoption.mjs failed before the migration helper; green: mixed adoption/collision test plus complete Runbook suite, evaluator 106.6/113, and doctor passed |
-| TK-004 | An explicitly requested v2 upgrade backs up changed skills, synchronizes the core, migrates legacy paths once, and proves rollback | in-progress | TK-003 | pending |
+| TK-004 | An explicitly requested v2 upgrade backs up changed skills, synchronizes the core, migrates legacy paths once, and proves rollback | done | TK-003 | Red: node tools/test-workbench-upgrade.mjs failed before the updater; green: explicit authorization, managed backup, clean recovery-point, migration, and rollback-record fixtures plus complete Runbook suite passed |
 | TK-005 | One v3 planning-to-delivery workflow resolves all project support paths through the manifest using the 12 bundled core skills | ready | TK-004 | pending |
 | TK-006 | LLM Workbench dogfoods v3, completes the fresh/cold acceptance matrix, and hands the exact integration candidate back to S-014 | ready | TK-005 | pending |
 
@@ -358,6 +358,7 @@ future tool names before their ticket establishes the stable seam.
 | 2026-09-01 | TK-001 | Ticket closed | Red: node tools/test-core-skill-installer.mjs failed before helper; green: focused installer/catalog tests and complete Runbook suite passed | Updated AGENTS.md, RUNBOOK.md, skills/README.md, update-harness source guidance, and catalog contract | TK-002 fresh Genesis remains |
 | 2026-09-01 | TK-002 | Ticket closed | Red: node tools/test-workbench-layout.mjs failed before layout helper; green: fresh Genesis, traversal, and symlink fixtures plus complete Runbook suite passed | Updated AGENTS.md, RUNBOOK.md, Genesis template and skill, manifest/layout tool, and focused tests | TK-003 lossless Adoption remains |
 | 2026-09-01 | TK-003 | Ticket closed | Red: node tools/test-workbench-adoption.mjs failed before the migration helper; green: mixed adoption/collision test plus complete Runbook suite, evaluator 106.6/113, and doctor passed | Updated AGENTS, RUNBOOK, Adoption template/skill, layout/spec tools, and focused tests; guardrail baseline/after remained 73/100 with pre-existing outcome-evidence gaps | TK-004 explicit update and rollback remains |
+| 2026-09-01 | TK-004 | Ticket closed | Red: node tools/test-workbench-upgrade.mjs failed before the updater; green: explicit authorization, managed backup, clean recovery-point, migration, and rollback-record fixtures plus complete Runbook suite passed | Updated AGENTS.md, RUNBOOK.md, and update-harness guidance for explicit update/recovery. | TK-005 manifest-aware workflow remains |
 
 ## Completion Result
 
