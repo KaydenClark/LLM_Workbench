@@ -162,7 +162,8 @@ worktree, a missing committed Git recovery point, or a pre-existing v3 support
 root before mutation. For each changed managed skill it creates a copy under
 the user home's `.workbench-upgrade-backup-*` directory, migrates the legacy
 support lanes once, and records the pre-migration SHA and tracked path inventory
-in `workbench/handoffs/upgrade-recovery.json`.
+in `workbench/handoffs/upgrade-recovery.json`. The target project must be clean
+and committed first; uncommitted state has no concrete rollback point.
 
 ### Spec Lifecycle And Retrieval
 

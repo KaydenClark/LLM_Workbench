@@ -91,6 +91,9 @@ function preflight(project, home, explicit) {
   if (lstatOrNull(path.join(project, 'workbench'))) return fail('support-root-exists', `${path.join(project, 'workbench')} already exists; use normal v3 maintenance instead of the one-time upgrade.`);
   const git = spawnSync('git', ['rev-parse', '--verify', 'HEAD'], { cwd: project, encoding: 'utf8' });
   if (git.status !== 0) return fail('missing-git-recovery-point', 'Upgrade requires a committed pre-migration Git HEAD for concrete rollback proof.');
+  const status = spawnSync('git', ['status', '--porcelain'], { cwd: project, encoding: 'utf8' });
+  if (status.status !== 0) return fail('git-status-failed', 'Could not verify that the pre-migration worktree is clean.');
+  if (status.stdout) return fail('dirty-project', 'Upgrade requires a clean project worktree so the recorded Git SHA is a complete recovery point.');
   const inventoryResult = spawnSync('git', ['ls-files', '-z'], { cwd: project, encoding: 'utf8' });
   if (inventoryResult.status !== 0) return fail('inventory-failed', 'Could not record the pre-migration tracked path inventory.');
   const destinations = [

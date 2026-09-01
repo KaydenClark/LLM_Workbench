@@ -102,4 +102,24 @@ test('the updater refuses to replace a changed installed skill without explicit 
   }
 });
 
+test('the updater refuses a dirty project because HEAD alone is not a full recovery point', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  try {
+    seedProject(project);
+    assert.equal(run(installer, 'install', '--home', home).status, 0);
+    write(project, 'README.md', '# README.md\n\nUncommitted project truth.\n');
+
+    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', 'v3.0.0', '--explicit-update');
+
+    assert.notEqual(result.status, 0);
+    assert.equal(result.report.status, 'blocked');
+    assert.equal(result.report.error.code, 'dirty-project');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
 console.log('ok - explicit upgrade preserves a rollback point and never changes skills implicitly');
