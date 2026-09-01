@@ -15,6 +15,20 @@ export const lanes = {
   feedback: 'workbench/feedback'
 };
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+function shippedTemplatePlaceholders() {
+  const placeholders = new Set();
+  for (const name of [...controls.filter((control) => control !== 'CLAUDE.md'), 'SPEC.md']) {
+    const templatePath = path.join(sourceRoot, 'templates', name);
+    if (!fs.existsSync(templatePath)) continue;
+    const content = fs.readFileSync(templatePath, 'utf8');
+    for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) placeholders.add(match[0]);
+  }
+  return placeholders;
+}
+
+const templatePlaceholders = shippedTemplatePlaceholders();
 
 function lstatOrNull(target) {
   try {
@@ -51,7 +65,12 @@ function isSafeRelative(value) {
 }
 
 function containsPlaceholder(content) {
-  return /(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/.test(content);
+  for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) {
+    const value = match[0];
+    if (templatePlaceholders.has(value)
+        || /^\[(?:[A-Z][A-Z0-9_ ]*|#+|0-9|YYYY-MM-DD)\]$/.test(value)) return true;
+  }
+  return false;
 }
 
 function versionStamp(content) {
@@ -104,12 +123,12 @@ function validateFirstSpec(project, expectedVersion) {
     && versionStamp(content) === expectedVersion
     && new RegExp(`^# ${expectedId} - \\S`, 'm').test(content)
     && new RegExp(`^\\*\\*Spec ID:\\*\\* ${expectedId}$`, 'm').test(content)
-    && /^\*\*Status:\*\* (?:planned|active|blocked|needs-review)$/m.test(content)
+    && /^\*\*Status:\*\* active$/m.test(content)
     && /^\*\*Priority:\*\* [0-9]$/m.test(content)
     && /^\*\*Owner:\*\* \S.+$/m.test(content)
     && /^\*\*Updated:\*\* \d{4}-\d{2}-\d{2}$/m.test(content)
     && requiredSections.every((section) => new RegExp(`^## ${section}$`, 'm').test(content))
-    && /^\| TK-\d{3} \| .+ \| (?:ready|in-progress|blocked) \| .+ \| .+ \|$/m.test(content)
+    && /^\| TK-\d{3} \| .+ \| ready \| none \| .+ \|$/m.test(content)
     && /^- \[ \] \S/m.test(content);
   if (!valid) {
     return fail('invalid-first-spec', 'The first spec is not an actionable version-matched Workbench packet.', { specPath });

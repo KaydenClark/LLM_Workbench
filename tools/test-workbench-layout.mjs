@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { nextWork } from './spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(root, 'tools', 'workbench-layout.mjs');
@@ -75,10 +76,12 @@ Pending.
 test('copy-ready v3 templates route active spec authority through workbench/specs', () => {
   const templateRoot = path.join(root, 'templates');
   const adoptionPath = path.join(templateRoot, 'ADOPTION.md');
-  for (const file of markdownFiles(templateRoot).filter((candidate) => candidate !== adoptionPath)) {
+  for (const file of markdownFiles(templateRoot)) {
     const relative = path.relative(templateRoot, file);
     const content = fs.readFileSync(file, 'utf8');
-    assert.doesNotMatch(content, /(?<!workbench\/)specs\//, `${relative} contains retired root specs authority`);
+    const retiredPaths = [...content.matchAll(/(?<!workbench\/)specs\//g)];
+    assert.equal(retiredPaths.length, file === adoptionPath ? 1 : 0,
+      `${relative} contains root specs authority outside the one bounded Adoption migration source`);
   }
   assert.match(fs.readFileSync(adoptionPath, 'utf8'), /The migration moves[\s\S]{0,200}`specs\/`[\s\S]{0,200}manifest-declared lanes/);
   for (const relative of ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('Wiki', 'MEMORY.project.md')]) {
@@ -98,6 +101,17 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     assert.equal(validated.status, 0, validated.stderr);
     assert.equal(validated.report.status, 'valid');
     assert.deepEqual(validated.report.controls, controls);
+    assert.deepEqual(nextWork(project), {
+      specId: 'S-001',
+      title: 'First Capability',
+      ticketId: 'TK-001',
+      slice: 'Prove one cold selection',
+      status: 'ready',
+      priority: 0,
+      owner: 'fixture',
+      path: 'workbench/specs/S-001-first/SPEC.md',
+      nextGate: 'Claim TK-001.'
+    });
     assert.equal(fs.existsSync(path.join(project, 'skills')), false);
     for (const lane of ['specs', 'wiki', 'grilling', 'handoffs', 'feedback']) {
       assert.equal(fs.existsSync(path.join(project, 'workbench', lane)), true);
@@ -218,6 +232,20 @@ test('Genesis validation rejects unstable and structurally incomplete first spec
       expected: 'invalid-first-spec',
       mutate(project) {
         const file = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('**Status:** active', '**Status:** planned'));
+      }
+    },
+    {
+      expected: 'invalid-first-spec',
+      mutate(project) {
+        const file = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('| TK-001 | Prove one cold selection | ready | none | pending |', '| TK-001 | Prove one cold selection | blocked | none | pending |'));
+      }
+    },
+    {
+      expected: 'invalid-first-spec',
+      mutate(project) {
+        const file = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
         fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('v3.0.0', 'v2.3.0'));
       }
     },
@@ -245,5 +273,27 @@ test('Genesis validation rejects unstable and structurally incomplete first spec
     } finally {
       fs.rmSync(project, { recursive: true, force: true });
     }
+  }
+});
+
+test('Genesis validation accepts legitimate filled Markdown bracket syntax', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    completeGenesis(project);
+    const runbook = path.join(project, 'RUNBOOK.md');
+    fs.appendFileSync(runbook, `
+## Bracket Examples
+
+Read array[0], run \`tool [--home USER_HOME]\`, follow [the guide](https://example.test),
+keep - [ ] as a checklist, route [[Room Note]], and define a [Reference]: https://example.test.
+`);
+
+    const validated = run('validate', '--project', project, '--genesis');
+
+    assert.equal(validated.status, 0, validated.stderr);
+    assert.equal(validated.report.status, 'valid');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
   }
 });
