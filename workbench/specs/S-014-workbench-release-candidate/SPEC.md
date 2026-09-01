@@ -4,14 +4,14 @@
 > `workbench/specs/S-014-workbench-release-candidate/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-014
-**Status:** active
+**Status:** blocked
 **Priority:** 0
 **Owner:** codex
 **Updated:** 2026-09-01
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** none
-**Latest event:** TK-002 claimed by codex.
-**Next gate:** Close TK-002 with verification and documentation proof.
+**Blockers:** S-015 must repair the immutable `d80d14c` audit findings and land on `integration` before a new exact candidate can be audited.
+**Latest event:** Independent Auditor `/root/s014_auditor` returned `REQUEST CHANGES` on exact candidate `d80d14c` with two P1 v3 readiness defects and one P2 limitation-count defect; no release evidence, status, or promotion PR was published.
+**Next gate:** Complete and land S-015, resolve the new exact `origin/integration` SHA, then repeat TK-002's separate immutable audit.
 
 ## Outcome
 
@@ -120,7 +120,7 @@ without weakening either repository's release boundary.
 - Neither TK-003 nor any verification step merges the promotion PR. Squash,
   rebase, force, branch deletion, and alternate repository/branch targets are
   outside this capability.
-- S-011's Claude authentication gate and seventeen isolated pending skills stay
+- S-011's fresh-Claude discovery gap and sixteen isolated pending skills stay
   visible as limitations. S-014 does not complete, validate, or distribute
   those pending skills; it releases only the already-audited live checkpoint.
 
@@ -155,7 +155,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile main ancestry into integration through an audited merge PR | done | none | PR #31 head `490ad58`; ancestry merge `88b6f7e`; integration merge `a9fb9f9` |
-| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | in-progress | none | S-021 landed at exact `origin/integration` `d80d14c`; no release-gate status or promotion PR exists |
+| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | blocked | S-015 | Audit of exact `d80d14c` returned REQUEST CHANGES; no release-gate status or promotion PR was created |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
 ### Scoped Ticket: TK-001
@@ -329,6 +329,7 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-08-31 | v3 dependency reconciliation | Refreshed live refs, confirmed main ancestry now passes, and blocked release publication on the owner-approved S-021 portable v3 capability | `git fetch origin --prune`; exact refs `08ab78e` and `9e6c71b`; ancestry exit 0; GitHub open-PR query found only obsolete PR #42 into integration and no integration-to-main PR | Updated S-014 current state, blocker, ticket status, and dependency; generated projections refreshed separately | Complete S-021, then restart immutable exact-head audit/publication at TK-002 |
 | 2026-09-01 | S-021 handoff | Received the completed portable-v3 candidate route; release work remains blocked until that candidate is present on `integration` | S-021 full suite and fixed-diff review are recorded in S-021; no S-014 audit, status, promotion PR, or release mutation was performed | Updated this handoff state and its manifest-declared stable path | Resolve the exact integration SHA after S-021 lands, then run S-014/TK-002 separately |
 | 2026-09-01 | TK-002 dependency satisfied | Refreshed the declared remote branches and confirmed S-021 is now the exact immutable integration candidate | `origin/integration` and the completed S-021 branch both resolve to `d80d14c531c4bece9e2978d11e92e5a5d7bd77a5`; `origin/main` remains `08ab78e5a59a68d2b04028fe71a2be488d5ae10e`; ancestry passes; GitHub reports no release-gate status and no integration-to-main PR | Updated S-014 and generated projections only; RUNBOOK, README, templates, and skills checked with no update needed because no operational or product behavior changed | Claim TK-002 and run the required separate read-only exact-head audit before publication |
+| 2026-09-01 | TK-002 immutable audit | Separate Auditor `/root/s014_auditor` rejected exact integration `d80d14c` without making candidate or external changes | Clean detached worktree; live main/integration refs and ancestry matched; complete 19-command RUNBOOK suite, evaluator 113/113 and templates 106.6/113 passed; review found stale root-spec template authority, permissive Genesis readiness validation, and stale 17-vs-16 limitation accounting | Added linked S-015 recovery capability and updated S-014 blocker/current limitation; S-021 remains immutable historical evidence | Complete and land S-015, then restart TK-002 against the changed exact integration SHA |
 
 ## Completion Result
 
