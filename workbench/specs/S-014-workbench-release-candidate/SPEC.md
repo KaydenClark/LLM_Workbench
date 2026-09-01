@@ -4,14 +4,14 @@
 > `workbench/specs/S-014-workbench-release-candidate/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-014
-**Status:** blocked
+**Status:** active
 **Priority:** 0
-**Owner:** unassigned
+**Owner:** codex
 **Updated:** 2026-09-01
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** The completed S-021 branch must land on `integration` before an immutable v3 release candidate can be audited and promoted.
-**Latest event:** S-021 has completed its portable v3 proof and hands the next integration candidate to this release gate; no release status or promotion PR was created.
-**Next gate:** After S-021 lands, resolve and pin the resulting exact `origin/integration` SHA, then resume TK-002's separate immutable audit.
+**Blockers:** none
+**Latest event:** TK-002 claimed by codex.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 ## Outcome
 
@@ -31,12 +31,11 @@ without weakening either repository's release boundary.
 ## Current Verified State
 
 - Refreshed `origin/integration` is exact commit
-  `9e6c71b81f38d0696ac01834076a20d428207bde`; `origin/main` is exact commit
-  `08ab78e5a59a68d2b04028fe71a2be488d5ae10e`. Integration is 46 commits ahead
-  and `git merge-base --is-ancestor origin/main origin/integration` succeeds.
-  There is still no open integration-to-main promotion PR. The new S-021 v3
-  work intentionally changes integration before release, so this head is not a
-  candidate to audit or annotate.
+  `d80d14c531c4bece9e2978d11e92e5a5d7bd77a5`; `origin/main` is exact commit
+  `08ab78e5a59a68d2b04028fe71a2be488d5ae10e`. Main remains an ancestor of
+  integration. S-021 is complete on this exact integration head, which has no
+  release-gate status and no open integration-to-main promotion PR; it is now
+  the immutable candidate owned by TK-002.
 - Audited PR #31 used exact head
   `490ad580d7b0c679bf6411d3d22696022b58515e`. Its ancestry merge
   `88b6f7e0a9edc25e45778a8c04cce59f5c570f6c` records exact main `dd1ed32`
@@ -156,7 +155,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile main ancestry into integration through an audited merge PR | done | none | PR #31 head `490ad58`; ancestry merge `88b6f7e`; integration merge `a9fb9f9` |
-| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | blocked | S-021 | Current ancestry passes, but the candidate remains intentionally mutable until S-021 lands; no release-gate status or promotion PR exists |
+| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | in-progress | none | S-021 landed at exact `origin/integration` `d80d14c`; no release-gate status or promotion PR exists |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
 ### Scoped Ticket: TK-001
@@ -329,6 +328,7 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-07-16 | TK-002 parser repair verification | Verified the repair candidate without advancing the release gate and opened draft PR #33 to integration | Complete RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; live guardrail remained 78/100 with only pre-existing real-outcome gaps; render, doctor, `next`, diff, and gitleaks directory/commit-range checks passed | Docs checked; no additional update needed beyond S-014 and generated Taskboard because operational commands and public controls are unchanged | Obtain an independent exact-head audit of draft PR #33; TK-002 remains in progress |
 | 2026-08-31 | v3 dependency reconciliation | Refreshed live refs, confirmed main ancestry now passes, and blocked release publication on the owner-approved S-021 portable v3 capability | `git fetch origin --prune`; exact refs `08ab78e` and `9e6c71b`; ancestry exit 0; GitHub open-PR query found only obsolete PR #42 into integration and no integration-to-main PR | Updated S-014 current state, blocker, ticket status, and dependency; generated projections refreshed separately | Complete S-021, then restart immutable exact-head audit/publication at TK-002 |
 | 2026-09-01 | S-021 handoff | Received the completed portable-v3 candidate route; release work remains blocked until that candidate is present on `integration` | S-021 full suite and fixed-diff review are recorded in S-021; no S-014 audit, status, promotion PR, or release mutation was performed | Updated this handoff state and its manifest-declared stable path | Resolve the exact integration SHA after S-021 lands, then run S-014/TK-002 separately |
+| 2026-09-01 | TK-002 dependency satisfied | Refreshed the declared remote branches and confirmed S-021 is now the exact immutable integration candidate | `origin/integration` and the completed S-021 branch both resolve to `d80d14c531c4bece9e2978d11e92e5a5d7bd77a5`; `origin/main` remains `08ab78e5a59a68d2b04028fe71a2be488d5ae10e`; ancestry passes; GitHub reports no release-gate status and no integration-to-main PR | Updated S-014 and generated projections only; RUNBOOK, README, templates, and skills checked with no update needed because no operational or product behavior changed | Claim TK-002 and run the required separate read-only exact-head audit before publication |
 
 ## Completion Result
 

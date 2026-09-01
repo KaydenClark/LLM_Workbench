@@ -14,7 +14,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-014](workbench/specs/S-014-workbench-release-candidate/SPEC.md) | TK-003: Open the sole non-draft integration-to-main owner promotion PR (ready) | unassigned | TK-002 | S-021 has completed its portable v3 proof and hands the next integration candidate to this release gate; no release status or promotion PR was created. | After S-021 lands, resolve and pin the resulting exact `origin/integration` SHA, then resume TK-002's separate immutable audit. |
+| [S-014](workbench/specs/S-014-workbench-release-candidate/SPEC.md) | TK-002: Coordinate separate exact-head audit and evidence publication tasks (in-progress) | codex | none | TK-002 claimed by codex. | Close TK-002 with verification and documentation proof. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
