@@ -65,11 +65,12 @@ Compare the target's current harness with the canonical templates. Copy only
 the changed contract; preserve filled project-specific scope, Git rules,
 verification commands, product boundaries, and safety rules.
 
-For the spec-centered Workbench:
+For the v3 spec-centered Workbench:
 
 - keep `AGENTS.md` small and operational;
 - keep cross-cutting product truth in `BLUEPRINT.md`;
-- create stable `specs/S-###-slug/SPEC.md` capability packets;
+- create stable `workbench/specs/S-###-slug/SPEC.md` capability packets through
+  the project's `workbench/manifest.json` lane declaration;
 - make `TASKBOARD.md` a generated hot projection;
 - keep exact commands and recovery in `RUNBOOK.md`;
 - keep `CLAUDE.md` as the thin `@AGENTS.md` bridge;
@@ -77,6 +78,14 @@ For the spec-centered Workbench:
   `WORKBENCH_FEEDBACK.md` (legacy `HARNESS_FEEDBACK.md`);
 - copy the canonical `tools/spec-workbench.mjs` exactly when the local
   interface is part of the current harness.
+
+For an explicitly authorized v2-to-v3 update, run the checked-out Workbench's
+`tools/workbench-upgrade.mjs upgrade --explicit-update` command against a
+disposable or verified user home. It updates only skills bearing the
+Workbench-managed marker, backs up changed skill directories first, and records
+the pre-migration Git SHA and inventory under the manifest-declared handoff
+lane. Normal setup remains presence-only; never use the upgrade command merely
+because a same-named skill exists.
 
 Map capabilities, not every historical ticket. Create completed specs only for
 durable current capabilities whose acceptance and proof are already real. Move

@@ -62,6 +62,7 @@ node tools/test-skill-catalog.mjs
 node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
+node tools/test-workbench-upgrade.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
@@ -140,6 +141,28 @@ The command refuses an existing support root or any legacy collision before
 mutation. It moves only documented durable lanes, preserves project-local
 skills as an explicit handoff recovery record after user-scoped core readiness,
 then renders and validates the manifest-declared spec lane.
+
+### V3 explicit upgrade and recovery check
+
+An ordinary setup is presence-only. Replacing an installed core skill is a
+separate, explicitly authorized operation and is limited to skills that the
+installer marked as Workbench-managed:
+
+```bash
+node tools/workbench-upgrade.mjs upgrade \
+  --project /absolute/project \
+  --home /disposable-or-user-home \
+  --version v3.0.0 \
+  --explicit-update
+node tools/test-workbench-upgrade.mjs
+```
+
+The command blocks an unmanaged same-named skill, a discovery root inside a Git
+worktree, a missing committed Git recovery point, or a pre-existing v3 support
+root before mutation. For each changed managed skill it creates a copy under
+the user home's `.workbench-upgrade-backup-*` directory, migrates the legacy
+support lanes once, and records the pre-migration SHA and tracked path inventory
+in `workbench/handoffs/upgrade-recovery.json`.
 
 ### Spec Lifecycle And Retrieval
 

@@ -10,6 +10,7 @@ const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
+const managedMarker = '.workbench-skill.json';
 
 function fail(code, message, details = {}) {
   return { status: 'blocked', requiredSkills: coreSkills, installed: [], skipped: [], error: { code, message, ...details } };
@@ -111,6 +112,7 @@ function install(home) {
           errorOnExist: true,
           verbatimSymlinks: true
         });
+        fs.writeFileSync(path.join(destination, managedMarker), `${JSON.stringify({ schemaVersion: 1, source: 'LLM Workbench core' })}\n`);
         report.installed.push({ engine, skill, destination });
       }
     }

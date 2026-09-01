@@ -12,8 +12,8 @@
 **Updated:** 2026-09-01
 **Catalog description:** Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts.
 **Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Complete TK-004.
+**Latest event:** TK-004 claimed by codex.
+**Next gate:** Close TK-004 with verification and documentation proof.
 
 ## Outcome
 
@@ -151,7 +151,7 @@ owner's request to prepare executable specs approves this dependency order.
 | TK-001 | A brand-new host installs only missing members of the 12-skill core without altering existing skills or foreign roots | done | none | Red: node tools/test-core-skill-installer.mjs failed before helper; green: focused installer/catalog tests and complete Runbook suite passed |
 | TK-002 | Genesis produces one fresh v3 project with seven root controls, manifest-backed support lanes, first spec, and green focused checks | done | TK-001 | Red: node tools/test-workbench-layout.mjs failed before layout helper; green: fresh Genesis, traversal, and symlink fixtures plus complete Runbook suite passed |
 | TK-003 | Adoption migrates one mixed existing project to v3 without losing records, history, project truth, or existing user skills | done | TK-002 | Red: node tools/test-workbench-adoption.mjs failed before the migration helper; green: mixed adoption/collision test plus complete Runbook suite, evaluator 106.6/113, and doctor passed |
-| TK-004 | An explicitly requested v2 upgrade backs up changed skills, synchronizes the core, migrates legacy paths once, and proves rollback | ready | TK-003 | pending |
+| TK-004 | An explicitly requested v2 upgrade backs up changed skills, synchronizes the core, migrates legacy paths once, and proves rollback | in-progress | TK-003 | pending |
 | TK-005 | One v3 planning-to-delivery workflow resolves all project support paths through the manifest using the 12 bundled core skills | ready | TK-004 | pending |
 | TK-006 | LLM Workbench dogfoods v3, completes the fresh/cold acceptance matrix, and hands the exact integration candidate back to S-014 | ready | TK-005 | pending |
 
