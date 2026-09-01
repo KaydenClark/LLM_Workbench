@@ -172,7 +172,7 @@ assert.doesNotMatch(toDocs, /ask (the )?user|interview the user|create a second|
 const toSpec = read('skills/to-spec/SKILL.md');
 assertIncludesAll(toSpec, [
   'already-settled conversation',
-  'stable `specs/S-###-slug/SPEC.md`',
+  '`workbench/manifest.json`',
   'Vertical Implementation Slices',
   'node tools/spec-workbench.mjs render',
   'node tools/spec-workbench.mjs doctor'
@@ -212,6 +212,14 @@ assert.match(updateHarness, /checked-out LLM Workbench repository/,
   'update-harness must identify the product-local source');
 assert.doesNotMatch(updateHarness, /\/Users\/kayden\/GPT_OS\//,
   'update-harness must not publish a private machine path');
+
+for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'implement', 'code-review']) {
+  const skill = read(`skills/${name}/SKILL.md`);
+  assert.match(skill, /workbench\/manifest\.json/,
+    `${name} must route durable v3 workflow records through the manifest`);
+}
+assert.doesNotMatch(toSpec, /stable `specs\/S-###-slug\/SPEC\.md`/,
+  'to-spec must not direct v3 projects to the retired root specs path');
 
 console.log('ok - the portable 12-skill source bundle and retired discovery boundary are aligned');
 await import('./test-delivery-skills.mjs');

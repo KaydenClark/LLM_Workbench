@@ -32,7 +32,8 @@ tags already carry the state.
 The `.agents/grilling diary/` folder is gitignored, so commit a copy into a repo
 both workstations and both agents can pull:
 
-- **Project-scoped grill** → commit the notepad into that project's own repo.
+- **Project-scoped v3 grill** → read `workbench/manifest.json` and commit the
+  notepad into its declared `handoffs` lane.
 - **Workspace/root-scoped grill** → commit it into a tracked `handoffs/` path in
   the workspace mirror (follow the `RUNBOOK.md` version-control steps).
 

@@ -15,6 +15,9 @@ between the steps below. Stop only for a decision that was never settled:
 destructive actions outside standing policy, paid services, credential
 changes, or genuinely new scope.
 
+For a v3 project, resolve every durable planning and delivery record through
+`workbench/manifest.json`; it is the sole support-path authority after setup.
+
 ## Resolve the input first
 
 The input is the settled decisions being approved. Resolve it in this order:

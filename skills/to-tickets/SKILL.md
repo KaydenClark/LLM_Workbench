@@ -9,6 +9,10 @@ disable-model-invocation: true
 The assigned `SPEC.md` is the only ticket store. `TASKBOARD.md` is a generated
 projection, not a second tracker.
 
+For v3, confirm the assigned spec resolves through `workbench/manifest.json`
+before changing it. Never recreate a root `specs/` queue or a project-local
+skill-discovery tree.
+
 ## Process
 
 1. Read the assigned `SPEC.md` and the relevant source and tests. Do not select

@@ -36,6 +36,9 @@ applicable approved controls it points to. Treat the diff, command output, and
 changed files as evidence. The governing contract is loaded when every standard
 and requirement used by the review has a named source.
 
+For v3 review, resolve the assigned spec through `workbench/manifest.json` and
+treat its declared support lanes as the only durable path authority.
+
 ## 3. Inspect both axes
 
 Trace each changed behavior through callers, tests, error boundaries, and owning

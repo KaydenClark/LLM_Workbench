@@ -7,6 +7,10 @@ disable-model-invocation: true
 Implement one eligible ticket from the assigned stable `SPEC.md`. One invocation
 owns one ticket and one durable writer lane.
 
+For v3 work, `workbench/manifest.json` is the support-path authority; the
+manifest-aware spec tool resolves the assigned `SPEC.md`. Do not write a root
+`specs/` fallback or a project-local skills tree.
+
 ## 1. Situate the slice
 
 Verify the repository root, branch, remote, upstream, and dirty state. Read the

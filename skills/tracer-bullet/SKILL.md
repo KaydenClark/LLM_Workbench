@@ -17,6 +17,10 @@ Use this discipline when defining a spec's `Vertical Implementation Slices`,
 when a proposed slice names only one layer, and before assigning a slice to an
 Engineer.
 
+When the capability belongs to a v3 project, read `workbench/manifest.json`
+before assigning the slice so its durable `SPEC.md` and evidence paths use the
+declared lanes.
+
 ## 1. Map the stack
 
 Name the project's real horizontal layers from its own source, not a generic

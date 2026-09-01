@@ -7,6 +7,10 @@ This is the core interview primitive. It runs the questioning and keeps a runnin
 notepad of the result. It never writes canonical files itself — the `/make-it-so`
 skill promotes the notepad, so `grilling` can also run on its own.
 
+For a v3 project, read `workbench/manifest.json` before promoting or
+checkpointing a durable record. The live `.agents/grilling diary/` notepad stays
+local; only a deliberately durable copy uses the manifest-declared lane.
+
 Grill the user relentlessly about every aspect of this until we reach a shared
 understanding. Walk down each branch of the decision tree, resolving dependencies
 between decisions one-by-one. For each question, provide your recommended answer.

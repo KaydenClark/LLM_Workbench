@@ -7,8 +7,9 @@ disable-model-invocation: true
 # To Spec
 
 Synthesize the current already-settled conversation into one
-stable `specs/S-###-slug/SPEC.md` capability record. Do not restart grilling or
-implement the capability.
+stable capability record at the `specs` lane declared by
+`workbench/manifest.json` (normally `workbench/specs/S-###-slug/SPEC.md`). Do
+not restart grilling or implement the capability.
 
 1. Verify the project root, nearest controls, existing specs, and relevant source
    or tests. Reuse an existing owning spec when the capability already has one;
