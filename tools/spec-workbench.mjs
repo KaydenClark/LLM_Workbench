@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { validateManifest } from './workbench-layout.mjs';
 import { pathToFileURL } from 'node:url';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 
@@ -147,7 +148,7 @@ export function doctor(rootDir, options = {}) {
     seen.push(spec.relativePath);
     byId.set(spec.id, seen);
     if (!SPEC_STATUSES.has(spec.status)) issues.push(issue('invalid-state', `${spec.id} has invalid status ${spec.status}`));
-    if (!spec.relativePath.startsWith(`specs/${spec.id}-`)) issues.push(issue('unstable-path', `${spec.id} path must start specs/${spec.id}-`));
+    if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(issue('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`));
     for (const ticket of spec.tickets) {
       if (!TICKET_STATUSES.has(ticket.status)) issues.push(issue('invalid-state', `${spec.id}/${ticket.id} has invalid status ${ticket.status}`));
       if (ticket.status === 'done' && (!ticket.proof || /^pending$/i.test(ticket.proof))) issues.push(issue('missing-evidence', `${spec.id}/${ticket.id} is done without proof`));
@@ -175,7 +176,7 @@ export function doctor(rootDir, options = {}) {
 
 function loadSpecs(rootDir, options = {}) {
   const root = path.resolve(rootDir);
-  const specsRoot = path.join(root, 'specs');
+  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
   if (!fs.existsSync(specsRoot)) return [];
   const paths = [];
   for (const entry of fs.readdirSync(specsRoot, { withFileTypes: true })) {
@@ -183,7 +184,10 @@ function loadSpecs(rootDir, options = {}) {
     const filePath = path.join(specsRoot, entry.name, 'SPEC.md');
     if (fs.existsSync(filePath)) paths.push(filePath);
   }
-  const specs = paths.sort().map((filePath) => parseSpec(fs.readFileSync(filePath, 'utf8'), filePath, root));
+  const specs = paths.sort().map((filePath) => ({
+    ...parseSpec(fs.readFileSync(filePath, 'utf8'), filePath, root),
+    specsPrefix
+  }));
   if (!options.allowDuplicates) {
     const ids = new Set();
     for (const spec of specs) {
@@ -192,6 +196,19 @@ function loadSpecs(rootDir, options = {}) {
     }
   }
   return specs;
+}
+
+function resolveSpecsRoot(root) {
+  const manifestPath = path.join(root, 'workbench', 'manifest.json');
+  if (!fs.existsSync(manifestPath)) return { specsRoot: path.join(root, 'specs'), specsPrefix: 'specs' };
+  const validation = validateManifest(root);
+  if (validation.status !== 'valid') {
+    throw new Error(`Workbench manifest is invalid: ${validation.error?.message ?? 'unknown validation failure'}`);
+  }
+  return {
+    specsRoot: path.join(root, validation.manifest.lanes.specs),
+    specsPrefix: validation.manifest.lanes.specs
+  };
 }
 
 function parseSpec(content, filePath, root) {

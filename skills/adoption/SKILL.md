@@ -14,7 +14,22 @@ Adoption to update an already-adopted project.
    clean.
 2. Locate the canonical Workbench source named by the workspace controls and
    read `templates/ADOPTION.md` completely. Follow its one-time inventory,
-   provenance, migration, verification, and handoff phases.
+   provenance, migration, verification, and handoff phases. After reconciling
+   the seven filled root controls, install or verify the core bundle in the
+   intended disposable or user-scoped home and run:
+
+   ```bash
+   node tools/workbench-adoption.mjs migrate \
+     --project [ABSOLUTE_PROJECT_PATH] \
+     --home [USER_HOME] \
+     --version v3.0.0
+   ```
+
+   The helper moves only unambiguous durable v2 lanes into the manifest-declared
+   v3 lanes, preserves a project-local `skills/` folder under the explicit
+   handoff recovery lane, renders the projections, and runs doctor. An existing
+   support root, path collision, missing core skill, or bracketed root control
+   is a blocker to reconcile before retrying; never overwrite it.
 3. Preserve project behavior and history. Port live truth into the existing
    Workbench owners, archive retired control documents, and do not perform an
    unrelated product cleanup or create another tracker.
@@ -27,5 +42,6 @@ Adoption to update an already-adopted project.
    `integration` to `main`.
 6. Record the source remote, ref, resolved commit, executed self-tests, and any
    vendored-helper checksum in the owning spec. Put fresh-clone reproduction
-   commands in `RUNBOOK.md`, render the Taskboard, run doctor, and report the
-   pushed recovery ref and remaining owner gates.
+   commands in `RUNBOOK.md`, validate `workbench/manifest.json`, resolve the
+   next ticket from its declared `workbench/specs/` lane, and report the pushed
+   recovery ref and remaining owner gates.

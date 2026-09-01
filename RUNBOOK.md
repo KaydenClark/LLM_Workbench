@@ -61,6 +61,7 @@ node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
+node tools/test-workbench-adoption.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
@@ -111,6 +112,34 @@ node tools/test-workbench-layout.mjs
 
 `validate --genesis` additionally requires the seven root controls, one first
 spec under `workbench/specs/`, and no project-local `skills/` directory.
+
+### V3 Adoption migration check
+
+Adoption requires seven filled root controls and all core skills in a
+user-scoped discovery root before it retires legacy project-local support paths.
+Exercise the deterministic mixed-v2 fixture without touching a real project:
+
+```bash
+node tools/test-workbench-adoption.mjs
+```
+
+For a real one-time migration, use the Adoption protocol after its inventory and
+control-reconciliation phases:
+
+```bash
+node tools/workbench-adoption.mjs migrate \
+  --project /absolute/project \
+  --home /disposable-or-user-home \
+  --version v3.0.0
+node tools/workbench-layout.mjs validate --project /absolute/project
+node tools/spec-workbench.mjs next --json
+node tools/spec-workbench.mjs doctor
+```
+
+The command refuses an existing support root or any legacy collision before
+mutation. It moves only documented durable lanes, preserves project-local
+skills as an explicit handoff recovery record after user-scoped core readiness,
+then renders and validates the manifest-declared spec lane.
 
 ### Spec Lifecycle And Retrieval
 

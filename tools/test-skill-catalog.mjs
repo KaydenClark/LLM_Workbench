@@ -188,7 +188,8 @@ assertIncludesAll(genesis, [
 
 const adoption = read('skills/adoption/SKILL.md');
 assertIncludesAll(adoption, [
-  '`templates/ADOPTION.md`', 'one-time', 'existing project', '`/update-harness`', 'private remote', 'commit and push'
+  '`templates/ADOPTION.md`', 'one-time', 'existing project', '`/update-harness`', 'private remote', 'commit and push',
+  'workbench-adoption.mjs', 'migrate', 'manifest-declared', 'project-local `skills/`'
 ], 'adoption');
 
 const implement = read('skills/implement/SKILL.md');

@@ -16,10 +16,9 @@ archive it; afterward AGENTS plus the progressive spec flow govern.
 ## What Adoption Is For
 
 The owner should be able to point an agent at an existing repo - with its own
-code, tests, and a prior harness - and get back the v2 control surfaces
-(`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, `RUNBOOK.md`, and
-stable specs) that describe **what is actually true**, with none of the
-project's real content lost in the move.
+code, tests, and a prior harness - and get back seven filled root controls plus
+the v3 `workbench/` support root that describe **what is actually true**, with
+none of the project's real content lost in the move.
 
 Adoption does **not** rewrite the product or "clean up" the code. It documents
 observed reality, migrates existing intent and history into the v2 layout, and
@@ -50,7 +49,7 @@ trust the code, note the drift, and document what is true.
 
 Decide alone (reversible, low-risk, faithful to what exists):
 
-- how to split an old combined doc into the v2 files (e.g. `ROADMAP` -> direction
+- how to split an old combined doc into the root controls (e.g. `ROADMAP` -> direction
   vs. queue);
 - edit-scope paths read directly off the real directory tree;
 - test/lint commands that already exist in the repo;
@@ -123,7 +122,8 @@ Output: an Architecture table that a new agent can trust against the source.
 
 ### Phase 3 - Map the old harness -> new control docs
 
-This is the heart of Adoption: move content into the v2 layout without losing it.
+This is the heart of Adoption: reconcile root controls and prepare durable
+records for the v3 support root without losing anything.
 Typical mappings (adjust to the actual dialect):
 
 - **Combined roadmap/plan doc** -> stable direction into `BLUEPRINT.md`; the live
@@ -142,7 +142,8 @@ Typical mappings (adjust to the actual dialect):
 Preserve history in a cold archive or the owning stable spec. Do not copy
 completed proof into the hot `TASKBOARD.md` projection.
 
-Output: v2 docs carrying the old harness's live content; a list of retired docs.
+Output: filled root controls carrying the old harness's live content; a list of
+durable records ready for migration.
 
 ### Phase 4 - AGENTS scopes from the real tree
 
@@ -192,23 +193,51 @@ Output: stable capability records plus a hot projection that reflects the
 project's actual state and the migration, and a `MEMORY.md` room brain that
 routes to them.
 
-### Phase 7 - Retire the old harness and handoff
+### Phase 7 - Migrate the durable support root, retire the old layout, and hand off
 
-Archive (do not silently delete) the retired docs - e.g. move them under an
-`archive/` note or a single `LEGACY_HARNESS.md` - so history survives and no one
-follows two rulesets. Set the `Generated from LLM Workbench v[HARNESS_VERSION]`
-stamp on each v2 control doc. Delete unfilled placeholders. Re-run the full
-verification suite and confirm it still matches the Phase 0 baseline. If
-`ADOPTION.md` was copied in, delete or archive it.
+Before migration, reconcile the seven root controls (`AGENTS.md`,
+`BLUEPRINT.md`, `LEXICON.md`, `RUNBOOK.md`, `TASKBOARD.md`, `CLAUDE.md`, and
+`README.md`) with project-specific content. They must be ordinary files with no
+`[BRACKETED]` placeholder. Install or verify the closed core bundle in the
+intended user home, then run the bounded migration seam:
 
-Output: a repo where each v2 control surface owns one class of truth and the old
-harness is preserved as history, not a competing rulebook.
+```bash
+node tools/core-skill-installer.mjs install --home [USER_HOME]
+node tools/workbench-adoption.mjs migrate \
+  --project [ABSOLUTE_PROJECT_PATH] \
+  --home [USER_HOME] \
+  --version v3.0.0
+node tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
+node tools/spec-workbench.mjs next --json
+node tools/spec-workbench.mjs doctor
+```
+
+The migration moves only known unambiguous durable paths: `specs/`, `Wiki/`,
+`feedback/`, `grilling diary/`, and `handoffs/` to their manifest-declared
+lanes. It preserves a legacy project-local `skills/` folder as
+`workbench/handoffs/adoption-legacy-skills/` only after every required core
+skill is already user-scoped. It writes the explicit recovery record at
+`workbench/handoffs/adoption-recovery.json`, renders the projections, and
+checks doctor before reporting completion.
+
+An existing `workbench/` root, a legacy path collision, unfilled controls, or
+missing user-scoped core skill blocks before migration; inspect and reconcile
+the conflict rather than overwriting it. Do not keep the legacy support paths
+as active mirrors. Archive any retired steering document that is outside the
+known durable lanes, then re-run the full verification suite and confirm it
+still matches the Phase 0 baseline. If `ADOPTION.md` was copied in, delete or
+archive it.
+
+Output: a repo with one v3 manifest authority, root controls that retain the
+project's reconciled truth, and legacy material preserved as history rather
+than a competing rulebook.
 
 ## What A Finished Adoption Must Prove
 
-- [ ] `BLUEPRINT.md`, `LEXICON.md`, `AGENTS.md`, `RUNBOOK.md`, and
-      `TASKBOARD.md` exist with **no remaining `[BRACKETED]` placeholders** in
-      required sections.
+- [ ] All seven root controls exist as filled ordinary files with **no remaining
+      `[BRACKETED]` placeholders**.
+- [ ] `workbench/manifest.json` validates, declares the canonical v3 support
+      lanes, and is the only active support-path authority.
 - [ ] Every existing harness doc was classified port / fold / keep / retire, and
       no ported doc's live content was lost.
 - [ ] `BLUEPRINT.md` matches the running code where the old docs disagreed;
@@ -221,13 +250,13 @@ harness is preserved as history, not a competing rulebook.
 - [ ] Stable specs contain the project's actual in-flight and ready work;
       `TASKBOARD.md` projects only the hot state and contains no completed proof
       archive.
-- [ ] A `MEMORY.md` room brain exists (from `templates/Wiki/`), routes to the
-      live controls, and has no unfilled placeholders.
+- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/Wiki/`),
+      routes to the live controls, and has no unfilled placeholders.
 - [ ] The owning spec records the source remote, ref, resolved commit, executed
       self-tests, and any applicable vendored-helper checksum; the project's
       `RUNBOOK.md` retains the exact fresh-clone verification commands.
-- [ ] Retired docs are archived (not deleted), and a spec evidence row records that
-      Adoption ran.
+- [ ] Retired docs are archived (not deleted), the explicit recovery record is
+      retained, and a spec evidence row records that Adoption ran.
 
 If any box is unchecked, adoption is `in-progress`, not `done`. State which box
 failed and why.

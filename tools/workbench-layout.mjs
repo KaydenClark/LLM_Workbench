@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const coreSkills = [
+export const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
-const lanes = {
+export const lanes = {
   specs: 'workbench/specs',
   wiki: 'workbench/wiki',
   grilling: 'workbench/grilling',
   handoffs: 'workbench/handoffs',
   feedback: 'workbench/feedback'
 };
-const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 
 function lstatOrNull(target) {
   try {
@@ -58,7 +59,7 @@ function hasSpec(directory) {
   return false;
 }
 
-function validateManifest(project) {
+export function validateManifest(project) {
   const manifestPath = path.join(project, 'workbench', 'manifest.json');
   let manifest;
   try {
@@ -94,7 +95,7 @@ function validateManifest(project) {
   return report('valid', { manifest });
 }
 
-function initialize(options) {
+export function initialize(options) {
   const project = path.resolve(options['--project']);
   const workbench = path.join(project, 'workbench');
   const manifestPath = path.join(workbench, 'manifest.json');
@@ -142,7 +143,7 @@ function validateManifestShape(manifest) {
   return null;
 }
 
-function validate(options, requireGenesis) {
+export function validate(options, requireGenesis) {
   const project = path.resolve(options['--project']);
   const result = validateManifest(project);
   if (result.status !== 'valid' || !requireGenesis) return result;
@@ -154,17 +155,19 @@ function validate(options, requireGenesis) {
   return report('valid', { manifest: result.manifest, controls });
 }
 
-try {
-  const [command, ...args] = process.argv.slice(2);
-  let result;
-  if (command === 'init') result = initialize(parseOptions(args, ['--project', '--provenance', '--version']));
-  else if (command === 'validate') {
-    const requireGenesis = args.includes('--genesis');
-    result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-  } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.0.0 | validate --project PATH [--genesis]');
-  process.stdout.write(`${JSON.stringify(result)}\n`);
-  if (!['initialized', 'valid'].includes(result.status)) process.exitCode = 1;
-} catch (error) {
-  process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
-  process.exitCode = 1;
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  try {
+    const [command, ...args] = process.argv.slice(2);
+    let result;
+    if (command === 'init') result = initialize(parseOptions(args, ['--project', '--provenance', '--version']));
+    else if (command === 'validate') {
+      const requireGenesis = args.includes('--genesis');
+      result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.0.0 | validate --project PATH [--genesis]');
+    process.stdout.write(`${JSON.stringify(result)}\n`);
+    if (!['initialized', 'valid'].includes(result.status)) process.exitCode = 1;
+  } catch (error) {
+    process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
+    process.exitCode = 1;
+  }
 }
