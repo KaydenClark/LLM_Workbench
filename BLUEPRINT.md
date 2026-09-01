@@ -105,7 +105,7 @@ be changed only through a later spec linked by supersession.
 | [S-013 - Standardized Automation Run Outcomes](workbench/specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
 | [S-014 - Workbench Release Candidate](workbench/specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | blocked |
 | [S-020 - Spec-Native Team Coordination](workbench/specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
-| [S-021 - Portable Workbench v3](workbench/specs/S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | active |
+| [S-021 - Portable Workbench v3](workbench/specs/S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | complete |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health

@@ -1,17 +1,17 @@
 # S-014 - Workbench Release Candidate
 
 > Generated from LLM Workbench v2.3. Stable path
-> `specs/S-014-workbench-release-candidate/SPEC.md`; never move between status folders.
+> `workbench/specs/S-014-workbench-release-candidate/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-014
 **Status:** blocked
 **Priority:** 0
 **Owner:** unassigned
-**Updated:** 2026-08-31
+**Updated:** 2026-09-01
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** S-021 must land on integration before an immutable v3 release candidate can be audited and promoted.
-**Latest event:** Live refs now satisfy main ancestry, but owner-approved S-021 intentionally makes integration mutable again and invalidates any pre-v3 candidate.
-**Next gate:** Complete S-021 on integration, then resume TK-002 against that exact immutable integration SHA.
+**Blockers:** The completed S-021 branch must land on `integration` before an immutable v3 release candidate can be audited and promoted.
+**Latest event:** S-021 has completed its portable v3 proof and hands the next integration candidate to this release gate; no release status or promotion PR was created.
+**Next gate:** After S-021 lands, resolve and pin the resulting exact `origin/integration` SHA, then resume TK-002's separate immutable audit.
 
 ## Outcome
 
@@ -328,6 +328,7 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-07-16 | TK-002 parser repair candidate | Exact-head audit of integration `bb5d9c1` returned REQUEST CHANGES after escaped pipes were treated as table delimiters; added one escape-aware parser shared by spec lifecycle and feedback automation | Focused red tests reproduced broken `node test \| tee proof.log` round-trip and dropped escaped HARNESS_FEEDBACK pipeline; focused green tests preserve pipes/backslashes, reject malformed rows explicitly, and prove rejected spec mutation has no partial persistence | Updated S-014 and generated Taskboard; RUNBOOK, README, templates, and skills checked with no change needed because the existing commands and public harness contract remain accurate | Run the full verification gate, publish the repair PR, then obtain an independent exact-head audit; TK-002 remains in progress and no success status or promotion PR may be created |
 | 2026-07-16 | TK-002 parser repair verification | Verified the repair candidate without advancing the release gate and opened draft PR #33 to integration | Complete RUNBOOK suite passed; root evaluator 113/113; templates 106.6/113; live guardrail remained 78/100 with only pre-existing real-outcome gaps; render, doctor, `next`, diff, and gitleaks directory/commit-range checks passed | Docs checked; no additional update needed beyond S-014 and generated Taskboard because operational commands and public controls are unchanged | Obtain an independent exact-head audit of draft PR #33; TK-002 remains in progress |
 | 2026-08-31 | v3 dependency reconciliation | Refreshed live refs, confirmed main ancestry now passes, and blocked release publication on the owner-approved S-021 portable v3 capability | `git fetch origin --prune`; exact refs `08ab78e` and `9e6c71b`; ancestry exit 0; GitHub open-PR query found only obsolete PR #42 into integration and no integration-to-main PR | Updated S-014 current state, blocker, ticket status, and dependency; generated projections refreshed separately | Complete S-021, then restart immutable exact-head audit/publication at TK-002 |
+| 2026-09-01 | S-021 handoff | Received the completed portable-v3 candidate route; release work remains blocked until that candidate is present on `integration` | S-021 full suite and fixed-diff review are recorded in S-021; no S-014 audit, status, promotion PR, or release mutation was performed | Updated this handoff state and its manifest-declared stable path | Resolve the exact integration SHA after S-021 lands, then run S-014/TK-002 separately |
 
 ## Completion Result
 

@@ -6,14 +6,14 @@
 > stable.
 
 **Spec ID:** S-021
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** codex
 **Updated:** 2026-09-01
 **Catalog description:** Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts.
 **Blockers:** none
-**Latest event:** TK-006 claimed by codex.
-**Next gate:** Close TK-006 with verification and documentation proof.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -153,7 +153,7 @@ owner's request to prepare executable specs approves this dependency order.
 | TK-003 | Adoption migrates one mixed existing project to v3 without losing records, history, project truth, or existing user skills | done | TK-002 | Red: node tools/test-workbench-adoption.mjs failed before the migration helper; green: mixed adoption/collision test plus complete Runbook suite, evaluator 106.6/113, and doctor passed |
 | TK-004 | An explicitly requested v2 upgrade backs up changed skills, synchronizes the core, migrates legacy paths once, and proves rollback | done | TK-003 | Red: node tools/test-workbench-upgrade.mjs failed before the updater; green: explicit authorization, managed backup, clean recovery-point, migration, and rollback-record fixtures plus complete Runbook suite passed |
 | TK-005 | One v3 planning-to-delivery workflow resolves all project support paths through the manifest using the 12 bundled core skills | done | TK-004 | Red: node tools/test-skill-catalog.mjs failed before manifest-routing contracts; green: all durable core workflow skills name manifest authority and the catalog/delivery tests pass |
-| TK-006 | LLM Workbench dogfoods v3, completes the fresh/cold acceptance matrix, and hands the exact integration candidate back to S-014 | in-progress | TK-005 | pending |
+| TK-006 | LLM Workbench dogfoods v3, completes the fresh/cold acceptance matrix, and hands the exact integration candidate back to S-014 | done | TK-005 | Red: node tools/test-workbench-dogfood.mjs failed before the manifest/root migration; green: Git-preserved support-path migration, cold manifest selection, fresh Genesis, mixed Adoption, explicit update/backup, both engine discovery, complete Runbook suite, templates evaluator 106.6/113, and guardrail 68/100 passed |
 
 ### TK-001 — Missing-Only Core Installation
 
@@ -282,27 +282,27 @@ docs, complete verification matrix, append-only evidence, and S-014 handoff.
 
 ## Acceptance Criteria
 
-- [ ] Genesis and Adoption each produce the seven root controls plus a valid
+- [x] Genesis and Adoption each produce the seven root controls plus a valid
       lowercase `workbench/` support root and first manifest-declared spec path.
-- [ ] `workbench/manifest.json` is the single machine-readable authority for
+- [x] `workbench/manifest.json` is the single machine-readable authority for
       schema/version, provenance, support lanes, and core-skill policy.
-- [ ] The source and installed-skill contracts cover exactly the 12 locked core
+- [x] The source and installed-skill contracts cover exactly the 12 locked core
       skills and never depend on `KaydenClark/skills`.
-- [ ] Normal setup installs only missing skills on a brand-new installation and
+- [x] Normal setup installs only missing skills on a brand-new installation and
       preserves every existing same-named skill without content comparison.
-- [ ] Explicit update authorization creates a recoverable backup and converges
+- [x] Explicit update authorization creates a recoverable backup and converges
       the core to the checked-out release's exact bundled versions.
-- [ ] Genesis, mixed Adoption, and v2 upgrade fixtures prove success, collision
+- [x] Genesis, mixed Adoption, and v2 upgrade fixtures prove success, collision
       handling, partial recovery, and no data loss.
-- [ ] The 12-skill planning/delivery flow resolves project support paths through
+- [x] The 12-skill planning/delivery flow resolves project support paths through
       the manifest and creates no project-local discovery tree or parallel truth
       store.
-- [ ] LLM Workbench itself dogfoods v3 with no permanent dual paths, while Git
+- [x] LLM Workbench itself dogfoods v3 with no permanent dual paths, while Git
       history and prior spec evidence remain reachable.
-- [ ] Focused tests, full verification, both engine discovery-path checks, one
+- [x] Focused tests, full verification, both engine discovery-path checks, one
       cold-context resume, and the under-one-minute demo pass without an
       unsupported model-outcome claim.
-- [ ] S-014 receives a current exact integration candidate and remains the sole
+- [x] S-014 receives the pushed S-021 integration candidate and remains the sole
       owner of the open `integration` to `main` promotion PR.
 
 ## Testing Seams
@@ -341,8 +341,7 @@ future tool names before their ticket establishes the stable seam.
 - `BLUEPRINT.md` owns the v3 product direction and portable/non-Foundry boundary.
 - `LEXICON.md` owns the shared definitions for the support root, core skill
   bundle, normal setup, and explicit skill update.
-- `README.md` owns public orientation and truthfully distinguishes current v2.3
-  behavior from the active v3 work until implementation lands.
+- `README.md` owns public orientation and the published v3 setup contract.
 - `RUNBOOK.md`, `AGENTS.md`, templates, and skills change ticket-by-ticket only
   when their operational behavior exists; planning must not publish commands or
   paths that are not implemented.
@@ -360,10 +359,15 @@ future tool names before their ticket establishes the stable seam.
 | 2026-09-01 | TK-003 | Ticket closed | Red: node tools/test-workbench-adoption.mjs failed before the migration helper; green: mixed adoption/collision test plus complete Runbook suite, evaluator 106.6/113, and doctor passed | Updated AGENTS, RUNBOOK, Adoption template/skill, layout/spec tools, and focused tests; guardrail baseline/after remained 73/100 with pre-existing outcome-evidence gaps | TK-004 explicit update and rollback remains |
 | 2026-09-01 | TK-004 | Ticket closed | Red: node tools/test-workbench-upgrade.mjs failed before the updater; green: explicit authorization, managed backup, clean recovery-point, migration, and rollback-record fixtures plus complete Runbook suite passed | Updated AGENTS.md, RUNBOOK.md, and update-harness guidance for explicit update/recovery. | TK-005 manifest-aware workflow remains |
 | 2026-09-01 | TK-005 | Ticket closed | Red: node tools/test-skill-catalog.mjs failed before manifest-routing contracts; green: all durable core workflow skills name manifest authority and the catalog/delivery tests pass | Updated the nine planning/delivery skills and their catalog contract for manifest-declared v3 paths. | TK-006 dogfood and integration handoff remain |
+| 2026-09-01 | TK-006 | Ticket closed | Red: node tools/test-workbench-dogfood.mjs failed before the manifest/root migration; green: Git-preserved support-path migration, cold manifest selection, fresh Genesis, mixed Adoption, explicit update/backup, both engine discovery, complete Runbook suite, templates evaluator 106.6/113, and guardrail 68/100 passed | Updated root controls, README, Runbook, manifest-backed support root, room memory, S-011 supersession, and S-014 handoff. | S-014 separately owns exact integration audit, release status, promotion PR, and main release. |
+| 2026-09-01 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Completed v3.0.0 supplies a closed 12-skill, presence-only portable setup,
+explicit managed-skill recovery, manifest-routed planning/delivery, and a
+dogfooded `workbench/` support root. S-014 remains the sole owner of any
+integration-to-main audit, status, promotion PR, and release decision.
 
 ## Remaining Limitations Or Follow-Up Specs
 
