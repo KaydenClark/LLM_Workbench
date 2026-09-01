@@ -74,6 +74,14 @@ function preflight(project, home) {
       return fail('lane-collision', `${path.join(project, lanes[lane])} already exists.`, { source, lane });
     }
   }
+  const legacyMemory = path.join(project, 'MEMORY.md');
+  const memoryEntry = lstatOrNull(legacyMemory);
+  if (memoryEntry && (memoryEntry.isSymbolicLink() || !memoryEntry.isFile())) {
+    return fail('legacy-path-collision', `${legacyMemory} must be an ordinary file when present.`, { source: 'MEMORY.md' });
+  }
+  if (memoryEntry && lstatOrNull(path.join(project, 'Wiki', 'MEMORY.md'))) {
+    return fail('wiki-memory-collision', 'Legacy Wiki/MEMORY.md and root MEMORY.md both exist; reconcile their project truth before adoption.');
+  }
   const legacySkills = lstatOrNull(path.join(project, 'skills'));
   if (legacySkills && (legacySkills.isSymbolicLink() || !legacySkills.isDirectory())) {
     return fail('legacy-path-collision', `${path.join(project, 'skills')} must be an ordinary directory when present.`, { source: 'skills' });
@@ -110,6 +118,12 @@ function migrate(options) {
       fs.rmdirSync(destination);
       fs.renameSync(sourcePath, destination);
       moved.push({ source, destination: lanes[lane] });
+    }
+    const legacyMemory = path.join(project, 'MEMORY.md');
+    if (lstatOrNull(legacyMemory)) {
+      const destination = path.join(project, lanes.wiki, 'MEMORY.md');
+      fs.renameSync(legacyMemory, destination);
+      moved.push({ source: 'MEMORY.md', destination: `${lanes.wiki}/MEMORY.md` });
     }
     const legacySkills = path.join(project, 'skills');
     if (lstatOrNull(legacySkills)) {

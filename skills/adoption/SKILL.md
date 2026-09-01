@@ -25,8 +25,9 @@ Adoption to update an already-adopted project.
      --version v3.0.0
    ```
 
-   The helper moves only unambiguous durable v2 lanes into the manifest-declared
-   v3 lanes, preserves a project-local `skills/` folder under the explicit
+   The helper moves only unambiguous durable v2 lanes, including a legacy root
+   `MEMORY.md`, into the manifest-declared v3 lanes, preserves a project-local `skills/`
+   folder under the explicit
    handoff recovery lane, renders the projections, and runs doctor. An existing
    support root, path collision, missing core skill, or bracketed root control
    is a blocker to reconcile before retrying; never overwrite it.

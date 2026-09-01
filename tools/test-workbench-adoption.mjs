@@ -92,7 +92,7 @@ function fixtureSpec() {
     seedControls(project);
     seedUserSkills(home);
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
-    write(project, 'Wiki/MEMORY.md', '# Adopted Wiki\n');
+    write(project, 'MEMORY.md', '# Adopted Wiki\n');
     write(project, 'feedback/WORKBENCH_FEEDBACK.md', '# Feedback\n');
     write(project, 'grilling diary/decision.md', '# Provisional decision\n');
     write(project, 'handoffs/recovery.md', '# Recovery point\n');
@@ -103,7 +103,7 @@ function fixtureSpec() {
     const report = JSON.parse(result.stdout);
     assert.equal(report.status, 'complete');
     assert.equal(fs.existsSync(path.join(project, 'specs')), false, 'legacy specs must retire after migration');
-    assert.equal(fs.existsSync(path.join(project, 'Wiki')), false, 'legacy Wiki must retire after migration');
+    assert.equal(fs.existsSync(path.join(project, 'MEMORY.md')), false, 'legacy root Wiki memory must retire after migration');
     assert.equal(fs.existsSync(path.join(project, 'feedback')), false, 'legacy feedback must retire after migration');
     assert.equal(fs.existsSync(path.join(project, 'grilling diary')), false, 'legacy provisional records must retire after migration');
     assert.equal(fs.existsSync(path.join(project, 'handoffs')), false, 'legacy recovery records must retire after migration');
