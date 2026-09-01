@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { doctor, nextWork } from './spec-workbench.mjs';
 import { validateManifest } from './workbench-layout.mjs';
@@ -16,6 +17,10 @@ assert.equal(fs.existsSync(path.join(root, 'workbench', 'specs', 'S-021-portable
   'S-021 must be recoverable at its manifest-declared stable path');
 assert.equal(validateManifest(root).status, 'valid', 'the dogfood manifest must validate');
 assert.deepEqual(doctor(root), [], 'doctor must resolve only the manifest-declared spec lane');
-assert.equal(nextWork(root).specId, 'S-021', 'cold selection must resolve S-021 from the manifest without chat history');
+assert.equal(nextWork(root), null, 'a completed workbench must expose no stale eligible ticket');
+const shown = spawnSync(process.execPath, ['tools/spec-workbench.mjs', 'show', 'S-021'], { cwd: root, encoding: 'utf8' });
+assert.equal(shown.status, 0, shown.stderr);
+assert.match(shown.stdout, /^# S-021 - Portable Workbench v3/m,
+  'cold recovery must resolve S-021 at its manifest-declared stable path');
 
 console.log('ok - LLM Workbench dogfoods its manifest-declared v3 support root');
