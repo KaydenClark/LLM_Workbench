@@ -4,9 +4,9 @@
 > same version during handoff (Phase 7).
 
 This file is the one-prompt bootstrap protocol. It tells an agent how to turn a
-single founding prompt into a project that already has filled-out control docs:
-`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, `RUNBOOK.md`, and a
-first stable `SPEC.md`.
+single founding prompt into a project that already has seven filled root controls:
+`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `RUNBOOK.md`, `TASKBOARD.md`,
+`CLAUDE.md`, and `README.md`; plus a manifest-backed first stable `SPEC.md`.
 
 Read this once, run it once. Genesis is a starting gun, not a standing rule. When
 bootstrap is finished, AGENTS plus the progressive spec flow govern; this file can be deleted or
@@ -157,22 +157,30 @@ must be one you executed and saw succeed, not an aspiration.
 
 Output: a `RUNBOOK.md` a new agent can follow to reproduce a green run.
 
-### Phase 6 - Seed the first spec, hot projection, and room brain
+### Phase 6 - Initialize the support root, first spec, hot projection, and room brain
 
-Create one stable `specs/S-001-<slug>/SPEC.md` for the nearest coherent
-capability. Put 1-3 one-context tracer-bullet tickets in its implementation
-table, record the Genesis result in its evidence log, then render
-`TASKBOARD.md` from the spec metadata.
+Initialize the v3 support root before writing support records:
 
-Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to the
-project root as `MEMORY.md`, fill its placeholders, and link it to the live
+```bash
+node /PATH/TO/LLM_WORKBENCH/tools/workbench-layout.mjs init \
+  --project [ABSOLUTE_PROJECT_PATH] --provenance genesis --version v[HARNESS_VERSION]
+```
+
+Create one stable `workbench/specs/S-001-<slug>/SPEC.md` for the nearest
+coherent capability. Put 1-3 one-context tracer-bullet tickets in its
+implementation table and record the Genesis result in its evidence log. The
+manifest declares the `specs`, `wiki`, `grilling`, `handoffs`, and `feedback`
+lanes; do not create a project-local `skills/` discovery directory.
+
+Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to
+`workbench/wiki/MEMORY.md`, fill its placeholders, and link it to the live
 controls just created. If this room lives inside a larger deployment vault, set
 the up-link to the deployment wiki's note for this room. See
 `templates/Wiki/README.md` for the link conventions. A room is not bootstrapped
 without a brain.
 
-Output: one durable capability record, a hot projection the normal work loop
-can pick up immediately, and a `MEMORY.md` room brain that routes to both.
+Output: one durable capability record, declared support lanes, a hot projection
+the normal work loop can pick up immediately, and a manifest-routed room brain.
 
 ### Phase 7 - Handoff
 
@@ -193,8 +201,8 @@ procedures, and source/tests for behavior.
 Do not call bootstrap done on vibes. All of the following must hold:
 
 - [ ] `BLUEPRINT.md`, `LEXICON.md`, `AGENTS.md`, `RUNBOOK.md`, and
-      `TASKBOARD.md` exist with **no remaining `[BRACKETED]` placeholders** in
-      required sections.
+      `TASKBOARD.md`, `CLAUDE.md`, and `README.md` exist with **no remaining
+      `[BRACKETED]` placeholders** in required sections.
 - [ ] The founding prompt is preserved verbatim somewhere durable.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
 - [ ] `.claude/settings.json` is filled from that scope (deny secrets, allow
@@ -202,10 +210,13 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
-- [ ] A stable first spec contains at least one actionable `ready` ticket with
-      proof requirements, and `TASKBOARD.md` projects it.
-- [ ] A `MEMORY.md` room brain exists (from `templates/Wiki/`), routes to the
-      live controls, and has no unfilled placeholders.
+- [ ] `workbench/manifest.json` declares the five support lanes, exact
+      12-skill policy, version, and Genesis provenance; the layout validator
+      passes with `--genesis`.
+- [ ] A stable first spec under `workbench/specs/` contains at least one
+      actionable `ready` ticket with proof requirements.
+- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/Wiki/`),
+      routes to the live controls, and has no unfilled placeholders.
 - [ ] The first spec evidence row records that Genesis ran, with the actual result.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box

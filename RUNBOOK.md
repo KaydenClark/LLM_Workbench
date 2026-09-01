@@ -60,6 +60,7 @@ node tools/test-team-coordination.mjs
 node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-core-skill-installer.mjs
+node tools/test-workbench-layout.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
@@ -96,6 +97,20 @@ The installer writes only missing core skill directories into
 `.agents/skills` and `.claude/skills`. It preserves existing names without a
 content comparison and blocks before mutation when either discovery root is
 Git-owned or a required skill path collides with a file or symlink.
+
+### V3 support-root check
+
+Genesis uses the bounded layout helper to create and validate its declared
+support lanes. Exercise it from a disposable project directory:
+
+```bash
+node tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.0.0
+node tools/workbench-layout.mjs validate --project /tmp/workbench-project
+node tools/test-workbench-layout.mjs
+```
+
+`validate --genesis` additionally requires the seven root controls, one first
+spec under `workbench/specs/`, and no project-local `skills/` directory.
 
 ### Spec Lifecycle And Retrieval
 

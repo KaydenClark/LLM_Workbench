@@ -12,8 +12,8 @@
 **Updated:** 2026-09-01
 **Catalog description:** Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-002 claimed by codex.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 ## Outcome
 
@@ -149,7 +149,7 @@ owner's request to prepare executable specs approves this dependency order.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | A brand-new host installs only missing members of the 12-skill core without altering existing skills or foreign roots | done | none | Red: node tools/test-core-skill-installer.mjs failed before helper; green: focused installer/catalog tests and complete Runbook suite passed |
-| TK-002 | Genesis produces one fresh v3 project with seven root controls, manifest-backed support lanes, first spec, and green focused checks | ready | TK-001 | pending |
+| TK-002 | Genesis produces one fresh v3 project with seven root controls, manifest-backed support lanes, first spec, and green focused checks | in-progress | TK-001 | pending |
 | TK-003 | Adoption migrates one mixed existing project to v3 without losing records, history, project truth, or existing user skills | ready | TK-002 | pending |
 | TK-004 | An explicitly requested v2 upgrade backs up changed skills, synchronizes the core, migrates legacy paths once, and proves rollback | ready | TK-003 | pending |
 | TK-005 | One v3 planning-to-delivery workflow resolves all project support paths through the manifest using the 12 bundled core skills | ready | TK-004 | pending |

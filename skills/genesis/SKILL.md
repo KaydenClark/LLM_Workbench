@@ -7,15 +7,16 @@ disable-model-invocation: true
 Use Genesis only for a new greenfield project. If the target already contains
 real code, history, or project controls, route to `/adoption` instead.
 
-1. Locate the canonical Workbench source named by the workspace controls and
-   read `templates/GENESIS.md` completely. Treat it as the bootstrap procedure;
+1. Locate the checked-out LLM Workbench repository and read
+   `templates/GENESIS.md` completely. Treat it as the bootstrap procedure;
    this skill is only its conversational entrypoint.
 2. Preserve the founding prompt verbatim, verify the target path is inside the
    authorized workspace, and ask only when a missing answer changes
    architecture, privacy, money, credentials, or destructive risk.
-3. Run the Genesis phases in order. Create filled controls, one stable spec, the
-   smallest runnable vertical proof, and exact Runbook commands. Do not leave a
-   second planning or proof store.
+3. Run the Genesis phases in order. Create the seven filled root controls, run
+   `tools/workbench-layout.mjs init` for the lowercase support root, create one
+   stable spec under the manifest-declared path, and record exact Runbook
+   commands. Do not leave a project-local skill tree or second proof store.
 4. Establish Git recovery immediately. When the current authorization and
    authenticated repository namespace permit remote creation, create a private
    remote if none was supplied. Never infer public visibility, change
