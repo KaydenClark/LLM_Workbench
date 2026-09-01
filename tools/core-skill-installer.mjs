@@ -44,24 +44,27 @@ function validateSource() {
   return null;
 }
 
-function validateDestinationRoot(destination) {
-  const entry = lstatOrNull(destination);
-  if (!entry) return null;
-  if (entry.isSymbolicLink() || !entry.isDirectory()) {
-    return fail('discovery-root-collision',
-      `Discovery root ${destination} must be an ordinary directory or absent.`, { destination });
-  }
-  if (lstatOrNull(path.join(destination, '.git'))) {
-    return fail('foreign-git-root',
-      `Discovery root ${destination} is Git-owned. Choose a dedicated user-scoped skills root before installing.`,
-      { destination });
+function validateDestinationRoot(destination, home) {
+  const homePath = path.resolve(home);
+  for (let current = path.resolve(destination); ; current = path.dirname(current)) {
+    const entry = lstatOrNull(current);
+    if (entry?.isSymbolicLink() || (entry && !entry.isDirectory())) {
+      return fail('discovery-root-collision',
+        `Discovery root ancestor ${current} must be an ordinary directory or absent.`, { destination, ancestor: current });
+    }
+    if (entry && lstatOrNull(path.join(current, '.git'))) {
+      return fail('foreign-git-root',
+        `Discovery root ${destination} is inside Git-owned directory ${current}. Choose a dedicated user-scoped skills root before installing.`,
+        { destination, gitRoot: current });
+    }
+    if (current === homePath) break;
   }
   return null;
 }
 
-function validateDestinations(destinations) {
+function validateDestinations(destinations, home) {
   for (const { engine, root: destinationRoot } of destinations) {
-    const rootFailure = validateDestinationRoot(destinationRoot);
+    const rootFailure = validateDestinationRoot(destinationRoot, home);
     if (rootFailure) return rootFailure;
     for (const skill of coreSkills) {
       const destination = path.join(destinationRoot, skill);
@@ -89,7 +92,7 @@ function install(home) {
   ];
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
-  const destinationFailure = validateDestinations(destinations);
+  const destinationFailure = validateDestinations(destinations, home);
   if (destinationFailure) return destinationFailure;
 
   const report = { status: 'complete', requiredSkills: coreSkills, installed: [], skipped: [] };

@@ -74,6 +74,23 @@ test('a foreign Git-owned discovery root blocks before either engine is mutated'
   }
 });
 
+test('a foreign Git-owned parent blocks before a missing discovery root is created', () => {
+  const home = fixtureHome();
+  try {
+    fs.mkdirSync(path.join(home, '.agents', '.git'), { recursive: true });
+
+    const result = install(home);
+
+    assert.notEqual(result.status, 0);
+    assert.equal(result.report.status, 'blocked');
+    assert.equal(result.report.error.code, 'foreign-git-root');
+    assert.equal(fs.existsSync(path.join(home, '.agents', 'skills')), false);
+    assert.equal(fs.existsSync(path.join(home, '.claude', 'skills')), false);
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
 test('a same-named file collision blocks without installing any skill', () => {
   const home = fixtureHome();
   try {
