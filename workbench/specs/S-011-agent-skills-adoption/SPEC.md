@@ -1,17 +1,17 @@
 # S-011 - Agent Skills Adoption
 
 > Generated from LLM Workbench v2.3. Stable path
-> `specs/S-011-agent-skills-adoption/SPEC.md`; never move between status folders.
+> `workbench/specs/S-011-agent-skills-adoption/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-011
-**Status:** blocked
+**Status:** superseded
 **Priority:** 2
 **Owner:** unassigned
-**Updated:** 2026-08-31
+**Updated:** 2026-09-01
 **Catalog description:** Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness.
-**Blockers:** S-021 must complete before this unfinished historical capability can be marked superseded without falsifying TK-003.
-**Latest event:** S-021 was accepted as this spec's successor; S-011 is blocked from further execution while its implementation evidence remains intact.
-**Next gate:** Complete S-021, then mark S-011 superseded without reopening TK-003.
+**Blockers:** none
+**Latest event:** S-021 superseded the obsolete catalog/distribution and fresh-Claude completion contract without changing historical proof.
+**Next gate:** None; future skill scope requires a new spec.
 
 ## Outcome
 
@@ -108,7 +108,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Import curated upstream skills with provenance and wire GPT_OS discovery | done | none | see evidence 2026-07-14 |
 | TK-002 | Rewrite `to-tickets` to persist slices only in the assigned Workbench spec | done | none | Red/green node tools/test-skill-catalog.mjs; RUNBOOK full suite, template evaluator 106.6/113, render, doctor, and git diff --check passed |
-| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | blocked | Fresh Claude skill-discovery proof is absent | Claude authentication is live; the earlier non-persistent probe supplied no prompt and did not test discovery |
+| TK-003 | Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution | done | none | Superseded by S-021's closed 12-skill portable distribution contract; the historical Claude-discovery proof remains absent and is not claimed |
 | TK-004 | Reconcile the owner-selected catalog, canonical cross-agent discovery, and shared Lexicon | done | none | see evidence 2026-07-14 |
 | TK-005 | Rewrite the grilling discipline and its Desktop-facing entry points | done | none | Red/green skill-catalog contract; RUNBOOK full suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |
 | TK-006 | Add Sitrep and split settled documentation/spec capture from grilling | done | none | Red/green skill-catalog contract; complete RUNBOOK suite; template evaluator 106.6/113; render, doctor, and git diff --check passed |

@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-08-31
 **Status:** active
-**Harness version:** v2.3
+**Harness version:** v3.0.0
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
@@ -33,7 +33,7 @@ Core promise:
 
 ## Accepted V3 Direction
 
-[S-021](specs/S-021-portable-workbench-v3/SPEC.md) owns the next major portable
+[S-021](workbench/specs/S-021-portable-workbench-v3/SPEC.md) owns the portable
 contract. It is intentionally an interim usability release while Foundry is
 unfinished, not a Foundry replacement or a general harness redesign.
 
@@ -53,8 +53,8 @@ unfinished, not a Foundry replacement or a general harness redesign.
   deterministic parsing, rendering, validation, and safe bounded file
   operations rather than one monolithic lifecycle program.
 
-Version v2.3 remains the published behavior until S-021 acceptance and release
-proof are green. Do not advertise or stamp v3 into generated projects early.
+Version v3.0.0 is the published portable behavior. Release promotion from
+`integration` to `main` remains separately owned by S-014.
 
 ## Architecture And Invariants
 
@@ -64,7 +64,7 @@ proof are green. Do not advertise or stamp v3 into generated projects early.
 | Product map | `BLUEPRINT.md` | Compact direction, architecture, invariants, and spec catalog; no live task narration. |
 | Shared language | `LEXICON.md` | On demand; owns accepted project-wide definitions without requirements or live state. |
 | Execution projection | `TASKBOARD.md` | Active specs only: current slice, owner, blocker, event, next gate. |
-| Capability record | `specs/S-###-slug/SPEC.md` | Stable path; owns requirements, decisions, acceptance, verification, evidence, and completion. |
+| Capability record | Manifest-declared `workbench/specs/S-###-slug/SPEC.md` | Stable path; owns requirements, decisions, acceptance, verification, evidence, and completion. |
 | Procedures | `RUNBOOK.md` | Commands, troubleshooting, recovery, and operational detail. |
 | Implementation truth | source and tests | Wins when prose disagrees with verified behavior. |
 
@@ -90,22 +90,22 @@ be changed only through a later spec linked by supersession.
 <!-- spec-catalog:start -->
 | Spec | Description | Status |
 |---|---|---|
-| [S-001 - Spec-Centered Progressive Disclosure](specs/S-001-progressive-disclosure/SPEC.md) | Make AGENTS the operating system while specs hold durable capability truth and the hot board projects active work only. | complete |
-| [S-002 - Held-Out Second-Domain Evaluation](specs/S-002-heldout-evaluation/SPEC.md) | Add a condition-blind held-out task before spending on repeated c0/c1/c2/c3 outcome trials. | complete |
-| [S-003 - Prospective Dungeon Friends Pilot](specs/S-003-dungeon-friends-pilot/SPEC.md) | Evaluate v2.3 progressive disclosure in Dungeon Friends only after separate owner authorization. | planned |
-| [S-004 - Safe Direct Claim](specs/S-004-safe-direct-claim/SPEC.md) | Prevent direct claim calls from bypassing a ticket's declared blockers. | complete |
-| [S-005 - Bootstrap Documentation Alignment](specs/S-005-bootstrap-doc-alignment/SPEC.md) | Remove stale four-control-doc and Taskboard-proof wording from bootstrap and adoption guidance. | complete |
-| [S-006 - Automated Harness Feedback Gate](specs/S-006-feedback-automation/SPEC.md) | Build and operate a one-candidate Terra/Sol feedback loop with independent evidence gates. | complete |
-| [S-007 - Safe Feedback Helper Import](specs/S-007-feedback-helper-import/SPEC.md) | Allow the feedback helper to be imported when Node has no script path. | complete |
-| [S-008 - Windows Verification Portability](specs/S-008-windows-verification-portability/SPEC.md) | Keep context output, spec-doctor, and eval-runner verification stable across Windows and POSIX hosts. | complete |
-| [S-009 - Git-Write Constrained Adoption](specs/S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
-| [S-010 - Canonical Evaluator Entry Detection](specs/S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
-| [S-011 - Agent Skills Adoption](specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | blocked |
-| [S-012 - Reproducible Adoption Provenance](specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
-| [S-013 - Standardized Automation Run Outcomes](specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
-| [S-014 - Workbench Release Candidate](specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | blocked |
-| [S-020 - Spec-Native Team Coordination](specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
-| [S-021 - Portable Workbench v3](specs/S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | active |
+| [S-001 - Spec-Centered Progressive Disclosure](workbench/specs/S-001-progressive-disclosure/SPEC.md) | Make AGENTS the operating system while specs hold durable capability truth and the hot board projects active work only. | complete |
+| [S-002 - Held-Out Second-Domain Evaluation](workbench/specs/S-002-heldout-evaluation/SPEC.md) | Add a condition-blind held-out task before spending on repeated c0/c1/c2/c3 outcome trials. | complete |
+| [S-003 - Prospective Dungeon Friends Pilot](workbench/specs/S-003-dungeon-friends-pilot/SPEC.md) | Evaluate v2.3 progressive disclosure in Dungeon Friends only after separate owner authorization. | planned |
+| [S-004 - Safe Direct Claim](workbench/specs/S-004-safe-direct-claim/SPEC.md) | Prevent direct claim calls from bypassing a ticket's declared blockers. | complete |
+| [S-005 - Bootstrap Documentation Alignment](workbench/specs/S-005-bootstrap-doc-alignment/SPEC.md) | Remove stale four-control-doc and Taskboard-proof wording from bootstrap and adoption guidance. | complete |
+| [S-006 - Automated Harness Feedback Gate](workbench/specs/S-006-feedback-automation/SPEC.md) | Build and operate a one-candidate Terra/Sol feedback loop with independent evidence gates. | complete |
+| [S-007 - Safe Feedback Helper Import](workbench/specs/S-007-feedback-helper-import/SPEC.md) | Allow the feedback helper to be imported when Node has no script path. | complete |
+| [S-008 - Windows Verification Portability](workbench/specs/S-008-windows-verification-portability/SPEC.md) | Keep context output, spec-doctor, and eval-runner verification stable across Windows and POSIX hosts. | complete |
+| [S-009 - Git-Write Constrained Adoption](workbench/specs/S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
+| [S-010 - Canonical Evaluator Entry Detection](workbench/specs/S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
+| [S-011 - Agent Skills Adoption](workbench/specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |
+| [S-012 - Reproducible Adoption Provenance](workbench/specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
+| [S-013 - Standardized Automation Run Outcomes](workbench/specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
+| [S-014 - Workbench Release Candidate](workbench/specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | blocked |
+| [S-020 - Spec-Native Team Coordination](workbench/specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
+| [S-021 - Portable Workbench v3](workbench/specs/S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health

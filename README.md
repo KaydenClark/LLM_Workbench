@@ -22,7 +22,7 @@ The blank, copyable templates live in `templates/`:
 - `templates/TASKBOARD.md` - hot projection of active specs only: current slice,
   owner, blocker, latest event, and next gate.
 - `templates/SPEC.md` - concise on-demand capability work packet. Copy it to a
-  stable `specs/S-###-slug/SPEC.md`; it owns detailed requirements, decisions,
+  manifest-declared `workbench/specs/S-###-slug/SPEC.md`; it owns detailed requirements, decisions,
   acceptance, evidence, completion, and supersession.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
@@ -63,10 +63,9 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the currently active v2.3 skill source. Active S-021 replaces the
-  broad project-local discovery model with a closed 12-skill, missing-only
-  brand-new-install fallback; until that implementation lands, follow the
-  current catalog and do not claim v3 behavior.
+- `skills/` - the closed 12-skill public source bundle. It is copied only into
+  user-scoped discovery roots during a missing-only brand-new install; this
+  repository does not use it as a project-local discovery tree.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
   until their Workbench rewrites pass review.
 - `team templates/` - optional manager/subagent coordination templates for
@@ -103,7 +102,7 @@ docs look like. Copy from `templates/`, not from the root.
    `templates/LEXICON.md`, `templates/TASKBOARD.md`, `templates/RUNBOOK.md`,
    `templates/README.md`, and `templates/SPEC.md` into the target project; copy
    `templates/Wiki/MEMORY.project.md` in as `MEMORY.md` (the room brain);
-   create `specs/` for stable work
+   initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for stable work
    packets and copy `tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items. For Claude Code, also copy `templates/.claude/settings.json`
@@ -158,13 +157,12 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v2.3** (recorded in `BLUEPRINT.md`); this repo is the
+current harness version is **v3.0.0** (recorded in `BLUEPRINT.md`); this repo is the
 source, so its own docs are not stamped.
 
-The owner has accepted the v3 portable layout and skill-install direction in
-[`S-021`](specs/S-021-portable-workbench-v3/SPEC.md). It is active work, not a
-published release: v2.3 remains the truthful setup contract until every S-021
-acceptance gate and the downstream exact-head release check pass.
+The portable layout and skill-install contract is implemented in
+[`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate
+exact-head `integration` to `main` release gate remains owned by S-014.
 
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template

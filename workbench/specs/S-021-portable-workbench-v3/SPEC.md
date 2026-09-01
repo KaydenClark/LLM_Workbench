@@ -12,8 +12,8 @@
 **Updated:** 2026-09-01
 **Catalog description:** Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts.
 **Blockers:** none
-**Latest event:** TK-005 closed with proof.
-**Next gate:** Complete TK-006.
+**Latest event:** TK-006 claimed by codex.
+**Next gate:** Close TK-006 with verification and documentation proof.
 
 ## Outcome
 
@@ -153,7 +153,7 @@ owner's request to prepare executable specs approves this dependency order.
 | TK-003 | Adoption migrates one mixed existing project to v3 without losing records, history, project truth, or existing user skills | done | TK-002 | Red: node tools/test-workbench-adoption.mjs failed before the migration helper; green: mixed adoption/collision test plus complete Runbook suite, evaluator 106.6/113, and doctor passed |
 | TK-004 | An explicitly requested v2 upgrade backs up changed skills, synchronizes the core, migrates legacy paths once, and proves rollback | done | TK-003 | Red: node tools/test-workbench-upgrade.mjs failed before the updater; green: explicit authorization, managed backup, clean recovery-point, migration, and rollback-record fixtures plus complete Runbook suite passed |
 | TK-005 | One v3 planning-to-delivery workflow resolves all project support paths through the manifest using the 12 bundled core skills | done | TK-004 | Red: node tools/test-skill-catalog.mjs failed before manifest-routing contracts; green: all durable core workflow skills name manifest authority and the catalog/delivery tests pass |
-| TK-006 | LLM Workbench dogfoods v3, completes the fresh/cold acceptance matrix, and hands the exact integration candidate back to S-014 | ready | TK-005 | pending |
+| TK-006 | LLM Workbench dogfoods v3, completes the fresh/cold acceptance matrix, and hands the exact integration candidate back to S-014 | in-progress | TK-005 | pending |
 
 ### TK-001 — Missing-Only Core Installation
 

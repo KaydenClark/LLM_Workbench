@@ -10,7 +10,7 @@ spec tool and one assigned `SPEC.md`; commands live in `RUNBOOK.md`.
 1. Current user request.
 2. This `AGENTS.md`.
 3. Source and tests verified live.
-4. The assigned `specs/S-###-slug/SPEC.md`.
+4. The assigned `SPEC.md` at the path declared by `workbench/manifest.json`.
 5. `BLUEPRINT.md`, then `LEXICON.md`, then `TASKBOARD.md`, then `RUNBOOK.md`.
 6. `README.md` and older evidence.
 
@@ -29,7 +29,7 @@ the prospective S-003 pilot without a separate user request.
 
 ## Edit Scope
 
-May edit `templates/`, `specs/`, `team templates/`, `research templates/`,
+May edit `templates/`, `workbench/specs/`, `team templates/`, `research templates/`,
 `tools/`, `evals/`, `outcomes/`, `benchmarks/`, and root control/docs files.
 Do not edit `LICENSE` without an explicit request, `research papers/`, or
 anything outside this repository. Stop if the correct change needs broader
@@ -40,7 +40,8 @@ Dogfood boundary:
 - `templates/` stays generic, copy-ready, and `[BRACKETED]`.
 - Root controls stay filled, current, and free of template placeholders.
 - Harness design changes normally update both; explain any exemption.
-- A spec path is stable. Never move it between active/done/archive folders.
+- A spec path is stable once declared in `workbench/manifest.json`. Never move
+  it between active/done/archive folders.
 
 ## Work Selection And Lifecycle
 
@@ -91,6 +92,7 @@ node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
 node tools/test-workbench-upgrade.mjs
+node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs

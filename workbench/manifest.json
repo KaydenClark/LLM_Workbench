@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "workbenchVersion": "v3.0.0",
+  "provenance": {
+    "lifecycle": "adoption"
+  },
+  "lanes": {
+    "specs": "workbench/specs",
+    "wiki": "workbench/wiki",
+    "grilling": "workbench/grilling",
+    "handoffs": "workbench/handoffs",
+    "feedback": "workbench/feedback"
+  },
+  "skillPolicy": {
+    "required": [
+      "adoption",
+      "checkpoint",
+      "code-review",
+      "genesis",
+      "grilling",
+      "implement",
+      "make-it-so",
+      "to-docs",
+      "to-spec",
+      "to-tickets",
+      "tracer-bullet",
+      "update-harness"
+    ],
+    "discovery": [
+      ".agents/skills",
+      ".claude/skills"
+    ],
+    "normalSetup": "presence-only",
+    "updates": "explicit-only"
+  }
+}
