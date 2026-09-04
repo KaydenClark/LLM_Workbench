@@ -43,6 +43,7 @@ function seedProject(project) {
   ].join('\n'));
   write(project, 'MEMORY.md', '# Project room memory\n');
   write(project, 'skills/local/SKILL.md', '# Legacy project-local skill\n');
+  write(project, 'tools/app.mjs', 'export const app = true;\n');
   assert.equal(spawnSync('git', ['init', '-q'], { cwd: project }).status, 0);
   assert.equal(spawnSync('git', ['add', '.'], { cwd: project }).status, 0);
   assert.equal(spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '-qm', 'v2 fixture'], { cwd: project }).status, 0);
@@ -76,6 +77,11 @@ test('explicit upgrade backs up a changed managed skill, migrates once, and reco
     assert.equal(recovery.preMigration.gitSha, beforeSha);
     assert.ok(recovery.preMigration.inventory.includes('specs/S-101-upgrade/SPEC.md'));
     assert.equal(recovery.skillBackups.length, 1);
+    assert.equal(fs.readFileSync(path.join(project, 'tools', 'app.mjs'), 'utf8'), 'export const app = true;\n', 'an application root tools directory survives an explicit upgrade');
+    const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
+    assert.equal(receipt.source.release, 'v3.0.0', 'explicit upgrade installs receipt-backed runtime tools');
+    assert.equal(recovery.tools.status, 'installed');
+    assert.equal(JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8')).provenance.lifecycle, 'upgrade');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });

@@ -203,8 +203,14 @@ destinations (legacy `grilling diary/` into the untracked grilling collection,
 legacy `handoffs/` into the tracked checkpoints collection), preserves
 project-local skills under `workbench/sessions/checkpoints/adoption-legacy-skills/`
 after user-scoped core readiness, writes
-`workbench/sessions/checkpoints/adoption-recovery.json`, then renders and
-validates the manifest-declared spec lane.
+`workbench/sessions/checkpoints/adoption-recovery.json`, moves a root
+`WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
+`workbench/feedback/WORKBENCH_FEEDBACK.md`, installs the receipt-backed runtime
+tools into `workbench/tools/`, then renders and validates the manifest-declared
+spec lane. Two root feedback files, or a root file beside a legacy
+`feedback/WORKBENCH_FEEDBACK.md`, block as `feedback-collision` before any
+mutation. An application's root `tools/` directory is never a migration
+source and is left untouched.
 
 ### V3 explicit upgrade and recovery check
 
@@ -225,9 +231,10 @@ The command blocks an unmanaged same-named skill, a discovery root inside a Git
 worktree, a missing committed Git recovery point, or a pre-existing v3 support
 root before mutation. For each changed managed skill it creates a copy under
 the user home's `.workbench-upgrade-backup-*` directory, migrates the legacy
-support lanes once, and records the pre-migration SHA and tracked path inventory
-in `workbench/sessions/checkpoints/upgrade-recovery.json`. The target project must be clean
-and committed first; uncommitted state has no concrete rollback point.
+support lanes once, installs the receipt-backed runtime tools, and records the
+pre-migration SHA, tracked path inventory, skill backups, and tools receipt in
+`workbench/sessions/checkpoints/upgrade-recovery.json`. The target project must
+be clean and committed first; uncommitted state has no concrete rollback point.
 
 ### Spec Lifecycle And Retrieval
 

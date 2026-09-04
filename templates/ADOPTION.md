@@ -207,16 +207,17 @@ node tools/workbench-adoption.mjs migrate \
   --project [ABSOLUTE_PROJECT_PATH] \
   --home [USER_HOME] \
   --version v3.0.0
-node tools/workbench-tools.mjs install --project [ABSOLUTE_PROJECT_PATH]
+node tools/workbench-tools.mjs verify --project [ABSOLUTE_PROJECT_PATH]
 node workbench/tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
 node workbench/tools/spec-workbench.mjs next --json
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
 The first three commands run from the checked-out LLM Workbench release; the
-last three run the project's own installed copies. The tools install writes a
-receipt with the exact source release, commit, and hashes; it never reads or
-writes an application's root `tools/` directory.
+last three run the project's own installed copies. The migration installs the
+runtime tools into `workbench/tools/` with a receipt recording the exact source
+release, commit, and hashes (`verify` confirms it); it never reads or writes an
+application's root `tools/` directory.
 
 The migration moves only known unambiguous durable paths: `specs/`, `Wiki/`,
 root `MEMORY.md`, `feedback/`, `grilling diary/`, and `handoffs/` to their
@@ -226,7 +227,9 @@ untracked `workbench/sessions/grilling/`; legacy handoffs become the tracked
 `skills/` folder as `workbench/sessions/checkpoints/adoption-legacy-skills/`
 only after every required core skill is already user-scoped. It writes the
 explicit recovery record at `workbench/sessions/checkpoints/adoption-recovery.json`,
-renders the projections, and checks doctor before reporting completion.
+moves a root `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
+`workbench/feedback/`, installs the runtime tools, renders the projections, and
+checks doctor before reporting completion.
 
 An existing `workbench/` root, a legacy path collision, unfilled controls, or
 missing user-scoped core skill blocks before migration; inspect and reconcile

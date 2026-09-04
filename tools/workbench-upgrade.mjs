@@ -159,8 +159,10 @@ function upgrade(options) {
     const validation = validateManifest(project);
     if (validation.status !== 'valid') throw new Error(validation.error.message);
     const recoveryPath = path.join(collections.checkpoints, 'upgrade-recovery.json');
-    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups }, null, 2)}\n`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skillBackups, migration: adoptionReport };
+    const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
+    const tools = { status: 'installed', receipt: `${validation.manifest.lanes.tools}/.workbench-tools.json`, source: receipt.source };
+    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, tools }, null, 2)}\n`);
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skillBackups, tools, migration: adoptionReport };
   } catch (error) {
     return { status: 'partial', skillBackups, error: { code: 'upgrade-failed', message: error.message } };
   }

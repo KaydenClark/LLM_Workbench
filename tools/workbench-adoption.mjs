@@ -2,8 +2,17 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { collections, controls, coreSkills, initialize, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
+
+const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const toolsInstaller = path.join(productRoot, 'tools', 'workbench-tools.mjs');
+// A root feedback file (current or legacy name) moves into the feedback lane
+// under the current name. An application's root `tools/` directory is never a
+// legacy source: it stays application-owned and is not listed here.
+const rootFeedbackNames = ['WORKBENCH_FEEDBACK.md', 'HARNESS_FEEDBACK.md'];
 
 // Legacy v2 sources and the schema 2 destination each one becomes. Live
 // grilling records land in the untracked grilling collection; the tracked
@@ -86,6 +95,17 @@ function preflight(project, home) {
   if (memoryEntry && lstatOrNull(path.join(project, 'Wiki', 'MEMORY.md'))) {
     return fail('wiki-memory-collision', 'Legacy Wiki/MEMORY.md and root MEMORY.md both exist; reconcile their project truth before adoption.');
   }
+  const rootFeedback = rootFeedbackNames.filter((name) => lstatOrNull(path.join(project, name)));
+  if (rootFeedback.length > 1) {
+    return fail('feedback-collision', `${rootFeedback.join(' and ')} both exist at the project root; keep one before adoption.`, { rootFeedback });
+  }
+  for (const name of rootFeedback) {
+    const entry = lstatOrNull(path.join(project, name));
+    if (entry.isSymbolicLink() || !entry.isFile()) return fail('legacy-path-collision', `${path.join(project, name)} must be an ordinary file when present.`, { source: name });
+    if (lstatOrNull(path.join(project, 'feedback', 'WORKBENCH_FEEDBACK.md'))) {
+      return fail('feedback-collision', `${name} at the root and feedback/WORKBENCH_FEEDBACK.md both exist; reconcile them before adoption.`, { rootFeedback });
+    }
+  }
   const legacySkills = lstatOrNull(path.join(project, 'skills'));
   if (legacySkills && (legacySkills.isSymbolicLink() || !legacySkills.isDirectory())) {
     return fail('legacy-path-collision', `${path.join(project, 'skills')} must be an ordinary directory when present.`, { source: 'skills' });
@@ -129,6 +149,14 @@ function migrate(options) {
       fs.renameSync(legacyMemory, destination);
       moved.push({ source: 'MEMORY.md', destination: `${lanes.wiki}/MEMORY.md` });
     }
+    for (const name of rootFeedbackNames) {
+      const source = path.join(project, name);
+      if (!lstatOrNull(source)) continue;
+      const destination = path.join(project, lanes.feedback, 'WORKBENCH_FEEDBACK.md');
+      removeGitkeep(path.join(project, lanes.feedback));
+      fs.renameSync(source, destination);
+      moved.push({ source: name, destination: `${lanes.feedback}/WORKBENCH_FEEDBACK.md` });
+    }
     const legacySkills = path.join(project, 'skills');
     if (lstatOrNull(legacySkills)) {
       const destination = path.join(project, recoveryLane, 'adoption-legacy-skills');
@@ -139,10 +167,15 @@ function migrate(options) {
     fs.writeFileSync(recoveryPath, `${JSON.stringify({ schemaVersion: 1, lifecycle: 'adoption', moved }, null, 2)}\n`);
     const validation = validateManifest(project);
     if (validation.status !== 'valid') throw new Error(validation.error?.message ?? 'Migrated manifest did not validate.');
+    const installed = spawnSync(process.execPath, [toolsInstaller, 'install', '--project', project], { cwd: productRoot, encoding: 'utf8' });
+    const toolsReport = installed.stdout ? JSON.parse(installed.stdout) : null;
+    if (installed.status !== 0 || toolsReport?.status !== 'installed') {
+      throw new Error(toolsReport?.error?.message ?? (installed.stderr || 'Runtime tools install failed.'));
+    }
     render(project);
     const issues = doctor(project);
     if (issues.length) throw new Error(`Adoption rendered an invalid project: ${issues.map((issue) => issue.code).join(', ')}.`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, recoveryPath: `${recoveryLane}/adoption-recovery.json`, doctor: 'passed' };
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, doctor: 'passed' };
   } catch (error) {
     return { status: 'partial', moved, error: { code: 'migration-failed', message: error.message } };
   }

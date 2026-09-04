@@ -97,6 +97,7 @@ function fixtureSpec() {
     write(project, 'grilling diary/decision.md', '# Provisional decision\n');
     write(project, 'handoffs/recovery.md', '# Recovery point\n');
     write(project, 'skills/custom/SKILL.md', '# Legacy project-local skill\n');
+    write(project, 'tools/app.mjs', 'export const app = true;\n');
 
     const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
     assert.equal(result.status, 0, result.stderr);
@@ -117,6 +118,10 @@ function fixtureSpec() {
     assert.equal(report.recoveryPath, 'workbench/sessions/checkpoints/adoption-recovery.json');
     assert.equal(JSON.parse(read(project, 'workbench/manifest.json')).schemaVersion, 2, 'adoption must produce schema 2');
     assert.equal(read(project, 'AGENTS.md'), '# AGENTS.md\n\nProject-specific adoption truth.\n');
+    assert.equal(read(project, 'tools/app.mjs'), 'export const app = true;\n', 'an application root tools directory is never absorbed');
+    assert.equal(fs.existsSync(path.join(project, 'tools', '.workbench-tools.json')), false, 'no receipt is written into an application root tools directory');
+    const receipt = JSON.parse(read(project, 'workbench/tools/.workbench-tools.json'));
+    assert.equal(receipt.source.release, 'v3.0.0', 'adoption installs receipt-backed runtime tools');
     assert.equal(nextWork(project).specId, 'S-101', 'selection must resolve the manifest-declared spec lane');
     assert.deepEqual(doctor(project), [], 'doctor must resolve and validate the manifest-declared spec lane');
   } finally {
@@ -140,6 +145,84 @@ function fixtureSpec() {
     assert.equal(report.error.code, 'support-root-exists');
     assert.equal(read(project, 'specs/S-101-adopted/SPEC.md'), fixtureSpec(), 'a blocked collision must preserve legacy records');
     assert.equal(read(project, 'workbench/specs/existing.md'), 'Do not overwrite me.\n');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    write(project, 'WORKBENCH_FEEDBACK.md', '# Root feedback\n');
+    write(project, 'HARNESS_FEEDBACK.md', '# Legacy feedback\n');
+    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    assert.notEqual(result.status, 0, 'two root feedback files must block before mutation');
+    const report = JSON.parse(result.stdout);
+    assert.equal(report.error.code, 'feedback-collision');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    write(project, 'HARNESS_FEEDBACK.md', '# Legacy feedback\n');
+    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Legacy feedback\n', 'a legacy-named root feedback file is renamed into the lane');
+    assert.equal(fs.existsSync(path.join(project, 'HARNESS_FEEDBACK.md')), false);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    write(project, 'WORKBENCH_FEEDBACK.md', '# Root feedback\n');
+    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    assert.equal(result.status, 0, result.stdout);
+    const report = JSON.parse(result.stdout);
+    assert.equal(fs.existsSync(path.join(project, 'WORKBENCH_FEEDBACK.md')), false, 'a root feedback file must move into the feedback lane');
+    assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Root feedback\n');
+    assert.ok(report.moved.some((entry) => entry.source === 'WORKBENCH_FEEDBACK.md' && entry.destination === 'workbench/feedback/WORKBENCH_FEEDBACK.md'));
+    assert.equal(report.tools.status, 'installed');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    write(project, 'feedback/WORKBENCH_FEEDBACK.md', '# Lane feedback\n');
+    write(project, 'WORKBENCH_FEEDBACK.md', '# Root feedback\n');
+    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    assert.notEqual(result.status, 0, 'a root feedback file beside a legacy feedback lane file must block before mutation');
+    assert.equal(JSON.parse(result.stdout).error.code, 'feedback-collision');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
