@@ -89,7 +89,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | The wiki template set seeds a validated project wiki with the required collections and profile during Genesis | ready | S-023 | pending |
+| TK-001 | The wiki template set seeds a validated project wiki with the required collections and profile during Genesis | ready | none | pending |
 | TK-002 | `wiki.mjs validate` enforces metadata, portability, article shape, no copied task state, and secret patterns, with stale as attention | ready | TK-001 | pending |
 | TK-003 | Lexicon routing and the product repository's own wiki adopt the contract with an empty design-concepts collection | ready | TK-002 | pending |
 
@@ -126,6 +126,7 @@ Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --chec
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-09-04 | plan | Released the first ticket's S-023 blocker: S-023/TK-001 through TK-004 landed the schema 2 layout, collections, sessions ignore file, and tools lane this slice depends on, while S-023 itself completes only after S-026/TK-001 re-points the skills; keeping a whole-spec blocker here would deadlock selection | `next --json` returned null with every first ticket blocked on an uncompletable S-023; doctor green | Ticket blocker only; requirements unchanged | Implement TK-001 |
 | 2026-09-04 | plan | Captured the portable wiki and design-concepts capability from the promoted v3.1 plan | Baseline suite green at the landed S-015 SHA; wiki contract drafts staged | Spec added; templates and controls change with their tickets | Implement TK-001 through TK-003 after S-023/TK-001 |
 
 ## Completion Result

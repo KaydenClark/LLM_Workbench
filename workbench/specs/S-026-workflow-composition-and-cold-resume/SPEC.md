@@ -84,7 +84,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | The twelve skills resolve tools, notepads, handoffs, and checkpoints through the manifest, and `sessions.mjs checkpoint` promotes a privacy-checked copy | ready | S-023 | pending |
+| TK-001 | The twelve skills resolve tools, notepads, handoffs, and checkpoints through the manifest, and `sessions.mjs checkpoint` promotes a privacy-checked copy | ready | none | pending |
 | TK-002 | Feedback lives in the feedback lane, discovery prefers it, Adoption relocates a root file, and the root keeps exactly seven controls | ready | TK-001 | pending |
 | TK-003 | The mechanical round-trip test proves planning, interruption, and clean-clone resume with Foundry absent | ready | TK-002, S-024 | pending |
 
@@ -124,6 +124,7 @@ Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --chec
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-09-04 | plan | Released the first ticket's S-023 blocker: S-023/TK-001 through TK-004 landed the schema 2 layout, collections, sessions ignore file, and tools lane this slice depends on, while S-023 itself completes only after S-026/TK-001 re-points the skills; keeping a whole-spec blocker here would deadlock selection | `next --json` returned null with every first ticket blocked on an uncompletable S-023; doctor green | Ticket blocker only; requirements unchanged | Implement TK-001 |
 | 2026-09-04 | plan | Captured the workflow composition, feedback lane, and cold-resume capability from the promoted v3.1 plan | Baseline suite green at the landed S-015 SHA; no capability behavior verified yet | Spec added; skills, templates, and Runbook change with their tickets | Implement TK-001 through TK-003 after S-023/TK-002 and S-024/TK-001 |
 
 ## Completion Result
