@@ -163,9 +163,17 @@ Output: a `RUNBOOK.md` a new agent can follow to reproduce a green run.
 Initialize the v3 support root before writing support records:
 
 ```bash
-node /PATH/TO/LLM_WORKBENCH/tools/workbench-layout.mjs init \
+node /PATH/TO/LLM_WORKBENCH/workbench/tools/workbench-layout.mjs init \
   --project [ABSOLUTE_PROJECT_PATH] --provenance genesis --version v[HARNESS_VERSION]
+node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs install \
+  --project [ABSOLUTE_PROJECT_PATH]
 ```
+
+The second command installs the Workbench-managed runtime tools into the
+project's `workbench/tools/` lane with a receipt recording the exact source
+release, commit, and per-file hashes. From then on the project runs its own
+copies (`node workbench/tools/spec-workbench.mjs ...`); an application's root
+`tools/` directory, if any, is the application's own and is never touched.
 
 Create one stable `workbench/specs/S-001-<slug>/SPEC.md` for the nearest
 coherent capability. Put 1-3 one-context tracer-bullet tickets in its
@@ -193,8 +201,8 @@ Then render the projections and run doctor so the generated regions in
 `BLUEPRINT.md` and `TASKBOARD.md` (kept from the templates) reflect the packet:
 
 ```bash
-node /PATH/TO/LLM_WORKBENCH/tools/spec-workbench.mjs render
-node /PATH/TO/LLM_WORKBENCH/tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to

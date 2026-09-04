@@ -172,7 +172,7 @@ be changed only through a later spec linked by supersession.
 ## Cross-Cutting Health
 
 - all Workbench self-tests and the template evaluator pass;
-- `node tools/spec-workbench.mjs doctor` reports no lifecycle, link, or render
+- `node workbench/tools/spec-workbench.mjs doctor` reports no lifecycle, link, or render
   drift;
 - root docs contain no template placeholders and generic templates contain no
   Workbench-specific state;

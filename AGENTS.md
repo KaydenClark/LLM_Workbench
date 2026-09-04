@@ -73,8 +73,8 @@ Dogfood boundary:
 Unless the user names work directly:
 
 1. Verify root, branch, remote, upstream, and dirty state.
-2. Run `node tools/spec-workbench.mjs doctor`; stop on ambiguous state.
-3. Run `node tools/spec-workbench.mjs next --json`.
+2. Run `node workbench/tools/spec-workbench.mjs doctor`; stop on ambiguous state.
+3. Run `node workbench/tools/spec-workbench.mjs next --json`.
 4. Load only the returned spec with `show S-###`; inspect referenced source/tests.
 5. Claim it before editing: `claim S-### --agent NAME`.
 6. Implement one eligible tracer-bullet ticket using red/green TDD.
@@ -117,6 +117,7 @@ node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
 node tools/test-workbench-upgrade.mjs
+node tools/test-workbench-tools.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -127,7 +128,7 @@ node tools/test-feedback-automation.mjs
 node tools/test-symlink-invocation.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
-node tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 Harness changes also capture the guardrail baseline before editing and the

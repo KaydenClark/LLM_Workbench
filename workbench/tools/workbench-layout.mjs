@@ -4,10 +4,10 @@
 // reported as `upgrade-required` and migrated once, losslessly.
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 export const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -323,14 +323,6 @@ export function validate(options, requireGenesis) {
   if (specIssue) return specIssue;
   if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'Genesis must not create a project-local skills directory.');
   return report('valid', { manifest: result.manifest, controls });
-}
-
-export function isMainModule(importMetaUrl) {
-  try {
-    return Boolean(process.argv[1]) && importMetaUrl === pathToFileURL(fs.realpathSync(process.argv[1])).href;
-  } catch {
-    return Boolean(process.argv[1]) && importMetaUrl === pathToFileURL(path.resolve(process.argv[1])).href;
-  }
 }
 
 if (isMainModule(import.meta.url)) {

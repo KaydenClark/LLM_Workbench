@@ -11,7 +11,7 @@ import {
   nextWork,
   parseCliArgs,
   render
-} from './spec-workbench.mjs';
+} from '../workbench/tools/spec-workbench.mjs';
 
 assert.deepEqual(
   parseCliArgs(['next', '--json']),

@@ -2,8 +2,8 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { collections, controls, coreSkills, initialize, lanes, validateManifest } from './workbench-layout.mjs';
-import { doctor, render } from './spec-workbench.mjs';
+import { collections, controls, coreSkills, initialize, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 // Legacy v2 sources and the schema 2 destination each one becomes. Live
 // grilling records land in the untracked grilling collection; the tracked

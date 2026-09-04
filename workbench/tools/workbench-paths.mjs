@@ -3,6 +3,7 @@
 // through this module; nothing hardcodes a lane or collection.
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 export const SCHEMA_VERSION = 2;
 export const LANES = Object.freeze({
@@ -101,4 +102,17 @@ export function collectionPath(root, name) {
 
 export function toolPath(root, tool) {
   return path.join(lanePath(root, 'tools'), tool);
+}
+
+// True when the module at `importMetaUrl` is the script Node was asked to run.
+// Resolves symlinked and relative argv paths, and never throws when argv[1] is
+// absent or not a real file (piped module input, embedding, or a REPL).
+export function isMainModule(importMetaUrl) {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return importMetaUrl === pathToFileURL(fs.realpathSync(entry)).href;
+  } catch {
+    return importMetaUrl === pathToFileURL(path.resolve(entry)).href;
+  }
 }

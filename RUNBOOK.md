@@ -63,6 +63,7 @@ node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
 node tools/test-workbench-upgrade.mjs
+node tools/test-workbench-tools.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -73,7 +74,7 @@ node tools/test-feedback-automation.mjs
 node tools/test-socket-contract.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
-node tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 Expected result:
@@ -113,8 +114,8 @@ keeps `grilling/` and `handoffs/` untracked; only `checkpoints/` is durable.
 Exercise it from a disposable project directory:
 
 ```bash
-node tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.0.0
-node tools/workbench-layout.mjs validate --project /tmp/workbench-project
+node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.0.0
+node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-project
 node tools/test-workbench-layout.mjs
 ```
 
@@ -125,11 +126,11 @@ and the tracked `workbench/handoffs` checkpoints become
 empty. A second run reports `current`.
 
 ```bash
-node tools/workbench-layout.mjs migrate --project /absolute/project
+node workbench/tools/workbench-layout.mjs migrate --project /absolute/project
 ```
 
 Every consumer resolves lanes and collections through
-`tools/workbench-paths.mjs`; nothing hardcodes a support path.
+`workbench/tools/workbench-paths.mjs`; nothing hardcodes a support path.
 
 `validate --genesis` additionally requires seven ordinary, filled root controls,
 exact Workbench version stamps on the six stamped controls (the thin
@@ -149,6 +150,30 @@ with the CLI, and its focused self-test proves that vocabulary exactly matches
 the shipped Genesis templates. Relocating the CLI and its declared helper
 modules therefore cannot weaken lowercase-placeholder detection.
 
+### Managed runtime tools check
+
+The product's `workbench/tools/` lane is the canonical source of the
+Workbench-managed runtime tools; this repository runs them from there. A
+downstream project receives receipt-backed copies:
+
+```bash
+node tools/workbench-tools.mjs install --project /absolute/project
+node tools/workbench-tools.mjs verify --project /absolute/project
+node tools/workbench-tools.mjs update --project /absolute/project --home /disposable-or-user-home --explicit-update
+node tools/workbench-tools.mjs rollback --project /absolute/project --backup /path/recorded/in/receipt
+node tools/test-workbench-tools.mjs
+```
+
+`install` writes `workbench/tools/.workbench-tools.json` with the source
+repository, release, commit, and a SHA-256 per file, copies each tool as an
+ordinary `0644` file, and refuses a lane that already carries a receipt, a
+foreign unreceipted file, or a symlink. `verify` reports `tools-receipt-drift`
+with the drifted file names (`source` on this repository). `update` requires
+`--explicit-update`, backs changed files up under the user home's
+`.workbench-tools-backup-*`, records the backup path in the receipt, and
+`rollback` restores that backup. An application's root `tools/` directory is
+never read or written.
+
 ### V3 Adoption migration check
 
 Adoption requires seven filled root controls and all core skills in a
@@ -167,9 +192,9 @@ node tools/workbench-adoption.mjs migrate \
   --project /absolute/project \
   --home /disposable-or-user-home \
   --version v3.0.0
-node tools/workbench-layout.mjs validate --project /absolute/project
-node tools/spec-workbench.mjs next --json
-node tools/spec-workbench.mjs doctor
+node workbench/tools/workbench-layout.mjs validate --project /absolute/project
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 The command refuses an existing support root or any legacy collision before
@@ -207,16 +232,16 @@ and committed first; uncommitted state has no concrete rollback point.
 ### Spec Lifecycle And Retrieval
 
 ```bash
-node tools/spec-workbench.mjs next --json
-node tools/spec-workbench.mjs show S-001
-node tools/spec-workbench.mjs claim S-001 --agent codex
-node tools/spec-workbench.mjs close S-001 \
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs show S-001
+node workbench/tools/spec-workbench.mjs claim S-001 --agent codex
+node workbench/tools/spec-workbench.mjs close S-001 \
   --proof "[NAMED VERIFICATION]" \
   --docs "[DOCS UPDATED OR Docs checked; no update needed + reason]" \
   --remaining-gap "[GAP OR none]"
-node tools/spec-workbench.mjs complete S-001
-node tools/spec-workbench.mjs render
-node tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs complete S-001
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 `next` returns one eligible ready ticket. `show` loads one stable work packet.

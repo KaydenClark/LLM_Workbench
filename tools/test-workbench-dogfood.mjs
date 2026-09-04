@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { doctor, nextWork } from './spec-workbench.mjs';
-import { validateManifest } from './workbench-layout.mjs';
+import { doctor, nextWork } from '../workbench/tools/spec-workbench.mjs';
+import { validateManifest } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -39,7 +39,7 @@ if (selected) {
   assert.equal(fs.existsSync(path.join(root, selected.path)), true,
     'the selected manifest-declared spec must exist');
 }
-const shown = spawnSync(process.execPath, ['tools/spec-workbench.mjs', 'show', 'S-021'], { cwd: root, encoding: 'utf8' });
+const shown = spawnSync(process.execPath, ['workbench/tools/spec-workbench.mjs', 'show', 'S-021'], { cwd: root, encoding: 'utf8' });
 assert.equal(shown.status, 0, shown.stderr);
 assert.match(shown.stdout, /^# S-021 - Portable Workbench v3/m,
   'cold recovery must resolve S-021 at its manifest-declared stable path');

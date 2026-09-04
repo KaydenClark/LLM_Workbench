@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { parseMarkdownTableRow } from './markdown-table.mjs';
+import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
 
 const IMPACT_WEIGHT = { high: 3, medium: 2, low: 1 };
 const RUN_OUTCOME_CATEGORIES = new Set([

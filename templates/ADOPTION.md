@@ -207,10 +207,16 @@ node tools/workbench-adoption.mjs migrate \
   --project [ABSOLUTE_PROJECT_PATH] \
   --home [USER_HOME] \
   --version v3.0.0
-node tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
-node tools/spec-workbench.mjs next --json
-node tools/spec-workbench.mjs doctor
+node tools/workbench-tools.mjs install --project [ABSOLUTE_PROJECT_PATH]
+node workbench/tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs doctor
 ```
+
+The first three commands run from the checked-out LLM Workbench release; the
+last three run the project's own installed copies. The tools install writes a
+receipt with the exact source release, commit, and hashes; it never reads or
+writes an application's root `tools/` directory.
 
 The migration moves only known unambiguous durable paths: `specs/`, `Wiki/`,
 root `MEMORY.md`, `feedback/`, `grilling diary/`, and `handoffs/` to their

@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { validateManifest } from './workbench-layout.mjs';
-import { pathToFileURL } from 'node:url';
+import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 
@@ -444,7 +444,7 @@ async function main() {
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href) {
+if (isMainModule(import.meta.url)) {
   main().catch((error) => {
     console.error(`error: ${error.message}`);
     process.exitCode = 1;

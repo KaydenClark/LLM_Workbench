@@ -81,8 +81,11 @@ docs look like. Copy from `templates/`, not from the root.
 - `tools/audit-guardrails.mjs` - deliberately hard 100-point drift audit across
   the static contract, freshness/consistency, benchmark discipline, and real
   outcome evidence; it also ranks the next improvements.
-- `tools/spec-workbench.mjs` - zero-dependency spec retrieval, lifecycle,
-  deterministic catalog/dashboard rendering, and drift diagnosis.
+- `workbench/tools/` - the Workbench-managed runtime tools every project runs
+  (`spec-workbench.mjs` lifecycle, rendering, and diagnosis; `workbench-layout.mjs`
+  manifest init, validate, and migrate; their pure helpers). This lane is the
+  canonical source; `tools/workbench-tools.mjs` installs receipt-backed copies
+  downstream while an application's root `tools/` stays application-owned.
 - `tools/test-skill-catalog.mjs` - fails when the selected skill definitions,
   physical folders, router name, or root/template Lexicons drift apart.
 - `tools/feedback-automation.mjs` - canonical downstream feedback discovery,
@@ -103,7 +106,7 @@ docs look like. Copy from `templates/`, not from the root.
    `templates/README.md`, and `templates/SPEC.md` into the target project; copy
    `templates/Wiki/MEMORY.project.md` in as `MEMORY.md` (the room brain);
    initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for stable work
-   packets and copy `tools/spec-workbench.mjs` when using the local interface.
+   packets and copy `workbench/tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items. For Claude Code, also copy `templates/.claude/settings.json`
    and fill it from the same edit scope to enforce the boundary mechanically.

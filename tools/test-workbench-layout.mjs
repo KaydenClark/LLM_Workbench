@@ -6,12 +6,13 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { doctor, nextWork, render } from './spec-workbench.mjs';
-import { genesisTemplateFiles, templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES } from './workbench-paths.mjs';
+import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
+import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
+import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const tool = path.join(root, 'tools', 'workbench-layout.mjs');
+const runtime = path.join(root, 'workbench', 'tools');
+const tool = path.join(runtime, 'workbench-layout.mjs');
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 
 function fixture() {
@@ -506,10 +507,9 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
     fs.mkdirSync(partialTools);
     const relocatedTool = path.join(partialTools, 'workbench-layout.mjs');
     fs.copyFileSync(tool, relocatedTool);
-    fs.copyFileSync(path.join(root, 'tools', 'spec-packet.mjs'), path.join(partialTools, 'spec-packet.mjs'));
-    fs.copyFileSync(path.join(root, 'tools', 'markdown-table.mjs'), path.join(partialTools, 'markdown-table.mjs'));
-    fs.copyFileSync(path.join(root, 'tools', 'template-placeholders.mjs'), path.join(partialTools, 'template-placeholders.mjs'));
-    fs.copyFileSync(path.join(root, 'tools', 'workbench-paths.mjs'), path.join(partialTools, 'workbench-paths.mjs'));
+    for (const helper of ['spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+      fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
+    }
 
     const validated = spawnSync(process.execPath, [relocatedTool, 'validate', '--project', project, '--genesis'], {
       cwd: partialBundle,
