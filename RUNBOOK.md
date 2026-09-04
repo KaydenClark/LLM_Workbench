@@ -65,6 +65,7 @@ node tools/test-workbench-adoption.mjs
 node tools/test-workbench-upgrade.mjs
 node tools/test-workbench-tools.mjs
 node tools/test-diagnostics.mjs
+node tools/test-adr.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -259,6 +260,31 @@ Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates only the marked Blueprint catalog and hot Taskboard regions.
 `complete` requires every slice done, acceptance boxes checked, completion result
 recorded, and evidence present; render then removes the spec from the hot board.
+
+### Architecture Decision Records
+
+Decision records live in the manifest-declared `docs/adr` collection
+(`workbench/docs/adr/`). An ADR owns rationale; its rule binds only where the
+`canonicalized_in` frontmatter points, and every named owner must exist.
+
+```bash
+node workbench/tools/adr.mjs new --title "Decision title"
+node workbench/tools/adr.mjs validate
+node workbench/tools/adr.mjs register
+node tools/test-adr.mjs
+```
+
+`new` allocates the next number by scanning the collection and writes a
+`proposed` record with the standard sections. `validate` reports
+`invalid-adr` for a missing frontmatter, an unknown status, a missing date or
+title, an accepted record with no or a nonexistent `canonicalized_in`
+target, a superseded record without `superseded_by`, or a duplicated number;
+`untracked-provenance` for a link into the untracked `sessions/grilling` or
+`sessions/handoffs` collections; and `stale-register` when the derived
+`REGISTER.md` differs from the collection. `register` rewrites that derived
+table. Doctor carries these findings for schema 2 projects; none blocks
+selection, and the `adr validate` command itself exits 1 only on error
+findings.
 
 ### Diagnostics And Blocking Effects
 

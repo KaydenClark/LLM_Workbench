@@ -6,6 +6,8 @@ import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, finding } from './diagnostics.mjs';
+import { collectionPath, readManifest } from './workbench-paths.mjs';
+import { validateAdrs } from './adr.mjs';
 
 const SPEC_STATUSES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
 const TICKET_STATUSES = new Set(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
@@ -185,7 +187,21 @@ export function doctor(rootDir, options = {}) {
   }
   checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
+  issues.push(...collectionFindings(root));
   return issues;
+}
+
+// Schema 2 projects also carry decision records; their findings ride along so
+// one doctor run reports the whole support root. None blocks selection: the
+// registered effect of every ADR code is `none`.
+function collectionFindings(root) {
+  const manifest = readManifest(root);
+  if (!manifest || manifest.schemaVersion !== 2) return [];
+  try {
+    return fs.existsSync(collectionPath(root, 'adr')) ? validateAdrs(root) : [];
+  } catch (error) {
+    return [finding('invalid-adr', `ADR validation failed: ${error.message}`)];
+  }
 }
 
 function loadSpecs(rootDir, options = {}) {

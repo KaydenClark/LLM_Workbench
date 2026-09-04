@@ -22,6 +22,7 @@ export const RECEIPT_NAME = '.workbench-tools.json';
 // The closed set of Workbench-managed runtime tools. Later capability tickets
 // append to this list; the product lane must contain exactly these files.
 export const RUNTIME_TOOLS = Object.freeze([
+  'adr.mjs',
   'diagnostics.mjs',
   'markdown-table.mjs',
   'spec-packet.mjs',
