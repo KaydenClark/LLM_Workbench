@@ -5,14 +5,14 @@
 > move it between status folders.
 
 **Spec ID:** S-026
-**Status:** active
+**Status:** complete
 **Priority:** 4
 **Owner:** claude-fable-5-1
 **Updated:** 2026-09-04
 **Catalog description:** Route the twelve core skills and feedback discovery through the schema 2 manifest, promote session records through privacy-checked checkpoints, and prove the composed planning-to-resume workflow mechanically.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Complete TK-003.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -86,15 +86,15 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | The twelve skills resolve tools, notepads, handoffs, and checkpoints through the manifest, and `sessions.mjs checkpoint` promotes a privacy-checked copy | done | none | Red: the sessions test failed before workbench/tools/sessions.mjs existed and the skill catalog failed on retired paths. Green: 2 sessions tests (a clean untracked notepad promotes byte for byte below one stamp into workbench/sessions/checkpoints with mode 0644 and a refused duplicate; token, absolute home path, and email content is refused with the offending line, nothing is written, a symlink source is refused, and the CLI exits 1), the skill catalog and delivery contracts with the twelve skills naming only manifest-resolved paths, the consumer scan now covering skills, and the full 29-command union suite |
 | TK-002 | Feedback lives in the feedback lane, discovery prefers it, Adoption relocates a root file, and the root keeps exactly seven controls | done | TK-001 | Red: feedback discovery ignored a lane-only project and the templates still linked a root feedback file. Green: feedback discovery finds workbench/feedback/WORKBENCH_FEEDBACK.md, prefers the manifest lane over a root file, and still accepts legacy root names (6 canonical repos, recurrence 6); the template regression proves the project README and Genesis route feedback to the lane with no root link; adoption relocation was proven in S-023/TK-003; full 29-command union suite |
-| TK-003 | The mechanical round-trip test proves planning, interruption, and clean-clone resume with Foundry absent | ready | TK-002, S-024 | pending |
+| TK-003 | The mechanical round-trip test proves planning, interruption, and clean-clone resume with Foundry absent | done | TK-002, S-024 | Red: the round-trip test failed on the slice invocation before the harness matched the fixture. Green: tools/test-workbench-round-trip.mjs proves bare remote, mechanical Genesis with this candidate's tools, validate --genesis and doctor green, an untracked notepad promoted to a checkpoint, a claimed slice, a pushed planning checkpoint with the notepad absent from the commit, deletion of the working clone, a fresh-clone resume with a scrubbed environment that selects the in-progress slice from repository state, a red then green slice, close, render, doctor, push, remote read-back, and no Foundry name, mechanism, or private home path in the clone or transcript; full 30-command union suite |
 
 ## Acceptance Criteria
 
-- [ ] No core skill or template names `.agents/grilling diary/`, a root `specs/`, or a root runtime-tool path.
-- [ ] `sessions.mjs checkpoint` refuses secret-like content, absolute home paths, and private tokens, and writes nothing on refusal.
-- [ ] Feedback discovery finds a manifest-lane file, prefers it over a root legacy file, and Adoption relocates the root file.
-- [ ] The round-trip test passes deterministically with Foundry variables scrubbed and no Foundry path in any transcript.
-- [ ] Full union suite, render, doctor, and `git diff --check` pass.
+- [x] No core skill or template names `.agents/grilling diary/`, a root `specs/`, or a root runtime-tool path.
+- [x] `sessions.mjs checkpoint` refuses secret-like content, absolute home paths, and private tokens, and writes nothing on refusal.
+- [x] Feedback discovery finds a manifest-lane file, prefers it over a root legacy file, and Adoption relocates the root file.
+- [x] The round-trip test passes deterministically with Foundry variables scrubbed and no Foundry path in any transcript.
+- [x] Full union suite, render, doctor, and `git diff --check` pass.
 
 ## Testing Seams
 
@@ -128,10 +128,19 @@ Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --chec
 | 2026-09-04 | plan | Captured the workflow composition, feedback lane, and cold-resume capability from the promoted v3.1 plan | Baseline suite green at the landed S-015 SHA; no capability behavior verified yet | Spec added; skills, templates, and Runbook change with their tickets | Implement TK-001 through TK-003 after S-023/TK-002 and S-024/TK-001 |
 | 2026-09-04 | TK-001 | Ticket closed | Red: the sessions test failed before workbench/tools/sessions.mjs existed and the skill catalog failed on retired paths. Green: 2 sessions tests (a clean untracked notepad promotes byte for byte below one stamp into workbench/sessions/checkpoints with mode 0644 and a refused duplicate; token, absolute home path, and email content is refused with the offending line, nothing is written, a symlink source is refused, and the CLI exits 1), the skill catalog and delivery contracts with the twelve skills naming only manifest-resolved paths, the consumer scan now covering skills, and the full 29-command union suite | Rewrote checkpoint; updated grilling, make-it-so, to-docs, genesis, adoption, update-harness, implement, to-spec, to-tickets; added the Session Records And Checkpoints section to AGENTS.md and templates/AGENTS.md and the Session Checkpoints section to RUNBOOK.md; ADR-0028 accepted; register regenerated | Feedback lane and discovery are TK-002; the mechanical round trip is TK-003 |
 | 2026-09-04 | TK-002 | Ticket closed | Red: feedback discovery ignored a lane-only project and the templates still linked a root feedback file. Green: feedback discovery finds workbench/feedback/WORKBENCH_FEEDBACK.md, prefers the manifest lane over a root file, and still accepts legacy root names (6 canonical repos, recurrence 6); the template regression proves the project README and Genesis route feedback to the lane with no root link; adoption relocation was proven in S-023/TK-003; full 29-command union suite | Updated templates/README.md, templates/GENESIS.md, templates/WORKBENCH_FEEDBACK.md, README.md, and the RUNBOOK.md discovery paragraph | The mechanical round trip is TK-003 |
+| 2026-09-04 | TK-003 | Ticket closed | Red: the round-trip test failed on the slice invocation before the harness matched the fixture. Green: tools/test-workbench-round-trip.mjs proves bare remote, mechanical Genesis with this candidate's tools, validate --genesis and doctor green, an untracked notepad promoted to a checkpoint, a claimed slice, a pushed planning checkpoint with the notepad absent from the commit, deletion of the working clone, a fresh-clone resume with a scrubbed environment that selects the in-progress slice from repository state, a red then green slice, close, render, doctor, push, remote read-back, and no Foundry name, mechanism, or private home path in the clone or transcript; full 30-command union suite | RUNBOOK.md gained the Composed round trip section; AGENTS.md and RUNBOOK.md suite lists updated | The real cross-provider resume with agents is S-022/TK-002 |
+| 2026-09-04 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Completed on `claude/v3.1-release`. The twelve core skills resolve runtime
+tools, live notepads, handoffs, checkpoints, and decision records through the
+manifest; `workbench/tools/sessions.mjs checkpoint` promotes a privacy-checked
+copy into the tracked checkpoints collection and writes nothing on refusal;
+feedback lives in the feedback lane, discovery prefers it, and Adoption
+relocates a root file; and `tools/test-workbench-round-trip.mjs` proves the
+composed planning, interruption, and clean-clone resume mechanically with
+Foundry absent on every full verification run.
 
 ## Remaining Limitations Or Follow-Up Specs
 

@@ -69,6 +69,7 @@ node tools/test-adr.mjs
 node tools/test-governance-core.mjs
 node tools/test-wiki.mjs
 node tools/test-sessions.mjs
+node tools/test-workbench-round-trip.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -299,6 +300,26 @@ target, a superseded record without `superseded_by`, or a duplicated number;
 table. Doctor carries these findings for schema 2 projects; none blocks
 selection, and the `adr validate` command itself exits 1 only on error
 findings.
+
+### Composed round trip
+
+The composed workflow is proven mechanically, without a model, on every full
+verification run:
+
+```bash
+node tools/test-workbench-round-trip.mjs
+```
+
+It creates a bare remote, runs Genesis with this candidate's tools (init,
+tools install, seven controls, wiki router, feedback lane, first spec),
+passes `validate --genesis` and doctor, writes a live notepad, promotes it as
+a checkpoint, claims the first slice, pushes the planning checkpoint (the
+notepad never enters the commit), deletes the working clone, resumes from a
+fresh clone with a scrubbed environment using only repository state, drives a
+red/green slice, closes, renders, passes doctor, pushes, reads the remote SHA
+back, and scans the clone and the transcript for any Foundry name, mechanism,
+or private home path. The real cross-provider resume with agents is S-022's
+release gate.
 
 ### Session Checkpoints
 
