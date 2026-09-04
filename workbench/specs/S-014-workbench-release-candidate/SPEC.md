@@ -7,11 +7,11 @@
 **Status:** blocked
 **Priority:** 0
 **Owner:** codex
-**Updated:** 2026-09-01
+**Updated:** 2026-09-04
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** S-015 must repair the immutable `d80d14c` audit findings and land on `integration` before a new exact candidate can be audited.
-**Latest event:** Independent Auditor `/root/s014_auditor` returned `REQUEST CHANGES` on exact candidate `d80d14c` with two P1 v3 readiness defects and one P2 limitation-count defect; no release evidence, status, or promotion PR was published.
-**Next gate:** Complete and land S-015, resolve the new exact `origin/integration` SHA, then repeat TK-002's separate immutable audit.
+**Blockers:** v3.0.0 is an unreleased internal candidate and is not promoted; S-014 resumes only on the audited v3.1.0 candidate that the v3.1 release umbrella (S-022) supplies on `integration`.
+**Latest event:** S-015 completed and landed on `integration` at `dd6fe03` after an independent PASS on `1c621b9`; the owner directed that v3.0.0 stay an unreleased internal candidate and that v3.1.0 be the first public v3 release.
+**Next gate:** Wait for the v3.1 umbrella (S-022) to land its audited exact candidate on `integration`, then repeat TK-002's separate immutable audit on that SHA.
 
 ## Outcome
 
@@ -155,7 +155,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile main ancestry into integration through an audited merge PR | done | none | PR #31 head `490ad58`; ancestry merge `88b6f7e`; integration merge `a9fb9f9` |
-| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | blocked | S-015 | Audit of exact `d80d14c` returned REQUEST CHANGES; no release-gate status or promotion PR was created |
+| TK-002 | Coordinate separate exact-head audit and evidence publication tasks | blocked | S-022 | Audit of exact `d80d14c` returned REQUEST CHANGES; S-015 repaired it, but v3.0.0 stays unreleased and the candidate becomes the audited v3.1.0 SHA |
 | TK-003 | Open the sole non-draft integration-to-main owner promotion PR | ready | TK-002 | pending |
 
 ### Scoped Ticket: TK-001
@@ -330,6 +330,7 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-09-01 | S-021 handoff | Received the completed portable-v3 candidate route; release work remains blocked until that candidate is present on `integration` | S-021 full suite and fixed-diff review are recorded in S-021; no S-014 audit, status, promotion PR, or release mutation was performed | Updated this handoff state and its manifest-declared stable path | Resolve the exact integration SHA after S-021 lands, then run S-014/TK-002 separately |
 | 2026-09-01 | TK-002 dependency satisfied | Refreshed the declared remote branches and confirmed S-021 is now the exact immutable integration candidate | `origin/integration` and the completed S-021 branch both resolve to `d80d14c531c4bece9e2978d11e92e5a5d7bd77a5`; `origin/main` remains `08ab78e5a59a68d2b04028fe71a2be488d5ae10e`; ancestry passes; GitHub reports no release-gate status and no integration-to-main PR | Updated S-014 and generated projections only; RUNBOOK, README, templates, and skills checked with no update needed because no operational or product behavior changed | Claim TK-002 and run the required separate read-only exact-head audit before publication |
 | 2026-09-01 | TK-002 immutable audit | Separate Auditor `/root/s014_auditor` rejected exact integration `d80d14c` without making candidate or external changes | Clean detached worktree; live main/integration refs and ancestry matched; complete 19-command RUNBOOK suite, evaluator 113/113 and templates 106.6/113 passed; review found stale root-spec template authority, permissive Genesis readiness validation, and stale 17-vs-16 limitation accounting | Added linked S-015 recovery capability and updated S-014 blocker/current limitation; S-021 remains immutable historical evidence | Complete and land S-015, then restart TK-002 against the changed exact integration SHA |
+| 2026-09-04 | v3.1 dependency reconciliation | S-015 completed on `integration` `dd6fe03`; owner amendments set v3.0.0 as an unreleased internal candidate and v3.1.0 as the first public v3 release, so the exact candidate moves to the v3.1 umbrella | `git ls-remote` integration `dd6fe03`, main `08ab78e`, ancestry exit 0; S-015 review PASS on `1c621b9`; no release status, promotion PR, or main mutation | Updated S-014 blocker, ticket blocker, current state, and generated projections | Resume TK-002 on the audited v3.1.0 integration SHA supplied by S-022 |
 
 ## Completion Result
 

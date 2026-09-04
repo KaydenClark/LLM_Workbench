@@ -4,14 +4,14 @@
 > `workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-015
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** claude-fable-5-1
 **Updated:** 2026-09-04
 **Catalog description:** Make generated v3 controls and Genesis validation enforce one operable manifest-declared spec lane before release.
 **Blockers:** none
-**Latest event:** TK-001 carried forward by claude-fable-5-1 after the independent `d80d14c..73308fc` review returned one P2 and five P3 findings; repair checkpoint prepared.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -107,7 +107,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | A cold Genesis project gets only manifest-routed controls and fails closed unless its controls and first spec are operable | in-progress | none | pending |
+| TK-001 | A cold Genesis project gets only manifest-routed controls and fails closed unless its controls and first spec are operable | done | none | Independent fixed-SHA review claude-fable-5-1/s015-independent-reviewer-2 returned PASS on 1c621b9 (range d80d14c..1c621b9) after the 73308fc REQUEST CHANGES was repaired; full 27-command union suite green from a clean detached worktree; evaluator 113/113 root and 106.6/113 templates; doctor clean; git diff --check clean; landed on integration as dd6fe03 via PR #46 |
 
 ### TK-001 — Operable Manifest-Routed Genesis
 
@@ -146,12 +146,12 @@ git diff --check
 
 ## Acceptance Criteria
 
-- [ ] Active v3 templates contain no root `specs/` authority and their links resolve through the default manifest lane.
-- [ ] A deterministic regression distinguishes active v3 guidance from bounded legacy Adoption migration input.
-- [ ] Genesis readiness rejects non-file controls, placeholders, mismatched version stamps, unstable first-spec paths, and structurally incomplete specs.
-- [ ] One operable generated fixture passes the public `validate --genesis` command in under one minute.
-- [ ] S-014 carries the exact failed-audit findings and truthful sixteen-pending-skill limitation before it resumes.
-- [ ] Full verification and an independent fixed-diff review pass on a remotely recoverable checkpoint.
+- [x] Active v3 templates contain no root `specs/` authority and their links resolve through the default manifest lane.
+- [x] A deterministic regression distinguishes active v3 guidance from bounded legacy Adoption migration input.
+- [x] Genesis readiness rejects non-file controls, placeholders, mismatched version stamps, unstable first-spec paths, and structurally incomplete specs.
+- [x] One operable generated fixture passes the public `validate --genesis` command in under one minute.
+- [x] S-014 carries the exact failed-audit findings and truthful sixteen-pending-skill limitation before it resumes.
+- [x] Full verification and an independent fixed-diff review pass on a remotely recoverable checkpoint.
 
 ## Testing Seams
 
@@ -185,16 +185,27 @@ independent fixed-SHA review.
 | 2026-09-01 | TK-001 parser-parity repair | Fixed the immutable `ac90fcf..cb9b5ac` rereview rejection by extracting the escape-aware spec packet parser as a shared pure module and failing closed when the adjacent versioned template vocabulary is incomplete | Review reproduced missing required fields and six-column rows that validated but failed selection, a tool-only copy that skipped lowercase placeholder checks, and uppercase reference-label false positives. Red: 3 focused groups failed those cases. Green: 8 focused tests now require real parser parity, exact five-column tickets, an active blocker-free ready slice selected by `nextWork()`, complete template source, and legitimate `[RFC]`/`[API]` syntax; the full 20-command union suite, evaluator 113/113, templates 106.6/113, doctor, and held-out grader pass. | Added shared `tools/spec-packet.mjs`, routed spec lifecycle and layout validation through it, documented the full-source requirement in RUNBOOK, and expanded focused tests; no public API or outcome claim changed | Push a new immutable checkpoint and repeat independent review against the full S-015 implementation range |
 | 2026-09-01 | TK-001 portability repair | Fixed the immutable `ac90fcf..528855b` rereview rejection by canonicalizing the CLI entrypoint, embedding the complete versioned placeholder vocabulary, and binding it exactly to shipped templates in the focused test | Review reproduced a `/var` vs `/private/var` silent exit, present-but-empty template source that lost one lowercase placeholder, and a stale S-015 snapshot sentence. Red: ordinary relocated invocation exited 0 with empty output. Green: 9 focused tests prove ordinary relocation executes, detects the embedded lowercase vocabulary without adjacent templates, accepts a filled project, and keeps the committed vocabulary byte-for-byte aligned with every shipped Genesis template; the full 20-command union suite, evaluator 113/113, templates 106.6/113, doctor, and held-out grader pass. | Added `tools/template-placeholders.mjs`, updated layout entrypoint/vocabulary wiring and RUNBOOK, corrected S-015 snapshot wording, and expanded relocation/source-alignment tests | Push a new immutable checkpoint and repeat independent review against the full S-015 implementation range |
 | 2026-09-04 | TK-001 review repair | Independent reviewer `claude-fable-5-1/s015-independent-reviewer` returned REQUEST CHANGES on immutable `d80d14c..73308fc` with one P2 (shipped Genesis procedure and `templates/SPEC.md` default produce a first packet the gate rejects, and `invalid-first-spec` could not name the failing predicate) and five P3 findings; every prior rejected finding was verified fixed. Repaired by naming each first-spec predicate in `reason`, requiring the generated-region markers in `BLUEPRINT.md`/`TASKBOARD.md`, stating `CLAUDE.md` exactness, ignoring dotfiles while listing stray lane `entries`, decoupling the dogfood assertion from the wall clock, and correcting `templates/GENESIS.md`/`templates/README.md` so a literal Genesis run satisfies the gate. TK-001 taken over from the stale codex claim after verifying the branch had no activity since 2026-09-01. | Red: 3 focused layout tests failed (missing markers accepted, no `reason`, generic status message). Green: 10 focused layout tests, dogfood, adoption, and upgrade tests; full union suite recorded in the next row. | Updated `templates/GENESIS.md` Phase 4/6 and acceptance boxes, `templates/README.md` Claude bridge guidance, `RUNBOOK.md` readiness paragraph, `tools/workbench-layout.mjs`, and the two focused tests; P3-5 (module entry guard throwing on a non-file argv) is carried to the v3.1 tools restructure rather than patched piecemeal | Push the repair checkpoint and repeat the independent fixed-SHA review of the full S-015 range before landing |
+| 2026-09-04 | TK-001 | Ticket closed | Independent fixed-SHA review claude-fable-5-1/s015-independent-reviewer-2 returned PASS on 1c621b9 (range d80d14c..1c621b9) after the 73308fc REQUEST CHANGES was repaired; full 27-command union suite green from a clean detached worktree; evaluator 113/113 root and 106.6/113 templates; doctor clean; git diff --check clean; landed on integration as dd6fe03 via PR #46 | Updated templates/GENESIS.md, templates/README.md, README.md, RUNBOOK.md, tools/workbench-layout.mjs, and focused tests across the repair; the three P3 wording items from the PASS review (Adoption does not enforce CLAUDE.md exactness, root README /init alternative, reason field scope) corrected in this closure | P3-5 module entry guard on non-file argv carried to the v3.1 tools restructure; fresh-Claude discovery unverified; sixteen pending skill baselines outside the 12-skill core |
+| 2026-09-04 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Completed on `integration` at `dd6fe03` (PR #46, repair head `1c621b9`). Every
+copy-ready v3 template routes active spec authority through the manifest
+lane; `validate --genesis` accepts only ordinary filled version-matched
+controls, the exact `CLAUDE.md` bridge, the generated-region markers, and one
+selectable first packet, naming the failing predicate in `reason`; the happy
+fixture is operable through `next`, `claim`, `render`, and `doctor` in under
+one minute. The independent fixed-SHA review PASSed on `1c621b9`. v3.0.0 is
+recorded as an unreleased internal candidate; the first public v3 release is
+v3.1.0, so S-014 resumes on the audited v3.1 candidate rather than on this SHA.
 
 ## Remaining Limitations Or Follow-Up Specs
 
 - Fresh Claude discovery remains unverified.
 - Sixteen historical pending skill baselines remain outside the released 12-skill core.
-- S-014 must repeat the immutable exact-head audit and publication flow after this repair lands.
+- The module entry guard throws on a non-file `argv[1]` (review P3-5); the v3.1 tools restructure owns the shared helper.
+- S-014 repeats the immutable exact-head audit on the v3.1 candidate, not on v3.0.0, which stays an unreleased internal candidate.
 
 ## Supersession
 
