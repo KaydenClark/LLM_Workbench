@@ -68,6 +68,7 @@ node tools/test-diagnostics.mjs
 node tools/test-adr.mjs
 node tools/test-governance-core.mjs
 node tools/test-wiki.mjs
+node tools/test-sessions.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -298,6 +299,25 @@ target, a superseded record without `superseded_by`, or a duplicated number;
 table. Doctor carries these findings for schema 2 projects; none blocks
 selection, and the `adr validate` command itself exits 1 only on error
 findings.
+
+### Session Checkpoints
+
+Live grilling notepads and handoffs stay untracked in
+`workbench/sessions/grilling/` and `workbench/sessions/handoffs/`. Promote a
+record only deliberately:
+
+```bash
+node workbench/tools/sessions.mjs checkpoint --from workbench/sessions/grilling/topic-YYYY-MM-DD.md --topic topic
+node workbench/tools/sessions.mjs scan --file PATH
+node tools/test-sessions.mjs
+```
+
+`checkpoint` copies an ordinary file byte for byte (after one stamp comment
+naming the source and date) into `workbench/sessions/checkpoints/<topic>-<date>.md`
+with mode `0644`, and refuses with `secret-like-content` and the offending
+line numbers when the shared `privacy.mjs` patterns match; `invalid-note`
+covers a symlink, a non-file, or an existing destination. A refusal writes
+nothing. Cite the promoted copy, never the live path.
 
 ### Wiki Validation
 

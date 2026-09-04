@@ -133,6 +133,17 @@ evidence; never duplicate completed proof in the Taskboard.
 - Never force-push shared history or merge review-held PRs without approval.
 - Bump versions only after behavior and proof are green.
 
+## Session Records And Checkpoints
+
+Live grilling notepads and handoffs live untracked in the manifest-declared
+`workbench/sessions/grilling/` and `workbench/sessions/handoffs/` collections
+and are never evidence. A record becomes durable only through a deliberate,
+privacy-checked promotion into the tracked `workbench/sessions/checkpoints/`
+collection (`node workbench/tools/sessions.mjs checkpoint --from PATH --topic slug`);
+durable references target that promoted copy. A promotion that hits
+secret-like content, an absolute home path, or an email address stops with the
+line number and writes nothing.
+
 ## Long Session Control
 
 After a context summary or long interruption, rerun `doctor`, `next`, and `show` for the assigned spec. Keep

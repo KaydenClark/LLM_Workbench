@@ -26,6 +26,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'diagnostics.mjs',
   'markdown-table.mjs',
   'privacy.mjs',
+  'sessions.mjs',
   'spec-packet.mjs',
   'spec-workbench.mjs',
   'template-placeholders.mjs',

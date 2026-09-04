@@ -122,6 +122,7 @@ node tools/test-diagnostics.mjs
 node tools/test-adr.mjs
 node tools/test-governance-core.mjs
 node tools/test-wiki.mjs
+node tools/test-sessions.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -185,6 +186,18 @@ Taskboard or rewrite append-only spec evidence rows.
 - Never merge a PR left open for review. Never force-push shared history without
   explicit approval. Commits are one logical change with an imperative subject.
 - Version bumps occur only after the new behavior and required proof are green.
+
+## Session Records And Checkpoints
+
+Live grilling notepads and handoffs are working records: they live untracked
+in the manifest-declared `workbench/sessions/grilling/` and
+`workbench/sessions/handoffs/` collections and are never evidence. A record
+becomes durable only through a deliberate, privacy-checked promotion into the
+tracked `workbench/sessions/checkpoints/` collection
+(`node workbench/tools/sessions.mjs checkpoint --from PATH --topic slug`);
+every durable reference from a spec, ADR, or control targets that promoted
+copy. A promotion that hits secret-like content, an absolute home path, or an
+email address stops with the line number and writes nothing.
 
 ## Long Session Control
 

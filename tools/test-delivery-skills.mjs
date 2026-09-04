@@ -76,7 +76,7 @@ test('implement checkpoints and reviews before closing the ticket', () => {
     'new truthful checkpoint',
     're-review',
     'exact-head review is green',
-    'node tools/spec-workbench.mjs close S-###',
+    'node workbench/tools/spec-workbench.mjs close S-###',
     'final push'
   ];
   let previous = -1;

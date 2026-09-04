@@ -129,7 +129,7 @@ test('no active root control or template names a root tools path for a runtime t
   const runtimePattern = new RegExp(`(?<![\\w/])tools/(${RUNTIME_TOOLS.map((tool) => tool.replace('.', '\\.')).join('|')})`);
   const files = ['AGENTS.md', 'BLUEPRINT.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md', 'LEXICON.md']
     .map((name) => path.join(root, name))
-    .concat(walk(path.join(root, 'templates')));
+    .concat(walk(path.join(root, 'templates')), walk(path.join(root, 'skills')));
   for (const file of files) {
     const content = fs.readFileSync(file, 'utf8');
     const hit = content.match(runtimePattern);

@@ -5,14 +5,14 @@
 > never move it between status folders.
 
 **Spec ID:** S-023
-**Status:** active
+**Status:** complete
 **Priority:** 1
 **Owner:** claude-fable-5-1
 **Updated:** 2026-09-04
 **Catalog description:** Ship manifest schema 2 with six lanes, declared collections, a lossless schema 1 migration, Workbench-managed runtime tools, and untracked-by-default session records.
 **Blockers:** none
-**Latest event:** TK-004 closed with proof.
-**Next gate:** Complete after S-026/TK-001 removes root tool paths from the twelve skills; every ticket is done.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -113,7 +113,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 - [x] Schema 2 init, validate, and lossless schema 1 migration are proven by focused red/green tests and by migrating this repository.
 - [x] Managed runtime tools carry receipts with exact source release, commit, and hashes; explicit update, backup, and rollback are proven.
-- [ ] No active consumer names a root tools path for a runtime tool; root `tools/` of a fixture application survives Adoption byte for byte.
+- [x] No active consumer names a root tools path for a runtime tool; root `tools/` of a fixture application survives Adoption byte for byte.
 - [x] Live session collections are untracked by default and `checkpoints/` is tracked in Genesis, Adoption, upgrade, and this repository.
 - [x] `wiki/design-concepts/` exists in every produced layout and its absence fails validation.
 - [x] Full union suite, render, doctor, and `git diff --check` pass.
@@ -154,10 +154,20 @@ Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --chec
 | 2026-09-04 | TK-002 | Ticket closed | Red: tools installer, layout, lifecycle, dogfood, and symlink tests failed before the lane existed. Green: 6 installer tests (source lane holds exactly the runtime tools and verifies as source; install writes a receipt with source release/commit and SHA-256 per file, 0644 non-symlink copies, refuses double install, leaves an application root tools/ byte-identical, and the installed copy renders and passes doctor; verify reports named drift; update requires --explicit-update, backs up under the user home, records the backup, reports current on rerun; rollback restores the backup verbatim and the pre-update drift; unreceipted collision and symlinked lane refused before mutation; no root control or template names a root runtime-tool path; runtime tools import safely with no argv file), 12 layout tests, symlink invocation through the lane, and the full 24-command union suite; evaluator 113/113 root and 106.6/113 templates | Moved six runtime tools to workbench/tools with Git history; added tools/workbench-tools.mjs and its test; shared isMainModule guard in workbench-paths.mjs closes the carried S-015 P3-5; re-pointed AGENTS.md, RUNBOOK.md (new Managed runtime tools check), BLUEPRINT.md, TASKBOARD.md, README.md, templates/GENESIS.md, and templates/ADOPTION.md at the lane; ADR-0031 accepted | Skills still name root tools paths until S-026/TK-001; later runtime tools (diagnostics, adr, wiki, sessions) join RUNTIME_TOOLS with their tickets |
 | 2026-09-04 | TK-003 | Ticket closed | Red: adoption and upgrade tests failed on root feedback relocation, tools receipt, and root tools survival. Green: five adoption fixtures (mixed v2 with root tools byte-identical and no receipt written there; two root feedback files blocked as feedback-collision; legacy HARNESS_FEEDBACK.md renamed into the lane; root WORKBENCH_FEEDBACK.md relocated with a moved entry and tools installed; root file beside a legacy lane file blocked before mutation), three upgrade fixtures with the tools receipt and recovery record, six installer tests, and the full 24-command union suite | Updated RUNBOOK.md adoption and upgrade paragraphs and templates/ADOPTION.md commands and migration description; skills change in S-026 | Genesis readiness does not yet require the tools receipt (TK-004); feedback discovery still prefers a root file until S-026/TK-002 |
 | 2026-09-04 | TK-004 | Ticket closed | Red: the layout suite failed on a Genesis fixture without a tools receipt. Green: 13 layout tests including tools-receipt-missing without a receipt, version-mismatch on a receipt naming another release, plain validate unaffected, and the happy fixture installing tools before readiness; full 24-command union suite; evaluator 113/113 root and 106.6/113 templates; guardrail 68/100 unchanged from baseline with no criteria changes | Updated templates/AGENTS.md writable scope, templates/GENESIS.md acceptance boxes, templates/RUNBOOK.md upgrade section, and RUNBOOK.md readiness paragraph; placeholder vocabulary unchanged | S-023 acceptance box three stays open until S-026/TK-001 removes root tool paths from the twelve skills; the spec completes then |
+| 2026-09-04 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Completed on `claude/v3.1-release`. `workbench/manifest.json` schema 2
+declares six lowercase lanes, seven collections, the wiki profile, and the
+exact source release and commit; a schema 1 manifest reports
+`upgrade-required` and migrates once losslessly, as this repository did. The
+portable runtime tools live in `workbench/tools/` as the canonical source and
+install downstream with receipts, explicit-only update, backups, rollback, and
+`0644` files while an application's root `tools/` stays untouched. Live
+session records are untracked by default and only `sessions/checkpoints/` is
+durable. Adoption, explicit upgrade, and Genesis all produce this layout, and
+no root control, template, or skill names a root tools path.
 
 ## Remaining Limitations Or Follow-Up Specs
 

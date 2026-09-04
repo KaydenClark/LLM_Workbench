@@ -17,16 +17,16 @@ Verify the repository root, branch, remote, upstream, and dirty state. Read the
 nearest `AGENTS.md` and its `RUNBOOK.md`, then run:
 
 ```bash
-node tools/spec-workbench.mjs doctor
-node tools/spec-workbench.mjs next --json
-node tools/spec-workbench.mjs show S-###
+node workbench/tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs show S-###
 ```
 
 Continue only when `next` returns the assigned ticket as ready or resumable and
 the working tree can be safely attributed. For a ready slice, claim it:
 
 ```bash
-node tools/spec-workbench.mjs claim S-### --agent NAME
+node workbench/tools/spec-workbench.mjs claim S-### --agent NAME
 ```
 
 The slice is situated when one eligible ticket, its acceptance boundary, its
@@ -77,12 +77,12 @@ Only after the exact-head review is green, close the ticket with its acceptance
 and proof:
 
 ```bash
-node tools/spec-workbench.mjs close S-### \
+node workbench/tools/spec-workbench.mjs close S-### \
   --proof "NAMED VERIFICATION" \
   --docs "DOCS UPDATED OR Docs checked; no update needed + reason" \
   --remaining-gap "GAP OR none"
-node tools/spec-workbench.mjs render
-node tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 Commit the close evidence and generated projection, make the final push, and

@@ -17,7 +17,7 @@
 | [0025](0025-planes-classify-claims-not-whole-artifacts.md) | Governance Planes classify claims and their use, not whole artifacts | accepted | 2026-09-04 | LEXICON.md, AGENTS.md |
 | [0026](0026-workbench-is-the-sole-source-and-foundry-extends-it.md) | LLM Workbench is the sole Workbench source; Foundry is a downstream extension | accepted | 2026-09-04 | BLUEPRINT.md, AGENTS.md |
 | [0027](0027-instruction-authority-is-separate-from-state-resolution.md) | Instruction authority is separate from state resolution | accepted | 2026-09-04 | AGENTS.md |
-| [0028](0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md) | Live session records stay untracked; durable references target promoted checkpoints | proposed | 2026-09-04 | AGENTS.md, RUNBOOK.md |
+| [0028](0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md) | Live session records stay untracked; durable references target promoted checkpoints | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [0029](0029-diagnostics-carry-registered-blocking-semantics.md) | Diagnostic codes carry registered blocking semantics that consumers enforce | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [0030](0030-every-workbench-declares-a-design-concepts-collection.md) | Every Workbench declares a design-concepts collection of owner-directed articles | accepted | 2026-09-04 | LEXICON.md, AGENTS.md |
 | [0031](0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md) | Portable runtime tools are Workbench-managed in the tools lane; root tools stay application-owned | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |

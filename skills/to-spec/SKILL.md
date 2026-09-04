@@ -25,8 +25,8 @@ not restart grilling or implement the capability.
    `/to-tickets` later for detailed decomposition.
 5. Preserve project vocabulary from `LEXICON.md` and cross-cutting boundaries
    from `BLUEPRINT.md`. A spec owns one capability; it replaces neither.
-6. Run `node tools/spec-workbench.mjs render` and
-   `node tools/spec-workbench.mjs doctor`, then report the spec path, open owner
+6. Run `node workbench/tools/spec-workbench.mjs render` and
+   `node workbench/tools/spec-workbench.mjs doctor`, then report the spec path, open owner
    gates, and next eligible action.
 
 Do not publish a parallel tracker record, create a transient requirements file,

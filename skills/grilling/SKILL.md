@@ -7,9 +7,11 @@ This is the core interview primitive. It runs the questioning and keeps a runnin
 notepad of the result. It never writes canonical files itself — the `/make-it-so`
 skill promotes the notepad, so `grilling` can also run on its own.
 
-For a v3 project, read `workbench/manifest.json` before promoting or
-checkpointing a durable record. The live `.agents/grilling diary/` notepad stays
-local; only a deliberately durable copy uses the manifest-declared lane.
+Read `workbench/manifest.json` first. The live notepad lives in the
+manifest-declared `grilling` collection (`workbench/sessions/grilling/`), which
+stays untracked by default; only a deliberately promoted, privacy-checked copy
+in `workbench/sessions/checkpoints/` is durable, and only `/checkpoint` or
+`/make-it-so` promotes it.
 
 Grill the user relentlessly about every aspect of this until we reach a shared
 understanding. Walk down each branch of the decision tree, resolving dependencies
@@ -29,8 +31,8 @@ compaction or a hand-off to another assistant. The notepad is the working record
 it is not canonical until it is promoted.
 
 1. Explore enough to build the real decision tree.
-2. Create the notepad at `.agents/grilling diary/<topic-slug>-<YYYY-MM-DD>.md`
-   (use the current date; create the folder if missing). Header it exactly:
+2. Create the notepad at `workbench/sessions/grilling/<topic-slug>-<YYYY-MM-DD>.md`
+   (use the current date; the collection exists in every v3.1 layout). Header it exactly:
    `STATUS: PROVISIONAL — not canonical until /make-it-so`
 3. Write the FULL planned question list up front, so I see the terrain before
    answering. It is a best-effort map; it will flex.
