@@ -16,7 +16,11 @@ assert.equal(fs.existsSync(path.join(root, 'specs')), false,
 assert.equal(fs.existsSync(path.join(root, 'workbench', 'specs', 'S-021-portable-workbench-v3', 'SPEC.md')), true,
   'S-021 must be recoverable at its manifest-declared stable path');
 assert.equal(validateManifest(root).status, 'valid', 'the dogfood manifest must validate');
-assert.deepEqual(doctor(root), [], 'doctor must resolve only the manifest-declared spec lane');
+// Lane resolution is what this assertion proves; a stale claim is a dated
+// lifecycle finding unrelated to the manifest, so it must not couple this test
+// to the wall clock.
+assert.deepEqual(doctor(root).filter((issue) => issue.code !== 'stale-claim'), [],
+  'doctor must resolve only the manifest-declared spec lane');
 const selected = nextWork(root);
 if (selected) {
   assert.match(selected.path, /^workbench\/specs\/S-\d{3}-[^/]+\/SPEC\.md$/,

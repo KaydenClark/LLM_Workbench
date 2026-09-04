@@ -114,10 +114,17 @@ node tools/test-workbench-layout.mjs
 
 `validate --genesis` additionally requires seven ordinary, filled root controls,
 exact Workbench version stamps on the six stamped controls (the thin
-`CLAUDE.md` remains exactly `@AGENTS.md`), one actionable version-matched first
-spec at a stable `workbench/specs/S-###-slug/SPEC.md` path, and no project-local
-`skills/` directory. It fails closed on symlinks, template placeholders, stubs,
-version drift, unstable spec paths, or structurally incomplete first specs.
+`CLAUDE.md` remains exactly `@AGENTS.md`), the generated-region markers in
+`BLUEPRINT.md` and `TASKBOARD.md` that `render` fills, one actionable
+version-matched first spec at a stable `workbench/specs/S-###-slug/SPEC.md`
+path, and no project-local `skills/` directory. It fails closed on symlinks,
+template placeholders, stubs, version drift, unstable spec paths, or
+structurally incomplete first specs. A rejected first spec carries a `reason`
+field naming the failing predicate (status, priority, ready ticket, sections,
+acceptance box, stamp, identity, or path), and a stray entry in the specs lane
+is listed in `entries`; dotfiles such as `.gitkeep` and `.DS_Store` are
+ignored. Readiness proves selection and claim, not doctor: run `render` and
+`doctor` on the project afterwards, as `templates/GENESIS.md` Phase 6 says.
 The `--genesis` readiness check carries the versioned placeholder vocabulary
 with the CLI, and its focused self-test proves that vocabulary exactly matches
 the shipped Genesis templates. Relocating the CLI and its declared helper

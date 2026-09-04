@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { nextWork } from './spec-workbench.mjs';
+import { doctor, nextWork, render } from './spec-workbench.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from './template-placeholders.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -30,11 +30,16 @@ function markdownFiles(directory) {
   });
 }
 
+const generatedRegions = {
+  'BLUEPRINT.md': '## Spec Catalog\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n',
+  'TASKBOARD.md': '## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
+};
+
 function completeGenesis(project) {
   for (const control of controls) {
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
-      : `# ${control}\n\n> Generated from LLM Workbench v3.0.0.\n\n## Purpose\n\nThis is a filled ${control} fixture.\n`;
+      : `# ${control}\n\n> Generated from LLM Workbench v3.0.0.\n\n## Purpose\n\nThis is a filled ${control} fixture.\n${generatedRegions[control] ?? ''}`;
     fs.writeFileSync(path.join(project, control), content);
   }
   const firstSpec = path.join(project, 'workbench', 'specs', 'S-001-first');
@@ -126,6 +131,8 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     for (const lane of ['specs', 'wiki', 'grilling', 'handoffs', 'feedback']) {
       assert.equal(fs.existsSync(path.join(project, 'workbench', lane)), true);
     }
+    render(project);
+    assert.deepEqual(doctor(project), [], 'an operable Genesis fixture must satisfy doctor once rendered');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }
@@ -202,6 +209,29 @@ test('Genesis validation rejects symlinked and unfilled root controls', () => {
         const file = path.join(project, 'RUNBOOK.md');
         fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('v3.0.0', 'v2.3.0'));
       }
+    },
+    {
+      expected: 'unfilled-control',
+      reason: /spec-catalog/,
+      mutate(project) {
+        const file = path.join(project, 'BLUEPRINT.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(generatedRegions['BLUEPRINT.md'], ''));
+      }
+    },
+    {
+      expected: 'unfilled-control',
+      reason: /hot-specs/,
+      mutate(project) {
+        const file = path.join(project, 'TASKBOARD.md');
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(generatedRegions['TASKBOARD.md'], ''));
+      }
+    },
+    {
+      expected: 'unfilled-control',
+      message: /exactly `@AGENTS\.md`/,
+      mutate(project) {
+        fs.writeFileSync(path.join(project, 'CLAUDE.md'), '@AGENTS.md\n<!-- also load the wiki -->\n');
+      }
     }
   ];
 
@@ -216,6 +246,8 @@ test('Genesis validation rejects symlinked and unfilled root controls', () => {
 
       assert.notEqual(validated.status, 0);
       assert.equal(validated.report.error.code, scenario.expected);
+      if (scenario.reason) assert.match(validated.report.error.reason ?? '', scenario.reason);
+      if (scenario.message) assert.match(validated.report.error.message, scenario.message);
     } finally {
       fs.rmSync(project, { recursive: true, force: true });
     }
@@ -296,9 +328,47 @@ test('Genesis validation rejects unstable and structurally incomplete first spec
 
       assert.notEqual(validated.status, 0);
       assert.equal(validated.report.error.code, scenario.expected);
+      assert.ok(typeof validated.report.error.reason === 'string' && validated.report.error.reason.length > 0,
+        `${scenario.expected} must name the failing predicate: ${JSON.stringify(validated.report.error)}`);
     } finally {
       fs.rmSync(project, { recursive: true, force: true });
     }
+  }
+});
+
+test('Genesis validation names the failing first-spec predicate and the stray lane entries', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    completeGenesis(project);
+    const specFile = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
+    const original = fs.readFileSync(specFile, 'utf8');
+
+    fs.writeFileSync(specFile, original.replace('**Status:** active', '**Status:** planned'));
+    const planned = run('validate', '--project', project, '--genesis');
+    assert.equal(planned.report.error.code, 'invalid-first-spec');
+    assert.match(planned.report.error.reason, /Status.*active/);
+
+    fs.writeFileSync(specFile, original.replace('**Priority:** 0', '**Priority:** 10'));
+    const priority = run('validate', '--project', project, '--genesis');
+    assert.match(priority.report.error.reason, /Priority/);
+
+    fs.writeFileSync(specFile, original.replace('- [ ] The first ticket is selectable.', '- [x] The first ticket is selectable.'));
+    const checked = run('validate', '--project', project, '--genesis');
+    assert.match(checked.report.error.reason, /acceptance/i);
+    fs.writeFileSync(specFile, original);
+
+    fs.writeFileSync(path.join(project, 'workbench', 'specs', '.DS_Store'), 'finder junk');
+    const dotfile = run('validate', '--project', project, '--genesis');
+    assert.equal(dotfile.status, 0, `${dotfile.stdout}\n${dotfile.stderr}`);
+    assert.equal(dotfile.report.status, 'valid');
+
+    fs.writeFileSync(path.join(project, 'workbench', 'specs', 'README.md'), '# stray\n');
+    const stray = run('validate', '--project', project, '--genesis');
+    assert.equal(stray.report.error.code, 'invalid-first-spec');
+    assert.deepEqual(stray.report.error.entries, ['README.md', 'S-001-first']);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
   }
 });
 
