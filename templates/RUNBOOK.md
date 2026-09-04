@@ -114,6 +114,30 @@ Coverage rules:
 - If behavior cannot be tested in the current harness, record the exact reason
   and use the strongest concrete manual check available.
 
+## Workbench Lifecycle, Diagnostics, And Decision Records
+
+The project runs its own installed runtime tools from the manifest-declared
+tools lane:
+
+```bash
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs show S-###
+node workbench/tools/spec-workbench.mjs claim S-### --agent NAME
+node workbench/tools/spec-workbench.mjs close S-### --proof "..." --docs "..." --remaining-gap "..."
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
+node workbench/tools/adr.mjs new --title "Decision title"
+node workbench/tools/adr.mjs validate
+node workbench/tools/adr.mjs register
+```
+
+`doctor` prints every registered finding with its severity and blocking
+effect and exits non-zero only for `all` or `selection` findings; a
+`selected-slice` finding is excluded by `next` and refused by `claim`, and an
+`attention` finding stays visible without blocking. Decision records live in
+`workbench/docs/adr/`; an accepted record names the control that carries its
+rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
+
 ## Evaluation And Benchmarking
 
 Use this section to prove whether the workbench or project process is improving.

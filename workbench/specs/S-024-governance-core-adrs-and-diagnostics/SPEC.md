@@ -5,14 +5,14 @@
 > never move it between status folders.
 
 **Spec ID:** S-024
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** claude-fable-5-1
 **Updated:** 2026-09-04
 **Catalog description:** Give every Workbench claim-level Governance Planes, separated instruction authority and state resolution, a registered diagnostic model enforced by doctor/next/claim, and a first-class ADR collection.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Complete TK-003.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -96,16 +96,16 @@ Tickets are temporary tracer bullets within this stable capability record.
 |---|---|---|---|---|
 | TK-001 | Doctor reports registered findings with effects, exits only on `all`/`selection`, and `next`/`claim` refuse slice blockers while attention stays visible | done | none | Red: the diagnostics test failed before the registry existed. Green: 4 diagnostics tests (closed typed registry with every emitted code registered and attention never blocking; attention findings keep doctor exit 0 and resumable work selectable; duplicate identity fails doctor and render refuses it; a schema 1 manifest blocks all and next refuses; a blocked selected slice is reported at exit 0, excluded by next, refused by claim by name without mutation, while ordered successor tickets are not findings), lifecycle, dogfood, layout, and installer tests, and the full 25-command union suite |
 | TK-002 | The ADR tool creates, validates, and registers ADRs in a fixture and in this repository, rejecting untracked provenance and unknown canonicalization targets | done | TK-001 | Red: the ADR test failed before workbench/tools/adr.mjs existed. Green: 4 ADR tests (valid corpus validates, register is deterministic and byte-stable, stale register is attention, doctor carries ADR findings; unknown canonicalized_in target, untracked sessions provenance with the exact target, missing frontmatter, duplicate number, and superseded without superseded_by are invalid-adr or untracked-provenance findings that never block selection while the adr command itself exits 1; new allocates the next number as a proposed record; the product corpus of 19 records validates with a current REGISTER.md), diagnostics, lifecycle, dogfood, installer tests, and the full 26-command union suite |
-| TK-003 | Root and template controls carry the Governance Core, and the product corpus holds the reconciled ported and new ADRs with valid `canonicalized_in` links | ready | TK-002 | pending |
+| TK-003 | Root and template controls carry the Governance Core, and the product corpus holds the reconciled ported and new ADRs with valid `canonicalized_in` links | done | TK-002 | Red: the Governance Core test failed on the copy-ready templates. Green: 4 Governance Core tests (root and template AGENTS separate instruction authority from state resolution and no longer rank source above the assigned spec; root and template Lexicons carry the thirteen Governance Core terms without product-specific ADR links; template Blueprint and Runbook route decision records, diagnostics, and the tools lane; ADR-0008 is not ported and ADR-0025 records its supersession lineage with every canonicalized_in target on a control or spec owner), layout, skill-catalog, and the full 27-command union suite; templates evaluator 106.6/113 unchanged |
 
 ## Acceptance Criteria
 
-- [ ] Every diagnostic code is registered with severity, scope, and effect; a test proves each effect at `doctor`, `next`, and `claim`.
-- [ ] Attention findings never change an exit code or hide eligible work.
-- [ ] `adr.mjs` validates frontmatter, canonicalization targets, provenance tracking, and register freshness in a fixture and in this repository.
-- [ ] Root and template `AGENTS.md`, `LEXICON.md`, and `BLUEPRINT.md` carry the Governance Core with no placeholder leakage and evaluator scores not below baseline.
-- [ ] ADR-0008 is reconciled: not ported; superseded by ADR-0025 with recorded lineage.
-- [ ] Full union suite, render, doctor, and `git diff --check` pass.
+- [x] Every diagnostic code is registered with severity, scope, and effect; a test proves each effect at `doctor`, `next`, and `claim`.
+- [x] Attention findings never change an exit code or hide eligible work.
+- [x] `adr.mjs` validates frontmatter, canonicalization targets, provenance tracking, and register freshness in a fixture and in this repository.
+- [x] Root and template `AGENTS.md`, `LEXICON.md`, and `BLUEPRINT.md` carry the Governance Core with no placeholder leakage and evaluator scores not below baseline.
+- [x] ADR-0008 is reconciled: not ported; superseded by ADR-0025 with recorded lineage.
+- [x] Full union suite, render, doctor, and `git diff --check` pass.
 
 ## Testing Seams
 
@@ -141,10 +141,20 @@ Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --chec
 | 2026-09-04 | plan | Captured the Governance Core, diagnostics, and ADR capability from the promoted v3.1 plan | Baseline suite green at the landed S-015 SHA; no capability behavior verified yet | Spec added; ADR drafts staged for TK-003; controls change with their tickets | Implement TK-001 through TK-003 after S-023/TK-001 |
 | 2026-09-04 | TK-001 | Ticket closed | Red: the diagnostics test failed before the registry existed. Green: 4 diagnostics tests (closed typed registry with every emitted code registered and attention never blocking; attention findings keep doctor exit 0 and resumable work selectable; duplicate identity fails doctor and render refuses it; a schema 1 manifest blocks all and next refuses; a blocked selected slice is reported at exit 0, excluded by next, refused by claim by name without mutation, while ordered successor tickets are not findings), lifecycle, dogfood, layout, and installer tests, and the full 25-command union suite | Added workbench/tools/diagnostics.mjs to the runtime set; RUNBOOK.md gained the Diagnostics And Blocking Effects table; AGENTS.md already carries the rule; ADR-0005 and ADR-0029 accepted | ADR and wiki findings join doctor with their tools in TK-002 and S-025/TK-002 |
 | 2026-09-04 | TK-002 | Ticket closed | Red: the ADR test failed before workbench/tools/adr.mjs existed. Green: 4 ADR tests (valid corpus validates, register is deterministic and byte-stable, stale register is attention, doctor carries ADR findings; unknown canonicalized_in target, untracked sessions provenance with the exact target, missing frontmatter, duplicate number, and superseded without superseded_by are invalid-adr or untracked-provenance findings that never block selection while the adr command itself exits 1; new allocates the next number as a proposed record; the product corpus of 19 records validates with a current REGISTER.md), diagnostics, lifecycle, dogfood, installer tests, and the full 26-command union suite | Added workbench/tools/adr.mjs to the runtime set and generated workbench/docs/adr/REGISTER.md; RUNBOOK.md gained the Architecture Decision Records section; doctor now carries ADR findings for schema 2 projects | Template and control Governance Core wiring is TK-003; wiki findings join doctor in S-025/TK-002 |
+| 2026-09-04 | TK-003 | Ticket closed | Red: the Governance Core test failed on the copy-ready templates. Green: 4 Governance Core tests (root and template AGENTS separate instruction authority from state resolution and no longer rank source above the assigned spec; root and template Lexicons carry the thirteen Governance Core terms without product-specific ADR links; template Blueprint and Runbook route decision records, diagnostics, and the tools lane; ADR-0008 is not ported and ADR-0025 records its supersession lineage with every canonicalized_in target on a control or spec owner), layout, skill-catalog, and the full 27-command union suite; templates evaluator 106.6/113 unchanged | Updated templates/AGENTS.md, templates/LEXICON.md, templates/BLUEPRINT.md, and templates/RUNBOOK.md; root controls carried the Governance Core since the planning checkpoint | none |
+| 2026-09-04 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Completed on `claude/v3.1-release`. `workbench/tools/diagnostics.mjs` is the
+closed registry of every finding with severity, scope, and blocking effect;
+`doctor` exits non-zero only on `all` and `selection`, `next` excludes and
+`claim` refuses a blocked selected slice by name, and attention never blocks.
+`workbench/tools/adr.mjs` creates, validates, and registers decision records,
+reporting untracked provenance and unknown canonicalization targets without
+blocking selection. Root and template controls carry the Governance Core;
+the product corpus holds ten faithfully ported and nine new ADRs with ADR-0008
+reconciled through ADR-0025.
 
 ## Remaining Limitations Or Follow-Up Specs
 
