@@ -11,6 +11,7 @@ import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/t
 import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const runtime = path.join(root, 'workbench', 'tools');
 const tool = path.join(runtime, 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
@@ -46,20 +47,20 @@ function installTools(project) {
 function completeGenesis(project, options = {}) {
   if (options.tools !== false) installTools(project);
   const router = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
-    .replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', '3.0.0').replaceAll('[YYYY-MM-DD]', '2026-09-01')
+    .replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', '2026-09-01')
     .replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, '');
   fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), router);
   for (const control of controls) {
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
-      : `# ${control}\n\n> Generated from LLM Workbench v3.0.0.\n\n## Purpose\n\nThis is a filled ${control} fixture.\n${generatedRegions[control] ?? ''}`;
+      : `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nThis is a filled ${control} fixture.\n${generatedRegions[control] ?? ''}`;
     fs.writeFileSync(path.join(project, control), content);
   }
   const firstSpec = path.join(project, 'workbench', 'specs', 'S-001-first');
   fs.mkdirSync(firstSpec);
   fs.writeFileSync(path.join(firstSpec, 'SPEC.md'), `# S-001 - First Capability
 
-> Generated from LLM Workbench v3.0.0. Stable path
+> Generated from LLM Workbench ${VERSION}. Stable path
 > \`workbench/specs/S-001-first/SPEC.md\`; never move between status folders.
 
 **Spec ID:** S-001
@@ -125,7 +126,7 @@ test('the committed placeholder vocabulary exactly matches the shipped Genesis t
 test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow', () => {
   const project = fixture();
   try {
-    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0');
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.equal(initialized.status, 0, initialized.stderr);
     completeGenesis(project);
 
@@ -151,7 +152,7 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     assert.deepEqual(manifest.lanes, LANES);
     assert.deepEqual(manifest.collections, COLLECTIONS);
     assert.equal(manifest.wiki.profile, 'project');
-    assert.equal(manifest.provenance.source.release, 'v3.0.0');
+    assert.equal(manifest.provenance.source.release, VERSION);
     for (const relative of [...Object.values(LANES), ...Object.values(COLLECTIONS)]) {
       assert.equal(fs.statSync(path.join(project, relative)).isDirectory(), true, `${relative} must exist`);
     }
@@ -176,7 +177,7 @@ function schemaOneFixture(project) {
   fs.writeFileSync(path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md'), '# S-001 - First\n');
   fs.writeFileSync(path.join(project, 'workbench', 'manifest.json'), `${JSON.stringify({
     schemaVersion: 1,
-    workbenchVersion: 'v3.0.0',
+    workbenchVersion: VERSION,
     provenance: { lifecycle: 'genesis' },
     lanes: { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' },
     skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
@@ -239,7 +240,7 @@ test('the validator requires every declared collection, the sessions ignore file
   for (const scenario of scenarios) {
     const project = fixture();
     try {
-      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
       scenario.mutate(project);
       const validated = run('validate', '--project', project);
       assert.notEqual(validated.status, 0, `${scenario.expected}: ${validated.stdout}`);
@@ -253,7 +254,7 @@ test('the validator requires every declared collection, the sessions ignore file
 test('the validator rejects a traversing manifest lane', () => {
   const project = fixture();
   try {
-    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     manifest.lanes.specs = '../specs';
@@ -272,7 +273,7 @@ test('the validator rejects a symlinked support lane', () => {
   const project = fixture();
   const outside = fixture();
   try {
-    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const wiki = path.join(project, 'workbench', 'wiki');
     fs.rmSync(wiki, { recursive: true, force: true });
     fs.symlinkSync(outside, wiki);
@@ -312,14 +313,14 @@ test('Genesis validation rejects symlinked and unfilled root controls', () => {
     {
       expected: 'unfilled-control',
       mutate(project) {
-        fs.writeFileSync(path.join(project, 'TASKBOARD.md'), '# Taskboard\n\n> Generated from LLM Workbench v3.0.0.\n\n## Focus\n\n[current useful outcome]\n');
+        fs.writeFileSync(path.join(project, 'TASKBOARD.md'), `# Taskboard\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Focus\n\n[current useful outcome]\n`);
       }
     },
     {
       expected: 'version-mismatch',
       mutate(project) {
         const file = path.join(project, 'RUNBOOK.md');
-        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('v3.0.0', 'v2.3.0'));
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(VERSION, 'v2.3.0'));
       }
     },
     {
@@ -350,7 +351,7 @@ test('Genesis validation rejects symlinked and unfilled root controls', () => {
   for (const scenario of scenarios) {
     const project = fixture();
     try {
-      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
       completeGenesis(project);
       scenario.mutate(project);
 
@@ -416,7 +417,7 @@ test('Genesis validation rejects unstable and structurally incomplete first spec
       expected: 'invalid-first-spec',
       mutate(project) {
         const file = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
-        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('v3.0.0', 'v2.3.0'));
+        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(VERSION, 'v2.3.0'));
       }
     },
     {
@@ -432,7 +433,7 @@ test('Genesis validation rejects unstable and structurally incomplete first spec
   for (const scenario of scenarios) {
     const project = fixture();
     try {
-      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
       completeGenesis(project);
       scenario.mutate(project);
 
@@ -452,14 +453,14 @@ test('Genesis readiness requires a version-matched runtime tools receipt', () =>
   const missing = fixture();
   const mismatched = fixture();
   try {
-    assert.equal(run('init', '--project', missing, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    assert.equal(run('init', '--project', missing, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(missing, { tools: false });
     const withoutReceipt = run('validate', '--project', missing, '--genesis');
     assert.notEqual(withoutReceipt.status, 0);
     assert.equal(withoutReceipt.report.error.code, 'tools-receipt-missing');
     assert.equal(run('validate', '--project', missing).report.status, 'valid', 'plain validation does not require the receipt');
 
-    assert.equal(run('init', '--project', mismatched, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    assert.equal(run('init', '--project', mismatched, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(mismatched);
     const receiptPath = path.join(mismatched, 'workbench', 'tools', '.workbench-tools.json');
     const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
@@ -477,7 +478,7 @@ test('Genesis readiness requires a version-matched runtime tools receipt', () =>
 test('Genesis validation names the failing first-spec predicate and the stray lane entries', () => {
   const project = fixture();
   try {
-    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     const specFile = path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md');
     const original = fs.readFileSync(specFile, 'utf8');
@@ -513,7 +514,7 @@ test('Genesis validation names the failing first-spec predicate and the stray la
 test('Genesis validation accepts legitimate filled Markdown bracket syntax', () => {
   const project = fixture();
   try {
-    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     const runbook = path.join(project, 'RUNBOOK.md');
     fs.appendFileSync(runbook, `
@@ -541,7 +542,7 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
   const project = fixture();
   const partialBundle = fixture();
   try {
-    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     const taskboard = path.join(project, 'TASKBOARD.md');
     fs.writeFileSync(taskboard, fs.readFileSync(taskboard, 'utf8').replace('This is a filled TASKBOARD.md fixture.', '[current useful outcome]'));

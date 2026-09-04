@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { doctor, nextWork } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-adoption.mjs');
 const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -99,7 +100,7 @@ function fixtureSpec() {
     write(project, 'skills/custom/SKILL.md', '# Legacy project-local skill\n');
     write(project, 'tools/app.mjs', 'export const app = true;\n');
 
-    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
     assert.equal(result.status, 0, result.stderr);
     const report = JSON.parse(result.stdout);
     assert.equal(report.status, 'complete');
@@ -121,7 +122,7 @@ function fixtureSpec() {
     assert.equal(read(project, 'tools/app.mjs'), 'export const app = true;\n', 'an application root tools directory is never absorbed');
     assert.equal(fs.existsSync(path.join(project, 'tools', '.workbench-tools.json')), false, 'no receipt is written into an application root tools directory');
     const receipt = JSON.parse(read(project, 'workbench/tools/.workbench-tools.json'));
-    assert.equal(receipt.source.release, 'v3.0.0', 'adoption installs receipt-backed runtime tools');
+    assert.equal(receipt.source.release, VERSION, 'adoption installs receipt-backed runtime tools');
     assert.equal(nextWork(project).specId, 'S-101', 'selection must resolve the manifest-declared spec lane');
     assert.deepEqual(doctor(project).filter((issue) => issue.blocks !== 'none'), [], 'doctor must resolve and validate the manifest-declared spec lane');
     assert.equal(report.doctor, 'passed-with-findings', 'a legacy wiki note without frontmatter is reported, not fatal');
@@ -140,7 +141,7 @@ function fixtureSpec() {
     seedUserSkills(home);
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
     write(project, 'workbench/specs/existing.md', 'Do not overwrite me.\n');
-    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
     assert.notEqual(result.status, 0, 'an existing support root must stop adoption before mutation');
     const report = JSON.parse(result.stdout);
     assert.equal(report.status, 'blocked');
@@ -162,7 +163,7 @@ function fixtureSpec() {
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
     write(project, 'WORKBENCH_FEEDBACK.md', '# Root feedback\n');
     write(project, 'HARNESS_FEEDBACK.md', '# Legacy feedback\n');
-    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
     assert.notEqual(result.status, 0, 'two root feedback files must block before mutation');
     const report = JSON.parse(result.stdout);
     assert.equal(report.error.code, 'feedback-collision');
@@ -181,7 +182,7 @@ function fixtureSpec() {
     seedUserSkills(home);
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
     write(project, 'HARNESS_FEEDBACK.md', '# Legacy feedback\n');
-    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
     assert.equal(result.status, 0, result.stdout);
     assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Legacy feedback\n', 'a legacy-named root feedback file is renamed into the lane');
     assert.equal(fs.existsSync(path.join(project, 'HARNESS_FEEDBACK.md')), false);
@@ -199,7 +200,7 @@ function fixtureSpec() {
     seedUserSkills(home);
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
     write(project, 'WORKBENCH_FEEDBACK.md', '# Root feedback\n');
-    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
     assert.equal(result.status, 0, result.stdout);
     const report = JSON.parse(result.stdout);
     assert.equal(fs.existsSync(path.join(project, 'WORKBENCH_FEEDBACK.md')), false, 'a root feedback file must move into the feedback lane');
@@ -221,7 +222,7 @@ function fixtureSpec() {
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
     write(project, 'feedback/WORKBENCH_FEEDBACK.md', '# Lane feedback\n');
     write(project, 'WORKBENCH_FEEDBACK.md', '# Root feedback\n');
-    const result = run('migrate', '--project', project, '--home', home, '--version', 'v3.0.0');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
     assert.notEqual(result.status, 0, 'a root feedback file beside a legacy feedback lane file must block before mutation');
     assert.equal(JSON.parse(result.stdout).error.code, 'feedback-collision');
     assert.equal(fs.existsSync(path.join(project, 'workbench')), false);

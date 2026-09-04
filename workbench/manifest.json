@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "workbenchVersion": "v3.0.0",
+  "workbenchVersion": "v3.1.0",
   "provenance": {
     "lifecycle": "adoption",
     "migratedFrom": 1,
     "source": {
       "repository": "https://github.com/KaydenClark/LLM_Workbench",
-      "release": "v3.0.0",
+      "release": "v3.1.0",
       "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
     }
   },

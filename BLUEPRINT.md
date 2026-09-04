@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-09-04
 **Status:** active
-**Harness version:** v3.0.0 (unreleased internal candidate; v3.1.0 is the first public v3 release target)
+**Harness version:** v3.1.0 (first public v3 release; v3.0.0 was an unreleased internal candidate)
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
@@ -53,9 +53,9 @@ unfinished, not a Foundry replacement or a general harness redesign.
   deterministic parsing, rendering, validation, and safe bounded file
   operations rather than one monolithic lifecycle program.
 
-Version v3.0.0 is the completed internal candidate; it is not released.
-Release promotion from `integration` to `main` remains separately owned by
-S-014 and resumes on the audited v3.1.0 candidate.
+Version v3.1.0 is the first public v3 release; v3.0.0 was the completed but
+unreleased internal candidate. Release promotion from `integration` to `main`
+remains separately owned by S-014 on the audited v3.1.0 candidate.
 
 ## Accepted V3.1 Direction
 

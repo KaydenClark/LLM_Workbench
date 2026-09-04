@@ -12,7 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const product = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const VERSION = 'v3.0.0';
+const VERSION = JSON.parse(fs.readFileSync(path.join(product, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const DATE = '2026-09-04';
 const transcript = [];
 // A scrubbed environment: no Foundry, deployment, or host lane variables reach

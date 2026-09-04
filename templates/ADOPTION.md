@@ -207,7 +207,7 @@ node tools/core-skill-installer.mjs install --home [USER_HOME]
 node tools/workbench-adoption.mjs migrate \
   --project [ABSOLUTE_PROJECT_PATH] \
   --home [USER_HOME] \
-  --version v3.0.0
+  --version v3.1.0
 node tools/workbench-tools.mjs verify --project [ABSOLUTE_PROJECT_PATH]
 node workbench/tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
 node workbench/tools/spec-workbench.mjs next --json

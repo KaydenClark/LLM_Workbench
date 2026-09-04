@@ -170,7 +170,7 @@ function upgrade(options) {
 
 try {
   const [command, ...args] = process.argv.slice(2);
-  if (command !== 'upgrade') throw new Error('Usage: workbench-upgrade.mjs upgrade --project PROJECT --home USER_HOME --version v3.0.0 --explicit-update');
+  if (command !== 'upgrade') throw new Error('Usage: workbench-upgrade.mjs upgrade --project PROJECT --home USER_HOME --version v3.1.0 --explicit-update');
   const result = upgrade(parseOptions(args));
   process.stdout.write(`${JSON.stringify(result)}\n`);
   if (result.status !== 'complete') process.exitCode = 1;

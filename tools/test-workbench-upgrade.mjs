@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-upgrade.mjs');
 const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -59,7 +60,7 @@ test('explicit upgrade backs up a changed managed skill, migrates once, and reco
     write(home, '.agents/skills/genesis/SKILL.md', '# changed installed genesis\n');
     const beforeSha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: project, encoding: 'utf8' }).stdout.trim();
 
-    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', 'v3.0.0', '--explicit-update');
+    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
 
     assert.equal(result.status, 0, result.stderr);
     assert.equal(result.report.status, 'complete');
@@ -79,7 +80,7 @@ test('explicit upgrade backs up a changed managed skill, migrates once, and reco
     assert.equal(recovery.skillBackups.length, 1);
     assert.equal(fs.readFileSync(path.join(project, 'tools', 'app.mjs'), 'utf8'), 'export const app = true;\n', 'an application root tools directory survives an explicit upgrade');
     const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
-    assert.equal(receipt.source.release, 'v3.0.0', 'explicit upgrade installs receipt-backed runtime tools');
+    assert.equal(receipt.source.release, VERSION, 'explicit upgrade installs receipt-backed runtime tools');
     assert.equal(recovery.tools.status, 'installed');
     assert.equal(JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8')).provenance.lifecycle, 'upgrade');
   } finally {
@@ -96,7 +97,7 @@ test('the updater refuses to replace a changed installed skill without explicit 
     assert.equal(run(installer, 'install', '--home', home).status, 0);
     write(home, '.agents/skills/genesis/SKILL.md', '# changed installed genesis\n');
 
-    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', 'v3.0.0');
+    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION);
 
     assert.notEqual(result.status, 0);
     assert.equal(result.report.status, 'blocked');
@@ -117,7 +118,7 @@ test('the updater refuses a dirty project because HEAD alone is not a full recov
     assert.equal(run(installer, 'install', '--home', home).status, 0);
     write(project, 'README.md', '# README.md\n\nUncommitted project truth.\n');
 
-    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', 'v3.0.0', '--explicit-update');
+    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
 
     assert.notEqual(result.status, 0);
     assert.equal(result.report.status, 'blocked');

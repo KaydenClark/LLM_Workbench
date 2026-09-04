@@ -12,8 +12,8 @@
 **Updated:** 2026-09-04
 **Catalog description:** Release v3.1.0 as the first public v3 Workbench from one independently audited exact candidate proven by a cross-provider cold resume with Foundry absent.
 **Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Complete TK-004.
+**Latest event:** TK-004 claimed by claude-fable-5-1.
+**Next gate:** Close TK-004 with verification and documentation proof.
 
 ## Outcome
 
@@ -105,7 +105,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-001 | Promote the greenlight and amendments into controls, ADRs, and five linked specs, and push the planning checkpoint | done | none | Planning checkpoint commit on `claude/v3.1-release`; render and doctor green; see evidence log |
 | TK-002 | Prove the primary acceptance round trip: planning checkpoint, forced interruption, cross-provider clean-clone resume with Foundry absent | done | S-023, S-024, S-025, S-026 | Cross-provider resume proof passed: Claude planned with the candidate's own workbench/tools (tools/cross-provider-resume.mjs plan), pushed planning checkpoint f31cc00, destroyed the planning clone; Codex gpt-5.6-terra resumed from a fresh clone with an isolated CODEX_HOME holding only the candidate's twelve skills and the receipt-backed candidate tools, ran doctor, next --json, show, wrote the failing test first, implemented, closed, rendered, passed doctor, and pushed e480d25; verify from a third fresh clone passed with foundry false and privatePaths false; the provider-free fixture test proves a recoverable checkpoint and a fail-closed verify; the promoted record is workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md |
 | TK-003 | Run the portability and privacy matrix on the exact candidate and record every result | done | S-023, S-024, S-025, S-026 | tools/test-portability-matrix.mjs 4/4: no tracked paths differ only by case and capitalised, spaced, traversing, or backslash lanes are rejected; a backslash or capitalised manifest lane fails before any lane is read and a CRLF manifest validates; active surfaces name no retired lane, hidden notepad directory, host temp lane, private skill catalog, Foundry-dependent path, or private home path (one real private path stripped from RUNBOOK.md); the shared privacy patterns find nothing on the active surfaces. Schema migration, mixed Adoption, symlink invocation, collisions, and stale links are covered by the cited tests; full 32-command union suite green |
-| TK-004 | Obtain the independent exact-SHA audit, land the v3.1.0 version bump, and hand the candidate to S-014 | ready | TK-002, TK-003 | pending |
+| TK-004 | Obtain the independent exact-SHA audit, land the v3.1.0 version bump, and hand the candidate to S-014 | in-progress | TK-002, TK-003 | pending |
 
 ### TK-002 - Primary acceptance round trip
 

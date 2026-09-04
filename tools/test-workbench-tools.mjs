@@ -9,6 +9,7 @@ import test from 'node:test';
 import { RECEIPT_NAME, RUNTIME_TOOLS } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 
@@ -23,7 +24,7 @@ function run(tool, ...args) {
 
 function project() {
   const dir = fixture();
-  assert.equal(run(layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+  assert.equal(run(layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', VERSION).status, 0);
   fs.mkdirSync(path.join(dir, 'tools'));
   fs.writeFileSync(path.join(dir, 'tools', 'app.mjs'), 'export const app = true;\n');
   fs.writeFileSync(path.join(dir, 'BLUEPRINT.md'), '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
@@ -46,7 +47,7 @@ test('install writes receipt-backed copies with hashes, source identity, and non
     assert.equal(installed.report.status, 'installed');
     const receipt = JSON.parse(fs.readFileSync(path.join(dir, 'workbench', 'tools', RECEIPT_NAME), 'utf8'));
     assert.equal(receipt.schemaVersion, 1);
-    assert.equal(receipt.source.release, 'v3.0.0');
+    assert.equal(receipt.source.release, VERSION);
     assert.match(receipt.source.commit, /^[0-9a-f]{40}$|^unknown$/);
     assert.deepEqual(Object.keys(receipt.files).sort(), [...RUNTIME_TOOLS].sort());
     for (const tool of RUNTIME_TOOLS) {

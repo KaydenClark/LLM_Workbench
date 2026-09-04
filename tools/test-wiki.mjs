@@ -11,6 +11,7 @@ import { validateWiki } from '../workbench/tools/wiki.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
 const vocabulary = new Set(templatePlaceholders);
@@ -52,7 +53,7 @@ test('the wiki template set is lowercase and complete, and the retired capitalis
 test('init seeds the wiki contract files with placeholders filled and reports the seeding', () => {
   const project = fixture();
   try {
-    const initialized = run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0', '--name', 'Puffer Pond', '--date', '2026-09-04');
+    const initialized = run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--name', 'Puffer Pond', '--date', '2026-09-04');
     assert.equal(initialized.status, 0, initialized.stdout);
     assert.equal(initialized.report.seeded.wiki, true);
     assert.deepEqual(initialized.report.seeded.written.sort(), ['workbench/wiki/AGENTS.md', 'workbench/wiki/SCHEMA.md', 'workbench/wiki/design-concepts/README.md']);
@@ -62,13 +63,13 @@ test('init seeds the wiki contract files with placeholders filled and reports th
       assert.match(content, /last_verified: 2026-09-04/, `${relative} carries the seeding date`);
     }
     assert.match(fs.readFileSync(path.join(project, 'workbench', 'wiki', 'AGENTS.md'), 'utf8'), /# Puffer Pond Wiki Agent Instructions/);
-    assert.match(fs.readFileSync(path.join(project, 'workbench', 'wiki', 'SCHEMA.md'), 'utf8'), /Generated from LLM Workbench v3\.0\.0/);
+    assert.match(fs.readFileSync(path.join(project, 'workbench', 'wiki', 'SCHEMA.md'), 'utf8'), new RegExp(`Generated from LLM Workbench ${VERSION.replaceAll('.', '\\.')}`));
     assert.equal(fs.existsSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md')), false, 'the router is authored by Genesis, not seeded blindly');
     const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
     assert.equal(manifest.wiki.profile, 'project');
     const deployment = fixture();
     try {
-      const second = run(layout, 'init', '--project', deployment, '--provenance', 'genesis', '--version', 'v3.0.0', '--wiki-profile', 'deployment');
+      const second = run(layout, 'init', '--project', deployment, '--provenance', 'genesis', '--version', VERSION, '--wiki-profile', 'deployment');
       assert.equal(JSON.parse(fs.readFileSync(path.join(deployment, 'workbench', 'manifest.json'), 'utf8')).wiki.profile, 'deployment');
       assert.equal(second.status, 0);
     } finally {
@@ -82,16 +83,16 @@ test('init seeds the wiki contract files with placeholders filled and reports th
 test('Genesis readiness requires the filled router and wiki contract files', () => {
   const project = fixture();
   try {
-    assert.equal(run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    assert.equal(run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     assert.equal(run(installer, 'install', '--project', project).status, 0);
     for (const control of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md']) {
       const regions = control === 'BLUEPRINT.md' ? '<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n' : control === 'TASKBOARD.md' ? '<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n' : '';
-      fs.writeFileSync(path.join(project, control), `# ${control}\n\n> Generated from LLM Workbench v3.0.0.\n\n## Purpose\n\nFilled.\n${regions}`);
+      fs.writeFileSync(path.join(project, control), `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nFilled.\n${regions}`);
     }
     fs.writeFileSync(path.join(project, 'CLAUDE.md'), '@AGENTS.md\n');
     const specDir = path.join(project, 'workbench', 'specs', 'S-001-first');
     fs.mkdirSync(specDir);
-    fs.writeFileSync(path.join(specDir, 'SPEC.md'), '# S-001 - First\n\n> Generated from LLM Workbench v3.0.0.\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Updated:** 2026-09-04\n**Catalog description:** First.\n**Blockers:** none\n**Latest event:** Captured.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nOne.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | First | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] Done.\n\n## Completion Result\n\nPending.\n');
+    fs.writeFileSync(path.join(specDir, 'SPEC.md'), `# S-001 - First\n\n> Generated from LLM Workbench ${VERSION}.\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Updated:** 2026-09-04\n**Catalog description:** First.\n**Blockers:** none\n**Latest event:** Captured.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nOne.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | First | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] Done.\n\n## Completion Result\n\nPending.\n`);
     const missingRouter = run(layout, 'validate', '--project', project, '--genesis');
     assert.equal(missingRouter.report.error.code, 'unfilled-control');
     assert.match(missingRouter.report.error.message, /MEMORY\.md/);
@@ -99,7 +100,7 @@ test('Genesis readiness requires the filled router and wiki contract files', () 
     fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), template);
     const unfilledRouter = run(layout, 'validate', '--project', project, '--genesis');
     assert.equal(unfilledRouter.report.error.code, 'unfilled-control', 'an unfilled router fails readiness');
-    fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), template.replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', '3.0.0').replaceAll('[YYYY-MM-DD]', '2026-09-04').replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, ''));
+    fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), template.replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', '2026-09-04').replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, ''));
     const ready = run(layout, 'validate', '--project', project, '--genesis');
     assert.equal(ready.status, 0, ready.stdout);
     assert.equal(ready.report.status, 'valid');
@@ -112,9 +113,9 @@ const wikiTool = path.join(root, 'workbench', 'tools', 'wiki.mjs');
 
 function seededWiki() {
   const project = fixture();
-  assert.equal(run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0', '--name', 'Fixture', '--date', '2026-09-04').status, 0);
+  assert.equal(run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--name', 'Fixture', '--date', '2026-09-04').status, 0);
   const template = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8');
-  fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), template.replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', '3.0.0').replaceAll('[YYYY-MM-DD]', '2026-09-04').replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, ''));
+  fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), template.replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', '2026-09-04').replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, ''));
   fs.writeFileSync(path.join(project, 'BLUEPRINT.md'), '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
   fs.writeFileSync(path.join(project, 'TASKBOARD.md'), '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   render(project);

@@ -164,8 +164,9 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v3.0.0**, an unreleased internal candidate recorded
-in `BLUEPRINT.md`; the first public v3 release is **v3.1.0**, in progress under
+current harness version is **v3.1.0**, the first public v3 release (recorded in
+`BLUEPRINT.md` and `workbench/manifest.json`); v3.0.0 was a completed but
+unreleased internal candidate. The release is owned by
 [`S-022`](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md). This repo
 is the source, so its own docs are not stamped.
 
