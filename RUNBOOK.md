@@ -70,6 +70,7 @@ node tools/test-governance-core.mjs
 node tools/test-wiki.mjs
 node tools/test-sessions.mjs
 node tools/test-workbench-round-trip.mjs
+node tools/test-cross-provider-fixture.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -320,6 +321,35 @@ red/green slice, closes, renders, passes doctor, pushes, reads the remote SHA
 back, and scans the clone and the transcript for any Foundry name, mechanism,
 or private home path. The real cross-provider resume with agents is S-022's
 release gate.
+
+### Cross-provider resume proof
+
+The release-gate proof that a different provider can resume from a clean
+clone using repository state only, with isolated candidate skills and
+receipt-backed candidate tools and nothing outside the repository:
+
+```bash
+node tools/cross-provider-resume.mjs plan --workspace /disposable/workspace
+node tools/cross-provider-resume.mjs resume-prompt --workspace /disposable/workspace
+node tools/cross-provider-resume.mjs verify --workspace /disposable/workspace --transcript /disposable/workspace/transcript.txt
+```
+
+`plan` builds a bare remote, runs Genesis with this candidate, promotes a
+checkpoint, claims the first slice, pushes the planning checkpoint, destroys
+the planning clone, and installs the candidate skills into an isolated
+provider home (`provider-home/.codex/skills` for Codex). Between `plan` and
+`verify`, run the other provider from a fresh clone of `origin.git` with its
+home pointed at that isolated directory and the printed prompt, capturing its
+output to a transcript; provider authentication stays the owner's action and
+is never copied. The isolated home runs the provider unsandboxed (the
+workspace-write sandbox refuses the `.git` writes a commit needs), so run the
+proof only in a disposable workspace. `verify` clones fresh and proves the remote advanced, the
+ticket closed with proof, the test and CLI pass, doctor is clean, the tools
+receipt names the exact candidate, the live notepad never travelled, and the
+transcript names nothing outside the repository. This proof spends provider
+budget and is run for the release umbrella, not on every verification pass;
+`node tools/test-cross-provider-fixture.mjs` proves the provider-free half
+(a recoverable planning checkpoint and a fail-closed verify) on every run.
 
 ### Session Checkpoints
 

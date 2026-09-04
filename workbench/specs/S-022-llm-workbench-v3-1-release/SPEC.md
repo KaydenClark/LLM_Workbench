@@ -12,8 +12,8 @@
 **Updated:** 2026-09-04
 **Catalog description:** Release v3.1.0 as the first public v3 Workbench from one independently audited exact candidate proven by a cross-provider cold resume with Foundry absent.
 **Blockers:** none
-**Latest event:** Planning checkpoint promoted; TK-001 recorded as done with the pushed checkpoint as proof.
-**Next gate:** Complete S-023, S-024, S-025, and S-026, then run TK-002 on the exact candidate.
+**Latest event:** TK-002 closed with proof.
+**Next gate:** Complete TK-003.
 
 ## Outcome
 
@@ -103,7 +103,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Promote the greenlight and amendments into controls, ADRs, and five linked specs, and push the planning checkpoint | done | none | Planning checkpoint commit on `claude/v3.1-release`; render and doctor green; see evidence log |
-| TK-002 | Prove the primary acceptance round trip: planning checkpoint, forced interruption, cross-provider clean-clone resume with Foundry absent | ready | S-023, S-024, S-025, S-026 | pending |
+| TK-002 | Prove the primary acceptance round trip: planning checkpoint, forced interruption, cross-provider clean-clone resume with Foundry absent | done | S-023, S-024, S-025, S-026 | Cross-provider resume proof passed: Claude planned with the candidate's own workbench/tools (tools/cross-provider-resume.mjs plan), pushed planning checkpoint f31cc00, destroyed the planning clone; Codex gpt-5.6-terra resumed from a fresh clone with an isolated CODEX_HOME holding only the candidate's twelve skills and the receipt-backed candidate tools, ran doctor, next --json, show, wrote the failing test first, implemented, closed, rendered, passed doctor, and pushed e480d25; verify from a third fresh clone passed with foundry false and privatePaths false; the provider-free fixture test proves a recoverable checkpoint and a fail-closed verify; the promoted record is workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md |
 | TK-003 | Run the portability and privacy matrix on the exact candidate and record every result | ready | S-023, S-024, S-025, S-026 | pending |
 | TK-004 | Obtain the independent exact-SHA audit, land the v3.1.0 version bump, and hand the candidate to S-014 | ready | TK-002, TK-003 | pending |
 
@@ -167,6 +167,7 @@ remote SHA read-back.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-04 | TK-001 | Promoted the greenlight handoff and twelve owner amendments into Blueprint, Lexicon, AGENTS, the ADR corpus, this umbrella, and S-023 through S-026 | Baseline: independent PASS on `73308fc`, landed on `integration`; S-015 closed; render and doctor green on the planning checkpoint | Updated BLUEPRINT.md, LEXICON.md, AGENTS.md, README.md, S-014, and the checkpoint record; RUNBOOK and templates change ticket by ticket only when their behavior exists | Implement S-023 first; TK-002 through TK-004 wait for the four capabilities |
+| 2026-09-04 | TK-002 | Ticket closed | Cross-provider resume proof passed: Claude planned with the candidate's own workbench/tools (tools/cross-provider-resume.mjs plan), pushed planning checkpoint f31cc00, destroyed the planning clone; Codex gpt-5.6-terra resumed from a fresh clone with an isolated CODEX_HOME holding only the candidate's twelve skills and the receipt-backed candidate tools, ran doctor, next --json, show, wrote the failing test first, implemented, closed, rendered, passed doctor, and pushed e480d25; verify from a third fresh clone passed with foundry false and privatePaths false; the provider-free fixture test proves a recoverable checkpoint and a fail-closed verify; the promoted record is workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md | Added tools/cross-provider-resume.mjs and tools/test-cross-provider-fixture.mjs; RUNBOOK.md gained the Cross-provider resume proof section; the privacy token pattern was tightened after a documented false positive; suite lists updated | The fresh-Claude CLI leg failed twice on an expired CLI OAuth session, an owner action; the rerun command is recorded in the checkpoint. A sandbox-blocked attempt is recorded as a truthful stop |
 
 ## Completion Result
 

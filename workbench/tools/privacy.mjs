@@ -3,7 +3,9 @@
 // without echoing the matched value.
 export const PRIVACY_PATTERNS = Object.freeze([
   { label: 'private key block', pattern: /-----BEGIN [A-Z ]*PRIVATE KEY-----/ },
-  { label: 'API token', pattern: /\b(?:sk|pk|ghp|gho|ghu|ghs|ghr|xox[abpr]|AKIA)[-_A-Za-z0-9]{12,}\b/ },
+  // Real token shapes only: a bare `sk`/`pk` prefix over a hyphenated word
+  // (`skills-installed-here`) is prose, not a secret.
+  { label: 'API token', pattern: /\b(?:sk|pk)-[A-Za-z0-9_]{20,}\b|\bgh[oprsu]_[A-Za-z0-9]{20,}\b|\bxox[abpr]-[A-Za-z0-9-]{10,}\b|\bAKIA[0-9A-Z]{16}\b/ },
   { label: 'bearer token', pattern: /\bBearer\s+[A-Za-z0-9._~+/=-]{16,}/ },
   { label: 'credential assignment', pattern: /\b(?:password|passwd|secret|api[_-]?key|token)\s*[:=]\s*["']?[^\s"']{6,}/i },
   { label: 'absolute home path', pattern: /(?:^|[\s"'`(])(?:\/Users\/[^\s/"'`)]+|\/home\/[^\s/"'`)]+|[A-Za-z]:\\Users\\[^\s\\"'`)]+)/ },

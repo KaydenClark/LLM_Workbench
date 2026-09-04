@@ -124,6 +124,7 @@ node tools/test-governance-core.mjs
 node tools/test-wiki.mjs
 node tools/test-sessions.mjs
 node tools/test-workbench-round-trip.mjs
+node tools/test-cross-provider-fixture.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
