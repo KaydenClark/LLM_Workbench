@@ -95,7 +95,7 @@ try {
   );
   assert.throws(
     () => claimWork(root, 'S-002', { agent: 'codex', date: '2026-07-12' }),
-    /no eligible ready ticket/i,
+    /blocked-slice|no eligible ready ticket/i,
     'direct claim must not bypass declared blockers'
   );
   fs.rmSync(path.join(root, 'specs/S-002-blocked'), { recursive: true });

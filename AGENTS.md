@@ -118,6 +118,7 @@ node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
 node tools/test-workbench-upgrade.mjs
 node tools/test-workbench-tools.mjs
+node tools/test-diagnostics.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs

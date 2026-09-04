@@ -64,6 +64,7 @@ node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
 node tools/test-workbench-upgrade.mjs
 node tools/test-workbench-tools.mjs
+node tools/test-diagnostics.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -258,6 +259,24 @@ Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates only the marked Blueprint catalog and hot Taskboard regions.
 `complete` requires every slice done, acceptance boxes checked, completion result
 recorded, and evidence present; render then removes the spec from the hot board.
+
+### Diagnostics And Blocking Effects
+
+Every finding a runtime tool emits is registered in
+`workbench/tools/diagnostics.mjs` with a severity (`error` or `attention`), a
+scope, and a blocking effect. The consuming command enforces the effect; no
+spec, manifest, or projection can choose whether its own finding blocks.
+
+| Effect | Consumer behavior | Codes |
+|---|---|---|
+| `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
+| `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target` |
+| `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
+| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `stale-register`, `stale-note`, and the ADR and wiki findings until their tools ship |
+
+`doctor --json` prints the findings with their `severity`, `scope`, and
+`blocks` fields; the plain output ends with an `ok - no blocking finding` line
+when only attention or slice findings remain.
 
 ### Socket Contract Registry
 

@@ -27,10 +27,11 @@ const ignored = spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/gril
 assert.equal(ignored.status, 0, 'live grilling records must be ignored by default');
 const tracked = spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/checkpoints/anything.md'], { cwd: root });
 assert.notEqual(tracked.status, 0, 'checkpoints must not be ignored');
-// Lane resolution is what this assertion proves; a stale claim is a dated
-// lifecycle finding unrelated to the manifest, so it must not couple this test
-// to the wall clock.
-assert.deepEqual(doctor(root).filter((issue) => issue.code !== 'stale-claim'), [],
+// Lane resolution is what this assertion proves. Attention findings (a dated
+// stale claim) and slice findings (a ready ticket waiting on another spec) are
+// registered as nonblocking, so only findings that block all or selection
+// count here.
+assert.deepEqual(doctor(root).filter((issue) => issue.blocks === 'all' || issue.blocks === 'selection'), [],
   'doctor must resolve only the manifest-declared spec lane');
 const selected = nextWork(root);
 if (selected) {

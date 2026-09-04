@@ -5,6 +5,7 @@ import { validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
+import { blocksSelection, finding } from './diagnostics.mjs';
 
 const SPEC_STATUSES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
 const TICKET_STATUSES = new Set(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
@@ -62,7 +63,11 @@ export function claimWork(rootDir, id, options) {
     ...spec.tickets.filter((item) => item.status === 'done').map((item) => item.id)
   ]);
   const ticket = spec.tickets.find((item) => item.status === 'ready' && blockersSatisfied(item.blockers, satisfied));
-  if (!ticket) throw new Error(`${id} has no eligible ready ticket to claim`);
+  if (!ticket) {
+    const blocked = spec.tickets.find((item) => item.status === 'ready');
+    if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
+    throw new Error(`${id} has no eligible ready ticket to claim`);
+  }
   const content = updateTicket(spec.content, ticket.id, (cells) => {
     cells[2] = 'in-progress';
     return cells;
@@ -141,34 +146,42 @@ export function doctor(rootDir, options = {}) {
   try {
     specs = loadSpecs(root, { allowDuplicates: true });
   } catch (error) {
-    return [{ code: 'malformed-spec', message: error.message }];
+    return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
   const byId = new Map();
+  const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of specs) {
     const seen = byId.get(spec.id) ?? [];
     seen.push(spec.relativePath);
     byId.set(spec.id, seen);
-    if (!SPEC_STATUSES.has(spec.status)) issues.push(issue('invalid-state', `${spec.id} has invalid status ${spec.status}`));
-    if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(issue('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`));
+    if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
+    if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
+    const satisfied = new Set([...completed, ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)]);
     for (const ticket of spec.tickets) {
-      if (!TICKET_STATUSES.has(ticket.status)) issues.push(issue('invalid-state', `${spec.id}/${ticket.id} has invalid status ${ticket.status}`));
-      if (ticket.status === 'done' && (!ticket.proof || /^pending$/i.test(ticket.proof))) issues.push(issue('missing-evidence', `${spec.id}/${ticket.id} is done without proof`));
+      if (!TICKET_STATUSES.has(ticket.status)) issues.push(finding('invalid-state', `${spec.id}/${ticket.id} has invalid status ${ticket.status}`, { specId: spec.id, ticketId: ticket.id }));
+      if (ticket.status === 'done' && (!ticket.proof || /^pending$/i.test(ticket.proof))) issues.push(finding('missing-evidence', `${spec.id}/${ticket.id} is done without proof`, { specId: spec.id, ticketId: ticket.id }));
+    }
+    // The selected slice is the first resumable or ready ticket; a later ticket
+    // waiting on its predecessor is ordinary sequencing, not a finding.
+    const head = spec.tickets.find((ticket) => ticket.status === 'in-progress' || ticket.status === 'ready');
+    if (spec.status === 'active' && head?.status === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
+      issues.push(finding('blocked-slice', `${spec.id}/${head.id} waits on ${head.blockers}`, { specId: spec.id, ticketId: head.id }));
     }
     if (['complete', 'superseded'].includes(spec.status) && spec.tickets.some((ticket) => ticket.status !== 'done')) {
-      issues.push(issue('contradictory-state', `${spec.id} is ${spec.status} with unfinished tickets`));
+      issues.push(finding('contradictory-state', `${spec.id} is ${spec.status} with unfinished tickets`, { specId: spec.id }));
     }
     const updated = Date.parse(`${spec.updated}T00:00:00Z`);
     const now = Date.parse(`${options.today ?? today()}T00:00:00Z`);
     if (spec.tickets.some((ticket) => ticket.status === 'in-progress') && Number.isFinite(updated) && now - updated > 86_400_000) {
-      issues.push(issue('stale-claim', `${spec.id} has an in-progress ticket last updated ${spec.updated}`));
+      issues.push(finding('stale-claim', `${spec.id} has an in-progress ticket last updated ${spec.updated}`, { specId: spec.id }));
     }
     for (const link of localLinks(spec.content)) {
       const target = path.resolve(path.dirname(spec.filePath), link);
-      if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) issues.push(issue('broken-link', `${spec.id} links to missing ${link}`));
+      if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) issues.push(finding('broken-link', `${spec.id} links to missing ${link}`, { specId: spec.id }));
     }
   }
   for (const [id, paths] of byId) {
-    if (paths.length > 1) issues.push(issue('duplicate-id', `${id} appears in ${paths.join(', ')}`));
+    if (paths.length > 1) issues.push(finding('duplicate-id', `${id} appears in ${paths.join(', ')}`, { specId: id }));
   }
   checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
@@ -204,7 +217,9 @@ function resolveSpecsRoot(root) {
   if (!fs.existsSync(manifestPath)) return { specsRoot: path.join(root, 'specs'), specsPrefix: 'specs' };
   const validation = validateManifest(root);
   if (validation.status !== 'valid') {
-    throw new Error(`Workbench manifest is invalid: ${validation.error?.message ?? 'unknown validation failure'}`);
+    const error = new Error(`Workbench manifest is invalid: ${validation.error?.message ?? 'unknown validation failure'}`);
+    error.code = validation.error?.code === 'upgrade-required' ? 'upgrade-required' : 'invalid-manifest';
+    throw error;
   }
   return {
     specsRoot: path.join(root, validation.manifest.lanes.specs),
@@ -336,17 +351,17 @@ function replaceRegion(content, startMarker, endMarker, body) {
 function checkRender(root, relative, startMarker, endMarker, expected, issues) {
   const filePath = path.join(root, relative);
   if (!fs.existsSync(filePath)) {
-    issues.push(issue('broken-render-target', `${relative} is missing`));
+    issues.push(finding('broken-render-target', `${relative} is missing`));
     return;
   }
   const content = fs.readFileSync(filePath, 'utf8');
   try {
     const actual = normalizeLineEndings(regionBody(content, startMarker, endMarker));
     if (actual !== normalizeLineEndings(expected)) {
-      issues.push(issue('render-drift', `${relative} generated region is stale`));
+      issues.push(finding('render-drift', `${relative} generated region is stale`));
     }
   } catch (error) {
-    issues.push(issue('broken-render-target', `${relative}: ${error.message}`));
+    issues.push(finding('broken-render-target', `${relative}: ${error.message}`));
   }
 }
 
@@ -385,10 +400,6 @@ function validDate(value) {
 function requireValue(value, message) {
   if (!value || !String(value).trim()) throw new Error(message);
   return String(value).trim();
-}
-
-function issue(code, message) {
-  return { code, message };
 }
 
 function escapeCell(value) {
@@ -434,13 +445,17 @@ async function main() {
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
-    if (result.length > 0) process.exitCode = 1;
+    if (blocksSelection(result)) process.exitCode = 1;
   } else {
     throw new Error('Usage: spec-workbench.mjs next|show|claim|close|complete|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
-  else if (command === 'doctor') console.log(result.length ? result.map((item) => `${item.code}: ${item.message}`).join('\n') : 'ok - spec workbench doctor passed');
+  else if (command === 'doctor') {
+    const lines = result.map((item) => `${item.code} [${item.severity}, blocks ${item.blocks}]: ${item.message}`);
+    if (lines.length === 0) console.log('ok - spec workbench doctor passed');
+    else console.log(`${lines.join('\n')}${blocksSelection(result) ? '' : '\nok - no blocking finding; attention and slice findings above stay visible'}`);
+  }
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
 }
 

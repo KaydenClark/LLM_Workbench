@@ -11,8 +11,8 @@
 **Updated:** 2026-09-04
 **Catalog description:** Give every Workbench claim-level Governance Planes, separated instruction authority and state resolution, a registered diagnostic model enforced by doctor/next/claim, and a first-class ADR collection.
 **Blockers:** none
-**Latest event:** Spec captured from the promoted v3.1 plan.
-**Next gate:** Claim TK-001 after S-023/TK-001 lands.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -94,7 +94,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Doctor reports registered findings with effects, exits only on `all`/`selection`, and `next`/`claim` refuse slice blockers while attention stays visible | ready | none | pending |
+| TK-001 | Doctor reports registered findings with effects, exits only on `all`/`selection`, and `next`/`claim` refuse slice blockers while attention stays visible | done | none | Red: the diagnostics test failed before the registry existed. Green: 4 diagnostics tests (closed typed registry with every emitted code registered and attention never blocking; attention findings keep doctor exit 0 and resumable work selectable; duplicate identity fails doctor and render refuses it; a schema 1 manifest blocks all and next refuses; a blocked selected slice is reported at exit 0, excluded by next, refused by claim by name without mutation, while ordered successor tickets are not findings), lifecycle, dogfood, layout, and installer tests, and the full 25-command union suite |
 | TK-002 | The ADR tool creates, validates, and registers ADRs in a fixture and in this repository, rejecting untracked provenance and unknown canonicalization targets | ready | TK-001 | pending |
 | TK-003 | Root and template controls carry the Governance Core, and the product corpus holds the reconciled ported and new ADRs with valid `canonicalized_in` links | ready | TK-002 | pending |
 
@@ -139,6 +139,7 @@ Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --chec
 |---|---|---|---|---|---|
 | 2026-09-04 | plan | Released the first ticket's S-023 blocker: S-023/TK-001 through TK-004 landed the schema 2 layout, collections, sessions ignore file, and tools lane this slice depends on, while S-023 itself completes only after S-026/TK-001 re-points the skills; keeping a whole-spec blocker here would deadlock selection | `next --json` returned null with every first ticket blocked on an uncompletable S-023; doctor green | Ticket blocker only; requirements unchanged | Implement TK-001 |
 | 2026-09-04 | plan | Captured the Governance Core, diagnostics, and ADR capability from the promoted v3.1 plan | Baseline suite green at the landed S-015 SHA; no capability behavior verified yet | Spec added; ADR drafts staged for TK-003; controls change with their tickets | Implement TK-001 through TK-003 after S-023/TK-001 |
+| 2026-09-04 | TK-001 | Ticket closed | Red: the diagnostics test failed before the registry existed. Green: 4 diagnostics tests (closed typed registry with every emitted code registered and attention never blocking; attention findings keep doctor exit 0 and resumable work selectable; duplicate identity fails doctor and render refuses it; a schema 1 manifest blocks all and next refuses; a blocked selected slice is reported at exit 0, excluded by next, refused by claim by name without mutation, while ordered successor tickets are not findings), lifecycle, dogfood, layout, and installer tests, and the full 25-command union suite | Added workbench/tools/diagnostics.mjs to the runtime set; RUNBOOK.md gained the Diagnostics And Blocking Effects table; AGENTS.md already carries the rule; ADR-0005 and ADR-0029 accepted | ADR and wiki findings join doctor with their tools in TK-002 and S-025/TK-002 |
 
 ## Completion Result
 
