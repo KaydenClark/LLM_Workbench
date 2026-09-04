@@ -1,0 +1,140 @@
+# S-026 - Workflow Composition, Feedback Lane, And Cold Resume
+
+> Linked v3.1 capability promoted on 2026-09-04. Stable path
+> `workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md`; never
+> move it between status folders.
+
+**Spec ID:** S-026
+**Status:** active
+**Priority:** 4
+**Owner:** claude-fable-5-1
+**Updated:** 2026-09-04
+**Catalog description:** Route the twelve core skills and feedback discovery through the schema 2 manifest, promote session records through privacy-checked checkpoints, and prove the composed planning-to-resume workflow mechanically.
+**Blockers:** none
+**Latest event:** Spec captured from the promoted v3.1 plan.
+**Next gate:** Claim TK-001 after S-023/TK-002 lands.
+
+## Outcome
+
+The twelve core skills resolve every path through the manifest: runtime tools
+in the tools lane, live notepads in `sessions/grilling`, handoffs in
+`sessions/handoffs`, and durable copies in `sessions/checkpoints` after a
+privacy check. Feedback lives in the feedback lane and discovery prefers it.
+A mechanical round-trip test proves that a planning checkpoint pushed before
+implementation can be resumed from a fresh clone with Foundry absent.
+
+## Why It Matters
+
+`make-it-so` already promises the complete runway, but nothing executed it end
+to end, and three skills still hardcoded a hidden private notepad path. A
+public release must prove the composition it advertises with the paths it
+declares.
+
+## Current Verified State
+
+- `grilling`, `checkpoint`, and `make-it-so` name `.agents/grilling diary/`;
+  `checkpoint` commits into the v3.0 handoff lane.
+- All skills and templates run `node tools/spec-workbench.mjs`.
+- `feedback-automation.mjs` discovers `WORKBENCH_FEEDBACK.md` or the legacy
+  name at a project root only.
+- `test-skill-catalog.mjs` and `test-delivery-skills.mjs` scan contracts;
+  no test executes the composed workflow.
+
+## Desired Behavior
+
+- Skills: `grilling` writes to the manifest `grilling` collection;
+  `checkpoint` promotes through `workbench/tools/sessions.mjs checkpoint`,
+  which scans for secrets, absolute home paths, and private tokens before
+  copying into `checkpoints/`; `make-it-so` resolves notepads and checkpoints
+  through the manifest; all skills run `node workbench/tools/spec-workbench.mjs`
+  and name ADRs only through the `adr` collection.
+- Feedback: generated projects carry `workbench/feedback/WORKBENCH_FEEDBACK.md`;
+  discovery prefers the manifest lane and still accepts legacy root files;
+  Adoption moves a root feedback file into the lane; the root keeps exactly
+  seven controls.
+- Round trip (`tools/test-workbench-round-trip.mjs`): bare remote, Genesis
+  from the candidate, spec and claim, pushed planning checkpoint, clone
+  destroyed, fresh clone resumes through `doctor`, `next`, `show`, implements
+  a trivial slice red/green, closes, renders, passes doctor, pushes; the
+  environment is scrubbed of Foundry variables and the transcript is scanned
+  for Foundry paths.
+
+## Decisions And Contracts
+
+- Rationale: [ADR-0028](../../docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md),
+  [ADR-0031](../../docs/adr/0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md).
+- The mechanical round trip is deterministic and provider-free; the
+  cross-provider proof with real agents belongs to S-022/TK-002.
+- The privacy scan is fail-closed: a hit stops promotion with the matching
+  line number and never writes a partial checkpoint.
+
+## Non-Goals
+
+- Changing the generic `/handoff` skill or router skills outside the core.
+- Scheduler or automation adapters; GPT_OS owns those.
+
+## Dependencies And Blockers
+
+- S-023/TK-002 supplies the tools lane every skill resolves.
+- S-024/TK-001 supplies the diagnostic effects `next` and `claim` enforce.
+
+## Vertical Implementation Slices
+
+Tickets are temporary tracer bullets within this stable capability record.
+
+| Ticket | Slice | Status | Blockers | Proof |
+|---|---|---|---|---|
+| TK-001 | The twelve skills resolve tools, notepads, handoffs, and checkpoints through the manifest, and `sessions.mjs checkpoint` promotes a privacy-checked copy | ready | S-023 | pending |
+| TK-002 | Feedback lives in the feedback lane, discovery prefers it, Adoption relocates a root file, and the root keeps exactly seven controls | ready | TK-001 | pending |
+| TK-003 | The mechanical round-trip test proves planning, interruption, and clean-clone resume with Foundry absent | ready | TK-002, S-024 | pending |
+
+## Acceptance Criteria
+
+- [ ] No core skill or template names `.agents/grilling diary/`, a root `specs/`, or a root runtime-tool path.
+- [ ] `sessions.mjs checkpoint` refuses secret-like content, absolute home paths, and private tokens, and writes nothing on refusal.
+- [ ] Feedback discovery finds a manifest-lane file, prefers it over a root legacy file, and Adoption relocates the root file.
+- [ ] The round-trip test passes deterministically with Foundry variables scrubbed and no Foundry path in any transcript.
+- [ ] Full union suite, render, doctor, and `git diff --check` pass.
+
+## Testing Seams
+
+- Skill contract scan with required and forbidden patterns.
+- Sessions CLI: JSON results with registered codes and byte-identical copies.
+- Feedback discovery fixture with lane and root files.
+- Round trip: bare remote fixture and transcript scan.
+
+## Verification Procedure
+
+```bash
+node tools/test-skill-catalog.mjs
+node tools/test-sessions.mjs
+node tools/test-feedback-automation.mjs
+node tools/test-workbench-round-trip.mjs
+```
+
+Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --check`.
+
+## Documentation Impact
+
+- Skills own their contracts; `skills/README.md` owns the catalog.
+- `RUNBOOK.md` owns the checkpoint, feedback, and round-trip commands.
+- `templates/README.md` and `templates/WORKBENCH_FEEDBACK.md` reflect the lane.
+
+## Append-Only Evidence And Execution Log
+
+| Date | Ticket | Event | Verification | Docs | Remaining gap |
+|---|---|---|---|---|---|
+| 2026-09-04 | plan | Captured the workflow composition, feedback lane, and cold-resume capability from the promoted v3.1 plan | Baseline suite green at the landed S-015 SHA; no capability behavior verified yet | Spec added; skills, templates, and Runbook change with their tickets | Implement TK-001 through TK-003 after S-023/TK-002 and S-024/TK-001 |
+
+## Completion Result
+
+Pending.
+
+## Remaining Limitations Or Follow-Up Specs
+
+- Real cross-provider resume proof is owned by S-022/TK-002.
+
+## Supersession
+
+- Supersedes: none
+- Superseded by: none
