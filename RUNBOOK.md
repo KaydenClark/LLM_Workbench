@@ -71,6 +71,7 @@ node tools/test-wiki.mjs
 node tools/test-sessions.mjs
 node tools/test-workbench-round-trip.mjs
 node tools/test-cross-provider-fixture.mjs
+node tools/test-portability-matrix.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -321,6 +322,27 @@ red/green slice, closes, renders, passes doctor, pushes, reads the remote SHA
 back, and scans the clone and the transcript for any Foundry name, mechanism,
 or private home path. The real cross-provider resume with agents is S-022's
 release gate.
+
+### Portability and privacy matrix
+
+Every row of the v3.1 release matrix has a named deterministic check that runs
+on every full verification pass:
+
+| Row | Check |
+|---|---|
+| schema migration | `test-workbench-layout.mjs`: schema 1 reports `upgrade-required`; `migrate` is lossless and idempotent |
+| mixed Adoption | `test-workbench-adoption.mjs`: five fixtures including root feedback, collisions, and an untouched root `tools/` |
+| case-sensitive paths | `test-portability-matrix.mjs`: no tracked paths differ only by case; capitalised or spaced lanes rejected |
+| Windows/POSIX behavior | `test-portability-matrix.mjs` and `test-spec-workbench.mjs`: backslash lanes rejected; CRLF manifests, packets, and projections accepted |
+| symlink invocation | `test-symlink-invocation.mjs`: every runtime lane tool runs its main through a symlinked path |
+| collisions | `test-workbench-tools.mjs`, `test-workbench-adoption.mjs`, `test-workbench-layout.mjs`: receipts, lanes, feedback, and first-spec collisions block before mutation |
+| stale links | `test-diagnostics.mjs`, `test-wiki.mjs`: broken spec links and stale notes are attention, never blocking |
+| public privacy stripping | `test-portability-matrix.mjs`: the shared `privacy.mjs` patterns find nothing on the active surfaces |
+| retired private and Foundry paths | `test-portability-matrix.mjs`: no active surface names a retired lane, the hidden notepad directory, a private home path, the private skill catalog, a host temp lane, or a Foundry-dependent path |
+
+```bash
+node tools/test-portability-matrix.mjs
+```
 
 ### Cross-provider resume proof
 
@@ -642,7 +664,7 @@ PR descriptions state what changed, why, risks, and verification.
 | evaluator self-test fails with score < 90 | root dogfood docs lost a rubric section | `node tools/evaluate-workbench.mjs --path .` and read the `missing` column | restore the missing section in the root doc |
 | self-test passes locally but templates score low | change landed at root but not in `templates/` (or vice versa) | `node tools/evaluate-workbench.mjs --path templates` | apply the Dogfood Boundary rule: land in both |
 | `evals/score.py` errors on results file | stale or hand-edited JSONL | regenerate with `_make_selftest.py` | never hand-edit results |
-| feedback discovery returns no candidate unexpectedly | checkout is a worktree/duplicate, origin is not writable-owner, or fingerprint is already pending/processed | `node tools/feedback-automation.mjs discover --projects-root /Users/kayden/GPT_OS/Projects` | repair the canonical checkout or record the pending/processed decision; do not broaden discovery |
+| feedback discovery returns no candidate unexpectedly | checkout is a worktree/duplicate, origin is not writable-owner, or fingerprint is already pending/processed | `node tools/feedback-automation.mjs discover --projects-root /absolute/projects-root` | repair the canonical checkout or record the pending/processed decision; do not broaden discovery |
 | an automation pauses after a lock, owner gate, or provider failure | the scheduler counted an interruption as idle | inspect the latest `run-outcome` JSON and prior verified-idle count | emit `collision`, `owner_gate`, or `infrastructure_error`; preserve the idle count and retry or wait for the proper wake event |
 | Sol cannot prove a candidate because GitHub or model access is down | transient infrastructure failure | read the PR verdict comment and repeat count | leave the PR open, retry next run, and alert after the second identical failure |
 
