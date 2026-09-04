@@ -21,7 +21,7 @@ before changing anything:
   consult it when shared language could be ambiguous.
 - [`TASKBOARD.md`](TASKBOARD.md) - active spec projection: current slice, owner,
   blocker, latest event, and next gate.
-- [`specs/S-###-slug/SPEC.md`](SPEC.md) - on-demand capability truth,
+- [`workbench/specs/S-###-slug/SPEC.md`](workbench/specs/S-###-slug/SPEC.md) - on-demand capability truth,
   acceptance, decisions, verification, append-only evidence, and completion.
 - [`RUNBOOK.md`](RUNBOOK.md) - how to set up, run, test, build, and recover this
   project, plus the verification commands that gate "done".
@@ -56,9 +56,10 @@ The control docs are intentionally plain Markdown so they work with Codex,
 Claude, or any other agent that reads repository instructions - no framework or
 preprocessing required.
 
-For **Claude Code**, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
-`/init` in this repo, so the rules load automatically. Other agents should be
-pointed at `AGENTS.md` as their entry point.
+For **Claude Code**, keep the one-line `CLAUDE.md` containing exactly
+`@AGENTS.md` so the rules load automatically; a Genesis or Adoption readiness
+check rejects any other bridge, so do not replace it with a generated `/init`
+file. Other agents should be pointed at `AGENTS.md` as their entry point.
 
 Every completed ticket must leave proof in its final response and owning spec's
 append-only evidence log. Milestone specs additionally require a short demo

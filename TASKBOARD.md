@@ -14,7 +14,8 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-014](workbench/specs/S-014-workbench-release-candidate/SPEC.md) | TK-003: Open the sole non-draft integration-to-main owner promotion PR (ready) | unassigned | TK-002 | S-021 has completed its portable v3 proof and hands the next integration candidate to this release gate; no release status or promotion PR was created. | After S-021 lands, resolve and pin the resulting exact `origin/integration` SHA, then resume TK-002's separate immutable audit. |
+| [S-014](workbench/specs/S-014-workbench-release-candidate/SPEC.md) | TK-003: Open the sole non-draft integration-to-main owner promotion PR (ready) | codex | TK-002 | Independent Auditor `/root/s014_auditor` returned `REQUEST CHANGES` on exact candidate `d80d14c` with two P1 v3 readiness defects and one P2 limitation-count defect; no release evidence, status, or promotion PR was published. | Complete and land S-015, resolve the new exact `origin/integration` SHA, then repeat TK-002's separate immutable audit. |
+| [S-015](workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md) | TK-001: A cold Genesis project gets only manifest-routed controls and fails closed unless its controls and first spec are operable (in-progress) | claude-fable-5-1 | none | TK-001 carried forward by claude-fable-5-1 after the independent `d80d14c..73308fc` review returned one P2 and five P3 findings; repair checkpoint prepared. | Close TK-001 with verification and documentation proof. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

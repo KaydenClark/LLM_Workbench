@@ -1,7 +1,7 @@
 # S-[###] - [CAPABILITY_TITLE]
 
 > Generated from LLM Workbench v[HARNESS_VERSION]. Copy this file to the stable
-> path `specs/S-[###]-[slug]/SPEC.md`; never move it between status folders.
+> path `workbench/specs/S-[###]-[slug]/SPEC.md`; never move it between status folders.
 
 **Spec ID:** S-[###]
 **Status:** planned

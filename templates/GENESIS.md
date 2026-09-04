@@ -132,9 +132,10 @@ demo artifact bootstrap must produce.
 Fill `AGENTS.md`, especially the **Edit Scope** placeholders that say nothing
 until set:
 
-- `[PRIMARY_SOURCE_DIRS]`, `[TEST_DIRS]`, `[DOCS_TO_KEEP_CURRENT]` -> the real
-  paths just scaffolded;
-- `[OUT_OF_SCOPE_DIRS_OR_REPOS]` -> secrets, generated output, unrelated dirs.
+- `[READABLE_ROOTS]` and `[WRITABLE_ROOTS]` -> the real paths just scaffolded;
+- `[SECRETS_OR_PRIVATE_PATHS]` and `[FORBIDDEN_PATHS]` -> secrets, generated
+  output, unrelated dirs;
+- `[REQUIRES_REVIEW_FOR]` -> schema/migrations, pushes, destructive commands.
 
 Confirm the read-scope, secrets boundary, authority order, and verification
 contract match this project's reality. Keep the generic safety rules intact.
@@ -171,6 +172,28 @@ coherent capability. Put 1-3 one-context tracer-bullet tickets in its
 implementation table and record the Genesis result in its evidence log. The
 manifest declares the `specs`, `wiki`, `grilling`, `handoffs`, and `feedback`
 lanes; do not create a project-local `skills/` discovery directory.
+
+The readiness gate (`validate --genesis`) accepts only an actionable first
+packet, so shape it exactly like this before running the gate:
+
+- `**Status:** active` (the copied `templates/SPEC.md` default is `planned`;
+  Genesis activates the first spec because it is the work the loop picks up);
+- `**Priority:**` a single digit `0`-`9`;
+- at least one ticket row whose status is `ready` and whose blockers are
+  `none`; do not claim it before the gate runs;
+- at least one unchecked `- [ ]` acceptance box;
+- the `## Outcome`, `## Vertical Implementation Slices`,
+  `## Acceptance Criteria`, and `## Completion Result` sections;
+- the exact `Generated from LLM Workbench v[HARNESS_VERSION]` stamp matching
+  the manifest, and no remaining template placeholder.
+
+Then render the projections and run doctor so the generated regions in
+`BLUEPRINT.md` and `TASKBOARD.md` (kept from the templates) reflect the packet:
+
+```bash
+node /PATH/TO/LLM_WORKBENCH/tools/spec-workbench.mjs render
+node /PATH/TO/LLM_WORKBENCH/tools/spec-workbench.mjs doctor
+```
 
 Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to
 `workbench/wiki/MEMORY.md`, fill its placeholders, and link it to the live
@@ -212,9 +235,13 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] `workbench/manifest.json` declares the five support lanes, exact
       12-skill policy, version, and Genesis provenance; the layout validator
-      passes with `--genesis`.
-- [ ] A stable first spec under `workbench/specs/` contains at least one
-      actionable `ready` ticket with proof requirements.
+      passes with `--genesis`. When it fails, its JSON `reason` names the
+      failing predicate; fix that predicate rather than the gate.
+- [ ] `CLAUDE.md` is exactly `@AGENTS.md`; the gate rejects any other bridge.
+- [ ] A stable first spec under `workbench/specs/` is `active`, carries at
+      least one unclaimed `ready` ticket with no blockers and proof
+      requirements, keeps at least one unchecked acceptance box, and `render`
+      plus `doctor` pass on the result.
 - [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/Wiki/`),
       routes to the live controls, and has no unfilled placeholders.
 - [ ] The first spec evidence row records that Genesis ran, with the actual result.

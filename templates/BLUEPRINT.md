@@ -55,7 +55,7 @@ history. Human-authored product prose stays outside the markers.
 <!-- spec-catalog:start -->
 | Spec | Description | Status |
 |---|---|---|
-| [S-001 - Capability](specs/S-001-capability/SPEC.md) | [Short catalog description] | planned |
+| [S-001 - Capability](workbench/specs/S-001-capability/SPEC.md) | [Short catalog description] | planned |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
