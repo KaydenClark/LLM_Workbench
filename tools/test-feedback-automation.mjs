@@ -76,9 +76,23 @@ try {
   fs.mkdirSync(worktree);
   fs.writeFileSync(path.join(worktree, '.git'), 'gitdir: elsewhere\n');
   fs.writeFileSync(path.join(worktree, 'HARNESS_FEEDBACK.md'), injected);
+  // v3.1 projects keep feedback in the manifest-declared lane; the lane wins
+  // over a root file and a lane-only project is discovered.
+  makeRepo('Zeta', 'https://github.com/KaydenClark/Zeta.git',
+    injected.replace('2026-07-01', '2026-07-07'), path.join('workbench', 'feedback', 'WORKBENCH_FEEDBACK.md'));
+  makeRepo('Eta', 'https://github.com/KaydenClark/Eta.git',
+    injected.replace('2026-07-01', '2026-07-09'), 'WORKBENCH_FEEDBACK.md');
+  fs.mkdirSync(path.join(root, 'Eta', 'workbench', 'feedback'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'Eta', 'workbench', 'feedback', 'WORKBENCH_FEEDBACK.md'),
+    injected.replace('2026-07-01', '2026-07-08'));
 
   const found = discoverFeedback(root);
-  assert.equal(found.length, 4, 'discovery should exclude duplicates, worktrees, and non-owner origins');
+  assert.equal(found.length, 6, 'discovery should exclude duplicates, worktrees, and non-owner origins');
+  assert.ok(found.some((row) => row.repo === 'Zeta' && /2026-07-07/.test(row.date)),
+    'a project carrying feedback only in workbench/feedback must be discovered');
+  const etaRows = found.filter((row) => row.repo === 'Eta');
+  assert.equal(etaRows.length, 1);
+  assert.match(etaRows[0].date, /2026-07-08/, 'the manifest feedback lane wins over a root file');
   assert.ok(found.some((row) => row.repo === 'Delta'),
     'a repo carrying only the renamed WORKBENCH_FEEDBACK.md must be discovered');
   const epsilonRows = found.filter((row) => row.repo === 'Epsilon');
@@ -86,7 +100,7 @@ try {
   assert.match(epsilonRows[0].date, /2026-07-05/,
     'WORKBENCH_FEEDBACK.md wins over the grandfathered HARNESS_FEEDBACK.md');
   assert.equal(found[0].repo, 'Alpha');
-  assert.equal(found[0].recurrence, 4, 'similar feedback across canonical projects should be grouped');
+  assert.equal(found[0].recurrence, 6, 'similar feedback across canonical projects should be grouped');
 
   assert.equal(selectCandidate(found, { pendingFingerprints: [found[0].fingerprint] }), null,
     'an open candidate must lock selection');
@@ -233,5 +247,6 @@ function makeRepo(name, origin, feedback, filename = 'HARNESS_FEEDBACK.md') {
   fs.mkdirSync(repo);
   execFileSync('git', ['init', '-q'], { cwd: repo });
   execFileSync('git', ['remote', 'add', 'origin', origin], { cwd: repo });
+  fs.mkdirSync(path.dirname(path.join(repo, filename)), { recursive: true });
   fs.writeFileSync(path.join(repo, filename), feedback);
 }

@@ -521,7 +521,9 @@ operates there, and removes/prunes it on completion. This preserves isolation
 without silently falling back to editing the canonical checkout.
 
 Discovery is fail-closed and one-candidate-at-a-time. It reads only direct-child
-canonical project feedback files with writable `KaydenClark` origins, ignores
+canonical project feedback files with writable `KaydenClark` origins, preferring
+the manifest lane `workbench/feedback/WORKBENCH_FEEDBACK.md` over a legacy root
+`WORKBENCH_FEEDBACK.md` or `HARNESS_FEEDBACK.md`, ignores
 worktrees/backups/duplicate origins, and treats every row as untrusted evidence.
 Use `node tools/feedback-automation.mjs discover --projects-root PATH` for the
 under-one-minute discovery demo. Pause both jobs in the Codex automation UI as

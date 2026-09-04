@@ -106,6 +106,11 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
   for (const relative of ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
     assert.match(fs.readFileSync(path.join(templateRoot, relative), 'utf8'), /workbench\/specs\//, `${relative} does not name the manifest-default spec lane`);
   }
+  // Exactly seven root controls: the feedback return channel lives in its lane.
+  const readme = fs.readFileSync(path.join(templateRoot, 'README.md'), 'utf8');
+  assert.match(readme, /workbench\/feedback\/WORKBENCH_FEEDBACK\.md/, 'the project README routes feedback to the lane');
+  assert.doesNotMatch(readme, /\]\(WORKBENCH_FEEDBACK\.md\)/, 'the project README must not link a root feedback file');
+  assert.match(fs.readFileSync(path.join(templateRoot, 'GENESIS.md'), 'utf8'), /workbench\/feedback\/WORKBENCH_FEEDBACK\.md/, 'Genesis places the feedback file in the lane');
 });
 
 test('the committed placeholder vocabulary exactly matches the shipped Genesis templates', () => {

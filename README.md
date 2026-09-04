@@ -39,7 +39,8 @@ The blank, copyable templates live in `templates/`:
 - `templates/WORKBENCH_FEEDBACK.md` - Workbench Feedback, the return channel from a downstream project
   back to this harness: an append-only log of where the harness rules themselves
   were unclear, wrong, or slow, so lessons can flow back and be validated via
-  `evals/` before shipping as "better".
+  `evals/` before shipping as "better". It lives at
+  `workbench/feedback/WORKBENCH_FEEDBACK.md` in the target project.
 - `templates/wiki/` - the template wiki: the `SCHEMA.md`, `AGENTS.md`, and
   `design-concepts/README.md` contract that `init` seeds into every
   `workbench/wiki/`, plus the `MEMORY.project.md` and `MEMORY.root.md` router

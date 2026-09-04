@@ -11,8 +11,8 @@
 **Updated:** 2026-09-04
 **Catalog description:** Route the twelve core skills and feedback discovery through the schema 2 manifest, promote session records through privacy-checked checkpoints, and prove the composed planning-to-resume workflow mechanically.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-002 closed with proof.
+**Next gate:** Complete TK-003.
 
 ## Outcome
 
@@ -85,7 +85,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | The twelve skills resolve tools, notepads, handoffs, and checkpoints through the manifest, and `sessions.mjs checkpoint` promotes a privacy-checked copy | done | none | Red: the sessions test failed before workbench/tools/sessions.mjs existed and the skill catalog failed on retired paths. Green: 2 sessions tests (a clean untracked notepad promotes byte for byte below one stamp into workbench/sessions/checkpoints with mode 0644 and a refused duplicate; token, absolute home path, and email content is refused with the offending line, nothing is written, a symlink source is refused, and the CLI exits 1), the skill catalog and delivery contracts with the twelve skills naming only manifest-resolved paths, the consumer scan now covering skills, and the full 29-command union suite |
-| TK-002 | Feedback lives in the feedback lane, discovery prefers it, Adoption relocates a root file, and the root keeps exactly seven controls | ready | TK-001 | pending |
+| TK-002 | Feedback lives in the feedback lane, discovery prefers it, Adoption relocates a root file, and the root keeps exactly seven controls | done | TK-001 | Red: feedback discovery ignored a lane-only project and the templates still linked a root feedback file. Green: feedback discovery finds workbench/feedback/WORKBENCH_FEEDBACK.md, prefers the manifest lane over a root file, and still accepts legacy root names (6 canonical repos, recurrence 6); the template regression proves the project README and Genesis route feedback to the lane with no root link; adoption relocation was proven in S-023/TK-003; full 29-command union suite |
 | TK-003 | The mechanical round-trip test proves planning, interruption, and clean-clone resume with Foundry absent | ready | TK-002, S-024 | pending |
 
 ## Acceptance Criteria
@@ -127,6 +127,7 @@ Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --chec
 | 2026-09-04 | plan | Released the first ticket's S-023 blocker: S-023/TK-001 through TK-004 landed the schema 2 layout, collections, sessions ignore file, and tools lane this slice depends on, while S-023 itself completes only after S-026/TK-001 re-points the skills; keeping a whole-spec blocker here would deadlock selection | `next --json` returned null with every first ticket blocked on an uncompletable S-023; doctor green | Ticket blocker only; requirements unchanged | Implement TK-001 |
 | 2026-09-04 | plan | Captured the workflow composition, feedback lane, and cold-resume capability from the promoted v3.1 plan | Baseline suite green at the landed S-015 SHA; no capability behavior verified yet | Spec added; skills, templates, and Runbook change with their tickets | Implement TK-001 through TK-003 after S-023/TK-002 and S-024/TK-001 |
 | 2026-09-04 | TK-001 | Ticket closed | Red: the sessions test failed before workbench/tools/sessions.mjs existed and the skill catalog failed on retired paths. Green: 2 sessions tests (a clean untracked notepad promotes byte for byte below one stamp into workbench/sessions/checkpoints with mode 0644 and a refused duplicate; token, absolute home path, and email content is refused with the offending line, nothing is written, a symlink source is refused, and the CLI exits 1), the skill catalog and delivery contracts with the twelve skills naming only manifest-resolved paths, the consumer scan now covering skills, and the full 29-command union suite | Rewrote checkpoint; updated grilling, make-it-so, to-docs, genesis, adoption, update-harness, implement, to-spec, to-tickets; added the Session Records And Checkpoints section to AGENTS.md and templates/AGENTS.md and the Session Checkpoints section to RUNBOOK.md; ADR-0028 accepted; register regenerated | Feedback lane and discovery are TK-002; the mechanical round trip is TK-003 |
+| 2026-09-04 | TK-002 | Ticket closed | Red: feedback discovery ignored a lane-only project and the templates still linked a root feedback file. Green: feedback discovery finds workbench/feedback/WORKBENCH_FEEDBACK.md, prefers the manifest lane over a root file, and still accepts legacy root names (6 canonical repos, recurrence 6); the template regression proves the project README and Genesis route feedback to the lane with no root link; adoption relocation was proven in S-023/TK-003; full 29-command union suite | Updated templates/README.md, templates/GENESIS.md, templates/WORKBENCH_FEEDBACK.md, README.md, and the RUNBOOK.md discovery paragraph | The mechanical round trip is TK-003 |
 
 ## Completion Result
 

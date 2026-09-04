@@ -75,6 +75,19 @@ export function parseFeedbackRows(markdown, source) {
   return rows;
 }
 
+// The manifest declares the feedback lane; a project without a readable
+// manifest gets the schema 2 default so lane-first discovery still applies.
+function feedbackLane(repoPath) {
+  try {
+    const manifest = JSON.parse(fs.readFileSync(path.join(repoPath, 'workbench', 'manifest.json'), 'utf8'));
+    const lane = manifest?.lanes?.feedback;
+    if (typeof lane === 'string' && lane.startsWith('workbench/') && !lane.includes('..')) return path.join(repoPath, lane);
+  } catch {
+    // no manifest or unreadable manifest: fall through to the default lane
+  }
+  return path.join(repoPath, 'workbench', 'feedback');
+}
+
 function isFeedbackHeader(cells) {
   return cells.length === 6
     && cells.map(normalize).join('|') === 'date|doc / section|what happened|impact|proposed change|status';
@@ -95,12 +108,15 @@ export function discoverFeedback(projectsRoot) {
     if (EXCLUDED_NAME.test(entry.name)) continue;
     const repoPath = path.join(projectsRoot, entry.name);
     const gitPath = path.join(repoPath, '.git');
-    // Workbench Feedback is the current name (S-008); HARNESS_FEEDBACK.md is
-    // the grandfathered legacy filename downstream projects may still carry.
-    // When both exist, the renamed file wins.
-    const feedbackPath = ['WORKBENCH_FEEDBACK.md', 'HARNESS_FEEDBACK.md']
-      .map((name) => path.join(repoPath, name))
-      .find((candidate) => fs.existsSync(candidate));
+    // A v3.1 project keeps its return channel in the manifest-declared
+    // feedback lane; WORKBENCH_FEEDBACK.md at the root is the v3.0 location
+    // and HARNESS_FEEDBACK.md the grandfathered legacy name. The first
+    // existing candidate wins, lane first.
+    const feedbackPath = [
+      path.join(feedbackLane(repoPath), 'WORKBENCH_FEEDBACK.md'),
+      path.join(repoPath, 'WORKBENCH_FEEDBACK.md'),
+      path.join(repoPath, 'HARNESS_FEEDBACK.md')
+    ].find((candidate) => fs.existsSync(candidate));
     if (!fs.existsSync(gitPath) || !fs.statSync(gitPath).isDirectory() || !feedbackPath) continue;
     const origin = git(repoPath, ['remote', 'get-url', 'origin']);
     const topLevel = git(repoPath, ['rev-parse', '--show-toplevel']);

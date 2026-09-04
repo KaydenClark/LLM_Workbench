@@ -30,9 +30,11 @@ before changing anything:
   live controls above, to flat memory notes, and to the owner-directed
   `design-concepts/` collection; it never duplicates live task state.
 
-- [`WORKBENCH_FEEDBACK.md`](WORKBENCH_FEEDBACK.md) - Workbench Feedback, the return channel to the
-  reusable harness these docs came from: log where the harness rules themselves
-  are unclear, wrong, or slow the work down, so they can be improved upstream.
+- [`workbench/feedback/WORKBENCH_FEEDBACK.md`](workbench/feedback/WORKBENCH_FEEDBACK.md) -
+  Workbench Feedback, the return channel to the reusable harness these docs
+  came from: log where the harness rules themselves are unclear, wrong, or slow
+  the work down, so they can be improved upstream. It lives in the feedback
+  lane so the root keeps exactly seven controls.
 
 If this project was bootstrapped from a single founding prompt, the one-time
 protocol that produced these docs is preserved in [`GENESIS.md`](GENESIS.md).

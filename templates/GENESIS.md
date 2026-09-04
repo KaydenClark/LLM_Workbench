@@ -205,6 +205,11 @@ node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
+Copy `templates/WORKBENCH_FEEDBACK.md` to
+`workbench/feedback/WORKBENCH_FEEDBACK.md` and fill its header; the return
+channel lives in the feedback lane, never at the root, so the root keeps
+exactly seven controls.
+
 Then seed the room brain: `init` already seeded `workbench/wiki/SCHEMA.md`,
 `workbench/wiki/AGENTS.md`, and `workbench/wiki/design-concepts/README.md`;
 copy `templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md`, fill
