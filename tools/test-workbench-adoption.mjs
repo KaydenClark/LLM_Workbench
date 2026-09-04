@@ -123,7 +123,9 @@ function fixtureSpec() {
     const receipt = JSON.parse(read(project, 'workbench/tools/.workbench-tools.json'));
     assert.equal(receipt.source.release, 'v3.0.0', 'adoption installs receipt-backed runtime tools');
     assert.equal(nextWork(project).specId, 'S-101', 'selection must resolve the manifest-declared spec lane');
-    assert.deepEqual(doctor(project), [], 'doctor must resolve and validate the manifest-declared spec lane');
+    assert.deepEqual(doctor(project).filter((issue) => issue.blocks !== 'none'), [], 'doctor must resolve and validate the manifest-declared spec lane');
+    assert.equal(report.doctor, 'passed-with-findings', 'a legacy wiki note without frontmatter is reported, not fatal');
+    assert.ok(report.findings.some((issue) => issue.code === 'invalid-note' && /MEMORY\.md/.test(issue.message)));
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });

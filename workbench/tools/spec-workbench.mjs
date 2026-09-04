@@ -6,8 +6,9 @@ import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, finding } from './diagnostics.mjs';
-import { collectionPath, readManifest } from './workbench-paths.mjs';
+import { collectionPath, lanePath, readManifest } from './workbench-paths.mjs';
 import { validateAdrs } from './adr.mjs';
+import { validateWiki } from './wiki.mjs';
 
 const SPEC_STATUSES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
 const TICKET_STATUSES = new Set(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
@@ -197,11 +198,18 @@ export function doctor(rootDir, options = {}) {
 function collectionFindings(root) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];
+  const findings = [];
   try {
-    return fs.existsSync(collectionPath(root, 'adr')) ? validateAdrs(root) : [];
+    if (fs.existsSync(collectionPath(root, 'adr'))) findings.push(...validateAdrs(root));
   } catch (error) {
-    return [finding('invalid-adr', `ADR validation failed: ${error.message}`)];
+    findings.push(finding('invalid-adr', `ADR validation failed: ${error.message}`));
   }
+  try {
+    if (fs.existsSync(lanePath(root, 'wiki'))) findings.push(...validateWiki(root));
+  } catch (error) {
+    findings.push(finding('invalid-note', `wiki validation failed: ${error.message}`));
+  }
+  return findings;
 }
 
 function loadSpecs(rootDir, options = {}) {

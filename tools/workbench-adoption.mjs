@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { collections, controls, coreSkills, initialize, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
+import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const toolsInstaller = path.join(productRoot, 'tools', 'workbench-tools.mjs');
@@ -173,9 +174,12 @@ function migrate(options) {
       throw new Error(toolsReport?.error?.message ?? (installed.stderr || 'Runtime tools install failed.'));
     }
     render(project);
+    // Only a finding that blocks all or selection makes the migration a
+    // failure; nonblocking findings (a legacy wiki note without frontmatter,
+    // a stale claim) are reported so the adopting agent repairs them next.
     const issues = doctor(project);
-    if (issues.length) throw new Error(`Adoption rendered an invalid project: ${issues.map((issue) => issue.code).join(', ')}.`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, doctor: 'passed' };
+    if (blocksSelection(issues)) throw new Error(`Adoption rendered an invalid project: ${issues.filter((issue) => issue.blocks === 'all' || issue.blocks === 'selection').map((issue) => issue.code).join(', ')}.`);
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, doctor: issues.length ? 'passed-with-findings' : 'passed', findings: issues.map((issue) => ({ code: issue.code, severity: issue.severity, blocks: issue.blocks, message: issue.message })) };
   } catch (error) {
     return { status: 'partial', moved, error: { code: 'migration-failed', message: error.message } };
   }

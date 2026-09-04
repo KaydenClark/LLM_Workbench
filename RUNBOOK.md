@@ -224,7 +224,10 @@ tools into `workbench/tools/`, then renders and validates the manifest-declared
 spec lane. Two root feedback files, or a root file beside a legacy
 `feedback/WORKBENCH_FEEDBACK.md`, block as `feedback-collision` before any
 mutation. An application's root `tools/` directory is never a migration
-source and is left untouched.
+source and is left untouched. The migration fails only on a finding that
+blocks `all` or `selection`; nonblocking findings (for example a legacy wiki
+note without frontmatter) are returned as `findings` with
+`doctor: passed-with-findings` so the adopting agent repairs them next.
 
 ### V3 explicit upgrade and recovery check
 
@@ -295,6 +298,29 @@ target, a superseded record without `superseded_by`, or a duplicated number;
 table. Doctor carries these findings for schema 2 projects; none blocks
 selection, and the `adr validate` command itself exits 1 only on error
 findings.
+
+### Wiki Validation
+
+The wiki lane is validated by its own runtime tool; doctor carries the same
+findings for schema 2 projects, none of which blocks selection:
+
+```bash
+node workbench/tools/wiki.mjs validate
+node tools/test-wiki.mjs
+```
+
+`invalid-note` covers a missing router, a missing required collection, absent
+frontmatter, a retired `authority` property, an enum outside `type`,
+`status`, `sensitivity`, or `knowledge_role`, a non-ISO `last_verified`, an
+absolute or traversing `source_paths` entry, a duplicated note basename, and a
+`design-concepts/` article that lacks `type: design-concept`,
+`authorized_by`, `parent`, or its `Evidence and Sources` and `History`
+sections. `copied-task-state` flags generated-region markers or ticket rows
+copied into a note; `secret-like-content` flags key blocks, tokens,
+credential assignments, absolute home paths, host temp handoff lanes, and
+email addresses in a `normal` note (the shared `workbench/tools/privacy.mjs`
+patterns). `stale-note` is attention only. An Obsidian vault configuration is
+ignored when present and never required.
 
 ### Diagnostics And Blocking Effects
 
