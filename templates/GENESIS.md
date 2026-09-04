@@ -235,8 +235,9 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] `workbench/manifest.json` declares the five support lanes, exact
       12-skill policy, version, and Genesis provenance; the layout validator
-      passes with `--genesis`. When it fails, its JSON `reason` names the
-      failing predicate; fix that predicate rather than the gate.
+      passes with `--genesis`. When it fails, its JSON `message` names the
+      failing control or predicate, and first-spec and generated-region
+      failures add a `reason` field; fix that predicate rather than the gate.
 - [ ] `CLAUDE.md` is exactly `@AGENTS.md`; the gate rejects any other bridge.
 - [ ] A stable first spec under `workbench/specs/` is `active`, carries at
       least one unclaimed `ready` ticket with no blockers and proof

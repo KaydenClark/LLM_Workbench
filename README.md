@@ -117,8 +117,9 @@ docs look like. Copy from `templates/`, not from the root.
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
 
-For Claude Code, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
-`/init` in the target repo, so these rules load automatically.
+For Claude Code, add a one-line `CLAUDE.md` containing exactly `@AGENTS.md` so
+these rules load automatically. A Genesis project must keep that exact bridge:
+`validate --genesis` rejects a generated `/init` file or any added line.
 
 ### One-Prompt Bootstrap
 

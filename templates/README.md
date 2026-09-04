@@ -57,9 +57,10 @@ Claude, or any other agent that reads repository instructions - no framework or
 preprocessing required.
 
 For **Claude Code**, keep the one-line `CLAUDE.md` containing exactly
-`@AGENTS.md` so the rules load automatically; a Genesis or Adoption readiness
-check rejects any other bridge, so do not replace it with a generated `/init`
-file. Other agents should be pointed at `AGENTS.md` as their entry point.
+`@AGENTS.md` so the rules load automatically; the Genesis readiness gate
+(`validate --genesis`) rejects any other bridge, so do not replace it with a
+generated `/init` file. Other agents should be pointed at `AGENTS.md` as their
+entry point.
 
 Every completed ticket must leave proof in its final response and owning spec's
 append-only evidence log. Milestone specs additionally require a short demo
