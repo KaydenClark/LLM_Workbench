@@ -311,6 +311,24 @@ function validateFirstSpec(project, expectedVersion) {
   return null;
 }
 
+// Readiness also needs the Workbench-managed runtime tools: an installed lane
+// whose receipt names the same release as the manifest.
+function validateGenesisRuntime(project, expectedVersion) {
+  const receiptPath = path.join(project, lanes.tools, '.workbench-tools.json');
+  const receiptEntry = lstatOrNull(receiptPath);
+  if (!receiptEntry?.isFile() || receiptEntry.isSymbolicLink()) {
+    return fail('tools-receipt-missing', `${lanes.tools} must carry the Workbench tools receipt; run workbench-tools.mjs install from the release checkout.`, { control: lanes.tools });
+  }
+  let receipt;
+  try { receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8')); } catch (error) {
+    return fail('tools-receipt-missing', `${lanes.tools}/.workbench-tools.json is unreadable: ${error.message}`, { control: lanes.tools });
+  }
+  if (receipt.source?.release !== expectedVersion) {
+    return fail('version-mismatch', `Tools receipt release ${receipt.source?.release} must match manifest Workbench version ${expectedVersion}.`, { control: lanes.tools, reason: 'runtime tools receipt release differs from the manifest' });
+  }
+  return null;
+}
+
 export function validate(options, requireGenesis) {
   const project = path.resolve(options['--project']);
   const result = validateManifest(project);
@@ -321,6 +339,8 @@ export function validate(options, requireGenesis) {
   }
   const specIssue = validateFirstSpec(project, result.manifest.workbenchVersion);
   if (specIssue) return specIssue;
+  const runtimeIssue = validateGenesisRuntime(project, result.manifest.workbenchVersion);
+  if (runtimeIssue) return runtimeIssue;
   if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'Genesis must not create a project-local skills directory.');
   return report('valid', { manifest: result.manifest, controls });
 }

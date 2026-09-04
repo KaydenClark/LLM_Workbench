@@ -137,7 +137,9 @@ exact Workbench version stamps on the six stamped controls (the thin
 `CLAUDE.md` remains exactly `@AGENTS.md`), the generated-region markers in
 `BLUEPRINT.md` and `TASKBOARD.md` that `render` fills, one actionable
 version-matched first spec at a stable `workbench/specs/S-###-slug/SPEC.md`
-path, and no project-local `skills/` directory. It fails closed on symlinks,
+path, an installed `workbench/tools/` lane whose receipt names the manifest's
+release (`tools-receipt-missing` or `version-mismatch` otherwise), and no
+project-local `skills/` directory. It fails closed on symlinks,
 template placeholders, stubs, version drift, unstable spec paths, or
 structurally incomplete first specs. A rejected first spec carries a `reason`
 field naming the failing predicate (status, priority, ready ticket, sections,

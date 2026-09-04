@@ -28,7 +28,8 @@ Stop and surface committed secrets, credentials, or tokens.
 
 ## Edit Scope
 
-- Writable: `[WRITABLE_ROOTS]`, root controls, and `workbench/specs/`
+- Writable: `[WRITABLE_ROOTS]`, root controls, and the `workbench/` support
+  lanes (`workbench/tools/` only through the explicit Workbench update)
 - Forbidden: `[FORBIDDEN_PATHS]`
 - Review required: `[REQUIRES_REVIEW_FOR]`
 

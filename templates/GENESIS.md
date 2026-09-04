@@ -250,6 +250,10 @@ Do not call bootstrap done on vibes. All of the following must hold:
       failing control or predicate, and first-spec and generated-region
       failures add a `reason` field; fix that predicate rather than the gate.
 - [ ] `CLAUDE.md` is exactly `@AGENTS.md`; the gate rejects any other bridge.
+- [ ] `workbench/tools/` holds the installed runtime tools and their receipt
+      (`.workbench-tools.json`) whose source release matches the manifest;
+      `workbench/sessions/.gitignore` keeps live records untracked; and
+      `workbench/wiki/design-concepts/` exists even if empty.
 - [ ] A stable first spec under `workbench/specs/` is `active`, carries at
       least one unclaimed `ready` ticket with no blockers and proof
       requirements, keeps at least one unchecked acceptance box, and `render`

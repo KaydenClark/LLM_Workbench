@@ -279,6 +279,12 @@ To upgrade:
 3. Update each doc's version stamp to the new version.
 4. Re-run the full verification suite and record the upgrade in its owning spec.
 
+The runtime tools in `workbench/tools/` are Workbench-managed: their receipt
+(`.workbench-tools.json`) records the exact source release, commit, and file
+hashes. Verify them with `node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs verify --project .`
+and replace them only through `update --explicit-update`, which backs up the
+previous files and records a rollback path. Never hand-edit a managed tool.
+
 Treat a harness upgrade like any other change: smallest correct diff, verified,
 with proof. If a downstream lesson should flow *back* to the harness, capture it
 per the project's `WORKBENCH_FEEDBACK` convention.

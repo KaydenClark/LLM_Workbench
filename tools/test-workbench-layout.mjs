@@ -13,6 +13,7 @@ import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const runtime = path.join(root, 'workbench', 'tools');
 const tool = path.join(runtime, 'workbench-layout.mjs');
+const installer = path.join(root, 'tools', 'workbench-tools.mjs');
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 
 function fixture() {
@@ -37,7 +38,13 @@ const generatedRegions = {
   'TASKBOARD.md': '## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
 };
 
-function completeGenesis(project) {
+function installTools(project) {
+  const result = spawnSync(process.execPath, [installer, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+}
+
+function completeGenesis(project, options = {}) {
+  if (options.tools !== false) installTools(project);
   for (const control of controls) {
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
@@ -429,6 +436,32 @@ test('Genesis validation rejects unstable and structurally incomplete first spec
     } finally {
       fs.rmSync(project, { recursive: true, force: true });
     }
+  }
+});
+
+test('Genesis readiness requires a version-matched runtime tools receipt', () => {
+  const missing = fixture();
+  const mismatched = fixture();
+  try {
+    assert.equal(run('init', '--project', missing, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    completeGenesis(missing, { tools: false });
+    const withoutReceipt = run('validate', '--project', missing, '--genesis');
+    assert.notEqual(withoutReceipt.status, 0);
+    assert.equal(withoutReceipt.report.error.code, 'tools-receipt-missing');
+    assert.equal(run('validate', '--project', missing).report.status, 'valid', 'plain validation does not require the receipt');
+
+    assert.equal(run('init', '--project', mismatched, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+    completeGenesis(mismatched);
+    const receiptPath = path.join(mismatched, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    receipt.source.release = 'v2.3.0';
+    fs.writeFileSync(receiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
+    const drifted = run('validate', '--project', mismatched, '--genesis');
+    assert.equal(drifted.report.error.code, 'version-mismatch');
+    assert.match(drifted.report.error.message, /receipt/);
+  } finally {
+    fs.rmSync(missing, { recursive: true, force: true });
+    fs.rmSync(mismatched, { recursive: true, force: true });
   }
 });
 
