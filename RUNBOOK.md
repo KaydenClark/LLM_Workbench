@@ -67,6 +67,7 @@ node tools/test-workbench-tools.mjs
 node tools/test-diagnostics.mjs
 node tools/test-adr.mjs
 node tools/test-governance-core.mjs
+node tools/test-wiki.mjs
 node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
@@ -134,6 +135,14 @@ node workbench/tools/workbench-layout.mjs migrate --project /absolute/project
 
 Every consumer resolves lanes and collections through
 `workbench/tools/workbench-paths.mjs`; nothing hardcodes a support path.
+
+`init` also seeds the wiki contract (`SCHEMA.md`, `AGENTS.md`, and
+`design-concepts/README.md`) into `workbench/wiki/` from `templates/wiki/`
+when it runs from a release checkout, filling the version, date, and project
+name (`--name`, `--date`, `--wiki-profile project|deployment`); a downstream
+copy of the tool reports `seeded.wiki: false` truthfully. The Genesis
+readiness gate requires the filled `workbench/wiki/MEMORY.md` router and those
+three files with no template placeholder.
 
 `validate --genesis` additionally requires seven ordinary, filled root controls,
 exact Workbench version stamps on the six stamped controls (the thin

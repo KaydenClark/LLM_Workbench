@@ -205,12 +205,14 @@ node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
-Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to
-`workbench/wiki/MEMORY.md`, fill its placeholders, and link it to the live
-controls just created. If this room lives inside a larger deployment vault, set
-the up-link to the deployment wiki's note for this room. See
-`templates/Wiki/README.md` for the link conventions. A room is not bootstrapped
-without a brain.
+Then seed the room brain: `init` already seeded `workbench/wiki/SCHEMA.md`,
+`workbench/wiki/AGENTS.md`, and `workbench/wiki/design-concepts/README.md`;
+copy `templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md`, fill
+its placeholders, and link it to the live controls just created. If this room
+lives inside a larger deployment, set the up-link to the deployment wiki's
+note for this room. See `templates/wiki/README.md` for the link conventions.
+The readiness gate requires the filled router and contract files; a room is
+not bootstrapped without a brain.
 
 Output: one durable capability record, declared support lanes, a hot projection
 the normal work loop can pick up immediately, and a manifest-routed room brain.
@@ -258,8 +260,9 @@ Do not call bootstrap done on vibes. All of the following must hold:
       least one unclaimed `ready` ticket with no blockers and proof
       requirements, keeps at least one unchecked acceptance box, and `render`
       plus `doctor` pass on the result.
-- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/Wiki/`),
-      routes to the live controls, and has no unfilled placeholders.
+- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),
+      routes to the live controls, and has no unfilled placeholders; the seeded
+      `SCHEMA.md`, `AGENTS.md`, and `design-concepts/README.md` sit beside it.
 - [ ] The first spec evidence row records that Genesis ran, with the actual result.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box

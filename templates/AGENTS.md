@@ -111,7 +111,7 @@ Documentation is part of done; the implementing agent is documentation owner.
 | requirements, acceptance, decisions, evidence, completion | assigned `SPEC.md` |
 | commands and troubleshooting | `RUNBOOK.md` |
 | public usage | `README.md` |
-| durable room memory and routing to it | `MEMORY.md` room brain |
+| durable room memory, design-concept articles, and routing to them | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules) |
 
 Use `Docs checked; no update needed` with a reason when appropriate. The final response proof states what changed, why, risks, and verification. Append spec
 evidence; never duplicate completed proof in the Taskboard.

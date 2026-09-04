@@ -182,16 +182,17 @@ slices in their implementation tables, preserve completed history in the owning
 spec or a cold archive, and render `TASKBOARD.md` from active spec metadata. Add
 an evidence row recording that Adoption ran and what moved where.
 
-Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to the
-project root as `MEMORY.md`, fill its placeholders, route any durable memory
-notes that survived classification, and link the live controls. If this room
-lives inside a larger deployment vault, set the up-link to the deployment
-wiki's note for this room (see `templates/Wiki/README.md` for link
-conventions).
+Then seed the room brain: after Phase 7's migration, copy
+`templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md` (a legacy
+root `MEMORY.md` is moved there by the migration; reconcile it with the
+template), fill its placeholders, route any durable memory notes that survived
+classification, and link the live controls. If this room lives inside a larger
+deployment, set the up-link to the deployment wiki's note for this room (see
+`templates/wiki/README.md` for link conventions).
 
 Output: stable capability records plus a hot projection that reflects the
-project's actual state and the migration, and a `MEMORY.md` room brain that
-routes to them.
+project's actual state and the migration, and a `workbench/wiki/MEMORY.md`
+room brain that routes to them.
 
 ### Phase 7 - Migrate the durable support root, retire the old layout, and hand off
 
@@ -261,7 +262,7 @@ than a competing rulebook.
 - [ ] Stable specs contain the project's actual in-flight and ready work;
       `TASKBOARD.md` projects only the hot state and contains no completed proof
       archive.
-- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/Wiki/`),
+- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),
       routes to the live controls, and has no unfilled placeholders.
 - [ ] The owning spec records the source remote, ref, resolved commit, executed
       self-tests, and any applicable vendored-helper checksum; the project's

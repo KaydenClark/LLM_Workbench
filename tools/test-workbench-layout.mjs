@@ -45,6 +45,10 @@ function installTools(project) {
 
 function completeGenesis(project, options = {}) {
   if (options.tools !== false) installTools(project);
+  const router = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
+    .replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', '3.0.0').replaceAll('[YYYY-MM-DD]', '2026-09-01')
+    .replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, '');
+  fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), router);
   for (const control of controls) {
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
@@ -99,7 +103,7 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
       `${relative} contains root specs authority outside the one bounded Adoption migration source`);
   }
   assert.match(fs.readFileSync(adoptionPath, 'utf8'), /The migration moves[\s\S]{0,200}`specs\/`[\s\S]{0,200}manifest-declared lanes/);
-  for (const relative of ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('Wiki', 'MEMORY.project.md')]) {
+  for (const relative of ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
     assert.match(fs.readFileSync(path.join(templateRoot, relative), 'utf8'), /workbench\/specs\//, `${relative} does not name the manifest-default spec lane`);
   }
 });

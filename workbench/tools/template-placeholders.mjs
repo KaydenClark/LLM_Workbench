@@ -5,7 +5,8 @@ export const genesisTemplateFiles = [
   'RUNBOOK.md',
   'TASKBOARD.md',
   'README.md',
-  'SPEC.md'
+  'SPEC.md',
+  'wiki/MEMORY.project.md'
 ];
 
 export const templatePlaceholders = [
@@ -13,6 +14,7 @@ export const templatePlaceholders = [
   '[0-9]',
   '[A / B]',
   '[ABSOLUTE_PROJECT_PATH]',
+  '[ANOTHER DURABLE QUESTION]',
   '[Architecture decision future specs must preserve]',
   '[BACKUP_OR_RESTORE_COMMAND]',
   '[BASELINE_TEST_COMMAND]',
@@ -59,6 +61,7 @@ export const templatePlaceholders = [
   '[PROJECT_NAME]',
   '[Pillar]',
   '[Privacy/safety boundary]',
+  "[QUESTION THIS ROOM'S MEMORY ANSWERS]",
   '[READABLE_ROOTS]',
   '[REQUIRES_REVIEW_FOR]',
   '[RUN COMMAND]',

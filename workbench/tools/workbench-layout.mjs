@@ -326,6 +326,12 @@ function validateGenesisRuntime(project, expectedVersion) {
   if (receipt.source?.release !== expectedVersion) {
     return fail('version-mismatch', `Tools receipt release ${receipt.source?.release} must match manifest Workbench version ${expectedVersion}.`, { control: lanes.tools, reason: 'runtime tools receipt release differs from the manifest' });
   }
+  for (const relative of ['MEMORY.md', ...wikiContractFiles]) {
+    const control = `${lanes.wiki}/${relative}`;
+    const entry = lstatOrNull(path.join(project, lanes.wiki, relative));
+    if (!entry?.isFile() || entry.isSymbolicLink()) return fail('unfilled-control', `${control} must exist as an ordinary file; copy the wiki router and contract from the release templates.`, { control });
+    if (containsPlaceholder(fs.readFileSync(path.join(project, lanes.wiki, relative), 'utf8'))) return fail('unfilled-control', `${control} must contain no template placeholders.`, { control });
+  }
   return null;
 }
 

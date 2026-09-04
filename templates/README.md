@@ -25,9 +25,10 @@ before changing anything:
   acceptance, decisions, verification, append-only evidence, and completion.
 - [`RUNBOOK.md`](RUNBOOK.md) - how to set up, run, test, build, and recover this
   project, plus the verification commands that gate "done".
-- [`MEMORY.md`](MEMORY.md) - the room brain: canonical, human-editable durable
-  memory for this project. It routes to the live controls above and to flat
-  memory notes; it never duplicates live task state.
+- [`workbench/wiki/MEMORY.md`](workbench/wiki/MEMORY.md) - the room brain:
+  canonical, human-editable durable memory for this project. It routes to the
+  live controls above, to flat memory notes, and to the owner-directed
+  `design-concepts/` collection; it never duplicates live task state.
 
 - [`WORKBENCH_FEEDBACK.md`](WORKBENCH_FEEDBACK.md) - Workbench Feedback, the return channel to the
   reusable harness these docs came from: log where the harness rules themselves
