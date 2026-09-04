@@ -216,3 +216,20 @@ test('design-concept articles need the owner-directed shape and stale notes are 
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
+
+test('the product wiki adopts the contract and both Lexicons route design questions to the collection', () => {
+  for (const relative of ['MEMORY.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md']) {
+    const file = path.join(root, 'workbench', 'wiki', relative);
+    assert.equal(fs.existsSync(file), true, `workbench/wiki/${relative} must exist in the product`);
+    assert.deepEqual(placeholders(fs.readFileSync(file, 'utf8')), [], `workbench/wiki/${relative} must carry no template placeholder`);
+  }
+  const router = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'MEMORY.md'), 'utf8');
+  assert.match(router, /^---\ntype: memory\n/, 'the product router carries frontmatter');
+  assert.match(router, /design-concepts/, 'the product router routes to the collection');
+  const findings = validateWiki(root);
+  assert.deepEqual(findings.filter((item) => item.severity === 'error'), [], 'the product wiki validates without error findings');
+  assert.equal(fs.readdirSync(path.join(root, 'workbench', 'wiki', 'design-concepts')).filter((name) => !name.startsWith('.') && name !== 'README.md').length, 0, 'the product ships an empty design-concepts collection: agents do not author articles');
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    assert.match(fs.readFileSync(path.join(root, relative), 'utf8'), /workbench\/wiki\/design-concepts\//, `${relative} routes design questions to the collection`);
+  }
+});

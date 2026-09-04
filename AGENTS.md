@@ -154,6 +154,8 @@ owner. Route each truth once:
 | requirements, decisions, acceptance, evidence, completion | assigned `SPEC.md` |
 | commands and troubleshooting | `RUNBOOK.md` |
 | public setup and usage | `README.md` |
+| decision rationale, alternatives, supersession | `workbench/docs/adr/` (rule binds only where `canonicalized_in` points) |
+| durable knowledge and owner-directed design-concept articles | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; never copied task state) |
 
 If no docs change, record `Docs checked; no update needed` with the reason in
 the spec evidence. Final response proof must state: what changed, why, risks or

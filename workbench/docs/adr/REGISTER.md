@@ -19,7 +19,7 @@
 | [0027](0027-instruction-authority-is-separate-from-state-resolution.md) | Instruction authority is separate from state resolution | accepted | 2026-09-04 | AGENTS.md |
 | [0028](0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md) | Live session records stay untracked; durable references target promoted checkpoints | proposed | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [0029](0029-diagnostics-carry-registered-blocking-semantics.md) | Diagnostic codes carry registered blocking semantics that consumers enforce | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
-| [0030](0030-every-workbench-declares-a-design-concepts-collection.md) | Every Workbench declares a design-concepts collection of owner-directed articles | proposed | 2026-09-04 | LEXICON.md, AGENTS.md |
+| [0030](0030-every-workbench-declares-a-design-concepts-collection.md) | Every Workbench declares a design-concepts collection of owner-directed articles | accepted | 2026-09-04 | LEXICON.md, AGENTS.md |
 | [0031](0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md) | Portable runtime tools are Workbench-managed in the tools lane; root tools stay application-owned | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0032](0032-manifest-schema-2-declares-lanes-and-collections.md) | Manifest schema 2 declares six lanes and every machine-used collection | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0033](0033-workbench-contract-is-a-claim-set.md) | The Workbench Contract is a claim set carried by the seven controls and the assigned spec | accepted | 2026-09-04 | LEXICON.md, BLUEPRINT.md |

@@ -31,6 +31,11 @@ could be ambiguous.
 
 ## Governance Core
 
+Design-concept routing: a question about what a product, subsystem, or
+relationship *is* starts here, then follows the term to the owner-directed
+articles in `workbench/wiki/design-concepts/`; the Blueprint and the assigned
+spec still decide when a requirement or verified Actuality matters.
+
 Shared by every Workbench. These rows describe roles and boundaries; the
 binding behavior lives in `AGENTS.md`, cross-cutting architecture in
 `BLUEPRINT.md`, and rationale in the project's `workbench/docs/adr/` collection.
