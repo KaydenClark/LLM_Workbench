@@ -104,13 +104,32 @@ Git-owned or a required skill path collides with a file or symlink.
 ### V3 support-root check
 
 Genesis uses the bounded layout helper to create and validate its declared
-support lanes. Exercise it from a disposable project directory:
+support root. Schema 2 declares six lowercase lanes (`docs`, `specs`, `wiki`,
+`sessions`, `feedback`, `tools`) and seven collections (`docs/adr`,
+`wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
+`sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`), the wiki
+profile, and the exact source release and commit. `workbench/sessions/.gitignore`
+keeps `grilling/` and `handoffs/` untracked; only `checkpoints/` is durable.
+Exercise it from a disposable project directory:
 
 ```bash
 node tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.0.0
 node tools/workbench-layout.mjs validate --project /tmp/workbench-project
 node tools/test-workbench-layout.mjs
 ```
+
+A schema 1 (v3.0 five-lane) manifest validates as `upgrade-required`. Migrate
+it once, losslessly: `workbench/grilling` becomes `workbench/sessions/grilling`
+and the tracked `workbench/handoffs` checkpoints become
+`workbench/sessions/checkpoints`; the new lanes and collections are created
+empty. A second run reports `current`.
+
+```bash
+node tools/workbench-layout.mjs migrate --project /absolute/project
+```
+
+Every consumer resolves lanes and collections through
+`tools/workbench-paths.mjs`; nothing hardcodes a support path.
 
 `validate --genesis` additionally requires seven ordinary, filled root controls,
 exact Workbench version stamps on the six stamped controls (the thin
@@ -154,9 +173,13 @@ node tools/spec-workbench.mjs doctor
 ```
 
 The command refuses an existing support root or any legacy collision before
-mutation. It moves only documented durable lanes, preserves project-local
-skills as an explicit handoff recovery record after user-scoped core readiness,
-then renders and validates the manifest-declared spec lane.
+mutation. It moves only documented durable lanes into their schema 2
+destinations (legacy `grilling diary/` into the untracked grilling collection,
+legacy `handoffs/` into the tracked checkpoints collection), preserves
+project-local skills under `workbench/sessions/checkpoints/adoption-legacy-skills/`
+after user-scoped core readiness, writes
+`workbench/sessions/checkpoints/adoption-recovery.json`, then renders and
+validates the manifest-declared spec lane.
 
 ### V3 explicit upgrade and recovery check
 
@@ -178,7 +201,7 @@ worktree, a missing committed Git recovery point, or a pre-existing v3 support
 root before mutation. For each changed managed skill it creates a copy under
 the user home's `.workbench-upgrade-backup-*` directory, migrates the legacy
 support lanes once, and records the pre-migration SHA and tracked path inventory
-in `workbench/handoffs/upgrade-recovery.json`. The target project must be clean
+in `workbench/sessions/checkpoints/upgrade-recovery.json`. The target project must be clean
 and committed first; uncommitted state has no concrete rollback point.
 
 ### Spec Lifecycle And Retrieval

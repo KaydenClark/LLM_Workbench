@@ -1,63 +1,54 @@
 #!/usr/bin/env node
+// Manifest schema 2 layout: six lanes, seven collections, untracked-by-default
+// session records, and the Genesis readiness gate. A schema 1 manifest is
+// reported as `upgrade-required` and migrated once, losslessly.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
+import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, isSafeRelative } from './workbench-paths.mjs';
 
 export const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
-export const lanes = {
-  specs: 'workbench/specs',
-  wiki: 'workbench/wiki',
-  grilling: 'workbench/grilling',
-  handoffs: 'workbench/handoffs',
-  feedback: 'workbench/feedback'
-};
+export const lanes = LANES;
+export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
-// The two projection controls must keep the regions spec-workbench renders;
-// without them doctor reports broken-render-target on an otherwise valid
-// Genesis project.
+export const SESSIONS_IGNORE = `# Live session records stay local; only checkpoints/ is durable evidence.\ngrilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n`;
+const legacyLanes = { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' };
+const skillPolicy = { required: coreSkills, discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' };
+// The two projection controls must keep the regions spec-workbench renders.
 const generatedRegions = {
   'BLUEPRINT.md': ['<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'],
   'TASKBOARD.md': ['<!-- hot-specs:start -->', '<!-- hot-specs:end -->']
 };
 const templateVocabulary = new Set(templatePlaceholders);
+const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
 
 function lstatOrNull(target) {
-  try {
-    return fs.lstatSync(target);
-  } catch (error) {
+  try { return fs.lstatSync(target); } catch (error) {
     if (error.code === 'ENOENT') return null;
     throw error;
   }
 }
 
-function report(status, details = {}) {
-  return { status, ...details };
-}
+function report(status, details = {}) { return { status, ...details }; }
+function fail(code, message, details = {}) { return report('invalid', { error: { code, message, ...details } }); }
 
-function fail(code, message, details = {}) {
-  return report('invalid', { error: { code, message, ...details } });
-}
-
-function parseOptions(args, required) {
+function parseOptions(args, required, flags = []) {
   const options = {};
-  for (let index = 0; index < args.length; index += 2) {
+  for (let index = 0; index < args.length;) {
     const key = args[index];
+    if (flags.includes(key)) { options[key] = true; index += 1; continue; }
     const value = args[index + 1];
     if (!key?.startsWith('--') || !value || options[key]) throw new Error('Invalid arguments.');
     options[key] = value;
+    index += 2;
   }
   for (const key of required) if (!options[key]) throw new Error(`Missing ${key}.`);
   return options;
-}
-
-function isSafeRelative(value) {
-  return typeof value === 'string' && !path.isAbsolute(value) && value === path.posix.normalize(value)
-    && !value.split('/').includes('..') && value.startsWith('workbench/');
 }
 
 function containsPlaceholder(content) {
@@ -71,67 +62,238 @@ function versionStamp(content) {
   return content.match(/(?:Generated from|Part of) LLM Workbench (v\d+\.\d+\.\d+)/)?.[1] ?? null;
 }
 
+function readManifestFile(project) {
+  const manifestPath = path.join(project, 'workbench', 'manifest.json');
+  try {
+    return { manifest: JSON.parse(fs.readFileSync(manifestPath, 'utf8')), manifestPath };
+  } catch (error) {
+    return { failure: fail('invalid-manifest', `Cannot read ${manifestPath}: ${error.message}`) };
+  }
+}
+
+function ordinaryDirectory(project, relative) {
+  const entry = lstatOrNull(path.join(project, relative));
+  return Boolean(entry) && !entry.isSymbolicLink() && entry.isDirectory();
+}
+
+export function validateManifest(project) {
+  const { manifest, failure } = readManifestFile(project);
+  if (failure) return failure;
+  if (manifest.schemaVersion === 1) {
+    return fail('upgrade-required', 'Manifest schema 1 is the v3.0 five-lane layout; run workbench-layout.mjs migrate --project PATH once.', { schemaVersion: 1 });
+  }
+  if (manifest.schemaVersion !== SCHEMA_VERSION || !/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) {
+    return fail('invalid-manifest', 'Manifest schemaVersion or workbenchVersion is invalid.');
+  }
+  if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance?.lifecycle)) {
+    return fail('invalid-manifest', 'Manifest provenance.lifecycle is invalid.');
+  }
+  if (JSON.stringify(manifest.lanes) !== JSON.stringify(lanes)) {
+    return fail('invalid-lane', 'Manifest lanes must exactly match the six v3.1 support lanes.', { lanes: manifest.lanes });
+  }
+  if (JSON.stringify(manifest.collections) !== JSON.stringify(collections)) {
+    return fail('invalid-collection', 'Manifest collections must exactly match the seven v3.1 collections.', { collections: manifest.collections });
+  }
+  for (const lane of Object.values(manifest.lanes)) {
+    if (!isSafeRelative(lane)) return fail('invalid-lane', `Manifest lane ${lane} is unsafe.`);
+    if (!ordinaryDirectory(project, lane)) return fail('unsafe-lane', `Manifest lane ${lane} must be an ordinary directory.`);
+  }
+  for (const collection of Object.values(manifest.collections)) {
+    if (!isSafeRelative(collection)) return fail('invalid-collection', `Manifest collection ${collection} is unsafe.`);
+    if (!ordinaryDirectory(project, collection)) return fail('missing-collection', `Manifest collection ${collection} must be an ordinary directory; it may be empty.`);
+  }
+  const ignore = path.join(project, lanes.sessions, '.gitignore');
+  const ignoreEntry = lstatOrNull(ignore);
+  if (!ignoreEntry?.isFile() || ignoreEntry.isSymbolicLink()) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must keep live session records untracked.`);
+  const ignoreContent = fs.readFileSync(ignore, 'utf8');
+  for (const name of UNTRACKED_COLLECTIONS) {
+    if (!new RegExp(`^${name}/\\*?$`, 'm').test(ignoreContent)) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must ignore ${name}/.`, { collection: name });
+  }
+  if (!WIKI_PROFILES.includes(manifest.wiki?.profile)) return fail('invalid-wiki-profile', `Manifest wiki.profile must be one of ${WIKI_PROFILES.join(', ')}.`);
+  if (JSON.stringify(manifest.skillPolicy) !== JSON.stringify(skillPolicy)) {
+    return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
+  }
+  return report('valid', { manifest });
+}
+
+function templateRoot() {
+  // The product checkout keeps copy-ready templates near the tools; a
+  // downstream project carries none, so seeding is reported truthfully.
+  let current = path.dirname(fileURLToPath(import.meta.url));
+  for (let depth = 0; depth < 3; depth += 1) {
+    current = path.dirname(current);
+    const candidate = path.join(current, 'templates');
+    if (fs.existsSync(path.join(candidate, 'wiki', 'SCHEMA.md'))) return candidate;
+  }
+  return null;
+}
+
+function fillTemplate(content, values) {
+  let result = content;
+  for (const [placeholder, value] of Object.entries(values)) result = result.replaceAll(placeholder, value);
+  return result;
+}
+
+export function initialize(options) {
+  const project = path.resolve(options['--project']);
+  const manifestPath = path.join(project, 'workbench', 'manifest.json');
+  if (fs.existsSync(manifestPath)) return fail('manifest-exists', `${manifestPath} already exists.`);
+  const projectEntry = lstatOrNull(project);
+  if (!projectEntry || projectEntry.isSymbolicLink() || !projectEntry.isDirectory()) {
+    return fail('invalid-project', `${project} must be an existing project directory.`);
+  }
+  const shape = validateManifestShape({ workbenchVersion: options['--version'], provenance: { lifecycle: options['--provenance'] }, wiki: { profile: options['--wiki-profile'] ?? 'project' } });
+  if (shape) return shape;
+  for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
+    const entry = lstatOrNull(path.join(project, relative));
+    if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${path.join(project, relative)} is not a directory.`);
+  }
+  const manifest = {
+    schemaVersion: SCHEMA_VERSION,
+    workbenchVersion: options['--version'],
+    provenance: { lifecycle: options['--provenance'], source: sourceIdentity(options) },
+    lanes,
+    collections,
+    wiki: { profile: options['--wiki-profile'] ?? 'project' },
+    skillPolicy
+  };
+  for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
+    const target = path.join(project, relative);
+    fs.mkdirSync(target, { recursive: true });
+    if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
+  }
+  fs.writeFileSync(path.join(project, lanes.sessions, '.gitignore'), SESSIONS_IGNORE);
+  const seeded = seedWiki(project, options);
+  fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  return report('initialized', { manifestPath, manifest, seeded });
+}
+
+function sourceIdentity(options) {
+  return {
+    repository: options['--source-repository'] ?? 'https://github.com/KaydenClark/LLM_Workbench',
+    release: options['--version'],
+    commit: options['--source-commit'] ?? 'unrecorded'
+  };
+}
+
+function seedWiki(project, options) {
+  const templates = templateRoot();
+  if (!templates) return { wiki: false, reason: 'no copy-ready templates beside this tool; seed the wiki contract from the Workbench release' };
+  const values = {
+    '[HARNESS_VERSION]': options['--version'].replace(/^v/, ''),
+    '[YYYY-MM-DD]': options['--date'] ?? new Date().toISOString().slice(0, 10),
+    '[PROJECT_NAME]': options['--name'] ?? path.basename(project)
+  };
+  const written = [];
+  for (const relative of wikiContractFiles) {
+    const destination = path.join(project, lanes.wiki, relative);
+    if (lstatOrNull(destination)) continue;
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.writeFileSync(destination, fillTemplate(fs.readFileSync(path.join(templates, 'wiki', relative), 'utf8'), values));
+    written.push(`${lanes.wiki}/${relative}`);
+  }
+  return { wiki: true, written };
+}
+
+function validateManifestShape(manifest) {
+  if (!/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) return fail('invalid-version', 'Workbench version must use vMAJOR.MINOR.PATCH.');
+  if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance.lifecycle)) return fail('invalid-provenance', 'Provenance must be genesis, adoption, or upgrade.');
+  if (!WIKI_PROFILES.includes(manifest.wiki.profile)) return fail('invalid-wiki-profile', `Wiki profile must be one of ${WIKI_PROFILES.join(', ')}.`);
+  return null;
+}
+
+// Lossless schema 1 -> 2 migration: the five-lane layout renames its
+// grilling lane into sessions, its tracked handoffs checkpoints into
+// sessions/checkpoints, and gains docs, tools, and the seven collections.
+export function migrate(options) {
+  const project = path.resolve(options['--project']);
+  const { manifest, manifestPath, failure } = readManifestFile(project);
+  if (failure) return failure;
+  if (manifest.schemaVersion === SCHEMA_VERSION) return report('current', { manifestPath, manifest });
+  if (manifest.schemaVersion !== 1) return fail('invalid-manifest', 'Only schema 1 manifests can be migrated.');
+  if (JSON.stringify(manifest.lanes) !== JSON.stringify(legacyLanes)) return fail('invalid-lane', 'Schema 1 lanes are not the v3.0 layout; reconcile them before migrating.');
+  const moves = [
+    { from: legacyLanes.grilling, to: collections.grilling },
+    { from: legacyLanes.handoffs, to: collections.checkpoints }
+  ];
+  for (const move of moves) {
+    if (lstatOrNull(path.join(project, move.to))) return fail('lane-collision', `${move.to} already exists; migration must not overwrite it.`);
+  }
+  for (const relative of [lanes.docs, lanes.tools, lanes.sessions]) {
+    const entry = lstatOrNull(path.join(project, relative));
+    if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${relative} is not a directory.`);
+  }
+  const moved = [];
+  fs.mkdirSync(path.join(project, lanes.sessions), { recursive: true });
+  for (const move of moves) {
+    const source = path.join(project, move.from);
+    if (!lstatOrNull(source)) continue;
+    fs.renameSync(source, path.join(project, move.to));
+    moved.push(move);
+  }
+  for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
+    const target = path.join(project, relative);
+    fs.mkdirSync(target, { recursive: true });
+    if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
+  }
+  fs.writeFileSync(path.join(project, lanes.sessions, '.gitignore'), SESSIONS_IGNORE);
+  const migrated = {
+    schemaVersion: SCHEMA_VERSION,
+    workbenchVersion: options['--version'] ?? manifest.workbenchVersion,
+    provenance: { ...manifest.provenance, migratedFrom: 1, source: sourceIdentity({ '--version': options['--version'] ?? manifest.workbenchVersion, ...options }) },
+    lanes,
+    collections,
+    wiki: { profile: options['--wiki-profile'] ?? 'project' },
+    skillPolicy
+  };
+  const temporary = `${manifestPath}.tmp-${process.pid}`;
+  fs.writeFileSync(temporary, `${JSON.stringify(migrated, null, 2)}\n`);
+  fs.renameSync(temporary, manifestPath);
+  const seeded = seedWiki(project, { '--version': migrated.workbenchVersion, ...options });
+  const validation = validateManifest(project);
+  if (validation.status !== 'valid') return report('partial', { moved, error: validation.error });
+  return report('migrated', { manifestPath, manifest: migrated, moved, seeded });
+}
+
 function validateGenesisControl(project, control, expectedVersion) {
   const target = path.join(project, control);
   const entry = lstatOrNull(target);
-  if (!entry || entry.isSymbolicLink() || !entry.isFile()) {
-    return fail('unsafe-control', `${control} must be an ordinary file.`, { control });
-  }
+  if (!entry || entry.isSymbolicLink() || !entry.isFile()) return fail('unsafe-control', `${control} must be an ordinary file.`, { control });
   const content = fs.readFileSync(target, 'utf8');
   const trimmed = content.trim();
   if (!trimmed || trimmed === control || containsPlaceholder(content)) {
     return fail('unfilled-control', `${control} must be filled and contain no template placeholders.`, { control });
   }
   if (control === 'CLAUDE.md') {
-    if (trimmed !== '@AGENTS.md') {
-      return fail('unfilled-control', 'CLAUDE.md must be exactly `@AGENTS.md`.', { control });
-    }
+    if (trimmed !== '@AGENTS.md') return fail('unfilled-control', 'CLAUDE.md must be exactly `@AGENTS.md`.', { control });
     return null;
   }
-  if (!/^#\s+\S/m.test(content) || !/^##\s+\S/m.test(content)) {
-    return fail('unfilled-control', `${control} must contain filled control content.`, { control });
-  }
+  if (!/^#\s+\S/m.test(content) || !/^##\s+\S/m.test(content)) return fail('unfilled-control', `${control} must contain filled control content.`, { control });
   for (const marker of generatedRegions[control] ?? []) {
-    if (!content.includes(marker)) {
-      return fail('unfilled-control', `${control} must keep the generated region marker ${marker} so render and doctor can project the first spec.`, { control, reason: `missing generated region marker ${marker}` });
-    }
+    if (!content.includes(marker)) return fail('unfilled-control', `${control} must keep the generated region marker ${marker} so render and doctor can project the first spec.`, { control, reason: `missing generated region marker ${marker}` });
   }
-  if (versionStamp(content) !== expectedVersion) {
-    return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control });
-  }
+  if (versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control });
   return null;
 }
 
 function validateFirstSpec(project, expectedVersion) {
   const specsRoot = path.join(project, lanes.specs);
-  // Dotfiles (the tracked .gitkeep placeholder, editor and Finder metadata)
-  // are not spec packets and never decide readiness.
-  const entries = fs.readdirSync(specsRoot, { withFileTypes: true })
-    .filter((entry) => !entry.name.startsWith('.'));
+  const entries = fs.readdirSync(specsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith('.'));
   const names = entries.map((entry) => entry.name).sort();
   if (entries.length === 0) return fail('missing-first-spec', 'Genesis must create a first spec in workbench/specs.');
   if (entries.length !== 1 || !entries[0].isDirectory() || !/^S-\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entries[0].name)) {
-    return fail('invalid-first-spec', 'Genesis must create one stable S-###-slug/SPEC.md packet.', {
-      entries: names,
-      reason: `the specs lane must contain exactly one stable S-###-slug directory; found ${names.join(', ')}`
-    });
+    return fail('invalid-first-spec', 'Genesis must create one stable S-###-slug/SPEC.md packet.', { entries: names, reason: `the specs lane must contain exactly one stable S-###-slug directory; found ${names.join(', ')}` });
   }
   const expectedId = entries[0].name.slice(0, 5);
   const specPath = path.join(specsRoot, entries[0].name, 'SPEC.md');
   const specEntry = lstatOrNull(specPath);
-  if (!specEntry || specEntry.isSymbolicLink() || !specEntry.isFile()) {
-    return fail('invalid-first-spec', 'The first spec must be an ordinary SPEC.md file.', { specPath, reason: 'SPEC.md is missing, a symlink, or not a regular file' });
-  }
+  if (!specEntry || specEntry.isSymbolicLink() || !specEntry.isFile()) return fail('invalid-first-spec', 'The first spec must be an ordinary SPEC.md file.', { specPath, reason: 'SPEC.md is missing, a symlink, or not a regular file' });
   const content = fs.readFileSync(specPath, 'utf8');
   const requiredSections = ['Outcome', 'Vertical Implementation Slices', 'Acceptance Criteria', 'Completion Result'];
   let packet;
-  try {
-    packet = parseSpecPacket(content, specPath, project);
-  } catch (error) {
+  try { packet = parseSpecPacket(content, specPath, project); } catch (error) {
     return fail('invalid-first-spec', error.message, { specPath, reason: error.message });
   }
-  // Each predicate names the failing requirement so a downstream Genesis agent
-  // can repair the packet without reading this validator.
   const predicates = [
     ['the packet must contain no template placeholder', () => !containsPlaceholder(content)],
     [`the packet must carry the Generated from LLM Workbench ${expectedVersion} stamp`, () => versionStamp(content) === expectedVersion],
@@ -144,93 +306,7 @@ function validateFirstSpec(project, expectedVersion) {
     ['at least one acceptance criterion must remain unchecked', () => /^- \[ \] \S/m.test(content)]
   ];
   for (const [reason, holds] of predicates) {
-    if (!holds()) {
-      return fail('invalid-first-spec', `The first spec is not an actionable version-matched Workbench packet: ${reason}.`, { specPath, reason });
-    }
-  }
-  return null;
-}
-
-export function validateManifest(project) {
-  const manifestPath = path.join(project, 'workbench', 'manifest.json');
-  let manifest;
-  try {
-    manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  } catch (error) {
-    return fail('invalid-manifest', `Cannot read ${manifestPath}: ${error.message}`);
-  }
-  if (manifest.schemaVersion !== 1 || !/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) {
-    return fail('invalid-manifest', 'Manifest schemaVersion or workbenchVersion is invalid.');
-  }
-  if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance?.lifecycle)) {
-    return fail('invalid-manifest', 'Manifest provenance.lifecycle is invalid.');
-  }
-  if (JSON.stringify(manifest.lanes) !== JSON.stringify(lanes)) {
-    return fail('invalid-lane', 'Manifest lanes must exactly match the v3 support paths.', { lanes: manifest.lanes });
-  }
-  for (const lane of Object.values(manifest.lanes)) {
-    if (!isSafeRelative(lane)) return fail('invalid-lane', `Manifest lane ${lane} is unsafe.`);
-    const entry = lstatOrNull(path.join(project, lane));
-    if (entry?.isSymbolicLink() || !entry?.isDirectory()) {
-      return fail('unsafe-lane', `Manifest lane ${lane} must be an ordinary directory.`);
-    }
-    if (!entry.isDirectory()) {
-      return fail('missing-lane', `Manifest lane ${lane} is missing.`);
-    }
-  }
-  const policy = manifest.skillPolicy;
-  if (JSON.stringify(policy?.required) !== JSON.stringify(coreSkills)
-      || JSON.stringify(policy?.discovery) !== JSON.stringify(['.agents/skills', '.claude/skills'])
-      || policy?.normalSetup !== 'presence-only' || policy?.updates !== 'explicit-only') {
-    return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
-  }
-  return report('valid', { manifest });
-}
-
-export function initialize(options) {
-  const project = path.resolve(options['--project']);
-  const workbench = path.join(project, 'workbench');
-  const manifestPath = path.join(workbench, 'manifest.json');
-  if (fs.existsSync(manifestPath)) return fail('manifest-exists', `${manifestPath} already exists.`);
-  const projectEntry = lstatOrNull(project);
-  if (!projectEntry || projectEntry.isSymbolicLink() || !projectEntry.isDirectory()) {
-    return fail('invalid-project', `${project} must be an existing project directory.`);
-  }
-  for (const lane of Object.values(lanes)) {
-    const target = path.join(project, lane);
-    const entry = lstatOrNull(target);
-    if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) {
-      return fail('lane-collision', `${target} is not a directory.`);
-    }
-  }
-  const manifest = {
-    schemaVersion: 1,
-    workbenchVersion: options['--version'],
-    provenance: { lifecycle: options['--provenance'] },
-    lanes,
-    skillPolicy: {
-      required: coreSkills,
-      discovery: ['.agents/skills', '.claude/skills'],
-      normalSetup: 'presence-only',
-      updates: 'explicit-only'
-    }
-  };
-  if (validateManifestShape(manifest)) return validateManifestShape(manifest);
-  for (const lane of Object.values(lanes)) {
-    const target = path.join(project, lane);
-    fs.mkdirSync(target, { recursive: true });
-    fs.writeFileSync(path.join(target, '.gitkeep'), '');
-  }
-  fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-  return report('initialized', { manifestPath, manifest });
-}
-
-function validateManifestShape(manifest) {
-  if (!/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) {
-    return fail('invalid-version', 'Workbench version must use vMAJOR.MINOR.PATCH.');
-  }
-  if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance.lifecycle)) {
-    return fail('invalid-provenance', 'Provenance must be genesis, adoption, or upgrade.');
+    if (!holds()) return fail('invalid-first-spec', `The first spec is not an actionable version-matched Workbench packet: ${reason}.`, { specPath, reason });
   }
   return null;
 }
@@ -249,17 +325,26 @@ export function validate(options, requireGenesis) {
   return report('valid', { manifest: result.manifest, controls });
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href) {
+export function isMainModule(importMetaUrl) {
+  try {
+    return Boolean(process.argv[1]) && importMetaUrl === pathToFileURL(fs.realpathSync(process.argv[1])).href;
+  } catch {
+    return Boolean(process.argv[1]) && importMetaUrl === pathToFileURL(path.resolve(process.argv[1])).href;
+  }
+}
+
+if (isMainModule(import.meta.url)) {
   try {
     const [command, ...args] = process.argv.slice(2);
     let result;
     if (command === 'init') result = initialize(parseOptions(args, ['--project', '--provenance', '--version']));
+    else if (command === 'migrate') result = migrate(parseOptions(args, ['--project']));
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.0.0 | validate --project PATH [--genesis]');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.0 [--wiki-profile project|deployment] [--name NAME] | migrate --project PATH [--version v3.1.0] | validate --project PATH [--genesis]');
     process.stdout.write(`${JSON.stringify(result)}\n`);
-    if (!['initialized', 'valid'].includes(result.status)) process.exitCode = 1;
+    if (!['initialized', 'valid', 'migrated', 'current'].includes(result.status)) process.exitCode = 1;
   } catch (error) {
     process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
     process.exitCode = 1;

@@ -1,0 +1,5 @@
+# Live session records stay local; only checkpoints/ is durable evidence.
+grilling/*
+!grilling/.gitkeep
+handoffs/*
+!handoffs/.gitkeep

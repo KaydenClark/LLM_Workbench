@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from './spec-workbench.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from './template-placeholders.mjs';
+import { COLLECTIONS, LANES } from './workbench-paths.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(root, 'tools', 'workbench-layout.mjs');
@@ -128,13 +129,107 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
       nextGate: 'Claim TK-001.'
     });
     assert.equal(fs.existsSync(path.join(project, 'skills')), false);
-    for (const lane of ['specs', 'wiki', 'grilling', 'handoffs', 'feedback']) {
-      assert.equal(fs.existsSync(path.join(project, 'workbench', lane)), true);
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    assert.equal(manifest.schemaVersion, 2);
+    assert.deepEqual(manifest.lanes, LANES);
+    assert.deepEqual(manifest.collections, COLLECTIONS);
+    assert.equal(manifest.wiki.profile, 'project');
+    assert.equal(manifest.provenance.source.release, 'v3.0.0');
+    for (const relative of [...Object.values(LANES), ...Object.values(COLLECTIONS)]) {
+      assert.equal(fs.statSync(path.join(project, relative)).isDirectory(), true, `${relative} must exist`);
     }
+    const ignore = fs.readFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), 'utf8');
+    assert.match(ignore, /^grilling\/\*$/m);
+    assert.match(ignore, /^handoffs\/\*$/m);
+    assert.doesNotMatch(ignore, /^checkpoints/m, 'checkpoints must never be ignored');
     render(project);
     assert.deepEqual(doctor(project), [], 'an operable Genesis fixture must satisfy doctor once rendered');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+function schemaOneFixture(project) {
+  for (const lane of ['specs', 'wiki', 'grilling', 'handoffs', 'feedback']) fs.mkdirSync(path.join(project, 'workbench', lane), { recursive: true });
+  fs.writeFileSync(path.join(project, 'workbench', 'grilling', 'notepad.md'), '# live notepad\n');
+  fs.writeFileSync(path.join(project, 'workbench', 'handoffs', 'checkpoint.md'), '# tracked checkpoint\n');
+  fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), '# memory\n');
+  fs.writeFileSync(path.join(project, 'workbench', 'feedback', '.gitkeep'), '');
+  fs.mkdirSync(path.join(project, 'workbench', 'specs', 'S-001-first'));
+  fs.writeFileSync(path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md'), '# S-001 - First\n');
+  fs.writeFileSync(path.join(project, 'workbench', 'manifest.json'), `${JSON.stringify({
+    schemaVersion: 1,
+    workbenchVersion: 'v3.0.0',
+    provenance: { lifecycle: 'genesis' },
+    lanes: { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' },
+    skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
+  }, null, 2)}\n`);
+}
+
+test('a schema 1 manifest reports upgrade-required and migrates losslessly once', () => {
+  const project = fixture();
+  try {
+    schemaOneFixture(project);
+    const stale = run('validate', '--project', project);
+    assert.notEqual(stale.status, 0);
+    assert.equal(stale.report.error.code, 'upgrade-required');
+
+    const migrated = run('migrate', '--project', project);
+    assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
+    assert.equal(migrated.report.status, 'migrated');
+    assert.equal(fs.readFileSync(path.join(project, 'workbench', 'sessions', 'grilling', 'notepad.md'), 'utf8'), '# live notepad\n');
+    assert.equal(fs.readFileSync(path.join(project, 'workbench', 'sessions', 'checkpoints', 'checkpoint.md'), 'utf8'), '# tracked checkpoint\n');
+    assert.equal(fs.readFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), 'utf8'), '# memory\n');
+    assert.equal(fs.readFileSync(path.join(project, 'workbench', 'specs', 'S-001-first', 'SPEC.md'), 'utf8'), '# S-001 - First\n');
+    assert.equal(fs.existsSync(path.join(project, 'workbench', 'grilling')), false);
+    assert.equal(fs.existsSync(path.join(project, 'workbench', 'handoffs')), false);
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    assert.equal(manifest.schemaVersion, 2);
+    assert.equal(manifest.provenance.lifecycle, 'genesis');
+    assert.equal(manifest.provenance.migratedFrom, 1);
+    assert.deepEqual(manifest.collections, COLLECTIONS);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project).report.status, 'current');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('the validator requires every declared collection, the sessions ignore file, and a known wiki profile', () => {
+  const scenarios = [
+    { expected: 'missing-collection', mutate: (project) => fs.rmSync(path.join(project, 'workbench', 'wiki', 'design-concepts'), { recursive: true }) },
+    { expected: 'sessions-not-ignored', mutate: (project) => fs.rmSync(path.join(project, 'workbench', 'sessions', '.gitignore')) },
+    { expected: 'sessions-not-ignored', mutate: (project) => fs.writeFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), 'grilling/*\n') },
+    {
+      expected: 'invalid-wiki-profile',
+      mutate(project) {
+        const manifestPath = path.join(project, 'workbench', 'manifest.json');
+        const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+        manifest.wiki.profile = 'vault';
+        fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+      }
+    },
+    {
+      expected: 'invalid-collection',
+      mutate(project) {
+        const manifestPath = path.join(project, 'workbench', 'manifest.json');
+        const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+        manifest.collections['design-concepts'] = 'workbench/wiki/Design Concepts';
+        fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+      }
+    }
+  ];
+  for (const scenario of scenarios) {
+    const project = fixture();
+    try {
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0').status, 0);
+      scenario.mutate(project);
+      const validated = run('validate', '--project', project);
+      assert.notEqual(validated.status, 0, `${scenario.expected}: ${validated.stdout}`);
+      assert.equal(validated.report.error.code, scenario.expected);
+    } finally {
+      fs.rmSync(project, { recursive: true, force: true });
+    }
   }
 });
 
@@ -414,6 +509,7 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
     fs.copyFileSync(path.join(root, 'tools', 'spec-packet.mjs'), path.join(partialTools, 'spec-packet.mjs'));
     fs.copyFileSync(path.join(root, 'tools', 'markdown-table.mjs'), path.join(partialTools, 'markdown-table.mjs'));
     fs.copyFileSync(path.join(root, 'tools', 'template-placeholders.mjs'), path.join(partialTools, 'template-placeholders.mjs'));
+    fs.copyFileSync(path.join(root, 'tools', 'workbench-paths.mjs'), path.join(partialTools, 'workbench-paths.mjs'));
 
     const validated = spawnSync(process.execPath, [relocatedTool, 'validate', '--project', project, '--genesis'], {
       cwd: partialBundle,

@@ -1,15 +1,34 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "workbenchVersion": "v3.0.0",
   "provenance": {
-    "lifecycle": "adoption"
+    "lifecycle": "adoption",
+    "migratedFrom": 1,
+    "source": {
+      "repository": "https://github.com/KaydenClark/LLM_Workbench",
+      "release": "v3.0.0",
+      "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
+    }
   },
   "lanes": {
+    "docs": "workbench/docs",
     "specs": "workbench/specs",
     "wiki": "workbench/wiki",
-    "grilling": "workbench/grilling",
-    "handoffs": "workbench/handoffs",
-    "feedback": "workbench/feedback"
+    "sessions": "workbench/sessions",
+    "feedback": "workbench/feedback",
+    "tools": "workbench/tools"
+  },
+  "collections": {
+    "adr": "workbench/docs/adr",
+    "design-concepts": "workbench/wiki/design-concepts",
+    "guidebooks": "workbench/wiki/guidebooks",
+    "archive": "workbench/wiki/archive",
+    "grilling": "workbench/sessions/grilling",
+    "handoffs": "workbench/sessions/handoffs",
+    "checkpoints": "workbench/sessions/checkpoints"
+  },
+  "wiki": {
+    "profile": "project"
   },
   "skillPolicy": {
     "required": [

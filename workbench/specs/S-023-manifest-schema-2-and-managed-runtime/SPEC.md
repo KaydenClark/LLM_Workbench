@@ -11,8 +11,8 @@
 **Updated:** 2026-09-04
 **Catalog description:** Ship manifest schema 2 with six lanes, declared collections, a lossless schema 1 migration, Workbench-managed runtime tools, and untracked-by-default session records.
 **Blockers:** none
-**Latest event:** TK-001 claimed by claude-fable-5-1.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -104,7 +104,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | A schema 2 manifest with six lanes and seven collections validates, a schema 1 manifest reports `upgrade-required`, and `migrate` converts the product repository losslessly | in-progress | none | pending |
+| TK-001 | A schema 2 manifest with six lanes and seven collections validates, a schema 1 manifest reports `upgrade-required`, and `migrate` converts the product repository losslessly | done | none | Red: schema 2 layout, dogfood, adoption, and upgrade tests failed before the resolver and schema 2 tool existed. Green: 12 focused layout tests (init six lanes and seven collections, sessions ignore file, upgrade-required, lossless migrate, current on rerun, missing-collection, sessions-not-ignored, invalid-wiki-profile, invalid-collection), dogfood schema 2 with git check-ignore proof, adoption and upgrade recovery in checkpoints; full 23-command union suite green; evaluator 113/113 root and 106.6/113 templates; this repository migrated with its planning checkpoint now at workbench/sessions/checkpoints |
 | TK-002 | Runtime tools live in `workbench/tools/` with a receipt, install/verify/update/rollback work against a fixture project, and every consumer resolves the tools lane | ready | TK-001 | pending |
 | TK-003 | Adoption and explicit upgrade produce schema 2 projects, relocate a root feedback file, write recovery to checkpoints, and leave root `tools/` untouched | ready | TK-002 | pending |
 | TK-004 | Genesis and its templates produce a validated schema 2 project with a tools receipt, sessions ignore file, and design-concepts collection | ready | TK-003 | pending |
@@ -150,6 +150,7 @@ Then the complete `RUNBOOK.md` union suite, render, doctor, and `git diff --chec
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-04 | plan | Captured the schema 2, tools, and sessions capability from the promoted v3.1 plan | Baseline suite green at the landed S-015 SHA; no capability behavior verified yet | Spec added; Blueprint and Lexicon carry the direction; Runbook and templates wait for tickets | Implement TK-001 through TK-004 |
+| 2026-09-04 | TK-001 | Ticket closed | Red: schema 2 layout, dogfood, adoption, and upgrade tests failed before the resolver and schema 2 tool existed. Green: 12 focused layout tests (init six lanes and seven collections, sessions ignore file, upgrade-required, lossless migrate, current on rerun, missing-collection, sessions-not-ignored, invalid-wiki-profile, invalid-collection), dogfood schema 2 with git check-ignore proof, adoption and upgrade recovery in checkpoints; full 23-command union suite green; evaluator 113/113 root and 106.6/113 templates; this repository migrated with its planning checkpoint now at workbench/sessions/checkpoints | Updated RUNBOOK.md support-root, migrate, adoption, and upgrade sections; templates/GENESIS.md lane sentence and acceptance box; templates/ADOPTION.md recovery paths; ADR-0017 and ADR-0032 moved to accepted; tools/workbench-paths.mjs added as the single resolver | Runtime tools still live in root tools/ until TK-002; Genesis wiki seeding reports wiki:false until S-025 ships templates/wiki |
 
 ## Completion Result
 

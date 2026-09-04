@@ -111,9 +111,11 @@ function fixtureSpec() {
     assert.equal(read(project, 'workbench/specs/S-101-adopted/SPEC.md'), fixtureSpec());
     assert.equal(read(project, 'workbench/wiki/MEMORY.md'), '# Adopted Wiki\n');
     assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Feedback\n');
-    assert.equal(read(project, 'workbench/grilling/decision.md'), '# Provisional decision\n');
-    assert.equal(read(project, 'workbench/handoffs/recovery.md'), '# Recovery point\n');
-    assert.equal(read(project, 'workbench/handoffs/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
+    assert.equal(read(project, 'workbench/sessions/grilling/decision.md'), '# Provisional decision\n');
+    assert.equal(read(project, 'workbench/sessions/checkpoints/recovery.md'), '# Recovery point\n');
+    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
+    assert.equal(report.recoveryPath, 'workbench/sessions/checkpoints/adoption-recovery.json');
+    assert.equal(JSON.parse(read(project, 'workbench/manifest.json')).schemaVersion, 2, 'adoption must produce schema 2');
     assert.equal(read(project, 'AGENTS.md'), '# AGENTS.md\n\nProject-specific adoption truth.\n');
     assert.equal(nextWork(project).specId, 'S-101', 'selection must resolve the manifest-declared spec lane');
     assert.deepEqual(doctor(project), [], 'doctor must resolve and validate the manifest-declared spec lane');

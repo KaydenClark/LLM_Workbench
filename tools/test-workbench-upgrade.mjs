@@ -71,6 +71,7 @@ test('explicit upgrade backs up a changed managed skill, migrates once, and reco
     const backup = result.report.skillBackups.find((entry) => entry.engine === 'codex' && entry.skill === 'genesis');
     assert.ok(backup, 'the changed managed skill must be backed up');
     assert.equal(fs.readFileSync(path.join(backup.path, 'SKILL.md'), 'utf8'), '# changed installed genesis\n');
+    assert.equal(result.report.recoveryPath, path.join('workbench', 'sessions', 'checkpoints', 'upgrade-recovery.json'));
     const recovery = JSON.parse(fs.readFileSync(path.join(project, result.report.recoveryPath), 'utf8'));
     assert.equal(recovery.preMigration.gitSha, beforeSha);
     assert.ok(recovery.preMigration.inventory.includes('specs/S-101-upgrade/SPEC.md'));

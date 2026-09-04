@@ -170,8 +170,10 @@ node /PATH/TO/LLM_WORKBENCH/tools/workbench-layout.mjs init \
 Create one stable `workbench/specs/S-001-<slug>/SPEC.md` for the nearest
 coherent capability. Put 1-3 one-context tracer-bullet tickets in its
 implementation table and record the Genesis result in its evidence log. The
-manifest declares the `specs`, `wiki`, `grilling`, `handoffs`, and `feedback`
-lanes; do not create a project-local `skills/` discovery directory.
+manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
+`feedback`, `tools`) and their collections; live grilling and handoff records
+under `workbench/sessions/` stay untracked, and only `sessions/checkpoints/`
+is durable. Do not create a project-local `skills/` discovery directory.
 
 The readiness gate (`validate --genesis`) accepts only an actionable first
 packet, so shape it exactly like this before running the gate:
@@ -233,8 +235,9 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
-- [ ] `workbench/manifest.json` declares the five support lanes, exact
-      12-skill policy, version, and Genesis provenance; the layout validator
+- [ ] `workbench/manifest.json` is schema 2 and declares the six support
+      lanes, seven collections, wiki profile, exact 12-skill policy, version,
+      and Genesis provenance with its source commit; the layout validator
       passes with `--genesis`. When it fails, its JSON `message` names the
       failing control or predicate, and first-spec and generated-region
       failures add a `reason` field; fix that predicate rather than the gate.

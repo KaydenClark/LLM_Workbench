@@ -2,16 +2,20 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { controls, coreSkills, initialize, lanes, validateManifest } from './workbench-layout.mjs';
+import { collections, controls, coreSkills, initialize, lanes, validateManifest } from './workbench-layout.mjs';
 import { doctor, render } from './spec-workbench.mjs';
 
+// Legacy v2 sources and the schema 2 destination each one becomes. Live
+// grilling records land in the untracked grilling collection; the tracked
+// legacy handoffs were durable checkpoints, so they land in checkpoints.
 const legacyLanes = [
-  { source: 'specs', lane: 'specs' },
-  { source: 'Wiki', lane: 'wiki' },
-  { source: 'feedback', lane: 'feedback' },
-  { source: 'grilling diary', lane: 'grilling' },
-  { source: 'handoffs', lane: 'handoffs' }
+  { source: 'specs', destination: lanes.specs },
+  { source: 'Wiki', destination: lanes.wiki },
+  { source: 'feedback', destination: lanes.feedback },
+  { source: 'grilling diary', destination: collections.grilling },
+  { source: 'handoffs', destination: collections.checkpoints }
 ];
+const recoveryLane = collections.checkpoints;
 
 function lstatOrNull(target) {
   try {
@@ -64,14 +68,14 @@ function preflight(project, home) {
   if (missingSkills.length) {
     return fail('missing-user-skills', 'Required core skills must be present in a user-scoped Codex or Claude discovery root before project-local skills can retire.', { missingSkills });
   }
-  for (const { source, lane } of legacyLanes) {
+  for (const { source, destination } of legacyLanes) {
     const sourcePath = path.join(project, source);
     const sourceEntry = lstatOrNull(sourcePath);
     if (sourceEntry && (sourceEntry.isSymbolicLink() || !sourceEntry.isDirectory())) {
       return fail('legacy-path-collision', `${sourcePath} must be an ordinary directory when present.`, { source });
     }
-    if (sourceEntry && lstatOrNull(path.join(project, lanes[lane]))) {
-      return fail('lane-collision', `${path.join(project, lanes[lane])} already exists.`, { source, lane });
+    if (sourceEntry && lstatOrNull(path.join(project, destination))) {
+      return fail('lane-collision', `${path.join(project, destination)} already exists.`, { source, destination });
     }
   }
   const legacyMemory = path.join(project, 'MEMORY.md');
@@ -86,12 +90,12 @@ function preflight(project, home) {
   if (legacySkills && (legacySkills.isSymbolicLink() || !legacySkills.isDirectory())) {
     return fail('legacy-path-collision', `${path.join(project, 'skills')} must be an ordinary directory when present.`, { source: 'skills' });
   }
-  const recoveryPath = path.join(project, lanes.handoffs, 'adoption-recovery.json');
+  const recoveryPath = path.join(project, recoveryLane, 'adoption-recovery.json');
   if (lstatOrNull(path.join(project, 'handoffs', 'adoption-recovery.json'))) {
     return fail('recovery-collision', `${recoveryPath} would overwrite an existing legacy recovery record.`);
   }
   if (legacySkills && lstatOrNull(path.join(project, 'handoffs', 'adoption-legacy-skills'))) {
-    return fail('recovery-collision', `${path.join(project, lanes.handoffs, 'adoption-legacy-skills')} would overwrite an existing legacy recovery directory.`);
+    return fail('recovery-collision', `${path.join(project, recoveryLane, 'adoption-legacy-skills')} would overwrite an existing legacy recovery directory.`);
   }
   return null;
 }
@@ -110,14 +114,14 @@ function migrate(options) {
   if (initialized.status !== 'initialized') return fail('layout-initialization-failed', initialized.error?.message ?? 'Could not initialize the v3 support root.');
   const moved = [];
   try {
-    for (const { source, lane } of legacyLanes) {
+    for (const { source, destination } of legacyLanes) {
       const sourcePath = path.join(project, source);
       if (!lstatOrNull(sourcePath)) continue;
-      const destination = path.join(project, lanes[lane]);
-      removeGitkeep(destination);
-      fs.rmdirSync(destination);
-      fs.renameSync(sourcePath, destination);
-      moved.push({ source, destination: lanes[lane] });
+      const target = path.join(project, destination);
+      removeGitkeep(target);
+      fs.rmdirSync(target);
+      fs.renameSync(sourcePath, target);
+      moved.push({ source, destination });
     }
     const legacyMemory = path.join(project, 'MEMORY.md');
     if (lstatOrNull(legacyMemory)) {
@@ -127,18 +131,18 @@ function migrate(options) {
     }
     const legacySkills = path.join(project, 'skills');
     if (lstatOrNull(legacySkills)) {
-      const destination = path.join(project, lanes.handoffs, 'adoption-legacy-skills');
+      const destination = path.join(project, recoveryLane, 'adoption-legacy-skills');
       fs.renameSync(legacySkills, destination);
-      moved.push({ source: 'skills', destination: `${lanes.handoffs}/adoption-legacy-skills` });
+      moved.push({ source: 'skills', destination: `${recoveryLane}/adoption-legacy-skills` });
     }
-    const recoveryPath = path.join(project, lanes.handoffs, 'adoption-recovery.json');
+    const recoveryPath = path.join(project, recoveryLane, 'adoption-recovery.json');
     fs.writeFileSync(recoveryPath, `${JSON.stringify({ schemaVersion: 1, lifecycle: 'adoption', moved }, null, 2)}\n`);
     const validation = validateManifest(project);
     if (validation.status !== 'valid') throw new Error(validation.error?.message ?? 'Migrated manifest did not validate.');
     render(project);
     const issues = doctor(project);
     if (issues.length) throw new Error(`Adoption rendered an invalid project: ${issues.map((issue) => issue.code).join(', ')}.`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, recoveryPath: path.join(lanes.handoffs, 'adoption-recovery.json'), doctor: 'passed' };
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, recoveryPath: `${recoveryLane}/adoption-recovery.json`, doctor: 'passed' };
   } catch (error) {
     return { status: 'partial', moved, error: { code: 'migration-failed', message: error.message } };
   }

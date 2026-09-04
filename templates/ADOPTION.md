@@ -214,11 +214,13 @@ node tools/spec-workbench.mjs doctor
 
 The migration moves only known unambiguous durable paths: `specs/`, `Wiki/`,
 root `MEMORY.md`, `feedback/`, `grilling diary/`, and `handoffs/` to their
-manifest-declared lanes. It preserves a legacy project-local `skills/` folder as
-`workbench/handoffs/adoption-legacy-skills/` only after every required core
-skill is already user-scoped. It writes the explicit recovery record at
-`workbench/handoffs/adoption-recovery.json`, renders the projections, and
-checks doctor before reporting completion.
+manifest-declared lanes and collections (legacy grilling records become the
+untracked `workbench/sessions/grilling/`; legacy handoffs become the tracked
+`workbench/sessions/checkpoints/`). It preserves a legacy project-local
+`skills/` folder as `workbench/sessions/checkpoints/adoption-legacy-skills/`
+only after every required core skill is already user-scoped. It writes the
+explicit recovery record at `workbench/sessions/checkpoints/adoption-recovery.json`,
+renders the projections, and checks doctor before reporting completion.
 
 An existing `workbench/` root, a legacy path collision, unfilled controls, or
 missing user-scoped core skill blocks before migration; inspect and reconcile

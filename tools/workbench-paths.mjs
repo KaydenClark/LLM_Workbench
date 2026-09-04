@@ -1,0 +1,104 @@
+// One answer to "where is the project root" and "where does lane or
+// collection X live". Every runtime tool and every skill resolves paths
+// through this module; nothing hardcodes a lane or collection.
+import fs from 'node:fs';
+import path from 'node:path';
+
+export const SCHEMA_VERSION = 2;
+export const LANES = Object.freeze({
+  docs: 'workbench/docs',
+  specs: 'workbench/specs',
+  wiki: 'workbench/wiki',
+  sessions: 'workbench/sessions',
+  feedback: 'workbench/feedback',
+  tools: 'workbench/tools'
+});
+export const COLLECTIONS = Object.freeze({
+  adr: 'workbench/docs/adr',
+  'design-concepts': 'workbench/wiki/design-concepts',
+  guidebooks: 'workbench/wiki/guidebooks',
+  archive: 'workbench/wiki/archive',
+  grilling: 'workbench/sessions/grilling',
+  handoffs: 'workbench/sessions/handoffs',
+  checkpoints: 'workbench/sessions/checkpoints'
+});
+// Live session collections stay untracked by default; only checkpoints are
+// durable. A durable reference into an untracked collection is a defect.
+export const UNTRACKED_COLLECTIONS = Object.freeze(['grilling', 'handoffs']);
+export const WIKI_PROFILES = Object.freeze(['project', 'deployment']);
+
+export function manifestPath(root) {
+  return path.join(path.resolve(root), 'workbench', 'manifest.json');
+}
+
+export function readManifest(root) {
+  const file = manifestPath(root);
+  if (!fs.existsSync(file)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (error) {
+    const failure = new Error(`${file} is unreadable: ${error.message}`);
+    failure.code = 'invalid-manifest';
+    throw failure;
+  }
+}
+
+export function isSafeRelative(value) {
+  return typeof value === 'string'
+    && !path.isAbsolute(value)
+    && !/[\\\s]/.test(value)
+    && value === value.toLowerCase()
+    && value === path.posix.normalize(value)
+    && !value.split('/').includes('..')
+    && value.startsWith('workbench/');
+}
+
+// Walk up from `start` to the nearest directory that declares a workbench,
+// falling back to the nearest Git checkout, then to `start` itself.
+export function findRoot(start = process.cwd()) {
+  let current = path.resolve(start);
+  if (fs.existsSync(current) && !fs.statSync(current).isDirectory()) current = path.dirname(current);
+  let gitRoot = null;
+  for (;;) {
+    if (fs.existsSync(path.join(current, 'workbench', 'manifest.json'))) return current;
+    if (gitRoot === null && fs.existsSync(path.join(current, '.git'))) gitRoot = current;
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  return gitRoot ?? path.resolve(start);
+}
+
+export function laneRelative(root, name) {
+  if (!Object.hasOwn(LANES, name)) throw new Error(`unknown lane: ${name}`);
+  const declared = readManifest(root)?.lanes?.[name];
+  if (declared !== undefined && !isSafeRelative(declared)) {
+    const failure = new Error(`manifest lane ${name} is unsafe: ${declared}`);
+    failure.code = 'invalid-lane';
+    throw failure;
+  }
+  return declared ?? LANES[name];
+}
+
+export function collectionRelative(root, name) {
+  if (!Object.hasOwn(COLLECTIONS, name)) throw new Error(`unknown collection: ${name}`);
+  const declared = readManifest(root)?.collections?.[name];
+  if (declared !== undefined && !isSafeRelative(declared)) {
+    const failure = new Error(`manifest collection ${name} is unsafe: ${declared}`);
+    failure.code = 'invalid-collection';
+    throw failure;
+  }
+  return declared ?? COLLECTIONS[name];
+}
+
+export function lanePath(root, name) {
+  return path.resolve(path.resolve(root), laneRelative(root, name));
+}
+
+export function collectionPath(root, name) {
+  return path.resolve(path.resolve(root), collectionRelative(root, name));
+}
+
+export function toolPath(root, tool) {
+  return path.join(lanePath(root, 'tools'), tool);
+}
