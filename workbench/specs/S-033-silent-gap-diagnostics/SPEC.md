@@ -8,8 +8,8 @@
 **Updated:** 2026-09-05
 **Catalog description:** Close the three v3.1.1 gaps that passed every gate green: an unrouted room brain, wiki files stamped with an older version than the manifest, and checkpoint promotion reading a source outside the repository.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Complete TK-003.
+**Latest event:** TK-003 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 ## Outcome
 
@@ -100,7 +100,7 @@ Gap: the three findings and the stale root stamps.
 |---|---|---|---|---|
 | TK-001 | `room-brain-unrouted` in doctor with a fixture whose controls omit the route | done | none | node tools/test-diagnostics.mjs (5 pass; new test: an unrouted room brain is an attention finding that names the control lacking the route), node tools/test-wiki.mjs (7 pass), node tools/test-workbench-layout.mjs (19 pass); doctor on this repository reports no room-brain-unrouted |
 | TK-002 | `stale-stamp` in doctor and wiki stamps in the Genesis gate; root wiki stamps updated to the manifest version | done | none | node tools/test-wiki.mjs (9 pass; new: stale-stamp attention test and this-repository stamp/routing test), node tools/test-workbench-layout.mjs (20 pass; new: Genesis readiness requires version-matched wiki stamps), node tools/test-diagnostics.mjs (5 pass), node tools/test-sessions.mjs (3 pass); doctor on this repository reported stale-stamp for workbench/wiki/SCHEMA.md, AGENTS.md, design-concepts/README.md (v3.0.0 vs manifest v3.1.1) before the refresh and none after |
-| TK-003 | `checkpoint` refuses a source outside the repository root | ready | none | pending |
+| TK-003 | `checkpoint` refuses a source outside the repository root | done | none | node tools/test-sessions.mjs (4 pass; new: checkpoint refuses a source outside the repository root and writes nothing, covering an absolute outside path, a .. traversal, a missing outside file, the root itself, the CLI exit 1, and an in-root handoff still promoting), node tools/test-diagnostics.mjs (5 pass), node tools/test-wiki.mjs (9 pass), node tools/test-workbench-layout.mjs (20 pass) |
 
 ### TK-001 - The controls route back
 
@@ -168,6 +168,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | spec | Spec captured from upstream fix-list item UP-009 and S-027 review P3-1 and P3-3 | Registry re-read at `diagnostics.mjs`: no routing or stamp code; `grep -rn "LLM Workbench v" workbench/wiki` shows three `v3.0.0` stamps against manifest v3.1.1; `sessions.mjs:22` resolves `--from` unbounded | Blueprint v3.1.2 direction links this spec | All three slices |
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-diagnostics.mjs (5 pass; new test: an unrouted room brain is an attention finding that names the control lacking the route), node tools/test-wiki.mjs (7 pass), node tools/test-workbench-layout.mjs (19 pass); doctor on this repository reports no room-brain-unrouted | RUNBOOK.md Wiki Validation and Diagnostics table, templates/RUNBOOK.md doctor section, templates/ADOPTION.md box 9 now name room-brain-unrouted and the reverse route | TK-002 stale-stamp and TK-003 checkpoint boundary |
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-wiki.mjs (9 pass; new: stale-stamp attention test and this-repository stamp/routing test), node tools/test-workbench-layout.mjs (20 pass; new: Genesis readiness requires version-matched wiki stamps), node tools/test-diagnostics.mjs (5 pass), node tools/test-sessions.mjs (3 pass); doctor on this repository reported stale-stamp for workbench/wiki/SCHEMA.md, AGENTS.md, design-concepts/README.md (v3.0.0 vs manifest v3.1.1) before the refresh and none after | workbench/wiki/SCHEMA.md, AGENTS.md, design-concepts/README.md stamps refreshed to v3.1.1; RUNBOOK.md Wiki Validation and Diagnostics table and templates/RUNBOOK.md doctor section name stale-stamp and the Genesis version-mismatch extension | TK-003 checkpoint source boundary |
+| 2026-09-05 | TK-003 | Ticket closed | node tools/test-sessions.mjs (4 pass; new: checkpoint refuses a source outside the repository root and writes nothing, covering an absolute outside path, a .. traversal, a missing outside file, the root itself, the CLI exit 1, and an in-root handoff still promoting), node tools/test-diagnostics.mjs (5 pass), node tools/test-wiki.mjs (9 pass), node tools/test-workbench-layout.mjs (20 pass) | RUNBOOK.md Session Checkpoints and templates/RUNBOOK.md upgrade safety paragraph name the source boundary | none |
 
 ## Completion Result
 

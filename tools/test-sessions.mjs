@@ -82,3 +82,27 @@ test('checkpoint refuses a linked destination collection without writing outside
     assert.deepEqual(fs.readdirSync(outside), []);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
 });
+
+test('checkpoint refuses a source outside the repository root and writes nothing', () => {
+  const dir = project(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'session-outside-'));
+  try {
+    fs.writeFileSync(path.join(outside, 'notes.md'), NOTEPAD);
+    const checkpoints = path.join(dir, 'workbench', 'sessions', 'checkpoints');
+    for (const from of [path.join(outside, 'notes.md'), path.join('..', path.basename(outside), 'notes.md'), path.join(outside, 'missing.md')]) {
+      const refused = checkpoint(dir, { from, topic: 'outside', date: '2026-09-04' });
+      assert.equal(refused.status, 'blocked', from);
+      assert.equal(refused.error.code, 'invalid-note', from);
+      assert.match(refused.error.message, /repository root/, 'the refusal names the boundary');
+      assert.deepEqual(fs.readdirSync(checkpoints).filter((name) => name !== '.gitkeep'), [], 'nothing is written on refusal');
+    }
+    assert.equal(checkpoint(dir, { from: dir, topic: 'root' }).error.code, 'invalid-note', 'the root itself is not a source');
+    const cli = spawnSync(process.execPath, [sessionsTool, 'checkpoint', '--path', dir, '--from', path.join(outside, 'notes.md'), '--topic', 'outside'], { encoding: 'utf8' });
+    assert.equal(cli.status, 1);
+    assert.equal(JSON.parse(cli.stdout).error.code, 'invalid-note');
+    assert.deepEqual(fs.readdirSync(checkpoints).filter((name) => name !== '.gitkeep'), []);
+    fs.writeFileSync(path.join(dir, 'workbench', 'sessions', 'handoffs', 'inside.md'), NOTEPAD);
+    const promoted = checkpoint(dir, { from: 'workbench/sessions/handoffs/inside.md', topic: 'inside', date: '2026-09-04' });
+    assert.equal(promoted.status, 'promoted', 'an in-repository source still promotes');
+    assert.equal(promoted.checkpoint, 'workbench/sessions/checkpoints/inside-2026-09-04.md');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
