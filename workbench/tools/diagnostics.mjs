@@ -53,7 +53,12 @@ const registry = Object.freeze({
   'project-local-skills': entry('error', 'controls', 'all', 'a project-local skills tree shadows user-scoped discovery'),
   // installed skills: doctor reads the user home and never writes to it
   'stale-skill': entry('attention', 'skills', 'none', 'an installed core skill records a release other than the manifest workbenchVersion'),
-  'skill-generation-unknown': entry('attention', 'skills', 'none', 'an installed core skill has no schema 2 marker, so its generation is unknown')
+  'skill-generation-unknown': entry('attention', 'skills', 'none', 'an installed core skill has no schema 2 marker, so its generation is unknown'),
+  // The permission file is the mechanical half of the prose Edit Scope. A
+  // withheld lane is reported by name and never blocks: a room may deny a
+  // lane deliberately and record why. The Genesis readiness gate still
+  // fails closed on it.
+  'permission-scope-drift': entry('error', 'controls', 'none', 'the permission file withholds a manifest-declared authorship lane or grants the tools lane')
 });
 
 function entry(severity, scope, blocks, summary) {

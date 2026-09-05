@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { readManagedSkillMarker, validateManifest } from './workbench-layout.mjs';
+import { permissionScopeDrift, permissionScopeMessage, readManagedSkillMarker, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -245,6 +245,10 @@ function collectionFindings(root) {
   } catch (error) {
     findings.push(finding('invalid-note', `wiki validation failed: ${error.message}`));
   }
+  // The permission file is the mechanical half of the prose Edit Scope; a
+  // declared lane it withholds is named, never rewritten, and never blocks.
+  const drift = permissionScopeDrift(root, manifest.lanes);
+  if (drift) findings.push(finding('permission-scope-drift', permissionScopeMessage(drift), { control: drift.control, lanes: drift.lanes }));
   return findings;
 }
 
