@@ -189,6 +189,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-workbench-layout.mjs (new test: the template permission file grants Edit and Write on every authorship lane the prose declares writable; red at ae60d8d on 'workbench/docs must have an Edit allow rule', green after the fill); node tools/test-workbench-dogfood.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls (106.6/113, identical to the pre-change baseline) | templates/.claude/README.md (Edit versus Write, authorship-lanes row, workbench/tools in ask, the permission-scope-drift finding), templates/GENESIS.md and templates/ADOPTION.md Phase 4 wording and completion boxes; AGENTS.md checked, no update needed: the prose Edit Scope already declares the workbench/ support lanes writable | TK-002: permission-scope-drift is not yet a doctor finding or a Genesis gate |
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-diagnostics.mjs (new test: permission-scope-drift names each withheld authorship lane without blocking doctor; red at b587350 on 'Unregistered diagnostic code: permission-scope-drift'); node tools/test-workbench-layout.mjs (new test: Genesis readiness fails closed on a permission file that withholds a declared authorship lane; red at b587350 with validate returning valid); node tools/test-workbench-dogfood.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls (identical to baseline); demo: doctor and validate --genesis on a disposable Genesis room with the pre-fix, fixed, and absent permission files | RUNBOOK.md (Diagnostics And Blocking Effects paragraph and Troubleshooting row for permission-scope-drift), templates/RUNBOOK.md (Workbench Lifecycle, Diagnostics, And Decision Records paragraph); AGENTS.md checked, no update needed: the prose scope is already correct | none for this slice; rooms that copied the old template repair their own file by hand or through update-harness, as the spec's Remaining Limitations state |
 | 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-05 | review | Integration review of `57801fb` approved with one should-fix and one nit: a lane granted in `allow` but also covered by `ask` prompts on every write and is now reported as withheld (`Edit is covered by an ask rule`); a null lane declaration falls back to the default lanes instead of throwing | node tools/test-diagnostics.mjs (red on the allow+ask assertion returning `[]`, green after the `else if (asked)` branch; null-declaration assertion); node tools/test-workbench-layout.mjs; node tools/test-workbench-dogfood.mjs; node tools/test-spec-workbench.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls; doctor; render; git diff --check | RUNBOOK.md, templates/RUNBOOK.md, templates/.claude/README.md now name the `ask` case | none |
 
 ## Completion Result
 
@@ -254,6 +255,17 @@ completion (see the evidence row). Demo artifact: a scripted completed Genesis
 room shows absent -> `valid`/no findings, pre-fix -> `permission-scope-drift`
 naming `docs,specs,wiki,sessions,feedback` from both `validate --genesis`
 (exit 1) and `doctor` (exit 0), fixed -> `valid`/no findings.
+
+**Review follow-up (after `57801fb`).** The integration review found that a
+lane granted in `allow` but also covered by an `ask` rule was reported as
+granted while, by the matcher's own precedence, `ask` overrides `allow` and
+every write in that lane would prompt: the unattended stall this spec names.
+The matcher now reports such a lane as withheld (`<tool> is covered by an ask
+rule`), and `permissionScopeDrift(project, null)` falls back to the default
+lanes instead of throwing (`?? lanes` rather than `?? {}`, so a null
+declaration never silently checks nothing). Both Runbooks and the `.claude`
+README describe the `ask` case. Verified by the tests named in the review
+evidence row.
 
 ## Remaining Limitations Or Follow-Up Specs
 

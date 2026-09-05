@@ -160,8 +160,8 @@ rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
 withholds a manifest-declared authorship lane (no covering `Edit` and `Write`
-`allow` rule, or a `deny` rule covering it) or grants `workbench/tools/` in
-`allow`; it names each lane, never blocks, and never edits the file. Resolve
+`allow` rule, or a `deny` or `ask` rule covering it, since both override
+`allow`) or grants `workbench/tools/` in `allow`; it names each lane, never blocks, and never edits the file. Resolve
 it by adding the paired `Edit(./workbench/<lane>/**)` and
 `Write(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
 or recording the deliberate denial in `AGENTS.md`. The Genesis readiness

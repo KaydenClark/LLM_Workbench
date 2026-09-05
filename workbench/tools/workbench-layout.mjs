@@ -449,7 +449,10 @@ function covers(rules, tool, lane) {
 export function permissionScopeDrift(project, declaredLanes = lanes) {
   const file = path.join(path.resolve(project), PERMISSION_FILE);
   if (!lstatOrNull(file)) return null;
-  const authorship = Object.entries(declaredLanes).filter(([name]) => name !== 'tools');
+  // A null declaration falls back to the default lanes: the check never
+  // throws and never silently checks nothing.
+  const checked = declaredLanes ?? lanes;
+  const authorship = Object.entries(checked).filter(([name]) => name !== 'tools');
   let buckets;
   try {
     const permissions = JSON.parse(fs.readFileSync(file, 'utf8'))?.permissions ?? {};
@@ -459,7 +462,7 @@ export function permissionScopeDrift(project, declaredLanes = lanes) {
     return { control: PERMISSION_FILE, lanes: authorship.map(([lane, relative]) => ({ lane, path: relative, reason })) };
   }
   const withheld = [];
-  for (const [lane, relative] of Object.entries(declaredLanes)) {
+  for (const [lane, relative] of Object.entries(checked)) {
     const reasons = [];
     for (const tool of permissionTools) {
       const denied = covers(buckets.deny, tool, relative);
@@ -468,6 +471,9 @@ export function permissionScopeDrift(project, declaredLanes = lanes) {
       if (lane === 'tools') {
         if (allowed && !asked && !denied) reasons.push(`${tool} is granted in allow; hold the tools lane in ask`);
       } else if (denied) reasons.push(`${tool} is covered by a deny rule`);
+      // ask overrides allow: a lane in both prompts on every write, which
+      // is the unattended stall this finding exists to name.
+      else if (asked) reasons.push(`${tool} is covered by an ask rule`);
       else if (!allowed) reasons.push(`no covering ${tool} allow rule`);
     }
     if (reasons.length) withheld.push({ lane, path: relative, reason: reasons.join('; ') });
