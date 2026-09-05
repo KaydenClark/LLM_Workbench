@@ -20,7 +20,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 | [S-035](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) | TK-001: Stamp v3.1.2 on every version-bearing surface, extend `supportedLegacy`, re-measure the guardrail, and write the final disposition table (ready) | unassigned | S-029, S-030, S-031, S-032, S-033, S-034 | Spec captured; the version stamp waits on S-029 through S-034. | Complete S-029 through S-034, then claim TK-001. |
 | [S-030](workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md) | TK-001: Template permission file and README grant the authorship lanes with Edit and Write; protocol wording and completion boxes updated (ready) | unassigned | none | Spec captured from upstream fix-list item UP-012. | Claim TK-001 and prove the template grants every authorship lane. |
 | [S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md) | TK-001: `control-fidelity.mjs report` with line classification, version labeling, JSON and Markdown output, and a fixture that drops one qualifier (ready) | unassigned | none | Spec captured from upstream fix-list item UP-008. | Claim TK-001 and prove a dropped qualifier is reported. |
-| [S-033](workbench/specs/S-033-silent-gap-diagnostics/SPEC.md) | TK-002: `stale-stamp` in doctor and wiki stamps in the Genesis gate; root wiki stamps updated to the manifest version (ready) | claude-fable-5-1 | none | TK-001 closed with proof. | Complete TK-002. |
+| [S-033](workbench/specs/S-033-silent-gap-diagnostics/SPEC.md) | TK-003: `checkpoint` refuses a source outside the repository root (ready) | claude-fable-5-1 | none | TK-002 closed with proof. | Complete TK-003. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

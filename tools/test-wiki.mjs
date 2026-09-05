@@ -236,3 +236,36 @@ test('the product wiki adopts the contract and both Lexicons route design questi
     assert.match(fs.readFileSync(path.join(root, relative), 'utf8'), /workbench\/wiki\/design-concepts\//, `${relative} routes design questions to the collection`);
   }
 });
+
+test('a wiki stamp naming a version other than the manifest is attention only, and a missing stamp is not a finding', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const schema = fs.readFileSync(path.join(wiki, 'SCHEMA.md'), 'utf8');
+    const router = fs.readFileSync(path.join(wiki, 'MEMORY.md'), 'utf8');
+    assert.ok(schema.includes(`Generated from LLM Workbench ${VERSION}`), 'the seeded contract carries the manifest stamp');
+    fs.writeFileSync(path.join(wiki, 'SCHEMA.md'), schema.replace(VERSION, 'v2.3.0'));
+    const stale = validateWiki(project);
+    assert.deepEqual(stale.map((item) => [item.code, item.severity, item.blocks, item.note]), [['stale-stamp', 'attention', 'none', 'workbench/wiki/SCHEMA.md']]);
+    assert.match(stale[0].message, /v2\.3\.0/);
+    assert.ok(stale[0].message.includes(VERSION), 'the message names the manifest version');
+    assert.deepEqual(doctor(project).filter((item) => item.code === 'stale-stamp').map((item) => item.note), ['workbench/wiki/SCHEMA.md'], 'doctor carries the stamp finding');
+    fs.writeFileSync(path.join(wiki, 'MEMORY.md'), router.replace(VERSION, 'v3.0.0'));
+    assert.deepEqual(validateWiki(project).map((item) => item.note).sort(), ['workbench/wiki/MEMORY.md', 'workbench/wiki/SCHEMA.md'], 'the room brain stamp is checked too');
+    fs.writeFileSync(path.join(wiki, 'SCHEMA.md'), schema);
+    fs.writeFileSync(path.join(wiki, 'MEMORY.md'), router);
+    assert.deepEqual(validateWiki(project), [], 'restoring the manifest version clears the finding');
+    fs.writeFileSync(path.join(wiki, 'Decisions History.md'), note());
+    assert.deepEqual(validateWiki(project), [], 'an ordinary unstamped note names no version and is not stale');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('this repository stamps its wiki contract files with its manifest version and routes to its room brain', () => {
+  for (const relative of ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md']) {
+    const content = fs.readFileSync(path.join(root, 'workbench', 'wiki', relative), 'utf8');
+    assert.equal(content.match(/Generated from LLM Workbench (v\d+\.\d+\.\d+)/)?.[1], VERSION, `${relative} stamp`);
+  }
+  assert.deepEqual(doctor(root).filter((item) => ['stale-stamp', 'room-brain-unrouted'].includes(item.code)), []);
+});

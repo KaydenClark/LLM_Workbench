@@ -774,3 +774,22 @@ test('the layout usage string lists both source flags for init and migrate', () 
   assert.match(migrateUsage, /--source-commit SHA/);
   assert.match(migrateUsage, /--source-repository URL/);
 });
+
+test('Genesis readiness requires version-matched wiki contract and room brain stamps', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    assert.equal(run('validate', '--project', project, '--genesis').report.status, 'valid');
+    const schema = path.join(project, 'workbench', 'wiki', 'SCHEMA.md');
+    fs.writeFileSync(schema, fs.readFileSync(schema, 'utf8').replace(VERSION, 'v2.3.0'));
+    const stale = run('validate', '--project', project, '--genesis');
+    assert.notEqual(stale.status, 0);
+    assert.equal(stale.report.error.code, 'version-mismatch');
+    assert.equal(stale.report.error.control, 'workbench/wiki/SCHEMA.md');
+    assert.match(stale.report.error.message, /SCHEMA\.md/);
+    assert.ok(typeof stale.report.error.reason === 'string' && stale.report.error.reason.length > 0, 'the failure names its predicate');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
