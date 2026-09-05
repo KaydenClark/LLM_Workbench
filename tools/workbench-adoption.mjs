@@ -273,8 +273,8 @@ function migrate(options) {
     }
     render(project);
     // Only a finding that blocks all or selection makes the migration a
-    // failure; nonblocking findings (a legacy wiki note without frontmatter,
-    // a stale claim) are reported so the adopting agent repairs them next.
+    // failure; nonblocking findings (a moved external link, a stale claim) are
+    // reported so the adopting agent repairs them next.
     const issues = doctor(project);
     if (blocksSelection(issues)) throw new Error(`Adoption rendered an invalid project: ${issues.filter((issue) => issue.blocks === 'all' || issue.blocks === 'selection').map((issue) => issue.code).join(', ')}.`);
     return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, residue, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, doctor: issues.length ? 'passed-with-findings' : 'passed', findings: issues.map((issue) => ({ code: issue.code, severity: issue.severity, blocks: issue.blocks, message: issue.message })) };

@@ -154,6 +154,21 @@ try {
   fs.rmSync(unsafeRoot, { recursive: true, force: true });
 }
 
+const foreignRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'feedback-discovery-foreign-'));
+try {
+  const repo = path.join(foreignRoot, 'Foreign');
+  fs.mkdirSync(repo);
+  execFileSync('git', ['init', '-q'], { cwd: repo });
+  execFileSync('git', ['remote', 'add', 'origin', 'https://github.com/other/Foreign.git'], { cwd: repo });
+  fs.mkdirSync(path.join(repo, 'workbench', 'Feedback'), { recursive: true });
+  fs.writeFileSync(path.join(repo, 'workbench', 'manifest.json'), JSON.stringify({ lanes: { feedback: 'workbench/Feedback' } }));
+  fs.writeFileSync(path.join(repo, 'workbench', 'Feedback', 'WORKBENCH_FEEDBACK.md'), injected);
+  assert.deepEqual(discoverFeedback(foreignRoot), [],
+    'an out-of-scope origin must be excluded before its untrusted manifest can block canonical discovery');
+} finally {
+  fs.rmSync(foreignRoot, { recursive: true, force: true });
+}
+
 assert.deepEqual(
   classifyDecision({
     baselineRed: true,

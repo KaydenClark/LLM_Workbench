@@ -102,6 +102,11 @@ export function discoverFeedback(projectsRoot) {
     const repoPath = path.join(projectsRoot, entry.name);
     const gitPath = path.join(repoPath, '.git');
     if (!fs.existsSync(gitPath) || !fs.statSync(gitPath).isDirectory()) continue;
+    const origin = git(repoPath, ['remote', 'get-url', 'origin']);
+    const topLevel = git(repoPath, ['rev-parse', '--show-toplevel']);
+    if (!origin || realPath(topLevel) !== realPath(repoPath) || !isWritableOwnerOrigin(origin)) continue;
+    const originKey = normalizeOrigin(origin);
+    if (seenOrigins.has(originKey)) continue;
     // A v3.1 project keeps its return channel in the manifest-declared
     // feedback lane; WORKBENCH_FEEDBACK.md at the root is the v3.0 location
     // and HARNESS_FEEDBACK.md the grandfathered legacy name. The first
@@ -112,11 +117,6 @@ export function discoverFeedback(projectsRoot) {
       path.join(repoPath, 'HARNESS_FEEDBACK.md')
     ].find((candidate) => fs.existsSync(candidate));
     if (!feedbackPath) continue;
-    const origin = git(repoPath, ['remote', 'get-url', 'origin']);
-    const topLevel = git(repoPath, ['rev-parse', '--show-toplevel']);
-    if (!origin || realPath(topLevel) !== realPath(repoPath) || !isWritableOwnerOrigin(origin)) continue;
-    const originKey = normalizeOrigin(origin);
-    if (seenOrigins.has(originKey)) continue;
     seenOrigins.add(originKey);
     candidates.push(...parseFeedbackRows(fs.readFileSync(feedbackPath, 'utf8'), {
       repo: entry.name,
