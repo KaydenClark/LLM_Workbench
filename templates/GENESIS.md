@@ -169,6 +169,12 @@ node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs install \
   --project [ABSOLUTE_PROJECT_PATH]
 ```
 
+Run `init` from the Workbench release checkout: it records that checkout's
+`origin` URL and `HEAD` commit as `provenance.source` in the manifest. Pass
+`--source-commit SHA` and `--source-repository URL` only to pin a different
+source; a copy of the tool outside a release checkout refuses with
+`invalid-invocation` naming the missing flag rather than guessing.
+
 The second command installs the Workbench-managed runtime tools into the
 project's `workbench/tools/` lane with a receipt recording the exact source
 release, commit, and per-file hashes. From then on the project runs its own

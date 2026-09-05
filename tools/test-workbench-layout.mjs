@@ -663,3 +663,114 @@ test('init refuses a linked workbench ancestor before creating outside lanes', (
     assert.deepEqual(fs.readdirSync(outside), []);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
 });
+
+// S-032: the Genesis path never writes `unrecorded`. From a release checkout the
+// tool resolves its own HEAD and origin; a relocated copy demands the flags.
+function gitValue(cwd, ...args) {
+  return spawnSync('git', args, { cwd, encoding: 'utf8' }).stdout.trim();
+}
+
+function relocateTool(bundle) {
+  const partialTools = path.join(bundle, 'tools');
+  fs.mkdirSync(partialTools);
+  const relocatedTool = path.join(partialTools, 'workbench-layout.mjs');
+  fs.copyFileSync(tool, relocatedTool);
+  for (const helper of ['spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+    fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
+  }
+  return relocatedTool;
+}
+
+test('init and migrate from the release checkout resolve HEAD and origin when the source flags are omitted', () => {
+  const project = fixture();
+  const legacy = fixture();
+  try {
+    const head = gitValue(root, 'rev-parse', 'HEAD');
+    const origin = gitValue(root, 'remote', 'get-url', 'origin');
+    assert.match(head, /^[0-9a-f]{40}$/);
+    assert.ok(origin, 'the release checkout must carry an origin remote for this case');
+
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
+    assert.equal(initialized.status, 0, initialized.stdout);
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    assert.equal(manifest.provenance.source.commit, head);
+    assert.equal(manifest.provenance.source.repository, origin);
+    assert.equal(manifest.provenance.source.release, VERSION);
+
+    schemaOneFixture(legacy);
+    const migrated = run('migrate', '--project', legacy);
+    assert.equal(migrated.status, 0, migrated.stdout);
+    const migratedManifest = JSON.parse(fs.readFileSync(path.join(legacy, 'workbench', 'manifest.json'), 'utf8'));
+    assert.equal(migratedManifest.provenance.source.commit, head);
+    assert.equal(migratedManifest.provenance.source.repository, origin);
+
+    const explicit = fixture();
+    try {
+      const pinned = run('init', '--project', explicit, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'a'.repeat(40), '--source-repository', 'https://example.invalid/workbench.git');
+      assert.equal(pinned.status, 0, pinned.stdout);
+      const pinnedManifest = JSON.parse(fs.readFileSync(path.join(explicit, 'workbench', 'manifest.json'), 'utf8'));
+      assert.equal(pinnedManifest.provenance.source.commit, 'a'.repeat(40), 'an explicit flag wins over resolution');
+      assert.equal(pinnedManifest.provenance.source.repository, 'https://example.invalid/workbench.git');
+    } finally { fs.rmSync(explicit, { recursive: true, force: true }); }
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(legacy, { recursive: true, force: true });
+  }
+});
+
+test('a relocated copy without templates refuses init and migrate naming the missing source flag and writes nothing', () => {
+  const project = fixture();
+  const legacy = fixture();
+  const bundle = fixture();
+  try {
+    const relocatedTool = relocateTool(bundle);
+    const relocated = (...args) => {
+      const result = spawnSync(process.execPath, [relocatedTool, ...args], { cwd: bundle, encoding: 'utf8' });
+      return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
+    };
+
+    const refused = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
+    assert.notEqual(refused.status, 0, refused.stdout);
+    assert.equal(refused.report.error.code, 'invalid-invocation');
+    assert.match(refused.report.error.message, /--source-commit/);
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'a refused init must create nothing');
+
+    const partial = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'b'.repeat(40));
+    assert.notEqual(partial.status, 0, partial.stdout);
+    assert.equal(partial.report.error.code, 'invalid-invocation');
+    assert.match(partial.report.error.message, /--source-repository/);
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
+
+    schemaOneFixture(legacy);
+    const refusedMigrate = relocated('migrate', '--project', legacy);
+    assert.notEqual(refusedMigrate.status, 0, refusedMigrate.stdout);
+    assert.equal(refusedMigrate.report.error.code, 'invalid-invocation');
+    assert.match(refusedMigrate.report.error.message, /--source-commit/);
+    assert.equal(fs.existsSync(path.join(legacy, 'workbench', 'grilling')), true, 'a refused migrate must not move legacy content');
+    assert.equal(JSON.parse(fs.readFileSync(path.join(legacy, 'workbench', 'manifest.json'), 'utf8')).schemaVersion, 1);
+
+    const pinned = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'b'.repeat(40), '--source-repository', 'https://example.invalid/workbench.git');
+    assert.equal(pinned.status, 0, pinned.stdout);
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    assert.equal(manifest.provenance.source.commit, 'b'.repeat(40));
+    assert.equal(manifest.provenance.source.repository, 'https://example.invalid/workbench.git');
+    assert.equal(fs.readFileSync(tool, 'utf8').includes("'unrecorded'"), false, 'the layout tool must carry no unrecorded placeholder');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(legacy, { recursive: true, force: true });
+    fs.rmSync(bundle, { recursive: true, force: true });
+  }
+});
+
+test('the layout usage string lists both source flags for init and migrate', () => {
+  const usage = run('help');
+  assert.notEqual(usage.status, 0);
+  assert.equal(usage.report.error.code, 'invalid-invocation');
+  const [initUsage, migrateUsage] = usage.report.error.message.split(' | ');
+  assert.match(initUsage, /^Usage: workbench-layout\.mjs init /);
+  assert.match(initUsage, /--source-commit SHA/);
+  assert.match(initUsage, /--source-repository URL/);
+  assert.match(migrateUsage, /^migrate /);
+  assert.match(migrateUsage, /--source-commit SHA/);
+  assert.match(migrateUsage, /--source-repository URL/);
+});

@@ -165,6 +165,15 @@ node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-proj
 node tools/test-workbench-layout.mjs
 ```
 
+`init` and `migrate` record the exact Workbench source in
+`provenance.source`. Run from this release checkout they resolve its `origin`
+URL and `HEAD` when `--source-commit SHA` and `--source-repository URL` are
+omitted; an explicit flag always wins. A copy of the tool outside a release
+checkout (the installed `workbench/tools/` copy in a downstream project) cannot
+know the Workbench source and refuses with `invalid-invocation` naming the
+missing flag before writing anything. The placeholder `unrecorded` is never
+written.
+
 A schema 1 (v3.0 five-lane) manifest validates as `upgrade-required`. Migrate
 it once, losslessly: `workbench/grilling` becomes `workbench/sessions/grilling`
 and the tracked `workbench/handoffs` checkpoints become
