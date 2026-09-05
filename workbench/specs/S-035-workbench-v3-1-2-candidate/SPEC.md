@@ -275,8 +275,8 @@ appear in their own specs; not repaired here):
   this spec.
 - Real-use evaluation of v3.1.2 in a room is Master Workbench's later review,
   not this spec's evidence.
-- TK-002 (review, PR, remote read-back) is open; the version stamp is a
-  candidate on a task branch until `origin/integration` contains it.
+- TK-002 closed at merge commit `2f9a573`; the candidate is on `integration`
+  and promotion to `main` stays owner-only.
 - The review-derived follow-ups listed in the Completion Result (S-032 F-1,
   S-034 template ADR row, S-031 message wording, S-033 hard links) are
   unowned until a later spec claims them.
