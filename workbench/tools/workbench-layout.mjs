@@ -217,9 +217,12 @@ export function validateManifest(project) {
   }
   // Earlier manifests remain readable at the policy their release declared:
   // v3.0.0 and v3.1.0 carried the twelve-skill bundle, v3.1.1 the sixteen-skill
-  // bundle with the four stances. Any other version must carry the current policy.
+  // bundle with the four stances. Each row is a frozen list, never the live
+  // policy, so a later bundle change keeps older manifests readable. Any other
+  // version must carry the current policy.
   const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
-  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': skillPolicy };
+  const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, 'builder', 'auditor', 'reviewer', 'reconciler'] };
+  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy };
   const accepted = [skillPolicy, supportedLegacy[manifest.workbenchVersion]].filter(Boolean).map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');

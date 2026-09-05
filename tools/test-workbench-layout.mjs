@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
+import { coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
 
@@ -662,6 +663,26 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('3.1.1', sixteen), 'invalid-manifest');
     assert.equal(outcome('unknown', sixteen), 'invalid-manifest');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('the v3.1.1 legacy row is the frozen sixteen-skill bundle, not the live current policy', () => {
+  const project = fixture();
+  const sixteen = [...coreSkills];
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    // Grow the live policy in-process; the exported array backs skillPolicy.required.
+    coreSkills.push('seventeenth');
+    fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion: 'v3.1.1', skillPolicy: { ...manifest.skillPolicy, required: sixteen } }));
+    assert.equal(validateManifest(project).status, 'valid', 'a v3.1.1 sixteen-skill manifest stays readable when the current bundle grows');
+    fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion: VERSION, skillPolicy: { ...manifest.skillPolicy, required: sixteen } }));
+    assert.equal(validateManifest(project).error?.code, 'invalid-skill-policy', 'the current version must carry the grown bundle');
+  } finally {
+    coreSkills.length = 0;
+    coreSkills.push(...sixteen);
+    fs.rmSync(project, { recursive: true, force: true });
+  }
 });
 
 for (const mode of ['init', 'migrate']) {

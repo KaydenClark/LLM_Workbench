@@ -117,8 +117,9 @@ Gap: the stamp, the re-measurement, the final disposition, and the review.
 
 Run the full suite green first, then change the surfaces listed above in one
 logical commit. Red first for the legacy list: a v3.1.1 sixteen-skill manifest
-must validate as `valid` after `supportedLegacy` grows and `invalid-manifest`
-must still reject an unknown version. Record before and after guardrail
+must validate as `valid` after `supportedLegacy` grows, an unlisted
+well-formed version must carry the current policy, and `invalid-manifest`
+must still reject a malformed version. Record before and after guardrail
 scores.
 
 ### TK-002 - Review and land
@@ -162,6 +163,7 @@ The full `AGENTS.md` verification suite, `render`, `doctor`,
 |---|---|---|---|---|---|
 | 2026-09-05 | spec | Spec captured as the v3.1.2 umbrella; disposition of the twelve v3.1.1 upstream items recorded against `b7b23dd` (three landed in S-028, one half landed, one not-supported, seven open across S-029 to S-034) | Version surfaces enumerated with `grep -rn "v3\.1\.1"`; S-028 completion and `tools/feedback-automation.mjs`, `tools/workbench-adoption.mjs` diffs confirm the landed rows | Blueprint v3.1.2 direction added | Everything; TK-001 waits on six specs |
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-workbench-layout.mjs (30 pass; new legacy version-table case, green before and after because the sixteen-skill policy is unchanged, so it pins the table rather than proving red-first); node tools/audit-guardrails.mjs --path . before at 5cd1e51 and after the stamp, 78/100 -> 78/100 with unchanged weights and the same four outcome recommendations; grep -rn v3.1.1 over the enumerated surfaces shows only history and the legacy table; full AGENTS.md suite, test-control-fidelity, path-safety eval, evaluate-workbench templates, render, doctor --home <empty>, git diff --check | manifest, BLUEPRINT, README, LEXICON, RUNBOOK, templates/ADOPTION.md, skills/adoption and update-harness, tool usage strings, three wiki stamps, benchmarks/RESULTS.md row, S-035 Completion Result with the final disposition table and review-derived limitations | TK-002: separate-context review of the exact candidate, gh PR into integration, remote containment read-back |
+| 2026-09-05 | TK-001 | Integration review of `dce85a2` returned APPROVE with three should-fixes, applied in one follow-up commit: the v3.1.1 legacy row now binds to the frozen sixteen-skill list instead of the live `skillPolicy` object; the Completion Result risks paragraph states what the tests actually pin; the limitations paragraph attributes its bullets to the integration reviews recorded here; the ticket text names the real `invalid-manifest` semantics | Red first: `coreSkills` grown in-process made a v3.1.1 sixteen-skill manifest `invalid-skill-policy`; green after the frozen row. node tools/test-workbench-layout.mjs, test-workbench-adoption.mjs, test-workbench-upgrade.mjs, test-workbench-dogfood.mjs, test-spec-workbench.mjs; doctor --home <empty>; render with clean porcelain; git diff --check | S-035 Completion Result and TK-001 ticket text | TK-002: PR into integration and remote containment read-back |
 
 ## Completion Result
 
@@ -198,9 +200,15 @@ marker at release v3.1.1 reads `stale-skill` from `doctor` (attention, never
 blocking) once its manifest moves to v3.1.2; only an explicit upgrade or a
 reinstall rewrites the marker. Downstream manifests are not touched by this
 change. The legacy-table rewrite changes no accepted or rejected manifest: the
-sixteen-skill policy is identical between v3.1.1 and v3.1.2, so the added test
-case was green before the change as well as after; it is a regression guard
-that pins the table, not a red-first proof, and the evidence row says so.
+sixteen-skill policy is identical between v3.1.1 and v3.1.2, so the first
+added test case was green before the change as well as after. What the tests
+pin: the two twelve-skill rows (v3.0.0, v3.1.0), the current-policy fallback
+for any unlisted well-formed version, the malformed-version `invalid-manifest`
+path, and, after the review follow-up, the frozen v3.1.1 row (a v3.1.1
+sixteen-skill manifest stays `valid` when the live bundle grows, red before
+the fix, green after). The integration review found the first table bound
+v3.1.1 to the live policy object; the follow-up binds it to the frozen
+sixteen-skill list.
 
 **How verified.** `node tools/test-workbench-layout.mjs` (30 pass, including
 the new legacy version-table case and the unchanged "v3.1.1 requires all four
@@ -235,8 +243,9 @@ log.
 | UP-011 | Integration branch mandated, established nowhere | landed in S-029: manifest schema 2 `git` block (`defaultBranch`, `integrationBranch`, exact case) written by `init`, `migrate`, and Adoption; `doctor` reports `integration-branch-undeclared` and `integration-branch-missing`; `validate --genesis` fails closed; ADR-0039 |
 | UP-012 | Permission file withholds the lanes | landed in S-030: `templates/.claude/settings.json` grants `Edit` and `Write` on the five authorship lanes; `doctor` reports `permission-scope-drift` naming each withheld lane and the Genesis gate fails closed on it |
 
-**Limitations carried from the independent reviews of S-029 to S-034**
-(recorded in those specs, not repaired here):
+**Limitations carried from the integration reviews of S-029 to S-034**
+(recorded here from those reviews; S-032 F-1 and the S-034 template row also
+appear in their own specs; not repaired here):
 
 - S-032 F-1: an explicit `--source-commit` has no SHA shape check, and
   `tools/workbench-tools.mjs sourceIdentity()`, which Adoption and both
