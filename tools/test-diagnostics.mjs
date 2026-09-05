@@ -410,7 +410,8 @@ test('a room outside any Git work tree is told so instead of being told to creat
     write(dir, 'workbench/wiki/MEMORY.md', '---\ntype: memory\nstatus: active\nsensitivity: normal\nknowledge_role: canonical\nprovenance:\n  - fixture\nsource_paths:\n  - workbench/wiki\nlast_verified: 2026-09-04\n---\n\n# Fixture Memory\n');
     write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
     render(dir);
-    const findings = doctor(dir, { home: quietHome });
+    // This bare fixture routes no room brain; only the git scope is under test.
+    const findings = doctor(dir, { home: quietHome }).filter((item) => item.scope === 'git');
     assert.deepEqual(findings.map((item) => [item.code, item.branch]), [['integration-branch-missing', 'integration']]);
     assert.match(findings[0].message, /not inside a Git work tree/, 'the message names the actual condition');
     assert.doesNotMatch(findings[0].message, /create it from/, 'no repository means no branch to create yet');
