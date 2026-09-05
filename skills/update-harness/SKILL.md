@@ -161,7 +161,17 @@ Run the same full project suite as the baseline, plus harness-specific checks:
 - placeholder and stale-version search;
 - retired control-name and duplicate-queue search;
 - control-file stamps and mechanical scope alignment;
-- diff review for lost project-specific rules or accidental product changes.
+- diff review for lost project-specific rules or accidental product changes,
+  backed by the control fidelity report run from the release checkout:
+
+  ```bash
+  node tools/control-fidelity.mjs report --project /absolute/project
+  ```
+
+  Every `dropped` or `changed` line it lists for `AGENTS.md` is either restored
+  or recorded as a decision in the upgrade spec or an ADR under
+  `workbench/docs/adr/`; the report labels a checkout-versus-manifest version
+  mismatch and never blocks.
 - feedback harvest: append observed harness friction to the manifest-declared
   feedback lane, or record `none observed` with the reason in the upgrade spec.
 

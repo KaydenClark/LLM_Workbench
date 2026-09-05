@@ -8,8 +8,8 @@
 **Updated:** 2026-09-05
 **Catalog description:** Report which template-derived lines a room's hand-reconciled controls changed, dropped, or added, so a deliberate divergence can be recorded and an accidental one is caught.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-002 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 ## Outcome
 
@@ -103,7 +103,7 @@ Gap: the report and its place in the protocols.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | `control-fidelity.mjs report` with line classification, version labeling, JSON and Markdown output, and a fixture that drops one qualifier | done | none | node tools/test-control-fidelity.mjs (10 cases: filled-only room, dropped canonicalized_in qualifier is one changed entry and zero dropped, deleted Branch Completion section is dropped per line, added lines, missing control, CLAUDE.md exact/mismatch, optional permission and wiki files, CRLF, newer/older/same version labels, CLI exit 0 on divergence and 1 on invocation errors with an unchanged room snapshot); node tools/test-skill-catalog.mjs; node tools/test-portability-matrix.mjs; node tools/test-evaluate-workbench.mjs; self-report against this checkout exits 0 |
-| TK-002 | Adoption Phase 4 and update-harness section 5 run the report and route divergences to a recorded decision | ready | TK-001 | pending |
+| TK-002 | Adoption Phase 4 and update-harness section 5 run the report and route divergences to a recorded decision | done | TK-001 | node tools/test-control-fidelity.mjs (11 cases; the new protocol case checks Adoption Phase 4, update-harness section 5, the Runbook command, and both verification lists); node tools/test-skill-catalog.mjs; node tools/test-portability-matrix.mjs; node tools/test-guardrail-audit.mjs; node tools/test-workbench-adoption.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls |
 
 ### TK-001 - The dropped qualifier is visible
 
@@ -160,6 +160,7 @@ list), `render`, `doctor`, and `git diff --check`.
 |---|---|---|---|---|---|
 | 2026-09-05 | spec | Spec captured from upstream fix-list item UP-008 (rank medium) | `template-placeholders.mjs` re-read: placeholder detection only; no template-versus-room comparison exists in `tools/` or `workbench/tools/` | Blueprint v3.1.2 direction links this spec | Both slices |
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-control-fidelity.mjs (10 cases: filled-only room, dropped canonicalized_in qualifier is one changed entry and zero dropped, deleted Branch Completion section is dropped per line, added lines, missing control, CLAUDE.md exact/mismatch, optional permission and wiki files, CRLF, newer/older/same version labels, CLI exit 0 on divergence and 1 on invocation errors with an unchanged room snapshot); node tools/test-skill-catalog.mjs; node tools/test-portability-matrix.mjs; node tools/test-evaluate-workbench.mjs; self-report against this checkout exits 0 | AGENTS.md and RUNBOOK.md full verification lists gained node tools/test-control-fidelity.mjs; LEXICON.md Core Terms gained Control fidelity; templates/AGENTS.md carries no ADR ownership row at this release, so the fixture template adds the root control's row before the room is filled from it | TK-002: ADOPTION.md Phase 4, update-harness section 5, and the Runbook command section |
+| 2026-09-05 | TK-002 | Ticket closed | node tools/test-control-fidelity.mjs (11 cases; the new protocol case checks Adoption Phase 4, update-harness section 5, the Runbook command, and both verification lists); node tools/test-skill-catalog.mjs; node tools/test-portability-matrix.mjs; node tools/test-guardrail-audit.mjs; node tools/test-workbench-adoption.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls | templates/ADOPTION.md Phase 4 and skills/update-harness/SKILL.md section 5 run the report and require each dropped or changed AGENTS.md line to be restored or recorded in the owning spec or an ADR; RUNBOOK.md gained the Control fidelity report section | none; spec completion pending the full suite |
 
 ## Completion Result
 

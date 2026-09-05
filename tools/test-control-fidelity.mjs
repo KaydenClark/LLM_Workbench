@@ -279,3 +279,18 @@ test('the product checkout reports against its own templates without throwing', 
   assert.equal(control(report, 'AGENTS.md').status, 'compared');
   assert.equal(report.versionMatch, true, 'the checkout and its own manifest agree');
 });
+
+test('the protocols run the report and route AGENTS.md divergences to a recorded decision', () => {
+  const adoption = fs.readFileSync(path.join(root, 'templates', 'ADOPTION.md'), 'utf8');
+  const phase4 = adoption.slice(adoption.indexOf('### Phase 4'), adoption.indexOf('### Phase 5'));
+  assert.match(phase4, /node tools\/control-fidelity\.mjs report --project/, 'Adoption Phase 4 runs the report');
+  assert.match(phase4, /`dropped` or `changed`[\s\S]*`AGENTS\.md`[\s\S]*(restored|restore)[\s\S]*(recorded|record)[\s\S]*ADR/, 'Adoption Phase 4 requires each AGENTS.md divergence to be restored or recorded');
+  const upgrade = fs.readFileSync(path.join(root, 'skills', 'update-harness', 'SKILL.md'), 'utf8');
+  const section5 = upgrade.slice(upgrade.indexOf('## 5.'), upgrade.indexOf('## 6.'));
+  assert.match(section5, /node tools\/control-fidelity\.mjs report --project/, 'update-harness section 5 runs the report');
+  assert.match(section5, /`dropped` or `changed`[\s\S]*`AGENTS\.md`[\s\S]*(restored|restore)[\s\S]*(recorded|record)[\s\S]*ADR/, 'update-harness section 5 requires each AGENTS.md divergence to be restored or recorded');
+  const runbook = fs.readFileSync(path.join(root, 'RUNBOOK.md'), 'utf8');
+  assert.match(runbook, /node tools\/control-fidelity\.mjs report --project/, 'the Runbook documents the report command');
+  assert.match(runbook, /node tools\/test-control-fidelity\.mjs/, 'the Runbook lists the fidelity test');
+  assert.match(fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8'), /node tools\/test-control-fidelity\.mjs/, 'AGENTS.md lists the fidelity test');
+});

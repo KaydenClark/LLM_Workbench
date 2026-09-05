@@ -161,8 +161,21 @@ that scope - writable roots -> `allow`, secrets/credentials/build output ->
 `deny`, review-required actions -> `ask` (see `.claude/README.md`). Omit `.claude/`
 deliberately if the project will not use Claude Code.
 
+Then compare the reconciled controls with the templates they came from. From
+the release checkout, run the control fidelity report against the project:
+
+```bash
+node tools/control-fidelity.mjs report --project [ABSOLUTE_PROJECT_PATH]
+```
+
+Every `dropped` or `changed` line the report lists for `AGENTS.md` must be
+either restored or recorded as a decision in the owning spec or an ADR under
+`workbench/docs/adr/`; `filled` lines are expected and `added` lines are this
+project's own rules.
+
 Output: an `AGENTS.md` whose scope names real paths, plus a filled
-`.claude/settings.json` or a recorded decision to omit it.
+`.claude/settings.json` or a recorded decision to omit it, plus a fidelity
+report whose `AGENTS.md` divergences are each restored or recorded.
 
 ### Phase 5 - RUNBOOK from what already runs
 
