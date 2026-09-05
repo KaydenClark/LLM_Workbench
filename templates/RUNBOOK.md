@@ -157,7 +157,9 @@ schema 2 marker; both are attention, and the explicit upgrade is the repair. `do
 `integration-branch-undeclared` and `integration-branch-missing` (scope
 `git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
 names a branch that resolves locally or on a remote; the Genesis readiness
-gate fails closed on the same two conditions. Decision records live in
+gate fails closed on the same two conditions. When that branch resolves and
+the spec `next` would select is already complete there, `doctor` reports
+`complete-on-integration` (attention) without hiding the work. Decision records live in
 `workbench/docs/adr/`; an accepted record names the control that carries its
 rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
