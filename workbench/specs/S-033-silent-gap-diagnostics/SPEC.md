@@ -170,6 +170,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-wiki.mjs (9 pass; new: stale-stamp attention test and this-repository stamp/routing test), node tools/test-workbench-layout.mjs (20 pass; new: Genesis readiness requires version-matched wiki stamps), node tools/test-diagnostics.mjs (5 pass), node tools/test-sessions.mjs (3 pass); doctor on this repository reported stale-stamp for workbench/wiki/SCHEMA.md, AGENTS.md, design-concepts/README.md (v3.0.0 vs manifest v3.1.1) before the refresh and none after | workbench/wiki/SCHEMA.md, AGENTS.md, design-concepts/README.md stamps refreshed to v3.1.1; RUNBOOK.md Wiki Validation and Diagnostics table and templates/RUNBOOK.md doctor section name stale-stamp and the Genesis version-mismatch extension | TK-003 checkpoint source boundary |
 | 2026-09-05 | TK-003 | Ticket closed | node tools/test-sessions.mjs (4 pass; new: checkpoint refuses a source outside the repository root and writes nothing, covering an absolute outside path, a .. traversal, a missing outside file, the root itself, the CLI exit 1, and an in-root handoff still promoting), node tools/test-diagnostics.mjs (5 pass), node tools/test-wiki.mjs (9 pass), node tools/test-workbench-layout.mjs (20 pass) | RUNBOOK.md Session Checkpoints and templates/RUNBOOK.md upgrade safety paragraph name the source boundary | none |
 | 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-05 | review | Integration review of c86ec20 requested changes: the checkpoint source boundary was lexical only (a linked directory inside the repository reached outside), an unfilled `v[HARNESS_VERSION]` wiki stamp was silent, plus three nits | `assertSafeReadPath` added beside `assertSafeWritePath` in `workbench-paths.mjs` and used by `checkpoint`; red first with a symlinked handoffs directory (`promoted` before, `invalid-note` after); `wikiStamps` reports an unfilled placeholder stamp as `stale-stamp` (red first, `[]` before); `node tools/test-sessions.mjs`, `test-wiki.mjs`, `test-diagnostics.mjs`, `test-workbench-layout.mjs`, `test-workbench-dogfood.mjs`, `test-workbench-tools.mjs`, `test-symlink-invocation.mjs`, `doctor`, `render`, `git diff --check` green | Both Runbooks name the symlink refusal and the customized-lane case; `templates/RUNBOOK.md` rewrapped; Genesis wiki loop reads each file once | none |
 
 ## Completion Result
 
@@ -214,6 +215,16 @@ in the AGENTS.md suite exited 0, `render` and `doctor` exit 0 with only the
 pre-existing S-035 `blocked-slice` visible, `git diff --check` is clean, and
 `evaluate-workbench --path templates --include-controls` is identical before
 and after (the template edits are prose in RUNBOOK and ADOPTION).
+
+**Review follow-up.** The integration review of c86ec20 found the checkpoint
+source boundary lexical only: a directory symlink inside the repository could
+still reach an outside file. `assertSafeReadPath` in `workbench-paths.mjs` now
+walks every component with `lstat` beside `assertSafeWritePath`, so the two
+boundaries are one, and `checkpoint` refuses any linked component with
+`invalid-note`. `stale-stamp` also covers a stamp left as the unfilled
+`v[HARNESS_VERSION]` placeholder, which a hand-copied template leaves where the
+Genesis gate never ran. Both were red first in `test-sessions.mjs` and
+`test-wiki.mjs`.
 
 ## Remaining Limitations Or Follow-Up Specs
 

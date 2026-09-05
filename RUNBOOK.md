@@ -472,9 +472,10 @@ naming the source and date) into `workbench/sessions/checkpoints/<topic>-<date>.
 with mode `0644`, and refuses with `secret-like-content` and the offending
 line numbers when the shared `privacy.mjs` patterns match; `invalid-note`
 covers a symlink, a non-file, an existing destination, or a `--from` that
-resolves outside the repository root (source and destination share one
-boundary; the untracked session collections are the intended sources). A
-refusal writes nothing. Cite the promoted copy, never the live path.
+resolves outside the repository root or passes through a symbolic link
+(source and destination share one boundary, `assertSafeReadPath` beside
+`assertSafeWritePath`; the untracked session collections are the intended
+sources). A refusal writes nothing. Cite the promoted copy, never the live path.
 
 ### Wiki Validation
 
@@ -499,7 +500,9 @@ email addresses in a `normal` note (the shared `workbench/tools/privacy.mjs`
 patterns). `stale-note` is attention only. `room-brain-unrouted` (attention)
 reports a root control that does not route back to the room brain: `AGENTS.md`
 must reference the wiki lane path and `README.md` must reference `MEMORY.md`;
-the message names the control lacking the route. `stale-stamp` (attention)
+the message names the control lacking the route, and a room whose manifest
+declares a different wiki lane path sees it until its controls name that lane.
+`stale-stamp` (attention)
 reports a wiki contract file (`SCHEMA.md`, `AGENTS.md`,
 `design-concepts/README.md`) or the room brain whose `Generated from LLM
 Workbench` stamp names a version other than the manifest's; the check is

@@ -45,16 +45,23 @@ function roomBrainRouting(root, wikiRelative) {
 
 // The wiki contract files and the room brain carry the Genesis stamp; one that
 // names a version other than the manifest is stale (version equality, not
-// content freshness). A file without a stamp names no version.
+// content freshness), and so is a stamp still holding the template placeholder,
+// which a hand-copied template leaves behind where the Genesis gate never ran.
+// A file without any stamp names no version.
 function wikiStamps(root, wikiRoot, wikiRelative, expectedVersion) {
   const findings = [];
   if (!expectedVersion) return findings;
   for (const relative of ['MEMORY.md', ...wikiContractFiles]) {
     const target = path.join(wikiRoot, relative);
     if (!fs.existsSync(target) || !fs.lstatSync(target).isFile()) continue;
-    const stamp = versionStamp(fs.readFileSync(target, 'utf8'));
+    const content = fs.readFileSync(target, 'utf8');
+    const note = `${wikiRelative}/${relative}`;
+    if (/LLM Workbench v\[/.test(content)) {
+      findings.push(finding('stale-stamp', `${note} stamp is unfilled; fill it with the manifest version ${expectedVersion}`, { note }));
+      continue;
+    }
+    const stamp = versionStamp(content);
     if (stamp !== null && stamp !== expectedVersion) {
-      const note = `${wikiRelative}/${relative}`;
       findings.push(finding('stale-stamp', `${note} is stamped ${stamp} but the manifest says ${expectedVersion}`, { note }));
     }
   }

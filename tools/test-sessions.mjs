@@ -88,7 +88,9 @@ test('checkpoint refuses a source outside the repository root and writes nothing
   try {
     fs.writeFileSync(path.join(outside, 'notes.md'), NOTEPAD);
     const checkpoints = path.join(dir, 'workbench', 'sessions', 'checkpoints');
-    for (const from of [path.join(outside, 'notes.md'), path.join('..', path.basename(outside), 'notes.md'), path.join(outside, 'missing.md')]) {
+    // A linked directory inside the repository must not reach outside either.
+    fs.symlinkSync(outside, path.join(dir, 'workbench', 'sessions', 'handoffs', 'link'));
+    for (const from of [path.join(outside, 'notes.md'), path.join('..', path.basename(outside), 'notes.md'), path.join(outside, 'missing.md'), 'workbench/sessions/handoffs/link/notes.md']) {
       const refused = checkpoint(dir, { from, topic: 'outside', date: '2026-09-04' });
       assert.equal(refused.status, 'blocked', from);
       assert.equal(refused.error.code, 'invalid-note', from);

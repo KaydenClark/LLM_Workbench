@@ -269,3 +269,17 @@ test('this repository stamps its wiki contract files with its manifest version a
   }
   assert.deepEqual(doctor(root).filter((item) => ['stale-stamp', 'room-brain-unrouted'].includes(item.code)), []);
 });
+
+test('an unfilled placeholder stamp is reported as stale so a hand-copied template is not silent', () => {
+  const project = seededWiki();
+  try {
+    const schema = path.join(project, 'workbench', 'wiki', 'SCHEMA.md');
+    fs.writeFileSync(schema, fs.readFileSync(schema, 'utf8').replace(`Generated from LLM Workbench ${VERSION}.`, 'Generated from LLM Workbench v[HARNESS_VERSION].'));
+    const unfilled = validateWiki(project).filter((item) => item.code === 'stale-stamp');
+    assert.deepEqual(unfilled.map((item) => [item.severity, item.blocks, item.note]), [['attention', 'none', 'workbench/wiki/SCHEMA.md']]);
+    assert.match(unfilled[0].message, /unfilled/);
+    assert.deepEqual(doctor(project).filter((item) => item.code === 'stale-stamp').map((item) => item.note), ['workbench/wiki/SCHEMA.md']);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
