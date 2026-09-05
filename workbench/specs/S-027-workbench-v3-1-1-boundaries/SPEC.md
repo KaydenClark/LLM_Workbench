@@ -7,7 +7,7 @@
 **Updated:** 2026-09-05
 **Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
 **Blockers:** none
-**Latest event:** Owner reported that an approved candidate still did not land and that merged branches were never cleaned up; the Branch Completion contract and closeout commands are now recorded.
+**Latest event:** Stabilization run reproduced the approved-candidate stall from its original prompt, repaired the worktree-unsafe closeout and the single-branch fetch refspec, and deleted three provably merged branches; the merge half stays gated on a fresh review.
 **Next gate:** Owner declined the merge for this run. A fresh separate-context review of the new branch tip is required before any integration merge; the earlier APPROVE covers `72cf0fe` only.
 **Stance:** Builder
 
@@ -173,6 +173,7 @@ completed spec evidence remain unchanged.
 | 2026-09-05 | TK-001 | Separate-context integration review APPROVE on the exact candidate | Reviewer reproduced all 29 AGENTS/RUNBOOK union commands in an immutable clone at `a61a6d3`; both prior rejection causes confirmed fixed; guardrail 68 -> 73 measured against a byte-unchanged `tools/audit-guardrails.mjs`; privacy scan found only synthetic negative-test fixtures; no spec path moved; append-only log confirmed unmodified | P2 record drift repaired in this spec header, acceptance box, slice row and the rendered Taskboard | Three P3 findings recorded as follow-up; integration merge itself remains |
 | 2026-09-05 | TK-001 | Delta review APPROVE on the record repair | Reviewer reproduced all 29 union commands at `72cf0fe`; evidence rows 12 -> 14 added, 0 modified; render drift zero; `next` now selects TK-001 instead of returning null | No further record change required | Reviewer graded the early acceptance-box check P3 and warned that later commits form a new candidate |
 | 2026-09-05 | TK-001 | Owner reported a harness failure: an approved candidate did not land and merged branches were never cleaned up | Red on three new governance-core assertions (missing Branch Completion contract, blanket branch-removal gate, absent Runbook closeout) then 7/7 green; all 26 required commands PASS; guardrail unchanged at 73/100 and templates unchanged at 106.6/113 | Branch Completion added to AGENTS and generic template, safety rule narrowed, Runbook closeout commands, feedback report F-002/F-003 | The branch tip is now a new candidate; the prior APPROVE covers `72cf0fe` only and a fresh review is required before any merge |
+| 2026-09-05 | TK-001 | Stabilization run reproduced the branch-completion stall from its original prompt and repaired two demonstrated closeout defects | Original prompt and the AskUserQuestion stall located in the 2026-09-04 session record; HEAD governance test red 3 of 7 against the 72cf0fe controls and green 7 of 7 at 7994d67; `git switch integration` reproduced failing against the linked worktree that holds `integration`; new closeout assertion red then 8 of 8 green; single-branch `remote.origin.fetch` repaired so `@{u}` resolves and `origin/integration` refreshes; three branches already contained in `origin/integration` deleted with `git branch -d` and `git push origin --delete`; full 29-command union PASS; guardrail 73/100 and templates 106.6/113 unchanged; ADR and Wiki validate; diff check clean | RUNBOOK closeout made worktree-safe with the refspec repair; generic RUNBOOK closeout placeholders registered in the vocabulary; the retired root-level notepad moved into the manifest grilling lane; limitations name installed-skill drift and owner-only cleanup | Merge half not rerun: a fresh separate-context review of the new tip is still required before any integration merge; real fresh-session continuation and the non-Foundry slice are untested |
 
 ## Completion Result
 
@@ -187,6 +188,22 @@ its earlier rejected candidate and correction are retained in the evidence log.
 ## Remaining Limitations Or Follow-Up Specs
 
 - Installed skills and external deployments are not synchronized by this work.
+  On the owner host the user-scoped discovery root is a foreign Git repository:
+  its twelve workflow skills differ from `skills/`, none of the four stances is
+  present, and its `grilling` and `checkpoint` copies write notepads to a spaced
+  `grilling diary/` lane that the manifest does not declare and `.gitignore` does
+  not cover. The installer and the explicit upgrade both fail closed there
+  (`foreign-git-root`), so only that repository's owner can add the four stance
+  directories from `skills/` and correct the lane path; the assigned Builder
+  stance cannot be loaded by a real session on that host until then.
+- Host Git state outside this checkout is owner cleanup: ten linked worktrees
+  under the host temp directory hold `integration` and `claude/v3.1-release`;
+  twenty remote branches are already contained in `origin/integration` and
+  thirty-five older remote branches still hold unmerged commits. Only the three
+  branches provably merged from the current line were deleted here.
+- Automatic approval review earlier refused a push from this repository while the
+  host's auto-mode environment names a different trusted repository. That is a
+  plausible, unconfirmed cause and lives outside this repository's edit scope.
 - Historical provider proof is not a new current-candidate provider run.
 - Master Workbench waits for several real contrasting owner-useful deliveries,
   named verification, fresh continuation and a concrete observation need.

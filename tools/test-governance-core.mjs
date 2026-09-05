@@ -113,3 +113,18 @@ test('the Runbook carries the operational branch closeout commands', () => {
   assert.match(runbook, /git branch -d/, 'RUNBOOK.md names the safe local delete');
   assert.match(runbook, /git push origin --delete/, 'RUNBOOK.md names the remote branch delete');
 });
+
+test('the Runbook closeout proves integration containment without a local integration checkout', () => {
+  const runbook = read('RUNBOOK.md');
+  const start = runbook.indexOf('Closeout, once the integration review has passed');
+  const end = runbook.indexOf('## Manual Harness Feedback Reports');
+  assert.ok(start > -1 && end > start, 'RUNBOOK.md carries a closeout block before the feedback-report section');
+  const closeout = runbook.slice(start, end);
+  assert.match(closeout, /git switch --detach origin\/integration/, 'the closeout leaves the task branch via a detached checkout of origin/integration, so a linked worktree holding integration cannot block it');
+  assert.match(closeout, /git merge-base --is-ancestor [^\n]*origin\/integration/, 'the closeout proves that origin/integration contains the work and fails loudly otherwise');
+  assert.match(closeout, /git branch --merged origin\/integration/, 'the closeout lists merged branches against origin/integration');
+  assert.doesNotMatch(closeout, /^git switch integration\b/m, 'the closeout commands must not check out a local integration branch');
+  const template = read('templates/RUNBOOK.md');
+  assert.match(template, /\[MERGE_PR_COMMAND\]/, 'templates/RUNBOOK.md carries the merge step that the template AGENTS Branch Completion contract requires');
+  assert.match(template, /\[DELETE_MERGED_BRANCH_COMMAND\]/, 'templates/RUNBOOK.md carries the merged-branch cleanup step');
+});

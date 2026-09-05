@@ -301,6 +301,17 @@ commands and expected results here:
 
 Expected result: [clean scope, verified base/target, reviewable PR].
 
+Closeout, once the integration review has passed. A pushed branch is
+recoverable, not delivered; finish the merge and clean up after yourself:
+
+```bash
+[MERGE_PR_COMMAND]
+[VERIFY_INTEGRATION_CONTAINS_WORK_COMMAND]
+[DELETE_MERGED_BRANCH_COMMAND]
+```
+
+Expected result: [integration contains the work; merged branch deleted locally and remotely; unmerged work never force-deleted].
+
 ## Upgrading The Harness
 
 These control docs were generated from a specific LLM Workbench version, recorded

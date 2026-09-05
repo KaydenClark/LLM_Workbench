@@ -679,17 +679,35 @@ recoverable, not delivered; finish the merge and clean up after yourself:
 
 ```bash
 gh pr merge --merge --delete-branch
-git switch integration && git pull
-git branch --merged integration
+git fetch origin --prune
+git switch --detach origin/integration
+git merge-base --is-ancestor codex/short-description origin/integration && echo "integration contains the work"
+git branch --merged origin/integration
 git branch -d codex/short-description
 git push origin --delete codex/short-description
 ```
 
-`git branch --merged integration` lists every branch `integration` now
-contains, including stacked branches that needed no separate merge. `-d`
-refuses to delete unmerged work, so let it fail rather than reaching for `-D`.
-`gh pr merge --delete-branch` already removes the remote branch; the explicit
-`git push origin --delete` is for branches that never had a PR.
+The closeout never checks out a local `integration` branch: a linked worktree
+may already hold it (this repository keeps one under the host temp directory),
+and `git switch integration` then fails. `git switch --detach origin/integration`
+leaves the task branch without that dependency, and `git merge-base
+--is-ancestor` exits non-zero when `origin/integration` does not contain the
+work, so a missed merge cannot pass silently. `git branch --merged
+origin/integration` lists every branch `integration` now contains, including
+stacked branches that needed no separate merge. `-d` refuses to delete unmerged
+work, so let it fail rather than reaching for `-D`. `gh pr merge
+--delete-branch` already removes the remote branch and may remove the local
+one; a "branch not found" from the two delete commands is then harmless. The
+explicit `git push origin --delete` is for branches that never had a PR.
+
+A clone whose `remote.origin.fetch` names only `main` cannot see
+`origin/integration` move or resolve `@{u}` for a pushed task branch. Repair
+it once before relying on the commands above:
+
+```bash
+git config --replace-all remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+git fetch origin --prune
+```
 
 ## Manual Harness Feedback Reports
 
