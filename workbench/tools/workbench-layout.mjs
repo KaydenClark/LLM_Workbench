@@ -215,11 +215,16 @@ export function validateManifest(project) {
   if (manifest.git !== undefined && (!manifest.git || typeof manifest.git !== 'object' || Array.isArray(manifest.git) || !isBranchName(manifest.git.defaultBranch) || !isBranchName(manifest.git.integrationBranch))) {
     return fail('invalid-manifest', 'Manifest git block must declare defaultBranch and integrationBranch as Git branch names.', { git: manifest.git });
   }
-  // Existing v3.0/v3.1 manifests remain readable; v3.1.1 must include stances.
+  // Earlier manifests remain readable at the policy their release declared:
+  // v3.0.0 and v3.1.0 carried the twelve-skill bundle, v3.1.1 the sixteen-skill
+  // bundle with the four stances. Each row is a frozen list, never the live
+  // policy, so a later bundle change keeps older manifests readable. Any other
+  // version must carry the current policy.
   const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
-  const supportedLegacy = ['v3.0.0', 'v3.1.0'].includes(manifest.workbenchVersion)
-    && JSON.stringify(manifest.skillPolicy) === JSON.stringify(legacyPolicy);
-  if (JSON.stringify(manifest.skillPolicy) !== JSON.stringify(skillPolicy) && !supportedLegacy) {
+  const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, 'builder', 'auditor', 'reviewer', 'reconciler'] };
+  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy };
+  const accepted = [skillPolicy, supportedLegacy[manifest.workbenchVersion]].filter(Boolean).map((policy) => JSON.stringify(policy));
+  if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
   }
   return report('valid', { manifest });
@@ -625,7 +630,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.1 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.1] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | validate --project PATH [--genesis] (the source flags default to the release checkout\'s HEAD and origin and are required for a relocated copy)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.2 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | validate --project PATH [--genesis] (the source flags default to the release checkout\'s HEAD and origin and are required for a relocated copy)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current'].includes(result.status)) process.exitCode = 1;
   } catch (error) {

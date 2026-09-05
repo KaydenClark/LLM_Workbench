@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-09-05
 **Status:** active
-**Harness version:** v3.1.1 (local candidate; publication pending)
+**Harness version:** v3.1.2 (local candidate; publication pending)
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
@@ -34,7 +34,7 @@ Core promise:
 ## Accepted V3 Direction
 
 [S-021](workbench/specs/S-021-portable-workbench-v3/SPEC.md) owns the portable
-contract. Its shipped capabilities remain the baseline for v3.1.1. Workbench development
+contract. Its shipped capabilities remain the baseline for v3.1.1 and the v3.1.2 patch. Workbench development
 stands on its own; it has no dependency on completing Foundry.
 
 - The seven root controls remain universally discoverable. Durable support
@@ -53,9 +53,10 @@ stands on its own; it has no dependency on completing Foundry.
   deterministic parsing, rendering, validation, and safe bounded file
   operations rather than one monolithic lifecycle program.
 
-v3.0.0 and v3.1.0 are preserved unreleased candidates. S-027 continues the
-v3.1 baseline as v3.1.1. A version label is not publication; the owner alone
-promotes integration to main, after the applicable candidate review.
+v3.0.0 and v3.1.0 are preserved unreleased candidates. S-027 continued the
+v3.1 baseline as v3.1.1, and S-035 stamps the v3.1.2 patch candidate. A version
+label is not publication; the owner alone promotes integration to main, after
+the applicable candidate review.
 
 ## Accepted V3.1 Direction
 
