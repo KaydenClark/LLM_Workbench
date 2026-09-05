@@ -1,15 +1,15 @@
 # S-035 - Workbench v3.1.2 Candidate
 
 **Spec ID:** S-035
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Stamp v3.1.2 only after the six v3.1.2 capability specs are complete and green, record the disposition of every v3.1.1 upstream fix-list item, and land the reviewed candidate on integration.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -109,7 +109,7 @@ Gap: the stamp, the re-measurement, the final disposition, and the review.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Stamp v3.1.2 on every version-bearing surface, extend `supportedLegacy`, re-measure the guardrail, and write the final disposition table | done | S-029, S-030, S-031, S-032, S-033, S-034 | node tools/test-workbench-layout.mjs (30 pass; new legacy version-table case, green before and after because the sixteen-skill policy is unchanged, so it pins the table rather than proving red-first); node tools/audit-guardrails.mjs --path . before at 5cd1e51 and after the stamp, 78/100 -> 78/100 with unchanged weights and the same four outcome recommendations; grep -rn v3.1.1 over the enumerated surfaces shows only history and the legacy table; full AGENTS.md suite, test-control-fidelity, path-safety eval, evaluate-workbench templates, render, doctor --home <empty>, git diff --check |
-| TK-002 | Separate-context review of the exact candidate, PR into integration, remote containment read-back | ready | TK-001 | pending |
+| TK-002 | Separate-context review of the exact candidate, PR into integration, remote containment read-back | done | TK-001 | Separate-context review APPROVED dce85a2 with three should-fixes, applied in 91e0993 and re-APPROVED after reproducing the 17th-skill scenario red then green; PR #60 opened with gh and merged with --match-head-commit 91e09931e9b41d6936d04c7de587b79635d2101f; merge commit 2f9a57386017c0c3bf396037784e10f3f6b89ae7; git merge-base --is-ancestor 91e0993 origin/integration succeeds; origin/main unchanged at 08ab78e |
 
 ### TK-001 - Stamp and account
 
@@ -135,7 +135,7 @@ ticket with the merge commit.
 - [x] Every version-bearing surface reads v3.1.2 and `supportedLegacy` accepts v3.1.1; the full suite, `render`, and `doctor` pass afterwards.
 - [x] Guardrail before and after scores are recorded with unchanged criteria and stated limitations.
 - [x] The Completion Result carries the final disposition of UP-001 through UP-012.
-- [ ] The exact candidate passed separate-context review and `origin/integration` contains it; `main` is unchanged.
+- [x] The exact candidate passed separate-context review and `origin/integration` contains it; `main` is unchanged.
 
 ## Testing Seams
 
@@ -164,6 +164,8 @@ The full `AGENTS.md` verification suite, `render`, `doctor`,
 | 2026-09-05 | spec | Spec captured as the v3.1.2 umbrella; disposition of the twelve v3.1.1 upstream items recorded against `b7b23dd` (three landed in S-028, one half landed, one not-supported, seven open across S-029 to S-034) | Version surfaces enumerated with `grep -rn "v3\.1\.1"`; S-028 completion and `tools/feedback-automation.mjs`, `tools/workbench-adoption.mjs` diffs confirm the landed rows | Blueprint v3.1.2 direction added | Everything; TK-001 waits on six specs |
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-workbench-layout.mjs (30 pass; new legacy version-table case, green before and after because the sixteen-skill policy is unchanged, so it pins the table rather than proving red-first); node tools/audit-guardrails.mjs --path . before at 5cd1e51 and after the stamp, 78/100 -> 78/100 with unchanged weights and the same four outcome recommendations; grep -rn v3.1.1 over the enumerated surfaces shows only history and the legacy table; full AGENTS.md suite, test-control-fidelity, path-safety eval, evaluate-workbench templates, render, doctor --home <empty>, git diff --check | manifest, BLUEPRINT, README, LEXICON, RUNBOOK, templates/ADOPTION.md, skills/adoption and update-harness, tool usage strings, three wiki stamps, benchmarks/RESULTS.md row, S-035 Completion Result with the final disposition table and review-derived limitations | TK-002: separate-context review of the exact candidate, gh PR into integration, remote containment read-back |
 | 2026-09-05 | TK-001 | Integration review of `dce85a2` returned APPROVE with three should-fixes, applied in one follow-up commit: the v3.1.1 legacy row now binds to the frozen sixteen-skill list instead of the live `skillPolicy` object; the Completion Result risks paragraph states what the tests actually pin; the limitations paragraph attributes its bullets to the integration reviews recorded here; the ticket text names the real `invalid-manifest` semantics | Red first: `coreSkills` grown in-process made a v3.1.1 sixteen-skill manifest `invalid-skill-policy`; green after the frozen row. node tools/test-workbench-layout.mjs, test-workbench-adoption.mjs, test-workbench-upgrade.mjs, test-workbench-dogfood.mjs, test-spec-workbench.mjs; doctor --home <empty>; render with clean porcelain; git diff --check | S-035 Completion Result and TK-001 ticket text | TK-002: PR into integration and remote containment read-back |
+| 2026-09-05 | TK-002 | Ticket closed | Separate-context review APPROVED dce85a2 with three should-fixes, applied in 91e0993 and re-APPROVED after reproducing the 17th-skill scenario red then green; PR #60 opened with gh and merged with --match-head-commit 91e09931e9b41d6936d04c7de587b79635d2101f; merge commit 2f9a57386017c0c3bf396037784e10f3f6b89ae7; git merge-base --is-ancestor 91e0993 origin/integration succeeds; origin/main unchanged at 08ab78e | Docs checked; no update needed beyond this spec: the closing record and the fifth acceptance box are the only documentation TK-002 owns | none; publication of integration to main and any tag stay owner-only |
+| 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
@@ -171,8 +173,12 @@ TK-001 completed 2026-09-05 by claude-fable-5-1 on
 `claude/s035-v3-1-2-candidate`, cut from `integration` at `5cd1e51` where
 S-029 through S-034 are `complete` and `doctor --home <empty>` passes. TK-002
 (separate-context review of the exact candidate, PR into `integration`, remote
-containment read-back) is still open, so this spec stays `active` and the
-fifth acceptance box stays unchecked until that ticket closes.
+containment read-back) closed 2026-09-05: the reviewer APPROVED `dce85a2`
+with three should-fixes, applied in `91e0993` and re-APPROVED; PR #60 merged
+`91e0993` into `integration` at merge commit `2f9a573`, containment was read
+back from `origin/integration`, and `origin/main` stayed at `08ab78e`. The
+candidate is delivered on `integration`; promotion to `main` and any tag are
+owner-only.
 
 **What changed.** `workbench/manifest.json` `workbenchVersion` reads v3.1.2
 (`provenance.source.release` stays v3.1.0, the adoption provenance S-027 kept).
@@ -210,7 +216,7 @@ the fix, green after). The integration review found the first table bound
 v3.1.1 to the live policy object; the follow-up binds it to the frozen
 sixteen-skill list.
 
-**How verified.** `node tools/test-workbench-layout.mjs` (30 pass, including
+**How verified.** `node tools/test-workbench-layout.mjs` (31 pass after the review follow-up, including
 the new legacy version-table case and the unchanged "v3.1.1 requires all four
 stances" case); `node tools/audit-guardrails.mjs --path .` before (`5cd1e51`)
 and after the stamp: **78/100 -> 78/100**, static 20/20, drift 25/25,
@@ -269,8 +275,8 @@ appear in their own specs; not repaired here):
   this spec.
 - Real-use evaluation of v3.1.2 in a room is Master Workbench's later review,
   not this spec's evidence.
-- TK-002 (review, PR, remote read-back) is open; the version stamp is a
-  candidate on a task branch until `origin/integration` contains it.
+- TK-002 closed at merge commit `2f9a573`; the candidate is on `integration`
+  and promotion to `main` stays owner-only.
 - The review-derived follow-ups listed in the Completion Result (S-032 F-1,
   S-034 template ADR row, S-031 message wording, S-033 hard links) are
   unowned until a later spec claims them.
