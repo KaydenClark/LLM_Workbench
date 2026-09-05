@@ -95,6 +95,38 @@ function fixtureSpec() {
     seedControls(project);
     seedUserSkills(home);
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    write(project, 'MEMORY.md', [
+      '---',
+      'type: memory',
+      'status: active',
+      '---',
+      '',
+      '# Partially described room brain',
+      ''
+    ].join('\n'));
+
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-05');
+    assert.equal(result.status, 0, result.stdout);
+    const migrated = read(project, 'workbench/wiki/MEMORY.md');
+    assert.match(migrated, /^---\n[\s\S]*sensitivity: normal\n[\s\S]*knowledge_role: canonical\n/,
+      'adoption must fill missing required metadata in existing frontmatter');
+    assert.match(migrated, /\n# Partially described room brain\n$/,
+      'frontmatter repair must preserve the room-brain body');
+    assert.equal(doctor(project).some((issue) => issue.code === 'invalid-note' && /MEMORY\.md/.test(issue.message)), false,
+      'the migrated room brain must pass its own Wiki validator');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
     write(project, 'MEMORY.md', '# Adopted Wiki\n\n[Runbook](RUNBOOK.md)\n');
     write(project, 'feedback/WORKBENCH_FEEDBACK.md', '# Feedback\n');
     write(project, 'grilling diary/decision.md', '# Provisional decision\n');

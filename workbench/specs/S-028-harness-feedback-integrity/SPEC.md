@@ -7,8 +7,8 @@
 **Updated:** 2026-09-05
 **Catalog description:** Make manifest-sensitive guardrails, feedback ingestion, and one-time migration report the paths and residue they actually handle.
 **Blockers:** none
-**Latest event:** Supported repairs and their full local verification are green.
-**Next gate:** Commit and push the exact candidate, then obtain separate-context review before integration.
+**Latest event:** First integration candidate was independently rejected; both uncovered edge cases now have red/green regressions.
+**Next gate:** Re-run full verification, publish the amended exact candidate, and obtain fresh separate-context review.
 **Stance:** Builder
 
 ## Outcome
@@ -131,6 +131,7 @@ format. Existing reports and append-only evidence remain unchanged.
 | 2026-09-05 | TK-001 | Manifest-sensitive paths, strict feedback rows, migration metadata/provenance/residue, and owning docs implemented | Focused guardrail, feedback, Adoption, upgrade, and governance tests green; all 30 AGENTS/Runbook commands PASS; templates 106.6/113; diff check clean; guardrail 73 -> 78 with unchanged weights | Runbook, Adoption, Genesis, update skill, both report formats, S-028 | Commit/push exact candidate and obtain separate-context review; no outcome-improvement claim |
 | 2026-09-05 | TK-001 | Fixed-scope self-review found an out-of-scope repository could be allowed to resolve its manifest before origin exclusion | New foreign-origin unsafe-manifest case RED, then feedback test GREEN after origin/top-level/dedup checks moved ahead of manifest resolution | No documentation change; existing discovery scope now matches execution order | Re-run full suite on the amended candidate |
 | 2026-09-05 | TK-001 | Fixed-scope self-review found residue covered moved lanes but omitted links inside a separately moved root room brain | Root-memory link case RED, then Adoption and upgrade tests GREEN after the scanner included that move without rewriting content | Existing residue contract already covers moved links | Re-run full suite on the amended candidate |
+| 2026-09-05 | TK-001 | Separate-context review rejected candidate `473ee31ec7d3a1bb16b0572099e5a17aa69b1e85` for two untested acceptance violations | Unsupported schema 999 and incomplete existing Wiki frontmatter reproduced RED; focused guardrail and Adoption tests GREEN after supported-schema validation and missing-field merge | S-028 evidence updated; no public contract change | Re-run the full suite and obtain a fresh review on the amended SHA |
 
 ## Completion Result
 

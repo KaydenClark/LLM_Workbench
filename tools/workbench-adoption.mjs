@@ -8,6 +8,7 @@ import { collections, controls, coreSkills, initialize, seedWiki, lanes, validat
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 import { writeSafeFile } from '../workbench/tools/workbench-paths.mjs';
+import { parseFrontmatter } from '../workbench/tools/adr.mjs';
 import { RUNTIME_TOOLS, sourceIdentity } from './workbench-tools.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -194,23 +195,28 @@ function addWikiFrontmatter(project, options) {
   const entry = lstatOrNull(memory);
   if (!entry?.isFile() || entry.isSymbolicLink()) return;
   const content = fs.readFileSync(memory, 'utf8');
-  if (/^---\r?\n/.test(content)) return;
   const date = options['--date'] ?? new Date().toISOString().slice(0, 10);
-  const frontmatter = [
-    '---',
-    'type: memory',
-    'status: active',
-    'sensitivity: normal',
-    'knowledge_role: canonical',
-    'provenance:',
-    `  - legacy room brain migrated by LLM Workbench Adoption ${date}`,
-    'source_paths:',
-    `  - ${lanes.wiki}/MEMORY.md`,
-    `last_verified: ${date}`,
-    '---',
-    ''
-  ].join('\n');
-  writeSafeFile(project, memory, `${frontmatter}\n${content}`);
+  const fields = [
+    ['type', ['type: memory']],
+    ['status', ['status: active']],
+    ['sensitivity', ['sensitivity: normal']],
+    ['knowledge_role', ['knowledge_role: canonical']],
+    ['provenance', ['provenance:', `  - legacy room brain migrated by LLM Workbench Adoption ${date}`]],
+    ['source_paths', ['source_paths:', `  - ${lanes.wiki}/MEMORY.md`]],
+    ['last_verified', [`last_verified: ${date}`]]
+  ];
+  const parsed = parseFrontmatter(content);
+  if (!parsed.data) {
+    const frontmatter = ['---', ...fields.flatMap(([, lines]) => lines), '---', ''].join('\n');
+    writeSafeFile(project, memory, `${frontmatter}\n${content}`);
+    return;
+  }
+  const missing = fields
+    .filter(([name]) => parsed.data[name] === undefined)
+    .flatMap(([, lines]) => lines);
+  if (missing.length === 0) return;
+  const frontmatterEnd = content.indexOf('\n---\n', 4);
+  writeSafeFile(project, memory, `${content.slice(0, frontmatterEnd)}\n${missing.join('\n')}${content.slice(frontmatterEnd)}`);
 }
 
 function migrate(options) {

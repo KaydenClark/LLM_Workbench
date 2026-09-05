@@ -122,6 +122,21 @@ assert.equal(proofFreshnessPasses({
   'specs/S-101-fresh/SPEC.md': freshSpec
 }), false, 'a present malformed manifest must not earn proof-freshness points through a legacy fallback');
 
+assert.equal(taskStatePasses({
+  'workbench/manifest.json': JSON.stringify({
+    schemaVersion: 999,
+    lanes: { specs: 'workbench/specs' }
+  }),
+  'workbench/specs/S-101-contradictory/SPEC.md': contradictorySpec
+}), false, 'an unsupported manifest schema must not earn task-state points');
+assert.equal(proofFreshnessPasses({
+  'workbench/manifest.json': JSON.stringify({
+    schemaVersion: 999,
+    lanes: { specs: 'workbench/specs' }
+  }),
+  'workbench/specs/S-101-fresh/SPEC.md': freshSpec
+}), false, 'an unsupported manifest schema must not earn proof-freshness points');
+
 const report = renderGuardrailReport(sparseAudit, { name: 'fixture' });
 assert.match(report, /Guardrail Audit: fixture/);
 assert.match(report, /Score: \*\*\d+(?:\.\d+)?\/100\*\*/);

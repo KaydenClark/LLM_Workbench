@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { scoreWorkbench } from './evaluate-workbench.mjs';
-import { isSafeRelative } from '../workbench/tools/workbench-paths.mjs';
+import { isSafeRelative, SCHEMA_VERSION } from '../workbench/tools/workbench-paths.mjs';
 
 const SKIP_DIRS = new Set(['.git', 'node_modules', '.next', 'dist', 'build']);
 const AUDIT_EXTENSIONS = new Set(['.md', '.txt', '.json', '.jsonl']);
@@ -367,6 +367,7 @@ function specFilePattern(files) {
   const raw = files['workbench/manifest.json'];
   if (raw === undefined) return /^specs\/S-\d{3}-[^/]+\/SPEC\.md$/;
   const manifest = safeJson(raw);
+  if (![1, SCHEMA_VERSION].includes(manifest?.schemaVersion)) return null;
   const lane = manifest?.lanes?.specs;
   if (!isSafeRelative(lane)) return null;
   return new RegExp(`^${escapeRegExp(lane)}\/S-\\d{3}-[^/]+\/SPEC\\.md$`);
