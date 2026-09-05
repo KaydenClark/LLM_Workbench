@@ -1,14 +1,14 @@
 # S-027 - Workbench v3.1.1 Boundaries
 
 **Spec ID:** S-027
-**Status:** active
+**Status:** blocked
 **Priority:** 0
 **Owner:** codex
 **Updated:** 2026-09-05
 **Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
-**Blockers:** none
-**Latest event:** v3.1.1 local candidate passes the full 29-command suite, Round One and fresh continuation.
-**Next gate:** Review the immutable local v3.1.1 candidate; obtain explicit approval to push, then verify the remote SHA.
+**Blockers:** Explicit owner approval to push the concrete local branch is required after automatic approval review rejected remote publication.
+**Latest event:** Independent review found one stale Lexicon claim; corrected locally with adjacent stale adoption wording.
+**Next gate:** Obtain explicit push approval after corrected-candidate review, then verify remote recovery. A full integration comparison remains required before merge.
 **Stance:** Builder
 
 ## Outcome
@@ -104,7 +104,7 @@ existing skills; real user installations are outside this task.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | in-progress | none | pending |
+| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | blocked | owner push approval | Local implementation verified; remote recovery pending |
 
 ### TK-001 - Assigned task
 
@@ -163,9 +163,20 @@ completed spec evidence remain unchanged.
 | 2026-09-05 | TK-001 | Fresh continuation PASS | Fresh agent cold_continuation followed the reduced route to S-027 and its report, resolved the exact output and pending decisions, passed doctor/next, and independently reproduced F-001; no authored artifact | Existing spec records returned chat proof | Separate-context candidate review and explicit push approval; F-001 repair remains unassigned |
 | 2026-09-05 | TK-001 | Full post-version verification PASS | All 29 commands in the AGENTS/Runbook union passed on v3.1.1; ADR/Wiki validation, report privacy scan, and diff check PASS; measured guardrail 73/100 | Benchmarks records 68 -> 73 with unchanged criteria and the F-001 scoring limitation | Immutable candidate review; remote publication blocked by automatic approval review pending explicit owner approval |
 
+| 2026-09-05 | TK-001 | Clean immutable candidate verified | Detached clean clone at 5ef5b15e0e69d37a207ccccd5c8fc75e79cf75ce passed all 29 union commands; guardrail remained 73/100; original locked checkpoint has no diff from baseline | Existing proof owners retained | Independent delta review then owner approval to push; inherited integration changes need their own review |
+| 2026-09-05 | TK-001 | Separate-context candidate delta REJECT, followed by narrow correction | Reviewer candidate_review checked 2538b8a..5ef5b15; sole P2 was stale LEXICON v3.1.0 release designation; installer 6/6, layout 14/14, round trip, catalog/delivery and doctor independently passed; F-001 supported on its pinned target | Corrected Lexicon release distinction and adjacent README/Adoption destination wording; historical evidence preserved | Re-review new immutable local candidate; this delta review does not audit inherited integration changes |
+
+| 2026-09-05 | TK-001 | Corrected current release/adoption wording and checkpointed blocked recovery state | Catalog/delivery, layout, evaluator, portability, ADR/Wiki and diff checks PASS after correction; source behavior unchanged from clean 29-command PASS | LEXICON, README, generic Adoption, this spec and generated Taskboard | Final local-delta review; explicit push approval and remote read-back; full inherited integration comparison before merge |
+
 ## Completion Result
 
-Pending.
+v3.1.1 is delivered as a local candidate: contract, five ADRs, four portable
+stances, chat-only Round One, feedback workflow/report and fresh continuation
+are implemented and verified. Remote recovery is blocked pending explicit push
+authorization; no release, integration acceptance, or completed spec is claimed.
+The local-delta review result is returned in chat for this immutable checkpoint;
+its earlier rejected candidate and correction are retained in the evidence log.
+
 
 ## Remaining Limitations Or Follow-Up Specs
 

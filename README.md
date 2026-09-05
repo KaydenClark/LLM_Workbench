@@ -144,8 +144,8 @@ For a project that already exists - real code, history, and often an older or
 foreign harness (`ROADMAP.md`, policy docs, a prior `AGENTS.md`) - use
 `templates/ADOPTION.md`, not GENESIS. Copy it alongside the control templates and
 point the agent at the repo. ADOPTION inventories the existing docs and
-classifies each (port into a v2 doc, fold into `AGENTS.md`, keep as project-local,
-or archive), maps the old harness into the v2 layout **without losing content**,
+classifies each (port into a current control, fold into `AGENTS.md`, keep as project-local,
+or archive), maps the old harness into the manifest-declared v3 layout **without losing content**,
 derives the edit scope from the real directory tree, and verifies against the
 project's existing test suite instead of a scaffold. It runs once, then is
 archived; retired docs are preserved as history, never silently deleted.

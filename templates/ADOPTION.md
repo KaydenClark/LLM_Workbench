@@ -21,7 +21,7 @@ the v3 `workbench/` support root that describe **what is actually true**, with
 none of the project's real content lost in the move.
 
 Adoption does **not** rewrite the product or "clean up" the code. It documents
-observed reality, migrates existing intent and history into the v2 layout, and
+observed reality, migrates existing intent and history into the manifest-declared v3 layout, and
 hands off to the normal work loop.
 
 ## Inputs
@@ -83,7 +83,7 @@ next begins.
    any applicable vendored-helper checksum in the owning spec before changing
    the harness.
 2. List every existing harness/steer doc and classify each:
-   - **Port** - real content that maps into a v2 doc (direction, tasks, rules).
+   - **Port** - real content that maps into a current control (direction, tasks, rules).
    - **Fold** - a policy/checklist doc whose rules belong inside `AGENTS.md`.
    - **Keep** - project-local material the harness does not own (e.g. a visual or
      design doc; the harness defers visual style to exactly these).
@@ -132,7 +132,7 @@ Typical mappings (adjust to the actual dialect):
   manufacture a spec for every historical task.
 - **Policy / checklist / "unattended work" docs** -> fold their still-live rules
   into `AGENTS.md` (authority, scope, verification, safety); retire the originals.
-- **Existing `AGENTS`/`CLAUDE`** -> reconcile into the v2 `AGENTS.md` and the thin
+- **Existing `AGENTS`/`CLAUDE`** -> reconcile into the current `AGENTS.md` and the thin
   `CLAUDE.md` bridge; keep any rule still true, drop what the code disproved.
 - **Glossary / ubiquitous-language / context docs** -> accepted shared
   definitions into `LEXICON.md`; scoped decisions into the owning spec; archive
