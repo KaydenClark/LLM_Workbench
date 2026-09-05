@@ -44,7 +44,7 @@ const generatedRegions = {
   'TASKBOARD.md': ['<!-- hot-specs:start -->', '<!-- hot-specs:end -->']
 };
 const templateVocabulary = new Set(templatePlaceholders);
-const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
+export const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
 
 function lstatOrNull(target) {
   try { return fs.lstatSync(target); } catch (error) {
@@ -77,7 +77,7 @@ function containsPlaceholder(content) {
   return false;
 }
 
-function versionStamp(content) {
+export function versionStamp(content) {
   return content.match(/(?:Generated from|Part of) LLM Workbench (v\d+\.\d+\.\d+)/)?.[1] ?? null;
 }
 
@@ -417,6 +417,7 @@ function validateGenesisRuntime(project, expectedVersion) {
     const entry = lstatOrNull(path.join(project, lanes.wiki, relative));
     if (!entry?.isFile() || entry.isSymbolicLink()) return fail('unfilled-control', `${control} must exist as an ordinary file; copy the wiki router and contract from the release templates.`, { control });
     if (containsPlaceholder(fs.readFileSync(path.join(project, lanes.wiki, relative), 'utf8'))) return fail('unfilled-control', `${control} must contain no template placeholders.`, { control });
+    if (versionStamp(fs.readFileSync(path.join(project, lanes.wiki, relative), 'utf8')) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control, reason: 'wiki stamp differs from the manifest' });
   }
   return null;
 }

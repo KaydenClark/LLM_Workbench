@@ -170,7 +170,11 @@ check fails closed on the same finding; a room without the file is unaffected.
 The wiki lane raises `room-brain-unrouted` (attention) when a root control
 does not route back to the room brain: `AGENTS.md` must reference
 `workbench/wiki/` and `README.md` must reference `MEMORY.md`; the finding names
-the control that lacks the route.
+the control that lacks the route. It raises `stale-stamp` (attention) when a
+wiki contract file or the room brain carries a `Generated from LLM Workbench`
+stamp naming a version other than `workbench/manifest.json`; refresh the stamp
+when the harness is upgraded (`validate --genesis` fails the same files with
+`version-mismatch`).
 
 ## Evaluation And Benchmarking
 

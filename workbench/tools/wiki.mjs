@@ -8,6 +8,7 @@ import { finding } from './diagnostics.mjs';
 import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, readManifest, WIKI_PROFILES } from './workbench-paths.mjs';
 import { parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
+import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
 export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'meta']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
@@ -42,6 +43,24 @@ function roomBrainRouting(root, wikiRelative) {
   return findings;
 }
 
+// The wiki contract files and the room brain carry the Genesis stamp; one that
+// names a version other than the manifest is stale (version equality, not
+// content freshness). A file without a stamp names no version.
+function wikiStamps(root, wikiRoot, wikiRelative, expectedVersion) {
+  const findings = [];
+  if (!expectedVersion) return findings;
+  for (const relative of ['MEMORY.md', ...wikiContractFiles]) {
+    const target = path.join(wikiRoot, relative);
+    if (!fs.existsSync(target) || !fs.lstatSync(target).isFile()) continue;
+    const stamp = versionStamp(fs.readFileSync(target, 'utf8'));
+    if (stamp !== null && stamp !== expectedVersion) {
+      const note = `${wikiRelative}/${relative}`;
+      findings.push(finding('stale-stamp', `${note} is stamped ${stamp} but the manifest says ${expectedVersion}`, { note }));
+    }
+  }
+  return findings;
+}
+
 export function validateWiki(root) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
@@ -55,6 +74,7 @@ export function validateWiki(root) {
     findings.push(finding('invalid-note', `${wikiRelative}/MEMORY.md router is missing`));
   }
   else findings.push(...roomBrainRouting(root, wikiRelative));
+  findings.push(...wikiStamps(root, wikiRoot, wikiRelative, manifest?.workbenchVersion));
   for (const name of REQUIRED_COLLECTIONS) {
     const relative = collectionRelative(root, name);
     const entry = fs.existsSync(path.join(root, relative)) ? fs.lstatSync(path.join(root, relative)) : null;
