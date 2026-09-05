@@ -156,12 +156,18 @@ evidence; never duplicate completed proof in the Taskboard.
   branches.
 - Default PR target: `[INTEGRATION_BRANCH_OR_DEFAULT]`; owner-only final merge:
   `[OWNER_ONLY_MERGE]`.
+- The integration branch is a declared fact, not a convention:
+  `workbench/manifest.json` `git.integrationBranch` names
+  `[INTEGRATION_BRANCH_OR_DEFAULT]` by exact case and `git.defaultBranch` names
+  the branch it is created from. `doctor` reports
+  `integration-branch-undeclared` or `integration-branch-missing` until the
+  declared branch resolves; neither blocks selection.
 - Never force-push shared history or merge review-held PRs without approval.
 - Bump versions only after behavior and proof are green.
 
-Before branches combine into `integration` (or the configured integration
-branch), a separate-context reviewer must check the immutable candidate against
-its controls, assigned spec, and named evidence. This gate challenges code,
+Before branches combine into the declared integration branch, a
+separate-context reviewer must check the immutable candidate against its
+controls, assigned spec, and named evidence. This gate challenges code,
 consequential report claims, and recommendations. Earlier review and audit are
 supports, not mandatory independent ceremonies per ticket. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
@@ -169,14 +175,15 @@ requires a fresh review; self-review alone cannot satisfy the integration gate.
 ### Branch Completion
 
 A task is not finished at the push. A pushed branch is recoverable, not
-delivered. When the integration review passes, open the PR into `integration`
-with `gh`, merge it, and confirm `integration` contains the work. Do not stall
-on an approved candidate or leave a passed PR waiting for the owner; only
-`integration` into `main` is owner-only. "Never merge a PR left open for
-review" means a PR whose review is still pending, not one that already passed.
+delivered. When the integration review passes, open the PR into the declared
+integration branch with the Runbook's PR command, merge it, and confirm that
+branch contains the work. Do not stall on an approved candidate or leave a
+passed PR waiting for the owner; only the owner-only final merge named above
+stays with the owner. "Never merge a PR left open for review" means a PR whose
+review is still pending, not one that already passed.
 
-Delete the branch once `integration` contains it and nothing is lost, unless
-its owner defers cleanup. Prove containment of the immutable reviewed commit
+Delete the branch once the declared integration branch contains it and nothing
+is lost, unless its owner defers cleanup. Prove containment of the immutable reviewed commit
 before any deletion, then check the actual local and remote branch tips too.
 Use `git branch -d` for local deletion and an expected-tip guard for remote
 deletion. A tracking upstream alone is not proof of integration containment;
