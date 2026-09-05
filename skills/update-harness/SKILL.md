@@ -132,6 +132,8 @@ Run the same full project suite as the baseline, plus harness-specific checks:
 - retired control-name and duplicate-queue search;
 - control-file stamps and mechanical scope alignment;
 - diff review for lost project-specific rules or accidental product changes.
+- feedback harvest: append observed harness friction to the manifest-declared
+  feedback lane, or record `none observed` with the reason in the upgrade spec.
 
 Record evaluator score and missing-evidence diagnostics, but do not pad the
 control plane merely to satisfy keyword heuristics. Native behavior proof,

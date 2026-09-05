@@ -271,6 +271,9 @@ Do not call bootstrap done on vibes. All of the following must hold:
       routes to the live controls, and has no unfilled placeholders; the seeded
       `SCHEMA.md`, `AGENTS.md`, and `design-concepts/README.md` sit beside it.
 - [ ] The first spec evidence row records that Genesis ran, with the actual result.
+- [ ] Harness friction observed during Genesis was appended to the declared
+      feedback lane; if none was observed, the first spec records `none observed`
+      with the reason.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box
 failed and why.

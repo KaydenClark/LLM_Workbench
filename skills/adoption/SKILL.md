@@ -48,4 +48,6 @@ Adoption to update an already-adopted project.
    vendored-helper checksum in the owning spec. Put fresh-clone reproduction
    commands in `RUNBOOK.md`, validate `workbench/manifest.json`, resolve the
    next ticket from its declared `workbench/specs/` lane, and report the pushed
-   recovery ref and remaining owner gates.
+   recovery ref and remaining owner gates. Append observed harness friction to
+   the manifest-declared feedback lane; if none was observed, record
+   `none observed` with the reason in the owning spec.

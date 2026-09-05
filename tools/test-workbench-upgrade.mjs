@@ -82,7 +82,10 @@ test('explicit upgrade backs up a changed managed skill, migrates once, and reco
     const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
     assert.equal(receipt.source.release, VERSION, 'explicit upgrade installs receipt-backed runtime tools');
     assert.equal(recovery.tools.status, 'installed');
-    assert.equal(JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8')).provenance.lifecycle, 'upgrade');
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    assert.equal(manifest.provenance.lifecycle, 'upgrade');
+    assert.equal(manifest.provenance.source.commit, receipt.source.commit,
+      'upgrade must preserve the adoption seam\'s exact source identity');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });

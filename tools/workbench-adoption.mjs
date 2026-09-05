@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { collections, controls, coreSkills, initialize, seedWiki, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
+import { writeSafeFile } from '../workbench/tools/workbench-paths.mjs';
+import { RUNTIME_TOOLS, sourceIdentity } from './workbench-tools.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const toolsInstaller = path.join(productRoot, 'tools', 'workbench-tools.mjs');
@@ -94,8 +96,12 @@ function preflight(project, home) {
   }
   const legacyMemory = path.join(project, 'MEMORY.md');
   const memoryEntry = lstatOrNull(legacyMemory);
-  if (memoryEntry && (memoryEntry.isSymbolicLink() || !memoryEntry.isFile())) {
+  if (memoryEntry && (memoryEntry.isSymbolicLink() || !memoryEntry.isFile() || memoryEntry.nlink > 1)) {
     return fail('legacy-path-collision', `${legacyMemory} must be an ordinary file when present.`, { source: 'MEMORY.md' });
+  }
+  const wikiMemory = lstatOrNull(path.join(project, 'Wiki', 'MEMORY.md'));
+  if (wikiMemory && (wikiMemory.isSymbolicLink() || !wikiMemory.isFile() || wikiMemory.nlink > 1)) {
+    return fail('legacy-path-collision', `${path.join(project, 'Wiki', 'MEMORY.md')} must be an ordinary file when present.`, { source: 'Wiki/MEMORY.md' });
   }
   if (memoryEntry && lstatOrNull(path.join(project, 'Wiki', 'MEMORY.md'))) {
     return fail('wiki-memory-collision', 'Legacy Wiki/MEMORY.md and root MEMORY.md both exist; reconcile their project truth before adoption.');
@@ -130,12 +136,95 @@ function removeGitkeep(directory) {
   if (lstatOrNull(placeholder)?.isFile()) fs.unlinkSync(placeholder);
 }
 
+function posixRelative(root, target) {
+  return path.relative(root, target).split(path.sep).join('/');
+}
+
+function isInside(root, target) {
+  const relative = path.relative(root, target);
+  return relative === ''
+    || (relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
+}
+
+function movedExternalLinks(project) {
+  const links = [];
+  for (const { source, destination } of legacyLanes) {
+    const sourceRoot = path.join(project, source);
+    if (!lstatOrNull(sourceRoot)?.isDirectory()) continue;
+    visit(sourceRoot);
+
+    function visit(directory) {
+      for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+        const target = path.join(directory, entry.name);
+        const stat = fs.lstatSync(target);
+        if (stat.isSymbolicLink()) continue;
+        if (stat.isDirectory()) { visit(target); continue; }
+        if (!stat.isFile() || path.extname(entry.name).toLowerCase() !== '.md') continue;
+        const relativeInLane = path.relative(sourceRoot, target);
+        const movedFile = path.join(project, destination, relativeInLane);
+        const content = fs.readFileSync(target, 'utf8');
+        for (const match of content.matchAll(/\[[^\]]*\]\((<[^>]+>|[^\s)#]+)(?:#[^)\s]+)?(?:\s+["'][^)]*["'])?\)/g)) {
+          const link = match[1].replace(/^<|>$/g, '');
+          if (!link || link.startsWith('#') || path.isAbsolute(link) || /^[a-z][a-z0-9+.-]*:/i.test(link)) continue;
+          const beforeTarget = path.resolve(path.dirname(target), link);
+          const outsideLane = !isInside(sourceRoot, beforeTarget);
+          const insideProject = isInside(project, beforeTarget);
+          const afterTarget = path.resolve(path.dirname(movedFile), link);
+          if (!outsideLane || !insideProject || !lstatOrNull(beforeTarget) || beforeTarget === afterTarget) continue;
+          links.push({
+            file: posixRelative(project, movedFile),
+            link,
+            target: posixRelative(project, beforeTarget)
+          });
+        }
+      }
+    }
+  }
+  return links.sort((left, right) => left.file.localeCompare(right.file) || left.link.localeCompare(right.link));
+}
+
+function addWikiFrontmatter(project, options) {
+  const memory = path.join(project, lanes.wiki, 'MEMORY.md');
+  const entry = lstatOrNull(memory);
+  if (!entry?.isFile() || entry.isSymbolicLink()) return;
+  const content = fs.readFileSync(memory, 'utf8');
+  if (/^---\r?\n/.test(content)) return;
+  const date = options['--date'] ?? new Date().toISOString().slice(0, 10);
+  const frontmatter = [
+    '---',
+    'type: memory',
+    'status: active',
+    'sensitivity: normal',
+    'knowledge_role: canonical',
+    'provenance:',
+    `  - legacy room brain migrated by LLM Workbench Adoption ${date}`,
+    'source_paths:',
+    `  - ${lanes.wiki}/MEMORY.md`,
+    `last_verified: ${date}`,
+    '---',
+    ''
+  ].join('\n');
+  writeSafeFile(project, memory, `${frontmatter}\n${content}`);
+}
+
 function migrate(options) {
   const project = path.resolve(options['--project']);
   const home = path.resolve(options['--home'] || os.homedir());
   const failure = preflight(project, home);
   if (failure) return failure;
-  const initialized = initialize({ '--project': project, '--provenance': 'adoption', '--version': options['--version'], deferWikiSeed: Boolean(lstatOrNull(path.join(project, 'Wiki'))) });
+  const source = sourceIdentity();
+  const residue = {
+    rootManagedTools: RUNTIME_TOOLS.filter((name) => Boolean(lstatOrNull(path.join(project, 'tools', name)))),
+    movedExternalLinks: movedExternalLinks(project)
+  };
+  const initialized = initialize({
+    '--project': project,
+    '--provenance': 'adoption',
+    '--version': options['--version'],
+    '--source-repository': source.repository,
+    '--source-commit': source.commit,
+    deferWikiSeed: Boolean(lstatOrNull(path.join(project, 'Wiki')))
+  });
   if (initialized.status !== 'initialized') return fail('layout-initialization-failed', initialized.error?.message ?? 'Could not initialize the v3 support root.');
   const moved = [];
   try {
@@ -155,6 +244,7 @@ function migrate(options) {
       fs.renameSync(legacyMemory, destination);
       moved.push({ source: 'MEMORY.md', destination: `${lanes.wiki}/MEMORY.md` });
     }
+    addWikiFrontmatter(project, options);
     for (const name of rootFeedbackNames) {
       const source = path.join(project, name);
       if (!lstatOrNull(source)) continue;
@@ -170,7 +260,7 @@ function migrate(options) {
       moved.push({ source: 'skills', destination: `${recoveryLane}/adoption-legacy-skills` });
     }
     const recoveryPath = path.join(project, recoveryLane, 'adoption-recovery.json');
-    fs.writeFileSync(recoveryPath, `${JSON.stringify({ schemaVersion: 1, lifecycle: 'adoption', moved }, null, 2)}\n`);
+    fs.writeFileSync(recoveryPath, `${JSON.stringify({ schemaVersion: 1, lifecycle: 'adoption', moved, residue }, null, 2)}\n`);
     const validation = validateManifest(project);
     if (validation.status !== 'valid') throw new Error(validation.error?.message ?? 'Migrated manifest did not validate.');
     const installed = spawnSync(process.execPath, [toolsInstaller, 'install', '--project', project], { cwd: productRoot, encoding: 'utf8' });
@@ -178,15 +268,18 @@ function migrate(options) {
     if (installed.status !== 0 || toolsReport?.status !== 'installed') {
       throw new Error(toolsReport?.error?.message ?? (installed.stderr || 'Runtime tools install failed.'));
     }
+    if (toolsReport.receipt?.source?.repository !== source.repository || toolsReport.receipt?.source?.commit !== source.commit) {
+      throw new Error('Manifest and managed-tools receipt resolved different Workbench source identities.');
+    }
     render(project);
     // Only a finding that blocks all or selection makes the migration a
     // failure; nonblocking findings (a legacy wiki note without frontmatter,
     // a stale claim) are reported so the adopting agent repairs them next.
     const issues = doctor(project);
     if (blocksSelection(issues)) throw new Error(`Adoption rendered an invalid project: ${issues.filter((issue) => issue.blocks === 'all' || issue.blocks === 'selection').map((issue) => issue.code).join(', ')}.`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, doctor: issues.length ? 'passed-with-findings' : 'passed', findings: issues.map((issue) => ({ code: issue.code, severity: issue.severity, blocks: issue.blocks, message: issue.message })) };
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, residue, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, doctor: issues.length ? 'passed-with-findings' : 'passed', findings: issues.map((issue) => ({ code: issue.code, severity: issue.severity, blocks: issue.blocks, message: issue.message })) };
   } catch (error) {
-    return { status: 'partial', moved, error: { code: 'migration-failed', message: error.message } };
+    return { status: 'partial', moved, residue, error: { code: 'migration-failed', message: error.message } };
   }
 }
 

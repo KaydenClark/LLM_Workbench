@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { scoreWorkbench } from './evaluate-workbench.mjs';
+import { isSafeRelative } from '../workbench/tools/workbench-paths.mjs';
 
 const SKIP_DIRS = new Set(['.git', 'node_modules', '.next', 'dist', 'build']);
 const AUDIT_EXTENSIONS = new Set(['.md', '.txt', '.json', '.jsonl']);
@@ -330,8 +331,10 @@ function taskIdsInSection(markdown, heading) {
 function taskboardProofIsFresh(files, today, maxAgeDays) {
   const taskboard = files['TASKBOARD.md'] ?? '';
   const updated = parseDate(taskboard.match(/\*\*Last updated:\*\*\s*(\d{4}-\d{2}-\d{2})/i)?.[1]);
+  const specPattern = specFilePattern(files);
+  if (!specPattern) return false;
   const specProof = Object.entries(files)
-    .filter(([name]) => /^specs\/S-\d{3}-[^/]+\/SPEC\.md$/.test(name))
+    .filter(([name]) => specPattern.test(name))
     .map(([, content]) => content.split(/^## Append-Only Evidence And Execution Log\s*$/im)[1] ?? '')
     .join('\n');
   const proof = specProof || (taskboard.split(/^## Proof Log\s*$/im)[1] ?? '');
@@ -345,8 +348,10 @@ function taskboardProofIsFresh(files, today, maxAgeDays) {
 }
 
 function hasContradictorySpecState(files) {
+  const specPattern = specFilePattern(files);
+  if (!specPattern) return true;
   for (const [name, content] of Object.entries(files)) {
-    if (!/^specs\/S-\d{3}-[^/]+\/SPEC\.md$/.test(name)) continue;
+    if (!specPattern.test(name)) continue;
     const id = content.match(/^\*\*Spec ID:\*\*\s*(S-\d{3})/m)?.[1];
     const status = content.match(/^\*\*Status:\*\*\s*([^\n]+)/m)?.[1]?.trim();
     if (!id || !status) return true;
@@ -356,6 +361,19 @@ function hasContradictorySpecState(files) {
     }
   }
   return false;
+}
+
+function specFilePattern(files) {
+  const raw = files['workbench/manifest.json'];
+  if (raw === undefined) return /^specs\/S-\d{3}-[^/]+\/SPEC\.md$/;
+  const manifest = safeJson(raw);
+  const lane = manifest?.lanes?.specs;
+  if (!isSafeRelative(lane)) return null;
+  return new RegExp(`^${escapeRegExp(lane)}\/S-\\d{3}-[^/]+\/SPEC\\.md$`);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function hasCondition(content, prefix) {

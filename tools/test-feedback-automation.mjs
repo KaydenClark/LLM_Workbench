@@ -60,6 +60,23 @@ assert.throws(
   'malformed feedback rows should be reported instead of silently dropped after partial parsing'
 );
 
+for (const [row, expected] of [
+  ['| 2026-07-04 | RUNBOOK.md | Unknown status | high | Preserve it | open |', /invalid status open/],
+  ['| 2026-07-04 | RUNBOOK.md | Ungraded impact | It slowed the work | Preserve it | new |', /invalid impact It slowed the work/]
+]) {
+  assert.throws(
+    () => parseFeedbackRows([
+      '# Example - Harness Feedback',
+      '',
+      '| Date | Doc / section | What happened | Impact | Proposed change | Status |',
+      '|---|---|---|---|---|---|',
+      row
+    ].join('\n'), { repo: 'Malformed', origin: 'https://github.com/KaydenClark/Malformed.git' }),
+    expected,
+    'feedback vocabulary errors must stop discovery instead of dropping or coercing a row'
+  );
+}
+
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'feedback-discovery-'));
 try {
   makeRepo('Alpha', 'https://github.com/KaydenClark/Alpha.git', injected);
@@ -85,9 +102,14 @@ try {
   fs.mkdirSync(path.join(root, 'Eta', 'workbench', 'feedback'), { recursive: true });
   fs.writeFileSync(path.join(root, 'Eta', 'workbench', 'feedback', 'WORKBENCH_FEEDBACK.md'),
     injected.replace('2026-07-01', '2026-07-08'));
+  makeRepo('Theta', 'https://github.com/KaydenClark/Theta.git',
+    injected.replace('2026-07-01', '2026-07-10'), path.join('workbench', 'observations', 'WORKBENCH_FEEDBACK.md'));
+  fs.writeFileSync(path.join(root, 'Theta', 'workbench', 'manifest.json'), JSON.stringify({
+    lanes: { feedback: 'workbench/observations' }
+  }));
 
   const found = discoverFeedback(root);
-  assert.equal(found.length, 6, 'discovery should exclude duplicates, worktrees, and non-owner origins');
+  assert.equal(found.length, 7, 'discovery should exclude duplicates, worktrees, and non-owner origins');
   assert.ok(found.some((row) => row.repo === 'Zeta' && /2026-07-07/.test(row.date)),
     'a project carrying feedback only in workbench/feedback must be discovered');
   const etaRows = found.filter((row) => row.repo === 'Eta');
@@ -100,7 +122,7 @@ try {
   assert.match(epsilonRows[0].date, /2026-07-05/,
     'WORKBENCH_FEEDBACK.md wins over the grandfathered HARNESS_FEEDBACK.md');
   assert.equal(found[0].repo, 'Alpha');
-  assert.equal(found[0].recurrence, 6, 'similar feedback across canonical projects should be grouped');
+  assert.equal(found[0].recurrence, 7, 'similar feedback across canonical projects should be grouped');
 
   assert.equal(selectCandidate(found, { pendingFingerprints: [found[0].fingerprint] }), null,
     'an open candidate must lock selection');
@@ -112,6 +134,24 @@ try {
   assert.equal(selectCandidate(found, {}).fingerprint, found[0].fingerprint);
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
+}
+
+const unsafeRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'feedback-discovery-unsafe-'));
+try {
+  const repo = path.join(unsafeRoot, 'Unsafe');
+  fs.mkdirSync(repo);
+  execFileSync('git', ['init', '-q'], { cwd: repo });
+  execFileSync('git', ['remote', 'add', 'origin', 'https://github.com/KaydenClark/Unsafe.git'], { cwd: repo });
+  fs.mkdirSync(path.join(repo, 'workbench', 'Feedback'), { recursive: true });
+  fs.writeFileSync(path.join(repo, 'workbench', 'manifest.json'), JSON.stringify({ lanes: { feedback: 'workbench/Feedback' } }));
+  fs.writeFileSync(path.join(repo, 'workbench', 'Feedback', 'WORKBENCH_FEEDBACK.md'), injected);
+  assert.throws(
+    () => discoverFeedback(unsafeRoot),
+    /manifest lane feedback is unsafe/,
+    'feedback discovery must use the shared safe manifest resolver'
+  );
+} finally {
+  fs.rmSync(unsafeRoot, { recursive: true, force: true });
 }
 
 assert.deepEqual(
