@@ -47,9 +47,10 @@ Verified in this repository at `b7b23dd3f0929e37276880335cd4d4cc60238d8e`
 (`origin/integration`, S-028 merged) on 2026-09-05:
 
 - `templates/AGENTS.md:157` makes the PR target a fillable
-  `[INTEGRATION_BRANCH_OR_DEFAULT]` placeholder; lines 162, 167, 172, 173,
-  175, 178 and 182 then hardcode the literal `integration` regardless of what
-  the placeholder was filled with. `templates/RUNBOOK.md:304-330` closeout text
+  `[INTEGRATION_BRANCH_OR_DEFAULT]` placeholder; lines 162, 172, 173, 175
+  and 178 then hardcode the branch literal `integration` regardless of what
+  the placeholder was filled with (lines 167 and 182 use the word for the
+  gate and for containment, not as a branch name). `templates/RUNBOOK.md:304-330` closeout text
   does the same in prose.
 - `skills/genesis/SKILL.md:29-30` and `skills/adoption/SKILL.md:45-46` instruct
   promoting verified work to `integration`; neither creates the branch nor
@@ -69,10 +70,11 @@ Verified in this repository at `b7b23dd3f0929e37276880335cd4d4cc60238d8e`
   ([REPORT-v3-1-1-acceptance-2026-09-05.md](../../feedback/REPORT-v3-1-1-acceptance-2026-09-05.md))
   reproduced F-006 live: at a branch tip fully contained in `integration`,
   `doctor` passed and `next --json` dispatched an agent to review and merge a
-  spec that was already complete on `integration`. Its F-007 counted eleven
+  spec that was already complete on `integration`. Its F-007 counted nine
   linked worktrees, eight under the host temporary directory, including the
-  only checkout of `integration` (`git worktree list` on 2026-09-05 shows the
-  same); no control names their lifetime.
+  only checkout of `integration`; `git worktree list` on 2026-09-05 showed ten
+  linked worktrees, all under that directory. No control names their
+  lifetime.
 - The Master Workbench feedback lane (`~/Master_Workbench/workbench/feedback/
   WORKBENCH_FEEDBACK.md`, row dated 2026-09-04) independently logged the
   missing commit box.
@@ -94,8 +96,10 @@ Gap: everything under Desired Behavior.
    as a local head nor on any remote. Both are registered with severity
    `error`, a new `git` scope, and effect `none`: visible in every doctor run,
    never blocking spec selection, exactly like `invalid-note`.
-   `validate --genesis` and the Adoption and upgrade completion paths fail
-   closed on either.
+   `validate --genesis` fails closed on either. The Adoption and upgrade
+   tools never block on the branch: `migrate` lists a missing branch in its
+   `residue`, and it is the protocol completion checklist (Desired Behavior 4)
+   that refuses to call the run done without the branch or a recorded reason.
 3. `templates/AGENTS.md`, `templates/RUNBOOK.md`, `skills/genesis/SKILL.md`,
    and `skills/adoption/SKILL.md` refer to the declared integration branch
    through the placeholder or the manifest, never to a bare literal that can
@@ -179,9 +183,9 @@ that exact name. Register the codes and the `git` scope in
 
 **Stance:** Builder
 
-Replace the seven hardcoded `integration` literals in `templates/AGENTS.md`
-Git Rules and Branch Completion with the placeholder or "the declared
-integration branch", keep `tools/test-governance-core.mjs` branch-completion
+Replace the five hardcoded `integration` branch literals in
+`templates/AGENTS.md` Git Rules and Branch Completion (lines 162, 172, 173,
+175, 178) with the placeholder or "the declared integration branch", keep `tools/test-governance-core.mjs` branch-completion
 assertions green, and add the two completion boxes to both protocols and the
 update-harness skill. Root `AGENTS.md` gains one sentence naming the manifest
 declaration. Runbook closeout adds `git worktree prune` and the scratch
@@ -247,7 +251,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
-| 2026-09-05 | spec | Spec captured from the Master Workbench v3.1.1 upstream fix list (UP-011 rank first, UP-006) and the acceptance report (F-006, F-007) | Mechanisms re-read at `b7b23dd`: placeholder at `templates/AGENTS.md:157` with seven literal `integration` sentences below it; no branch code in `diagnostics.mjs`; `git worktree list` shows eleven worktrees with `integration` under the temp directory | Blueprint v3.1.2 direction links this spec | All three slices |
+| 2026-09-05 | spec | Spec captured from the Master Workbench v3.1.1 upstream fix list (UP-011 rank first, UP-006) and the acceptance report (F-006, F-007) | Mechanisms re-read at `b7b23dd`: placeholder at `templates/AGENTS.md:157` with five literal `integration` branch names below it; no branch code in `diagnostics.mjs`; `git worktree list` shows eleven worktrees with `integration` under the temp directory | Blueprint v3.1.2 direction links this spec | All three slices |
 
 ## Completion Result
 

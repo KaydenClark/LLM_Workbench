@@ -1,6 +1,6 @@
 # LLM Workbench - Blueprint
 
-**Last reviewed:** 2026-09-04
+**Last reviewed:** 2026-09-05
 **Status:** active
 **Harness version:** v3.1.1 (local candidate; publication pending)
 **Source root:** this repository

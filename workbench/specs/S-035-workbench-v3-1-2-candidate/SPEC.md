@@ -36,14 +36,15 @@ on 2026-09-05:
 
 - Version-bearing surfaces at v3.1.1: `workbench/manifest.json`
   `workbenchVersion`; `BLUEPRINT.md:5` and its direction sections;
-  `README.md:167-170`; `RUNBOOK.md:141,240,274`; `templates/ADOPTION.md:210`;
+  `README.md:167-170`; `RUNBOOK.md:141,240,278`; `templates/ADOPTION.md:210`;
   `skills/adoption/SKILL.md:25`; `tools/workbench-upgrade.mjs:173` and
   `workbench/tools/workbench-layout.mjs:406` usage strings;
   `workbench-layout.mjs:116` `supportedLegacy` accepting `v3.0.0` and
   `v3.1.0` twelve-skill manifests; `tools/test-workbench-layout.mjs:578-589`;
   `LEXICON.md:93`; and the three wiki stamps S-033 aligns.
-- The guardrail audit stands at 78/100 after S-028 (`benchmarks/RESULTS.md`
-  and S-028 evidence), measured with unchanged weights.
+- `node tools/audit-guardrails.mjs --path .` prints 78/100 at this commit
+  (S-028 evidence records the 73 to 78 movement with unchanged weights;
+  `benchmarks/RESULTS.md` carries no S-028 row yet).
 - Disposition of the twelve items against this commit:
 
 | Item | Title | Disposition at `b7b23dd` |
@@ -159,7 +160,7 @@ The full `AGENTS.md` verification suite, `render`, `doctor`,
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
-| 2026-09-05 | spec | Spec captured as the v3.1.2 umbrella; disposition of the twelve v3.1.1 upstream items recorded against `b7b23dd` (four landed in S-028, one not-supported, seven open across S-029 to S-034) | Version surfaces enumerated with `grep -rn "v3\.1\.1"`; S-028 completion and `tools/feedback-automation.mjs`, `tools/workbench-adoption.mjs` diffs confirm the landed rows | Blueprint v3.1.2 direction added | Everything; TK-001 waits on six specs |
+| 2026-09-05 | spec | Spec captured as the v3.1.2 umbrella; disposition of the twelve v3.1.1 upstream items recorded against `b7b23dd` (three landed in S-028, one half landed, one not-supported, seven open across S-029 to S-034) | Version surfaces enumerated with `grep -rn "v3\.1\.1"`; S-028 completion and `tools/feedback-automation.mjs`, `tools/workbench-adoption.mjs` diffs confirm the landed rows | Blueprint v3.1.2 direction added | Everything; TK-001 waits on six specs |
 
 ## Completion Result
 

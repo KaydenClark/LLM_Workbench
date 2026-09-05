@@ -41,23 +41,23 @@ on 2026-09-05:
 - **UP-003's stated mechanism does not survive a source read, but its
   conclusion does.** The fix list says `tools/workbench-upgrade.mjs` "never
   creates a `workbench/` support root". At this commit
-  `workbench-upgrade.mjs:149` spawns `workbench-adoption.mjs migrate`,
-  line 156 rewrites `provenance.lifecycle` to `upgrade`, and
+  `workbench-upgrade.mjs:150` spawns `workbench-adoption.mjs migrate`,
+  line 157 rewrites `provenance.lifecycle` to `upgrade`, and
   `tools/test-workbench-upgrade.mjs:86-87` asserts both the lifecycle and that
   the manifest commit equals the receipt commit. The upgrade route does build
   the support root. It is nevertheless the route nobody used, for two
   verified reasons:
-  - `workbench-upgrade.mjs:94-119` `preflight` refuses before the layout
-    phase when `--explicit-update` is absent (`explicit-update-required`),
-    when a discovery root is inside a Git repository (`foreign-git-root`,
-    line 87), or when any same-named installed skill lacks the managed marker
-    (`unmanaged-skill`, line 117). S-027's Remaining Limitations record that
+  - `workbench-upgrade.mjs:88-114` `preflight` refuses before the layout
+    phase when `--explicit-update` is absent (`explicit-update-required`,
+    line 89), when a discovery root is inside a Git repository
+    (`foreign-git-root`, line 82), or when any same-named installed skill
+    lacks the managed marker (`unmanaged-skill`, line 110). S-027's Remaining Limitations record that
     the owner host's discovery root is a foreign Git repository and that the
     installer and upgrade "both fail closed there". On that host the layout
     phase is unreachable because the skill phase gates it.
-  - `skills/update-harness/SKILL.md:86-92` describes the command as one that
+  - `skills/update-harness/SKILL.md:85-91` describes the command as one that
     "updates only skills bearing the Workbench-managed marker", never as the
-    route that creates the support root, and lines 71-72 of the same section
+    route that creates the support root, and lines 72-73 of the same section
     tell the agent to create specs "through the project's
     `workbench/manifest.json` lane declaration", which a v2 room does not have
     until after that phase. `skills/adoption/SKILL.md:7-9` forbids Adoption
@@ -69,7 +69,7 @@ on 2026-09-05:
   `templates/GENESIS.md` Phase 6 shows `init` without them. The installed
   downstream copy of the tool must not resolve its own repository's HEAD as a
   source commit, which is why a blind default is wrong in both directions.
-- `tools/workbench-tools.mjs:57` `sourceIdentity()` already resolves the
+- `tools/workbench-tools.mjs:58` `sourceIdentity()` already resolves the
   release checkout's origin, release, commit, and dirty state; S-028 threaded
   it through `migrate`.
 
@@ -196,7 +196,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
-| 2026-09-05 | spec | Spec captured from upstream fix-list items UP-003 and UP-004; UP-003's mechanism claim re-read and found not supported at `b7b23dd` (`workbench-upgrade.mjs:149-156` does build the support root and record `upgrade`) while its conclusion holds because `preflight` gates the layout phase behind skill replacement and the skill text hides the route | `workbench-layout.mjs:213` still defaults to `unrecorded`; usage at line 406 lists no source flags; `test-workbench-upgrade.mjs:86-87` asserts lifecycle and commit on the explicit path | Blueprint v3.1.2 direction links this spec | Both slices |
+| 2026-09-05 | spec | Spec captured from upstream fix-list items UP-003 and UP-004; UP-003's mechanism claim re-read and found not supported at `b7b23dd` (`workbench-upgrade.mjs:150-157` does build the support root and record `upgrade`) while its conclusion holds because `preflight` gates the layout phase behind skill replacement and the skill text hides the route | `workbench-layout.mjs:213` still defaults to `unrecorded`; usage at line 406 lists no source flags; `test-workbench-upgrade.mjs:86-87` asserts lifecycle and commit on the explicit path | Blueprint v3.1.2 direction links this spec | Both slices |
 
 ## Completion Result
 

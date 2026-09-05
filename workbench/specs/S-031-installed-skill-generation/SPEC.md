@@ -29,9 +29,11 @@ the host. Master Workbench's fix list kept that finding as `not-supported`
 which copy it held, so the defect manufactured false evidence against the
 harness, which is the evidence the harness improves from. S-027's own
 limitations record the same host: the user-scoped discovery root is a foreign
-Git repository, four installed skills differ from `skills/`, and the installer
-and explicit upgrade both fail closed there, so shipped and installed skills
-drift with nothing detecting the divergence. The acceptance report's F-005
+Git repository, its twelve workflow skills differed from `skills/` with no
+stance present, and the installer and explicit upgrade both fail closed there.
+The acceptance report's F-005 re-read that root later: all four stances were
+present by then and four installed skills still differed, so shipped and
+installed skills drift with nothing detecting the divergence. The acceptance report's F-005
 adds the privacy consequence: the installed `grilling` and `checkpoint` copies
 write live notepads into a spaced `grilling diary/` directory that the sessions
 ignore rules do not cover, so a notepad becomes committable before the

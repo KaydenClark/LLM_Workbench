@@ -106,7 +106,7 @@ authorized change to the skill text and to the manifest's permitted
 verify the canonical Workbench source at `$INSTANCE_ROOT/Foundry/Halls/Forge`.
 
 **Actuality.** On the observed machine `INSTANCE_ROOT` is unset and
-`/Users/kayden/Foundry` does not exist. The same skill then instructs, in step 3,
+`~/Foundry` does not exist. The same skill then instructs, in step 3,
 "create stable `specs/S-###-slug/SPEC.md` capability packets" and "copy the
 canonical `tools/spec-workbench.mjs` exactly", and in step 4 runs
 `node tools/spec-workbench.mjs render`. All are v2 root-layout paths superseded

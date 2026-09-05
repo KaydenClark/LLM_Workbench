@@ -41,7 +41,9 @@ on 2026-09-05:
 - No tool in `tools/` or `workbench/tools/` reads `templates/` beside a room's
   controls. `tools/evaluate-workbench.mjs` scores control coverage against a
   rubric, not against the template text.
-- `templates/` carries the seven controls, `.claude/`, `SPEC.md`,
+- `templates/` carries six control templates (`CLAUDE.md` has none; it is
+  generated as exactly `@AGENTS.md`, `workbench-layout.mjs:311`), the
+  `GENESIS.md` and `ADOPTION.md` protocols, `.claude/`, `SPEC.md`,
   `WORKBENCH_FEEDBACK.md`, `feedback/REPORT_FORMAT.md`, and `wiki/`; each
   room's manifest records the release it was generated or adopted from, so
   the template generation to compare against is a declared fact.
@@ -54,9 +56,10 @@ Gap: the report and its place in the protocols.
 ## Desired Behavior
 
 1. `node tools/control-fidelity.mjs report --project PATH [--control NAME]`
-   runs from the release checkout and compares each of the room's seven root
-   controls, `.claude/settings.json` when present, and the wiki contract files
-   against the corresponding template. Every template line is classified:
+   runs from the release checkout and compares each of the room's six
+   templated root controls, `.claude/settings.json` when present, and the wiki
+   contract files against the corresponding template; `CLAUDE.md` is checked
+   for exact equality with `@AGENTS.md`. Every template line is classified:
    `filled` (the template line carried a placeholder and the room's line
    differs), `unchanged`, `dropped` (a non-placeholder template line absent
    from the room), or `changed` (a non-placeholder line the room altered,
