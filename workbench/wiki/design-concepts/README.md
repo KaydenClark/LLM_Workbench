@@ -12,7 +12,7 @@ last_verified: 2026-09-04
 
 # Design Concepts
 
-> Generated from LLM Workbench v3.0.0.
+> Generated from LLM Workbench v3.1.1.
 
 This collection holds Design Concept articles: complete, navlinked,
 encyclopedic explanations of one durable, reusable, cross-cutting design model

@@ -8,6 +8,7 @@ import { finding } from './diagnostics.mjs';
 import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, readManifest, WIKI_PROFILES } from './workbench-paths.mjs';
 import { parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
+import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
 export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'meta']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
@@ -28,6 +29,45 @@ function walkMarkdown(directory, files = []) {
   return files.sort();
 }
 
+// The room brain is only useful when the controls route back to it: AGENTS.md
+// must name the wiki lane and README.md must name MEMORY.md (UP-009).
+function roomBrainRouting(root, wikiRelative) {
+  const findings = [];
+  for (const [control, reference] of [['AGENTS.md', wikiRelative], ['README.md', 'MEMORY.md']]) {
+    const target = path.join(root, control);
+    const content = fs.existsSync(target) && fs.lstatSync(target).isFile() ? fs.readFileSync(target, 'utf8') : '';
+    if (!content.includes(reference)) {
+      findings.push(finding('room-brain-unrouted', `${control} does not route to the room brain ${wikiRelative}/MEMORY.md; it must reference ${reference}`, { control }));
+    }
+  }
+  return findings;
+}
+
+// The wiki contract files and the room brain carry the Genesis stamp; one that
+// names a version other than the manifest is stale (version equality, not
+// content freshness), and so is a stamp still holding the template placeholder,
+// which a hand-copied template leaves behind where the Genesis gate never ran.
+// A file without any stamp names no version.
+function wikiStamps(root, wikiRoot, wikiRelative, expectedVersion) {
+  const findings = [];
+  if (!expectedVersion) return findings;
+  for (const relative of ['MEMORY.md', ...wikiContractFiles]) {
+    const target = path.join(wikiRoot, relative);
+    if (!fs.existsSync(target) || !fs.lstatSync(target).isFile()) continue;
+    const content = fs.readFileSync(target, 'utf8');
+    const note = `${wikiRelative}/${relative}`;
+    if (/LLM Workbench v\[/.test(content)) {
+      findings.push(finding('stale-stamp', `${note} stamp is unfilled; fill it with the manifest version ${expectedVersion}`, { note }));
+      continue;
+    }
+    const stamp = versionStamp(content);
+    if (stamp !== null && stamp !== expectedVersion) {
+      findings.push(finding('stale-stamp', `${note} is stamped ${stamp} but the manifest says ${expectedVersion}`, { note }));
+    }
+  }
+  return findings;
+}
+
 export function validateWiki(root) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
@@ -40,6 +80,8 @@ export function validateWiki(root) {
   if (!fs.existsSync(path.join(wikiRoot, 'MEMORY.md'))) {
     findings.push(finding('invalid-note', `${wikiRelative}/MEMORY.md router is missing`));
   }
+  else findings.push(...roomBrainRouting(root, wikiRelative));
+  findings.push(...wikiStamps(root, wikiRoot, wikiRelative, manifest?.workbenchVersion));
   for (const name of REQUIRED_COLLECTIONS) {
     const relative = collectionRelative(root, name);
     const entry = fs.existsSync(path.join(root, relative)) ? fs.lstatSync(path.join(root, relative)) : null;

@@ -53,7 +53,7 @@ function completeGenesis(project, options = {}) {
   for (const control of controls) {
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
-      : `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nThis is a filled ${control} fixture.\n${generatedRegions[control] ?? ''}`;
+      : `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nThis is a filled ${control} fixture.\nDurable memory lives in workbench/wiki/MEMORY.md.\n${generatedRegions[control] ?? ''}`;
     fs.writeFileSync(path.join(project, control), content);
   }
   const firstSpec = path.join(project, 'workbench', 'specs', 'S-001-first');
@@ -835,6 +835,25 @@ test('Genesis readiness fails closed on a permission file that withholds a decla
     const absent = run('validate', '--project', project, '--genesis');
     assert.equal(absent.status, 0, absent.stdout);
     assert.equal(absent.report.status, 'valid', 'a room without the file is unaffected');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('Genesis readiness requires version-matched wiki contract and room brain stamps', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    assert.equal(run('validate', '--project', project, '--genesis').report.status, 'valid');
+    const schema = path.join(project, 'workbench', 'wiki', 'SCHEMA.md');
+    fs.writeFileSync(schema, fs.readFileSync(schema, 'utf8').replace(VERSION, 'v2.3.0'));
+    const stale = run('validate', '--project', project, '--genesis');
+    assert.notEqual(stale.status, 0);
+    assert.equal(stale.report.error.code, 'version-mismatch');
+    assert.equal(stale.report.error.control, 'workbench/wiki/SCHEMA.md');
+    assert.match(stale.report.error.message, /SCHEMA\.md/);
+    assert.ok(typeof stale.report.error.reason === 'string' && stale.report.error.reason.length > 0, 'the failure names its predicate');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }

@@ -500,8 +500,11 @@ node tools/test-sessions.mjs
 naming the source and date) into `workbench/sessions/checkpoints/<topic>-<date>.md`
 with mode `0644`, and refuses with `secret-like-content` and the offending
 line numbers when the shared `privacy.mjs` patterns match; `invalid-note`
-covers a symlink, a non-file, or an existing destination. A refusal writes
-nothing. Cite the promoted copy, never the live path.
+covers a symlink, a non-file, an existing destination, or a `--from` that
+resolves outside the repository root or passes through a symbolic link
+(source and destination share one boundary, `assertSafeReadPath` beside
+`assertSafeWritePath`; the untracked session collections are the intended
+sources). A refusal writes nothing. Cite the promoted copy, never the live path.
 
 ### Wiki Validation
 
@@ -523,8 +526,19 @@ sections. `copied-task-state` flags generated-region markers or ticket rows
 copied into a note; `secret-like-content` flags key blocks, tokens,
 credential assignments, absolute home paths, host temp handoff lanes, and
 email addresses in a `normal` note (the shared `workbench/tools/privacy.mjs`
-patterns). `stale-note` is attention only. An Obsidian vault configuration is
-ignored when present and never required.
+patterns). `stale-note` is attention only. `room-brain-unrouted` (attention)
+reports a root control that does not route back to the room brain: `AGENTS.md`
+must reference the wiki lane path and `README.md` must reference `MEMORY.md`;
+the message names the control lacking the route, and a room whose manifest
+declares a different wiki lane path sees it until its controls name that lane.
+`stale-stamp` (attention)
+reports a wiki contract file (`SCHEMA.md`, `AGENTS.md`,
+`design-concepts/README.md`) or the room brain whose `Generated from LLM
+Workbench` stamp names a version other than the manifest's; the check is
+version equality, not content freshness (that stays with `stale-note`), and a
+file without a stamp names no version. `validate --genesis` fails the same
+files with `version-mismatch`. An Obsidian vault configuration is ignored when
+present and never required.
 
 ### Diagnostics And Blocking Effects
 
@@ -538,7 +552,7 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
 | `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target` |
 | `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
-| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, and the ADR and wiki findings until their tools ship |
+| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, and the ADR and wiki findings until their tools ship |
 
 `doctor --json` prints the findings with their `severity`, `scope`, and
 `blocks` fields; the plain output ends with an `ok - no blocking finding` line

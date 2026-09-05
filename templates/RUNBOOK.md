@@ -167,6 +167,16 @@ it by adding the paired `Edit(./workbench/<lane>/**)` and
 or recording the deliberate denial in `AGENTS.md`. The Genesis readiness
 check fails closed on the same finding; a room without the file is unaffected.
 
+The wiki lane raises `room-brain-unrouted` (attention) when a root control does
+not route back to the room brain: `AGENTS.md` must reference `workbench/wiki/`
+and `README.md` must reference `MEMORY.md`; the finding names the control that
+lacks the route, and a room whose manifest declares a different wiki lane path
+sees it until its controls name that lane. It raises `stale-stamp` (attention)
+when a wiki contract file or the room brain carries a `Generated from LLM
+Workbench` stamp naming a version other than `workbench/manifest.json`; refresh
+the stamp when the harness is upgraded (`validate --genesis` fails the same
+files with `version-mismatch`).
+
 ## Evaluation And Benchmarking
 
 Use this section to prove whether the workbench or project process is improving.
@@ -376,8 +386,10 @@ backup and can be restored.
 Layout initialization and schema migration preserve existing session ignore
 rules and reject linked destination paths before writes. ADR creation, register
 rendering and checkpoint promotion also reject unsafe destination chains and
-use private temporary files. Legacy Wiki adoption moves existing knowledge
-before seeding only the missing contract files.
+use private temporary files; checkpoint promotion refuses a `--from` source
+outside the repository root, or one reached through a symbolic link, with
+`invalid-note` and writes nothing. Legacy Wiki adoption moves existing
+knowledge before seeding only the missing contract files.
 
 Treat a harness upgrade like any other change: smallest correct diff, verified,
 with proof. If a downstream lesson should flow *back* to the harness, capture it
