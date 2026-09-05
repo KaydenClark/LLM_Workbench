@@ -158,6 +158,15 @@ Decision records live in
 `workbench/docs/adr/`; an accepted record names the control that carries its
 rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
+`permission-scope-drift` is reported when `.claude/settings.json` exists and
+withholds a manifest-declared authorship lane (no covering `Edit` and `Write`
+`allow` rule, or a `deny` rule covering it) or grants `workbench/tools/` in
+`allow`; it names each lane, never blocks, and never edits the file. Resolve
+it by adding the paired `Edit(./workbench/<lane>/**)` and
+`Write(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
+or recording the deliberate denial in `AGENTS.md`. The Genesis readiness
+check fails closed on the same finding; a room without the file is unaffected.
+
 ## Evaluation And Benchmarking
 
 Use this section to prove whether the workbench or project process is improving.

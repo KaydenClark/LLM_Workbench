@@ -808,3 +808,34 @@ test('the template permission file grants Edit and Write on every authorship lan
     assert.match(content, /grants Edit and\s+Write on the declared authorship lanes, or `\.claude\/` was\s+omitted with a\s+reason/, `${protocol} completion box asks for the grant`);
   }
 });
+
+test('Genesis readiness fails closed on a permission file that withholds a declared authorship lane', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    const settings = path.join(project, '.claude', 'settings.json');
+    fs.mkdirSync(path.dirname(settings));
+    fs.writeFileSync(settings, JSON.stringify({ permissions: { deny: ['Write(./secrets/**)'], ask: ['Bash(git push:*)'], allow: ['Edit(./src/**)', 'Edit(./AGENTS.md)'] } }));
+
+    const drifted = run('validate', '--project', project, '--genesis');
+
+    assert.notEqual(drifted.status, 0, drifted.stdout);
+    assert.equal(drifted.report.error.code, 'permission-scope-drift');
+    assert.equal(drifted.report.error.control, '.claude/settings.json');
+    assert.deepEqual(drifted.report.error.lanes.map((entry) => entry.lane).sort(), ['docs', 'feedback', 'sessions', 'specs', 'wiki']);
+    assert.ok(typeof drifted.report.error.reason === 'string' && drifted.report.error.reason.length > 0, 'the rejection names the withheld lanes');
+
+    fs.copyFileSync(path.join(root, 'templates', '.claude', 'settings.json'), settings);
+    const granted = run('validate', '--project', project, '--genesis');
+    assert.equal(granted.status, 0, granted.stdout);
+    assert.equal(granted.report.status, 'valid');
+
+    fs.rmSync(path.dirname(settings), { recursive: true, force: true });
+    const absent = run('validate', '--project', project, '--genesis');
+    assert.equal(absent.status, 0, absent.stdout);
+    assert.equal(absent.report.status, 'valid', 'a room without the file is unaffected');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
