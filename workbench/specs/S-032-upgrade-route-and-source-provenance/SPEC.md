@@ -201,6 +201,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-workbench-upgrade.mjs (5 pass: Git-owned discovery root blocks --explicit-update with foreign-git-root and completes --layout-only with lifecycle upgrade, manifest commit equal to receipt commit, skills presence-only, empty skillBackups, no skill or marker touched; layout-only still blocks missing-user-skills and dirty-project; both modes together are invalid-invocation); node tools/test-skill-catalog.mjs and test-delivery-skills.mjs pass with the new route-text assertions; node tools/test-workbench-layout.mjs 22 pass; evaluate-workbench templates 106.6/113 unchanged from baseline | skills/update-harness/SKILL.md section 3 names the v2-root layout route first and reconciles specs through the manifest it declares; skills/adoption/SKILL.md opening and templates/ADOPTION.md intro name upgrade --layout-only for an already-adopted room; RUNBOOK.md V3 explicit upgrade section documents both modes; LEXICON.md Explicit skill update distinction gains the layout-only mode | none; acceptance boxes and completion result pending the full suite |
 | 2026-09-05 | spec | Guardrail audit captured before and after the harness change: 78/100 both times, with the same four outcome-evidence recommendations (real repeated trials, control comparison, refresh, effect and confidence interval), none of which this spec claims to address; no static or context improvement is translated into an agent-outcome claim | node tools/audit-guardrails.mjs before at ae60d8d and after at the completion candidate | Docs checked; no update needed: the audit result changes no owner | none |
 | 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-05 | spec | Integration review of `e360258` returned APPROVE; rebased onto `integration` at `90abc59` (S-031) resolving only the generated `TASKBOARD.md` and `BLUEPRINT.md` regions by re-rendering; F-1 recorded under Remaining Limitations and the Completion Result risk sentence narrowed to direct `init`/`migrate`; `templates/ADOPTION.md` now says the layout route runs from the Workbench release checkout | Full `AGENTS.md` suite rerun on the rebased tree (see the final report) | `templates/ADOPTION.md` intro; spec Remaining Limitations and Completion Result | F-1 follow-up |
 
 ## Completion Result
 
@@ -234,10 +235,14 @@ mechanism claim ("never creates a support root") is not supported at
 **Risks and side effects.** A downstream copy of `workbench-layout.mjs` now
 refuses `init`/`migrate` without both flags where it previously wrote a
 placeholder; that refusal is the intended contract and names the flag. A
-release checkout without an `origin` remote (a tarball) also refuses; pass
-the flags. The recovery record gains a `skills` field in both modes; no reader
-depended on its absence. Rooms already misrecorded as `adoption` are not
-rewritten.
+release checkout without an `origin` remote (a tarball) also refuses direct
+`init`/`migrate`; pass the flags. That refusal does not extend to Adoption or
+`upgrade --layout-only`, which resolve the source through
+`tools/workbench-tools.mjs sourceIdentity()` and can still record
+`commit: "unknown"` (review finding F-1, recorded under Remaining
+Limitations). The recovery record gains a `skills` field in both modes; no
+reader depended on its absence. Rooms already misrecorded as `adoption` are
+not rewritten.
 
 **How verified.** Red/green at the named seams: `tools/test-workbench-layout.mjs`
 (22 pass; checkout resolution, relocated refusal that writes nothing, usage),
@@ -254,6 +259,15 @@ after: recorded in the evidence log.
 ## Remaining Limitations Or Follow-Up Specs
 
 - Rooms already misrecorded as `adoption` are not rewritten by this spec.
+- F-1 (integration review, non-blocking): `sourceIdentity` in
+  `workbench/tools/workbench-layout.mjs` accepts any truthy explicit
+  `--source-commit` without a shape check, and
+  `tools/workbench-tools.mjs sourceIdentity()`, which Adoption and both
+  upgrade modes use, falls back to `'unknown'` on a checkout with no `origin`
+  or no Git; `upgrade --layout-only` can therefore still record
+  `commit: "unknown"`. The direct `init`/`migrate` refusal in this spec does
+  not cover that path. A follow-up spec may add a SHA shape check and thread
+  the same refusal through `sourceIdentity()`.
 - The version stamp belongs to
   [S-035](../S-035-workbench-v3-1-2-candidate/SPEC.md).
 
