@@ -153,7 +153,10 @@ support root. Schema 2 declares six lowercase lanes (`docs`, `specs`, `wiki`,
 `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
 `sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`), the wiki
 profile, and the exact source release and commit. `workbench/sessions/.gitignore`
-keeps `grilling/` and `handoffs/` untracked; only `checkpoints/` is durable.
+keeps `grilling/` and `handoffs/` untracked, and also denies the legacy spaced
+`grilling diary/` name that a stale installed skill may still write (an
+existing ignore file keeps its project rules and validates without that line);
+only `checkpoints/` is durable.
 Exercise it from a disposable project directory:
 
 ```bash
