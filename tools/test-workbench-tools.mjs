@@ -158,3 +158,43 @@ function walk(directory, files = []) {
   }
   return files;
 }
+
+for (const operation of ['update', 'rollback']) {
+  for (const collision of ['file', 'lane', 'ancestor']) {
+    test(`${operation} refuses a symlinked ${collision} before any writes`, () => {
+      const dir = project(); const home = fixture(); const outside = fixture();
+      try {
+        assert.equal(run(installer, 'install', '--project', dir).status, 0);
+        const lane = path.join(dir, 'workbench', 'tools');
+        const target = path.join(lane, 'adr.mjs');
+        fs.writeFileSync(target, '// pre-update local version\n');
+        const updated = run(installer, 'update', '--project', dir, '--home', home, '--explicit-update');
+        assert.equal(updated.status, 0, updated.stdout);
+        const beforeReceipt = fs.readFileSync(path.join(lane, RECEIPT_NAME), 'utf8');
+        const beforeBackups = fs.readdirSync(home);
+        let external;
+        if (collision === 'file') {
+          external = path.join(outside, 'unrelated.txt');
+          fs.writeFileSync(external, 'keep this external data\n');
+          fs.unlinkSync(target); fs.symlinkSync(external, target);
+        } else {
+          const replaced = collision === 'lane' ? lane : path.join(dir, 'workbench');
+          const moved = path.join(outside, 'moved');
+          fs.renameSync(replaced, moved); fs.symlinkSync(moved, replaced);
+          external = path.join(moved, ...(collision === 'lane' ? [] : ['tools']), 'adr.mjs');
+          fs.writeFileSync(external, 'keep this external data\n');
+        }
+        const result = operation === 'update'
+          ? run(installer, 'update', '--project', dir, '--home', home, '--explicit-update')
+          : run(installer, 'rollback', '--project', dir, '--backup', updated.report.backup);
+        assert.notEqual(result.status, 0, result.stdout);
+        assert.equal(result.report.status, 'blocked');
+        assert.equal(fs.readFileSync(external, 'utf8'), 'keep this external data\n');
+        assert.equal(fs.readFileSync(path.join(lane, RECEIPT_NAME), 'utf8'), beforeReceipt);
+        assert.deepEqual(fs.readdirSync(home), beforeBackups, 'refusal must not create backups');
+      } finally {
+        for (const p of [dir, home, outside]) fs.rmSync(p, { recursive: true, force: true });
+      }
+    });
+  }
+}

@@ -74,6 +74,33 @@ export function validateSource() {
   return null;
 }
 
+// Preflight every path before backups or writes. Checking only the final lane
+// misses a symlink in workbench/ or in a nested manifest-declared parent.
+function safeDirectoryChain(root, relative) {
+  let current = path.resolve(root);
+  for (const part of relative.split('/').filter(Boolean)) {
+    current = path.join(current, part);
+    const entry = lstatOrNull(current);
+    if (entry && (!entry.isDirectory() || entry.isSymbolicLink())) {
+      return fail('unsafe-lane', `${current} must be an ordinary directory.`);
+    }
+  }
+  return null;
+}
+
+function safeManagedFiles(lane, names = RUNTIME_TOOLS) {
+  for (const name of [...names, RECEIPT_NAME]) {
+    if (name !== RECEIPT_NAME && !RUNTIME_TOOLS.includes(name)) {
+      return fail('invalid-receipt', 'Receipt contains an unknown managed filename.');
+    }
+    const entry = lstatOrNull(path.join(lane, name));
+    if (entry && (!entry.isFile() || entry.isSymbolicLink() || entry.nlink > 1)) {
+      return fail('unsafe-tool', `${name} must be an ordinary, unshared file.`, { tool: name });
+    }
+  }
+  return null;
+}
+
 function readManifestLane(project) {
   const manifestPath = path.join(project, 'workbench', 'manifest.json');
   if (!fs.existsSync(manifestPath)) return fail('invalid-manifest', `${manifestPath} is missing; initialize the layout first.`);
@@ -83,6 +110,8 @@ function readManifestLane(project) {
   }
   const lane = manifest.lanes?.tools;
   if (typeof lane !== 'string' || !lane.startsWith('workbench/') || lane.includes('..')) return fail('invalid-lane', 'The manifest must declare a tools lane under workbench/.');
+  const unsafe = safeDirectoryChain(project, lane);
+  if (unsafe) return unsafe;
   return { lane: path.join(project, lane), relative: lane, manifest };
 }
 
@@ -94,9 +123,13 @@ export function readReceipt(laneDir) {
 
 function writeReceipt(laneDir, receipt) {
   const file = path.join(laneDir, RECEIPT_NAME);
-  const temporary = `${file}.tmp-${process.pid}`;
-  fs.writeFileSync(temporary, `${JSON.stringify(receipt, null, 2)}\n`, { mode: 0o644 });
-  fs.renameSync(temporary, file);
+  // A private temporary directory avoids following a pre-existing temp symlink.
+  const temporaryDir = fs.mkdtempSync(path.join(laneDir, '.receipt-'));
+  try {
+    const temporary = path.join(temporaryDir, 'receipt');
+    fs.writeFileSync(temporary, `${JSON.stringify(receipt, null, 2)}\n`, { mode: 0o644, flag: 'wx' });
+    fs.renameSync(temporary, file);
+  } finally { fs.rmSync(temporaryDir, { recursive: true, force: true }); }
 }
 
 function copyTool(tool, destinationDir) {
@@ -131,6 +164,8 @@ export function verify(project) {
   const resolved = readManifestLane(project);
   if (resolved.status === 'blocked') return resolved;
   const { lane, relative } = resolved;
+  const unsafe = safeManagedFiles(lane);
+  if (unsafe) return unsafe;
   const receipt = readReceipt(lane);
   if (!receipt && path.resolve(lane) === path.resolve(sourceLane)) return { status: 'source', lane: relative, source: sourceIdentity() };
   if (!receipt) return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative} has no ${RECEIPT_NAME}.` } };
@@ -154,6 +189,8 @@ export function update(project, options = {}) {
   const resolved = readManifestLane(project);
   if (resolved.status === 'blocked') return resolved;
   const { lane, relative } = resolved;
+  const unsafe = safeManagedFiles(lane);
+  if (unsafe) return unsafe;
   const receipt = readReceipt(lane);
   if (!receipt) return fail('tools-receipt-missing', `${relative} has no receipt; use install.`);
   const home = path.resolve(options.home ?? os.homedir());
@@ -183,10 +220,14 @@ export function rollback(project, options = {}) {
   const resolved = readManifestLane(project);
   if (resolved.status === 'blocked') return resolved;
   const { lane, relative } = resolved;
+  const unsafe = safeManagedFiles(lane);
+  if (unsafe) return unsafe;
   const backupRoot = path.resolve(options.backup ?? '');
   if (!options.backup || !lstatOrNull(backupRoot)?.isDirectory()) return fail('invalid-backup', '--backup must name an existing backup directory recorded in the receipt.');
   const previous = readReceipt(backupRoot);
-  if (!previous) return fail('invalid-backup', `${backupRoot} carries no receipt to restore.`);
+  if (!previous || !previous.files || typeof previous.files !== 'object' || Array.isArray(previous.files)) return fail('invalid-backup', `${backupRoot} carries no valid receipt to restore.`);
+  const unsafeBackup = safeManagedFiles(backupRoot, Object.keys(previous.files));
+  if (unsafeBackup) return unsafeBackup;
   // A backup is the lane exactly as it was before the update, including any
   // local edit that already drifted from the receipt; rollback restores that
   // state verbatim and lets `verify` report the drift again.

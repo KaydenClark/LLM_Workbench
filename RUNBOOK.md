@@ -208,6 +208,12 @@ with the drifted file names (`source` on this repository). `update` requires
 `rollback` restores that backup. An application's root `tools/` directory is
 never read or written.
 
+Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
+nonregular managed files, and unsafe backup entries before copying or creating
+backups. Resolve the path collision while preserving its target, then retry the
+explicit operation. Ordinary drift in a regular managed file still receives a
+backup and can be restored.
+
 ### V3 Adoption migration check
 
 Adoption requires seven filled root controls and all core skills in a

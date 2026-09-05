@@ -179,6 +179,10 @@ completed spec evidence remain unchanged.
 
 | 2026-09-05 | TK-001 | Cloud verification completed after correcting a template vocabulary mismatch found by the full suite | All 30 commands in the AGENTS/RUNBOOK union passed, with layout 14/14 and closeout 6/6 rerun after correction; ADR/Wiki validation and diff check PASS; guardrail remains 73/100 with unchanged criteria | Root/template closeout and spec state reconciled; existing placeholder vocabulary preserved | Immutable integration review and actual merge pending. Remaining score recommendations concern real repeated comparative outcome trials and known proof-freshness routing; these checks do not prove real-work readiness |
 
+| 2026-09-05 | TK-001 | Independent integration review REJECT on `4e53c8c`: inherited runtime update could follow a replaced managed-file symlink and overwrite an unrelated file; rollback shared the unsafe path. Reproduced six cases and repaired preflight validation for files, lane and ancestor paths | Six new update/rollback refusal cases RED, then managed-tools 12/12 GREEN; each confirms unchanged external bytes, receipt and backup inventory | Root and generic Runbooks document collision refusal; runtime source files themselves unchanged; installer/update controller repaired | Full final suite and fresh immutable review required; prior approval is not carried forward |
+
+| 2026-09-05 | TK-001 | Full verification of symlink-safety correction passed | All 30 union commands PASS on corrected code and docs; managed-tools 12/12 and closeout 6/6; ADR/Wiki validate; diff check; guardrail 73/100 unchanged | Existing owners updated, no version bump or host deployment | Publish corrected immutable tree, fresh integration review, then authorized merge; cleanup deferred |
+
 ## Completion Result
 
 v3.1.1 source behavior, route, stances, Round One, feedback workflow and report
