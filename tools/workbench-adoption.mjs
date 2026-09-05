@@ -151,36 +151,42 @@ function movedExternalLinks(project) {
   for (const { source, destination } of legacyLanes) {
     const sourceRoot = path.join(project, source);
     if (!lstatOrNull(sourceRoot)?.isDirectory()) continue;
-    visit(sourceRoot);
-
-    function visit(directory) {
-      for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-        const target = path.join(directory, entry.name);
-        const stat = fs.lstatSync(target);
-        if (stat.isSymbolicLink()) continue;
-        if (stat.isDirectory()) { visit(target); continue; }
-        if (!stat.isFile() || path.extname(entry.name).toLowerCase() !== '.md') continue;
-        const relativeInLane = path.relative(sourceRoot, target);
-        const movedFile = path.join(project, destination, relativeInLane);
-        const content = fs.readFileSync(target, 'utf8');
-        for (const match of content.matchAll(/\[[^\]]*\]\((<[^>]+>|[^\s)#]+)(?:#[^)\s]+)?(?:\s+["'][^)]*["'])?\)/g)) {
-          const link = match[1].replace(/^<|>$/g, '');
-          if (!link || link.startsWith('#') || path.isAbsolute(link) || /^[a-z][a-z0-9+.-]*:/i.test(link)) continue;
-          const beforeTarget = path.resolve(path.dirname(target), link);
-          const outsideLane = !isInside(sourceRoot, beforeTarget);
-          const insideProject = isInside(project, beforeTarget);
-          const afterTarget = path.resolve(path.dirname(movedFile), link);
-          if (!outsideLane || !insideProject || !lstatOrNull(beforeTarget) || beforeTarget === afterTarget) continue;
-          links.push({
-            file: posixRelative(project, movedFile),
-            link,
-            target: posixRelative(project, beforeTarget)
-          });
-        }
-      }
-    }
+    visit(sourceRoot, sourceRoot, path.join(project, destination));
+  }
+  const rootMemory = path.join(project, 'MEMORY.md');
+  if (lstatOrNull(rootMemory)?.isFile()) {
+    inspect(rootMemory, path.join(project, lanes.wiki, 'MEMORY.md'), null);
   }
   return links.sort((left, right) => left.file.localeCompare(right.file) || left.link.localeCompare(right.link));
+
+  function visit(directory, sourceRoot, destinationRoot) {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const target = path.join(directory, entry.name);
+      const stat = fs.lstatSync(target);
+      if (stat.isSymbolicLink()) continue;
+      if (stat.isDirectory()) { visit(target, sourceRoot, destinationRoot); continue; }
+      if (!stat.isFile() || path.extname(entry.name).toLowerCase() !== '.md') continue;
+      inspect(target, path.join(destinationRoot, path.relative(sourceRoot, target)), sourceRoot);
+    }
+  }
+
+  function inspect(file, movedFile, sourceRoot) {
+    const content = fs.readFileSync(file, 'utf8');
+    for (const match of content.matchAll(/\[[^\]]*\]\((<[^>]+>|[^\s)#]+)(?:#[^)\s]+)?(?:\s+["'][^)]*["'])?\)/g)) {
+      const link = match[1].replace(/^<|>$/g, '');
+      if (!link || link.startsWith('#') || path.isAbsolute(link) || /^[a-z][a-z0-9+.-]*:/i.test(link)) continue;
+      const beforeTarget = path.resolve(path.dirname(file), link);
+      const targetMovesWithLane = sourceRoot && isInside(sourceRoot, beforeTarget);
+      const insideProject = isInside(project, beforeTarget);
+      const afterTarget = path.resolve(path.dirname(movedFile), link);
+      if (targetMovesWithLane || !insideProject || !lstatOrNull(beforeTarget) || beforeTarget === afterTarget) continue;
+      links.push({
+        file: posixRelative(project, movedFile),
+        link,
+        target: posixRelative(project, beforeTarget)
+      });
+    }
+  }
 }
 
 function addWikiFrontmatter(project, options) {

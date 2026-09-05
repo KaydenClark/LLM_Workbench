@@ -95,7 +95,7 @@ function fixtureSpec() {
     seedControls(project);
     seedUserSkills(home);
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
-    write(project, 'MEMORY.md', '# Adopted Wiki\n');
+    write(project, 'MEMORY.md', '# Adopted Wiki\n\n[Runbook](RUNBOOK.md)\n');
     write(project, 'feedback/WORKBENCH_FEEDBACK.md', '# Feedback\n');
     write(project, 'grilling diary/decision.md', '# Provisional decision\n');
     write(project, 'handoffs/recovery.md', '# Recovery point\n');
@@ -115,7 +115,7 @@ function fixtureSpec() {
     assert.equal(fs.existsSync(path.join(project, 'handoffs')), false, 'legacy recovery records must retire after migration');
     assert.equal(fs.existsSync(path.join(project, 'skills')), false, 'legacy project-local skills must retire after user-scoped readiness');
     assert.equal(read(project, 'workbench/specs/S-101-adopted/SPEC.md'), fixtureSpec());
-    assert.match(read(project, 'workbench/wiki/MEMORY.md'), /^---\n[\s\S]+\n---\n\n# Adopted Wiki\n$/,
+    assert.match(read(project, 'workbench/wiki/MEMORY.md'), /^---\n[\s\S]+\n---\n\n# Adopted Wiki\n\n\[Runbook\]\(RUNBOOK\.md\)\n$/,
       'a moved room brain must receive the required Wiki metadata without losing its body');
     assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Feedback\n');
     assert.equal(read(project, 'workbench/sessions/grilling/decision.md'), '# Provisional decision\n');
@@ -134,11 +134,18 @@ function fixtureSpec() {
       'manifest and managed-tools receipt must record one source commit');
     assert.deepEqual(report.residue.rootManagedTools, ['spec-workbench.mjs'],
       'matching application-root tool names are reported without moving or deleting them');
-    assert.deepEqual(report.residue.movedExternalLinks, [{
-      file: 'workbench/specs/S-101-adopted/SPEC.md',
-      link: '../../schema.sql',
-      target: 'schema.sql'
-    }], 'links that escaped a moved lane are reported for explicit reconciliation');
+    assert.deepEqual(report.residue.movedExternalLinks, [
+      {
+        file: 'workbench/specs/S-101-adopted/SPEC.md',
+        link: '../../schema.sql',
+        target: 'schema.sql'
+      },
+      {
+        file: 'workbench/wiki/MEMORY.md',
+        link: 'RUNBOOK.md',
+        target: 'RUNBOOK.md'
+      }
+    ], 'links that escaped a moved lane or moved room brain are reported for explicit reconciliation');
     assert.equal(nextWork(project).specId, 'S-101', 'selection must resolve the manifest-declared spec lane');
     assert.deepEqual(doctor(project).filter((issue) => issue.blocks !== 'none'), [], 'doctor must resolve and validate the manifest-declared spec lane');
     assert.equal(report.doctor, 'passed-with-findings', 'the intentionally unrepaired moved link remains visible and nonblocking');
