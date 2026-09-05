@@ -73,6 +73,13 @@ Limitations:
 
 Ordered by demonstrated impact.
 
+**Finding ID scope:** identifiers in this lane are report-scoped, not global.
+At this review the lane holds five reports and `F-001` through `F-006` are each
+defined by more than one of them with different meanings. Every reference below
+names its source report, and the ledger keys on the pair rather than the bare
+identifier. Whether the lane adopts a global namespace is an owner decision
+recorded under Open Questions; this report does not renumber another report.
+
 ### F-004 - High: the guardrail contradiction check cannot fail under schema 2
 
 **Location:** `tools/audit-guardrails.mjs:347` (`hasContradictorySpecState`),
@@ -283,6 +290,10 @@ Open questions for the owner:
   question F-003 left open; two reports have now reached it independently.
 - Should the deferred branch cleanup, currently 27 remote branches contained in
   `origin/integration`, receive a review date?
+- Should `REPORT_FORMAT.md` require report-scoped finding identifiers, for
+  example a short report prefix, so that version-over-version reporting can key
+  on a stable pair? Five reports now share the `F-###` space and six identifiers
+  already collide, which blocks a lane-wide ledger keyed on the bare number.
 
 A cold continuation can act on this report and the linked spec without the
 originating chat. It creates no new task; the owner's authorization does.
