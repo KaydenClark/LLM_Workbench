@@ -74,6 +74,14 @@ export function resolveBranchRefs(project, name) {
   return resolved;
 }
 
+// The content of a project-relative file at a ref the repository already
+// has, or null when the ref or the file is absent. Nothing is fetched.
+export function readAtRef(project, ref, relative) {
+  const prefix = gitRead(project, ['rev-parse', '--show-prefix']);
+  if (prefix === null) return null;
+  return gitRead(project, ['show', `${ref}:${prefix}${relative}`]);
+}
+
 // Every branch name the repository knows locally or on a remote.
 export function listBranchNames(project) {
   const remotes = remoteNames(project);

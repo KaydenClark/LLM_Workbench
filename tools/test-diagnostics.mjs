@@ -180,3 +180,43 @@ test('the declared integration branch is checked by doctor as a git-scope error 
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('a selected spec already complete at the declared integration ref is reported as attention and still dispatched', () => {
+  assert.deepEqual(describe('complete-on-integration'), { severity: 'attention', scope: 'specs', blocks: 'none', summary: describe('complete-on-integration').summary });
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '-m', 'S-001 active on the task branch');
+    assert.deepEqual(doctor(dir), [], 'an integration ref that does not carry the spec is not a finding');
+
+    git(dir, 'switch', '-q', 'integration');
+    git(dir, 'merge', '-q', '--ff-only', 'main');
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { status: 'complete', tickets: '| TK-001 | First slice | done | none | node test |' }));
+    render(dir);
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '-m', 'S-001 complete on integration');
+    git(dir, 'switch', '-q', 'main');
+    assert.match(fs.readFileSync(path.join(dir, 'workbench', 'specs', 'S-001-first', 'SPEC.md'), 'utf8'), /\*\*Status:\*\* active/, 'the checkout still carries the spec active');
+
+    const findings = doctor(dir);
+    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.specId, item.ref]), [['complete-on-integration', 'attention', 'specs', 'none', 'S-001', 'integration']]);
+    assert.match(findings[0].message, /S-001.*complete.*integration/);
+    assert.equal(cliDoctor(dir).status, 0, 'the finding informs and never fails doctor');
+    assert.equal(nextWork(dir).ticketId, 'TK-001', 'next still returns the slice; a checkout may be pinned deliberately');
+
+    const tip = git(dir, 'rev-parse', 'integration');
+    git(dir, 'update-ref', '-d', 'refs/heads/integration');
+    git(dir, 'remote', 'add', 'origin', dir);
+    git(dir, 'update-ref', 'refs/remotes/origin/integration', tip);
+    const remote = doctor(dir);
+    assert.deepEqual(remote.map((item) => [item.code, item.ref]), [['complete-on-integration', 'origin/integration']], 'a remote-only integration ref is read without fetching');
+
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { status: 'complete', tickets: '| TK-001 | First slice | done | none | node test |' }));
+    render(dir);
+    assert.deepEqual(doctor(dir), [], 'once the checkout agrees there is nothing to select and nothing to report');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

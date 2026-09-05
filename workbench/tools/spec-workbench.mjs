@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
+import { readAtRef, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -18,7 +18,10 @@ const HOT_START = '<!-- hot-specs:start -->';
 const HOT_END = '<!-- hot-specs:end -->';
 
 export function nextWork(rootDir) {
-  const specs = loadSpecs(rootDir);
+  return selectCandidate(loadSpecs(rootDir));
+}
+
+function selectCandidate(specs) {
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   const candidates = [];
   for (const spec of specs) {
@@ -189,14 +192,14 @@ export function doctor(rootDir, options = {}) {
   checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
   issues.push(...collectionFindings(root));
-  issues.push(...gitFindings(root));
+  issues.push(...gitFindings(root, specs));
   return issues;
 }
 
 // The declared integration branch is the review gate's merge target. Its
 // absence is an error every doctor run shows and none blocks: a room can
 // create the branch in one command, and selection must not wait on it.
-function gitFindings(root) {
+function gitFindings(root, specs) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];
   const declared = declaredGit(root);
@@ -204,6 +207,17 @@ function gitFindings(root) {
   const refs = resolveBranchRefs(root, declared.integrationBranch);
   if (refs.length === 0) {
     return [finding('integration-branch-missing', `declared integration branch ${declared.integrationBranch} resolves neither as a local head nor on a remote; create it from ${declared.defaultBranch}`, { branch: declared.integrationBranch })];
+  }
+  // A checkout behind its integration branch is told that the work next would
+  // dispatch is already finished there. It still dispatches: a checkout may be
+  // pinned deliberately, so the finding informs and never blocks.
+  const selected = selectCandidate(specs);
+  const spec = selected && specs.find((item) => item.id === selected.specId);
+  for (const { ref, name } of spec ? refs : []) {
+    const status = readAtRef(root, ref, spec.relativePath)?.match(/^\*\*Status:\*\*\s*(\S+)/m)?.[1];
+    if (['complete', 'superseded'].includes(status)) {
+      return [finding('complete-on-integration', `${spec.id} is ${status} at ${name}; this checkout still carries it ${spec.status}, so fetch or rebase before dispatching ${selected.ticketId}`, { specId: spec.id, ref: name })];
+    }
   }
   return [];
 }

@@ -169,7 +169,13 @@ the block stays valid, and `workbench-paths.mjs` exposes the block as
 is absent and `integration-branch-missing` when the declared name resolves
 neither as a local head nor on a remote; both are `error` findings in the
 `git` scope with effect `none`, so they stay visible without blocking
-selection. Declaring never creates a branch. This repository declares
+selection. When the declared branch resolves and the spec `next` would select
+is already `complete` or `superseded` at that ref, `doctor` reports
+`complete-on-integration` (attention, naming the spec and ref) so a checkout
+behind its integration branch is told so instead of dispatching finished
+work; it reads the ref the repository already has and never fetches, and
+`next` still returns the slice because a checkout may be pinned
+deliberately. Declaring never creates a branch. This repository declares
 `integration`; create a missing one from the default branch:
 
 ```bash
@@ -482,7 +488,7 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
 | `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target` |
 | `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
-| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `stale-register`, `stale-note`, and the ADR and wiki findings until their tools ship |
+| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, and the ADR and wiki findings until their tools ship |
 | `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
 
 `doctor --json` prints the findings with their `severity`, `scope`, and
