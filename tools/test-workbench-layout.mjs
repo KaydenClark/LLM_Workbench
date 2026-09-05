@@ -774,3 +774,37 @@ test('the layout usage string lists both source flags for init and migrate', () 
   assert.match(migrateUsage, /--source-commit SHA/);
   assert.match(migrateUsage, /--source-repository URL/);
 });
+
+test('the template permission file grants Edit and Write on every authorship lane the prose declares writable', () => {
+  const settings = JSON.parse(fs.readFileSync(path.join(root, 'templates', '.claude', 'settings.json'), 'utf8'));
+  const { allow, ask, deny } = settings.permissions;
+  const rule = (tool, target) => `${tool}(./${target}/**)`;
+  for (const [name, lane] of Object.entries(LANES)) {
+    if (name === 'tools') {
+      assert.ok(ask.includes(rule('Edit', lane)) && ask.includes(rule('Write', lane)), `${lane} must sit in ask for Edit and Write`);
+      assert.equal(allow.some((entry) => /^(?:Edit|Write)\(/.test(entry) && entry.includes(lane)), false, `${lane} must not be granted Edit or Write in allow`);
+      continue;
+    }
+    assert.ok(allow.includes(rule('Edit', lane)), `${lane} must have an Edit allow rule`);
+    assert.ok(allow.includes(rule('Write', lane)), `${lane} must have a Write allow rule`);
+    assert.equal(deny.some((entry) => /^(?:Edit|Write)\(/.test(entry) && entry.includes(lane)), false, `${lane} must not be denied`);
+  }
+  // Every writable root directory gets Write beside Edit; single-file controls
+  // are revised, never created, so Edit alone is the right grant there.
+  for (const entry of allow) {
+    const directoryEdit = entry.match(/^Edit\((\.\/.+\/\*\*)\)$/);
+    if (directoryEdit) assert.ok(allow.includes(`Write(${directoryEdit[1]})`), `${entry} needs a paired Write rule`);
+  }
+  assert.ok(allow.includes('Edit(./LEXICON.md)'), 'LEXICON.md is a root control agents keep current');
+  for (const tool of ['spec-workbench', 'adr', 'sessions', 'wiki', 'workbench-layout']) {
+    assert.ok(allow.includes(`Bash(node workbench/tools/${tool}.mjs:*)`), `${tool}.mjs must be runnable without a prompt`);
+  }
+  const readme = fs.readFileSync(path.join(root, 'templates', '.claude', 'README.md'), 'utf8');
+  assert.match(readme, /Edit and Write are separate grants/i, 'the README explains Edit versus Write');
+  assert.match(readme, /^\| \*\*Workbench authorship lanes\*\*.*`allow`.*Edit and Write/m, 'the mapping table names the lanes as its fourth row');
+  for (const protocol of ['GENESIS.md', 'ADOPTION.md']) {
+    const content = fs.readFileSync(path.join(root, 'templates', protocol), 'utf8');
+    assert.match(content, /writable roots and the\s+Workbench authorship lanes -> `allow` \(Edit\s+and Write\)/, `${protocol} Phase 4 names the lanes`);
+    assert.match(content, /grants Edit and\s+Write on the declared authorship lanes, or `\.claude\/` was\s+omitted with a\s+reason/, `${protocol} completion box asks for the grant`);
+  }
+});
