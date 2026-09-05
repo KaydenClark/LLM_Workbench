@@ -1,14 +1,14 @@
 # S-027 - Workbench v3.1.1 Boundaries
 
 **Spec ID:** S-027
-**Status:** blocked
+**Status:** active
 **Priority:** 0
 **Owner:** codex
 **Updated:** 2026-09-05
 **Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
-**Blockers:** Explicit owner approval to push the concrete local branch is required after automatic approval review rejected remote publication.
-**Latest event:** Local v3.1.1 implementation verified; review corrections include stale wording and the committed Blueprint projection.
-**Next gate:** Obtain explicit push approval after corrected-candidate review, then verify remote recovery. A full integration comparison remains required before merge.
+**Blockers:** none
+**Latest event:** Owner authorized the push; the corrected candidate is remotely recoverable and a separate-context review returned APPROVE with one record-drift correction.
+**Next gate:** Open the integration pull request for the reviewed candidate. Merging into `integration` remains the only remaining step; `integration` to `main` stays owner-only.
 **Stance:** Builder
 
 ## Outcome
@@ -104,7 +104,7 @@ existing skills; real user installations are outside this task.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | blocked | owner push approval | Local implementation verified; remote recovery pending |
+| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | in-progress | none | Candidate `a61a6d3` pushed and read back from the remote; separate-context review APPROVE |
 
 ### TK-001 - Assigned task
 
@@ -123,7 +123,7 @@ is read-only and reports only in chat. No new queue item is created for it.
 - [x] Fresh Round One agent verifies setup via the intended route and reports only in chat.
 - [x] Subsequent report format/workflow and one report live in the feedback lane; a fresh agent finds the bounded next action or owner gate without original chat.
 - [x] Full required suite, render, doctor, ADR/Wiki checks and diff check pass; guardrail after-score and limits recorded.
-- [ ] v3.1.1 candidate is remotely recoverable; separate-context review covers the exact proposed integration candidate before any integration merge.
+- [x] v3.1.1 candidate is remotely recoverable; separate-context review covers the exact proposed integration candidate before any integration merge.
 
 ## Testing Seams
 
@@ -169,6 +169,8 @@ completed spec evidence remain unchanged.
 | 2026-09-05 | TK-001 | Corrected current release/adoption wording and checkpointed blocked recovery state | Catalog/delivery, layout, evaluator, portability, ADR/Wiki and diff checks PASS after correction; source behavior unchanged from clean 29-command PASS | LEXICON, README, generic Adoption, this spec and generated Taskboard | Final local-delta review; explicit push approval and remote read-back; full inherited integration comparison before merge |
 
 | 2026-09-05 | TK-001 | Second immutable delta review REJECT exposed an omitted generated Blueprint row | Clean clone at 3613fd1 failed dogfood and doctor because the committed catalog said active while spec/Taskboard said blocked; reviewer independently identified the same omission | Included the already-rendered blocked catalog row in the correction; both rejected SHAs preserved | Verify corrected immutable candidate and return final local-delta verdict in chat; push remains unapproved |
+| 2026-09-05 | TK-001 | Owner authorized the push; corrected candidate published and read back | Pushed `codex/workbench-boundaries-redesign`; `git ls-remote` returns `a61a6d335a2a37e53839ca48c633a270844cb8c7` matching local HEAD; full 23-test suite, path-safety eval, evaluator (templates 106.6/113), render (no drift) and doctor PASS before push | No docs change required by the push itself | Separate-context review of the exact candidate |
+| 2026-09-05 | TK-001 | Separate-context integration review APPROVE on the exact candidate | Reviewer reproduced all 29 AGENTS/RUNBOOK union commands in an immutable clone at `a61a6d3`; both prior rejection causes confirmed fixed; guardrail 68 -> 73 measured against a byte-unchanged `tools/audit-guardrails.mjs`; privacy scan found only synthetic negative-test fixtures; no spec path moved; append-only log confirmed unmodified | P2 record drift repaired in this spec header, acceptance box, slice row and the rendered Taskboard | Three P3 findings recorded as follow-up; integration merge itself remains |
 
 ## Completion Result
 
@@ -186,6 +188,13 @@ its earlier rejected candidate and correction are retained in the evidence log.
 - Historical provider proof is not a new current-candidate provider run.
 - Master Workbench waits for several real contrasting owner-useful deliveries,
   named verification, fresh continuation and a concrete observation need.
+- Review P3-1: `workbench/wiki/AGENTS.md`, `SCHEMA.md` and `design-concepts/README.md`
+  still stamp "Generated from LLM Workbench v3.0.0" while the manifest is v3.1.1;
+  no diagnostic covers wiki stamps, whose scope is root controls only.
+- Review P3-2: `RUNBOOK.md` "Full verification" omits `tools/test-symlink-invocation.mjs`,
+  which `AGENTS.md` requires, so the two lists disagree for a cold agent.
+- Review P3-3: `workbench/tools/sessions.mjs` resolves `--from` without constraining
+  it to the repository root; the fail-closed privacy scan still gates every write.
 
 ## Supersession
 
