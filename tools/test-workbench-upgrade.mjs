@@ -58,12 +58,21 @@ test('explicit upgrade backs up a changed managed skill, migrates once, and reco
     const installed = run(installer, 'install', '--home', home);
     assert.equal(installed.status, 0, installed.stderr);
     write(home, '.agents/skills/genesis/SKILL.md', '# changed installed genesis\n');
+    // A pre-generation (schema 1) marker on an unchanged skill still reads as managed.
+    write(home, '.agents/skills/adoption/.workbench-skill.json', '{"schemaVersion":1,"source":"LLM Workbench core"}\n');
     const beforeSha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: project, encoding: 'utf8' }).stdout.trim();
 
     const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
 
     assert.equal(result.status, 0, result.stderr);
     assert.equal(result.report.status, 'complete');
+    for (const skill of ['genesis', 'adoption']) {
+      const marker = JSON.parse(fs.readFileSync(path.join(home, '.agents', 'skills', skill, '.workbench-skill.json'), 'utf8'));
+      assert.equal(marker.schemaVersion, 2, `${skill} carries a schema 2 marker after the explicit upgrade`);
+      assert.equal(marker.release, VERSION);
+      assert.match(marker.commit, /^[0-9a-f]{40}$|^unknown$/);
+      assert.match(marker.contentHash, /^[0-9a-f]{64}$/);
+    }
     assert.equal(fs.existsSync(path.join(project, 'specs')), false);
     assert.equal(fs.existsSync(path.join(project, 'workbench', 'manifest.json')), true);
     assert.equal(

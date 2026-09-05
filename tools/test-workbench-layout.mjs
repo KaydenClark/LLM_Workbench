@@ -125,6 +125,7 @@ test('the committed placeholder vocabulary exactly matches the shipped Genesis t
 
 test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow', () => {
   const project = fixture();
+  const quietHome = fixture();
   try {
     const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.equal(initialized.status, 0, initialized.stderr);
@@ -161,7 +162,30 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     assert.match(ignore, /^handoffs\/\*$/m);
     assert.doesNotMatch(ignore, /^checkpoints/m, 'checkpoints must never be ignored');
     render(project);
-    assert.deepEqual(doctor(project), [], 'an operable Genesis fixture must satisfy doctor once rendered');
+    assert.deepEqual(doctor(project, { home: quietHome }), [], 'an operable Genesis fixture must satisfy doctor once rendered');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
+test('the sessions ignore denies the legacy grilling diary name, keeps project rules byte-for-byte, and older ignore files still validate', () => {
+  const project = fixture();
+  try {
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: project }).status, 0);
+    const projectRules = '# project rule kept as written\n*.scratch\n';
+    fs.mkdirSync(path.join(project, 'workbench', 'sessions'), { recursive: true });
+    fs.writeFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), projectRules);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const ignore = fs.readFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), 'utf8');
+    assert.ok(ignore.startsWith(projectRules), 'existing project rules are preserved byte-for-byte');
+    for (const relative of ['workbench/sessions/grilling diary/notepad.md', 'workbench/sessions/grilling/notepad.md', 'workbench/sessions/handoffs/handoff.md']) {
+      assert.equal(spawnSync('git', ['check-ignore', '-q', relative], { cwd: project }).status, 0, `${relative} must be ignored`);
+    }
+    assert.notEqual(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/checkpoints/topic-2026-09-05.md'], { cwd: project }).status, 0, 'checkpoints stay trackable');
+    // An ignore file written before the legacy line existed is still valid.
+    fs.writeFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), 'grilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }

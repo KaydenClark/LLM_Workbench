@@ -33,6 +33,13 @@ Finding identifiers are report-scoped. Cross-report aggregation keys on the
 report identity plus finding ID, or on an explicit shared recurrence key; a bare
 `F-001` never silently aliases another report's `F-001`.
 
+A claim about a skill names the copy it was read from. A Canon claim cites
+the canonical `skills/<name>/SKILL.md` path and the commit read; a claim about
+an installed copy says so and names the discovery root (for example
+`.agents/skills` or `.claude/skills` under the user home) and, when present,
+the `release` and `commit` in its `.workbench-skill.json` marker. Text read
+from an installed copy is evidence about that host, never about the release.
+
 ## Challenged Or Rejected Findings
 
 Record consequential claims considered but unsupported, contradicted, or outside

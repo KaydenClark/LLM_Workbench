@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
 import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
-const managedMarker = '.workbench-skill.json';
+import { markerSourceIdentity, writeManagedMarker } from './skill-marker.mjs';
 
 function fail(code, message, details = {}) {
   return { status: 'blocked', requiredSkills: coreSkills, installed: [], skipped: [], error: { code, message, ...details } };
@@ -95,6 +95,7 @@ function install(home) {
 
   const report = { status: 'complete', requiredSkills: coreSkills, installed: [], skipped: [] };
   try {
+    const identity = markerSourceIdentity();
     for (const { engine, root: destinationRoot } of destinations) {
       fs.mkdirSync(destinationRoot, { recursive: true });
       for (const skill of coreSkills) {
@@ -109,8 +110,8 @@ function install(home) {
           errorOnExist: true,
           verbatimSymlinks: true
         });
-        fs.writeFileSync(path.join(destination, managedMarker), `${JSON.stringify({ schemaVersion: 1, source: 'LLM Workbench core' })}\n`);
-        report.installed.push({ engine, skill, destination });
+        const marker = writeManagedMarker(destination, identity);
+        report.installed.push({ engine, skill, destination, release: marker.release, commit: marker.commit });
       }
     }
     return report;

@@ -8,7 +8,7 @@
 // is a tool change with a test.
 
 export const SEVERITIES = Object.freeze(['error', 'attention']);
-export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls']);
+export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls', 'skills']);
 export const EFFECTS = Object.freeze(['all', 'selection', 'selected-slice', 'none']);
 
 const registry = Object.freeze({
@@ -50,7 +50,10 @@ const registry = Object.freeze({
   'version-mismatch': entry('error', 'controls', 'all', 'a control version stamp disagrees with the manifest'),
   'missing-first-spec': entry('error', 'specs', 'all', 'Genesis produced no first spec'),
   'invalid-first-spec': entry('error', 'specs', 'all', 'the first spec is not an actionable packet'),
-  'project-local-skills': entry('error', 'controls', 'all', 'a project-local skills tree shadows user-scoped discovery')
+  'project-local-skills': entry('error', 'controls', 'all', 'a project-local skills tree shadows user-scoped discovery'),
+  // installed skills: doctor reads the user home and never writes to it
+  'stale-skill': entry('attention', 'skills', 'none', 'an installed core skill records a release other than the manifest workbenchVersion'),
+  'skill-generation-unknown': entry('attention', 'skills', 'none', 'an installed core skill has no schema 2 marker, so its generation is unknown')
 });
 
 function entry(severity, scope, blocks, summary) {

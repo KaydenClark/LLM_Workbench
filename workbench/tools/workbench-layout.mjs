@@ -17,7 +17,24 @@ export const coreSkills = [...legacyCoreSkills, 'builder', 'auditor', 'reviewer'
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
-export const SESSIONS_IGNORE = `# Live session records stay local; only checkpoints/ is durable evidence.\ngrilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n`;
+// The spaced `grilling diary/` name is a legacy path a stale installed skill
+// may still write; denying it keeps a live notepad untrackable before the
+// checkpoint privacy scan runs. `validate` does not require the line.
+export const SESSIONS_IGNORE = `# Live session records stay local; only checkpoints/ is durable evidence.\ngrilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n# Legacy notepad path a stale installed skill may still write; never tracked.\ngrilling diary/\n`;
+// The managed skill marker every installed core skill carries; one reader for
+// the installer, the explicit upgrade, and doctor. Schema 1 (source only) and
+// schema 2 (source, release, commit, contentHash) both prove management.
+export const MANAGED_SKILL_MARKER = '.workbench-skill.json';
+export const MANAGED_SKILL_SOURCE = 'LLM Workbench core';
+export function readManagedSkillMarker(skillDirectory) {
+  const file = path.join(skillDirectory, MANAGED_SKILL_MARKER);
+  const entry = lstatOrNull(file);
+  if (!entry?.isFile()) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return [1, 2].includes(parsed?.schemaVersion) && parsed.source === MANAGED_SKILL_SOURCE ? parsed : null;
+  } catch { return null; }
+}
 const legacyLanes = { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' };
 const skillPolicy = { required: coreSkills, discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' };
 // The two projection controls must keep the regions spec-workbench renders.

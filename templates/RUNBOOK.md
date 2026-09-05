@@ -148,7 +148,13 @@ node workbench/tools/adr.mjs register
 `doctor` prints every registered finding with its severity and blocking
 effect and exits non-zero only for `all` or `selection` findings; a
 `selected-slice` finding is excluded by `next` and refused by `claim`, and an
-`attention` finding stays visible without blocking. Decision records live in
+`attention` finding stays visible without blocking. `doctor --home USER_HOME`
+(default: the user home, only ever read) also checks each installed core skill's
+managed marker `.workbench-skill.json` (schema 2: `source`, `release`,
+`commit`, `contentHash`) against the manifest: `stale-skill` names a release
+other than the manifest's, `skill-generation-unknown` names a skill with no
+schema 2 marker; both are attention, and the explicit upgrade is the repair.
+Decision records live in
 `workbench/docs/adr/`; an accepted record names the control that carries its
 rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 

@@ -42,6 +42,25 @@ collision blocks before either discovery root is changed and returns exact
 remediation in its JSON result. Replacing an existing skill is reserved for the
 explicit-update flow, not normal setup.
 
+## Managed skill marker
+
+Each skill the installer or the explicit upgrade (`tools/workbench-upgrade.mjs`)
+writes carries `.workbench-skill.json` beside its `SKILL.md`:
+
+```json
+{"schemaVersion":2,"source":"LLM Workbench core","release":"vX.Y.Z","commit":"<40-hex or unknown>","contentHash":"<sha256>"}
+```
+
+`release` and `commit` are the checked-out Workbench's identity at write time
+(the same source identity the runtime tools receipt records); `contentHash` is
+SHA-256 over the skill's file paths and bytes, excluding the marker. Schema 1
+markers (`schemaVersion` 1, `source` only) were written before the generation
+was recorded: readers still treat them as managed, and a room's
+`spec-workbench.mjs doctor --home` reports them as `skill-generation-unknown`
+and a schema 2 marker whose `release` differs from the manifest as
+`stale-skill`. Doctor only reads the home; the explicit upgrade rewrites every
+managed marker at this release's generation.
+
 ## Retired and preserved source
 
 The optional router, convenience, and reference skills removed from live

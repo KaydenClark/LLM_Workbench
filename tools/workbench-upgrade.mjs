@@ -4,11 +4,12 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { MANAGED_MARKER, markerSourceIdentity, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
 const adoptionTool = path.join(root, 'tools', 'workbench-adoption.mjs');
-const managedMarker = '.workbench-skill.json';
+const managedMarker = MANAGED_MARKER;
 
 function lstatOrNull(target) {
   try { return fs.lstatSync(target); } catch (error) {
@@ -54,13 +55,9 @@ function hashTree(directory, relative = '', entries = []) {
   return entries;
 }
 
+// A schema 1 marker (no generation) still proves Workbench management.
 function managed(destination) {
-  const marker = lstatOrNull(path.join(destination, managedMarker));
-  if (!marker?.isFile() || marker.isSymbolicLink()) return false;
-  try {
-    const parsed = JSON.parse(fs.readFileSync(path.join(destination, managedMarker), 'utf8'));
-    return parsed.schemaVersion === 1 && parsed.source === 'LLM Workbench core';
-  } catch { return false; }
+  return readManagedMarker(destination) !== null;
 }
 
 function validateSource() {
@@ -116,6 +113,7 @@ function preflight(project, home, explicit) {
 function updateSkills(destinations, home) {
   const backupRoot = fs.mkdtempSync(path.join(home, '.workbench-upgrade-backup-'));
   const skillBackups = [];
+  const identity = markerSourceIdentity();
   for (const { engine, root: destinationRoot } of destinations) {
     fs.mkdirSync(destinationRoot, { recursive: true });
     for (const skill of coreSkills) {
@@ -130,8 +128,10 @@ function updateSkills(destinations, home) {
       }
       if (!lstatOrNull(destination)) {
         fs.cpSync(path.join(sourceRoot, skill), destination, { recursive: true, force: false, errorOnExist: true, verbatimSymlinks: true });
-        fs.writeFileSync(path.join(destination, managedMarker), `${JSON.stringify({ schemaVersion: 1, source: 'LLM Workbench core' })}\n`);
       }
+      // Every managed skill leaves the explicit upgrade with this release's
+      // generation recorded, whether or not its content had to change.
+      writeManagedMarker(destination, identity);
     }
   }
   return skillBackups;

@@ -9,6 +9,7 @@ import test from 'node:test';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
@@ -138,4 +139,27 @@ test('a stance collision blocks before either discovery root is populated', () =
     assert.equal(result.report.error?.code, 'skill-path-collision');
     assert.equal(fs.existsSync(path.join(home, '.agents/skills')), false);
   } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('an installed core skill carries a schema 2 marker naming the release, commit, and content hash it came from', () => {
+  const home = fixtureHome();
+  try {
+    const result = install(home);
+    assert.equal(result.status, 0, result.stdout);
+    const markers = ['.agents', '.claude'].map((provider) =>
+      JSON.parse(fs.readFileSync(path.join(home, provider, 'skills', 'genesis', '.workbench-skill.json'), 'utf8')));
+    for (const marker of markers) {
+      assert.deepEqual(Object.keys(marker).sort(), ['commit', 'contentHash', 'release', 'schemaVersion', 'source']);
+      assert.equal(marker.schemaVersion, 2);
+      assert.equal(marker.source, 'LLM Workbench core');
+      assert.equal(marker.release, VERSION, 'the marker names the release of the checkout that installed it');
+      assert.match(marker.commit, /^[0-9a-f]{40}$|^unknown$/);
+      assert.match(marker.contentHash, /^[0-9a-f]{64}$/);
+    }
+    assert.equal(markers[0].contentHash, markers[1].contentHash, 'both engines install the same content');
+    const other = JSON.parse(fs.readFileSync(path.join(home, '.claude', 'skills', 'builder', '.workbench-skill.json'), 'utf8'));
+    assert.notEqual(other.contentHash, markers[0].contentHash, 'the hash covers the skill content, not the bundle');
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
 });
