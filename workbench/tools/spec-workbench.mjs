@@ -2,12 +2,12 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { permissionScopeDrift, permissionScopeMessage, readManagedSkillMarker, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, finding } from './diagnostics.mjs';
-import { collectionPath, lanePath, readManifest } from './workbench-paths.mjs';
+import { collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 
@@ -19,7 +19,10 @@ const HOT_START = '<!-- hot-specs:start -->';
 const HOT_END = '<!-- hot-specs:end -->';
 
 export function nextWork(rootDir) {
-  const specs = loadSpecs(rootDir);
+  return selectCandidate(loadSpecs(rootDir));
+}
+
+function selectCandidate(specs) {
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   const candidates = [];
   for (const spec of specs) {
@@ -191,6 +194,7 @@ export function doctor(rootDir, options = {}) {
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root, options.home));
+  issues.push(...gitFindings(root, specs));
   return issues;
 }
 
@@ -227,6 +231,34 @@ function isDirectory(target) {
   try { return fs.statSync(target).isDirectory(); } catch { return false; }
 }
 
+// The declared integration branch is the review gate's merge target. Its
+// absence is an error every doctor run shows and none blocks: a room can
+// create the branch in one command, and selection must not wait on it.
+function gitFindings(root, specs) {
+  const manifest = readManifest(root);
+  if (!manifest || manifest.schemaVersion !== 2) return [];
+  const declared = declaredGit(root);
+  if (!declared) return [finding('integration-branch-undeclared', 'workbench/manifest.json declares no git.integrationBranch; declare the branch the independent review gate merges into')];
+  if (!insideWorkTree(root)) {
+    return [finding('integration-branch-missing', `the project is not inside a Git work tree, so declared integration branch ${declared.integrationBranch} cannot resolve; initialize the repository first`, { branch: declared.integrationBranch })];
+  }
+  const refs = resolveBranchRefs(root, declared.integrationBranch);
+  if (refs.length === 0) {
+    return [finding('integration-branch-missing', `declared integration branch ${declared.integrationBranch} resolves neither as a local head nor on a remote; create it from ${declared.defaultBranch}`, { branch: declared.integrationBranch })];
+  }
+  // A checkout behind its integration branch is told that the work next would
+  // dispatch is already finished there. It still dispatches: a checkout may be
+  // pinned deliberately, so the finding informs and never blocks.
+  const selected = selectCandidate(specs);
+  const spec = selected && specs.find((item) => item.id === selected.specId);
+  for (const { ref, name } of spec ? refs : []) {
+    const status = readAtRef(root, ref, spec.relativePath)?.match(/^\*\*Status:\*\*\s*(\S+)/m)?.[1];
+    if (['complete', 'superseded'].includes(status)) {
+      return [finding('complete-on-integration', `${spec.id} is ${status} at ${name}; this checkout still carries it ${spec.status}, so fetch or rebase before dispatching ${selected.ticketId}`, { specId: spec.id, ref: name })];
+    }
+  }
+  return [];
+}
 
 // Schema 2 projects also carry decision records; their findings ride along so
 // one doctor run reports the whole support root. None blocks selection: the

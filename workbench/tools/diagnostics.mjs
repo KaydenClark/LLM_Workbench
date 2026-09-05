@@ -8,7 +8,7 @@
 // is a tool change with a test.
 
 export const SEVERITIES = Object.freeze(['error', 'attention']);
-export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls', 'skills']);
+export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls', 'skills', 'git']);
 export const EFFECTS = Object.freeze(['all', 'selection', 'selected-slice', 'none']);
 
 const registry = Object.freeze({
@@ -37,6 +37,7 @@ const registry = Object.freeze({
   'blocked-slice': entry('error', 'specs', 'selected-slice', 'the selected ticket names an unmet dependency'),
   // attention: visible, never blocking
   'stale-claim': entry('attention', 'specs', 'none', 'an in-progress claim is older than one working day; verify activity before reclaiming'),
+  'complete-on-integration': entry('attention', 'specs', 'none', 'the spec next would select is already complete or superseded at the declared integration ref; the checkout is behind it'),
   'broken-link': entry('attention', 'specs', 'none', 'a spec links to a missing local target'),
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   'invalid-adr': entry('error', 'adr', 'none', 'an ADR is missing required frontmatter or names an unknown canonicalization target'),
@@ -47,6 +48,10 @@ const registry = Object.freeze({
   'secret-like-content': entry('error', 'wiki', 'none', 'a note or checkpoint contains secret-like material'),
   'room-brain-unrouted': entry('attention', 'wiki', 'none', 'a root control does not route to the room brain'),
   'stale-stamp': entry('attention', 'wiki', 'none', 'a wiki contract file or the room brain is stamped with a version other than the manifest'),
+  // git: the review gate's merge target is a declared fact; its absence is
+  // visible in every doctor run and blocks only the Genesis readiness gate
+  'integration-branch-undeclared': entry('error', 'git', 'none', 'the manifest declares no git.integrationBranch; declare the branch the independent review gate merges into'),
+  'integration-branch-missing': entry('error', 'git', 'none', 'the declared integration branch resolves neither as a local head nor on a remote'),
   'unfilled-control': entry('error', 'controls', 'all', 'a root control is empty, a stub, or carries template placeholders'),
   'unsafe-control': entry('error', 'controls', 'all', 'a root control is not an ordinary file'),
   'version-mismatch': entry('error', 'controls', 'all', 'a control version stamp disagrees with the manifest'),

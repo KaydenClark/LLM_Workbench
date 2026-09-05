@@ -65,6 +65,11 @@ try {
   fs.mkdirSync(first);
   git(first, 'init', '-q', '-b', 'main');
   git(first, 'remote', 'add', 'origin', remote);
+  // Genesis establishes the declared integration branch from the default
+  // branch and pushes it, so the review gate has a merge target from the start.
+  git(first, 'commit', '-q', '--allow-empty', '-m', 'Genesis base');
+  git(first, 'branch', 'integration');
+  git(first, 'push', '-q', 'origin', 'main', 'integration');
   node(product, path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', first, '--provenance', 'genesis', '--version', VERSION, '--name', 'Round Trip', '--date', DATE, '--source-commit', 'candidate');
   node(product, path.join(product, 'tools', 'workbench-tools.mjs'), 'install', '--project', first);
   const stamp = `> Generated from LLM Workbench ${VERSION}.`;

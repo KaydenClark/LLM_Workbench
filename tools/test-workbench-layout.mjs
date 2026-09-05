@@ -39,6 +39,20 @@ const generatedRegions = {
   'TASKBOARD.md': '## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
 };
 
+function git(cwd, ...args) {
+  const result = spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', ...args], { cwd, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout.trim();
+}
+
+// A finished Genesis room is a Git repository whose declared integration
+// branch resolves; the readiness gate fails closed without it.
+function gitRoom(project, branch = 'integration') {
+  git(project, 'init', '-q', '-b', 'main');
+  git(project, 'commit', '-q', '--allow-empty', '-m', 'fixture');
+  if (branch) git(project, 'branch', branch);
+}
+
 function installTools(project) {
   const result = spawnSync(process.execPath, [installer, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
   assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
@@ -46,6 +60,7 @@ function installTools(project) {
 
 function completeGenesis(project, options = {}) {
   if (options.tools !== false) installTools(project);
+  if (options.git !== false) gitRoom(project);
   const router = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
     .replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', '2026-09-01')
     .replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, '');
@@ -854,6 +869,98 @@ test('Genesis readiness requires version-matched wiki contract and room brain st
     assert.equal(stale.report.error.control, 'workbench/wiki/SCHEMA.md');
     assert.match(stale.report.error.message, /SCHEMA\.md/);
     assert.ok(typeof stale.report.error.reason === 'string' && stale.report.error.reason.length > 0, 'the failure names its predicate');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('init declares the integration branch, the Genesis gate fails closed until it resolves, and a manifest without the block stays valid', () => {
+  const project = fixture();
+  try {
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--default-branch', 'trunk', '--integration-branch', 'Integration');
+    assert.equal(initialized.status, 0, initialized.stdout);
+    assert.deepEqual(initialized.report.manifest.git, { defaultBranch: 'trunk', integrationBranch: 'Integration' }, 'init writes the exact declared names');
+    completeGenesis(project, { git: false });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'plain validation never requires the branch');
+
+    const missing = run('validate', '--project', project, '--genesis');
+    assert.notEqual(missing.status, 0);
+    assert.equal(missing.report.error.code, 'integration-branch-missing');
+    assert.equal(missing.report.error.branch, 'Integration');
+    assert.match(missing.report.error.message, /Integration/);
+
+    gitRoom(project, null);
+    git(project, 'branch', 'integration');
+    const wrongCase = run('validate', '--project', project, '--genesis');
+    assert.equal(wrongCase.report.error.code, 'integration-branch-missing', 'the declaration carries the exact name; a differently cased branch does not satisfy it');
+    // A case-insensitive filesystem cannot hold both spellings as loose refs.
+    git(project, 'branch', '-d', 'integration');
+    git(project, 'branch', 'Integration');
+    const ready = run('validate', '--project', project, '--genesis');
+    assert.equal(ready.status, 0, ready.stdout);
+    assert.equal(ready.report.status, 'valid');
+
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    delete manifest.git;
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'a manifest without the git block stays valid');
+    const undeclared = run('validate', '--project', project, '--genesis');
+    assert.notEqual(undeclared.status, 0);
+    assert.equal(undeclared.report.error.code, 'integration-branch-undeclared');
+
+    manifest.git = { defaultBranch: 'main', integrationBranch: 'bad branch' };
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-manifest', 'a malformed git block is a malformed manifest');
+    const rejected = run('init', '--project', fixture(), '--provenance', 'genesis', '--version', VERSION, '--integration-branch', '-bad');
+    assert.notEqual(rejected.status, 0);
+    assert.equal(rejected.report.error.code, 'invalid-branch');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('init and migrate default the declaration to origin/HEAD and an existing integration-named branch by its exact case', () => {
+  const project = fixture();
+  const migrated = fixture();
+  try {
+    gitRoom(project, 'Integration');
+    git(project, 'remote', 'add', 'origin', project);
+    git(project, 'update-ref', 'refs/remotes/origin/trunk', 'HEAD');
+    git(project, 'symbolic-ref', 'refs/remotes/origin/HEAD', 'refs/remotes/origin/trunk');
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
+    assert.equal(initialized.status, 0, initialized.stdout);
+    assert.deepEqual(initialized.report.manifest.git, { defaultBranch: 'trunk', integrationBranch: 'Integration' });
+
+    schemaOneFixture(migrated);
+    gitRoom(migrated, null);
+    const report = run('migrate', '--project', migrated);
+    assert.equal(report.status, 0, report.stdout);
+    assert.deepEqual(report.report.manifest.git, { defaultBranch: 'main', integrationBranch: 'integration' }, 'a schema 1 migration declares the checked-out default branch and the default integration name');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(migrated, { recursive: true, force: true });
+  }
+});
+
+test('HEAD is not a branch name: init refuses it and a symref never satisfies the declaration', () => {
+  const project = fixture();
+  try {
+    const rejected = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--integration-branch', 'HEAD');
+    assert.notEqual(rejected.status, 0, rejected.stdout);
+    assert.equal(rejected.report.error.code, 'invalid-branch');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'a refused init writes nothing');
+
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project, { git: false });
+    gitRoom(project, null);
+    git(project, 'remote', 'add', 'origin', project);
+    git(project, 'symbolic-ref', 'refs/remotes/origin/HEAD', 'refs/heads/main');
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    manifest.git.integrationBranch = 'HEAD';
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-manifest', 'a manifest declaring HEAD is malformed even though origin/HEAD is a symref');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }

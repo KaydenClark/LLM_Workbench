@@ -153,8 +153,13 @@ effect and exits non-zero only for `all` or `selection` findings; a
 managed marker `.workbench-skill.json` (schema 2: `source`, `release`,
 `commit`, `contentHash`) against the manifest: `stale-skill` names a release
 other than the manifest's, `skill-generation-unknown` names a skill with no
-schema 2 marker; both are attention, and the explicit upgrade is the repair.
-Decision records live in
+schema 2 marker; both are attention, and the explicit upgrade is the repair. `doctor` also reports
+`integration-branch-undeclared` and `integration-branch-missing` (scope
+`git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
+names a branch that resolves locally or on a remote; the Genesis readiness
+gate fails closed on the same two conditions. When that branch resolves and
+the spec `next` would select is already complete there, `doctor` reports
+`complete-on-integration` (attention) without hiding the work. Decision records live in
 `workbench/docs/adr/`; an accepted record names the control that carries its
 rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
@@ -348,12 +353,17 @@ After successful verification, if cleanup is authorized:
 
 ```bash
 [DELETE_MERGED_BRANCH_COMMAND]
+git worktree prune
 ```
 
 Expected result: [integration contains the work; merged branch deleted locally and remotely; unmerged work never force-deleted].
 
-When cleanup is owner-deferred, integration contains the reviewed work and the
-branches remain available for later cleanup.
+When cleanup is owner-deferred, the declared integration branch contains the
+reviewed work and the branches remain available for later cleanup. Disposable
+review clones and linked worktrees live outside the canonical checkout, under
+the host temporary directory; `git worktree prune` drops the registrations of
+removed ones, and a finished review checkout is removed once its review is
+recorded. None is a durable owner.
 
 ## Upgrading The Harness
 

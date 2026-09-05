@@ -66,7 +66,8 @@ done. Earlier review is support, not a mandatory independent ceremony per
 ticket. Self-review can find issues while Builder work continues.
 
 A proposed merge requires separate-context review before branches combine at
-`integration`. Run `/code-review` against immutable `BASE_SHA` and `HEAD_SHA`,
+the declared integration branch (`git.integrationBranch` in
+`workbench/manifest.json`). Run `/code-review` against immutable `BASE_SHA` and `HEAD_SHA`,
 including controls, the assigned spec, tests and consequential report claims.
 Repair only authorized findings, create a new truthful checkpoint, and re-review
 the changed candidate. The exact-head review must pass before integration.
@@ -90,8 +91,9 @@ Commit the close evidence and generated projection, make the final push, and
 verify the remote branch resolves to that local commit. If the ticket remains
 incomplete, its in-progress checkpoint is the handoff; closing is not truthful.
 
-Automated delivery stops at `integration` after the repository's review
-gates pass. The owner controls promotion from integration to the release branch.
+Automated delivery stops at the declared integration branch after the
+repository's review gates pass. The owner controls promotion from that branch
+to the release branch.
 
 The invocation is complete only when the worktree state is accounted for and
 the pushed remote commit is the recovery point.

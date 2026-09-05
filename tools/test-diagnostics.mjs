@@ -44,10 +44,22 @@ function spec(id, { status = 'active', tickets = '| TK-001 | First slice | ready
 const ROUTED_AGENTS = '# Agents\n\n| Truth | Owner |\n|---|---|\n| durable room memory | `workbench/wiki/` (`MEMORY.md` router) |\n';
 const ROUTED_README = '# Fixture\n\n- [`workbench/wiki/MEMORY.md`](workbench/wiki/MEMORY.md) - the room brain.\n';
 
+function git(cwd, ...args) {
+  const result = spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', ...args], { cwd, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout.trim();
+}
+
 function project(version = 'v3.0.0') {
   const dir = fixture();
   const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout);
+  // A room lives in a Git repository whose declared integration branch
+  // resolves; doctor reports a missing one, which is not the behavior under
+  // test in the fixtures that expect an empty report.
+  git(dir, 'init', '-q', '-b', 'main');
+  git(dir, 'commit', '-q', '--allow-empty', '-m', 'fixture');
+  git(dir, 'branch', 'integration');
   write(dir, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
   write(dir, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   // A complete schema 2 project carries its wiki router; doctor reports a
@@ -78,7 +90,7 @@ test('the registry is closed, typed, and every emitted code is registered', () =
   for (const match of source.matchAll(/finding\('([a-z-]+)'/g)) assert.ok(isRegistered(match[1]), `${match[1]} emitted by spec-workbench must be registered`);
   const layoutSource = fs.readFileSync(layout, 'utf8');
   for (const match of layoutSource.matchAll(/fail\('([a-z-]+)'/g)) {
-    if (['manifest-exists', 'invalid-project', 'lane-collision', 'invalid-version', 'invalid-provenance', 'invalid-invocation'].includes(match[1])) continue;
+    if (['manifest-exists', 'invalid-project', 'lane-collision', 'invalid-version', 'invalid-provenance', 'invalid-branch', 'invalid-invocation'].includes(match[1])) continue;
     assert.ok(isRegistered(match[1]), `${match[1]} emitted by workbench-layout must be registered`);
   }
 });
@@ -307,6 +319,102 @@ test('an unrouted room brain is an attention finding that names the control lack
     fs.rmSync(path.join(dir, 'workbench', 'wiki', 'MEMORY.md'));
     write(dir, 'AGENTS.md', '# Agents\n');
     assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => item.code), ['invalid-note'], 'without a room brain there is nothing to route to; the missing router is the finding');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the declared integration branch is checked by doctor as a git-scope error that never blocks selection', () => {
+  for (const code of ['integration-branch-undeclared', 'integration-branch-missing']) {
+    assert.deepEqual(describe(code), { severity: 'error', scope: 'git', blocks: 'none', summary: describe(code).summary }, code);
+    assert.ok(describe(code).summary.length > 0, `${code} carries a summary`);
+  }
+  assert.ok(SCOPES.includes('git'), 'git is a registered scope');
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(manifest.git, { defaultBranch: 'main', integrationBranch: 'integration' }, 'init declares the default and integration branches');
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a declared branch that resolves locally is not a finding');
+
+    git(dir, 'branch', '-d', 'integration');
+    const missing = doctor(dir, { home: quietHome });
+    assert.deepEqual(missing.map((item) => [item.code, item.severity, item.scope, item.blocks, item.branch]), [['integration-branch-missing', 'error', 'git', 'none', 'integration']]);
+    assert.equal(cliDoctor(dir).status, 0, 'a missing integration branch must not fail doctor');
+    assert.equal(nextWork(dir).ticketId, 'TK-001', 'a missing integration branch must not hide work');
+
+    git(dir, 'remote', 'add', 'origin', dir);
+    git(dir, 'update-ref', 'refs/remotes/origin/integration', 'HEAD');
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a declared branch that resolves only on a remote is not a finding');
+
+    delete manifest.git;
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    const undeclared = doctor(dir, { home: quietHome });
+    assert.deepEqual(undeclared.map((item) => [item.code, item.severity, item.scope, item.blocks]), [['integration-branch-undeclared', 'error', 'git', 'none']]);
+    assert.equal(cliDoctor(dir).status, 0, 'an undeclared integration branch must not fail doctor');
+    assert.equal(claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }).tickets[0].status, 'in-progress', 'claim proceeds without the declaration');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a selected spec already complete at the declared integration ref is reported as attention and still dispatched', () => {
+  assert.deepEqual(describe('complete-on-integration'), { severity: 'attention', scope: 'specs', blocks: 'none', summary: describe('complete-on-integration').summary });
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '-m', 'S-001 active on the task branch');
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'an integration ref that does not carry the spec is not a finding');
+
+    git(dir, 'switch', '-q', 'integration');
+    git(dir, 'merge', '-q', '--ff-only', 'main');
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { status: 'complete', tickets: '| TK-001 | First slice | done | none | node test |' }));
+    render(dir);
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '-m', 'S-001 complete on integration');
+    git(dir, 'switch', '-q', 'main');
+    assert.match(fs.readFileSync(path.join(dir, 'workbench', 'specs', 'S-001-first', 'SPEC.md'), 'utf8'), /\*\*Status:\*\* active/, 'the checkout still carries the spec active');
+
+    const findings = doctor(dir, { home: quietHome });
+    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.specId, item.ref]), [['complete-on-integration', 'attention', 'specs', 'none', 'S-001', 'integration']]);
+    assert.match(findings[0].message, /S-001.*complete.*integration/);
+    assert.equal(cliDoctor(dir).status, 0, 'the finding informs and never fails doctor');
+    assert.equal(nextWork(dir).ticketId, 'TK-001', 'next still returns the slice; a checkout may be pinned deliberately');
+
+    const tip = git(dir, 'rev-parse', 'integration');
+    git(dir, 'update-ref', '-d', 'refs/heads/integration');
+    git(dir, 'remote', 'add', 'origin', dir);
+    git(dir, 'update-ref', 'refs/remotes/origin/integration', tip);
+    const remote = doctor(dir, { home: quietHome });
+    assert.deepEqual(remote.map((item) => [item.code, item.ref]), [['complete-on-integration', 'origin/integration']], 'a remote-only integration ref is read without fetching');
+
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { status: 'complete', tickets: '| TK-001 | First slice | done | none | node test |' }));
+    render(dir);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'once the checkout agrees there is nothing to select and nothing to report');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a room outside any Git work tree is told so instead of being told to create the branch', () => {
+  const dir = fixture();
+  try {
+    const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', VERSION], { encoding: 'utf8' });
+    assert.equal(init.status, 0, init.stdout);
+    write(dir, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
+    write(dir, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
+    write(dir, 'workbench/wiki/MEMORY.md', '---\ntype: memory\nstatus: active\nsensitivity: normal\nknowledge_role: canonical\nprovenance:\n  - fixture\nsource_paths:\n  - workbench/wiki\nlast_verified: 2026-09-04\n---\n\n# Fixture Memory\n');
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    // This bare fixture routes no room brain; only the git scope is under test.
+    const findings = doctor(dir, { home: quietHome }).filter((item) => item.scope === 'git');
+    assert.deepEqual(findings.map((item) => [item.code, item.branch]), [['integration-branch-missing', 'integration']]);
+    assert.match(findings[0].message, /not inside a Git work tree/, 'the message names the actual condition');
+    assert.doesNotMatch(findings[0].message, /create it from/, 'no repository means no branch to create yet');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
