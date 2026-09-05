@@ -46,7 +46,7 @@ ADR `REGISTER.md` for decision rationale. Read only the relevant linked owners.
 | **Support root** | The lowercase `workbench/` directory whose manifest declares the six support lanes and seven collections of a v3.1 project (schema 2); a schema 1 five-lane manifest migrates once. | Root controls remain universally discoverable; the support root is not a second control plane. |
 | **Core skill bundle** | The closed set of twelve workflow skills and four stance skills available as a brand-new-install fallback. | It is not Kayden's private catalog, a generalized marketplace, or a project-local discovery tree. |
 | **Normal setup** | Presence-only skill reconciliation during Genesis or Adoption: install a missing core skill when safe and preserve anything already installed. | It never compares or replaces an existing skill and never mutates a foreign Git-owned skill root. |
-| **Explicit skill update** | A separately authorized operation that backs up differing installed core skills and synchronizes them to the exact checked-out LLM Workbench versions. | It is the only path that may replace an existing skill; routine setup cannot imply it. |
+| **Explicit skill update** | A separately authorized operation that backs up differing installed core skills and synchronizes them to the exact checked-out LLM Workbench versions. | It is the only path that may replace an existing skill; routine setup cannot imply it, and the support-root-only upgrade mode (`workbench-upgrade.mjs upgrade --layout-only`) reads skill presence without replacing anything. |
 
 ## Stance Terms
 

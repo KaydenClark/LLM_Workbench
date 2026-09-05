@@ -8,8 +8,8 @@
 **Updated:** 2026-09-05
 **Catalog description:** Give an already-adopted v2-root room one documented upgrade route that works without skill replacement and records lifecycle `upgrade`, and stop the layout tool from writing `unrecorded` as a source commit on the Genesis path.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-002 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 ## Outcome
 
@@ -132,7 +132,7 @@ text.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | `init` and `migrate` resolve or demand the source commit; usage and Genesis Phase 6 updated | done | none | node tools/test-workbench-layout.mjs (22 pass: checkout init/migrate resolve HEAD and origin; relocated copy refuses init/migrate with invalid-invocation naming --source-commit/--source-repository and writes nothing; usage lists both flags); node tools/test-workbench-adoption.mjs, test-workbench-upgrade.mjs, test-workbench-round-trip.mjs, test-cross-provider-fixture.mjs, test-workbench-tools.mjs, test-workbench-dogfood.mjs pass. UP-003 verdict: its mechanism claim (upgrade never creates the support root) is not supported at ae60d8d, its conclusion (the route fails closed before the layout phase on a Git-owned discovery root) is |
-| TK-002 | `upgrade --layout-only` runs the layout phase without skill replacement; skill and protocol text name the route | ready | TK-001 | pending |
+| TK-002 | `upgrade --layout-only` runs the layout phase without skill replacement; skill and protocol text name the route | done | TK-001 | node tools/test-workbench-upgrade.mjs (5 pass: Git-owned discovery root blocks --explicit-update with foreign-git-root and completes --layout-only with lifecycle upgrade, manifest commit equal to receipt commit, skills presence-only, empty skillBackups, no skill or marker touched; layout-only still blocks missing-user-skills and dirty-project; both modes together are invalid-invocation); node tools/test-skill-catalog.mjs and test-delivery-skills.mjs pass with the new route-text assertions; node tools/test-workbench-layout.mjs 22 pass; evaluate-workbench templates 106.6/113 unchanged from baseline |
 
 ### TK-001 - No more `unrecorded`
 
@@ -198,6 +198,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 |---|---|---|---|---|---|
 | 2026-09-05 | spec | Spec captured from upstream fix-list items UP-003 and UP-004; UP-003's mechanism claim re-read and found not supported at `b7b23dd` (`workbench-upgrade.mjs:150-157` does build the support root and record `upgrade`) while its conclusion holds because `preflight` gates the layout phase behind skill replacement and the skill text hides the route | `workbench-layout.mjs:213` still defaults to `unrecorded`; usage at line 406 lists no source flags; `test-workbench-upgrade.mjs:86-87` asserts lifecycle and commit on the explicit path | Blueprint v3.1.2 direction links this spec | Both slices |
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-workbench-layout.mjs (22 pass: checkout init/migrate resolve HEAD and origin; relocated copy refuses init/migrate with invalid-invocation naming --source-commit/--source-repository and writes nothing; usage lists both flags); node tools/test-workbench-adoption.mjs, test-workbench-upgrade.mjs, test-workbench-round-trip.mjs, test-cross-provider-fixture.mjs, test-workbench-tools.mjs, test-workbench-dogfood.mjs pass. UP-003 verdict: its mechanism claim (upgrade never creates the support root) is not supported at ae60d8d, its conclusion (the route fails closed before the layout phase on a Git-owned discovery root) is | templates/GENESIS.md Phase 6 and RUNBOOK.md V3 support-root check document source resolution and the two flags | TK-002: upgrade --layout-only and the skill/protocol text |
+| 2026-09-05 | TK-002 | Ticket closed | node tools/test-workbench-upgrade.mjs (5 pass: Git-owned discovery root blocks --explicit-update with foreign-git-root and completes --layout-only with lifecycle upgrade, manifest commit equal to receipt commit, skills presence-only, empty skillBackups, no skill or marker touched; layout-only still blocks missing-user-skills and dirty-project; both modes together are invalid-invocation); node tools/test-skill-catalog.mjs and test-delivery-skills.mjs pass with the new route-text assertions; node tools/test-workbench-layout.mjs 22 pass; evaluate-workbench templates 106.6/113 unchanged from baseline | skills/update-harness/SKILL.md section 3 names the v2-root layout route first and reconciles specs through the manifest it declares; skills/adoption/SKILL.md opening and templates/ADOPTION.md intro name upgrade --layout-only for an already-adopted room; RUNBOOK.md V3 explicit upgrade section documents both modes; LEXICON.md Explicit skill update distinction gains the layout-only mode | none; acceptance boxes and completion result pending the full suite |
 
 ## Completion Result
 

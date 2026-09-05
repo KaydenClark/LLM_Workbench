@@ -11,7 +11,10 @@ whatever harness is already there.
 
 Use Adoption (not Genesis) when the target has real code, history, or existing
 `AGENTS`/`ROADMAP`/policy docs. Read this once, run it once, then delete or
-archive it; afterward AGENTS plus the progressive spec flow govern.
+archive it; afterward AGENTS plus the progressive spec flow govern. An
+already-adopted room that still sits on a v2 root is not a new adoption: move
+it with `tools/workbench-upgrade.mjs upgrade --layout-only`, which records
+lifecycle `upgrade` instead of a second `adoption`.
 
 ## What Adoption Is For
 

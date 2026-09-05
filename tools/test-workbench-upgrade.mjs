@@ -142,4 +142,77 @@ test('the updater refuses a dirty project because HEAD alone is not a full recov
   }
 });
 
+// S-032: on a host whose discovery root is a foreign Git repository the
+// explicit path fails closed before its layout phase; --layout-only reads
+// skill presence only, builds the support root, and records `upgrade`.
+test('layout-only upgrade completes on a Git-owned discovery root without touching a skill while explicit-update still blocks', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  try {
+    seedProject(project);
+    assert.equal(run(installer, 'install', '--home', home).status, 0);
+    write(home, '.agents/skills/genesis/SKILL.md', '# locally changed genesis\n');
+    fs.rmSync(path.join(home, '.agents', 'skills', 'genesis', '.workbench-skill.json'), { force: true });
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: home }).status, 0, 'the discovery root must sit inside a Git repository');
+    const beforeSha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: project, encoding: 'utf8' }).stdout.trim();
+
+    const explicit = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
+    assert.notEqual(explicit.status, 0);
+    assert.equal(explicit.report.status, 'blocked');
+    assert.equal(explicit.report.error.code, 'foreign-git-root');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'the explicit path must still fail closed before its layout phase');
+
+    const both = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update', '--layout-only');
+    assert.notEqual(both.status, 0);
+    assert.equal(both.report.error.code, 'invalid-invocation', 'the two modes are exclusive');
+
+    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--layout-only');
+
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(result.report.status, 'complete');
+    assert.deepEqual(result.report.skillBackups, []);
+    assert.equal(result.report.skills, 'presence-only');
+    assert.equal(fs.readFileSync(path.join(home, '.agents', 'skills', 'genesis', 'SKILL.md'), 'utf8'), '# locally changed genesis\n', 'layout-only never replaces a skill');
+    assert.equal(fs.existsSync(path.join(home, '.agents', 'skills', 'genesis', '.workbench-skill.json')), false, 'layout-only never writes a marker');
+    assert.equal(fs.readdirSync(home).filter((name) => name.startsWith('.workbench-upgrade-backup-')).length, 0, 'layout-only creates no backup directory');
+    assert.equal(fs.existsSync(path.join(project, 'specs')), false);
+    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
+    assert.equal(manifest.provenance.lifecycle, 'upgrade');
+    const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
+    assert.equal(manifest.provenance.source.commit, receipt.source.commit);
+    assert.notEqual(manifest.provenance.source.commit, 'unrecorded');
+    const recovery = JSON.parse(fs.readFileSync(path.join(project, result.report.recoveryPath), 'utf8'));
+    assert.equal(recovery.lifecycle, 'upgrade');
+    assert.equal(recovery.skills, 'presence-only');
+    assert.deepEqual(recovery.skillBackups, []);
+    assert.equal(recovery.preMigration.gitSha, beforeSha);
+    assert.ok(recovery.preMigration.inventory.includes('specs/S-101-upgrade/SPEC.md'));
+    assert.equal(recovery.tools.status, 'installed');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test('layout-only upgrade still requires presence of every core skill, a clean committed target, and no support root', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  try {
+    seedProject(project);
+    const missing = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--layout-only');
+    assert.notEqual(missing.status, 0);
+    assert.equal(missing.report.error.code, 'missing-user-skills');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
+
+    assert.equal(run(installer, 'install', '--home', home).status, 0);
+    write(project, 'README.md', '# README.md\n\nUncommitted project truth.\n');
+    const dirty = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--layout-only');
+    assert.equal(dirty.report.error.code, 'dirty-project');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
 console.log('ok - explicit upgrade preserves a rollback point and never changes skills implicitly');

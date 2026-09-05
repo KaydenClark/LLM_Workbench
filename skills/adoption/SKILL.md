@@ -5,8 +5,12 @@ disable-model-invocation: true
 ---
 
 Use Adoption only when an existing project is joining the Workbench for the
-first time. A routine harness update uses `/update-harness`; do not rerun
-Adoption to update an already-adopted project.
+first time. An already-adopted room that still sits on a v2 root moves onto the
+v3 support root through `/update-harness`, which runs
+`node tools/workbench-upgrade.mjs upgrade --layout-only` and records
+`provenance.lifecycle: upgrade`; do not rerun Adoption for it, because a second
+`adoption` record contradicts its first. A routine harness update also uses
+`/update-harness`.
 
 1. Verify the canonical checkout, branch, dirty/ahead/diverged state, remote,
    and nearest controls. Dirty state routes recovery: checkpoint owned work or
