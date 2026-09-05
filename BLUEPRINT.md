@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-09-04
 **Status:** active
-**Harness version:** v3.1.0 (first public v3 release; v3.0.0 was an unreleased internal candidate)
+**Harness version:** v3.1.0 (unreleased baseline; v3.1.1 continuation in S-027)
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
@@ -34,14 +34,14 @@ Core promise:
 ## Accepted V3 Direction
 
 [S-021](workbench/specs/S-021-portable-workbench-v3/SPEC.md) owns the portable
-contract. It is intentionally an interim usability release while Foundry is
-unfinished, not a Foundry replacement or a general harness redesign.
+contract. Its shipped capabilities remain the baseline for v3.1.1. Workbench development
+stands on its own; it has no dependency on completing Foundry.
 
 - The seven root controls remain universally discoverable. Durable support
   records move behind one lowercase `workbench/manifest.json` authority with
   declared specs, Wiki, grilling, handoff, and feedback lanes.
-- LLM Workbench carries exactly the closed 12-skill setup/planning/delivery
-  workflow. On a brand-new installation it supplies a required skill only when
+- LLM Workbench carries twelve setup/planning/delivery workflow skills plus
+  four portable stance skills under S-027. On a brand-new installation it supplies a required skill only when
   that skill is missing from user-scoped discovery.
 - Existing installed skills are accepted by presence and remain untouched.
   Exact synchronization occurs only after an explicit skill-update request and
@@ -53,9 +53,9 @@ unfinished, not a Foundry replacement or a general harness redesign.
   deterministic parsing, rendering, validation, and safe bounded file
   operations rather than one monolithic lifecycle program.
 
-Version v3.1.0 is the first public v3 release; v3.0.0 was the completed but
-unreleased internal candidate. Release promotion from `integration` to `main`
-remains separately owned by S-014 on the audited v3.1.0 candidate.
+v3.0.0 and v3.1.0 are preserved unreleased candidates. S-027 continues the
+v3.1 baseline as v3.1.1. A version label is not publication; the owner alone
+promotes integration to main, after the applicable candidate review.
 
 ## Accepted V3.1 Direction
 
@@ -108,6 +108,28 @@ tools check structure and agents carry judgment
 ([ADR-0023](workbench/docs/adr/0023-mechanical-guarantees-and-agent-obligations.md)).
 Decision records live in `workbench/docs/adr/`; an ADR whose rule a later
 ticket canonicalizes stays `proposed` until that ticket lands.
+
+## Accepted V3.1.1 Direction
+
+[S-027](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) owns the
+locked Q1-Q16 continuation. The seven-control Contract remains; ordinary entry
+is AGENTS -> RUNBOOK -> LEXICON, then assigned work and task-relevant owners.
+Stances are behavior skills, assigned by SPEC/TASK, without authority transfer,
+agent spawning or handoff ceremony. Autonomy stays within assigned work.
+Every required step must have immediate delivery value (ADR-0034).
+
+Delivery order: route and four stances -> fresh, chat-only Round One setup check
+-> feedback-report workflow and evidence-backed report in the manifest feedback
+lane -> fresh continuation. Reporting does not repair its target. Separate-context
+review is required at integration, where the candidate and consequential claims
+are challenged. It is not a separate independent gate per ticket.
+
+Use real contrasting owner-selected Workbenches for later evidence: useful
+delivery, named verification, and truthful fresh-session continuation. Example
+projects are not assignments. Master Workbench implementation is parked until
+several such proofs establish a concrete registry, observation-audit, or
+visualization need. Foundry development, orchestration, CIC redesign, connectors,
+and a dedicated feedback Workbench are outside this first implementation.
 
 ## Architecture And Invariants
 
@@ -162,11 +184,12 @@ be changed only through a later spec linked by supersession.
 | [S-015 - Portable v3 Release Audit Recovery](workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md) | Make generated v3 controls and Genesis validation enforce one operable manifest-declared spec lane before release. | complete |
 | [S-020 - Spec-Native Team Coordination](workbench/specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
 | [S-021 - Portable Workbench v3](workbench/specs/S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | complete |
-| [S-022 - LLM Workbench v3.1 Release](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md) | Release v3.1.0 as the first public v3 Workbench from one independently audited exact candidate proven by a cross-provider cold resume with Foundry absent. | active |
+| [S-022 - LLM Workbench v3.1 Release](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md) | Release v3.1.0 as the first public v3 Workbench from one independently audited exact candidate proven by a cross-provider cold resume with Foundry absent. | blocked |
 | [S-023 - Manifest Schema 2 And Managed Support Runtime](workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md) | Ship manifest schema 2 with six lanes, declared collections, a lossless schema 1 migration, Workbench-managed runtime tools, and untracked-by-default session records. | complete |
 | [S-024 - Governance Core, ADRs, And Scoped Diagnostics](workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md) | Give every Workbench claim-level Governance Planes, separated instruction authority and state resolution, a registered diagnostic model enforced by doctor/next/claim, and a first-class ADR collection. | complete |
 | [S-025 - Portable Wiki And Design Concepts](workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md) | Ship the portable wiki contract with an explicit profile, knowledge-role and provenance metadata, handling-only sensitivity, relative source paths, optional Obsidian, and a mandatory owner-directed design-concepts collection. | complete |
 | [S-026 - Workflow Composition, Feedback Lane, And Cold Resume](workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md) | Route the twelve core skills and feedback discovery through the schema 2 manifest, promote session records through privacy-checked checkpoints, and prove the composed planning-to-resume workflow mechanically. | complete |
+| [S-027 - Workbench v3.1.1 Boundaries](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) | Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health

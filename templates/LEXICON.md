@@ -9,6 +9,15 @@ This is the canonical lookup table for terms whose meaning is shared across the
 project. Read it when a request, spec, test, or skill uses project language that
 could be ambiguous.
 
+## Task Routing
+
+The ordinary entry route is `AGENTS.md` -> `RUNBOOK.md` -> `LEXICON.md`.
+Continue to the assigned `SPEC.md` resolved through `workbench/manifest.json`.
+Use `BLUEPRINT.md` for architecture and cross-cutting direction; use the
+manifest-declared Wiki `MEMORY.md` for task-relevant durable knowledge and the
+ADR `REGISTER.md` for decision rationale. Read only the relevant linked owners.
+`TASKBOARD.md` is a dashboard, not a prerequisite reading archive.
+
 ## Ownership Rules
 
 - Add a term only after the parties agree on its meaning.
@@ -28,6 +37,17 @@ could be ambiguous.
 | **Lexicon** | The canonical lookup table for definitions shared across the project. | It owns meanings, not requirements, implementation decisions, or work status. |
 | **Spec** | A stable capability record containing scoped intent, requirements, decisions, implementation slices, acceptance, verification, evidence, and completion. | It combines the useful product and engineering roles often split between a PRD and technical spec. |
 | **Ticket** | A temporary, one-context tracer-bullet slice inside a spec that produces independently verifiable progress. | It is execution structure, not durable capability history. |
+
+## Stance Terms
+
+| Term | Definition | Distinction |
+|---|---|---|
+| **Stance** | The method and obligations for performing one assigned task within already established authority. | It is neither an identity nor an authority grant; switching stance creates no handoff. |
+| **Builder** | The stance that delivers a scoped, verified result and maintains its documentation. | Implementation includes relevant review and verification. |
+| **Auditor** | The stance that checks claims against named evidence and reports a bounded verdict. | An audit does not authorize repairs or release. |
+| **Reviewer** | The stance that challenges a candidate's correctness, impact and evidence. | At integration it runs in a separate context; it does not quietly repair the candidate. |
+| **Reconciler** | The stance that reconciles achieved work with the state and owners needed for continuation. | It neither manufactures completion nor duplicates truth in a universal handoff. |
+| **TASK** | The assigned ticket within a stable SPEC, carrying its normal stance assignment. | No additional task file or queue is introduced. |
 
 ## Governance Core
 

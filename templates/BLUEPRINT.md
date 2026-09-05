@@ -70,3 +70,13 @@ history. Human-authored product prose stays outside the markers.
 - the primary workflow succeeds end to end;
 - secrets and private data stay out of committed output;
 - spec doctor/render checks report no lifecycle, link, or projection drift.
+
+## Workbench Entry And Delivery Boundaries
+
+The seven-control Contract enters through AGENTS -> RUNBOOK -> LEXICON, then
+assigned work and task-relevant owners. This Blueprint loads for architecture
+and cross-cutting direction. SPEC and TASK assign portable stances; stances
+change method without transferring authority or spawning agents. Independent
+review is required before branches combine at integration. Required steps need
+immediate delivery value; uncertain practices remain optional and reviewable.
+A setup-only Round One proof reports in chat before feedback-report testing.

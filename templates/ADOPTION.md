@@ -285,3 +285,11 @@ failed and why.
   the code and flag the drift.
 - Keep this file generic if it lives in a template set. Adoption fills the *other*
   docs with project specifics; it does not fill this one.
+
+### Feedback report format
+
+After migration resolves the manifest feedback lane, copy the source
+`templates/feedback/REPORT_FORMAT.md` there only if it is missing. Preserve
+existing report formats during normal setup. Explicit harness reconciliation
+updates this procedure together with the Runbook; no report or repair is
+triggered by installation.

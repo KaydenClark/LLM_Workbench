@@ -32,3 +32,8 @@ skill-discovery tree.
    `TASKBOARD.md`, then run `node workbench/tools/spec-workbench.mjs doctor`. Execution
    later uses the claim and close commands in `RUNBOOK.md` one eligible ticket
    at a time.
+
+Set the normal stance explicitly in each assigned TASK (ticket) and its SPEC
+during authorized decomposition. TASK is the existing ticket, not another file.
+An executing agent investigates within its assignment and never creates its own
+next task; these planning tools require owner-directed planning authority.

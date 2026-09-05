@@ -14,7 +14,10 @@ try {
   assert.match(record.planningSha, /^[0-9a-f]{40}$/);
   assert.equal(fs.existsSync(path.join(workspace, 'planning-clone')), false, 'the planning context is destroyed after the push');
   assert.equal(fs.existsSync(path.join(record.codexHome, 'skills', 'implement', 'SKILL.md')), true, 'the isolated home carries the candidate skills');
-  assert.equal(record.installedSkills, 24);
+  assert.equal(record.installedSkills, 32);
+  for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
+    assert.ok(fs.statSync(path.join(record.codexHome, 'skills', stance, 'SKILL.md')).isFile());
+  }
   const remoteHead = execFileSync('git', ['ls-remote', record.remote, 'main'], { encoding: 'utf8' }).split('\t')[0];
   assert.equal(remoteHead, record.planningSha, 'the planning checkpoint is remotely recoverable');
   const result = verify(workspace);

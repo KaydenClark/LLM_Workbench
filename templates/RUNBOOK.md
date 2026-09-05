@@ -10,6 +10,20 @@
 This file explains how to operate, verify, recover, and evaluate the project. It
 should be boring, exact, and executable.
 
+## Ordinary Entry
+
+Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
+root, branch, upstream and dirty state; run the project-local spec doctor and
+load the explicitly assigned spec. For owner-directed pickup, use `next --json`
+and `show` to resolve that assignment. The spec and ticket set the normal
+stance. Investigate within the task; do not invent a next task when blocked.
+Load remaining Runbook sections only for the operation being performed.
+
+For a setup-only Round One assignment, a fresh agent follows that route, checks
+the manifest, relevant Wiki and ADRs, and runs read-only configuration checks.
+Return the result in chat only: no feedback report, handoff, checkpoint,
+self-created task, or other prose artifact. Round One precedes feedback testing.
+
 ## Prerequisites
 
 Required tools:
@@ -312,6 +326,29 @@ previous files and records a rollback path. Never hand-edit a managed tool.
 Treat a harness upgrade like any other change: smallest correct diff, verified,
 with proof. If a downstream lesson should flow *back* to the harness, capture it
 per the project's `WORKBENCH_FEEDBACK` convention.
+
+## Manual Harness Feedback Reports
+
+Run this workflow after a setup-only Round One check succeeds. It assesses the
+assigned target; it never authorizes a repair or invokes automated repair.
+
+1. Resolve `lanes.feedback`, `lanes.specs` and the relevant collections through
+   `workbench/manifest.json`. Pin the target revision and the assigned question.
+2. Inspect only relevant controls, source and named proof. Test consequential
+   claims, distinguish observation from inference, and disclose evidence limits.
+3. Write `REPORT-topic-date.md` in the declared feedback lane using its
+   `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
+   Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
+   and Review Boundary. No findings is valid. Reports never live loose or in
+   the Wiki. If the format is absent in an older installation, these sections
+   are sufficient; explicit upgrades may copy it from the source templates.
+4. Put accepted follow-up work in its existing linked spec; proposed repairs
+   remain pending owner authorization. A report is not a work assignment.
+5. At a meaningful continuation boundary, a fresh session should find the report,
+   its linked spec, and the next executable action or owner gate using repository
+   state only. No universal handoff or new self-created task is required.
+6. Before integration, the candidate's separate-context review challenges the
+   report's consequential claims and recommendations along with the change.
 
 ## Troubleshooting
 

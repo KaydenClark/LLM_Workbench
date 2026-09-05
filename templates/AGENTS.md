@@ -2,10 +2,11 @@
 
 > Generated from LLM Workbench v[HARNESS_VERSION].
 
-This always-loaded file owns how agents work. Product detail loads from
-`BLUEPRINT.md` only when needed; shared definitions load from `LEXICON.md` when
-project language matters; executable work comes from the assigned stable
-`workbench/specs/S-###-slug/SPEC.md`; commands live in `RUNBOOK.md`.
+This always-loaded file owns how agents work. Ordinary entry follows
+`AGENTS.md` -> `RUNBOOK.md` -> `LEXICON.md`. Read the Runbook's entry procedure
+and the Lexicon's routing section, then only the owners relevant to the assigned
+task. The assigned `workbench/specs/S-###-slug/SPEC.md` is mandatory after selection. `BLUEPRINT.md` loads
+for architecture or cross-cutting product direction, not default orientation.
 
 ## Authority Order
 
@@ -45,6 +46,32 @@ manufacturing authority. Diagnostics block only by their registered effect:
 work, `claim` refuses a slice blocker, and `attention` findings stay visible
 without blocking.
 
+## Assigned Work And Stances
+
+Work autonomously within the assigned task and established authority. Investigate
+missing information through the Contract, relevant ADRs, specs, Wiki and live
+project evidence. Resolve supported decisions within scope. If no confident
+next action can be established, record the blocker in the existing work owner
+and stop; do not create a next task for yourself or manufacture a queue item.
+
+Normal stance is set in the assigned SPEC and TASK (the ticket in that spec),
+not selected or recorded by the arriving agent. Builder, Auditor, Reviewer and
+Reconciler are portable behavior skills. A stance never grants, removes, or
+transfers authority; loading it never spawns an agent. Each defines Purpose,
+Method / Posture, Obligations, and Completion / Exit Condition. Changing stance
+alone creates no handoff. Troubleshooting stance policy is outside this contract.
+
+A required step must name its immediate delivery value and leave a checkable
+artifact, decision, or risk reduction. If its value is uncertain, retain it as
+an optional practice visible for owner review; do not make it mandatory or
+silently discard it. Verification and safety still apply to the work they check.
+
+Cold continuation uses existing owners: the Contract, assigned packet and linked
+context, exact achieved output or commit, current state, named verification,
+and next executable action or blocker. Update those owners as work proceeds;
+promote a checkpoint only when session reasoning is material. No universal
+handoff artifact is required. A read-only setup check may return only in chat.
+
 ## Read Scope
 
 - Allowed: `[READABLE_ROOTS]`
@@ -74,8 +101,7 @@ stable; never move them between status folders.
    completed specs from the hot Taskboard immediately.
 
 Do not read the full Blueprint, Taskboard, completed specs, or proof archive for
-normal selection. Read the Lexicon when a shared term is unclear or a selected
-skill depends on project vocabulary. A spec is a durable capability; a ticket is a temporary slice.
+normal selection. Use the Lexicon routing section to find task-relevant owners. A spec is a durable capability; a ticket is a temporary slice.
 Later change creates a linked superseding spec rather than rewriting history.
 
 ## Engineering And Verification
@@ -132,6 +158,13 @@ evidence; never duplicate completed proof in the Taskboard.
   `[OWNER_ONLY_MERGE]`.
 - Never force-push shared history or merge review-held PRs without approval.
 - Bump versions only after behavior and proof are green.
+
+Before branches combine into `integration` (or the configured integration
+branch), a separate-context reviewer must check the immutable candidate against
+its controls, assigned spec, and named evidence. This gate challenges code,
+consequential report claims, and recommendations. Earlier review and audit are
+supports, not mandatory independent ceremonies per ticket. A new candidate
+requires a fresh review; self-review alone cannot satisfy the integration gate.
 
 ## Session Records And Checkpoints
 

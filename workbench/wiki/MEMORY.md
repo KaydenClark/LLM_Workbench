@@ -48,8 +48,8 @@ nothing.
 
 | Question | Read first |
 |---|---|
-| How the Workbench is governed in v3.1 | [LEXICON.md](../../LEXICON.md) -> Governance Core, then `workbench/docs/adr/` |
-| Why a v3.1 layout or tooling decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
+| How the Workbench is governed | [LEXICON.md](../../LEXICON.md) -> Governance Core, then `workbench/docs/adr/` |
+| Why a layout, stance or entry-route decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
 
 This product repository keeps no personal, machine, or deployment notes; it is
 a `project` profile wiki. The collections ship empty until the owner directs

@@ -11,8 +11,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const product = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const VERSION = JSON.parse(fs.readFileSync(path.join(product, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
+const sourceProduct = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const VERSION = JSON.parse(fs.readFileSync(path.join(sourceProduct, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const DATE = '2026-09-04';
 const transcript = [];
 // A scrubbed environment: no Foundry, deployment, or host lane variables reach
@@ -22,7 +22,7 @@ const FOUNDRY_SIGNS = /Foundry|\.foundry|Job Order|Captain|CAS\/Journal|GPT_OS/;
 
 function run(cwd, command, args, expectStatus = 0) {
   const result = spawnSync(command, args, { cwd, encoding: 'utf8', env });
-  transcript.push(`$ ${command} ${args.join(' ')}\n${result.stdout}${result.stderr}`);
+  transcript.push(`$ ${command === process.execPath ? 'node' : command} ${args.join(' ')}\n${result.stdout}${result.stderr}`);
   assert.equal(result.status, expectStatus, `${command} ${args.join(' ')} exited ${result.status}: ${result.stdout}${result.stderr}`);
   return result.stdout;
 }
@@ -32,7 +32,7 @@ function git(cwd, ...args) {
 }
 
 function node(cwd, script, ...args) {
-  return run(cwd, process.execPath, [script, ...args]);
+  return run(cwd, process.execPath, [path.relative(cwd, script), ...args]);
 }
 
 function write(root, relative, content) {
@@ -42,18 +42,31 @@ function write(root, relative, content) {
 }
 
 const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-round-trip-'));
+const product = path.join(workspace, 'candidate');
 const remote = path.join(workspace, 'origin.git');
 const first = path.join(workspace, 'planning-clone');
 const second = path.join(workspace, 'resume-clone');
 try {
+  // Snapshot current source bytes, including uncommitted changes. A local clone
+  // would leak its source path through Git's origin and installer receipts.
+  // Keep raw stdout/stderr untouched: unexpected private paths must still fail.
+  for (const relative of ['templates', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs']) {
+    const target = path.join(product, relative);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.cpSync(path.join(sourceProduct, relative), target, { recursive: true });
+  }
+  git(product, 'init', '-q', '-b', 'main');
+  git(product, 'remote', 'add', 'origin', 'https://github.com/KaydenClark/LLM_Workbench.git');
+  git(product, 'add', '.');
+  git(product, 'commit', '-q', '-m', 'Exact candidate fixture files');
   // ---- Genesis in the first clone, from this candidate's tools -------------
   fs.mkdirSync(remote);
   run(remote, 'git', ['init', '-q', '--bare', '-b', 'main']);
   fs.mkdirSync(first);
   git(first, 'init', '-q', '-b', 'main');
   git(first, 'remote', 'add', 'origin', remote);
-  node(first, path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', first, '--provenance', 'genesis', '--version', VERSION, '--name', 'Round Trip', '--date', DATE, '--source-commit', 'candidate');
-  node(first, path.join(product, 'tools', 'workbench-tools.mjs'), 'install', '--project', first);
+  node(product, path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', first, '--provenance', 'genesis', '--version', VERSION, '--name', 'Round Trip', '--date', DATE, '--source-commit', 'candidate');
+  node(product, path.join(product, 'tools', 'workbench-tools.mjs'), 'install', '--project', first);
   const stamp = `> Generated from LLM Workbench ${VERSION}.`;
   write(first, 'AGENTS.md', `# Round Trip - Agent Operating System\n\n${stamp}\n\n## Authority Order\n\n1. The current user request.\n2. This file.\n3. The assigned spec.\n\n## Work Selection And Lifecycle\n\nRun \`node workbench/tools/spec-workbench.mjs doctor\`, then \`next --json\`, then \`show\`, claim, implement red/green, close, render, doctor, push.\n`);
   write(first, 'BLUEPRINT.md', `# Round Trip - Blueprint\n\n${stamp}\n\n## Product Map\n\nA tiny CLI that greets.\n\n## Spec Catalog\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n`);

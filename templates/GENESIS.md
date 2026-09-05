@@ -206,7 +206,9 @@ node workbench/tools/spec-workbench.mjs doctor
 ```
 
 Copy `templates/WORKBENCH_FEEDBACK.md` to
-`workbench/feedback/WORKBENCH_FEEDBACK.md` and fill its header; the return
+`workbench/feedback/WORKBENCH_FEEDBACK.md` and fill its header; also copy
+`templates/feedback/REPORT_FORMAT.md` into the declared feedback lane as
+`REPORT_FORMAT.md` for later assigned reports; the return
 channel lives in the feedback lane, never at the root, so the root keeps
 exactly seven controls.
 
@@ -251,7 +253,7 @@ Do not call bootstrap done on vibes. All of the following must hold:
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] `workbench/manifest.json` is schema 2 and declares the six support
-      lanes, seven collections, wiki profile, exact 12-skill policy, version,
+      lanes, seven collections, wiki profile, exact 16-skill policy, version,
       and Genesis provenance with its source commit; the layout validator
       passes with `--genesis`. When it fails, its JSON `message` names the
       failing control or predicate, and first-spec and generated-region

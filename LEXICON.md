@@ -7,6 +7,15 @@ This is the canonical lookup table for shared Workbench language. It helps the
 owner and agents recover the same meaning when a term appears across multiple
 specs, skills, or conversations.
 
+## Task Routing
+
+The ordinary entry route is `AGENTS.md` -> `RUNBOOK.md` -> `LEXICON.md`.
+Continue to the assigned `SPEC.md` resolved through `workbench/manifest.json`.
+Use `BLUEPRINT.md` for architecture and cross-cutting direction; use the
+manifest-declared Wiki `MEMORY.md` for task-relevant durable knowledge and the
+ADR `REGISTER.md` for decision rationale. Read only the relevant linked owners.
+`TASKBOARD.md` is a dashboard, not a prerequisite reading archive.
+
 ## Ownership Rules
 
 - Add a term after the parties have agreed on its meaning, not while it is still
@@ -35,9 +44,20 @@ specs, skills, or conversations.
 | **Hot projection** | The minimal current view of active, blocked, ready, or in-progress work generated from canonical specs. | `TASKBOARD.md` is a projection, not a second tracker or proof archive. |
 | **Seam** | A public boundary where behavior can be exercised and verified without depending on implementation details. | Specs agree important testing seams; tests and callers use the same boundary. |
 | **Support root** | The lowercase `workbench/` directory whose manifest declares the six support lanes and seven collections of a v3.1 project (schema 2); a schema 1 five-lane manifest migrates once. | Root controls remain universally discoverable; the support root is not a second control plane. |
-| **Core skill bundle** | The closed set of 12 LLM Workbench setup, planning, and delivery skills available as a brand-new-install fallback. | It is not Kayden's private catalog, a generalized marketplace, or a project-local discovery tree. |
+| **Core skill bundle** | The closed set of twelve workflow skills and four stance skills available as a brand-new-install fallback. | It is not Kayden's private catalog, a generalized marketplace, or a project-local discovery tree. |
 | **Normal setup** | Presence-only skill reconciliation during Genesis or Adoption: install a missing core skill when safe and preserve anything already installed. | It never compares or replaces an existing skill and never mutates a foreign Git-owned skill root. |
 | **Explicit skill update** | A separately authorized operation that backs up differing installed core skills and synchronizes them to the exact checked-out LLM Workbench versions. | It is the only path that may replace an existing skill; routine setup cannot imply it. |
+
+## Stance Terms
+
+| Term | Definition | Distinction |
+|---|---|---|
+| **Stance** | The method and obligations for performing one assigned task within already established authority. | It is neither an identity nor an authority grant; switching stance creates no handoff. |
+| **Builder** | The stance that delivers a scoped, verified result and maintains its documentation. | Implementation includes relevant review and verification. |
+| **Auditor** | The stance that checks claims against named evidence and reports a bounded verdict. | An audit does not authorize repairs or release. |
+| **Reviewer** | The stance that challenges a candidate's correctness, impact and evidence. | At integration it runs in a separate context; it does not quietly repair the candidate. |
+| **Reconciler** | The stance that reconciles achieved work with the state and owners needed for continuation. | It neither manufactures completion nor duplicates truth in a universal handoff. |
+| **TASK** | The assigned ticket within a stable SPEC, carrying its normal stance assignment. | No additional task file or queue is introduced. |
 
 ## Governance Core
 

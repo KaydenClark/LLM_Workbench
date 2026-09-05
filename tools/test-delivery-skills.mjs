@@ -67,24 +67,18 @@ test('code-review fixed diff disables a hostile textconv driver', () => {
   }
 });
 
-test('implement checkpoints and reviews before closing the ticket', () => {
+test('independence applies at integration, not every ticket close', () => {
   const skill = read('skills/implement/SKILL.md');
-  const orderedContract = [
-    'truthful in-progress checkpoint',
-    'remotely verified checkpoint',
-    'fixed immutable-SHA review',
-    'new truthful checkpoint',
-    're-review',
-    'exact-head review is green',
-    'node workbench/tools/spec-workbench.mjs close S-###',
-    'final push'
-  ];
-  let previous = -1;
-
-  for (const term of orderedContract) {
-    const current = skill.indexOf(term);
-    assert.ok(current >= 0, `implement must use ${term}`);
-    assert.ok(current > previous, `implement must place ${term} after the prior delivery gate`);
-    previous = current;
+  assert.match(skill, /separate-context review.*integration/s);
+  assert.match(skill, /Earlier review.*not.*mandatory independent/s);
+  assert.doesNotMatch(skill, /Only after the exact-head review is green, close/);
+  for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
+    const content = read(`skills/${stance}/SKILL.md`);
+    for (const section of ['Purpose', 'Method / Posture', 'Obligations', 'Completion / Exit Condition']) {
+      assert.ok(content.includes(`## ${section}`), `${stance}: ${section}`);
+    }
+    assert.match(content, /never grants, removes, or transfers authority/);
+    assert.match(content, /never spawns/);
+    assert.match(content, /assigned SPEC and TASK/);
   }
 });

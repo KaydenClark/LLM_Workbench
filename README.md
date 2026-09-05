@@ -66,7 +66,7 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the closed 12-skill public source bundle. It is copied only into
+- `skills/` - the closed 16-skill public source bundle. It is copied only into
   user-scoped discovery roots during a missing-only brand-new install; this
   repository does not use it as a project-local discovery tree.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
@@ -164,10 +164,10 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v3.1.0**, the first public v3 release (recorded in
-`BLUEPRINT.md` and `workbench/manifest.json`); v3.0.0 was a completed but
-unreleased internal candidate. The release is owned by
-[`S-022`](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md). This repo
+current harness version is **v3.1.0**, an unreleased baseline (recorded in
+`BLUEPRINT.md` and `workbench/manifest.json`). v3.0.0 was also unreleased.
+[`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continues
+that baseline as v3.1.1; publication remains separately owner-controlled. This repo
 is the source, so its own docs are not stamped.
 
 The portable layout and skill-install contract is implemented in
@@ -281,3 +281,11 @@ running notes, and turn the final investigation into a source-backed README.
 ## License
 
 MIT. See `LICENSE`.
+
+## Ordinary Agent Entry
+
+Follow AGENTS.md -> RUNBOOK.md -> LEXICON.md, then the assigned SPEC and only
+its relevant owners. Builder, Auditor, Reviewer and Reconciler are assigned
+stances within existing authority. Work autonomously inside the assigned task;
+independent review is required before integration. The setup-only Round One
+proof returns in chat; feedback reporting follows it in the declared lane.

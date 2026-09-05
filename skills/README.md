@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 12-skill bundle for a brand-new installation, not a general catalog
+is a closed 16-skill bundle (twelve workflow skills and four stances) for a brand-new installation, not a general catalog
 or a project-local discovery tree. The checked-out LLM Workbench release owns
 the exact source versions.
 
@@ -20,6 +20,10 @@ the exact source versions.
 | `to-tickets` | Decompose a capability into dependency-aware implementation slices. |
 | `tracer-bullet` | Cut a capability into vertically testable slices. |
 | `update-harness` | Reconcile an adopted project with the current Workbench contract. |
+| `builder` | Deliver the assigned result with useful verification and truthful documentation. |
+| `auditor` | Determine whether named claims hold on the assigned target and evidence. |
+| `reviewer` | Challenge candidate correctness, downstream impact and consequential claims. |
+| `reconciler` | Leave achieved work and its existing truth owners consistent for continuation. |
 <!-- core-skills:end -->
 
 ## Normal setup
@@ -46,3 +50,12 @@ discovery are retained under `skills-archive/optional-active-2026-09-01/`.
 directory participates in the portable core bundle.
 
 The upstream baselines are covered by the [tracked third-party notice](../THIRD_PARTY_NOTICES.md).
+
+## Stance discovery
+
+Builder, Auditor, Reviewer and Reconciler ship as flat skill directories in both
+user discovery roots, so Claude's one-level scan sees them directly. If a user
+separately stores a stance below `stances/`, that nested installation also needs
+a flat top-level symlink. The missing-only installer never replaces a foreign
+symlink or rearranges existing installations. SPEC and TASK assign a stance;
+loading one changes method without changing authority or spawning an agent.

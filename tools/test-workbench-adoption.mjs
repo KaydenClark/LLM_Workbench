@@ -12,7 +12,7 @@ const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifes
 const tool = path.join(root, 'tools', 'workbench-adoption.mjs');
 const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
+  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
 ];
 
 function fixture() {

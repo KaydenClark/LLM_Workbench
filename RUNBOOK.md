@@ -1,11 +1,25 @@
 # LLM Workbench - Runbook
 
-**Last reviewed:** 2026-07-10
+**Last reviewed:** 2026-09-04
 **Runtime owner:** Kayden
 **Environment:** local (macOS); public repo `github.com/KaydenClark/LLM_Workbench`
 
 This file explains how to operate, verify, and evaluate the workbench repo
 itself. It should be boring, exact, and executable.
+
+## Ordinary Entry
+
+Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
+root, branch, upstream and dirty state; run the project-local spec doctor and
+load the explicitly assigned spec. For owner-directed pickup, use `next --json`
+and `show` to resolve that assignment. The spec and ticket set the normal
+stance. Investigate within the task; do not invent a next task when blocked.
+Load remaining Runbook sections only for the operation being performed.
+
+For a setup-only Round One assignment, a fresh agent follows that route, checks
+the manifest, relevant Wiki and ADRs, and runs read-only configuration checks.
+Return the result in chat only: no feedback report, handoff, checkpoint,
+self-created task, or other prose artifact. Round One precedes feedback testing.
 
 ## Prerequisites
 
@@ -96,7 +110,7 @@ Expected result:
 
 ### Core-skill setup check
 
-The public source bundle is intentionally limited to the 12 skills in
+The public source bundle is intentionally limited to the 16 skills in
 `skills/README.md`. Test the missing-only installer against a disposable user
 home without touching a real account:
 
@@ -561,8 +575,9 @@ making claims.
 Downstream projects built from `templates/` carry a `WORKBENCH_FEEDBACK.md` return
 channel (legacy copies named `HARNESS_FEEDBACK.md` are still discovered): an
 append-only log of where the harness rules themselves were unclear,
-wrong, or slow. This repo is the harvest destination, so it has no
-feedback file of its own; instead:
+wrong, or slow. This repo is the harvest destination. Manual reports and their format live
+in its manifest-declared feedback lane; the downstream append-only return
+channel is a different artifact. For authorized repairs:
 
 1. Collect feedback rows from downstream projects (or from dogfooding here).
 2. Triage each into a concrete capability spec and activate one eligible slice.
@@ -576,7 +591,9 @@ closes the loop on evidence rather than taste without keeping deferred work hot.
 
 ### Automated Feedback Gate
 
-Two local scheduled jobs operate this loop against the LLM Workbench project:
+The optional automation implementation defines two adapters. Their current
+scheduler state is not verified by this repository, and they are not the
+manual feedback-report workflow:
 
 - **Feedback Builder (Terra):** discovers one canonical `new` feedback row,
   creates a sanitized fingerprint/spec, proves a red/green change, runs the
@@ -587,10 +604,10 @@ Two local scheduled jobs operate this loop against the LLM Workbench project:
   change, or leaves a transient infrastructure failure open for retry. It never
   merges `integration` to `main` or deletes the source branch.
 
-This Codex host currently rejects scheduler-native worktree execution. Each job
-therefore runs as a local project job but treats the canonical checkout as
-read-only, creates a registered temporary worktree from `origin/integration`,
-operates there, and removes/prunes it on completion. This preserves isolation
+The recorded adapter workaround for hosts that reject scheduler-native
+worktree execution uses a local project job, treats the canonical checkout as
+read-only, and creates a temporary worktree from `origin/integration`. Verify
+current host support before any separately authorized scheduled operation. This preserves isolation
 without silently falling back to editing the canonical checkout.
 
 Discovery is fail-closed and one-candidate-at-a-time. It reads only direct-child
@@ -656,6 +673,29 @@ gh pr create --base integration --fill
 
 Before creating a branch or PR, verify the live base and preserve dirty work.
 PR descriptions state what changed, why, risks, and verification.
+
+## Manual Harness Feedback Reports
+
+Run this workflow after a setup-only Round One check succeeds. It assesses the
+assigned target; it never authorizes a repair or invokes automated repair.
+
+1. Resolve `lanes.feedback`, `lanes.specs` and the relevant collections through
+   `workbench/manifest.json`. Pin the target revision and the assigned question.
+2. Inspect only relevant controls, source and named proof. Test consequential
+   claims, distinguish observation from inference, and disclose evidence limits.
+3. Write `REPORT-topic-date.md` in the declared feedback lane using its
+   `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
+   Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
+   and Review Boundary. No findings is valid. Reports never live loose or in
+   the Wiki. If the format is absent in an older installation, these sections
+   are sufficient; explicit upgrades may copy it from the source templates.
+4. Put accepted follow-up work in its existing linked spec; proposed repairs
+   remain pending owner authorization. A report is not a work assignment.
+5. At a meaningful continuation boundary, a fresh session should find the report,
+   its linked spec, and the next executable action or owner gate using repository
+   state only. No universal handoff or new self-created task is required.
+6. Before integration, the candidate's separate-context review challenges the
+   report's consequential claims and recommendations along with the change.
 
 ## Troubleshooting
 

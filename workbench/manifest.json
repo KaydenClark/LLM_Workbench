@@ -43,7 +43,11 @@
       "to-spec",
       "to-tickets",
       "tracer-bullet",
-      "update-harness"
+      "update-harness",
+      "builder",
+      "auditor",
+      "reviewer",
+      "reconciler"
     ],
     "discovery": [
       ".agents/skills",

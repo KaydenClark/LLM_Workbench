@@ -23,3 +23,8 @@
 | [0031](0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md) | Portable runtime tools are Workbench-managed in the tools lane; root tools stay application-owned | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0032](0032-manifest-schema-2-declares-lanes-and-collections.md) | Manifest schema 2 declares six lanes and every machine-used collection | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0033](0033-workbench-contract-is-a-claim-set.md) | The Workbench Contract is a claim set carried by the seven controls and the assigned spec | accepted | 2026-09-04 | LEXICON.md, BLUEPRINT.md |
+| [0034](0034-required-steps-must-enable-delivery.md) | Required steps must enable direct delivery | accepted | 2026-09-04 | AGENTS.md, BLUEPRINT.md |
+| [0035](0035-reduced-entry-and-assigned-autonomy.md) | Reduced entry and autonomy within assigned work | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md, LEXICON.md |
+| [0036](0036-stances-change-method-not-authority.md) | Assigned portable stances change method, not authority | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
+| [0037](0037-independent-review-at-integration.md) | Require independent review when branches combine at integration | accepted | 2026-09-04 | AGENTS.md |
+| [0038](0038-setup-proof-precedes-feedback-reporting.md) | Chat-only setup proof precedes feedback reporting | accepted | 2026-09-04 | RUNBOOK.md, BLUEPRINT.md, workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md |

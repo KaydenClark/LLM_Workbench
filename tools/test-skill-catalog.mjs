@@ -9,7 +9,7 @@ const skillsRoot = path.join(root, 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
 const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
+  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
 ].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
@@ -34,9 +34,9 @@ const catalogNames = catalogRegion[1]
   .sort();
 
 assert.deepEqual(catalogNames, coreSkills,
-  'the documented source bundle must contain exactly the locked 12 skills');
+  'the documented source bundle must contain exactly the locked 16 skills');
 assert.deepEqual(directoryNames(skillsRoot), coreSkills,
-  'live discovery source must contain exactly the locked 12 skills');
+  'live discovery source must contain exactly the locked 16 skills');
 for (const skill of coreSkills) {
   const source = path.join(skillsRoot, skill, 'SKILL.md');
   assert.ok(fs.statSync(source).isFile(), `${skill} must contain SKILL.md`);
@@ -232,5 +232,5 @@ for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec'
 assert.doesNotMatch(toSpec, /stable `specs\/S-###-slug\/SPEC\.md`/,
   'to-spec must not direct v3 projects to the retired root specs path');
 
-console.log('ok - the portable 12-skill source bundle and retired discovery boundary are aligned');
+console.log('ok - the portable 16-skill source bundle and retired discovery boundary are aligned');
 await import('./test-delivery-skills.mjs');

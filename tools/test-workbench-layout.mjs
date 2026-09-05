@@ -574,3 +574,23 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
     fs.rmSync(partialBundle, { recursive: true, force: true });
   }
 });
+
+test('legacy twelve-skill manifests remain readable but v3.1.1 requires all four stances', () => {
+  const project = fixture();
+  try {
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.1.0');
+    assert.equal(initialized.status, 0, initialized.stdout);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(manifest.skillPolicy.required.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler']);
+    manifest.skillPolicy.required = manifest.skillPolicy.required.slice(0, 12);
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    manifest.workbenchVersion = 'v3.1.1';
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-skill-policy');
+    manifest.skillPolicy.required.push('builder', 'auditor', 'reviewer', 'reconciler');
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});

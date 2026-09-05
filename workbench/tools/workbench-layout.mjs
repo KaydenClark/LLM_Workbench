@@ -9,10 +9,11 @@ import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
 import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
-export const coreSkills = [
+const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
+export const coreSkills = [...legacyCoreSkills, 'builder', 'auditor', 'reviewer', 'reconciler'];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -110,7 +111,11 @@ export function validateManifest(project) {
     if (!new RegExp(`^${name}/\\*?$`, 'm').test(ignoreContent)) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must ignore ${name}/.`, { collection: name });
   }
   if (!WIKI_PROFILES.includes(manifest.wiki?.profile)) return fail('invalid-wiki-profile', `Manifest wiki.profile must be one of ${WIKI_PROFILES.join(', ')}.`);
-  if (JSON.stringify(manifest.skillPolicy) !== JSON.stringify(skillPolicy)) {
+  // Existing v3.0/v3.1 manifests remain readable; v3.1.1 must include stances.
+  const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
+  const supportedLegacy = ['v3.0.0', 'v3.1.0'].includes(manifest.workbenchVersion)
+    && JSON.stringify(manifest.skillPolicy) === JSON.stringify(legacyPolicy);
+  if (JSON.stringify(manifest.skillPolicy) !== JSON.stringify(skillPolicy) && !supportedLegacy) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
   }
   return report('valid', { manifest });
