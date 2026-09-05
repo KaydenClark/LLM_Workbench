@@ -421,6 +421,64 @@ function validateGenesisRuntime(project, expectedVersion) {
   return null;
 }
 
+// The permission file is the mechanical half of the prose Edit Scope. The
+// matcher is deliberately conservative: `./<path>/**` and a covering parent
+// glob such as `./workbench/**` grant, and anything else does not, so a false
+// "drift" is possible but a false "granted" is not. It reports and never
+// rewrites: a room may deny a lane deliberately and record why.
+export const PERMISSION_FILE = '.claude/settings.json';
+const permissionTools = ['Edit', 'Write'];
+const permissionBuckets = ['allow', 'ask', 'deny'];
+
+function coveringPrefix(rule, tool) {
+  const match = typeof rule === 'string' ? rule.match(/^(Edit|Write)\(\.\/(.*)\)$/) : null;
+  if (!match || match[1] !== tool) return null;
+  if (match[2] === '**') return '';
+  return match[2].endsWith('/**') ? match[2].slice(0, -3) : null;
+}
+
+function covers(rules, tool, lane) {
+  return rules.some((rule) => {
+    const prefix = coveringPrefix(rule, tool);
+    return prefix !== null && (prefix === '' || prefix === lane || lane.startsWith(`${prefix}/`));
+  });
+}
+
+// Null when the file is absent or grants every declared lane; otherwise the
+// withheld lanes, each with the reason, so a finding can name them.
+export function permissionScopeDrift(project, declaredLanes = lanes) {
+  const file = path.join(path.resolve(project), PERMISSION_FILE);
+  if (!lstatOrNull(file)) return null;
+  const authorship = Object.entries(declaredLanes).filter(([name]) => name !== 'tools');
+  let buckets;
+  try {
+    const permissions = JSON.parse(fs.readFileSync(file, 'utf8'))?.permissions ?? {};
+    buckets = Object.fromEntries(permissionBuckets.map((bucket) => [bucket, Array.isArray(permissions[bucket]) ? permissions[bucket] : []]));
+  } catch (error) {
+    const reason = `the file is unreadable, so it grants nothing: ${error.message}`;
+    return { control: PERMISSION_FILE, lanes: authorship.map(([lane, relative]) => ({ lane, path: relative, reason })) };
+  }
+  const withheld = [];
+  for (const [lane, relative] of Object.entries(declaredLanes)) {
+    const reasons = [];
+    for (const tool of permissionTools) {
+      const denied = covers(buckets.deny, tool, relative);
+      const asked = covers(buckets.ask, tool, relative);
+      const allowed = covers(buckets.allow, tool, relative);
+      if (lane === 'tools') {
+        if (allowed && !asked && !denied) reasons.push(`${tool} is granted in allow; hold the tools lane in ask`);
+      } else if (denied) reasons.push(`${tool} is covered by a deny rule`);
+      else if (!allowed) reasons.push(`no covering ${tool} allow rule`);
+    }
+    if (reasons.length) withheld.push({ lane, path: relative, reason: reasons.join('; ') });
+  }
+  return withheld.length ? { control: PERMISSION_FILE, lanes: withheld } : null;
+}
+
+export function permissionScopeMessage(drift) {
+  return `${drift.control} withholds declared lanes: ${drift.lanes.map((entry) => `${entry.lane} (${entry.path}: ${entry.reason})`).join('; ')}`;
+}
+
 export function validate(options, requireGenesis) {
   const project = path.resolve(options['--project']);
   const result = validateManifest(project);
@@ -433,6 +491,8 @@ export function validate(options, requireGenesis) {
   if (specIssue) return specIssue;
   const runtimeIssue = validateGenesisRuntime(project, result.manifest.workbenchVersion);
   if (runtimeIssue) return runtimeIssue;
+  const drift = permissionScopeDrift(project, result.manifest.lanes);
+  if (drift) return fail('permission-scope-drift', permissionScopeMessage(drift), { control: drift.control, lanes: drift.lanes, reason: drift.lanes.map((entry) => `${entry.lane}: ${entry.reason}`).join('; ') });
   if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'Genesis must not create a project-local skills directory.');
   return report('valid', { manifest: result.manifest, controls });
 }

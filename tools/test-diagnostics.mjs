@@ -193,3 +193,71 @@ test('doctor --home reports a stale or unknown installed skill generation per re
     fs.rmSync(home, { recursive: true, force: true });
   }
 });
+
+// The permission file is the mechanical half of the prose Edit Scope. A lane
+// the manifest declares that the file withholds is reported by name; the
+// finding is registered as nonblocking so a room can deny a lane deliberately.
+function permissionFile(buckets) {
+  return JSON.stringify({ permissions: { deny: [], ask: [], allow: [], ...buckets } });
+}
+
+const authorshipLanes = ['docs', 'specs', 'wiki', 'sessions', 'feedback'];
+const laneGrants = authorshipLanes.flatMap((lane) => [`Edit(./workbench/${lane}/**)`, `Write(./workbench/${lane}/**)`]);
+
+test('permission-scope-drift names each withheld authorship lane without blocking doctor', () => {
+  const registered = describe('permission-scope-drift');
+  assert.deepEqual([registered.severity, registered.scope, registered.blocks], ['error', 'controls', 'none']);
+  const dir = project();
+  const settings = path.join(dir, '.claude', 'settings.json');
+  const driftLanes = (findings) => {
+    assert.equal(findings.length, 1, JSON.stringify(findings));
+    assert.deepEqual([findings[0].code, findings[0].severity, findings[0].blocks, findings[0].control], ['permission-scope-drift', 'error', 'none', '.claude/settings.json']);
+    return findings[0].lanes.map((entry) => entry.lane);
+  };
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a room without the file is unaffected');
+
+    // The pre-fix template shape: Edit on writable roots, no Write, no lane.
+    write(dir, '.claude/settings.json', permissionFile({ deny: ['Write(./secrets/**)'], ask: ['Bash(git push:*)'], allow: ['Edit(./src/**)', 'Edit(./AGENTS.md)'] }));
+    const legacy = doctor(dir, { home: quietHome });
+    assert.deepEqual(driftLanes(legacy).sort(), [...authorshipLanes].sort());
+    for (const lane of authorshipLanes) assert.match(legacy[0].message, new RegExp(`workbench/${lane}`), `the finding names ${lane}`);
+    const cli = cliDoctor(dir);
+    assert.equal(cli.status, 0, 'permission drift is reported, never a doctor failure');
+    assert.deepEqual(cli.findings.map((item) => item.code), ['permission-scope-drift']);
+    assert.equal(nextWork(dir).ticketId, 'TK-001', 'the finding must not hide work');
+
+    // The shipped template shape grants every lane.
+    fs.copyFileSync(path.join(root, 'templates', '.claude', 'settings.json'), settings);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'the fixed template yields no finding');
+
+    // A missing Write, a covering deny, and a granted tools lane are each drift.
+    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants.filter((rule) => rule !== 'Write(./workbench/wiki/**)') }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['wiki']);
+    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants, deny: ['Edit(./workbench/docs/**)'] }));
+    const denied = doctor(dir, { home: quietHome });
+    assert.deepEqual(driftLanes(denied), ['docs']);
+    assert.match(denied[0].lanes[0].reason, /deny/);
+    write(dir, '.claude/settings.json', permissionFile({ allow: [...laneGrants, 'Edit(./workbench/tools/**)', 'Write(./workbench/tools/**)'] }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
+
+    // A covering parent glob grants; it counts as granting tools only when no
+    // ask or deny rule takes precedence for that lane.
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)', 'Write(./workbench/**)'] }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)', 'Write(./workbench/**)'], ask: ['Edit(./workbench/tools/**)', 'Write(./workbench/tools/**)'] }));
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a parent glob with tools held in ask is the accepted shape');
+
+    // Anything the conservative matcher does not recognise is not a grant.
+    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants.map((rule) => rule.replace('/**)', '/*.md)')) }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })).sort(), [...authorshipLanes].sort());
+    write(dir, '.claude/settings.json', '{ not json');
+    const unreadable = doctor(dir, { home: quietHome });
+    assert.deepEqual(driftLanes(unreadable).sort(), [...authorshipLanes].sort());
+    assert.match(unreadable[0].message, /unreadable/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
