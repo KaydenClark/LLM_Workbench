@@ -3,13 +3,13 @@
 **Spec ID:** S-029
 **Status:** active
 **Priority:** 0
-**Owner:** unassigned
+**Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Make the integration branch a manifest-declared fact that Genesis, Adoption, and doctor can check, and require generation and adoption to end as a committed branch with a reachable review gate.
 **Blockers:** none
-**Latest event:** Spec captured from upstream fix-list items UP-011 and UP-006 and the v3.1.1 acceptance report findings F-006 and F-007.
-**Next gate:** Claim TK-001 and prove the declared branch and its doctor finding red then green.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -163,7 +163,7 @@ Gap: everything under Desired Behavior.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Manifest `git` block, layout and adoption flags, `integration-branch-undeclared` and `integration-branch-missing` in doctor and the Genesis gate | ready | none | pending |
+| TK-001 | Manifest `git` block, layout and adoption flags, `integration-branch-undeclared` and `integration-branch-missing` in doctor and the Genesis gate | done | none | node tools/test-diagnostics.mjs (5 pass: registry describes integration-branch-undeclared and integration-branch-missing as error/git/none; doctor reports both without failing, next and claim proceed), node tools/test-workbench-layout.mjs (21 pass: init and migrate write git.defaultBranch and git.integrationBranch, validate --genesis fails closed on both codes and passes once the exact-case branch resolves, manifest without the block stays valid), node tools/test-workbench-adoption.mjs (migrate declares an existing Integration branch by exact case and lists a missing branch as residue.missingIntegrationBranch), node tools/test-wiki.mjs, node tools/test-workbench-round-trip.mjs, node tools/test-cross-provider-fixture.mjs, node tools/test-adr.mjs, node tools/test-governance-core.mjs all green; doctor clean on this checkout |
 | TK-002 | Reconcile template and root controls, Genesis and Adoption skills, completion boxes for commit and branch, Runbook closeout prune | ready | TK-001 | pending |
 | TK-003 | `complete-on-integration` attention finding when the selected spec is complete at the declared integration ref | ready | TK-001 | pending |
 
@@ -252,6 +252,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-05 | spec | Spec captured from the Master Workbench v3.1.1 upstream fix list (UP-011 rank first, UP-006) and the acceptance report (F-006, F-007) | Mechanisms re-read at `b7b23dd`: placeholder at `templates/AGENTS.md:157` with five literal `integration` branch names below it; no branch code in `diagnostics.mjs`; `git worktree list` shows eleven worktrees with `integration` under the temp directory | Blueprint v3.1.2 direction links this spec | All three slices |
+| 2026-09-05 | TK-001 | Ticket closed | node tools/test-diagnostics.mjs (5 pass: registry describes integration-branch-undeclared and integration-branch-missing as error/git/none; doctor reports both without failing, next and claim proceed), node tools/test-workbench-layout.mjs (21 pass: init and migrate write git.defaultBranch and git.integrationBranch, validate --genesis fails closed on both codes and passes once the exact-case branch resolves, manifest without the block stays valid), node tools/test-workbench-adoption.mjs (migrate declares an existing Integration branch by exact case and lists a missing branch as residue.missingIntegrationBranch), node tools/test-wiki.mjs, node tools/test-workbench-round-trip.mjs, node tools/test-cross-provider-fixture.mjs, node tools/test-adr.mjs, node tools/test-governance-core.mjs all green; doctor clean on this checkout | RUNBOOK.md (git block, init/migrate flags, both doctor codes in the effects table, branch creation commands); LEXICON.md and templates/LEXICON.md (Declared integration branch term); ADR-0039 proposed; workbench/manifest.json declares main and integration | TK-002 controls, skills, protocol completion boxes, closeout prune, ADR acceptance; TK-003 complete-on-integration |
 
 ## Completion Result
 
