@@ -399,3 +399,22 @@ test('a selected spec already complete at the declared integration ref is report
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('a room outside any Git work tree is told so instead of being told to create the branch', () => {
+  const dir = fixture();
+  try {
+    const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', VERSION], { encoding: 'utf8' });
+    assert.equal(init.status, 0, init.stdout);
+    write(dir, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
+    write(dir, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
+    write(dir, 'workbench/wiki/MEMORY.md', '---\ntype: memory\nstatus: active\nsensitivity: normal\nknowledge_role: canonical\nprovenance:\n  - fixture\nsource_paths:\n  - workbench/wiki\nlast_verified: 2026-09-04\n---\n\n# Fixture Memory\n');
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    const findings = doctor(dir, { home: quietHome });
+    assert.deepEqual(findings.map((item) => [item.code, item.branch]), [['integration-branch-missing', 'integration']]);
+    assert.match(findings[0].message, /not inside a Git work tree/, 'the message names the actual condition');
+    assert.doesNotMatch(findings[0].message, /create it from/, 'no repository means no branch to create yet');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

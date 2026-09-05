@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -239,6 +239,9 @@ function gitFindings(root, specs) {
   if (!manifest || manifest.schemaVersion !== 2) return [];
   const declared = declaredGit(root);
   if (!declared) return [finding('integration-branch-undeclared', 'workbench/manifest.json declares no git.integrationBranch; declare the branch the independent review gate merges into')];
+  if (!insideWorkTree(root)) {
+    return [finding('integration-branch-missing', `the project is not inside a Git work tree, so declared integration branch ${declared.integrationBranch} cannot resolve; initialize the repository first`, { branch: declared.integrationBranch })];
+  }
   const refs = resolveBranchRefs(root, declared.integrationBranch);
   if (refs.length === 0) {
     return [finding('integration-branch-missing', `declared integration branch ${declared.integrationBranch} resolves neither as a local head nor on a remote; create it from ${declared.defaultBranch}`, { branch: declared.integrationBranch })];

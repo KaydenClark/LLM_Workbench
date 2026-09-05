@@ -61,7 +61,7 @@ function gitRead(project, args) {
   return result.status === 0 ? result.stdout.trim() : null;
 }
 
-function insideWorkTree(project) {
+export function insideWorkTree(project) {
   return gitRead(project, ['rev-parse', '--is-inside-work-tree']) === 'true';
 }
 
@@ -586,6 +586,9 @@ function validateGenesisGit(project) {
   const declared = declaredGit(project);
   if (!declared) {
     return fail('integration-branch-undeclared', 'workbench/manifest.json must declare git.integrationBranch, the branch the independent review gate merges into; run init with --integration-branch or add the git block.', { reason: 'the manifest has no git block' });
+  }
+  if (!insideWorkTree(project)) {
+    return fail('integration-branch-missing', `The project is not inside a Git work tree, so declared integration branch ${declared.integrationBranch} cannot resolve; initialize the repository and create the branch from ${declared.defaultBranch}.`, { branch: declared.integrationBranch, reason: 'the project is not inside a Git work tree' });
   }
   if (resolveBranchRefs(project, declared.integrationBranch).length === 0) {
     return fail('integration-branch-missing', `Declared integration branch ${declared.integrationBranch} resolves neither as a local head nor on a remote; create it from ${declared.defaultBranch} and push it, or record the omission reason in the owning spec.`, { branch: declared.integrationBranch, reason: `no refs/heads/${declared.integrationBranch} and no remote carries ${declared.integrationBranch}` });

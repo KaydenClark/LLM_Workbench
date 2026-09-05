@@ -942,3 +942,26 @@ test('init and migrate default the declaration to origin/HEAD and an existing in
     fs.rmSync(migrated, { recursive: true, force: true });
   }
 });
+
+test('HEAD is not a branch name: init refuses it and a symref never satisfies the declaration', () => {
+  const project = fixture();
+  try {
+    const rejected = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--integration-branch', 'HEAD');
+    assert.notEqual(rejected.status, 0, rejected.stdout);
+    assert.equal(rejected.report.error.code, 'invalid-branch');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'a refused init writes nothing');
+
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project, { git: false });
+    gitRoom(project, null);
+    git(project, 'remote', 'add', 'origin', project);
+    git(project, 'symbolic-ref', 'refs/remotes/origin/HEAD', 'refs/heads/main');
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    manifest.git.integrationBranch = 'HEAD';
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-manifest', 'a manifest declaring HEAD is malformed even though origin/HEAD is a symref');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});

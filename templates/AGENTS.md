@@ -159,7 +159,8 @@ evidence; never duplicate completed proof in the Taskboard.
 - The integration branch is a declared fact, not a convention:
   `workbench/manifest.json` `git.integrationBranch` names
   `[INTEGRATION_BRANCH_OR_DEFAULT]` by exact case and `git.defaultBranch` names
-  the branch it is created from. `doctor` reports
+  the branch it is created from when the two differ (a room that merges
+  straight into its default branch declares the same name twice). `doctor` reports
   `integration-branch-undeclared` or `integration-branch-missing` until the
   declared branch resolves; neither blocks selection.
 - Never force-push shared history or merge review-held PRs without approval.

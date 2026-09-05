@@ -256,6 +256,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-governance-core.mjs (12 pass: templates/AGENTS.md Git Rules and Branch Completion carry no bare integration literal and route through [INTEGRATION_BRANCH_OR_DEFAULT] and git.integrationBranch; root AGENTS.md names the manifest declaration; genesis and adoption skills create the declared branch from the default branch; GENESIS, ADOPTION, and update-harness carry the commit-on-prefixed-branch and declared-branch-or-recorded-reason boxes; root and template Runbook closeout prune worktrees and name the scratch location), node tools/test-skill-catalog.mjs (core skills reference git.integrationBranch), node tools/test-branch-closeout.mjs (6 pass with git worktree prune in the cleanup block), node tools/test-workbench-layout.mjs (placeholder vocabulary unchanged), node tools/test-adr.mjs and adr validate (ADR-0039 accepted, canonicalized in AGENTS.md, RUNBOOK.md, LEXICON.md); guardrail audit 78/100 before and after | AGENTS.md and templates/AGENTS.md (declared integration branch, Branch Completion without literals); RUNBOOK.md and templates/RUNBOOK.md (closeout git worktree prune, scratch convention, doctor findings); templates/GENESIS.md, templates/ADOPTION.md, skills/genesis, skills/adoption, skills/implement, skills/update-harness (declared branch and completion boxes); ADR-0039 accepted and registered | TK-003 complete-on-integration |
 | 2026-09-05 | TK-003 | Ticket closed | node tools/test-diagnostics.mjs (6 pass: complete-on-integration registered as attention/specs/none; a fixture whose integration ref carries S-001 complete while the checkout carries it active reports the spec and ref for a local head and for a remote-only ref, cliDoctor exits 0, next still returns TK-001, and an agreeing checkout reports nothing), node tools/test-spec-workbench.mjs, node tools/test-workbench-adoption.mjs, node tools/test-workbench-dogfood.mjs, node tools/test-governance-core.mjs green; doctor clean on this checkout against refs/heads/integration and origin/integration | RUNBOOK.md (complete-on-integration in the support-root check and the effects table) and templates/RUNBOOK.md (diagnostics paragraph) | none; acceptance boxes and completion result pending |
 | 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-05 | review | Independent review of 98b328d passed with two nits: `isBranchName` accepted `HEAD` (satisfiable by the `origin/HEAD` symref) and the outside-work-tree case said "create it from main" | Red then green: `tools/test-workbench-layout.mjs` refuses `--integration-branch HEAD` and a manifest declaring `HEAD`; `tools/test-diagnostics.mjs` asserts the not-inside-a-Git-work-tree message; candidate rebased onto `origin/integration` after S-031 and S-032 with both sides kept | `templates/AGENTS.md` gains the when-they-differ clause; Completion Result notes the follow-up | none |
 
 ## Completion Result
 
@@ -304,6 +305,17 @@ How verified. Red then green for each ticket in `tools/test-diagnostics.mjs`,
 full `AGENTS.md` suite, `render`, `doctor`, and `git diff --check` recorded in
 the evidence log; guardrail audit 78/100 before and after; templates score
 106.6/113 against controls 0 and 2.
+
+Review follow-up. The independent review of `98b328d` passed and raised two
+nits, fixed in one follow-up commit after the rebase onto S-031 and S-032:
+`isBranchName` now rejects `HEAD` (Git itself refuses `git branch HEAD`, and
+the `origin/HEAD` symref could otherwise satisfy a declaration), and a room
+outside any Git work tree is told that condition instead of being told to
+create the branch. Rebasing kept both sides of every conflict: the `git`
+scope beside S-031's `skills` scope, `gitFindings` beside `skillFindings`
+(doctor now takes `--home` and the new tests pass `quietHome`), the git block
+beside S-032's resolved `provenance.source`, and both Runbook, Lexicon, and
+protocol paragraphs.
 
 ## Remaining Limitations Or Follow-Up Specs
 

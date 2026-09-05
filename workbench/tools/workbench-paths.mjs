@@ -53,7 +53,9 @@ export function isBranchName(value) {
     && !value.startsWith('-') && !value.startsWith('/') && !value.startsWith('.')
     && !value.endsWith('/') && !value.endsWith('.') && !value.endsWith('.lock')
     && !value.includes('..') && !value.includes('//') && !value.includes('/.') && !value.includes('@{')
-    && value !== '@';
+    && value !== '@'
+    // Git refuses `git branch HEAD`; accepting it would let the origin/HEAD symref satisfy a declaration.
+    && value !== 'HEAD';
 }
 
 // The declared Git facts: the default branch and the branch the independent
