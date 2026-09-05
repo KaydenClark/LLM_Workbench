@@ -23,12 +23,18 @@ function fail(code, message, details = {}) {
 }
 
 function parseOptions(args) {
-  const options = { explicit: false };
+  const options = { explicit: false, layoutOnly: false };
   for (let index = 0; index < args.length;) {
     const key = args[index];
     if (key === '--explicit-update') {
       if (options.explicit) throw new Error('Duplicate --explicit-update.');
       options.explicit = true;
+      index += 1;
+      continue;
+    }
+    if (key === '--layout-only') {
+      if (options.layoutOnly) throw new Error('Duplicate --layout-only.');
+      options.layoutOnly = true;
       index += 1;
       continue;
     }
@@ -38,7 +44,16 @@ function parseOptions(args) {
     index += 2;
   }
   for (const key of ['--project', '--home', '--version']) if (!options[key]) throw new Error(`Missing ${key}.`);
+  if (options.explicit && options.layoutOnly) throw new Error('--explicit-update and --layout-only are exclusive modes; choose one.');
   return options;
+}
+
+// The layout-only mode reads skill presence exactly as Adoption does: every
+// required core skill must exist in a discovery root, and nothing there is
+// compared, marked, backed up, or replaced.
+function missingUserSkills(home) {
+  const roots = [path.join(home, '.agents', 'skills'), path.join(home, '.claude', 'skills')];
+  return coreSkills.filter((skill) => !roots.some((root) => lstatOrNull(path.join(root, skill))?.isDirectory()));
 }
 
 function hashTree(directory, relative = '', entries = []) {
@@ -82,8 +97,8 @@ function validateDestinationRoot(destination, home) {
   return null;
 }
 
-function preflight(project, home, explicit) {
-  if (!explicit) return fail('explicit-update-required', 'Skill replacement requires --explicit-update; normal setup is presence-only.');
+function preflight(project, home, explicit, layoutOnly = false) {
+  if (!explicit && !layoutOnly) return fail('explicit-update-required', 'Skill replacement requires --explicit-update; the support-root-only route requires --layout-only.');
   if (!lstatOrNull(project)?.isDirectory() || lstatOrNull(project)?.isSymbolicLink()) return fail('invalid-project', `${project} must be an existing ordinary project directory.`);
   if (lstatOrNull(path.join(project, 'workbench'))) return fail('support-root-exists', `${path.join(project, 'workbench')} already exists; use normal v3 maintenance instead of the one-time upgrade.`);
   const git = spawnSync('git', ['rev-parse', '--verify', 'HEAD'], { cwd: project, encoding: 'utf8' });
@@ -93,6 +108,11 @@ function preflight(project, home, explicit) {
   if (status.stdout) return fail('dirty-project', 'Upgrade requires a clean project worktree so the recorded Git SHA is a complete recovery point.');
   const inventoryResult = spawnSync('git', ['ls-files', '-z'], { cwd: project, encoding: 'utf8' });
   if (inventoryResult.status !== 0) return fail('inventory-failed', 'Could not record the pre-migration tracked path inventory.');
+  if (layoutOnly) {
+    const missingSkills = missingUserSkills(home);
+    if (missingSkills.length) return fail('missing-user-skills', 'Layout-only upgrade requires every core skill to be present in a user-scoped Codex or Claude discovery root; it never installs or replaces one.', { missingSkills });
+    return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean), destinations: [] };
+  }
   const destinations = [
     { engine: 'codex', root: path.join(home, '.agents', 'skills') },
     { engine: 'claude', root: path.join(home, '.claude', 'skills') }
@@ -142,11 +162,12 @@ function upgrade(options) {
   const home = path.resolve(options['--home']);
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
-  const readiness = preflight(project, home, options.explicit);
+  const readiness = preflight(project, home, options.explicit, options.layoutOnly);
   if (readiness.status === 'blocked') return readiness;
+  const skills = options.layoutOnly ? 'presence-only' : 'explicit-update';
   let skillBackups = [];
   try {
-    skillBackups = updateSkills(readiness.destinations, home);
+    if (!options.layoutOnly) skillBackups = updateSkills(readiness.destinations, home);
     const adoption = spawnSync(process.execPath, [adoptionTool, 'migrate', '--project', project, '--home', home, '--version', options['--version']], { cwd: root, encoding: 'utf8' });
     const adoptionReport = adoption.stdout ? JSON.parse(adoption.stdout) : null;
     if (adoption.status !== 0 || adoptionReport?.status !== 'complete') {
@@ -161,8 +182,8 @@ function upgrade(options) {
     const recoveryPath = path.join(collections.checkpoints, 'upgrade-recovery.json');
     const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
     const tools = { status: 'installed', receipt: `${validation.manifest.lanes.tools}/.workbench-tools.json`, source: receipt.source };
-    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, tools }, null, 2)}\n`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skillBackups, tools, migration: adoptionReport };
+    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', skills, preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, tools }, null, 2)}\n`);
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skills, skillBackups, tools, migration: adoptionReport };
   } catch (error) {
     return { status: 'partial', skillBackups, error: { code: 'upgrade-failed', message: error.message } };
   }
@@ -170,7 +191,7 @@ function upgrade(options) {
 
 try {
   const [command, ...args] = process.argv.slice(2);
-  if (command !== 'upgrade') throw new Error('Usage: workbench-upgrade.mjs upgrade --project PROJECT --home USER_HOME --version v3.1.1 --explicit-update');
+  if (command !== 'upgrade') throw new Error('Usage: workbench-upgrade.mjs upgrade --project PROJECT --home USER_HOME --version v3.1.1 (--explicit-update | --layout-only)');
   const result = upgrade(parseOptions(args));
   process.stdout.write(`${JSON.stringify(result)}\n`);
   if (result.status !== 'complete') process.exitCode = 1;

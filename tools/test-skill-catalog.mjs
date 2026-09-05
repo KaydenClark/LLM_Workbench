@@ -224,6 +224,28 @@ assert.match(updateHarness, /checked-out LLM Workbench repository/,
 assert.doesNotMatch(updateHarness, /\/Users\/kayden\/GPT_OS\//,
   'update-harness must not publish a private machine path');
 
+// S-032: an already-adopted v2-root room has one named route that works
+// without skill replacement, and no passage sends it to a manifest it lacks.
+const reconcileSection = updateHarness.slice(updateHarness.indexOf('## 3.'), updateHarness.indexOf('## 4.'))
+  .replace(/ \\\n\s+/g, ' ');
+assert.match(reconcileSection, /workbench-upgrade\.mjs upgrade[^\n`]*--layout-only/,
+  'update-harness section 3 must name the layout-only upgrade route');
+assert.ok(reconcileSection.indexOf('--layout-only') < reconcileSection.indexOf('--explicit-update'),
+  'update-harness section 3 must name the v2-root layout route before skill replacement');
+assert.match(reconcileSection, /manifest[^.]*the route just declared/,
+  'update-harness must reconcile specs through the manifest the layout route declares');
+assert.doesNotMatch(reconcileSection, /through the project's\s+`workbench\/manifest\.json` lane declaration/,
+  'update-harness must not send a v2 room to a manifest it does not have yet');
+assert.match(reconcileSection, /records\s+`provenance\.lifecycle: upgrade`/,
+  'update-harness must state that the route records lifecycle upgrade');
+const adoptionOpening = adoption.slice(0, adoption.indexOf('\n1. '));
+assert.ok(adoptionOpening.includes('workbench-upgrade.mjs upgrade --layout-only'),
+  'adoption must point an already-adopted room at the layout-only route by name');
+assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workbench-upgrade\.mjs upgrade --layout-only`/,
+  'templates/ADOPTION.md must name the layout-only route for an already-adopted room');
+assert.match(read('RUNBOOK.md'), /--layout-only/, 'the Runbook must document the layout-only mode');
+assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
+
 for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'implement', 'code-review']) {
   const skill = read(`skills/${name}/SKILL.md`);
   assert.match(skill, /workbench\/manifest\.json/,

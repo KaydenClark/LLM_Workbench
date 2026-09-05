@@ -65,12 +65,40 @@ Compare the target's current harness with the canonical templates. Copy only
 the changed contract; preserve filled project-specific scope, Git rules,
 verification commands, product boundaries, and safety rules.
 
+Settle the target's starting point first:
+
+- **A v2-root room, whether it was adopted earlier or not**: it has a root
+  `specs/` directory and no `workbench/` support root, so it cannot yet declare
+  a lane. Run the layout route from the checked-out Workbench against the
+  clean, committed target:
+
+  ```bash
+  node tools/workbench-upgrade.mjs upgrade \
+    --project [ABSOLUTE_PROJECT_PATH] \
+    --home [USER_HOME] \
+    --version v3.1.1 \
+    --layout-only
+  ```
+
+  It requires every core skill to be present in a user-scoped discovery root
+  and reads that presence only; it migrates the legacy lanes once through the
+  Adoption seam, installs the receipt-backed runtime tools, records
+  `provenance.lifecycle: upgrade` with the exact source commit, and writes
+  `workbench/sessions/checkpoints/upgrade-recovery.json` with
+  `skills: "presence-only"`. It works on a host whose discovery root is a
+  foreign Git repository because it never touches one. Only after it completes
+  do you reconcile specs through the manifest the route just declared
+  (`workbench/manifest.json`). Never rerun Adoption for an already-adopted
+  room; a second `adoption` record contradicts its first.
+- **A room already on a v3 support root**: no layout route runs; reconcile
+  controls and specs through its existing manifest.
+
 For the v3 spec-centered Workbench:
 
 - keep `AGENTS.md` small and operational;
 - keep cross-cutting product truth in `BLUEPRINT.md`;
-- create stable `workbench/specs/S-###-slug/SPEC.md` capability packets through
-  the project's `workbench/manifest.json` lane declaration;
+- create stable `workbench/specs/S-###-slug/SPEC.md` capability packets in the
+  lane the manifest declares;
 - make `TASKBOARD.md` a generated hot projection;
 - keep exact commands and recovery in `RUNBOOK.md`;
 - keep `CLAUDE.md` as the thin `@AGENTS.md` bridge;
@@ -82,13 +110,15 @@ For the v3 spec-centered Workbench:
   which backs up changed files and records a rollback path; never hand-copy a
   runtime tool.
 
-For an explicitly authorized v2-to-v3 update, run the checked-out Workbench's
-`tools/workbench-upgrade.mjs upgrade --explicit-update` command against a
-disposable or verified user home. It updates only skills bearing the
-Workbench-managed marker, backs up changed skill directories first, and records
-the pre-migration Git SHA and inventory under the manifest-declared handoff
-lane. Normal setup remains presence-only; never use the upgrade command merely
-because a same-named skill exists.
+Skill replacement stays a separate, explicitly authorized operation. The same
+command's other mode, `tools/workbench-upgrade.mjs upgrade --explicit-update`,
+run against a disposable or verified user home, combines the layout phase with
+skill replacement: it updates only skills bearing the Workbench-managed marker,
+backs up changed skill directories first, and records the pre-migration Git
+SHA, inventory, and backups in the same recovery record. It fails closed when a
+discovery root is inside a foreign Git repository or a same-named skill is
+unmanaged. Normal setup remains presence-only; never use `--explicit-update`
+merely because a same-named skill exists.
 
 Map capabilities, not every historical ticket. Create completed specs only for
 durable current capabilities whose acceptance and proof are already real. Move

@@ -165,6 +165,15 @@ node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-proj
 node tools/test-workbench-layout.mjs
 ```
 
+`init` and `migrate` record the exact Workbench source in
+`provenance.source`. Run from this release checkout they resolve its `origin`
+URL and `HEAD` when `--source-commit SHA` and `--source-repository URL` are
+omitted; an explicit flag always wins. A copy of the tool outside a release
+checkout (the installed `workbench/tools/` copy in a downstream project) cannot
+know the Workbench source and refuses with `invalid-invocation` naming the
+missing flag before writing anything. The placeholder `unrecorded` is never
+written.
+
 A schema 1 (v3.0 five-lane) manifest validates as `upgrade-required`. Migrate
 it once, losslessly: `workbench/grilling` becomes `workbench/sessions/grilling`
 and the tracked `workbench/handoffs` checkpoints become
@@ -289,9 +298,34 @@ example a moved link that needs explicit reconciliation) are returned as `findin
 
 ### V3 explicit upgrade and recovery check
 
-An ordinary setup is presence-only. Replacing an installed core skill is a
-separate, explicitly authorized operation and is limited to skills that the
-installer marked as Workbench-managed:
+One command moves a v2-root room (root `specs/`, no `workbench/`) onto the v3
+support root and records `provenance.lifecycle: upgrade`; it has two exclusive
+modes. Both require a clean, committed target with no support root, and both
+record the pre-migration SHA, tracked path inventory, and tools receipt in
+`workbench/sessions/checkpoints/upgrade-recovery.json`.
+
+`--layout-only` is the route for an already-adopted room and for any host whose
+discovery root the tool must not touch. It requires every core skill to be
+present in a user-scoped discovery root (`missing-user-skills` otherwise),
+reads that presence only, migrates the legacy lanes once through the Adoption
+seam, installs the receipt-backed runtime tools, and writes the recovery record
+with `skills: "presence-only"` and an empty `skillBackups`. It completes even
+when the discovery root is inside a foreign Git repository:
+
+```bash
+node tools/workbench-upgrade.mjs upgrade \
+  --project /absolute/project \
+  --home /disposable-or-user-home \
+  --version v3.1.1 \
+  --layout-only
+```
+
+`--explicit-update` is the only path that replaces a skill. It is limited to
+skills that the installer marked as Workbench-managed and blocks an unmanaged
+same-named skill or a discovery root inside a Git worktree before mutation. For
+each changed managed skill it creates a copy under the user home's
+`.workbench-upgrade-backup-*` directory, then runs the same layout phase and
+records the backups with `skills: "explicit-update"`:
 
 ```bash
 node tools/workbench-upgrade.mjs upgrade \
@@ -302,14 +336,8 @@ node tools/workbench-upgrade.mjs upgrade \
 node tools/test-workbench-upgrade.mjs
 ```
 
-The command blocks an unmanaged same-named skill, a discovery root inside a Git
-worktree, a missing committed Git recovery point, or a pre-existing v3 support
-root before mutation. For each changed managed skill it creates a copy under
-the user home's `.workbench-upgrade-backup-*` directory, migrates the legacy
-support lanes once, installs the receipt-backed runtime tools, and records the
-pre-migration SHA, tracked path inventory, skill backups, and tools receipt in
-`workbench/sessions/checkpoints/upgrade-recovery.json`. The target project must
-be clean and committed first; uncommitted state has no concrete rollback point.
+Passing neither mode blocks with `explicit-update-required`; passing both is an
+`invalid-invocation`. Uncommitted state has no concrete rollback point.
 
 ### Spec Lifecycle And Retrieval
 

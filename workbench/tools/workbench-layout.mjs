@@ -4,6 +4,7 @@
 // reported as `upgrade-required` and migrated once, losslessly.
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
@@ -202,10 +203,12 @@ export function initialize(options) {
     const entry = lstatOrNull(path.join(project, relative));
     if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${path.join(project, relative)} is not a directory.`);
   }
+  const source = sourceIdentity(options);
+  if (source.status) return source;
   const manifest = {
     schemaVersion: SCHEMA_VERSION,
     workbenchVersion: options['--version'],
-    provenance: { lifecycle: options['--provenance'], source: sourceIdentity(options) },
+    provenance: { lifecycle: options['--provenance'], source },
     lanes,
     collections,
     wiki: { profile: options['--wiki-profile'] ?? 'project' },
@@ -223,12 +226,33 @@ export function initialize(options) {
   return report('initialized', { manifestPath, manifest, seeded });
 }
 
+function gitValue(cwd, args) {
+  const result = spawnSync('git', args, { cwd, encoding: 'utf8' });
+  return result.status === 0 ? result.stdout.trim() : '';
+}
+
+// The manifest records the exact Workbench source that produced it. An
+// explicit flag always wins; otherwise only a release checkout (the one that
+// carries `templates/`) may resolve its own origin and HEAD. A downstream copy
+// of this tool sits inside the project's repository, whose HEAD is not a
+// Workbench source, so it must refuse rather than guess or write a placeholder.
 function sourceIdentity(options) {
-  return {
-    repository: options['--source-repository'] ?? 'https://github.com/KaydenClark/LLM_Workbench',
-    release: options['--version'],
-    commit: options['--source-commit'] ?? 'unrecorded'
-  };
+  const templates = templateRoot();
+  const release = templates ? path.dirname(templates) : null;
+  const resolved = { repository: options['--source-repository'], release: options['--version'], commit: options['--source-commit'] };
+  const missing = [];
+  for (const [field, flag, gitArgs] of [['commit', '--source-commit', ['rev-parse', 'HEAD']], ['repository', '--source-repository', ['remote', 'get-url', 'origin']]]) {
+    if (resolved[field]) continue;
+    if (release) resolved[field] = gitValue(release, gitArgs);
+    if (!resolved[field]) missing.push(flag);
+  }
+  if (missing.length) {
+    const reason = release
+      ? `the release checkout at ${release} did not resolve it from Git`
+      : 'this copy of workbench-layout.mjs is not inside a Workbench release checkout, so it cannot resolve the Workbench source';
+    return fail('invalid-invocation', `Pass ${missing.join(' and ')}: ${reason}.`, { missing });
+  }
+  return resolved;
 }
 
 export function seedWiki(project, options) {
@@ -285,6 +309,8 @@ export function migrate(options) {
     const entry = lstatOrNull(path.join(project, relative));
     if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${relative} is not a directory.`);
   }
+  const source = sourceIdentity({ ...options, '--version': options['--version'] ?? manifest.workbenchVersion });
+  if (source.status) return source;
   const moved = [];
   fs.mkdirSync(path.join(project, lanes.sessions), { recursive: true });
   for (const move of moves) {
@@ -302,7 +328,7 @@ export function migrate(options) {
   const migrated = {
     schemaVersion: SCHEMA_VERSION,
     workbenchVersion: options['--version'] ?? manifest.workbenchVersion,
-    provenance: { ...manifest.provenance, migratedFrom: 1, source: sourceIdentity({ '--version': options['--version'] ?? manifest.workbenchVersion, ...options }) },
+    provenance: { ...manifest.provenance, migratedFrom: 1, source },
     lanes,
     collections,
     wiki: { profile: options['--wiki-profile'] ?? 'project' },
@@ -420,7 +446,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.1 [--wiki-profile project|deployment] [--name NAME] | migrate --project PATH [--version v3.1.1] | validate --project PATH [--genesis]');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.1 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] | migrate --project PATH [--version v3.1.1] [--source-commit SHA] [--source-repository URL] | validate --project PATH [--genesis] (the source flags default to the release checkout\'s HEAD and origin and are required for a relocated copy)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current'].includes(result.status)) process.exitCode = 1;
   } catch (error) {
