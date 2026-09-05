@@ -1,15 +1,15 @@
 # S-029 - Declared Integration Branch And Recoverable Completion
 
 **Spec ID:** S-029
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Make the integration branch a manifest-declared fact that Genesis, Adoption, and doctor can check, and require generation and adoption to end as a committed branch with a reachable review gate.
 **Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -203,12 +203,12 @@ deliberately).
 
 ## Acceptance Criteria
 
-- [ ] A manifest may declare `git.defaultBranch` and `git.integrationBranch`; `init` and `migrate` write it; a manifest without it stays valid.
-- [ ] `doctor` reports `integration-branch-undeclared` and `integration-branch-missing`; `validate --genesis` fails closed on both; neither blocks `next` or `claim`.
-- [ ] No template control or core skill hardcodes a literal integration branch that can disagree with the placeholder or manifest.
-- [ ] Genesis, Adoption, and update-harness completion require a commit on a prefixed branch and a resolving declared integration branch or a recorded omission reason.
-- [ ] `doctor` reports `complete-on-integration` when the selected spec is complete at the declared ref.
-- [ ] Root and template Runbook closeout prune worktrees; the full required suite, render, and doctor pass.
+- [x] A manifest may declare `git.defaultBranch` and `git.integrationBranch`; `init` and `migrate` write it; a manifest without it stays valid.
+- [x] `doctor` reports `integration-branch-undeclared` and `integration-branch-missing`; `validate --genesis` fails closed on both; neither blocks `next` or `claim`.
+- [x] No template control or core skill hardcodes a literal integration branch that can disagree with the placeholder or manifest.
+- [x] Genesis, Adoption, and update-harness completion require a commit on a prefixed branch and a resolving declared integration branch or a recorded omission reason.
+- [x] `doctor` reports `complete-on-integration` when the selected spec is complete at the declared ref.
+- [x] Root and template Runbook closeout prune worktrees; the full required suite, render, and doctor pass.
 
 ## Testing Seams
 
@@ -255,10 +255,55 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-diagnostics.mjs (5 pass: registry describes integration-branch-undeclared and integration-branch-missing as error/git/none; doctor reports both without failing, next and claim proceed), node tools/test-workbench-layout.mjs (21 pass: init and migrate write git.defaultBranch and git.integrationBranch, validate --genesis fails closed on both codes and passes once the exact-case branch resolves, manifest without the block stays valid), node tools/test-workbench-adoption.mjs (migrate declares an existing Integration branch by exact case and lists a missing branch as residue.missingIntegrationBranch), node tools/test-wiki.mjs, node tools/test-workbench-round-trip.mjs, node tools/test-cross-provider-fixture.mjs, node tools/test-adr.mjs, node tools/test-governance-core.mjs all green; doctor clean on this checkout | RUNBOOK.md (git block, init/migrate flags, both doctor codes in the effects table, branch creation commands); LEXICON.md and templates/LEXICON.md (Declared integration branch term); ADR-0039 proposed; workbench/manifest.json declares main and integration | TK-002 controls, skills, protocol completion boxes, closeout prune, ADR acceptance; TK-003 complete-on-integration |
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-governance-core.mjs (12 pass: templates/AGENTS.md Git Rules and Branch Completion carry no bare integration literal and route through [INTEGRATION_BRANCH_OR_DEFAULT] and git.integrationBranch; root AGENTS.md names the manifest declaration; genesis and adoption skills create the declared branch from the default branch; GENESIS, ADOPTION, and update-harness carry the commit-on-prefixed-branch and declared-branch-or-recorded-reason boxes; root and template Runbook closeout prune worktrees and name the scratch location), node tools/test-skill-catalog.mjs (core skills reference git.integrationBranch), node tools/test-branch-closeout.mjs (6 pass with git worktree prune in the cleanup block), node tools/test-workbench-layout.mjs (placeholder vocabulary unchanged), node tools/test-adr.mjs and adr validate (ADR-0039 accepted, canonicalized in AGENTS.md, RUNBOOK.md, LEXICON.md); guardrail audit 78/100 before and after | AGENTS.md and templates/AGENTS.md (declared integration branch, Branch Completion without literals); RUNBOOK.md and templates/RUNBOOK.md (closeout git worktree prune, scratch convention, doctor findings); templates/GENESIS.md, templates/ADOPTION.md, skills/genesis, skills/adoption, skills/implement, skills/update-harness (declared branch and completion boxes); ADR-0039 accepted and registered | TK-003 complete-on-integration |
 | 2026-09-05 | TK-003 | Ticket closed | node tools/test-diagnostics.mjs (6 pass: complete-on-integration registered as attention/specs/none; a fixture whose integration ref carries S-001 complete while the checkout carries it active reports the spec and ref for a local head and for a remote-only ref, cliDoctor exits 0, next still returns TK-001, and an agreeing checkout reports nothing), node tools/test-spec-workbench.mjs, node tools/test-workbench-adoption.mjs, node tools/test-workbench-dogfood.mjs, node tools/test-governance-core.mjs green; doctor clean on this checkout against refs/heads/integration and origin/integration | RUNBOOK.md (complete-on-integration in the support-root check and the effects table) and templates/RUNBOOK.md (diagnostics paragraph) | none; acceptance boxes and completion result pending |
+| 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+What changed. Manifest schema 2 gained an additive `git` block
+(`defaultBranch`, `integrationBranch`, exact case) that `workbench-layout.mjs
+init` and `migrate` write from `--default-branch` and `--integration-branch`
+(defaulting to an existing integration-named branch by its exact case, then
+`origin/HEAD` or the checked-out branch, and `integration`), that
+`workbench-adoption.mjs migrate` writes the same way while listing an
+unresolved branch as `residue.missingIntegrationBranch`, and that
+`workbench-paths.mjs` exposes as `declaredGit`. `diagnostics.mjs` registers a
+`git` scope with `integration-branch-undeclared` and
+`integration-branch-missing` (error, effect `none`) and the attention finding
+`complete-on-integration` (scope `specs`). `doctor` emits all three;
+`validate --genesis` fails closed on the first two. Branch resolution compares
+exact ref names from `git for-each-ref`, so a case-insensitive filesystem
+cannot satisfy `integration` with `Integration`. The root and template
+`AGENTS.md`, the genesis, adoption, implement, and update-harness skills, and
+both protocols now route the branch through the placeholder or the manifest;
+Genesis, Adoption, and update-harness completion each carry the commit-on-a-
+prefixed-branch and declared-branch-or-recorded-reason boxes; the root and
+template Runbook closeout run `git worktree prune` and name the host temporary
+directory as the home of disposable review checkouts. This repository declares
+`main` and `integration`. ADR-0039 records the decision (accepted,
+canonicalized in `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`), and the Lexicon
+defines `Declared integration branch`.
+
+Why. UP-011 and F-006/F-007: two of four live rooms had no merge target for
+the review gate that `AGENTS.md` requires, two spelled it differently, an
+adoption read `Completed` while untracked, and a checkout behind its
+integration branch dispatched finished work.
+
+Risks and side effects. Every existing room without the block now sees
+`integration-branch-undeclared` in doctor until it adds the block by hand or
+through the next update-harness run; the finding never blocks selection.
+Genesis fixtures and rooms must hold a resolving integration branch before
+`validate --genesis` passes, so the round-trip, cross-provider, wiki, layout,
+and diagnostics fixtures create one. `complete-on-integration` reads only the
+refs the repository already has and does not fetch. The skill-catalog test now
+requires `git.integrationBranch` instead of the literal in the genesis,
+adoption, and implement skills.
+
+How verified. Red then green for each ticket in `tools/test-diagnostics.mjs`,
+`tools/test-workbench-layout.mjs`, `tools/test-workbench-adoption.mjs`, and
+`tools/test-governance-core.mjs`; the spec's Verification Procedure and the
+full `AGENTS.md` suite, `render`, `doctor`, and `git diff --check` recorded in
+the evidence log; guardrail audit 78/100 before and after; templates score
+106.6/113 against controls 0 and 2.
 
 ## Remaining Limitations Or Follow-Up Specs
 
