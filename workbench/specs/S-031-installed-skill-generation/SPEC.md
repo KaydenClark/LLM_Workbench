@@ -3,13 +3,13 @@
 **Spec ID:** S-031
 **Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Record the release and commit in every Workbench-managed skill marker, have doctor report an installed skill whose generation is stale or unknown, and require review claims about a skill to name the copy they read.
 **Blockers:** none
-**Latest event:** Spec captured from upstream fix-list items UP-002 and UP-010 and the acceptance report finding F-005.
-**Next gate:** Claim TK-001 and prove a stale marker is reported red then green.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -119,7 +119,7 @@ Gap: everything under Desired Behavior.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Schema 2 marker from installer and upgrade; `stale-skill` and `skill-generation-unknown` in doctor with `--home` | ready | none | pending |
+| TK-001 | Schema 2 marker from installer and upgrade; `stale-skill` and `skill-generation-unknown` in doctor with `--home` | done | none | node tools/test-core-skill-installer.mjs (schema 2 marker fields), node tools/test-workbench-upgrade.mjs (schema 2 marker after replacement and refresh; schema 1 still managed), node tools/test-diagnostics.mjs (doctor --home: stale-skill, skill-generation-unknown, home snapshot unchanged, schema 1 unknown), node tools/test-workbench-layout.mjs, node tools/test-portability-matrix.mjs; live doctor on this checkout against the real home read 32 skill-generation-unknown attention findings, exit 0 once rendered |
 | TK-002 | Report formats require naming the copy read; sessions ignore denies `grilling diary/` losslessly | ready | TK-001 | pending |
 
 ### TK-001 - The marker carries its generation
@@ -183,6 +183,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-05 | spec | Spec captured from upstream fix-list items UP-002 (rank first) and UP-010 (not-supported, kept) and acceptance report F-005 | Marker writers re-read at `core-skill-installer.mjs:112` and `workbench-upgrade.mjs:133`: no release or commit recorded; `SESSIONS_IGNORE` re-read at `workbench-layout.mjs:20`; Foundry grep over `skills/` empty | Blueprint v3.1.2 direction links this spec | Both slices |
+| 2026-09-05 | TK-001 | Ticket closed | node tools/test-core-skill-installer.mjs (schema 2 marker fields), node tools/test-workbench-upgrade.mjs (schema 2 marker after replacement and refresh; schema 1 still managed), node tools/test-diagnostics.mjs (doctor --home: stale-skill, skill-generation-unknown, home snapshot unchanged, schema 1 unknown), node tools/test-workbench-layout.mjs, node tools/test-portability-matrix.mjs; live doctor on this checkout against the real home read 32 skill-generation-unknown attention findings, exit 0 once rendered | RUNBOOK.md (core-skill setup marker paragraph, doctor --home, none-row codes), templates/RUNBOOK.md (doctor --home and marker), skills/README.md (Managed skill marker section), LEXICON.md (Managed skill marker term) | TK-002: report formats name the copy read; sessions ignore denies grilling diary/ |
 
 ## Completion Result
 

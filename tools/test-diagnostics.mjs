@@ -12,10 +12,17 @@ import { claimWork, doctor, nextWork, render } from '../workbench/tools/spec-wor
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const specTool = path.join(root, 'workbench', 'tools', 'spec-workbench.mjs');
+const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-diagnostics-'));
 }
+
+// Doctor reads the user home for installed skills; fixtures that assert an
+// exact finding list read an empty disposable home so host state stays out.
+const quietHome = fixture();
+process.on('exit', () => fs.rmSync(quietHome, { recursive: true, force: true }));
 
 function write(project, relative, content) {
   const target = path.join(project, relative);
@@ -33,9 +40,9 @@ function spec(id, { status = 'active', tickets = '| TK-001 | First slice | ready
   ].join('\n');
 }
 
-function project() {
+function project(version = 'v3.0.0') {
   const dir = fixture();
-  const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', 'v3.0.0'], { encoding: 'utf8' });
+  const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout);
   write(dir, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
   write(dir, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
@@ -45,8 +52,8 @@ function project() {
   return dir;
 }
 
-function cliDoctor(dir) {
-  const result = spawnSync(process.execPath, [specTool, 'doctor', '--json'], { cwd: dir, encoding: 'utf8' });
+function cliDoctor(dir, home = quietHome) {
+  const result = spawnSync(process.execPath, [specTool, 'doctor', '--json', '--home', home], { cwd: dir, encoding: 'utf8' });
   return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
 }
 
@@ -74,7 +81,7 @@ test('attention findings stay visible and never change the doctor exit code or h
   try {
     write(dir, 'workbench/specs/S-001-stale/SPEC.md', spec('S-001', { tickets: '| TK-001 | First slice | in-progress | none | pending |', updated: '2026-01-01', extra: '[missing](../../missing.md)' }));
     render(dir);
-    const findings = doctor(dir, { today: '2026-09-04' });
+    const findings = doctor(dir, { today: '2026-09-04', home: quietHome });
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.blocks]).sort(), [['broken-link', 'attention', 'none'], ['stale-claim', 'attention', 'none']]);
     const cli = cliDoctor(dir);
     assert.equal(cli.status, 0, 'attention findings must not fail doctor');
@@ -90,20 +97,20 @@ test('selection findings fail doctor and an unsafe manifest blocks everything', 
   try {
     write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
     render(dir);
-    assert.deepEqual(doctor(dir), []);
+    assert.deepEqual(doctor(dir, { home: quietHome }), []);
     write(dir, 'workbench/specs/S-009-duplicate/SPEC.md', spec('S-001'));
     const findings = doctor(dir);
     assert.ok(findings.some((item) => item.code === 'duplicate-id' && item.blocks === 'selection'));
     assert.equal(cliDoctor(dir).status, 1, 'a selection finding must fail doctor');
     assert.throws(() => render(dir), /Duplicate spec ID/, 'render refuses an ambiguous identity');
     fs.rmSync(path.join(dir, 'workbench', 'specs', 'S-009-duplicate'), { recursive: true });
-    assert.deepEqual(doctor(dir), []);
+    assert.deepEqual(doctor(dir, { home: quietHome }), []);
 
     const manifestPath = path.join(dir, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     manifest.schemaVersion = 1;
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
-    const stale = doctor(dir);
+    const stale = doctor(dir, { home: quietHome });
     assert.deepEqual(stale.map((item) => [item.code, item.blocks]), [['upgrade-required', 'all']]);
     assert.equal(cliDoctor(dir).status, 1);
     assert.throws(() => nextWork(dir), /upgrade-required|schema 1/i, 'next must not select work from an unmigrated layout');
@@ -117,7 +124,7 @@ test('a selected slice with an unmet dependency is reported, excluded by next, a
   try {
     write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tickets: '| TK-001 | Blocked slice | ready | S-999 | pending |' }));
     render(dir);
-    const findings = doctor(dir);
+    const findings = doctor(dir, { home: quietHome });
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.blocks, item.specId, item.ticketId]), [['blocked-slice', 'error', 'selected-slice', 'S-001', 'TK-001']]);
     assert.equal(cliDoctor(dir).status, 0, 'a slice blocker must not fail doctor for unrelated work');
     assert.equal(nextWork(dir), null, 'next must exclude the blocked slice');
@@ -126,9 +133,60 @@ test('a selected slice with an unmet dependency is reported, excluded by next, a
 
     write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tickets: '| TK-001 | First slice | ready | none | pending |\n| TK-002 | Second slice | ready | TK-001 | pending |' }));
     render(dir);
-    assert.deepEqual(doctor(dir), [], 'a later ticket waiting on its predecessor is ordinary sequencing, not a finding');
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a later ticket waiting on its predecessor is ordinary sequencing, not a finding');
     assert.equal(nextWork(dir).ticketId, 'TK-001');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+function snapshot(directory) {
+  const entries = [];
+  (function walk(current) {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const target = path.join(current, entry.name);
+      const stat = fs.lstatSync(target);
+      entries.push([path.relative(directory, target), stat.mode, stat.isFile() ? fs.readFileSync(target, 'utf8') : stat.isDirectory() ? 'dir' : 'other']);
+      if (stat.isDirectory()) walk(target);
+    }
+  })(directory);
+  return entries;
+}
+
+test('doctor --home reports a stale or unknown installed skill generation per required skill, never writes to the home, and reads schema 1 as unknown', () => {
+  const dir = project(VERSION);
+  const home = fixture();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    const installed = spawnSync(process.execPath, [installer, 'install', '--home', home], { cwd: root, encoding: 'utf8' });
+    assert.equal(installed.status, 0, installed.stdout);
+    assert.deepEqual(doctor(dir, { home }), [], 'a freshly installed bundle from this release is neither stale nor unknown');
+
+    const staleMarker = path.join(home, '.claude', 'skills', 'genesis', '.workbench-skill.json');
+    fs.writeFileSync(staleMarker, JSON.stringify({ ...JSON.parse(fs.readFileSync(staleMarker, 'utf8')), release: 'v0.0.0' }));
+    fs.rmSync(path.join(home, '.agents', 'skills', 'builder', '.workbench-skill.json'));
+    fs.writeFileSync(path.join(home, '.agents', 'skills', 'reviewer', '.workbench-skill.json'), '{"schemaVersion":1,"source":"LLM Workbench core"}\n');
+    const before = snapshot(home);
+
+    const findings = doctor(dir, { home });
+
+    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.skill, item.root]).sort(), [
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'builder', '.agents/skills'],
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'reviewer', '.agents/skills'],
+      ['stale-skill', 'attention', 'skills', 'none', 'genesis', '.claude/skills']
+    ]);
+    assert.equal(findings.find((item) => item.code === 'stale-skill').release, 'v0.0.0');
+    assert.match(findings.find((item) => item.code === 'stale-skill').message, /v0\.0\.0.*v\d+\.\d+\.\d+|v\d+\.\d+\.\d+.*v0\.0\.0/);
+    assert.deepEqual(snapshot(home), before, 'doctor never writes to the home');
+    const cli = cliDoctor(dir, home);
+    assert.equal(cli.status, 0, 'skill findings are attention and never block');
+    assert.equal(cli.findings.length, 3);
+    assert.equal(nextWork(dir).ticketId, 'TK-001');
+    assert.ok(SCOPES.includes('skills'));
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a missing skill is Adoption preflight\'s finding, not doctor\'s');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
   }
 });

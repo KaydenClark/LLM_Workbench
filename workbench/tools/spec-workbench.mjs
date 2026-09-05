@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
@@ -189,7 +190,44 @@ export function doctor(rootDir, options = {}) {
   checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
   issues.push(...collectionFindings(root));
+  issues.push(...skillFindings(root, options.home));
   return issues;
+}
+
+// Installed core skills: for each skill the manifest requires, read its
+// managed marker in every declared discovery root under the user home
+// (`--home`, default the user home). A schema 2 marker whose release differs
+// from the manifest is stale; a present skill without one is of unknown
+// generation. A missing skill is Adoption preflight's finding. The home is
+// only ever read.
+function skillFindings(root, home) {
+  const manifest = readManifest(root);
+  if (!manifest || manifest.schemaVersion !== 2) return [];
+  const required = Array.isArray(manifest.skillPolicy?.required) ? manifest.skillPolicy.required : [];
+  const discovery = Array.isArray(manifest.skillPolicy?.discovery) ? manifest.skillPolicy.discovery : [];
+  const homeDir = path.resolve(home ?? os.homedir());
+  const findings = [];
+  for (const discoveryRoot of discovery) {
+    for (const skill of required) {
+      const installed = path.join(homeDir, discoveryRoot, skill);
+      if (!isDirectory(installed)) continue;
+      const marker = readSkillMarker(path.join(installed, '.workbench-skill.json'));
+      if (marker?.schemaVersion !== 2 || typeof marker.release !== 'string') {
+        findings.push(finding('skill-generation-unknown', `${discoveryRoot}/${skill} has no schema 2 marker; which Workbench generation it came from is unknown`, { skill, root: discoveryRoot }));
+      } else if (marker.release !== manifest.workbenchVersion) {
+        findings.push(finding('stale-skill', `${discoveryRoot}/${skill} records release ${marker.release}; the manifest runs ${manifest.workbenchVersion}`, { skill, root: discoveryRoot, release: marker.release, expected: manifest.workbenchVersion }));
+      }
+    }
+  }
+  return findings;
+}
+
+function isDirectory(target) {
+  try { return fs.statSync(target).isDirectory(); } catch { return false; }
+}
+
+function readSkillMarker(file) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return null; }
 }
 
 // Schema 2 projects also carry decision records; their findings ride along so
