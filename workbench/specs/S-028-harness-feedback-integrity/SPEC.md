@@ -1,14 +1,14 @@
 # S-028 - Harness Feedback Integrity
 
 **Spec ID:** S-028
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** codex
 **Updated:** 2026-09-05
 **Catalog description:** Make manifest-sensitive guardrails, feedback ingestion, and one-time migration report the paths and residue they actually handle.
 **Blockers:** none
-**Latest event:** First integration candidate was independently rejected; both uncovered edge cases now have red/green regressions.
-**Next gate:** Re-run full verification, publish the amended exact candidate, and obtain fresh separate-context review.
+**Latest event:** Independently reviewed candidate `3934c87` landed through PR #51 at integration `3e4f828`.
+**Next gate:** none
 **Stance:** Builder
 
 ## Outcome
@@ -85,7 +85,7 @@ historical date intentionally makes current proof stale.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Repair manifest-sensitive guardrails, strict feedback ingestion, truthful migration output, and their owning docs | in-progress | none | pending |
+| TK-001 | Repair manifest-sensitive guardrails, strict feedback ingestion, truthful migration output, and their owning docs | done | none | Candidate `3934c87` independently passed and landed through PR #51 |
 
 ### TK-001 - Assigned task
 
@@ -101,7 +101,7 @@ agent-outcome claim.
 - [x] Adoption tests prove source identity agreement, valid moved room-brain metadata, and accurate non-destructive residue.
 - [x] Report and lifecycle docs carry the accepted scoped-ID, explicit-destination, feedback-harvest, and existing-upgrade-route contracts.
 - [x] Focused tests, the full required suite, render, doctor, diff check, and before/after guardrail measurement pass.
-- [ ] The exact candidate receives separate-context review before any integration merge; `main` and downstream projects remain untouched.
+- [x] The exact candidate receives separate-context review before any integration merge; `main` and downstream projects remain untouched.
 
 ## Testing Seams
 
@@ -132,10 +132,15 @@ format. Existing reports and append-only evidence remain unchanged.
 | 2026-09-05 | TK-001 | Fixed-scope self-review found an out-of-scope repository could be allowed to resolve its manifest before origin exclusion | New foreign-origin unsafe-manifest case RED, then feedback test GREEN after origin/top-level/dedup checks moved ahead of manifest resolution | No documentation change; existing discovery scope now matches execution order | Re-run full suite on the amended candidate |
 | 2026-09-05 | TK-001 | Fixed-scope self-review found residue covered moved lanes but omitted links inside a separately moved root room brain | Root-memory link case RED, then Adoption and upgrade tests GREEN after the scanner included that move without rewriting content | Existing residue contract already covers moved links | Re-run full suite on the amended candidate |
 | 2026-09-05 | TK-001 | Separate-context review rejected candidate `473ee31ec7d3a1bb16b0572099e5a17aa69b1e85` for two untested acceptance violations | Unsupported schema 999 and incomplete existing Wiki frontmatter reproduced RED; focused guardrail and Adoption tests GREEN after supported-schema validation and missing-field merge | S-028 evidence updated; no public contract change | Re-run the full suite and obtain a fresh review on the amended SHA |
+| 2026-09-05 | TK-001 | Amended candidate passed fresh separate-context review and landed on `integration` through PR #51 | Reviewed `3934c8740165e5a45da7d0f412db162fee46612e`; all 30 Runbook commands PASS; merge commit `3e4f828a8ec15972040a14eb95db9829d97e1010` contains it | S-028 completion record and generated projections reconciled | none |
 
 ## Completion Result
 
-Pending.
+Complete. The accepted subset of the harness feedback is implemented and
+verified without the rejected blanket literal lint, lifecycle expansion, or
+automatic link rewriting. The exact candidate passed separate-context review
+and is contained by `integration`; `main`, downstream project logs, and
+user-scoped installed skills were not changed.
 
 ## Supersession
 

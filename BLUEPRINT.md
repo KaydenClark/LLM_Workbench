@@ -190,7 +190,7 @@ be changed only through a later spec linked by supersession.
 | [S-025 - Portable Wiki And Design Concepts](workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md) | Ship the portable wiki contract with an explicit profile, knowledge-role and provenance metadata, handling-only sensitivity, relative source paths, optional Obsidian, and a mandatory owner-directed design-concepts collection. | complete |
 | [S-026 - Workflow Composition, Feedback Lane, And Cold Resume](workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md) | Route the twelve core skills and feedback discovery through the schema 2 manifest, promote session records through privacy-checked checkpoints, and prove the composed planning-to-resume workflow mechanically. | complete |
 | [S-027 - Workbench v3.1.1 Boundaries](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) | Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1. | complete |
-| [S-028 - Harness Feedback Integrity](workbench/specs/S-028-harness-feedback-integrity/SPEC.md) | Make manifest-sensitive guardrails, feedback ingestion, and one-time migration report the paths and residue they actually handle. | active |
+| [S-028 - Harness Feedback Integrity](workbench/specs/S-028-harness-feedback-integrity/SPEC.md) | Make manifest-sensitive guardrails, feedback ingestion, and one-time migration report the paths and residue they actually handle. | complete |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
