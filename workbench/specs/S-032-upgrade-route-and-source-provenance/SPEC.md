@@ -1,15 +1,15 @@
 # S-032 - Working Upgrade Route And Source Provenance
 
 **Spec ID:** S-032
-**Status:** active
+**Status:** complete
 **Priority:** 1
 **Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Give an already-adopted v2-root room one documented upgrade route that works without skill replacement and records lifecycle `upgrade`, and stop the layout tool from writing `unrecorded` as a source commit on the Genesis path.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -157,10 +157,10 @@ protocol passages and the Runbook section.
 
 ## Acceptance Criteria
 
-- [ ] `init` and `migrate` never write `unrecorded`; they resolve the release checkout or fail naming the flag; usage lists both flags.
-- [ ] `upgrade --layout-only` completes on a fixture whose discovery root is Git-owned and records `lifecycle: upgrade`; `--explicit-update` behavior is unchanged.
-- [ ] update-harness, adoption, and ADOPTION.md name the layout route for already-adopted rooms and no longer send a v2 room to a manifest it lacks.
-- [ ] The full required suite, render, and doctor pass.
+- [x] `init` and `migrate` never write `unrecorded`; they resolve the release checkout or fail naming the flag; usage lists both flags.
+- [x] `upgrade --layout-only` completes on a fixture whose discovery root is Git-owned and records `lifecycle: upgrade`; `--explicit-update` behavior is unchanged.
+- [x] update-harness, adoption, and ADOPTION.md name the layout route for already-adopted rooms and no longer send a v2 room to a manifest it lacks.
+- [x] The full required suite, render, and doctor pass.
 
 ## Testing Seams
 
@@ -199,10 +199,57 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | spec | Spec captured from upstream fix-list items UP-003 and UP-004; UP-003's mechanism claim re-read and found not supported at `b7b23dd` (`workbench-upgrade.mjs:150-157` does build the support root and record `upgrade`) while its conclusion holds because `preflight` gates the layout phase behind skill replacement and the skill text hides the route | `workbench-layout.mjs:213` still defaults to `unrecorded`; usage at line 406 lists no source flags; `test-workbench-upgrade.mjs:86-87` asserts lifecycle and commit on the explicit path | Blueprint v3.1.2 direction links this spec | Both slices |
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-workbench-layout.mjs (22 pass: checkout init/migrate resolve HEAD and origin; relocated copy refuses init/migrate with invalid-invocation naming --source-commit/--source-repository and writes nothing; usage lists both flags); node tools/test-workbench-adoption.mjs, test-workbench-upgrade.mjs, test-workbench-round-trip.mjs, test-cross-provider-fixture.mjs, test-workbench-tools.mjs, test-workbench-dogfood.mjs pass. UP-003 verdict: its mechanism claim (upgrade never creates the support root) is not supported at ae60d8d, its conclusion (the route fails closed before the layout phase on a Git-owned discovery root) is | templates/GENESIS.md Phase 6 and RUNBOOK.md V3 support-root check document source resolution and the two flags | TK-002: upgrade --layout-only and the skill/protocol text |
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-workbench-upgrade.mjs (5 pass: Git-owned discovery root blocks --explicit-update with foreign-git-root and completes --layout-only with lifecycle upgrade, manifest commit equal to receipt commit, skills presence-only, empty skillBackups, no skill or marker touched; layout-only still blocks missing-user-skills and dirty-project; both modes together are invalid-invocation); node tools/test-skill-catalog.mjs and test-delivery-skills.mjs pass with the new route-text assertions; node tools/test-workbench-layout.mjs 22 pass; evaluate-workbench templates 106.6/113 unchanged from baseline | skills/update-harness/SKILL.md section 3 names the v2-root layout route first and reconciles specs through the manifest it declares; skills/adoption/SKILL.md opening and templates/ADOPTION.md intro name upgrade --layout-only for an already-adopted room; RUNBOOK.md V3 explicit upgrade section documents both modes; LEXICON.md Explicit skill update distinction gains the layout-only mode | none; acceptance boxes and completion result pending the full suite |
+| 2026-09-05 | spec | Guardrail audit captured before and after the harness change: 78/100 both times, with the same four outcome-evidence recommendations (real repeated trials, control comparison, refresh, effect and confidence interval), none of which this spec claims to address; no static or context improvement is translated into an agent-outcome claim | node tools/audit-guardrails.mjs before at ae60d8d and after at the completion candidate | Docs checked; no update needed: the audit result changes no owner | none |
+| 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+**What changed.** `workbench/tools/workbench-layout.mjs` `init` and
+`migrate` resolve `provenance.source` before writing anything: an explicit
+`--source-commit`/`--source-repository` wins; otherwise only a release
+checkout (the one carrying `templates/`) resolves its own `HEAD` and `origin`,
+and a relocated copy refuses with `invalid-invocation` naming the missing
+flag. The placeholder `unrecorded` no longer exists in the tool. The usage
+string lists both flags. `tools/workbench-upgrade.mjs upgrade` gained
+`--layout-only`, exclusive with `--explicit-update`: it keeps the clean,
+committed, no-support-root gate, requires every core skill to be present in a
+discovery root (`missing-user-skills` otherwise), reads presence only, runs
+the Adoption migrate seam, records `lifecycle: upgrade`, and writes
+`upgrade-recovery.json` with `skills: "presence-only"` and an empty
+`skillBackups`; the explicit mode records `skills: "explicit-update"` in the
+same field and is otherwise unchanged. `skills/update-harness/SKILL.md`
+section 3 names the v2-root case first and reconciles specs through the
+manifest the route declares; `skills/adoption/SKILL.md`, `templates/ADOPTION.md`,
+`templates/GENESIS.md` Phase 6, `RUNBOOK.md` (both upgrade modes and the
+source resolution), and `LEXICON.md` name the route and the flags.
+
+**Why.** UP-004: Cashflow Calculator and the Master Workbench feedback lane
+reproduced `commit: "unrecorded"` from the tool's own help. UP-003: CIC and
+OpenBrain moved to v3.1.1 through Adoption because the upgrade route failed
+closed before its layout phase on a Git-owned discovery root and the skills
+never named it. The upstream verdict is recorded in the evidence log: UP-003's
+mechanism claim ("never creates a support root") is not supported at
+`ae60d8d`; its conclusion is.
+
+**Risks and side effects.** A downstream copy of `workbench-layout.mjs` now
+refuses `init`/`migrate` without both flags where it previously wrote a
+placeholder; that refusal is the intended contract and names the flag. A
+release checkout without an `origin` remote (a tarball) also refuses; pass
+the flags. The recovery record gains a `skills` field in both modes; no reader
+depended on its absence. Rooms already misrecorded as `adoption` are not
+rewritten.
+
+**How verified.** Red/green at the named seams: `tools/test-workbench-layout.mjs`
+(22 pass; checkout resolution, relocated refusal that writes nothing, usage),
+`tools/test-workbench-upgrade.mjs` (5 pass; Git-owned home blocks
+`--explicit-update` with `foreign-git-root` and completes `--layout-only`
+untouched, presence and dirty gates, exclusive modes),
+`tools/test-skill-catalog.mjs` route-text assertions. Full `AGENTS.md` suite
+(25 commands), `python3 evals/tasks/task_b_path_safety/test_grade.py`,
+`evaluate-workbench --path templates --include-controls` 106.6/113 (unchanged
+from baseline), `render`, `doctor` (only the pre-existing S-035 blocked-slice
+finding), and `git diff --check` all pass. Guardrail audit score before and
+after: recorded in the evidence log.
 
 ## Remaining Limitations Or Follow-Up Specs
 
