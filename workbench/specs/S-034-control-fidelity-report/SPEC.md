@@ -161,6 +161,7 @@ list), `render`, `doctor`, and `git diff --check`.
 | 2026-09-05 | spec | Spec captured from upstream fix-list item UP-008 (rank medium) | `template-placeholders.mjs` re-read: placeholder detection only; no template-versus-room comparison exists in `tools/` or `workbench/tools/` | Blueprint v3.1.2 direction links this spec | Both slices |
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-control-fidelity.mjs (10 cases: filled-only room, dropped canonicalized_in qualifier is one changed entry and zero dropped, deleted Branch Completion section is dropped per line, added lines, missing control, CLAUDE.md exact/mismatch, optional permission and wiki files, CRLF, newer/older/same version labels, CLI exit 0 on divergence and 1 on invocation errors with an unchanged room snapshot); node tools/test-skill-catalog.mjs; node tools/test-portability-matrix.mjs; node tools/test-evaluate-workbench.mjs; self-report against this checkout exits 0 | AGENTS.md and RUNBOOK.md full verification lists gained node tools/test-control-fidelity.mjs; LEXICON.md Core Terms gained Control fidelity; templates/AGENTS.md carries no ADR ownership row at this release, so the fixture template adds the root control's row before the room is filled from it | TK-002: ADOPTION.md Phase 4, update-harness section 5, and the Runbook command section |
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-control-fidelity.mjs (11 cases; the new protocol case checks Adoption Phase 4, update-harness section 5, the Runbook command, and both verification lists); node tools/test-skill-catalog.mjs; node tools/test-portability-matrix.mjs; node tools/test-guardrail-audit.mjs; node tools/test-workbench-adoption.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls | templates/ADOPTION.md Phase 4 and skills/update-harness/SKILL.md section 5 run the report and require each dropped or changed AGENTS.md line to be restored or recorded in the owning spec or an ADR; RUNBOOK.md gained the Control fidelity report section | none; spec completion pending the full suite |
+| 2026-09-05 | review | Integration review of d23cd4d approved with follow-ups applied: manifest wiki lane validated with `isSafeRelative` (unsafe lane noted, default lane used, nothing outside the room read); Markdown headline counts non-trivial lines with the trivial remainder named; a flag is never an option value; EPIPE on stdout exits quietly | `node tools/test-control-fidelity.mjs` (14 cases, three new, red then green); `test-skill-catalog`; `test-governance-core`; `test-workbench-dogfood`; piped Markdown self-report prints no trace; `doctor`; `render`; `git diff --check` | Remaining Limitations gained the missing template ADR row note; Completion Result gained the review follow-up | none |
 | 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
@@ -216,12 +217,24 @@ suite including the new test, `python3 evals/tasks/task_b_path_safety/test_grade
 `render`, `doctor`, and `git diff --check`; a self-report against this
 checkout exits 0 in JSON and Markdown.
 
+**Review follow-up.** The integration review of `d23cd4d` found that an unsafe
+manifest wiki lane (for example `../outside`) was joined verbatim, that the
+Markdown headline counted trivial lines the list omitted, that a flag could be
+taken as an option value, and that a closed stdout pipe printed a stack trace.
+All four are fixed in the follow-up commit with three new test cases; the
+wiki lane now passes `isSafeRelative` or the report names it in
+`manifestNote` and uses the default lane.
+
 ## Remaining Limitations Or Follow-Up Specs
 
 - The report compares against the checkout's templates; comparing against an
   arbitrary older release requires checking that release out.
 - The version stamp belongs to
   [S-035](../S-035-workbench-v3-1-2-candidate/SPEC.md).
+- `templates/AGENTS.md` at this release carries no ADR ownership row, so the
+  exact UP-008 line (the dropped `canonicalized_in` qualifier) is reported as
+  `added`, not `changed`, until a follow-up adds that row to the template;
+  S-035's disposition will carry the same note.
 
 ## Supersession
 

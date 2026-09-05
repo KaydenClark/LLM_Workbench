@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
-import { LANES, isMainModule, readManifest } from '../workbench/tools/workbench-paths.mjs';
+import { LANES, isMainModule, isSafeRelative, readManifest } from '../workbench/tools/workbench-paths.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const templatedControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
@@ -259,10 +259,20 @@ function versionNote(checkoutVersion, manifestRelease) {
   return `The checkout (${checkout}) is ${relation} than the room's manifest release (${manifest}): the comparison is against a ${relation} template generation, so some differences may be upstream template changes rather than room divergence.`;
 }
 
+// The manifest may declare the wiki lane, but only a safe lowercase relative
+// path under `workbench/` is ever joined to the project; anything else is
+// named in a note and the default lane is used instead.
+export function wikiLaneOf(manifest) {
+  const declared = manifest?.lanes?.wiki;
+  if (declared === undefined) return { lane: LANES.wiki, note: null };
+  if (isSafeRelative(declared)) return { lane: declared, note: null };
+  return { lane: LANES.wiki, note: `manifest lane wiki is unsafe: ${JSON.stringify(declared)}; the wiki files were compared under the default lane ${LANES.wiki}.` };
+}
+
 // The files a room derives from templates: the seven root controls, the
 // optional Claude permission file, and the seeded wiki contract files.
 export function fidelityTargets(project, manifest) {
-  const wikiLane = typeof manifest?.lanes?.wiki === 'string' ? manifest.lanes.wiki : LANES.wiki;
+  const wikiLane = wikiLaneOf(manifest).lane;
   const profile = manifest?.wiki?.profile;
   const targets = templatedControls.map((control) => ({ control, template: control, optional: false }));
   targets.push({ control: 'CLAUDE.md', template: null, optional: false });
@@ -294,6 +304,17 @@ function excerpt(line) {
   return text.length > 120 ? `${text.slice(0, 117)}...` : text;
 }
 
+// The headline counts the lines the list below itemizes; blank lines and
+// table separators are named separately so the numbers reconcile.
+function headlineCounts(control) {
+  return KINDS.map((kind) => {
+    const trivial = control.lines.filter((line) => line.kind === kind && line.trivial).length;
+    const count = control.counts[kind];
+    if (!['dropped', 'changed', 'added'].includes(kind) || !trivial) return `${kind} ${count}`;
+    return `${kind} ${count - trivial} (${trivial} trivial)`;
+  }).join(', ');
+}
+
 export function summarizeMarkdown(report) {
   const out = ['# Control fidelity report', ''];
   out.push(`Project: \`${report.project}\`. Templates: \`${report.templates}\` (checkout ${report.checkoutVersion ?? 'unknown'}). Room manifest release: ${report.manifestRelease ?? 'unknown'}${report.sourceRelease ? ` (adopted from ${report.sourceRelease})` : ''}.`);
@@ -302,8 +323,7 @@ export function summarizeMarkdown(report) {
     out.push(`## ${control.control}`, '');
     if (control.status === 'absent') { out.push(`Optional; not present in the room.`, ''); continue; }
     if (control.status === 'missing' || control.status === 'template-missing') { out.push(`${control.status}: ${control.note}`, ''); continue; }
-    const counts = KINDS.map((kind) => `${kind} ${control.counts[kind]}`).join(', ');
-    out.push(`Template \`${control.template}\` (${control.status}): ${counts}.`, '');
+    out.push(`Template \`${control.template}\` (${control.status}): ${headlineCounts(control)}.`, '');
     const notable = control.lines.filter((line) => !line.trivial && ['dropped', 'changed', 'added'].includes(line.kind));
     for (const line of notable) {
       if (line.kind === 'changed') out.push(`- changed L${line.templateLine} -> L${line.roomLine}: \`${excerpt(line.template)}\` -> \`${excerpt(line.room)}\``);
@@ -324,6 +344,8 @@ export function reportFidelity(options) {
   let manifest = null;
   let manifestNote = null;
   try { manifest = readManifest(project); } catch (error) { manifestNote = error.message; }
+  const laneNote = wikiLaneOf(manifest).note;
+  if (laneNote) manifestNote = manifestNote ? `${manifestNote} ${laneNote}` : laneNote;
   const productManifest = readManifest(productRoot);
   const checkoutVersion = options.checkoutVersion ?? productManifest?.workbenchVersion ?? null;
   const manifestRelease = options.manifestRelease ?? manifest?.workbenchVersion ?? null;
@@ -354,7 +376,7 @@ function parseOptions(args) {
   for (let index = 0; index < args.length; index += 2) {
     const key = args[index];
     const value = args[index + 1];
-    if (!key?.startsWith('--') || !value || options[key]) throw new Error('Invalid arguments.');
+    if (!key?.startsWith('--') || !value || value.startsWith('--') || options[key]) throw new Error(`Invalid arguments: ${key} needs a value.`);
     options[key] = value;
   }
   if (!options['--project']) throw new Error('Missing --project.');
@@ -365,6 +387,10 @@ function parseOptions(args) {
 const usage = 'Usage: control-fidelity.mjs report --project PATH [--control NAME] [--templates PATH] [--format json|markdown]';
 
 if (isMainModule(import.meta.url)) {
+  process.stdout.on('error', (error) => {
+    if (error.code === 'EPIPE') process.exit(0);
+    throw error;
+  });
   try {
     const [command, ...args] = process.argv.slice(2);
     if (command !== 'report') throw new Error(usage);

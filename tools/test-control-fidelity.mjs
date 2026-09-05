@@ -294,3 +294,60 @@ test('the protocols run the report and route AGENTS.md divergences to a recorded
   assert.match(runbook, /node tools\/test-control-fidelity\.mjs/, 'the Runbook lists the fidelity test');
   assert.match(fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8'), /node tools\/test-control-fidelity\.mjs/, 'AGENTS.md lists the fidelity test');
 });
+
+test('an unsafe manifest wiki lane is never joined: the report notes it and falls back to the default lane', () => {
+  const templates = fixtureTemplates();
+  const parent = fixture('control-fidelity-parent-');
+  const project = path.join(parent, 'room');
+  for (const name of controls) write(project, name, fill(read(templates, name)));
+  write(project, 'CLAUDE.md', '@AGENTS.md\n');
+  write(project, 'workbench/manifest.json', `${JSON.stringify({ schemaVersion: 2, workbenchVersion: VERSION, lanes: { wiki: '../outside' }, wiki: { profile: 'project' } }, null, 2)}\n`);
+  write(parent, 'outside/SCHEMA.md', '# Outside the room\n\nsecret-marker-line\n');
+  write(project, 'workbench/wiki/SCHEMA.md', fill(read(templates, 'wiki/SCHEMA.md')));
+  const report = reportFidelity({ project, templates, manifestRelease: VERSION, checkoutVersion: VERSION });
+  assert.equal(report.status, 'reported');
+  assert.match(report.manifestNote ?? '', /\.\.\/outside/, 'the note names the invalid lane');
+  assert.equal(JSON.stringify(report).includes('secret-marker-line'), false, 'nothing outside the room is read or echoed');
+  assert.equal(JSON.stringify(report).includes('../outside'), true);
+  const schema = control(report, 'workbench/wiki/SCHEMA.md');
+  assert.equal(schema.status, 'compared');
+  assert.equal(schema.counts.dropped, 0);
+  assert.equal(report.controls.some((entry) => entry.control.includes('..')), false);
+});
+
+test('the Markdown headline counts reconcile with the itemized list and name trivial lines separately', () => {
+  const templates = fixtureTemplates();
+  const project = fixtureRoom(templates);
+  const agents = read(project, 'AGENTS.md');
+  const start = agents.indexOf('### Branch Completion');
+  const end = agents.indexOf('\n## ', start);
+  write(project, 'AGENTS.md', `${agents.slice(0, start)}${agents.slice(end + 1)}\n\n\nExtra room rule.\n`);
+  const report = reportFidelity({ project, templates, manifestRelease: VERSION, checkoutVersion: VERSION });
+  const entry = control(report, 'AGENTS.md');
+  const trivialDropped = kinds(entry, 'dropped').filter((line) => line.trivial).length;
+  const trivialAdded = kinds(entry, 'added').filter((line) => line.trivial).length;
+  assert.ok(trivialDropped > 0 && trivialAdded > 0, 'the fixture produces trivial dropped and added lines');
+  const section = report.markdown.slice(report.markdown.indexOf('## AGENTS.md'), report.markdown.indexOf('## BLUEPRINT.md'));
+  const headline = section.split('\n').find((line) => line.startsWith('Template `AGENTS.md`'));
+  const listed = (kind) => section.split('\n').filter((line) => line.startsWith(`- ${kind} L`)).length;
+  for (const kind of ['dropped', 'changed', 'added']) {
+    const count = Number(new RegExp(`(?:^|, )${kind} (\\d+)`).exec(headline)?.[1]);
+    assert.equal(count, listed(kind), `${kind} headline ${count} must equal the ${listed(kind)} listed lines`);
+  }
+  assert.match(headline, new RegExp(`dropped ${listed('dropped')} \\(${trivialDropped} trivial\\)`));
+  assert.match(headline, new RegExp(`added ${listed('added')} \\(${trivialAdded} trivial\\)`));
+  assert.equal(Number(/, unchanged (\d+)/.exec(headline)[1]) + Number(/: filled (\d+)/.exec(headline)[1]) + listed('dropped') + trivialDropped + listed('changed'), read(templates, 'AGENTS.md').replace(/\n$/, '').split('\n').length, 'the headline still accounts for every template line');
+});
+
+test('an option whose value is another flag is an invocation error, and a closed stdout pipe prints no stack trace', () => {
+  const templates = fixtureTemplates();
+  const project = fixtureRoom(templates);
+  for (const args of [['--project', '--format'], ['--project', project, '--control', '--format', 'markdown']]) {
+    const flagValue = spawnSync(process.execPath, [tool, 'report', ...args], { cwd: root, encoding: 'utf8' });
+    assert.equal(flagValue.status, 1, args.join(' '));
+    assert.equal(JSON.parse(flagValue.stdout).error.code, 'invalid-invocation', args.join(' '));
+  }
+  const piped = spawnSync('sh', ['-c', `"${process.execPath}" "${tool}" report --project "${root}" | head -1`], { cwd: root, encoding: 'utf8' });
+  assert.equal(piped.stdout, '{\n');
+  assert.doesNotMatch(piped.stderr, /EPIPE|at .*\.mjs|Error/, `a closed pipe prints no stack trace: ${piped.stderr}`);
+});
