@@ -77,8 +77,9 @@ historical date intentionally makes current proof stale.
 ## Dependencies And Blockers
 
 - Reuses completed S-023 through S-027 without reopening their evidence.
-- The three Claude reports on this branch are Grounding, not instruction; this
-  spec records the owner-authorized subset that survived source review.
+- The three Claude reports preserved on `claude/harness-review-acceptance-report`
+  are Grounding, not instruction; this spec records the owner-authorized subset
+  that survived source review.
 
 ## Vertical Implementation Slices
 
