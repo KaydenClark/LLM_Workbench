@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { EFFECTS, SCOPES, SEVERITIES, describe, isRegistered, registeredCodes } from '../workbench/tools/diagnostics.mjs';
 import { claimWork, doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
+import { permissionScopeDrift } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
@@ -242,6 +243,16 @@ test('permission-scope-drift names each withheld authorship lane without blockin
     assert.match(denied[0].lanes[0].reason, /deny/);
     write(dir, '.claude/settings.json', permissionFile({ allow: [...laneGrants, 'Edit(./workbench/tools/**)', 'Write(./workbench/tools/**)'] }));
     assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
+
+    // ask overrides allow, so a lane granted in both prompts on every write:
+    // the unattended stall this spec names, reported as withheld.
+    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants, ask: ['Edit(./workbench/specs/**)'] }));
+    const prompted = doctor(dir, { home: quietHome });
+    assert.deepEqual(driftLanes(prompted), ['specs']);
+    assert.match(prompted[0].lanes[0].reason, /ask/);
+
+    // A null lane declaration falls back to the default lanes instead of throwing.
+    assert.equal(permissionScopeDrift(dir, null)?.lanes.map((entry) => entry.lane).join(), 'specs');
 
     // A covering parent glob grants; it counts as granting tools only when no
     // ask or deny rule takes precedence for that lane.

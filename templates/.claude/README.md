@@ -32,7 +32,8 @@ without touching them.
 
 `doctor` reports `permission-scope-drift` when this file exists and withholds
 a declared authorship lane (no covering `Edit` and `Write` allow rule, or a
-`deny` rule covering it) or grants `workbench/tools/` in `allow`; the Genesis
+`deny` or `ask` rule covering it, since both override `allow` and an asked
+lane prompts on every write) or grants `workbench/tools/` in `allow`; the Genesis
 readiness check fails closed on the same finding. The check recognises
 `./<lane>/**` and a covering parent glob such as `./workbench/**`; any other
 shape is treated as not granting, so widen the rule or record the deliberate

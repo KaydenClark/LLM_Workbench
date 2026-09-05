@@ -520,8 +520,9 @@ home); doctor never writes there.
 `permission-scope-drift` (severity `error`, scope `controls`, effect `none`)
 is reported when `.claude/settings.json` exists and withholds a
 manifest-declared authorship lane (`docs`, `specs`, `wiki`, `sessions`, or
-`feedback` lacks a covering `Edit` and `Write` `allow` rule, or a `deny` rule
-covers it), or when the `tools` lane is granted in `allow` with no `ask` or
+`feedback` lacks a covering `Edit` and `Write` `allow` rule, or a `deny` or
+`ask` rule covers it, since both override `allow` and an asked lane prompts on
+every write), or when the `tools` lane is granted in `allow` with no `ask` or
 `deny` rule taking precedence. The finding names each withheld lane with its
 reason; it never edits the file, and a room may deny a lane deliberately and
 record why in `AGENTS.md`. The matcher is conservative: it recognises
@@ -855,7 +856,7 @@ assigned target; it never authorizes a repair or invokes automated repair.
 | feedback discovery returns no candidate unexpectedly | checkout is a worktree/duplicate, origin is not writable-owner, or fingerprint is already pending/processed | `node tools/feedback-automation.mjs discover --projects-root /absolute/projects-root` | repair the canonical checkout or record the pending/processed decision; do not broaden discovery |
 | an automation pauses after a lock, owner gate, or provider failure | the scheduler counted an interruption as idle | inspect the latest `run-outcome` JSON and prior verified-idle count | emit `collision`, `owner_gate`, or `infrastructure_error`; preserve the idle count and retry or wait for the proper wake event |
 | Sol cannot prove a candidate because GitHub or model access is down | transient infrastructure failure | read the PR verdict comment and repeat count | leave the PR open, retry next run, and alert after the second identical failure |
-| `doctor` reports `permission-scope-drift` or `validate --genesis` rejects a room on it | `.claude/settings.json` withholds a manifest-declared authorship lane or grants `workbench/tools/` in `allow` | `node workbench/tools/spec-workbench.mjs doctor --json` and read the `lanes` field | add the paired `Edit` and `Write` `allow` rules for each named lane from `templates/.claude/settings.json`, hold `workbench/tools/**` in `ask`, or record the deliberate denial in `AGENTS.md` |
+| `doctor` reports `permission-scope-drift` or `validate --genesis` rejects a room on it | `.claude/settings.json` withholds a manifest-declared authorship lane (no `Edit` and `Write` allow, or a `deny` or `ask` rule covers it) or grants `workbench/tools/` in `allow` | `node workbench/tools/spec-workbench.mjs doctor --json` and read the `lanes` field | add the paired `Edit` and `Write` `allow` rules for each named lane from `templates/.claude/settings.json`, hold `workbench/tools/**` in `ask`, or record the deliberate denial in `AGENTS.md` |
 
 ## Recovery And Rollback
 
