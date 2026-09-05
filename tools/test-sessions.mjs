@@ -70,3 +70,15 @@ test('checkpoint refuses secret-like content, private paths, and unsafe sources 
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('checkpoint refuses a linked destination collection without writing outside', () => {
+  const dir = project(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'session-outside-'));
+  try {
+    fs.writeFileSync(path.join(dir, 'note.md'), NOTEPAD);
+    const destination = path.join(dir, 'workbench', 'sessions', 'checkpoints');
+    fs.rmSync(destination, { recursive: true }); fs.symlinkSync(outside, destination);
+    const result = spawnSync(process.execPath, [sessionsTool, 'checkpoint', '--path', dir, '--from', 'note.md', '--topic', 'topic'], { encoding: 'utf8' });
+    assert.notEqual(result.status, 0);
+    assert.deepEqual(fs.readdirSync(outside), []);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});

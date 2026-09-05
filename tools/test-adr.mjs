@@ -104,3 +104,26 @@ test('the product corpus validates with a current register and no error findings
   assert.deepEqual(findings.filter((item) => item.code === 'stale-register'), [], 'the committed register must be current');
   assert.ok(listAdrs(root).length >= 19);
 });
+
+for (const command of ['register', 'new']) test(`ADR ${command} refuses linked collection before writing`, () => {
+  const dir = fixture(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'adr-outside-'));
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    fs.rmSync(collection, { recursive: true }); fs.symlinkSync(outside, collection);
+    fs.writeFileSync(path.join(outside, 'REGISTER.md'), 'keep original\n');
+    const result = spawnSync(process.execPath, [adrTool, command, '--path', dir, '--title', 'Example'], { encoding: 'utf8' });
+    assert.notEqual(result.status, 0);
+    assert.equal(fs.readFileSync(path.join(outside, 'REGISTER.md'), 'utf8'), 'keep original\n');
+    assert.deepEqual(fs.readdirSync(outside), ['REGISTER.md']);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
+
+test('register never follows a pre-existing predictable temporary symlink', () => {
+  const dir = fixture(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'adr-temp-'));
+  try {
+    const target = path.join(outside, 'data'); fs.writeFileSync(target, 'keep original\n');
+    fs.symlinkSync(target, path.join(dir, 'workbench', 'docs', 'adr', `REGISTER.md.tmp-${process.pid}`));
+    writeRegister(dir);
+    assert.equal(fs.readFileSync(target, 'utf8'), 'keep original\n');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});

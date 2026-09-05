@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { collectionPath, collectionRelative, findRoot, isMainModule, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
+import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
@@ -123,12 +123,11 @@ export function renderRegister(adrs) {
 }
 
 export function writeRegister(root) {
-  const adrs = listAdrs(root);
   const registerPath = path.join(collectionPath(root, 'adr'), REGISTER_NAME);
+  assertSafeWritePath(root, registerPath);
+  const adrs = listAdrs(root);
   const content = renderRegister(adrs);
-  const temporary = `${registerPath}.tmp-${process.pid}`;
-  fs.writeFileSync(temporary, content);
-  fs.renameSync(temporary, registerPath);
+  writeSafeFile(root, registerPath, content);
   return { registerPath, count: adrs.length };
 }
 
@@ -137,7 +136,7 @@ export function newAdr(root, options) {
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   if (!slug) throw new Error('title must contain letters or digits');
   const directory = collectionPath(root, 'adr');
-  fs.mkdirSync(directory, { recursive: true });
+  assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
   const numbers = listAdrs(root).map((adr) => Number(adr.number));
   const next = String((numbers.length ? Math.max(...numbers) : 0) + 1).padStart(4, '0');
   const filePath = path.join(directory, `${next}-${slug}.md`);
@@ -162,7 +161,7 @@ export function newAdr(root, options) {
     'Provenance: [the promoted checkpoint or owner decision, by repository-relative path].',
     ''
   ].join('\n');
-  fs.writeFileSync(filePath, content);
+  writeSafeFile(root, filePath, content, { exclusive: true });
   return { filePath, number: next };
 }
 

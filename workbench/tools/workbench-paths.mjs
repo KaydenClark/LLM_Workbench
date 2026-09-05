@@ -116,3 +116,35 @@ export function isMainModule(importMetaUrl) {
     return importMetaUrl === pathToFileURL(path.resolve(entry)).href;
   }
 }
+
+// Refuse linked destination ancestors and nonregular targets before a writer
+// creates directories or touches data. Missing descendants may be created.
+export function assertSafeWritePath(root, destination) {
+  const base = path.resolve(root);
+  const relative = path.relative(base, path.resolve(destination));
+  if (!relative || relative.startsWith(`..${path.sep}`) || relative === '..' || path.isAbsolute(relative)) throw new Error('Write destination must stay inside the project');
+  let current = base;
+  const parts = relative.split(path.sep);
+  for (let index = 0; index < parts.length; index += 1) {
+    current = path.join(current, parts[index]);
+    let entry;
+    try { entry = fs.lstatSync(current); } catch (error) { if (error.code === 'ENOENT') continue; throw error; }
+    const final = index === parts.length - 1;
+    if (entry.isSymbolicLink() || (final ? !entry.isFile() || entry.nlink > 1 : !entry.isDirectory())) {
+      throw new Error(`Unsafe write destination: ${current}`);
+    }
+  }
+}
+
+export function writeSafeFile(root, destination, content, { exclusive = false } = {}) {
+  assertSafeWritePath(root, destination);
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  const temporaryDir = fs.mkdtempSync(path.join(path.dirname(destination), '.write-'));
+  try {
+    const temporary = path.join(temporaryDir, 'content');
+    fs.writeFileSync(temporary, content, { mode: 0o644, flag: 'wx' });
+    // link is an atomic no-replace publication for a new ADR or checkpoint.
+    if (exclusive) fs.linkSync(temporary, destination);
+    else fs.renameSync(temporary, destination);
+  } finally { fs.rmSync(temporaryDir, { recursive: true, force: true }); }
+}

@@ -358,6 +358,12 @@ backups. Resolve the path collision while preserving its target, then retry the
 explicit operation. Ordinary drift in a regular managed file still receives a
 backup and can be restored.
 
+Layout initialization and schema migration preserve existing session ignore
+rules and reject linked destination paths before writes. ADR creation, register
+rendering and checkpoint promotion also reject unsafe destination chains and
+use private temporary files. Legacy Wiki adoption moves existing knowledge
+before seeding only the missing contract files.
+
 Treat a harness upgrade like any other change: smallest correct diff, verified,
 with proof. If a downstream lesson should flow *back* to the harness, capture it
 per the project's `WORKBENCH_FEEDBACK` convention.

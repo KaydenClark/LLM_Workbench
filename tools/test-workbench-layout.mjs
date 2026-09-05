@@ -594,3 +594,48 @@ test('legacy twelve-skill manifests remain readable but v3.1.1 requires all four
     assert.equal(run('validate', '--project', project).report.status, 'valid');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
+
+for (const mode of ['init', 'migrate']) {
+  for (const collision of ['symlink', 'ordinary']) {
+    test(`${mode} preserves existing session ignore ${collision} content`, () => {
+      const dir = fixture(); const outside = fixture();
+      try {
+        fs.mkdirSync(path.join(dir, 'workbench', 'sessions'), { recursive: true });
+        if (mode === 'migrate') {
+          const lanes = { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' };
+          for (const lane of Object.values(lanes)) fs.mkdirSync(path.join(dir, lane), { recursive: true });
+          fs.writeFileSync(path.join(dir, 'workbench', 'manifest.json'), JSON.stringify({ schemaVersion: 1, workbenchVersion: 'v3.0.0', provenance: { lifecycle: 'genesis' }, lanes }));
+        }
+        const ignore = path.join(dir, 'workbench', 'sessions', '.gitignore');
+        const external = path.join(outside, 'rules');
+        fs.writeFileSync(external, 'custom-private/\n');
+        if (collision === 'symlink') fs.symlinkSync(external, ignore);
+        else fs.writeFileSync(ignore, 'custom-private/\n');
+        const result = run(mode, '--project', dir, '--provenance', 'genesis', '--version', VERSION);
+        assert.equal(fs.readFileSync(external, 'utf8'), 'custom-private/\n');
+        if (collision === 'symlink') {
+          assert.notEqual(result.status, 0, result.stdout);
+          assert.equal(fs.existsSync(path.join(dir, 'workbench', 'docs')), false, 'preflight refusal must not create lanes');
+          if (mode === 'migrate') assert.equal(fs.existsSync(path.join(dir, 'workbench', 'grilling')), true, 'refusal must not move legacy content');
+        } else {
+          assert.equal(result.status, 0, result.stdout);
+          assert.match(fs.readFileSync(ignore, 'utf8'), /^custom-private\/$/m);
+          assert.match(fs.readFileSync(ignore, 'utf8'), /^grilling\/\*$/m);
+        }
+      } finally {
+        fs.rmSync(dir, { recursive: true, force: true });
+        fs.rmSync(outside, { recursive: true, force: true });
+      }
+    });
+  }
+}
+
+test('init refuses a linked workbench ancestor before creating outside lanes', () => {
+  const dir = fixture(); const outside = fixture();
+  try {
+    fs.symlinkSync(outside, path.join(dir, 'workbench'));
+    const result = run('init', '--project', dir, '--provenance', 'genesis', '--version', VERSION);
+    assert.notEqual(result.status, 0);
+    assert.deepEqual(fs.readdirSync(outside), []);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});

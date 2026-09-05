@@ -8,7 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { collectionPath, collectionRelative, findRoot, isMainModule } from './workbench-paths.mjs';
+import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule } from './workbench-paths.mjs';
 import { scanPrivacy } from './privacy.mjs';
 
 function lstatOrNull(target) {
@@ -34,15 +34,13 @@ export function checkpoint(root, options) {
   const date = options.date ?? new Date().toISOString().slice(0, 10);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error(`Invalid date: ${date}`);
   const directory = collectionPath(root, 'checkpoints');
-  fs.mkdirSync(directory, { recursive: true });
   const destination = path.join(directory, `${topic}-${date}.md`);
+  assertSafeWritePath(root, destination);
   if (lstatOrNull(destination)) return { status: 'blocked', error: finding('invalid-note', `${path.relative(root, destination)} already exists; promote under a new date or topic`) };
   const stamped = content.startsWith('<!-- checkpoint')
     ? content
     : `<!-- checkpoint: promoted ${date} from ${path.relative(root, source).split(path.sep).join('/')} -->\n${content}`;
-  const temporary = `${destination}.tmp-${process.pid}`;
-  fs.writeFileSync(temporary, stamped, { mode: 0o644 });
-  fs.renameSync(temporary, destination);
+  writeSafeFile(root, destination, stamped, { exclusive: true });
   return { status: 'promoted', source: path.relative(root, source).split(path.sep).join('/'), checkpoint: `${collectionRelative(root, 'checkpoints')}/${topic}-${date}.md` };
 }
 

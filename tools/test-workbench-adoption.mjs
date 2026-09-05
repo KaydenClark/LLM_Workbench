@@ -233,3 +233,20 @@ function fixtureSpec() {
 }
 
 console.log('ok - mixed v2 adoption preserves durable truth and blocks collisions');
+
+{
+  const project = fixture(); const home = fixture();
+  try {
+    seedControls(project); seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    write(project, 'Wiki/MEMORY.md', '# Legacy Wiki memory\n');
+    write(project, 'Wiki/nested/history.md', '# Preserve this knowledge\n');
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(read(project, 'workbench/wiki/MEMORY.md'), '# Legacy Wiki memory\n');
+    assert.equal(read(project, 'workbench/wiki/nested/history.md'), '# Preserve this knowledge\n');
+    assert.equal(fs.existsSync(path.join(project, 'Wiki')), false);
+    assert.equal(fs.existsSync(path.join(project, 'workbench/wiki/SCHEMA.md')), true);
+    assert.equal(JSON.parse(result.stdout).status, 'complete');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(home, { recursive: true, force: true }); }
+}

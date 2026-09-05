@@ -214,6 +214,12 @@ backups. Resolve the path collision while preserving its target, then retry the
 explicit operation. Ordinary drift in a regular managed file still receives a
 backup and can be restored.
 
+Layout initialization and schema migration preserve existing session ignore
+rules and reject linked destination paths before writes. ADR creation, register
+rendering and checkpoint promotion also reject unsafe destination chains and
+use private temporary files. Legacy Wiki adoption moves existing knowledge
+before seeding only the missing contract files.
+
 ### V3 Adoption migration check
 
 Adoption requires seven filled root controls and all core skills in a

@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, writeSafeFile, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -139,14 +139,46 @@ function fillTemplate(content, values) {
   return result;
 }
 
+// Validate all layout parents and the ignore destination before any mkdir or
+// migration move. A final-directory check alone misses linked ancestors.
+function preflightLayout(project, extraDirectories = []) {
+  for (const relative of ['workbench', ...Object.values(lanes), ...Object.values(collections), ...extraDirectories]) {
+    let current = project;
+    for (const part of relative.split('/')) {
+      current = path.join(current, part);
+      const entry = lstatOrNull(current);
+      if (entry && (!entry.isDirectory() || entry.isSymbolicLink())) {
+        return fail('lane-collision', `${current} must be an ordinary directory.`);
+      }
+    }
+  }
+  for (const relative of ['workbench/manifest.json', `${lanes.sessions}/.gitignore`]) {
+    const entry = lstatOrNull(path.join(project, relative));
+    if (entry && (!entry.isFile() || entry.isSymbolicLink() || entry.nlink > 1)) {
+      return fail('lane-collision', `${relative} must be an ordinary, unshared file.`);
+    }
+  }
+  return null;
+}
+
+function writeSessionsIgnore(project) {
+  const destination = path.join(project, lanes.sessions, '.gitignore');
+  const current = lstatOrNull(destination) ? fs.readFileSync(destination, 'utf8') : '';
+  // Retain project rules byte-for-byte, appending the required live-session block.
+  const combined = current + (current && !current.endsWith('\n') ? '\n' : '') + SESSIONS_IGNORE;
+  fs.writeFileSync(destination, combined);
+}
+
 export function initialize(options) {
   const project = path.resolve(options['--project']);
   const manifestPath = path.join(project, 'workbench', 'manifest.json');
-  if (fs.existsSync(manifestPath)) return fail('manifest-exists', `${manifestPath} already exists.`);
+  if (lstatOrNull(manifestPath)) return fail('manifest-exists', `${manifestPath} already exists.`);
   const projectEntry = lstatOrNull(project);
   if (!projectEntry || projectEntry.isSymbolicLink() || !projectEntry.isDirectory()) {
     return fail('invalid-project', `${project} must be an existing project directory.`);
   }
+  const unsafe = preflightLayout(project);
+  if (unsafe) return unsafe;
   const shape = validateManifestShape({ workbenchVersion: options['--version'], provenance: { lifecycle: options['--provenance'] }, wiki: { profile: options['--wiki-profile'] ?? 'project' } });
   if (shape) return shape;
   for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
@@ -163,12 +195,13 @@ export function initialize(options) {
     skillPolicy
   };
   for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
+    if (options.deferWikiSeed && relative.startsWith(`${lanes.wiki}/`)) continue;
     const target = path.join(project, relative);
     fs.mkdirSync(target, { recursive: true });
     if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
   }
-  fs.writeFileSync(path.join(project, lanes.sessions, '.gitignore'), SESSIONS_IGNORE);
-  const seeded = seedWiki(project, options);
+  writeSessionsIgnore(project);
+  const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options);
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   return report('initialized', { manifestPath, manifest, seeded });
 }
@@ -181,7 +214,10 @@ function sourceIdentity(options) {
   };
 }
 
-function seedWiki(project, options) {
+export function seedWiki(project, options) {
+  for (const relative of Object.values(collections).filter(value => value.startsWith(`${lanes.wiki}/`))) {
+    fs.mkdirSync(path.join(project, relative), { recursive: true });
+  }
   const templates = templateRoot();
   if (!templates) return { wiki: false, reason: 'no copy-ready templates beside this tool; seed the wiki contract from the Workbench release' };
   const values = {
@@ -217,6 +253,10 @@ export function migrate(options) {
   if (manifest.schemaVersion === SCHEMA_VERSION) return report('current', { manifestPath, manifest });
   if (manifest.schemaVersion !== 1) return fail('invalid-manifest', 'Only schema 1 manifests can be migrated.');
   if (JSON.stringify(manifest.lanes) !== JSON.stringify(legacyLanes)) return fail('invalid-lane', 'Schema 1 lanes are not the v3.0 layout; reconcile them before migrating.');
+  const unsafe = preflightLayout(project, Object.values(legacyLanes));
+  if (unsafe) return unsafe;
+  const shape = validateManifestShape({ workbenchVersion: options['--version'] ?? manifest.workbenchVersion, provenance: manifest.provenance, wiki: { profile: options['--wiki-profile'] ?? 'project' } });
+  if (shape) return shape;
   const moves = [
     { from: legacyLanes.grilling, to: collections.grilling },
     { from: legacyLanes.handoffs, to: collections.checkpoints }
@@ -241,7 +281,7 @@ export function migrate(options) {
     fs.mkdirSync(target, { recursive: true });
     if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
   }
-  fs.writeFileSync(path.join(project, lanes.sessions, '.gitignore'), SESSIONS_IGNORE);
+  writeSessionsIgnore(project);
   const migrated = {
     schemaVersion: SCHEMA_VERSION,
     workbenchVersion: options['--version'] ?? manifest.workbenchVersion,
@@ -251,9 +291,7 @@ export function migrate(options) {
     wiki: { profile: options['--wiki-profile'] ?? 'project' },
     skillPolicy
   };
-  const temporary = `${manifestPath}.tmp-${process.pid}`;
-  fs.writeFileSync(temporary, `${JSON.stringify(migrated, null, 2)}\n`);
-  fs.renameSync(temporary, manifestPath);
+  writeSafeFile(project, manifestPath, `${JSON.stringify(migrated, null, 2)}\n`);
   const seeded = seedWiki(project, { '--version': migrated.workbenchVersion, ...options });
   const validation = validateManifest(project);
   if (validation.status !== 'valid') return report('partial', { moved, error: validation.error });

@@ -183,6 +183,10 @@ completed spec evidence remain unchanged.
 
 | 2026-09-05 | TK-001 | Full verification of symlink-safety correction passed | All 30 union commands PASS on corrected code and docs; managed-tools 12/12 and closeout 6/6; ADR/Wiki validate; diff check; guardrail 73/100 unchanged | Existing owners updated, no version bump or host deployment | Publish corrected immutable tree, fresh integration review, then authorized merge; cleanup deferred |
 
+| 2026-09-05 | TK-001 | Independent review REJECT on `059400a`: layout erased session ignore rules or followed linked destinations; ADR/checkpoint writers followed linked collections; legacy Wiki adoption failed on its newly seeded destination. Reproduced and repaired this bounded set | Four init/migrate ignore cases RED then GREEN; ADR linked collection tests RED then GREEN; checkpoint linked destination RED then GREEN; real legacy Wiki adoption RED ENOTEMPTY then GREEN with byte-preserved knowledge. Layout 18/18, ADR 6/6, sessions 3/3 and adoption PASS before supplementary ancestor/temp regression checks | Root/template Runbooks describe refusal and preservation; shared destination guard/private temporary writes, lossless ignore append, deferred Wiki seeding implemented; prior evidence unchanged | Full final union and fresh independent exact-candidate review pending; no merge, release, cleanup or host sync claimed |
+
+| 2026-09-05 | TK-001 | Verified the bounded inherited safety and adoption corrections | All 30 union commands PASS after replacing an unregistered collision code with the existing lane-collision diagnostic and rerunning diagnostics 4/4 and layout 19/19; ADR 7/7, sessions 3/3, legacy Wiki adoption, managed-tools 12/12 and closeout 6/6 PASS; ADR/Wiki validate, diff check; guardrail remains 73/100 | Changed runtime source and matching operation docs; no criteria weakened, no host files touched | Fresh immutable integration review and merge remain pending; cleanup remains deferred |
+
 ## Completion Result
 
 v3.1.1 source behavior, route, stances, Round One, feedback workflow and report

@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { collections, controls, coreSkills, initialize, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { collections, controls, coreSkills, initialize, seedWiki, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 
@@ -88,6 +88,10 @@ function preflight(project, home) {
       return fail('lane-collision', `${path.join(project, destination)} already exists.`, { source, destination });
     }
   }
+  for (const name of ['design-concepts', 'guidebooks', 'archive']) {
+    const entry = lstatOrNull(path.join(project, 'Wiki', name));
+    if (entry && (!entry.isDirectory() || entry.isSymbolicLink())) return fail('wiki-collision', `Wiki/${name} must be an ordinary directory.`);
+  }
   const legacyMemory = path.join(project, 'MEMORY.md');
   const memoryEntry = lstatOrNull(legacyMemory);
   if (memoryEntry && (memoryEntry.isSymbolicLink() || !memoryEntry.isFile())) {
@@ -131,7 +135,7 @@ function migrate(options) {
   const home = path.resolve(options['--home'] || os.homedir());
   const failure = preflight(project, home);
   if (failure) return failure;
-  const initialized = initialize({ '--project': project, '--provenance': 'adoption', '--version': options['--version'] });
+  const initialized = initialize({ '--project': project, '--provenance': 'adoption', '--version': options['--version'], deferWikiSeed: Boolean(lstatOrNull(path.join(project, 'Wiki'))) });
   if (initialized.status !== 'initialized') return fail('layout-initialization-failed', initialized.error?.message ?? 'Could not initialize the v3 support root.');
   const moved = [];
   try {
@@ -144,6 +148,7 @@ function migrate(options) {
       fs.renameSync(sourcePath, target);
       moved.push({ source, destination });
     }
+    seedWiki(project, { '--version': options['--version'] });
     const legacyMemory = path.join(project, 'MEMORY.md');
     if (lstatOrNull(legacyMemory)) {
       const destination = path.join(project, lanes.wiki, 'MEMORY.md');
