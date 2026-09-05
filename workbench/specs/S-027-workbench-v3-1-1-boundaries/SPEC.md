@@ -7,8 +7,8 @@
 **Updated:** 2026-09-05
 **Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
 **Blockers:** none
-**Latest event:** TK-001 claimed by codex.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** v3.1.1 local candidate passes the full 29-command suite, Round One and fresh continuation.
+**Next gate:** Review the immutable local v3.1.1 candidate; obtain explicit approval to push, then verify the remote SHA.
 **Stance:** Builder
 
 ## Outcome
@@ -117,12 +117,12 @@ is read-only and reports only in chat. No new queue item is created for it.
 
 ## Acceptance Criteria
 
-- [ ] Root contract and generic templates agree on entry, authority, stances, continuation and review.
-- [ ] All four stances install and are discoverable on a fresh disposable host; existing skills remain preserved and unsafe collisions fail before writes.
-- [ ] Round-trip privacy regression passes without weakening its assertion.
-- [ ] Fresh Round One agent verifies setup via the intended route and reports only in chat.
-- [ ] Subsequent report format/workflow and one report live in the feedback lane; a fresh agent finds the bounded next action or owner gate without original chat.
-- [ ] Full required suite, render, doctor, ADR/Wiki checks and diff check pass; guardrail after-score and limits recorded.
+- [x] Root contract and generic templates agree on entry, authority, stances, continuation and review.
+- [x] All four stances install and are discoverable on a fresh disposable host; existing skills remain preserved and unsafe collisions fail before writes.
+- [x] Round-trip privacy regression passes without weakening its assertion.
+- [x] Fresh Round One agent verifies setup via the intended route and reports only in chat.
+- [x] Subsequent report format/workflow and one report live in the feedback lane; a fresh agent finds the bounded next action or owner gate without original chat.
+- [x] Full required suite, render, doctor, ADR/Wiki checks and diff check pass; guardrail after-score and limits recorded.
 - [ ] v3.1.1 candidate is remotely recoverable; separate-context review covers the exact proposed integration candidate before any integration merge.
 
 ## Testing Seams
@@ -155,6 +155,13 @@ completed spec evidence remain unchanged.
 | 2026-09-05 | TK-001 | Route and stance implementation; original privacy failure reproduced and repaired | Installer red missing four stances then 6/6 green; delivery-contract red on per-ticket independence then 2/2 green; round trip red on private producer paths then green with unchanged assertion; catalog PASS; legacy/new manifest policy test PASS | Root and generic controls, stance skills, installer/layout and tests updated | Round One and reporting sequence; full final suite and review |
 | 2026-09-05 | TK-001 | Fresh-context Round One PASS before reporting implementation | Agent round_one followed AGENTS -> RUNBOOK -> LEXICON -> manifest/S-027 -> Wiki and relevant ADRs; doctor, layout, Wiki, ADR and catalog checks PASS; no authored file or prose artifact; observed dirty tree at baseline HEAD 2538b8a | Existing spec records returned chat evidence; no Round One report or handoff created | This proves setup only, not installation, integration or release |
 | 2026-09-05 | TK-001 | Implemented subsequent manual reporting workflow and lane-owned format | Format manually checked for revision, scope, evidence, challenged findings, bounded action, review and no-repair boundary | RUNBOOK and template, feedback format, Genesis/Adoption placement and Wiki routing | Produce report and prove fresh continuation |
+
+| 2026-09-05 | TK-001 | First subsequent report delivered | [Feedback report](../../feedback/REPORT-boundaries-2026-09-05.md) pins local behavior checkpoint bfae8c0d731d1a799a487b0848f2e39af25c68d5; F-001 reproduced without repair; 29-command pre-version suite PASS | Report and lane format linked from the assigned spec | Fresh continuation, version verification and review; push approval; F-001 repair not assigned |
+
+| 2026-09-05 | TK-001 | Stamped v3.1.1 after behavior proof | All 29 required commands passed before bump; version-bearing source manifest and usage examples updated; original adoption provenance retained | BLUEPRINT, README, source manifest and active version examples | Run complete post-version verification and review; no release or remote publication implied |
+
+| 2026-09-05 | TK-001 | Fresh continuation PASS | Fresh agent cold_continuation followed the reduced route to S-027 and its report, resolved the exact output and pending decisions, passed doctor/next, and independently reproduced F-001; no authored artifact | Existing spec records returned chat proof | Separate-context candidate review and explicit push approval; F-001 repair remains unassigned |
+| 2026-09-05 | TK-001 | Full post-version verification PASS | All 29 commands in the AGENTS/Runbook union passed on v3.1.1; ADR/Wiki validation, report privacy scan, and diff check PASS; measured guardrail 73/100 | Benchmarks records 68 -> 73 with unchanged criteria and the F-001 scoring limitation | Immutable candidate review; remote publication blocked by automatic approval review pending explicit owner approval |
 
 ## Completion Result
 

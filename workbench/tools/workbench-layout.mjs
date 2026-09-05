@@ -365,7 +365,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.0 [--wiki-profile project|deployment] [--name NAME] | migrate --project PATH [--version v3.1.0] | validate --project PATH [--genesis]');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.1 [--wiki-profile project|deployment] [--name NAME] | migrate --project PATH [--version v3.1.1] | validate --project PATH [--genesis]');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current'].includes(result.status)) process.exitCode = 1;
   } catch (error) {

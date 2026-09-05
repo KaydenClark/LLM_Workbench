@@ -22,7 +22,7 @@ Adoption to update an already-adopted project.
    node tools/workbench-adoption.mjs migrate \
      --project [ABSOLUTE_PROJECT_PATH] \
      --home [USER_HOME] \
-     --version v3.1.0
+     --version v3.1.1
    ```
 
    The helper moves only unambiguous durable v2 lanes, including a legacy root

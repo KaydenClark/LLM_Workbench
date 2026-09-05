@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-09-04
 **Status:** active
-**Harness version:** v3.1.0 (unreleased baseline; v3.1.1 continuation in S-027)
+**Harness version:** v3.1.1 (local candidate; publication pending)
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
@@ -59,8 +59,8 @@ promotes integration to main, after the applicable candidate review.
 
 ## Accepted V3.1 Direction
 
-[S-022](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md) owns the
-first public v3 release. `KaydenClark/LLM_Workbench` is the sole Workbench
+[S-022](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md) records the
+original v3.1 release umbrella, now paused behind S-027. `KaydenClark/LLM_Workbench` is the sole Workbench
 source and release repository; the owner's deployment and its Foundry
 extension adopt released versions and are read-only evidence while v3.1 is
 built ([ADR-0026](workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md)).
