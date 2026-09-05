@@ -471,8 +471,10 @@ node tools/test-sessions.mjs
 naming the source and date) into `workbench/sessions/checkpoints/<topic>-<date>.md`
 with mode `0644`, and refuses with `secret-like-content` and the offending
 line numbers when the shared `privacy.mjs` patterns match; `invalid-note`
-covers a symlink, a non-file, or an existing destination. A refusal writes
-nothing. Cite the promoted copy, never the live path.
+covers a symlink, a non-file, an existing destination, or a `--from` that
+resolves outside the repository root (source and destination share one
+boundary; the untracked session collections are the intended sources). A
+refusal writes nothing. Cite the promoted copy, never the live path.
 
 ### Wiki Validation
 

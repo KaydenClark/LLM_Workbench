@@ -376,7 +376,8 @@ backup and can be restored.
 Layout initialization and schema migration preserve existing session ignore
 rules and reject linked destination paths before writes. ADR creation, register
 rendering and checkpoint promotion also reject unsafe destination chains and
-use private temporary files. Legacy Wiki adoption moves existing knowledge
+use private temporary files; checkpoint promotion refuses a `--from` source
+outside the repository root with `invalid-note` and writes nothing. Legacy Wiki adoption moves existing knowledge
 before seeding only the missing contract files.
 
 Treat a harness upgrade like any other change: smallest correct diff, verified,
