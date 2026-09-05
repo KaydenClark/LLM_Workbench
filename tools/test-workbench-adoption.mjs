@@ -166,6 +166,10 @@ function fixtureSpec() {
       'manifest and managed-tools receipt must record one source commit');
     assert.deepEqual(report.residue.rootManagedTools, ['spec-workbench.mjs'],
       'matching application-root tool names are reported without moving or deleting them');
+    assert.equal(report.residue.missingIntegrationBranch, 'integration',
+      'a room without an integration branch declares the default name and reports it missing rather than blocking');
+    assert.deepEqual(JSON.parse(read(project, 'workbench/manifest.json')).git, { defaultBranch: 'main', integrationBranch: 'integration' });
+    assert.ok(report.findings.some((issue) => issue.code === 'integration-branch-missing' && issue.blocks === 'none'));
     assert.deepEqual(report.residue.movedExternalLinks, [
       {
         file: 'workbench/specs/S-101-adopted/SPEC.md',
@@ -282,6 +286,30 @@ function fixtureSpec() {
     assert.notEqual(result.status, 0, 'a root feedback file beside a legacy feedback lane file must block before mutation');
     assert.equal(JSON.parse(result.stdout).error.code, 'feedback-collision');
     assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    for (const args of [['init', '-q', '-b', 'main'], ['add', '.'], ['commit', '-q', '-m', 'v2 room'], ['branch', 'Integration']]) {
+      const git = spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', ...args], { cwd: project, encoding: 'utf8' });
+      assert.equal(git.status, 0, git.stderr);
+    }
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
+    assert.equal(result.status, 0, result.stdout);
+    const report = JSON.parse(result.stdout);
+    assert.deepEqual(JSON.parse(read(project, 'workbench/manifest.json')).git, { defaultBranch: 'main', integrationBranch: 'Integration' },
+      'adoption declares an existing integration-named branch by its exact case');
+    assert.equal(report.residue.missingIntegrationBranch, null);
+    assert.equal(report.findings.some((issue) => issue.scope === 'git'), false, 'a resolving declared branch is not a finding');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });

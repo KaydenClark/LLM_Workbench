@@ -10,6 +10,10 @@
       "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
     }
   },
+  "git": {
+    "defaultBranch": "main",
+    "integrationBranch": "integration"
+  },
   "lanes": {
     "docs": "workbench/docs",
     "specs": "workbench/specs",

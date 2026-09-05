@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { collections, controls, coreSkills, initialize, seedWiki, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { collections, controls, coreSkills, initialize, resolveBranchRefs, seedWiki, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 import { writeSafeFile } from '../workbench/tools/workbench-paths.mjs';
@@ -238,6 +238,10 @@ function migrate(options) {
     deferWikiSeed: Boolean(lstatOrNull(path.join(project, 'Wiki')))
   });
   if (initialized.status !== 'initialized') return fail('layout-initialization-failed', initialized.error?.message ?? 'Could not initialize the v3 support root.');
+  // The declared integration branch is reported, never created or required:
+  // the protocol completion checklist decides whether its absence is recorded.
+  const integrationBranch = initialized.manifest.git.integrationBranch;
+  residue.missingIntegrationBranch = resolveBranchRefs(project, integrationBranch).length ? null : integrationBranch;
   const moved = [];
   try {
     for (const { source, destination } of legacyLanes) {

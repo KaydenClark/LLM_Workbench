@@ -138,7 +138,7 @@ keeps `grilling/` and `handoffs/` untracked; only `checkpoints/` is durable.
 Exercise it from a disposable project directory:
 
 ```bash
-node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.1.1
+node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.1.1 --integration-branch integration
 node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-project
 node tools/test-workbench-layout.mjs
 ```
@@ -156,6 +156,27 @@ node workbench/tools/workbench-layout.mjs migrate --project /absolute/project
 Every consumer resolves lanes and collections through
 `workbench/tools/workbench-paths.mjs`; nothing hardcodes a support path.
 
+The manifest may also carry a `git` block (`defaultBranch`,
+`integrationBranch`) naming, by exact case, the branch the independent review
+gate merges into ([ADR-0039](workbench/docs/adr/0039-the-integration-branch-is-a-manifest-declared-fact.md)).
+`init` and `migrate` write it from `--default-branch` and
+`--integration-branch`, defaulting to an existing integration-named branch by
+its exact case, then `origin/HEAD` (or the checked-out branch) and
+`integration`; `workbench-adoption.mjs migrate` does the same and lists an
+unresolved branch as `residue.missingIntegrationBranch`. A manifest without
+the block stays valid, and `workbench-paths.mjs` exposes the block as
+`declaredGit`. `doctor` reports `integration-branch-undeclared` when the block
+is absent and `integration-branch-missing` when the declared name resolves
+neither as a local head nor on a remote; both are `error` findings in the
+`git` scope with effect `none`, so they stay visible without blocking
+selection. Declaring never creates a branch. This repository declares
+`integration`; create a missing one from the default branch:
+
+```bash
+git branch integration main
+git push -u origin integration
+```
+
 `init` also seeds the wiki contract (`SCHEMA.md`, `AGENTS.md`, and
 `design-concepts/README.md`) into `workbench/wiki/` from `templates/wiki/`
 when it runs from a release checkout, filling the version, date, and project
@@ -170,7 +191,9 @@ exact Workbench version stamps on the six stamped controls (the thin
 `BLUEPRINT.md` and `TASKBOARD.md` that `render` fills, one actionable
 version-matched first spec at a stable `workbench/specs/S-###-slug/SPEC.md`
 path, an installed `workbench/tools/` lane whose receipt names the manifest's
-release (`tools-receipt-missing` or `version-mismatch` otherwise), and no
+release (`tools-receipt-missing` or `version-mismatch` otherwise), a declared
+integration branch that resolves (`integration-branch-undeclared` or
+`integration-branch-missing` otherwise), and no
 project-local `skills/` directory. It fails closed on symlinks,
 template placeholders, stubs, version drift, unstable spec paths, or
 structurally incomplete first specs. A rejected first spec carries a `reason`
@@ -460,6 +483,7 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target` |
 | `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
 | `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `stale-register`, `stale-note`, and the ADR and wiki findings until their tools ship |
+| `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
 
 `doctor --json` prints the findings with their `severity`, `scope`, and
 `blocks` fields; the plain output ends with an `ok - no blocking finding` line

@@ -50,6 +50,11 @@ export function plan(workspace, date = new Date().toISOString().slice(0, 10)) {
   fs.mkdirSync(planning);
   git(planning, 'init', '-q', '-b', 'main');
   git(planning, 'remote', 'add', 'origin', remote);
+  // Genesis establishes the declared integration branch from the default
+  // branch and pushes it, so the review gate has a merge target from the start.
+  git(planning, 'commit', '-q', '--allow-empty', '-m', 'Genesis base');
+  git(planning, 'branch', 'integration');
+  git(planning, 'push', '-q', 'origin', 'main', 'integration');
   sh(planning, process.execPath, [path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', planning, '--provenance', 'genesis', '--version', VERSION, '--name', 'Greeter', '--date', date, '--source-commit', git(product, 'rev-parse', 'HEAD')]);
   sh(planning, process.execPath, [path.join(product, 'tools', 'workbench-tools.mjs'), 'install', '--project', planning]);
   const stamp = `> Generated from LLM Workbench ${VERSION}.`;

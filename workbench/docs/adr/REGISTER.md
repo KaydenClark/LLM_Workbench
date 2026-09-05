@@ -28,3 +28,4 @@
 | [0036](0036-stances-change-method-not-authority.md) | Assigned portable stances change method, not authority | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
 | [0037](0037-independent-review-at-integration.md) | Require independent review when branches combine at integration | accepted | 2026-09-04 | AGENTS.md |
 | [0038](0038-setup-proof-precedes-feedback-reporting.md) | Chat-only setup proof precedes feedback reporting | accepted | 2026-09-04 | RUNBOOK.md, BLUEPRINT.md, workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md |
+| [0039](0039-the-integration-branch-is-a-manifest-declared-fact.md) | The integration branch is a manifest-declared fact | proposed | 2026-09-05 | AGENTS.md, RUNBOOK.md, LEXICON.md |

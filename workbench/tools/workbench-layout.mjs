@@ -4,10 +4,11 @@
 // reported as `upgrade-required` and migrated once, losslessly.
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, writeSafeFile, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, declaredGit, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -37,6 +38,80 @@ function lstatOrNull(target) {
 
 function report(status, details = {}) { return { status, ...details }; }
 function fail(code, message, details = {}) { return report('invalid', { error: { code, message, ...details } }); }
+
+function gitRead(project, args) {
+  const result = spawnSync('git', ['-C', project, ...args], { encoding: 'utf8' });
+  return result.status === 0 ? result.stdout.trim() : null;
+}
+
+function insideWorkTree(project) {
+  return gitRead(project, ['rev-parse', '--is-inside-work-tree']) === 'true';
+}
+
+function remoteNames(project) {
+  return (gitRead(project, ['remote']) ?? '').split('\n').filter(Boolean);
+}
+
+function listRefs(project) {
+  if (!insideWorkTree(project)) return [];
+  return (gitRead(project, ['for-each-ref', '--format=%(refname)', 'refs/heads', 'refs/remotes']) ?? '').split('\n').filter(Boolean);
+}
+
+// The refs under which a branch name resolves in the repository containing
+// the project: the local head first, then each configured remote. Names are
+// compared exactly from the ref listing, so a case-insensitive filesystem
+// cannot make `Integration` satisfy a declared `integration`. Nothing is
+// fetched, and a project outside any Git work tree resolves nothing.
+export function resolveBranchRefs(project, name) {
+  if (!isBranchName(name)) return [];
+  const refs = listRefs(project);
+  const resolved = [];
+  if (refs.includes(`refs/heads/${name}`)) resolved.push({ ref: `refs/heads/${name}`, name });
+  for (const remote of remoteNames(project)) {
+    const ref = `refs/remotes/${remote}/${name}`;
+    if (refs.includes(ref)) resolved.push({ ref, name: `${remote}/${name}` });
+  }
+  return resolved;
+}
+
+// Every branch name the repository knows locally or on a remote.
+export function listBranchNames(project) {
+  const remotes = remoteNames(project);
+  const names = new Set();
+  for (const ref of listRefs(project)) {
+    if (ref.startsWith('refs/heads/')) { names.add(ref.slice('refs/heads/'.length)); continue; }
+    const remote = remotes.find((candidate) => ref.startsWith(`refs/remotes/${candidate}/`));
+    if (!remote) continue;
+    const name = ref.slice(`refs/remotes/${remote}/`.length);
+    if (name !== 'HEAD') names.add(name);
+  }
+  return [...names].sort();
+}
+
+// origin/HEAD names the default branch; a repository without one falls back
+// to its checked-out branch, and a project outside Git to main.
+export function defaultBranchName(project) {
+  const originHead = gitRead(project, ['symbolic-ref', '--quiet', 'refs/remotes/origin/HEAD']);
+  if (originHead?.startsWith('refs/remotes/origin/')) return originHead.slice('refs/remotes/origin/'.length);
+  return gitRead(project, ['symbolic-ref', '--quiet', '--short', 'HEAD']) || 'main';
+}
+
+// The manifest git block init and migrate write: explicit flags win, then an
+// existing integration-named branch by its exact case, then the defaults.
+// Declaring never creates a branch; the Genesis gate and doctor check it.
+function gitDeclaration(project, options) {
+  for (const flag of ['--default-branch', '--integration-branch']) {
+    if (options[flag] !== undefined && !isBranchName(options[flag])) return fail('invalid-branch', `${flag} must be a Git branch name; received ${options[flag]}.`);
+  }
+  const names = listBranchNames(project);
+  const existing = names.find((name) => name === 'integration') ?? names.find((name) => name.toLowerCase() === 'integration');
+  return report('declared', {
+    git: {
+      defaultBranch: options['--default-branch'] ?? defaultBranchName(project),
+      integrationBranch: options['--integration-branch'] ?? existing ?? 'integration'
+    }
+  });
+}
 
 function parseOptions(args, required, flags = []) {
   const options = {};
@@ -111,6 +186,10 @@ export function validateManifest(project) {
     if (!new RegExp(`^${name}/\\*?$`, 'm').test(ignoreContent)) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must ignore ${name}/.`, { collection: name });
   }
   if (!WIKI_PROFILES.includes(manifest.wiki?.profile)) return fail('invalid-wiki-profile', `Manifest wiki.profile must be one of ${WIKI_PROFILES.join(', ')}.`);
+  // The git block is an additive schema 2 field: absent is valid, malformed is not.
+  if (manifest.git !== undefined && (!manifest.git || typeof manifest.git !== 'object' || Array.isArray(manifest.git) || !isBranchName(manifest.git.defaultBranch) || !isBranchName(manifest.git.integrationBranch))) {
+    return fail('invalid-manifest', 'Manifest git block must declare defaultBranch and integrationBranch as Git branch names.', { git: manifest.git });
+  }
   // Existing v3.0/v3.1 manifests remain readable; v3.1.1 must include stances.
   const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
   const supportedLegacy = ['v3.0.0', 'v3.1.0'].includes(manifest.workbenchVersion)
@@ -181,6 +260,8 @@ export function initialize(options) {
   if (unsafe) return unsafe;
   const shape = validateManifestShape({ workbenchVersion: options['--version'], provenance: { lifecycle: options['--provenance'] }, wiki: { profile: options['--wiki-profile'] ?? 'project' } });
   if (shape) return shape;
+  const declaration = gitDeclaration(project, options);
+  if (declaration.status !== 'declared') return declaration;
   for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
     const entry = lstatOrNull(path.join(project, relative));
     if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${path.join(project, relative)} is not a directory.`);
@@ -189,6 +270,7 @@ export function initialize(options) {
     schemaVersion: SCHEMA_VERSION,
     workbenchVersion: options['--version'],
     provenance: { lifecycle: options['--provenance'], source: sourceIdentity(options) },
+    git: declaration.git,
     lanes,
     collections,
     wiki: { profile: options['--wiki-profile'] ?? 'project' },
@@ -257,6 +339,8 @@ export function migrate(options) {
   if (unsafe) return unsafe;
   const shape = validateManifestShape({ workbenchVersion: options['--version'] ?? manifest.workbenchVersion, provenance: manifest.provenance, wiki: { profile: options['--wiki-profile'] ?? 'project' } });
   if (shape) return shape;
+  const declaration = gitDeclaration(project, options);
+  if (declaration.status !== 'declared') return declaration;
   const moves = [
     { from: legacyLanes.grilling, to: collections.grilling },
     { from: legacyLanes.handoffs, to: collections.checkpoints }
@@ -286,6 +370,7 @@ export function migrate(options) {
     schemaVersion: SCHEMA_VERSION,
     workbenchVersion: options['--version'] ?? manifest.workbenchVersion,
     provenance: { ...manifest.provenance, migratedFrom: 1, source: sourceIdentity({ '--version': options['--version'] ?? manifest.workbenchVersion, ...options }) },
+    git: declaration.git,
     lanes,
     collections,
     wiki: { profile: options['--wiki-profile'] ?? 'project' },
@@ -378,6 +463,20 @@ function validateGenesisRuntime(project, expectedVersion) {
   return null;
 }
 
+// Readiness needs the review gate's merge target: a declared integration
+// branch that resolves as a local head or on a remote. Steady-state doctor
+// reports the same two conditions without blocking selection.
+function validateGenesisGit(project) {
+  const declared = declaredGit(project);
+  if (!declared) {
+    return fail('integration-branch-undeclared', 'workbench/manifest.json must declare git.integrationBranch, the branch the independent review gate merges into; run init with --integration-branch or add the git block.', { reason: 'the manifest has no git block' });
+  }
+  if (resolveBranchRefs(project, declared.integrationBranch).length === 0) {
+    return fail('integration-branch-missing', `Declared integration branch ${declared.integrationBranch} resolves neither as a local head nor on a remote; create it from ${declared.defaultBranch} and push it, or record the omission reason in the owning spec.`, { branch: declared.integrationBranch, reason: `no refs/heads/${declared.integrationBranch} and no remote carries ${declared.integrationBranch}` });
+  }
+  return null;
+}
+
 export function validate(options, requireGenesis) {
   const project = path.resolve(options['--project']);
   const result = validateManifest(project);
@@ -390,6 +489,8 @@ export function validate(options, requireGenesis) {
   if (specIssue) return specIssue;
   const runtimeIssue = validateGenesisRuntime(project, result.manifest.workbenchVersion);
   if (runtimeIssue) return runtimeIssue;
+  const gitIssue = validateGenesisGit(project);
+  if (gitIssue) return gitIssue;
   if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'Genesis must not create a project-local skills directory.');
   return report('valid', { manifest: result.manifest, controls });
 }
@@ -403,7 +504,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.1 [--wiki-profile project|deployment] [--name NAME] | migrate --project PATH [--version v3.1.1] | validate --project PATH [--genesis]');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.1 [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.1] [--default-branch NAME] [--integration-branch NAME] | validate --project PATH [--genesis]');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current'].includes(result.status)) process.exitCode = 1;
   } catch (error) {

@@ -44,6 +44,32 @@ export function readManifest(root) {
   }
 }
 
+// The practical subset of git-check-ref-format for a branch name, checked
+// without spawning Git so a manifest can be validated anywhere.
+export function isBranchName(value) {
+  return typeof value === 'string'
+    && value.length > 0
+    && !/[\s~^:?*[\\\x00-\x1f\x7f]/.test(value)
+    && !value.startsWith('-') && !value.startsWith('/') && !value.startsWith('.')
+    && !value.endsWith('/') && !value.endsWith('.') && !value.endsWith('.lock')
+    && !value.includes('..') && !value.includes('//') && !value.includes('/.') && !value.includes('@{')
+    && value !== '@';
+}
+
+// The declared Git facts: the default branch and the branch the independent
+// review gate merges into, by exact name. A manifest without the block
+// declares nothing and stays valid; a malformed block is a malformed manifest.
+export function declaredGit(root) {
+  const declared = readManifest(root)?.git;
+  if (declared === undefined) return null;
+  if (!declared || typeof declared !== 'object' || Array.isArray(declared) || !isBranchName(declared.defaultBranch) || !isBranchName(declared.integrationBranch)) {
+    const failure = new Error('manifest git block must declare defaultBranch and integrationBranch as Git branch names');
+    failure.code = 'invalid-manifest';
+    throw failure;
+  }
+  return { defaultBranch: declared.defaultBranch, integrationBranch: declared.integrationBranch };
+}
+
 export function isSafeRelative(value) {
   return typeof value === 'string'
     && !path.isAbsolute(value)

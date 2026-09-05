@@ -8,7 +8,7 @@
 // is a tool change with a test.
 
 export const SEVERITIES = Object.freeze(['error', 'attention']);
-export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls']);
+export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls', 'git']);
 export const EFFECTS = Object.freeze(['all', 'selection', 'selected-slice', 'none']);
 
 const registry = Object.freeze({
@@ -45,6 +45,10 @@ const registry = Object.freeze({
   'invalid-note': entry('error', 'wiki', 'none', 'a wiki note violates the schema'),
   'copied-task-state': entry('error', 'wiki', 'none', 'a wiki note copies live task state'),
   'secret-like-content': entry('error', 'wiki', 'none', 'a note or checkpoint contains secret-like material'),
+  // git: the review gate's merge target is a declared fact; its absence is
+  // visible in every doctor run and blocks only the Genesis readiness gate
+  'integration-branch-undeclared': entry('error', 'git', 'none', 'the manifest declares no git.integrationBranch; declare the branch the independent review gate merges into'),
+  'integration-branch-missing': entry('error', 'git', 'none', 'the declared integration branch resolves neither as a local head nor on a remote'),
   'unfilled-control': entry('error', 'controls', 'all', 'a root control is empty, a stub, or carries template placeholders'),
   'unsafe-control': entry('error', 'controls', 'all', 'a root control is not an ordinary file'),
   'version-mismatch': entry('error', 'controls', 'all', 'a control version stamp disagrees with the manifest'),

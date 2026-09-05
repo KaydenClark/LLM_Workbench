@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { validateManifest } from './workbench-layout.mjs';
+import { resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, finding } from './diagnostics.mjs';
-import { collectionPath, lanePath, readManifest } from './workbench-paths.mjs';
+import { collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 
@@ -189,7 +189,23 @@ export function doctor(rootDir, options = {}) {
   checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
   issues.push(...collectionFindings(root));
+  issues.push(...gitFindings(root));
   return issues;
+}
+
+// The declared integration branch is the review gate's merge target. Its
+// absence is an error every doctor run shows and none blocks: a room can
+// create the branch in one command, and selection must not wait on it.
+function gitFindings(root) {
+  const manifest = readManifest(root);
+  if (!manifest || manifest.schemaVersion !== 2) return [];
+  const declared = declaredGit(root);
+  if (!declared) return [finding('integration-branch-undeclared', 'workbench/manifest.json declares no git.integrationBranch; declare the branch the independent review gate merges into')];
+  const refs = resolveBranchRefs(root, declared.integrationBranch);
+  if (refs.length === 0) {
+    return [finding('integration-branch-missing', `declared integration branch ${declared.integrationBranch} resolves neither as a local head nor on a remote; create it from ${declared.defaultBranch}`, { branch: declared.integrationBranch })];
+  }
+  return [];
 }
 
 // Schema 2 projects also carry decision records; their findings ride along so
