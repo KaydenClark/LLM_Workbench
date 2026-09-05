@@ -81,6 +81,7 @@ node tools/test-workbench-tools.mjs
 node tools/test-diagnostics.mjs
 node tools/test-adr.mjs
 node tools/test-governance-core.mjs
+node tools/test-branch-closeout.mjs
 node tools/test-wiki.mjs
 node tools/test-sessions.mjs
 node tools/test-workbench-round-trip.mjs
@@ -94,6 +95,7 @@ node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
 node tools/test-socket-contract.mjs
+node tools/test-symlink-invocation.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node workbench/tools/spec-workbench.mjs doctor
@@ -674,40 +676,63 @@ gh pr create --base integration --fill
 Before creating a branch or PR, verify the live base and preserve dirty work.
 PR descriptions state what changed, why, risks, and verification.
 
-Closeout, once the integration review has passed. A pushed branch is
-recoverable, not delivered; finish the merge and clean up after yourself:
+Closeout, once the integration review has passed. Export `TASK_BRANCH`,
+`PR_NUMBER`, and the reviewed full commit SHA as `EXPECTED_HEAD` before running
+this block. Export `CLEANUP=no` when the owner defers cleanup; otherwise use
+`CLEANUP=yes`. Review must cover the live integration comparison before merging.
 
 ```bash
-gh pr merge --merge --delete-branch
-git fetch origin --prune
-git switch --detach origin/integration
-git merge-base --is-ancestor codex/short-description origin/integration && echo "integration contains the work"
-git branch --merged origin/integration
-git branch -d codex/short-description
-git push origin --delete codex/short-description
+(
+set -eu
+: "${TASK_BRANCH:?Set the reviewed task branch}"
+: "${PR_NUMBER:?Set the reviewed PR number}"
+: "${EXPECTED_HEAD:?Set the reviewed full commit SHA}"
+: "${CLEANUP:?Set yes or no according to the owner instruction}"
+case "$CLEANUP" in yes|no) ;; *) exit 1 ;; esac
+git check-ref-format --branch "$TASK_BRANCH" >/dev/null
+case "$TASK_BRANCH" in main|integration) exit 1 ;; esac
+test -z "$(git status --porcelain)"
+test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+# Explicit refspecs also work in a single-branch clone.
+git fetch origin '+refs/heads/integration:refs/remotes/origin/integration'
+gh pr merge "$PR_NUMBER" --merge --match-head-commit "$EXPECTED_HEAD"
+git fetch origin '+refs/heads/integration:refs/remotes/origin/integration'
+git merge-base --is-ancestor "$EXPECTED_HEAD" origin/integration
+echo "integration contains the reviewed work"
+if [ "$CLEANUP" = yes ]; then
+  # Never require a local integration checkout, which another worktree may hold.
+  git switch --detach origin/integration
+  git branch --merged origin/integration
+  if git show-ref --verify --quiet "refs/heads/$TASK_BRANCH"; then
+    git merge-base --is-ancestor "$TASK_BRANCH" origin/integration
+    git branch -d "$TASK_BRANCH"
+  fi
+  remote_head=$(git ls-remote origin "refs/heads/$TASK_BRANCH")
+  if [ -n "$remote_head" ]; then
+    remote_head=${remote_head%%[[:space:]]*}
+    git fetch origin "refs/heads/$TASK_BRANCH"
+    test "$(git rev-parse FETCH_HEAD)" = "$remote_head"
+    git merge-base --is-ancestor "$remote_head" origin/integration
+    # Compare-and-delete protects commits pushed after the containment check.
+    git push origin --delete "$TASK_BRANCH" --force-with-lease="refs/heads/$TASK_BRANCH:$remote_head"
+  fi
+fi
+)
 ```
 
-The closeout never checks out a local `integration` branch: a linked worktree
-may already hold it (this repository keeps one under the host temp directory),
-and `git switch integration` then fails. `git switch --detach origin/integration`
-leaves the task branch without that dependency, and `git merge-base
---is-ancestor` exits non-zero when `origin/integration` does not contain the
-work, so a missed merge cannot pass silently. `git branch --merged
-origin/integration` lists every branch `integration` now contains, including
-stacked branches that needed no separate merge. `-d` refuses to delete unmerged
-work, so let it fail rather than reaching for `-D`. `gh pr merge
---delete-branch` already removes the remote branch and may remove the local
-one; a "branch not found" from the two delete commands is then harmless. The
-explicit `git push origin --delete` is for branches that never had a PR.
+The subshell stops on any failure without closing the caller's shell. Merge
+never requests branch deletion. Containment uses the immutable reviewed SHA,
+so it remains checkable if GitHub already removed the source branch. Cleanup
+checks local and remote tips separately; a missing branch is already clean.
+The deletion lease is a compare-and-delete guard, not permission to rewrite
+history. Never use `-D` or an unconditional force push to bypass failed checks.
+If a worktree still holds the task branch, local deletion fails and cleanup
+stops. When cleanup is deferred, both branches and the checkout stay intact.
 
-A clone whose `remote.origin.fetch` names only `main` cannot see
-`origin/integration` move or resolve `@{u}` for a pushed task branch. Repair
-it once before relying on the commands above:
-
-```bash
-git config --replace-all remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-git fetch origin --prune
-```
+Use `node tools/test-branch-closeout.mjs` for a disposable Git demonstration of
+failure preservation, linked worktrees, already-deleted branches, and deferred
+cleanup. GitHub merge responses are simulated there; actual integration delivery
+still requires the reviewed PR and remote containment read-back.
 
 ## Manual Harness Feedback Reports
 
@@ -753,8 +778,9 @@ If a change fails:
 3. Rerun the failing verification command.
 4. Update the owning spec with the result and remaining gap, then render.
 
-Do not delete data (result ledgers, benchmark records), remove branches, or
-rewrite history unless the owner explicitly approves that action.
+Do not delete data (result ledgers, benchmark records), remove unmerged branches,
+or rewrite history unless the owner explicitly approves that action. Merged
+branch cleanup follows Git Rules and any owner instruction to defer it.
 
 The pre-migration local state (before this folder became the repo home) is
 preserved on branch `backup/local-pre-v2-migration`; the YAML-frontmatter

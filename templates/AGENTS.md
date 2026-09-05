@@ -175,12 +175,15 @@ on an approved candidate or leave a passed PR waiting for the owner; only
 `integration` into `main` is owner-only. "Never merge a PR left open for
 review" means a PR whose review is still pending, not one that already passed.
 
-Delete the branch once `integration` contains it and nothing is lost. Use
-`git branch -d` and delete the remote branch; `-d` refuses unless the work is
-truly merged, so let that check be the safety gate and never force it with
+Delete the branch once `integration` contains it and nothing is lost, unless
+its owner defers cleanup. Prove containment of the immutable reviewed commit
+before any deletion, then check the actual local and remote branch tips too.
+Use `git branch -d` for local deletion and an expected-tip guard for remote
+deletion. A tracking upstream alone is not proof of integration containment;
+never force it with
 `-D` to clear a branch. Stacked branches whose commits are already ancestors of
-the merged tip are deleted the same way and need no separate merge. A branch
-still holding unmerged work is removed only with owner approval.
+the merged tip need no separate merge. A branch still holding unmerged work is
+removed only with owner approval.
 
 ## Session Records And Checkpoints
 

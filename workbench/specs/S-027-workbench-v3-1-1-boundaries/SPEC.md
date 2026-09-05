@@ -7,8 +7,8 @@
 **Updated:** 2026-09-05
 **Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
 **Blockers:** none
-**Latest event:** Stabilization run reproduced the approved-candidate stall from its original prompt, repaired the worktree-unsafe closeout and the single-branch fetch refspec, and deleted three provably merged branches; the merge half stays gated on a fresh review.
-**Next gate:** Owner declined the merge for this run. A fresh separate-context review of the new branch tip is required before any integration merge; the earlier APPROVE covers `72cf0fe` only.
+**Latest event:** Owner authorized integration delivery after verification and fresh review; cloud continuation repaired the demonstrated closeout failure. Branch cleanup and local synchronization are explicitly deferred.
+**Next gate:** Verify and independently review the new immutable candidate against live integration, then merge and confirm remote containment. Preserve branches for owner-directed cleanup after local synchronization.
 **Stance:** Builder
 
 ## Outcome
@@ -104,7 +104,7 @@ existing skills; real user installations are outside this task.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | in-progress | none | Candidate `a61a6d3` pushed and read back from the remote; separate-context review APPROVE |
+| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | in-progress | none | Historical approvals cover earlier candidates only; current closeout repair awaits full verification and exact-candidate review |
 
 ### TK-001 - Assigned task
 
@@ -123,7 +123,7 @@ is read-only and reports only in chat. No new queue item is created for it.
 - [x] Fresh Round One agent verifies setup via the intended route and reports only in chat.
 - [x] Subsequent report format/workflow and one report live in the feedback lane; a fresh agent finds the bounded next action or owner gate without original chat.
 - [x] Full required suite, render, doctor, ADR/Wiki checks and diff check pass; guardrail after-score and limits recorded.
-- [x] v3.1.1 candidate is remotely recoverable; separate-context review covers the exact proposed integration candidate before any integration merge.
+- [ ] v3.1.1 candidate is remotely recoverable; separate-context review covers the exact proposed integration candidate before any integration merge.
 
 ## Testing Seams
 
@@ -175,15 +175,19 @@ completed spec evidence remain unchanged.
 | 2026-09-05 | TK-001 | Owner reported a harness failure: an approved candidate did not land and merged branches were never cleaned up | Red on three new governance-core assertions (missing Branch Completion contract, blanket branch-removal gate, absent Runbook closeout) then 7/7 green; all 26 required commands PASS; guardrail unchanged at 73/100 and templates unchanged at 106.6/113 | Branch Completion added to AGENTS and generic template, safety rule narrowed, Runbook closeout commands, feedback report F-002/F-003 | The branch tip is now a new candidate; the prior APPROVE covers `72cf0fe` only and a fresh review is required before any merge |
 | 2026-09-05 | TK-001 | Stabilization run reproduced the branch-completion stall from its original prompt and repaired two demonstrated closeout defects | Original prompt and the AskUserQuestion stall located in the 2026-09-04 session record; HEAD governance test red 3 of 7 against the 72cf0fe controls and green 7 of 7 at 7994d67; `git switch integration` reproduced failing against the linked worktree that holds `integration`; new closeout assertion red then 8 of 8 green; single-branch `remote.origin.fetch` repaired so `@{u}` resolves and `origin/integration` refreshes; three branches already contained in `origin/integration` deleted with `git branch -d` and `git push origin --delete`; full 29-command union PASS; guardrail 73/100 and templates 106.6/113 unchanged; ADR and Wiki validate; diff check clean | RUNBOOK closeout made worktree-safe with the refspec repair; generic RUNBOOK closeout placeholders registered in the vocabulary; the retired root-level notepad moved into the manifest grilling lane; limitations name installed-skill drift and owner-only cleanup | Merge half not rerun: a fresh separate-context review of the new tip is still required before any integration merge; real fresh-session continuation and the non-Foundry slice are untested |
 
+| 2026-09-05 | TK-001 | Owner authorized integration merge when verified and reviewed; deferred all real branch cleanup and local synchronization. Continued existing codex assignment. Reproduced unsafe closeout in disposable repositories: old recipe deleted branch refs after failed merge; six regression scenarios red then green after repair | `node tools/test-branch-closeout.mjs` 6/6 PASS; governance-core 8/8 PASS; baseline guardrail 73/100 | AGENTS and generic controls now require reviewed-SHA containment before deletion, per-tip cleanup checks and owner deferral; Runbook is fail-fast and worktree-safe; stale completion/review claims reconciled | Full union suite, immutable review and integration read-back pending; GitHub merge is simulated in the fixture, actual host and real-work trials remain outside this run |
+
+| 2026-09-05 | TK-001 | Cloud verification completed after correcting a template vocabulary mismatch found by the full suite | All 30 commands in the AGENTS/RUNBOOK union passed, with layout 14/14 and closeout 6/6 rerun after correction; ADR/Wiki validation and diff check PASS; guardrail remains 73/100 with unchanged criteria | Root/template closeout and spec state reconciled; existing placeholder vocabulary preserved | Immutable integration review and actual merge pending. Remaining score recommendations concern real repeated comparative outcome trials and known proof-freshness routing; these checks do not prove real-work readiness |
+
 ## Completion Result
 
-v3.1.1 is delivered as a local candidate: contract, five ADRs, four portable
-stances, chat-only Round One, feedback workflow/report and fresh continuation
-are implemented and verified. Remote recovery is blocked pending explicit push
-authorization; no release, integration acceptance, or completed spec is claimed.
-The local-delta review result is returned in chat for this immutable checkpoint;
-its earlier rejected candidate and correction are retained in the evidence log.
-
+v3.1.1 source behavior, route, stances, Round One, feedback workflow and report
+continuation are implemented. The earlier candidate is remotely recoverable at
+`7d05596`; the current closeout repair remains pending final verification,
+publication and independent review. The owner now authorizes integration
+merge once ready, superseding the earlier run-specific refusal. No main merge,
+release, local-host synchronization or real-work readiness claim is made.
+Branch cleanup is deferred until the owner synchronizes the local checkout.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -210,8 +214,8 @@ its earlier rejected candidate and correction are retained in the evidence log.
 - Review P3-1: `workbench/wiki/AGENTS.md`, `SCHEMA.md` and `design-concepts/README.md`
   still stamp "Generated from LLM Workbench v3.0.0" while the manifest is v3.1.1;
   no diagnostic covers wiki stamps, whose scope is root controls only.
-- Review P3-2: `RUNBOOK.md` "Full verification" omits `tools/test-symlink-invocation.mjs`,
-  which `AGENTS.md` requires, so the two lists disagree for a cold agent.
+- Review P3-2 resolved in this continuation: RUNBOOK now includes the required
+  symlink-invocation test. The verification procedure still uses the union.
 - Review P3-3: `workbench/tools/sessions.mjs` resolves `--from` without constraining
   it to the repository root; the fail-closed privacy scan still gates every write.
 

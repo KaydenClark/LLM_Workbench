@@ -304,13 +304,31 @@ Expected result: [clean scope, verified base/target, reviewable PR].
 Closeout, once the integration review has passed. A pushed branch is
 recoverable, not delivered; finish the merge and clean up after yourself:
 
+Run merge and containment verification as a fail-fast sequence. Pin the reviewed
+commit and reject a changed candidate. Merge must not delete branches before
+containment is verified. A linked worktree holding the target must not block
+verification. Only run cleanup when the owner has not deferred it; verify each
+local and remote tip is contained, tolerate absent branches, and use an atomic
+expected-tip guard on remote deletion so concurrent pushes are preserved.
+
 ```bash
+(
+set -eu
 [MERGE_PR_COMMAND]
 [VERIFY_INTEGRATION_CONTAINS_WORK_COMMAND]
+)
+```
+
+After successful verification, if cleanup is authorized:
+
+```bash
 [DELETE_MERGED_BRANCH_COMMAND]
 ```
 
 Expected result: [integration contains the work; merged branch deleted locally and remotely; unmerged work never force-deleted].
+
+When cleanup is owner-deferred, integration contains the reviewed work and the
+branches remain available for later cleanup.
 
 ## Upgrading The Harness
 
