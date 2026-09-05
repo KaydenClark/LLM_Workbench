@@ -4,7 +4,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
-import { MANAGED_MARKER, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
+import { MANAGED_MARKER, markerSourceIdentity, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
@@ -113,6 +113,7 @@ function preflight(project, home, explicit) {
 function updateSkills(destinations, home) {
   const backupRoot = fs.mkdtempSync(path.join(home, '.workbench-upgrade-backup-'));
   const skillBackups = [];
+  const identity = markerSourceIdentity();
   for (const { engine, root: destinationRoot } of destinations) {
     fs.mkdirSync(destinationRoot, { recursive: true });
     for (const skill of coreSkills) {
@@ -130,7 +131,7 @@ function updateSkills(destinations, home) {
       }
       // Every managed skill leaves the explicit upgrade with this release's
       // generation recorded, whether or not its content had to change.
-      writeManagedMarker(destination);
+      writeManagedMarker(destination, identity);
     }
   }
   return skillBackups;

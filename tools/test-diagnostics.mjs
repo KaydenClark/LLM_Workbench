@@ -167,11 +167,14 @@ test('doctor --home reports a stale or unknown installed skill generation per re
     fs.writeFileSync(staleMarker, JSON.stringify({ ...JSON.parse(fs.readFileSync(staleMarker, 'utf8')), release: 'v0.0.0' }));
     fs.rmSync(path.join(home, '.agents', 'skills', 'builder', '.workbench-skill.json'));
     fs.writeFileSync(path.join(home, '.agents', 'skills', 'reviewer', '.workbench-skill.json'), '{"schemaVersion":1,"source":"LLM Workbench core"}\n');
+    // A schema 2 marker from another source is not a Workbench generation even when it names the manifest release.
+    fs.writeFileSync(path.join(home, '.claude', 'skills', 'auditor', '.workbench-skill.json'), `${JSON.stringify({ schemaVersion: 2, source: 'someone else', release: VERSION, commit: 'unknown', contentHash: 'x' })}\n`);
     const before = snapshot(home);
 
     const findings = doctor(dir, { home });
 
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.skill, item.root]).sort(), [
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'auditor', '.claude/skills'],
       ['skill-generation-unknown', 'attention', 'skills', 'none', 'builder', '.agents/skills'],
       ['skill-generation-unknown', 'attention', 'skills', 'none', 'reviewer', '.agents/skills'],
       ['stale-skill', 'attention', 'skills', 'none', 'genesis', '.claude/skills']
@@ -181,7 +184,7 @@ test('doctor --home reports a stale or unknown installed skill generation per re
     assert.deepEqual(snapshot(home), before, 'doctor never writes to the home');
     const cli = cliDoctor(dir, home);
     assert.equal(cli.status, 0, 'skill findings are attention and never block');
-    assert.equal(cli.findings.length, 3);
+    assert.equal(cli.findings.length, 4);
     assert.equal(nextWork(dir).ticketId, 'TK-001');
     assert.ok(SCOPES.includes('skills'));
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a missing skill is Adoption preflight\'s finding, not doctor\'s');

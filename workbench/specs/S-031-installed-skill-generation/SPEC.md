@@ -186,6 +186,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-core-skill-installer.mjs (schema 2 marker fields), node tools/test-workbench-upgrade.mjs (schema 2 marker after replacement and refresh; schema 1 still managed), node tools/test-diagnostics.mjs (doctor --home: stale-skill, skill-generation-unknown, home snapshot unchanged, schema 1 unknown), node tools/test-workbench-layout.mjs, node tools/test-portability-matrix.mjs; live doctor on this checkout against the real home read 32 skill-generation-unknown attention findings, exit 0 once rendered | RUNBOOK.md (core-skill setup marker paragraph, doctor --home, none-row codes), templates/RUNBOOK.md (doctor --home and marker), skills/README.md (Managed skill marker section), LEXICON.md (Managed skill marker term) | TK-002: report formats name the copy read; sessions ignore denies grilling diary/ |
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-workbench-layout.mjs (init into a git-initialised disposable project: git check-ignore accepts workbench/sessions/grilling diary/notepad.md, project rules kept byte-for-byte, checkpoints trackable, an older ignore file without the line still validates), node tools/test-portability-matrix.mjs, node tools/test-workbench-adoption.mjs, node tools/test-diagnostics.mjs, node tools/test-feedback-automation.mjs, node tools/test-guardrail-audit.mjs; templates 106.6/113 unchanged | templates/feedback/REPORT_FORMAT.md and workbench/feedback/REPORT_FORMAT.md (Findings: a skill claim names the copy read), RUNBOOK.md (sessions ignore denies the legacy grilling diary/ name) | none; spec completion pending |
 | 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-05 | spec | Integration review of `aad7667` approved with one should-fix (doctor accepted a schema 2 marker from any `source`) and one nit (`sourceIdentity()` per skill); both applied in one follow-up commit | Red: foreign-source marker `{schemaVersion:2, source:'someone else', release:<manifest>}` read as current; green after doctor reads through the shared `readManagedSkillMarker` (`workbench-layout.mjs`) that requires `source` `LLM Workbench core`; `markerSourceIdentity()` resolved once per install/upgrade run; test-diagnostics, test-core-skill-installer, test-workbench-upgrade, test-workbench-layout, test-portability-matrix, test-workbench-dogfood, test-workbench-adoption, test-workbench-tools PASS; `doctor --home <empty dir>` exit 0 with no skill finding; render no-op; diff check clean | Docs checked; no update needed: the marker schema and finding semantics in RUNBOOK, skills/README, and LEXICON already describe a core-source marker | none |
 
 ## Completion Result
 
@@ -231,6 +232,11 @@ Risks and side effects:
 - The `workbench/tools/` runtime lane changed (`diagnostics.mjs`,
   `spec-workbench.mjs`, `workbench-layout.mjs`); downstream rooms receive it
   through the receipt-backed tools update, not silently.
+
+Review follow-up: the integration review's should-fix (a schema 2 marker from
+another `source` now reads as `skill-generation-unknown`, through the shared
+reader) and nit (source identity resolved once per run) landed in one
+additional commit; see the evidence log.
 
 Verified: red then green at every seam named in the evidence log; the five
 Verification Procedure tests, the full `AGENTS.md` suite, the path-safety

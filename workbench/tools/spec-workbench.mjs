@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { validateManifest } from './workbench-layout.mjs';
+import { readManagedSkillMarker, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -197,7 +197,8 @@ export function doctor(rootDir, options = {}) {
 // Installed core skills: for each skill the manifest requires, read its
 // managed marker in every declared discovery root under the user home
 // (`--home`, default the user home). A schema 2 marker whose release differs
-// from the manifest is stale; a present skill without one is of unknown
+// from the manifest is stale; a present skill without a Workbench-managed
+// schema 2 marker (missing, schema 1, or another source) is of unknown
 // generation. A missing skill is Adoption preflight's finding. The home is
 // only ever read.
 function skillFindings(root, home) {
@@ -211,7 +212,7 @@ function skillFindings(root, home) {
     for (const skill of required) {
       const installed = path.join(homeDir, discoveryRoot, skill);
       if (!isDirectory(installed)) continue;
-      const marker = readSkillMarker(path.join(installed, '.workbench-skill.json'));
+      const marker = readManagedSkillMarker(installed);
       if (marker?.schemaVersion !== 2 || typeof marker.release !== 'string') {
         findings.push(finding('skill-generation-unknown', `${discoveryRoot}/${skill} has no schema 2 marker; which Workbench generation it came from is unknown`, { skill, root: discoveryRoot }));
       } else if (marker.release !== manifest.workbenchVersion) {
@@ -226,9 +227,6 @@ function isDirectory(target) {
   try { return fs.statSync(target).isDirectory(); } catch { return false; }
 }
 
-function readSkillMarker(file) {
-  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return null; }
-}
 
 // Schema 2 projects also carry decision records; their findings ride along so
 // one doctor run reports the whole support root. None blocks selection: the

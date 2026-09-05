@@ -6,10 +6,11 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { MANAGED_SKILL_MARKER, MANAGED_SKILL_SOURCE, readManagedSkillMarker } from '../workbench/tools/workbench-layout.mjs';
 import { sourceIdentity } from './workbench-tools.mjs';
 
-export const MANAGED_MARKER = '.workbench-skill.json';
-export const MARKER_SOURCE = 'LLM Workbench core';
+export const MANAGED_MARKER = MANAGED_SKILL_MARKER;
+export const MARKER_SOURCE = MANAGED_SKILL_SOURCE;
 export const MARKER_SCHEMA_VERSION = 2;
 
 // SHA-256 over the sorted relative paths and bytes of every regular file in
@@ -32,26 +33,23 @@ export function skillContentHash(directory) {
   return hash.digest('hex');
 }
 
-export function managedMarker(skillDirectory) {
+// The release identity is one Git lookup per run: callers resolve it once
+// with `markerSourceIdentity()` and pass it to every marker they write.
+export function markerSourceIdentity() {
   const { release, commit } = sourceIdentity();
-  return { schemaVersion: MARKER_SCHEMA_VERSION, source: MARKER_SOURCE, release, commit, contentHash: skillContentHash(skillDirectory) };
+  return { release, commit };
 }
 
-export function writeManagedMarker(skillDirectory) {
-  const marker = managedMarker(skillDirectory);
+export function managedMarker(skillDirectory, identity = markerSourceIdentity()) {
+  return { schemaVersion: MARKER_SCHEMA_VERSION, source: MARKER_SOURCE, release: identity.release, commit: identity.commit, contentHash: skillContentHash(skillDirectory) };
+}
+
+export function writeManagedMarker(skillDirectory, identity = markerSourceIdentity()) {
+  const marker = managedMarker(skillDirectory, identity);
   fs.writeFileSync(path.join(skillDirectory, MANAGED_MARKER), `${JSON.stringify(marker)}\n`);
   return marker;
 }
 
 // Returns the parsed marker when the skill is Workbench-managed (schema 1 or
 // 2 with the core source), otherwise null. Never throws on a foreign file.
-export function readManagedMarker(skillDirectory) {
-  const file = path.join(skillDirectory, MANAGED_MARKER);
-  let stat;
-  try { stat = fs.lstatSync(file); } catch { return null; }
-  if (!stat.isFile()) return null;
-  try {
-    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
-    return [1, MARKER_SCHEMA_VERSION].includes(parsed?.schemaVersion) && parsed.source === MARKER_SOURCE ? parsed : null;
-  } catch { return null; }
-}
+export const readManagedMarker = readManagedSkillMarker;
