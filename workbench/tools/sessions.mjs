@@ -8,7 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule } from './workbench-paths.mjs';
 import { scanPrivacy } from './privacy.mjs';
 
 function lstatOrNull(target) {
@@ -22,11 +22,11 @@ export function checkpoint(root, options) {
   const source = path.resolve(root, requireValue(options.from, '--from is required'));
   const topic = requireValue(options.topic, '--topic is required');
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(topic)) throw new Error('--topic must be a lowercase slug');
-  // Source and destination share one boundary: promotion reads inside the
-  // repository only, so no other readable file on the host can be promoted.
-  const inside = path.relative(path.resolve(root), source);
-  if (!inside || inside === '..' || inside.startsWith(`..${path.sep}`) || path.isAbsolute(inside)) {
-    return { status: 'blocked', error: finding('invalid-note', `refused to promote ${options.from}: the source must be a file inside the repository root ${path.resolve(root)}`) };
+  // The source shares the destination's boundary: it must resolve inside the
+  // repository root and no component of its path may be a symbolic link. The
+  // privacy scan below still gates what the file contains.
+  try { assertSafeReadPath(root, source); } catch (error) {
+    return { status: 'blocked', error: finding('invalid-note', `refused to promote ${options.from}: ${error.message}`) };
   }
   const entry = lstatOrNull(source);
   if (!entry || entry.isSymbolicLink() || !entry.isFile()) {

@@ -117,6 +117,23 @@ export function isMainModule(importMetaUrl) {
   }
 }
 
+// The read boundary for a promotion source: it must resolve inside the
+// project and no component of its path may be a symbolic link, so a linked
+// directory cannot reach outside. A missing component is left for the caller
+// to report; this only refuses what a later lstat would misread.
+export function assertSafeReadPath(root, source) {
+  const base = path.resolve(root);
+  const relative = path.relative(base, path.resolve(source));
+  if (!relative || relative.startsWith(`..${path.sep}`) || relative === '..' || path.isAbsolute(relative)) throw new Error(`the source must stay inside the repository root ${base}`);
+  let current = base;
+  for (const part of relative.split(path.sep)) {
+    current = path.join(current, part);
+    let entry;
+    try { entry = fs.lstatSync(current); } catch (error) { if (error.code === 'ENOENT') return; throw error; }
+    if (entry.isSymbolicLink()) throw new Error(`${current} is a symbolic link; a source must be an ordinary path inside the repository root ${base}`);
+  }
+}
+
 // Refuse linked destination ancestors and nonregular targets before a writer
 // creates directories or touches data. Missing descendants may be created.
 export function assertSafeWritePath(root, destination) {

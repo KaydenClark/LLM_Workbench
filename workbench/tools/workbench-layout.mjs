@@ -416,8 +416,9 @@ function validateGenesisRuntime(project, expectedVersion) {
     const control = `${lanes.wiki}/${relative}`;
     const entry = lstatOrNull(path.join(project, lanes.wiki, relative));
     if (!entry?.isFile() || entry.isSymbolicLink()) return fail('unfilled-control', `${control} must exist as an ordinary file; copy the wiki router and contract from the release templates.`, { control });
-    if (containsPlaceholder(fs.readFileSync(path.join(project, lanes.wiki, relative), 'utf8'))) return fail('unfilled-control', `${control} must contain no template placeholders.`, { control });
-    if (versionStamp(fs.readFileSync(path.join(project, lanes.wiki, relative), 'utf8')) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control, reason: 'wiki stamp differs from the manifest' });
+    const content = fs.readFileSync(path.join(project, lanes.wiki, relative), 'utf8');
+    if (containsPlaceholder(content)) return fail('unfilled-control', `${control} must contain no template placeholders.`, { control });
+    if (versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control, reason: 'wiki stamp differs from the manifest' });
   }
   return null;
 }
