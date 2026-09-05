@@ -7,7 +7,7 @@
 **Updated:** 2026-09-05
 **Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
 **Blockers:** Explicit owner approval to push the concrete local branch is required after automatic approval review rejected remote publication.
-**Latest event:** Independent review found one stale Lexicon claim; corrected locally with adjacent stale adoption wording.
+**Latest event:** Local v3.1.1 implementation verified; review corrections include stale wording and the committed Blueprint projection.
 **Next gate:** Obtain explicit push approval after corrected-candidate review, then verify remote recovery. A full integration comparison remains required before merge.
 **Stance:** Builder
 
@@ -167,6 +167,8 @@ completed spec evidence remain unchanged.
 | 2026-09-05 | TK-001 | Separate-context candidate delta REJECT, followed by narrow correction | Reviewer candidate_review checked 2538b8a..5ef5b15; sole P2 was stale LEXICON v3.1.0 release designation; installer 6/6, layout 14/14, round trip, catalog/delivery and doctor independently passed; F-001 supported on its pinned target | Corrected Lexicon release distinction and adjacent README/Adoption destination wording; historical evidence preserved | Re-review new immutable local candidate; this delta review does not audit inherited integration changes |
 
 | 2026-09-05 | TK-001 | Corrected current release/adoption wording and checkpointed blocked recovery state | Catalog/delivery, layout, evaluator, portability, ADR/Wiki and diff checks PASS after correction; source behavior unchanged from clean 29-command PASS | LEXICON, README, generic Adoption, this spec and generated Taskboard | Final local-delta review; explicit push approval and remote read-back; full inherited integration comparison before merge |
+
+| 2026-09-05 | TK-001 | Second immutable delta review REJECT exposed an omitted generated Blueprint row | Clean clone at 3613fd1 failed dogfood and doctor because the committed catalog said active while spec/Taskboard said blocked; reviewer independently identified the same omission | Included the already-rendered blocked catalog row in the correction; both rejected SHAs preserved | Verify corrected immutable candidate and return final local-delta verdict in chat; push remains unapproved |
 
 ## Completion Result
 
