@@ -3,13 +3,13 @@
 **Spec ID:** S-030
 **Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Ship a template permission file that grants Edit and Write on the Workbench authorship lanes the prose already declares writable, and make doctor report when a room's permission file withholds a declared lane.
 **Blockers:** none
-**Latest event:** Spec captured from upstream fix-list item UP-012.
-**Next gate:** Claim TK-001 and prove the template grants every authorship lane.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -120,7 +120,7 @@ Gap: everything under Desired Behavior.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Template permission file and README grant the authorship lanes with Edit and Write; protocol wording and completion boxes updated | ready | none | pending |
+| TK-001 | Template permission file and README grant the authorship lanes with Edit and Write; protocol wording and completion boxes updated | done | none | node tools/test-workbench-layout.mjs (new test: the template permission file grants Edit and Write on every authorship lane the prose declares writable; red at ae60d8d on 'workbench/docs must have an Edit allow rule', green after the fill); node tools/test-workbench-dogfood.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls (106.6/113, identical to the pre-change baseline) |
 | TK-002 | `permission-scope-drift` in doctor and the Genesis gate, with the conservative glob matcher | ready | TK-001 | pending |
 
 ### TK-001 - The template says what the prose says
@@ -186,6 +186,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-05 | spec | Spec captured from upstream fix-list item UP-012 (rank high, found in Master Workbench on 2026-09-05) | Template file re-read at `b7b23dd`: no `Write` rule, no `workbench/` entry, no `LEXICON.md` edit rule; `template-placeholders.mjs:93` checks the prose placeholder only | Blueprint v3.1.2 direction links this spec | Both slices |
+| 2026-09-05 | TK-001 | Ticket closed | node tools/test-workbench-layout.mjs (new test: the template permission file grants Edit and Write on every authorship lane the prose declares writable; red at ae60d8d on 'workbench/docs must have an Edit allow rule', green after the fill); node tools/test-workbench-dogfood.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls (106.6/113, identical to the pre-change baseline) | templates/.claude/README.md (Edit versus Write, authorship-lanes row, workbench/tools in ask, the permission-scope-drift finding), templates/GENESIS.md and templates/ADOPTION.md Phase 4 wording and completion boxes; AGENTS.md checked, no update needed: the prose Edit Scope already declares the workbench/ support lanes writable | TK-002: permission-scope-drift is not yet a doctor finding or a Genesis gate |
 
 ## Completion Result
 

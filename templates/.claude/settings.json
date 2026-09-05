@@ -19,18 +19,39 @@
     "ask": [
       "Bash(git push:*)",
       "Bash(rm -rf:*)",
-      "Edit(./[SCHEMA_OR_MIGRATIONS_DIR]/**)"
+      "Edit(./[SCHEMA_OR_MIGRATIONS_DIR]/**)",
+      "Write(./[SCHEMA_OR_MIGRATIONS_DIR]/**)",
+      "Edit(./workbench/tools/**)",
+      "Write(./workbench/tools/**)"
     ],
     "allow": [
       "Edit(./[PRIMARY_SOURCE_DIR]/**)",
+      "Write(./[PRIMARY_SOURCE_DIR]/**)",
       "Edit(./[TEST_DIR]/**)",
+      "Write(./[TEST_DIR]/**)",
       "Edit(./AGENTS.md)",
       "Edit(./BLUEPRINT.md)",
+      "Edit(./LEXICON.md)",
       "Edit(./TASKBOARD.md)",
       "Edit(./RUNBOOK.md)",
       "Edit(./README.md)",
+      "Edit(./workbench/specs/**)",
+      "Write(./workbench/specs/**)",
+      "Edit(./workbench/docs/**)",
+      "Write(./workbench/docs/**)",
+      "Edit(./workbench/wiki/**)",
+      "Write(./workbench/wiki/**)",
+      "Edit(./workbench/feedback/**)",
+      "Write(./workbench/feedback/**)",
+      "Edit(./workbench/sessions/**)",
+      "Write(./workbench/sessions/**)",
       "Bash([TEST_COMMAND])",
-      "Bash([BUILD_COMMAND])"
+      "Bash([BUILD_COMMAND])",
+      "Bash(node workbench/tools/spec-workbench.mjs:*)",
+      "Bash(node workbench/tools/adr.mjs:*)",
+      "Bash(node workbench/tools/sessions.mjs:*)",
+      "Bash(node workbench/tools/wiki.mjs:*)",
+      "Bash(node workbench/tools/workbench-layout.mjs:*)"
     ]
   }
 }

@@ -157,9 +157,11 @@ secrets boundary, authority order, and verification contract to this repo's
 reality.
 
 Then make it mechanical: if `.claude/settings.json` was copied in, fill it from
-that scope - writable roots -> `allow`, secrets/credentials/build output ->
-`deny`, review-required actions -> `ask` (see `.claude/README.md`). Omit `.claude/`
-deliberately if the project will not use Claude Code.
+that scope - writable roots and the Workbench authorship lanes -> `allow` (Edit
+and Write), secrets/credentials/build output -> `deny`, review-required actions
+and `workbench/tools/` -> `ask` (see `.claude/README.md`). Edit revises an
+existing file and Write creates one; a lane that must hold new records needs
+both. Omit `.claude/` deliberately if the project will not use Claude Code.
 
 Output: an `AGENTS.md` whose scope names real paths, plus a filled
 `.claude/settings.json` or a recorded decision to omit it.
@@ -259,8 +261,9 @@ than a competing rulebook.
 - [ ] `BLUEPRINT.md` matches the running code where the old docs disagreed;
       drifts are logged.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
-- [ ] `.claude/settings.json` is filled from that scope, or `.claude/` was omitted
-      with a reason.
+- [ ] `.claude/settings.json` is filled from that scope and grants Edit and
+      Write on the declared authorship lanes, or `.claude/` was omitted with a
+      reason.
 - [ ] The full verification suite runs green and matches the Phase 0 baseline;
       paste or reference the result.
 - [ ] Stable specs contain the project's actual in-flight and ready work;
