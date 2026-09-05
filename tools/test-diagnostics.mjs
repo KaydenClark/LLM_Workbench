@@ -41,6 +41,9 @@ function spec(id, { status = 'active', tickets = '| TK-001 | First slice | ready
   ].join('\n');
 }
 
+const ROUTED_AGENTS = '# Agents\n\n| Truth | Owner |\n|---|---|\n| durable room memory | `workbench/wiki/` (`MEMORY.md` router) |\n';
+const ROUTED_README = '# Fixture\n\n- [`workbench/wiki/MEMORY.md`](workbench/wiki/MEMORY.md) - the room brain.\n';
+
 function project(version = 'v3.0.0') {
   const dir = fixture();
   const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
@@ -50,6 +53,9 @@ function project(version = 'v3.0.0') {
   // A complete schema 2 project carries its wiki router; doctor reports a
   // missing one, which is not the behavior under test here.
   write(dir, 'workbench/wiki/MEMORY.md', '---\ntype: memory\nstatus: active\nsensitivity: normal\nknowledge_role: canonical\nprovenance:\n  - fixture\nsource_paths:\n  - workbench/wiki\nlast_verified: 2026-09-04\n---\n\n# Fixture Memory\n');
+  // The controls route back to the room brain; an unrouted brain is a finding.
+  write(dir, 'AGENTS.md', ROUTED_AGENTS);
+  write(dir, 'README.md', ROUTED_README);
   return dir;
 }
 
@@ -100,7 +106,7 @@ test('selection findings fail doctor and an unsafe manifest blocks everything', 
     render(dir);
     assert.deepEqual(doctor(dir, { home: quietHome }), []);
     write(dir, 'workbench/specs/S-009-duplicate/SPEC.md', spec('S-001'));
-    const findings = doctor(dir);
+    const findings = doctor(dir, { home: quietHome });
     assert.ok(findings.some((item) => item.code === 'duplicate-id' && item.blocks === 'selection'));
     assert.equal(cliDoctor(dir).status, 1, 'a selection finding must fail doctor');
     assert.throws(() => render(dir), /Duplicate spec ID/, 'render refuses an ambiguous identity');
@@ -268,6 +274,39 @@ test('permission-scope-drift names each withheld authorship lane without blockin
     const unreadable = doctor(dir, { home: quietHome });
     assert.deepEqual(driftLanes(unreadable).sort(), [...authorshipLanes].sort());
     assert.match(unreadable[0].message, /unreadable/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('an unrouted room brain is an attention finding that names the control lacking the route', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'routed controls are not a finding');
+    assert.deepEqual([describe('room-brain-unrouted').severity, describe('room-brain-unrouted').scope, describe('room-brain-unrouted').blocks], ['attention', 'wiki', 'none']);
+
+    write(dir, 'AGENTS.md', '# Agents\n\nNo ownership row here.\n');
+    const unrouted = doctor(dir, { home: quietHome });
+    assert.deepEqual(unrouted.map((item) => [item.code, item.severity, item.blocks, item.control]), [['room-brain-unrouted', 'attention', 'none', 'AGENTS.md']]);
+    assert.match(unrouted[0].message, /AGENTS\.md/);
+    assert.match(unrouted[0].message, /workbench\/wiki/);
+    const cli = cliDoctor(dir);
+    assert.equal(cli.status, 0, 'an unrouted brain never fails doctor');
+    assert.ok(cli.findings.some((item) => item.code === 'room-brain-unrouted'));
+
+    write(dir, 'AGENTS.md', ROUTED_AGENTS);
+    write(dir, 'README.md', '# Fixture\n\nNo brain link.\n');
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.control]), [['room-brain-unrouted', 'README.md']]);
+    fs.rmSync(path.join(dir, 'README.md'));
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.control]), [['room-brain-unrouted', 'README.md']], 'a missing control routes nowhere');
+
+    write(dir, 'README.md', ROUTED_README);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'adding the route clears the finding');
+    fs.rmSync(path.join(dir, 'workbench', 'wiki', 'MEMORY.md'));
+    write(dir, 'AGENTS.md', '# Agents\n');
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => item.code), ['invalid-note'], 'without a room brain there is nothing to route to; the missing router is the finding');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

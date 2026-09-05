@@ -53,7 +53,7 @@ function completeGenesis(project, options = {}) {
   for (const control of controls) {
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
-      : `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nThis is a filled ${control} fixture.\n${generatedRegions[control] ?? ''}`;
+      : `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nThis is a filled ${control} fixture.\nDurable memory lives in workbench/wiki/MEMORY.md.\n${generatedRegions[control] ?? ''}`;
     fs.writeFileSync(path.join(project, control), content);
   }
   const firstSpec = path.join(project, 'workbench', 'specs', 'S-001-first');

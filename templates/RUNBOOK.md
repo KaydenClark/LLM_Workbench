@@ -167,6 +167,11 @@ it by adding the paired `Edit(./workbench/<lane>/**)` and
 or recording the deliberate denial in `AGENTS.md`. The Genesis readiness
 check fails closed on the same finding; a room without the file is unaffected.
 
+The wiki lane raises `room-brain-unrouted` (attention) when a root control
+does not route back to the room brain: `AGENTS.md` must reference
+`workbench/wiki/` and `README.md` must reference `MEMORY.md`; the finding names
+the control that lacks the route.
+
 ## Evaluation And Benchmarking
 
 Use this section to prove whether the workbench or project process is improving.

@@ -45,6 +45,7 @@ const registry = Object.freeze({
   'invalid-note': entry('error', 'wiki', 'none', 'a wiki note violates the schema'),
   'copied-task-state': entry('error', 'wiki', 'none', 'a wiki note copies live task state'),
   'secret-like-content': entry('error', 'wiki', 'none', 'a note or checkpoint contains secret-like material'),
+  'room-brain-unrouted': entry('attention', 'wiki', 'none', 'a root control does not route to the room brain'),
   'unfilled-control': entry('error', 'controls', 'all', 'a root control is empty, a stub, or carries template placeholders'),
   'unsafe-control': entry('error', 'controls', 'all', 'a root control is not an ordinary file'),
   'version-mismatch': entry('error', 'controls', 'all', 'a control version stamp disagrees with the manifest'),
