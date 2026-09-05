@@ -3,13 +3,13 @@
 **Spec ID:** S-033
 **Status:** active
 **Priority:** 3
-**Owner:** unassigned
+**Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Close the three v3.1.1 gaps that passed every gate green: an unrouted room brain, wiki files stamped with an older version than the manifest, and checkpoint promotion reading a source outside the repository.
 **Blockers:** none
-**Latest event:** Spec captured from upstream fix-list item UP-009 and the S-027 review findings P3-1 and P3-3.
-**Next gate:** Claim TK-001 and prove an unrouted room brain is reported.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -98,7 +98,7 @@ Gap: the three findings and the stale root stamps.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | `room-brain-unrouted` in doctor with a fixture whose controls omit the route | ready | none | pending |
+| TK-001 | `room-brain-unrouted` in doctor with a fixture whose controls omit the route | done | none | node tools/test-diagnostics.mjs (5 pass; new test: an unrouted room brain is an attention finding that names the control lacking the route), node tools/test-wiki.mjs (7 pass), node tools/test-workbench-layout.mjs (19 pass); doctor on this repository reports no room-brain-unrouted |
 | TK-002 | `stale-stamp` in doctor and wiki stamps in the Genesis gate; root wiki stamps updated to the manifest version | ready | none | pending |
 | TK-003 | `checkpoint` refuses a source outside the repository root | ready | none | pending |
 
@@ -166,6 +166,7 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-05 | spec | Spec captured from upstream fix-list item UP-009 and S-027 review P3-1 and P3-3 | Registry re-read at `diagnostics.mjs`: no routing or stamp code; `grep -rn "LLM Workbench v" workbench/wiki` shows three `v3.0.0` stamps against manifest v3.1.1; `sessions.mjs:22` resolves `--from` unbounded | Blueprint v3.1.2 direction links this spec | All three slices |
+| 2026-09-05 | TK-001 | Ticket closed | node tools/test-diagnostics.mjs (5 pass; new test: an unrouted room brain is an attention finding that names the control lacking the route), node tools/test-wiki.mjs (7 pass), node tools/test-workbench-layout.mjs (19 pass); doctor on this repository reports no room-brain-unrouted | RUNBOOK.md Wiki Validation and Diagnostics table, templates/RUNBOOK.md doctor section, templates/ADOPTION.md box 9 now name room-brain-unrouted and the reverse route | TK-002 stale-stamp and TK-003 checkpoint boundary |
 
 ## Completion Result
 

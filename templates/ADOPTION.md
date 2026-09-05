@@ -267,7 +267,9 @@ than a competing rulebook.
       `TASKBOARD.md` projects only the hot state and contains no completed proof
       archive.
 - [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),
-      routes to the live controls, and has no unfilled placeholders.
+      routes to the live controls, the controls route to it (`AGENTS.md`
+      names `workbench/wiki/`, `README.md` names `MEMORY.md`; `doctor` reports
+      `room-brain-unrouted` otherwise), and has no unfilled placeholders.
 - [ ] The owning spec records the source remote, ref, resolved commit, executed
       self-tests, and any applicable vendored-helper checksum; the project's
       `RUNBOOK.md` retains the exact fresh-clone verification commands.

@@ -158,6 +158,11 @@ Decision records live in
 `workbench/docs/adr/`; an accepted record names the control that carries its
 rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
+The wiki lane raises `room-brain-unrouted` (attention) when a root control
+does not route back to the room brain: `AGENTS.md` must reference
+`workbench/wiki/` and `README.md` must reference `MEMORY.md`; the finding names
+the control that lacks the route.
+
 ## Evaluation And Benchmarking
 
 Use this section to prove whether the workbench or project process is improving.

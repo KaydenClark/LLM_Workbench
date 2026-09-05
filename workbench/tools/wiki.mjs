@@ -28,6 +28,20 @@ function walkMarkdown(directory, files = []) {
   return files.sort();
 }
 
+// The room brain is only useful when the controls route back to it: AGENTS.md
+// must name the wiki lane and README.md must name MEMORY.md (UP-009).
+function roomBrainRouting(root, wikiRelative) {
+  const findings = [];
+  for (const [control, reference] of [['AGENTS.md', wikiRelative], ['README.md', 'MEMORY.md']]) {
+    const target = path.join(root, control);
+    const content = fs.existsSync(target) && fs.lstatSync(target).isFile() ? fs.readFileSync(target, 'utf8') : '';
+    if (!content.includes(reference)) {
+      findings.push(finding('room-brain-unrouted', `${control} does not route to the room brain ${wikiRelative}/MEMORY.md; it must reference ${reference}`, { control }));
+    }
+  }
+  return findings;
+}
+
 export function validateWiki(root) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
@@ -40,6 +54,7 @@ export function validateWiki(root) {
   if (!fs.existsSync(path.join(wikiRoot, 'MEMORY.md'))) {
     findings.push(finding('invalid-note', `${wikiRelative}/MEMORY.md router is missing`));
   }
+  else findings.push(...roomBrainRouting(root, wikiRelative));
   for (const name of REQUIRED_COLLECTIONS) {
     const relative = collectionRelative(root, name);
     const entry = fs.existsSync(path.join(root, relative)) ? fs.lstatSync(path.join(root, relative)) : null;
