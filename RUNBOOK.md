@@ -96,6 +96,7 @@ node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
 node tools/test-socket-contract.mjs
 node tools/test-symlink-invocation.mjs
+node tools/test-control-fidelity.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node workbench/tools/spec-workbench.mjs doctor
@@ -295,6 +296,34 @@ repository/commit must match the managed-tools receipt. The migration fails
 only on a finding that blocks `all` or `selection`; nonblocking findings (for
 example a moved link that needs explicit reconciliation) are returned as `findings` with
 `doctor: passed-with-findings` so the adopting agent repairs them next.
+
+### Control fidelity report
+
+After Adoption Phase 4 or an update-harness run, compare a room's
+hand-reconciled controls with the templates they derive from. Run it from this
+release checkout; it reads the room and never writes to it:
+
+```bash
+node tools/control-fidelity.mjs report --project /absolute/project
+node tools/control-fidelity.mjs report --project /absolute/project --control AGENTS.md --format markdown
+node tools/test-control-fidelity.mjs
+```
+
+The JSON report (Markdown with `--format markdown`, also carried in the JSON
+`markdown` field) covers the six templated root controls, `CLAUDE.md` checked
+for exact equality with `@AGENTS.md`, `.claude/settings.json` when present, and
+the seeded wiki contract files plus `MEMORY.md` under the manifest-declared
+wiki lane. Every template line is `filled` (a placeholder line the room
+filled, compared for presence only), `unchanged`, `dropped`, or `changed`
+(nearest word-overlap match at or above 0.5); every room line with no template
+origin is `added`. It states the checkout version and the room's manifest
+release and labels a newer or older template generation instead of pretending
+fidelity is exact. Divergence never changes the exit code; only an invocation
+error (missing `--project`, an unknown `--control`, a nonexistent project)
+exits 1. Each `dropped` or `changed` `AGENTS.md` line is restored or recorded
+as a decision in the owning spec or an ADR. Comparing against an older
+release means checking that release out first; `--templates PATH` points the
+report at another templates directory.
 
 ### V3 explicit upgrade and recovery check
 

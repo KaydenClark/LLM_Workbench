@@ -47,6 +47,7 @@ ADR `REGISTER.md` for decision rationale. Read only the relevant linked owners.
 | **Core skill bundle** | The closed set of twelve workflow skills and four stance skills available as a brand-new-install fallback. | It is not Kayden's private catalog, a generalized marketplace, or a project-local discovery tree. |
 | **Normal setup** | Presence-only skill reconciliation during Genesis or Adoption: install a missing core skill when safe and preserve anything already installed. | It never compares or replaces an existing skill and never mutates a foreign Git-owned skill root. |
 | **Explicit skill update** | A separately authorized operation that backs up differing installed core skills and synchronizes them to the exact checked-out LLM Workbench versions. | It is the only path that may replace an existing skill; routine setup cannot imply it, and the support-root-only upgrade mode (`workbench-upgrade.mjs upgrade --layout-only`) reads skill presence without replacing anything. |
+| **Control fidelity** | How a room's hand-reconciled controls relate to the templates they derive from: every template line is `filled`, `unchanged`, `dropped`, or `changed`, and every extra room line is `added`, as `tools/control-fidelity.mjs report` states beside the checkout and manifest versions. | It is a report, never a gate: divergence is legitimate and is restored or recorded as a decision; silent divergence is the defect ([S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md)). |
 
 ## Stance Terms
 
