@@ -761,6 +761,8 @@ if [ "$CLEANUP" = yes ]; then
     # Compare-and-delete protects commits pushed after the containment check.
     git push origin --delete "$TASK_BRANCH" --force-with-lease="refs/heads/$TASK_BRANCH:$remote_head"
   fi
+  # Drop registrations of review worktrees whose directories are already gone.
+  git worktree prune
 fi
 )
 ```
@@ -773,6 +775,15 @@ The deletion lease is a compare-and-delete guard, not permission to rewrite
 history. Never use `-D` or an unconditional force push to bypass failed checks.
 If a worktree still holds the task branch, local deletion fails and cleanup
 stops. When cleanup is deferred, both branches and the checkout stay intact.
+
+Disposable review clones and linked worktrees live under the host temporary
+directory (`/private/tmp/llm-workbench-<purpose>-<sha>` or the session
+scratchpad), never inside the canonical checkout, and none is a durable owner.
+`git worktree prune` at closeout drops the registrations of removed ones; a
+finished review checkout is removed with `git worktree remove PATH` once its
+review is recorded, and `git worktree list` shows what still lingers. The
+declared integration branch (`git.integrationBranch` in
+`workbench/manifest.json`) needs no local checkout for closeout.
 
 Use `node tools/test-branch-closeout.mjs` for a disposable Git demonstration of
 failure preservation, linked worktrees, already-deleted branches, and deferred

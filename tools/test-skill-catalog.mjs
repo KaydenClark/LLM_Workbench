@@ -193,14 +193,14 @@ for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for
 
 const genesis = read('skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
-  '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`integration`', 'commit and push',
+  '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`git.integrationBranch`', 'commit and push',
   'workbench/tools/workbench-layout.mjs init', 'tools/workbench-tools.mjs install'
 ], 'genesis');
 
 const adoption = read('skills/adoption/SKILL.md');
 assertIncludesAll(adoption, [
   '`templates/ADOPTION.md`', 'one-time', 'existing project', '`/update-harness`', 'private remote', 'commit and push',
-  'workbench-adoption.mjs', 'migrate', 'manifest-declared', 'project-local `skills/`'
+  'workbench-adoption.mjs', 'migrate', 'manifest-declared', 'project-local `skills/`', '`git.integrationBranch`'
 ], 'adoption');
 
 const implement = read('skills/implement/SKILL.md');
@@ -208,7 +208,7 @@ assertIncludesAll(implement, [
   'assigned stable `SPEC.md`', 'one eligible ticket', 'node workbench/tools/spec-workbench.mjs next --json',
   'node workbench/tools/spec-workbench.mjs show S-###', 'node workbench/tools/spec-workbench.mjs claim S-### --agent NAME',
   'red/green/refactor', 'project-owned verification', 'owning documentation',
-  'node workbench/tools/spec-workbench.mjs close S-###', 'truthful checkpoint', 'commit and push', '`integration`'
+  'node workbench/tools/spec-workbench.mjs close S-###', 'truthful checkpoint', 'commit and push', '`git.integrationBranch`'
 ], 'implement');
 
 const codeReview = read('skills/code-review/SKILL.md');

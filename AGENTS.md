@@ -216,6 +216,10 @@ Taskboard or rewrite append-only spec evidence rows.
   directly to `main` or `integration`.
 - Default PR target is `integration`. Agents may merge below `integration` when
   safe; only the owner merges `integration` into `main`.
+- `workbench/manifest.json` declares `integration` (`git.integrationBranch`) as this
+  repository's integration branch and `main` (`git.defaultBranch`) as the branch
+  it is created from; controls resolve the branch from that declaration, and
+  `doctor` reports it undeclared or missing without blocking selection.
 - Never merge a PR left open for review. Never force-push shared history without
   explicit approval. Commits are one logical change with an imperative subject.
 - Version bumps occur only after the new behavior and required proof are green.

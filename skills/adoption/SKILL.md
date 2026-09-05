@@ -29,7 +29,10 @@ Adoption to update an already-adopted project.
    `MEMORY.md` and a root feedback file, into the manifest-declared schema 2
    lanes and collections, preserves a project-local `skills/` folder under
    `workbench/sessions/checkpoints/`, installs the receipt-backed runtime
-   tools into `workbench/tools/`, renders the projections, and runs doctor. An
+   tools into `workbench/tools/`, declares `git.integrationBranch` by the
+   exact case of an existing integration-named branch (listing an unresolved
+   one as `residue.missingIntegrationBranch`), renders the projections, and
+   runs doctor. An
    existing support root, path collision, missing core skill, or bracketed
    root control is a blocker to reconcile before retrying; never overwrite it,
    and never touch an application's root `tools/`. Afterwards use the
@@ -42,8 +45,13 @@ Adoption to update an already-adopted project.
    project has none. Never infer public visibility, rewrite remote history,
    change credentials, or replace an existing remote.
 5. Always commit and push each coherent migration ticket and every incomplete
-   checkpoint. Promote verified work only to `integration`; the owner controls
-   `integration` to `main`.
+   checkpoint on a prefixed task branch; untracked migration output is not a
+   finished Adoption. Promote verified work only to the declared integration
+   branch (`git.integrationBranch` in `workbench/manifest.json`; the migration
+   declares an existing integration-named branch or `integration`). When
+   authorization permits, create it from the default branch and push it;
+   otherwise record the omission reason in the owning spec. The merge from the
+   declared branch into the default branch stays with the owner.
 6. Record the source remote, ref, resolved commit, executed self-tests, and any
    vendored-helper checksum in the owning spec. Put fresh-clone reproduction
    commands in `RUNBOOK.md`, validate `workbench/manifest.json`, resolve the

@@ -164,10 +164,19 @@ Initialize the v3 support root before writing support records:
 
 ```bash
 node /PATH/TO/LLM_WORKBENCH/workbench/tools/workbench-layout.mjs init \
-  --project [ABSOLUTE_PROJECT_PATH] --provenance genesis --version v[HARNESS_VERSION]
+  --project [ABSOLUTE_PROJECT_PATH] --provenance genesis --version v[HARNESS_VERSION] \
+  --default-branch [DEFAULT_BRANCH] --integration-branch [INTEGRATION_BRANCH_OR_DEFAULT]
 node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs install \
   --project [ABSOLUTE_PROJECT_PATH]
 ```
+
+The `init` flags declare, by exact case, the default branch and the branch the
+independent review gate merges into (`git.defaultBranch` and
+`git.integrationBranch` in the manifest; the same names fill `AGENTS.md` Git
+Rules). Declaring never creates the branch: when authorization permits, create
+it from the default branch and push it (`git branch NAME DEFAULT` then
+`git push -u origin NAME`); otherwise record the omission reason in the first
+spec. The readiness gate fails `integration-branch-missing` until it resolves.
 
 The second command installs the Workbench-managed runtime tools into the
 project's `workbench/tools/` lane with a receipt recording the exact source
@@ -254,7 +263,7 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] `workbench/manifest.json` is schema 2 and declares the six support
       lanes, seven collections, wiki profile, exact 16-skill policy, version,
-      and Genesis provenance with its source commit; the layout validator
+      the `git` block, and Genesis provenance with its source commit; the layout validator
       passes with `--genesis`. When it fails, its JSON `message` names the
       failing control or predicate, and first-spec and generated-region
       failures add a `reason` field; fix that predicate rather than the gate.
@@ -274,6 +283,13 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] Harness friction observed during Genesis was appended to the declared
       feedback lane; if none was observed, the first spec records `none observed`
       with the reason.
+- [ ] The Genesis run exists as a commit on a prefixed task branch (`codex/`,
+      `claude/`, or `backup/`) pushed to the default remote; a working tree of
+      untracked files is `in-progress`, not `done`.
+- [ ] The declared integration branch (`git.integrationBranch` in
+      `workbench/manifest.json`) exists on the default remote at the generation
+      commit, or the first spec records the explicit reason it was omitted;
+      `doctor` reports `integration-branch-missing` until it resolves.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box
 failed and why.

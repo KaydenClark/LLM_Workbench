@@ -148,7 +148,11 @@ node workbench/tools/adr.mjs register
 `doctor` prints every registered finding with its severity and blocking
 effect and exits non-zero only for `all` or `selection` findings; a
 `selected-slice` finding is excluded by `next` and refused by `claim`, and an
-`attention` finding stays visible without blocking. Decision records live in
+`attention` finding stays visible without blocking. `doctor` also reports
+`integration-branch-undeclared` and `integration-branch-missing` (scope
+`git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
+names a branch that resolves locally or on a remote; the Genesis readiness
+gate fails closed on the same two conditions. Decision records live in
 `workbench/docs/adr/`; an accepted record names the control that carries its
 rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
@@ -323,12 +327,17 @@ After successful verification, if cleanup is authorized:
 
 ```bash
 [DELETE_MERGED_BRANCH_COMMAND]
+git worktree prune
 ```
 
 Expected result: [integration contains the work; merged branch deleted locally and remotely; unmerged work never force-deleted].
 
-When cleanup is owner-deferred, integration contains the reviewed work and the
-branches remain available for later cleanup.
+When cleanup is owner-deferred, the declared integration branch contains the
+reviewed work and the branches remain available for later cleanup. Disposable
+review clones and linked worktrees live outside the canonical checkout, under
+the host temporary directory; `git worktree prune` drops the registrations of
+removed ones, and a finished review checkout is removed once its review is
+recorded. None is a durable owner.
 
 ## Upgrading The Harness
 

@@ -146,3 +146,39 @@ test('feedback and transition docs preserve review ownership and harvest observe
   assert.doesNotMatch(update, /Foundry\/Halls\/Forge/,
     'the source update skill stays independent of the retired private source path');
 });
+
+test('controls, protocols, and core skills resolve the integration branch from the manifest declaration', () => {
+  const template = read('templates/AGENTS.md');
+  const gitRules = template.slice(template.indexOf('## Git Rules'), template.indexOf('## Session Records And Checkpoints'));
+  assert.doesNotMatch(gitRules, /`integration`/, 'templates/AGENTS.md Git Rules and Branch Completion must not hardcode a branch literal that can disagree with the placeholder');
+  assert.match(gitRules, /\[INTEGRATION_BRANCH_OR_DEFAULT\]/, 'the template keeps the fillable integration branch placeholder');
+  assert.match(gitRules, /git\.integrationBranch/, 'the template routes the branch through the manifest declaration');
+  assert.match(gitRules, /declared integration branch/, 'the template names the declared integration branch');
+  const root = read('AGENTS.md');
+  assert.match(root, /`workbench\/manifest\.json`[^\n]*`git\.integrationBranch`|`git\.integrationBranch`[^\n]*`workbench\/manifest\.json`/, 'root AGENTS.md names the manifest declaration of its integration branch');
+  for (const relative of ['skills/genesis/SKILL.md', 'skills/adoption/SKILL.md']) {
+    const skill = read(relative);
+    assert.match(skill, /git\.integrationBranch/, `${relative} resolves the branch from the manifest`);
+    assert.match(skill, /create[^\n]*from the default branch/i, `${relative} creates the declared branch from the default branch when authorization permits`);
+    assert.doesNotMatch(skill, /only to `integration`/, `${relative} must not promote to a bare branch literal`);
+  }
+});
+
+test('Genesis, Adoption, and update-harness completion require a committed prefixed branch and a resolving declared integration branch', () => {
+  for (const relative of ['templates/GENESIS.md', 'templates/ADOPTION.md', 'skills/update-harness/SKILL.md']) {
+    const content = read(relative);
+    assert.match(content, /^- \[ \] [^\n]*exists as a commit on a prefixed task branch/m, `${relative} requires the run to exist as a commit on a prefixed branch`);
+    assert.match(content, /^- \[ \] [^\n]*declared integration branch[\s\S]{0,400}records the explicit reason/m, `${relative} requires the declared integration branch on the remote or a recorded omission reason`);
+  }
+});
+
+test('the Runbook closeout prunes linked worktrees and names where disposable review checkouts live', () => {
+  const runbook = read('RUNBOOK.md');
+  const closeout = runbook.slice(runbook.indexOf('Closeout, once the integration review has passed'), runbook.indexOf('## Manual Harness Feedback Reports'));
+  assert.match(closeout, /^\s*git worktree prune$/m, 'RUNBOOK.md closeout prunes linked worktrees');
+  assert.match(closeout, /disposable review (?:clones|checkouts)[^\n]*live/i, 'RUNBOOK.md names where disposable review clones live');
+  const template = read('templates/RUNBOOK.md');
+  const templateCloseout = template.slice(template.indexOf('Closeout, once the integration review has passed'), template.indexOf('## Upgrading The Harness'));
+  assert.match(templateCloseout, /git worktree prune/, 'templates/RUNBOOK.md closeout prunes linked worktrees');
+  assert.match(template, /integration-branch-missing/, 'templates/RUNBOOK.md names the declared-branch doctor finding');
+});

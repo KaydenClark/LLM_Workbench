@@ -163,4 +163,13 @@ Report:
 6. The exact remaining owner gate, if any.
 
 Completion criterion: the verified migration is recoverable remotely or the
-specific publication blocker is stated without claiming completion.
+specific publication blocker is stated without claiming completion. The
+update is `done` only when both boxes hold:
+
+- [ ] The upgrade exists as a commit on a prefixed task branch pushed to the
+      default remote; migration output left untracked is `in-progress`, not
+      `done`.
+- [ ] The declared integration branch (`git.integrationBranch` in
+      `workbench/manifest.json`, which the migration declares) exists on the
+      default remote at the migration commit, or the upgrade spec
+      records the explicit reason it was omitted.

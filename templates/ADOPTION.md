@@ -230,7 +230,13 @@ only after every required core skill is already user-scoped. It writes the
 explicit recovery record at `workbench/sessions/checkpoints/adoption-recovery.json`,
 moves a root `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
 `workbench/feedback/`, installs the runtime tools, renders the projections, and
-checks doctor before reporting completion.
+checks doctor before reporting completion. It also declares the integration
+branch in the manifest (`git.integrationBranch`, by the exact case of an
+existing integration-named branch, else `integration`; `git.defaultBranch`
+from `origin/HEAD`) and lists an unresolved one as
+`residue.missingIntegrationBranch` without blocking. When authorization
+permits, create that branch from the default branch and push it; otherwise
+record the omission reason in the owning spec.
 
 An existing `workbench/` root, a legacy path collision, unfilled controls, or
 missing user-scoped core skill blocks before migration; inspect and reconcile
@@ -272,6 +278,13 @@ than a competing rulebook.
 - [ ] Harness friction observed during Adoption was appended to the declared
       feedback lane; if none was observed, the owning spec records `none observed`
       with the reason.
+- [ ] The Adoption run exists as a commit on a prefixed task branch (`codex/`,
+      `claude/`, or `backup/`) pushed to the default remote; migration output
+      left untracked is `in-progress`, not `done`.
+- [ ] The declared integration branch (`git.integrationBranch` in
+      `workbench/manifest.json`) exists on the default remote at the migration
+      commit, or the owning spec records the explicit reason it was omitted;
+      `doctor` reports `integration-branch-missing` until it resolves.
 
 If any box is unchecked, adoption is `in-progress`, not `done`. State which box
 failed and why.
