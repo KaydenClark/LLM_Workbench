@@ -9,11 +9,11 @@
 **Status:** blocked
 **Priority:** 0
 **Owner:** claude-fable-5-1
-**Updated:** 2026-09-04
+**Updated:** 2026-09-05
 **Catalog description:** Release v3.1.0 as the first public v3 Workbench from one independently audited exact candidate proven by a cross-provider cold resume with Foundry absent.
-**Blockers:** S-027 continues the owner-authorized v3.1.1 direction; prior exact-SHA release audit remains pending.
-**Latest event:** Owner authorized S-027; preserve the v3.1 candidate and completed proof; pause TK-004.
-**Next gate:** Complete S-027 candidate preparation, then reconcile the exact candidate before resuming release.
+**Blockers:** Owner release-direction reconciliation remains pending; integration testing is authorized, main/release publication is not.
+**Latest event:** S-027 delivered the reviewed v3.1.1 candidate through PR #48 at integration 09f0875; historical release proof remains preserved.
+**Next gate:** Reconcile this historical release procedure and version intent with owner direction before any publication; do not reopen S-027 or require CIC for ordinary testing.
 
 ## Outcome
 
@@ -36,7 +36,8 @@ and the Foundry the altitude.
 
 ## Current Verified State
 
-Current continuation (2026-09-05): release remains paused behind S-027.
+Current continuation (2026-09-05): S-027 is delivered to integration at
+`09f0875`; release remains paused for owner direction and release reconciliation.
 The observations below describe the original capability baseline; they do not
 assert a current schema, release status, or candidate audit. S-027 owns the
 refreshed checkout and remote evidence.
@@ -110,7 +111,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | TK-001 | Promote the greenlight and amendments into controls, ADRs, and five linked specs, and push the planning checkpoint | done | none | Planning checkpoint commit on `claude/v3.1-release`; render and doctor green; see evidence log |
 | TK-002 | Prove the primary acceptance round trip: planning checkpoint, forced interruption, cross-provider clean-clone resume with Foundry absent | done | S-023, S-024, S-025, S-026 | Cross-provider resume proof passed: Claude planned with the candidate's own workbench/tools (tools/cross-provider-resume.mjs plan), pushed planning checkpoint f31cc00, destroyed the planning clone; Codex gpt-5.6-terra resumed from a fresh clone with an isolated CODEX_HOME holding only the candidate's twelve skills and the receipt-backed candidate tools, ran doctor, next --json, show, wrote the failing test first, implemented, closed, rendered, passed doctor, and pushed e480d25; verify from a third fresh clone passed with foundry false and privatePaths false; the provider-free fixture test proves a recoverable checkpoint and a fail-closed verify; the promoted record is workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md |
 | TK-003 | Run the portability and privacy matrix on the exact candidate and record every result | done | S-023, S-024, S-025, S-026 | tools/test-portability-matrix.mjs 4/4: no tracked paths differ only by case and capitalised, spaced, traversing, or backslash lanes are rejected; a backslash or capitalised manifest lane fails before any lane is read and a CRLF manifest validates; active surfaces name no retired lane, hidden notepad directory, host temp lane, private skill catalog, Foundry-dependent path, or private home path (one real private path stripped from RUNBOOK.md); the shared privacy patterns find nothing on the active surfaces. Schema migration, mixed Adoption, symlink invocation, collisions, and stale links are covered by the cited tests; full 32-command union suite green |
-| TK-004 | Obtain the independent exact-SHA audit, land the v3.1.0 version bump, and hand the candidate to S-014 | blocked | S-027 | pending |
+| TK-004 | Obtain the independent exact-SHA audit, land the v3.1.0 version bump, and hand the candidate to S-014 | blocked | owner release direction | pending |
 
 ### TK-002 - Primary acceptance round trip
 
@@ -176,6 +177,8 @@ remote SHA read-back.
 | 2026-09-04 | TK-003 | Ticket closed | tools/test-portability-matrix.mjs 4/4: no tracked paths differ only by case and capitalised, spaced, traversing, or backslash lanes are rejected; a backslash or capitalised manifest lane fails before any lane is read and a CRLF manifest validates; active surfaces name no retired lane, hidden notepad directory, host temp lane, private skill catalog, Foundry-dependent path, or private home path (one real private path stripped from RUNBOOK.md); the shared privacy patterns find nothing on the active surfaces. Schema migration, mixed Adoption, symlink invocation, collisions, and stale links are covered by the cited tests; full 32-command union suite green | RUNBOOK.md gained the Portability and privacy matrix table mapping every row to its check and lost a private path; AGENTS.md and RUNBOOK.md suite lists updated | none |
 
 | 2026-09-04 | TK-004 | Owner-authorized v3.1.1 continuation assigned to S-027; old claim paused | Live preserved branch remains 4ce74f8; no release tag or independent PASS inferred | Pending gate linked to S-027; prior evidence unchanged | S-027 and fresh candidate review |
+
+| 2026-09-05 | release | S-027 integration delivery verified at `09f0875` via PR #48; release remains paused | Exact reviewed `fa04e27` is an ancestor of remote integration; main unchanged | Current gate reconciled; original baseline and append-only evidence preserved | Owner release-direction reconciliation, not S-027 preparation |
 
 ## Completion Result
 

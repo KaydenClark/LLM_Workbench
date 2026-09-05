@@ -7,11 +7,11 @@
 **Status:** blocked
 **Priority:** 0
 **Owner:** codex
-**Updated:** 2026-09-04
+**Updated:** 2026-09-05
 **Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** Release remains paused behind S-027 v3.1.1 preparation and the linked S-022 release reconciliation; no audited integration candidate supplied.
-**Latest event:** Owner authorized S-027 v3.1.1 continuation; historical release proof is retained and publication remains paused.
-**Next gate:** Wait for the reviewed v3.1.1 integration candidate; reconcile this historical release procedure with current owner direction before publication.
+**Blockers:** Owner release-direction reconciliation remains pending; integration testing is authorized, main/release publication is not.
+**Latest event:** S-027 delivered the reviewed v3.1.1 candidate through PR #48 at integration 09f0875; historical release proof remains preserved.
+**Next gate:** Reconcile this historical release procedure and version intent with owner direction before any publication; do not reopen S-027 or require CIC for ordinary testing.
 
 ## Outcome
 
@@ -30,7 +30,8 @@ without weakening either repository's release boundary.
 
 ## Current Verified State
 
-Current continuation (2026-09-05): release remains paused behind S-027.
+Current continuation (2026-09-05): S-027 is delivered to integration at
+`09f0875`; release remains paused for owner direction and release reconciliation.
 The observations below describe the original capability baseline; they do not
 assert a current schema, release status, or candidate audit. S-027 owns the
 refreshed checkout and remote evidence.
@@ -338,6 +339,8 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 | 2026-09-04 | v3.1 dependency reconciliation | S-015 completed on `integration` `dd6fe03`; owner amendments set v3.0.0 as an unreleased internal candidate and v3.1.0 as the first public v3 release, so the exact candidate moves to the v3.1 umbrella | `git ls-remote` integration `dd6fe03`, main `08ab78e`, ancestry exit 0; S-015 review PASS on `1c621b9`; no release status, promotion PR, or main mutation | Updated S-014 blocker, ticket blocker, current state, and generated projections | Resume TK-002 on the audited v3.1.0 integration SHA supplied by S-022 |
 
 | 2026-09-04 | TK-002 | Owner authorized S-027 continuation; publication remains blocked | Live refs verified; no current audit PASS inferred | Pending gate updated; historic proof preserved | S-027 and fresh exact candidate review |
+
+| 2026-09-05 | release | S-027 integration delivery verified at `09f0875` via PR #48; release remains paused | Exact reviewed `fa04e27` is an ancestor of remote integration; main unchanged | Current gate reconciled; original baseline and append-only evidence preserved | Owner release-direction reconciliation, not S-027 preparation |
 
 ## Completion Result
 

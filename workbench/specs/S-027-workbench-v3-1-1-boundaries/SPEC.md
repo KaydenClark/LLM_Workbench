@@ -1,14 +1,14 @@
 # S-027 - Workbench v3.1.1 Boundaries
 
 **Spec ID:** S-027
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** codex
 **Updated:** 2026-09-05
 **Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
 **Blockers:** none
-**Latest event:** Owner authorized integration delivery after verification and fresh review; cloud continuation repaired the demonstrated closeout failure. Branch cleanup and local synchronization are explicitly deferred.
-**Next gate:** Verify and independently review the new immutable candidate against live integration, then merge and confirm remote containment. Preserve branches for owner-directed cleanup after local synchronization.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 **Stance:** Builder
 
 ## Outcome
@@ -24,6 +24,9 @@ The Workbench must support useful autonomous work without inventing process,
 queue items, or external orchestration dependencies.
 
 ## Current Verified State
+
+Current delivery is recorded in Completion Result and the append-only log.
+The following paragraph is the preserved authorization baseline, not live refs.
 
 At authorization the checkout is `2538b8ab88991a866d8b97e5d2c1fb72d9571fe7`.
 Live remote integration is `9e1c935d1027d3818578070c9bbdb88809af3dcd`, main is
@@ -104,7 +107,7 @@ existing skills; real user installations are outside this task.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | in-progress | none | Historical approvals cover earlier candidates only; current closeout repair awaits full verification and exact-candidate review |
+| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | done | none | All 30 commands PASS on clean fa04e27; independent APPROVE; PR48 merged at 09f0875; remote containment verified |
 
 ### TK-001 - Assigned task
 
@@ -123,7 +126,7 @@ is read-only and reports only in chat. No new queue item is created for it.
 - [x] Fresh Round One agent verifies setup via the intended route and reports only in chat.
 - [x] Subsequent report format/workflow and one report live in the feedback lane; a fresh agent finds the bounded next action or owner gate without original chat.
 - [x] Full required suite, render, doctor, ADR/Wiki checks and diff check pass; guardrail after-score and limits recorded.
-- [ ] v3.1.1 candidate is remotely recoverable; separate-context review covers the exact proposed integration candidate before any integration merge.
+- [x] v3.1.1 candidate is remotely recoverable; separate-context review covers the exact proposed integration candidate before any integration merge.
 
 ## Testing Seams
 
@@ -187,15 +190,28 @@ completed spec evidence remain unchanged.
 
 | 2026-09-05 | TK-001 | Verified the bounded inherited safety and adoption corrections | All 30 union commands PASS after replacing an unregistered collision code with the existing lane-collision diagnostic and rerunning diagnostics 4/4 and layout 19/19; ADR 7/7, sessions 3/3, legacy Wiki adoption, managed-tools 12/12 and closeout 6/6 PASS; ADR/Wiki validate, diff check; guardrail remains 73/100 | Changed runtime source and matching operation docs; no criteria weakened, no host files touched | Fresh immutable integration review and merge remain pending; cleanup remains deferred |
 
+| 2026-09-05 | TK-001 | Separate-context reviewer APPROVE on `fa04e27` against `9e1c935`; PR #48 merged into integration at `09f0875` under the owner's current authorization | Reviewer independently passed layout 19/19, managed-tools 12/12, ADR 7/7, sessions 3/3, closeout 6/6, diagnostics 4/4, actual legacy Wiki adoption, doctor and diff check. Implementer reran all 30 union commands on clean published `fa04e27`, all PASS. Remote merge parents are exactly `9e1c935` and `fa04e27`; ancestry PASS; source branch retained; main unchanged | Completion reconciled in this spec; S-022/S-014 release gates updated without altering historical evidence; rendered projections follow spec state | No release/main merge, local synchronization or branch cleanup; genuine fresh-session real-work proof remains an owner-selected next assignment |
+| 2026-09-05 | TK-001 | Ticket closed | All 30 commands PASS on clean fa04e27; independent APPROVE; PR48 merged at 09f0875; remote containment verified | Root and template controls, tools, tests and linked spec gates updated | Real-work trial and local sync remain untested; owner deferred cleanup; main/release excluded |
+| 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+
 ## Completion Result
 
-v3.1.1 source behavior, route, stances, Round One, feedback workflow and report
-continuation are implemented. The earlier candidate is remotely recoverable at
-`7d05596`; the current closeout repair remains pending final verification,
-publication and independent review. The owner now authorizes integration
-merge once ready, superseding the earlier run-specific refusal. No main merge,
-release, local-host synchronization or real-work readiness claim is made.
-Branch cleanup is deferred until the owner synchronizes the local checkout.
+v3.1.1 candidate preparation and authorized integration delivery are complete.
+Separate-context review approved `fa04e27261497ad5aa2f62085764fb6581b2e7e1`
+against `9e1c935d1027d3818578070c9bbdb88809af3dcd`. All 30 required commands
+passed again on that clean published candidate. PR #48 merged it into
+`integration` at `09f0875edce730eebac56902fa561ec3301b0543`; remote fetch,
+merge-parent inspection and ancestry checks confirm containment of the exact
+reviewed commit. GitHub connector publication matched the tested Git trees;
+native Git push lacked credentials in this cloud workspace.
+
+This is ready for an owner-selected real-work test, not proof that real-work
+execution or a new provider session succeeds. Main remains unchanged at
+`08ab78e5a59a68d2b04028fe71a2be488d5ae10e`; no release or host synchronization
+occurred. Branch refs are preserved for cleanup after the owner syncs locally.
+The earlier run-specific merge refusal was superseded by the owner's explicit
+authorization in this continuation. S-022/S-014 remain paused for separate
+release-direction reconciliation, not incomplete S-027 preparation.
 
 ## Remaining Limitations Or Follow-Up Specs
 
