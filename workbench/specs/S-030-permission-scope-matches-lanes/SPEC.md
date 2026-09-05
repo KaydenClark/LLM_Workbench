@@ -1,15 +1,15 @@
 # S-030 - Permission Scope Matches Declared Lanes
 
 **Spec ID:** S-030
-**Status:** active
+**Status:** complete
 **Priority:** 1
 **Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Ship a template permission file that grants Edit and Write on the Workbench authorship lanes the prose already declares writable, and make doctor report when a room's permission file withholds a declared lane.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -146,10 +146,10 @@ project without the file yields none. Register the code and describe it in
 
 ## Acceptance Criteria
 
-- [ ] The template grants Edit and Write on the five authorship lanes, holds `workbench/tools/**` in `ask`, pairs Write with Edit on writable roots, and grants the authoring-tool Bash entries.
-- [ ] `.claude/README.md`, GENESIS, and ADOPTION explain Edit versus Write and name the lanes; the completion boxes ask for the grant.
-- [ ] `doctor` reports `permission-scope-drift` naming each withheld lane; `validate --genesis` fails closed on it; rooms without the file are unaffected.
-- [ ] The full required suite, render, and doctor pass.
+- [x] The template grants Edit and Write on the five authorship lanes, holds `workbench/tools/**` in `ask`, pairs Write with Edit on writable roots, and grants the authoring-tool Bash entries.
+- [x] `.claude/README.md`, GENESIS, and ADOPTION explain Edit versus Write and name the lanes; the completion boxes ask for the grant.
+- [x] `doctor` reports `permission-scope-drift` naming each withheld lane; `validate --genesis` fails closed on it; rooms without the file are unaffected.
+- [x] The full required suite, render, and doctor pass.
 
 ## Testing Seams
 
@@ -188,10 +188,72 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | spec | Spec captured from upstream fix-list item UP-012 (rank high, found in Master Workbench on 2026-09-05) | Template file re-read at `b7b23dd`: no `Write` rule, no `workbench/` entry, no `LEXICON.md` edit rule; `template-placeholders.mjs:93` checks the prose placeholder only | Blueprint v3.1.2 direction links this spec | Both slices |
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-workbench-layout.mjs (new test: the template permission file grants Edit and Write on every authorship lane the prose declares writable; red at ae60d8d on 'workbench/docs must have an Edit allow rule', green after the fill); node tools/test-workbench-dogfood.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls (106.6/113, identical to the pre-change baseline) | templates/.claude/README.md (Edit versus Write, authorship-lanes row, workbench/tools in ask, the permission-scope-drift finding), templates/GENESIS.md and templates/ADOPTION.md Phase 4 wording and completion boxes; AGENTS.md checked, no update needed: the prose Edit Scope already declares the workbench/ support lanes writable | TK-002: permission-scope-drift is not yet a doctor finding or a Genesis gate |
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-diagnostics.mjs (new test: permission-scope-drift names each withheld authorship lane without blocking doctor; red at b587350 on 'Unregistered diagnostic code: permission-scope-drift'); node tools/test-workbench-layout.mjs (new test: Genesis readiness fails closed on a permission file that withholds a declared authorship lane; red at b587350 with validate returning valid); node tools/test-workbench-dogfood.mjs; node tools/evaluate-workbench.mjs --path templates --include-controls (identical to baseline); demo: doctor and validate --genesis on a disposable Genesis room with the pre-fix, fixed, and absent permission files | RUNBOOK.md (Diagnostics And Blocking Effects paragraph and Troubleshooting row for permission-scope-drift), templates/RUNBOOK.md (Workbench Lifecycle, Diagnostics, And Decision Records paragraph); AGENTS.md checked, no update needed: the prose scope is already correct | none for this slice; rooms that copied the old template repair their own file by hand or through update-harness, as the spec's Remaining Limitations state |
+| 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Completed 2026-09-05 by claude-fable-5-1 on `claude/s030-permission-scope-lanes`
+(TK-001 at `b587350`, TK-002 at `62ef21f`).
+
+**What changed.** `templates/.claude/settings.json` now grants `Edit` and
+`Write` on `workbench/specs`, `docs`, `wiki`, `feedback`, and `sessions`,
+pairs `Write` with every directory `Edit` on the writable roots, adds
+`Edit(./LEXICON.md)`, holds `workbench/tools/**` in `ask` for both tools, and
+allows `Bash(node workbench/tools/<spec-workbench|adr|sessions|wiki|workbench-layout>.mjs:*)`.
+`templates/.claude/README.md` explains that Edit and Write are separate grants,
+that creating a record needs Write, and lists the authorship lanes as a fourth
+mapping row; `templates/GENESIS.md` and `templates/ADOPTION.md` Phase 4 and
+their completion boxes ask for the grant. `workbench/tools/workbench-layout.mjs`
+gains `permissionScopeDrift(project, lanes)` and `permissionScopeMessage`,
+a conservative matcher that recognises `./<path>/**` and a covering parent
+glob and treats anything else (or an unreadable file) as not granting.
+`doctor` (through `collectionFindings` in `spec-workbench.mjs`) reports
+`permission-scope-drift` (error, controls, effect `none`) naming each withheld
+lane with its reason; `validate --genesis` fails closed on the same condition;
+a room without the file is unaffected. The code is registered in
+`diagnostics.mjs`, and the root and template Runbooks describe the finding and
+its resolution. `AGENTS.md` needed no change: the prose scope was already
+correct.
+
+**Why.** Upstream fix-list item UP-012: a Genesis v3.1.1 room could not write
+its own specs, ADRs, wiki pages, feedback rows, or checkpoints while passing
+every check, because the permission file never mentioned the lanes and carried
+no `Write` grant, and nothing read it.
+
+**Ambiguities resolved.** (1) "the `tools` lane appears in `allow`" is read
+as effectively granted: an `allow` rule covers it and no `ask` or `deny` rule
+covers it, so the accepted shape of a parent `./workbench/**` allow with
+`./workbench/tools/**` in `ask` is not drift, while a bare parent glob is.
+(2) An unreadable permission file grants nothing and is reported as drift
+naming all five lanes. (3) `Write(./[SCHEMA_OR_MIGRATIONS_DIR]/**)` was added
+beside its `Edit` in `ask` so the Edit/Write pairing holds for every
+directory rule, not only `allow`. (4) The matcher lives in
+`workbench-layout.mjs` rather than a new module because the relocated-CLI
+test and the installer's fixed `RUNTIME_TOOLS` list pin the helper set.
+(5) The Bash grants use the `node workbench/tools/<tool>.mjs:*` prefix form.
+
+**Risks and side effects.** Rooms that copied the old template now see a
+nonblocking `permission-scope-drift` from `doctor` and fail
+`validate --genesis` until they add the lane rules or record a deliberate
+denial; the finding tells them which lanes. The matcher is conservative by
+contract, so legitimate but unrecognised shapes (`workbench/**` without `./`,
+`//workbench/**`, per-file globs) report drift; the Runbooks say to widen the
+rule. The template now allows the five authoring tools under Bash without a
+prompt in a generated room.
+
+**How verified.** Red/green at the named commits: the TK-001 template test
+failed on `workbench/docs must have an Edit allow rule`, the TK-002 diagnostics
+test on `Unregistered diagnostic code: permission-scope-drift`, and the gate
+test with `validate --genesis` returning `valid` for the pre-fix file.
+`node tools/test-diagnostics.mjs` (5/5), `node tools/test-workbench-layout.mjs`
+(21/21), `node tools/test-workbench-dogfood.mjs`, and
+`node tools/evaluate-workbench.mjs --path templates --include-controls`
+(106.6/113, byte-identical to the pre-change baseline) pass; the full
+`AGENTS.md` suite, `render`, `doctor`, and `git diff --check` were run after
+completion (see the evidence row). Demo artifact: a scripted completed Genesis
+room shows absent -> `valid`/no findings, pre-fix -> `permission-scope-drift`
+naming `docs,specs,wiki,sessions,feedback` from both `validate --genesis`
+(exit 1) and `doctor` (exit 0), fixed -> `valid`/no findings.
 
 ## Remaining Limitations Or Follow-Up Specs
 
