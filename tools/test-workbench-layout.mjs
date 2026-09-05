@@ -634,6 +634,36 @@ test('legacy twelve-skill manifests remain readable but v3.1.1 requires all four
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
+test('each listed legacy version validates only at the policy its release declared, and a malformed version is invalid-manifest', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const sixteen = manifest.skillPolicy.required;
+    const twelve = sixteen.slice(0, 12);
+    const outcome = (workbenchVersion, required) => {
+      fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion, skillPolicy: { ...manifest.skillPolicy, required } }));
+      const { report } = run('validate', '--project', project);
+      return report.status === 'valid' ? 'valid' : report.error.code;
+    };
+    // A v3.1.1 sixteen-skill manifest stays readable at this release; the
+    // twelve-skill bundle belongs to v3.0.0 and v3.1.0 only.
+    assert.equal(outcome('v3.1.1', sixteen), 'valid');
+    assert.equal(outcome('v3.1.1', twelve), 'invalid-skill-policy');
+    assert.equal(outcome('v3.1.0', twelve), 'valid');
+    assert.equal(outcome('v3.0.0', twelve), 'valid');
+    assert.equal(outcome(VERSION, sixteen), 'valid');
+    assert.equal(outcome(VERSION, twelve), 'invalid-skill-policy');
+    // An unlisted well-formed version must carry the current policy.
+    assert.equal(outcome('v9.9.9', sixteen), 'valid');
+    assert.equal(outcome('v9.9.9', twelve), 'invalid-skill-policy');
+    // A version that is not vMAJOR.MINOR.PATCH is a malformed manifest.
+    assert.equal(outcome('3.1.1', sixteen), 'invalid-manifest');
+    assert.equal(outcome('unknown', sixteen), 'invalid-manifest');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
 for (const mode of ['init', 'migrate']) {
   for (const collision of ['symlink', 'ordinary']) {
     test(`${mode} preserves existing session ignore ${collision} content`, () => {

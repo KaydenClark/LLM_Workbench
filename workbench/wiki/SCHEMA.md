@@ -12,7 +12,7 @@ last_verified: 2026-09-04
 
 # Wiki Schema and CRUD Contract
 
-> Generated from LLM Workbench v3.1.1.
+> Generated from LLM Workbench v3.1.2.
 
 ## Purpose And Ownership
 
