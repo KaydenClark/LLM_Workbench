@@ -7,6 +7,7 @@
 **Status:** planned
 **Priority:** [0-9]
 **Owner:** [owner]
+**Stance:** Builder
 **Updated:** [YYYY-MM-DD]
 **Catalog description:** [One sentence for the Blueprint catalog.]
 **Blockers:** none
@@ -48,6 +49,12 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | [Small end-to-end slice] | ready | none | pending |
+
+### TK-001 - Assigned task
+
+**Stance:** Builder
+
+[Small end-to-end slice]
 
 ## Acceptance Criteria
 

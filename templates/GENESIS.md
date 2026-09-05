@@ -163,15 +163,25 @@ Output: a `RUNBOOK.md` a new agent can follow to reproduce a green run.
 Initialize the v3 support root before writing support records:
 
 ```bash
-node /PATH/TO/LLM_WORKBENCH/tools/workbench-layout.mjs init \
+node /PATH/TO/LLM_WORKBENCH/workbench/tools/workbench-layout.mjs init \
   --project [ABSOLUTE_PROJECT_PATH] --provenance genesis --version v[HARNESS_VERSION]
+node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs install \
+  --project [ABSOLUTE_PROJECT_PATH]
 ```
+
+The second command installs the Workbench-managed runtime tools into the
+project's `workbench/tools/` lane with a receipt recording the exact source
+release, commit, and per-file hashes. From then on the project runs its own
+copies (`node workbench/tools/spec-workbench.mjs ...`); an application's root
+`tools/` directory, if any, is the application's own and is never touched.
 
 Create one stable `workbench/specs/S-001-<slug>/SPEC.md` for the nearest
 coherent capability. Put 1-3 one-context tracer-bullet tickets in its
 implementation table and record the Genesis result in its evidence log. The
-manifest declares the `specs`, `wiki`, `grilling`, `handoffs`, and `feedback`
-lanes; do not create a project-local `skills/` discovery directory.
+manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
+`feedback`, `tools`) and their collections; live grilling and handoff records
+under `workbench/sessions/` stay untracked, and only `sessions/checkpoints/`
+is durable. Do not create a project-local `skills/` discovery directory.
 
 The readiness gate (`validate --genesis`) accepts only an actionable first
 packet, so shape it exactly like this before running the gate:
@@ -191,16 +201,25 @@ Then render the projections and run doctor so the generated regions in
 `BLUEPRINT.md` and `TASKBOARD.md` (kept from the templates) reflect the packet:
 
 ```bash
-node /PATH/TO/LLM_WORKBENCH/tools/spec-workbench.mjs render
-node /PATH/TO/LLM_WORKBENCH/tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
-Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to
-`workbench/wiki/MEMORY.md`, fill its placeholders, and link it to the live
-controls just created. If this room lives inside a larger deployment vault, set
-the up-link to the deployment wiki's note for this room. See
-`templates/Wiki/README.md` for the link conventions. A room is not bootstrapped
-without a brain.
+Copy `templates/WORKBENCH_FEEDBACK.md` to
+`workbench/feedback/WORKBENCH_FEEDBACK.md` and fill its header; also copy
+`templates/feedback/REPORT_FORMAT.md` into the declared feedback lane as
+`REPORT_FORMAT.md` for later assigned reports; the return
+channel lives in the feedback lane, never at the root, so the root keeps
+exactly seven controls.
+
+Then seed the room brain: `init` already seeded `workbench/wiki/SCHEMA.md`,
+`workbench/wiki/AGENTS.md`, and `workbench/wiki/design-concepts/README.md`;
+copy `templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md`, fill
+its placeholders, and link it to the live controls just created. If this room
+lives inside a larger deployment, set the up-link to the deployment wiki's
+note for this room. See `templates/wiki/README.md` for the link conventions.
+The readiness gate requires the filled router and contract files; a room is
+not bootstrapped without a brain.
 
 Output: one durable capability record, declared support lanes, a hot projection
 the normal work loop can pick up immediately, and a manifest-routed room brain.
@@ -233,18 +252,24 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
-- [ ] `workbench/manifest.json` declares the five support lanes, exact
-      12-skill policy, version, and Genesis provenance; the layout validator
+- [ ] `workbench/manifest.json` is schema 2 and declares the six support
+      lanes, seven collections, wiki profile, exact 16-skill policy, version,
+      and Genesis provenance with its source commit; the layout validator
       passes with `--genesis`. When it fails, its JSON `message` names the
       failing control or predicate, and first-spec and generated-region
       failures add a `reason` field; fix that predicate rather than the gate.
 - [ ] `CLAUDE.md` is exactly `@AGENTS.md`; the gate rejects any other bridge.
+- [ ] `workbench/tools/` holds the installed runtime tools and their receipt
+      (`.workbench-tools.json`) whose source release matches the manifest;
+      `workbench/sessions/.gitignore` keeps live records untracked; and
+      `workbench/wiki/design-concepts/` exists even if empty.
 - [ ] A stable first spec under `workbench/specs/` is `active`, carries at
       least one unclaimed `ready` ticket with no blockers and proof
       requirements, keeps at least one unchecked acceptance box, and `render`
       plus `doctor` pass on the result.
-- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/Wiki/`),
-      routes to the live controls, and has no unfilled placeholders.
+- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),
+      routes to the live controls, and has no unfilled placeholders; the seeded
+      `SCHEMA.md`, `AGENTS.md`, and `design-concepts/README.md` sit beside it.
 - [ ] The first spec evidence row records that Genesis ran, with the actual result.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box

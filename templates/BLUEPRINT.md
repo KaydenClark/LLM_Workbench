@@ -36,8 +36,13 @@ Rules that span multiple capabilities:
 - [Privacy/safety boundary]
 - [Architecture decision future specs must preserve]
 
-Source and tests remain implementation truth. Put capability-specific
-requirements and decisions in its stable spec, not here.
+Source and tests say what is implemented; this file and the assigned spec say
+what is accepted (`AGENTS.md` -> State Resolution). Put capability-specific
+requirements and decisions in its stable spec, not here. Consequential
+architectural decisions with real alternatives get a record in
+`workbench/docs/adr/`; the rule they establish still lives in the owning
+control, because the Workbench Contract is the set of claims those controls
+and the assigned spec carry, not a file.
 Put accepted project-wide definitions in `LEXICON.md`; the Blueprint helps
 participants recover the design concept but is not itself the design concept or
 the project glossary.
@@ -65,3 +70,13 @@ history. Human-authored product prose stays outside the markers.
 - the primary workflow succeeds end to end;
 - secrets and private data stay out of committed output;
 - spec doctor/render checks report no lifecycle, link, or projection drift.
+
+## Workbench Entry And Delivery Boundaries
+
+The seven-control Contract enters through AGENTS -> RUNBOOK -> LEXICON, then
+assigned work and task-relevant owners. This Blueprint loads for architecture
+and cross-cutting direction. SPEC and TASK assign portable stances; stances
+change method without transferring authority or spawning agents. Independent
+review is required before branches combine at integration. Required steps need
+immediate delivery value; uncertain practices remain optional and reviewable.
+A setup-only Round One proof reports in chat before feedback-report testing.

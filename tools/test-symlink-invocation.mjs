@@ -22,7 +22,8 @@ fs.symlinkSync(repoRoot, linkedRepo);
 // report header) when its main actually runs; the broken guard produces
 // nothing at all.
 const cases = [
-  { tool: 'spec-workbench.mjs', expect: /Usage: spec-workbench\.mjs/ },
+  { tool: 'workbench/tools/spec-workbench.mjs', expect: /Usage: spec-workbench\.mjs/ },
+  { tool: 'workbench/tools/workbench-layout.mjs', expect: /Usage: workbench-layout\.mjs/ },
   { tool: 'feedback-automation.mjs', expect: /usage: feedback-automation\.mjs/ },
   { tool: 'context-pack.mjs', expect: /AGENTS\.md|usage/i },
   { tool: 'audit-guardrails.mjs', expect: /Guardrail Audit/ },
@@ -33,7 +34,7 @@ const cases = [
 
 try {
   for (const { tool, expect } of cases) {
-    const linkedTool = path.join(linkedRepo, 'tools', tool);
+    const linkedTool = path.join(linkedRepo, tool.includes('/') ? tool : path.join('tools', tool));
     let stdout = '';
     let stderr = '';
     try {

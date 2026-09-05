@@ -17,16 +17,18 @@ Verify the repository root, branch, remote, upstream, and dirty state. Read the
 nearest `AGENTS.md` and its `RUNBOOK.md`, then run:
 
 ```bash
-node tools/spec-workbench.mjs doctor
-node tools/spec-workbench.mjs next --json
-node tools/spec-workbench.mjs show S-###
+node workbench/tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs show S-###
 ```
 
-Continue only when `next` returns the assigned ticket as ready or resumable and
-the working tree can be safely attributed. For a ready slice, claim it:
+Continue when the explicitly assigned ticket is ready or resumable and the
+working tree can be safely attributed. `next` supports owner-directed pickup;
+it does not override an explicit assignment. Use the stance assigned in SPEC
+and TASK, and investigate within that task without inventing another queue item. For a ready slice, claim it:
 
 ```bash
-node tools/spec-workbench.mjs claim S-### --agent NAME
+node workbench/tools/spec-workbench.mjs claim S-### --agent NAME
 ```
 
 The slice is situated when one eligible ticket, its acceptance boundary, its
@@ -57,32 +59,31 @@ Record the comparison base as `BASE_SHA` and the remotely verified checkpoint as
 `HEAD_SHA`. This step is complete only when the remote is the recovery point for
 the exact code, tests, documentation, and in-progress spec state under review.
 
-## 4. Review the immutable checkpoint
+## 4. Review at the relevant boundary
 
-Run `/code-review` as a separate review task against `BASE_SHA` and `HEAD_SHA`.
-That fixed immutable-SHA review must inspect the pushed commit, not later
-working-tree state.
+Use review and verification practices to challenge the work before calling it
+done. Earlier review is support, not a mandatory independent ceremony per
+ticket. Self-review can find issues while Builder work continues.
 
-Resolve each in-scope finding through the same red/green loop. Update its owning
-documentation, create and push a new truthful checkpoint, verify the new remote
-SHA, and re-review the newly fixed `BASE_SHA` to `HEAD_SHA` range. Repeat until
-the exact-head review is green with no unresolved in-scope finding.
-
-If review cannot finish, leave the ticket in progress and yield only after its
-latest truthful checkpoint is remotely recoverable.
+A proposed merge requires separate-context review before branches combine at
+`integration`. Run `/code-review` against immutable `BASE_SHA` and `HEAD_SHA`,
+including controls, the assigned spec, tests and consequential report claims.
+Repair only authorized findings, create a new truthful checkpoint, and re-review
+the changed candidate. The exact-head review must pass before integration.
+Do not call an intermediate checkpoint or green self-review an integration PASS.
 
 ## 5. Close and recover remotely
 
-Only after the exact-head review is green, close the ticket with its acceptance
-and proof:
+Close the ticket only after its scoped acceptance and required proof are met.
+If the ticket includes integration, the separate-context gate above also applies:
 
 ```bash
-node tools/spec-workbench.mjs close S-### \
+node workbench/tools/spec-workbench.mjs close S-### \
   --proof "NAMED VERIFICATION" \
   --docs "DOCS UPDATED OR Docs checked; no update needed + reason" \
   --remaining-gap "GAP OR none"
-node tools/spec-workbench.mjs render
-node tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 Commit the close evidence and generated projection, make the final push, and

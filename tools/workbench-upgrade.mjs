@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { coreSkills, validateManifest } from './workbench-layout.mjs';
+import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
@@ -154,13 +154,15 @@ function upgrade(options) {
     }
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    manifest.provenance = { lifecycle: 'upgrade' };
+    manifest.provenance = { ...manifest.provenance, lifecycle: 'upgrade' };
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     const validation = validateManifest(project);
     if (validation.status !== 'valid') throw new Error(validation.error.message);
-    const recoveryPath = path.join('workbench', 'handoffs', 'upgrade-recovery.json');
-    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups }, null, 2)}\n`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skillBackups, migration: adoptionReport };
+    const recoveryPath = path.join(collections.checkpoints, 'upgrade-recovery.json');
+    const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
+    const tools = { status: 'installed', receipt: `${validation.manifest.lanes.tools}/.workbench-tools.json`, source: receipt.source };
+    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, tools }, null, 2)}\n`);
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skillBackups, tools, migration: adoptionReport };
   } catch (error) {
     return { status: 'partial', skillBackups, error: { code: 'upgrade-failed', message: error.message } };
   }
@@ -168,7 +170,7 @@ function upgrade(options) {
 
 try {
   const [command, ...args] = process.argv.slice(2);
-  if (command !== 'upgrade') throw new Error('Usage: workbench-upgrade.mjs upgrade --project PROJECT --home USER_HOME --version v3.0.0 --explicit-update');
+  if (command !== 'upgrade') throw new Error('Usage: workbench-upgrade.mjs upgrade --project PROJECT --home USER_HOME --version v3.1.1 --explicit-update');
   const result = upgrade(parseOptions(args));
   process.stdout.write(`${JSON.stringify(result)}\n`);
   if (result.status !== 'complete') process.exitCode = 1;

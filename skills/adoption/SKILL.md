@@ -22,15 +22,18 @@ Adoption to update an already-adopted project.
    node tools/workbench-adoption.mjs migrate \
      --project [ABSOLUTE_PROJECT_PATH] \
      --home [USER_HOME] \
-     --version v3.0.0
+     --version v3.1.1
    ```
 
    The helper moves only unambiguous durable v2 lanes, including a legacy root
-   `MEMORY.md`, into the manifest-declared v3 lanes, preserves a project-local `skills/`
-   folder under the explicit
-   handoff recovery lane, renders the projections, and runs doctor. An existing
-   support root, path collision, missing core skill, or bracketed root control
-   is a blocker to reconcile before retrying; never overwrite it.
+   `MEMORY.md` and a root feedback file, into the manifest-declared schema 2
+   lanes and collections, preserves a project-local `skills/` folder under
+   `workbench/sessions/checkpoints/`, installs the receipt-backed runtime
+   tools into `workbench/tools/`, renders the projections, and runs doctor. An
+   existing support root, path collision, missing core skill, or bracketed
+   root control is a blocker to reconcile before retrying; never overwrite it,
+   and never touch an application's root `tools/`. Afterwards use the
+   project's own `node workbench/tools/spec-workbench.mjs ...` copies.
 3. Preserve project behavior and history. Port live truth into the existing
    Workbench owners, archive retired control documents, and do not perform an
    unrelated product cleanup or create another tracker.

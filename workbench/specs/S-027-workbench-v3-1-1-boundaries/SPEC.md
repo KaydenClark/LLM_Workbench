@@ -1,0 +1,233 @@
+# S-027 - Workbench v3.1.1 Boundaries
+
+**Spec ID:** S-027
+**Status:** active
+**Priority:** 0
+**Owner:** codex
+**Updated:** 2026-09-05
+**Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
+**Blockers:** none
+**Latest event:** Owner authorized integration delivery after verification and fresh review; cloud continuation repaired the demonstrated closeout failure. Branch cleanup and local synchronization are explicitly deferred.
+**Next gate:** Verify and independently review the new immutable candidate against live integration, then merge and confirm remote containment. Preserve branches for owner-directed cleanup after local synchronization.
+**Stance:** Builder
+
+## Outcome
+
+An assigned agent enters through AGENTS -> RUNBOOK -> LEXICON, follows only
+task-relevant memory and owners, and delivers verified, recoverable work.
+v3.1.1 continues the preserved v3.1 candidate; this spec owns the changed
+behavior and candidate preparation, not publication or downstream adoption.
+
+## Why It Matters
+
+The Workbench must support useful autonomous work without inventing process,
+queue items, or external orchestration dependencies.
+
+## Current Verified State
+
+At authorization the checkout is `2538b8ab88991a866d8b97e5d2c1fb72d9571fe7`.
+Live remote integration is `9e1c935d1027d3818578070c9bbdb88809af3dcd`, main is
+`08ab78e5a59a68d2b04028fe71a2be488d5ae10e`, and the preserved v3.1 candidate is
+`4ce74f8de1da30a3bffd9286e32c3b63e417a08b`. Neither version has a remote tag.
+Doctor passes; next still selects S-022/TK-004 under its old owner. Schema 2,
+Wiki, ADRs, managed tools, and twelve portable skills already exist. The
+round-trip transcript captures absolute producer paths; its privacy assertion
+must be repaired at the producers, not removed. Guardrail baseline: 68/100.
+
+## Desired Behavior
+
+1. Retain seven controls. Reduce entry to AGENTS.md -> RUNBOOK.md -> LEXICON.md;
+   consult Blueprint only for architecture/direction, then the assigned spec,
+   relevant Wiki and ADRs as routed by the task.
+2. Ship Builder, Auditor, Reviewer, Reconciler as four portable stance skills.
+   A stance changes behavior only; it neither grants/removes/transfers authority
+   nor spawns an agent or requires a handoff. Each has Purpose, Method / Posture,
+   Obligations, Completion / Exit Condition. The assigned SPEC and TASK set the
+   normal stance. Missing information is investigated inside assigned scope;
+   the agent never creates its own next task. Troubleshooting stance policy is
+   outside scope.
+3. First complete Round One: a fresh agent follows the reduced route, Wiki and
+   relevant ADRs, verifies setup, and returns the result in this chat only.
+   It creates no report, handoff, checkpoint, new task, or other prose artifact.
+4. After Round One succeeds, implement the feedback-report procedure and format
+   in the manifest feedback lane. Produce an evidence-backed report there and
+   demonstrate fresh-context continuation to its accepted action or an honest
+   owner decision pending. A report never repairs or authorizes repair of its
+   target; no findings is a valid outcome.
+5. Independent separate-context review is mandatory only at the proposed
+   integration merge. It challenges the fixed candidate and evidence, including
+   consequential report claims. Earlier verification/review remains useful
+   support, without an independent ceremony per ticket.
+6. Version stamps change only after behavior and required proof are green.
+   No release or integration merge is claimed by a version bump.
+
+## Decisions And Contracts
+
+Source: [locked Q1-Q16](../../sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md),
+authorized by the owner on 2026-09-04. Locked answers supersede that record's
+older recommendations, tentative sequence, paused header, and stale next action.
+
+| Decisions | Canonical destination |
+|---|---|
+| Q1, Q11, Q13, Q14 | This spec: build route/stances, chat-only Round One, then reporting and continuation |
+| Q2, Q5 | AGENTS, RUNBOOK, LEXICON: reduced entry and existing truth owners |
+| Q3, Q12, Q16 | AGENTS, LEXICON, skills: assigned stances and behavior-only contracts |
+| Q4 | AGENTS and implementation/review skills: integration review gate |
+| Q6, Q15 | AGENTS: autonomy within assigned work; no self-created next task |
+| Q7 | RUNBOOK and report format: manifest feedback lane; report/repair boundary |
+| Q8 | BLUEPRINT and this spec: continue v3.1 as v3.1.1 without rewriting proof |
+| Q9 | BLUEPRINT: real contrasting owner-selected work before any Master Workbench |
+| Q10 | AGENTS and ADR-0034: each requirement must enable delivery |
+
+The four stance directories ship flat in both discovery roots, so one-level
+Claude discovery works without a second copy. A separately nested installation
+under `stances/` must expose a flat top-level symlink. Normal setup preserves
+existing skills; real user installations are outside this task.
+
+## Non-Goals
+
+- Foundry, CIC, Master Workbench implementation, connectors, scheduler mutation,
+  real user skill synchronization, or assignment of any example pilot project.
+- Merging integration to main, publishing a release status/tag, waiving an
+  independent integration review, or relabeling historical proof as current.
+- A new CONTRACT.md, handoff layer, mandatory stance-selection ritual, or task
+  schema engine. TASK means the existing ticket in its assigned SPEC.
+- Comparative agent-outcome claims without repeated controlled trials.
+
+## Dependencies And Blockers
+
+- Reuse completed S-023 through S-026 unchanged; link this later capability.
+- S-022/TK-004 is paused behind S-027. S-014 remains blocked pending an audited
+  integration candidate; its historic CIC flow is not a prerequisite here.
+
+## Vertical Implementation Slices
+
+| Ticket | Slice | Status | Blockers | Proof |
+|---|---|---|---|---|
+| TK-001 | Build and verify v3.1.1 route and stances, run Round One, then deliver feedback reporting and continuation | in-progress | none | Historical approvals cover earlier candidates only; current closeout repair awaits full verification and exact-candidate review |
+
+### TK-001 - Assigned task
+
+**Stance:** Builder. Sequence: route/stances and transcript repair -> fresh
+Round One agent -> feedback workflow/report -> fresh continuation -> full suite
+-> version update and candidate review. Fresh setup, continuation, and the
+integration review may use separate subagents with no inherited conversation;
+they return evidence to this spec's single durable writer. The Round One agent
+is read-only and reports only in chat. No new queue item is created for it.
+
+## Acceptance Criteria
+
+- [x] Root contract and generic templates agree on entry, authority, stances, continuation and review.
+- [x] All four stances install and are discoverable on a fresh disposable host; existing skills remain preserved and unsafe collisions fail before writes.
+- [x] Round-trip privacy regression passes without weakening its assertion.
+- [x] Fresh Round One agent verifies setup via the intended route and reports only in chat.
+- [x] Subsequent report format/workflow and one report live in the feedback lane; a fresh agent finds the bounded next action or owner gate without original chat.
+- [x] Full required suite, render, doctor, ADR/Wiki checks and diff check pass; guardrail after-score and limits recorded.
+- [ ] v3.1.1 candidate is remotely recoverable; separate-context review covers the exact proposed integration candidate before any integration merge.
+
+## Testing Seams
+
+- Disposable installer CLI, manifest validation, and flat provider discovery.
+- Mechanical round trip: producer command/output capture and unchanged final
+  private-path assertion; no filtering of an agent transcript to manufacture PASS.
+- Fresh read-only agents for setup and continuation; chat results are evidence,
+  not comparative outcome trials.
+
+## Verification Procedure
+
+Run the full union of AGENTS.md and RUNBOOK.md verification commands, targeted
+installer/catalog/layout/round-trip checks, ADR register/validate, Wiki validate,
+guardrail audit, render, doctor, diff check, and remote SHA read-back.
+
+## Documentation Impact
+
+AGENTS, BLUEPRINT, LEXICON, RUNBOOK, README, corresponding generic templates,
+portable skills, ADR-0034 through ADR-0038, generated Taskboard/catalog/register,
+S-022/S-014 pending gates, and benchmarks/RESULTS.md. The locked checkpoint and
+completed spec evidence remain unchanged.
+
+## Append-Only Evidence And Execution Log
+
+| Date | Ticket | Event | Verification | Docs | Remaining gap |
+|---|---|---|---|---|---|
+| 2026-09-04 | TK-001 | Owner authorized Q1-Q16; baseline refreshed | doctor PASS; live refs match; guardrail 68/100 | Accepted decisions promoted with current owners | Implement and prove the ordered sequence; publication remains separate |
+
+| 2026-09-05 | TK-001 | Route and stance implementation; original privacy failure reproduced and repaired | Installer red missing four stances then 6/6 green; delivery-contract red on per-ticket independence then 2/2 green; round trip red on private producer paths then green with unchanged assertion; catalog PASS; legacy/new manifest policy test PASS | Root and generic controls, stance skills, installer/layout and tests updated | Round One and reporting sequence; full final suite and review |
+| 2026-09-05 | TK-001 | Fresh-context Round One PASS before reporting implementation | Agent round_one followed AGENTS -> RUNBOOK -> LEXICON -> manifest/S-027 -> Wiki and relevant ADRs; doctor, layout, Wiki, ADR and catalog checks PASS; no authored file or prose artifact; observed dirty tree at baseline HEAD 2538b8a | Existing spec records returned chat evidence; no Round One report or handoff created | This proves setup only, not installation, integration or release |
+| 2026-09-05 | TK-001 | Implemented subsequent manual reporting workflow and lane-owned format | Format manually checked for revision, scope, evidence, challenged findings, bounded action, review and no-repair boundary | RUNBOOK and template, feedback format, Genesis/Adoption placement and Wiki routing | Produce report and prove fresh continuation |
+
+| 2026-09-05 | TK-001 | First subsequent report delivered | [Feedback report](../../feedback/REPORT-boundaries-2026-09-05.md) pins local behavior checkpoint bfae8c0d731d1a799a487b0848f2e39af25c68d5; F-001 reproduced without repair; 29-command pre-version suite PASS | Report and lane format linked from the assigned spec | Fresh continuation, version verification and review; push approval; F-001 repair not assigned |
+
+| 2026-09-05 | TK-001 | Stamped v3.1.1 after behavior proof | All 29 required commands passed before bump; version-bearing source manifest and usage examples updated; original adoption provenance retained | BLUEPRINT, README, source manifest and active version examples | Run complete post-version verification and review; no release or remote publication implied |
+
+| 2026-09-05 | TK-001 | Fresh continuation PASS | Fresh agent cold_continuation followed the reduced route to S-027 and its report, resolved the exact output and pending decisions, passed doctor/next, and independently reproduced F-001; no authored artifact | Existing spec records returned chat proof | Separate-context candidate review and explicit push approval; F-001 repair remains unassigned |
+| 2026-09-05 | TK-001 | Full post-version verification PASS | All 29 commands in the AGENTS/Runbook union passed on v3.1.1; ADR/Wiki validation, report privacy scan, and diff check PASS; measured guardrail 73/100 | Benchmarks records 68 -> 73 with unchanged criteria and the F-001 scoring limitation | Immutable candidate review; remote publication blocked by automatic approval review pending explicit owner approval |
+
+| 2026-09-05 | TK-001 | Clean immutable candidate verified | Detached clean clone at 5ef5b15e0e69d37a207ccccd5c8fc75e79cf75ce passed all 29 union commands; guardrail remained 73/100; original locked checkpoint has no diff from baseline | Existing proof owners retained | Independent delta review then owner approval to push; inherited integration changes need their own review |
+| 2026-09-05 | TK-001 | Separate-context candidate delta REJECT, followed by narrow correction | Reviewer candidate_review checked 2538b8a..5ef5b15; sole P2 was stale LEXICON v3.1.0 release designation; installer 6/6, layout 14/14, round trip, catalog/delivery and doctor independently passed; F-001 supported on its pinned target | Corrected Lexicon release distinction and adjacent README/Adoption destination wording; historical evidence preserved | Re-review new immutable local candidate; this delta review does not audit inherited integration changes |
+
+| 2026-09-05 | TK-001 | Corrected current release/adoption wording and checkpointed blocked recovery state | Catalog/delivery, layout, evaluator, portability, ADR/Wiki and diff checks PASS after correction; source behavior unchanged from clean 29-command PASS | LEXICON, README, generic Adoption, this spec and generated Taskboard | Final local-delta review; explicit push approval and remote read-back; full inherited integration comparison before merge |
+
+| 2026-09-05 | TK-001 | Second immutable delta review REJECT exposed an omitted generated Blueprint row | Clean clone at 3613fd1 failed dogfood and doctor because the committed catalog said active while spec/Taskboard said blocked; reviewer independently identified the same omission | Included the already-rendered blocked catalog row in the correction; both rejected SHAs preserved | Verify corrected immutable candidate and return final local-delta verdict in chat; push remains unapproved |
+| 2026-09-05 | TK-001 | Owner authorized the push; corrected candidate published and read back | Pushed `codex/workbench-boundaries-redesign`; `git ls-remote` returns `a61a6d335a2a37e53839ca48c633a270844cb8c7` matching local HEAD; full 23-test suite, path-safety eval, evaluator (templates 106.6/113), render (no drift) and doctor PASS before push | No docs change required by the push itself | Separate-context review of the exact candidate |
+| 2026-09-05 | TK-001 | Separate-context integration review APPROVE on the exact candidate | Reviewer reproduced all 29 AGENTS/RUNBOOK union commands in an immutable clone at `a61a6d3`; both prior rejection causes confirmed fixed; guardrail 68 -> 73 measured against a byte-unchanged `tools/audit-guardrails.mjs`; privacy scan found only synthetic negative-test fixtures; no spec path moved; append-only log confirmed unmodified | P2 record drift repaired in this spec header, acceptance box, slice row and the rendered Taskboard | Three P3 findings recorded as follow-up; integration merge itself remains |
+| 2026-09-05 | TK-001 | Delta review APPROVE on the record repair | Reviewer reproduced all 29 union commands at `72cf0fe`; evidence rows 12 -> 14 added, 0 modified; render drift zero; `next` now selects TK-001 instead of returning null | No further record change required | Reviewer graded the early acceptance-box check P3 and warned that later commits form a new candidate |
+| 2026-09-05 | TK-001 | Owner reported a harness failure: an approved candidate did not land and merged branches were never cleaned up | Red on three new governance-core assertions (missing Branch Completion contract, blanket branch-removal gate, absent Runbook closeout) then 7/7 green; all 26 required commands PASS; guardrail unchanged at 73/100 and templates unchanged at 106.6/113 | Branch Completion added to AGENTS and generic template, safety rule narrowed, Runbook closeout commands, feedback report F-002/F-003 | The branch tip is now a new candidate; the prior APPROVE covers `72cf0fe` only and a fresh review is required before any merge |
+| 2026-09-05 | TK-001 | Stabilization run reproduced the branch-completion stall from its original prompt and repaired two demonstrated closeout defects | Original prompt and the AskUserQuestion stall located in the 2026-09-04 session record; HEAD governance test red 3 of 7 against the 72cf0fe controls and green 7 of 7 at 7994d67; `git switch integration` reproduced failing against the linked worktree that holds `integration`; new closeout assertion red then 8 of 8 green; single-branch `remote.origin.fetch` repaired so `@{u}` resolves and `origin/integration` refreshes; three branches already contained in `origin/integration` deleted with `git branch -d` and `git push origin --delete`; full 29-command union PASS; guardrail 73/100 and templates 106.6/113 unchanged; ADR and Wiki validate; diff check clean | RUNBOOK closeout made worktree-safe with the refspec repair; generic RUNBOOK closeout placeholders registered in the vocabulary; the retired root-level notepad moved into the manifest grilling lane; limitations name installed-skill drift and owner-only cleanup | Merge half not rerun: a fresh separate-context review of the new tip is still required before any integration merge; real fresh-session continuation and the non-Foundry slice are untested |
+
+| 2026-09-05 | TK-001 | Owner authorized integration merge when verified and reviewed; deferred all real branch cleanup and local synchronization. Continued existing codex assignment. Reproduced unsafe closeout in disposable repositories: old recipe deleted branch refs after failed merge; six regression scenarios red then green after repair | `node tools/test-branch-closeout.mjs` 6/6 PASS; governance-core 8/8 PASS; baseline guardrail 73/100 | AGENTS and generic controls now require reviewed-SHA containment before deletion, per-tip cleanup checks and owner deferral; Runbook is fail-fast and worktree-safe; stale completion/review claims reconciled | Full union suite, immutable review and integration read-back pending; GitHub merge is simulated in the fixture, actual host and real-work trials remain outside this run |
+
+| 2026-09-05 | TK-001 | Cloud verification completed after correcting a template vocabulary mismatch found by the full suite | All 30 commands in the AGENTS/RUNBOOK union passed, with layout 14/14 and closeout 6/6 rerun after correction; ADR/Wiki validation and diff check PASS; guardrail remains 73/100 with unchanged criteria | Root/template closeout and spec state reconciled; existing placeholder vocabulary preserved | Immutable integration review and actual merge pending. Remaining score recommendations concern real repeated comparative outcome trials and known proof-freshness routing; these checks do not prove real-work readiness |
+
+| 2026-09-05 | TK-001 | Independent integration review REJECT on `4e53c8c`: inherited runtime update could follow a replaced managed-file symlink and overwrite an unrelated file; rollback shared the unsafe path. Reproduced six cases and repaired preflight validation for files, lane and ancestor paths | Six new update/rollback refusal cases RED, then managed-tools 12/12 GREEN; each confirms unchanged external bytes, receipt and backup inventory | Root and generic Runbooks document collision refusal; runtime source files themselves unchanged; installer/update controller repaired | Full final suite and fresh immutable review required; prior approval is not carried forward |
+
+| 2026-09-05 | TK-001 | Full verification of symlink-safety correction passed | All 30 union commands PASS on corrected code and docs; managed-tools 12/12 and closeout 6/6; ADR/Wiki validate; diff check; guardrail 73/100 unchanged | Existing owners updated, no version bump or host deployment | Publish corrected immutable tree, fresh integration review, then authorized merge; cleanup deferred |
+
+| 2026-09-05 | TK-001 | Independent review REJECT on `059400a`: layout erased session ignore rules or followed linked destinations; ADR/checkpoint writers followed linked collections; legacy Wiki adoption failed on its newly seeded destination. Reproduced and repaired this bounded set | Four init/migrate ignore cases RED then GREEN; ADR linked collection tests RED then GREEN; checkpoint linked destination RED then GREEN; real legacy Wiki adoption RED ENOTEMPTY then GREEN with byte-preserved knowledge. Layout 18/18, ADR 6/6, sessions 3/3 and adoption PASS before supplementary ancestor/temp regression checks | Root/template Runbooks describe refusal and preservation; shared destination guard/private temporary writes, lossless ignore append, deferred Wiki seeding implemented; prior evidence unchanged | Full final union and fresh independent exact-candidate review pending; no merge, release, cleanup or host sync claimed |
+
+| 2026-09-05 | TK-001 | Verified the bounded inherited safety and adoption corrections | All 30 union commands PASS after replacing an unregistered collision code with the existing lane-collision diagnostic and rerunning diagnostics 4/4 and layout 19/19; ADR 7/7, sessions 3/3, legacy Wiki adoption, managed-tools 12/12 and closeout 6/6 PASS; ADR/Wiki validate, diff check; guardrail remains 73/100 | Changed runtime source and matching operation docs; no criteria weakened, no host files touched | Fresh immutable integration review and merge remain pending; cleanup remains deferred |
+
+## Completion Result
+
+v3.1.1 source behavior, route, stances, Round One, feedback workflow and report
+continuation are implemented. The earlier candidate is remotely recoverable at
+`7d05596`; the current closeout repair remains pending final verification,
+publication and independent review. The owner now authorizes integration
+merge once ready, superseding the earlier run-specific refusal. No main merge,
+release, local-host synchronization or real-work readiness claim is made.
+Branch cleanup is deferred until the owner synchronizes the local checkout.
+
+## Remaining Limitations Or Follow-Up Specs
+
+- Installed skills and external deployments are not synchronized by this work.
+  On the owner host the user-scoped discovery root is a foreign Git repository:
+  its twelve workflow skills differ from `skills/`, none of the four stances is
+  present, and its `grilling` and `checkpoint` copies write notepads to a spaced
+  `grilling diary/` lane that the manifest does not declare and `.gitignore` does
+  not cover. The installer and the explicit upgrade both fail closed there
+  (`foreign-git-root`), so only that repository's owner can add the four stance
+  directories from `skills/` and correct the lane path; the assigned Builder
+  stance cannot be loaded by a real session on that host until then.
+- Host Git state outside this checkout is owner cleanup: ten linked worktrees
+  under the host temp directory hold `integration` and `claude/v3.1-release`;
+  twenty remote branches are already contained in `origin/integration` and
+  thirty-five older remote branches still hold unmerged commits. Only the three
+  branches provably merged from the current line were deleted here.
+- Automatic approval review earlier refused a push from this repository while the
+  host's auto-mode environment names a different trusted repository. That is a
+  plausible, unconfirmed cause and lives outside this repository's edit scope.
+- Historical provider proof is not a new current-candidate provider run.
+- Master Workbench waits for several real contrasting owner-useful deliveries,
+  named verification, fresh continuation and a concrete observation need.
+- Review P3-1: `workbench/wiki/AGENTS.md`, `SCHEMA.md` and `design-concepts/README.md`
+  still stamp "Generated from LLM Workbench v3.0.0" while the manifest is v3.1.1;
+  no diagnostic covers wiki stamps, whose scope is root controls only.
+- Review P3-2 resolved in this continuation: RUNBOOK now includes the required
+  symlink-invocation test. The verification procedure still uses the union.
+- Review P3-3: `workbench/tools/sessions.mjs` resolves `--from` without constraining
+  it to the repository root; the fail-closed privacy scan still gates every write.
+
+## Supersession
+
+- Supersedes: S-026's twelve-skill/routing contract only; completed history preserved.
+- Superseded by: none

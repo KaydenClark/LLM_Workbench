@@ -1,7 +1,8 @@
 # [PROJECT_NAME] - Workbench Feedback
 
-> Generated from LLM Workbench v[HARNESS_VERSION]. See `RUNBOOK.md` ->
-> Upgrading The Harness.
+> Generated from LLM Workbench v[HARNESS_VERSION]. Lives at
+> `workbench/feedback/WORKBENCH_FEEDBACK.md`; see `RUNBOOK.md` -> Upgrading
+> The Harness.
 
 This is the return channel from this project back to the LLM Workbench harness.
 When the control docs themselves (`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`,

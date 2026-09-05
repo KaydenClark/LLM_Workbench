@@ -11,7 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
 const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
+  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
 ];
 
 function fixtureHome() {
@@ -107,4 +107,35 @@ test('a same-named file collision blocks without installing any skill', () => {
   } finally {
     fs.rmSync(home, { recursive: true, force: true });
   }
+});
+
+
+test('all four stances are available through one-level discovery and a repeated install preserves them', () => {
+  const home = fixtureHome();
+  try {
+    const result = install(home);
+    assert.equal(result.status, 0, result.stdout);
+    for (const provider of ['.agents', '.claude']) {
+      for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
+        const file = path.join(home, provider, 'skills', stance, 'SKILL.md');
+        assert.equal(fs.readFileSync(file, 'utf8'), fs.readFileSync(path.join(root, 'skills', stance, 'SKILL.md'), 'utf8'));
+        fs.writeFileSync(file, 'existing stance instructions\n');
+      }
+    }
+    const repeated = install(home);
+    assert.equal(repeated.status, 0, repeated.stdout);
+    assert.equal(repeated.report.installed.length, 0);
+    assert.equal(fs.readFileSync(path.join(home, '.claude/skills/reviewer/SKILL.md'), 'utf8'), 'existing stance instructions\n');
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('a stance collision blocks before either discovery root is populated', () => {
+  const home = fixtureHome();
+  try {
+    fs.mkdirSync(path.join(home, '.claude/skills'), { recursive: true });
+    fs.writeFileSync(path.join(home, '.claude/skills/reviewer'), 'collision');
+    const result = install(home);
+    assert.equal(result.report.error?.code, 'skill-path-collision');
+    assert.equal(fs.existsSync(path.join(home, '.agents/skills')), false);
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
 });

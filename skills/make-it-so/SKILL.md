@@ -15,31 +15,42 @@ between the steps below. Stop only for a decision that was never settled:
 destructive actions outside standing policy, paid services, credential
 changes, or genuinely new scope.
 
-For a v3 project, resolve every durable planning and delivery record through
+Resolve every durable planning and delivery record through
 `workbench/manifest.json`; it is the sole support-path authority after setup.
+Live notepads live in its `grilling` collection (`workbench/sessions/grilling/`),
+promoted checkpoints in `workbench/sessions/checkpoints/`, decision records in
+`workbench/docs/adr/`, and the runtime tools in `workbench/tools/`.
 
 ## Resolve the input first
 
 The input is the settled decisions being approved. Resolve it in this order:
 
 1. **Matching grilling notepad.** If a `PROVISIONAL` notepad in
-   `.agents/grilling diary/` covers the topic under discussion, it is the
+   `workbench/sessions/grilling/` covers the topic under discussion, it is the
    source of truth — the notepad wins over a compacted chat.
 2. **Stale notepad guard.** Never promote a `PROVISIONAL` notepad whose topic
    does not match the current discussion. Name the mismatched notepad
    visibly, leave it untouched, and continue with the conversation fallback.
 3. **Conversation fallback.** With no matching notepad, the settled decisions
    of the current conversation are the input. Write them into a new notepad at
-   `.agents/grilling diary/<topic-slug>-<YYYY-MM-DD>.md` first — each decision
+   `workbench/sessions/grilling/<topic-slug>-<YYYY-MM-DD>.md` first — each decision
    as a `[locked]` line, anything unsettled as `[open]` — so the promotion has
    the same durable record a grilling would leave. If the conversation has no
    settled decisions to write, say so and stop; there is nothing to authorize.
 
 Then, in order:
 
-1. Summarize and lock the agreed scope from the notepad.
+1. Summarize and lock the agreed scope from the notepad, then promote the
+   notepad as the durable planning record:
+   `node workbench/tools/sessions.mjs checkpoint --from <notepad> --topic <topic-slug>`.
+   The promoted copy in `workbench/sessions/checkpoints/` is what specs and
+   ADRs cite; the live notepad is not evidence.
 2. `to-docs` — route every `[locked]` decision that belongs in existing control
-   files to its owner.
+   files to its owner. Record an ADR only when warranted: a consequential
+   decision with meaningful alternatives or reversal cost gets
+   `node workbench/tools/adr.mjs new --title "..."` in the manifest `adr`
+   collection (`workbench/docs/adr/`), with `canonicalized_in` naming the
+   control that now carries its rule; an ordinary decision gets none.
 3. `to-spec` — create or update the stable `SPEC.md` for a new or changed
    capability (skip when the outcome is documentation only).
 4. `to-tickets` — add dependency-aware slices to that spec. `make it so`

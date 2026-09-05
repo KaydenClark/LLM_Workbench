@@ -28,7 +28,12 @@ skill-discovery tree.
 4. After approval, update only the assigned spec's `Vertical Implementation Slices`
    table. Preserve completed rows and append-only evidence. Keep unresolved
    owner decisions visible as blockers. Create no parallel ticket or proof store.
-5. Run `node tools/spec-workbench.mjs render` to refresh the generated
-   `TASKBOARD.md`, then run `node tools/spec-workbench.mjs doctor`. Execution
+5. Run `node workbench/tools/spec-workbench.mjs render` to refresh the generated
+   `TASKBOARD.md`, then run `node workbench/tools/spec-workbench.mjs doctor`. Execution
    later uses the claim and close commands in `RUNBOOK.md` one eligible ticket
    at a time.
+
+Set the normal stance explicitly in each assigned TASK (ticket) and its SPEC
+during authorized decomposition. TASK is the existing ticket, not another file.
+An executing agent investigates within its assignment and never creates its own
+next task; these planning tools require owner-directed planning authority.

@@ -9,7 +9,7 @@ const skillsRoot = path.join(root, 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
 const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
+  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
 ].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
@@ -34,9 +34,9 @@ const catalogNames = catalogRegion[1]
   .sort();
 
 assert.deepEqual(catalogNames, coreSkills,
-  'the documented source bundle must contain exactly the locked 12 skills');
+  'the documented source bundle must contain exactly the locked 16 skills');
 assert.deepEqual(directoryNames(skillsRoot), coreSkills,
-  'live discovery source must contain exactly the locked 12 skills');
+  'live discovery source must contain exactly the locked 16 skills');
 for (const skill of coreSkills) {
   const source = path.join(skillsRoot, skill, 'SKILL.md');
   assert.ok(fs.statSync(source).isFile(), `${skill} must contain SKILL.md`);
@@ -67,18 +67,23 @@ const forbiddenLivePatterns = [
   /CONTEXT\.md/,
   /docs\/agents/,
   /\.scratch\//,
-  /docs\/adr/,
-  /\bADR'?s?\b/i,
   /\bissue tracker\b/i,
   /UBIQUITOUS_LANGUAGE\.md/,
-  /learning-records\//
+  /learning-records\//,
+  /\.agents\/grilling diary/,
+  /(?<![\w/])tools\/(?:spec-workbench|workbench-layout|adr|wiki|sessions|diagnostics)\.mjs/,
+  /workbench\/grilling\b/,
+  /workbench\/handoffs\b/
 ];
 for (const name of coreSkills) {
   const skill = read(`skills/${name}/SKILL.md`);
   for (const pattern of forbiddenLivePatterns) {
     assert.doesNotMatch(skill, pattern,
-      `${name} must not expose unfinished parallel truth-routing instructions`);
+      `${name} must not expose retired paths or parallel truth-routing instructions`);
   }
+  // Decision records are first-class in v3.1, but only through the
+  // manifest-declared collection, never a parallel docs tree.
+  if (/\bADR'?s?\b/i.test(skill)) assert.match(skill, /workbench\/docs\/adr/, `${name} may name ADRs only through the manifest adr collection`);
 }
 
 for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
@@ -106,8 +111,8 @@ assertIncludesAll(toTickets, [
   'assigned `SPEC.md`',
   '`Vertical Implementation Slices`',
   '`RUNBOOK.md`',
-  'node tools/spec-workbench.mjs render',
-  'node tools/spec-workbench.mjs doctor'
+  'node workbench/tools/spec-workbench.mjs render',
+  'node workbench/tools/spec-workbench.mjs doctor'
 ], 'to-tickets');
 assert.match(toTickets, /`TASKBOARD\.md` is a generated\s+projection/,
   'to-tickets must treat TASKBOARD.md as a generated projection');
@@ -117,14 +122,14 @@ for (const [pattern, label] of [
   [/\/domain-modeling/, 'imported domain-modeling invocation'],
   [/CONTEXT\.md/, 'parallel context file'],
   [/docs\/agents/, 'parallel agent configuration'],
-  [/docs\/adr/, 'parallel decision directory'],
-  [/\bADR'?s?\b/i, 'parallel decision layer'],
   [/\btracker\b/i, 'parallel tracker layer'],
   [/\bglossary\b/i, 'parallel glossary layer']
 ]) {
   assert.doesNotMatch(grilling, pattern, `grilling must not depend on a ${label}`);
 }
 assertIncludesAll(grilling, [
+  'workbench/sessions/grilling',
+  'untracked',
   'Grill the user relentlessly',
   'each branch of the decision tree',
   'For each question, provide your recommended answer',
@@ -139,6 +144,10 @@ assertIncludesAll(grilling, [
 
 const makeItSo = read('skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
+  'workbench/sessions/grilling',
+  'workbench/sessions/checkpoints',
+  'workbench/docs/adr',
+  'only when warranted',
   'notepad',
   '`to-docs`',
   '`to-spec`',
@@ -151,7 +160,7 @@ assert.match(makeItSo, /pushed commit, never\s+local-only progress/,
   'make-it-so must forbid yielding with local-only progress');
 
 const checkpoint = read('skills/checkpoint/SKILL.md');
-assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`'], 'checkpoint');
+assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
 assert.match(checkpoint, /PAUSED/, 'checkpoint must mark the notepad paused for resume');
 
 const toDocs = read('skills/to-docs/SKILL.md');
@@ -163,8 +172,9 @@ assertIncludesAll(toDocs, [
   '`RUNBOOK.md`',
   '`README.md`',
   '`AGENTS.md`',
-  'node tools/spec-workbench.mjs render',
-  'node tools/spec-workbench.mjs doctor'
+  'workbench/docs/adr',
+  'node workbench/tools/spec-workbench.mjs render',
+  'node workbench/tools/spec-workbench.mjs doctor'
 ], 'to-docs');
 assert.doesNotMatch(toDocs, /ask (the )?user|interview the user|create a second|issue tracker/i,
   'to-docs must persist settled truth without restarting discovery or adding stores');
@@ -174,8 +184,8 @@ assertIncludesAll(toSpec, [
   'already-settled conversation',
   '`workbench/manifest.json`',
   'Vertical Implementation Slices',
-  'node tools/spec-workbench.mjs render',
-  'node tools/spec-workbench.mjs doctor'
+  'node workbench/tools/spec-workbench.mjs render',
+  'node workbench/tools/spec-workbench.mjs doctor'
 ], 'to-spec');
 for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for-agent']) {
   assert.ok(!toSpec.includes(forbidden), `to-spec must not retain ${forbidden}`);
@@ -183,7 +193,8 @@ for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for
 
 const genesis = read('skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
-  '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`integration`', 'commit and push'
+  '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`integration`', 'commit and push',
+  'workbench/tools/workbench-layout.mjs init', 'tools/workbench-tools.mjs install'
 ], 'genesis');
 
 const adoption = read('skills/adoption/SKILL.md');
@@ -194,10 +205,10 @@ assertIncludesAll(adoption, [
 
 const implement = read('skills/implement/SKILL.md');
 assertIncludesAll(implement, [
-  'assigned stable `SPEC.md`', 'one eligible ticket', 'node tools/spec-workbench.mjs next --json',
-  'node tools/spec-workbench.mjs show S-###', 'node tools/spec-workbench.mjs claim S-### --agent NAME',
+  'assigned stable `SPEC.md`', 'one eligible ticket', 'node workbench/tools/spec-workbench.mjs next --json',
+  'node workbench/tools/spec-workbench.mjs show S-###', 'node workbench/tools/spec-workbench.mjs claim S-### --agent NAME',
   'red/green/refactor', 'project-owned verification', 'owning documentation',
-  'node tools/spec-workbench.mjs close S-###', 'truthful checkpoint', 'commit and push', '`integration`'
+  'node workbench/tools/spec-workbench.mjs close S-###', 'truthful checkpoint', 'commit and push', '`integration`'
 ], 'implement');
 
 const codeReview = read('skills/code-review/SKILL.md');
@@ -221,5 +232,5 @@ for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec'
 assert.doesNotMatch(toSpec, /stable `specs\/S-###-slug\/SPEC\.md`/,
   'to-spec must not direct v3 projects to the retired root specs path');
 
-console.log('ok - the portable 12-skill source bundle and retired discovery boundary are aligned');
+console.log('ok - the portable 16-skill source bundle and retired discovery boundary are aligned');
 await import('./test-delivery-skills.mjs');

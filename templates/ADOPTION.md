@@ -21,7 +21,7 @@ the v3 `workbench/` support root that describe **what is actually true**, with
 none of the project's real content lost in the move.
 
 Adoption does **not** rewrite the product or "clean up" the code. It documents
-observed reality, migrates existing intent and history into the v2 layout, and
+observed reality, migrates existing intent and history into the manifest-declared v3 layout, and
 hands off to the normal work loop.
 
 ## Inputs
@@ -83,7 +83,7 @@ next begins.
    any applicable vendored-helper checksum in the owning spec before changing
    the harness.
 2. List every existing harness/steer doc and classify each:
-   - **Port** - real content that maps into a v2 doc (direction, tasks, rules).
+   - **Port** - real content that maps into a current control (direction, tasks, rules).
    - **Fold** - a policy/checklist doc whose rules belong inside `AGENTS.md`.
    - **Keep** - project-local material the harness does not own (e.g. a visual or
      design doc; the harness defers visual style to exactly these).
@@ -132,7 +132,7 @@ Typical mappings (adjust to the actual dialect):
   manufacture a spec for every historical task.
 - **Policy / checklist / "unattended work" docs** -> fold their still-live rules
   into `AGENTS.md` (authority, scope, verification, safety); retire the originals.
-- **Existing `AGENTS`/`CLAUDE`** -> reconcile into the v2 `AGENTS.md` and the thin
+- **Existing `AGENTS`/`CLAUDE`** -> reconcile into the current `AGENTS.md` and the thin
   `CLAUDE.md` bridge; keep any rule still true, drop what the code disproved.
 - **Glossary / ubiquitous-language / context docs** -> accepted shared
   definitions into `LEXICON.md`; scoped decisions into the owning spec; archive
@@ -182,16 +182,17 @@ slices in their implementation tables, preserve completed history in the owning
 spec or a cold archive, and render `TASKBOARD.md` from active spec metadata. Add
 an evidence row recording that Adoption ran and what moved where.
 
-Then seed the room brain: copy `templates/Wiki/MEMORY.project.md` to the
-project root as `MEMORY.md`, fill its placeholders, route any durable memory
-notes that survived classification, and link the live controls. If this room
-lives inside a larger deployment vault, set the up-link to the deployment
-wiki's note for this room (see `templates/Wiki/README.md` for link
-conventions).
+Then seed the room brain: after Phase 7's migration, copy
+`templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md` (a legacy
+root `MEMORY.md` is moved there by the migration; reconcile it with the
+template), fill its placeholders, route any durable memory notes that survived
+classification, and link the live controls. If this room lives inside a larger
+deployment, set the up-link to the deployment wiki's note for this room (see
+`templates/wiki/README.md` for link conventions).
 
 Output: stable capability records plus a hot projection that reflects the
-project's actual state and the migration, and a `MEMORY.md` room brain that
-routes to them.
+project's actual state and the migration, and a `workbench/wiki/MEMORY.md`
+room brain that routes to them.
 
 ### Phase 7 - Migrate the durable support root, retire the old layout, and hand off
 
@@ -206,18 +207,29 @@ node tools/core-skill-installer.mjs install --home [USER_HOME]
 node tools/workbench-adoption.mjs migrate \
   --project [ABSOLUTE_PROJECT_PATH] \
   --home [USER_HOME] \
-  --version v3.0.0
-node tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
-node tools/spec-workbench.mjs next --json
-node tools/spec-workbench.mjs doctor
+  --version v3.1.1
+node tools/workbench-tools.mjs verify --project [ABSOLUTE_PROJECT_PATH]
+node workbench/tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs doctor
 ```
+
+The first three commands run from the checked-out LLM Workbench release; the
+last three run the project's own installed copies. The migration installs the
+runtime tools into `workbench/tools/` with a receipt recording the exact source
+release, commit, and hashes (`verify` confirms it); it never reads or writes an
+application's root `tools/` directory.
 
 The migration moves only known unambiguous durable paths: `specs/`, `Wiki/`,
 root `MEMORY.md`, `feedback/`, `grilling diary/`, and `handoffs/` to their
-manifest-declared lanes. It preserves a legacy project-local `skills/` folder as
-`workbench/handoffs/adoption-legacy-skills/` only after every required core
-skill is already user-scoped. It writes the explicit recovery record at
-`workbench/handoffs/adoption-recovery.json`, renders the projections, and
+manifest-declared lanes and collections (legacy grilling records become the
+untracked `workbench/sessions/grilling/`; legacy handoffs become the tracked
+`workbench/sessions/checkpoints/`). It preserves a legacy project-local
+`skills/` folder as `workbench/sessions/checkpoints/adoption-legacy-skills/`
+only after every required core skill is already user-scoped. It writes the
+explicit recovery record at `workbench/sessions/checkpoints/adoption-recovery.json`,
+moves a root `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
+`workbench/feedback/`, installs the runtime tools, renders the projections, and
 checks doctor before reporting completion.
 
 An existing `workbench/` root, a legacy path collision, unfilled controls, or
@@ -250,7 +262,7 @@ than a competing rulebook.
 - [ ] Stable specs contain the project's actual in-flight and ready work;
       `TASKBOARD.md` projects only the hot state and contains no completed proof
       archive.
-- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/Wiki/`),
+- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),
       routes to the live controls, and has no unfilled placeholders.
 - [ ] The owning spec records the source remote, ref, resolved commit, executed
       self-tests, and any applicable vendored-helper checksum; the project's
@@ -273,3 +285,11 @@ failed and why.
   the code and flag the drift.
 - Keep this file generic if it lives in a template set. Adoption fills the *other*
   docs with project specifics; it does not fill this one.
+
+### Feedback report format
+
+After migration resolves the manifest feedback lane, copy the source
+`templates/feedback/REPORT_FORMAT.md` there only if it is missing. Preserve
+existing report formats during normal setup. Explicit harness reconciliation
+updates this procedure together with the Runbook; no report or repair is
+triggered by installation.

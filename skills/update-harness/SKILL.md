@@ -76,8 +76,11 @@ For the v3 spec-centered Workbench:
 - keep `CLAUDE.md` as the thin `@AGENTS.md` bridge;
 - preserve public setup in `README.md` and harness friction in
   `WORKBENCH_FEEDBACK.md` (legacy `HARNESS_FEEDBACK.md`);
-- copy the canonical `tools/spec-workbench.mjs` exactly when the local
-  interface is part of the current harness.
+- refresh the Workbench-managed runtime tools in `workbench/tools/` only
+  through the release checkout's
+  `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`,
+  which backs up changed files and records a rollback path; never hand-copy a
+  runtime tool.
 
 For an explicitly authorized v2-to-v3 update, run the checked-out Workbench's
 `tools/workbench-upgrade.mjs upgrade --explicit-update` command against a
@@ -106,9 +109,9 @@ placeholders and stale version/path/routing language. Run the current lifecycle
 commands from the target root, normally:
 
 ```bash
-node tools/spec-workbench.mjs render
-node tools/spec-workbench.mjs doctor
-node tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs next --json
 ```
 
 Inspect the rendered Blueprint catalog and Taskboard projection. Confirm `next`

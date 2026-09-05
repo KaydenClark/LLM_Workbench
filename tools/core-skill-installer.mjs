@@ -6,10 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
-const coreSkills = [
-  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
-];
+import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 const managedMarker = '.workbench-skill.json';
 
 function fail(code, message, details = {}) {

@@ -14,9 +14,13 @@ real code, history, or project controls, route to `/adoption` instead.
    authorized workspace, and ask only when a missing answer changes
    architecture, privacy, money, credentials, or destructive risk.
 3. Run the Genesis phases in order. Create the seven filled root controls, run
-   `tools/workbench-layout.mjs init` for the lowercase support root, create one
-   stable spec under the manifest-declared path, and record exact Runbook
-   commands. Do not leave a project-local skill tree or second proof store.
+   the release checkout's `node workbench/tools/workbench-layout.mjs init` for
+   the schema 2 support root (it seeds the wiki contract) and
+   `node tools/workbench-tools.mjs install` for the receipt-backed runtime
+   tools, copy and fill the wiki router, create one stable spec under the
+   manifest-declared path, and record exact Runbook commands. From then on run
+   the project's own `node workbench/tools/spec-workbench.mjs ...` copies. Do
+   not leave a project-local skill tree or second proof store.
 4. Establish Git recovery immediately. When the current authorization and
    authenticated repository namespace permit remote creation, create a private
    remote if none was supplied. Never infer public visibility, change

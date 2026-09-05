@@ -5,7 +5,8 @@ export const genesisTemplateFiles = [
   'RUNBOOK.md',
   'TASKBOARD.md',
   'README.md',
-  'SPEC.md'
+  'SPEC.md',
+  'wiki/MEMORY.project.md'
 ];
 
 export const templatePlaceholders = [
@@ -13,6 +14,7 @@ export const templatePlaceholders = [
   '[0-9]',
   '[A / B]',
   '[ABSOLUTE_PROJECT_PATH]',
+  '[ANOTHER DURABLE QUESTION]',
   '[Architecture decision future specs must preserve]',
   '[BACKUP_OR_RESTORE_COMMAND]',
   '[BASELINE_TEST_COMMAND]',
@@ -23,6 +25,10 @@ export const templatePlaceholders = [
   '[CAPABILITY_TITLE]',
   '[COPY_ENV_COMMAND]',
   '[CREATE_PR_COMMAND]',
+  '[DELETE_MERGED_BRANCH_COMMAND]',
+  '[MERGE_PR_COMMAND]',
+  '[VERIFY_INTEGRATION_CONTAINS_WORK_COMMAND]',
+  '[integration contains the work; merged branch deleted locally and remotely; unmerged work never force-deleted]',
   '[CREATE_TASK_BRANCH_COMMAND]',
   '[Concise requirements.]',
   '[Concrete user-facing promise.]',
@@ -59,6 +65,7 @@ export const templatePlaceholders = [
   '[PROJECT_NAME]',
   '[Pillar]',
   '[Privacy/safety boundary]',
+  "[QUESTION THIS ROOM'S MEMORY ANSWERS]",
   '[READABLE_ROOTS]',
   '[REQUIRES_REVIEW_FOR]',
   '[RUN COMMAND]',
