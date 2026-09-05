@@ -128,3 +128,21 @@ test('the Runbook closeout proves integration containment without a local integr
   assert.match(template, /\[MERGE_PR_COMMAND\]/, 'templates/RUNBOOK.md carries the merge step that the template AGENTS Branch Completion contract requires');
   assert.match(template, /\[DELETE_MERGED_BRANCH_COMMAND\]/, 'templates/RUNBOOK.md carries the merged-branch cleanup step');
 });
+
+test('feedback and transition docs preserve review ownership and harvest observed friction', () => {
+  for (const relative of ['templates/feedback/REPORT_FORMAT.md', 'workbench/feedback/REPORT_FORMAT.md']) {
+    const format = read(relative);
+    assert.match(format, /finding identifiers are report-scoped/i, `${relative} scopes finding identifiers to their report`);
+    assert.match(format, /explicit(?:ly)? supplied destination/i,
+      `${relative} lets an assigned independent review write to its external evidence owner`);
+  }
+  for (const relative of ['templates/ADOPTION.md', 'templates/GENESIS.md', 'skills/update-harness/SKILL.md']) {
+    const content = read(relative);
+    assert.match(content, /none observed/i, `${relative} requires a truthful feedback-harvest result`);
+  }
+  const update = read('skills/update-harness/SKILL.md');
+  assert.match(update, /workbench-upgrade\.mjs upgrade --explicit-update/,
+    'the existing update route owns explicitly authorized v2-root to v3-support-root transitions');
+  assert.doesNotMatch(update, /Foundry\/Halls\/Forge/,
+    'the source update skill stays independent of the retired private source path');
+});

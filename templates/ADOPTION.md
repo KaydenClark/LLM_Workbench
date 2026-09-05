@@ -269,6 +269,9 @@ than a competing rulebook.
       `RUNBOOK.md` retains the exact fresh-clone verification commands.
 - [ ] Retired docs are archived (not deleted), the explicit recovery record is
       retained, and a spec evidence row records that Adoption ran.
+- [ ] Harness friction observed during Adoption was appended to the declared
+      feedback lane; if none was observed, the owning spec records `none observed`
+      with the reason.
 
 If any box is unchecked, adoption is `in-progress`, not `done`. State which box
 failed and why.

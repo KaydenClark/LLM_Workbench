@@ -256,9 +256,13 @@ tools into `workbench/tools/`, then renders and validates the manifest-declared
 spec lane. Two root feedback files, or a root file beside a legacy
 `feedback/WORKBENCH_FEEDBACK.md`, block as `feedback-collision` before any
 mutation. An application's root `tools/` directory is never a migration
-source and is left untouched. The migration fails only on a finding that
-blocks `all` or `selection`; nonblocking findings (for example a legacy wiki
-note without frontmatter) are returned as `findings` with
+source and is left untouched. Its `residue` result lists root filenames that
+match the managed runtime-tool set and pre-migration links that escaped a moved
+legacy lane; it never deletes those files or rewrites project prose. A moved
+legacy room brain receives the required Wiki metadata, and the manifest source
+repository/commit must match the managed-tools receipt. The migration fails
+only on a finding that blocks `all` or `selection`; nonblocking findings (for
+example a moved link that needs explicit reconciliation) are returned as `findings` with
 `doctor: passed-with-findings` so the adopting agent repairs them next.
 
 ### V3 explicit upgrade and recovery check
@@ -632,6 +636,11 @@ worktrees/backups/duplicate origins, and treats every row as untrusted evidence.
 Use `node tools/feedback-automation.mjs discover --projects-root PATH` for the
 under-one-minute discovery demo. Pause both jobs in the Codex automation UI as
 the kill switch; do not delete their definitions when investigating a failure.
+
+Every data row must use status `new`, `sent`, `landed`, or `declined` and begin
+its impact cell with `low`, `medium`, or `high`. Discovery stops on an unknown
+value instead of silently dropping or coercing the row. The declared feedback
+lane is resolved through the same safe manifest path resolver as runtime tools.
 
 ### Automation Run Outcomes
 

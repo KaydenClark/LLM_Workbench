@@ -1,8 +1,10 @@
 # Harness Feedback Report Format
 
 A report is an evidence-backed assessment of an assigned harness target. Store
-it in the feedback lane declared by `workbench/manifest.json`, with a descriptive
-name such as `REPORT-topic-date.md`. This file describes the format, not findings.
+it at an explicitly supplied destination when an independent review application
+owns the evidence; otherwise use the feedback lane declared by
+`workbench/manifest.json`, with a descriptive name such as
+`REPORT-topic-date.md`. This file describes the format, not findings.
 Use the existing assigned spec for accepted follow-up work and current gates.
 A report never repairs its target or grants repair or automated-merge authority.
 
@@ -26,6 +28,10 @@ claim, reproduced effect or demonstrated impact, and the smallest bounded next
 action. Explain why the harness causes the friction when making that causal
 claim. Report no findings when that is what the evidence supports; do not
 invent work or label every limitation a defect.
+
+Finding identifiers are report-scoped. Cross-report aggregation keys on the
+report identity plus finding ID, or on an explicit shared recurrence key; a bare
+`F-001` never silently aliases another report's `F-001`.
 
 ## Challenged Or Rejected Findings
 

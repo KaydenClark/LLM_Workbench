@@ -5,8 +5,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
+import { lanePath } from '../workbench/tools/workbench-paths.mjs';
 
 const IMPACT_WEIGHT = { high: 3, medium: 2, low: 1 };
+const FEEDBACK_STATUSES = new Set(['new', 'sent', 'landed', 'declined']);
 const RUN_OUTCOME_CATEGORIES = new Set([
   'actionable',
   'worked',
@@ -49,12 +51,16 @@ export function parseFeedbackRows(markdown, source) {
 
     const [date, docSection, whatHappened, impactText, proposedChange, statusText] = cells;
     const status = normalize(statusText);
-    if (status !== 'new') continue;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       if (/^\[YYYY-MM-DD\]$/.test(date)) continue;
       throw malformedFeedbackRow(index + 1, `invalid date ${date || '(empty)'}`);
     }
-    const impact = Object.keys(IMPACT_WEIGHT).find((value) => normalize(impactText).startsWith(value)) ?? 'low';
+    if (!FEEDBACK_STATUSES.has(status)) {
+      throw malformedFeedbackRow(index + 1, `invalid status ${statusText || '(empty)'}`);
+    }
+    const impact = normalize(impactText).match(/^(high|medium|low)\b/)?.[1];
+    if (!impact) throw malformedFeedbackRow(index + 1, `invalid impact ${impactText || '(empty)'}`);
+    if (status !== 'new') continue;
     const normalized = [source.repo, date, docSection, whatHappened, proposedChange]
       .map(normalize)
       .join('|');
@@ -73,19 +79,6 @@ export function parseFeedbackRows(markdown, source) {
     });
   }
   return rows;
-}
-
-// The manifest declares the feedback lane; a project without a readable
-// manifest gets the schema 2 default so lane-first discovery still applies.
-function feedbackLane(repoPath) {
-  try {
-    const manifest = JSON.parse(fs.readFileSync(path.join(repoPath, 'workbench', 'manifest.json'), 'utf8'));
-    const lane = manifest?.lanes?.feedback;
-    if (typeof lane === 'string' && lane.startsWith('workbench/') && !lane.includes('..')) return path.join(repoPath, lane);
-  } catch {
-    // no manifest or unreadable manifest: fall through to the default lane
-  }
-  return path.join(repoPath, 'workbench', 'feedback');
 }
 
 function isFeedbackHeader(cells) {
@@ -108,21 +101,22 @@ export function discoverFeedback(projectsRoot) {
     if (EXCLUDED_NAME.test(entry.name)) continue;
     const repoPath = path.join(projectsRoot, entry.name);
     const gitPath = path.join(repoPath, '.git');
-    // A v3.1 project keeps its return channel in the manifest-declared
-    // feedback lane; WORKBENCH_FEEDBACK.md at the root is the v3.0 location
-    // and HARNESS_FEEDBACK.md the grandfathered legacy name. The first
-    // existing candidate wins, lane first.
-    const feedbackPath = [
-      path.join(feedbackLane(repoPath), 'WORKBENCH_FEEDBACK.md'),
-      path.join(repoPath, 'WORKBENCH_FEEDBACK.md'),
-      path.join(repoPath, 'HARNESS_FEEDBACK.md')
-    ].find((candidate) => fs.existsSync(candidate));
-    if (!fs.existsSync(gitPath) || !fs.statSync(gitPath).isDirectory() || !feedbackPath) continue;
+    if (!fs.existsSync(gitPath) || !fs.statSync(gitPath).isDirectory()) continue;
     const origin = git(repoPath, ['remote', 'get-url', 'origin']);
     const topLevel = git(repoPath, ['rev-parse', '--show-toplevel']);
     if (!origin || realPath(topLevel) !== realPath(repoPath) || !isWritableOwnerOrigin(origin)) continue;
     const originKey = normalizeOrigin(origin);
     if (seenOrigins.has(originKey)) continue;
+    // A v3.1 project keeps its return channel in the manifest-declared
+    // feedback lane; WORKBENCH_FEEDBACK.md at the root is the v3.0 location
+    // and HARNESS_FEEDBACK.md the grandfathered legacy name. The first
+    // existing candidate wins, lane first.
+    const feedbackPath = [
+      path.join(lanePath(repoPath, 'feedback'), 'WORKBENCH_FEEDBACK.md'),
+      path.join(repoPath, 'WORKBENCH_FEEDBACK.md'),
+      path.join(repoPath, 'HARNESS_FEEDBACK.md')
+    ].find((candidate) => fs.existsSync(candidate));
+    if (!feedbackPath) continue;
     seenOrigins.add(originKey);
     candidates.push(...parseFeedbackRows(fs.readFileSync(feedbackPath, 'utf8'), {
       repo: entry.name,
