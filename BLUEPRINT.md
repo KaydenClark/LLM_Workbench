@@ -131,6 +131,46 @@ several such proofs establish a concrete registry, observation-audit, or
 visualization need. Foundry development, orchestration, CIC redesign, connectors,
 and a dedicated feedback Workbench are outside this first implementation.
 
+## Accepted V3.1.2 Direction
+
+v3.1.2 is the patch that answers the v3.1.1 upstream fix list compiled by
+Master Workbench from the Cashflow Calculator, Command Information Center, and
+OpenBrain reviews, together with this repository's own v3.1.1 acceptance
+report. S-028 landed the first accepted subset (strict feedback rows, truthful
+migration output, manifest-aware guardrails, feedback harvest as a completion
+condition). Six linked capabilities carry the rest, and one umbrella stamps the
+version last:
+
+- [S-029](workbench/specs/S-029-declared-integration-branch/SPEC.md): the
+  integration branch as a manifest-declared fact that doctor and the Genesis
+  gate check; Genesis, Adoption, and upgrade finish as a commit on a prefixed
+  branch; a checkout is told when its selected spec is already complete on
+  integration.
+- [S-030](workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md): the
+  template permission file grants Edit and Write on the Workbench authorship
+  lanes, and doctor reports a permission file that withholds a declared lane.
+- [S-031](workbench/specs/S-031-installed-skill-generation/SPEC.md): managed
+  skill markers record release and commit; doctor names stale or unknown
+  installed skills; a review claim about a skill names the copy it read.
+- [S-032](workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md):
+  one working upgrade route for already-adopted v2-root rooms that records
+  lifecycle `upgrade` without skill replacement; the layout tool never writes
+  `unrecorded` as a source commit.
+- [S-033](workbench/specs/S-033-silent-gap-diagnostics/SPEC.md): doctor covers
+  an unrouted room brain and stale wiki stamps; checkpoint promotion reads only
+  inside the repository.
+- [S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md): a report of
+  which template-derived control lines a room changed, dropped, or added.
+- [S-035](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md): the
+  v3.1.2 stamp after every capability above is complete, the guardrail
+  re-measurement, the disposition of all twelve upstream items, and the
+  reviewed candidate on `integration`.
+
+Invariants these must preserve: findings that only inform stay `attention` or
+`none`-effect (ADR-0020); presence-only setup and explicit-only skill
+replacement are unchanged; nothing in this repository edits a downstream room;
+a version label is not publication.
+
 ## Architecture And Invariants
 
 | Layer | Owner | Invariant |
@@ -191,6 +231,13 @@ be changed only through a later spec linked by supersession.
 | [S-026 - Workflow Composition, Feedback Lane, And Cold Resume](workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md) | Route the twelve core skills and feedback discovery through the schema 2 manifest, promote session records through privacy-checked checkpoints, and prove the composed planning-to-resume workflow mechanically. | complete |
 | [S-027 - Workbench v3.1.1 Boundaries](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) | Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1. | complete |
 | [S-028 - Harness Feedback Integrity](workbench/specs/S-028-harness-feedback-integrity/SPEC.md) | Make manifest-sensitive guardrails, feedback ingestion, and one-time migration report the paths and residue they actually handle. | complete |
+| [S-029 - Declared Integration Branch And Recoverable Completion](workbench/specs/S-029-declared-integration-branch/SPEC.md) | Make the integration branch a manifest-declared fact that Genesis, Adoption, and doctor can check, and require generation and adoption to end as a committed branch with a reachable review gate. | active |
+| [S-030 - Permission Scope Matches Declared Lanes](workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md) | Ship a template permission file that grants Edit and Write on the Workbench authorship lanes the prose already declares writable, and make doctor report when a room's permission file withholds a declared lane. | active |
+| [S-031 - Installed Skill Generation Visibility](workbench/specs/S-031-installed-skill-generation/SPEC.md) | Record the release and commit in every Workbench-managed skill marker, have doctor report an installed skill whose generation is stale or unknown, and require review claims about a skill to name the copy they read. | active |
+| [S-032 - Working Upgrade Route And Source Provenance](workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md) | Give an already-adopted v2-root room one documented upgrade route that works without skill replacement and records lifecycle `upgrade`, and stop the layout tool from writing `unrecorded` as a source commit on the Genesis path. | active |
+| [S-033 - Room Brain Routing, Wiki Stamps, And Checkpoint Source Bounds](workbench/specs/S-033-silent-gap-diagnostics/SPEC.md) | Close the three v3.1.1 gaps that passed every gate green: an unrouted room brain, wiki files stamped with an older version than the manifest, and checkpoint promotion reading a source outside the repository. | active |
+| [S-034 - Control Fidelity Report](workbench/specs/S-034-control-fidelity-report/SPEC.md) | Report which template-derived lines a room's hand-reconciled controls changed, dropped, or added, so a deliberate divergence can be recorded and an accidental one is caught. | active |
+| [S-035 - Workbench v3.1.2 Candidate](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) | Stamp v3.1.2 only after the six v3.1.2 capability specs are complete and green, record the disposition of every v3.1.1 upstream fix-list item, and land the reviewed candidate on integration. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
