@@ -1,15 +1,15 @@
 # S-033 - Room Brain Routing, Wiki Stamps, And Checkpoint Source Bounds
 
 **Spec ID:** S-033
-**Status:** active
+**Status:** complete
 **Priority:** 3
 **Owner:** claude-fable-5-1
 **Stance:** Builder
 **Updated:** 2026-09-05
 **Catalog description:** Close the three v3.1.1 gaps that passed every gate green: an unrouted room brain, wiki files stamped with an older version than the manifest, and checkpoint promotion reading a source outside the repository.
 **Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -129,10 +129,10 @@ nothing; an in-repository source still promotes.
 
 ## Acceptance Criteria
 
-- [ ] `doctor` reports `room-brain-unrouted` naming the control lacking the route.
-- [ ] `doctor` reports `stale-stamp` for wiki files behind the manifest; `validate --genesis` fails on them; this repository's wiki stamps match its manifest.
-- [ ] `checkpoint` refuses a source outside the repository and writes nothing.
-- [ ] The full required suite, render, and doctor pass.
+- [x] `doctor` reports `room-brain-unrouted` naming the control lacking the route.
+- [x] `doctor` reports `stale-stamp` for wiki files behind the manifest; `validate --genesis` fails on them; this repository's wiki stamps match its manifest.
+- [x] `checkpoint` refuses a source outside the repository and writes nothing.
+- [x] The full required suite, render, and doctor pass.
 
 ## Testing Seams
 
@@ -169,10 +169,51 @@ Then the full `AGENTS.md` verification suite, `render`, `doctor`, and
 | 2026-09-05 | TK-001 | Ticket closed | node tools/test-diagnostics.mjs (5 pass; new test: an unrouted room brain is an attention finding that names the control lacking the route), node tools/test-wiki.mjs (7 pass), node tools/test-workbench-layout.mjs (19 pass); doctor on this repository reports no room-brain-unrouted | RUNBOOK.md Wiki Validation and Diagnostics table, templates/RUNBOOK.md doctor section, templates/ADOPTION.md box 9 now name room-brain-unrouted and the reverse route | TK-002 stale-stamp and TK-003 checkpoint boundary |
 | 2026-09-05 | TK-002 | Ticket closed | node tools/test-wiki.mjs (9 pass; new: stale-stamp attention test and this-repository stamp/routing test), node tools/test-workbench-layout.mjs (20 pass; new: Genesis readiness requires version-matched wiki stamps), node tools/test-diagnostics.mjs (5 pass), node tools/test-sessions.mjs (3 pass); doctor on this repository reported stale-stamp for workbench/wiki/SCHEMA.md, AGENTS.md, design-concepts/README.md (v3.0.0 vs manifest v3.1.1) before the refresh and none after | workbench/wiki/SCHEMA.md, AGENTS.md, design-concepts/README.md stamps refreshed to v3.1.1; RUNBOOK.md Wiki Validation and Diagnostics table and templates/RUNBOOK.md doctor section name stale-stamp and the Genesis version-mismatch extension | TK-003 checkpoint source boundary |
 | 2026-09-05 | TK-003 | Ticket closed | node tools/test-sessions.mjs (4 pass; new: checkpoint refuses a source outside the repository root and writes nothing, covering an absolute outside path, a .. traversal, a missing outside file, the root itself, the CLI exit 1, and an in-root handoff still promoting), node tools/test-diagnostics.mjs (5 pass), node tools/test-wiki.mjs (9 pass), node tools/test-workbench-layout.mjs (20 pass) | RUNBOOK.md Session Checkpoints and templates/RUNBOOK.md upgrade safety paragraph name the source boundary | none |
+| 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+**What changed.** `workbench/tools/diagnostics.mjs` registers
+`room-brain-unrouted` and `stale-stamp` (both attention, scope `wiki`, effect
+`none`). `workbench/tools/wiki.mjs` raises the first when the wiki lane holds
+`MEMORY.md` but `AGENTS.md` does not reference the wiki lane path or
+`README.md` does not reference `MEMORY.md` (the message and a `control` field
+name the control), and the second when the room brain or a wiki contract file
+carries a `Generated from LLM Workbench` stamp naming a version other than the
+manifest's; `doctor` carries both through `validateWiki`. `workbench-layout.mjs`
+exports `versionStamp` and `wikiContractFiles` and its Genesis runtime gate
+fails the same four wiki files with `version-mismatch`. `sessions.mjs
+checkpoint` refuses a `--from` that resolves outside the repository root with
+`invalid-note` before reading it. This repository's `workbench/wiki/SCHEMA.md`,
+`AGENTS.md`, and `design-concepts/README.md` stamps moved from v3.0.0 to the
+manifest's v3.1.1. Root and template `RUNBOOK.md` document the three findings
+and the checkpoint boundary; `templates/ADOPTION.md` box 9 requires the
+controls to route to the room brain.
+
+**Why.** Each gap had passed every automated gate and was found by hand
+(UP-009, S-027 review P3-1 and P3-3). Attention severity keeps ADR-0020's rule
+that visibility gaps never block selection.
+
+**Risks and side effects.** A room whose controls are stubs or absent now sees
+`room-brain-unrouted` from `doctor` and `wiki.mjs validate`; it is attention
+only. A room upgraded without refreshing its wiki stamps sees `stale-stamp`
+until it does. A file with no stamp names no version and is not reported by
+`doctor`; the Genesis gate still requires the stamp. The test fixtures that
+run `doctor` on a room with a brain (`test-diagnostics`, `test-wiki`,
+`test-workbench-layout`) now carry the reverse route. `wiki.mjs` imports two
+helpers from `workbench-layout.mjs`; both are managed runtime tools installed
+together, and no cycle exists.
+
+**How verified.** Red first for every slice: `room-brain-unrouted` was an
+unregistered code, `stale-stamp` was never emitted and `doctor` on this
+repository reported it for the three v3.0.0 files once the check existed,
+`validate --genesis` accepted a stale `SCHEMA.md`, and an outside source was
+promoted. Green: `node tools/test-diagnostics.mjs` (5), `test-wiki.mjs` (9),
+`test-workbench-layout.mjs` (20), `test-sessions.mjs` (4); then every command
+in the AGENTS.md suite exited 0, `render` and `doctor` exit 0 with only the
+pre-existing S-035 `blocked-slice` visible, `git diff --check` is clean, and
+`evaluate-workbench --path templates --include-controls` is identical before
+and after (the template edits are prose in RUNBOOK and ADOPTION).
 
 ## Remaining Limitations Or Follow-Up Specs
 
