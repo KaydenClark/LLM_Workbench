@@ -166,6 +166,22 @@ consequential report claims, and recommendations. Earlier review and audit are
 supports, not mandatory independent ceremonies per ticket. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
 
+### Branch Completion
+
+A task is not finished at the push. A pushed branch is recoverable, not
+delivered. When the integration review passes, open the PR into `integration`
+with `gh`, merge it, and confirm `integration` contains the work. Do not stall
+on an approved candidate or leave a passed PR waiting for the owner; only
+`integration` into `main` is owner-only. "Never merge a PR left open for
+review" means a PR whose review is still pending, not one that already passed.
+
+Delete the branch once `integration` contains it and nothing is lost. Use
+`git branch -d` and delete the remote branch; `-d` refuses unless the work is
+truly merged, so let that check be the safety gate and never force it with
+`-D` to clear a branch. Stacked branches whose commits are already ancestors of
+the merged tip are deleted the same way and need no separate merge. A branch
+still holding unmerged work is removed only with owner approval.
+
 ## Session Records And Checkpoints
 
 Live grilling notepads and handoffs live untracked in the manifest-declared

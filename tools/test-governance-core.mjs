@@ -65,3 +65,51 @@ test('the ADR corpus is reconciled: ADR-0008 is not ported and ADR-0025 records 
     if (adr.data.ported_from) assert.doesNotMatch(String(adr.data.ported_from), /\/Users\/|\/home\//, `${adr.name} ported_from must not carry a private path`);
   }
 });
+
+test('root and template AGENTS define branch completion and merged-branch cleanup', () => {
+  for (const relative of ['AGENTS.md', 'templates/AGENTS.md']) {
+    const agents = read(relative);
+    assert.match(agents, /^### Branch Completion$/m, `${relative} names the branch completion contract`);
+    assert.match(
+      agents,
+      /A task is not finished at the push/,
+      `${relative} states that a pushed branch is not a finished task`
+    );
+    assert.match(
+      agents,
+      /git branch -d/,
+      `${relative} names the safe merged-branch delete`
+    );
+    assert.match(
+      agents,
+      /never force it with\s+`-D`/,
+      `${relative} forbids forcing a delete past the merged check`
+    );
+    assert.match(
+      agents,
+      /already ancestors of\s+the merged tip/,
+      `${relative} resolves stacked branches without a separate merge`
+    );
+  }
+});
+
+test('the safety rule exempts a provably merged branch from the ask-first gate', () => {
+  const agents = read('AGENTS.md');
+  assert.doesNotMatch(
+    agents,
+    /removing branches\/results, adding paid services/,
+    'the blanket ask-before-removing-branches rule must be narrowed'
+  );
+  assert.match(
+    agents,
+    /removing unmerged branches or results/,
+    'AGENTS.md gates only unmerged branch removal behind asking'
+  );
+});
+
+test('the Runbook carries the operational branch closeout commands', () => {
+  const runbook = read('RUNBOOK.md');
+  assert.match(runbook, /gh pr merge/, 'RUNBOOK.md names the merge command');
+  assert.match(runbook, /git branch -d/, 'RUNBOOK.md names the safe local delete');
+  assert.match(runbook, /git push origin --delete/, 'RUNBOOK.md names the remote branch delete');
+});

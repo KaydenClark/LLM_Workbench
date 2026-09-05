@@ -674,6 +674,23 @@ gh pr create --base integration --fill
 Before creating a branch or PR, verify the live base and preserve dirty work.
 PR descriptions state what changed, why, risks, and verification.
 
+Closeout, once the integration review has passed. A pushed branch is
+recoverable, not delivered; finish the merge and clean up after yourself:
+
+```bash
+gh pr merge --merge --delete-branch
+git switch integration && git pull
+git branch --merged integration
+git branch -d codex/short-description
+git push origin --delete codex/short-description
+```
+
+`git branch --merged integration` lists every branch `integration` now
+contains, including stacked branches that needed no separate merge. `-d`
+refuses to delete unmerged work, so let it fail rather than reaching for `-D`.
+`gh pr merge --delete-branch` already removes the remote branch; the explicit
+`git push origin --delete` is for branches that never had a PR.
+
 ## Manual Harness Feedback Reports
 
 Run this workflow after a setup-only Round One check succeeds. It assesses the

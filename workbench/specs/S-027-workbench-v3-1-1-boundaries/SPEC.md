@@ -7,8 +7,8 @@
 **Updated:** 2026-09-05
 **Catalog description:** Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1.
 **Blockers:** none
-**Latest event:** Owner authorized the push; the corrected candidate is remotely recoverable and a separate-context review returned APPROVE with one record-drift correction.
-**Next gate:** Open the integration pull request for the reviewed candidate. Merging into `integration` remains the only remaining step; `integration` to `main` stays owner-only.
+**Latest event:** Owner reported that an approved candidate still did not land and that merged branches were never cleaned up; the Branch Completion contract and closeout commands are now recorded.
+**Next gate:** Owner declined the merge for this run. A fresh separate-context review of the new branch tip is required before any integration merge; the earlier APPROVE covers `72cf0fe` only.
 **Stance:** Builder
 
 ## Outcome
@@ -171,6 +171,8 @@ completed spec evidence remain unchanged.
 | 2026-09-05 | TK-001 | Second immutable delta review REJECT exposed an omitted generated Blueprint row | Clean clone at 3613fd1 failed dogfood and doctor because the committed catalog said active while spec/Taskboard said blocked; reviewer independently identified the same omission | Included the already-rendered blocked catalog row in the correction; both rejected SHAs preserved | Verify corrected immutable candidate and return final local-delta verdict in chat; push remains unapproved |
 | 2026-09-05 | TK-001 | Owner authorized the push; corrected candidate published and read back | Pushed `codex/workbench-boundaries-redesign`; `git ls-remote` returns `a61a6d335a2a37e53839ca48c633a270844cb8c7` matching local HEAD; full 23-test suite, path-safety eval, evaluator (templates 106.6/113), render (no drift) and doctor PASS before push | No docs change required by the push itself | Separate-context review of the exact candidate |
 | 2026-09-05 | TK-001 | Separate-context integration review APPROVE on the exact candidate | Reviewer reproduced all 29 AGENTS/RUNBOOK union commands in an immutable clone at `a61a6d3`; both prior rejection causes confirmed fixed; guardrail 68 -> 73 measured against a byte-unchanged `tools/audit-guardrails.mjs`; privacy scan found only synthetic negative-test fixtures; no spec path moved; append-only log confirmed unmodified | P2 record drift repaired in this spec header, acceptance box, slice row and the rendered Taskboard | Three P3 findings recorded as follow-up; integration merge itself remains |
+| 2026-09-05 | TK-001 | Delta review APPROVE on the record repair | Reviewer reproduced all 29 union commands at `72cf0fe`; evidence rows 12 -> 14 added, 0 modified; render drift zero; `next` now selects TK-001 instead of returning null | No further record change required | Reviewer graded the early acceptance-box check P3 and warned that later commits form a new candidate |
+| 2026-09-05 | TK-001 | Owner reported a harness failure: an approved candidate did not land and merged branches were never cleaned up | Red on three new governance-core assertions (missing Branch Completion contract, blanket branch-removal gate, absent Runbook closeout) then 7/7 green; all 26 required commands PASS; guardrail unchanged at 73/100 and templates unchanged at 106.6/113 | Branch Completion added to AGENTS and generic template, safety rule narrowed, Runbook closeout commands, feedback report F-002/F-003 | The branch tip is now a new candidate; the prior APPROVE covers `72cf0fe` only and a fresh review is required before any merge |
 
 ## Completion Result
 
