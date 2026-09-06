@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { REGISTER_NAME, listAdrs, newAdr, renderRegister, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
+import { REGISTER_NAME, listAdrs, newAdr, normalizeAdrs, renderRegister, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -146,4 +146,48 @@ test('register never follows a pre-existing predictable temporary symlink', () =
     writeRegister(dir);
     assert.equal(fs.readFileSync(target, 'utf8'), 'keep original\n');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
+
+// S-042 TK-002: the harness can repair its own historical output. Normalize is
+// explicit, inserts only the missing required keys, and never touches a body -
+// including on a CRLF checkout, where an LF-terminated splice would corrupt it.
+test('normalize inserts only the missing required frontmatter keys and leaves every body byte alone', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    const bare = '# A bare decision\n\nThe decision.\n\nProvenance: owner decision.\n';
+    const partial = '---\nstatus: accepted\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A partial decision\n\nThe decision.\n';
+    const crlf = '---\r\nstatus: proposed\r\n---\r\n\r\n# A CRLF decision\r\n\r\nThe decision.\r\n';
+    fs.writeFileSync(path.join(collection, '0001-bare.md'), bare);
+    fs.writeFileSync(path.join(collection, '0002-partial.md'), partial);
+    fs.writeFileSync(path.join(collection, '0003-crlf.md'), crlf);
+
+    assert.ok(validateAdrs(dir).filter((item) => item.code === 'invalid-adr').length >= 3, 'all three records are invalid before normalize');
+    assert.equal(fs.readFileSync(path.join(collection, '0001-bare.md'), 'utf8'), bare, 'validate alone writes nothing');
+    assert.equal(fs.readFileSync(path.join(collection, '0002-partial.md'), 'utf8'), partial, 'validate alone writes nothing');
+    assert.equal(fs.readFileSync(path.join(collection, '0003-crlf.md'), 'utf8'), crlf, 'validate alone writes nothing');
+
+    const result = normalizeAdrs(dir, { date: '2026-09-06' });
+    assert.deepEqual(result.changed.map((entry) => `${path.basename(entry.record)}:${entry.inserted.join(',')}`).sort(), [
+      '0001-bare.md:status,date',
+      '0002-partial.md:date',
+      '0003-crlf.md:date'
+    ], 'normalize reports every file it changed and the keys it inserted');
+
+    assert.equal(fs.readFileSync(path.join(collection, '0001-bare.md'), 'utf8'), `---\nstatus: proposed\ndate: 2026-09-06\n---\n\n${bare}`);
+    assert.equal(fs.readFileSync(path.join(collection, '0002-partial.md'), 'utf8'), '---\nstatus: accepted\ncanonicalized_in:\n  - AGENTS.md\ndate: 2026-09-06\n---\n\n# A partial decision\n\nThe decision.\n');
+    const normalizedCrlf = fs.readFileSync(path.join(collection, '0003-crlf.md'), 'utf8');
+    assert.equal(normalizedCrlf, '---\r\nstatus: proposed\r\ndate: 2026-09-06\r\n---\r\n\r\n# A CRLF decision\r\n\r\nThe decision.\r\n');
+    assert.doesNotMatch(normalizedCrlf, /(?<!\r)\n/, 'a CRLF record must not gain an LF-terminated key');
+
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir), [], 'every normalized record validates');
+    assert.deepEqual(normalizeAdrs(dir, { date: '2026-09-06' }).changed, [], 'normalize is idempotent');
+
+    const cli = spawnSync(process.execPath, [adrTool, 'normalize', '--path', dir, '--date', '2026-09-06', '--json'], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.deepEqual(JSON.parse(cli.stdout).changed, []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });

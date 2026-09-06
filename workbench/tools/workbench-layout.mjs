@@ -5,8 +5,10 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
 import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, declaredGit, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
@@ -46,6 +48,15 @@ const generatedRegions = {
 };
 const templateVocabulary = new Set(templatePlaceholders);
 export const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
+// Seeded lane documents are the third class of installed state, beside runtime
+// tools and installed skills: the harness copies them out of the release to be
+// read and, unlike a runtime tool, sometimes locally adjusted. Their generation
+// is therefore a recorded release in a seed record beside the manifest, never a
+// hash in the tools receipt, whose drift finding blocks everything.
+export const SEED_RECORD = 'workbench/.workbench-seed.json';
+export const SEED_SCHEMA_VERSION = 1;
+export const SEED_SOURCE = 'LLM Workbench seeded documents';
+export const seededLaneDocuments = [{ lane: 'feedback', name: 'REPORT_FORMAT.md', template: 'feedback/REPORT_FORMAT.md' }];
 
 function lstatOrNull(target) {
   try { return fs.lstatSync(target); } catch (error) {
@@ -385,6 +396,143 @@ export function seedWiki(project, options) {
   return { wiki: true, written };
 }
 
+// Bring the seeded lane documents this release carries into a room and record
+// the generation of each one. Nothing here rewrites content it did not add: a
+// document is written only when it is absent, or when its bytes still match the
+// hash this command recorded when it last wrote it. A copy the room adjusted,
+// or one whose generation this command cannot establish from bytes it can see,
+// is retained untouched and reported by name.
+export function seedLaneDocuments(project, options) {
+  const root = path.resolve(project);
+  const templates = templateRoot();
+  if (!templates) return fail('invalid-source-identity', 'This copy is not inside a verified Workbench release checkout; seeded lane documents cannot be copied from bytes it cannot verify.');
+  const { manifest, failure } = readManifestFile(root);
+  if (failure) return failure;
+  if (manifest.schemaVersion === 1) return fail('upgrade-required', 'Manifest schema 1 is the v3.0 five-lane layout; run workbench-layout.mjs migrate --project PATH once.', { schemaVersion: 1 });
+  if (manifest.schemaVersion !== SCHEMA_VERSION) return fail('invalid-manifest', 'Manifest schemaVersion is invalid.');
+  const release = options['--version'] ?? manifest.workbenchVersion;
+  const record = readSeedRecord(root) ?? { schemaVersion: SEED_SCHEMA_VERSION, source: SEED_SOURCE, documents: {} };
+  const documents = { ...record.documents };
+  const written = [];
+  const retained = [];
+  for (const document of seededLaneDocuments) {
+    const relative = `${lanes[document.lane]}/${document.name}`;
+    const destination = path.join(root, relative);
+    const source = path.join(templates, document.template);
+    if (!lstatOrNull(source)) { retained.push({ document: relative, reason: `the release carries no ${document.template}` }); continue; }
+    const bytes = fs.readFileSync(source);
+    const contentHash = digest(bytes);
+    const entry = lstatOrNull(destination);
+    if (entry && (entry.isSymbolicLink() || !entry.isFile())) { retained.push({ document: relative, reason: 'the installed path is not an ordinary file' }); continue; }
+    if (!entry) {
+      fs.mkdirSync(path.dirname(destination), { recursive: true });
+      writeSafeFile(root, destination, bytes);
+      documents[relative] = { release, contentHash };
+      written.push({ document: relative, action: 'seeded' });
+      continue;
+    }
+    const installed = digest(fs.readFileSync(destination));
+    if (installed === contentHash) {
+      // Byte equality with the release copy is evidence of the generation, so a
+      // hand-copied document a room already carries can be recorded truthfully.
+      documents[relative] = { release, contentHash };
+      written.push({ document: relative, action: 'recorded' });
+      continue;
+    }
+    if (documents[relative]?.contentHash === installed) {
+      writeSafeFile(root, destination, bytes);
+      documents[relative] = { release, contentHash };
+      written.push({ document: relative, action: 'refreshed' });
+      continue;
+    }
+    retained.push({ document: relative, reason: documents[relative] ? 'the installed copy was changed after it was seeded' : 'the installed copy matches no generation this command can verify' });
+  }
+  // A run that established nothing writes nothing: an empty record would claim
+  // the room tracks generations it cannot actually name.
+  if (written.length) writeSafeFile(root, path.join(root, SEED_RECORD), `${JSON.stringify({ schemaVersion: SEED_SCHEMA_VERSION, source: SEED_SOURCE, documents }, null, 2)}\n`);
+  return report('seeded', { release, record: SEED_RECORD, written, retained });
+}
+
+function digest(bytes) {
+  return createHash('sha256').update(bytes).digest('hex');
+}
+
+// The seed record, or null when the room has none or carries a record this
+// tool did not write. A foreign or malformed record records no generation.
+export function readSeedRecord(project) {
+  const target = path.join(path.resolve(project), SEED_RECORD);
+  const entry = lstatOrNull(target);
+  if (!entry?.isFile() || entry.isSymbolicLink()) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(target, 'utf8'));
+    if (parsed?.schemaVersion !== SEED_SCHEMA_VERSION || parsed.source !== SEED_SOURCE) return null;
+    return { ...parsed, documents: parsed.documents && typeof parsed.documents === 'object' ? parsed.documents : {} };
+  } catch { return null; }
+}
+
+// A seeded lane document whose recorded release is not the manifest's is behind
+// the release the room runs. Version equality, not content freshness: a room
+// may adjust a seeded document locally and stay current.
+export function seededDocumentFindings(project) {
+  const root = path.resolve(project);
+  const { manifest, failure } = readManifestFile(root);
+  if (failure || manifest?.schemaVersion !== SCHEMA_VERSION) return [];
+  const expected = manifest.workbenchVersion;
+  const record = readSeedRecord(root);
+  if (!expected || !record) return [];
+  const findings = [];
+  for (const [document, entry] of Object.entries(record.documents)) {
+    const release = entry?.release;
+    if (typeof release !== 'string' || release === expected) continue;
+    findings.push(finding('stale-seed', `${document} was seeded from ${release} but the manifest runs ${expected}; re-copy it from the ${expected} release`, { document, release, expected }));
+  }
+  return findings;
+}
+
+// The manifest's recorded source identity is what lets a later review
+// reproduce the installation. A placeholder, an absent field, or a release that
+// disagrees with the room's own workbenchVersion is reported by name so the
+// room can re-record it with `record-source`; none of it blocks.
+export function provenanceFindings(project) {
+  const root = path.resolve(project);
+  const { manifest, failure } = readManifestFile(root);
+  if (failure || manifest?.schemaVersion !== SCHEMA_VERSION) return [];
+  const source = manifest.provenance?.source;
+  if (!source || typeof source !== 'object' || Array.isArray(source)) {
+    return [finding('unverified-provenance', 'workbench/manifest.json records no provenance.source; run workbench-layout.mjs record-source from a clean release checkout')];
+  }
+  const findings = [];
+  if (!/^[0-9a-f]{40}$/.test(String(source.commit ?? ''))) {
+    findings.push(finding('unverified-provenance', `workbench/manifest.json provenance.source.commit ${JSON.stringify(source.commit ?? null)} is not a full 40-character Git commit; the recorded install cannot be reproduced`, { field: 'commit' }));
+  }
+  if (!String(source.repository ?? '').trim()) {
+    findings.push(finding('unverified-provenance', 'workbench/manifest.json provenance.source.repository is empty; the recorded install names no origin', { field: 'repository' }));
+  }
+  if (String(source.release ?? '') !== String(manifest.workbenchVersion)) {
+    findings.push(finding('unverified-provenance', `workbench/manifest.json provenance.source.release ${JSON.stringify(source.release ?? null)} disagrees with workbenchVersion ${manifest.workbenchVersion}`, { field: 'release', release: source.release ?? null, expected: manifest.workbenchVersion }));
+  }
+  return findings;
+}
+
+// Record verified source identity for a room that already exists, under the
+// same clean-release-checkout verification `init` carries. Nothing else in the
+// manifest changes, and a source it cannot verify is never written.
+export function recordSource(options) {
+  const project = path.resolve(options['--project']);
+  const { manifest, manifestPath, failure } = readManifestFile(project);
+  if (failure) return failure;
+  if (manifest.schemaVersion === 1) {
+    return fail('upgrade-required', 'Manifest schema 1 is the v3.0 five-lane layout; run workbench-layout.mjs migrate --project PATH once.', { schemaVersion: 1 });
+  }
+  if (manifest.schemaVersion !== SCHEMA_VERSION) return fail('invalid-manifest', 'Manifest schemaVersion is invalid.');
+  const version = options['--version'] ?? manifest.workbenchVersion;
+  const source = sourceIdentity({ ...options, '--version': version });
+  if (source.status) return source;
+  const updated = { ...manifest, provenance: { ...manifest.provenance, source } };
+  writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
+  return report('recorded', { manifestPath, source });
+}
+
 function validateManifestShape(manifest) {
   if (!/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) return fail('invalid-version', 'Workbench version must use vMAJOR.MINOR.PATCH.');
   if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance.lifecycle)) return fail('invalid-provenance', 'Provenance must be genesis, adoption, or upgrade.');
@@ -703,12 +851,17 @@ if (isMainModule(import.meta.url)) {
     let result;
     if (command === 'init') result = initialize(parseOptions(args, ['--project', '--provenance', '--version']));
     else if (command === 'migrate') result = migrate(parseOptions(args, ['--project']));
+    else if (command === 'record-source') result = recordSource(parseOptions(args, ['--project']));
+    else if (command === 'seed-documents') {
+      const options = parseOptions(args, ['--project']);
+      result = seedLaneDocuments(options['--project'], options);
+    }
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.2 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.2 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | record-source --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.1.2] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
-    if (!['initialized', 'valid', 'migrated', 'current'].includes(result.status)) process.exitCode = 1;
+    if (!['initialized', 'valid', 'migrated', 'current', 'recorded', 'seeded'].includes(result.status)) process.exitCode = 1;
   } catch (error) {
     process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
     process.exitCode = 1;

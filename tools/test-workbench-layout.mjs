@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
@@ -590,7 +591,10 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
     fs.mkdirSync(partialTools);
     const relocatedTool = path.join(partialTools, 'workbench-layout.mjs');
     fs.copyFileSync(tool, relocatedTool);
-    for (const helper of ['spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+    // Every module the layout tool imports is itself a managed runtime tool
+  // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
+  // release checkout around them, which is the condition under test.
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
       fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
     }
 
@@ -744,7 +748,10 @@ function relocateTool(bundle) {
   fs.mkdirSync(partialTools);
   const relocatedTool = path.join(partialTools, 'workbench-layout.mjs');
   fs.copyFileSync(tool, relocatedTool);
-  for (const helper of ['spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+  // Every module the layout tool imports is itself a managed runtime tool
+  // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
+  // release checkout around them, which is the condition under test.
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
     fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
   }
   return relocatedTool;
@@ -1057,5 +1064,104 @@ test('HEAD is not a branch name: init refuses it and a symref never satisfies th
     assert.equal(run('validate', '--project', project).report.error.code, 'invalid-manifest', 'a manifest declaring HEAD is malformed even though origin/HEAD is a symref');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-042 TK-001: the generation of a seeded lane document is recorded only from
+// bytes this command can verify, and a copy the room changed is never rewritten.
+test('seed-documents records a verifiable generation and never rewrites an adjusted copy', () => {
+  const project = fixture();
+  const bundle = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const relative = 'workbench/feedback/REPORT_FORMAT.md';
+    const document = path.join(project, relative);
+    const recordPath = path.join(project, 'workbench', '.workbench-seed.json');
+    const template = fs.readFileSync(path.join(root, 'templates', 'feedback', 'REPORT_FORMAT.md'));
+    assert.equal(fs.existsSync(recordPath), false, 'init writes no seed record; seeding a lane document is an explicit command');
+
+    const seeded = run('seed-documents', '--project', project);
+    assert.equal(seeded.status, 0, seeded.stdout);
+    assert.deepEqual(seeded.report.written, [{ document: relative, action: 'seeded' }]);
+    assert.deepEqual(seeded.report.retained, []);
+    assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'));
+    assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
+
+    const again = run('seed-documents', '--project', project);
+    assert.deepEqual(again.report.written, [{ document: relative, action: 'recorded' }], 'byte equality with the release copy is evidence of the generation');
+
+    // A copy still identical to what an older release seeded is refreshed.
+    const older = `${template.toString('utf8')}\nSeeded by an older release.\n`;
+    fs.writeFileSync(document, older);
+    const record = JSON.parse(fs.readFileSync(recordPath, 'utf8'));
+    record.documents[relative] = { release: 'v3.1.0', contentHash: createHash('sha256').update(Buffer.from(older)).digest('hex') };
+    fs.writeFileSync(recordPath, `${JSON.stringify(record, null, 2)}\n`);
+    const refreshed = run('seed-documents', '--project', project);
+    assert.deepEqual(refreshed.report.written, [{ document: relative, action: 'refreshed' }]);
+    assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'), 'an untouched older copy is brought current without a reinstall');
+    assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
+
+    fs.appendFileSync(document, '\nLocal note this room added.\n');
+    const adjusted = run('seed-documents', '--project', project);
+    assert.deepEqual(adjusted.report.written, [], 'a repair never rewrites content it did not add');
+    assert.deepEqual(adjusted.report.retained.map((entry) => entry.document), [relative]);
+    assert.match(adjusted.report.retained[0].reason, /changed after it was seeded/);
+    assert.match(fs.readFileSync(document, 'utf8'), /Local note this room added\./);
+
+    const relocatedTool = relocateTool(bundle);
+    const refused = spawnSync(process.execPath, [relocatedTool, 'seed-documents', '--project', project], { cwd: bundle, encoding: 'utf8' });
+    assert.notEqual(refused.status, 0, refused.stdout);
+    assert.equal(JSON.parse(refused.stdout).error.code, 'invalid-source-identity');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(bundle, { recursive: true, force: true });
+  }
+});
+
+// S-042 TK-003: an existing room can record verified source identity without a
+// reinstall, under the same verification init carries.
+test('record-source repairs placeholder provenance for an existing room and refuses what it cannot verify', () => {
+  const project = fixture();
+  const bundle = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const initialized = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const verified = initialized.provenance.source;
+    const provenance = () => doctor(project).filter((item) => item.code === 'unverified-provenance');
+    assert.deepEqual(provenance(), [], 'a room initialized from the release checkout records a verifiable identity');
+
+    initialized.provenance.source = { repository: '', release: 'v3.1.0', commit: 'unknown' };
+    fs.writeFileSync(manifestPath, `${JSON.stringify(initialized, null, 2)}\n`);
+    assert.deepEqual(provenance().map((item) => item.field).sort(), ['commit', 'release', 'repository']);
+
+    const relocatedTool = relocateTool(bundle);
+    const refused = spawnSync(process.execPath, [relocatedTool, 'record-source', '--project', project], { cwd: bundle, encoding: 'utf8' });
+    assert.notEqual(refused.status, 0, refused.stdout);
+    assert.equal(JSON.parse(refused.stdout).error.code, 'invalid-source-identity');
+    assert.match(JSON.parse(refused.stdout).error.message, /verified Workbench release checkout/);
+    assert.equal(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).provenance.source.commit, 'unknown', 'a refused recording writes nothing');
+
+    const mismatched = run('record-source', '--project', project, '--version', 'v9.9.9');
+    assert.notEqual(mismatched.status, 0, mismatched.stdout);
+    assert.equal(mismatched.report.error.code, 'invalid-source-identity');
+    assert.match(mismatched.report.error.message, /verified checkout release/);
+
+    const pinned = run('record-source', '--project', project, '--source-commit', 'b'.repeat(40));
+    assert.notEqual(pinned.status, 0, pinned.stdout);
+    assert.equal(pinned.report.error.code, 'invalid-source-identity');
+
+    const recorded = run('record-source', '--project', project);
+    assert.equal(recorded.status, 0, recorded.stdout);
+    assert.equal(recorded.report.status, 'recorded');
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(after.provenance.source, verified, 'the verified identity replaces the placeholder');
+    assert.equal(after.provenance.lifecycle, 'genesis', 'nothing else in the manifest changes');
+    assert.deepEqual(after.lanes, LANES);
+    assert.deepEqual(provenance(), [], 'recording the verified identity clears the finding');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(bundle, { recursive: true, force: true });
   }
 });

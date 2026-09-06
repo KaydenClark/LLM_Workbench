@@ -66,7 +66,14 @@ const registry = Object.freeze({
   // withheld lane is reported by name and never blocks: a room may deny a
   // lane deliberately and record why. The Genesis readiness gate still
   // fails closed on it.
-  'permission-scope-drift': entry('error', 'controls', 'none', 'the permission file withholds a manifest-declared authorship lane or grants the tools lane')
+  'permission-scope-drift': entry('error', 'controls', 'none', 'the permission file withholds a manifest-declared authorship lane or grants the tools lane'),
+  // Installed state the harness itself wrote. Neither blocks: a room repairs
+  // both with a command it runs itself, and a byte-managed effect would turn a
+  // deliberate local adjustment into a blocking failure. `stale-seed` is scoped
+  // to the feedback lane because that is the whole covered set today; widening
+  // the set to another lane is a registry change with its own test.
+  'stale-seed': entry('attention', 'feedback', 'none', 'a seeded lane document records a release other than the manifest workbenchVersion'),
+  'unverified-provenance': entry('attention', 'manifest', 'none', 'the manifest records no verifiable source identity, or one that disagrees with its own workbenchVersion')
 });
 
 function entry(severity, scope, blocks, summary) {
