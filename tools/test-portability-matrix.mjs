@@ -22,6 +22,7 @@ import { isSafeRelative } from '../workbench/tools/workbench-paths.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const ACTIVE_SURFACES = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md', 'templates', 'skills', 'workbench/manifest.json', 'workbench/tools', 'workbench/docs', 'workbench/wiki', 'workbench/sessions/checkpoints'];
 const RETIRED = [
   { label: 'hidden notepad directory', pattern: /\.agents\/grilling diary/ },
@@ -62,7 +63,7 @@ test('tracked paths never differ only by case, and lanes must be lowercase witho
 test('a manifest with a backslash or capitalised lane is rejected before any lane is read', () => {
   const project = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-matrix-'));
   try {
-    assert.equal(spawnSync(process.execPath, [layout, 'init', '--project', project, '--provenance', 'genesis', '--version', 'v3.0.0'], { encoding: 'utf8' }).status, 0);
+    assert.equal(spawnSync(process.execPath, [layout, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION], { encoding: 'utf8' }).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     for (const [lane, value, code] of [['specs', 'workbench\\specs', 'invalid-lane'], ['wiki', 'Workbench/wiki', 'invalid-lane']]) {
