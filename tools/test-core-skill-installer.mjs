@@ -153,7 +153,7 @@ test('an installed core skill carries a schema 2 marker naming the release, comm
       assert.equal(marker.schemaVersion, 2);
       assert.equal(marker.source, 'LLM Workbench core');
       assert.equal(marker.release, VERSION, 'the marker names the release of the checkout that installed it');
-      assert.match(marker.commit, /^[0-9a-f]{40}$|^unknown$/);
+      assert.match(marker.commit, /^[0-9a-f]{40}$/);
       assert.match(marker.contentHash, /^[0-9a-f]{64}$/);
     }
     assert.equal(markers[0].contentHash, markers[1].contentHash, 'both engines install the same content');

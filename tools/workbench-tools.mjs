@@ -55,14 +55,24 @@ function git(args, cwd = productRoot) {
   return result.status === 0 ? result.stdout.trim() : '';
 }
 
-export function sourceIdentity() {
-  const manifestPath = path.join(productRoot, 'workbench', 'manifest.json');
+export function sourceIdentity(options = {}) {
+  const root = path.resolve(options.root ?? productRoot);
+  const managedPaths = options.managedPaths ?? ['workbench/tools'];
+  const manifestPath = path.join(root, 'workbench', 'manifest.json');
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
+  const commit = git(['rev-parse', '--verify', 'HEAD'], root);
+  const repository = git(['remote', 'get-url', 'origin'], root);
+  const release = manifest.workbenchVersion;
+  if (!/^[0-9a-f]{40}$/.test(commit)) throw new Error(`${root} is not a verified Git checkout with a concrete HEAD commit.`);
+  if (!repository) throw new Error(`${root} has no origin repository URL.`);
+  if (!/^v\d+\.\d+\.\d+$/.test(release ?? '')) throw new Error(`${manifestPath} has no valid Workbench release.`);
+  const dirty = git(['status', '--porcelain', '--', ...managedPaths], root);
+  if (dirty) throw new Error(`The Workbench source has uncommitted changes under ${managedPaths.join(', ')}; commit the exact source candidate before installation.`);
   return {
-    repository: git(['remote', 'get-url', 'origin']) || 'unknown',
-    release: manifest.workbenchVersion ?? 'unknown',
-    commit: git(['rev-parse', 'HEAD']) || 'unknown',
-    dirty: git(['status', '--porcelain', '--', 'workbench/tools']) !== ''
+    repository,
+    release,
+    commit,
+    dirty: false
   };
 }
 
@@ -142,6 +152,8 @@ function copyTool(tool, destinationDir) {
 export function install(project, options = {}) {
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
+  let identity;
+  try { identity = sourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
   const resolved = readManifestLane(project);
   if (resolved.status === 'blocked') return resolved;
   const { lane, relative } = resolved;
@@ -155,7 +167,7 @@ export function install(project, options = {}) {
   fs.mkdirSync(lane, { recursive: true });
   const files = {};
   for (const tool of RUNTIME_TOOLS) files[tool] = copyTool(tool, lane);
-  const receipt = { schemaVersion: 1, source: sourceIdentity(), installedAt: options.date ?? new Date().toISOString().slice(0, 10), files, backups: [] };
+  const receipt = { schemaVersion: 1, source: identity, installedAt: options.date ?? new Date().toISOString().slice(0, 10), files, backups: [] };
   writeReceipt(lane, receipt);
   return { status: 'installed', lane: relative, receipt };
 }
@@ -167,7 +179,10 @@ export function verify(project) {
   const unsafe = safeManagedFiles(lane);
   if (unsafe) return unsafe;
   const receipt = readReceipt(lane);
-  if (!receipt && path.resolve(lane) === path.resolve(sourceLane)) return { status: 'source', lane: relative, source: sourceIdentity() };
+  if (!receipt && path.resolve(lane) === path.resolve(sourceLane)) {
+    try { return { status: 'source', lane: relative, source: sourceIdentity() }; }
+    catch (error) { return fail('invalid-source-identity', error.message); }
+  }
   if (!receipt) return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative} has no ${RECEIPT_NAME}.` } };
   const drift = [];
   for (const [tool, expected] of Object.entries(receipt.files)) {
@@ -186,6 +201,8 @@ export function update(project, options = {}) {
   if (!options.explicit) return fail('explicit-update-required', 'Replacing managed runtime tools requires --explicit-update.');
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
+  let identity;
+  try { identity = sourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
   const resolved = readManifestLane(project);
   if (resolved.status === 'blocked') return resolved;
   const { lane, relative } = resolved;
@@ -211,7 +228,7 @@ export function update(project, options = {}) {
   fs.writeFileSync(path.join(backupRoot, RECEIPT_NAME), `${JSON.stringify(receipt, null, 2)}\n`);
   const files = { ...receipt.files };
   for (const tool of changed) files[tool] = copyTool(tool, lane);
-  const updated = { ...receipt, source: sourceIdentity(), updatedAt: options.date ?? new Date().toISOString().slice(0, 10), files, backups: [...(receipt.backups ?? []), { path: backupRoot, files: backedUp }] };
+  const updated = { ...receipt, source: identity, updatedAt: options.date ?? new Date().toISOString().slice(0, 10), files, backups: [...(receipt.backups ?? []), { path: backupRoot, files: backedUp }] };
   writeReceipt(lane, updated);
   return { status: 'updated', lane: relative, changed, backup: backupRoot, receipt: updated };
 }

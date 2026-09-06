@@ -376,18 +376,26 @@ the current one.
 
 To upgrade:
 
-1. Check the LLM Workbench repo's releases/changelog for what changed since
+1. Check the clean LLM Workbench release checkout's releases/changelog for what changed since
    `v[HARNESS_VERSION]`.
 2. Re-copy only the changed template sections; keep this project's filled-in
    specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
-3. Update each doc's version stamp to the new version.
-4. Re-run the full verification suite and record the upgrade in its owning spec.
+3. Update managed runtime tools only with that checkout's
+   `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`;
+   keep its receipt and backup as the component recovery point.
+4. Update each doc's version stamp to the new version. Do not rewrite the room
+   manifest's historical adoption source to impersonate the newly installed
+   component generation.
+5. Re-run the full verification suite and record the upgrade in its owning spec.
 
 The runtime tools in `workbench/tools/` are Workbench-managed: their receipt
 (`.workbench-tools.json`) records the exact source release, commit, and file
 hashes. Verify them with `node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs verify --project .`
 and replace them only through `update --explicit-update`, which backs up the
 previous files and records a rollback path. Never hand-edit a managed tool.
+The source checkout must have a concrete `origin` and 40-character `HEAD`, and
+its managed source lane must be clean; otherwise install/update refuses before
+creating a receipt or backup.
 
 Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
 nonregular managed files, and unsafe backup entries before copying or creating

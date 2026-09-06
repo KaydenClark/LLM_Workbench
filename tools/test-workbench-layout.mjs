@@ -618,15 +618,18 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
 test('legacy twelve-skill manifests remain readable but v3.1.1 requires all four stances', () => {
   const project = fixture();
   try {
-    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.1.0');
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.equal(initialized.status, 0, initialized.stdout);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     assert.deepEqual(manifest.skillPolicy.required.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler']);
+    manifest.workbenchVersion = 'v3.1.0';
+    manifest.provenance.source.release = 'v3.1.0';
     manifest.skillPolicy.required = manifest.skillPolicy.required.slice(0, 12);
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     assert.equal(run('validate', '--project', project).report.status, 'valid');
     manifest.workbenchVersion = 'v3.1.1';
+    manifest.provenance.source.release = 'v3.1.1';
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     assert.equal(run('validate', '--project', project).report.error.code, 'invalid-skill-policy');
     manifest.skillPolicy.required.push('builder', 'auditor', 'reviewer', 'reconciler');
@@ -773,10 +776,10 @@ test('init and migrate from the release checkout resolve HEAD and origin when th
     const explicit = fixture();
     try {
       const pinned = run('init', '--project', explicit, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'a'.repeat(40), '--source-repository', 'https://example.invalid/workbench.git');
-      assert.equal(pinned.status, 0, pinned.stdout);
-      const pinnedManifest = JSON.parse(fs.readFileSync(path.join(explicit, 'workbench', 'manifest.json'), 'utf8'));
-      assert.equal(pinnedManifest.provenance.source.commit, 'a'.repeat(40), 'an explicit flag wins over resolution');
-      assert.equal(pinnedManifest.provenance.source.repository, 'https://example.invalid/workbench.git');
+      assert.notEqual(pinned.status, 0, pinned.stdout);
+      assert.equal(pinned.report.error.code, 'invalid-source-identity');
+      assert.match(pinned.report.error.message, /does not match/);
+      assert.equal(fs.existsSync(path.join(explicit, 'workbench')), false, 'contradictory source assertions must fail before mutation');
     } finally { fs.rmSync(explicit, { recursive: true, force: true }); }
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
@@ -784,7 +787,7 @@ test('init and migrate from the release checkout resolve HEAD and origin when th
   }
 });
 
-test('a relocated copy without templates refuses init and migrate naming the missing source flag and writes nothing', () => {
+test('a relocated partial copy refuses init and migrate even when source strings are supplied', () => {
   const project = fixture();
   const legacy = fixture();
   const bundle = fixture();
@@ -797,29 +800,29 @@ test('a relocated copy without templates refuses init and migrate naming the mis
 
     const refused = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.notEqual(refused.status, 0, refused.stdout);
-    assert.equal(refused.report.error.code, 'invalid-invocation');
-    assert.match(refused.report.error.message, /--source-commit/);
+    assert.equal(refused.report.error.code, 'invalid-source-identity');
+    assert.match(refused.report.error.message, /verified Workbench release checkout/);
     assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'a refused init must create nothing');
 
     const partial = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'b'.repeat(40));
     assert.notEqual(partial.status, 0, partial.stdout);
-    assert.equal(partial.report.error.code, 'invalid-invocation');
-    assert.match(partial.report.error.message, /--source-repository/);
+    assert.equal(partial.report.error.code, 'invalid-source-identity');
+    assert.match(partial.report.error.message, /verified Workbench release checkout/);
     assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
 
     schemaOneFixture(legacy);
     const refusedMigrate = relocated('migrate', '--project', legacy);
     assert.notEqual(refusedMigrate.status, 0, refusedMigrate.stdout);
-    assert.equal(refusedMigrate.report.error.code, 'invalid-invocation');
-    assert.match(refusedMigrate.report.error.message, /--source-commit/);
+    assert.equal(refusedMigrate.report.error.code, 'invalid-source-identity');
+    assert.match(refusedMigrate.report.error.message, /verified Workbench release checkout/);
     assert.equal(fs.existsSync(path.join(legacy, 'workbench', 'grilling')), true, 'a refused migrate must not move legacy content');
     assert.equal(JSON.parse(fs.readFileSync(path.join(legacy, 'workbench', 'manifest.json'), 'utf8')).schemaVersion, 1);
 
     const pinned = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'b'.repeat(40), '--source-repository', 'https://example.invalid/workbench.git');
-    assert.equal(pinned.status, 0, pinned.stdout);
-    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
-    assert.equal(manifest.provenance.source.commit, 'b'.repeat(40));
-    assert.equal(manifest.provenance.source.repository, 'https://example.invalid/workbench.git');
+    assert.notEqual(pinned.status, 0, pinned.stdout);
+    assert.equal(pinned.report.error.code, 'invalid-source-identity');
+    assert.match(pinned.report.error.message, /verified Workbench release checkout/);
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'supplied strings cannot make a relocated partial tool a verified source');
     assert.equal(fs.readFileSync(tool, 'utf8').includes("'unrecorded'"), false, 'the layout tool must carry no unrecorded placeholder');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });

@@ -70,7 +70,7 @@ try {
   git(first, 'commit', '-q', '--allow-empty', '-m', 'Genesis base');
   git(first, 'branch', 'integration');
   git(first, 'push', '-q', 'origin', 'main', 'integration');
-  node(product, path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', first, '--provenance', 'genesis', '--version', VERSION, '--name', 'Round Trip', '--date', DATE, '--source-commit', 'candidate');
+  node(product, path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', first, '--provenance', 'genesis', '--version', VERSION, '--name', 'Round Trip', '--date', DATE);
   node(product, path.join(product, 'tools', 'workbench-tools.mjs'), 'install', '--project', first);
   const stamp = `> Generated from LLM Workbench ${VERSION}.`;
   write(first, 'AGENTS.md', `# Round Trip - Agent Operating System\n\n${stamp}\n\n## Authority Order\n\n1. The current user request.\n2. This file.\n3. The assigned spec.\n\n## Work Selection And Lifecycle\n\nRun \`node workbench/tools/spec-workbench.mjs doctor\`, then \`next --json\`, then \`show\`, claim, implement red/green, close, render, doctor, push.\n`);

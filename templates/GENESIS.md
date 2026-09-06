@@ -174,10 +174,12 @@ node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs install \
 ```
 
 Run `init` from the Workbench release checkout: it records that checkout's
-`origin` URL and `HEAD` commit as `provenance.source` in the manifest. Pass
-`--source-commit SHA` and `--source-repository URL` only to pin a different
-source; a copy of the tool outside a release checkout refuses with
-`invalid-invocation` naming the missing flag rather than guessing.
+`origin` URL and full `HEAD` commit as `provenance.source` in the manifest.
+The checkout and its runtime-tool lane must be clean. Optional
+`--source-commit SHA` and `--source-repository URL` values assert that resolved
+identity and must match it; they cannot pin an unrelated source. A partial copy
+outside a verified release checkout refuses with `invalid-source-identity`
+before writing, even when source strings are supplied.
 
 The `init` flags declare, by exact case, the default branch and the branch the
 independent review gate merges into (`git.defaultBranch` and

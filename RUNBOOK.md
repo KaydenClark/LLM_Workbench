@@ -167,13 +167,13 @@ node tools/test-workbench-layout.mjs
 ```
 
 `init` and `migrate` record the exact Workbench source in
-`provenance.source`. Run from this release checkout they resolve its `origin`
-URL and `HEAD` when `--source-commit SHA` and `--source-repository URL` are
-omitted; an explicit flag always wins. A copy of the tool outside a release
-checkout (the installed `workbench/tools/` copy in a downstream project) cannot
-know the Workbench source and refuses with `invalid-invocation` naming the
-missing flag before writing anything. The placeholder `unrecorded` is never
-written.
+`provenance.source`. Run them from a clean release checkout: they verify its
+`origin`, full 40-character `HEAD`, declared release, and runtime-tool bytes.
+Optional `--source-commit SHA` and `--source-repository URL` values are
+assertions and must match that checkout; they cannot override it. A relocated
+partial copy cannot prove which Workbench bytes it carries and refuses with
+`invalid-source-identity` before writing anything, even when source strings are
+supplied. The placeholders `unrecorded` and `unknown` are never written.
 
 A schema 1 (v3.0 five-lane) manifest validates as `upgrade-required`. Migrate
 it once, losslessly: `workbench/grilling` becomes `workbench/sessions/grilling`
@@ -268,6 +268,13 @@ with the drifted file names (`source` on this repository). `update` requires
 `.workbench-tools-backup-*`, records the backup path in the receipt, and
 `rollback` restores that backup. An application's root `tools/` directory is
 never read or written.
+
+Installation and explicit updates also require a clean Git source lane, an
+`origin`, and a concrete 40-character `HEAD`; source identity is resolved
+before a destination, receipt, or backup is created. Skill markers apply the
+same rule to the bundled `skills/` bytes. Managed-component updates record the
+new component generation in their receipt or marker without rewriting the
+room manifest's historical adoption source.
 
 Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
 nonregular managed files, and unsafe backup entries before copying or creating

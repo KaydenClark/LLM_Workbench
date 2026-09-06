@@ -130,10 +130,9 @@ function preflight(project, home, explicit, layoutOnly = false) {
   return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean), destinations };
 }
 
-function updateSkills(destinations, home) {
+function updateSkills(destinations, home, identity) {
   const backupRoot = fs.mkdtempSync(path.join(home, '.workbench-upgrade-backup-'));
   const skillBackups = [];
-  const identity = markerSourceIdentity();
   for (const { engine, root: destinationRoot } of destinations) {
     fs.mkdirSync(destinationRoot, { recursive: true });
     for (const skill of coreSkills) {
@@ -162,12 +161,16 @@ function upgrade(options) {
   const home = path.resolve(options['--home']);
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
+  let skillIdentity;
+  if (!options.layoutOnly) {
+    try { skillIdentity = markerSourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
+  }
   const readiness = preflight(project, home, options.explicit, options.layoutOnly);
   if (readiness.status === 'blocked') return readiness;
   const skills = options.layoutOnly ? 'presence-only' : 'explicit-update';
   let skillBackups = [];
   try {
-    if (!options.layoutOnly) skillBackups = updateSkills(readiness.destinations, home);
+    if (!options.layoutOnly) skillBackups = updateSkills(readiness.destinations, home, skillIdentity);
     const adoption = spawnSync(process.execPath, [adoptionTool, 'migrate', '--project', project, '--home', home, '--version', options['--version']], { cwd: root, encoding: 'utf8' });
     const adoptionReport = adoption.stdout ? JSON.parse(adoption.stdout) : null;
     if (adoption.status !== 0 || adoptionReport?.status !== 'complete') {

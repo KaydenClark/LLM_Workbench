@@ -8,8 +8,8 @@
 **Updated:** 2026-09-06
 **Catalog description:** Correct the unpublished v3.1.2 candidate where permission, control-fidelity, and source-identity checks overstate what they prove, then rehearse the already-v3 upgrade path and return an exact reviewed candidate for GPT_OS deployment.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Complete TK-003.
+**Latest event:** TK-003 claimed by codex-gpt-5.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 ## Outcome
 
@@ -124,7 +124,7 @@ Verified on 2026-09-05 after refreshing `origin`, at
 |---|---|---|---|---|
 | TK-001 | Align the shipped Claude permission template, diagnostic, protocols, and tests with one supported `Edit`-rule model that reports restrictive uncertainty | done | none | Red: node tools/test-diagnostics.mjs exposed Edit-only lanes as withheld, and node tools/test-workbench-layout.mjs exposed paired Write rules in the shipped template. Green: test-diagnostics 10/10, test-workbench-layout 31/31, test-workbench-dogfood pass, evaluate-workbench templates 106.6/113, git diff --check pass. Claude Code 2.1.212 native disposable write did not reach a permission decision because the workspace was untrusted and OAuth was expired; no trust or credential state was changed. |
 | TK-002 | Make placeholder fills preserve fixed wording and prove the shipped ADR ownership row detects a removed qualifier in JSON and Markdown | done | TK-001 | Red: test-control-fidelity failed because the shipping AGENTS template lacked its ADR owner row, and the direct Forbidden-to-Allowed placeholder case returned filled 1 / changed 0. Green: test-control-fidelity 15/15, including JSON and Markdown production CLI coverage for the removed canonicalized_in qualifier; test-workbench-layout 31/31; test-workbench-dogfood pass after render; template evaluation 106.6/113 unchanged; git diff --check pass. |
-| TK-003 | Fail closed on unverified source identity across layout, adoption, runtime-tool receipts, and skill markers, then rehearse v3.1.1 -> v3.1.2 maintenance preservation | ready | TK-002 | pending |
+| TK-003 | Fail closed on unverified source identity across layout, adoption, runtime-tool receipts, and skill markers, then rehearse v3.1.1 -> v3.1.2 maintenance preservation | in-progress | TK-002 | pending |
 | TK-004 | Reconcile current ownership prose, run the full release gate, independently review the immutable candidate, and land it on `integration` | blocked | TK-003 | pending |
 
 ### TK-001 - Permission truth at the public seam

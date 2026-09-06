@@ -70,7 +70,7 @@ test('explicit upgrade backs up a changed managed skill, migrates once, and reco
       const marker = JSON.parse(fs.readFileSync(path.join(home, '.agents', 'skills', skill, '.workbench-skill.json'), 'utf8'));
       assert.equal(marker.schemaVersion, 2, `${skill} carries a schema 2 marker after the explicit upgrade`);
       assert.equal(marker.release, VERSION);
-      assert.match(marker.commit, /^[0-9a-f]{40}$|^unknown$/);
+      assert.match(marker.commit, /^[0-9a-f]{40}$/);
       assert.match(marker.contentHash, /^[0-9a-f]{64}$/);
     }
     assert.equal(fs.existsSync(path.join(project, 'specs')), false);

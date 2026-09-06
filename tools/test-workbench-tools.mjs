@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { RECEIPT_NAME, RUNTIME_TOOLS } from './workbench-tools.mjs';
+import { RECEIPT_NAME, RUNTIME_TOOLS, sourceIdentity } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
@@ -32,6 +33,35 @@ function project() {
   return dir;
 }
 
+function hash(content) {
+  return crypto.createHash('sha256').update(content).digest('hex');
+}
+
+function selectedSnapshot(rootDir, paths) {
+  return paths.map((relative) => `${relative}:${hash(fs.readFileSync(path.join(rootDir, relative)))}`).join('\n');
+}
+
+test('source identity requires a clean Git checkout with a concrete origin and commit', () => {
+  const dir = fixture('workbench-source-identity-');
+  try {
+    fs.mkdirSync(path.join(dir, 'workbench', 'tools'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'workbench', 'manifest.json'), `${JSON.stringify({ workbenchVersion: VERSION })}\n`);
+    fs.writeFileSync(path.join(dir, 'workbench', 'tools', 'proof.mjs'), 'export const proof = true;\n');
+    assert.throws(() => sourceIdentity({ root: dir, managedPaths: ['workbench/tools'] }), /Git checkout/);
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: dir }).status, 0);
+    assert.equal(spawnSync('git', ['add', '.'], { cwd: dir }).status, 0);
+    assert.equal(spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '-qm', 'source fixture'], { cwd: dir }).status, 0);
+    assert.throws(() => sourceIdentity({ root: dir, managedPaths: ['workbench/tools'] }), /origin/);
+    assert.equal(spawnSync('git', ['remote', 'add', 'origin', 'https://example.invalid/workbench.git'], { cwd: dir }).status, 0);
+    const identity = sourceIdentity({ root: dir, managedPaths: ['workbench/tools'] });
+    assert.match(identity.commit, /^[0-9a-f]{40}$/);
+    assert.equal(identity.repository, 'https://example.invalid/workbench.git');
+    assert.equal(identity.release, VERSION);
+    fs.writeFileSync(path.join(dir, 'workbench', 'tools', 'proof.mjs'), 'export const proof = false;\n');
+    assert.throws(() => sourceIdentity({ root: dir, managedPaths: ['workbench/tools'] }), /uncommitted/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('the product tools lane is the canonical runtime source and holds exactly the runtime tools', () => {
   const lane = fs.readdirSync(path.join(root, 'workbench', 'tools')).filter((name) => name.endsWith('.mjs')).sort();
   assert.deepEqual(lane, [...RUNTIME_TOOLS].sort());
@@ -48,7 +78,7 @@ test('install writes receipt-backed copies with hashes, source identity, and non
     const receipt = JSON.parse(fs.readFileSync(path.join(dir, 'workbench', 'tools', RECEIPT_NAME), 'utf8'));
     assert.equal(receipt.schemaVersion, 1);
     assert.equal(receipt.source.release, VERSION);
-    assert.match(receipt.source.commit, /^[0-9a-f]{40}$|^unknown$/);
+    assert.match(receipt.source.commit, /^[0-9a-f]{40}$/);
     assert.deepEqual(Object.keys(receipt.files).sort(), [...RUNTIME_TOOLS].sort());
     for (const tool of RUNTIME_TOOLS) {
       const target = path.join(dir, 'workbench', 'tools', tool);
@@ -103,6 +133,64 @@ test('verify reports drift, update requires explicit authorization, backs up, an
     assert.deepEqual(rolled.report.restored, ['markdown-table.mjs']);
     assert.equal(run(installer, 'verify', '--project', dir).report.error.code, 'tools-receipt-drift', 'rollback restores the pre-update drift honestly');
     assert.equal(run(installer, 'rollback', '--project', dir, '--backup', path.join(home, 'nope')).report.error.code, 'invalid-backup');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test('v3.1.1 maintenance preserves project truth and historical provenance while managed tools update and roll back', () => {
+  const dir = project();
+  const home = fixture('workbench-tools-home-');
+  const protectedPaths = [
+    'AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'src/app.mjs',
+    'workbench/specs/S-201-active/SPEC.md',
+    'workbench/specs/S-200-complete/evidence.md',
+    'workbench/wiki/MEMORY.md'
+  ];
+  try {
+    for (const [relative, content] of [
+      ['AGENTS.md', '# Project rules\n'], ['README.md', '# Product\n'], ['src/app.mjs', 'export const app = true;\n'],
+      ['workbench/specs/S-201-active/SPEC.md', '# Active project work\n'],
+      ['workbench/specs/S-200-complete/evidence.md', '# Completed evidence\n'],
+      ['workbench/wiki/MEMORY.md', '# Durable project memory\n']
+    ]) {
+      fs.mkdirSync(path.dirname(path.join(dir, relative)), { recursive: true });
+      fs.writeFileSync(path.join(dir, relative), content);
+    }
+    assert.equal(run(installer, 'install', '--project', dir).report.status, 'installed');
+
+    const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    manifest.workbenchVersion = 'v3.1.1';
+    manifest.provenance.source.release = 'v3.1.1';
+    manifest.provenance.source.commit = '1'.repeat(40);
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    const lane = path.join(dir, 'workbench', 'tools');
+    const receiptPath = path.join(lane, RECEIPT_NAME);
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const oldTool = '// managed v3.1.1 markdown table\n';
+    fs.writeFileSync(path.join(lane, 'markdown-table.mjs'), oldTool);
+    receipt.source = { ...receipt.source, release: 'v3.1.1', commit: '1'.repeat(40) };
+    receipt.files['markdown-table.mjs'] = hash(oldTool);
+    fs.writeFileSync(receiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
+    const before = selectedSnapshot(dir, protectedPaths);
+    const historicalSource = JSON.parse(fs.readFileSync(manifestPath, 'utf8')).provenance.source;
+
+    const updated = run(installer, 'update', '--project', dir, '--home', home, '--explicit-update');
+    assert.equal(updated.status, 0, updated.stdout);
+    assert.deepEqual(updated.report.changed, ['markdown-table.mjs']);
+    assert.equal(selectedSnapshot(dir, protectedPaths), before, 'controls, code, active work, completed evidence, and Wiki content survive byte-for-byte');
+    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).provenance.source, historicalSource, 'installed-component maintenance never rewrites historical room provenance');
+    assert.equal(updated.report.receipt.source.release, VERSION);
+    assert.match(updated.report.receipt.source.commit, /^[0-9a-f]{40}$/);
+    assert.equal(fs.readFileSync(path.join(updated.report.backup, 'markdown-table.mjs'), 'utf8'), oldTool);
+
+    const rolled = run(installer, 'rollback', '--project', dir, '--backup', updated.report.backup);
+    assert.equal(rolled.status, 0, rolled.stdout);
+    assert.equal(fs.readFileSync(path.join(lane, 'markdown-table.mjs'), 'utf8'), oldTool);
+    assert.equal(JSON.parse(fs.readFileSync(receiptPath, 'utf8')).source.release, 'v3.1.1');
+    assert.equal(selectedSnapshot(dir, protectedPaths), before, 'rollback also leaves project-owned truth untouched');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
