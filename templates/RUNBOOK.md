@@ -165,9 +165,10 @@ rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
 withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
-a `deny` or `ask` rule covers it, or a restrictive pattern is uncertain) or
-grants `workbench/tools/` in `allow`; it names each lane, never blocks, and
-never edits the file. Claude Code applies `Edit` rules to every built-in
+a `deny` or `ask` rule covers it, or a restrictive pattern is uncertain), or
+grants `workbench/tools/` in `allow` without a covering `ask` holding the whole
+lane; an intersecting tools deny also remains visible. It names each lane,
+never blocks, and never edits the file. Claude Code applies `Edit` rules to every built-in
 file-editing tool. Resolve the finding by adding the
 `Edit(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
 simplifying an uncertain restriction, or recording the deliberate restriction

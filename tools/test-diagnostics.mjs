@@ -273,8 +273,7 @@ test('permission-scope-drift names each withheld authorship lane without blockin
     // A null lane declaration falls back to the default lanes instead of throwing.
     assert.equal(permissionScopeDrift(dir, null)?.lanes.map((entry) => entry.lane).join(), 'specs');
 
-    // A covering parent glob grants; it counts as granting tools only when no
-    // ask or deny rule takes precedence for that lane.
+    // A covering parent glob grants; the tools lane still needs a covering ask.
     write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'] }));
     assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
     write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'], ask: ['Edit(./workbench/tools/**)'] }));

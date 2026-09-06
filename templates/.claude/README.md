@@ -32,7 +32,8 @@ without touching them.
 `doctor` reports `permission-scope-drift` when this file exists and withholds
 a declared authorship lane (no covering `Edit` allow rule, or a
 `deny` or `ask` rule covering it, since both override `allow` and an asked
-lane prompts on every write) or grants `workbench/tools/` in `allow`; the Genesis
+lane prompts on every write), or grants `workbench/tools/` in `allow` without a
+covering `ask`; an intersecting tools deny also remains visible. The Genesis
 readiness check fails closed on the same finding. The check recognises bare
 `Edit`, the documented `path`, `./path`, and `/path` project-relative forms,
 `//path` absolute paths, and `~/path` home-relative paths. A restrictive path
