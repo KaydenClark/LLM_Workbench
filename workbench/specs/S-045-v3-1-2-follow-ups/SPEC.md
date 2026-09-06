@@ -201,11 +201,21 @@ Pending.
 - TK-004 is the one with a live cost: until it closes, nine citations in S-039
   on `integration` point at unrelated content, one of them behind a checked
   acceptance box. That is a reader-facing defect in a merged, completed spec.
+- **The widened orphan scan will flag legitimate prose under an evidence table.**
+  `check-append-only.py` now reads to the next heading rather than stopping at
+  the first blank line, which is what closed the blind spot that swallowed
+  S-043's gate row. No spec puts prose there today - all 41 were scanned - but a
+  future spec that adds a footnote beneath its table will fail with a message
+  about rewritten rows, which is the wrong explanation. Recorded rather than
+  pre-emptively fixed, because the message is cheap to correct once a real case
+  exists and guessing at the shape now is how the citation class started.
 - Whether S-042's approving review happened is unresolved. Its `Latest event`
   cites one; no evidence row records it, and the header line was written by its
   own merge commit. Four deviations are established - S-039, S-040, S-043,
   S-044. If S-042's review did not happen it is the **fifth of six**, leaving
-  S-041 as the only slice with an evidenced approving review.
+  S-041 as the only slice whose *merge was preceded by* an evidenced approving
+  review. S-043 has one too, but it was written retrospectively, after the merge
+  it should have gated.
 
 ## Supersession
 

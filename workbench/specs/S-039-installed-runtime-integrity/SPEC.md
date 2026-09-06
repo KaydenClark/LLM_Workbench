@@ -355,9 +355,10 @@ hash together. Both are named below rather than claimed closed.
 
 - **Nine bare shipped-tree citations in this spec are stale on `integration`.**
   The repair `eb5a32b` pinned them to its own branch tree, and the merge
-  `92be949` moved them again. The row citing `workbench-layout.mjs:696` for
-  `managedRuntimeDrift` now lands on `validateGenesisRuntime` itself, the
-  function that repair existed to re-anchor, and the acceptance criterion
+  `92be949` moved them again. The Completion Result sentence citing
+  `workbench-layout.mjs:696` for `managedRuntimeDrift` now lands on
+  `validateGenesisRuntime` itself, the function that repair existed to
+  re-anchor, and the acceptance criterion
   beginning "the effect table" is a checked box whose only citation is a bare
   line number. Line numbers are deliberately not used to point at this spec's
   own contents here, since that is the defect being described. Found by the retrospective review of the skipped gate;
