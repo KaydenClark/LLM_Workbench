@@ -325,26 +325,32 @@ function gitValue(cwd, args) {
   return result.status === 0 ? result.stdout.trim() : '';
 }
 
-// The manifest records the exact Workbench source that produced it. An
-// explicit flag always wins; otherwise only a release checkout (the one that
-// carries `templates/`) may resolve its own origin and HEAD. A downstream copy
-// of this tool sits inside the project's repository, whose HEAD is not a
-// Workbench source, so it must refuse rather than guess or write a placeholder.
+// The manifest records the exact clean Workbench checkout that produced it.
+// Explicit flags are assertions against that checkout, never replacements for
+// evidence. A downstream partial copy therefore refuses rather than claiming
+// caller-supplied strings as the identity of bytes it cannot verify.
 function sourceIdentity(options) {
   const templates = templateRoot();
   const release = templates ? path.dirname(templates) : null;
-  const resolved = { repository: options['--source-repository'], release: options['--version'], commit: options['--source-commit'] };
-  const missing = [];
-  for (const [field, flag, gitArgs] of [['commit', '--source-commit', ['rev-parse', 'HEAD']], ['repository', '--source-repository', ['remote', 'get-url', 'origin']]]) {
-    if (resolved[field]) continue;
-    if (release) resolved[field] = gitValue(release, gitArgs);
-    if (!resolved[field]) missing.push(flag);
-  }
-  if (missing.length) {
-    const reason = release
-      ? `the release checkout at ${release} did not resolve it from Git`
-      : 'this copy of workbench-layout.mjs is not inside a Workbench release checkout, so it cannot resolve the Workbench source';
-    return fail('invalid-invocation', `Pass ${missing.join(' and ')}: ${reason}.`, { missing });
+  if (!release) return fail('invalid-source-identity', 'This copy is not inside a verified Workbench release checkout; source flags cannot establish the identity of relocated bytes.');
+  const resolved = {
+    repository: gitValue(release, ['remote', 'get-url', 'origin']),
+    release: options['--version'],
+    commit: gitValue(release, ['rev-parse', '--verify', 'HEAD'])
+  };
+  if (!/^[0-9a-f]{40}$/.test(resolved.commit)) return fail('invalid-source-identity', `The Workbench release checkout at ${release} has no concrete HEAD commit.`);
+  if (!resolved.repository) return fail('invalid-source-identity', `The Workbench release checkout at ${release} has no origin repository URL.`);
+  const sourceManifest = path.join(release, 'workbench', 'manifest.json');
+  let checkoutVersion;
+  try { checkoutVersion = JSON.parse(fs.readFileSync(sourceManifest, 'utf8')).workbenchVersion; }
+  catch { return fail('invalid-source-identity', `${sourceManifest} is missing or unreadable.`); }
+  if (checkoutVersion !== resolved.release) return fail('invalid-source-identity', `Requested source release ${resolved.release} does not match the verified checkout release ${checkoutVersion}.`);
+  const dirty = gitValue(release, ['status', '--porcelain', '--', 'workbench/tools']);
+  if (dirty) return fail('invalid-source-identity', 'The Workbench runtime-tool source has uncommitted changes; commit the exact candidate before initialization.');
+  for (const [field, flag] of [['commit', '--source-commit'], ['repository', '--source-repository']]) {
+    if (!options[flag]) continue;
+    if (field === 'commit' && !/^[0-9a-f]{40}$/.test(options[flag])) return fail('invalid-source-identity', `${flag} must be a full 40-character Git commit.`);
+    if (options[flag] !== resolved[field]) return fail('invalid-source-identity', `${flag} does not match the verified checkout ${field}.`);
   }
   return resolved;
 }
@@ -669,7 +675,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.2 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | validate --project PATH [--genesis] (the source flags default to the release checkout\'s HEAD and origin and are required for a relocated copy)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.2 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current'].includes(result.status)) process.exitCode = 1;
   } catch (error) {
