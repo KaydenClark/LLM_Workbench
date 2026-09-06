@@ -199,6 +199,8 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Restored the append-only capture row that two rounds of citation repair had rewritten | The capture row above was created at `288c821` citing `templates/ADOPTION.md:80-99,265,286,318` and `skills/update-harness/SKILL.md:42-60,164,198`. It was rewritten at `a5e7fe0` (`164,198` to `156,186`) and again at `d1de47f` (`80-99` to `81-99`, `186` to `198`), both violating `AGENTS.md` Documentation Ownership. It is restored byte-for-byte and the corrections are recorded here instead: at `b3633e5` the completion criterion the row describes is `skills/update-harness/SKILL.md:186`, not `:198` (which is `1. What changed.`), and the Phase 0 range begins at `:81` because `:80` is blank. Live Current Verified State already cites `:81-88`, `:81-99` and `:198` against the post-S-036 tree, where the completion criterion moved to `:198` | No control text changed | TK-001 open |
 | 2026-09-06 | TK-001 | Ticket closed | Red first, three cases in one batch before any implementation, run against the unchanged parser: case 1 (unavailable with a valid reason proceeds) failed `Cannot read properties of undefined (reading 'state')`; case 2 (a red baseline still stops) failed `Cannot read properties of undefined (reading 'proceeds')`; case 3 (a reason outside the closed vocabulary is refused) failed `Missing expected exception.`; the same batch inside tools/test-spec-workbench.mjs failed `AssertionError: a spec that records no baseline keeps parsing as it did before, + undefined - null`. Green after implementing parseBaselineRecord in workbench/tools/spec-packet.mjs: node tools/test-spec-workbench.mjs pass, plus all 25 node suites, python3 evals/tasks/task_b_path_safety/test_grade.py, render (no drift), doctor exit 0, python3 tools/check-append-only.py CLEAN, git diff --check clean. node tools/evaluate-workbench.mjs --path templates --include-controls scores templates 106.6/113, unchanged from the pre-change score. Word-for-word agreement proved by extracting the 737-character rule from templates/ADOPTION.md and asserting it appears verbatim in skills/update-harness/SKILL.md (True). | templates/ADOPTION.md Phase 0 step 1, the shared baseline rule after step 3, the Phase 0 output line, the Phase 7 completion box and the fabricate-a-green-run guardrail; skills/update-harness/SKILL.md section 2 body and completion criterion and the section 5 completion criterion, carrying the same rule word for word; templates/SPEC.md notes the optional Baseline field without adding a new bracketed placeholder token. LEXICON.md and AGENTS.md deliberately untouched: the baseline states are named only in the two migration contracts, not across root controls, and the rule does not generalize beyond migration. | The rooms that stopped are not retried by this spec; spec completion waits on the separate-context review of this candidate. |
 | 2026-09-06 | TK-001 | Re-anchored the pre-change `file:line` citations in Current Verified State to the post-TK-001 tree and checked the four acceptance boxes TK-001 satisfies | Read each cited range after the edit: `templates/ADOPTION.md:81-90`, `:100-109`, `:111-113`, `:300-303`; `skills/update-harness/SKILL.md:58-67`, `:69-72`, `:210-213` | No control text changed by this row; the earlier rows keep their original citations | Spec completion waits on the separate-context review of this candidate |
+| 2026-09-06 | TK-001 | Separate-context review APPROVED; three caveats recorded rather than left implied | Reviewer attacked `parseBaselineRecord` with 27 hand-built inputs: every near-miss, casing variant, superstring, multi-reason and whitespace variant of the closed vocabulary is refused, `unavailable` with a valid reason but no evidence is refused, and red cannot be flipped by spelling or whitespace. Back-compat proved by parsing all 40 specs with 0 failures and by `doctor` and `next --json` output byte-identical between `09bfff7` and this candidate. Word-for-word agreement confirmed by `cmp`: the shared rule block is byte-identical in `templates/ADOPTION.md:100-109` and `skills/update-harness/SKILL.md:58-67`. `templates/SPEC.md` bracket inventory identical to base, so the frozen placeholder vocabulary is exact; control fidelity ok; evaluator 106.6/113 unchanged. Recorded here rather than glossed: `proceeds`/`stop` are consumed by no tool, so the red stop is a record and a written contract rather than a gate; `red (owner-expanded)` is forgeable and asks less than `unavailable`; and two of the three reds prove API absence rather than wrong behavior, with only the out-of-vocabulary case changing observable behavior on unchanged surfaces | Three limitations added; no claim strengthened | The `owner-expanded` qualifier needs evidence, and the baseline record needs a consumer, before red is machine-enforced; both belong to a follow-up spec |
+
 
 ## Completion Result
 
@@ -213,6 +215,31 @@ Pending.
   `product-broken-as-found` for a condition a more patient operator would have
   fixed. The record makes that visible to a later reviewer rather than
   preventing it.
+- **The recorded baseline is a record, not yet a gate.** `parseBaselineRecord`
+  computes `proceeds` and `stop`, but `nextWork`, `claimWork` and `doctor` do
+  not read `spec.baseline`. A fixture whose only spec records
+  `**Baseline:** red` is still returned by `next` and still claimed. So "a red
+  baseline still stops" is true of the parsed record and of the written
+  contract, not of any tool. That is consistent with Desired Behavior 5, which
+  says red is unchanged - at `09bfff7` the red stop was prose with no machine
+  enforcement and it still is - but the distinction belongs here rather than
+  being inferred from the evidence log.
+- **`red (owner-expanded)` is forgeable and demands less than `unavailable`.**
+  It flips `proceeds` to true with no evidence, no date, and no owner decision
+  anywhere in the record, and it tolerates `red(owner-expanded)`, a tab, and a
+  trailing hyphen. `unavailable` with a valid reason but no evidence is refused
+  outright. The asymmetry runs the wrong way: the path that proceeds against a
+  *failing* suite asks less than the path that proceeds against an *absent*
+  one. Requiring non-empty evidence on the qualifier, exactly as `unavailable`
+  does, is the natural next hardening and belongs to a follow-up spec.
+- **Two of the three red cases prove API absence, not wrong behavior.** At
+  `09bfff7` a spec recording `unavailable (host-restricted) - ...` already
+  parsed, already passed `doctor`, and was already returned by `next`, because
+  the field was ignored; the same is true of `red`. Only case 3, an
+  out-of-vocabulary reason, changes observable behavior on unchanged public
+  surfaces - `doctor` moves from `[]` to `malformed-spec`, and `next`, `claim`
+  and `render` refuse. The evidence log's literals are accurate; this states
+  what they do and do not establish.
 
 ## Supersession
 
