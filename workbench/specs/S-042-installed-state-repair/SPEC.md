@@ -46,29 +46,36 @@ commit `57fb22f` while `workbenchVersion` is `v3.1.2`.
 ## Current Verified State
 
 Verified in this repository on 2026-09-06. The findings were established at
-`b3633e5`; the `file:line` citations were re-anchored to the post-S-036 tree
-after PR #63 merged, so following one lands on what it names.
+`b3633e5` and re-verified at the base commit `09bfff7`. These are the conditions
+as they stood BEFORE this ticket changed them, so each is anchored to
+`git show 09bfff7:` rather than to a line the ticket then moved; where the file
+still carries the same thing at a different line, the shipped line follows in
+parentheses.
 
-- `tools/workbench-tools.mjs:24-36` `RUNTIME_TOOLS` covers exactly eleven `.mjs`
+- `git show 09bfff7:tools/workbench-tools.mjs` lines 24-36 `RUNTIME_TOOLS` cover exactly eleven `.mjs`
   files. No seeded document is a member.
 - `templates/feedback/REPORT_FORMAT.md` carries no version stamp and no
   generation marker, and no tool reads it. `grep` for
   `Generated from LLM Workbench` returns nothing in either the template or the
   installed copy.
-- `workbench/tools/workbench-layout.mjs:48` `wikiContractFiles` covers three
-  files; `workbench/tools/wiki.mjs:54-65` emits `stale-stamp` for those plus
+- `git show 09bfff7:workbench/tools/workbench-layout.mjs` line 48
+  `wikiContractFiles` (shipped `:50`) covers three files;
+  `workbench/tools/wiki.mjs:54-65` emits `stale-stamp` for those plus
   `MEMORY.md`. The feedback lane and the remaining seeded wiki documents are
   outside that set.
-- `workbench/tools/adr.mjs:217` offers `validate | register | new`;
-  `workbench/tools/wiki.mjs:152` offers `validate` only. Neither can bring an
+- `git show 09bfff7:workbench/tools/adr.mjs` line 217 offers
+  `validate | register | new` (shipped `:281`, now also `normalize`);
+  `git show 09bfff7:workbench/tools/wiki.mjs` line 152 offers `validate` only
+  (shipped `:215`, now also `normalize`). Neither can bring an
   existing document into shape, so a room seeded before the frontmatter fix, or
   whose ADRs were hand-authored, can only be repaired by editing every file.
 - `unrecorded` no longer exists in the layout tool; `init` and `migrate` resolve
   the release checkout from Git or refuse with `invalid-source-identity`
-  (`sourceIdentity`, `workbench/tools/workbench-layout.mjs:337-360`; S-036
-  replaced the former `invalid-invocation`, which now survives only as the CLI
-  catch-all at `:713`), and `tools/test-workbench-layout.mjs:848` guards the
-  placeholder's absence. But no
+  (`sourceIdentity`, `git show 09bfff7:workbench/tools/workbench-layout.mjs`
+  lines 337-360, shipped `:348-375`; S-036 replaced the former
+  `invalid-invocation`, which survives only as the CLI catch-all at base `:713`,
+  shipped `:866`), and `tools/test-workbench-layout.mjs` base `:848`, shipped
+  `:855`, guards the placeholder's absence. But no
   diagnostic reads `provenance.source` on an existing manifest, and no command
   records source identity for a room after the fact.
 - This repository's `workbench/manifest.json` `provenance.source` reads release
@@ -259,6 +266,9 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Named `wiki.mjs validate` as the emitter everywhere the prose was wrong | Four places described the routing incorrectly and are repaired. `RUNBOOK.md` Wiki Validation said only that the wiki lane "is validated by its own runtime tool; doctor carries the same findings"; it now states that the same tool also emits `stale-seed` and `unverified-provenance`, which are not wiki facts and are repaired with `workbench-layout.mjs`. `RUNBOOK.md` Installed State The Harness Wrote said the two classes are "reported by `doctor`"; it now names `node workbench/tools/wiki.mjs validate` as the actual emitter, says `doctor` reports them because it wires that validator, and marks the routing interim. `workbench/wiki/SCHEMA.md` Verification enumerated what the validator checks and omitted both; it now names them, their repair commands, and the RUNBOOK section that owns them. The `wiki.mjs` usage string carries the same sentence, and `templates/wiki/SCHEMA.md` carries the same paragraph. A room operator who sees a provenance line from `wiki validate` can now find out why from any one of them | `RUNBOOK.md`, `workbench/wiki/SCHEMA.md`, `templates/wiki/SCHEMA.md`, and the `wiki.mjs` usage string | none |
 | 2026-09-06 | spec | Recorded the four non-blocking observations and declined all four changes | Each is real, and each is now a named limitation rather than an unowned note. Declined with reasons: (1) `writeSafeFile` publishing mode `0o644` is shared logic with eight call sites across five tools, and both `workbench/tools/workbench-paths.mjs` and `tools/workbench-adoption.mjs` are outside this spec's declared testing seams, so changing it here is not the smallest correct change and needs its own red. (2) Making `normalizeAdrs` and `normalizeWiki` atomic, or reporting their partial progress, changes what a failing run returns and needs its own red at the same seam. (3) Pruning seed-record keys outside `seededLaneDocuments` changes what `stale-seed` reports and needs its own red; the residue is hygiene only, with no traversal, because a forged key is read and echoed, never used as a write path. (4) Refusing or repairing an ADR whose frontmatter fence is never closed changes normalize's contract for a malformed input that today still validates and loses no content. All four are behavior changes to code a separate-context review has already probed adversarially and passed; making any of them inside a record-accuracy repair would invalidate that review for no proportionate gain | All four carried in Remaining Limitations Or Follow-Up Specs | Four named follow-ups, none blocking |
 | 2026-09-06 | spec | Full verification of the repaired candidate | Run on the committed tree at `9f2a48b`, because `sourceIdentity` refuses a dirty checkout and eight `tools/test-wiki.mjs` cases fail with `invalid-source-identity` when it is not clean. 25/25 node suites pass, `python3 evals/tasks/task_b_path_safety/test_grade.py` passes, `node workbench/tools/spec-workbench.mjs doctor` exits 0 with the same finding set as the reviewed candidate - one `unverified-provenance` attention line for this room, 32 `skill-generation-unknown` lines, and S-038's `blocked-slice` - `render` leaves no drift, `python3 tools/check-append-only.py` prints CLEAN, `git diff --check` is clean, and `git grep -Il $'\r' -- '*.md'` is empty. Guardrail on `templates` is 106.6/113 before and after, unchanged even though a template byte did change this time, and `node tools/test-control-fidelity.mjs` passes. No shipped behavior changed: the only non-documentation edit is the `wiki.mjs` call-site comment and its usage string. This row itself lands in a following commit | Documentation owners updated as recorded in the six rows above | Fresh independent review of the new candidate, then merge into `integration` |
+| 2026-09-06 | spec | Separate-context re-review confirmed the repair changed no behavior and blocked on three record defects; corrected here | Reviewer confirmed the only executable delta from `aa68f6e` is the `validateWiki` call-site comment and the usage string at `wiki.mjs:215`, that no assertion reads that string, and that the prior adversarial pass therefore stands. It re-measured TK-001's red independently (10 pass / 2 fail, `1 !== 0` carrying `invalid-invocation`) and judged the in-place correction of the fabricated red legitimate, since `check-append-only.py` scopes append-only to `| 20` rows and all twelve dated rows survive byte-identical. Blocking: (1) `Current Verified State` promised its citations resolve while seven did not - `workbench-layout.mjs:48` landed on `};`, `adr.mjs:217` on a list element, `wiki.mjs:152` on `}`, `sourceIdentity` at `:337-360` on mid-function plumbing, the CLI catch-all at `:713` on an unrelated return, `test-workbench-layout.mjs:848` on a `schemaVersion` assertion, and the RUNBOOK effect table on `stale-stamp` prose. Every one is now anchored to `git show 09bfff7:` with the shipped line alongside. (2) The re-anchoring row at `:253` published effect-table anchors that this same repair then invalidated by adding nine lines above the table; the post-repair anchors are in the row below. (3) `writeSafeFile` was recorded as having "eight call sites across five tools" - the true count is twelve across five here and six across four at `09bfff7`, matching neither; the decline is still right and the number a reader checks it against is now correct | Header, five citation groups, and the Remaining Limitations count corrected in place; `Current Verified State` and Remaining Limitations are not append-only | The RUNBOOK effect table moves again when S-039 merges; sibling re-anchoring stays the coordinator's post-merge job |
+| 2026-09-06 | spec | Post-repair anchors for the sibling specs that cite the RUNBOOK effect table | Superseding the anchors in the row at `:253`, which were true at `aa68f6e` and were invalidated by this candidate's own nine added lines above the table. At `dcafae1` the heading `### Diagnostics And Blocking Effects` is `RUNBOOK.md:646`, the table header `:653`, and the effect rows `:655-659`. Verified by `grep -n` in the shipped tree. Content and row order are unchanged from `09bfff7`; only the position moved | No control text changed by this row | `claude/s039-v3-1-2` also adds prose above this table, so the final integration numbers are neither this row's nor S-039's; whoever merges second re-anchors both |
+
 
 ## Completion Result
 
@@ -293,7 +303,8 @@ Awaiting independent review of the exact candidate and the merge into
   temporary file with mode `0o644` and renames it into place
   (`workbench/tools/workbench-paths.mjs`), so normalizing a record a room had
   set read-only silently resets its mode. These are pre-existing helper
-  semantics with eight call sites across five tools; `normalize` is the first
+  semantics with twelve call sites across five tools in this candidate, six
+  across four at the base commit; `normalize` is the first
   command to apply them to arbitrary author-owned files.
 - `normalizeAdrs` and `normalizeWiki` are not atomic across files. A failure
   part-way through the loop leaves the files already rewritten on disk and
