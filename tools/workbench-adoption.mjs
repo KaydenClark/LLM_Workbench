@@ -60,6 +60,49 @@ function hasRequiredUserSkills(home) {
   return coreSkills.filter((skill) => !destinations.some((root) => lstatOrNull(path.join(root, skill))?.isDirectory()));
 }
 
+// Producing a missing control is the same procedure every time, and eight rooms
+// each derived it alone because no control stated it. The refusal is where the
+// agent is standing when it decides what to do, so the order and the warning
+// travel with it rather than living only in the Adoption prose.
+const RECONCILE_ORDER = [
+  'Branch from a clean commit onto an isolated migration branch; never reconcile a control on a dirty tree.',
+  "Author or fill each named control from the project's own observed truth - its code, tests, and existing steering docs.",
+  'Remove every [BRACKETED] placeholder and confirm each control is an ordinary file, not a symlink.',
+  'Commit the reconciled controls, then re-run this migration.'
+];
+const TEMPLATE_OVERWRITE_WARNING = 'Never copy a template over an existing control: the template overwrites the project-specific privacy, boundary, and verification rules that control already carries. Copy a template only into a control that does not exist yet, and merge by hand everywhere else.';
+const CONTROL_REASONS = {
+  'missing-control': 'must be a filled ordinary root control before adoption',
+  'bracketed-control': 'contains an unfilled template placeholder'
+};
+
+// Every unreconciled control, not the first: an operator with three missing
+// controls otherwise learns of one per migration attempt.
+function unreconciledControls(project) {
+  const findings = [];
+  for (const control of controls) {
+    const controlPath = path.join(project, control);
+    const controlEntry = lstatOrNull(controlPath);
+    if (!controlEntry?.isFile() || controlEntry.isSymbolicLink()) {
+      findings.push({ control, reason: 'missing-control', path: controlPath });
+      continue;
+    }
+    if (/\[BRACKETED(?:_[A-Z]+)*\]/.test(fs.readFileSync(controlPath, 'utf8'))) {
+      findings.push({ control, reason: 'bracketed-control', path: controlPath });
+    }
+  }
+  return findings;
+}
+
+function unreconciledControlsMessage(findings) {
+  const named = findings.map(({ control, reason, path: controlPath }) => `${control} (${reason}: ${controlPath} ${CONTROL_REASONS[reason]})`).join('; ');
+  return [
+    `Adoption requires all ${controls.length} root controls reconciled with project-specific content; ${findings.length} ${findings.length === 1 ? 'is' : 'are'} not: ${named}.`,
+    `Reconcile before migrating, in this order: ${RECONCILE_ORDER.map((step, index) => `${index + 1}. ${step}`).join(' ')}`,
+    TEMPLATE_OVERWRITE_WARNING
+  ].join(' ');
+}
+
 function preflight(project, home) {
   const entry = lstatOrNull(project);
   if (!entry || entry.isSymbolicLink() || !entry.isDirectory()) {
@@ -67,16 +110,8 @@ function preflight(project, home) {
   }
   const workbench = path.join(project, 'workbench');
   if (lstatOrNull(workbench)) return fail('support-root-exists', `${workbench} already exists; inspect and reconcile it before adoption.`);
-  for (const control of controls) {
-    const controlPath = path.join(project, control);
-    const controlEntry = lstatOrNull(controlPath);
-    if (!controlEntry?.isFile() || controlEntry.isSymbolicLink()) {
-      return fail('missing-control', `${controlPath} must be a filled ordinary root control before adoption.`, { control });
-    }
-    if (/\[BRACKETED(?:_[A-Z]+)*\]/.test(fs.readFileSync(controlPath, 'utf8'))) {
-      return fail('bracketed-control', `${controlPath} contains an unfilled template placeholder.`, { control });
-    }
-  }
+  const unreconciled = unreconciledControls(project);
+  if (unreconciled.length) return fail('unreconciled-controls', unreconciledControlsMessage(unreconciled), { controls: unreconciled, reconcileOrder: RECONCILE_ORDER, templateOverwriteWarning: TEMPLATE_OVERWRITE_WARNING });
   const missingSkills = hasRequiredUserSkills(home);
   if (missingSkills.length) {
     return fail('missing-user-skills', 'Required core skills must be present in a user-scoped Codex or Claude discovery root before project-local skills can retire.', { missingSkills });

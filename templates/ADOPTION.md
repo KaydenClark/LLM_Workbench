@@ -17,6 +17,25 @@ it with `tools/workbench-upgrade.mjs upgrade --layout-only`, run from the
 Workbench release checkout, which records lifecycle `upgrade` instead of a
 second `adoption`.
 
+Ask the room which route its own contents support before choosing one. This
+reads and writes nothing:
+
+```bash
+node tools/workbench-classify.mjs classify --project [ABSOLUTE_PROJECT_PATH]
+```
+
+It reports `genesis`, `adoption`, `upgrade`, or `unclassifiable`, each with the
+evidence that produced it. `unclassifiable` is an answer, not an error: it means
+the room's contents support two readings at once - most often a harness-shaped
+room carrying no manifest and no version stamp, which an unstamped Workbench
+installation and an independent dialect both produce. A room that will not let a
+control, a lane, or its own top-level listing be read produces it too; the
+command names what it could not read, and read access is the fix. Establish
+which from outside the room (its history, its remote, or the owner) rather than
+guessing; treating a first adoption as an upgrade loses the live truth an
+adoption would reconcile. The verdict is evidence for a decision, never the
+decision: it selects no route, claims no work, and authorizes no migration.
+
 ## What Adoption Is For
 
 The owner should be able to point an agent at an existing repo - with its own
@@ -95,7 +114,8 @@ next begins.
      design doc; the harness defers visual style to exactly these).
    - **Retire** - superseded or dead docs to archive after migration.
 3. Identify the dialect (which harness version/layout it uses) so you know what is
-   moving where.
+   moving where. Start from `workbench-classify.mjs classify` above and record
+   its verdict, evidence, and any `unclassifiable` reasons in the owning spec.
 
 If the baseline cannot be taken at all - the suite cannot run for a reason this
 change did not cause and cannot repair - record it in the owning spec's
@@ -232,8 +252,26 @@ room brain that routes to them.
 Before migration, reconcile the seven root controls (`AGENTS.md`,
 `BLUEPRINT.md`, `LEXICON.md`, `RUNBOOK.md`, `TASKBOARD.md`, `CLAUDE.md`, and
 `README.md`) with project-specific content. They must be ordinary files with no
-`[BRACKETED]` placeholder. Install or verify the closed core bundle in the
-intended user home, then run the bounded migration seam:
+`[BRACKETED]` placeholder.
+
+Produce a missing or unfilled one in this order:
+
+1. Branch from a clean commit onto an isolated migration branch; never reconcile
+   a control on a dirty tree.
+2. Author or fill each named control from the project's own observed truth - its
+   code, tests, and existing steering docs.
+3. Remove every `[BRACKETED]` placeholder and confirm each control is an ordinary
+   file, not a symlink.
+4. Commit the reconciled controls, then run the migration.
+
+Never copy a template over an existing control: the template overwrites the
+project-specific privacy, boundary, and verification rules that control already
+carries. Copy a template only into a control that does not exist yet, and merge
+by hand everywhere else. The migration's own refusal repeats this order and
+warning, and names every unreconciled control at once rather than the first.
+
+Install or verify the closed core bundle in the intended user home, then run the
+bounded migration seam:
 
 ```bash
 node tools/core-skill-installer.mjs install --home [USER_HOME]
@@ -273,11 +311,13 @@ record the omission reason in the owning spec.
 
 An existing `workbench/` root, a legacy path collision, unfilled controls, or
 missing user-scoped core skill blocks before migration; inspect and reconcile
-the conflict rather than overwriting it. Do not keep the legacy support paths
-as active mirrors. Archive any retired steering document that is outside the
-known durable lanes, then re-run the full verification suite and confirm it
-still matches the Phase 0 baseline. If `ADOPTION.md` was copied in, delete or
-archive it.
+the conflict rather than overwriting it. An `unreconciled-controls` refusal
+lists every failing control at once, each with its own reason
+(`missing-control` or `bracketed-control`), so one run tells you the whole
+set. Do not keep the legacy support paths as active mirrors. Archive any
+retired steering document that is outside the known durable lanes, then re-run
+the full verification suite and confirm it still matches the Phase 0 baseline.
+If `ADOPTION.md` was copied in, delete or archive it.
 
 Output: a repo with one v3 manifest authority, root controls that retain the
 project's reconciled truth, and legacy material preserved as history rather
