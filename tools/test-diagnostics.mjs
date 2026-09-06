@@ -50,7 +50,7 @@ function git(cwd, ...args) {
   return result.stdout.trim();
 }
 
-function project(version = 'v3.0.0') {
+function project(version = VERSION) {
   const dir = fixture();
   const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout);
