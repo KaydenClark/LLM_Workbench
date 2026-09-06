@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
 import { coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
@@ -1153,10 +1153,12 @@ test('classify reports a lifecycle verdict with its evidence and writes nothing'
     fs.writeFileSync(path.join(working, 'src', 'app.js'), 'export const app = true;\n');
     fs.writeFileSync(path.join(working, 'README.md'), '# Working project\n');
     fs.writeFileSync(path.join(working, 'ROADMAP.md'), '# Roadmap\n');
+    const workingBefore = roomSnapshot(working);
     const workingResult = classify(working);
     assert.equal(workingResult.status, 0, `${workingResult.stdout}${workingResult.stderr}`);
     assert.equal(workingResult.report.verdict, 'adoption');
     assert.deepEqual(workingResult.report.evidence.legacyControlShapes.controlsPresent, ['README.md']);
+    assert.deepEqual(roomSnapshot(working), workingBefore, 'classify must write nothing into a working room');
   } finally {
     for (const project of [bare, legacy, current, ambiguous, working]) fs.rmSync(project, { recursive: true, force: true });
   }
@@ -1177,5 +1179,144 @@ test('classify refuses to guess a support root that carries no readable manifest
     assert.deepEqual(roomSnapshot(project), before, 'classify must write nothing while refusing');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-044 TK-002 repair: the recorded rule mislabelled three real rooms. Each
+// case below is the room the separate-context review named.
+
+test('classify corroborates the root tools/ shape before calling a room harness-shaped', () => {
+  const vanilla = fixture();
+  const unstamped = fixture();
+  try {
+    // A vanilla Node application that happens to carry one generic filename
+    // from the managed runtime set. Six of the seven controls are absent.
+    fs.writeFileSync(path.join(vanilla, 'README.md'), '# Vanilla app\n');
+    fs.writeFileSync(path.join(vanilla, 'package.json'), '{ "name": "vanilla" }\n');
+    fs.mkdirSync(path.join(vanilla, 'src'));
+    fs.writeFileSync(path.join(vanilla, 'src', 'index.js'), 'export const app = true;\n');
+    fs.mkdirSync(path.join(vanilla, 'tools'));
+    fs.writeFileSync(path.join(vanilla, 'tools', 'privacy.mjs'), 'export const privacy = true;\n');
+    const vanillaBefore = roomSnapshot(vanilla);
+    const vanillaResult = classify(vanilla);
+    assert.equal(vanillaResult.status, 0, `${vanillaResult.stdout}${vanillaResult.stderr}`);
+    assert.equal(vanillaResult.report.verdict, 'adoption',
+      'one generic managed filename cannot make a room whose own evidence shows six absent controls harness-shaped');
+    assert.deepEqual(roomSnapshot(vanilla), vanillaBefore, 'classify must write nothing into a vanilla room');
+
+    // The corroborated shape still catches the room it exists for: an unstamped
+    // Workbench room carrying the whole control set stays unclassifiable.
+    legacyRoom(unstamped);
+    fs.mkdirSync(path.join(unstamped, 'tools'));
+    fs.writeFileSync(path.join(unstamped, 'tools', 'privacy.mjs'), 'export const privacy = true;\n');
+    const unstampedResult = classify(unstamped);
+    assert.equal(unstampedResult.status, 0, `${unstampedResult.stdout}${unstampedResult.stderr}`);
+    assert.equal(unstampedResult.report.verdict, 'unclassifiable',
+      'a genuine unstamped Workbench room must still refuse to be guessed');
+  } finally {
+    for (const project of [vanilla, unstamped]) fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('classify refuses a workbench/manifest.json that is not a Workbench manifest', () => {
+  const bodies = [
+    ['an unrelated JSON object', '{ "name": "my-workbench-app", "version": "1.0.0" }\n'],
+    ['a JSON array', '[]\n'],
+    ['a JSON null', 'null\n']
+  ];
+  for (const [label, body] of bodies) {
+    const project = fixture();
+    try {
+      fs.mkdirSync(path.join(project, 'workbench'));
+      fs.writeFileSync(path.join(project, 'workbench', 'manifest.json'), body);
+      const before = roomSnapshot(project);
+      const result = classify(project);
+      assert.equal(result.status, 0, `${label}: ${result.stdout}${result.stderr}`);
+      assert.equal(result.report.status, 'classified', `${label} is a room condition, not an unreadable invocation`);
+      assert.equal(result.report.verdict, 'unclassifiable', `${label} must not read as an installed Workbench room`);
+      assert.equal(result.report.evidence.manifest.readable, false, `${label} is not a readable manifest`);
+      assert.deepEqual(roomSnapshot(project), before, `${label}: classify must write nothing while refusing`);
+    } finally {
+      fs.rmSync(project, { recursive: true, force: true });
+    }
+  }
+});
+
+test('classify never reads a workbench/ symlink out of the room', () => {
+  const installed = fixture();
+  const borrower = fixture();
+  try {
+    assert.equal(run('init', '--project', installed, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    fs.writeFileSync(path.join(borrower, 'README.md'), '# Borrowed room\n');
+    fs.symlinkSync(path.join(installed, 'workbench'), path.join(borrower, 'workbench'), 'dir');
+    const before = roomSnapshot(borrower);
+    const result = classify(borrower);
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+    assert.equal(result.report.verdict, 'unclassifiable',
+      "another room's manifest, reached through a symlink, cannot make this room an installed room");
+    assert.equal(result.report.evidence.supportRoot.present, true);
+    assert.equal(result.report.evidence.supportRoot.ordinaryDirectory, false);
+    assert.equal(result.report.evidence.manifest.readable, false, 'nothing may be read through a support-root symlink');
+    assert.deepEqual(roomSnapshot(borrower), before, 'classify must write nothing while refusing');
+  } finally {
+    for (const project of [installed, borrower]) fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('classify treats an unreadable root control as a room condition, not a crash', () => {
+  if (typeof process.getuid === 'function' && process.getuid() === 0) return;
+  const stamped = fixture();
+  const working = fixture();
+  try {
+    legacyRoom(stamped, { stamp: 'v3.0.0' });
+    fs.chmodSync(path.join(stamped, 'LEXICON.md'), 0o000);
+    const stampedResult = classify(stamped);
+    assert.equal(stampedResult.status, 0, `${stampedResult.stdout}${stampedResult.stderr}`);
+    assert.equal(stampedResult.report.status, 'classified', 'an unreadable control is a room condition, not an unreadable invocation');
+    assert.equal(stampedResult.report.verdict, 'upgrade', 'the six readable controls still carry the stamp');
+    assert.deepEqual(stampedResult.report.evidence.versionStamp.unreadable, ['LEXICON.md'],
+      'the control that could not be read must be reported as evidence');
+
+    fs.writeFileSync(path.join(working, 'README.md'), '# Working project\n');
+    fs.mkdirSync(path.join(working, 'src'));
+    fs.writeFileSync(path.join(working, 'src', 'app.js'), 'export const app = true;\n');
+    fs.chmodSync(path.join(working, 'README.md'), 0o000);
+    const workingResult = classify(working);
+    assert.equal(workingResult.status, 0, `${workingResult.stdout}${workingResult.stderr}`);
+    assert.equal(workingResult.report.verdict, 'unclassifiable',
+      'a control that cannot be read leaves the stamp evidence incomplete, so the room cannot be classified');
+  } finally {
+    for (const [project, control] of [[stamped, 'LEXICON.md'], [working, 'README.md']]) {
+      try { fs.chmodSync(path.join(project, control), 0o644); } catch { /* already gone */ }
+      fs.rmSync(project, { recursive: true, force: true });
+    }
+  }
+});
+
+test('importing the classifier does not run its command line', () => {
+  const probe = spawnSync(process.execPath, ['--input-type=module', '-e',
+    `import(${JSON.stringify(pathToFileURL(classifier).href)}).then((module) => process.stdout.write(typeof module.classify));`
+  ], { cwd: root, encoding: 'utf8' });
+  assert.equal(probe.status, 0, `${probe.stdout}${probe.stderr}`);
+  assert.equal(probe.stdout, 'function', 'importing the tool must export classify without printing a usage refusal');
+});
+
+test('classify reports the unfilled state of a straight template copy as evidence', () => {
+  const copied = fixture();
+  try {
+    for (const control of controls) {
+      fs.writeFileSync(path.join(copied, control), `# ${control}\n\n> Part of LLM Workbench v[HARNESS_VERSION].\n\n[BRACKETED_PROJECT]\n`);
+    }
+    const result = classify(copied);
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+    assert.equal(result.report.verdict, 'unclassifiable');
+    assert.deepEqual(result.report.evidence.legacyControlShapes.controlsBracketed, controls,
+      'an unfilled control is evidence about the room, and the adoption preflight refuses on the same shape');
+    assert.equal(result.report.evidence.versionStamp.unresolved.length, controls.length,
+      'a banner whose version never resolved is not a Workbench version stamp, and the difference must be visible');
+    assert.ok(result.report.reasons.some((reason) => /\[BRACKETED\] placeholder/.test(reason)),
+      'the reasons must offer the unfilled-template-copy reading the evidence supports');
+  } finally {
+    fs.rmSync(copied, { recursive: true, force: true });
   }
 });

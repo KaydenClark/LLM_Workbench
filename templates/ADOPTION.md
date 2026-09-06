@@ -297,11 +297,11 @@ An existing `workbench/` root, a legacy path collision, unfilled controls, or
 missing user-scoped core skill blocks before migration; inspect and reconcile
 the conflict rather than overwriting it. An `unreconciled-controls` refusal
 lists every failing control at once, each with its own reason
-(`missing-control` or `bracketed-control`), so one run tells you the whole set. Do not keep the legacy support paths
-as active mirrors. Archive any retired steering document that is outside the
-known durable lanes, then re-run the full verification suite and confirm it
-still matches the Phase 0 baseline. If `ADOPTION.md` was copied in, delete or
-archive it.
+(`missing-control` or `bracketed-control`), so one run tells you the whole
+set. Do not keep the legacy support paths as active mirrors. Archive any
+retired steering document that is outside the known durable lanes, then re-run
+the full verification suite and confirm it still matches the Phase 0 baseline.
+If `ADOPTION.md` was copied in, delete or archive it.
 
 Output: a repo with one v3 manifest authority, root controls that retain the
 project's reconciled truth, and legacy material preserved as history rather

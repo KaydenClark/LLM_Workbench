@@ -13,6 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { controls, versionStamp } from '../workbench/tools/workbench-layout.mjs';
+import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 import { RECEIPT_NAME, RUNTIME_TOOLS } from './workbench-tools.mjs';
 
 // The v2 root paths Adoption knows how to move, plus the two root feedback
@@ -23,6 +24,11 @@ const LEGACY_PATHS = [
   'WORKBENCH_FEEDBACK.md', 'HARNESS_FEEDBACK.md', 'skills'
 ];
 const VERDICTS = ['genesis', 'adoption', 'upgrade', 'unclassifiable'];
+// An unfilled control and a banner whose version never resolved are facts about
+// a copy of the templates rather than about an installed room, so both are
+// reported. `workbench-adoption.mjs` refuses on the same placeholder shape.
+const BRACKETED_PLACEHOLDER = /\[BRACKETED(?:_[A-Z]+)*\]/;
+const UNRESOLVED_STAMP = /(?:Generated from|Part of) LLM Workbench (?!v\d+\.\d+\.\d+)(\S+)/;
 
 function lstatOrNull(target) {
   try {
@@ -49,8 +55,19 @@ function parseOptions(args) {
   return options;
 }
 
-function manifestEvidence(project) {
+function manifestEvidence(project, supportRoot) {
   const relative = path.join('workbench', 'manifest.json');
+  // Reading through a support root that is not an ordinary directory would
+  // report whatever room the link points at as this room's own authority, so
+  // nothing under it is opened.
+  if (supportRoot.present && !supportRoot.ordinaryDirectory) {
+    return {
+      path: relative,
+      present: null,
+      readable: false,
+      reason: 'workbench/ is not an ordinary directory, so nothing under it was read'
+    };
+  }
   const manifestPath = path.join(project, relative);
   const entry = lstatOrNull(manifestPath);
   if (!entry) return { path: relative, present: false, readable: false, reason: 'no workbench/manifest.json' };
@@ -63,6 +80,17 @@ function manifestEvidence(project) {
   } catch (error) {
     return { path: relative, present: true, readable: false, reason: `workbench/manifest.json does not parse: ${error.message}` };
   }
+  // Parsing is not reading. An unrelated JSON object, an array, or a bare
+  // `null` is valid JSON and no room's authority; Rule 1 routes it to
+  // `unclassifiable` rather than reporting an installed Workbench room.
+  if (manifest === null || typeof manifest !== 'object' || Array.isArray(manifest) || manifest.schemaVersion === undefined || manifest.schemaVersion === null) {
+    return {
+      path: relative,
+      present: true,
+      readable: false,
+      reason: 'workbench/manifest.json parses but is not a Workbench manifest object carrying schemaVersion'
+    };
+  }
   return {
     path: relative,
     present: true,
@@ -73,19 +101,43 @@ function manifestEvidence(project) {
   };
 }
 
-function versionStampEvidence(project) {
-  const stamped = [];
-  const versions = [];
+// Every present root control is read once, and the same bytes answer three
+// questions: whether a release stamped the room, whether a stamp is present but
+// unresolved, and whether the control is still an unfilled template copy. A
+// control the room will not let us read is a fact about the room, never a
+// failed invocation.
+function controlEvidence(project) {
+  const read = { present: [], missing: [], unreadable: [], bracketed: [], stamped: [], versions: [], unresolved: [] };
   for (const control of controls) {
     const controlPath = path.join(project, control);
     const entry = lstatOrNull(controlPath);
-    if (!entry?.isFile() || entry.isSymbolicLink()) continue;
-    const version = versionStamp(fs.readFileSync(controlPath, 'utf8'));
-    if (!version) continue;
-    stamped.push(control);
-    if (!versions.includes(version)) versions.push(version);
+    if (!entry?.isFile() || entry.isSymbolicLink()) {
+      read.missing.push(control);
+      continue;
+    }
+    read.present.push(control);
+    let content;
+    try {
+      content = fs.readFileSync(controlPath, 'utf8');
+    } catch {
+      read.unreadable.push(control);
+      continue;
+    }
+    if (BRACKETED_PLACEHOLDER.test(content)) read.bracketed.push(control);
+    const version = versionStamp(content);
+    if (version) {
+      read.stamped.push(control);
+      if (!read.versions.includes(version)) read.versions.push(version);
+      continue;
+    }
+    const unresolved = content.match(UNRESOLVED_STAMP)?.[1]?.replace(/\.$/, '');
+    if (unresolved) read.unresolved.push(`${control} (${unresolved})`);
   }
-  return { stamped, versions };
+  return read;
+}
+
+function versionStampEvidence(read) {
+  return { stamped: read.stamped, versions: read.versions, unresolved: read.unresolved, unreadable: read.unreadable };
 }
 
 function supportRootEvidence(project) {
@@ -111,14 +163,11 @@ function lifecycleToolsEvidence(project) {
   };
 }
 
-function legacyControlShapesEvidence(project) {
-  const presentControl = (control) => {
-    const entry = lstatOrNull(path.join(project, control));
-    return Boolean(entry) && entry.isFile() && !entry.isSymbolicLink();
-  };
+function legacyControlShapesEvidence(project, read) {
   return {
-    controlsPresent: controls.filter(presentControl),
-    controlsMissing: controls.filter((control) => !presentControl(control)),
+    controlsPresent: read.present,
+    controlsMissing: read.missing,
+    controlsBracketed: read.bracketed,
     legacyPaths: LEGACY_PATHS.filter((relative) => Boolean(lstatOrNull(path.join(project, relative))))
   };
 }
@@ -129,12 +178,14 @@ function roomContentsEvidence(project) {
 }
 
 function gather(project) {
+  const supportRoot = supportRootEvidence(project);
+  const read = controlEvidence(project);
   return {
-    manifest: manifestEvidence(project),
-    versionStamp: versionStampEvidence(project),
-    supportRoot: supportRootEvidence(project),
+    manifest: manifestEvidence(project, supportRoot),
+    versionStamp: versionStampEvidence(read),
+    supportRoot,
     lifecycleTools: lifecycleToolsEvidence(project),
-    legacyControlShapes: legacyControlShapesEvidence(project),
+    legacyControlShapes: legacyControlShapesEvidence(project, read),
     roomContents: roomContentsEvidence(project)
   };
 }
@@ -143,11 +194,14 @@ function gather(project) {
 // that produced it; nothing here decides a route or authorizes a migration.
 function decide(evidence) {
   const { manifest, versionStamp: stamp, supportRoot, lifecycleTools, legacyControlShapes, roomContents } = evidence;
-  if (supportRoot.present && !manifest.readable) {
+  if (supportRoot.present && (!supportRoot.ordinaryDirectory || !manifest.readable)) {
     return {
       verdict: 'unclassifiable',
       reasons: [
         `workbench/ exists but its own authority cannot be read (${manifest.reason}), so the room is neither a readable installation nor a clean adoption target.`,
+        stamp.stamped.length
+          ? `${stamp.stamped.join(', ')} carry a Workbench version stamp (${stamp.versions.join(', ')}), so a release did write here, but nothing readable says which release the support root belongs to.`
+          : 'No root control carries a Workbench version stamp either, so nothing outside workbench/ corroborates an installation.',
         'Adoption already refuses this room as support-root-exists; inspect and reconcile workbench/ by hand, then re-run this classification.'
       ]
     };
@@ -161,19 +215,42 @@ function decide(evidence) {
       ]
     };
   }
-  const harnessShaped = legacyControlShapes.controlsMissing.length === 0 || lifecycleTools.rootManagedNames.length > 0;
-  if (!stamp.stamped.length && harnessShaped) {
-    const shape = legacyControlShapes.controlsMissing.length === 0
-      ? `all ${controls.length} root controls`
-      : `root tools/ files from the managed runtime set (${lifecycleTools.rootManagedNames.join(', ')})`;
+  // A control that will not open leaves the stamp evidence incomplete: the room
+  // cannot be told from an unstamped one on partial reads.
+  if (!stamp.stamped.length && stamp.unreadable.length) {
     return {
       verdict: 'unclassifiable',
       reasons: [
-        `The room carries ${shape}, the shape a Workbench installation leaves behind, but no manifest and no version stamp records that any release installed here.`,
-        'An unstamped Workbench room (upgrade) and an independent dialect reusing the same names (adoption) produce exactly this evidence, and the room does not say which.',
-        'Establish which from outside the room - its history, its remote, or the owner - rather than guessing; treating an unstamped first adoption as an upgrade loses the live truth an adoption would reconcile.'
+        `${stamp.unreadable.join(', ')} could not be read, so whether a release stamped this room is undetermined and no readable control settles it.`,
+        'Restore read access to the named control and re-run this classification rather than classifying a room on partial evidence.'
       ]
     };
+  }
+  // The seven controls are the Workbench's exact closed set, so the whole set
+  // corroborates itself. A managed runtime-tool filename does not: those names
+  // are ordinary (`privacy.mjs`, `sessions.mjs`), and one of them under a root
+  // `tools/` says nothing on its own. That limb counts only when the room also
+  // carries more of the control set than it is missing.
+  const controlMajority = legacyControlShapes.controlsPresent.length > legacyControlShapes.controlsMissing.length;
+  const harnessShaped = legacyControlShapes.controlsMissing.length === 0
+    || (lifecycleTools.rootManagedNames.length > 0 && controlMajority);
+  if (!stamp.stamped.length && harnessShaped) {
+    const shape = legacyControlShapes.controlsMissing.length === 0
+      ? `all ${controls.length} root controls`
+      : `${legacyControlShapes.controlsPresent.length} of ${controls.length} root controls and root tools/ files from the managed runtime set (${lifecycleTools.rootManagedNames.join(', ')})`;
+    const reasons = [
+      `The room carries ${shape}, the shape a Workbench installation leaves behind, but no manifest and no version stamp records that any release installed here.`,
+      'An unstamped Workbench room (upgrade) and an independent dialect reusing the same names (adoption) produce exactly this evidence, and the room does not say which.',
+      'Establish which from outside the room - its history, its remote, or the owner - rather than guessing; treating an unstamped first adoption as an upgrade loses the live truth an adoption would reconcile.'
+    ];
+    const unfilled = [
+      legacyControlShapes.controlsBracketed.length ? `${legacyControlShapes.controlsBracketed.join(', ')} still ${legacyControlShapes.controlsBracketed.length === 1 ? 'carries' : 'carry'} an unfilled [BRACKETED] placeholder` : null,
+      stamp.unresolved.length ? `an unresolved version banner in ${stamp.unresolved.join(', ')}` : null
+    ].filter(Boolean);
+    if (unfilled.length) {
+      reasons.push(`A third reading is open: ${unfilled.join(', and ')}, which is what an unfilled copy of the templates looks like rather than a room any release installed.`);
+    }
+    return { verdict: 'unclassifiable', reasons };
   }
   if (stamp.stamped.length) {
     return {
@@ -217,15 +294,17 @@ export function classify(projectPath) {
   return { status: 'classified', project, verdict, reasons, evidence };
 }
 
-try {
-  const [command, ...args] = process.argv.slice(2);
-  if (command !== 'classify') throw new Error(`Usage: workbench-classify.mjs classify --project PROJECT (read-only; reports ${VERDICTS.join(' | ')} with its evidence and writes nothing)`);
-  const result = classify(parseOptions(args)['--project']);
-  process.stdout.write(`${JSON.stringify(result)}\n`);
-  // Every verdict is an answer, `unclassifiable` included: only an unreadable
-  // invocation or a project that is not a directory is a failure.
-  if (result.status !== 'classified') process.exitCode = 1;
-} catch (error) {
-  process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
-  process.exitCode = 1;
+if (isMainModule(import.meta.url)) {
+  try {
+    const [command, ...args] = process.argv.slice(2);
+    if (command !== 'classify') throw new Error(`Usage: workbench-classify.mjs classify --project PROJECT (read-only; reports ${VERDICTS.join(' | ')} with its evidence and writes nothing)`);
+    const result = classify(parseOptions(args)['--project']);
+    process.stdout.write(`${JSON.stringify(result)}\n`);
+    // Every verdict is an answer, `unclassifiable` included: only an unreadable
+    // invocation or a project that is not a directory is a failure.
+    if (result.status !== 'classified') process.exitCode = 1;
+  } catch (error) {
+    process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
+    process.exitCode = 1;
+  }
 }
