@@ -98,6 +98,11 @@ function validateDestinationRoot(destination, home) {
   return null;
 }
 
+// A correct refusal that withholds its exit transfers its whole cost onto the
+// agent that meets it, so both shared-skill gates name the route that clears
+// them and why that route is not blocked by the same condition.
+const layoutOnlyRoute = 'The support-root-only route --layout-only clears this gate: it migrates the support root and never installs, compares, marks, backs up, or replaces a skill.';
+
 function preflight(project, home, explicit, layoutOnly = false) {
   if (!explicit && !layoutOnly) return fail('explicit-update-required', 'Skill replacement requires --explicit-update; the support-root-only route requires --layout-only.');
   if (!lstatOrNull(project)?.isDirectory() || lstatOrNull(project)?.isSymbolicLink()) return fail('invalid-project', `${project} must be an existing ordinary project directory.`);
@@ -124,8 +129,8 @@ function preflight(project, home, explicit, layoutOnly = false) {
     for (const skill of coreSkills) {
       const target = path.join(destination.root, skill);
       const entry = lstatOrNull(target);
-      if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('skill-path-collision', `${target} is not an ordinary directory.`);
-      if (entry && !managed(target)) return fail('unmanaged-skill', `${target} is not marked as a Workbench-managed skill and will not be replaced.`);
+      if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('skill-path-collision', `${target} is not an ordinary directory. ${layoutOnlyRoute}`);
+      if (entry && !managed(target)) return fail('unmanaged-skill', `${target} is not marked as a Workbench-managed skill and will not be replaced. ${layoutOnlyRoute}`);
     }
   }
   return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean), destinations };

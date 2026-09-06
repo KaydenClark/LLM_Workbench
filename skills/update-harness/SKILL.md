@@ -21,6 +21,25 @@ version before reading its templates or lifecycle tooling. This public product
 is self-contained and does not require a private machine path or external skill
 catalog.
 
+## Route selection
+
+Choose the route before running anything. The migration has two exclusive
+modes, and only one of them touches a user-scoped skill:
+
+- `--layout-only` migrates the support root and reads skill presence only. It
+  never installs, compares, marks, backs up, or replaces a skill. This is the
+  default route for an already-adopted room and for any host whose discovery
+  root the tool must not touch.
+- `--explicit-update` additionally replaces Workbench-managed skills, and is
+  used only when replacing them is the point of the run.
+
+A same-named user-scoped skill that is shared, linked, or unmanaged is a reason
+to choose `--layout-only`, not a workstation to reconcile first. The
+`skill-path-collision` and `unmanaged-skill` refusals belong to
+`--explicit-update` alone; a `--layout-only` run returns before either is
+reached. Do not propose inventorying, backing up, or replacing an existing user
+skill in order to retry a route you did not need.
+
 ## 1. Establish authority and source truth
 
 1. Read the applicable root and project-local `AGENTS.md` files completely.
