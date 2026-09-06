@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -237,15 +238,37 @@ test('a drifted or unreadable managed runtime is a blocking tools finding in the
     assert.equal(installed.status, 0, `${installed.stdout}${installed.stderr}`);
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'an installed runtime that matches its receipt reports nothing');
 
+    const receiptPath = path.join(dir, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+
     fs.appendFileSync(path.join(dir, 'workbench', 'tools', 'markdown-table.mjs'), '// locally edited\n');
     const drifted = doctor(dir, { home: quietHome });
     assert.deepEqual(drifted.map((item) => [item.code, item.severity, item.scope, item.blocks]), [['tools-receipt-drift', 'error', 'tools', 'all']]);
     assert.equal(cliDoctor(dir).status, 1, 'an all-effect runtime finding must fail doctor');
+    // `all` is a refusal, not only a doctor exit code: a room whose runtime
+    // disagrees with its receipt is executing bytes nobody verified, so it
+    // must not hand out or claim work either.
+    assert.throws(() => nextWork(dir), /tools-receipt-drift/, 'next must refuse to read a drifted layout');
+    assert.throws(() => claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }), /tools-receipt-drift/, 'claim must refuse a drifted layout');
 
     // An unreadable receipt must fail visibly rather than silently switching
     // the integrity check off.
-    fs.writeFileSync(path.join(dir, 'workbench', 'tools', '.workbench-tools.json'), '{ not json\n');
+    fs.writeFileSync(receiptPath, '{ not json\n');
     assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']]);
+
+    // Nor may a receipt that parses but records no file hashes: an empty map
+    // would switch the check off for every managed file at once, which is the
+    // one outcome the drifted case above must never be able to reach.
+    fs.writeFileSync(receiptPath, JSON.stringify({ ...receipt, files: {} }));
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'an empty files map is a receipt that records nothing, not a clean runtime');
+
+    // A receipt key names a file inside the managed lane. A key that climbs
+    // out of it must never satisfy the lane check with a root control's own
+    // true hash.
+    const escaping = `..${path.sep}..${path.sep}AGENTS.md`;
+    const trueHash = crypto.createHash('sha256').update(fs.readFileSync(path.join(dir, 'AGENTS.md'))).digest('hex');
+    fs.writeFileSync(receiptPath, JSON.stringify({ ...receipt, files: { [escaping]: trueHash } }));
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'a receipt key outside the managed lane must be refused, not resolved');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

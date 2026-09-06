@@ -6,7 +6,7 @@ import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionSc
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
-import { blocksSelection, finding } from './diagnostics.mjs';
+import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
@@ -19,7 +19,26 @@ const HOT_START = '<!-- hot-specs:start -->';
 const HOT_END = '<!-- hot-specs:end -->';
 
 export function nextWork(rootDir) {
+  refuseBlockedRuntime(rootDir);
   return selectCandidate(loadSpecs(rootDir));
+}
+
+// An `all` effect is a refusal, not only a doctor exit code: the effect table
+// says `next` and `claim` refuse to read the layout. Every other `all` finding
+// is raised by `validateManifest`, which `loadSpecs` already runs, so this is
+// the one `all` condition selection would otherwise walk past - and walking
+// past it means dispatching a ticket to an agent whose runtime nobody
+// verified. `doctor` still reports the finding instead of throwing, because
+// reporting it is what `doctor` is for.
+function refuseBlockedRuntime(rootDir) {
+  const root = path.resolve(rootDir);
+  const manifest = readManifest(root);
+  if (!manifest || manifest.schemaVersion !== 2) return;
+  const runtime = managedRuntimeDrift(root, { lane: manifest.lanes?.tools });
+  if (!runtime || describe(runtime.code).blocks !== 'all') return;
+  const error = new Error(`${runtime.code}: ${runtime.message}`);
+  error.code = runtime.code;
+  throw error;
 }
 
 function selectCandidate(specs) {
@@ -58,6 +77,7 @@ export function showSpec(rootDir, id) {
 }
 
 export function claimWork(rootDir, id, options) {
+  refuseBlockedRuntime(rootDir);
   requireValue(options?.agent, '--agent is required');
   const date = validDate(options?.date ?? today());
   const specs = loadSpecs(rootDir);
@@ -261,8 +281,10 @@ function gitFindings(root, specs) {
 }
 
 // Schema 2 projects also carry decision records; their findings ride along so
-// one doctor run reports the whole support root. None blocks selection: the
-// registered effect of every ADR code is `none`.
+// one doctor run reports the whole support root. The ADR, wiki, and permission
+// codes are all registered `none` and block nothing. The managed-runtime codes
+// are registered `all`, and this is their only emitter, so `refuseBlockedRuntime`
+// enforces that effect for `next` and `claim` separately.
 function collectionFindings(root) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];

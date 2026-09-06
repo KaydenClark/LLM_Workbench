@@ -564,6 +564,33 @@ function driftState(laneDir, tool, installed, matchesReceipt, sourceLane) {
   return matchesReceipt ? 'runtime-authentic' : 'receipt-stale';
 }
 
+// A receipt key names one managed file inside the lane. `path.join` on an
+// unchecked key resolves `../../AGENTS.md` against the lane, so a receipt
+// naming a root control with that control's own true hash would satisfy a
+// managed-lane check. A key is a plain lane-relative name or it is not a
+// managed file at all.
+function isLaneRelativeName(tool) {
+  if (typeof tool !== 'string' || tool.length === 0) return false;
+  if (path.isAbsolute(tool) || tool.includes('\\')) return false;
+  if (tool !== path.posix.normalize(tool)) return false;
+  const segments = tool.split('/');
+  return !segments.includes('..') && !segments.includes('.') && !segments.includes('');
+}
+
+// The managed file map the integrity check reads. A receipt with no map, an
+// empty map, or a key outside the lane records nothing verifiable: saying so
+// is the only honest answer, because returning no drift from it would read as
+// a clean runtime and switch the whole check off.
+export function managedReceiptFiles(receipt) {
+  const files = receipt?.files;
+  if (!files || typeof files !== 'object' || Array.isArray(files)) return { error: 'records no managed file hashes' };
+  const entries = Object.entries(files);
+  if (entries.length === 0) return { error: 'records no managed file hashes' };
+  const escaping = entries.map(([tool]) => tool).filter((tool) => !isLaneRelativeName(tool));
+  if (escaping.length) return { error: `names ${escaping.join(', ')} outside the managed lane` };
+  return { entries };
+}
+
 // The managed-runtime integrity check, kept in a tool every room carries. The
 // installer that writes the receipt (`tools/workbench-tools.mjs`) is never
 // copied into a room, so without this the registered `all` effect of
@@ -572,13 +599,17 @@ function driftState(laneDir, tool, installed, matchesReceipt, sourceLane) {
 // each read and hashed once, and only when a receipt exists; the release
 // source is read only for a file that already drifted.
 export function receiptDrift(laneDir, receipt, options = {}) {
+  const files = managedReceiptFiles(receipt);
+  // Fail loudly rather than return an empty drift list a caller would read as
+  // a clean runtime. Both callers classify the same condition first.
+  if (files.error) throw new Error(`the managed runtime receipt ${files.error}`);
   const sourceLane = options.sourceLane ?? null;
   const drift = [];
   const entryFor = (tool, reason, installed, matchesReceipt) => {
     const state = driftState(laneDir, tool, installed, matchesReceipt, sourceLane);
     return { tool, reason, state, remedy: DRIFT_STATES[state] };
   };
-  for (const [tool, expected] of Object.entries(receipt.files)) {
+  for (const [tool, expected] of files.entries) {
     const file = path.join(laneDir, tool);
     const entry = lstatOrNull(file);
     if (!entry?.isFile() || entry.isSymbolicLink()) { drift.push(entryFor(tool, 'missing-or-not-a-file', null, false)); continue; }
@@ -591,8 +622,9 @@ export function receiptDrift(laneDir, receipt, options = {}) {
 
 // Doctor's half of the same check. A lane with no receipt is not a managed
 // runtime and is reported by the Genesis readiness gate, not here; a receipt
-// that exists and cannot be read is reported, because a corrupt receipt must
-// not silently switch the integrity check off.
+// that exists and cannot be read, records no file hashes, or names a file
+// outside the lane is reported, because none of those may silently switch the
+// integrity check off.
 export function managedRuntimeDrift(project, options = {}) {
   const relative = options.lane ?? lanes.tools;
   const laneDir = path.join(project, relative);
@@ -603,7 +635,8 @@ export function managedRuntimeDrift(project, options = {}) {
   if (!entry.isFile() || entry.isSymbolicLink()) return unreadable('must be an ordinary file');
   let receipt;
   try { receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8')); } catch (error) { return unreadable(`is unreadable: ${error.message}`); }
-  if (!receipt?.files || typeof receipt.files !== 'object' || Array.isArray(receipt.files)) return unreadable('records no managed file hashes');
+  const files = managedReceiptFiles(receipt);
+  if (files.error) return unreadable(files.error);
   const drift = receiptDrift(laneDir, receipt);
   if (drift.length === 0) return null;
   const named = drift.map((item) => `${item.tool} (${item.reason}, ${item.state})`).join(', ');

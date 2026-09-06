@@ -14,7 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { receiptDrift } from '../workbench/tools/workbench-layout.mjs';
+import { managedReceiptFiles, receiptDrift } from '../workbench/tools/workbench-layout.mjs';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -192,6 +192,11 @@ export function verify(project) {
     catch (error) { return fail('invalid-source-identity', error.message); }
   }
   if (!receipt) return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative} has no ${RECEIPT_NAME}.` } };
+  // The release side reaches the same map, so it refuses the same receipts a
+  // room's doctor refuses: one that records nothing, or one whose key resolves
+  // outside the managed lane.
+  const files = managedReceiptFiles(receipt);
+  if (files.error) return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} ${files.error}.` } };
   // The same comparison an installed room runs from workbench-layout.mjs, here
   // with the release source available, so each drifted file is classified as a
   // stale receipt, a modified runtime, or authentic bytes with a drifted mode.
