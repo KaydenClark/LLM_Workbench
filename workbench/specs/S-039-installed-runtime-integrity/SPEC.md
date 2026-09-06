@@ -349,10 +349,12 @@ hash together. Both are named below rather than claimed closed.
 
 - **Nine bare shipped-tree citations in this spec are stale on `integration`.**
   The repair `eb5a32b` pinned them to its own branch tree, and the merge
-  `92be949` moved them again. `SPEC.md:260`'s `:696` now lands on
-  `validateGenesisRuntime` itself, the function that repair existed to
-  re-anchor, and acceptance criterion 4 at `:186` is a checked box with no
-  immutable fallback. Found by the retrospective review of the skipped gate;
+  `92be949` moved them again. The row citing `workbench-layout.mjs:696` for
+  `managedRuntimeDrift` now lands on `validateGenesisRuntime` itself, the
+  function that repair existed to re-anchor, and the acceptance criterion
+  beginning "the effect table" is a checked box whose only citation is a bare
+  line number. Line numbers are deliberately not used to point at this spec's
+  own contents here, since that is the defect being described. Found by the retrospective review of the skipped gate;
   owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-004, together with the
   convention question behind it, since roughly 68 further bare citations across
   the sibling specs are the same class.

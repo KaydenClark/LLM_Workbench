@@ -73,7 +73,12 @@ def orphans(path):
     for i,l in enumerate(open(path,encoding="utf-8").read().split("\n"),1):
         if l.startswith("| Date |") or l.startswith("| 20"): inside=True; continue
         if inside:
-            if l.strip()=="": inside=False; continue
+            # A blank line ends the rendered table but not the region a rewritten
+            # row can hide in: appending after one detaches the row from the table
+            # while leaving it in the log. Keep scanning until a heading, so the
+            # blind spot that swallowed S-043's gate row cannot reopen.
+            if l.strip()=="": continue
+            if l.startswith("#"): inside=False; continue
             if l.startswith("|"):
                 cell=l.split("|")[1].strip() if l.count("|")>1 else ""
                 if set(cell)<=set("-: ") and cell: continue   # separator row

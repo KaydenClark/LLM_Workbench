@@ -6,27 +6,30 @@
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-09-06
-**Catalog description:** Own the three follow-ups the v3.1.2 slices recorded and could not close, so owed work has a spec that carries it instead of surviving only as prose inside completed specs.
+**Catalog description:** Own the seven follow-ups the v3.1.2 slices and their retrospective reviews left open, so owed work has a spec that carries it instead of surviving only as prose inside completed specs.
 **Blockers:** owner direction on whether v3.1.3 takes these
-**Latest event:** Created at the v3.1.2 closeout because two of the three had their named owner completed out from under them.
+**Latest event:** Grown from three tickets to seven after the four retrospective reviews of the skipped gates routed their findings here.
 **Next gate:** Owner decides whether these land in v3.1.3; until then every ticket stays blocked and `next` correctly excludes them.
 
 ## Outcome
 
-Three limitations that S-040, S-042 and S-044 recorded, reviewed, and could not
-close inside their own scope have a spec that owns them, rather than surviving
-only as prose inside a completed spec that `AGENTS.md` tells arriving agents not
-to load. This spec appears on the Taskboard and in the Blueprint spec catalog;
-the three tickets live inside it. The Taskboard projects one current slice per
-spec, so it shows TK-001 and not the other two - a reader reaches all three by
-opening this spec, which is the routing that was missing before.
+Seven findings that five specs - S-039, S-040, S-042, S-043 and S-044 - recorded
+or had raised against them, and could not close inside their own scope, have a
+spec that owns them, rather than surviving only as prose inside a completed spec
+that `AGENTS.md` tells arriving agents not to load. Three came from the slices
+themselves; four more arrived when the retrospective reviews of the four skipped
+gates were finally run. This spec appears on the Taskboard and in the Blueprint
+spec catalog; all seven tickets live inside it. The Taskboard projects one
+current slice per spec, so it shows TK-001 and not the other six - a reader
+reaches all seven by opening this spec, which is the routing that was missing
+before.
 `next` deliberately does **not** return them: every ticket is blocked on owner
 direction, and `next` excludes a blocked slice. Owned and owed, not
 dispatchable.
 
 ## Why It Matters
 
-Two of the three named an owner that no longer exists.
+Two of the first three named an owner that no longer exists.
 
 S-040 routed its presence-only link gap to "a follow-up spec, or an upstream item
 under [S-038]". The v3.1.2 closeout completed S-038 without opening either.
@@ -38,7 +41,7 @@ without the hook, so that fallback is the operative branch, and this is that
 spec.
 
 Without it the harness reports the truth badly: `next --json` returns `null`,
-`doctor` exits 0, and the Taskboard lists neither item, while three reviewed
+`doctor` exits 0, and the Taskboard lists neither item, while seven reviewed
 findings are owed. `AGENTS.md` is explicit that a later change creates a new
 linked spec rather than rewriting a completed result.
 
@@ -61,7 +64,14 @@ Verified on `origin/integration` at `18ffc0d` on 2026-09-06.
 - `tools/test-workbench-layout.mjs` carries seventeen `classify` cases; eleven
   compare a before/after room snapshot and six do not, including the EPERM seam
   probe, which is the one case that runs the classifier under a monkey-patched
-  `fs`.
+  `fs`. Measured again at invocation granularity by S-044's retrospective
+  reviewer: the file makes **34** `classify` invocations and brackets **21**.
+  Three of the eleven cases counted as snapshotted still classify a room with no
+  write check, so the case count overstates the coverage.
+- Bare shipped-tree line citations across S-039 through S-044 name lines that
+  every merge into `integration` moves. Nine in S-039 are known to point at
+  unrelated content today, one of them behind a checked acceptance box with no
+  immutable fallback.
 
 ## Desired Behavior
 
@@ -69,8 +79,13 @@ Verified on `origin/integration` at `18ffc0d` on 2026-09-06.
    reached through a link, or the contract states which one is authoritative.
 2. The two installed-state checks are emitted from a seam whose scope matches
    what they report, rather than from the wiki validator.
-3. All seventeen `classify` cases prove the read-only property, so the claim in
-   S-044's Proof column is true as originally written.
+3. Every `classify` invocation that classifies a room is bracketed by a
+   before/after snapshot - by invocation, not by case, because three cases that
+   carry a snapshot still classify a room without one. Closing this at case
+   granularity would leave S-044's Proof column claim false.
+4. A citation into a file that moves is anchored to an immutable ref, so a
+   merged spec cannot come to point at unrelated content.
+5. Registering a diagnostic code without pinning its effect is a red test.
 
 ## Decisions And Contracts
 
@@ -82,7 +97,8 @@ Verified on `origin/integration` at `18ffc0d` on 2026-09-06.
 
 ## Non-Goals
 
-- Reopening S-040, S-042, S-043 or S-044.
+- Reopening S-039, S-040, S-042, S-043 or S-044. Every finding here is recorded
+  against them; none rewrites a completed result.
 - Deciding whether v3.1.3 exists.
 
 ## Dependencies And Blockers
@@ -156,7 +172,7 @@ node workbench/tools/spec-workbench.mjs doctor
 
 ## Documentation Impact
 
-- The three originating specs' Remaining Limitations gain this spec as owner.
+- The five originating specs' Remaining Limitations gain this spec as owner.
 - `RUNBOOK.md` only if a command surface changes.
 
 ## Append-Only Evidence And Execution Log
@@ -165,6 +181,7 @@ node workbench/tools/spec-workbench.mjs doctor
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Created at the v3.1.2 closeout to own three follow-ups, two of which lost their named owner | S-040 routed its presence-only link gap to a follow-up spec or an upstream item under S-038, and the closeout completed S-038 without opening either. S-042 named S-043 as its `doctor` hook's owner with the fallback "if S-043 merges without the hook, this becomes a new linked spec"; S-043 merged as PR #66 without it, so this is that spec - that fallback fired at PR #66, before the closeout branch existed, and the closeout's first attempt to record this misattributed it to the closeout itself. S-044's six unsnapshotted `classify` cases were counted independently: seventeen cases, eleven with a snapshot | Three specs' Remaining Limitations now name an owner | Every ticket blocked on owner direction; nothing here decides whether v3.1.3 exists |
 | 2026-09-06 | spec | Four retrospective separate-context reviews routed five more items here | The v3.1.2 closeout's own review found that four of six slices - S-039, S-040, S-043, S-044 - merged without the fresh review `AGENTS.md` requires after a CHANGES REQUESTED verdict. All four owed reviews were run on 2026-09-06 against their exact unreviewed ranges. S-043 approved and routed one item here (TK-006). S-040, S-039 and S-044 returned CHANGES REQUESTED and routed TK-005, TK-004 and TK-007. TK-003 was re-scoped by S-044's reviewer, who measured 34 `classify` invocations with 21 bracketed and showed that three cases counted among S-044's "eleven with a snapshot" still classify a room with no write check - so the ticket as originally worded would have closed while leaving the claim it exists to fix false | Ticket table, acceptance criteria and testing seams extended; the four originating specs each gained a gate-deviation row naming this spec as the owner of its findings | Every ticket still blocked on owner direction. TK-004 is the largest and the only one whose absence actively misleads a reader of `integration` today |
+| 2026-09-06 | spec | Correcting the row above and the ticket table's own description of itself | The row above says "the four originating specs each gained a gate-deviation row naming this spec as the owner of its findings". S-040 gained no row in that commit: its only change was the deletion of two blank lines, and `grep "S-045"` over its evidence rows returned zero. S-038's row in the same commit said so correctly - "S-039, S-043 and S-044 each gained a gate-deviation row in the shape S-040's already had" - so the branch published both statements at once. S-040 now has its row, recording the retrospective outcome and naming TK-005, which makes the claim true of the branch as merged; it was not true when written. Two further corrections: this spec's Outcome, catalog description, `Latest event`, Why It Matters and Documentation Impact all still called it a three-ticket spec in the commit that made it seven, and the stale catalog description reached `BLUEPRINT.md`; and the S-042 conditional was stated as a "fourth" deviation in three places when four are already established, so it is the fifth. Found by the separate-context review of `49a6246` | All mutable prose repaired and `render` re-run so the catalog and Taskboard carry seven; the frozen rows in this spec, S-038 and S-042 are corrected by appended rows rather than edited | None. The seven tickets stay blocked on owner direction |
 
 ## Completion Result
 
@@ -179,8 +196,9 @@ Pending.
   acceptance box. That is a reader-facing defect in a merged, completed spec.
 - Whether S-042's approving review happened is unresolved. Its `Latest event`
   cites one; no evidence row records it, and the header line was written by its
-  own merge commit. If it did not happen, v3.1.2 has four gate deviations with a
-  fifth unevidenced rather than four with one unevidenced.
+  own merge commit. Four deviations are established - S-039, S-040, S-043,
+  S-044. If S-042's review did not happen it is the **fifth of six**, leaving
+  S-041 as the only slice with an evidenced approving review.
 
 ## Supersession
 
