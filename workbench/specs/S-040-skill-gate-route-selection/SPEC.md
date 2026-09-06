@@ -252,9 +252,9 @@ A limitation this capability opens is recorded rather than hidden: the presence-
   defect it reproduced is gone - but the premise is corrected here rather than
   carried forward.
 - Changing the presence-only path is barred by this spec's Non-Goals, so the
-  condition is recorded and routed rather than fixed: it needs a follow-up spec,
-  or an upstream item under
-  [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md).
+  condition is recorded and routed rather than fixed: it is owned by
+  [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-001, created at the v3.1.2
+  closeout because completing S-038 removed the owner this spec had named.
 - Rooms that already stopped are not retried by this spec.
 
 ## Supersession

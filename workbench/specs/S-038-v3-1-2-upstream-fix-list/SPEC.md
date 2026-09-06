@@ -256,6 +256,8 @@ node tools/evaluate-workbench.mjs --path templates --include-controls
 | 2026-09-06 | spec | Fourth separate-context review found the previous commit repeated the append-only defect it was repairing | `f963b96` restored the five earlier rewrites correctly, then rewrote three rows that `7a386fd` had already published - this spec's, S-039's, and S-042's fresh-review rows - to fold in the corrections. The same commit demonstrated the right pattern twice, in S-041 and S-044, so the defect was inconsistency rather than ignorance. All three are restored byte-for-byte to their `7a386fd` text and the corrections are recorded here. Two claims those rewrites made need correcting: the count of rewritten rows before `f963b96` was five across four specs, and the row at `:255` claiming "every correction is recorded in an appended row instead" was false of two of them at the time it was written. S-041's and S-044's new rows attribute the second rewrite of their capture rows to `d1de47f`; the true commit is `22f5728` - `git diff d1de47f^ d1de47f` touches no evidence row in either spec | Added `check-append-only.py`, which reconstructs every evidence row from every commit on the branch and asserts each row still carries its first-published text. It reports this branch CLEAN across all seven specs and would have caught all three rounds of this defect | Every accepted slice still unimplemented |
 | 2026-09-06 | TK-002 | Ticket closed and spec completed; the release account is recorded | All six owning specs are `complete` and contained in `integration`: S-041 PR #65, S-043 PR #66, S-040 PR #67, S-042 PR #68, S-039 PR #69, S-044 PR #70, each proved by `git merge-base --is-ancestor`. `origin/main` carries no `workbench/` tree. Full `AGENTS.md` suite on the merged tip `18ffc0d`: 25 node suites plus `evals/tasks/task_b_path_safety/test_grade.py` all pass; `render` leaves no drift; `doctor` exits 0; `check-append-only.py` CLEAN; `git diff --check` clean; no CRLF. Guardrail `78/100` and templates `106.6/113`, measured before the work began and again here with unchanged criteria - neither moved, and the Completion Result says why that is the expected result rather than a disappointing one | Disposition table in the S-035 shape, the release account for Master Workbench, the guardrail before/after with its limitation, and an honest record of what the review gate cost | Publishing `integration` to `main` is owner-only. Every limitation the six specs recorded stays open and routed; none is closed by this ticket |
 | 2026-09-06 | TK-002 | Separate-context review of the closeout found two false claims in it; corrected here | Reviewer verified every completion and containment claim, all eleven disposition rows against the merged tree, all four corrections to the upstream report, the reattribution's `E:/`-path evidence, the guardrail argument by measuring three commits itself, and the faithfulness of the recovered S-036/S-037 cherry-pick - and found two claims false. (1) "Every one of the six capability slices was rejected by its first separate-context review" is wrong: S-041's one slice review APPROVED, recording three caveats. The true count is five of six. It was wrong in the paragraph that exists to let Master Workbench price the review gate, and wrong in the same direction as flattery toward the gate. Corrected in the Completion Result and in `benchmarks/RESULTS.md`, whose row had not yet reached `integration`. (2) The row above claims every limitation "stays open and routed". Completing S-038 and S-043 in this very ticket removed the named owner from two: S-040 routed its presence-only link gap to "a follow-up spec, or an upstream item under S-038", and S-042 named S-043 as its `doctor` hook's owner "if S-043 merges without the hook, this becomes a new linked spec" - which is what happened. Both are now carried in this spec's Remaining Limitations as owed with no current owner. Neither spec is created, per `AGENTS.md`: record the blocker in the existing owner rather than manufacture a queue item. Also surfaced S-044's six missing `classify` snapshots into its Remaining Limitations, where they had lived only in an evidence cell, and corrected the UP-020 row, which juxtaposed the reporting room's 6 + 4 against this repository's zero and invited the inference that S-037 moved this repository from one to the other; the real evidence is S-037's CRLF simulation | The row above is restored byte-for-byte and corrected here rather than edited, because `check-append-only.py` counts it published at `4b4c67c` and amending a pushed commit would be a force-push `AGENTS.md` forbids without approval | The two orphaned follow-ups are owed and unowned; opening specs for them is an owner decision |
+rows are - one definition of published, enforced rather than asserted. (2) The row above claims every limitation "stays open and routed". Completing S-038 and S-043 in this very ticket removed the named owner from two: S-040 routed its presence-only link gap to "a follow-up spec, or an upstream item under S-038", and S-042 named S-043 as its `doctor` hook's owner "if S-043 merges without the hook, this becomes a new linked spec" - which is what happened. Both are now carried in this spec's Remaining Limitations as owed with no current owner. Neither spec is created, per `AGENTS.md`: record the blocker in the existing owner rather than manufacture a queue item. Also surfaced S-044's six missing `classify` snapshots into its Remaining Limitations, where they had lived only in an evidence cell, and corrected the UP-020 row, which juxtaposed the reporting room's 6 + 4 against this repository's zero and invited the inference that S-037 moved this repository from one to the other; the real evidence is S-037's CRLF simulation | The row above is restored byte-for-byte and corrected here rather than edited, because `check-append-only.py` counts it published at `4b4c67c` and amending a pushed commit would be a force-push `AGENTS.md` forbids without approval | The two orphaned follow-ups are owed and unowned; opening specs for them is an owner decision |
+| 2026-09-06 | TK-002 | Second closeout review found the corrected count still wrong and one cause misattributed; corrected here | Reviewer recounted from the evidence logs: "three of those needed four rounds" is wrong - **two** did. Enumerated in the Completion Result so the claim no longer depends on a counting convention: S-039 and S-044 four slice reviews, S-042 three, S-040 and S-043 two, S-041 one. The first correction fixed six-to-five and left the adjacent number unchecked. It also found "Completing S-038 and S-043 in this very ticket" false: S-043 was already `complete` at `18ffc0d` and this branch never touched it, so S-042's fallback fired at PR #66 before this branch existed. Only S-040's item was orphaned here. And it found the `AGENTS.md` citation did not license declining to open the specs - the "no confident next action" and "for yourself" antecedents both fail, while `AGENTS.md` positively requires a new linked spec for a later change to a completed result - and that "visible" was false against the harness's own routes, since `next` returns null and neither item reaches `doctor` or the Taskboard | [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) created to own all three follow-ups, every ticket `blocked` on owner direction so `next` still excludes them; `tools/check-append-only.py` extended to cover `benchmarks/RESULTS.md`, which immediately caught this branch's own in-place edit of that ledger | Whether v3.1.3 takes any of the three is an owner decision |
 
 ## Completion Result
 
@@ -305,7 +307,11 @@ v3.1.2 makes an agent better or worse than v3.1.1**, and no such claim is made.
 ### What the gate cost, honestly
 
 Five of the six capability slices were rejected by their first separate-context
-review, and three of those needed four rounds. S-041 is the exception: its one
+review of the slice. Enumerated, so no counting convention is needed: S-039 and
+S-044 took four slice reviews each, S-042 three, S-040 and S-043 two, and S-041
+one, which approved. An earlier draft said "three needed four rounds"; two did.
+The routing candidate S-038 itself took five further reviews before any slice
+existed, and those are not counted here. S-041 is the exception: its one
 slice review approved, recording three caveats rather than blocking on them.
 Naming it matters, because six-of-six reads as a gate that catches something
 every time, while five-of-six with one clean pass is a different signal about
@@ -339,25 +345,30 @@ submitted.
   runtime without updating its receipt? UP-014 explains why the report cannot
   tell; the receipt carries no backup and no update event that would answer it.
   S-039 makes the question answerable in future, not retroactively.
-- **Two follow-ups this closeout orphaned, now carried here.** Completing S-038
-  and S-043 removed the owners two routed limitations named, so both are recorded
-  here explicitly as owed with **no current owner**, awaiting owner direction:
+- **Two follow-ups without their named owner, now owned by
+  [S-045](../S-045-v3-1-2-follow-ups/SPEC.md).** Only one of the two was orphaned
+  by this ticket. The other fired earlier and this spec's first attempt to record
+  it misattributed the cause:
   - **The presence-only link gap** ([S-040](../S-040-skill-gate-route-selection/SPEC.md)).
     `missingUserSkills` and `hasRequiredUserSkills` judge with
     `lstatOrNull(...)?.isDirectory()`, so a host whose every populated discovery
     root holds the skill as a link is reported `missing-user-skills` while the
     installer reports `complete`. S-040 routed it to "a follow-up spec, or an
-    upstream item under S-038"; this ticket completed S-038 without opening one.
+    upstream item under S-038"; this ticket completed S-038 without opening one,
+    so this ticket is the cause. Now owned by S-045 TK-001.
   - **A dedicated `doctor` hook for installed-state checks**
     ([S-042](../S-042-installed-state-repair/SPEC.md)). `stale-seed` and
     `unverified-provenance` ride inside `validateWiki` as an interim
     lane-collision measure. S-042 named the owner as "the next spec to take the
     `spec-workbench.mjs` lane, S-043 while its branch is open; if S-043 merges
-    without the hook, this becomes a new linked spec". S-043 merged without it,
-    so that fallback is operative and no such spec exists.
-  Neither is created here: `AGENTS.md` says to record a blocker in the existing
-  owner and stop rather than manufacture a queue item. They are owed, unowned,
-  and visible.
+    without the hook, this becomes a new linked spec". S-043 merged as PR #66
+    without it, which is when the fallback fired - **before this closeout branch
+    existed**, and this branch never touched S-043. Now owned by S-045 TK-002.
+  Both are created as [S-045](../S-045-v3-1-2-follow-ups/SPEC.md), because
+  `AGENTS.md` says a later change creates a new linked spec rather than rewriting
+  a completed result, and because S-042's own accepted disposition already
+  decided this exact fallback. Every S-045 ticket is `blocked` on owner
+  direction, so `next` still excludes them and nothing is dispatched unasked.
 - **Carried-forward blocker.** The reporting room's own `tools-receipt-drift` is
   live and unrepaired. It needs an owner decision before that room's managed-tool
   verification can be cited as evidence. Nothing in this repository repairs it.

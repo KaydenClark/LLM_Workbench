@@ -486,7 +486,8 @@ merges into `integration`.
   under a monkey-patched `fs`, and it has no write check of its own. The property
   itself was independently re-proven with 23 `fs` mutators poisoned; adding the
   six snapshots would make the Proof column's original claim true and is a
-  test-only follow-up. Recorded here because it was previously carried only in an
+  test-only follow-up, owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md)
+  TK-003. Recorded here because it was previously carried only in an
   evidence-log cell, where a reader checking what this spec still owes would not
   find it.
 
