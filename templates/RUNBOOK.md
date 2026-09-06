@@ -400,13 +400,21 @@ same receipt hash check from the tools this project carries, so a hand-edited
 managed tool fails the check here with no release checkout present. It fails at
 the `all` effect, which also makes `next` and `claim` refuse until the runtime
 is repaired. The check runs only when `workbench/tools/` carries a receipt; a
-receipt that cannot be read, records no file hashes, or names a file outside
-that lane is reported as `tools-receipt-missing` rather than switching the
-check off. Without a release checkout `doctor` cannot say whether the receipt
-went stale or the bytes were changed - it reports every drifted file as
-`source-unavailable` - so run `verify` from the release checkout to classify
-it. A deleted receipt is the readiness gate's finding, not this check's; a
-deleted managed tool stops `doctor` from loading at all.
+receipt that cannot be read, records no file hashes, names a file outside that
+lane, or does not account for every file the lane holds is reported as
+`tools-receipt-missing` rather than switching the check off. That last one
+matters because the drift report names the file it found: deleting that key
+would otherwise switch the check off for exactly the hand-edited tool. This
+project has no authoritative list of what should be managed, so the expected
+set is the lane's own contents, which also reports a foreign file dropped into
+it; dotted entries are skipped. Refresh a receipt that lost a key with
+`update --explicit-update` from the release checkout. Without a release
+checkout `doctor` cannot say whether the receipt went stale or the bytes were
+changed - it reports every drifted file as `source-unavailable` - so run
+`verify` from the release checkout to classify it. A deleted receipt is the
+readiness gate's finding, not this check's; a deleted managed tool stops
+`doctor` from loading at all, and leaves the lane with nothing for the coverage
+check to see.
 
 The source checkout must have a concrete `origin` and 40-character `HEAD`, and
 its managed source lane must be clean; otherwise install/update refuses before

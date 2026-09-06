@@ -8,7 +8,7 @@
 **Updated:** 2026-09-06
 **Catalog description:** Give an installed room a command that verifies the runtime it is executing, and make a drift report say whether the runtime matches the source or only disagrees with a stale receipt.
 **Blockers:** none
-**Latest event:** Review repair: an empty or out-of-lane receipt no longer switches the check off, `next` and `claim` enforce the `all` effect, and the false green is corrected by an appended row.
+**Latest event:** Second review repair: the receipt no longer controls the scope of its own check - a key pruned of a file the lane still holds is refused on both paths - and the two claims that read as closing the class are reworded to what is guaranteed.
 **Next gate:** none; re-review of `claude/s039-v3-1-2` before integration.
 
 ## Outcome
@@ -162,10 +162,15 @@ the comparison so both paths carry it.
 - [x] A room with a hash-drifted managed tool fails its own `doctor` with
       `tools-receipt-drift`, using only tools installed in the room, and
       `next` and `claim` refuse that room until it is repaired.
-- [x] No receipt that verifies nothing can switch the check off. An empty
-      `files` map and a receipt key that resolves outside the managed lane are
-      both `tools-receipt-missing`, on the room `doctor` path and the
-      release-side `verify` path.
+- [x] No receipt can narrow the check below the runtime it scopes, in content
+      or in coverage. An empty `files` map, a key that resolves outside the
+      managed lane, and a map pruned of a file the lane still holds are all
+      `tools-receipt-missing` on the room `doctor` path and the release-side
+      `verify` path; `verify` additionally refuses a receipt that omits any
+      member of `RUNTIME_TOOLS`, on disk or not. The two conditions this does
+      not reach - a key and its managed file removed together, and a room whose
+      lane code is itself rewritten - are named in Remaining Limitations rather
+      than claimed closed.
 - [x] A drift result distinguishes receipt-stale, runtime-modified, and
       source-unavailable, and each names its supported remedy. A fourth state,
       `runtime-authentic`, covers mode-only drift, whose bytes match both the
@@ -199,13 +204,17 @@ node workbench/tools/spec-workbench.mjs doctor
 - `RUNBOOK.md` managed runtime tools check: the installed entry point and the
   drift states. Done in `4856985`; extended by the review repair with the
   `next`/`claim` refusal, the out-of-lane receipt key, and the two conditions
-  the check cannot reach.
+  the check cannot reach; extended again by the second repair with the coverage
+  rule, where each side's expected set comes from, and the coverage check's own
+  blind spot in the deleted-file paragraph.
 - `templates/RUNBOOK.md` managed runtime tools paragraph: the dogfood
   counterpart. Rooms this capability exists for read that file, and it still
   told an operator that verification means the release-side `verify`. Updated
   with the room's own `doctor` check, the `all` effect, the refused receipts,
-  and why a room sees only `source-unavailable`. Guardrail score unchanged at
-  106.6/113.
+  and why a room sees only `source-unavailable`; the second repair adds the
+  coverage rule in room-generic terms, with no reference to this repository's
+  own files. Guardrail score unchanged at 106.6/113 before and after both
+  repairs.
 - `LEXICON.md` if the three states need named terms. Not needed: the states are
   values of a `verify`/`doctor` report field, documented where that report is
   documented, not shared project vocabulary other controls speak.
@@ -230,12 +239,14 @@ node workbench/tools/spec-workbench.mjs doctor
 ## Completion Result
 
 An installed room verifies the runtime it executes with only the tools it
-contains. `workbench/tools/workbench-layout.mjs:601` holds the receipt hash
-comparison and `:628` the doctor entry point; `workbench/tools/spec-workbench.mjs:305`
-reads it, so a drifted managed tool now fails that room's own `doctor` at the
-`all` effect `workbench/tools/diagnostics.mjs:26` registers. The release-side
-`tools/workbench-tools.mjs:203` calls the same function with its source lane,
-so both entry points report identical drift.
+contains. `workbench/tools/workbench-layout.mjs:629` `receiptDrift` holds the
+receipt hash comparison and `:656` `managedRuntimeDrift` is the doctor entry
+point; `workbench/tools/spec-workbench.mjs:305` reads it, so a drifted managed
+tool now fails that room's own `doctor` at the `all` effect
+`workbench/tools/diagnostics.mjs:26` registers. The release-side
+`tools/workbench-tools.mjs:220` calls the same function with its source lane,
+so both entry points report identical drift. Every line number in this section
+is named with its symbol and was re-read at the final commit of this branch.
 
 The `all` effect is enforced as the effect table states it, not only as a
 `doctor` exit code. `workbench/tools/spec-workbench.mjs:33` `refuseBlockedRuntime`
@@ -254,6 +265,20 @@ resolves against the lane. `managedRuntimeDrift` reports each as
 drift list; and `tools/workbench-tools.mjs:198` applies the same validator, so
 the release-side `verify` refuses the same receipts.
 
+Nor does the receipt decide how much of the runtime is checked. Refusing an
+empty map still left the key set in charge of the check's scope, and a drift
+report names the file it found, so deleting that one key switched the check off
+for exactly the tampered file while ten others went on verifying.
+`workbench/tools/workbench-layout.mjs:612` `unaccountedLaneFiles` compares the
+receipt's key set with the lane's own contents - the only expected set a room
+can derive, since `tools/workbench-tools.mjs` is never installed into one - and
+`managedRuntimeDrift` (`:672`) reports what the receipt does not account for
+before it reads a hash. `tools/workbench-tools.mjs:210` runs the same
+comparison and additionally refuses a receipt that omits any member of
+`RUNTIME_TOOLS`, on disk or not, because the release holds the authoritative
+set. `update --explicit-update` rewrites a key the receipt lost even when the
+installed bytes already match the release, so the refusal has a remedy.
+
 A drift entry carries `state` and `remedy`. `receipt-stale` means the installed
 bytes are the release source's and names `update --explicit-update`;
 `runtime-modified` means they match neither and names `rollback`;
@@ -263,10 +288,16 @@ every installed room reports. `updateAvailable` still answers the separate
 receipt-versus-source question and now rides the drift path as well as the
 valid path.
 
-No verification path was weakened: a modified runtime still fails `verify` and
-`doctor`, a missing receipt still fails the Genesis gate, and a receipt that
-exists but cannot be read, records no hashes, or names a file outside the lane
-is reported rather than silently disabling the check.
+No verification path was weakened, and the guarantee is stated as what it
+covers rather than as an absolute. A managed file the lane still holds fails
+`verify` and `doctor` when its bytes are modified, whether or not the receipt
+names it - the coverage comparison above is what makes "whether or not" true. A
+missing receipt still fails the Genesis gate, and a receipt that exists but
+cannot be read, records no hashes, names a file outside the lane, or covers
+less than the lane holds is reported rather than silently disabling the check.
+Two conditions are outside that sentence and are named below rather than
+claimed: a managed file removed from the lane together with its receipt key,
+and a room whose lane code is itself rewritten.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -286,6 +317,25 @@ is reported rather than silently disabling the check.
   `ERR_MODULE_NOT_FOUND` (raised from `wiki.mjs`) and a non-zero exit before
   any check executes. Verified on the same fixture. The failure is loud, so
   there is no false pass, but it is a stack trace rather than a named finding.
+- **The room's coverage check derives its expected set from the lane, so a file
+  and its key removed together are invisible to it.** A room carries no
+  authoritative list of what should be managed - `tools/workbench-tools.mjs`,
+  which holds `RUNTIME_TOOLS`, is never installed into one. Three options were
+  weighed: derive the expected set from the lane's contents, carry it in the
+  receipt's own metadata, or accept the gap. The receipt's own metadata was
+  rejected because it has exactly the trust problem being closed - the party
+  who prunes a key can prune the list beside it - and accepting the gap was
+  rejected because the drift message names the key to delete, which makes the
+  bypass a copy-and-paste away. Deriving from the lane needs no second list to
+  keep in sync with `RUNTIME_TOOLS`, and closes the bypass for any file still
+  on disk; removing the file instead is the already-recorded loud failure. What
+  it cannot cover is a managed file deleted along with its key, and, more
+  broadly, no check a room runs is more trustworthy than the lane code running
+  it: an attacker who can rewrite `workbench-layout.mjs` and prune its key can
+  disarm any in-room check, and only the release-side `verify` - which reads
+  the authoritative set from outside the room - sees that. Closing it inside a
+  room needs a trust anchor the room does not have today, so it is recorded
+  rather than fixed here.
 - **A room's own `doctor` still cannot separate `receipt-stale` from
   `runtime-modified`.** A room carries no release checkout, so every drifted
   file it reports is `source-unavailable`; the fixture above reports
