@@ -510,6 +510,36 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// The plain report is grouped by the consequence the registry assigns each
+// finding, so a room whose findings block nothing does not read as failed.
+// Presentation only: the effect is the registry's (workbench/tools/diagnostics.mjs),
+// severity follows the effect in the line rather than leading it, and --json
+// is untouched. Every registered effect must appear in exactly one group.
+// Exported so a test can bind this to the diagnostics EFFECTS vocabulary.
+// Every effect must land in exactly one group; an effect added to EFFECTS with
+// no group here makes formatDoctorReport throw and prints no findings at all,
+// which is a total doctor outage rather than a missing line.
+export const DOCTOR_GROUPS = Object.freeze([
+  Object.freeze({ name: 'blocking', effects: Object.freeze(['all', 'selection']), consequence: 'doctor exits 1 until repaired' }),
+  Object.freeze({ name: 'selected slice', effects: Object.freeze(['selected-slice']), consequence: 'next excludes the slice and claim refuses it' }),
+  Object.freeze({ name: 'informational', effects: Object.freeze(['none']), consequence: 'reported only; nothing is blocked' })
+]);
+
+export function formatDoctorReport(findings) {
+  if (findings.length === 0) return 'ok - spec workbench doctor passed';
+  const ungrouped = findings.filter((item) => !DOCTOR_GROUPS.some((group) => group.effects.includes(item.blocks)));
+  if (ungrouped.length > 0) throw new Error(`Unreportable diagnostic effect: ${[...new Set(ungrouped.map((item) => item.blocks))].join(', ')}`);
+  const lines = [];
+  for (const group of DOCTOR_GROUPS) {
+    const members = findings.filter((item) => group.effects.includes(item.blocks));
+    if (members.length === 0) continue;
+    lines.push(`${group.name} (${members.length}) - ${group.consequence}`);
+    for (const item of members) lines.push(`  ${item.code} [blocks ${item.blocks}, ${item.severity}]: ${item.message}`);
+  }
+  if (!blocksSelection(findings)) lines.push('ok - no blocking finding; attention and slice findings above stay visible');
+  return lines.join('\n');
+}
+
 export function parseCliArgs(argv) {
   const command = argv[0];
   let index = 1;
@@ -547,11 +577,7 @@ async function main() {
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
-  else if (command === 'doctor') {
-    const lines = result.map((item) => `${item.code} [${item.severity}, blocks ${item.blocks}]: ${item.message}`);
-    if (lines.length === 0) console.log('ok - spec workbench doctor passed');
-    else console.log(`${lines.join('\n')}${blocksSelection(result) ? '' : '\nok - no blocking finding; attention and slice findings above stay visible'}`);
-  }
+  else if (command === 'doctor') console.log(formatDoctorReport(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
 }
 
