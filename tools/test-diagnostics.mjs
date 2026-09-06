@@ -463,3 +463,66 @@ test('a room outside any Git work tree is told so instead of being told to creat
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+// S-042 TK-001: seeded lane documents are the third class of installed state.
+// Their generation lives in a seed record beside the manifest, never in the
+// byte-managed tools receipt, so a local adjustment stays legal.
+test('a seeded lane document whose recorded generation is behind the manifest is reported and never blocks', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a room with no seed record names no generation and reports nothing');
+    const seedRun = spawnSync(process.execPath, [layout, 'seed-documents', '--project', dir], { encoding: 'utf8' });
+    assert.equal(seedRun.status, 0, seedRun.stdout);
+    assert.deepEqual(JSON.parse(seedRun.stdout).written, [{ document: 'workbench/feedback/REPORT_FORMAT.md', action: 'seeded' }]);
+    const record = path.join(dir, 'workbench', '.workbench-seed.json');
+    assert.equal(fs.existsSync(record), true, 'seed-documents records the generation of each seeded lane document');
+    const seeded = JSON.parse(fs.readFileSync(record, 'utf8'));
+    assert.equal(fs.existsSync(path.join(dir, 'workbench', 'feedback', 'REPORT_FORMAT.md')), true, 'seed-documents copies the feedback report format');
+    assert.equal(seeded.documents['workbench/feedback/REPORT_FORMAT.md'].release, VERSION);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a document seeded from the manifest release reports nothing');
+    seeded.documents['workbench/feedback/REPORT_FORMAT.md'].release = 'v3.1.0';
+    fs.writeFileSync(record, `${JSON.stringify(seeded, null, 2)}\n`);
+    const findings = doctor(dir, { home: quietHome });
+    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.document]), [['stale-seed', 'attention', 'feedback', 'none', 'workbench/feedback/REPORT_FORMAT.md']]);
+    assert.match(findings[0].message, /v3\.1\.0/);
+    assert.ok(findings[0].message.includes(VERSION), 'the message names the manifest version');
+    assert.equal(cliDoctor(dir).status, 0, 'a seeded document behind the manifest never blocks selection');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// S-042 TK-003: a manifest whose recorded source identity is a placeholder or
+// disagrees with its own release cannot reproduce the installation it claims.
+test('placeholder and version-mismatched manifest provenance are reported without blocking', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a room initialized from a verified checkout reports nothing');
+    const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const recorded = manifest.provenance.source;
+    manifest.provenance.source = { ...recorded, commit: 'unknown' };
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    const placeholder = doctor(dir, { home: quietHome });
+    assert.deepEqual(placeholder.map((item) => [item.code, item.severity, item.scope, item.blocks]), [['unverified-provenance', 'attention', 'manifest', 'none']]);
+    assert.match(placeholder[0].message, /commit/);
+
+    manifest.provenance.source = { ...recorded, release: 'v3.1.0' };
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    const mismatch = doctor(dir, { home: quietHome });
+    assert.deepEqual(mismatch.map((item) => item.code), ['unverified-provenance']);
+    assert.match(mismatch[0].message, /v3\.1\.0/);
+    assert.ok(mismatch[0].message.includes(VERSION), 'the message names the manifest release it disagrees with');
+    assert.equal(cliDoctor(dir).status, 0, 'unverified provenance is reported and never blocks selection');
+
+    manifest.provenance.source = recorded;
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'restoring the recorded identity clears the finding');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

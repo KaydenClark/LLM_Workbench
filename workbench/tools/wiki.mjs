@@ -5,10 +5,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, readManifest, WIKI_PROFILES } from './workbench-paths.mjs';
-import { parseFrontmatter } from './adr.mjs';
+import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
+import { insertFrontmatterKeys, parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
-import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
+import { provenanceFindings, seededDocumentFindings, versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
 export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'meta']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
@@ -82,6 +82,15 @@ export function validateWiki(root) {
   }
   else findings.push(...roomBrainRouting(root, wikiRelative));
   findings.push(...wikiStamps(root, wikiRoot, wikiRelative, manifest?.workbenchVersion));
+  // Doctor wires exactly two support-root validators, this one and the ADR
+  // validator, so the two installed-state checks a room needs in every run -
+  // the generation of its seeded lane documents and the source identity its
+  // manifest records - ride along here, exactly as the manifest-scope wiki
+  // profile and collection findings above already do. Both checks live in
+  // workbench-layout.mjs, which owns seeding and provenance; this validator
+  // only carries them to the one report a room actually reads.
+  findings.push(...seededDocumentFindings(root));
+  findings.push(...provenanceFindings(root));
   for (const name of REQUIRED_COLLECTIONS) {
     const relative = collectionRelative(root, name);
     const entry = fs.existsSync(path.join(root, relative)) ? fs.lstatSync(path.join(root, relative)) : null;
@@ -143,16 +152,70 @@ export function validateWiki(root) {
   return findings;
 }
 
+// Bring existing notes into shape without editing a body. Every inserted value
+// is the least-claiming one the schema allows: `status: partial` says the note
+// was completed mechanically rather than verified, `knowledge_role: derived`
+// never outranks its inputs, and `last_verified` records the day normalize ran,
+// not a fact anyone checked. `type` is inferred from where the note actually
+// lives. A note in `archive/` is historical and is left alone, exactly as the
+// validator leaves it alone. An owner-directed design-concept article still
+// needs its `authorized_by`, `parent`, and sections; normalize adds none of
+// them and `validate` keeps reporting them.
+export function normalizeWiki(root, options = {}) {
+  const date = options.date ?? new Date().toISOString().slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('--date must be YYYY-MM-DD');
+  const wikiRoot = lanePath(root, 'wiki');
+  if (!fs.existsSync(wikiRoot)) return { changed: [] };
+  const archive = path.join(root, collectionRelative(root, 'archive'));
+  const changed = [];
+  for (const file of walkMarkdown(wikiRoot)) {
+    if (file.startsWith(archive + path.sep)) continue;
+    const relative = path.relative(root, file).split(path.sep).join('/');
+    const content = fs.readFileSync(file, 'utf8');
+    const result = insertFrontmatterKeys(content, noteFields(root, file, relative, date), relative);
+    if (result.inserted.length === 0) continue;
+    writeSafeFile(root, file, result.content);
+    changed.push({ note: relative, inserted: result.inserted });
+  }
+  return { changed };
+}
+
+function noteFields(root, file, relative, date) {
+  return [
+    ['type', [`type: ${inferredType(root, file)}`]],
+    ['status', ['status: partial']],
+    ['sensitivity', ['sensitivity: normal']],
+    ['knowledge_role', ['knowledge_role: derived']],
+    ['provenance', ['provenance:', `  - required properties completed by LLM Workbench wiki normalize ${date}`]],
+    ['source_paths', ['source_paths:', `  - ${relative}`]],
+    ['last_verified', [`last_verified: ${date}`]]
+  ];
+}
+
+function inferredType(root, file) {
+  if (path.basename(file) === 'MEMORY.md') return 'memory';
+  for (const [collection, type] of [['guidebooks', 'guidebook'], ['design-concepts', 'design-concept']]) {
+    if (file.startsWith(path.join(root, collectionRelative(root, collection)) + path.sep)) return type;
+  }
+  return 'meta';
+}
+
 if (isMainModule(import.meta.url)) {
   try {
     const [command, ...rest] = process.argv.slice(2);
     const json = rest.includes('--json');
     const pathIndex = rest.indexOf('--path');
     const root = findRoot(pathIndex >= 0 ? rest[pathIndex + 1] : process.cwd());
-    if (command !== 'validate') throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json]');
-    const findings = validateWiki(root);
-    console.log(json ? JSON.stringify(findings, null, 2) : (findings.length ? findings.map((item) => `${item.code} [${item.severity}]: ${item.message}`).join('\n') : 'ok - wiki validated'));
-    if (findings.some((item) => item.severity === 'error')) process.exitCode = 1;
+    const dateIndex = rest.indexOf('--date');
+    if (!['validate', 'normalize'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json]');
+    if (command === 'normalize') {
+      const result = normalizeWiki(root, { date: dateIndex >= 0 ? rest[dateIndex + 1] : undefined });
+      console.log(json ? JSON.stringify(result, null, 2) : (result.changed.length ? result.changed.map((entry) => `${entry.note}: inserted ${entry.inserted.join(', ')}`).join('\n') : 'ok - every note already carries its required properties'));
+    } else {
+      const findings = validateWiki(root);
+      console.log(json ? JSON.stringify(findings, null, 2) : (findings.length ? findings.map((item) => `${item.code} [${item.severity}]: ${item.message}`).join('\n') : 'ok - wiki validated'));
+      if (findings.some((item) => item.severity === 'error')) process.exitCode = 1;
+    }
   } catch (error) {
     console.error(`error: ${error.message}`);
     process.exitCode = 1;
