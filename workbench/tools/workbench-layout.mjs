@@ -515,6 +515,34 @@ function validateFirstSpec(project, expectedVersion) {
 
 export const TOOLS_RECEIPT = '.workbench-tools.json';
 
+// The closed set of Workbench-managed runtime tools. Later capability tickets
+// append to this list; the product lane must contain exactly these files.
+//
+// It lives here, in a tool every room installs, rather than in the release-side
+// installer `tools/workbench-tools.mjs`, which is never copied into a room.
+// Deriving the expected set from the lane's own contents instead left one
+// condition unreachable from inside a room: a managed file deleted together
+// with its receipt key leaves nothing on disk to be missed. Ten of the eleven
+// tools are in `doctor`'s own import graph, so deleting one of those fails
+// loudly at import time - but `sessions.mjs` is imported by none of them, and
+// its deletion was a silent clean run. A room now carries the authoritative
+// set, and it is no less trustworthy than the check that reads it: this file
+// is itself managed, so rewriting the list means rewriting a managed file,
+// which the receipt hash comparison reports.
+export const RUNTIME_TOOLS = Object.freeze([
+  'adr.mjs',
+  'diagnostics.mjs',
+  'markdown-table.mjs',
+  'privacy.mjs',
+  'sessions.mjs',
+  'spec-packet.mjs',
+  'spec-workbench.mjs',
+  'template-placeholders.mjs',
+  'wiki.mjs',
+  'workbench-layout.mjs',
+  'workbench-paths.mjs'
+]);
+
 // Readiness also needs the Workbench-managed runtime tools: an installed lane
 // whose receipt names the same release as the manifest.
 function validateGenesisRuntime(project, expectedVersion) {
@@ -595,28 +623,36 @@ export function managedReceiptFiles(receipt) {
 // check's SCOPE: the drift report names the file it found, so deleting that one
 // key switched the check off for exactly that file while every remaining key
 // went on verifying. Nothing compared the receipt's key set against the files
-// actually managed.
+// actually managed. Both entry points now run this comparison against
+// `RUNTIME_TOOLS`, so the receipt scopes nothing.
 //
-// A room holds no authoritative list of what should be managed - the release
-// does, and `tools/workbench-tools.mjs` is never installed into a room - so the
-// expected set here is derived from the lane's own contents: every ordinary
-// entry the managed lane holds must be accounted for by a receipt key. That
-// closes the pruned-key case for any file still on disk, and reports a foreign
-// file smuggled into the lane as the same condition. Dotted entries are
-// skipped: the receipt itself, the installer's transient `.receipt-*` staging
-// directory, and editor or VCS droppings are not managed runtime.
+// Two conditions, not one, because they have different repairs and a single
+// message named a remedy that works for only the first:
 //
-// What it cannot see is a key and its file deleted together; that is the
-// deleted-file limitation the spec records, which fails loudly at import time
-// because every managed tool is in doctor's own import graph.
-export function unaccountedLaneFiles(laneDir, files) {
+// `unaccounted` - a managed tool the receipt has no key for, whether or not the
+// file is still on disk. The expected set is `RUNTIME_TOOLS`, so a file deleted
+// along with its key is named rather than silently leaving the expected set.
+// Refreshing the receipt with `update --explicit-update` rewrites the key and
+// restores the file, so the remedy named is one that works.
+//
+// `foreign` - an ordinary lane entry the managed runtime does not include.
+// `update`'s changed set is derived from `RUNTIME_TOOLS`, so it can never adopt
+// such a file: it reports `current` and changes nothing. The only repair is to
+// move the file out of the managed lane, which is what the message must say.
+//
+// Dotted entries are skipped on both sides: the receipt itself, the installer's
+// transient `.receipt-*` staging directory, and editor or VCS droppings are not
+// managed runtime.
+export function laneCoverage(laneDir, files) {
   const named = new Set(files.entries.map(([tool]) => tool));
+  const unaccounted = RUNTIME_TOOLS.filter((tool) => !named.has(tool));
   let entries;
-  try { entries = fs.readdirSync(laneDir, { withFileTypes: true }); } catch { return []; }
-  return entries
+  try { entries = fs.readdirSync(laneDir, { withFileTypes: true }); } catch { entries = []; }
+  const foreign = entries
     .map((entry) => entry.name)
-    .filter((name) => !name.startsWith('.') && !named.has(name))
+    .filter((name) => !name.startsWith('.') && !named.has(name) && !RUNTIME_TOOLS.includes(name))
     .sort();
+  return { unaccounted, foreign };
 }
 
 // The managed-runtime integrity check, kept in a tool every room carries. The
@@ -653,6 +689,10 @@ export function receiptDrift(laneDir, receipt, options = {}) {
 // that exists and cannot be read, records no file hashes, or names a file
 // outside the lane is reported, because none of those may silently switch the
 // integrity check off.
+function coverageFinding(relative, reason, remedy) {
+  return { code: 'tools-receipt-missing', message: `${relative}/${TOOLS_RECEIPT} ${reason}; ${remedy}`, lane: relative };
+}
+
 export function managedRuntimeDrift(project, options = {}) {
   const relative = options.lane ?? lanes.tools;
   const laneDir = path.join(project, relative);
@@ -666,11 +706,20 @@ export function managedRuntimeDrift(project, options = {}) {
   const files = managedReceiptFiles(receipt);
   if (files.error) return unreadable(files.error);
   // Coverage before content: a receipt that does not account for the whole
-  // lane cannot scope a trustworthy drift report over part of it, and both
-  // conditions block identically, so the operator loses nothing by being told
-  // the more fundamental one first.
-  const unaccounted = unaccountedLaneFiles(laneDir, files);
-  if (unaccounted.length) return unreadable(`does not account for ${unaccounted.join(', ')}`);
+  // managed runtime cannot scope a trustworthy drift report over part of it,
+  // and both conditions block identically, so the operator loses nothing by
+  // being told the more fundamental one first. Each condition names the repair
+  // that works for it; `reinstall` works for neither, because `install` refuses
+  // a lane that already carries a receipt.
+  const coverage = laneCoverage(laneDir, files);
+  if (coverage.unaccounted.length) {
+    return coverageFinding(relative, `does not account for ${coverage.unaccounted.join(', ')}`,
+      'refresh it with `workbench-tools.mjs update --project PATH --explicit-update` from a release checkout');
+  }
+  if (coverage.foreign.length) {
+    return coverageFinding(relative, `does not account for ${coverage.foreign.join(', ')}, which the managed runtime does not include`,
+      `move it out of ${relative} after reviewing it; \`update\` cannot adopt a file the managed runtime does not include`);
+  }
   const drift = receiptDrift(laneDir, receipt);
   if (drift.length === 0) return null;
   const named = drift.map((item) => `${item.tool} (${item.reason}, ${item.state})`).join(', ');

@@ -14,27 +14,18 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { managedReceiptFiles, receiptDrift, unaccountedLaneFiles } from '../workbench/tools/workbench-layout.mjs';
+import { RUNTIME_TOOLS, laneCoverage, managedReceiptFiles, receiptDrift } from '../workbench/tools/workbench-layout.mjs';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceLane = path.join(productRoot, 'workbench', 'tools');
 export const RECEIPT_NAME = '.workbench-tools.json';
-// The closed set of Workbench-managed runtime tools. Later capability tickets
-// append to this list; the product lane must contain exactly these files.
-export const RUNTIME_TOOLS = Object.freeze([
-  'adr.mjs',
-  'diagnostics.mjs',
-  'markdown-table.mjs',
-  'privacy.mjs',
-  'sessions.mjs',
-  'spec-packet.mjs',
-  'spec-workbench.mjs',
-  'template-placeholders.mjs',
-  'wiki.mjs',
-  'workbench-layout.mjs',
-  'workbench-paths.mjs'
-]);
+// The closed set of Workbench-managed runtime tools is defined in
+// `workbench/tools/workbench-layout.mjs` and re-exported here. It has to live
+// in a tool every room installs: this installer never is, so a room that read
+// its expected set from here would have none, and a managed file deleted with
+// its receipt key would leave nothing on disk for a lane-derived set to miss.
+export { RUNTIME_TOOLS };
 
 function lstatOrNull(target) {
   try { return fs.lstatSync(target); } catch (error) {
@@ -203,16 +194,18 @@ export function verify(project) {
   const sourceDrift = RUNTIME_TOOLS.filter((tool) => receipt.files[tool] !== sha256(path.join(sourceLane, tool)));
   // The receipt's key set decided how much of the runtime got checked, so a
   // receipt pruned of the file somebody tampered with verified ten of eleven
-  // tools and returned `valid`. Here, unlike in a room, the authoritative
-  // managed set is at hand: a receipt that omits a member of RUNTIME_TOOLS is
-  // refused whether or not that file is still on disk, and the lane check
-  // catches anything smuggled in beside them.
-  const unaccounted = [...new Set([
-    ...RUNTIME_TOOLS.filter((tool) => !Object.prototype.hasOwnProperty.call(receipt.files, tool)),
-    ...unaccountedLaneFiles(lane, files)
-  ])].sort();
-  if (unaccounted.length) {
-    return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} does not account for ${unaccounted.join(', ')}; refresh it with \`workbench-tools.mjs update --project PATH --explicit-update\` after reviewing the lane.`, unaccounted }, receipt, updateAvailable: sourceDrift };
+  // tools and returned `valid`. Both sides now compare against the same
+  // authoritative managed set, so a receipt that omits a member of
+  // RUNTIME_TOOLS is refused whether or not that file is still on disk, and a
+  // file smuggled in beside them is reported as the separate condition it is:
+  // `update` rewrites a lost key but can never adopt a foreign file, so the two
+  // must not share a remedy.
+  const coverage = laneCoverage(lane, files);
+  if (coverage.unaccounted.length) {
+    return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} does not account for ${coverage.unaccounted.join(', ')}; refresh it with \`workbench-tools.mjs update --project PATH --explicit-update\` after reviewing the lane.`, unaccounted: coverage.unaccounted }, receipt, updateAvailable: sourceDrift };
+  }
+  if (coverage.foreign.length) {
+    return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} does not account for ${coverage.foreign.join(', ')}, which the managed runtime does not include; move it out of ${relative} after reviewing it. \`update\` reports \`current\` and changes nothing here, and \`install\` refuses a lane that already carries a receipt.`, foreign: coverage.foreign }, receipt, updateAvailable: sourceDrift };
   }
   // The same comparison an installed room runs from workbench-layout.mjs, here
   // with the release source available, so each drifted file is classified as a

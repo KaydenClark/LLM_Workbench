@@ -252,6 +252,47 @@ test('a receipt that does not account for every managed file is refused, not rea
     const smuggled = run(installer, 'verify', '--project', dir);
     assert.equal(smuggled.report.error?.code, 'tools-receipt-missing', smuggled.stdout);
     assert.match(smuggled.report.error.message, /does not account for smuggled\.mjs/);
+    // A foreign file and a lost key are not the same condition, and the
+    // message that serves both must not send the operator to a command that
+    // cannot repair this one: `update`'s changed set is derived from the
+    // managed tool list, so it never contains a file the runtime does not
+    // include.
+    assert.match(smuggled.report.error.message, /move it out of/, 'the only repair for a foreign file is removing it from the lane');
+    assert.doesNotMatch(smuggled.report.error.message, /--explicit-update/, 'update cannot adopt a foreign file, so it must not be named here');
+    assert.equal(run(installer, 'update', '--project', dir, '--home', home, '--explicit-update').report.status, 'current',
+      'update reports current and changes nothing, which is why naming it here was a dead end');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+// The refusal a room now raises for a managed file removed together with its
+// receipt key names `update --explicit-update`. That remedy has to restore the
+// file as well as the key, or the room is told to run a command that leaves it
+// refused.
+test('update --explicit-update restores a managed file removed together with its receipt key', () => {
+  const dir = project();
+  const home = fixture('workbench-tools-home-');
+  try {
+    assert.equal(run(installer, 'install', '--project', dir).report.status, 'installed');
+    const lane = path.join(dir, 'workbench', 'tools');
+    const receiptPath = path.join(lane, RECEIPT_NAME);
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const pruned = { ...receipt.files };
+    delete pruned['sessions.mjs'];
+    fs.rmSync(path.join(lane, 'sessions.mjs'));
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+
+    const refused = run(installer, 'verify', '--project', dir);
+    assert.equal(refused.report.error?.code, 'tools-receipt-missing', refused.stdout);
+    assert.match(refused.report.error.message, /does not account for sessions\.mjs/);
+
+    const repaired = run(installer, 'update', '--project', dir, '--home', home, '--explicit-update');
+    assert.equal(repaired.status, 0, repaired.stdout);
+    assert.deepEqual(repaired.report.changed, ['sessions.mjs'], 'the managed file the lane lost is the one rewritten');
+    assert.ok(fs.existsSync(path.join(lane, 'sessions.mjs')), 'the deleted managed file is restored, not only its key');
+    assert.equal(run(installer, 'verify', '--project', dir).report.status, 'valid');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
