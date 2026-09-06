@@ -58,5 +58,25 @@ if led:
 else:
     print(f"  OK  {LEDGER}: {len(first)} row(s), all at first-published text")
 
+# A rewritten row emitted without its `| 20...` prefix is not a row, so the
+# checks above cannot see it - and one shipped that way on this branch, inside
+# the commit that claimed to enforce a single append-only rule. Any non-row line
+# sitting between two rows inside an evidence table is that shape.
+def orphans(path):
+    out=[]; inside=False
+    for i,l in enumerate(open(path,encoding="utf-8").read().split("\n"),1):
+        if l.startswith("| Date |") or l.startswith("| 20"): inside=True; continue
+        if inside:
+            if l.strip()=="" or l.startswith("|"):
+                if l.strip()=="": inside=False
+                continue
+            out.append((i,l))
+    return out
+for spec in SPECS+[None]:
+    path=f"workbench/specs/{spec}/SPEC.md" if spec else LEDGER
+    for i,l in orphans(path):
+        bad+=1; print(f"  VIOLATION {path}:{i}: a non-row line inside an evidence table - a rewritten row without its prefix looks exactly like this")
+        print(f"     {l[:90]}")
+
 print("\nAPPEND-ONLY (first-published text preserved for every row):", "CLEAN" if not bad else f"{bad} VIOLATION(S)")
 sys.exit(1 if bad else 0)

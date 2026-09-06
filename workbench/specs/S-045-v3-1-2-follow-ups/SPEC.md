@@ -6,7 +6,7 @@
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-09-06
-**Catalog description:** Own the three follow-ups the v3.1.2 slices recorded and could not close, so owed work is reachable from `next` instead of surviving only as prose in completed specs.
+**Catalog description:** Own the three follow-ups the v3.1.2 slices recorded and could not close, so owed work appears on the Taskboard and in the spec catalog instead of surviving only as prose inside completed specs.
 **Blockers:** owner direction on whether v3.1.3 takes these
 **Latest event:** Created at the v3.1.2 closeout because two of the three had their named owner completed out from under them.
 **Next gate:** Owner decides whether these land in v3.1.3; until then every ticket stays blocked and `next` correctly excludes them.
@@ -14,9 +14,12 @@
 ## Outcome
 
 Three limitations that S-040, S-042 and S-044 recorded, reviewed, and could not
-close inside their own scope have a spec that owns them. Each is reachable from
-the ordinary work loop rather than surviving only as prose inside a completed
-spec that `AGENTS.md` tells arriving agents not to load.
+close inside their own scope have a spec that owns them. Each appears on the
+Taskboard and in the Blueprint spec catalog rather than surviving only as prose
+inside a completed spec that `AGENTS.md` tells arriving agents not to load.
+`next` deliberately does **not** return them: every ticket is blocked on owner
+direction, and `next` excludes a blocked slice. Visible and owed, not
+dispatchable.
 
 ## Why It Matters
 
