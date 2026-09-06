@@ -97,6 +97,7 @@ node tools/test-feedback-automation.mjs
 node tools/test-socket-contract.mjs
 node tools/test-symlink-invocation.mjs
 node tools/test-control-fidelity.mjs
+python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
 node workbench/tools/spec-workbench.mjs doctor

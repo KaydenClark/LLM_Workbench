@@ -1,15 +1,15 @@
 # S-040 - Skill Gate Route Selection And Link Resolution
 
 **Spec ID:** S-040
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** claude-opus-5
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Make the shared-skill refusals name the route that clears them and stop the installer's link check from being stricter than the install it guards, so a workstation with a linked skill directory is a route choice rather than a portfolio-wide stop.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Merged into `integration` as PR #67 at `627968e` on 2026-09-06 **with no fresh review after the second returned CHANGES REQUESTED**; the owed review ran retrospectively on 2026-09-06 and returned CHANGES REQUESTED with a HIGH finding, owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-005.
+**Next gate:** None; the capability is complete and contained in `integration`.
 
 ## Outcome
 
@@ -205,15 +205,30 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Both slices verified together on the committed tree at `2f5f9e1` | Full `AGENTS.md` suite: 25 node test files, `evals/tasks/task_b_path_safety/test_grade.py`, `evaluate-workbench --path templates --include-controls`, `render`, and `doctor` all green; each new case was run against the unmodified `09bfff7` implementation before any source edit | `skills/update-harness/SKILL.md` updated; `RUNBOOK.md` and `templates/ADOPTION.md` checked, no update needed - no refusal code and no operator preparation step changed | Spec left `active` with `Pending` completion for the separate-context integration review, matching S-036, S-037 and S-038 |
 | 2026-09-06 | spec | Correcting the previous row's loose word for the evaluator result | `node tools/evaluate-workbench.mjs --path templates --include-controls` exits 0 and scores 106.6/113 with `Team coordination: manager instructions, subagent instructions` outstanding; it is a diagnostic, not a pass/fail gate, and the score is unchanged by this spec because `templates/` is untouched (`git diff --stat 09bfff7 HEAD` lists no path under it) | No documentation change | none |
 | 2026-09-06 | spec | Separate-context review confirmed UP-015 closed as filed and blocked on one false record claim, corrected here | Reviewer rebuilt the reported host shape and confirmed the installer defect is gone: refused with `skill-path-collision` at `09bfff7`, `complete` with a `resolved` target at `ce3da23`. Both reds reproduced as genuine, and the three TK-001 negative cases pass at base, so they are real regression guards. Nine link shapes probed against `resolveSkillLink` with no accept-that-should-refuse; the safety boundary holds, with target bytes and the link itself unchanged and no marker written through it. Blocking finding: Remaining Limitations claimed "No limitation remains from that question", which is false for a host whose skill is symlinked into BOTH discovery roots. Reproduced here: `lstat(...).isDirectory()` returns false for each link while `stat` returns true, so `missingUserSkills` and `hasRequiredUserSkills` both report the skill missing. That makes the installer and the presence gate disagree - new in this candidate - and makes the `--layout-only` route the TK-002 messages name fail on that host. No code change: the Non-Goals bar the presence-only path | The false claim is replaced by the condition, its two consequences, and a correction to UP-015's own premise about what the presence paths accept; routed to a follow-up rather than closed | The presence-only link gap is unfixed and now recorded; it needs a follow-up spec or an upstream item under S-038 |
-
 | 2026-09-06 | spec | Separate-context re-review confirmed the recorded limitation accurate and blocked on seven stale citations; corrected here | Reviewer rebuilt the host and reproduced the table this spec records: at `09bfff7` the installer and both presence gates agreed by refusing; at `29cabf5` the installer reports `complete` with a `resolved` target while `missingUserSkills` and `hasRequiredUserSkills` report the same skill missing. It confirmed UP-015's own Claim is wrong at `REPORT-upstream-v3-1-1-summary-2026-09-06.md:113-119`, and that the repair was documentation-only. Blocking finding: `Current Verified State` promised "following one lands on what it names" while seven of its nine citations named lines TK-001 and TK-002 had themselves moved - `:114` for `missing-user-skills` landed on `dirty-project`, and `:112-116` for the early exit landed on git-status plumbing. Every pre-change condition is now anchored to `git show 09bfff7:` with the shipped line alongside, the pattern S-043 was required to adopt for this same defect class | The limitation headline said "both discovery roots" while the mechanism affects any host whose every populated root holds a link; broadened to the mechanism. The sentence claiming the gate accepts a skill in either discovery root is corrected in place rather than only contradicted sixty lines later | The presence-only link gap stays unfixed and routed to a follow-up spec or an upstream item under S-038 |
-
+| 2026-09-06 | spec | Spec completed; the reviewed candidate is contained in `integration` | Merged as PR #67 at `627968e`. `git merge-base --is-ancestor 627968e origin/integration` returns true; `git ls-tree origin/main` carries no `workbench/` tree, so `main` is untouched. Full `AGENTS.md` suite re-run on the merged `integration` tip `18ffc0d`: 25 node suites plus the path-safety grader all pass, `render` leaves no drift, `doctor` exits 0, `check-append-only.py` CLEAN, `git diff --check` clean, no CRLF. Guardrail 78/100 and templates 106.6/113, both unchanged from the pre-implementation baseline - a control-surface change is not expected to move either, and neither moved | Status, latest event, next gate and Completion Result reconciled with the merged reality | Limitations recorded in this spec stay open and routed; none is closed by the merge |
+| 2026-09-06 | spec | **Gate deviation recorded: this spec merged without the fresh review its repair required** | Surfaced by the v3.1.2 closeout's review-round recount, not by anything in this spec. The sequence: the second separate-context review of `29cabf5` returned CHANGES REQUESTED, blocked on seven stale citations. The repair landed as `dbe67de`, a line-count correction as `627968e`, and `627968e` was merged as PR #67 - **with no fresh review of either commit.** `AGENTS.md` Git Rules: "A new candidate requires a fresh review." It was skipped. Worse, `627968e`'s own commit message opens "The re-review approved this candidate and noted, non-blocking, that…". The re-review did not approve; it returned CHANGES REQUESTED and separately noted the line-count nit. That sentence misdescribes the gate it was bypassing. What is true and checkable: the repair was documentation-only - `git diff ce3da23 dbe67de --stat -- '*.mjs' 'templates/' 'skills/'` is empty, and `git diff dbe67de 627968e` is two lines of one sentence - and the full suite was green at merge. That bounds the risk; it does not substitute for the review, and a documentation-only delta is exactly the kind this project has repeatedly found false claims in. A retrospective separate-context review of the merged delta is requested rather than assumed clean | No control text changes from this row; it records a process failure against the spec that suffered it | The retrospective review is owed. If it finds anything, that finding lands as a new linked spec, since this one is complete and contained |
+| 2026-09-06 | spec | The retrospective review the row above says is owed was run; it returned CHANGES REQUESTED with a HIGH finding | Reviewed `git diff ce3da23 627968e`, the exact unreviewed range. The bounding facts hold: the range touches only this SPEC, no `.mjs`, `.py`, `.json`, `templates/` or `skills/` path, so the repair is documentation-only; `dbe67de..627968e` is one two-line sentence; all seven repaired citations land on content matching their prose. **The HIGH finding is what the repair re-published under the "Verified in this repository on 2026-09-06" stamp**: this spec says `~/.claude/skills/code-review` is a junction to `~/.agents/skills/code-review` and that the installer refused with `skill-path-collision`. Measured read-only, twice, by two reviewers: `~/.claude/skills` is the symlink and both `code-review` directories are ordinary, so the link is one level up from where this spec puts it; and `validateDestinationRoot` walks destination ancestors first, returning `discovery-root-collision` at `~/.claude/skills` and `foreign-git-root` at `~/.agents/skills`, either of which precedes any per-skill check - making `skill-path-collision` unreachable for that layout. This repository's own `workbench/feedback/REPORT-v3-1-1-acceptance-2026-09-05.md` agrees with the measurement and not with this spec. TK-002's half is unaffected and does help that host | Header `Latest event` repaired to state the deviation and the outcome; the host record and the discovery-root question routed to S-045 TK-005; Remaining Limitations names it | The false host record stands in this spec until S-045 TK-005 acts. It is not corrected here because this spec is complete and contained, and `AGENTS.md` routes a later change to a new linked spec |
 
 ## Completion Result
 
-Pending.
+A linked destination whose realpath already holds the skill installs and reports the resolution, while a symlink to a file, a dangling link, and a link to a directory without the skill all still refuse. Both shared-skill refusals name `--layout-only`, and `skills/update-harness/SKILL.md` states the route-selection rule before the migration seam runs.
+
+UP-015 is closed as filed: the reviewer rebuilt the reported host and confirmed the installer refuses at `09bfff7` and completes with a `resolved` target here. Nine link shapes were probed with no accept-that-should-refuse, and nothing is written through a link.
+
+A limitation this capability opens is recorded rather than hidden: the presence-only gates judge with `lstatOrNull(...)?.isDirectory()`, so on a host where every root holding the skill holds it as a link, they still report it missing while the installer reports `complete`. That disagreement is new, and the `--layout-only` route the messages name does not complete there. Non-Goals bar the fix, so it is routed to a follow-up. The spec also corrects a premise it inherited from UP-015 without testing: the presence paths accept a skill only where a root holds an ordinary directory, never through a link.
 
 ## Remaining Limitations Or Follow-Up Specs
+
+- **This spec's host record is false and sits under a verification stamp.** The
+  `Current Verified State` section places the symlink at the skill directory
+  and names `skill-path-collision` as the refusal; measurement puts the symlink
+  one level up at `~/.claude/skills` and shows that code unreachable for the
+  layout, with `discovery-root-collision` and `foreign-git-root` preceding it.
+  Owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-005, which also carries
+  the open question the record obscured: whether a linked or Git-owned discovery
+  root is supported, refused, or routed. That, not the skill-level link this
+  spec addressed, is the portfolio-wide stop.
 
 - The reporting host's `code-review` junction is supported as-is by owner
   decision of 2026-09-06, recorded in
@@ -247,9 +262,9 @@ Pending.
   defect it reproduced is gone - but the premise is corrected here rather than
   carried forward.
 - Changing the presence-only path is barred by this spec's Non-Goals, so the
-  condition is recorded and routed rather than fixed: it needs a follow-up spec,
-  or an upstream item under
-  [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md).
+  condition is recorded and routed rather than fixed: it is owned by
+  [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-001, created at the v3.1.2
+  closeout because completing S-038 removed the owner this spec had named.
 - Rooms that already stopped are not retried by this spec.
 
 ## Supersession

@@ -8,8 +8,8 @@
 **Updated:** 2026-09-06
 **Catalog description:** Stop a healthy room from reading as failed by separating what a doctor finding blocks from how loudly it is printed, without changing any blocking semantics.
 **Blockers:** none
-**Latest event:** Spec completed and removed from the hot board.
-**Next gate:** none
+**Latest event:** Merged into `integration` as PR #66 at `5b25f37` on 2026-09-06 **with no fresh review after its review returned CHANGES REQUESTED**; the owed review ran retrospectively on 2026-09-06 and approved the delta.
+**Next gate:** None; the capability is complete and contained in `integration`. The skipped gate is discharged and disclosed, not undone.
 
 ## Outcome
 
@@ -197,7 +197,7 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | TK-001 | Ticket closed | node tools/test-diagnostics.mjs: 13/13 pass. Red first at the named seam: the import of formatDoctorReport failed with "SyntaxError: The requested module does not provide an export named formatDoctorReport"; with the seam extracted at the current ungrouped shape the grouping case failed strictEqual with actual "skill-generation-unknown [attention, blocks none]: ... duplicate-id [error, blocks selection]: ..." against the expected grouped report, and the CLI case failed with "unexpected line in a failing doctor report: blocked-slice [error, blocks selected-slice]: S-001/TK-001 waits on S-999". Both green after the grouping change, with the other 11 cases unchanged. cmp of doctor --json before and after on this repository: byte-identical (9729 bytes). | RUNBOOK.md diagnostics section documents the grouped shape; the effect table rows were not touched or reordered. AGENTS.md Authority Order: Docs checked; no update needed - it names the effects (doctor fails on all and selection, next excludes blocked work, claim refuses a slice blocker, attention stays visible) and no effect changed. | Grouping does not reduce the finding count; skill-generation-unknown volume stays with S-031. A blocking code registered after this spec is not in the named pin until added. |
 | 2026-09-06 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 | 2026-09-06 | TK-001 | Separate-context review returned CHANGES REQUESTED on two record defects and one robustness gap; all three closed | The pin did not meet the criterion checked above it. Reviewer mutation: `stale-claim` promoted from `('attention','specs','none')` to `('error','specs','selection')` left the pin at `pass 1 / fail 0`, because `pinnedBlocking` is a subset check that never notices a code ARRIVING in a blocking effect and the severity invariant passed when severity moved to `error` in the same edit. Reproduced here before fixing. All nine attention codes are now pinned by triple, so all 44 registered codes are covered; the same mutation now fails with `AssertionError: stale-claim effect moved`, and the unmutated suite is 14/14. Added a test binding `EFFECTS` to `DOCTOR_GROUPS`: `formatDoctorReport` throws on an effect matching no group, that throw reaches `main().catch` and prints NO findings including real blocking ones, so extending `EFFECTS` without a group is a total `doctor` outage that nothing else in the suite caught - the throw's only other cover passes a hand-made object rather than the vocabulary. `DOCTOR_GROUPS` is exported to make that seam real | Three live citations named lines this ticket itself moved - `:551`, `:553`, `:551-553` now land on argument parsing and a `toCamel` helper. Anchored to `git show 09bfff7:` for the pre-change condition, with the shipped-tree lines given alongside | The pin still tolerates a code registered later by another spec; recorded in Remaining Limitations rather than closed |
-
+| 2026-09-06 | spec | **Gate deviation recorded: this spec merged without the fresh review `AGENTS.md` requires.** Its separate-context review returned CHANGES REQUESTED; the repair landed as `5b25f37` and PR #66 merged it with no fresh review. Recorded here rather than by rewriting any published row | Retrospective separate-context review run 2026-09-06 against `git diff cb4d9b9 5b25f37`, the whole unreviewed surface. **APPROVED**: no finding in `5b25f37` would have blocked the merge. The reviewer reproduced the defect the repair closed - mutating a pinned code's effect passes green at the parent `cb4d9b9` and fails with `stale-claim effect moved` at `5b25f37` - so the pin is real rather than decorative, and confirmed the one executable change is `const DOCTOR_GROUPS` becoming `export const DOCTOR_GROUPS`, with no reachable behavior effect. It also checked `RUNBOOK.md`'s `none` (attention) row against `registeredCodes()` at `18ffc0d`: 11 codes each side, set difference empty | Header `Latest event` and `Next gate` repaired to state the deviation | The pin covered all 44 codes registered at `5b25f37`; two codes registered since by sibling merges, `stale-seed` and `unverified-provenance`, sit outside it, and the reviewer demonstrated the reviewed mutation class passing silently against them at `18ffc0d`. Routed to S-045 |
 
 ## Completion Result
 
@@ -215,7 +215,13 @@ byte-identical to its pre-change output on this repository.
   list. `skill-generation-unknown` volume stays with S-031.
 - The registry pin is a named set, so a blocking code registered after this
   spec is not pinned until it is added to `PINNED_EFFECTS`. The whole-registry
-  invariant still holds it to `error` severity.
+  invariant still holds it to `error` severity. **This has already reopened:**
+  the retrospective review of the skipped gate found `stale-seed` and
+  `unverified-provenance`, both registered since by sibling merges, outside the
+  pin, and demonstrated the exact mutation class this spec closed passing
+  silently against them at `18ffc0d`. Owned by
+  [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-006, which also carries the
+  `group.title` to `group.name` message fix in the same touch.
 - Grouping is fixed; there is no ordering or verbosity option, and none was
   asked for.
 

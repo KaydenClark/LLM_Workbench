@@ -1,15 +1,15 @@
 # S-037 - Line-Ending-Agnostic Record Parsing
 
 **Spec ID:** S-037
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** claude-opus-5
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Parse ADR and Wiki frontmatter by its structure rather than by a bare line feed, so a Workbench room checked out on a CRLF host reports its real record state instead of declaring every record broken.
 **Blockers:** none
-**Latest event:** Red/green landed for the shared frontmatter parser and the adoption memory writer; a simulated CRLF room drops from 30 findings to 0.
-**Next gate:** Independent review of the exact candidate, then merge into `integration`.
+**Latest event:** Merged into `integration` as PR #64 on 2026-09-06 after two separate-context reviews.
+**Next gate:** None; the capability is complete and contained in `integration`.
 
 ## Outcome
 
@@ -100,7 +100,7 @@ Verified on 2026-09-06 at `ec3fcf58a7a91f5ca3dc5e387555a14252e6b73d`:
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Parse ADR and Wiki frontmatter independently of the line terminator and preserve the room's terminator when adoption adds memory fields | done | none | Red: a new CRLF corpus test in tools/test-adr.mjs failed at ec3fcf5 with a clean tree, 7 pass / 1 fail, with `TypeError: Cannot read properties of null (reading 'status')` at tools/test-adr.mjs:61 - the parser returned `data: null`, so the property access threw before any assertion message could render. Green: 8/8 after the fix; full AGENTS.md suite 25/25 pass on a clean tree; doctor exit 0. A cloned CRLF room went from 25 invalid-adr + 4 invalid-note + 1 stale-register to 0 record findings. |
-| TK-002 | Obtain independent review of the exact candidate and land it on `integration` | ready | TK-001 | Pending. |
+| TK-002 | Obtain independent review of the exact candidate and land it on `integration` | done | none | Two separate-context reviews: the first returned CHANGES REQUESTED on a regression the writer half introduced against its base, the second closed all three blocking findings after repair and left one false spec clause, corrected in `6422710`. Merged as PR #64; `git merge-base --is-ancestor 6422710 origin/integration` confirms containment at `5561906`. `origin/main` still carries no `workbench/` tree. |
 
 ### TK-001 - One parser, any terminator
 
@@ -127,7 +127,7 @@ the PR into `integration`, merge it, and prove remote containment. Stop before
 - [x] A simulated CRLF checkout of this repository reports zero record findings from `doctor`.
 - [x] The adoption memory writer locates the closing fence by the terminator that delimits that fence, splices missing fields in that terminator, and writes a created frontmatter block in the terminator the body already uses.
 - [x] The unchanged full `AGENTS.md` suite passes with the fix applied on a clean tree.
-- [ ] An exact-SHA independent review, PR, and remote `integration` containment are recorded; `main` remains untouched.
+- [x] An exact-SHA independent review, PR, and remote `integration` containment are recorded; `main` remains untouched.
 
 ## Testing Seams
 
@@ -175,10 +175,28 @@ constraint is recorded as a follow-up on S-036.
 | 2026-09-06 | TK-001 | Ticket closed | Red: new CRLF corpus test failed at `ec3fcf5` on a clean tree, 7 pass / 1 fail, with `TypeError: Cannot read properties of null (reading 'status')` at `tools/test-adr.mjs:61`. Green: 8/8; full suite 25/25 pass; template evaluation 106.6/113 and guardrail 78/100 unchanged; doctor exit 0; the CRLF room dropped from 30 record findings to 0 | Docs checked; no update needed - the correction is internal to two parsers and is explained at both seams | TK-002 independent review, PR, and integration containment |
 | 2026-09-06 | TK-001 | Second separate-context review closed all three blocking findings and left one false clause, corrected here | Reviewer drove the real `migrate` at base `5a98c00`, at the rejected `da95e58`, and at this candidate over five terminator shapes: the candidate loses no required field on any, while base duplicates frontmatter on all-CRLF and CR-only rooms and `da95e58` drops five fields on the mixed and CR-only rooms. Reviewer fuzzed `locateClosingFence` against `parseFrontmatter` over 219,446 inputs and found no case where a parse returns data and the fence is unlocatable, and no off-by-one, so the throw is unreachable in normal operation; it surfaces through `migrate`'s existing catch as `migration-failed` with exit 1, not an uncaught crash. Qualification recorded rather than glossed: three of the four new cases are red at base `5a98c00`, but "LF fence with one pasted CRLF body line" is green there, because base never carried the whole-file terminator test - that case guards against the rejected `da95e58`, not against base. Full suite 25/25, task_b pass, templates 106.6/113, doctor exit 0, `git diff --check` clean, render no drift | Desired Behavior #3 still said the writer "returns without writing" when the fence is unlocatable, contradicting this spec's own evidence row and the delivered code; corrected to say it throws | TK-002 PR and integration containment |
 | 2026-09-06 | TK-001 | Separate-context review returned CHANGES REQUESTED; the writer half of the change was repaired and given the test it lacked | Reviewer reproduced a regression against the base commit: `addWikiFrontmatter` derived the terminator from the whole file, so one pasted CRLF line in an otherwise-LF room brain hid the LF fence and the writer returned without writing, dropping five required fields while `migrate` still exited 0 and reported `complete`. The create branch also still joined with a hard-coded line feed, so the checked criterion was false for that branch. Red: three splice cases (all-CRLF, LF fence with one CRLF body line, CR-only) plus one create case added to `tools/test-workbench-adoption.mjs`, failing on the mixed case with `adoption must fill missing required metadata, sensitivity: normal is absent`. Green: both new blocks pass; `locateClosingFence` derives the splice point and terminator from the fence itself and `nativeEol` gives the create branch the body's terminator; an unlocatable fence now throws instead of returning silently | Two false citations corrected in this spec (the unreachable red assertion message, and the acceptance criterion that claimed create-branch behavior that did not exist); BOM and trailing-delimiter whitespace recorded as remaining limitations | TK-002 fresh independent review of the repaired candidate, PR, and integration containment |
+| 2026-09-06 | TK-002 | Ticket closed and spec completed after the approved candidate landed | Merged as PR #64 at `6422710`. `git merge-base --is-ancestor 6422710 origin/integration` returns true; `origin/main` carries no `workbench/` tree. Full `AGENTS.md` suite green at the merged tip: 25 node suites plus the path-safety grader, templates 106.6/113, guardrail 78/100, `doctor` exit 0. The second review verified the fix by driving the real `migrate` at base, at the rejected candidate, and at the repair across five terminator shapes, and by fuzzing `locateClosingFence` against `parseFrontmatter` over 219,446 inputs with no case where a parse returns data and the fence is unlocatable | Spec status, latest event, next gate, ticket row, the last acceptance box, and Completion Result reconciled with the merged reality | Ticket state had said `ready` while the work was merged; that drift is what this row repairs. BOM and trailing-delimiter whitespace stay recorded as remaining limitations |
 
 ## Completion Result
 
-Pending.
+A Workbench room now behaves identically on LF and CRLF checkouts. `parseFrontmatter`
+parses ADR and Wiki records by structure rather than by a bare line feed, and the
+adoption memory writer locates the closing fence by the terminator that delimits
+it, writing created blocks in the terminator the body already uses. A simulated
+CRLF checkout of this repository drops from 30 record findings - 25 `invalid-adr`,
+4 `invalid-note`, 1 `stale-register`, none of them true - to zero.
+
+Landed as PR #64 at `6422710`, contained in `integration` at `5561906`.
+`origin/main` carries no `workbench/` tree and is untouched. Full `AGENTS.md`
+suite green at the merged tip: 25 node suites plus the path-safety grader,
+templates 106.6/113, guardrail 78/100, `doctor` exit 0.
+
+Two separate-context reviews were required. The first found a regression the
+original fix introduced against its own base: a whole-file terminator test made
+the writer silently drop five required metadata fields from a mixed-ending room
+brain while `migrate` reported `complete`. That is recorded because it is the
+kind of defect a green suite does not catch - the writer half had no test at all
+until the review demanded one.
 
 ## Remaining Limitations Or Follow-Up Specs
 
