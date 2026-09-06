@@ -7,8 +7,9 @@ disable-model-invocation: true
 # To Spec
 
 Synthesize the current already-settled conversation into one
-stable `specs/S-###-slug/SPEC.md` capability record. Do not restart grilling or
-implement the capability.
+stable capability record at the `specs` lane declared by
+`workbench/manifest.json` (normally `workbench/specs/S-###-slug/SPEC.md`). Do
+not restart grilling or implement the capability.
 
 1. Verify the project root, nearest controls, existing specs, and relevant source
    or tests. Reuse an existing owning spec when the capability already has one;
@@ -18,13 +19,17 @@ implement the capability.
 3. Capture the outcome, why it matters, verified current state, desired behavior,
    decisions/contracts, non-goals, dependencies, acceptance, test seams,
    documentation impact, and append-only evidence structure.
-4. Seed `Vertical Implementation Slices` only with the smallest vertical tracer
-   bullet needed to make the capability schedulable. Use `/to-tickets` later for
-   detailed decomposition.
-5. Preserve project vocabulary from `LEXICON.md` and cross-cutting boundaries
+4. Set the normal stance in the assigned SPEC and each TASK (ticket) during
+   authorized planning, usually Builder for implementation; do not make arriving
+   agents select or record their own stance.
+5. Seed `Vertical Implementation Slices` only with the smallest vertical tracer
+   bullet needed to make the capability schedulable, cut with the
+   `/tracer-bullet` discipline so it pierces every layer of the stack. Use
+   `/to-tickets` later for detailed decomposition.
+6. Preserve project vocabulary from `LEXICON.md` and cross-cutting boundaries
    from `BLUEPRINT.md`. A spec owns one capability; it replaces neither.
-6. Run `node tools/spec-workbench.mjs render` and
-   `node tools/spec-workbench.mjs doctor`, then report the spec path, open owner
+7. Run `node workbench/tools/spec-workbench.mjs render` and
+   `node workbench/tools/spec-workbench.mjs doctor`, then report the spec path, open owner
    gates, and next eligible action.
 
 Do not publish a parallel tracker record, create a transient requirements file,

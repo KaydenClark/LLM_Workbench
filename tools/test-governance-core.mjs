@@ -1,0 +1,184 @@
+#!/usr/bin/env node
+// The Governance Core is carried by root controls and by the copy-ready
+// templates alike, and the ADR corpus is reconciled with the claim-level model.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import test from 'node:test';
+import { listAdrs } from '../workbench/tools/adr.mjs';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
+const CORE_TERMS = [
+  'Governance Plane', 'Workbench Contract', 'Instruction authority', 'State resolution', 'No-governance-tax rule',
+  'Diagnostic', 'Support lane', 'Collection', 'ADR', 'Checkpoint', 'Design Concept article', 'Wiki profile', 'Managed runtime tool'
+];
+
+test('root and template AGENTS separate instruction authority from state resolution', () => {
+  for (const relative of ['AGENTS.md', 'templates/AGENTS.md']) {
+    const agents = read(relative);
+    assert.match(agents, /^## Authority Order$/m, `${relative} keeps the Authority Order section`);
+    assert.match(agents, /^### Instruction Authority$/m, `${relative} names instruction authority`);
+    assert.match(agents, /^### State Resolution$/m, `${relative} names state resolution`);
+    assert.match(agents, /implementation gap/, `${relative} names the newer-Canon condition`);
+    assert.match(agents, /documentation drift/, `${relative} names the newer-Actuality condition`);
+    assert.match(agents, /cannot enlarge/, `${relative} bounds the assigned spec`);
+    assert.doesNotMatch(agents, /^\d\. Source and tests verified live\.$/m, `${relative} no longer ranks source above the assigned spec`);
+    assert.match(agents, /`doctor` fails on `all` and `selection`/, `${relative} states the diagnostic effects`);
+  }
+});
+
+test('root and template Lexicons carry the Governance Core terms and keep the owner definition of design concept', () => {
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const lexicon = read(relative);
+    assert.match(lexicon, /^## Governance Core$/m, `${relative} has a Governance Core section`);
+    for (const term of CORE_TERMS) assert.match(lexicon, new RegExp(`^\\| \\*\\*${term}\\*\\* \\|`, 'm'), `${relative} defines ${term}`);
+    assert.match(lexicon, /\*\*Design concept\*\*.*shared understanding between the parties working on a project about what that project is/s);
+  }
+  const template = read('templates/LEXICON.md');
+  assert.doesNotMatch(template, /workbench\/docs\/adr\/00\d\d-/, 'the template Lexicon must not link product-specific ADRs');
+  assert.match(template, /workbench\/docs\/adr\//, 'the template Lexicon routes to the project ADR collection');
+});
+
+test('template Blueprint and Runbook route decision records, diagnostics, and the tools lane', () => {
+  const blueprint = read('templates/BLUEPRINT.md');
+  assert.match(blueprint, /workbench\/docs\/adr\//, 'the template Blueprint names the ADR collection');
+  assert.match(blueprint, /Workbench Contract/, 'the template Blueprint names the contract');
+  const runbook = read('templates/RUNBOOK.md');
+  assert.match(runbook, /node workbench\/tools\/adr\.mjs/, 'the template Runbook names the ADR command');
+  assert.match(runbook, /node workbench\/tools\/spec-workbench\.mjs doctor/, 'the template Runbook names the doctor command');
+  assert.match(runbook, /attention/, 'the template Runbook explains attention findings');
+});
+
+test('the ADR corpus is reconciled: ADR-0008 is not ported and ADR-0025 records the supersession lineage', () => {
+  const adrs = listAdrs(root);
+  assert.equal(adrs.some((adr) => adr.number === '0008'), false, 'ADR-0008 must not be ported with its categorical rule');
+  const claimLevel = adrs.find((adr) => adr.number === '0025');
+  assert.ok(claimLevel, 'ADR-0025 exists');
+  assert.equal(claimLevel.data.status, 'accepted');
+  assert.match(String(claimLevel.data.ported_from), /ADR-0008/);
+  assert.match(String(claimLevel.data.supersedes), /Grounding/);
+  for (const adr of adrs) {
+    const owners = Array.isArray(adr.data.canonicalized_in) ? adr.data.canonicalized_in : [adr.data.canonicalized_in];
+    for (const owner of owners) assert.ok(['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md'].includes(owner) || owner.startsWith('workbench/specs/'), `${adr.name} canonicalized_in ${owner} must target a control or spec owner`);
+    if (adr.data.ported_from) assert.doesNotMatch(String(adr.data.ported_from), /\/Users\/|\/home\//, `${adr.name} ported_from must not carry a private path`);
+  }
+});
+
+test('root and template AGENTS define branch completion and merged-branch cleanup', () => {
+  for (const relative of ['AGENTS.md', 'templates/AGENTS.md']) {
+    const agents = read(relative);
+    assert.match(agents, /^### Branch Completion$/m, `${relative} names the branch completion contract`);
+    assert.match(
+      agents,
+      /A task is not finished at the push/,
+      `${relative} states that a pushed branch is not a finished task`
+    );
+    assert.match(
+      agents,
+      /git branch -d/,
+      `${relative} names the safe merged-branch delete`
+    );
+    assert.match(
+      agents,
+      /never force it with\s+`-D`/,
+      `${relative} forbids forcing a delete past the merged check`
+    );
+    assert.match(
+      agents,
+      /already ancestors of\s+the merged tip/,
+      `${relative} resolves stacked branches without a separate merge`
+    );
+  }
+});
+
+test('the safety rule exempts a provably merged branch from the ask-first gate', () => {
+  const agents = read('AGENTS.md');
+  assert.doesNotMatch(
+    agents,
+    /removing branches\/results, adding paid services/,
+    'the blanket ask-before-removing-branches rule must be narrowed'
+  );
+  assert.match(
+    agents,
+    /removing unmerged branches or results/,
+    'AGENTS.md gates only unmerged branch removal behind asking'
+  );
+});
+
+test('the Runbook carries the operational branch closeout commands', () => {
+  const runbook = read('RUNBOOK.md');
+  assert.match(runbook, /gh pr merge/, 'RUNBOOK.md names the merge command');
+  assert.match(runbook, /git branch -d/, 'RUNBOOK.md names the safe local delete');
+  assert.match(runbook, /git push origin --delete/, 'RUNBOOK.md names the remote branch delete');
+});
+
+test('the Runbook closeout proves integration containment without a local integration checkout', () => {
+  const runbook = read('RUNBOOK.md');
+  const start = runbook.indexOf('Closeout, once the integration review has passed');
+  const end = runbook.indexOf('## Manual Harness Feedback Reports');
+  assert.ok(start > -1 && end > start, 'RUNBOOK.md carries a closeout block before the feedback-report section');
+  const closeout = runbook.slice(start, end);
+  assert.match(closeout, /git switch --detach origin\/integration/, 'the closeout leaves the task branch via a detached checkout of origin/integration, so a linked worktree holding integration cannot block it');
+  assert.match(closeout, /git merge-base --is-ancestor [^\n]*origin\/integration/, 'the closeout proves that origin/integration contains the work and fails loudly otherwise');
+  assert.match(closeout, /git branch --merged origin\/integration/, 'the closeout lists merged branches against origin/integration');
+  assert.doesNotMatch(closeout, /^git switch integration\b/m, 'the closeout commands must not check out a local integration branch');
+  const template = read('templates/RUNBOOK.md');
+  assert.match(template, /\[MERGE_PR_COMMAND\]/, 'templates/RUNBOOK.md carries the merge step that the template AGENTS Branch Completion contract requires');
+  assert.match(template, /\[DELETE_MERGED_BRANCH_COMMAND\]/, 'templates/RUNBOOK.md carries the merged-branch cleanup step');
+});
+
+test('feedback and transition docs preserve review ownership and harvest observed friction', () => {
+  for (const relative of ['templates/feedback/REPORT_FORMAT.md', 'workbench/feedback/REPORT_FORMAT.md']) {
+    const format = read(relative);
+    assert.match(format, /finding identifiers are report-scoped/i, `${relative} scopes finding identifiers to their report`);
+    assert.match(format, /explicit(?:ly)? supplied destination/i,
+      `${relative} lets an assigned independent review write to its external evidence owner`);
+  }
+  for (const relative of ['templates/ADOPTION.md', 'templates/GENESIS.md', 'skills/update-harness/SKILL.md']) {
+    const content = read(relative);
+    assert.match(content, /none observed/i, `${relative} requires a truthful feedback-harvest result`);
+  }
+  const update = read('skills/update-harness/SKILL.md');
+  assert.match(update, /workbench-upgrade\.mjs upgrade --explicit-update/,
+    'the existing update route owns explicitly authorized v2-root to v3-support-root transitions');
+  assert.doesNotMatch(update, /Foundry\/Halls\/Forge/,
+    'the source update skill stays independent of the retired private source path');
+});
+
+test('controls, protocols, and core skills resolve the integration branch from the manifest declaration', () => {
+  const template = read('templates/AGENTS.md');
+  const gitRules = template.slice(template.indexOf('## Git Rules'), template.indexOf('## Session Records And Checkpoints'));
+  assert.doesNotMatch(gitRules, /`integration`/, 'templates/AGENTS.md Git Rules and Branch Completion must not hardcode a branch literal that can disagree with the placeholder');
+  assert.match(gitRules, /\[INTEGRATION_BRANCH_OR_DEFAULT\]/, 'the template keeps the fillable integration branch placeholder');
+  assert.match(gitRules, /git\.integrationBranch/, 'the template routes the branch through the manifest declaration');
+  assert.match(gitRules, /declared integration branch/, 'the template names the declared integration branch');
+  const root = read('AGENTS.md');
+  assert.match(root, /`workbench\/manifest\.json`[^\n]*`git\.integrationBranch`|`git\.integrationBranch`[^\n]*`workbench\/manifest\.json`/, 'root AGENTS.md names the manifest declaration of its integration branch');
+  for (const relative of ['skills/genesis/SKILL.md', 'skills/adoption/SKILL.md']) {
+    const skill = read(relative);
+    assert.match(skill, /git\.integrationBranch/, `${relative} resolves the branch from the manifest`);
+    assert.match(skill, /create[^\n]*from the default branch/i, `${relative} creates the declared branch from the default branch when authorization permits`);
+    assert.doesNotMatch(skill, /only to `integration`/, `${relative} must not promote to a bare branch literal`);
+  }
+});
+
+test('Genesis, Adoption, and update-harness completion require a committed prefixed branch and a resolving declared integration branch', () => {
+  for (const relative of ['templates/GENESIS.md', 'templates/ADOPTION.md', 'skills/update-harness/SKILL.md']) {
+    const content = read(relative);
+    assert.match(content, /^- \[ \] [^\n]*exists as a commit on a prefixed task branch/m, `${relative} requires the run to exist as a commit on a prefixed branch`);
+    assert.match(content, /^- \[ \] [^\n]*declared integration branch[\s\S]{0,400}records the explicit reason/m, `${relative} requires the declared integration branch on the remote or a recorded omission reason`);
+  }
+});
+
+test('the Runbook closeout prunes linked worktrees and names where disposable review checkouts live', () => {
+  const runbook = read('RUNBOOK.md');
+  const closeout = runbook.slice(runbook.indexOf('Closeout, once the integration review has passed'), runbook.indexOf('## Manual Harness Feedback Reports'));
+  assert.match(closeout, /^\s*git worktree prune$/m, 'RUNBOOK.md closeout prunes linked worktrees');
+  assert.match(closeout, /disposable review (?:clones|checkouts)[^\n]*live/i, 'RUNBOOK.md names where disposable review clones live');
+  const template = read('templates/RUNBOOK.md');
+  const templateCloseout = template.slice(template.indexOf('Closeout, once the integration review has passed'), template.indexOf('## Upgrading The Harness'));
+  assert.match(templateCloseout, /git worktree prune/, 'templates/RUNBOOK.md closeout prunes linked worktrees');
+  assert.match(template, /integration-branch-missing/, 'templates/RUNBOOK.md names the declared-branch doctor finding');
+});

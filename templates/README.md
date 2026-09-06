@@ -21,14 +21,20 @@ before changing anything:
   consult it when shared language could be ambiguous.
 - [`TASKBOARD.md`](TASKBOARD.md) - active spec projection: current slice, owner,
   blocker, latest event, and next gate.
-- [`specs/S-###-slug/SPEC.md`](SPEC.md) - on-demand capability truth,
+- [`workbench/specs/S-###-slug/SPEC.md`](workbench/specs/S-###-slug/SPEC.md) - on-demand capability truth,
   acceptance, decisions, verification, append-only evidence, and completion.
 - [`RUNBOOK.md`](RUNBOOK.md) - how to set up, run, test, build, and recover this
   project, plus the verification commands that gate "done".
+- [`workbench/wiki/MEMORY.md`](workbench/wiki/MEMORY.md) - the room brain:
+  canonical, human-editable durable memory for this project. It routes to the
+  live controls above, to flat memory notes, and to the owner-directed
+  `design-concepts/` collection; it never duplicates live task state.
 
-- [`HARNESS_FEEDBACK.md`](HARNESS_FEEDBACK.md) - the return channel to the
-  reusable harness these docs came from: log where the harness rules themselves
-  are unclear, wrong, or slow the work down, so they can be improved upstream.
+- [`workbench/feedback/WORKBENCH_FEEDBACK.md`](workbench/feedback/WORKBENCH_FEEDBACK.md) -
+  Workbench Feedback, the return channel to the reusable harness these docs
+  came from: log where the harness rules themselves are unclear, wrong, or slow
+  the work down, so they can be improved upstream. It lives in the feedback
+  lane so the root keeps exactly seven controls.
 
 If this project was bootstrapped from a single founding prompt, the one-time
 protocol that produced these docs is preserved in [`GENESIS.md`](GENESIS.md).
@@ -53,9 +59,11 @@ The control docs are intentionally plain Markdown so they work with Codex,
 Claude, or any other agent that reads repository instructions - no framework or
 preprocessing required.
 
-For **Claude Code**, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
-`/init` in this repo, so the rules load automatically. Other agents should be
-pointed at `AGENTS.md` as their entry point.
+For **Claude Code**, keep the one-line `CLAUDE.md` containing exactly
+`@AGENTS.md` so the rules load automatically; the Genesis readiness gate
+(`validate --genesis`) rejects any other bridge, so do not replace it with a
+generated `/init` file. Other agents should be pointed at `AGENTS.md` as their
+entry point.
 
 Every completed ticket must leave proof in its final response and owning spec's
 append-only evidence log. Milestone specs additionally require a short demo

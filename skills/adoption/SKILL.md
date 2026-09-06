@@ -5,8 +5,12 @@ disable-model-invocation: true
 ---
 
 Use Adoption only when an existing project is joining the Workbench for the
-first time. A routine harness update uses `/update-harness`; do not rerun
-Adoption to update an already-adopted project.
+first time. An already-adopted room that still sits on a v2 root moves onto the
+v3 support root through `/update-harness`, which runs
+`node tools/workbench-upgrade.mjs upgrade --layout-only` and records
+`provenance.lifecycle: upgrade`; do not rerun Adoption for it, because a second
+`adoption` record contradicts its first. A routine harness update also uses
+`/update-harness`.
 
 1. Verify the canonical checkout, branch, dirty/ahead/diverged state, remote,
    and nearest controls. Dirty state routes recovery: checkpoint owned work or
@@ -14,7 +18,29 @@ Adoption to update an already-adopted project.
    clean.
 2. Locate the canonical Workbench source named by the workspace controls and
    read `templates/ADOPTION.md` completely. Follow its one-time inventory,
-   provenance, migration, verification, and handoff phases.
+   provenance, migration, verification, and handoff phases. After reconciling
+   the seven filled root controls, install or verify the core bundle in the
+   intended disposable or user-scoped home and run:
+
+   ```bash
+   node tools/workbench-adoption.mjs migrate \
+     --project [ABSOLUTE_PROJECT_PATH] \
+     --home [USER_HOME] \
+     --version v3.1.2
+   ```
+
+   The helper moves only unambiguous durable v2 lanes, including a legacy root
+   `MEMORY.md` and a root feedback file, into the manifest-declared schema 2
+   lanes and collections, preserves a project-local `skills/` folder under
+   `workbench/sessions/checkpoints/`, installs the receipt-backed runtime
+   tools into `workbench/tools/`, declares `git.integrationBranch` by the
+   exact case of an existing integration-named branch (listing an unresolved
+   one as `residue.missingIntegrationBranch`), renders the projections, and
+   runs doctor. An
+   existing support root, path collision, missing core skill, or bracketed
+   root control is a blocker to reconcile before retrying; never overwrite it,
+   and never touch an application's root `tools/`. Afterwards use the
+   project's own `node workbench/tools/spec-workbench.mjs ...` copies.
 3. Preserve project behavior and history. Port live truth into the existing
    Workbench owners, archive retired control documents, and do not perform an
    unrelated product cleanup or create another tracker.
@@ -23,9 +49,17 @@ Adoption to update an already-adopted project.
    project has none. Never infer public visibility, rewrite remote history,
    change credentials, or replace an existing remote.
 5. Always commit and push each coherent migration ticket and every incomplete
-   checkpoint. Promote verified work only to `integration`; the owner controls
-   `integration` to `main`.
+   checkpoint on a prefixed task branch; untracked migration output is not a
+   finished Adoption. Promote verified work only to the declared integration
+   branch (`git.integrationBranch` in `workbench/manifest.json`; the migration
+   declares an existing integration-named branch or `integration`). When
+   authorization permits, create it from the default branch and push it;
+   otherwise record the omission reason in the owning spec. The merge from the
+   declared branch into the default branch stays with the owner.
 6. Record the source remote, ref, resolved commit, executed self-tests, and any
    vendored-helper checksum in the owning spec. Put fresh-clone reproduction
-   commands in `RUNBOOK.md`, render the Taskboard, run doctor, and report the
-   pushed recovery ref and remaining owner gates.
+   commands in `RUNBOOK.md`, validate `workbench/manifest.json`, resolve the
+   next ticket from its declared `workbench/specs/` lane, and report the pushed
+   recovery ref and remaining owner gates. Append observed harness friction to
+   the manifest-declared feedback lane; if none was observed, record
+   `none observed` with the reason in the owning spec.

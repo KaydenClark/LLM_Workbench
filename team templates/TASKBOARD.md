@@ -1,51 +1,47 @@
-# Taskboard — [GOAL_NAME]
+# Run Notes — [GOAL_NAME]
 
-The single shared coordination artifact for this run. The **manager** owns the Goal, Done when, Assignments table, and final documentation integration. **Subagents** append their own rows to the Proof Log and report documentation impact for their lanes. No one rewrites another agent's rows.
+> **Disposable coordination notes for one run. Not a Taskboard, not a queue,
+> not a proof store.** The coordinator is the only writer of this sheet.
+> Tickets and proof live only in the owning stable spec; the project
+> `TASKBOARD.md` stays a generated read-only projection. Delete this file when
+> the run ends — it must never survive as a parallel project tracker.
 
-**Run started:** [YYYY-MM-DD HH:MM]  
-**Manager:** [agent id]  
-**Subagents:** [agent ids]
-
-## Goal
-
-[One sentence describing the outcome this run must produce.]
+**Owning spec:** `specs/S-###-[slug]/SPEC.md` — claimed slice `TK-###`
+**Run started:** [YYYY-MM-DD HH:MM]
+**Coordinator (primary durable writer):** [agent id]
 
 ## Done when
 
-The run is complete when all of these hold:
+The slice's done criteria in the owning spec hold, the full verification suite
+(`RUNBOOK.md` → Test And Build) passes, every lane below is `verified`, the
+spec evidence row is appended and the projection rendered, and the integrated
+result is committed and pushed.
 
-- [Checkable acceptance condition]
-- [Checkable acceptance condition]
-- Affected docs are updated, or documentation is marked `Docs checked; no update needed`.
-- The full verification suite (`RUNBOOK.md` → Test And Build) passes.
-- No task below is `assigned` or `in-progress`.
+## Lanes
 
-## Assignments
+Fill one row per dispatched role task. **Rule: no two open tasks may share a
+`Touches` path — lanes do not overlap, ever.** If two tasks need the same file,
+sequence them: dispatch one, verify and consolidate it, then dispatch the next.
+Scout and Auditor lanes leave `Touches` empty; they are read-only.
 
-The manager fills this in. **Rule: no two open tasks may share a `Touches` path.** If two tasks need the same files, sequence them instead of running both.
+| Task | Role (one contract) | Objective | Touches (only editable paths) | Immutable inputs | Verification | Docs impact | Status |
+|---|---|---|---|---|---|---|---|
+| A | [Engineer] | [bounded outcome] | `[path/ or file]` | owning spec, project controls | `[named check]` | [in lane / reserved for consolidation] | dispatched |
+| B | [Scout] | [bounded question] | — (read-only) | everything it reads | [report with evidence links] | none | dispatched |
 
-| ID | Task | Owner | Touches (paths it may edit) | Docs impact | Status | Why (outcome) |
-|---|---|---|---|---|---|---|
-| T1 | [specific task] | [subagent] | `[path/ or file]` | [docs in lane / manager final pass / none expected] | assigned | [what this delivers] |
-| T2 | [specific task] | [subagent] | `[non-overlapping path]` | [docs in lane / manager final pass / none expected] | assigned | [what this delivers] |
-| T3 | [specific task] | [subagent] | `[non-overlapping path]` | [docs in lane / manager final pass / none expected] | assigned | [what this delivers] |
+**Status values:** `dispatched` → `returned` → `verified` · or `sent-back` / `blocked`.
 
-**Status values:** `assigned` → `in-progress` → `needs-rework` → `done` · or `blocked`.
+## Sequenced work (would overlap an open lane)
 
-## Blocked
+Work that must wait for a lane to close before it can be dispatched.
 
-Tasks that cannot proceed. Surface these to the user; do not retry indefinitely.
-
-| ID | Blocked on | Reason |
+| Task | Waits for | Shared path that forced sequencing |
 |---|---|---|
-| [ID] | [prerequisite / out-of-scope thing] | [why it stopped] |
+| [C] | [A] | `[path]` |
 
-## Proof Log
+## Where results go
 
-Append one row when a task changes durable project state. Tag it with your agent id. Use actual results, not claims. Include the documentation result. Re-read this file immediately before appending so you build on the latest version; never rewrite an existing row. This board is the subagents' only durable write target; the manager copies the final result into the project root `TASKBOARD.md`.
-
-| Date | Agent | Task | Proof (command or named manual check) | Documentation | Result | Remaining gap |
-|---|---|---|---|---|---|---|
-| [YYYY-MM-DD] | [manager] | baseline | `[full test command]` | [docs checked / gap] | [pass/fail] | [none/gap] |
-| [YYYY-MM-DD] | [subagent] | [T#] | `[command]` or manual check + reason | [updated / manager follow-up / no update needed] | [pass/fail] | [none/gap] |
-| [YYYY-MM-DD] | [manager] | integration | `[full test command]` | [docs updated / no update needed] | [pass/fail] | [none/gap] |
+There is deliberately no proof log here. Role tasks return evidence in their
+reports; the coordinator verifies each result and — as the single reserved
+writer — records the outcome once in the owning spec's append-only evidence,
+renders the projection, and discards this sheet.

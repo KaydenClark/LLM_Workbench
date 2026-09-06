@@ -11,7 +11,8 @@ import {
   nextWork,
   parseCliArgs,
   render
-} from './spec-workbench.mjs';
+} from '../workbench/tools/spec-workbench.mjs';
+import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 
 assert.deepEqual(
   parseCliArgs(['next', '--json']),
@@ -95,7 +96,7 @@ try {
   );
   assert.throws(
     () => claimWork(root, 'S-002', { agent: 'codex', date: '2026-07-12' }),
-    /no eligible ready ticket/i,
+    /blocked-slice|no eligible ready ticket/i,
     'direct claim must not bypass declared blockers'
   );
   fs.rmSync(path.join(root, 'specs/S-002-blocked'), { recursive: true });
@@ -144,6 +145,59 @@ try {
     read('TASKBOARD.md').replace('No active slice', 'Stale active state')
   );
   assert.ok(doctor(root).some((issue) => issue.code === 'render-drift'));
+  render(root);
+
+  // The recorded baseline states. `green` and `red` are what a baseline run
+  // produces; `unavailable` records that no baseline could be taken at all, for
+  // a reason the requested change cannot affect. Its reason set is closed.
+  const baselineSpec = (id, baseline) => fixtureSpec()
+    .replaceAll('S-001', id)
+    .replace('**Blockers:** none', `**Baseline:** ${baseline}\n**Blockers:** none`);
+  const packetAt = (relative) => parseSpecPacket(read(relative), path.join(root, relative), root);
+
+  assert.equal(packetAt('specs/S-001-fixture/SPEC.md').baseline, null,
+    'a spec that records no baseline keeps parsing as it did before');
+
+  write(
+    'specs/S-101-unavailable/SPEC.md',
+    baselineSpec('S-101', 'unavailable (host-restricted) - the runner refuses to spawn a child process (spawn EPERM); the requested change is not implicated')
+  );
+  render(root);
+  const unavailable = packetAt('specs/S-101-unavailable/SPEC.md').baseline;
+  assert.equal(unavailable.state, 'unavailable');
+  assert.equal(unavailable.reason, 'host-restricted');
+  assert.match(unavailable.evidence, /spawn EPERM/);
+  assert.equal(unavailable.proceeds, true, 'a baseline recorded unavailable with a valid reason proceeds');
+  assert.deepEqual(doctor(root), [], 'a recorded unavailable baseline is a valid packet, not a malformed one');
+  assert.equal(nextWork(root).specId, 'S-101', 'work proceeds against a recorded unavailable baseline');
+
+  write('specs/S-102-red/SPEC.md', baselineSpec('S-102', 'red - two suite failures predate this work'));
+  render(root);
+  const red = packetAt('specs/S-102-red/SPEC.md').baseline;
+  assert.equal(red.state, 'red');
+  assert.equal(red.proceeds, false, 'a red baseline still stops without an explicit owner expansion');
+  assert.match(red.stop, /expands the task/);
+  write('specs/S-102-red/SPEC.md', baselineSpec('S-102', 'red (owner-expanded) - the owner expanded the task to repair the two failures'));
+  assert.equal(packetAt('specs/S-102-red/SPEC.md').baseline.proceeds, true,
+    'only an explicit owner expansion lets a red baseline proceed');
+
+  write('specs/S-103-free-text/SPEC.md', baselineSpec('S-103', 'unavailable (too-slow-today) - a reason of the room\'s own invention'));
+  assert.throws(
+    () => packetAt('specs/S-103-free-text/SPEC.md'),
+    /baseline reason vocabulary/,
+    'a reason outside the closed vocabulary is refused rather than accepted as free text'
+  );
+  assert.ok(doctor(root).some((issue) => issue.code === 'malformed-spec'),
+    'doctor refuses a packet whose baseline reason is outside the closed vocabulary');
+  write('specs/S-103-free-text/SPEC.md', baselineSpec('S-103', 'unavailable (host-restricted)'));
+  assert.throws(() => packetAt('specs/S-103-free-text/SPEC.md'), /evidence/,
+    'an unavailable baseline must carry the evidence for its reason');
+  write('specs/S-103-free-text/SPEC.md', baselineSpec('S-103', 'unknown'));
+  assert.throws(() => packetAt('specs/S-103-free-text/SPEC.md'), /baseline state/,
+    'the baseline state vocabulary is closed');
+  for (const dir of ['specs/S-101-unavailable', 'specs/S-102-red', 'specs/S-103-free-text']) {
+    fs.rmSync(path.join(root, dir), { recursive: true });
+  }
   render(root);
 
   write('specs/S-999-duplicate/SPEC.md', fixtureSpec());

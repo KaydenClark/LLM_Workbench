@@ -11,18 +11,40 @@ whatever harness is already there.
 
 Use Adoption (not Genesis) when the target has real code, history, or existing
 `AGENTS`/`ROADMAP`/policy docs. Read this once, run it once, then delete or
-archive it; afterward AGENTS plus the progressive spec flow govern.
+archive it; afterward AGENTS plus the progressive spec flow govern. An
+already-adopted room that still sits on a v2 root is not a new adoption: move
+it with `tools/workbench-upgrade.mjs upgrade --layout-only`, run from the
+Workbench release checkout, which records lifecycle `upgrade` instead of a
+second `adoption`.
+
+Ask the room which route its own contents support before choosing one. This
+reads and writes nothing:
+
+```bash
+node tools/workbench-classify.mjs classify --project [ABSOLUTE_PROJECT_PATH]
+```
+
+It reports `genesis`, `adoption`, `upgrade`, or `unclassifiable`, each with the
+evidence that produced it. `unclassifiable` is an answer, not an error: it means
+the room's contents support two readings at once - most often a harness-shaped
+room carrying no manifest and no version stamp, which an unstamped Workbench
+installation and an independent dialect both produce. A room that will not let a
+control, a lane, or its own top-level listing be read produces it too; the
+command names what it could not read, and read access is the fix. Establish
+which from outside the room (its history, its remote, or the owner) rather than
+guessing; treating a first adoption as an upgrade loses the live truth an
+adoption would reconcile. The verdict is evidence for a decision, never the
+decision: it selects no route, claims no work, and authorizes no migration.
 
 ## What Adoption Is For
 
 The owner should be able to point an agent at an existing repo - with its own
-code, tests, and a prior harness - and get back the v2 control surfaces
-(`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, `RUNBOOK.md`, and
-stable specs) that describe **what is actually true**, with none of the
-project's real content lost in the move.
+code, tests, and a prior harness - and get back seven filled root controls plus
+the v3 `workbench/` support root that describe **what is actually true**, with
+none of the project's real content lost in the move.
 
 Adoption does **not** rewrite the product or "clean up" the code. It documents
-observed reality, migrates existing intent and history into the v2 layout, and
+observed reality, migrates existing intent and history into the manifest-declared v3 layout, and
 hands off to the normal work loop.
 
 ## Inputs
@@ -50,7 +72,7 @@ trust the code, note the drift, and document what is true.
 
 Decide alone (reversible, low-risk, faithful to what exists):
 
-- how to split an old combined doc into the v2 files (e.g. `ROADMAP` -> direction
+- how to split an old combined doc into the root controls (e.g. `ROADMAP` -> direction
   vs. queue);
 - edit-scope paths read directly off the real directory tree;
 - test/lint commands that already exist in the repo;
@@ -77,6 +99,8 @@ next begins.
 
 1. Branch from a clean commit. Confirm the existing test/build commands run
    green *as found* - you need a known-good baseline before touching anything.
+   If no baseline can be taken at all, record it under the baseline rule below
+   instead of improvising a remedy.
    If the host cannot write Git metadata, record the blocker; do not force the
    Git operation or fabricate its proof. Continue only permitted, reversible
    document work and verification, then hand branch operations to the owner.
@@ -84,16 +108,29 @@ next begins.
    any applicable vendored-helper checksum in the owning spec before changing
    the harness.
 2. List every existing harness/steer doc and classify each:
-   - **Port** - real content that maps into a v2 doc (direction, tasks, rules).
+   - **Port** - real content that maps into a current control (direction, tasks, rules).
    - **Fold** - a policy/checklist doc whose rules belong inside `AGENTS.md`.
    - **Keep** - project-local material the harness does not own (e.g. a visual or
      design doc; the harness defers visual style to exactly these).
    - **Retire** - superseded or dead docs to archive after migration.
 3. Identify the dialect (which harness version/layout it uses) so you know what is
-   moving where.
+   moving where. Start from `workbench-classify.mjs classify` above and record
+   its verdict, evidence, and any `unclassifiable` reasons in the owning spec.
+
+If the baseline cannot be taken at all - the suite cannot run for a reason this
+change did not cause and cannot repair - record it in the owning spec's
+`**Baseline:**` field as `unavailable` with one reason from the closed set
+`host-restricted`, `product-broken-as-found`, or `owner-declined-on-boundary`,
+the evidence for that reason, and the statement that the requested change is
+not implicated. A reason outside that set is refused. The change then proceeds
+against that record, and every later completion criterion compares against the
+recorded state instead of a green run and says so. A red baseline is not
+unavailable: it still stops unless the owner explicitly expands the task, and
+`unavailable` never relabels a failing suite.
 
 Output: a migration map (each existing doc -> port / fold / keep / retire) and a
-green baseline run recorded.
+green baseline run recorded, or a baseline recorded `unavailable` with its
+reason and evidence.
 
 ### Phase 1 - Recover intent -> BLUEPRINT
 
@@ -123,7 +160,8 @@ Output: an Architecture table that a new agent can trust against the source.
 
 ### Phase 3 - Map the old harness -> new control docs
 
-This is the heart of Adoption: move content into the v2 layout without losing it.
+This is the heart of Adoption: reconcile root controls and prepare durable
+records for the v3 support root without losing anything.
 Typical mappings (adjust to the actual dialect):
 
 - **Combined roadmap/plan doc** -> stable direction into `BLUEPRINT.md`; the live
@@ -132,7 +170,7 @@ Typical mappings (adjust to the actual dialect):
   manufacture a spec for every historical task.
 - **Policy / checklist / "unattended work" docs** -> fold their still-live rules
   into `AGENTS.md` (authority, scope, verification, safety); retire the originals.
-- **Existing `AGENTS`/`CLAUDE`** -> reconcile into the v2 `AGENTS.md` and the thin
+- **Existing `AGENTS`/`CLAUDE`** -> reconcile into the current `AGENTS.md` and the thin
   `CLAUDE.md` bridge; keep any rule still true, drop what the code disproved.
 - **Glossary / ubiquitous-language / context docs** -> accepted shared
   definitions into `LEXICON.md`; scoped decisions into the owning spec; archive
@@ -142,7 +180,8 @@ Typical mappings (adjust to the actual dialect):
 Preserve history in a cold archive or the owning stable spec. Do not copy
 completed proof into the hot `TASKBOARD.md` projection.
 
-Output: v2 docs carrying the old harness's live content; a list of retired docs.
+Output: filled root controls carrying the old harness's live content; a list of
+durable records ready for migration.
 
 ### Phase 4 - AGENTS scopes from the real tree
 
@@ -152,12 +191,27 @@ secrets boundary, authority order, and verification contract to this repo's
 reality.
 
 Then make it mechanical: if `.claude/settings.json` was copied in, fill it from
-that scope - writable roots -> `allow`, secrets/credentials/build output ->
-`deny`, review-required actions -> `ask` (see `.claude/README.md`). Omit `.claude/`
-deliberately if the project will not use Claude Code.
+that scope - writable roots and the Workbench authorship lanes -> `allow`
+(`Edit`), secrets/credentials/build output -> `deny`, review-required actions
+and `workbench/tools/` -> `ask` (see `.claude/README.md`). Claude Code applies
+`Edit` rules to every built-in file-editing tool, including creation. Omit
+`.claude/` deliberately if the project will not use Claude Code.
+
+Then compare the reconciled controls with the templates they came from. From
+the release checkout, run the control fidelity report against the project:
+
+```bash
+node tools/control-fidelity.mjs report --project [ABSOLUTE_PROJECT_PATH]
+```
+
+Every `dropped` or `changed` line the report lists for `AGENTS.md` must be
+either restored or recorded as a decision in the owning spec or an ADR under
+`workbench/docs/adr/`; `filled` lines are expected and `added` lines are this
+project's own rules.
 
 Output: an `AGENTS.md` whose scope names real paths, plus a filled
-`.claude/settings.json` or a recorded decision to omit it.
+`.claude/settings.json` or a recorded decision to omit it, plus a fidelity
+report whose `AGENTS.md` divergences are each restored or recorded.
 
 ### Phase 5 - RUNBOOK from what already runs
 
@@ -181,43 +235,134 @@ slices in their implementation tables, preserve completed history in the owning
 spec or a cold archive, and render `TASKBOARD.md` from active spec metadata. Add
 an evidence row recording that Adoption ran and what moved where.
 
+Then seed the room brain: after Phase 7's migration, copy
+`templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md` (a legacy
+root `MEMORY.md` is moved there by the migration; reconcile it with the
+template), fill its placeholders, route any durable memory notes that survived
+classification, and link the live controls. If this room lives inside a larger
+deployment, set the up-link to the deployment wiki's note for this room (see
+`templates/wiki/README.md` for link conventions).
+
 Output: stable capability records plus a hot projection that reflects the
-project's actual state and the migration.
+project's actual state and the migration, and a `workbench/wiki/MEMORY.md`
+room brain that routes to them.
 
-### Phase 7 - Retire the old harness and handoff
+### Phase 7 - Migrate the durable support root, retire the old layout, and hand off
 
-Archive (do not silently delete) the retired docs - e.g. move them under an
-`archive/` note or a single `LEGACY_HARNESS.md` - so history survives and no one
-follows two rulesets. Set the `Generated from LLM Workbench v[HARNESS_VERSION]`
-stamp on each v2 control doc. Delete unfilled placeholders. Re-run the full
-verification suite and confirm it still matches the Phase 0 baseline. If
-`ADOPTION.md` was copied in, delete or archive it.
+Before migration, reconcile the seven root controls (`AGENTS.md`,
+`BLUEPRINT.md`, `LEXICON.md`, `RUNBOOK.md`, `TASKBOARD.md`, `CLAUDE.md`, and
+`README.md`) with project-specific content. They must be ordinary files with no
+`[BRACKETED]` placeholder.
 
-Output: a repo where each v2 control surface owns one class of truth and the old
-harness is preserved as history, not a competing rulebook.
+Produce a missing or unfilled one in this order:
+
+1. Branch from a clean commit onto an isolated migration branch; never reconcile
+   a control on a dirty tree.
+2. Author or fill each named control from the project's own observed truth - its
+   code, tests, and existing steering docs.
+3. Remove every `[BRACKETED]` placeholder and confirm each control is an ordinary
+   file, not a symlink.
+4. Commit the reconciled controls, then run the migration.
+
+Never copy a template over an existing control: the template overwrites the
+project-specific privacy, boundary, and verification rules that control already
+carries. Copy a template only into a control that does not exist yet, and merge
+by hand everywhere else. The migration's own refusal repeats this order and
+warning, and names every unreconciled control at once rather than the first.
+
+Install or verify the closed core bundle in the intended user home, then run the
+bounded migration seam:
+
+```bash
+node tools/core-skill-installer.mjs install --home [USER_HOME]
+node tools/workbench-adoption.mjs migrate \
+  --project [ABSOLUTE_PROJECT_PATH] \
+  --home [USER_HOME] \
+  --version v3.1.2
+node tools/workbench-tools.mjs verify --project [ABSOLUTE_PROJECT_PATH]
+node workbench/tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs doctor
+```
+
+The first three commands run from the checked-out LLM Workbench release; the
+last three run the project's own installed copies. The migration installs the
+runtime tools into `workbench/tools/` with a receipt recording the exact source
+release, commit, and hashes (`verify` confirms it); it never reads or writes an
+application's root `tools/` directory.
+
+The migration moves only known unambiguous durable paths: `specs/`, `Wiki/`,
+root `MEMORY.md`, `feedback/`, `grilling diary/`, and `handoffs/` to their
+manifest-declared lanes and collections (legacy grilling records become the
+untracked `workbench/sessions/grilling/`; legacy handoffs become the tracked
+`workbench/sessions/checkpoints/`). It preserves a legacy project-local
+`skills/` folder as `workbench/sessions/checkpoints/adoption-legacy-skills/`
+only after every required core skill is already user-scoped. It writes the
+explicit recovery record at `workbench/sessions/checkpoints/adoption-recovery.json`,
+moves a root `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
+`workbench/feedback/`, installs the runtime tools, renders the projections, and
+checks doctor before reporting completion. It also declares the integration
+branch in the manifest (`git.integrationBranch`, by the exact case of an
+existing integration-named branch, else `integration`; `git.defaultBranch`
+from `origin/HEAD`) and lists an unresolved one as
+`residue.missingIntegrationBranch` without blocking. When authorization
+permits, create that branch from the default branch and push it; otherwise
+record the omission reason in the owning spec.
+
+An existing `workbench/` root, a legacy path collision, unfilled controls, or
+missing user-scoped core skill blocks before migration; inspect and reconcile
+the conflict rather than overwriting it. An `unreconciled-controls` refusal
+lists every failing control at once, each with its own reason
+(`missing-control` or `bracketed-control`), so one run tells you the whole
+set. Do not keep the legacy support paths as active mirrors. Archive any
+retired steering document that is outside the known durable lanes, then re-run
+the full verification suite and confirm it still matches the Phase 0 baseline.
+If `ADOPTION.md` was copied in, delete or archive it.
+
+Output: a repo with one v3 manifest authority, root controls that retain the
+project's reconciled truth, and legacy material preserved as history rather
+than a competing rulebook.
 
 ## What A Finished Adoption Must Prove
 
-- [ ] `BLUEPRINT.md`, `LEXICON.md`, `AGENTS.md`, `RUNBOOK.md`, and
-      `TASKBOARD.md` exist with **no remaining `[BRACKETED]` placeholders** in
-      required sections.
+- [ ] All seven root controls exist as filled ordinary files with **no remaining
+      `[BRACKETED]` placeholders**.
+- [ ] `workbench/manifest.json` validates, declares the canonical v3 support
+      lanes, and is the only active support-path authority.
 - [ ] Every existing harness doc was classified port / fold / keep / retire, and
       no ported doc's live content was lost.
 - [ ] `BLUEPRINT.md` matches the running code where the old docs disagreed;
       drifts are logged.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
-- [ ] `.claude/settings.json` is filled from that scope, or `.claude/` was omitted
-      with a reason.
+- [ ] `.claude/settings.json` is filled from that scope and grants `Edit` on
+      the declared authorship lanes, or `.claude/` was omitted with a
+      reason.
 - [ ] The full verification suite runs green and matches the Phase 0 baseline;
-      paste or reference the result.
+      paste or reference the result. Where Phase 0 recorded the baseline
+      `unavailable`, the result states that and compares against the recorded
+      state instead of claiming a green baseline was taken.
 - [ ] Stable specs contain the project's actual in-flight and ready work;
       `TASKBOARD.md` projects only the hot state and contains no completed proof
       archive.
+- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),
+      routes to the live controls, the controls route to it (`AGENTS.md`
+      names `workbench/wiki/`, `README.md` names `MEMORY.md`; `doctor` reports
+      `room-brain-unrouted` otherwise), and has no unfilled placeholders.
 - [ ] The owning spec records the source remote, ref, resolved commit, executed
       self-tests, and any applicable vendored-helper checksum; the project's
       `RUNBOOK.md` retains the exact fresh-clone verification commands.
-- [ ] Retired docs are archived (not deleted), and a spec evidence row records that
-      Adoption ran.
+- [ ] Retired docs are archived (not deleted), the explicit recovery record is
+      retained, and a spec evidence row records that Adoption ran.
+- [ ] Harness friction observed during Adoption was appended to the declared
+      feedback lane; if none was observed, the owning spec records `none observed`
+      with the reason.
+- [ ] The Adoption run exists as a commit on a prefixed task branch (`codex/`,
+      `claude/`, or `backup/`) pushed to the default remote; migration output
+      left untracked is `in-progress`, not `done`.
+- [ ] The declared integration branch (`git.integrationBranch` in
+      `workbench/manifest.json`) exists on the default remote at the migration
+      commit, or the owning spec records the explicit reason it was omitted;
+      `doctor` reports `integration-branch-missing` until it resolves.
 
 If any box is unchecked, adoption is `in-progress`, not `done`. State which box
 failed and why.
@@ -227,10 +372,19 @@ failed and why.
 - Do not bulldoze. Reconcile and preserve; the existing project is real work, not
   a blank slate.
 - Do not fabricate a green run. Baseline in Phase 0 and re-verify at handoff; a
-  command you did not execute is not proof.
+  command you did not execute is not proof. A baseline recorded `unavailable`
+  is a record of what could not run, never a substitute for a run that could.
 - Do not lose history. Archive retired docs and migrate proof records; never
   delete the old queue or ledger outright.
 - Observed reality outranks old docs. When code and a stale doc conflict, document
   the code and flag the drift.
 - Keep this file generic if it lives in a template set. Adoption fills the *other*
   docs with project specifics; it does not fill this one.
+
+### Feedback report format
+
+After migration resolves the manifest feedback lane, copy the source
+`templates/feedback/REPORT_FORMAT.md` there only if it is missing. Preserve
+existing report formats during normal setup. Explicit harness reconciliation
+updates this procedure together with the Runbook; no report or repair is
+triggered by installation.

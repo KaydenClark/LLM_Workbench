@@ -4,9 +4,11 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { parseMarkdownTableRow } from './markdown-table.mjs';
+import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
+import { lanePath } from '../workbench/tools/workbench-paths.mjs';
 
 const IMPACT_WEIGHT = { high: 3, medium: 2, low: 1 };
+const FEEDBACK_STATUSES = new Set(['new', 'sent', 'landed', 'declined']);
 const RUN_OUTCOME_CATEGORIES = new Set([
   'actionable',
   'worked',
@@ -49,12 +51,16 @@ export function parseFeedbackRows(markdown, source) {
 
     const [date, docSection, whatHappened, impactText, proposedChange, statusText] = cells;
     const status = normalize(statusText);
-    if (status !== 'new') continue;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       if (/^\[YYYY-MM-DD\]$/.test(date)) continue;
       throw malformedFeedbackRow(index + 1, `invalid date ${date || '(empty)'}`);
     }
-    const impact = Object.keys(IMPACT_WEIGHT).find((value) => normalize(impactText).startsWith(value)) ?? 'low';
+    if (!FEEDBACK_STATUSES.has(status)) {
+      throw malformedFeedbackRow(index + 1, `invalid status ${statusText || '(empty)'}`);
+    }
+    const impact = normalize(impactText).match(/^(high|medium|low)\b/)?.[1];
+    if (!impact) throw malformedFeedbackRow(index + 1, `invalid impact ${impactText || '(empty)'}`);
+    if (status !== 'new') continue;
     const normalized = [source.repo, date, docSection, whatHappened, proposedChange]
       .map(normalize)
       .join('|');
@@ -81,7 +87,7 @@ function isFeedbackHeader(cells) {
 }
 
 function malformedFeedbackRow(line, detail) {
-  return new Error(`HARNESS_FEEDBACK line ${line} is malformed: ${detail}`);
+  return new Error(`Workbench Feedback line ${line} is malformed: ${detail}`);
 }
 
 export function discoverFeedback(projectsRoot) {
@@ -95,13 +101,22 @@ export function discoverFeedback(projectsRoot) {
     if (EXCLUDED_NAME.test(entry.name)) continue;
     const repoPath = path.join(projectsRoot, entry.name);
     const gitPath = path.join(repoPath, '.git');
-    const feedbackPath = path.join(repoPath, 'HARNESS_FEEDBACK.md');
-    if (!fs.existsSync(gitPath) || !fs.statSync(gitPath).isDirectory() || !fs.existsSync(feedbackPath)) continue;
+    if (!fs.existsSync(gitPath) || !fs.statSync(gitPath).isDirectory()) continue;
     const origin = git(repoPath, ['remote', 'get-url', 'origin']);
     const topLevel = git(repoPath, ['rev-parse', '--show-toplevel']);
     if (!origin || realPath(topLevel) !== realPath(repoPath) || !isWritableOwnerOrigin(origin)) continue;
     const originKey = normalizeOrigin(origin);
     if (seenOrigins.has(originKey)) continue;
+    // A v3.1 project keeps its return channel in the manifest-declared
+    // feedback lane; WORKBENCH_FEEDBACK.md at the root is the v3.0 location
+    // and HARNESS_FEEDBACK.md the grandfathered legacy name. The first
+    // existing candidate wins, lane first.
+    const feedbackPath = [
+      path.join(lanePath(repoPath, 'feedback'), 'WORKBENCH_FEEDBACK.md'),
+      path.join(repoPath, 'WORKBENCH_FEEDBACK.md'),
+      path.join(repoPath, 'HARNESS_FEEDBACK.md')
+    ].find((candidate) => fs.existsSync(candidate));
+    if (!feedbackPath) continue;
     seenOrigins.add(originKey);
     candidates.push(...parseFeedbackRows(fs.readFileSync(feedbackPath, 'utf8'), {
       repo: entry.name,
@@ -280,7 +295,7 @@ function splitCsv(value) {
   return value ? value.split(',').map((item) => item.trim()).filter(Boolean) : [];
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href) {
   try {
     main(process.argv.slice(2));
   } catch (error) {

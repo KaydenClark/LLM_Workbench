@@ -22,7 +22,7 @@ The blank, copyable templates live in `templates/`:
 - `templates/TASKBOARD.md` - hot projection of active specs only: current slice,
   owner, blocker, latest event, and next gate.
 - `templates/SPEC.md` - concise on-demand capability work packet. Copy it to a
-  stable `specs/S-###-slug/SPEC.md`; it owns detailed requirements, decisions,
+  manifest-declared `workbench/specs/S-###-slug/SPEC.md`; it owns detailed requirements, decisions,
   acceptance, evidence, completion, and supersession.
 - `templates/RUNBOOK.md` - setup, run, test, build, troubleshooting, recovery,
   and evaluation procedure.
@@ -36,10 +36,17 @@ The blank, copyable templates live in `templates/`:
   an older or foreign harness): observe the repo, map the old docs into the v2
   layout without losing content, verify on the existing test suite. The
   existing-project counterpart to `GENESIS.md`; run once, then archive.
-- `templates/HARNESS_FEEDBACK.md` - the return channel from a downstream project
+- `templates/WORKBENCH_FEEDBACK.md` - Workbench Feedback, the return channel from a downstream project
   back to this harness: an append-only log of where the harness rules themselves
   were unclear, wrong, or slow, so lessons can flow back and be validated via
-  `evals/` before shipping as "better".
+  `evals/` before shipping as "better". It lives at
+  `workbench/feedback/WORKBENCH_FEEDBACK.md` in the target project.
+- `templates/wiki/` - the template wiki: the `SCHEMA.md`, `AGENTS.md`, and
+  `design-concepts/README.md` contract that `init` seeds into every
+  `workbench/wiki/`, plus the `MEMORY.project.md` and `MEMORY.root.md` router
+  variants. Every instantiated room copies a router in as its mandatory
+  `workbench/wiki/MEMORY.md`, so no room is born without a brain. See
+  `templates/wiki/README.md`.
 - `templates/.claude/settings.json` - optional Claude Code permission file that
   makes the `AGENTS.md` edit scope *mechanical* (deny secrets, allow writable
   roots, ask on review-required actions). See `templates/.claude/README.md` for
@@ -59,8 +66,9 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - canonical live, owner-editable skill discovery library. GPT_OS
-  exposes this folder through both Claude and Codex-compatible discovery paths.
+- `skills/` - the closed 16-skill public source bundle. It is copied only into
+  user-scoped discovery roots during a missing-only brand-new install; this
+  repository does not use it as a project-local discovery tree.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
   until their Workbench rewrites pass review.
 - `team templates/` - optional manager/subagent coordination templates for
@@ -76,8 +84,11 @@ docs look like. Copy from `templates/`, not from the root.
 - `tools/audit-guardrails.mjs` - deliberately hard 100-point drift audit across
   the static contract, freshness/consistency, benchmark discipline, and real
   outcome evidence; it also ranks the next improvements.
-- `tools/spec-workbench.mjs` - zero-dependency spec retrieval, lifecycle,
-  deterministic catalog/dashboard rendering, and drift diagnosis.
+- `workbench/tools/` - the Workbench-managed runtime tools every project runs
+  (`spec-workbench.mjs` lifecycle, rendering, and diagnosis; `workbench-layout.mjs`
+  manifest init, validate, and migrate; their pure helpers). This lane is the
+  canonical source; `tools/workbench-tools.mjs` installs receipt-backed copies
+  downstream while an application's root `tools/` stays application-owned.
 - `tools/test-skill-catalog.mjs` - fails when the selected skill definitions,
   physical folders, router name, or root/template Lexicons drift apart.
 - `tools/feedback-automation.mjs` - canonical downstream feedback discovery,
@@ -95,8 +106,10 @@ docs look like. Copy from `templates/`, not from the root.
 
 1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
    `templates/LEXICON.md`, `templates/TASKBOARD.md`, `templates/RUNBOOK.md`,
-   `templates/README.md`, and `templates/SPEC.md` into the target project; create `specs/` for stable work
-   packets and copy `tools/spec-workbench.mjs` when using the local interface.
+   `templates/README.md`, and `templates/SPEC.md` into the target project; copy
+   `templates/wiki/MEMORY.project.md` in as `workbench/wiki/MEMORY.md` (the room brain);
+   initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for stable work
+   packets and copy `workbench/tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
    and task items. For Claude Code, also copy `templates/.claude/settings.json`
    and fill it from the same edit scope to enforce the boundary mechanically.
@@ -110,8 +123,9 @@ docs look like. Copy from `templates/`, not from the root.
 The templates are intentionally plain Markdown so they work with Codex, Claude,
 or any other agent that reads repository instructions.
 
-For Claude Code, add a one-line `CLAUDE.md` containing `@AGENTS.md`, or run
-`/init` in the target repo, so these rules load automatically.
+For Claude Code, add a one-line `CLAUDE.md` containing exactly `@AGENTS.md` so
+these rules load automatically. A Genesis project must keep that exact bridge:
+`validate --genesis` rejects a generated `/init` file or any added line.
 
 ### One-Prompt Bootstrap
 
@@ -130,8 +144,8 @@ For a project that already exists - real code, history, and often an older or
 foreign harness (`ROADMAP.md`, policy docs, a prior `AGENTS.md`) - use
 `templates/ADOPTION.md`, not GENESIS. Copy it alongside the control templates and
 point the agent at the repo. ADOPTION inventories the existing docs and
-classifies each (port into a v2 doc, fold into `AGENTS.md`, keep as project-local,
-or archive), maps the old harness into the v2 layout **without losing content**,
+classifies each (port into a current control, fold into `AGENTS.md`, keep as project-local,
+or archive), maps the old harness into the manifest-declared v3 layout **without losing content**,
 derives the edit scope from the real directory tree, and verifies against the
 project's existing test suite instead of a scaffold. It runs once, then is
 archived; retired docs are preserved as history, never silently deleted.
@@ -150,8 +164,26 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v2.3** (recorded in `BLUEPRINT.md`); this repo is the
-source, so its own docs are not stamped.
+current harness version is **v3.1.2**, a local candidate (recorded in
+`BLUEPRINT.md` and `workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
+[`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continued
+that baseline as v3.1.1 and
+[`S-035`](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) stamps the
+v3.1.2 patch candidate; [`S-036`](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md)
+owns its evidence-integrity corrections. Publication remains separately
+owner-controlled. This repo is the source, so its own docs are not stamped.
+
+Portfolio responsibilities stay separate: LLM_Workbench produces the canonical
+harness and exact upgrade handoff; GPT_OS selects authorized targets and owns
+deployment, rollout tracking, and recovery; Audit_Workbench audits project HFRs
+and compiles upstream reports; each project owns its product, filled controls,
+local evidence, and truthful feedback. A fix landing here is upstream
+implementation evidence, not proof that a downstream project has deployed or
+benefited from it.
+
+The portable layout and skill-install contract is implemented in
+[`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate
+exact-head `integration` to `main` release gate remains owned by S-014.
 
 To pull later harness improvements into a downstream project, follow that
 project's `RUNBOOK.md` -> Upgrading The Harness: re-copy only changed template
@@ -160,7 +192,7 @@ record the upgrade in a dedicated spec. Completed spec evidence remains at its
 stable path; stale claims are diagnosed per `AGENTS.md` -> Long Session Control.
 
 The upgrade path is a loop, not a one-way copy. Downstream projects record where
-the harness helped or hurt in their `HARNESS_FEEDBACK.md`; those lessons are
+the harness helped or hurt in their `WORKBENCH_FEEDBACK.md` (legacy copies may still be named `HARNESS_FEEDBACK.md`); those lessons are
 harvested back here, turned into template changes, and validated with `evals/`
 before shipping as a new harness version. A template change is only called
 "better" when the evidence supports it - see `RUNBOOK.md` -> Evaluation And
@@ -260,3 +292,11 @@ running notes, and turn the final investigation into a source-backed README.
 ## License
 
 MIT. See `LICENSE`.
+
+## Ordinary Agent Entry
+
+Follow AGENTS.md -> RUNBOOK.md -> LEXICON.md, then the assigned SPEC and only
+its relevant owners. Builder, Auditor, Reviewer and Reconciler are assigned
+stances within existing authority. Work autonomously inside the assigned task;
+independent review is required before integration. The setup-only Round One
+proof returns in chat; feedback reporting follows it in the declared lane.

@@ -1,17 +1,25 @@
 # S-[###] - [CAPABILITY_TITLE]
 
 > Generated from LLM Workbench v[HARNESS_VERSION]. Copy this file to the stable
-> path `specs/S-[###]-[slug]/SPEC.md`; never move it between status folders.
+> path `workbench/specs/S-[###]-[slug]/SPEC.md`; never move it between status folders.
 
 **Spec ID:** S-[###]
 **Status:** planned
 **Priority:** [0-9]
 **Owner:** [owner]
+**Stance:** Builder
 **Updated:** [YYYY-MM-DD]
 **Catalog description:** [One sentence for the Blueprint catalog.]
 **Blockers:** none
 **Latest event:** Spec captured.
 **Next gate:** Refine and activate the first eligible slice.
+
+> Optional for a migration or upgrade spec: add a `Baseline` field to the block
+> above, recording the pre-change baseline as `green`, `red`, `red
+> (owner-expanded) - evidence`, or `unavailable (host-restricted |
+> product-broken-as-found | owner-declined-on-boundary) - evidence`. The
+> unavailable reason set is closed; a reason outside it is refused. A red
+> baseline stops until the owner explicitly expands the task.
 
 ## Outcome
 
@@ -48,6 +56,12 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | [Small end-to-end slice] | ready | none | pending |
+
+### TK-001 - Assigned task
+
+**Stance:** Builder
+
+[Small end-to-end slice]
 
 ## Acceptance Criteria
 

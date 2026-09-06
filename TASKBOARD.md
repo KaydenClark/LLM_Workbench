@@ -1,11 +1,11 @@
 # LLM Workbench - Hot Taskboard
 
-**Current focus:** S-014/TK-002 remains in progress with REQUEST CHANGES: independently audit the escaped-table parser repair before restarting release evidence work.
-**Owner:** Kayden (executive); agents execute assigned slices
-**Last updated:** 2026-07-16
+**Current focus:** See the generated Active Specs projection below.
+**Owner:** See each assigned spec.
+**Last updated:** 2026-09-05
 
 This dashboard contains current execution state only. Use
-`node tools/spec-workbench.mjs next` to select work and `show S-###` to load its
+`node workbench/tools/spec-workbench.mjs next` to select work and `show S-###` to load its
 requirements. Durable requirements, decisions, acceptance criteria, and proof
 live in the linked spec. Commands live in `RUNBOOK.md`.
 
@@ -14,11 +14,12 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-014](specs/S-014-workbench-release-candidate/SPEC.md) | TK-002: Coordinate separate exact-head audit and evidence publication tasks (in-progress) | Captain (TK-002 coordination) | parser repair audit | Draft parser-repair PR #33 is ready for an independent exact-head audit after REQUEST CHANGES on integration `bb5d9c1`. | Independently audit the parser-repair PR exact head; only a green merged integration head may restart the TK-002 Auditor/Publisher gate. |
-| [S-011](specs/S-011-agent-skills-adoption/SPEC.md) | TK-003: Verify rewritten skills in fresh Claude and Codex sessions and prepare downstream distribution (blocked) | codex | Owner Claude authentication | TK-009 exact-head delivery audit repair passed. | Complete TK-003. |
+| [S-014](workbench/specs/S-014-workbench-release-candidate/SPEC.md) | TK-003: Open the sole non-draft integration-to-main owner promotion PR (ready) | codex | TK-002 | S-027 delivered the reviewed v3.1.1 candidate through PR #48 at integration 09f0875; historical release proof remains preserved. | Reconcile this historical release procedure and version intent with owner direction before any publication; do not reopen S-027 or require CIC for ordinary testing. |
+| [S-022](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md) | TK-004: Obtain the independent exact-SHA audit, land the v3.1.0 version bump, and hand the candidate to S-014 (blocked) | claude-fable-5-1 | owner release direction | S-027 delivered the reviewed v3.1.1 candidate through PR #48 at integration 09f0875; historical release proof remains preserved. | Reconcile this historical release procedure and version intent with owner direction before any publication; do not reopen S-027 or require CIC for ordinary testing. |
+| [S-045](workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md) | TK-001: Make the presence-only gates and the installer agree on a linked skill destination, or record which is authoritative (blocked) | unassigned | owner direction | TK-004 closed under owner direction; the citation convention is recorded and enforced. The other six stay blocked for v3.1.3. | Owner decides whether the remaining six land in v3.1.3; until then they stay blocked and `next` correctly excludes them. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
 
-No open owner decisions. New decisions stay here only while they block an
-active spec; the resolved decision moves into that spec.
+Owner decisions and blockers live in their assigned specs and appear in the
+generated projection above. This section adds no separate decision store.

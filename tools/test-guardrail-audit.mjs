@@ -42,6 +42,101 @@ assert.ok(
   'audit should reserve material score for real outcome evidence'
 );
 
+const contradictorySpec = [
+  '# S-101 - Contradictory fixture',
+  '',
+  '**Spec ID:** S-101',
+  '**Status:** complete',
+  '',
+  '## Vertical Implementation Slices',
+  '',
+  '| Ticket | Slice | Status | Blockers | Proof |',
+  '|---|---|---|---|---|',
+  '| TK-001 | Still open | ready | none | pending |'
+].join('\n');
+
+function taskStatePasses(files) {
+  return auditGuardrails({
+    ...sparseFiles,
+    'TASKBOARD.md': '# Taskboard\n\n**Last updated:** 2026-07-12\n\n## Ready\n',
+    ...files
+  }, { today })
+    .categories.find((category) => category.id === 'drift_resistance')
+    .checks.find((check) => check.id === 'task_state')
+    .passed;
+}
+
+function proofFreshnessPasses(files) {
+  return auditGuardrails({
+    ...sparseFiles,
+    'TASKBOARD.md': '# Taskboard\n\n**Last updated:** 2026-07-12\n',
+    ...files
+  }, { today })
+    .categories.find((category) => category.id === 'drift_resistance')
+    .checks.find((check) => check.id === 'proof_freshness')
+    .passed;
+}
+
+const freshSpec = [
+  '# S-101 - Fresh fixture',
+  '',
+  '**Spec ID:** S-101',
+  '**Status:** active',
+  '',
+  '## Append-Only Evidence And Execution Log',
+  '',
+  '| Date | Ticket | Event | Verification | Docs | Remaining gap |',
+  '|---|---|---|---|---|---|',
+  '| 2026-07-12 | TK-001 | Verified | focused check passed | none | none |'
+].join('\n');
+
+assert.equal(taskStatePasses({
+  'specs/S-101-contradictory/SPEC.md': contradictorySpec
+}), false, 'a legacy root-layout contradiction must remain visible without a manifest');
+assert.equal(proofFreshnessPasses({
+  'specs/S-101-fresh/SPEC.md': freshSpec
+}), true, 'a legacy root-layout proof remains visible without a manifest');
+
+for (const schemaVersion of [1, 2]) {
+  assert.equal(taskStatePasses({
+    'workbench/manifest.json': JSON.stringify({
+      schemaVersion,
+      lanes: { specs: 'workbench/specs' }
+    }),
+    'workbench/specs/S-101-contradictory/SPEC.md': contradictorySpec
+  }), false, `a schema ${schemaVersion} manifest must route the contradiction check to its specs lane`);
+  assert.equal(proofFreshnessPasses({
+    'workbench/manifest.json': JSON.stringify({
+      schemaVersion,
+      lanes: { specs: 'workbench/specs' }
+    }),
+    'workbench/specs/S-101-fresh/SPEC.md': freshSpec
+  }), true, `a schema ${schemaVersion} manifest must route proof freshness to its specs lane`);
+}
+
+assert.equal(taskStatePasses({
+  'workbench/manifest.json': '{not-json'
+}), false, 'a present malformed manifest must not earn task-state points through a legacy fallback');
+assert.equal(proofFreshnessPasses({
+  'workbench/manifest.json': '{not-json',
+  'specs/S-101-fresh/SPEC.md': freshSpec
+}), false, 'a present malformed manifest must not earn proof-freshness points through a legacy fallback');
+
+assert.equal(taskStatePasses({
+  'workbench/manifest.json': JSON.stringify({
+    schemaVersion: 999,
+    lanes: { specs: 'workbench/specs' }
+  }),
+  'workbench/specs/S-101-contradictory/SPEC.md': contradictorySpec
+}), false, 'an unsupported manifest schema must not earn task-state points');
+assert.equal(proofFreshnessPasses({
+  'workbench/manifest.json': JSON.stringify({
+    schemaVersion: 999,
+    lanes: { specs: 'workbench/specs' }
+  }),
+  'workbench/specs/S-101-fresh/SPEC.md': freshSpec
+}), false, 'an unsupported manifest schema must not earn proof-freshness points');
+
 const report = renderGuardrailReport(sparseAudit, { name: 'fixture' });
 assert.match(report, /Guardrail Audit: fixture/);
 assert.match(report, /Score: \*\*\d+(?:\.\d+)?\/100\*\*/);

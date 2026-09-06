@@ -4,9 +4,9 @@
 > same version during handoff (Phase 7).
 
 This file is the one-prompt bootstrap protocol. It tells an agent how to turn a
-single founding prompt into a project that already has filled-out control docs:
-`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, `RUNBOOK.md`, and a
-first stable `SPEC.md`.
+single founding prompt into a project that already has seven filled root controls:
+`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `RUNBOOK.md`, `TASKBOARD.md`,
+`CLAUDE.md`, and `README.md`; plus a manifest-backed first stable `SPEC.md`.
 
 Read this once, run it once. Genesis is a starting gun, not a standing rule. When
 bootstrap is finished, AGENTS plus the progressive spec flow govern; this file can be deleted or
@@ -132,17 +132,21 @@ demo artifact bootstrap must produce.
 Fill `AGENTS.md`, especially the **Edit Scope** placeholders that say nothing
 until set:
 
-- `[PRIMARY_SOURCE_DIRS]`, `[TEST_DIRS]`, `[DOCS_TO_KEEP_CURRENT]` -> the real
-  paths just scaffolded;
-- `[OUT_OF_SCOPE_DIRS_OR_REPOS]` -> secrets, generated output, unrelated dirs.
+- `[READABLE_ROOTS]` and `[WRITABLE_ROOTS]` -> the real paths just scaffolded;
+- `[SECRETS_OR_PRIVATE_PATHS]` and `[FORBIDDEN_PATHS]` -> secrets, generated
+  output, unrelated dirs;
+- `[REQUIRES_REVIEW_FOR]` -> schema/migrations, pushes, destructive commands.
 
 Confirm the read-scope, secrets boundary, authority order, and verification
 contract match this project's reality. Keep the generic safety rules intact.
 
 Then make the boundary mechanical, not just prose. If `.claude/settings.json`
-was copied in, fill it from the scope you just drew: writable roots -> `allow`,
-forbidden paths (secrets, credentials, build output) -> `deny`, review-required
-actions (schema/migrations, `git push`, destructive commands) -> `ask`. See
+was copied in, fill it from the scope you just drew: writable roots and the
+Workbench authorship lanes -> `allow` (`Edit`), forbidden paths
+(secrets, credentials, build output) -> `deny`, review-required actions
+(schema/migrations, `git push`, destructive commands, `workbench/tools/`) ->
+`ask`. Claude Code applies `Edit` rules to every built-in file-editing tool,
+including creation. See
 `.claude/README.md` for the mapping. If the project will not use Claude Code,
 delete `.claude/` and rely on the prose scope alone.
 
@@ -157,15 +161,88 @@ must be one you executed and saw succeed, not an aspiration.
 
 Output: a `RUNBOOK.md` a new agent can follow to reproduce a green run.
 
-### Phase 6 - Seed the first spec and hot projection
+### Phase 6 - Initialize the support root, first spec, hot projection, and room brain
 
-Create one stable `specs/S-001-<slug>/SPEC.md` for the nearest coherent
-capability. Put 1-3 one-context tracer-bullet tickets in its implementation
-table, record the Genesis result in its evidence log, then render
-`TASKBOARD.md` from the spec metadata.
+Initialize the v3 support root before writing support records:
 
-Output: one durable capability record plus a hot projection the normal work
-loop can pick up immediately.
+```bash
+node /PATH/TO/LLM_WORKBENCH/workbench/tools/workbench-layout.mjs init \
+  --project [ABSOLUTE_PROJECT_PATH] --provenance genesis --version v[HARNESS_VERSION] \
+  --default-branch [DEFAULT_BRANCH] --integration-branch [INTEGRATION_BRANCH_OR_DEFAULT]
+node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs install \
+  --project [ABSOLUTE_PROJECT_PATH]
+```
+
+Run `init` from the Workbench release checkout: it records that checkout's
+`origin` URL and full `HEAD` commit as `provenance.source` in the manifest.
+The checkout and its runtime-tool lane must be clean. Optional
+`--source-commit SHA` and `--source-repository URL` values assert that resolved
+identity and must match it; they cannot pin an unrelated source. A partial copy
+outside a verified release checkout refuses with `invalid-source-identity`
+before writing, even when source strings are supplied.
+
+The `init` flags declare, by exact case, the default branch and the branch the
+independent review gate merges into (`git.defaultBranch` and
+`git.integrationBranch` in the manifest; the same names fill `AGENTS.md` Git
+Rules). Declaring never creates the branch: when authorization permits, create
+it from the default branch and push it (`git branch NAME DEFAULT` then
+`git push -u origin NAME`); otherwise record the omission reason in the first
+spec. The readiness gate fails `integration-branch-missing` until it resolves.
+
+The second command installs the Workbench-managed runtime tools into the
+project's `workbench/tools/` lane with a receipt recording the exact source
+release, commit, and per-file hashes. From then on the project runs its own
+copies (`node workbench/tools/spec-workbench.mjs ...`); an application's root
+`tools/` directory, if any, is the application's own and is never touched.
+
+Create one stable `workbench/specs/S-001-<slug>/SPEC.md` for the nearest
+coherent capability. Put 1-3 one-context tracer-bullet tickets in its
+implementation table and record the Genesis result in its evidence log. The
+manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
+`feedback`, `tools`) and their collections; live grilling and handoff records
+under `workbench/sessions/` stay untracked, and only `sessions/checkpoints/`
+is durable. Do not create a project-local `skills/` discovery directory.
+
+The readiness gate (`validate --genesis`) accepts only an actionable first
+packet, so shape it exactly like this before running the gate:
+
+- `**Status:** active` (the copied `templates/SPEC.md` default is `planned`;
+  Genesis activates the first spec because it is the work the loop picks up);
+- `**Priority:**` a single digit `0`-`9`;
+- at least one ticket row whose status is `ready` and whose blockers are
+  `none`; do not claim it before the gate runs;
+- at least one unchecked `- [ ]` acceptance box;
+- the `## Outcome`, `## Vertical Implementation Slices`,
+  `## Acceptance Criteria`, and `## Completion Result` sections;
+- the exact `Generated from LLM Workbench v[HARNESS_VERSION]` stamp matching
+  the manifest, and no remaining template placeholder.
+
+Then render the projections and run doctor so the generated regions in
+`BLUEPRINT.md` and `TASKBOARD.md` (kept from the templates) reflect the packet:
+
+```bash
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
+```
+
+Copy `templates/WORKBENCH_FEEDBACK.md` to
+`workbench/feedback/WORKBENCH_FEEDBACK.md` and fill its header; also copy
+`templates/feedback/REPORT_FORMAT.md` into the declared feedback lane as
+`REPORT_FORMAT.md` for later assigned reports; the return
+channel lives in the feedback lane, never at the root, so the root keeps
+exactly seven controls.
+
+Then seed the room brain: `init` already seeded `workbench/wiki/SCHEMA.md`,
+`workbench/wiki/AGENTS.md`, and `workbench/wiki/design-concepts/README.md`;
+copy `templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md`, fill
+its placeholders, and link it to the live controls just created. If this room
+lives inside a larger deployment, set the up-link to the deployment wiki's
+note for this room. See `templates/wiki/README.md` for the link conventions.
+The readiness gate requires the filled router and contract files; a room is
+not bootstrapped without a brain.
+
+Output: one durable capability record, declared support lanes, a hot projection
+the normal work loop can pick up immediately, and a manifest-routed room brain.
 
 ### Phase 7 - Handoff
 
@@ -186,18 +263,45 @@ procedures, and source/tests for behavior.
 Do not call bootstrap done on vibes. All of the following must hold:
 
 - [ ] `BLUEPRINT.md`, `LEXICON.md`, `AGENTS.md`, `RUNBOOK.md`, and
-      `TASKBOARD.md` exist with **no remaining `[BRACKETED]` placeholders** in
-      required sections.
+      `TASKBOARD.md`, `CLAUDE.md`, and `README.md` exist with **no remaining
+      `[BRACKETED]` placeholders** in required sections.
 - [ ] The founding prompt is preserved verbatim somewhere durable.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
-- [ ] `.claude/settings.json` is filled from that scope (deny secrets, allow
-      writable roots), or `.claude/` was deliberately omitted with a reason.
+- [ ] `.claude/settings.json` is filled from that scope and grants `Edit` on
+      the declared authorship lanes, or `.claude/` was omitted with a
+      reason.
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
-- [ ] A stable first spec contains at least one actionable `ready` ticket with
-      proof requirements, and `TASKBOARD.md` projects it.
+- [ ] `workbench/manifest.json` is schema 2 and declares the six support
+      lanes, seven collections, wiki profile, exact 16-skill policy, version,
+      the `git` block, and Genesis provenance with its source commit; the layout validator
+      passes with `--genesis`. When it fails, its JSON `message` names the
+      failing control or predicate, and first-spec and generated-region
+      failures add a `reason` field; fix that predicate rather than the gate.
+- [ ] `CLAUDE.md` is exactly `@AGENTS.md`; the gate rejects any other bridge.
+- [ ] `workbench/tools/` holds the installed runtime tools and their receipt
+      (`.workbench-tools.json`) whose source release matches the manifest;
+      `workbench/sessions/.gitignore` keeps live records untracked; and
+      `workbench/wiki/design-concepts/` exists even if empty.
+- [ ] A stable first spec under `workbench/specs/` is `active`, carries at
+      least one unclaimed `ready` ticket with no blockers and proof
+      requirements, keeps at least one unchecked acceptance box, and `render`
+      plus `doctor` pass on the result.
+- [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),
+      routes to the live controls, and has no unfilled placeholders; the seeded
+      `SCHEMA.md`, `AGENTS.md`, and `design-concepts/README.md` sit beside it.
 - [ ] The first spec evidence row records that Genesis ran, with the actual result.
+- [ ] Harness friction observed during Genesis was appended to the declared
+      feedback lane; if none was observed, the first spec records `none observed`
+      with the reason.
+- [ ] The Genesis run exists as a commit on a prefixed task branch (`codex/`,
+      `claude/`, or `backup/`) pushed to the default remote; a working tree of
+      untracked files is `in-progress`, not `done`.
+- [ ] The declared integration branch (`git.integrationBranch` in
+      `workbench/manifest.json`) exists on the default remote at the generation
+      commit, or the first spec records the explicit reason it was omitted;
+      `doctor` reports `integration-branch-missing` until it resolves.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box
 failed and why.

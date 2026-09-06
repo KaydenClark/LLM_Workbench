@@ -1,11 +1,25 @@
 # LLM Workbench - Runbook
 
-**Last reviewed:** 2026-07-10
+**Last reviewed:** 2026-09-04
 **Runtime owner:** Kayden
 **Environment:** local (macOS); public repo `github.com/KaydenClark/LLM_Workbench`
 
 This file explains how to operate, verify, and evaluate the workbench repo
 itself. It should be boring, exact, and executable.
+
+## Ordinary Entry
+
+Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
+root, branch, upstream and dirty state; run the project-local spec doctor and
+load the explicitly assigned spec. For owner-directed pickup, use `next --json`
+and `show` to resolve that assignment. The spec and ticket set the normal
+stance. Investigate within the task; do not invent a next task when blocked.
+Load remaining Runbook sections only for the operation being performed.
+
+For a setup-only Round One assignment, a fresh agent follows that route, checks
+the manifest, relevant Wiki and ADRs, and runs read-only configuration checks.
+Return the result in chat only: no feedback report, handoff, checkpoint,
+self-created task, or other prose artifact. Round One precedes feedback testing.
 
 ## Prerequisites
 
@@ -56,16 +70,38 @@ Full verification:
 
 ```bash
 node tools/test-spec-workbench.mjs
+node tools/test-team-coordination.mjs
+node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
+node tools/test-core-skill-installer.mjs
+node tools/test-workbench-layout.mjs
+node tools/test-workbench-adoption.mjs
+node tools/test-workbench-upgrade.mjs
+node tools/test-workbench-tools.mjs
+node tools/test-diagnostics.mjs
+node tools/test-adr.mjs
+node tools/test-governance-core.mjs
+node tools/test-branch-closeout.mjs
+node tools/test-wiki.mjs
+node tools/test-sessions.mjs
+node tools/test-workbench-round-trip.mjs
+node tools/test-cross-provider-fixture.mjs
+node tools/test-portability-matrix.mjs
+node tools/test-workbench-dogfood.mjs
 node tools/test-evaluate-workbench.mjs
 node tools/test-guardrail-audit.mjs
 node tools/test-context-tools.mjs
 node tools/test-outcome-trials.mjs
 node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
+node tools/test-socket-contract.mjs
+node tools/test-symlink-invocation.mjs
+node tools/test-control-fidelity.mjs
+node tools/test-spec-citation-anchors.mjs
+python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
-node tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 Expected result:
@@ -77,19 +113,451 @@ Expected result:
 - spec doctor reports no duplicate IDs, invalid/contradictory states, stale
   claims, missing evidence, broken links, or generated-region drift.
 
+### Core-skill setup check
+
+The public source bundle is intentionally limited to the 16 skills in
+`skills/README.md`. Test the missing-only installer against a disposable user
+home without touching a real account:
+
+```bash
+node tools/core-skill-installer.mjs install --home /tmp/workbench-user-home
+node tools/test-core-skill-installer.mjs
+```
+
+The installer writes only missing core skill directories into
+`.agents/skills` and `.claude/skills`. It preserves existing names without a
+content comparison and blocks before mutation when either discovery root is
+Git-owned or a required skill path collides with a file or symlink.
+
+Every skill the installer or the explicit upgrade writes carries the managed
+skill marker `.workbench-skill.json` (schema 2): `source`, the `release` and
+`commit` of the checkout that wrote it (the same source identity as the tools
+receipt), and a `contentHash` of the skill's files. A schema 1 marker
+(`source` only) still counts as managed but names no generation. Check an
+installed bundle against the room's manifest without touching it:
+
+```bash
+node workbench/tools/spec-workbench.mjs doctor --home /tmp/workbench-user-home
+```
+
+`--home` defaults to the user home and is only ever read. For each required
+skill present in a discovery root, `stale-skill` (attention) means its marker
+records a release other than the manifest `workbenchVersion`, and
+`skill-generation-unknown` (attention) means it has no schema 2 marker, which
+is how a foreign Git-owned skill root shows up. Neither blocks; a missing
+skill is Adoption preflight's finding. Repair is the explicit upgrade, never
+doctor.
+
+### V3 support-root check
+
+Genesis uses the bounded layout helper to create and validate its declared
+support root. Schema 2 declares six lowercase lanes (`docs`, `specs`, `wiki`,
+`sessions`, `feedback`, `tools`) and seven collections (`docs/adr`,
+`wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
+`sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`), the wiki
+profile, and the exact source release and commit. `workbench/sessions/.gitignore`
+keeps `grilling/` and `handoffs/` untracked, and also denies the legacy spaced
+`grilling diary/` name that a stale installed skill may still write (an
+existing ignore file keeps its project rules and validates without that line);
+only `checkpoints/` is durable.
+Exercise it from a disposable project directory:
+
+```bash
+node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.1.2 --integration-branch integration
+node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-project
+node tools/test-workbench-layout.mjs
+```
+
+`init` and `migrate` record the exact Workbench source in
+`provenance.source`. Run them from a clean release checkout: they verify its
+`origin`, full 40-character `HEAD`, declared release, and runtime-tool bytes.
+Optional `--source-commit SHA` and `--source-repository URL` values are
+assertions and must match that checkout; they cannot override it. A relocated
+partial copy cannot prove which Workbench bytes it carries and refuses with
+`invalid-source-identity` before writing anything, even when source strings are
+supplied. The placeholders `unrecorded` and `unknown` are never written.
+
+A room that already exists records source identity after the fact with
+`record-source` and brings its seeded lane documents current with
+`seed-documents`; both are described under Installed State The Harness Wrote.
+
+A schema 1 (v3.0 five-lane) manifest validates as `upgrade-required`. Migrate
+it once, losslessly: `workbench/grilling` becomes `workbench/sessions/grilling`
+and the tracked `workbench/handoffs` checkpoints become
+`workbench/sessions/checkpoints`; the new lanes and collections are created
+empty. A second run reports `current`.
+
+```bash
+node workbench/tools/workbench-layout.mjs migrate --project /absolute/project
+```
+
+Every consumer resolves lanes and collections through
+`workbench/tools/workbench-paths.mjs`; nothing hardcodes a support path.
+
+The manifest may also carry a `git` block (`defaultBranch`,
+`integrationBranch`) naming, by exact case, the branch the independent review
+gate merges into ([ADR-0039](workbench/docs/adr/0039-the-integration-branch-is-a-manifest-declared-fact.md)).
+`init` and `migrate` write it from `--default-branch` and
+`--integration-branch`, defaulting to an existing integration-named branch by
+its exact case, then `origin/HEAD` (or the checked-out branch) and
+`integration`; `workbench-adoption.mjs migrate` does the same and lists an
+unresolved branch as `residue.missingIntegrationBranch`. A manifest without
+the block stays valid, and `workbench-paths.mjs` exposes the block as
+`declaredGit`. `doctor` reports `integration-branch-undeclared` when the block
+is absent and `integration-branch-missing` when the declared name resolves
+neither as a local head nor on a remote; both are `error` findings in the
+`git` scope with effect `none`, so they stay visible without blocking
+selection. When the declared branch resolves and the spec `next` would select
+is already `complete` or `superseded` at that ref, `doctor` reports
+`complete-on-integration` (attention, naming the spec and ref) so a checkout
+behind its integration branch is told so instead of dispatching finished
+work; it reads the ref the repository already has and never fetches, and
+`next` still returns the slice because a checkout may be pinned
+deliberately. Declaring never creates a branch. This repository declares
+`integration`; create a missing one from the default branch:
+
+```bash
+git branch integration main
+git push -u origin integration
+```
+
+`init` also seeds the wiki contract (`SCHEMA.md`, `AGENTS.md`, and
+`design-concepts/README.md`) into `workbench/wiki/` from `templates/wiki/`
+when it runs from a release checkout, filling the version, date, and project
+name (`--name`, `--date`, `--wiki-profile project|deployment`); a downstream
+copy of the tool reports `seeded.wiki: false` truthfully. The Genesis
+readiness gate requires the filled `workbench/wiki/MEMORY.md` router and those
+three files with no template placeholder.
+
+`validate --genesis` additionally requires seven ordinary, filled root controls,
+exact Workbench version stamps on the six stamped controls (the thin
+`CLAUDE.md` remains exactly `@AGENTS.md`), the generated-region markers in
+`BLUEPRINT.md` and `TASKBOARD.md` that `render` fills, one actionable
+version-matched first spec at a stable `workbench/specs/S-###-slug/SPEC.md`
+path, an installed `workbench/tools/` lane whose receipt names the manifest's
+release (`tools-receipt-missing` or `version-mismatch` otherwise), a declared
+integration branch that resolves (`integration-branch-undeclared` or
+`integration-branch-missing` otherwise), and no
+project-local `skills/` directory. It fails closed on symlinks,
+template placeholders, stubs, version drift, unstable spec paths, or
+structurally incomplete first specs. A rejected first spec carries a `reason`
+field naming the failing predicate (status, priority, ready ticket, sections,
+acceptance box, stamp, identity, or path), and a stray entry in the specs lane
+is listed in `entries`; dotfiles such as `.gitkeep` and `.DS_Store` are
+ignored. Readiness proves selection and claim, not doctor: run `render` and
+`doctor` on the project afterwards, as `templates/GENESIS.md` Phase 6 says.
+The `--genesis` readiness check carries the versioned placeholder vocabulary
+with the CLI, and its focused self-test proves that vocabulary exactly matches
+the shipped Genesis templates. Relocating the CLI and its declared helper
+modules therefore cannot weaken lowercase-placeholder detection.
+
+### Managed runtime tools check
+
+The product's `workbench/tools/` lane is the canonical source of the
+Workbench-managed runtime tools; this repository runs them from there. A
+downstream project receives receipt-backed copies:
+
+```bash
+node tools/workbench-tools.mjs install --project /absolute/project
+node tools/workbench-tools.mjs verify --project /absolute/project
+node tools/workbench-tools.mjs update --project /absolute/project --home /disposable-or-user-home --explicit-update
+node tools/workbench-tools.mjs rollback --project /absolute/project --backup /path/recorded/in/receipt
+node tools/test-workbench-tools.mjs
+```
+
+`install` writes `workbench/tools/.workbench-tools.json` with the source
+repository, release, commit, and a SHA-256 per file, copies each tool as an
+ordinary `0644` file, and refuses a lane that already carries a receipt, a
+foreign unreceipted file, or a symlink. `verify` reports `tools-receipt-drift`
+with the drifted file names and, for each, which of the drift states below it
+is in (`source` on this repository). `update` requires `--explicit-update`,
+backs changed files up under the user home's `.workbench-tools-backup-*`,
+records the backup path in the receipt, and `rollback` restores that backup. An
+application's root `tools/` directory is never read or written.
+
+`workbench-tools.mjs` itself is never installed into a room, so the same
+receipt hash check also runs from `workbench/tools/workbench-layout.mjs`, which
+every room does install, and `doctor` reads it. A room therefore verifies the
+runtime it is executing with only the tools it contains, and a drifted managed
+tool fails that room's own `doctor` at the registered `all` effect - which
+`next` and `claim` also enforce, refusing to dispatch or claim a slice until
+the runtime is repaired. The check runs only when the lane carries a receipt -
+an uninstalled or release lane is not a managed runtime, and its absent receipt
+stays the Genesis readiness gate's finding - and a receipt that exists but
+cannot be read, records no file hashes, or names a file outside the tools lane
+is reported as `tools-receipt-missing` rather than silently switching the check
+off. Its cost is bounded: at most the managed files the receipt names plus one
+directory listing of the lane, each file read and hashed once.
+
+The receipt does not decide how much of the runtime gets checked. A drift
+report names the file it found, so deleting that key would otherwise switch the
+check off for exactly the tampered file while every other key went on
+verifying. Both entry points therefore compare the receipt's key set with the
+authoritative managed set - `RUNTIME_TOOLS`, defined in
+`workbench/tools/workbench-layout.mjs` so that a room carries it too - and
+report `tools-receipt-missing` naming what the receipt does not account for,
+whether or not the file is still on disk. Both also list the lane, so a foreign
+file dropped in beside the managed tools is reported. Dotted entries - the
+receipt itself, the installer's transient `.receipt-*` staging directory - are
+not managed runtime and are skipped.
+
+The two conditions carry different remedies, because only one of them has a
+command that repairs it. A managed tool the receipt does not account for is
+repaired by `update --explicit-update`, which rewrites a key the receipt lost
+even when the installed bytes already match the release, and restores a managed
+file the lane lost. A file the managed runtime does not include is repaired
+only by moving it out of the lane: `update` derives its changed set from the
+managed tool list, so it reports `current` and changes nothing, and `install`
+refuses a lane that already carries a receipt.
+
+The list lives in an installed tool rather than in the release-side installer
+because a room never carries `workbench-tools.mjs`. Deriving the expected set
+from the lane's own contents instead left one silent hole: a managed file
+deleted together with its receipt key leaves nothing on disk to be missed. Ten
+of the eleven managed tools are in `doctor`'s own import graph, so deleting one
+of those fails loudly with `ERR_MODULE_NOT_FOUND` before any check runs;
+`sessions.mjs` is imported by none of them, and its deletion read as a clean
+runtime. The list is no less trustworthy than the check that reads it:
+`workbench-layout.mjs` is itself a managed file, so rewriting the list means
+rewriting a managed file, which the hash comparison reports.
+
+One condition the receipt check still cannot reach: a receipt deleted outright
+leaves no managed runtime to check, so `doctor` reports nothing and only the
+Genesis readiness gate (`validate --genesis`) fails on it. A managed file
+deleted outright is now named - by the coverage comparison if its key went with
+it, as `missing-or-not-a-file` drift if the key remains - though for the ten
+tools in the import graph the loader fails first, so what a room sees there is
+a stack trace rather than a finding.
+
+Drift alone does not say what happened, so each drifted file is classified by
+comparing the installed bytes with the release source. `updateAvailable`
+compares the receipt with the source and answers a different question, so it
+never substitutes for this.
+
+| Drift state | What it means | Remedy |
+|---|---|---|
+| `receipt-stale` | the installed bytes are the release source's; the receipt hash is the stale fact | `update --explicit-update`, which backs the replaced files up under the user home and records the backup path in the receipt |
+| `runtime-modified` | the installed bytes match neither the receipt nor the release source | `rollback --backup PATH` from a backup the receipt records, or `update --explicit-update` once the difference is reviewed |
+| `runtime-authentic` | the bytes match both the receipt and the release source; only the file mode drifted | restore mode `0644` on the managed file |
+| `source-unavailable` | no release source was reachable, which is every installed room | run `verify` from a release checkout to classify the drift |
+
+Installation and explicit updates also require a clean Git source lane, an
+`origin`, and a concrete 40-character `HEAD`; source identity is resolved
+before a destination, receipt, or backup is created. Skill markers apply the
+same rule to the bundled `skills/` bytes. Managed-component updates record the
+new component generation in their receipt or marker without rewriting the
+room manifest's historical adoption source.
+
+Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
+nonregular managed files, and unsafe backup entries before copying or creating
+backups. Resolve the path collision while preserving its target, then retry the
+explicit operation. Ordinary drift in a regular managed file still receives a
+backup and can be restored.
+
+Layout initialization and schema migration preserve existing session ignore
+rules and reject linked destination paths before writes. ADR creation, register
+rendering and checkpoint promotion also reject unsafe destination chains and
+use private temporary files. Legacy Wiki adoption moves existing knowledge
+before seeding only the missing contract files.
+
+### Room lifecycle classification check
+
+Before choosing a lifecycle route for a room, ask the room which route its own
+contents support. The command is read-only: it never writes, claims work,
+selects a route, or authorizes a migration. Run it from this release checkout.
+
+```bash
+node tools/workbench-classify.mjs classify --project /absolute/project
+node tools/test-workbench-layout.mjs
+```
+
+It reports one of four verdicts with the reasons behind it and the evidence it
+gathered (`manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`,
+`legacyControlShapes`, `roomContents`), and exits 0 for all four. A lane the
+room will not let it read - `workbench/` or root `tools/` at mode 000, a
+`tools -> tools` symlink loop, a lane name under a regular file, a link whose
+target is too long to resolve - is one of the room's own facts: it is reported
+as undetermined rather than counted as absent, and the room still gets a
+verdict. Only the supplied project path itself failing - unreachable, or not an
+ordinary directory - exits 1.
+
+| Verdict | The evidence that produces it |
+|---|---|
+| `genesis` | The room is empty apart from `.git`: nothing to derive filled controls from |
+| `adoption` | A working repository with content, no manifest, no version stamp, and no Workbench-shaped control set |
+| `upgrade` | A `workbench/manifest.json` that reads as a manifest object carrying an integer `schemaVersion`, or a Workbench version stamp in a root control with no manifest (the `upgrade --layout-only` v2-root room) |
+| `unclassifiable` | `workbench/` is present but is not an ordinary directory or carries no readable manifest; a root control or the room's own top-level listing cannot be read and nothing else is stamped; or the room is harness-shaped with no manifest and no stamp |
+
+Harness-shaped means all seven root controls, or root `tools/` files from the
+managed runtime set in a room that also carries more of the seven controls than
+it is missing. Those filenames (`privacy.mjs`, `sessions.mjs`) are ordinary, so
+one of them alone never makes a room harness-shaped. A `workbench/manifest.json`
+that parses as an unrelated JSON object, an array, or a `schemaVersion` that is
+absent, `null`, or not an integer is not this room's authority and reads as
+`unclassifiable`. Nothing under a `workbench/` that is not an ordinary directory
+is read - not the manifest, and not the managed `workbench/tools/` lane, whose
+receipt would otherwise credit this room with another room's runtime lane - and
+a `workbench/manifest.json` that is itself a symlink is never opened either.
+Every component a lifecycle lane is read through must be the room's own, one
+level down as well: an ordinary `workbench/` whose `tools` is a link reports
+`read: false` for the same reason, and inside an ordinary lane a managed name
+that is itself a link, or a directory wearing the name, is not an installed tool
+this room carries. A root `tools/` that is a link out of the room is listed as
+`rootBorrowedNames` rather than `rootManagedNames`, so another room's files
+never corroborate the harness-shaped reading.
+
+`unclassifiable` is a first-class answer, not an error. A harness-shaped room
+with no manifest and no stamp is produced equally by an unstamped Workbench
+installation (upgrade) and by an independent dialect reusing the same names
+(adoption); the room does not say which, so the command lists both readings and
+escalates with evidence rather than guessing. A readable manifest reports its
+`schemaVersion`, `workbenchVersion`, and recorded `provenance.lifecycle` as
+evidence; the recorded lifecycle is never the verdict, and whether an installed
+room actually needs migrating is `workbench-layout.mjs validate`'s answer. An
+unfilled `[BRACKETED]` control and a version banner that never resolved are
+reported as evidence and listed among the reasons, under both the harness-shaped
+verdict and the `adoption` one a straight `cp -R templates/.` produces, so a
+copy of the templates is offered as a reading rather than mistaken for a room.
+The rule is recorded in
+[S-044](workbench/specs/S-044-legacy-room-classification/SPEC.md).
+
+### V3 Adoption migration check
+
+Adoption requires seven filled root controls and all core skills in a
+user-scoped discovery root before it retires legacy project-local support paths.
+Exercise the deterministic mixed-v2 fixture without touching a real project:
+
+```bash
+node tools/test-workbench-adoption.mjs
+```
+
+For a real one-time migration, use the Adoption protocol after its inventory and
+control-reconciliation phases:
+
+```bash
+node tools/workbench-adoption.mjs migrate \
+  --project /absolute/project \
+  --home /disposable-or-user-home \
+  --version v3.1.2
+node workbench/tools/workbench-layout.mjs validate --project /absolute/project
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs doctor
+```
+
+The command refuses an existing support root or any legacy collision before
+mutation. Unreconciled root controls refuse once as `unreconciled-controls`,
+naming every failing control in `error.controls` with its own reason
+(`missing-control` for an absent, linked, or non-file control;
+`bracketed-control` for one still carrying a `[BRACKETED]` placeholder), and
+carrying the four-step reconcile-before-migrate order and the warning that a
+template copied over an existing control overwrites the project-specific
+privacy, boundary, and verification rules it already holds
+(`error.reconcileOrder` and `error.templateOverwriteWarning` repeat both for a
+machine reader). It moves only documented durable lanes into their schema 2
+destinations (legacy `grilling diary/` into the untracked grilling collection,
+legacy `handoffs/` into the tracked checkpoints collection), preserves
+project-local skills under `workbench/sessions/checkpoints/adoption-legacy-skills/`
+after user-scoped core readiness, writes
+`workbench/sessions/checkpoints/adoption-recovery.json`, moves a root
+`WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
+`workbench/feedback/WORKBENCH_FEEDBACK.md`, installs the receipt-backed runtime
+tools into `workbench/tools/`, then renders and validates the manifest-declared
+spec lane. Two root feedback files, or a root file beside a legacy
+`feedback/WORKBENCH_FEEDBACK.md`, block as `feedback-collision` before any
+mutation. An application's root `tools/` directory is never a migration
+source and is left untouched. Its `residue` result lists root filenames that
+match the managed runtime-tool set and pre-migration links that escaped a moved
+legacy lane; it never deletes those files or rewrites project prose. A moved
+legacy room brain receives the required Wiki metadata, and the manifest source
+repository/commit must match the managed-tools receipt. The migration fails
+only on a finding that blocks `all` or `selection`; nonblocking findings (for
+example a moved link that needs explicit reconciliation) are returned as `findings` with
+`doctor: passed-with-findings` so the adopting agent repairs them next.
+
+### Control fidelity report
+
+After Adoption Phase 4 or an update-harness run, compare a room's
+hand-reconciled controls with the templates they derive from. Run it from this
+release checkout; it reads the room and never writes to it:
+
+```bash
+node tools/control-fidelity.mjs report --project /absolute/project
+node tools/control-fidelity.mjs report --project /absolute/project --control AGENTS.md --format markdown
+node tools/test-control-fidelity.mjs
+```
+
+The JSON report (Markdown with `--format markdown`, also carried in the JSON
+`markdown` field) covers the six templated root controls, `CLAUDE.md` checked
+for exact equality with `@AGENTS.md`, `.claude/settings.json` when present, and
+the seeded wiki contract files plus `MEMORY.md` under the manifest-declared
+wiki lane. Every template line is `filled` (a placeholder line whose fixed
+wording remains intact after the room fills its value), `unchanged`, `dropped`, or `changed`
+(nearest word-overlap match at or above 0.5); every room line with no template
+origin is `added`. It states the checkout version and the room's manifest
+release and labels a newer or older template generation instead of pretending
+fidelity is exact. Divergence never changes the exit code; only an invocation
+error (missing `--project`, an unknown `--control`, a nonexistent project)
+exits 1. Each `dropped` or `changed` `AGENTS.md` line is restored or recorded
+as a decision in the owning spec or an ADR. Comparing against an older
+release means checking that release out first; `--templates PATH` points the
+report at another templates directory.
+
+### V3 explicit upgrade and recovery check
+
+One command moves a v2-root room (root `specs/`, no `workbench/`) onto the v3
+support root and records `provenance.lifecycle: upgrade`; it has two exclusive
+modes. Both require a clean, committed target with no support root, and both
+record the pre-migration SHA, tracked path inventory, and tools receipt in
+`workbench/sessions/checkpoints/upgrade-recovery.json`.
+
+`--layout-only` is the route for an already-adopted room and for any host whose
+discovery root the tool must not touch. It requires every core skill to be
+present in a user-scoped discovery root (`missing-user-skills` otherwise),
+reads that presence only, migrates the legacy lanes once through the Adoption
+seam, installs the receipt-backed runtime tools, and writes the recovery record
+with `skills: "presence-only"` and an empty `skillBackups`. It completes even
+when the discovery root is inside a foreign Git repository:
+
+```bash
+node tools/workbench-upgrade.mjs upgrade \
+  --project /absolute/project \
+  --home /disposable-or-user-home \
+  --version v3.1.2 \
+  --layout-only
+```
+
+`--explicit-update` is the only path that replaces a skill. It is limited to
+skills that the installer marked as Workbench-managed and blocks an unmanaged
+same-named skill or a discovery root inside a Git worktree before mutation. For
+each changed managed skill it creates a copy under the user home's
+`.workbench-upgrade-backup-*` directory, then runs the same layout phase and
+records the backups with `skills: "explicit-update"`:
+
+```bash
+node tools/workbench-upgrade.mjs upgrade \
+  --project /absolute/project \
+  --home /disposable-or-user-home \
+  --version v3.1.2 \
+  --explicit-update
+node tools/test-workbench-upgrade.mjs
+```
+
+Passing neither mode blocks with `explicit-update-required`; passing both is an
+`invalid-invocation`. Uncommitted state has no concrete rollback point.
+
 ### Spec Lifecycle And Retrieval
 
 ```bash
-node tools/spec-workbench.mjs next --json
-node tools/spec-workbench.mjs show S-001
-node tools/spec-workbench.mjs claim S-001 --agent codex
-node tools/spec-workbench.mjs close S-001 \
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs show S-001
+node workbench/tools/spec-workbench.mjs claim S-001 --agent codex
+node workbench/tools/spec-workbench.mjs close S-001 \
   --proof "[NAMED VERIFICATION]" \
   --docs "[DOCS UPDATED OR Docs checked; no update needed + reason]" \
   --remaining-gap "[GAP OR none]"
-node tools/spec-workbench.mjs complete S-001
-node tools/spec-workbench.mjs render
-node tools/spec-workbench.mjs doctor
+node workbench/tools/spec-workbench.mjs complete S-001
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
 ```
 
 `next` returns one eligible ready ticket. `show` loads one stable work packet.
@@ -97,6 +565,289 @@ Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates only the marked Blueprint catalog and hot Taskboard regions.
 `complete` requires every slice done, acceptance boxes checked, completion result
 recorded, and evidence present; render then removes the spec from the hot board.
+
+### Architecture Decision Records
+
+Decision records live in the manifest-declared `docs/adr` collection
+(`workbench/docs/adr/`). An ADR owns rationale; its rule binds only where the
+`canonicalized_in` frontmatter points, and every named owner must exist.
+
+```bash
+node workbench/tools/adr.mjs new --title "Decision title"
+node workbench/tools/adr.mjs validate
+node workbench/tools/adr.mjs normalize [--date YYYY-MM-DD]
+node workbench/tools/adr.mjs register
+node tools/test-adr.mjs
+```
+
+`new` allocates the next number by scanning the collection and writes a
+`proposed` record with the standard sections. `validate` reports
+`invalid-adr` for a missing frontmatter, an unknown status, a missing date or
+title, an accepted record with no or a nonexistent `canonicalized_in`
+target, a superseded record without `superseded_by`, or a duplicated number;
+`untracked-provenance` for a link into the untracked `sessions/grilling` or
+`sessions/handoffs` collections; and `stale-register` when the derived
+`REGISTER.md` differs from the collection. `register` rewrites that derived
+table. Doctor carries these findings for schema 2 projects; none blocks
+selection, and the `adr validate` command itself exits 1 only on error
+findings.
+
+`normalize` is the explicit repair for a hand-authored record: it inserts only
+the required frontmatter keys a record is missing (`status: proposed` and the
+date), never runs as a side effect of `validate`, never edits a body, and lists
+every file it changed with the keys it inserted. It preserves the file's own
+line terminator, so a record on a CRLF clone does not gain LF-terminated keys.
+An accepted record still needs a `canonicalized_in` owner only its author can
+name; normalize leaves that record unchanged and `validate` keeps failing it.
+
+### Composed round trip
+
+The composed workflow is proven mechanically, without a model, on every full
+verification run:
+
+```bash
+node tools/test-workbench-round-trip.mjs
+```
+
+It creates a bare remote, runs Genesis with this candidate's tools (init,
+tools install, seven controls, wiki router, feedback lane, first spec),
+passes `validate --genesis` and doctor, writes a live notepad, promotes it as
+a checkpoint, claims the first slice, pushes the planning checkpoint (the
+notepad never enters the commit), deletes the working clone, resumes from a
+fresh clone with a scrubbed environment using only repository state, drives a
+red/green slice, closes, renders, passes doctor, pushes, reads the remote SHA
+back, and scans the clone and the transcript for any Foundry name, mechanism,
+or private home path. The real cross-provider resume with agents is S-022's
+release gate.
+
+### Portability and privacy matrix
+
+Every row of the v3.1 release matrix has a named deterministic check that runs
+on every full verification pass:
+
+| Row | Check |
+|---|---|
+| schema migration | `test-workbench-layout.mjs`: schema 1 reports `upgrade-required`; `migrate` is lossless and idempotent |
+| mixed Adoption | `test-workbench-adoption.mjs`: five fixtures including root feedback, collisions, and an untouched root `tools/` |
+| case-sensitive paths | `test-portability-matrix.mjs`: no tracked paths differ only by case; capitalised or spaced lanes rejected |
+| Windows/POSIX behavior | `test-portability-matrix.mjs` and `test-spec-workbench.mjs`: backslash lanes rejected; CRLF manifests, packets, and projections accepted |
+| symlink invocation | `test-symlink-invocation.mjs`: every runtime lane tool runs its main through a symlinked path |
+| collisions | `test-workbench-tools.mjs`, `test-workbench-adoption.mjs`, `test-workbench-layout.mjs`: receipts, lanes, feedback, and first-spec collisions block before mutation |
+| stale links | `test-diagnostics.mjs`, `test-wiki.mjs`: broken spec links and stale notes are attention, never blocking |
+| public privacy stripping | `test-portability-matrix.mjs`: the shared `privacy.mjs` patterns find nothing on the active surfaces |
+| retired private and Foundry paths | `test-portability-matrix.mjs`: no active surface names a retired lane, the hidden notepad directory, a private home path, the private skill catalog, a host temp lane, or a Foundry-dependent path |
+
+```bash
+node tools/test-portability-matrix.mjs
+```
+
+### Cross-provider resume proof
+
+The release-gate proof that a different provider can resume from a clean
+clone using repository state only, with isolated candidate skills and
+receipt-backed candidate tools and nothing outside the repository:
+
+```bash
+node tools/cross-provider-resume.mjs plan --workspace /disposable/workspace
+node tools/cross-provider-resume.mjs resume-prompt --workspace /disposable/workspace
+node tools/cross-provider-resume.mjs verify --workspace /disposable/workspace --transcript /disposable/workspace/transcript.txt
+```
+
+`plan` builds a bare remote, runs Genesis with this candidate, promotes a
+checkpoint, claims the first slice, pushes the planning checkpoint, destroys
+the planning clone, and installs the candidate skills into an isolated
+provider home (`provider-home/.codex/skills` for Codex). Between `plan` and
+`verify`, run the other provider from a fresh clone of `origin.git` with its
+home pointed at that isolated directory and the printed prompt, capturing its
+output to a transcript; provider authentication stays the owner's action and
+is never copied. The isolated home runs the provider unsandboxed (the
+workspace-write sandbox refuses the `.git` writes a commit needs), so run the
+proof only in a disposable workspace. `verify` clones fresh and proves the remote advanced, the
+ticket closed with proof, the test and CLI pass, doctor is clean, the tools
+receipt names the exact candidate, the live notepad never travelled, and the
+transcript names nothing outside the repository. This proof spends provider
+budget and is run for the release umbrella, not on every verification pass;
+`node tools/test-cross-provider-fixture.mjs` proves the provider-free half
+(a recoverable planning checkpoint and a fail-closed verify) on every run.
+
+### Session Checkpoints
+
+Live grilling notepads and handoffs stay untracked in
+`workbench/sessions/grilling/` and `workbench/sessions/handoffs/`. Promote a
+record only deliberately:
+
+```bash
+node workbench/tools/sessions.mjs checkpoint --from workbench/sessions/grilling/topic-YYYY-MM-DD.md --topic topic
+node workbench/tools/sessions.mjs scan --file PATH
+node tools/test-sessions.mjs
+```
+
+`checkpoint` copies an ordinary file byte for byte (after one stamp comment
+naming the source and date) into `workbench/sessions/checkpoints/<topic>-<date>.md`
+with mode `0644`, and refuses with `secret-like-content` and the offending
+line numbers when the shared `privacy.mjs` patterns match; `invalid-note`
+covers a symlink, a non-file, an existing destination, or a `--from` that
+resolves outside the repository root or passes through a symbolic link
+(source and destination share one boundary, `assertSafeReadPath` beside
+`assertSafeWritePath`; the untracked session collections are the intended
+sources). A refusal writes nothing. Cite the promoted copy, never the live path.
+
+### Wiki Validation
+
+The wiki lane is validated by its own runtime tool; doctor carries the same
+findings for schema 2 projects, none of which blocks selection. That tool is
+also the emitter of the two installed-state findings described under Installed
+State The Harness Wrote below - `stale-seed` and `unverified-provenance` - which
+are not wiki facts and are repaired with `workbench-layout.mjs`, not with
+anything in the wiki lane:
+
+```bash
+node workbench/tools/wiki.mjs validate
+node workbench/tools/wiki.mjs normalize [--date YYYY-MM-DD]
+node tools/test-wiki.mjs
+```
+
+`invalid-note` covers a missing router, a missing required collection, absent
+frontmatter, a retired `authority` property, an enum outside `type`,
+`status`, `sensitivity`, or `knowledge_role`, a non-ISO `last_verified`, an
+absolute or traversing `source_paths` entry, a duplicated note basename, and a
+`design-concepts/` article that lacks `type: design-concept`,
+`authorized_by`, `parent`, or its `Evidence and Sources` and `History`
+sections. `copied-task-state` flags generated-region markers or ticket rows
+copied into a note; `secret-like-content` flags key blocks, tokens,
+credential assignments, absolute home paths, host temp handoff lanes, and
+email addresses in a `normal` note (the shared `workbench/tools/privacy.mjs`
+patterns). `stale-note` is attention only. `room-brain-unrouted` (attention)
+reports a root control that does not route back to the room brain: `AGENTS.md`
+must reference the wiki lane path and `README.md` must reference `MEMORY.md`;
+the message names the control lacking the route, and a room whose manifest
+declares a different wiki lane path sees it until its controls name that lane.
+`stale-stamp` (attention)
+reports a wiki contract file (`SCHEMA.md`, `AGENTS.md`,
+`design-concepts/README.md`) or the room brain whose `Generated from LLM
+Workbench` stamp names a version other than the manifest's; the check is
+version equality, not content freshness (that stays with `stale-note`), and a
+file without a stamp names no version. `validate --genesis` fails the same
+files with `version-mismatch`. An Obsidian vault configuration is ignored when
+present and never required.
+
+`normalize` is the explicit repair for a note whose required properties are
+missing. It inserts only what is absent, never edits a body, never overwrites a
+declared value, keeps the file's own line terminator, skips `archive/`, and
+lists every note it changed. Inserted values are the least-claiming the schema
+allows: `status: partial` (completed mechanically, not verified),
+`knowledge_role: derived`, a `provenance` line naming the normalization, the
+note's own path as its `source_paths`, and `last_verified` set to the day
+normalize ran. `type` is inferred from where the note lives (`MEMORY.md` ->
+`memory`, `guidebooks/` -> `guidebook`, `design-concepts/` -> `design-concept`,
+otherwise `meta`). Correct the inferred values by hand afterwards; a
+design-concept article still needs its `authorized_by`, `parent`, and sections,
+which normalize never invents.
+
+### Installed State The Harness Wrote
+
+Two classes of installed state are repaired by a command the room runs itself;
+neither blocks. Both findings are emitted by
+`node workbench/tools/wiki.mjs validate`, which is where a room sees them
+directly, and `doctor` reports them because it wires that validator; the checks
+themselves live in `workbench-layout.mjs`, which owns seeding and provenance.
+That routing is interim - the findings belong behind a dedicated `doctor` hook -
+and it is recorded as a follow-up in S-042.
+
+```bash
+node workbench/tools/workbench-layout.mjs seed-documents --project /absolute/project
+node workbench/tools/workbench-layout.mjs record-source --project /absolute/project
+```
+
+`seed-documents` copies the seeded lane documents this release carries
+(currently `workbench/feedback/REPORT_FORMAT.md`) and records the generation of
+each one in `workbench/.workbench-seed.json` beside the manifest - a release per
+document, never a byte hash in the tools receipt, whose drift finding blocks
+everything and would turn a deliberate local adjustment into a failure. It
+writes a document only when it is absent, or when the installed bytes still
+match the hash the command recorded when it last wrote that document; a copy
+byte-identical to the release is recorded as current, and a copy the room
+changed is retained untouched and reported by name. `stale-seed` (attention,
+scope `feedback`) then reports a document whose recorded release is not the
+manifest `workbenchVersion`. A document with no recorded generation names no
+generation and is silent, exactly as an unstamped wiki file is.
+
+`record-source` records verified source identity in `provenance.source` for a
+room that already exists, under the same clean-release-checkout verification
+`init` carries: a relocated partial copy refuses with `invalid-source-identity`
+and writes nothing, and nothing else in the manifest changes.
+`unverified-provenance` (attention, scope `manifest`) reports a manifest with no
+`provenance.source`, a commit that is not a full 40-character SHA, an empty
+repository, or a `release` that disagrees with `workbenchVersion`.
+
+### Diagnostics And Blocking Effects
+
+Every finding a runtime tool emits is registered in
+`workbench/tools/diagnostics.mjs` with a severity (`error` or `attention`), a
+scope, and a blocking effect. The consuming command enforces the effect; no
+spec, manifest, or projection can choose whether its own finding blocks.
+
+| Effect | Consumer behavior | Codes |
+|---|---|---|
+| `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
+| `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target` |
+| `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
+| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, `stale-seed`, `unverified-provenance`, and the ADR and wiki findings until their tools ship |
+| `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
+
+`doctor --json` prints the findings with their `severity`, `scope`, and
+`blocks` fields. The plain output groups them by that effect and is read from
+the top: `blocking (N)` first (effects `all` and `selection`), then
+`selected slice (N)`, then `informational (N)` for everything registered
+`none`. Each header carries its count and its consequence, each row reads
+`code [blocks EFFECT, SEVERITY]: message`, and the output ends with an
+`ok - no blocking finding` line when only attention or slice findings remain.
+Grouping is presentation: an `error` under `informational` is still an `error`
+in the registry and in `--json`; it simply stops nothing.
+
+`doctor --home USER_HOME` names the home whose discovery roots the `skills`
+scope reads (default: the user home); doctor never writes there.
+
+`permission-scope-drift` (severity `error`, scope `controls`, effect `none`)
+is reported when `.claude/settings.json` exists and withholds a
+manifest-declared authorship lane (`docs`, `specs`, `wiki`, `sessions`, or
+`feedback` lacks a covering `Edit` `allow` rule, or a `deny` or
+`ask` rule covers it, since both override `allow` and an asked lane prompts on
+every write), or when the `tools` lane is granted in `allow` without a covering
+`ask` rule holding the whole lane. A `deny` that covers or intersects an allowed
+tools lane remains visible. The finding names each withheld lane with its
+reason; it never edits the file, and a room may deny a lane deliberately and
+record why in `AGENTS.md`. The matcher is conservative: it recognises
+bare `Edit`, the documented `path`, `./path`, and `/path` project-relative
+forms, `//path` absolute paths, and `~/path` home-relative paths. A restrictive
+pattern it cannot safely interpret and an unreadable file
+are reported rather than treated as clear. `validate --genesis`
+fails closed on the same condition; a room without the file is unaffected.
+Resolve it by adding the `Edit(./workbench/<lane>/**)` rules from
+`templates/.claude/settings.json` and moving `workbench/tools/**` to `ask`.
+
+### Socket Contract Registry
+
+The Foundry socket contract registry (GPT_OS root spec S-014, C-003 extraction)
+travels with the Sockets family. `tools/socket-registry/registry.json` is the
+machine-readable contract artifact (one record per `K-###`),
+`tools/socket-registry/schema.mjs` is its schema, and `tools/socket-contract.mjs`
+is the validator — the successor to the instance-side `id-registry.mjs` (which
+validates the binding *table*; this validates the *contract*).
+
+```bash
+node tools/socket-contract.mjs validate            # schema-check the whole artifact
+node tools/socket-contract.mjs resolve K-001       # resolve a socket to its contract
+node tools/socket-contract.mjs check-binding  '{"socketId":"K-001","boundEntity":"P-010","access":"contract","entrypoint":"recall.query"}'
+node tools/socket-contract.mjs check-connection '{"socketId":"K-001","access":"contract","entrypoint":"recall.query"}'
+node tools/test-socket-contract.mjs                # red/green suite
+```
+
+An instance binding row (which module fills a socket here) is validated *against*
+this traveling contract with `check-binding`; a connection that reaches around
+the contract (filesystem/database access into the module) is rejected by
+`check-connection` — the no-reach-around hard gate that module legs (OpenBrain,
+CIC) import.
 
 ### Test Coverage Policy
 
@@ -200,10 +951,12 @@ making claims.
 
 ### Harness Feedback Loop
 
-Downstream projects built from `templates/` carry a `HARNESS_FEEDBACK.md` return
-channel: an append-only log of where the harness rules themselves were unclear,
-wrong, or slow. This repo is the harvest destination, so it has no
-`HARNESS_FEEDBACK.md` of its own; instead:
+Downstream projects built from `templates/` carry a `WORKBENCH_FEEDBACK.md` return
+channel (legacy copies named `HARNESS_FEEDBACK.md` are still discovered): an
+append-only log of where the harness rules themselves were unclear,
+wrong, or slow. This repo is the harvest destination. Manual reports and their format live
+in its manifest-declared feedback lane; the downstream append-only return
+channel is a different artifact. For authorized repairs:
 
 1. Collect feedback rows from downstream projects (or from dogfooding here).
 2. Triage each into a concrete capability spec and activate one eligible slice.
@@ -217,7 +970,9 @@ closes the loop on evidence rather than taste without keeping deferred work hot.
 
 ### Automated Feedback Gate
 
-Two local scheduled jobs operate this loop against the LLM Workbench project:
+The optional automation implementation defines two adapters. Their current
+scheduler state is not verified by this repository, and they are not the
+manual feedback-report workflow:
 
 - **Feedback Builder (Terra):** discovers one canonical `new` feedback row,
   creates a sanitized fingerprint/spec, proves a red/green change, runs the
@@ -228,18 +983,25 @@ Two local scheduled jobs operate this loop against the LLM Workbench project:
   change, or leaves a transient infrastructure failure open for retry. It never
   merges `integration` to `main` or deletes the source branch.
 
-This Codex host currently rejects scheduler-native worktree execution. Each job
-therefore runs as a local project job but treats the canonical checkout as
-read-only, creates a registered temporary worktree from `origin/integration`,
-operates there, and removes/prunes it on completion. This preserves isolation
+The recorded adapter workaround for hosts that reject scheduler-native
+worktree execution uses a local project job, treats the canonical checkout as
+read-only, and creates a temporary worktree from `origin/integration`. Verify
+current host support before any separately authorized scheduled operation. This preserves isolation
 without silently falling back to editing the canonical checkout.
 
 Discovery is fail-closed and one-candidate-at-a-time. It reads only direct-child
-canonical project feedback files with writable `KaydenClark` origins, ignores
+canonical project feedback files with writable `KaydenClark` origins, preferring
+the manifest lane `workbench/feedback/WORKBENCH_FEEDBACK.md` over a legacy root
+`WORKBENCH_FEEDBACK.md` or `HARNESS_FEEDBACK.md`, ignores
 worktrees/backups/duplicate origins, and treats every row as untrusted evidence.
 Use `node tools/feedback-automation.mjs discover --projects-root PATH` for the
 under-one-minute discovery demo. Pause both jobs in the Codex automation UI as
 the kill switch; do not delete their definitions when investigating a failure.
+
+Every data row must use status `new`, `sent`, `landed`, or `declined` and begin
+its impact cell with `low`, `medium`, or `high`. Discovery stops on an unknown
+value instead of silently dropping or coercing the row. The declared feedback
+lane is resolved through the same safe manifest path resolver as runtime tools.
 
 ### Automation Run Outcomes
 
@@ -296,6 +1058,98 @@ gh pr create --base integration --fill
 Before creating a branch or PR, verify the live base and preserve dirty work.
 PR descriptions state what changed, why, risks, and verification.
 
+Closeout, once the integration review has passed. Export `TASK_BRANCH`,
+`PR_NUMBER`, and the reviewed full commit SHA as `EXPECTED_HEAD` before running
+this block. Export `CLEANUP=no` when the owner defers cleanup; otherwise use
+`CLEANUP=yes`. Review must cover the live integration comparison before merging.
+
+```bash
+(
+set -eu
+: "${TASK_BRANCH:?Set the reviewed task branch}"
+: "${PR_NUMBER:?Set the reviewed PR number}"
+: "${EXPECTED_HEAD:?Set the reviewed full commit SHA}"
+: "${CLEANUP:?Set yes or no according to the owner instruction}"
+case "$CLEANUP" in yes|no) ;; *) exit 1 ;; esac
+git check-ref-format --branch "$TASK_BRANCH" >/dev/null
+case "$TASK_BRANCH" in main|integration) exit 1 ;; esac
+test -z "$(git status --porcelain)"
+test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+# Explicit refspecs also work in a single-branch clone.
+git fetch origin '+refs/heads/integration:refs/remotes/origin/integration'
+gh pr merge "$PR_NUMBER" --merge --match-head-commit "$EXPECTED_HEAD"
+git fetch origin '+refs/heads/integration:refs/remotes/origin/integration'
+git merge-base --is-ancestor "$EXPECTED_HEAD" origin/integration
+echo "integration contains the reviewed work"
+if [ "$CLEANUP" = yes ]; then
+  # Never require a local integration checkout, which another worktree may hold.
+  git switch --detach origin/integration
+  git branch --merged origin/integration
+  if git show-ref --verify --quiet "refs/heads/$TASK_BRANCH"; then
+    git merge-base --is-ancestor "$TASK_BRANCH" origin/integration
+    git branch -d "$TASK_BRANCH"
+  fi
+  remote_head=$(git ls-remote origin "refs/heads/$TASK_BRANCH")
+  if [ -n "$remote_head" ]; then
+    remote_head=${remote_head%%[[:space:]]*}
+    git fetch origin "refs/heads/$TASK_BRANCH"
+    test "$(git rev-parse FETCH_HEAD)" = "$remote_head"
+    git merge-base --is-ancestor "$remote_head" origin/integration
+    # Compare-and-delete protects commits pushed after the containment check.
+    git push origin --delete "$TASK_BRANCH" --force-with-lease="refs/heads/$TASK_BRANCH:$remote_head"
+  fi
+  # Drop registrations of review worktrees whose directories are already gone.
+  git worktree prune
+fi
+)
+```
+
+The subshell stops on any failure without closing the caller's shell. Merge
+never requests branch deletion. Containment uses the immutable reviewed SHA,
+so it remains checkable if GitHub already removed the source branch. Cleanup
+checks local and remote tips separately; a missing branch is already clean.
+The deletion lease is a compare-and-delete guard, not permission to rewrite
+history. Never use `-D` or an unconditional force push to bypass failed checks.
+If a worktree still holds the task branch, local deletion fails and cleanup
+stops. When cleanup is deferred, both branches and the checkout stay intact.
+
+Disposable review clones and linked worktrees live under the host temporary
+directory (`/private/tmp/llm-workbench-<purpose>-<sha>` or the session
+scratchpad), never inside the canonical checkout, and none is a durable owner.
+`git worktree prune` at closeout drops the registrations of removed ones; a
+finished review checkout is removed with `git worktree remove PATH` once its
+review is recorded, and `git worktree list` shows what still lingers. The
+declared integration branch (`git.integrationBranch` in
+`workbench/manifest.json`) needs no local checkout for closeout.
+
+Use `node tools/test-branch-closeout.mjs` for a disposable Git demonstration of
+failure preservation, linked worktrees, already-deleted branches, and deferred
+cleanup. GitHub merge responses are simulated there; actual integration delivery
+still requires the reviewed PR and remote containment read-back.
+
+## Manual Harness Feedback Reports
+
+Run this workflow after a setup-only Round One check succeeds. It assesses the
+assigned target; it never authorizes a repair or invokes automated repair.
+
+1. Resolve `lanes.feedback`, `lanes.specs` and the relevant collections through
+   `workbench/manifest.json`. Pin the target revision and the assigned question.
+2. Inspect only relevant controls, source and named proof. Test consequential
+   claims, distinguish observation from inference, and disclose evidence limits.
+3. Write `REPORT-topic-date.md` in the declared feedback lane using its
+   `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
+   Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
+   and Review Boundary. No findings is valid. Reports never live loose or in
+   the Wiki. If the format is absent in an older installation, these sections
+   are sufficient; explicit upgrades may copy it from the source templates.
+4. Put accepted follow-up work in its existing linked spec; proposed repairs
+   remain pending owner authorization. A report is not a work assignment.
+5. At a meaningful continuation boundary, a fresh session should find the report,
+   its linked spec, and the next executable action or owner gate using repository
+   state only. No universal handoff or new self-created task is required.
+6. Before integration, the candidate's separate-context review challenges the
+   report's consequential claims and recommendations along with the change.
+
 ## Troubleshooting
 
 | Symptom | Likely cause | Check | Fix |
@@ -303,9 +1157,10 @@ PR descriptions state what changed, why, risks, and verification.
 | evaluator self-test fails with score < 90 | root dogfood docs lost a rubric section | `node tools/evaluate-workbench.mjs --path .` and read the `missing` column | restore the missing section in the root doc |
 | self-test passes locally but templates score low | change landed at root but not in `templates/` (or vice versa) | `node tools/evaluate-workbench.mjs --path templates` | apply the Dogfood Boundary rule: land in both |
 | `evals/score.py` errors on results file | stale or hand-edited JSONL | regenerate with `_make_selftest.py` | never hand-edit results |
-| feedback discovery returns no candidate unexpectedly | checkout is a worktree/duplicate, origin is not writable-owner, or fingerprint is already pending/processed | `node tools/feedback-automation.mjs discover --projects-root /Users/kayden/GPT_OS/Projects` | repair the canonical checkout or record the pending/processed decision; do not broaden discovery |
+| feedback discovery returns no candidate unexpectedly | checkout is a worktree/duplicate, origin is not writable-owner, or fingerprint is already pending/processed | `node tools/feedback-automation.mjs discover --projects-root /absolute/projects-root` | repair the canonical checkout or record the pending/processed decision; do not broaden discovery |
 | an automation pauses after a lock, owner gate, or provider failure | the scheduler counted an interruption as idle | inspect the latest `run-outcome` JSON and prior verified-idle count | emit `collision`, `owner_gate`, or `infrastructure_error`; preserve the idle count and retry or wait for the proper wake event |
 | Sol cannot prove a candidate because GitHub or model access is down | transient infrastructure failure | read the PR verdict comment and repeat count | leave the PR open, retry next run, and alert after the second identical failure |
+| `doctor` reports `permission-scope-drift` or `validate --genesis` rejects a room on it | `.claude/settings.json` withholds a manifest-declared authorship lane (no covering `Edit` allow, a `deny` or `ask` rule covers it, or a restrictive shape is uncertain), or grants `workbench/tools/` in `allow` without a covering `ask`; an intersecting tools deny also remains visible | `node workbench/tools/spec-workbench.mjs doctor --json` and read the `lanes` field | add the `Edit` `allow` rule for each named lane from `templates/.claude/settings.json`, hold the whole `workbench/tools/**` lane in `ask`, simplify an uncertain restriction, or record the deliberate denial in `AGENTS.md` |
 
 ## Recovery And Rollback
 
@@ -317,8 +1172,9 @@ If a change fails:
 3. Rerun the failing verification command.
 4. Update the owning spec with the result and remaining gap, then render.
 
-Do not delete data (result ledgers, benchmark records), remove branches, or
-rewrite history unless the owner explicitly approves that action.
+Do not delete data (result ledgers, benchmark records), remove unmerged branches,
+or rewrite history unless the owner explicitly approves that action. Merged
+branch cleanup follows Git Rules and any owner instruction to defer it.
 
 The pre-migration local state (before this folder became the repo home) is
 preserved on branch `backup/local-pre-v2-migration`; the YAML-frontmatter

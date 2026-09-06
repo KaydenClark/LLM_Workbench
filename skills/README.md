@@ -1,86 +1,80 @@
-# Workbench Agent Skills
+# Workbench Core Skills
 
-This folder is the canonical, owner-editable skill library for the Workbench.
-It contains the conversational front doors and supporting disciplines Kayden
-selected for his workflow. The catalog below owns the selected names and their
-plain-language definitions. Only entries marked `Active` live in `skills/` and
-are exposed to agent discovery; preserved upstream baselines marked
-`Pending rewrite` live in `skills-pending/` until their Workbench rewrite is
-reviewed.
+This directory is the self-contained, versioned LLM Workbench skill source. It
+is a closed 16-skill bundle (twelve workflow skills and four stances) for a brand-new installation, not a general catalog
+or a project-local discovery tree. The checked-out LLM Workbench release owns
+the exact source versions.
 
-## Selected Skill Catalog
+<!-- core-skills:start -->
+| Skill | Purpose |
+|---|---|
+| `adoption` | Migrate an existing project into the Workbench once while preserving project truth and recovery. |
+| `checkpoint` | Save an in-progress decision record as a recoverable handoff. |
+| `code-review` | Independently review a fixed implementation diff against its owning spec. |
+| `genesis` | Create a new greenfield Workbench project from a founding prompt. |
+| `grilling` | Run the question-at-a-time decision interview. |
+| `implement` | Drive one eligible ticket through red/green, review, and remote recovery. |
+| `make-it-so` | Promote settled decisions and execute their approved tickets. |
+| `to-docs` | Route settled truth into its existing documentation owner. |
+| `to-spec` | Create or update one stable capability specification. |
+| `to-tickets` | Decompose a capability into dependency-aware implementation slices. |
+| `tracer-bullet` | Cut a capability into vertically testable slices. |
+| `update-harness` | Reconcile an adopted project with the current Workbench contract. |
+| `builder` | Deliver the assigned result with useful verification and truthful documentation. |
+| `auditor` | Determine whether named claims hold on the assigned target and evidence. |
+| `reviewer` | Challenge candidate correctness, downstream impact and consequential claims. |
+| `reconciler` | Leave achieved work and its existing truth owners consistent for continuation. |
+<!-- core-skills:end -->
 
-`Core rewrite` is the first usable flow. `Supporting rewrite` expands that flow
-after its routing agrees with the Workbench contract. `Reference` supplies
-vocabulary to other skills. `Native` already belongs to the Workbench rather
-than the upstream workflow. Availability is fail-closed: an unfinished rewrite
-is preserved but not invocable.
+## Normal setup
 
-<!-- selected-skills:start -->
-| Skill | Definition | Rewrite lane | Availability |
-|---|---|---|---|
-| `ask-workbench` | Route a situation to the smallest appropriate Workbench skill or flow when the owner does not remember the command. | Native | Active |
-| `genesis` | Create a new greenfield project from its founding prompt, establish a private remote recovery boundary, and hand off a verified Workbench scaffold. | Native | Active |
-| `adoption` | Migrate an existing project into the Workbench once while preserving code, history, project truth, provenance, and remote recovery. | Native | Active |
-| `grilling` | Ask one decision question at a time, include a recommended answer, research discoverable facts, and stop before implementation. | Core rewrite | Active |
-| `grill-me` | Start the question-first interview that develops shared understanding before a spec or plan is written. | Core rewrite | Active |
-| `sitrep` | Give a smallest-scope conversational situation report, dispatching read-only Scout research only when the live evidence is insufficient. | Native | Active |
-| `to-docs` | Route settled conversation truth into existing Workbench documentation owners without restarting discovery or creating another store. | Native | Active |
-| `to-spec` | Synthesize an already-settled conversation into one stable `S-###/SPEC.md` capability record without restarting the interview. | Core rewrite | Active |
-| `to-tickets` | Break a spec into one-context tracer-bullet slices with explicit blockers inside the spec's implementation table. | Core rewrite | Active |
-| `wayfinder` | Reduce fog in work too large to specify by resolving one investigation decision at a time toward a named destination. | Supporting rewrite | Pending rewrite |
-| `prototype` | Build a reversible, runnable artifact that answers one design question and records the resulting decision. | Core rewrite | Pending rewrite |
-| `research` | Investigate a question against primary sources and return cited findings, creating a durable artifact only when the task needs one. | Core rewrite | Pending rewrite |
-| `implement` | Claim one eligible slice, use red-green-refactor, review it, update proof and docs, then safely commit and push the task branch. | Core rewrite | Active |
-| `tdd` | Drive one behavior at an agreed public seam through a red-green-refactor loop with durable tests. | Core rewrite | Pending rewrite |
-| `code-review` | Review a diff separately against repository standards and the owning Workbench spec, reporting actionable findings first. | Core rewrite | Active |
-| `diagnosing-bugs` | Establish a tight reproduction loop, prove the root cause, and enter fix mode only when the user requested a fix. | Core rewrite | Pending rewrite |
-| `handoff` | Preserve only the context a fresh session still needs, linking to existing specs, proof, commits, and files instead of duplicating them. | Core rewrite | Pending rewrite |
-| `teach` | Teach a topic through a stateful sequence of small lessons grounded in the learner's purpose and prior understanding. | Supporting rewrite | Pending rewrite |
-| `writing-great-skills` | Define the authoring vocabulary and pruning rules used to make Workbench skills predictable and maintainable. | Reference | Active |
-| `design-an-interface` | Generate and compare meaningfully different public interface shapes before choosing one to implement. | Supporting rewrite | Pending rewrite |
-| `ubiquitous-language` | Extract, challenge, and normalize shared project terms, promoting accepted definitions into `LEXICON.md`. | Supporting rewrite | Pending rewrite |
-| `resolving-merge-conflicts` | Reconstruct both intents in a merge conflict, preserve compatible behavior, verify the result, and surface irreconcilable product choices. | Supporting rewrite | Pending rewrite |
-| `improve-codebase-architecture` | Find high-value opportunities to deepen modules, improve seams, and reduce the amount of context needed to change code safely. | Supporting rewrite | Pending rewrite |
-| `setup-pre-commit` | Add project-appropriate commit-time checks without assuming one package manager, formatter, or full-suite policy fits every repository. | Supporting rewrite | Pending rewrite |
-| `setup-ts-deep-modules` | Add enforceable TypeScript package boundaries when a project has explicitly chosen the deep-module architecture. | Supporting rewrite | Pending rewrite |
-| `codebase-design` | Supply shared engineering vocabulary for modules, interfaces, seams, adapters, depth, leverage, and locality. | Supporting rewrite | Pending rewrite |
-| `domain-modeling` | Clarify domain concepts and relationships while routing shared definitions to the Lexicon and scoped decisions to the owning spec. | Supporting rewrite | Pending rewrite |
-| `loop-me` | Discover a recurring workflow worth delegating and grill it until an implementable Workbench spec exists. | Supporting rewrite | Pending rewrite |
-| `wizard` | Build a human-guided script for repeatable setup or migration steps that cannot be safely automated end to end. | Supporting rewrite | Pending rewrite |
-| `update-harness` | Reconcile a project with the current Workbench contract while preserving project truth, provenance, and publication safety. | Native | Active |
-<!-- selected-skills:end -->
+Run the checked-out helper on a brand-new host:
 
-## Truth Routing
+```bash
+node tools/core-skill-installer.mjs install [--home USER_HOME]
+```
 
-- `LEXICON.md` owns shared definitions used across capabilities.
-- `BLUEPRINT.md` owns product direction, architecture, invariants, and non-goals.
-- `specs/S-###-slug/SPEC.md` owns scoped requirements, decisions, tickets, and proof.
-- `TASKBOARD.md` is only the generated hot projection.
-- `RUNBOOK.md` owns commands and operations.
+It supplies a missing core skill only from this directory into the user-scoped
+Codex-compatible `.agents/skills` and Claude `.claude/skills` roots. Normal
+setup is presence-only: an existing same-named skill is accepted without a
+content comparison or replacement. A Git-owned discovery root or a path
+collision blocks before either discovery root is changed and returns exact
+remediation in its JSON result. Replacing an existing skill is reserved for the
+explicit-update flow, not normal setup.
 
-Until a skill's Workbench rewrite lands, its imported upstream behavior stays
-under `skills-pending/`, outside the live discovery root. Pending source is
-reference material only and cannot be invoked from `ask-workbench`.
+## Managed skill marker
 
-## Provenance
+Each skill the installer or the explicit upgrade (`tools/workbench-upgrade.mjs`)
+writes carries `.workbench-skill.json` beside its `SKILL.md`:
 
-The upstream baselines came from
-[`mattpocock/skills`](https://github.com/mattpocock/skills) under the MIT
-license. The upstream copyright and permission text is retained verbatim in the
-[tracked third-party notice](../THIRD_PARTY_NOTICES.md). `ask-workbench` is the Workbench-owned successor to `ask-matt`;
-`sitrep`, `to-docs`, and `update-harness` were authored in this repository.
-`genesis` and `adoption` are callable entrypoints for the existing one-time
-bootstrap protocols; routine migrations between harness versions remain owned
-by `update-harness`. `to-docs` replaces the retired `grill-with-docs` wrapper so
-interviewing and persistence remain separate. The untouched local snapshot
-is retained outside the live discovery path at
-`GPT_OS/.agents/upstream-matt-skills-2026-07-14/` for comparison.
+```json
+{"schemaVersion":2,"source":"LLM Workbench core","release":"vX.Y.Z","commit":"<40-hex>","contentHash":"<sha256>"}
+```
 
-## Discovery And Editing
+`release` and `commit` are the clean checked-out Workbench's verified identity at write time
+(the same source identity the runtime tools receipt records); `contentHash` is
+SHA-256 over the skill's file paths and bytes, excluding the marker. Schema 1
+markers (`schemaVersion` 1, `source` only) were written before the generation
+was recorded: readers still treat them as managed, and a room's
+`spec-workbench.mjs doctor --home` reports them as `skill-generation-unknown`
+and a schema 2 marker whose `release` differs from the manifest as
+`stale-skill`. Doctor only reads the home; the explicit upgrade rewrites every
+managed marker at this release's generation.
 
-Edit active skills here and promote preserved source from `skills-pending/`
-only after its Workbench rewrite passes the catalog contract. GPT_OS exposes this same directory to Claude through
-`.claude/skills` and to Codex-compatible discovery through `.agents/skills`.
-Downstream projects receive selected skills through the normal harness upgrade
-path after their rewrite lane is complete.
+## Retired and preserved source
+
+The optional router, convenience, and reference skills removed from live
+discovery are retained under `skills-archive/optional-active-2026-09-01/`.
+`skills-pending/` remains historical rewrite source outside discovery. Neither
+directory participates in the portable core bundle.
+
+The upstream baselines are covered by the [tracked third-party notice](../THIRD_PARTY_NOTICES.md).
+
+## Stance discovery
+
+Builder, Auditor, Reviewer and Reconciler ship as flat skill directories in both
+user discovery roots, so Claude's one-level scan sees them directly. If a user
+separately stores a stance below `stances/`, that nested installation also needs
+a flat top-level symlink. The missing-only installer never replaces a foreign
+symlink or rearranges existing installations. SPEC and TASK assign a stance;
+loading one changes method without changing authority or spawning an agent.

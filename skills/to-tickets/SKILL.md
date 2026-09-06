@@ -9,20 +9,31 @@ disable-model-invocation: true
 The assigned `SPEC.md` is the only ticket store. `TASKBOARD.md` is a generated
 projection, not a second tracker.
 
+For v3, confirm the assigned spec resolves through `workbench/manifest.json`
+before changing it. Never recreate a root `specs/` queue or a project-local
+skill-discovery tree.
+
 ## Process
 
 1. Read the assigned `SPEC.md` and the relevant source and tests. Do not select
    an unassigned spec.
 2. Propose vertical slices that each deliver a checkable behavior in one context.
-   Give each a short outcome-oriented title, real blockers, done criteria, and
-   closing proof. Prefer an independent first tracer bullet; use expand-contract
-   when a wide refactor cannot stay green by vertical slice.
+   Apply the `/tracer-bullet` discipline so each slice pierces every layer of the
+   project's stack rather than one layer. Give each a short outcome-oriented
+   title, real blockers, done criteria, and closing proof. Prefer an independent
+   first tracer bullet; use expand-contract when a wide refactor cannot stay
+   green by vertical slice.
 3. Present the proposed table and ask for approval before changing durable
    work state. Confirm that slice size and blocking edges are right.
 4. After approval, update only the assigned spec's `Vertical Implementation Slices`
    table. Preserve completed rows and append-only evidence. Keep unresolved
    owner decisions visible as blockers. Create no parallel ticket or proof store.
-5. Run `node tools/spec-workbench.mjs render` to refresh the generated
-   `TASKBOARD.md`, then run `node tools/spec-workbench.mjs doctor`. Execution
+5. Run `node workbench/tools/spec-workbench.mjs render` to refresh the generated
+   `TASKBOARD.md`, then run `node workbench/tools/spec-workbench.mjs doctor`. Execution
    later uses the claim and close commands in `RUNBOOK.md` one eligible ticket
    at a time.
+
+Set the normal stance explicitly in each assigned TASK (ticket) and its SPEC
+during authorized decomposition. TASK is the existing ticket, not another file.
+An executing agent investigates within its assignment and never creates its own
+next task; these planning tools require owner-directed planning authority.

@@ -10,6 +10,20 @@
 This file explains how to operate, verify, recover, and evaluate the project. It
 should be boring, exact, and executable.
 
+## Ordinary Entry
+
+Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
+root, branch, upstream and dirty state; run the project-local spec doctor and
+load the explicitly assigned spec. For owner-directed pickup, use `next --json`
+and `show` to resolve that assignment. The spec and ticket set the normal
+stance. Investigate within the task; do not invent a next task when blocked.
+Load remaining Runbook sections only for the operation being performed.
+
+For a setup-only Round One assignment, a fresh agent follows that route, checks
+the manifest, relevant Wiki and ADRs, and runs read-only configuration checks.
+Return the result in chat only: no feedback report, handoff, checkpoint,
+self-created task, or other prose artifact. Round One precedes feedback testing.
+
 ## Prerequisites
 
 Required tools:
@@ -114,6 +128,63 @@ Coverage rules:
 - If behavior cannot be tested in the current harness, record the exact reason
   and use the strongest concrete manual check available.
 
+## Workbench Lifecycle, Diagnostics, And Decision Records
+
+The project runs its own installed runtime tools from the manifest-declared
+tools lane:
+
+```bash
+node workbench/tools/spec-workbench.mjs next --json
+node workbench/tools/spec-workbench.mjs show S-###
+node workbench/tools/spec-workbench.mjs claim S-### --agent NAME
+node workbench/tools/spec-workbench.mjs close S-### --proof "..." --docs "..." --remaining-gap "..."
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
+node workbench/tools/adr.mjs new --title "Decision title"
+node workbench/tools/adr.mjs validate
+node workbench/tools/adr.mjs register
+```
+
+`doctor` prints every registered finding with its severity and blocking
+effect and exits non-zero only for `all` or `selection` findings; a
+`selected-slice` finding is excluded by `next` and refused by `claim`, and an
+`attention` finding stays visible without blocking. `doctor --home USER_HOME`
+(default: the user home, only ever read) also checks each installed core skill's
+managed marker `.workbench-skill.json` (schema 2: `source`, `release`,
+`commit`, `contentHash`) against the manifest: `stale-skill` names a release
+other than the manifest's, `skill-generation-unknown` names a skill with no
+schema 2 marker; both are attention, and the explicit upgrade is the repair. `doctor` also reports
+`integration-branch-undeclared` and `integration-branch-missing` (scope
+`git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
+names a branch that resolves locally or on a remote; the Genesis readiness
+gate fails closed on the same two conditions. When that branch resolves and
+the spec `next` would select is already complete there, `doctor` reports
+`complete-on-integration` (attention) without hiding the work. Decision records live in
+`workbench/docs/adr/`; an accepted record names the control that carries its
+rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
+
+`permission-scope-drift` is reported when `.claude/settings.json` exists and
+withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
+a `deny` or `ask` rule covers it, or a restrictive pattern is uncertain), or
+grants `workbench/tools/` in `allow` without a covering `ask` holding the whole
+lane; an intersecting tools deny also remains visible. It names each lane,
+never blocks, and never edits the file. Claude Code applies `Edit` rules to every built-in
+file-editing tool. Resolve the finding by adding the
+`Edit(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
+simplifying an uncertain restriction, or recording the deliberate restriction
+in `AGENTS.md`. The Genesis readiness check fails closed on the same finding;
+a room without the file is unaffected.
+
+The wiki lane raises `room-brain-unrouted` (attention) when a root control does
+not route back to the room brain: `AGENTS.md` must reference `workbench/wiki/`
+and `README.md` must reference `MEMORY.md`; the finding names the control that
+lacks the route, and a room whose manifest declares a different wiki lane path
+sees it until its controls name that lane. It raises `stale-stamp` (attention)
+when a wiki contract file or the room brain carries a `Generated from LLM
+Workbench` stamp naming a version other than `workbench/manifest.json`; refresh
+the stamp when the harness is upgraded (`validate --genesis` fails the same
+files with `version-mismatch`).
+
 ## Evaluation And Benchmarking
 
 Use this section to prove whether the workbench or project process is improving.
@@ -186,7 +257,7 @@ model, conditions, task suite, trial count, and result path before making claims
 
 ### Harness Feedback Loop
 
-This project's `HARNESS_FEEDBACK.md` is the return channel to the upstream
+This project's `WORKBENCH_FEEDBACK.md` is the return channel to the upstream
 harness. Lessons logged there feed harness changes, which must clear the same
 bar as any other "better" claim: a proposed template change is `c3_candidate`
 above, tested against the current docs on the same task suite before it ships.
@@ -263,6 +334,40 @@ commands and expected results here:
 
 Expected result: [clean scope, verified base/target, reviewable PR].
 
+Closeout, once the integration review has passed. A pushed branch is
+recoverable, not delivered; finish the merge and clean up after yourself:
+
+Run merge and containment verification as a fail-fast sequence. Pin the reviewed
+commit and reject a changed candidate. Merge must not delete branches before
+containment is verified. A linked worktree holding the target must not block
+verification. Only run cleanup when the owner has not deferred it; verify each
+local and remote tip is contained, tolerate absent branches, and use an atomic
+expected-tip guard on remote deletion so concurrent pushes are preserved.
+
+```bash
+(
+set -eu
+[MERGE_PR_COMMAND]
+[VERIFY_INTEGRATION_CONTAINS_WORK_COMMAND]
+)
+```
+
+After successful verification, if cleanup is authorized:
+
+```bash
+[DELETE_MERGED_BRANCH_COMMAND]
+git worktree prune
+```
+
+Expected result: [integration contains the work; merged branch deleted locally and remotely; unmerged work never force-deleted].
+
+When cleanup is owner-deferred, the declared integration branch contains the
+reviewed work and the branches remain available for later cleanup. Disposable
+review clones and linked worktrees live outside the canonical checkout, under
+the host temporary directory; `git worktree prune` drops the registrations of
+removed ones, and a finished review checkout is removed once its review is
+recorded. None is a durable owner.
+
 ## Upgrading The Harness
 
 These control docs were generated from a specific LLM Workbench version, recorded
@@ -272,16 +377,97 @@ the current one.
 
 To upgrade:
 
-1. Check the LLM Workbench repo's releases/changelog for what changed since
+1. Check the clean LLM Workbench release checkout's releases/changelog for what changed since
    `v[HARNESS_VERSION]`.
 2. Re-copy only the changed template sections; keep this project's filled-in
    specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
-3. Update each doc's version stamp to the new version.
-4. Re-run the full verification suite and record the upgrade in its owning spec.
+3. Update managed runtime tools only with that checkout's
+   `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`;
+   keep its receipt and backup as the component recovery point.
+4. Update each doc's version stamp to the new version. Do not rewrite the room
+   manifest's historical adoption source to impersonate the newly installed
+   component generation.
+5. Re-run the full verification suite and record the upgrade in its owning spec.
+
+The runtime tools in `workbench/tools/` are Workbench-managed: their receipt
+(`.workbench-tools.json`) records the exact source release, commit, and file
+hashes. Verify them with `node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs verify --project .`
+and replace them only through `update --explicit-update`, which backs up the
+previous files and records a rollback path. Never hand-edit a managed tool.
+
+This project's own `node workbench/tools/spec-workbench.mjs doctor` runs the
+same receipt hash check from the tools this project carries, so a hand-edited
+managed tool fails the check here with no release checkout present. It fails at
+the `all` effect, which also makes `next` and `claim` refuse until the runtime
+is repaired. The check runs only when `workbench/tools/` carries a receipt; a
+receipt that cannot be read, records no file hashes, names a file outside that
+lane, or does not account for every managed tool is reported as
+`tools-receipt-missing` rather than switching the check off. That last one
+matters because the drift report names the file it found: deleting that key
+would otherwise switch the check off for exactly the hand-edited tool. The
+authoritative list of what is managed ships inside the installed tools
+themselves, so a receipt is checked against that list and not against whatever
+the lane happens to hold - a managed tool deleted along with its key is still
+named. Dotted entries are skipped.
+
+The two coverage conditions have different repairs. A managed tool the receipt
+does not account for is refreshed with `update --explicit-update` from the
+release checkout, which rewrites the lost key and restores a deleted managed
+file. A file the managed runtime does not include has to be moved out of the
+lane instead: `update` cannot adopt it and reports `current`, and `install`
+refuses a lane that already carries a receipt.
+
+Without a release checkout `doctor` cannot say whether the receipt went stale
+or the bytes were changed - it reports every drifted file as
+`source-unavailable` - so run `verify` from the release checkout to classify
+it. A deleted receipt is the readiness gate's finding, not this check's. A
+deleted managed tool that another managed tool imports stops `doctor` from
+loading at all, so what appears is a loader stack trace rather than a finding.
+
+The source checkout must have a concrete `origin` and 40-character `HEAD`, and
+its managed source lane must be clean; otherwise install/update refuses before
+creating a receipt or backup.
+
+Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
+nonregular managed files, and unsafe backup entries before copying or creating
+backups. Resolve the path collision while preserving its target, then retry the
+explicit operation. Ordinary drift in a regular managed file still receives a
+backup and can be restored.
+
+Layout initialization and schema migration preserve existing session ignore
+rules and reject linked destination paths before writes. ADR creation, register
+rendering and checkpoint promotion also reject unsafe destination chains and
+use private temporary files; checkpoint promotion refuses a `--from` source
+outside the repository root, or one reached through a symbolic link, with
+`invalid-note` and writes nothing. Legacy Wiki adoption moves existing
+knowledge before seeding only the missing contract files.
 
 Treat a harness upgrade like any other change: smallest correct diff, verified,
 with proof. If a downstream lesson should flow *back* to the harness, capture it
-per the project's `HARNESS_FEEDBACK` convention.
+per the project's `WORKBENCH_FEEDBACK` convention.
+
+## Manual Harness Feedback Reports
+
+Run this workflow after a setup-only Round One check succeeds. It assesses the
+assigned target; it never authorizes a repair or invokes automated repair.
+
+1. Resolve `lanes.feedback`, `lanes.specs` and the relevant collections through
+   `workbench/manifest.json`. Pin the target revision and the assigned question.
+2. Inspect only relevant controls, source and named proof. Test consequential
+   claims, distinguish observation from inference, and disclose evidence limits.
+3. Write `REPORT-topic-date.md` in the declared feedback lane using its
+   `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
+   Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
+   and Review Boundary. No findings is valid. Reports never live loose or in
+   the Wiki. If the format is absent in an older installation, these sections
+   are sufficient; explicit upgrades may copy it from the source templates.
+4. Put accepted follow-up work in its existing linked spec; proposed repairs
+   remain pending owner authorization. A report is not a work assignment.
+5. At a meaningful continuation boundary, a fresh session should find the report,
+   its linked spec, and the next executable action or owner gate using repository
+   state only. No universal handoff or new self-created task is required.
+6. Before integration, the candidate's separate-context review challenges the
+   report's consequential claims and recommendations along with the change.
 
 ## Troubleshooting
 

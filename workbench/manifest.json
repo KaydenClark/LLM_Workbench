@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 2,
+  "workbenchVersion": "v3.1.2",
+  "provenance": {
+    "lifecycle": "adoption",
+    "migratedFrom": 1,
+    "source": {
+      "repository": "https://github.com/KaydenClark/LLM_Workbench",
+      "release": "v3.1.0",
+      "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
+    }
+  },
+  "git": {
+    "defaultBranch": "main",
+    "integrationBranch": "integration"
+  },
+  "lanes": {
+    "docs": "workbench/docs",
+    "specs": "workbench/specs",
+    "wiki": "workbench/wiki",
+    "sessions": "workbench/sessions",
+    "feedback": "workbench/feedback",
+    "tools": "workbench/tools"
+  },
+  "collections": {
+    "adr": "workbench/docs/adr",
+    "design-concepts": "workbench/wiki/design-concepts",
+    "guidebooks": "workbench/wiki/guidebooks",
+    "archive": "workbench/wiki/archive",
+    "grilling": "workbench/sessions/grilling",
+    "handoffs": "workbench/sessions/handoffs",
+    "checkpoints": "workbench/sessions/checkpoints"
+  },
+  "wiki": {
+    "profile": "project"
+  },
+  "skillPolicy": {
+    "required": [
+      "adoption",
+      "checkpoint",
+      "code-review",
+      "genesis",
+      "grilling",
+      "implement",
+      "make-it-so",
+      "to-docs",
+      "to-spec",
+      "to-tickets",
+      "tracer-bullet",
+      "update-harness",
+      "builder",
+      "auditor",
+      "reviewer",
+      "reconciler"
+    ],
+    "discovery": [
+      ".agents/skills",
+      ".claude/skills"
+    ],
+    "normalSetup": "presence-only",
+    "updates": "explicit-only"
+  }
+}
