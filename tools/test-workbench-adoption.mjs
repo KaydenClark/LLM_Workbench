@@ -415,3 +415,45 @@ console.log('ok - mixed v2 adoption preserves durable truth and blocks collision
 }
 
 console.log('ok - adoption writes room-brain frontmatter in the terminator the file already uses');
+
+// An operator preparing a room for adoption must learn every unreconciled
+// control in one run. Returning on the first one teaches one missing control
+// per migration attempt, and teaches nothing about how to produce it.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    for (const control of ['LEXICON.md', 'RUNBOOK.md', 'README.md']) fs.rmSync(path.join(project, control));
+    write(project, 'AGENTS.md', '# AGENTS.md\n\nEdit scope: [BRACKETED_LANE].\n');
+
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
+    assert.notEqual(result.status, 0, 'unreconciled root controls must block before mutation');
+    const report = JSON.parse(result.stdout);
+    assert.equal(report.status, 'blocked');
+    assert.deepEqual(report.error.controls, [
+      { control: 'AGENTS.md', reason: 'bracketed-control', path: path.join(project, 'AGENTS.md') },
+      { control: 'LEXICON.md', reason: 'missing-control', path: path.join(project, 'LEXICON.md') },
+      { control: 'RUNBOOK.md', reason: 'missing-control', path: path.join(project, 'RUNBOOK.md') },
+      { control: 'README.md', reason: 'missing-control', path: path.join(project, 'README.md') }
+    ], 'one refusal must name every unreconciled control with its own distinct reason');
+    for (const control of ['AGENTS.md', 'LEXICON.md', 'RUNBOOK.md', 'README.md']) {
+      assert.ok(report.error.message.includes(control), `the refusal message must name ${control}`);
+    }
+    assert.ok(report.error.message.includes('BLUEPRINT.md') === false, 'a reconciled control must not be named as a failure');
+    assert.match(report.error.message, /isolated migration branch/,
+      'the refusal must name the reconcile-before-migrate order');
+    assert.match(report.error.message, /never copy a template over an existing control/i,
+      'the refusal must carry the template-overwrite warning where the agent is standing');
+    assert.match(report.error.message, /privacy/,
+      'the warning must name what a copied template overwrites');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'the refusal must precede every mutation');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+console.log('ok - one adoption refusal names every unreconciled control, the reconcile order, and the overwrite warning');

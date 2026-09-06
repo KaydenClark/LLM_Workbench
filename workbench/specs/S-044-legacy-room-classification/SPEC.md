@@ -8,8 +8,8 @@
 **Updated:** 2026-09-06
 **Catalog description:** Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone.
 **Blockers:** none
-**Latest event:** Spec captured from upstream items UP-022 and UP-023; both re-verified against `b3633e5`, and the preflight was found to fail on the first missing control rather than naming all of them.
-**Next gate:** Claim TK-001 and reproduce the first-control-only refusal red.
+**Latest event:** TK-001 closed: one `unreconciled-controls` refusal now names every failing control with its own reason, the reconcile order, and the template-overwrite warning.
+**Next gate:** Implement TK-002 against the classification rule recorded in Decisions And Contracts.
 
 ## Outcome
 
@@ -91,6 +91,67 @@ read-only way to classify an unversioned room.
 - **The template-overwrite warning belongs in the failure output**, not only in
   the Adoption prose, because the failure is where the agent is standing when it
   decides what to do.
+- **One refusal carries one code, and each control carries its own reason.**
+  `missing-control` and `bracketed-control` each describe a single control's
+  condition, so neither can honestly label a batch that mixes them. The batched
+  refusal is `unreconciled-controls`, and every entry in `error.controls` keeps
+  its own distinct `reason` of exactly those two values. Nothing outside
+  `tools/workbench-adoption.mjs` read either code, so no consumer breaks.
+- **The classifier is a release-checkout tool, not a runtime tool.** It lives at
+  `tools/workbench-classify.mjs`, beside `workbench-adoption.mjs` and
+  `workbench-upgrade.mjs`, because the room it classifies may carry no installed
+  `workbench/tools/` at all - that absence is one of the facts it reports. Adding
+  it to the installed runtime set would require the room to already be a
+  Workbench installation, which is the question it exists to answer.
+
+### The classification rule
+
+The verdict is a **route**, not a history: it answers "which of the three
+lifecycle routes does this room's own evidence support, or does it support
+none of them". A room's recorded `provenance.lifecycle` is reported as evidence,
+never as the verdict. Five evidence categories are gathered, all read-only:
+`manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`, and
+`legacyControlShapes`.
+
+Two derived predicates:
+
+- **stamped** - at least one present root control carries a
+  `Generated from | Part of LLM Workbench vX.Y.Z` stamp
+  (`workbench-layout.mjs` `versionStamp`). A release demonstrably wrote here.
+- **harness-shaped** - all seven root controls are present, or the room's own
+  root `tools/` carries a file named in the managed runtime-tool set. The seven
+  controls are the Workbench's exact closed set; either shape is what a
+  Workbench installation leaves behind.
+
+Ordered, first match wins:
+
+1. `workbench/` exists but `workbench/manifest.json` is absent, unreadable, or
+   not an ordinary JSON file -> **`unclassifiable`**. A support root without its
+   own authority is neither an installed room nor a clean adoption target, and
+   Adoption's preflight already refuses it as `support-root-exists`.
+2. `workbench/manifest.json` reads as JSON -> **`upgrade`**. The room is an
+   installed Workbench room, so it is neither a genesis nor a second adoption;
+   every move from here is an upgrade. Whether it needs one - schema 1 migrate,
+   a version bump, or nothing - is `validateManifest`'s answer, and the
+   classifier reports the manifest's `schemaVersion`, `workbenchVersion`, and
+   `provenance.lifecycle` as evidence so the reader can see which.
+3. Not stamped, no manifest, but harness-shaped -> **`unclassifiable`**. The
+   shape says a Workbench-shaped harness; the absent stamp and manifest say no
+   release recorded itself. An unstamped Workbench room (upgrade) and an
+   independent dialect reusing the same names (adoption) both produce exactly
+   this evidence, and the room does not say which. Both readings are listed as
+   reasons so the agent escalates with evidence instead of guessing.
+4. Stamped, no manifest -> **`upgrade`**. This is the already-adopted v2-root
+   room `workbench-upgrade.mjs upgrade --layout-only` exists for.
+5. The room is empty apart from `.git` -> **`genesis`**. No content to derive
+   filled controls from.
+6. Otherwise -> **`adoption`**. A working room with real content, no Workbench
+   installation to upgrade, and no Workbench-shaped ambiguity.
+
+Rule 6 is why a repository carrying only application code and a `README.md`
+is `adoption` and not `genesis`: `templates/ADOPTION.md` already routes a target
+with real code to Adoption, and Genesis derives from a founding prompt rather
+than from a repository.
 
 ## Non-Goals
 
@@ -108,7 +169,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Report every missing or unfilled control in one preflight result, with the reconcile order and the template-overwrite warning | ready | none | pending |
+| TK-001 | Report every missing or unfilled control in one preflight result, with the reconcile order and the template-overwrite warning | done | none | `tools/test-workbench-adoption.mjs` names all four unreconciled controls in one refusal |
 | TK-002 | Add a read-only classify command reporting `genesis \| adoption \| upgrade \| unclassifiable` with its evidence | ready | none | pending |
 
 ### TK-001 - Name every missing control at once
@@ -178,6 +239,8 @@ node workbench/tools/spec-workbench.mjs doctor
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Spec captured from upstream UP-022 and UP-023 and re-verified at `b3633e5` | Read `workbench-adoption.mjs:63-78` (returns on the first failing control), `workbench-layout.mjs:20,226`, `templates/ADOPTION.md:218-222,274`; grepped `classify` across `tools/` and `workbench/tools/` and found no lifecycle classifier | Blueprint catalog regenerated by render | Both slices open; the first-control-only behavior sharpens UP-022 beyond the upstream statement |
 | 2026-09-06 | spec | Restored the append-only capture row that two rounds of citation repair had rewritten | The capture row above was created at `288c821` citing `workbench-layout.mjs:20,226` and `templates/ADOPTION.md:218-222,274`. It was rewritten at `a5e7fe0` (`274` to `275-276`) and again at `d1de47f` (`:20` to `:21`, `275-276` to `274-275`, plus a parenthetical about four matching files that was never in the original record), both violating `AGENTS.md` Documentation Ownership. It is restored byte-for-byte and the corrections are recorded here instead: at `b3633e5` `controls` really was at `workbench-layout.mjs:20` and the seven-controls completion box really was at `ADOPTION.md:274`, so the original row was right and both rewrites degraded it; the `a5e7fe0` change to `275-276` was the only substantive error. Against the post-S-036 tree those facts are at `:21` and `:274-275`, which live Current Verified State cites | No control text changed | Both slices open |
+
+| 2026-09-06 | TK-001 | One `unreconciled-controls` refusal now names every failing root control with its own reason, the four-step reconcile order, and the template-overwrite warning | Red at `09bfff7`: the new `tools/test-workbench-adoption.mjs` case failed `AssertionError [ERR_ASSERTION]: one refusal must name every unreconciled control with its own distinct reason`, actual `undefined` (the base returns on the first control and carries a singular `error.control`). Green after collecting: `ok - one adoption refusal names every unreconciled control, the reconcile order, and the overwrite warning`. Re-anchored the cited seam first: `missing-control` is at `tools/workbench-adoption.mjs:74` and `bracketed-control` at `:77` in the pre-change tree, and `grep` found no reader of either code outside that file | `templates/ADOPTION.md` Phase 7 states the reconcile order and the overwrite warning once and records that the refusal repeats them; `RUNBOOK.md` V3 Adoption migration check documents the `unreconciled-controls` shape | TK-002 open; the classification rule is now recorded in Decisions And Contracts but not yet implemented |
 
 ## Completion Result
 

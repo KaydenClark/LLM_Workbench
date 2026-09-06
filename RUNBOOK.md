@@ -312,7 +312,15 @@ node workbench/tools/spec-workbench.mjs doctor
 ```
 
 The command refuses an existing support root or any legacy collision before
-mutation. It moves only documented durable lanes into their schema 2
+mutation. Unreconciled root controls refuse once as `unreconciled-controls`,
+naming every failing control in `error.controls` with its own reason
+(`missing-control` for an absent, linked, or non-file control;
+`bracketed-control` for one still carrying a `[BRACKETED]` placeholder), and
+carrying the four-step reconcile-before-migrate order and the warning that a
+template copied over an existing control overwrites the project-specific
+privacy, boundary, and verification rules it already holds
+(`error.reconcileOrder` and `error.templateOverwriteWarning` repeat both for a
+machine reader). It moves only documented durable lanes into their schema 2
 destinations (legacy `grilling diary/` into the untracked grilling collection,
 legacy `handoffs/` into the tracked checkpoints collection), preserves
 project-local skills under `workbench/sessions/checkpoints/adoption-legacy-skills/`
