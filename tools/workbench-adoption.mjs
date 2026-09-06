@@ -190,6 +190,26 @@ function movedExternalLinks(project) {
   }
 }
 
+// A record is authored on one host and edited on others, so its terminators
+// can be mixed. The terminator that delimits the closing fence is the only one
+// that can locate the splice point: testing the whole file instead lets a
+// single pasted CRLF line in the body hide an LF fence, and the writer then
+// declines to write and drops every required field in silence.
+function locateClosingFence(content) {
+  const open = content.match(/^---(\r\n|\n|\r)/);
+  if (!open) return null;
+  const close = content.slice(open[0].length).match(/(\r\n|\n|\r)---(?=\r\n|\n|\r|$)/);
+  if (!close) return null;
+  return { index: open[0].length + close.index, eol: close[1] };
+}
+
+// A file with no frontmatter still has a body whose terminator the created
+// block must match, so adoption never manufactures a mixed-ending record.
+function nativeEol(content) {
+  const match = content.match(/\r\n|\n|\r/);
+  return match ? match[0] : '\n';
+}
+
 function addWikiFrontmatter(project, options) {
   const memory = path.join(project, lanes.wiki, 'MEMORY.md');
   const entry = lstatOrNull(memory);
@@ -207,16 +227,21 @@ function addWikiFrontmatter(project, options) {
   ];
   const parsed = parseFrontmatter(content);
   if (!parsed.data) {
-    const frontmatter = ['---', ...fields.flatMap(([, lines]) => lines), '---', ''].join('\n');
-    writeSafeFile(project, memory, `${frontmatter}\n${content}`);
+    const eol = nativeEol(content);
+    const frontmatter = ['---', ...fields.flatMap(([, lines]) => lines), '---', ''].join(eol);
+    writeSafeFile(project, memory, `${frontmatter}${eol}${content}`);
     return;
   }
   const missing = fields
     .filter(([name]) => parsed.data[name] === undefined)
     .flatMap(([, lines]) => lines);
   if (missing.length === 0) return;
-  const frontmatterEnd = content.indexOf('\n---\n', 4);
-  writeSafeFile(project, memory, `${content.slice(0, frontmatterEnd)}\n${missing.join('\n')}${content.slice(frontmatterEnd)}`);
+  const fence = locateClosingFence(content);
+  // parseFrontmatter returned data, so a closing fence exists in the
+  // normalized text and must exist here too. If it does not, the two have
+  // disagreed and splicing at a guessed offset would corrupt the record.
+  if (!fence) throw new Error(`${memory} parsed as having frontmatter but carries no locatable closing fence.`);
+  writeSafeFile(project, memory, `${content.slice(0, fence.index)}${fence.eol}${missing.join(fence.eol)}${content.slice(fence.index)}`);
 }
 
 function migrate(options) {

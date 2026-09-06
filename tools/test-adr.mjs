@@ -50,6 +50,25 @@ test('a valid corpus validates, registers deterministically, and reports a stale
   }
 });
 
+test('records checked out with CRLF line endings parse, validate, and register', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    const crlf = (value) => value.replace(/\r?\n/g, '\r\n');
+    fs.writeFileSync(path.join(collection, '0001-first.md'), crlf(adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n')));
+    const records = listAdrs(dir);
+    assert.equal(records.length, 1);
+    assert.equal(records[0].data.status, 'accepted', 'CRLF frontmatter must parse its fields');
+    assert.deepEqual(records[0].data.canonicalized_in, ['AGENTS.md'], 'CRLF list items must parse without a trailing carriage return');
+    assert.equal(records[0].title, 'A decision', 'the CRLF body must still yield the title');
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir), [], 'a CRLF corpus must not report invalid-adr or stale-register');
+    assert.equal(doctor(dir).filter((item) => item.scope === 'adr').length, 0, 'doctor must not report CRLF records as broken');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('validation rejects unknown canonicalization targets, untracked provenance, missing frontmatter, and duplicate numbers', () => {
   const dir = fixture();
   try {
