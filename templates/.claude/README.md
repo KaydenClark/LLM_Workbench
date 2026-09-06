@@ -34,8 +34,9 @@ a declared authorship lane (no covering `Edit` allow rule, or a
 `deny` or `ask` rule covering it, since both override `allow` and an asked
 lane prompts on every write) or grants `workbench/tools/` in `allow`; the Genesis
 readiness check fails closed on the same finding. The check recognises bare
-`Edit` and the documented `path`, `./path`, and `/path` project-relative forms.
-A restrictive path shape it cannot safely interpret is reported as uncertainty;
+`Edit`, the documented `path`, `./path`, and `/path` project-relative forms,
+`//path` absolute paths, and `~/path` home-relative paths. A restrictive path
+shape it cannot safely interpret is reported as uncertainty;
 widen or simplify the rule, or record the deliberate restriction in `AGENTS.md`.
 
 Notes:

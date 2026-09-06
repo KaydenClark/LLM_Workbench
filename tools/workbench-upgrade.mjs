@@ -164,7 +164,7 @@ function upgrade(options) {
   if (sourceFailure) return sourceFailure;
   let skillIdentity;
   try {
-    const identity = sourceIdentity({ managedPaths: options.layoutOnly ? ['workbench/tools'] : ['skills', 'workbench/tools'] });
+    const identity = sourceIdentity({ managedPaths: options.layoutOnly ? ['workbench/tools', 'templates'] : ['skills', 'workbench/tools', 'templates'] });
     if (!options.layoutOnly) skillIdentity = { release: identity.release, commit: identity.commit };
   } catch (error) { return fail('invalid-source-identity', error.message); }
   const readiness = preflight(project, home, options.explicit, options.layoutOnly);

@@ -602,12 +602,14 @@ is reported when `.claude/settings.json` exists and withholds a
 manifest-declared authorship lane (`docs`, `specs`, `wiki`, `sessions`, or
 `feedback` lacks a covering `Edit` `allow` rule, or a `deny` or
 `ask` rule covers it, since both override `allow` and an asked lane prompts on
-every write), or when the `tools` lane is granted in `allow` with no `ask` or
-`deny` rule taking precedence. The finding names each withheld lane with its
+every write), or when the `tools` lane is granted in `allow` without a covering
+`ask` rule holding the whole lane. A `deny` that covers or intersects an allowed
+tools lane remains visible. The finding names each withheld lane with its
 reason; it never edits the file, and a room may deny a lane deliberately and
 record why in `AGENTS.md`. The matcher is conservative: it recognises
-bare `Edit` and the documented `path`, `./path`, and `/path` project-relative
-forms. A restrictive pattern it cannot safely interpret and an unreadable file
+bare `Edit`, the documented `path`, `./path`, and `/path` project-relative
+forms, `//path` absolute paths, and `~/path` home-relative paths. A restrictive
+pattern it cannot safely interpret and an unreadable file
 are reported rather than treated as clear. `validate --genesis`
 fails closed on the same condition; a room without the file is unaffected.
 Resolve it by adding the `Edit(./workbench/<lane>/**)` rules from
