@@ -1,15 +1,15 @@
 # S-041 - Recorded Baseline Availability
 
 **Spec ID:** S-041
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** claude-opus-5
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Decide and record what a harness-only migration does when the target has no runnable green baseline, so eight rooms (the report's count) blocked by an unrelated product or host condition get one answer instead of eight improvised ones.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Separate-context review of this candidate, then merge into `integration`; complete the spec after the review passes.
+**Latest event:** Merged into `integration` as PR #65 at `b22a8da` on 2026-09-06 after separate-context review.
+**Next gate:** None; the capability is complete and contained in `integration`.
 
 ## Outcome
 
@@ -201,10 +201,15 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | TK-001 | Re-anchored the pre-change `file:line` citations in Current Verified State to the post-TK-001 tree and checked the four acceptance boxes TK-001 satisfies | Read each cited range after the edit: `templates/ADOPTION.md:81-90`, `:100-109`, `:111-113`, `:300-303`; `skills/update-harness/SKILL.md:58-67`, `:69-72`, `:210-213` | No control text changed by this row; the earlier rows keep their original citations | Spec completion waits on the separate-context review of this candidate |
 | 2026-09-06 | TK-001 | Separate-context review APPROVED; three caveats recorded rather than left implied | Reviewer attacked `parseBaselineRecord` with 27 hand-built inputs: every near-miss, casing variant, superstring, multi-reason and whitespace variant of the closed vocabulary is refused, `unavailable` with a valid reason but no evidence is refused, and red cannot be flipped by spelling or whitespace. Back-compat proved by parsing all 40 specs with 0 failures and by `doctor` and `next --json` output byte-identical between `09bfff7` and this candidate. Word-for-word agreement confirmed by `cmp`: the shared rule block is byte-identical in `templates/ADOPTION.md:100-109` and `skills/update-harness/SKILL.md:58-67`. `templates/SPEC.md` bracket inventory identical to base, so the frozen placeholder vocabulary is exact; control fidelity ok; evaluator 106.6/113 unchanged. Recorded here rather than glossed: `proceeds`/`stop` are consumed by no tool, so the red stop is a record and a written contract rather than a gate; `red (owner-expanded)` is forgeable and asks less than `unavailable`; and two of the three reds prove API absence rather than wrong behavior, with only the out-of-vocabulary case changing observable behavior on unchanged surfaces | Three limitations added; no claim strengthened | The `owner-expanded` qualifier needs evidence, and the baseline record needs a consumer, before red is machine-enforced; both belong to a follow-up spec |
 
+| 2026-09-06 | spec | Spec completed; the reviewed candidate is contained in `integration` | Merged as PR #65 at `b22a8da`. `git merge-base --is-ancestor b22a8da origin/integration` returns true; `git ls-tree origin/main` carries no `workbench/` tree, so `main` is untouched. Full `AGENTS.md` suite re-run on the merged `integration` tip `18ffc0d`: 25 node suites plus the path-safety grader all pass, `render` leaves no drift, `doctor` exits 0, `check-append-only.py` CLEAN, `git diff --check` clean, no CRLF. Guardrail 78/100 and templates 106.6/113, both unchanged from the pre-implementation baseline - a control-surface change is not expected to move either, and neither moved | Status, latest event, next gate and Completion Result reconciled with the merged reality | Limitations recorded in this spec stay open and routed; none is closed by the merge |
 
 ## Completion Result
 
-Pending.
+The Adoption and update contracts now give one answer to a target with no runnable green baseline: the owning spec records it unavailable with a reason from a closed vocabulary and its evidence, and the harness-only change proceeds against that record. A red baseline still stops, and a reason outside the vocabulary is refused rather than accepted as free text.
+
+The rule block is byte-identical in `templates/ADOPTION.md` and `skills/update-harness/SKILL.md`, verified by `cmp`. Word-for-word agreement is the point: two contracts paraphrasing each other is how eight rooms improvised eight answers.
+
+Recorded rather than implied: the baseline is a record, not yet a gate - `proceeds` and `stop` are computed but no tool reads `spec.baseline`, so the red stop remains the written contract it already was. `red (owner-expanded)` is forgeable and asks less than `unavailable`. And two of the three red cases proved API absence rather than wrong behavior; only the out-of-vocabulary reason changes observable behavior on unchanged surfaces.
 
 ## Remaining Limitations Or Follow-Up Specs
 

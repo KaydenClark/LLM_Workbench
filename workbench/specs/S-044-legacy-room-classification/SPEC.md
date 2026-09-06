@@ -1,15 +1,15 @@
 # S-044 - Legacy Room Classification And Control Reconcile Order
 
 **Spec ID:** S-044
-**Status:** active
+**Status:** complete
 **Priority:** 3
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone.
 **Blockers:** none
-**Latest event:** Fourth separate-context review found the code clean and blocked on one overstated proof claim, corrected here; the read-only property itself was independently re-proven with 23 fs mutators poisoned.
-**Next gate:** Independent integration review of `claude/s044-v3-1-2` before it merges into `integration`.
+**Latest event:** Merged into `integration` as PR #70 at `fc68fc0` on 2026-09-06 after separate-context review.
+**Next gate:** None; the capability is complete and contained in `integration`.
 
 ## Outcome
 
@@ -367,6 +367,7 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | TK-002 | Correcting row: the mutation-survivor partition in the row above is wrong, and the count it gives is not the one the run produced | The row above says "seven because `lstat` never reports a symlink as a file or a directory ... and the three carried forward". Re-checked against the run: the `lstat` argument covers six survivors, not seven - `ordinaryFile`'s symlink limb, `ownDirectory`'s symlink limb, `supportRootEvidence`'s `ordinaryDirectory` symlink limb, `controlEvidence`'s symlinked control, `manifestEvidence`'s symlinked manifest, and the project-path symlink guard - and that last one is also one of the three carried forward, so the two groups as written overlap and do not partition the ten. The correct partition is six by the `lstat` argument (the project-path guard among them), two call-site equivalences (`ownDirectory` returning `true` instead of `null` for a path the room did not answer for, because both call sites compare `=== false`; and Rule 1's non-ordinary limb, because `manifestEvidence` already returns `readable: false` under exactly that condition), and two carried forward (`Array.isArray`, subsumed by the integer `schemaVersion` test, and the unlistable room's `empty: false` default, unreachable past Rules 3 and 5). The totals the row gives - 33 mutations, 23 caught, 10 survivors - are unchanged, and no survivor's equivalence claim is withdrawn | The Completion Result's `How verified` paragraph, which is not append-only, states the corrected partition in place | None. This corrects a claim about the verification, not the verification |
 
 | 2026-09-06 | TK-002 | Fourth separate-context review found the code clean and one proof claim false; corrected here | Reviewer built its own donor room and eight borrower shapes and confirmed zero evidence fields report anything a room does not own; pinned all five errno values by mutation; re-introduced the builder's three self-found holes and confirmed each is caught; independently confirmed all ten equivalence arguments analytically rather than empirically; and re-proved read-only in a child process with 23 `fs` mutators plus write-flag `openSync` poisoned, snapshotting both borrower and donor. The defect: the TK-002 Proof column said the seventeen `classify` cases **each** compare a before/after snapshot. Eleven do. Six do not - the unreadable-root-control case, the two template-copy readings, the stamp-state case, the project-path refusal, and the EPERM seam probe - and five of those classify a real room. The EPERM case is the sharpest: it is the one that runs the classifier under a monkey-patched `fs`, so a poisoning mistake there would be invisible. The append-only row recording this round says "Every new case that classifies a room compares the snapshot"; two of this round's four new cases break it, and round two's wording ("also compares") was true when written. Counted independently before correcting: 11 with, 6 without, 17 total | The mutable Proof column now states eleven of seventeen and names what the other six assert; the append-only row is corrected here rather than edited | Adding the six missing snapshots would make the original claim true and is the better close; it is a test-only change and is left for a follow-up rather than taken in a record repair after the behavior passed review |
+| 2026-09-06 | spec | Spec completed; the reviewed candidate is contained in `integration` | Merged as PR #70 at `fc68fc0`. `git merge-base --is-ancestor fc68fc0 origin/integration` returns true; `git ls-tree origin/main` carries no `workbench/` tree, so `main` is untouched. Full `AGENTS.md` suite re-run on the merged `integration` tip `18ffc0d`: 25 node suites plus the path-safety grader all pass, `render` leaves no drift, `doctor` exits 0, `check-append-only.py` CLEAN, `git diff --check` clean, no CRLF. Guardrail 78/100 and templates 106.6/113, both unchanged from the pre-implementation baseline - a control-surface change is not expected to move either, and neither moved | Status, latest event, next gate and Completion Result reconciled with the merged reality | Limitations recorded in this spec stay open and routed; none is closed by the merge |
 
 ## Completion Result
 

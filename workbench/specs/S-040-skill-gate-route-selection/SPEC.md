@@ -1,15 +1,15 @@
 # S-040 - Skill Gate Route Selection And Link Resolution
 
 **Spec ID:** S-040
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** claude-opus-5
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Make the shared-skill refusals name the route that clears them and stop the installer's link check from being stricter than the install it guards, so a workstation with a linked skill directory is a route choice rather than a portfolio-wide stop.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Merged into `integration` as PR #67 at `627968e` on 2026-09-06 after separate-context review.
+**Next gate:** None; the capability is complete and contained in `integration`.
 
 ## Outcome
 
@@ -208,10 +208,15 @@ node workbench/tools/spec-workbench.mjs doctor
 
 | 2026-09-06 | spec | Separate-context re-review confirmed the recorded limitation accurate and blocked on seven stale citations; corrected here | Reviewer rebuilt the host and reproduced the table this spec records: at `09bfff7` the installer and both presence gates agreed by refusing; at `29cabf5` the installer reports `complete` with a `resolved` target while `missingUserSkills` and `hasRequiredUserSkills` report the same skill missing. It confirmed UP-015's own Claim is wrong at `REPORT-upstream-v3-1-1-summary-2026-09-06.md:113-119`, and that the repair was documentation-only. Blocking finding: `Current Verified State` promised "following one lands on what it names" while seven of its nine citations named lines TK-001 and TK-002 had themselves moved - `:114` for `missing-user-skills` landed on `dirty-project`, and `:112-116` for the early exit landed on git-status plumbing. Every pre-change condition is now anchored to `git show 09bfff7:` with the shipped line alongside, the pattern S-043 was required to adopt for this same defect class | The limitation headline said "both discovery roots" while the mechanism affects any host whose every populated root holds a link; broadened to the mechanism. The sentence claiming the gate accepts a skill in either discovery root is corrected in place rather than only contradicted sixty lines later | The presence-only link gap stays unfixed and routed to a follow-up spec or an upstream item under S-038 |
 
+| 2026-09-06 | spec | Spec completed; the reviewed candidate is contained in `integration` | Merged as PR #67 at `627968e`. `git merge-base --is-ancestor 627968e origin/integration` returns true; `git ls-tree origin/main` carries no `workbench/` tree, so `main` is untouched. Full `AGENTS.md` suite re-run on the merged `integration` tip `18ffc0d`: 25 node suites plus the path-safety grader all pass, `render` leaves no drift, `doctor` exits 0, `check-append-only.py` CLEAN, `git diff --check` clean, no CRLF. Guardrail 78/100 and templates 106.6/113, both unchanged from the pre-implementation baseline - a control-surface change is not expected to move either, and neither moved | Status, latest event, next gate and Completion Result reconciled with the merged reality | Limitations recorded in this spec stay open and routed; none is closed by the merge |
 
 ## Completion Result
 
-Pending.
+A linked destination whose realpath already holds the skill installs and reports the resolution, while a symlink to a file, a dangling link, and a link to a directory without the skill all still refuse. Both shared-skill refusals name `--layout-only`, and `skills/update-harness/SKILL.md` states the route-selection rule before the migration seam runs.
+
+UP-015 is closed as filed: the reviewer rebuilt the reported host and confirmed the installer refuses at `09bfff7` and completes with a `resolved` target here. Nine link shapes were probed with no accept-that-should-refuse, and nothing is written through a link.
+
+A limitation this capability opens is recorded rather than hidden: the presence-only gates judge with `lstatOrNull(...)?.isDirectory()`, so on a host where every root holding the skill holds it as a link, they still report it missing while the installer reports `complete`. That disagreement is new, and the `--layout-only` route the messages name does not complete there. Non-Goals bar the fix, so it is routed to a follow-up. The spec also corrects a premise it inherited from UP-015 without testing: the presence paths accept a skill only where a root holds an ordinary directory, never through a link.
 
 ## Remaining Limitations Or Follow-Up Specs
 

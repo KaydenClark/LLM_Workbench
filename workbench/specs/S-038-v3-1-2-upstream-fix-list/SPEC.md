@@ -1,15 +1,15 @@
 # S-038 - Workbench v3.1.2 Upstream Fix List
 
 **Spec ID:** S-038
-**Status:** active
+**Status:** complete
 **Priority:** 1
 **Owner:** claude-opus-5
 **Stance:** Reconciler
 **Updated:** 2026-09-06
 **Catalog description:** Accept, decline, or correct each of the eleven v3.1.1 upstream items UP-013 through UP-023, route the accepted ones to capability specs, and record the final disposition so Master Workbench can compare v3.1.2 against v3.1.1.
 **Blockers:** none
-**Latest event:** Owner accepted the routing on 2026-09-06 and answered questions 1 and 2; S-041 is unblocked and question 3 stays open as an owner-only item.
-**Next gate:** Separate-context review of this candidate, then merge into `integration`; capability slices proceed under their own specs.
+**Latest event:** All eleven accepted items landed and their six owning specs are complete and contained in `integration`; the final disposition table and release account are recorded.
+**Next gate:** None. Publishing `integration` to `main` is owner-only and outside this spec.
 
 ## Outcome
 
@@ -183,7 +183,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Record the owner's acceptance or amendment of the routing and the answers to the three open questions | done | none | Owner accepted the routing unamended on 2026-09-06 and answered question 1 (Option A, record and proceed) and question 2 (support the junction as-is); both written into S-041 Decisions And Contracts and into S-040 Non-Goals respectively; question 3 recorded as owner-only with no owning spec; `render` then `doctor` clean, no `broken-link` and no `render-drift` |
-| TK-002 | After S-039 through S-044 are complete and the full suite is green, write the final disposition table and the v3.1.2 release account | ready | S-039, S-040, S-041, S-042, S-043, S-044 | pending |
+| TK-002 | After S-039 through S-044 are complete and the full suite is green, write the final disposition table and the v3.1.2 release account | done | none | All six owning specs are `complete` and contained in `integration` (PRs #65, #66, #67, #68, #69, #70). Full `AGENTS.md` suite green on the merged tip: 25 node suites plus the path-safety grader, `render` no drift, `doctor` exit 0, `check-append-only.py` CLEAN, `git diff --check` clean, no CRLF. Guardrail 78/100 and templates 106.6/113, both unchanged from the pre-implementation baseline. Disposition table and release account below. |
 
 ### TK-001 - Owner disposition
 
@@ -212,13 +212,13 @@ measure and supports no agent-outcome claim.
 - [x] The three open questions are answered, or each unanswered one is recorded
       as a live blocker naming what it blocks: 1 and 2 answered, 3 recorded as
       owner-only and blocking no slice.
-- [ ] Each accepted item names the capability spec and ticket that owns it, and
+- [x] Each accepted item names the capability spec and ticket that owns it, and
       that ticket exists at the named path.
-- [ ] Every correction to the upstream report is stated with the source evidence
+- [x] Every correction to the upstream report is stated with the source evidence
       that establishes it.
-- [ ] S-039 through S-044 are `complete` before TK-002 closes.
-- [ ] The full `AGENTS.md` verification suite passes at the release commit.
-- [ ] The Completion Result carries the final disposition table in the S-035
+- [x] S-039 through S-044 are `complete` before TK-002 closes.
+- [x] The full `AGENTS.md` verification suite passes at the release commit.
+- [x] The Completion Result carries the final disposition table in the S-035
       shape.
 
 ## Testing Seams
@@ -254,10 +254,69 @@ node tools/evaluate-workbench.mjs --path templates --include-controls
 | 2026-09-06 | spec | Separate-context review of `a5e7fe0` returned CHANGES REQUESTED; every finding was repaired in this candidate | Reviewer independently re-verified all three Corrections as established, confirmed all eleven UP items route to tickets that exist, and reported `render` with no drift, `doctor` exit 0 with no `broken-link`, `test-spec-workbench` pass, templates 106.6/113. Repaired: the stale `Gap:` line that contradicted TK-001's own `done` row; three stale statements that S-036 was unmerged (it merged as PR #63 on 2026-09-06); `templates/ADOPTION.md:275-276` corrected to `274-275` and `:80-87` to `:81-88`; `workbench-layout.mjs:20` corrected to `:21`; `workbench-layout.mjs:503,507` re-anchored to `:517,521`, `workbench-tools.mjs:181` to `:203`, `RUNBOOK.md:579-584` to `:586-592`, `SKILL.md:186` to `:198`; the `grep -rn classify` claim corrected to four matching files; the "Both are Windows checkouts" and "GPT_OS is a Windows room" statements softened to the inference they are, since the report never says so; and the 32 `skill-generation-unknown` lines qualified as `attention` severity, evidencing UP-019's legibility half rather than its `error`-that-blocks-nothing half. A citation sweep over all seven specs now reports no citation pointing at a blank or out-of-range line | Every `Current Verified State` section now states that findings were established at `b3633e5` and citations re-anchored to the post-S-036 tree, so a Builder following one lands on what it names | Fresh separate-context review of the repaired candidate; every accepted slice still unimplemented |
 | 2026-09-06 | spec | Fresh separate-context review of `d1de47f` returned CHANGES REQUESTED with thirteen findings; all repaired here | The prior repair round was the defect: it applied blind string replacement without checking each target, so it degraded two correct citations (`workbench-tools.mjs:24-36` to `24-64`, `test-workbench-layout.mjs:823` to `848`), missed `workbench-upgrade.mjs` entirely (six citations each one line short), missed `diagnostics.mjs` (eight codes anchored one line short after S-036 inserted `invalid-source-identity` at `:27`), and rewrote two append-only evidence rows, which `AGENTS.md` Documentation Ownership forbids. Both rewritten rows are restored to their original text and this round is recorded as new rows instead. The sweeper that reported "no citation pointing at a blank or out-of-range line" was too weak a check: it never asked whether a cited line contains what the prose claims. It is replaced by a semantic verifier that matches identifiers named near a citation against the cited span | Corrections in seven specs; `E:/`-path evidence restated - the report names the reporting room by path at `REPORT-upstream-v3-1-1-summary-2026-09-06.md:6,39,40,43` but gives GPT_OS none at `:30,218,239,310`, so the reattribution is established for one room and inferred for the other | Every accepted slice still unimplemented |
 | 2026-09-06 | spec | Fourth separate-context review found the previous commit repeated the append-only defect it was repairing | `f963b96` restored the five earlier rewrites correctly, then rewrote three rows that `7a386fd` had already published - this spec's, S-039's, and S-042's fresh-review rows - to fold in the corrections. The same commit demonstrated the right pattern twice, in S-041 and S-044, so the defect was inconsistency rather than ignorance. All three are restored byte-for-byte to their `7a386fd` text and the corrections are recorded here. Two claims those rewrites made need correcting: the count of rewritten rows before `f963b96` was five across four specs, and the row at `:255` claiming "every correction is recorded in an appended row instead" was false of two of them at the time it was written. S-041's and S-044's new rows attribute the second rewrite of their capture rows to `d1de47f`; the true commit is `22f5728` - `git diff d1de47f^ d1de47f` touches no evidence row in either spec | Added `check-append-only.py`, which reconstructs every evidence row from every commit on the branch and asserts each row still carries its first-published text. It reports this branch CLEAN across all seven specs and would have caught all three rounds of this defect | Every accepted slice still unimplemented |
+| 2026-09-06 | TK-002 | Ticket closed and spec completed; the release account is recorded | All six owning specs are `complete` and contained in `integration`: S-041 PR #65, S-043 PR #66, S-040 PR #67, S-042 PR #68, S-039 PR #69, S-044 PR #70, each proved by `git merge-base --is-ancestor`. `origin/main` carries no `workbench/` tree. Full `AGENTS.md` suite on the merged tip `18ffc0d`: 25 node suites plus `evals/tasks/task_b_path_safety/test_grade.py` all pass; `render` leaves no drift; `doctor` exits 0; `check-append-only.py` CLEAN; `git diff --check` clean; no CRLF. Guardrail `78/100` and templates `106.6/113`, measured before the work began and again here with unchanged criteria - neither moved, and the Completion Result says why that is the expected result rather than a disappointing one | Disposition table in the S-035 shape, the release account for Master Workbench, the guardrail before/after with its limitation, and an honest record of what the review gate cost | Publishing `integration` to `main` is owner-only. Every limitation the six specs recorded stays open and routed; none is closed by this ticket |
 
 ## Completion Result
 
-Pending.
+Every item on the second v3.1.1 upstream fix list has a final disposition, and
+each accepted one landed in the capability spec that owned it.
+
+| Item | Title | Final disposition |
+|---|---|---|
+| UP-013 | `doctor` never emits the managed-runtime integrity check it registers | landed in S-039: the receipt hash check moved into `workbench/tools/workbench-layout.mjs`, which every room installs, so a room's own `doctor` reports `tools-receipt-drift` and exits 1. Claim refined at routing: `tools-receipt-missing` *was* emitted by an installed tool, but only on the `validate --genesis` path with no hash check |
+| UP-014 | A drift report cannot distinguish a stale receipt from a modified runtime | landed in S-039: drift is classified `receipt-stale`, `runtime-modified`, `source-unavailable`, or `runtime-authentic`, each naming its remedy. Closed for the release-side `verify`; a room's own `doctor` still reports only `source-unavailable`, which is recorded as a limitation |
+| UP-015 | Presence-only skill install fails closed on a linked skill path | landed in S-040: a destination whose realpath already holds the skill installs and reports the resolution; a link to a file, a dangling link, and a link to a directory without the skill still refuse. The report's own claim that the presence paths accept a skill in *either* root was corrected - they accept one only where a root holds an ordinary directory |
+| UP-016 | The upgrade gate never names the route that clears it | landed in S-040: `skill-path-collision` and `unmanaged-skill` both name `--layout-only`, and `skills/update-harness/SKILL.md` states the route-selection rule before the migration seam |
+| UP-017 | The green-baseline gate has no recorded "baseline unavailable" path | landed in S-041 under the owner's **Option A**: the owning spec records the baseline unavailable with a reason from a closed vocabulary and its evidence, and the harness-only change proceeds. Option B declined. The rule is byte-identical in `templates/ADOPTION.md` and `skills/update-harness/SKILL.md` |
+| UP-018 | Seeded lane documents are installed once and never managed | landed in S-042: a seed record beside the manifest tracks each seeded document's generation, and `stale-seed` reports one behind the manifest. Chosen over receipt membership so a room's legal local adjustment does not become a blocking finding |
+| UP-019 | Error-level findings that block nothing make a healthy room read as failed | landed in S-043 **with correction**: the report's first proposed remedy already shipped in v3.1.1, so only its second disjunct was live. `doctor` now groups and counts findings by consequence; `--json` is byte-unchanged and no blocking semantics moved. The report named four `error`/`blocks: none` codes; there are eight |
+| UP-020 | No normalize path for existing ADRs and wiki notes without frontmatter | landed in S-042 **at reduced scope**: `adr` and `wiki` gained `normalize`. Most of the reported impact was the line-ending defect S-037 fixed, and the measured residue in this repository after S-037 is **zero** against the report's 6 + 4. The capability is for hand-authored and pre-fix rooms |
+| UP-021 | Provenance fixes do not reach rooms already carrying a placeholder | landed in S-042: `unverified-provenance` reports a placeholder commit or a release disagreeing with `workbenchVersion`, and `record-source` repairs it. This repository is itself an instance and is deliberately left unrepaired - running the command here would stamp the branch's own tip as the room's source |
+| UP-022 | Adoption demands seven filled controls with no scaffold-then-reconcile route | landed in S-044 **and sharpened**: the preflight returned on the *first* failing control, so an operator learned one per run. It now refuses once naming every control with its own reason, plus the reconcile order and the overwrite warning |
+| UP-023 | No classifier for an unversioned legacy control set | landed in S-044: `tools/workbench-classify.mjs` reports `genesis | adoption | upgrade | unclassifiable` with its evidence, writes nothing, and its rule is recorded before the code |
+
+### What v3.1.2 removed, for Master Workbench
+
+Eleven of eleven items accepted; eleven landed. None declined. Four carried a
+correction to the report itself, recorded at routing rather than applied
+silently: UP-013's half-right emitter claim, UP-019's already-shipped remedy and
+its four-versus-eight code count, UP-020's inflated impact, and UP-015's false
+premise about what the presence paths accept.
+
+Two items' cited magnitude was reattributed to the line-ending defect S-037
+fixed. That reattribution is established for the reporting room, which the report
+names by an `E:/` path, and inferred from the failure mode for GPT_OS, which the
+report gives no path at all.
+
+### Guardrail, before and after
+
+`node tools/audit-guardrails.mjs --path .` reports **78/100** before this work
+and **78/100** after, with unchanged criteria: static 20/20, drift resistance
+25/25, benchmark discipline 25/25, outcome evidence 8/30. The template evaluator
+reports **106.6/113** before and after.
+
+Neither moved, and neither was expected to. Every criterion these eleven items
+touch is already satisfied in the static rubric; the work closed real defects in
+runtime behavior and in the record, which that rubric does not measure. Both
+numbers are static control-surface measures. **Nothing here establishes that
+v3.1.2 makes an agent better or worse than v3.1.1**, and no such claim is made.
+
+### What the gate cost, honestly
+
+Every one of the six capability slices was rejected by its first separate-context
+review, and three needed four rounds. The findings were real and none was
+cosmetic: a receipt whose `files` map was `{}` silently disabled the integrity
+check; `next` and `claim` ignored a registered `all` effect, so an agent could
+claim a slice while executing tampered bytes; a vanilla Node app with one file
+named `tools/privacy.mjs` classified as `unclassifiable`; a symlinked support
+root reported another room's manifest as the room's own; a registry pin passed
+while an unpinned code was promoted into a blocking effect; and a claim asserted
+in shipped `templates/RUNBOOK.md` that deleting a managed tool is always loud was
+false, because `sessions.mjs` is in `RUNTIME_TOOLS` but not in `doctor`'s import
+graph.
+
+None of that was visible from a green suite. Every branch was green when it was
+submitted.
 
 ## Remaining Limitations Or Follow-Up Specs
 
