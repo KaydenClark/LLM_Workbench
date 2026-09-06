@@ -781,6 +781,22 @@ test('init and migrate from the release checkout resolve HEAD and origin when th
       assert.match(pinned.report.error.message, /does not match/);
       assert.equal(fs.existsSync(path.join(explicit, 'workbench')), false, 'contradictory source assertions must fail before mutation');
     } finally { fs.rmSync(explicit, { recursive: true, force: true }); }
+
+    const asserted = fixture();
+    try {
+      const matching = run('init', '--project', asserted, '--provenance', 'genesis', '--version', VERSION, '--source-commit', head, '--source-repository', origin);
+      assert.equal(matching.status, 0, matching.stdout);
+      assert.deepEqual(matching.report.manifest.provenance.source, { repository: origin, release: VERSION, commit: head });
+    } finally { fs.rmSync(asserted, { recursive: true, force: true }); }
+
+    const malformed = fixture();
+    try {
+      const rejected = run('init', '--project', malformed, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'abc123');
+      assert.notEqual(rejected.status, 0, rejected.stdout);
+      assert.equal(rejected.report.error.code, 'invalid-source-identity');
+      assert.match(rejected.report.error.message, /40-character/);
+      assert.equal(fs.existsSync(path.join(malformed, 'workbench')), false);
+    } finally { fs.rmSync(malformed, { recursive: true, force: true }); }
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(legacy, { recursive: true, force: true });
