@@ -48,10 +48,10 @@ Each skill the installer or the explicit upgrade (`tools/workbench-upgrade.mjs`)
 writes carries `.workbench-skill.json` beside its `SKILL.md`:
 
 ```json
-{"schemaVersion":2,"source":"LLM Workbench core","release":"vX.Y.Z","commit":"<40-hex or unknown>","contentHash":"<sha256>"}
+{"schemaVersion":2,"source":"LLM Workbench core","release":"vX.Y.Z","commit":"<40-hex>","contentHash":"<sha256>"}
 ```
 
-`release` and `commit` are the checked-out Workbench's identity at write time
+`release` and `commit` are the clean checked-out Workbench's verified identity at write time
 (the same source identity the runtime tools receipt records); `contentHash` is
 SHA-256 over the skill's file paths and bytes, excluding the marker. Schema 1
 markers (`schemaVersion` 1, `source` only) were written before the generation

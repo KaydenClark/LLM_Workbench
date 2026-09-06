@@ -618,15 +618,18 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
 test('legacy twelve-skill manifests remain readable but v3.1.1 requires all four stances', () => {
   const project = fixture();
   try {
-    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', 'v3.1.0');
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.equal(initialized.status, 0, initialized.stdout);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     assert.deepEqual(manifest.skillPolicy.required.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler']);
+    manifest.workbenchVersion = 'v3.1.0';
+    manifest.provenance.source.release = 'v3.1.0';
     manifest.skillPolicy.required = manifest.skillPolicy.required.slice(0, 12);
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     assert.equal(run('validate', '--project', project).report.status, 'valid');
     manifest.workbenchVersion = 'v3.1.1';
+    manifest.provenance.source.release = 'v3.1.1';
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     assert.equal(run('validate', '--project', project).report.error.code, 'invalid-skill-policy');
     manifest.skillPolicy.required.push('builder', 'auditor', 'reviewer', 'reconciler');
@@ -747,6 +750,12 @@ function relocateTool(bundle) {
   return relocatedTool;
 }
 
+function cloneRelease(bundle) {
+  const result = spawnSync('git', ['clone', '-q', '--no-local', root, bundle], { cwd: path.dirname(bundle), encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  return path.join(bundle, 'workbench', 'tools', 'workbench-layout.mjs');
+}
+
 test('init and migrate from the release checkout resolve HEAD and origin when the source flags are omitted', () => {
   const project = fixture();
   const legacy = fixture();
@@ -773,18 +782,34 @@ test('init and migrate from the release checkout resolve HEAD and origin when th
     const explicit = fixture();
     try {
       const pinned = run('init', '--project', explicit, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'a'.repeat(40), '--source-repository', 'https://example.invalid/workbench.git');
-      assert.equal(pinned.status, 0, pinned.stdout);
-      const pinnedManifest = JSON.parse(fs.readFileSync(path.join(explicit, 'workbench', 'manifest.json'), 'utf8'));
-      assert.equal(pinnedManifest.provenance.source.commit, 'a'.repeat(40), 'an explicit flag wins over resolution');
-      assert.equal(pinnedManifest.provenance.source.repository, 'https://example.invalid/workbench.git');
+      assert.notEqual(pinned.status, 0, pinned.stdout);
+      assert.equal(pinned.report.error.code, 'invalid-source-identity');
+      assert.match(pinned.report.error.message, /does not match/);
+      assert.equal(fs.existsSync(path.join(explicit, 'workbench')), false, 'contradictory source assertions must fail before mutation');
     } finally { fs.rmSync(explicit, { recursive: true, force: true }); }
+
+    const asserted = fixture();
+    try {
+      const matching = run('init', '--project', asserted, '--provenance', 'genesis', '--version', VERSION, '--source-commit', head, '--source-repository', origin);
+      assert.equal(matching.status, 0, matching.stdout);
+      assert.deepEqual(matching.report.manifest.provenance.source, { repository: origin, release: VERSION, commit: head });
+    } finally { fs.rmSync(asserted, { recursive: true, force: true }); }
+
+    const malformed = fixture();
+    try {
+      const rejected = run('init', '--project', malformed, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'abc123');
+      assert.notEqual(rejected.status, 0, rejected.stdout);
+      assert.equal(rejected.report.error.code, 'invalid-source-identity');
+      assert.match(rejected.report.error.message, /40-character/);
+      assert.equal(fs.existsSync(path.join(malformed, 'workbench')), false);
+    } finally { fs.rmSync(malformed, { recursive: true, force: true }); }
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(legacy, { recursive: true, force: true });
   }
 });
 
-test('a relocated copy without templates refuses init and migrate naming the missing source flag and writes nothing', () => {
+test('a relocated partial copy refuses init and migrate even when source strings are supplied', () => {
   const project = fixture();
   const legacy = fixture();
   const bundle = fixture();
@@ -797,34 +822,56 @@ test('a relocated copy without templates refuses init and migrate naming the mis
 
     const refused = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.notEqual(refused.status, 0, refused.stdout);
-    assert.equal(refused.report.error.code, 'invalid-invocation');
-    assert.match(refused.report.error.message, /--source-commit/);
+    assert.equal(refused.report.error.code, 'invalid-source-identity');
+    assert.match(refused.report.error.message, /verified Workbench release checkout/);
     assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'a refused init must create nothing');
 
     const partial = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'b'.repeat(40));
     assert.notEqual(partial.status, 0, partial.stdout);
-    assert.equal(partial.report.error.code, 'invalid-invocation');
-    assert.match(partial.report.error.message, /--source-repository/);
+    assert.equal(partial.report.error.code, 'invalid-source-identity');
+    assert.match(partial.report.error.message, /verified Workbench release checkout/);
     assert.equal(fs.existsSync(path.join(project, 'workbench')), false);
 
     schemaOneFixture(legacy);
     const refusedMigrate = relocated('migrate', '--project', legacy);
     assert.notEqual(refusedMigrate.status, 0, refusedMigrate.stdout);
-    assert.equal(refusedMigrate.report.error.code, 'invalid-invocation');
-    assert.match(refusedMigrate.report.error.message, /--source-commit/);
+    assert.equal(refusedMigrate.report.error.code, 'invalid-source-identity');
+    assert.match(refusedMigrate.report.error.message, /verified Workbench release checkout/);
     assert.equal(fs.existsSync(path.join(legacy, 'workbench', 'grilling')), true, 'a refused migrate must not move legacy content');
     assert.equal(JSON.parse(fs.readFileSync(path.join(legacy, 'workbench', 'manifest.json'), 'utf8')).schemaVersion, 1);
 
     const pinned = relocated('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--source-commit', 'b'.repeat(40), '--source-repository', 'https://example.invalid/workbench.git');
-    assert.equal(pinned.status, 0, pinned.stdout);
-    const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
-    assert.equal(manifest.provenance.source.commit, 'b'.repeat(40));
-    assert.equal(manifest.provenance.source.repository, 'https://example.invalid/workbench.git');
+    assert.notEqual(pinned.status, 0, pinned.stdout);
+    assert.equal(pinned.report.error.code, 'invalid-source-identity');
+    assert.match(pinned.report.error.message, /verified Workbench release checkout/);
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'supplied strings cannot make a relocated partial tool a verified source');
     assert.equal(fs.readFileSync(tool, 'utf8').includes("'unrecorded'"), false, 'the layout tool must carry no unrecorded placeholder');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(legacy, { recursive: true, force: true });
     fs.rmSync(bundle, { recursive: true, force: true });
+  }
+});
+
+test('init refuses a dirty release template before mutating the target project', () => {
+  const project = fixture();
+  const parent = fixture();
+  const bundle = path.join(parent, 'release');
+  try {
+    const clonedTool = cloneRelease(bundle);
+    fs.appendFileSync(path.join(bundle, 'templates', 'wiki', 'SCHEMA.md'), '\nDirty source template.\n');
+    const result = spawnSync(process.execPath, [clonedTool, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION], {
+      cwd: bundle,
+      encoding: 'utf8'
+    });
+    const report = result.stdout ? JSON.parse(result.stdout) : null;
+    assert.notEqual(result.status, 0, result.stdout);
+    assert.equal(report.error.code, 'invalid-source-identity');
+    assert.match(report.error.message, /uncommitted/);
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'dirty template bytes fail before target mutation');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(parent, { recursive: true, force: true });
   }
 });
 
@@ -841,37 +888,33 @@ test('the layout usage string lists both source flags for init and migrate', () 
   assert.match(migrateUsage, /--source-repository URL/);
 });
 
-test('the template permission file grants Edit and Write on every authorship lane the prose declares writable', () => {
+test('the template permission file grants Edit on every authorship lane the prose declares writable', () => {
   const settings = JSON.parse(fs.readFileSync(path.join(root, 'templates', '.claude', 'settings.json'), 'utf8'));
   const { allow, ask, deny } = settings.permissions;
   const rule = (tool, target) => `${tool}(./${target}/**)`;
   for (const [name, lane] of Object.entries(LANES)) {
     if (name === 'tools') {
-      assert.ok(ask.includes(rule('Edit', lane)) && ask.includes(rule('Write', lane)), `${lane} must sit in ask for Edit and Write`);
-      assert.equal(allow.some((entry) => /^(?:Edit|Write)\(/.test(entry) && entry.includes(lane)), false, `${lane} must not be granted Edit or Write in allow`);
+      assert.ok(ask.includes(rule('Edit', lane)), `${lane} must sit in ask for Edit`);
+      assert.equal(allow.some((entry) => /^Edit\(/.test(entry) && entry.includes(lane)), false, `${lane} must not be granted Edit in allow`);
       continue;
     }
     assert.ok(allow.includes(rule('Edit', lane)), `${lane} must have an Edit allow rule`);
-    assert.ok(allow.includes(rule('Write', lane)), `${lane} must have a Write allow rule`);
-    assert.equal(deny.some((entry) => /^(?:Edit|Write)\(/.test(entry) && entry.includes(lane)), false, `${lane} must not be denied`);
+    assert.equal(deny.some((entry) => /^Edit\(/.test(entry) && entry.includes(lane)), false, `${lane} must not be denied`);
   }
-  // Every writable root directory gets Write beside Edit; single-file controls
-  // are revised, never created, so Edit alone is the right grant there.
-  for (const entry of allow) {
-    const directoryEdit = entry.match(/^Edit\((\.\/.+\/\*\*)\)$/);
-    if (directoryEdit) assert.ok(allow.includes(`Write(${directoryEdit[1]})`), `${entry} needs a paired Write rule`);
-  }
+  assert.equal([...allow, ...ask, ...deny].some((entry) => /^Write\(/.test(entry)), false,
+    'path-scoped Write rules are not the Claude Code file-permission seam');
   assert.ok(allow.includes('Edit(./LEXICON.md)'), 'LEXICON.md is a root control agents keep current');
   for (const tool of ['spec-workbench', 'adr', 'sessions', 'wiki', 'workbench-layout']) {
     assert.ok(allow.includes(`Bash(node workbench/tools/${tool}.mjs:*)`), `${tool}.mjs must be runnable without a prompt`);
   }
   const readme = fs.readFileSync(path.join(root, 'templates', '.claude', 'README.md'), 'utf8');
-  assert.match(readme, /Edit and Write are separate grants/i, 'the README explains Edit versus Write');
-  assert.match(readme, /^\| \*\*Workbench authorship lanes\*\*.*`allow`.*Edit and Write/m, 'the mapping table names the lanes as its fourth row');
+  assert.match(readme, /Edit rules apply to all built-in tools that edit files/i, 'the README names the supported file-permission seam');
+  assert.match(readme, /^\| \*\*Workbench authorship lanes\*\*.*`allow` \(`Edit`\)/m, 'the mapping table names the lanes as its fourth row');
   for (const protocol of ['GENESIS.md', 'ADOPTION.md']) {
     const content = fs.readFileSync(path.join(root, 'templates', protocol), 'utf8');
-    assert.match(content, /writable roots and the\s+Workbench authorship lanes -> `allow` \(Edit\s+and Write\)/, `${protocol} Phase 4 names the lanes`);
-    assert.match(content, /grants Edit and\s+Write on the declared authorship lanes, or `\.claude\/` was\s+omitted with a\s+reason/, `${protocol} completion box asks for the grant`);
+    assert.match(content, /writable roots and the\s+Workbench authorship lanes -> `allow`\s+\(`Edit`\)/, `${protocol} Phase 4 names the lanes`);
+    assert.match(content, /grants `Edit`\s+on\s+the declared authorship lanes/, `${protocol} completion box asks for the grant`);
+    assert.match(content, /`\.claude\/` was omitted with a\s+reason/, `${protocol} completion box preserves the omission route`);
   }
 });
 

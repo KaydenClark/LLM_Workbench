@@ -36,7 +36,7 @@ export function skillContentHash(directory) {
 // The release identity is one Git lookup per run: callers resolve it once
 // with `markerSourceIdentity()` and pass it to every marker they write.
 export function markerSourceIdentity() {
-  const { release, commit } = sourceIdentity();
+  const { release, commit } = sourceIdentity({ managedPaths: ['skills'] });
   return { release, commit };
 }
 

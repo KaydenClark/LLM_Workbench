@@ -90,12 +90,13 @@ function install(home) {
   ];
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
+  let identity;
+  try { identity = markerSourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
   const destinationFailure = validateDestinations(destinations, home);
   if (destinationFailure) return destinationFailure;
 
   const report = { status: 'complete', requiredSkills: coreSkills, installed: [], skipped: [] };
   try {
-    const identity = markerSourceIdentity();
     for (const { engine, root: destinationRoot } of destinations) {
       fs.mkdirSync(destinationRoot, { recursive: true });
       for (const skill of coreSkills) {

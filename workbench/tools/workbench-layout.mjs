@@ -3,6 +3,7 @@
 // session records, and the Genesis readiness gate. A schema 1 manifest is
 // reported as `upgrade-required` and migrated once, losslessly.
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -325,26 +326,39 @@ function gitValue(cwd, args) {
   return result.status === 0 ? result.stdout.trim() : '';
 }
 
-// The manifest records the exact Workbench source that produced it. An
-// explicit flag always wins; otherwise only a release checkout (the one that
-// carries `templates/`) may resolve its own origin and HEAD. A downstream copy
-// of this tool sits inside the project's repository, whose HEAD is not a
-// Workbench source, so it must refuse rather than guess or write a placeholder.
+function gitStatus(cwd, args) {
+  return spawnSync('git', args, { cwd, encoding: 'utf8' });
+}
+
+// The manifest records the exact clean Workbench checkout that produced it.
+// Explicit flags are assertions against that checkout, never replacements for
+// evidence. A downstream partial copy therefore refuses rather than claiming
+// caller-supplied strings as the identity of bytes it cannot verify.
 function sourceIdentity(options) {
   const templates = templateRoot();
   const release = templates ? path.dirname(templates) : null;
-  const resolved = { repository: options['--source-repository'], release: options['--version'], commit: options['--source-commit'] };
-  const missing = [];
-  for (const [field, flag, gitArgs] of [['commit', '--source-commit', ['rev-parse', 'HEAD']], ['repository', '--source-repository', ['remote', 'get-url', 'origin']]]) {
-    if (resolved[field]) continue;
-    if (release) resolved[field] = gitValue(release, gitArgs);
-    if (!resolved[field]) missing.push(flag);
-  }
-  if (missing.length) {
-    const reason = release
-      ? `the release checkout at ${release} did not resolve it from Git`
-      : 'this copy of workbench-layout.mjs is not inside a Workbench release checkout, so it cannot resolve the Workbench source';
-    return fail('invalid-invocation', `Pass ${missing.join(' and ')}: ${reason}.`, { missing });
+  if (!release) return fail('invalid-source-identity', 'This copy is not inside a verified Workbench release checkout; source flags cannot establish the identity of relocated bytes.');
+  const resolved = {
+    repository: gitValue(release, ['remote', 'get-url', 'origin']),
+    release: options['--version'],
+    commit: gitValue(release, ['rev-parse', '--verify', 'HEAD'])
+  };
+  const topLevel = gitValue(release, ['rev-parse', '--show-toplevel']);
+  if (!/^[0-9a-f]{40}$/.test(resolved.commit)) return fail('invalid-source-identity', `The Workbench release checkout at ${release} has no concrete HEAD commit.`);
+  if (!topLevel || fs.realpathSync(topLevel) !== fs.realpathSync(release)) return fail('invalid-source-identity', `The Workbench release path ${release} is not the Git checkout root.`);
+  if (!resolved.repository) return fail('invalid-source-identity', `The Workbench release checkout at ${release} has no origin repository URL.`);
+  const sourceManifest = path.join(release, 'workbench', 'manifest.json');
+  let checkoutVersion;
+  try { checkoutVersion = JSON.parse(fs.readFileSync(sourceManifest, 'utf8')).workbenchVersion; }
+  catch { return fail('invalid-source-identity', `${sourceManifest} is missing or unreadable.`); }
+  if (checkoutVersion !== resolved.release) return fail('invalid-source-identity', `Requested source release ${resolved.release} does not match the verified checkout release ${checkoutVersion}.`);
+  const status = gitStatus(release, ['status', '--porcelain', '--', 'workbench/manifest.json', 'workbench/tools', 'templates']);
+  if (status.status !== 0) return fail('invalid-source-identity', 'Git status could not verify the Workbench manifest, runtime tools, and templates as a clean source.');
+  if (status.stdout.trim()) return fail('invalid-source-identity', 'The Workbench manifest, runtime tools, or templates have uncommitted changes; commit the exact candidate before initialization.');
+  for (const [field, flag] of [['commit', '--source-commit'], ['repository', '--source-repository']]) {
+    if (!options[flag]) continue;
+    if (field === 'commit' && !/^[0-9a-f]{40}$/.test(options[flag])) return fail('invalid-source-identity', `${flag} must be a full 40-character Git commit.`);
+    if (options[flag] !== resolved[field]) return fail('invalid-source-identity', `${flag} does not match the verified checkout ${field}.`);
   }
   return resolved;
 }
@@ -520,27 +534,80 @@ function validateGenesisRuntime(project, expectedVersion) {
   return null;
 }
 
-// The permission file is the mechanical half of the prose Edit Scope. The
-// matcher is deliberately conservative: `./<path>/**` and a covering parent
-// glob such as `./workbench/**` grant, and anything else does not, so a false
-// "drift" is possible but a false "granted" is not. It reports and never
-// rewrites: a room may deny a lane deliberately and record why.
+// The permission file is the mechanical half of the prose Edit Scope. Claude
+// Code applies Edit rules to every built-in tool that edits files; path-scoped
+// Write rules are not a second creation permission. The bounded matcher
+// recognises the documented project-relative forms and reports any restrictive
+// pattern it cannot safely interpret instead of returning a false clear.
 export const PERMISSION_FILE = '.claude/settings.json';
-const permissionTools = ['Edit', 'Write'];
 const permissionBuckets = ['allow', 'ask', 'deny'];
 
-function coveringPrefix(rule, tool) {
-  const match = typeof rule === 'string' ? rule.match(/^(Edit|Write)\(\.\/(.*)\)$/) : null;
-  if (!match || match[1] !== tool) return null;
-  if (match[2] === '**') return '';
-  return match[2].endsWith('/**') ? match[2].slice(0, -3) : null;
+function parsePermissionRule(rule) {
+  if (rule === 'Edit' || rule === 'Write') return { tool: rule, bare: true };
+  const match = typeof rule === 'string' ? rule.match(/^(Edit|Write)\((.*)\)$/) : null;
+  if (!match) return null;
+  return { tool: match[1], bare: false, pattern: match[2] };
 }
 
-function covers(rules, tool, lane) {
-  return rules.some((rule) => {
-    const prefix = coveringPrefix(rule, tool);
-    return prefix !== null && (prefix === '' || prefix === lane || lane.startsWith(`${prefix}/`));
-  });
+function normalizedPermissionPaths(pattern, lane, project) {
+  const absoluteLane = path.resolve(project, lane).replaceAll('\\', '/');
+  if (pattern.startsWith('//')) {
+    return { candidate: path.normalize(pattern.slice(1)).replaceAll('\\', '/'), lane: absoluteLane };
+  }
+  if (pattern.startsWith('~/')) {
+    return { candidate: path.resolve(os.homedir(), pattern.slice(2)).replaceAll('\\', '/'), lane: absoluteLane };
+  }
+  return { candidate: pattern.replace(/^\.\//, '').replace(/^\//, ''), lane };
+}
+
+function pathRelation(pattern, lane, project) {
+  const { candidate: relative, lane: comparedLane } = normalizedPermissionPaths(pattern, lane, project);
+  if (!relative || relative === '**') return 'covers';
+  const simple = relative.match(/^([^*?{}\[\]!]+)\/\*\*$/);
+  if (simple) {
+    const prefix = simple[1].replace(/\/$/, '');
+    if (prefix === comparedLane || comparedLane.startsWith(`${prefix}/`)) return 'covers';
+    if (prefix.startsWith(`${comparedLane}/`)) return 'intersects';
+    return 'disjoint';
+  }
+  if (!/[*?{}\[\]!]/.test(relative)) {
+    if (relative === comparedLane || relative.startsWith(`${comparedLane}/`)) return 'intersects';
+    return 'disjoint';
+  }
+  const fixed = relative.slice(0, relative.search(/[*?{}\[\]!]/)).replace(/\/$/, '');
+  // An unfilled template placeholder is a different top-level path. Once the
+  // template is filled the resulting literal path is evaluated normally.
+  if (!fixed && /^\[[A-Z][A-Z0-9_]*\]/.test(relative)) return 'disjoint';
+  if (!fixed || fixed === comparedLane || fixed.startsWith(`${comparedLane}/`) || comparedLane.startsWith(`${fixed}/`)) return 'uncertain';
+  return 'disjoint';
+}
+
+function ruleRelation(rule, lane, project) {
+  const parsed = parsePermissionRule(rule);
+  if (!parsed) return null;
+  if (parsed.bare) return 'covers';
+  const relation = pathRelation(parsed.pattern, lane, project);
+  // Claude Code documents path-scoped file permissions through Edit. A
+  // path-scoped Write restriction is therefore uncertainty when it may touch
+  // the lane, never a second mechanically proven restriction.
+  return parsed.tool === 'Write' && relation !== 'disjoint' ? 'uncertain' : relation;
+}
+
+function coveringEdit(rules, lane, project) {
+  return rules.some((rule) => parsePermissionRule(rule)?.tool === 'Edit' && ruleRelation(rule, lane, project) === 'covers');
+}
+
+function restrictions(rules, lane, project) {
+  const matched = [];
+  for (const rule of rules) {
+    const parsed = parsePermissionRule(rule);
+    if (!parsed) continue;
+    const relation = ruleRelation(rule, lane, project);
+    if (relation === 'covers' || relation === 'intersects' || relation === 'uncertain') {
+      matched.push({ rule, relation, uncertain: relation === 'uncertain' });
+    }
+  }
+  return matched;
 }
 
 // Null when the file is absent or grants every declared lane; otherwise the
@@ -563,18 +630,27 @@ export function permissionScopeDrift(project, declaredLanes = lanes) {
   const withheld = [];
   for (const [lane, relative] of Object.entries(checked)) {
     const reasons = [];
-    for (const tool of permissionTools) {
-      const denied = covers(buckets.deny, tool, relative);
-      const asked = covers(buckets.ask, tool, relative);
-      const allowed = covers(buckets.allow, tool, relative);
-      if (lane === 'tools') {
-        if (allowed && !asked && !denied) reasons.push(`${tool} is granted in allow; hold the tools lane in ask`);
-      } else if (denied) reasons.push(`${tool} is covered by a deny rule`);
-      // ask overrides allow: a lane in both prompts on every write, which
-      // is the unattended stall this finding exists to name.
-      else if (asked) reasons.push(`${tool} is covered by an ask rule`);
-      else if (!allowed) reasons.push(`no covering ${tool} allow rule`);
-    }
+    const denied = restrictions(buckets.deny, relative, project)[0];
+    const askedRestrictions = restrictions(buckets.ask, relative, project);
+    const asked = askedRestrictions[0];
+    const coveringAsk = askedRestrictions.some((entry) => entry.relation === 'covers');
+    const allowed = coveringEdit(buckets.allow, relative, project);
+    if (lane === 'tools') {
+      if (allowed && denied) reasons.push(denied.uncertain
+        ? `deny rule cannot safely interpret whether it restricts the lane: ${denied.rule}`
+        : `lane is covered or intersected by a deny rule: ${denied.rule}`);
+      if (allowed && !coveringAsk) reasons.push(asked
+        ? `Edit is broadly granted in allow, but the ask rule does not cover the whole tools lane: ${asked.rule}`
+        : 'Edit is granted in allow; hold the whole tools lane in ask');
+    } else if (denied) {
+      reasons.push(denied.uncertain
+        ? `deny rule cannot safely interpret whether it restricts the lane: ${denied.rule}`
+        : `lane is covered or intersected by a deny rule: ${denied.rule}`);
+    } else if (asked) {
+      reasons.push(asked.uncertain
+        ? `ask rule cannot safely interpret whether it restricts the lane: ${asked.rule}`
+        : `lane is covered or intersected by an ask rule: ${asked.rule}`);
+    } else if (!allowed) reasons.push('no covering Edit allow rule');
     if (reasons.length) withheld.push({ lane, path: relative, reason: reasons.join('; ') });
   }
   return withheld.length ? { control: PERMISSION_FILE, lanes: withheld } : null;
@@ -630,7 +706,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.2 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | validate --project PATH [--genesis] (the source flags default to the release checkout\'s HEAD and origin and are required for a relocated copy)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.2 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current'].includes(result.status)) process.exitCode = 1;
   } catch (error) {

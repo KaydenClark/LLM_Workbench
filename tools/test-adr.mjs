@@ -12,10 +12,11 @@ import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const adrTool = path.join(root, 'workbench', 'tools', 'adr.mjs');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 
 function fixture() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adr-'));
-  const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', 'v3.0.0'], { encoding: 'utf8' });
+  const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', VERSION], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout);
   fs.writeFileSync(path.join(dir, 'AGENTS.md'), '# Agents\n\n## Rules\n\nCarries the rule.\n');
   fs.writeFileSync(path.join(dir, 'BLUEPRINT.md'), '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');

@@ -169,8 +169,17 @@ current harness version is **v3.1.2**, a local candidate (recorded in
 [`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continued
 that baseline as v3.1.1 and
 [`S-035`](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) stamps the
-v3.1.2 patch candidate; publication remains separately owner-controlled. This repo
-is the source, so its own docs are not stamped.
+v3.1.2 patch candidate; [`S-036`](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md)
+owns its evidence-integrity corrections. Publication remains separately
+owner-controlled. This repo is the source, so its own docs are not stamped.
+
+Portfolio responsibilities stay separate: LLM_Workbench produces the canonical
+harness and exact upgrade handoff; GPT_OS selects authorized targets and owns
+deployment, rollout tracking, and recovery; Audit_Workbench audits project HFRs
+and compiles upstream reports; each project owns its product, filled controls,
+local evidence, and truthful feedback. A fix landing here is upstream
+implementation evidence, not proof that a downstream project has deployed or
+benefited from it.
 
 The portable layout and skill-install contract is implemented in
 [`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate

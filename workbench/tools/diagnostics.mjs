@@ -24,6 +24,7 @@ const registry = Object.freeze({
   'sessions-not-ignored': entry('error', 'sessions', 'all', 'live session collections are not ignored by default'),
   'tools-receipt-missing': entry('error', 'tools', 'all', 'the tools lane has no Workbench receipt'),
   'tools-receipt-drift': entry('error', 'tools', 'all', 'an installed runtime tool differs from its receipt hash'),
+  'invalid-source-identity': entry('error', 'tools', 'all', 'the Workbench source checkout, release, repository, commit, or managed bytes could not be verified'),
   // spec lifecycle: identity and state consistency selection depends on
   'malformed-spec': entry('error', 'specs', 'selection', 'a spec packet cannot be parsed'),
   'duplicate-id': entry('error', 'specs', 'selection', 'two packets claim one spec ID'),

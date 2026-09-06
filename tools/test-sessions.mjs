@@ -11,10 +11,11 @@ import { checkpoint, scanFile } from '../workbench/tools/sessions.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const sessionsTool = path.join(root, 'workbench', 'tools', 'sessions.mjs');
+const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 
 function project() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-sessions-'));
-  const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', 'v3.0.0'], { encoding: 'utf8' });
+  const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', VERSION], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout);
   spawnSync('git', ['init', '-q'], { cwd: dir });
   return dir;

@@ -164,13 +164,16 @@ the spec `next` would select is already complete there, `doctor` reports
 rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
-withholds a manifest-declared authorship lane (no covering `Edit` and `Write`
-`allow` rule, or a `deny` or `ask` rule covering it, since both override
-`allow`) or grants `workbench/tools/` in `allow`; it names each lane, never blocks, and never edits the file. Resolve
-it by adding the paired `Edit(./workbench/<lane>/**)` and
-`Write(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
-or recording the deliberate denial in `AGENTS.md`. The Genesis readiness
-check fails closed on the same finding; a room without the file is unaffected.
+withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
+a `deny` or `ask` rule covers it, or a restrictive pattern is uncertain), or
+grants `workbench/tools/` in `allow` without a covering `ask` holding the whole
+lane; an intersecting tools deny also remains visible. It names each lane,
+never blocks, and never edits the file. Claude Code applies `Edit` rules to every built-in
+file-editing tool. Resolve the finding by adding the
+`Edit(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
+simplifying an uncertain restriction, or recording the deliberate restriction
+in `AGENTS.md`. The Genesis readiness check fails closed on the same finding;
+a room without the file is unaffected.
 
 The wiki lane raises `room-brain-unrouted` (attention) when a root control does
 not route back to the room brain: `AGENTS.md` must reference `workbench/wiki/`
@@ -374,18 +377,26 @@ the current one.
 
 To upgrade:
 
-1. Check the LLM Workbench repo's releases/changelog for what changed since
+1. Check the clean LLM Workbench release checkout's releases/changelog for what changed since
    `v[HARNESS_VERSION]`.
 2. Re-copy only the changed template sections; keep this project's filled-in
    specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
-3. Update each doc's version stamp to the new version.
-4. Re-run the full verification suite and record the upgrade in its owning spec.
+3. Update managed runtime tools only with that checkout's
+   `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`;
+   keep its receipt and backup as the component recovery point.
+4. Update each doc's version stamp to the new version. Do not rewrite the room
+   manifest's historical adoption source to impersonate the newly installed
+   component generation.
+5. Re-run the full verification suite and record the upgrade in its owning spec.
 
 The runtime tools in `workbench/tools/` are Workbench-managed: their receipt
 (`.workbench-tools.json`) records the exact source release, commit, and file
 hashes. Verify them with `node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs verify --project .`
 and replace them only through `update --explicit-update`, which backs up the
 previous files and records a rollback path. Never hand-edit a managed tool.
+The source checkout must have a concrete `origin` and 40-character `HEAD`, and
+its managed source lane must be clean; otherwise install/update refuses before
+creating a receipt or backup.
 
 Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
 nonregular managed files, and unsafe backup entries before copying or creating

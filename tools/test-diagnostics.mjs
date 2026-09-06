@@ -50,7 +50,7 @@ function git(cwd, ...args) {
   return result.stdout.trim();
 }
 
-function project(version = 'v3.0.0') {
+function project(version = VERSION) {
   const dir = fixture();
   const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout);
@@ -221,7 +221,7 @@ function permissionFile(buckets) {
 }
 
 const authorshipLanes = ['docs', 'specs', 'wiki', 'sessions', 'feedback'];
-const laneGrants = authorshipLanes.flatMap((lane) => [`Edit(./workbench/${lane}/**)`, `Write(./workbench/${lane}/**)`]);
+const laneGrants = authorshipLanes.map((lane) => `Edit(./workbench/${lane}/**)`);
 
 test('permission-scope-drift names each withheld authorship lane without blocking doctor', () => {
   const registered = describe('permission-scope-drift');
@@ -238,7 +238,7 @@ test('permission-scope-drift names each withheld authorship lane without blockin
     render(dir);
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a room without the file is unaffected');
 
-    // The pre-fix template shape: Edit on writable roots, no Write, no lane.
+    // The pre-fix template shape: Edit on writable roots, but no Workbench lane.
     write(dir, '.claude/settings.json', permissionFile({ deny: ['Write(./secrets/**)'], ask: ['Bash(git push:*)'], allow: ['Edit(./src/**)', 'Edit(./AGENTS.md)'] }));
     const legacy = doctor(dir, { home: quietHome });
     assert.deepEqual(driftLanes(legacy).sort(), [...authorshipLanes].sort());
@@ -252,14 +252,15 @@ test('permission-scope-drift names each withheld authorship lane without blockin
     fs.copyFileSync(path.join(root, 'templates', '.claude', 'settings.json'), settings);
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'the fixed template yields no finding');
 
-    // A missing Write, a covering deny, and a granted tools lane are each drift.
-    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants.filter((rule) => rule !== 'Write(./workbench/wiki/**)') }));
+    // A missing Edit grant, a nested restriction, and a granted tools lane are
+    // each drift. Edit rules govern every built-in file editing tool.
+    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants.filter((rule) => rule !== 'Edit(./workbench/wiki/**)') }));
     assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['wiki']);
-    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants, deny: ['Edit(./workbench/docs/**)'] }));
+    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants, deny: ['Edit(./workbench/docs/**/private.md)'] }));
     const denied = doctor(dir, { home: quietHome });
     assert.deepEqual(driftLanes(denied), ['docs']);
     assert.match(denied[0].lanes[0].reason, /deny/);
-    write(dir, '.claude/settings.json', permissionFile({ allow: [...laneGrants, 'Edit(./workbench/tools/**)', 'Write(./workbench/tools/**)'] }));
+    write(dir, '.claude/settings.json', permissionFile({ allow: [...laneGrants, 'Edit(./workbench/tools/**)'] }));
     assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
 
     // ask overrides allow, so a lane granted in both prompts on every write:
@@ -272,12 +273,55 @@ test('permission-scope-drift names each withheld authorship lane without blockin
     // A null lane declaration falls back to the default lanes instead of throwing.
     assert.equal(permissionScopeDrift(dir, null)?.lanes.map((entry) => entry.lane).join(), 'specs');
 
-    // A covering parent glob grants; it counts as granting tools only when no
-    // ask or deny rule takes precedence for that lane.
-    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)', 'Write(./workbench/**)'] }));
+    // A covering parent glob grants; the tools lane still needs a covering ask.
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'] }));
     assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
-    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)', 'Write(./workbench/**)'], ask: ['Edit(./workbench/tools/**)', 'Write(./workbench/tools/**)'] }));
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'], ask: ['Edit(./workbench/tools/**)'] }));
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a parent glob with tools held in ask is the accepted shape');
+
+    // A narrow restriction does not protect the rest of a broadly allowed
+    // tools lane. Both ask and deny regressions must remain visible.
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'], ask: ['Edit(./workbench/tools/private.mjs)'] }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'], deny: ['Edit(./workbench/tools/private.mjs)'] }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
+
+    // Claude Code's documented bare and project-root Edit forms are valid.
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit'], ask: ['Edit(/workbench/tools/**)'] }));
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'bare Edit grants authorship while a project-root ask protects tools');
+    write(dir, '.claude/settings.json', permissionFile({ allow: authorshipLanes.map((lane) => `Edit(/workbench/${lane}/**)`), ask: ['Edit(/workbench/tools/**)'] }));
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'project-root path rules are supported');
+
+    // Absolute and home-relative restrictions use Claude Code's documented
+    // path forms and must not be discarded as unrelated.
+    write(dir, '.claude/settings.json', permissionFile({
+      allow: laneGrants,
+      ask: ['Edit(./workbench/tools/**)'],
+      deny: [`Edit(/${path.join(dir, 'workbench', 'specs', '**')})`]
+    }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['specs']);
+    const priorHome = process.env.HOME;
+    process.env.HOME = path.dirname(dir);
+    try {
+      write(dir, '.claude/settings.json', permissionFile({
+        allow: laneGrants,
+        ask: ['Edit(./workbench/tools/**)'],
+        deny: [`Edit(~/${path.basename(dir)}/workbench/specs/**)`]
+      }));
+      assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['specs']);
+    } finally {
+      if (priorHome === undefined) delete process.env.HOME;
+      else process.env.HOME = priorHome;
+    }
+
+    // A bare Write restriction is a real tool restriction, while a bounded
+    // matcher must surface a restrictive Edit shape it cannot fully interpret.
+    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants, ask: ['Edit(./workbench/tools/**)'], deny: ['Write'] }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })).sort(), [...authorshipLanes].sort());
+    write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants, ask: ['Edit(./workbench/tools/**)'], deny: ['Edit(./workbench/specs/{draft,private}/**)'] }));
+    const uncertain = doctor(dir, { home: quietHome });
+    assert.deepEqual(driftLanes(uncertain), ['specs']);
+    assert.match(uncertain[0].lanes[0].reason, /cannot safely interpret/);
 
     // Anything the conservative matcher does not recognise is not a grant.
     write(dir, '.claude/settings.json', permissionFile({ allow: laneGrants.map((rule) => rule.replace('/**)', '/*.md)')) }));
