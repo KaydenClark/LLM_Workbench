@@ -14,7 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { managedReceiptFiles, receiptDrift } from '../workbench/tools/workbench-layout.mjs';
+import { managedReceiptFiles, receiptDrift, unaccountedLaneFiles } from '../workbench/tools/workbench-layout.mjs';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -197,14 +197,27 @@ export function verify(project) {
   // outside the managed lane.
   const files = managedReceiptFiles(receipt);
   if (files.error) return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} ${files.error}.` } };
+  // `updateAvailable` compares the receipt with the source, which says nothing
+  // about the installed bytes; it rides every path so a room that is refused is
+  // not also denied the fact that a newer release exists.
+  const sourceDrift = RUNTIME_TOOLS.filter((tool) => receipt.files[tool] !== sha256(path.join(sourceLane, tool)));
+  // The receipt's key set decided how much of the runtime got checked, so a
+  // receipt pruned of the file somebody tampered with verified ten of eleven
+  // tools and returned `valid`. Here, unlike in a room, the authoritative
+  // managed set is at hand: a receipt that omits a member of RUNTIME_TOOLS is
+  // refused whether or not that file is still on disk, and the lane check
+  // catches anything smuggled in beside them.
+  const unaccounted = [...new Set([
+    ...RUNTIME_TOOLS.filter((tool) => !Object.prototype.hasOwnProperty.call(receipt.files, tool)),
+    ...unaccountedLaneFiles(lane, files)
+  ])].sort();
+  if (unaccounted.length) {
+    return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} does not account for ${unaccounted.join(', ')}; refresh it with \`workbench-tools.mjs update --project PATH --explicit-update\` after reviewing the lane.`, unaccounted }, receipt, updateAvailable: sourceDrift };
+  }
   // The same comparison an installed room runs from workbench-layout.mjs, here
   // with the release source available, so each drifted file is classified as a
   // stale receipt, a modified runtime, or authentic bytes with a drifted mode.
   const drift = receiptDrift(lane, receipt, { sourceLane });
-  // `updateAvailable` compares the receipt with the source, which says nothing
-  // about the installed bytes; it rides both paths so a drifted room is not
-  // denied the fact that a newer release exists.
-  const sourceDrift = RUNTIME_TOOLS.filter((tool) => receipt.files[tool] !== sha256(path.join(sourceLane, tool)));
   if (drift.length) return { status: 'invalid', error: { code: 'tools-receipt-drift', message: `${relative} differs from its receipt.`, drift }, receipt, updateAvailable: sourceDrift };
   return { status: 'valid', lane: relative, receipt, updateAvailable: sourceDrift };
 }
@@ -223,8 +236,13 @@ export function update(project, options = {}) {
   const receipt = readReceipt(lane);
   if (!receipt) return fail('tools-receipt-missing', `${relative} has no receipt; use install.`);
   const home = path.resolve(options.home ?? os.homedir());
+  // A tool is `changed` when the receipt must be rewritten for it, which is not
+  // only a byte difference: a receipt pruned of a key whose file is authentic
+  // changes no bytes, and without this the refusal `verify` now raises would
+  // have no remedy - `update` would report `current` and leave the gap open.
   const changed = RUNTIME_TOOLS.filter((tool) => {
     const file = path.join(lane, tool);
+    if (!Object.prototype.hasOwnProperty.call(receipt.files ?? {}, tool)) return true;
     return !lstatOrNull(file) || sha256(file) !== sha256(path.join(sourceLane, tool));
   });
   if (changed.length === 0) return { status: 'current', lane: relative, receipt };

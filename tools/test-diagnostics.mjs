@@ -269,6 +269,29 @@ test('a drifted or unreadable managed runtime is a blocking tools finding in the
     const trueHash = crypto.createHash('sha256').update(fs.readFileSync(path.join(dir, 'AGENTS.md'))).digest('hex');
     fs.writeFileSync(receiptPath, JSON.stringify({ ...receipt, files: { [escaping]: trueHash } }));
     assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'a receipt key outside the managed lane must be refused, not resolved');
+
+    // Nor may a receipt name every managed file but one. The drift message
+    // names the key to delete, so pruning it is the cheapest way to switch the
+    // check off for exactly the tampered file. The room compares the receipt's
+    // key set with the lane's own contents, which is the only expected set a
+    // room can derive without an authoritative list.
+    const pruned = { ...receipt.files };
+    delete pruned['markdown-table.mjs'];
+    fs.writeFileSync(receiptPath, JSON.stringify({ ...receipt, files: pruned }));
+    const narrowed = doctor(dir, { home: quietHome });
+    assert.deepEqual(narrowed.map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'a receipt pruned of a file the lane still holds verifies less than the runtime it scopes');
+    assert.match(narrowed[0].message, /does not account for markdown-table\.mjs/);
+    assert.throws(() => nextWork(dir), /tools-receipt-missing/, 'next must refuse a room whose receipt does not cover its lane');
+    assert.throws(() => claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }), /tools-receipt-missing/, 'claim must refuse it too');
+
+    // A foreign file dropped into the managed lane is the same condition seen
+    // from the other side: the lane holds a file no receipt key accounts for.
+    fs.writeFileSync(receiptPath, JSON.stringify(receipt));
+    fs.copyFileSync(path.join(root, 'workbench', 'tools', 'markdown-table.mjs'), path.join(dir, 'workbench', 'tools', 'markdown-table.mjs'));
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'the repaired lane is clean again');
+    fs.writeFileSync(path.join(dir, 'workbench', 'tools', 'smuggled.mjs'), 'export const smuggled = true;\n');
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'an unreceipted file in the managed lane is reported, not ignored');
+    fs.rmSync(path.join(dir, 'workbench', 'tools', 'smuggled.mjs'));
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

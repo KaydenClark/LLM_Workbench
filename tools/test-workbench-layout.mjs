@@ -547,6 +547,26 @@ test('a room whose managed runtime drifts from its receipt fails the doctor it c
     // than guessed at in either direction.
     assert.equal(reported.drift[0].state, 'source-unavailable');
     assert.match(reported.drift[0].remedy, /release checkout/);
+
+    // The receipt must not control the SCOPE of its own check. The drift
+    // message above names the key to delete, and deleting it would otherwise
+    // disarm the check for exactly the tampered file while ten other keys
+    // still verify. A room carries no authoritative list of what should be
+    // managed, so the expected set is the lane's own contents: a file the lane
+    // holds that no receipt key accounts for is reported.
+    const receiptPath = path.join(project, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const pruned = { ...receipt.files };
+    delete pruned['markdown-table.mjs'];
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+    const narrowed = roomDoctor();
+    const unaccounted = narrowed.findings?.find((item) => item.code === 'tools-receipt-missing');
+    assert.ok(unaccounted, `a receipt pruned of the tampered file must not read as a clean runtime: ${JSON.stringify(narrowed.findings)}`);
+    assert.match(unaccounted.message, /does not account for markdown-table\.mjs/);
+    assert.equal(unaccounted.blocks, 'all', 'a receipt that verifies less than the lane holds blocks the same way drift does');
+    assert.equal(narrowed.status, 1, 'a pruned receipt fails the doctor the room carries');
+    assert.equal(fs.readFileSync(path.join(project, 'workbench', 'tools', 'markdown-table.mjs'), 'utf8').includes('// locally edited'), true,
+      'the tampered file is still on disk; the pruned receipt is what changed');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(quietHome, { recursive: true, force: true });

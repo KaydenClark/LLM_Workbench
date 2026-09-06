@@ -591,6 +591,34 @@ export function managedReceiptFiles(receipt) {
   return { entries };
 }
 
+// Refusing an empty or out-of-lane map still left the receipt in charge of the
+// check's SCOPE: the drift report names the file it found, so deleting that one
+// key switched the check off for exactly that file while every remaining key
+// went on verifying. Nothing compared the receipt's key set against the files
+// actually managed.
+//
+// A room holds no authoritative list of what should be managed - the release
+// does, and `tools/workbench-tools.mjs` is never installed into a room - so the
+// expected set here is derived from the lane's own contents: every ordinary
+// entry the managed lane holds must be accounted for by a receipt key. That
+// closes the pruned-key case for any file still on disk, and reports a foreign
+// file smuggled into the lane as the same condition. Dotted entries are
+// skipped: the receipt itself, the installer's transient `.receipt-*` staging
+// directory, and editor or VCS droppings are not managed runtime.
+//
+// What it cannot see is a key and its file deleted together; that is the
+// deleted-file limitation the spec records, which fails loudly at import time
+// because every managed tool is in doctor's own import graph.
+export function unaccountedLaneFiles(laneDir, files) {
+  const named = new Set(files.entries.map(([tool]) => tool));
+  let entries;
+  try { entries = fs.readdirSync(laneDir, { withFileTypes: true }); } catch { return []; }
+  return entries
+    .map((entry) => entry.name)
+    .filter((name) => !name.startsWith('.') && !named.has(name))
+    .sort();
+}
+
 // The managed-runtime integrity check, kept in a tool every room carries. The
 // installer that writes the receipt (`tools/workbench-tools.mjs`) is never
 // copied into a room, so without this the registered `all` effect of
@@ -637,6 +665,12 @@ export function managedRuntimeDrift(project, options = {}) {
   try { receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8')); } catch (error) { return unreadable(`is unreadable: ${error.message}`); }
   const files = managedReceiptFiles(receipt);
   if (files.error) return unreadable(files.error);
+  // Coverage before content: a receipt that does not account for the whole
+  // lane cannot scope a trustworthy drift report over part of it, and both
+  // conditions block identically, so the operator loses nothing by being told
+  // the more fundamental one first.
+  const unaccounted = unaccountedLaneFiles(laneDir, files);
+  if (unaccounted.length) return unreadable(`does not account for ${unaccounted.join(', ')}`);
   const drift = receiptDrift(laneDir, receipt);
   if (drift.length === 0) return null;
   const named = drift.map((item) => `${item.tool} (${item.reason}, ${item.state})`).join(', ');

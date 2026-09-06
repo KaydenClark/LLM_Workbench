@@ -206,6 +206,58 @@ test('a drift result separates a stale receipt from a modified runtime and names
   }
 });
 
+// The receipt's key set decided the scope of the check, so deleting the key of
+// a tampered file switched it off for that file while every remaining key still
+// verified. The release side holds the authoritative managed set, so it can say
+// which managed file a receipt fails to account for instead of returning valid.
+test('a receipt that does not account for every managed file is refused, not read as valid', () => {
+  const dir = project();
+  const home = fixture('workbench-tools-home-');
+  try {
+    assert.equal(run(installer, 'install', '--project', dir).report.status, 'installed');
+    const lane = path.join(dir, 'workbench', 'tools');
+    const receiptPath = path.join(lane, RECEIPT_NAME);
+    const managed = path.join(lane, 'markdown-table.mjs');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+
+    fs.appendFileSync(managed, '// locally edited\n');
+    assert.equal(run(installer, 'verify', '--project', dir).report.error.code, 'tools-receipt-drift',
+      'the drift report names the key an attacker would delete');
+
+    const pruned = { ...receipt.files };
+    delete pruned['markdown-table.mjs'];
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+    assert.equal(Object.keys(pruned).length, RUNTIME_TOOLS.length - 1, 'every other key still verifies');
+    const narrowed = run(installer, 'verify', '--project', dir);
+    assert.notEqual(narrowed.status, 0, `a pruned receipt must not verify: ${narrowed.stdout}`);
+    assert.equal(narrowed.report.status, 'invalid');
+    assert.equal(narrowed.report.error.code, 'tools-receipt-missing');
+    assert.match(narrowed.report.error.message, /does not account for markdown-table\.mjs/);
+    assert.deepEqual(narrowed.report.updateAvailable, ['markdown-table.mjs'],
+      'the receipt-versus-source comparison rides this path too');
+    assert.ok(fs.readFileSync(managed, 'utf8').includes('// locally edited'),
+      'the tampered file is still installed; only the receipt was pruned');
+
+    // The refusal has to be repairable: an authentic file whose key was pruned
+    // changes no bytes, so the receipt is what `update` must rewrite.
+    fs.copyFileSync(path.join(root, 'workbench', 'tools', 'markdown-table.mjs'), managed);
+    const repaired = run(installer, 'update', '--project', dir, '--home', home, '--explicit-update');
+    assert.equal(repaired.status, 0, repaired.stdout);
+    assert.deepEqual(repaired.report.changed, ['markdown-table.mjs'], 'a key the receipt lost is rewritten even when the bytes match');
+    assert.equal(run(installer, 'verify', '--project', dir).report.status, 'valid');
+
+    // A file the lane holds that the receipt never named is the same gap seen
+    // from the other side.
+    fs.writeFileSync(path.join(lane, 'smuggled.mjs'), 'export const smuggled = true;\n');
+    const smuggled = run(installer, 'verify', '--project', dir);
+    assert.equal(smuggled.report.error?.code, 'tools-receipt-missing', smuggled.stdout);
+    assert.match(smuggled.report.error.message, /does not account for smuggled\.mjs/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
 test('v3.1.1 maintenance preserves project truth and historical provenance while managed tools update and roll back', () => {
   const dir = project();
   const home = fixture('workbench-tools-home-');
