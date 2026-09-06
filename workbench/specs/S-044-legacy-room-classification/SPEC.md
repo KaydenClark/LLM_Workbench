@@ -8,7 +8,7 @@
 **Updated:** 2026-09-06
 **Catalog description:** Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone.
 **Blockers:** none
-**Latest event:** Both slices are done, and the classification rule has been repaired twice after separate-context review: the second round fixed the classes the first round had fixed only for their named instances - every lane the room will not open is now a room condition rather than an exit 1, and nothing under a non-ordinary support root is read, the managed tools lane included.
+**Latest event:** Both slices are done, and the classification rule has been repaired three times after separate-context review: the third round closes the borrowed lane at every path component rather than at the support root alone, pins the three room conditions no fixture reached, gives an unreadable legacy lane its own bucket, and corrects the Completion Result that still described round one.
 **Next gate:** Independent integration review of `claude/s044-v3-1-2` before it merges into `integration`.
 
 ## Outcome
@@ -126,6 +126,31 @@ read-only way to classify an unversioned room.
   was offered under Rule 4 but not under Rule 7, which is exactly where a
   straight `cp -R templates/.` lands. Rather than narrowing the prose to "in the
   evidence", both branches state it: an agent acts on the reasons.
+- **A lane is owned by the room only if every component of it is.** Gating the
+  read on `workbench/` left the borrowed lane reachable one path level down: an
+  ordinary `workbench/` whose `tools` is a link reported another room's
+  installed tools and its receipt as this room's managed runtime lane, and so
+  did symlinked managed names inside an ordinary lane. The same convention the
+  module already applies to a manifest and to a root control - only an ordinary
+  file, only an ordinary directory - now covers a lane's directory components
+  and its leaves. A root `tools/` reached through a link is the one place the
+  evidence moves a verdict, because that limb corroborates harness-shaped, so
+  those names are reported as `rootBorrowedNames` and a room with four controls
+  and a borrowed `tools/` is `adoption` rather than `unclassifiable`.
+- **A room condition is pinned per condition, not per class.** `ROOM_CONDITIONS`
+  names five errno values and only two were reachable from a fixture; dropping
+  `ENOTDIR` or `ENAMETOOLONG` restored the exit-1-with-a-leaked-message the
+  class exists to remove while the suite stayed green. `ENOTDIR` (a regular file
+  where a lane name would be) and `ENAMETOOLONG` (a link to a name the
+  filesystem will not resolve) are pinned as rooms; `EPERM`, which no fixture can
+  produce on demand, is pinned at the `fs.lstatSync` seam the set is declared
+  over.
+- **Undetermined gets a bucket wherever it is reported.** `legacyPaths` filtered
+  the legacy lane names through a predicate that returned false for both absent
+  and unreadable, so a `specs/` the room would not stat was emitted as one the
+  room does not carry - the exact fold the file's own invariant forbids. The
+  helper is gone and the legacy lanes are read like every other lane, with
+  `legacyPathsUnreadable` beside `legacyPaths`.
 - **The classifier is a release-checkout tool, not a runtime tool.** It lives at
   `tools/workbench-classify.mjs`, beside `workbench-adoption.mjs` and
   `workbench-upgrade.mjs`, because the room it classifies may carry no installed
@@ -143,9 +168,12 @@ never as the verdict. Six evidence categories are gathered, all read-only:
 `legacyControlShapes`, and `roomContents`.
 
 A path the room will not let the command `lstat` - a lane at mode 000, a lane
-behind a symlink loop, a name under a file - is a fact about the room, exactly
-as an absent path is, and is reported as undetermined rather than counted as
-absent. Only the supplied project path is different: if that cannot be stat-ed,
+behind a symlink loop, a name under a regular file, a link whose target is too
+long to resolve, a name the kernel refuses outright - is a fact about the room,
+exactly as an absent path is, and is reported as undetermined rather than
+counted as absent. Each of the five conditions is pinned by a case that fails
+when it is dropped, so the class cannot narrow back to the two a fixture
+happened to reach. Only the supplied project path is different: if that cannot be stat-ed,
 or is not an ordinary directory, there is no room to report on and the command
 refuses the invocation. Nothing else in a room makes it exit non-zero.
 
@@ -157,8 +185,11 @@ Two derived predicates:
   banner whose version never resolved (a copied `v[HARNESS_VERSION]`) is not a
   stamp; it is reported separately as `versionStamp.unresolved`.
 - **harness-shaped** - all seven root controls are present, or the room's own
-  root `tools/` carries a file named in the managed runtime-tool set **and** the
-  room carries more of the seven controls than it is missing. The seven controls
+  root `tools/` carries an ordinary file named in the managed runtime-tool set
+  **and** the room carries more of the seven controls than it is missing. A
+  `tools/` that is a link out of the room, and a managed name inside it that is
+  itself a link or a directory, are another room's files under this room's path;
+  they are reported as `rootBorrowedNames` and never satisfy this limb. The seven controls
   are the Workbench's exact closed set, so the whole set corroborates itself.
   The managed runtime-tool names do not: `privacy.mjs`, `sessions.mjs`,
   `diagnostics.mjs` and `markdown-table.mjs` are ordinary filenames any project
@@ -178,7 +209,9 @@ Ordered, first match wins:
    report another room's manifest as this room's authority and another room's
    tools receipt as this room's managed runtime lane. A
    `workbench/manifest.json` that is not itself an ordinary file is never opened
-   either, for the same reason. The room's stamp state is listed as a reason
+   either, for the same reason, and neither is a `workbench/tools` that is not
+   an ordinary directory under an ordinary `workbench/`: the gate is on every
+   component the lane is read through, not on the support root alone. The room's stamp state is listed as a reason
    here, because in a stamped room it is the decisive evidence that a release
    did write here.
 2. `workbench/manifest.json` reads as a JSON object carrying an integer
@@ -250,7 +283,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Report every missing or unfilled control in one preflight result, with the reconcile order and the template-overwrite warning | done | none | `tools/test-workbench-adoption.mjs` names all four unreconciled controls in one refusal |
-| TK-002 | Add a read-only classify command reporting `genesis \| adoption \| upgrade \| unclassifiable` with its evidence | done | none | `tools/test-workbench-layout.mjs` classifies six fixtures and proves the command writes nothing |
+| TK-002 | Add a read-only classify command reporting `genesis \| adoption \| upgrade \| unclassifiable` with its evidence | done | none | `tools/test-workbench-layout.mjs` carries seventeen `classify` cases - every verdict, every room condition its rule names, and every borrowed lane - each comparing a recursive path/size/mtime snapshot of the room before and after to prove the command writes nothing |
 
 ### TK-001 - Name every missing control at once
 
@@ -329,6 +362,8 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | TK-002 | Repaired the recorded classification rule after a separate-context review returned CHANGES REQUESTED: the harness-shaped predicate now corroborates its managed-filename limb, an unreadable manifest shape and a symlinked support root classify instead of misreporting, an unreadable root control is a room condition, and the CLI is guarded by `isMainModule` | Five red cases first, all in `tools/test-workbench-layout.mjs`, each run before any implementation. (1) A vanilla Node app (`README.md`, `package.json`, `src/index.js`, `tools/privacy.mjs`) asserted `adoption`: `AssertionError [ERR_ASSERTION]: one generic managed filename cannot make a room whose own evidence shows six absent controls harness-shaped`, actual `'unclassifiable'`. (2) `workbench/manifest.json` holding `{ "name": "my-workbench-app", "version": "1.0.0" }`: `an unrelated JSON object must not read as an installed Workbench room`, actual `'upgrade'`. (3) A `workbench/` symlink into another initialized room: `another room's manifest, reached through a symlink, cannot make this room an installed room`, actual `'upgrade'`. (4) `chmod 000` on a root control: `{"status":"blocked","error":{"code":"invalid-invocation","message":"EACCES: permission denied, open '.../LEXICON.md'"}}`, `1 !== 0`. (5) Importing the module: `{"status":"blocked","error":{"code":"invalid-invocation","message":"Usage: workbench-classify.mjs classify --project PROJECT ..."}}`, `1 !== 0`. Green after the repair, with the pre-existing 34 cases untouched and unweakened: `tests 40 / pass 40 / fail 0`, including `classify corroborates the root tools/ shape before calling a room harness-shaped`, `classify refuses a workbench/manifest.json that is not a Workbench manifest` (object, array and null), `classify never reads a workbench/ symlink out of the room`, `classify treats an unreadable root control as a room condition, not a crash`, `classify reports the unfilled state of a straight template copy as evidence`, and `importing the classifier does not run its command line`. Every new case that classifies a room also compares the recursive path/size/mtime snapshot before and after | Decisions And Contracts records the repaired rule (corroborated harness-shaped predicate, the manifest shape guard, the support-root symlink refusal, the new unreadable-control rule, and the unfilled-template evidence); `RUNBOOK.md` verdict table and prose updated to match; `templates/ADOPTION.md` re-wrapped one over-long line with no wording change | `skills/update-harness/SKILL.md` stays deferred to S-040/S-041 as before |
 
 | 2026-09-06 | TK-002 | Second repair after the re-review: the crash class and the support-root read gate are fixed for the class rather than the named instance, two mutation-proven coverage holes are pinned, and the prose that overstated the contract is now true | Reds first, each captured before any implementation. (1) The crash class, in one new `tools/test-workbench-layout.mjs` case over four rooms - `workbench/` at mode 000 holding a manifest, root `tools/` at mode 000 with seven stamped controls, a `tools -> tools` symlink loop with seven stamped controls, and a room that will not list itself: `AssertionError [ERR_ASSERTION]: {"status":"blocked","error":{"code":"invalid-invocation","message":"EACCES: permission denied, lstat '.../workbench/manifest.json'"}}`, `1 !== 0`. (2) The borrowed managed lane: `AssertionError [ERR_ASSERTION]: nothing under a support root that is not an ordinary directory may be read, the managed lane included`, actual `undefined`, expected `false` - the base reported `lifecycleTools` `receipt: true` and three installed tools read through the `workbench/` symlink while `manifest` correctly reported nothing. (3) A wrong-typed manifest: `a string schemaVersion must not read as an installed Workbench room`, actual `'upgrade'`. (4) The unfilled reading on the adoption branch: `an unfilled copy of the templates is a reading of the room, so it belongs in the reasons and not only in the evidence`, actual `false`. (5) The two coverage pins are red only under their mutant, which is what makes them pins: deleting `|| manifest.schemaVersion === null` gave `a null schemaVersion must not read as an installed Workbench room`, and deleting Rule 1's whole `stamp.stamped.length ? ... : ...` reason gave `in a stamped room the stamp is the decisive evidence that a release did write here, so Rule 1 must name it`. Green: `tests 46 / pass 46 / fail 0` in `tools/test-workbench-layout.mjs`, no pre-existing case weakened or removed. Every new case that classifies a room still compares the recursive path/size/mtime snapshot before and after, the four `chmod 000` rooms included. Mutation testing over 30 mutations of `tools/workbench-classify.mjs`: 27 caught, 3 survivors each proven equivalent - dropping `Array.isArray(manifest)` is subsumed by `!Number.isInteger(manifest.schemaVersion)` because a JSON array has no `schemaVersion` property; flipping the unlistable room's `empty` to `true` cannot change a verdict because Rule 3 catches every unstamped unlistable room and Rule 5 every stamped one, so Rule 6 is unreachable there; and dropping `entry.isSymbolicLink()` from the project-path guard changes nothing because under `lstat` a symlink is never `isDirectory()` | `RUNBOOK.md`: the exit-1 sentence now names the room conditions that return a verdict instead, the symlink sentence covers the managed lane and a symlinked `manifest.json`, the `unclassifiable` row adds the unlistable room, and the unfilled-copy sentence says the reading is listed among the reasons under both verdicts. This spec: six evidence categories rather than five (`roomContents` was gathered and undeclared, pre-existing), Rule 1 extended to the managed lane, Rule 2 to the integer `schemaVersion`, Rule 3 to the unlistable room, Rule 7 to the unfilled reading, plus four new Decisions And Contracts entries. `templates/ADOPTION.md`: `unclassifiable` also covers a room that will not let something be read | `skills/update-harness/SKILL.md` stays deferred to S-040/S-041 as before. The three equivalent mutants are left as they are: `Array.isArray` and the symlink limb document intent at the seam they guard, and the `empty: false` default is defensive against a future rule reordering |
+| 2026-09-06 | TK-002 | Third repair after the third review: the borrowed lane is closed at every path component rather than at the support root alone, the three room conditions no fixture reached are pinned, an unreadable legacy lane gets its own bucket, and the Completion Result now records all three rounds | Reds first, each captured before any implementation. (1) The lane one component down, in a room whose `workbench/` is an ordinary directory holding its own `manifest.json` and whose `tools` is a link into another room: `AssertionError [ERR_ASSERTION]: a relative symlinked lane: a managed lane reached through a link out of the room is never read`, actual `true`, expected `false` - the base reported that room's five installed tools and `receipt: true`. (2) The borrowed root lane: `AssertionError [ERR_ASSERTION]: a managed filename reached through a link out of the room is not this room's root lane`, actual `[ 'privacy.mjs' ]`, expected `[]`, in a four-of-seven-control room the borrowed name made harness-shaped. (3) The undetermined legacy lane: `TypeError: Cannot read properties of undefined (reading 'includes')` on `legacyControlShapes.legacyPathsUnreadable`, which did not exist. (4) Five coverage pins, red only under their mutant: dropping `ENOTDIR` gave `AssertionError [ERR_ASSERTION]: {"status":"blocked","error":{"code":"invalid-invocation","message":"ENOTDIR: not a directory, lstat '.../tools/adr.mjs'"}}`, dropping `ENAMETOOLONG` gave the same refusal reading `ENAMETOOLONG: name too long, lstat '.../tools/adr.mjs'`, dropping `EPERM` made the seam probe die with `Error: EPERM: operation not permitted, lstat '.../tools/privacy.mjs'` thrown out of `lstatOrNull`, folding an unstat-able control into `missing` gave `a control the room will not stat is present-or-absent unknown, never counted among the missing` (actual `[]`), and reporting an unstat-able support root as present gave `a room that will not let its own support root be stat-ed reports it neither present nor absent`, actual `true`, expected `null`. Green: `tests 50 / pass 50 / fail 0` in `tools/test-workbench-layout.mjs`, four cases added and no existing case weakened or removed. Every new case that classifies a room compares the recursive path/size/mtime snapshot before and after. Mutation testing over 33 mutations of `tools/workbench-classify.mjs`: the first run caught 20 and exposed three real holes in the new code (a directory wearing a managed tool name, an absent managed lane read as a borrowed one, and a symlinked leaf inside an ordinary root `tools/`), which are now pinned by two added rooms; the second run caught 23 with 10 survivors, each equivalent - seven because `lstat` never reports a symlink as a file or a directory, so an `isSymbolicLink()` limb beside an `isFile()` or `isDirectory()` test cannot change an outcome, and the three carried forward from the previous round (`Array.isArray`, the unlistable room's `empty` default, and the project-path symlink guard) | `RUNBOOK.md`: the room-condition sentence names the two further conditions, the `upgrade` verdict row says an integer `schemaVersion`, and the symlink paragraph now covers `workbench/tools`, a symlinked managed name, and the borrowed root lane. This spec: the rule prose states that every component a lane is read through must be the room's own and that each of the five room conditions is pinned, Rule 1 extends the gate below the support root, the harness-shaped predicate names `rootBorrowedNames`, three Decisions And Contracts entries are added, the TK-002 proof column names what the suite actually proves, and the Completion Result - which is not append-only - is corrected in place to record all three rounds and their four behavior changes. `templates/ADOPTION.md` checked; no update needed: its `unclassifiable` sentence already covers a control, a lane, or the listing the room will not let be read | `skills/update-harness/SKILL.md` stays deferred to S-040/S-041. The ten equivalent mutants are left as they are: each documents intent at the seam it guards. A root `tools/` that is a link is reported as borrowed rather than refused unread, because unlike the support root it carries no authority to borrow |
+
 
 ## Completion Result
 
@@ -342,15 +377,36 @@ reasons and the `manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`,
 `legacyControlShapes`, and `roomContents` evidence behind it, exiting 0 for all
 four verdicts.
 
-After the separate-context review, the classifier's rule was repaired in three
-places where it mislabelled real rooms and hardened in two more: the
+After the first separate-context review, the classifier's rule was repaired in
+three places where it mislabelled real rooms and hardened in two more: the
 harness-shaped predicate requires the managed-filename limb to be corroborated
-by the control set, a manifest must read as an object carrying `schemaVersion`
-rather than merely parse, a `workbench/` that is not an ordinary directory is
-never read through, an unreadable root control classifies as a room condition
-instead of exiting 1 with an internal message, and the command line runs only
-under `isMainModule`. The evidence gained `versionStamp.unreadable`,
+by the control set, a manifest must read as an object carrying an integer
+`schemaVersion` rather than merely parse, a `workbench/` that is not an ordinary
+directory is never read through, an unreadable root control classifies as a room
+condition instead of exiting 1 with an internal message, and the command line
+runs only under `isMainModule`. The evidence gained `versionStamp.unreadable`,
 `versionStamp.unresolved`, and `legacyControlShapes.controlsBracketed`.
+
+The second review found each of those fixed for its named room rather than for
+its class, and the second repair closed the classes: every path the room will
+not let the command `lstat` is a room condition that still returns a verdict
+(`ROOM_CONDITIONS`, five errno values) rather than an exit 1 carrying a
+filesystem message; nothing under a `workbench/` that is not an ordinary
+directory is read, the managed `workbench/tools/` lane included; and the
+`schemaVersion` a manifest must carry is an integer, which no near neighbour of
+a manifest satisfies.
+
+The third review found the borrowed lane still reachable one path component
+lower, and this repair closes it at every component: an ordinary `workbench/`
+whose `tools` is a link is not read either, a managed name inside an ordinary
+lane that is itself a link or a directory is not an installed tool, and a root
+`tools/` reached through a link is reported as `rootBorrowedNames` instead of
+corroborating the harness-shaped reading. `reachable()` - which folded an
+unreadable legacy lane into an absent one, against the invariant the file
+states - is gone, and `legacyControlShapes` gained `legacyPathsUnreadable`
+beside `legacyPaths`. Three room conditions that no fixture reached
+(`ENOTDIR`, `ENAMETOOLONG`, `EPERM`) are now pinned, the first two as rooms and
+the third at the `fs.lstatSync` seam.
 
 **Why.** An operator with three missing controls previously learned of one per
 migration attempt and was told nothing about how to produce it, and no command
@@ -358,21 +414,49 @@ could tell an arriving agent whether a room was an installation to upgrade or a
 first adoption. Both gaps were being closed by eight and nine rooms
 independently, in judgment rather than in evidence.
 
-**Risks and side effects.** The corroborated harness-shaped predicate is the one
-behavior change a reader should check: a room carrying a managed runtime-tool
-filename at its root is now Workbench-shaped only when it also holds more of the
-seven controls than it is missing, so a room with exactly four of seven controls
-and such a file is the boundary case. A room with all seven controls is
-unaffected. The batched refusal replaces the two single-control
-error codes with one; `grep` found no reader of either outside
-`tools/workbench-adoption.mjs`, and each control keeps its original reason. The
-classifier writes nothing and authorizes nothing, so a wrong verdict costs an
-escalation, not a migration. A harness-shaped room with no manifest and no stamp
-returns `unclassifiable` by design rather than a guess.
+**Risks and side effects.** Four behavior changes are worth a reader's check,
+one per repair round.
 
-**How verified.** Both slices red before green (rows above), then the full
-`AGENTS.md` suite, `evaluate-workbench --path templates --include-controls`,
-`render`, `doctor` (exit 0), and `check-append-only.py` (CLEAN).
+1. The corroborated harness-shaped predicate: a room carrying a managed
+   runtime-tool filename at its root is Workbench-shaped only when it also holds
+   more of the seven controls than it is missing, so a room with exactly four of
+   seven controls and such a file is the boundary case. A room with all seven
+   controls is unaffected.
+2. The integer `schemaVersion`: a room whose `workbench/manifest.json` carries
+   `null`, `"2"`, `[2]`, or `{"n":2}` moves from `upgrade` to `unclassifiable`.
+   No Workbench release writes such a manifest - `validateManifest` accepts an
+   integer only - so the rooms this moves are near neighbours of a manifest, and
+   `unclassifiable` names what they are rather than reporting an installation.
+3. The widened room-condition class: seven fixture rooms that exited 1 with a
+   leaked `lstat` message now return a verdict with the undetermined lane named
+   as evidence. Nothing that returned a verdict before returns a different one.
+4. The lane-ownership gate at every component: a room whose root `tools/` is a
+   link out of the room no longer has that lane corroborate the harness-shaped
+   limb, so a room with four of seven controls and a borrowed root `tools/`
+   moves from `unclassifiable` to `adoption`; and a managed lane reached through
+   a `workbench/tools` link now reports `read: false` with `installed` and
+   `receipt` `null` instead of another room's tools. The evidence gained
+   `lifecycleTools.rootBorrowedNames` and
+   `legacyControlShapes.legacyPathsUnreadable`; both additions are additive, and
+   `grep` finds no reader of this evidence outside the tool, its tests,
+   `RUNBOOK.md`, and this spec.
+
+The batched refusal replaces the two single-control error codes with one; `grep`
+found no reader of either outside `tools/workbench-adoption.mjs`, and each
+control keeps its original reason. The classifier writes nothing and authorizes
+nothing, so a wrong verdict costs an escalation, not a migration. A
+harness-shaped room with no manifest and no stamp returns `unclassifiable` by
+design rather than a guess.
+
+**How verified.** Both slices red before green, and each repair round red before
+green in its own evidence row above, with the coverage pins red only under the
+mutant that makes them pins. Then the full `AGENTS.md` suite,
+`evaluate-workbench --path templates --include-controls`, `render`, `doctor`
+(exit 0), and `check-append-only.py` (CLEAN). The third round also re-ran
+mutation testing over `tools/workbench-classify.mjs`: 33 mutations, 23 caught,
+10 survivors each argued equivalent (seven of them because `lstat` never reports
+a symlink as a file or a directory, so dropping an `isSymbolicLink()` limb beside
+an `isFile()` or `isDirectory()` test changes nothing).
 
 Current Verified State above describes the pre-change tree at `b3633e5` and is
 left as the record the evidence rows cite; this section states what the change

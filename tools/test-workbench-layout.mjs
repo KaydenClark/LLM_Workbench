@@ -1393,8 +1393,14 @@ test('classify treats a lane it cannot stat as a room condition, not a crash', (
       'a room that will not list its own contents is neither a genesis nor an adoption target');
     assert.equal(sealedRoomResult.report.evidence.roomContents.readable, false,
       'the listing the room refused must be reported as evidence');
+    assert.equal(sealedRoomResult.report.evidence.supportRoot.present, null,
+      'a room that will not let its own support root be stat-ed reports it neither present nor absent');
+    assert.deepEqual(sealedRoomResult.report.evidence.legacyControlShapes.controlsPresent, controls,
+      'a control the room will not stat is present-or-absent unknown, never counted among the missing');
     assert.deepEqual(sealedRoomResult.report.evidence.legacyControlShapes.legacyPaths, [],
       'a legacy lane the room will not stat is undetermined, never reported as one the room carries');
+    assert.ok(sealedRoomResult.report.evidence.legacyControlShapes.legacyPathsUnreadable.includes('specs'),
+      'and undetermined is reported as its own bucket, which is what keeps the empty legacyPaths honest');
     assert.deepEqual(roomSnapshot(sealedRoom), sealedRoomBefore, 'classify must write nothing into a sealed room');
 
     // 5. A room that can be walked into but not listed: every control answers,
@@ -1550,5 +1556,196 @@ test('classify never reads a workbench/manifest.json symlinked out of the room',
     assert.deepEqual(roomSnapshot(borrower), before, 'classify must write nothing while refusing');
   } finally {
     for (const project of [installed, borrower]) fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-044 TK-002 third repair: the support-root gate closed the borrowed lane at
+// `workbench/`, and the lane leaked one path level below it. Every component a
+// lifecycle lane is read through must be one this room owns, and so must the
+// names under it.
+
+test('classify never reads a lifecycle lane borrowed below an ordinary support root', () => {
+  const installed = fixture();
+  const relative = fixture();
+  const absolute = fixture();
+  const leaves = fixture();
+  const absent = fixture();
+  try {
+    fs.mkdirSync(path.join(installed, 'workbench', 'tools'), { recursive: true });
+    for (const name of ['adr.mjs', 'diagnostics.mjs', 'privacy.mjs', 'sessions.mjs', 'wiki.mjs']) {
+      fs.writeFileSync(path.join(installed, 'workbench', 'tools', name), `export const tool = ${JSON.stringify(name)};\n`);
+    }
+    fs.writeFileSync(path.join(installed, 'workbench', 'tools', '.workbench-tools.json'), '{ "schemaVersion": 2 }\n');
+
+    // 1. An ordinary workbench/ carrying this room's own manifest, whose
+    //    managed tools lane is a link into another room. The support-root gate
+    //    never fires, because the support root is this room's own.
+    for (const [label, room, target] of [
+      ['a relative symlinked lane', relative, path.join('..', '..', path.basename(installed), 'workbench', 'tools')],
+      ['an absolute symlinked lane', absolute, path.join(installed, 'workbench', 'tools')]
+    ]) {
+      fs.mkdirSync(path.join(room, 'workbench'));
+      fs.writeFileSync(path.join(room, 'workbench', 'manifest.json'), '{ "schemaVersion": 2, "workbenchVersion": "v3.1.2" }\n');
+      fs.symlinkSync(target, path.join(room, 'workbench', 'tools'), 'dir');
+      const before = roomSnapshot(room);
+      const result = classify(room);
+      assert.equal(result.status, 0, `${label}: ${result.stdout}${result.stderr}`);
+      assert.equal(result.report.evidence.lifecycleTools.read, false,
+        `${label}: a managed lane reached through a link out of the room is never read`);
+      assert.equal(result.report.evidence.lifecycleTools.installed, null,
+        `${label}: another room's installed runtime tools must never be listed as this room's`);
+      assert.equal(result.report.evidence.lifecycleTools.receipt, null,
+        `${label}: another room's tools receipt must never be reported as this room's`);
+      assert.deepEqual(roomSnapshot(room), before, `${label}: classify must write nothing`);
+    }
+
+    // 2. An ordinary workbench/tools/ whose managed names are themselves links
+    //    out of the room: a link is a pointer to another room's tool, not a
+    //    tool this room carries.
+    fs.mkdirSync(path.join(leaves, 'workbench', 'tools'), { recursive: true });
+    fs.writeFileSync(path.join(leaves, 'workbench', 'manifest.json'), '{ "schemaVersion": 2, "workbenchVersion": "v3.1.2" }\n');
+    for (const name of ['adr.mjs', '.workbench-tools.json']) {
+      fs.symlinkSync(path.join(installed, 'workbench', 'tools', name), path.join(leaves, 'workbench', 'tools', name));
+    }
+    const leavesBefore = roomSnapshot(leaves);
+    const leavesResult = classify(leaves);
+    assert.equal(leavesResult.status, 0, `${leavesResult.stdout}${leavesResult.stderr}`);
+    assert.equal(leavesResult.report.evidence.lifecycleTools.read, true,
+      'an ordinary managed lane is this room\'s own, so it is read');
+    assert.deepEqual(leavesResult.report.evidence.lifecycleTools.installed, [],
+      'a managed name that is a link out of the room is not a tool the room carries');
+    assert.equal(leavesResult.report.evidence.lifecycleTools.receipt, false,
+      'a receipt that is a link out of the room is not this room\'s installation receipt');
+    assert.deepEqual(roomSnapshot(leaves), leavesBefore, 'classify must write nothing into a borrowed-leaf room');
+
+    // 3. A room whose ordinary workbench/ carries no tools lane at all: the
+    //    lane was read and holds nothing, which is not the same answer as a
+    //    lane that was never read because it belongs to another room.
+    fs.mkdirSync(path.join(absent, 'workbench'));
+    fs.writeFileSync(path.join(absent, 'workbench', 'manifest.json'), '{ "schemaVersion": 2, "workbenchVersion": "v3.1.2" }\n');
+    const absentResult = classify(absent);
+    assert.equal(absentResult.status, 0, `${absentResult.stdout}${absentResult.stderr}`);
+    assert.equal(absentResult.report.evidence.lifecycleTools.read, true,
+      'an absent managed lane is a lane the room answered for, so it is read rather than gated');
+    assert.deepEqual(absentResult.report.evidence.lifecycleTools.installed, [],
+      'a room with no managed lane carries no installed runtime tools');
+    assert.equal(absentResult.report.evidence.lifecycleTools.receipt, false,
+      'a room with no managed lane carries no installation receipt');
+  } finally {
+    for (const project of [installed, relative, absolute, leaves, absent]) fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('classify never counts a root tools/ lane borrowed from another room as this room\'s shape', () => {
+  const installed = fixture();
+  const borrower = fixture();
+  const shaped = fixture();
+  try {
+    fs.mkdirSync(path.join(installed, 'tools'));
+    fs.writeFileSync(path.join(installed, 'tools', 'privacy.mjs'), 'export const privacy = true;\n');
+    // Four of the seven controls is the control majority the shape limb needs,
+    // so the borrowed filename is the only thing left deciding the verdict.
+    for (const control of controls.slice(0, 4)) {
+      fs.writeFileSync(path.join(borrower, control), `# ${control}\n\nProject truth.\n`);
+    }
+    fs.symlinkSync(path.join(installed, 'tools'), path.join(borrower, 'tools'), 'dir');
+    const before = roomSnapshot(borrower);
+    const result = classify(borrower);
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+    assert.deepEqual(result.report.evidence.lifecycleTools.rootManagedNames, [],
+      'a managed filename reached through a link out of the room is not this room\'s root lane');
+    assert.deepEqual(result.report.evidence.lifecycleTools.rootBorrowedNames, ['privacy.mjs'],
+      'the name behind the link is reported as borrowed rather than dropped in silence');
+    assert.equal(result.report.verdict, 'adoption',
+      'another room\'s tools/ cannot make this room harness-shaped');
+    assert.deepEqual(roomSnapshot(borrower), before, 'classify must write nothing into a borrowed root lane room');
+
+    // The same convention one level in: inside an ordinary root tools/, a
+    // managed name that is a link out of the room or a directory wearing the
+    // name is not a managed runtime file this room carries.
+    for (const control of controls.slice(0, 4)) {
+      fs.writeFileSync(path.join(shaped, control), `# ${control}\n\nProject truth.\n`);
+    }
+    fs.mkdirSync(path.join(shaped, 'tools'));
+    fs.symlinkSync(path.join(installed, 'tools', 'privacy.mjs'), path.join(shaped, 'tools', 'privacy.mjs'));
+    fs.mkdirSync(path.join(shaped, 'tools', 'sessions.mjs'));
+    const shapedResult = classify(shaped);
+    assert.equal(shapedResult.status, 0, `${shapedResult.stdout}${shapedResult.stderr}`);
+    assert.deepEqual(shapedResult.report.evidence.lifecycleTools.rootManagedNames, [],
+      'a managed name that is a link out of the room, or a directory wearing it, is not a managed runtime file');
+    assert.equal(shapedResult.report.verdict, 'adoption',
+      'neither shape is the trace of an installation, so neither makes the room harness-shaped');
+  } finally {
+    for (const project of [installed, borrower, shaped]) fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('classify answers every room condition its rule names, not only the two the fixtures reached', () => {
+  const notDirectory = fixture();
+  const longName = fixture();
+  try {
+    // ENOTDIR, the ordinary case: a regular file stands where the lane name
+    // would be, so every name under it is a name this room cannot answer for.
+    legacyRoom(notDirectory, { stamp: 'v3.0.0' });
+    fs.writeFileSync(path.join(notDirectory, 'tools'), 'not a directory\n');
+    const notDirectoryBefore = roomSnapshot(notDirectory);
+    const notDirectoryResult = classify(notDirectory);
+    assert.equal(notDirectoryResult.status, 0, `${notDirectoryResult.stdout}${notDirectoryResult.stderr}`);
+    assert.equal(notDirectoryResult.report.status, 'classified',
+      'a lane name under a regular file is a room condition, not an unreadable invocation');
+    assert.equal(notDirectoryResult.report.verdict, 'upgrade', 'the seven stamped controls still classify the room');
+    assert.ok(notDirectoryResult.report.evidence.lifecycleTools.rootUnreadable.includes('privacy.mjs'),
+      'a name the room will not stat because its lane is a file must be named, never counted as absent');
+    assert.deepEqual(roomSnapshot(notDirectory), notDirectoryBefore, 'classify must write nothing into a file-as-lane room');
+
+    // ENAMETOOLONG: a lane linked to a name longer than the filesystem will
+    // resolve is the same undetermined lane by a third filesystem error.
+    legacyRoom(longName, { stamp: 'v3.0.0' });
+    fs.symlinkSync('a'.repeat(300), path.join(longName, 'tools'));
+    const longNameBefore = roomSnapshot(longName);
+    const longNameResult = classify(longName);
+    assert.equal(longNameResult.status, 0, `${longNameResult.stdout}${longNameResult.stderr}`);
+    assert.equal(longNameResult.report.status, 'classified',
+      'a lane whose link target is too long to resolve is a room condition, not an unreadable invocation');
+    assert.equal(longNameResult.report.verdict, 'upgrade', 'the seven stamped controls still classify the room');
+    assert.ok(longNameResult.report.evidence.lifecycleTools.rootUnreadable.includes('privacy.mjs'),
+      'a name behind an unresolvable link is undetermined, never absent');
+    assert.deepEqual(roomSnapshot(longName), longNameBefore, 'classify must write nothing into an unresolvable-lane room');
+  } finally {
+    for (const project of [notDirectory, longName]) fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('classify answers an EPERM lane at the stat seam the room conditions are declared over', () => {
+  const project = fixture();
+  try {
+    legacyRoom(project, { stamp: 'v3.0.0' });
+    fs.mkdirSync(path.join(project, 'tools'));
+    fs.writeFileSync(path.join(project, 'tools', 'privacy.mjs'), 'export const privacy = true;\n');
+    // EPERM is a room condition no fixture can produce on demand, so it is
+    // pinned at the seam it is declared over rather than left to a platform.
+    const sealed = path.join(project, 'tools', 'privacy.mjs');
+    const probe = spawnSync(process.execPath, ['--input-type=module', '-e', `
+      import fs from 'node:fs';
+      const lstatSync = fs.lstatSync;
+      fs.lstatSync = (target, ...rest) => {
+        if (String(target) === ${JSON.stringify(sealed)}) {
+          const error = new Error("EPERM: operation not permitted, lstat '" + target + "'");
+          error.code = 'EPERM';
+          throw error;
+        }
+        return lstatSync(target, ...rest);
+      };
+      const { classify } = await import(${JSON.stringify(pathToFileURL(classifier).href)});
+      process.stdout.write(JSON.stringify(classify(${JSON.stringify(project)})));
+    `], { cwd: root, encoding: 'utf8' });
+    assert.equal(probe.status, 0, `${probe.stdout}${probe.stderr}`);
+    const report = JSON.parse(probe.stdout);
+    assert.equal(report.status, 'classified', 'an EPERM lane name is a room condition, not a thrown filesystem error');
+    assert.equal(report.verdict, 'upgrade', 'the seven stamped controls still classify the room');
+    assert.deepEqual(report.evidence.lifecycleTools.rootUnreadable, ['privacy.mjs'],
+      'the name the room refused must be reported as undetermined');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
   }
 });

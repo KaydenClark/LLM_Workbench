@@ -49,11 +49,22 @@ function lstatOrNull(target) {
   }
 }
 
-// True only when the room answered that the path is there. An UNREADABLE path
-// is neither present nor absent.
-function reachable(target) {
+// A lifecycle lane is read through directory components and reported as
+// filenames, and both must be this room's own: `workbench/tools` linked out of
+// the room, and a managed name inside it that is itself a link, each report
+// another room's installation as this room's. `manifestEvidence` and
+// `controlEvidence` already count only an ordinary file; these are the same
+// convention for a lane's directory component and its leaves.
+// `ownDirectory` is `null` when the room did not answer - absent, or a path it
+// will not stat - because neither is a directory this room reads through.
+function ownDirectory(target) {
   const entry = lstatOrNull(target);
-  return Boolean(entry) && entry !== UNREADABLE;
+  if (!entry || entry === UNREADABLE) return null;
+  return entry.isDirectory() && !entry.isSymbolicLink();
+}
+
+function ordinaryFile(entry) {
+  return entry.isFile() && !entry.isSymbolicLink();
 }
 
 function fail(code, message, details = {}) {
@@ -192,14 +203,16 @@ function supportRootEvidence(project) {
 
 // Names the room reported as there, and names it would not answer for, kept
 // apart: a lane at mode 000 or behind a symlink loop holds neither an installed
-// tool nor an absent one until the room says.
-function laneReading(lane, names) {
+// tool nor an absent one until the room says. `accept` decides what the room
+// reporting a name means for that lane: an installed lifecycle tool is an
+// ordinary file, while a legacy lane shape is any entry the room reported.
+function laneReading(lane, names, accept = () => true) {
   const found = [];
   const unreadable = [];
   for (const name of names) {
     const entry = lstatOrNull(path.join(lane, name));
     if (entry === UNREADABLE) unreadable.push(name);
-    else if (entry) found.push(name);
+    else if (entry && accept(entry)) found.push(name);
   }
   return { found, unreadable };
 }
@@ -208,8 +221,18 @@ function laneReading(lane, names) {
 // with its receipt, and root `tools/` filenames from the managed set, which is
 // what an older room that installed the tools at its root still carries.
 function lifecycleToolsEvidence(project, supportRoot) {
-  const rootLane = laneReading(path.join(project, 'tools'), RUNTIME_TOOLS);
-  const root = { lane: 'workbench/tools', rootManagedNames: rootLane.found, rootUnreadable: rootLane.unreadable };
+  const rootLane = laneReading(path.join(project, 'tools'), RUNTIME_TOOLS, ordinaryFile);
+  // A root `tools/` that is a link out of the room holds another room's files
+  // under this room's path, and that shape corroborates the harness-shaped
+  // reading. The names are still reported, as borrowed rather than as this
+  // room's own, because a name dropped in silence is evidence the reader loses.
+  const rootBorrowed = ownDirectory(path.join(project, 'tools')) === false;
+  const root = {
+    lane: 'workbench/tools',
+    rootManagedNames: rootBorrowed ? [] : rootLane.found,
+    rootBorrowedNames: rootBorrowed ? rootLane.found : [],
+    rootUnreadable: rootLane.unreadable
+  };
   // The managed lane is under the support root, so it is gated exactly as the
   // manifest is: following a `workbench/` symlink would report the receipt and
   // installed tools of the room the link points at as this room's own managed
@@ -224,7 +247,20 @@ function lifecycleToolsEvidence(project, supportRoot) {
       reason: 'workbench/ is not an ordinary directory, so nothing under it was read'
     };
   }
-  const managed = laneReading(path.join(project, 'workbench', 'tools'), [...RUNTIME_TOOLS, RECEIPT_NAME]);
+  // The gate one level down: an ordinary `workbench/` whose `tools` is a link
+  // reaches the same borrowed lane by the second component of the same path.
+  const managedLane = path.join(project, 'workbench', 'tools');
+  if (ownDirectory(managedLane) === false) {
+    return {
+      ...root,
+      read: false,
+      installed: null,
+      receipt: null,
+      unreadable: [],
+      reason: 'workbench/tools is not an ordinary directory, so nothing under it was read'
+    };
+  }
+  const managed = laneReading(managedLane, [...RUNTIME_TOOLS, RECEIPT_NAME], ordinaryFile);
   return {
     ...root,
     read: true,
@@ -235,11 +271,16 @@ function lifecycleToolsEvidence(project, supportRoot) {
 }
 
 function legacyControlShapesEvidence(project, read) {
+  // A legacy lane the room will not stat is undetermined exactly as an
+  // unreadable control is, so it gets its own bucket rather than being filtered
+  // into the same emptiness as a lane the room said is not there.
+  const legacy = laneReading(project, LEGACY_PATHS);
   return {
     controlsPresent: read.present,
     controlsMissing: read.missing,
     controlsBracketed: read.bracketed,
-    legacyPaths: LEGACY_PATHS.filter((relative) => reachable(path.join(project, relative)))
+    legacyPaths: legacy.found,
+    legacyPathsUnreadable: legacy.unreadable
   };
 }
 

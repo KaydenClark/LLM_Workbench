@@ -303,7 +303,8 @@ It reports one of four verdicts with the reasons behind it and the evidence it
 gathered (`manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`,
 `legacyControlShapes`, `roomContents`), and exits 0 for all four. A lane the
 room will not let it read - `workbench/` or root `tools/` at mode 000, a
-`tools -> tools` symlink loop - is one of the room's own facts: it is reported
+`tools -> tools` symlink loop, a lane name under a regular file, a link whose
+target is too long to resolve - is one of the room's own facts: it is reported
 as undetermined rather than counted as absent, and the room still gets a
 verdict. Only the supplied project path itself failing - unreachable, or not an
 ordinary directory - exits 1.
@@ -312,7 +313,7 @@ ordinary directory - exits 1.
 |---|---|
 | `genesis` | The room is empty apart from `.git`: nothing to derive filled controls from |
 | `adoption` | A working repository with content, no manifest, no version stamp, and no Workbench-shaped control set |
-| `upgrade` | A `workbench/manifest.json` that reads as a manifest object carrying `schemaVersion`, or a Workbench version stamp in a root control with no manifest (the `upgrade --layout-only` v2-root room) |
+| `upgrade` | A `workbench/manifest.json` that reads as a manifest object carrying an integer `schemaVersion`, or a Workbench version stamp in a root control with no manifest (the `upgrade --layout-only` v2-root room) |
 | `unclassifiable` | `workbench/` is present but is not an ordinary directory or carries no readable manifest; a root control or the room's own top-level listing cannot be read and nothing else is stamped; or the room is harness-shaped with no manifest and no stamp |
 
 Harness-shaped means all seven root controls, or root `tools/` files from the
@@ -325,6 +326,13 @@ absent, `null`, or not an integer is not this room's authority and reads as
 is read - not the manifest, and not the managed `workbench/tools/` lane, whose
 receipt would otherwise credit this room with another room's runtime lane - and
 a `workbench/manifest.json` that is itself a symlink is never opened either.
+Every component a lifecycle lane is read through must be the room's own, one
+level down as well: an ordinary `workbench/` whose `tools` is a link reports
+`read: false` for the same reason, and inside an ordinary lane a managed name
+that is itself a link, or a directory wearing the name, is not an installed tool
+this room carries. A root `tools/` that is a link out of the room is listed as
+`rootBorrowedNames` rather than `rootManagedNames`, so another room's files
+never corroborate the harness-shaped reading.
 
 `unclassifiable` is a first-class answer, not an error. A harness-shaped room
 with no manifest and no stamp is produced equally by an unstamped Workbench
