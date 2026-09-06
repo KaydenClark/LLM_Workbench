@@ -253,6 +253,7 @@ be changed only through a later spec linked by supersession.
 | [S-034 - Control Fidelity Report](workbench/specs/S-034-control-fidelity-report/SPEC.md) | Report which template-derived lines a room's hand-reconciled controls changed, dropped, or added, so a deliberate divergence can be recorded and an accidental one is caught. | complete |
 | [S-035 - Workbench v3.1.2 Candidate](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) | Stamp v3.1.2 only after the six v3.1.2 capability specs are complete and green, record the disposition of every v3.1.1 upstream fix-list item, and land the reviewed candidate on integration. | complete |
 | [S-036 - Workbench v3.1.2 Evidence Corrections](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md) | Correct the unpublished v3.1.2 candidate where permission, control-fidelity, and source-identity checks overstate what they prove, then rehearse the already-v3 upgrade path and return an exact reviewed candidate for GPT_OS deployment. | active |
+| [S-037 - Line-Ending-Agnostic Record Parsing](workbench/specs/S-037-line-ending-agnostic-records/SPEC.md) | Parse ADR and Wiki frontmatter by its structure rather than by a bare line feed, so a Workbench room checked out on a CRLF host reports its real record state instead of declaring every record broken. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health

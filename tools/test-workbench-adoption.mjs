@@ -335,3 +335,83 @@ console.log('ok - mixed v2 adoption preserves durable truth and blocks collision
     assert.equal(JSON.parse(result.stdout).status, 'complete');
   } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(home, { recursive: true, force: true }); }
 }
+
+// A legacy room brain is assembled from many pasted sources, so its MEMORY.md
+// is the file most likely to carry mixed terminators. The writer must locate
+// the closing fence by the terminator that delimits the fence itself, not by
+// whether a CRLF appears anywhere in the file, and the create path must write
+// frontmatter in the terminator the body already uses.
+{
+  const cases = [
+    {
+      name: 'all-CRLF frontmatter and body',
+      memory: '---\r\ntype: memory\r\nstatus: active\r\n---\r\n\r\n# CRLF room brain\r\n',
+      eol: '\r\n'
+    },
+    {
+      name: 'LF frontmatter with one pasted CRLF line in the body',
+      memory: '---\ntype: memory\nstatus: active\n---\n\npasted windows line\r\n# Mixed room brain\n',
+      eol: '\n'
+    },
+    {
+      name: 'CR-only frontmatter and body',
+      memory: '---\rtype: memory\rstatus: active\r---\r\r# CR room brain\r',
+      eol: '\r'
+    }
+  ];
+  for (const item of cases) {
+    const project = fixture();
+    const home = fixture();
+    try {
+      seedControls(project);
+      seedUserSkills(home);
+      write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+      write(project, 'MEMORY.md', item.memory);
+
+      const result = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-05');
+      assert.equal(result.status, 0, result.stdout);
+      const migrated = read(project, 'workbench/wiki/MEMORY.md');
+      for (const field of ['sensitivity: normal', 'knowledge_role: canonical', 'last_verified: 2026-09-05']) {
+        assert.ok(migrated.includes(field),
+          `${item.name}: adoption must fill missing required metadata, ${field} is absent`);
+      }
+      assert.ok(migrated.includes(`${item.eol}sensitivity: normal${item.eol}`),
+        `${item.name}: spliced metadata must carry the terminator the fence uses`);
+      assert.equal(doctor(project).some((issue) => issue.code === 'invalid-note' && /MEMORY\.md/.test(issue.message)), false,
+        `${item.name}: the migrated room brain must pass its own Wiki validator`);
+    } finally {
+      fs.rmSync(project, { recursive: true, force: true });
+      fs.rmSync(home, { recursive: true, force: true });
+    }
+  }
+}
+
+// The create path: a room brain with no frontmatter at all must receive a
+// block written in the body's own terminator rather than a hard-coded line
+// feed, so adoption never manufactures a mixed-ending file.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    seedUserSkills(home);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    write(project, 'MEMORY.md', '# Adopted Wiki\r\n\r\nLegacy knowledge.\r\n');
+
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-05');
+    assert.equal(result.status, 0, result.stdout);
+    const migrated = read(project, 'workbench/wiki/MEMORY.md');
+    assert.ok(migrated.startsWith('---\r\ntype: memory\r\n'),
+      'created frontmatter must use the terminator the body already uses');
+    assert.equal(/(^|[^\r])\n/.test(migrated), false,
+      'adoption must not produce a mixed-terminator room brain');
+    assert.ok(migrated.includes('# Adopted Wiki'), 'the legacy body must survive');
+    assert.equal(doctor(project).some((issue) => issue.code === 'invalid-note' && /MEMORY\.md/.test(issue.message)), false,
+      'the created room brain must pass its own Wiki validator');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+console.log('ok - adoption writes room-brain frontmatter in the terminator the file already uses');
