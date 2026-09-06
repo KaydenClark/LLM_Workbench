@@ -287,27 +287,41 @@ The receipt does not decide how much of the runtime gets checked. A drift
 report names the file it found, so deleting that key would otherwise switch the
 check off for exactly the tampered file while every other key went on
 verifying. Both entry points therefore compare the receipt's key set with the
-files actually managed, and report `tools-receipt-missing` naming what the
-receipt does not account for. A room holds no authoritative list of what should
-be managed, so its expected set is the lane's own contents: every ordinary
-entry the lane holds must be accounted for by a receipt key, which also reports
-a foreign file smuggled into the lane. Dotted entries - the receipt itself, the
-installer's transient `.receipt-*` staging directory - are not managed runtime
-and are skipped. The release-side `verify` has the authoritative set at hand
-and additionally refuses a receipt that omits any managed tool, on disk or not.
-`update --explicit-update` is the remedy: it rewrites a key the receipt lost
-even when the installed bytes already match the release.
+authoritative managed set - `RUNTIME_TOOLS`, defined in
+`workbench/tools/workbench-layout.mjs` so that a room carries it too - and
+report `tools-receipt-missing` naming what the receipt does not account for,
+whether or not the file is still on disk. Both also list the lane, so a foreign
+file dropped in beside the managed tools is reported. Dotted entries - the
+receipt itself, the installer's transient `.receipt-*` staging directory - are
+not managed runtime and are skipped.
 
-Two conditions the receipt check cannot reach. A receipt deleted outright
+The two conditions carry different remedies, because only one of them has a
+command that repairs it. A managed tool the receipt does not account for is
+repaired by `update --explicit-update`, which rewrites a key the receipt lost
+even when the installed bytes already match the release, and restores a managed
+file the lane lost. A file the managed runtime does not include is repaired
+only by moving it out of the lane: `update` derives its changed set from the
+managed tool list, so it reports `current` and changes nothing, and `install`
+refuses a lane that already carries a receipt.
+
+The list lives in an installed tool rather than in the release-side installer
+because a room never carries `workbench-tools.mjs`. Deriving the expected set
+from the lane's own contents instead left one silent hole: a managed file
+deleted together with its receipt key leaves nothing on disk to be missed. Ten
+of the eleven managed tools are in `doctor`'s own import graph, so deleting one
+of those fails loudly with `ERR_MODULE_NOT_FOUND` before any check runs;
+`sessions.mjs` is imported by none of them, and its deletion read as a clean
+runtime. The list is no less trustworthy than the check that reads it:
+`workbench-layout.mjs` is itself a managed file, so rewriting the list means
+rewriting a managed file, which the hash comparison reports.
+
+One condition the receipt check still cannot reach: a receipt deleted outright
 leaves no managed runtime to check, so `doctor` reports nothing and only the
 Genesis readiness gate (`validate --genesis`) fails on it. A managed file
-deleted outright is never reported as drift either - nor by the room's coverage
-check, whose expected set is the lane the file has left - because every managed
-tool is in `doctor`'s own import graph: the run fails to load with
-`ERR_MODULE_NOT_FOUND` and a non-zero exit before any check runs. The
-release-side `verify`, which compares against the authoritative managed set,
-does name it. Both conditions fail visibly in a room; neither produces a named
-finding there.
+deleted outright is now named - by the coverage comparison if its key went with
+it, as `missing-or-not-a-file` drift if the key remains - though for the ten
+tools in the import graph the loader fails first, so what a room sees there is
+a stack trace rather than a finding.
 
 Drift alone does not say what happened, so each drifted file is classified by
 comparing the installed bytes with the release source. `updateAvailable`
