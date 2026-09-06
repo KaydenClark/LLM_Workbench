@@ -43,10 +43,14 @@ after PR #63 merged, so following one lands on what it names.
 - `workbench/tools/diagnostics.mjs:44,45,47,48,49,54,55,69` register the eight
   `error` / `blocks: none` codes listed above. The upstream report names four of
   them; the set is larger.
-- `workbench/tools/spec-workbench.mjs:551` renders each line as
-  `${item.code} [${item.severity}, blocks ${item.blocks}]: ${item.message}`.
-- `:553` appends `ok - no blocking finding; attention and slice findings above
-  stay visible` when nothing blocks selection.
+- `git show 09bfff7:workbench/tools/spec-workbench.mjs` line 551 renders each
+  line as `${item.code} [${item.severity}, blocks ${item.blocks}]: ${item.message}`,
+  and line 553 appends `ok - no blocking finding; attention and slice findings
+  above stay visible` when nothing blocks selection. Both are anchored to the
+  base commit on purpose: this ticket moves them, so a line number in the
+  shipped tree would name the replacement rather than the condition described.
+  In the shipped tree the row render is `spec-workbench.mjs:537` and the `ok`
+  line `:539`.
 - Findings are printed in production order, with no grouping and no count.
 
 **Correction to the upstream evidence.** UP-019's smallest bounded next action
@@ -146,7 +150,8 @@ per-group count for a fixture carrying both a blocking and a non-blocking
 finding; assert that `--json` is byte-unchanged; and add a registry pin asserting
 each code's `severity`/`scope`/`blocks` triple, so a later presentation change
 cannot move an effect unnoticed. Then implement the rendering change at
-`workbench/tools/spec-workbench.mjs:551-553`.
+`git show 09bfff7:workbench/tools/spec-workbench.mjs` lines 551-553, which the
+shipped tree carries as `spec-workbench.mjs:522-539`.
 
 ## Acceptance Criteria
 
@@ -154,8 +159,10 @@ cannot move an effect unnoticed. Then implement the rendering change at
 - [x] A `blocks: none` finding is visually distinct from a blocking one, and
       still shows its code, effect, and message.
 - [x] `--json` output is unchanged.
-- [x] A registry pin test fails if any registered code's severity, scope, or
-      effect changes.
+- [x] A registry pin test fails if any currently registered code's severity,
+      scope, or effect changes. All 44 registered codes are pinned by triple.
+      A code registered later by another spec is not in the set and passes,
+      which is deliberate; that tolerance is recorded in Remaining Limitations.
 - [x] `node tools/test-diagnostics.mjs` and `node tools/test-spec-workbench.mjs`
       pass, new cases red before green.
 - [x] The full `AGENTS.md` verification suite passes.
@@ -189,6 +196,8 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Fresh separate-context review found the diagnostics anchor never re-anchored past S-036 | S-036 inserted `invalid-source-identity` at `diagnostics.mjs:27`, shifting every code below it by one. The eight `error`/`blocks: none` codes were still cited as `:43-48,53-54,68`, where `:43` is `stale-register` (`attention`, not one of the eight), `:53` and `:68` are comments, and two of the eight fall outside the ranges. Now cited individually as `:44,45,47,48,49,54,55,69`. The GPT_OS Windows inference is restated: the report gives that room no path at all | No control text changed | One slice open |
 | 2026-09-06 | TK-001 | Ticket closed | node tools/test-diagnostics.mjs: 13/13 pass. Red first at the named seam: the import of formatDoctorReport failed with "SyntaxError: The requested module does not provide an export named formatDoctorReport"; with the seam extracted at the current ungrouped shape the grouping case failed strictEqual with actual "skill-generation-unknown [attention, blocks none]: ... duplicate-id [error, blocks selection]: ..." against the expected grouped report, and the CLI case failed with "unexpected line in a failing doctor report: blocked-slice [error, blocks selected-slice]: S-001/TK-001 waits on S-999". Both green after the grouping change, with the other 11 cases unchanged. cmp of doctor --json before and after on this repository: byte-identical (9729 bytes). | RUNBOOK.md diagnostics section documents the grouped shape; the effect table rows were not touched or reordered. AGENTS.md Authority Order: Docs checked; no update needed - it names the effects (doctor fails on all and selection, next excludes blocked work, claim refuses a slice blocker, attention stays visible) and no effect changed. | Grouping does not reduce the finding count; skill-generation-unknown volume stays with S-031. A blocking code registered after this spec is not in the named pin until added. |
 | 2026-09-06 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-06 | TK-001 | Separate-context review returned CHANGES REQUESTED on two record defects and one robustness gap; all three closed | The pin did not meet the criterion checked above it. Reviewer mutation: `stale-claim` promoted from `('attention','specs','none')` to `('error','specs','selection')` left the pin at `pass 1 / fail 0`, because `pinnedBlocking` is a subset check that never notices a code ARRIVING in a blocking effect and the severity invariant passed when severity moved to `error` in the same edit. Reproduced here before fixing. All nine attention codes are now pinned by triple, so all 44 registered codes are covered; the same mutation now fails with `AssertionError: stale-claim effect moved`, and the unmutated suite is 14/14. Added a test binding `EFFECTS` to `DOCTOR_GROUPS`: `formatDoctorReport` throws on an effect matching no group, that throw reaches `main().catch` and prints NO findings including real blocking ones, so extending `EFFECTS` without a group is a total `doctor` outage that nothing else in the suite caught - the throw's only other cover passes a hand-made object rather than the vocabulary. `DOCTOR_GROUPS` is exported to make that seam real | Three live citations named lines this ticket itself moved - `:551`, `:553`, `:551-553` now land on argument parsing and a `toCamel` helper. Anchored to `git show 09bfff7:` for the pre-change condition, with the shipped-tree lines given alongside | The pin still tolerates a code registered later by another spec; recorded in Remaining Limitations rather than closed |
+
 
 ## Completion Result
 

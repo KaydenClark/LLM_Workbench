@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { EFFECTS, SCOPES, SEVERITIES, describe, finding, isRegistered, registeredCodes } from '../workbench/tools/diagnostics.mjs';
-import { claimWork, doctor, formatDoctorReport, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
+import { claimWork, doctor, formatDoctorReport, nextWork, render, DOCTOR_GROUPS } from '../workbench/tools/spec-workbench.mjs';
 import { permissionScopeDrift } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -464,12 +464,20 @@ test('a room outside any Git work tree is told so instead of being told to creat
   }
 });
 
-// The registered severity/scope/effect triple for every code whose effect
-// stops work, plus the eight `error` severity codes that block nothing. This
-// is a named set rather than the whole registry on purpose: it catches an
-// effect that moves - the risk a presentation change carries - without having
-// to be edited every time another spec registers a new code. Attention codes
-// are held by the invariants below instead.
+// The registered severity/scope/effect triple for every code the registry
+// carries today. A named set rather than a whole-registry equality on purpose:
+// it catches a triple that MOVES on an existing code - the risk a presentation
+// change carries - while a spec registering a genuinely new code is simply not
+// in the set and passes.
+//
+// Attention codes are pinned here too. An earlier draft left them to the
+// invariants below, reasoning that those held them; they did not. A review
+// mutation promoted the unpinned `stale-claim` from ('attention','specs','none')
+// to ('error','specs','selection') and the pin still passed: `pinnedBlocking`
+// is a subset check, so it never notices a code ARRIVING in a blocking effect,
+// and the severity invariant passed because the severity moved to `error` in
+// the same edit. Promoting an attention code into a blocking effect is exactly
+// the change that must not pass unnoticed.
 const PINNED_EFFECTS = {
   'invalid-manifest': ['error', 'manifest', 'all'],
   'upgrade-required': ['error', 'manifest', 'all'],
@@ -505,7 +513,16 @@ const PINNED_EFFECTS = {
   'secret-like-content': ['error', 'wiki', 'none'],
   'integration-branch-undeclared': ['error', 'git', 'none'],
   'integration-branch-missing': ['error', 'git', 'none'],
-  'permission-scope-drift': ['error', 'controls', 'none']
+  'permission-scope-drift': ['error', 'controls', 'none'],
+  'stale-claim': ['attention', 'specs', 'none'],
+  'complete-on-integration': ['attention', 'specs', 'none'],
+  'broken-link': ['attention', 'specs', 'none'],
+  'stale-register': ['attention', 'adr', 'none'],
+  'stale-note': ['attention', 'wiki', 'none'],
+  'room-brain-unrouted': ['attention', 'wiki', 'none'],
+  'stale-stamp': ['attention', 'wiki', 'none'],
+  'stale-skill': ['attention', 'skills', 'none'],
+  'skill-generation-unknown': ['attention', 'skills', 'none']
 };
 
 test('the registered effect of every blocking code is pinned, and no attention code blocks', () => {
@@ -592,5 +609,23 @@ test('doctor renders the same findings as grouped text and byte-unchanged --json
     }
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// Every registered effect must be reportable. formatDoctorReport throws on an
+// effect that matches no group, and that throw reaches main().catch, which
+// prints the error and NO findings - including real blocking ones. So adding a
+// value to EFFECTS without a group is a total doctor outage, and nothing else
+// in the suite notices: the throw's only other cover passes a hand-made object
+// rather than the vocabulary.
+test('every registered diagnostic effect lands in exactly one doctor group', () => {
+  for (const effect of EFFECTS) {
+    const groups = DOCTOR_GROUPS.filter((group) => group.effects.includes(effect));
+    assert.equal(groups.length, 1, `effect ${effect} must land in exactly one doctor group, found ${groups.length}`);
+  }
+  for (const group of DOCTOR_GROUPS) {
+    for (const effect of group.effects) {
+      assert.ok(EFFECTS.includes(effect), `doctor group ${group.title} names ${effect}, which is not a registered effect`);
+    }
   }
 });

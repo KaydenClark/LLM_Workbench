@@ -515,7 +515,11 @@ function today() {
 // Presentation only: the effect is the registry's (workbench/tools/diagnostics.mjs),
 // severity follows the effect in the line rather than leading it, and --json
 // is untouched. Every registered effect must appear in exactly one group.
-const DOCTOR_GROUPS = Object.freeze([
+// Exported so a test can bind this to the diagnostics EFFECTS vocabulary.
+// Every effect must land in exactly one group; an effect added to EFFECTS with
+// no group here makes formatDoctorReport throw and prints no findings at all,
+// which is a total doctor outage rather than a missing line.
+export const DOCTOR_GROUPS = Object.freeze([
   Object.freeze({ name: 'blocking', effects: Object.freeze(['all', 'selection']), consequence: 'doctor exits 1 until repaired' }),
   Object.freeze({ name: 'selected slice', effects: Object.freeze(['selected-slice']), consequence: 'next excludes the slice and claim refuses it' }),
   Object.freeze({ name: 'informational', effects: Object.freeze(['none']), consequence: 'reported only; nothing is blocked' })
