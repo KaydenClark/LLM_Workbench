@@ -60,6 +60,23 @@ function validateDestinationRoot(destination, home) {
   return null;
 }
 
+// A linked destination is judged by what it resolves to, because the install
+// below skips an existing skill without reading it. Only a resolved directory
+// that already holds the skill is accepted; nothing is ever written through the
+// link.
+function resolveSkillLink(destination) {
+  let resolved;
+  try {
+    resolved = fs.realpathSync(destination);
+  } catch (error) {
+    if (error.code === 'ENOENT' || error.code === 'ELOOP') return null;
+    throw error;
+  }
+  if (!lstatOrNull(resolved)?.isDirectory()) return null;
+  if (!lstatOrNull(path.join(resolved, 'SKILL.md'))?.isFile()) return null;
+  return resolved;
+}
+
 function validateDestinations(destinations, home) {
   for (const { engine, root: destinationRoot } of destinations) {
     const rootFailure = validateDestinationRoot(destinationRoot, home);
@@ -67,7 +84,15 @@ function validateDestinations(destinations, home) {
     for (const skill of coreSkills) {
       const destination = path.join(destinationRoot, skill);
       const entry = lstatOrNull(destination);
-      if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) {
+      if (!entry) continue;
+      if (entry.isSymbolicLink()) {
+        const resolved = resolveSkillLink(destination);
+        if (resolved) continue;
+        return fail('skill-path-collision',
+          `Skill destination ${destination} is a link whose target is not a directory already holding ${skill}/SKILL.md. Remove or relocate the collision, then retry.`,
+          { engine, skill, destination });
+      }
+      if (!entry.isDirectory()) {
         return fail('skill-path-collision',
           `Skill destination ${destination} is not an ordinary directory. Remove or relocate the collision, then retry.`,
           { engine, skill, destination });
@@ -101,8 +126,11 @@ function install(home) {
       fs.mkdirSync(destinationRoot, { recursive: true });
       for (const skill of coreSkills) {
         const destination = path.join(destinationRoot, skill);
-        if (lstatOrNull(destination)) {
-          report.skipped.push({ engine, skill, reason: 'already-present', destination });
+        const entry = lstatOrNull(destination);
+        if (entry) {
+          const skipped = { engine, skill, reason: 'already-present', destination };
+          if (entry.isSymbolicLink()) skipped.resolved = resolveSkillLink(destination);
+          report.skipped.push(skipped);
           continue;
         }
         fs.cpSync(path.join(sourceRoot, skill), destination, {

@@ -175,6 +175,10 @@ partial copy cannot prove which Workbench bytes it carries and refuses with
 `invalid-source-identity` before writing anything, even when source strings are
 supplied. The placeholders `unrecorded` and `unknown` are never written.
 
+A room that already exists records source identity after the fact with
+`record-source` and brings its seeded lane documents current with
+`seed-documents`; both are described under Installed State The Harness Wrote.
+
 A schema 1 (v3.0 five-lane) manifest validates as `upgrade-required`. Migrate
 it once, losslessly: `workbench/grilling` becomes `workbench/sessions/grilling`
 and the tracked `workbench/handoffs` checkpoints become
@@ -263,11 +267,77 @@ node tools/test-workbench-tools.mjs
 repository, release, commit, and a SHA-256 per file, copies each tool as an
 ordinary `0644` file, and refuses a lane that already carries a receipt, a
 foreign unreceipted file, or a symlink. `verify` reports `tools-receipt-drift`
-with the drifted file names (`source` on this repository). `update` requires
-`--explicit-update`, backs changed files up under the user home's
-`.workbench-tools-backup-*`, records the backup path in the receipt, and
-`rollback` restores that backup. An application's root `tools/` directory is
-never read or written.
+with the drifted file names and, for each, which of the drift states below it
+is in (`source` on this repository). `update` requires `--explicit-update`,
+backs changed files up under the user home's `.workbench-tools-backup-*`,
+records the backup path in the receipt, and `rollback` restores that backup. An
+application's root `tools/` directory is never read or written.
+
+`workbench-tools.mjs` itself is never installed into a room, so the same
+receipt hash check also runs from `workbench/tools/workbench-layout.mjs`, which
+every room does install, and `doctor` reads it. A room therefore verifies the
+runtime it is executing with only the tools it contains, and a drifted managed
+tool fails that room's own `doctor` at the registered `all` effect - which
+`next` and `claim` also enforce, refusing to dispatch or claim a slice until
+the runtime is repaired. The check runs only when the lane carries a receipt -
+an uninstalled or release lane is not a managed runtime, and its absent receipt
+stays the Genesis readiness gate's finding - and a receipt that exists but
+cannot be read, records no file hashes, or names a file outside the tools lane
+is reported as `tools-receipt-missing` rather than silently switching the check
+off. Its cost is bounded: at most the managed files the receipt names plus one
+directory listing of the lane, each file read and hashed once.
+
+The receipt does not decide how much of the runtime gets checked. A drift
+report names the file it found, so deleting that key would otherwise switch the
+check off for exactly the tampered file while every other key went on
+verifying. Both entry points therefore compare the receipt's key set with the
+authoritative managed set - `RUNTIME_TOOLS`, defined in
+`workbench/tools/workbench-layout.mjs` so that a room carries it too - and
+report `tools-receipt-missing` naming what the receipt does not account for,
+whether or not the file is still on disk. Both also list the lane, so a foreign
+file dropped in beside the managed tools is reported. Dotted entries - the
+receipt itself, the installer's transient `.receipt-*` staging directory - are
+not managed runtime and are skipped.
+
+The two conditions carry different remedies, because only one of them has a
+command that repairs it. A managed tool the receipt does not account for is
+repaired by `update --explicit-update`, which rewrites a key the receipt lost
+even when the installed bytes already match the release, and restores a managed
+file the lane lost. A file the managed runtime does not include is repaired
+only by moving it out of the lane: `update` derives its changed set from the
+managed tool list, so it reports `current` and changes nothing, and `install`
+refuses a lane that already carries a receipt.
+
+The list lives in an installed tool rather than in the release-side installer
+because a room never carries `workbench-tools.mjs`. Deriving the expected set
+from the lane's own contents instead left one silent hole: a managed file
+deleted together with its receipt key leaves nothing on disk to be missed. Ten
+of the eleven managed tools are in `doctor`'s own import graph, so deleting one
+of those fails loudly with `ERR_MODULE_NOT_FOUND` before any check runs;
+`sessions.mjs` is imported by none of them, and its deletion read as a clean
+runtime. The list is no less trustworthy than the check that reads it:
+`workbench-layout.mjs` is itself a managed file, so rewriting the list means
+rewriting a managed file, which the hash comparison reports.
+
+One condition the receipt check still cannot reach: a receipt deleted outright
+leaves no managed runtime to check, so `doctor` reports nothing and only the
+Genesis readiness gate (`validate --genesis`) fails on it. A managed file
+deleted outright is now named - by the coverage comparison if its key went with
+it, as `missing-or-not-a-file` drift if the key remains - though for the ten
+tools in the import graph the loader fails first, so what a room sees there is
+a stack trace rather than a finding.
+
+Drift alone does not say what happened, so each drifted file is classified by
+comparing the installed bytes with the release source. `updateAvailable`
+compares the receipt with the source and answers a different question, so it
+never substitutes for this.
+
+| Drift state | What it means | Remedy |
+|---|---|---|
+| `receipt-stale` | the installed bytes are the release source's; the receipt hash is the stale fact | `update --explicit-update`, which backs the replaced files up under the user home and records the backup path in the receipt |
+| `runtime-modified` | the installed bytes match neither the receipt nor the release source | `rollback --backup PATH` from a backup the receipt records, or `update --explicit-update` once the difference is reviewed |
+| `runtime-authentic` | the bytes match both the receipt and the release source; only the file mode drifted | restore mode `0644` on the managed file |
+| `source-unavailable` | no release source was reachable, which is every installed room | run `verify` from a release checkout to classify the drift |
 
 Installation and explicit updates also require a clean Git source lane, an
 `origin`, and a concrete 40-character `HEAD`; source identity is resolved
@@ -503,6 +573,7 @@ Decision records live in the manifest-declared `docs/adr` collection
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"
 node workbench/tools/adr.mjs validate
+node workbench/tools/adr.mjs normalize [--date YYYY-MM-DD]
 node workbench/tools/adr.mjs register
 node tools/test-adr.mjs
 ```
@@ -518,6 +589,14 @@ target, a superseded record without `superseded_by`, or a duplicated number;
 table. Doctor carries these findings for schema 2 projects; none blocks
 selection, and the `adr validate` command itself exits 1 only on error
 findings.
+
+`normalize` is the explicit repair for a hand-authored record: it inserts only
+the required frontmatter keys a record is missing (`status: proposed` and the
+date), never runs as a side effect of `validate`, never edits a body, and lists
+every file it changed with the keys it inserted. It preserves the file's own
+line terminator, so a record on a CRLF clone does not gain LF-terminated keys.
+An accepted record still needs a `canonicalized_in` owner only its author can
+name; normalize leaves that record unchanged and `validate` keeps failing it.
 
 ### Composed round trip
 
@@ -614,10 +693,15 @@ sources). A refusal writes nothing. Cite the promoted copy, never the live path.
 ### Wiki Validation
 
 The wiki lane is validated by its own runtime tool; doctor carries the same
-findings for schema 2 projects, none of which blocks selection:
+findings for schema 2 projects, none of which blocks selection. That tool is
+also the emitter of the two installed-state findings described under Installed
+State The Harness Wrote below - `stale-seed` and `unverified-provenance` - which
+are not wiki facts and are repaired with `workbench-layout.mjs`, not with
+anything in the wiki lane:
 
 ```bash
 node workbench/tools/wiki.mjs validate
+node workbench/tools/wiki.mjs normalize [--date YYYY-MM-DD]
 node tools/test-wiki.mjs
 ```
 
@@ -645,6 +729,55 @@ file without a stamp names no version. `validate --genesis` fails the same
 files with `version-mismatch`. An Obsidian vault configuration is ignored when
 present and never required.
 
+`normalize` is the explicit repair for a note whose required properties are
+missing. It inserts only what is absent, never edits a body, never overwrites a
+declared value, keeps the file's own line terminator, skips `archive/`, and
+lists every note it changed. Inserted values are the least-claiming the schema
+allows: `status: partial` (completed mechanically, not verified),
+`knowledge_role: derived`, a `provenance` line naming the normalization, the
+note's own path as its `source_paths`, and `last_verified` set to the day
+normalize ran. `type` is inferred from where the note lives (`MEMORY.md` ->
+`memory`, `guidebooks/` -> `guidebook`, `design-concepts/` -> `design-concept`,
+otherwise `meta`). Correct the inferred values by hand afterwards; a
+design-concept article still needs its `authorized_by`, `parent`, and sections,
+which normalize never invents.
+
+### Installed State The Harness Wrote
+
+Two classes of installed state are repaired by a command the room runs itself;
+neither blocks. Both findings are emitted by
+`node workbench/tools/wiki.mjs validate`, which is where a room sees them
+directly, and `doctor` reports them because it wires that validator; the checks
+themselves live in `workbench-layout.mjs`, which owns seeding and provenance.
+That routing is interim - the findings belong behind a dedicated `doctor` hook -
+and it is recorded as a follow-up in S-042.
+
+```bash
+node workbench/tools/workbench-layout.mjs seed-documents --project /absolute/project
+node workbench/tools/workbench-layout.mjs record-source --project /absolute/project
+```
+
+`seed-documents` copies the seeded lane documents this release carries
+(currently `workbench/feedback/REPORT_FORMAT.md`) and records the generation of
+each one in `workbench/.workbench-seed.json` beside the manifest - a release per
+document, never a byte hash in the tools receipt, whose drift finding blocks
+everything and would turn a deliberate local adjustment into a failure. It
+writes a document only when it is absent, or when the installed bytes still
+match the hash the command recorded when it last wrote that document; a copy
+byte-identical to the release is recorded as current, and a copy the room
+changed is retained untouched and reported by name. `stale-seed` (attention,
+scope `feedback`) then reports a document whose recorded release is not the
+manifest `workbenchVersion`. A document with no recorded generation names no
+generation and is silent, exactly as an unstamped wiki file is.
+
+`record-source` records verified source identity in `provenance.source` for a
+room that already exists, under the same clean-release-checkout verification
+`init` carries: a relocated partial copy refuses with `invalid-source-identity`
+and writes nothing, and nothing else in the manifest changes.
+`unverified-provenance` (attention, scope `manifest`) reports a manifest with no
+`provenance.source`, a commit that is not a full 40-character SHA, an empty
+repository, or a `release` that disagrees with `workbenchVersion`.
+
 ### Diagnostics And Blocking Effects
 
 Every finding a runtime tool emits is registered in
@@ -657,14 +790,21 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
 | `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target` |
 | `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
-| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, and the ADR and wiki findings until their tools ship |
+| `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, `stale-seed`, `unverified-provenance`, and the ADR and wiki findings until their tools ship |
 | `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
 
 `doctor --json` prints the findings with their `severity`, `scope`, and
-`blocks` fields; the plain output ends with an `ok - no blocking finding` line
-when only attention or slice findings remain. `doctor --home USER_HOME` names
-the home whose discovery roots the `skills` scope reads (default: the user
-home); doctor never writes there.
+`blocks` fields. The plain output groups them by that effect and is read from
+the top: `blocking (N)` first (effects `all` and `selection`), then
+`selected slice (N)`, then `informational (N)` for everything registered
+`none`. Each header carries its count and its consequence, each row reads
+`code [blocks EFFECT, SEVERITY]: message`, and the output ends with an
+`ok - no blocking finding` line when only attention or slice findings remain.
+Grouping is presentation: an `error` under `informational` is still an `error`
+in the registry and in `--json`; it simply stops nothing.
+
+`doctor --home USER_HOME` names the home whose discovery roots the `skills`
+scope reads (default: the user home); doctor never writes there.
 
 `permission-scope-drift` (severity `error`, scope `controls`, effect `none`)
 is reported when `.claude/settings.json` exists and withholds a

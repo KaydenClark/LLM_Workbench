@@ -14,26 +14,18 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { RUNTIME_TOOLS, laneCoverage, managedReceiptFiles, receiptDrift } from '../workbench/tools/workbench-layout.mjs';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceLane = path.join(productRoot, 'workbench', 'tools');
 export const RECEIPT_NAME = '.workbench-tools.json';
-// The closed set of Workbench-managed runtime tools. Later capability tickets
-// append to this list; the product lane must contain exactly these files.
-export const RUNTIME_TOOLS = Object.freeze([
-  'adr.mjs',
-  'diagnostics.mjs',
-  'markdown-table.mjs',
-  'privacy.mjs',
-  'sessions.mjs',
-  'spec-packet.mjs',
-  'spec-workbench.mjs',
-  'template-placeholders.mjs',
-  'wiki.mjs',
-  'workbench-layout.mjs',
-  'workbench-paths.mjs'
-]);
+// The closed set of Workbench-managed runtime tools is defined in
+// `workbench/tools/workbench-layout.mjs` and re-exported here. It has to live
+// in a tool every room installs: this installer never is, so a room that read
+// its expected set from here would have none, and a managed file deleted with
+// its receipt key would leave nothing on disk for a lane-derived set to miss.
+export { RUNTIME_TOOLS };
 
 function lstatOrNull(target) {
   try { return fs.lstatSync(target); } catch (error) {
@@ -191,16 +183,35 @@ export function verify(project) {
     catch (error) { return fail('invalid-source-identity', error.message); }
   }
   if (!receipt) return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative} has no ${RECEIPT_NAME}.` } };
-  const drift = [];
-  for (const [tool, expected] of Object.entries(receipt.files)) {
-    const file = path.join(lane, tool);
-    const entry = lstatOrNull(file);
-    if (!entry?.isFile() || entry.isSymbolicLink()) { drift.push({ tool, reason: 'missing-or-not-a-file' }); continue; }
-    if ((entry.mode & 0o111) !== 0) drift.push({ tool, reason: 'executable-bit' });
-    if (sha256(file) !== expected) drift.push({ tool, reason: 'hash' });
-  }
+  // The release side reaches the same map, so it refuses the same receipts a
+  // room's doctor refuses: one that records nothing, or one whose key resolves
+  // outside the managed lane.
+  const files = managedReceiptFiles(receipt);
+  if (files.error) return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} ${files.error}.` } };
+  // `updateAvailable` compares the receipt with the source, which says nothing
+  // about the installed bytes; it rides every path so a room that is refused is
+  // not also denied the fact that a newer release exists.
   const sourceDrift = RUNTIME_TOOLS.filter((tool) => receipt.files[tool] !== sha256(path.join(sourceLane, tool)));
-  if (drift.length) return { status: 'invalid', error: { code: 'tools-receipt-drift', message: `${relative} differs from its receipt.`, drift }, receipt };
+  // The receipt's key set decided how much of the runtime got checked, so a
+  // receipt pruned of the file somebody tampered with verified ten of eleven
+  // tools and returned `valid`. Both sides now compare against the same
+  // authoritative managed set, so a receipt that omits a member of
+  // RUNTIME_TOOLS is refused whether or not that file is still on disk, and a
+  // file smuggled in beside them is reported as the separate condition it is:
+  // `update` rewrites a lost key but can never adopt a foreign file, so the two
+  // must not share a remedy.
+  const coverage = laneCoverage(lane, files);
+  if (coverage.unaccounted.length) {
+    return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} does not account for ${coverage.unaccounted.join(', ')}; refresh it with \`workbench-tools.mjs update --project PATH --explicit-update\` after reviewing the lane.`, unaccounted: coverage.unaccounted }, receipt, updateAvailable: sourceDrift };
+  }
+  if (coverage.foreign.length) {
+    return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative}/${RECEIPT_NAME} does not account for ${coverage.foreign.join(', ')}, which the managed runtime does not include; move it out of ${relative} after reviewing it. \`update\` reports \`current\` and changes nothing here, and \`install\` refuses a lane that already carries a receipt.`, foreign: coverage.foreign }, receipt, updateAvailable: sourceDrift };
+  }
+  // The same comparison an installed room runs from workbench-layout.mjs, here
+  // with the release source available, so each drifted file is classified as a
+  // stale receipt, a modified runtime, or authentic bytes with a drifted mode.
+  const drift = receiptDrift(lane, receipt, { sourceLane });
+  if (drift.length) return { status: 'invalid', error: { code: 'tools-receipt-drift', message: `${relative} differs from its receipt.`, drift }, receipt, updateAvailable: sourceDrift };
   return { status: 'valid', lane: relative, receipt, updateAvailable: sourceDrift };
 }
 
@@ -218,8 +229,13 @@ export function update(project, options = {}) {
   const receipt = readReceipt(lane);
   if (!receipt) return fail('tools-receipt-missing', `${relative} has no receipt; use install.`);
   const home = path.resolve(options.home ?? os.homedir());
+  // A tool is `changed` when the receipt must be rewritten for it, which is not
+  // only a byte difference: a receipt pruned of a key whose file is authentic
+  // changes no bytes, and without this the refusal `verify` now raises would
+  // have no remedy - `update` would report `current` and leave the gap open.
   const changed = RUNTIME_TOOLS.filter((tool) => {
     const file = path.join(lane, tool);
+    if (!Object.prototype.hasOwnProperty.call(receipt.files ?? {}, tool)) return true;
     return !lstatOrNull(file) || sha256(file) !== sha256(path.join(sourceLane, tool));
   });
   if (changed.length === 0) return { status: 'current', lane: relative, receipt };

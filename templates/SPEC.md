@@ -14,6 +14,13 @@
 **Latest event:** Spec captured.
 **Next gate:** Refine and activate the first eligible slice.
 
+> Optional for a migration or upgrade spec: add a `Baseline` field to the block
+> above, recording the pre-change baseline as `green`, `red`, `red
+> (owner-expanded) - evidence`, or `unavailable (host-restricted |
+> product-broken-as-found | owner-declined-on-boundary) - evidence`. The
+> unavailable reason set is closed; a reason outside it is refused. A red
+> baseline stops until the owner explicitly expands the task.
+
 ## Outcome
 
 [What coherent product capability or user outcome should exist?]

@@ -163,3 +163,58 @@ test('an installed core skill carries a schema 2 marker naming the release, comm
     fs.rmSync(home, { recursive: true, force: true });
   }
 });
+
+// S-040: the pre-check must not be stricter than the install it guards. A
+// destination reached through a link to a directory that already holds the
+// skill is exactly the case the presence-only install would skip anyway.
+test('a linked destination whose resolved target already holds the skill installs and reports the resolution', () => {
+  const home = fixtureHome();
+  try {
+    const shared = path.join(home, '.agents', 'skills', 'code-review');
+    fs.mkdirSync(shared, { recursive: true });
+    fs.writeFileSync(path.join(shared, 'SKILL.md'), '# shared code-review\n');
+    fs.mkdirSync(path.join(home, '.claude', 'skills'), { recursive: true });
+    const linked = path.join(home, '.claude', 'skills', 'code-review');
+    fs.symlinkSync(shared, linked, 'dir');
+
+    const result = install(home);
+
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(result.report.status, 'complete');
+    const skipped = result.report.skipped.find((entry) => entry.engine === 'claude' && entry.skill === 'code-review');
+    assert.ok(skipped, 'the linked destination is reported as skipped');
+    assert.equal(skipped.reason, 'already-present');
+    assert.equal(skipped.resolved, fs.realpathSync(shared), 'the report names the target the decision was made about');
+    assert.equal(fs.lstatSync(linked).isSymbolicLink(), true, 'the link itself is untouched');
+    assert.equal(fs.readFileSync(path.join(shared, 'SKILL.md'), 'utf8'), '# shared code-review\n', 'nothing is written through the link');
+    assert.equal(fs.existsSync(path.join(shared, '.workbench-skill.json')), false, 'no marker is written through the link');
+    assert.ok(result.report.installed.some((entry) => entry.engine === 'claude' && entry.skill === 'genesis'),
+      'the remaining skills still install');
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test('a linked destination still blocks when it resolves to a file, to nothing, or to a directory without the skill', () => {
+  for (const shape of ['file', 'dangling', 'directory-without-the-skill']) {
+    const home = fixtureHome();
+    try {
+      const claudeRoot = path.join(home, '.claude', 'skills');
+      fs.mkdirSync(claudeRoot, { recursive: true });
+      const target = path.join(home, `shared-${shape}`);
+      if (shape === 'file') fs.writeFileSync(target, 'not a skill directory\n');
+      if (shape === 'directory-without-the-skill') fs.mkdirSync(target);
+      fs.symlinkSync(target, path.join(claudeRoot, 'code-review'));
+
+      const result = install(home);
+
+      assert.notEqual(result.status, 0, shape);
+      assert.equal(result.report.status, 'blocked', shape);
+      assert.equal(result.report.error.code, 'skill-path-collision', shape);
+      assert.equal(fs.existsSync(path.join(home, '.agents', 'skills')), false,
+        `${shape} blocks before either discovery root is populated`);
+    } finally {
+      fs.rmSync(home, { recursive: true, force: true });
+    }
+  }
+});

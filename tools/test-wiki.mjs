@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
-import { validateWiki } from '../workbench/tools/wiki.mjs';
+import { normalizeWiki, validateWiki } from '../workbench/tools/wiki.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -283,6 +283,51 @@ test('an unfilled placeholder stamp is reported as stale so a hand-copied templa
     assert.deepEqual(unfilled.map((item) => [item.severity, item.blocks, item.note]), [['attention', 'none', 'workbench/wiki/SCHEMA.md']]);
     assert.match(unfilled[0].message, /unfilled/);
     assert.deepEqual(doctor(project).filter((item) => item.code === 'stale-stamp').map((item) => item.note), ['workbench/wiki/SCHEMA.md']);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-042 TK-002: a note the harness or a hand seeded without frontmatter is
+// repairable in place. Only the missing required properties are inserted, the
+// body keeps every byte, and a CRLF checkout keeps its own terminator.
+test('normalize inserts only the missing required properties and leaves every note body alone', () => {
+  const project = seededWiki();
+  try {
+    const wiki = path.join(project, 'workbench', 'wiki');
+    const bare = '# Bare Note\n\nDurable knowledge with no metadata.\n';
+    const partial = '---\ntype: project\nstatus: active\n---\n\n# Partial Note\n\nHalf the metadata.\n';
+    const crlf = '---\r\ntype: guidebook\r\n---\r\n\r\n# CRLF Guidebook\r\n\r\nOrdered steps.\r\n';
+    fs.writeFileSync(path.join(wiki, 'Bare Note.md'), bare);
+    fs.writeFileSync(path.join(wiki, 'Partial Note.md'), partial);
+    fs.writeFileSync(path.join(wiki, 'guidebooks', 'CRLF Guidebook.md'), crlf);
+
+    assert.ok(validateWiki(project).filter((item) => item.code === 'invalid-note').length >= 3, 'the three notes are invalid before normalize');
+    assert.equal(fs.readFileSync(path.join(wiki, 'Bare Note.md'), 'utf8'), bare, 'validate alone writes nothing');
+    assert.equal(fs.readFileSync(path.join(wiki, 'Partial Note.md'), 'utf8'), partial, 'validate alone writes nothing');
+
+    const result = normalizeWiki(project, { date: '2026-09-06' });
+    assert.deepEqual(result.changed.map((entry) => entry.note).sort(), [
+      'workbench/wiki/Bare Note.md',
+      'workbench/wiki/Partial Note.md',
+      'workbench/wiki/guidebooks/CRLF Guidebook.md'
+    ], 'normalize reports every file it changed');
+    assert.deepEqual(result.changed.find((entry) => entry.note.endsWith('Partial Note.md')).inserted, ['sensitivity', 'knowledge_role', 'provenance', 'source_paths', 'last_verified']);
+
+    const normalizedBare = fs.readFileSync(path.join(wiki, 'Bare Note.md'), 'utf8');
+    assert.ok(normalizedBare.endsWith(bare), 'the body keeps every byte after the inserted block');
+    assert.match(normalizedBare, /^---\ntype: meta\nstatus: partial\n/, 'an unlocated note is typed meta and marked partial, not asserted active');
+    assert.match(fs.readFileSync(path.join(wiki, 'Partial Note.md'), 'utf8'), /^---\ntype: project\nstatus: active\nsensitivity: normal\n/, 'declared values are never overwritten');
+    const normalizedCrlf = fs.readFileSync(path.join(wiki, 'guidebooks', 'CRLF Guidebook.md'), 'utf8');
+    assert.doesNotMatch(normalizedCrlf, /(?<!\r)\n/, 'a CRLF note must not gain an LF-terminated property');
+    assert.ok(normalizedCrlf.endsWith('# CRLF Guidebook\r\n\r\nOrdered steps.\r\n'));
+
+    assert.deepEqual(validateWiki(project), [], 'every normalized note validates');
+    assert.deepEqual(normalizeWiki(project, { date: '2026-09-06' }).changed, [], 'normalize is idempotent');
+
+    const cli = spawnSync(process.execPath, [wikiTool, 'normalize', '--path', project, '--date', '2026-09-06', '--json'], { cwd: project, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.deepEqual(JSON.parse(cli.stdout).changed, []);
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }

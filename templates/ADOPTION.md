@@ -99,6 +99,8 @@ next begins.
 
 1. Branch from a clean commit. Confirm the existing test/build commands run
    green *as found* - you need a known-good baseline before touching anything.
+   If no baseline can be taken at all, record it under the baseline rule below
+   instead of improvising a remedy.
    If the host cannot write Git metadata, record the blocker; do not force the
    Git operation or fabricate its proof. Continue only permitted, reversible
    document work and verification, then hand branch operations to the owner.
@@ -115,8 +117,20 @@ next begins.
    moving where. Start from `workbench-classify.mjs classify` above and record
    its verdict, evidence, and any `unclassifiable` reasons in the owning spec.
 
+If the baseline cannot be taken at all - the suite cannot run for a reason this
+change did not cause and cannot repair - record it in the owning spec's
+`**Baseline:**` field as `unavailable` with one reason from the closed set
+`host-restricted`, `product-broken-as-found`, or `owner-declined-on-boundary`,
+the evidence for that reason, and the statement that the requested change is
+not implicated. A reason outside that set is refused. The change then proceeds
+against that record, and every later completion criterion compares against the
+recorded state instead of a green run and says so. A red baseline is not
+unavailable: it still stops unless the owner explicitly expands the task, and
+`unavailable` never relabels a failing suite.
+
 Output: a migration map (each existing doc -> port / fold / keep / retire) and a
-green baseline run recorded.
+green baseline run recorded, or a baseline recorded `unavailable` with its
+reason and evidence.
 
 ### Phase 1 - Recover intent -> BLUEPRINT
 
@@ -324,7 +338,9 @@ than a competing rulebook.
       the declared authorship lanes, or `.claude/` was omitted with a
       reason.
 - [ ] The full verification suite runs green and matches the Phase 0 baseline;
-      paste or reference the result.
+      paste or reference the result. Where Phase 0 recorded the baseline
+      `unavailable`, the result states that and compares against the recorded
+      state instead of claiming a green baseline was taken.
 - [ ] Stable specs contain the project's actual in-flight and ready work;
       `TASKBOARD.md` projects only the hot state and contains no completed proof
       archive.
@@ -356,7 +372,8 @@ failed and why.
 - Do not bulldoze. Reconcile and preserve; the existing project is real work, not
   a blank slate.
 - Do not fabricate a green run. Baseline in Phase 0 and re-verify at handoff; a
-  command you did not execute is not proof.
+  command you did not execute is not proof. A baseline recorded `unavailable`
+  is a record of what could not run, never a substitute for a run that could.
 - Do not lose history. Archive retired docs and migrate proof records; never
   delete the old queue or ledger outright.
 - Observed reality outranks old docs. When code and a stale doc conflict, document

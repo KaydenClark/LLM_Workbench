@@ -2,11 +2,11 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { insideWorkTree, permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
-import { blocksSelection, finding } from './diagnostics.mjs';
+import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
@@ -19,7 +19,26 @@ const HOT_START = '<!-- hot-specs:start -->';
 const HOT_END = '<!-- hot-specs:end -->';
 
 export function nextWork(rootDir) {
+  refuseBlockedRuntime(rootDir);
   return selectCandidate(loadSpecs(rootDir));
+}
+
+// An `all` effect is a refusal, not only a doctor exit code: the effect table
+// says `next` and `claim` refuse to read the layout. Every other `all` finding
+// is raised by `validateManifest`, which `loadSpecs` already runs, so this is
+// the one `all` condition selection would otherwise walk past - and walking
+// past it means dispatching a ticket to an agent whose runtime nobody
+// verified. `doctor` still reports the finding instead of throwing, because
+// reporting it is what `doctor` is for.
+function refuseBlockedRuntime(rootDir) {
+  const root = path.resolve(rootDir);
+  const manifest = readManifest(root);
+  if (!manifest || manifest.schemaVersion !== 2) return;
+  const runtime = managedRuntimeDrift(root, { lane: manifest.lanes?.tools });
+  if (!runtime || describe(runtime.code).blocks !== 'all') return;
+  const error = new Error(`${runtime.code}: ${runtime.message}`);
+  error.code = runtime.code;
+  throw error;
 }
 
 function selectCandidate(specs) {
@@ -58,6 +77,7 @@ export function showSpec(rootDir, id) {
 }
 
 export function claimWork(rootDir, id, options) {
+  refuseBlockedRuntime(rootDir);
   requireValue(options?.agent, '--agent is required');
   const date = validDate(options?.date ?? today());
   const specs = loadSpecs(rootDir);
@@ -261,8 +281,10 @@ function gitFindings(root, specs) {
 }
 
 // Schema 2 projects also carry decision records; their findings ride along so
-// one doctor run reports the whole support root. None blocks selection: the
-// registered effect of every ADR code is `none`.
+// one doctor run reports the whole support root. The ADR, wiki, and permission
+// codes are all registered `none` and block nothing. The managed-runtime codes
+// are registered `all`, and this is their only emitter, so `refuseBlockedRuntime`
+// enforces that effect for `next` and `claim` separately.
 function collectionFindings(root) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];
@@ -277,6 +299,11 @@ function collectionFindings(root) {
   } catch (error) {
     findings.push(finding('invalid-note', `wiki validation failed: ${error.message}`));
   }
+  // The runtime a room executes is checked against the receipt that installed
+  // it, from the room itself; a lane with no receipt is not a managed runtime
+  // and is the Genesis readiness gate's business, not doctor's.
+  const runtime = managedRuntimeDrift(root, { lane: manifest.lanes?.tools });
+  if (runtime) findings.push(finding(runtime.code, runtime.message, { lane: runtime.lane, ...(runtime.drift ? { drift: runtime.drift } : {}) }));
   // The permission file is the mechanical half of the prose Edit Scope; a
   // declared lane it withholds is named, never rewritten, and never blocks.
   const drift = permissionScopeDrift(root, manifest.lanes);
@@ -510,6 +537,36 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// The plain report is grouped by the consequence the registry assigns each
+// finding, so a room whose findings block nothing does not read as failed.
+// Presentation only: the effect is the registry's (workbench/tools/diagnostics.mjs),
+// severity follows the effect in the line rather than leading it, and --json
+// is untouched. Every registered effect must appear in exactly one group.
+// Exported so a test can bind this to the diagnostics EFFECTS vocabulary.
+// Every effect must land in exactly one group; an effect added to EFFECTS with
+// no group here makes formatDoctorReport throw and prints no findings at all,
+// which is a total doctor outage rather than a missing line.
+export const DOCTOR_GROUPS = Object.freeze([
+  Object.freeze({ name: 'blocking', effects: Object.freeze(['all', 'selection']), consequence: 'doctor exits 1 until repaired' }),
+  Object.freeze({ name: 'selected slice', effects: Object.freeze(['selected-slice']), consequence: 'next excludes the slice and claim refuses it' }),
+  Object.freeze({ name: 'informational', effects: Object.freeze(['none']), consequence: 'reported only; nothing is blocked' })
+]);
+
+export function formatDoctorReport(findings) {
+  if (findings.length === 0) return 'ok - spec workbench doctor passed';
+  const ungrouped = findings.filter((item) => !DOCTOR_GROUPS.some((group) => group.effects.includes(item.blocks)));
+  if (ungrouped.length > 0) throw new Error(`Unreportable diagnostic effect: ${[...new Set(ungrouped.map((item) => item.blocks))].join(', ')}`);
+  const lines = [];
+  for (const group of DOCTOR_GROUPS) {
+    const members = findings.filter((item) => group.effects.includes(item.blocks));
+    if (members.length === 0) continue;
+    lines.push(`${group.name} (${members.length}) - ${group.consequence}`);
+    for (const item of members) lines.push(`  ${item.code} [blocks ${item.blocks}, ${item.severity}]: ${item.message}`);
+  }
+  if (!blocksSelection(findings)) lines.push('ok - no blocking finding; attention and slice findings above stay visible');
+  return lines.join('\n');
+}
+
 export function parseCliArgs(argv) {
   const command = argv[0];
   let index = 1;
@@ -547,11 +604,7 @@ async function main() {
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
-  else if (command === 'doctor') {
-    const lines = result.map((item) => `${item.code} [${item.severity}, blocks ${item.blocks}]: ${item.message}`);
-    if (lines.length === 0) console.log('ok - spec workbench doctor passed');
-    else console.log(`${lines.join('\n')}${blocksSelection(result) ? '' : '\nok - no blocking finding; attention and slice findings above stay visible'}`);
-  }
+  else if (command === 'doctor') console.log(formatDoctorReport(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
 }
 

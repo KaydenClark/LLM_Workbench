@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
@@ -515,6 +516,158 @@ test('Genesis readiness requires a version-matched runtime tools receipt', () =>
   }
 });
 
+// The receipt hash check must be reachable from the room itself: the release
+// installer is never copied into a room, so a room whose managed runtime
+// disagrees with its own receipt has to fail the doctor it carries.
+test('a room whose managed runtime drifts from its receipt fails the doctor it carries', () => {
+  const project = fixture();
+  const quietHome = fixture();
+  const roomDoctor = () => {
+    const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
+    return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
+  };
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    render(project);
+    const clean = roomDoctor();
+    assert.equal(clean.status, 0, `${clean.stderr}`);
+    assert.deepEqual(clean.findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+
+    // An appended comment still parses, so the room's doctor runs; only the
+    // hash the receipt recorded has changed.
+    fs.appendFileSync(path.join(project, 'workbench', 'tools', 'markdown-table.mjs'), '// locally edited\n');
+    const drifted = roomDoctor();
+    const reported = drifted.findings?.find((item) => item.code === 'tools-receipt-drift');
+    assert.ok(reported, `the room's own doctor must report tools-receipt-drift: ${JSON.stringify(drifted.findings)}`);
+    assert.equal(reported.blocks, 'all', 'the registered effect is the contract');
+    assert.deepEqual(reported.drift.map((entry) => [entry.tool, entry.reason]), [['markdown-table.mjs', 'hash']]);
+    assert.equal(drifted.status, 1, 'a drifted managed runtime fails the doctor the room carries');
+    // A room holds no release checkout, so the installed-versus-source
+    // comparison cannot be made there; it is reported as unavailable rather
+    // than guessed at in either direction.
+    assert.equal(reported.drift[0].state, 'source-unavailable');
+    assert.match(reported.drift[0].remedy, /release checkout/);
+
+    // The receipt must not control the SCOPE of its own check. The drift
+    // message above names the key to delete, and deleting it would otherwise
+    // disarm the check for exactly the tampered file while ten other keys
+    // still verify. A room carries no authoritative list of what should be
+    // managed, so the expected set is the lane's own contents: a file the lane
+    // holds that no receipt key accounts for is reported.
+    const receiptPath = path.join(project, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const pruned = { ...receipt.files };
+    delete pruned['markdown-table.mjs'];
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+    const narrowed = roomDoctor();
+    const unaccounted = narrowed.findings?.find((item) => item.code === 'tools-receipt-missing');
+    assert.ok(unaccounted, `a receipt pruned of the tampered file must not read as a clean runtime: ${JSON.stringify(narrowed.findings)}`);
+    assert.match(unaccounted.message, /does not account for markdown-table\.mjs/);
+    assert.equal(unaccounted.blocks, 'all', 'a receipt that verifies less than the lane holds blocks the same way drift does');
+    assert.equal(narrowed.status, 1, 'a pruned receipt fails the doctor the room carries');
+    assert.equal(fs.readFileSync(path.join(project, 'workbench', 'tools', 'markdown-table.mjs'), 'utf8').includes('// locally edited'), true,
+      'the tampered file is still on disk; the pruned receipt is what changed');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
+// The room's coverage check derived its expected set from the lane's own
+// contents, so a managed file deleted together with its receipt key left
+// nothing behind to be missed. Ten of the eleven managed tools are in
+// `doctor`'s own import graph and make the run fail loudly at import time;
+// `sessions.mjs` is imported by none of them, so removing it and its key was a
+// silent, clean run - the one false pass the coverage check could still
+// produce. The authoritative managed set therefore lives in the lane the room
+// installs, not only in the release-side installer a room never carries.
+test('a room names a managed file deleted together with its receipt key', () => {
+  const project = fixture();
+  const quietHome = fixture();
+  const roomDoctor = () => {
+    const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
+    return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
+  };
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    render(project);
+    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+
+    // `sessions.mjs` is the managed tool no doctor import reaches, so this is
+    // the deletion that used to be invisible from inside the room.
+    const receiptPath = path.join(project, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const pruned = { ...receipt.files };
+    delete pruned['sessions.mjs'];
+    fs.rmSync(path.join(project, 'workbench', 'tools', 'sessions.mjs'));
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+
+    const gone = roomDoctor();
+    const missing = gone.findings?.find((item) => item.code === 'tools-receipt-missing');
+    assert.ok(missing, `a managed file removed with its key must not read as a clean runtime: ${JSON.stringify(gone.findings)}`);
+    assert.match(missing.message, /does not account for sessions\.mjs/);
+    assert.equal(missing.blocks, 'all', 'a runtime missing a managed tool blocks the same way drift does');
+    assert.equal(gone.status, 1, 'the room doctor fails on a managed tool that is gone');
+    assert.throws(() => nextWork(project), /tools-receipt-missing/, 'next must refuse a room whose managed runtime is incomplete');
+    // The remedy the message names has to be one that works from a release
+    // checkout: `update --explicit-update` restores both the file and the key.
+    assert.match(missing.message, /workbench-tools\.mjs update .*--explicit-update/);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
+// A receipt key the lane lost and a file the managed runtime never included
+// are different conditions with different repairs, and one message served
+// both. `update --explicit-update` rewrites a lost key, but its changed set is
+// derived from the managed tool list, so it can never adopt a foreign file:
+// naming it there sends the operator to a command that reports `current` and
+// changes nothing.
+test('a room tells a foreign lane file apart from a receipt key it lost', () => {
+  const project = fixture();
+  const quietHome = fixture();
+  const roomDoctor = () => {
+    const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
+    return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
+  };
+  const laneFinding = () => roomDoctor().findings?.find((item) => item.code === 'tools-receipt-missing');
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    render(project);
+    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+
+    const smuggled = path.join(project, 'workbench', 'tools', 'smuggled.mjs');
+    fs.writeFileSync(smuggled, 'export const smuggled = true;\n');
+    const foreign = laneFinding();
+    assert.ok(foreign, `a file the managed runtime does not include must be reported: ${JSON.stringify(roomDoctor().findings)}`);
+    assert.match(foreign.message, /does not account for smuggled\.mjs/);
+    assert.match(foreign.message, /move it out of/, 'the only repair for a foreign file is removing it from the lane');
+    assert.doesNotMatch(foreign.message, /--explicit-update/, 'update cannot adopt a foreign file, so it must not be named here');
+    fs.rmSync(smuggled);
+    assert.deepEqual(roomDoctor().findings, [], 'removing the foreign file clears the finding');
+
+    // The other half of the same message: a key the receipt lost for a file
+    // the lane still holds is repaired by refreshing the receipt.
+    const receiptPath = path.join(project, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const pruned = { ...receipt.files };
+    delete pruned['markdown-table.mjs'];
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+    const lost = laneFinding();
+    assert.ok(lost, 'a pruned key is still reported');
+    assert.match(lost.message, /does not account for markdown-table\.mjs/);
+    assert.match(lost.message, /workbench-tools\.mjs update .*--explicit-update/, 'a lost key is repaired by refreshing the receipt');
+    assert.doesNotMatch(lost.message, /move it out of/, 'the managed file belongs in the lane; the receipt is what is wrong');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
 test('Genesis validation names the failing first-spec predicate and the stray lane entries', () => {
   const project = fixture();
   try {
@@ -590,7 +743,10 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
     fs.mkdirSync(partialTools);
     const relocatedTool = path.join(partialTools, 'workbench-layout.mjs');
     fs.copyFileSync(tool, relocatedTool);
-    for (const helper of ['spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+    // Every module the layout tool imports is itself a managed runtime tool
+  // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
+  // release checkout around them, which is the condition under test.
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
       fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
     }
 
@@ -744,7 +900,10 @@ function relocateTool(bundle) {
   fs.mkdirSync(partialTools);
   const relocatedTool = path.join(partialTools, 'workbench-layout.mjs');
   fs.copyFileSync(tool, relocatedTool);
-  for (const helper of ['spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+  // Every module the layout tool imports is itself a managed runtime tool
+  // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
+  // release checkout around them, which is the condition under test.
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
     fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
   }
   return relocatedTool;
@@ -1057,6 +1216,105 @@ test('HEAD is not a branch name: init refuses it and a symref never satisfies th
     assert.equal(run('validate', '--project', project).report.error.code, 'invalid-manifest', 'a manifest declaring HEAD is malformed even though origin/HEAD is a symref');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+// S-042 TK-001: the generation of a seeded lane document is recorded only from
+// bytes this command can verify, and a copy the room changed is never rewritten.
+test('seed-documents records a verifiable generation and never rewrites an adjusted copy', () => {
+  const project = fixture();
+  const bundle = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const relative = 'workbench/feedback/REPORT_FORMAT.md';
+    const document = path.join(project, relative);
+    const recordPath = path.join(project, 'workbench', '.workbench-seed.json');
+    const template = fs.readFileSync(path.join(root, 'templates', 'feedback', 'REPORT_FORMAT.md'));
+    assert.equal(fs.existsSync(recordPath), false, 'init writes no seed record; seeding a lane document is an explicit command');
+
+    const seeded = run('seed-documents', '--project', project);
+    assert.equal(seeded.status, 0, seeded.stdout);
+    assert.deepEqual(seeded.report.written, [{ document: relative, action: 'seeded' }]);
+    assert.deepEqual(seeded.report.retained, []);
+    assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'));
+    assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
+
+    const again = run('seed-documents', '--project', project);
+    assert.deepEqual(again.report.written, [{ document: relative, action: 'recorded' }], 'byte equality with the release copy is evidence of the generation');
+
+    // A copy still identical to what an older release seeded is refreshed.
+    const older = `${template.toString('utf8')}\nSeeded by an older release.\n`;
+    fs.writeFileSync(document, older);
+    const record = JSON.parse(fs.readFileSync(recordPath, 'utf8'));
+    record.documents[relative] = { release: 'v3.1.0', contentHash: createHash('sha256').update(Buffer.from(older)).digest('hex') };
+    fs.writeFileSync(recordPath, `${JSON.stringify(record, null, 2)}\n`);
+    const refreshed = run('seed-documents', '--project', project);
+    assert.deepEqual(refreshed.report.written, [{ document: relative, action: 'refreshed' }]);
+    assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'), 'an untouched older copy is brought current without a reinstall');
+    assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
+
+    fs.appendFileSync(document, '\nLocal note this room added.\n');
+    const adjusted = run('seed-documents', '--project', project);
+    assert.deepEqual(adjusted.report.written, [], 'a repair never rewrites content it did not add');
+    assert.deepEqual(adjusted.report.retained.map((entry) => entry.document), [relative]);
+    assert.match(adjusted.report.retained[0].reason, /changed after it was seeded/);
+    assert.match(fs.readFileSync(document, 'utf8'), /Local note this room added\./);
+
+    const relocatedTool = relocateTool(bundle);
+    const refused = spawnSync(process.execPath, [relocatedTool, 'seed-documents', '--project', project], { cwd: bundle, encoding: 'utf8' });
+    assert.notEqual(refused.status, 0, refused.stdout);
+    assert.equal(JSON.parse(refused.stdout).error.code, 'invalid-source-identity');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(bundle, { recursive: true, force: true });
+  }
+});
+
+// S-042 TK-003: an existing room can record verified source identity without a
+// reinstall, under the same verification init carries.
+test('record-source repairs placeholder provenance for an existing room and refuses what it cannot verify', () => {
+  const project = fixture();
+  const bundle = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const initialized = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const verified = initialized.provenance.source;
+    const provenance = () => doctor(project).filter((item) => item.code === 'unverified-provenance');
+    assert.deepEqual(provenance(), [], 'a room initialized from the release checkout records a verifiable identity');
+
+    initialized.provenance.source = { repository: '', release: 'v3.1.0', commit: 'unknown' };
+    fs.writeFileSync(manifestPath, `${JSON.stringify(initialized, null, 2)}\n`);
+    assert.deepEqual(provenance().map((item) => item.field).sort(), ['commit', 'release', 'repository']);
+
+    const relocatedTool = relocateTool(bundle);
+    const refused = spawnSync(process.execPath, [relocatedTool, 'record-source', '--project', project], { cwd: bundle, encoding: 'utf8' });
+    assert.notEqual(refused.status, 0, refused.stdout);
+    assert.equal(JSON.parse(refused.stdout).error.code, 'invalid-source-identity');
+    assert.match(JSON.parse(refused.stdout).error.message, /verified Workbench release checkout/);
+    assert.equal(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).provenance.source.commit, 'unknown', 'a refused recording writes nothing');
+
+    const mismatched = run('record-source', '--project', project, '--version', 'v9.9.9');
+    assert.notEqual(mismatched.status, 0, mismatched.stdout);
+    assert.equal(mismatched.report.error.code, 'invalid-source-identity');
+    assert.match(mismatched.report.error.message, /verified checkout release/);
+
+    const pinned = run('record-source', '--project', project, '--source-commit', 'b'.repeat(40));
+    assert.notEqual(pinned.status, 0, pinned.stdout);
+    assert.equal(pinned.report.error.code, 'invalid-source-identity');
+
+    const recorded = run('record-source', '--project', project);
+    assert.equal(recorded.status, 0, recorded.stdout);
+    assert.equal(recorded.report.status, 'recorded');
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(after.provenance.source, verified, 'the verified identity replaces the placeholder');
+    assert.equal(after.provenance.lifecycle, 'genesis', 'nothing else in the manifest changes');
+    assert.deepEqual(after.lanes, LANES);
+    assert.deepEqual(provenance(), [], 'recording the verified identity clears the finding');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(bundle, { recursive: true, force: true });
   }
 });
 
