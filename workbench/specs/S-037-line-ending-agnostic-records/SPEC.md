@@ -60,9 +60,13 @@ Verified on 2026-09-06 at `ec3fcf58a7a91f5ca3dc5e387555a14252e6b73d`:
    to disk, so no file's terminator is rewritten as a side effect.
 2. ADR validation, register rendering, Wiki note validation, and `doctor`
    report the same result for a CRLF room as for the byte-equivalent LF room.
-3. The adoption memory writer inserts missing fields using the terminator the
-   target file already uses, and returns without writing when the frontmatter
-   fence cannot be located rather than splicing at index `-1`.
+3. The adoption memory writer inserts missing fields using the terminator that
+   delimits the closing fence, writes a created block in the terminator the body
+   already uses, and fails loudly rather than splicing at index `-1` when a
+   parsed record carries no locatable fence. A truthy parse guarantees one
+   exists, so that throw is unreachable in normal operation and `migrate`
+   converts it to a structured `migration-failed` result like its other
+   in-`try` failures.
 
 ## Decisions And Contracts
 
@@ -169,6 +173,7 @@ constraint is recorded as a follow-up on S-036.
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Defect reproduced and scoped while reviewing the S-036 candidate for downstream deployment | Direct `parseFrontmatter` probe returned data for LF and `null` for CRLF; a CRLF clone at `ec3fcf5` reported 25 invalid-adr, 4 invalid-note, 1 stale-register; the same code confirmed present at `b2918ee`, so it is not a v3.1.2 regression | S-037 created as the owning spec; S-036 evidence untouched | TK-001 and TK-002 |
 | 2026-09-06 | TK-001 | Ticket closed | Red: new CRLF corpus test failed at `ec3fcf5` on a clean tree, 7 pass / 1 fail, with `TypeError: Cannot read properties of null (reading 'status')` at `tools/test-adr.mjs:61`. Green: 8/8; full suite 25/25 pass; template evaluation 106.6/113 and guardrail 78/100 unchanged; doctor exit 0; the CRLF room dropped from 30 record findings to 0 | Docs checked; no update needed - the correction is internal to two parsers and is explained at both seams | TK-002 independent review, PR, and integration containment |
+| 2026-09-06 | TK-001 | Second separate-context review closed all three blocking findings and left one false clause, corrected here | Reviewer drove the real `migrate` at base `5a98c00`, at the rejected `da95e58`, and at this candidate over five terminator shapes: the candidate loses no required field on any, while base duplicates frontmatter on all-CRLF and CR-only rooms and `da95e58` drops five fields on the mixed and CR-only rooms. Reviewer fuzzed `locateClosingFence` against `parseFrontmatter` over 219,446 inputs and found no case where a parse returns data and the fence is unlocatable, and no off-by-one, so the throw is unreachable in normal operation; it surfaces through `migrate`'s existing catch as `migration-failed` with exit 1, not an uncaught crash. Qualification recorded rather than glossed: three of the four new cases are red at base `5a98c00`, but "LF fence with one pasted CRLF body line" is green there, because base never carried the whole-file terminator test - that case guards against the rejected `da95e58`, not against base. Full suite 25/25, task_b pass, templates 106.6/113, doctor exit 0, `git diff --check` clean, render no drift | Desired Behavior #3 still said the writer "returns without writing" when the fence is unlocatable, contradicting this spec's own evidence row and the delivered code; corrected to say it throws | TK-002 PR and integration containment |
 | 2026-09-06 | TK-001 | Separate-context review returned CHANGES REQUESTED; the writer half of the change was repaired and given the test it lacked | Reviewer reproduced a regression against the base commit: `addWikiFrontmatter` derived the terminator from the whole file, so one pasted CRLF line in an otherwise-LF room brain hid the LF fence and the writer returned without writing, dropping five required fields while `migrate` still exited 0 and reported `complete`. The create branch also still joined with a hard-coded line feed, so the checked criterion was false for that branch. Red: three splice cases (all-CRLF, LF fence with one CRLF body line, CR-only) plus one create case added to `tools/test-workbench-adoption.mjs`, failing on the mixed case with `adoption must fill missing required metadata, sensitivity: normal is absent`. Green: both new blocks pass; `locateClosingFence` derives the splice point and terminator from the fence itself and `nativeEol` gives the create branch the body's terminator; an unlocatable fence now throws instead of returning silently | Two false citations corrected in this spec (the unreachable red assertion message, and the acceptance criterion that claimed create-branch behavior that did not exist); BOM and trailing-delimiter whitespace recorded as remaining limitations | TK-002 fresh independent review of the repaired candidate, PR, and integration containment |
 
 ## Completion Result
