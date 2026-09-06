@@ -342,8 +342,8 @@ The JSON report (Markdown with `--format markdown`, also carried in the JSON
 `markdown` field) covers the six templated root controls, `CLAUDE.md` checked
 for exact equality with `@AGENTS.md`, `.claude/settings.json` when present, and
 the seeded wiki contract files plus `MEMORY.md` under the manifest-declared
-wiki lane. Every template line is `filled` (a placeholder line the room
-filled, compared for presence only), `unchanged`, `dropped`, or `changed`
+wiki lane. Every template line is `filled` (a placeholder line whose fixed
+wording remains intact after the room fills its value), `unchanged`, `dropped`, or `changed`
 (nearest word-overlap match at or above 0.5); every room line with no template
 origin is `added`. It states the checkout version and the room's manifest
 release and labels a newer or older template generation instead of pretending
