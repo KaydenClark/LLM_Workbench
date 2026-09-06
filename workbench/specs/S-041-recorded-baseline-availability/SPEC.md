@@ -6,7 +6,7 @@
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-09-06
-**Catalog description:** Decide and record what a harness-only migration does when the target has no runnable green baseline, so eight rooms blocked by an unrelated product or host condition get one answer instead of eight improvised ones.
+**Catalog description:** Decide and record what a harness-only migration does when the target has no runnable green baseline, so eight rooms (the report's count) blocked by an unrelated product or host condition get one answer instead of eight improvised ones.
 **Blockers:** none
 **Latest event:** Owner selected Option A (record and proceed) on 2026-09-06; TK-001 is unblocked and ready.
 **Next gate:** Claim TK-001 and prove red that a spec recording an unavailable baseline with a valid reason proceeds while a red baseline still stops.
@@ -73,7 +73,7 @@ reason, deliberately not run for a privacy or write-boundary reason).
 
 The owner selected **Option A - record and proceed** on 2026-09-06. Option B
 (declare such a room out of scope for migration) was considered and declined
-because it would leave eight rooms permanently unmigratable for reasons the
+because it would leave eight rooms (the report's count) permanently unmigratable for reasons the
 harness did not cause and cannot repair.
 
 1. The owning spec can record a baseline as `unavailable` with a reason drawn
@@ -197,7 +197,7 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- The eight rooms that stopped are not retried by this spec; the contract is
+- The eight rooms (the report's count) that stopped are not retried by this spec; the contract is
   what unblocks them, and their retries belong to their own owners.
 - Option A trades a strong guarantee for a recorded one. The closed vocabulary
   bounds that trade but does not eliminate it: a room can still record
