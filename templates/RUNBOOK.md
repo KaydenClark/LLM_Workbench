@@ -394,6 +394,20 @@ The runtime tools in `workbench/tools/` are Workbench-managed: their receipt
 hashes. Verify them with `node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs verify --project .`
 and replace them only through `update --explicit-update`, which backs up the
 previous files and records a rollback path. Never hand-edit a managed tool.
+
+This project's own `node workbench/tools/spec-workbench.mjs doctor` runs the
+same receipt hash check from the tools this project carries, so a hand-edited
+managed tool fails the check here with no release checkout present. It fails at
+the `all` effect, which also makes `next` and `claim` refuse until the runtime
+is repaired. The check runs only when `workbench/tools/` carries a receipt; a
+receipt that cannot be read, records no file hashes, or names a file outside
+that lane is reported as `tools-receipt-missing` rather than switching the
+check off. Without a release checkout `doctor` cannot say whether the receipt
+went stale or the bytes were changed - it reports every drifted file as
+`source-unavailable` - so run `verify` from the release checkout to classify
+it. A deleted receipt is the readiness gate's finding, not this check's; a
+deleted managed tool stops `doctor` from loading at all.
+
 The source checkout must have a concrete `origin` and 40-character `HEAD`, and
 its managed source lane must be clean; otherwise install/update refuses before
 creating a receipt or backup.

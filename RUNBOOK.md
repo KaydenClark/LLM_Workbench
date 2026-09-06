@@ -273,13 +273,23 @@ application's root `tools/` directory is never read or written.
 receipt hash check also runs from `workbench/tools/workbench-layout.mjs`, which
 every room does install, and `doctor` reads it. A room therefore verifies the
 runtime it is executing with only the tools it contains, and a drifted managed
-tool fails that room's own `doctor` at the registered `all` effect. The check
-runs only when the lane carries a receipt - an uninstalled or release lane is
-not a managed runtime, and its absent receipt stays the Genesis readiness
-gate's finding - and a receipt that exists but cannot be read or records no
-file hashes is reported as `tools-receipt-missing` rather than silently
-switching the check off. Its cost is bounded: at most the managed files the
-receipt names, each read and hashed once.
+tool fails that room's own `doctor` at the registered `all` effect - which
+`next` and `claim` also enforce, refusing to dispatch or claim a slice until
+the runtime is repaired. The check runs only when the lane carries a receipt -
+an uninstalled or release lane is not a managed runtime, and its absent receipt
+stays the Genesis readiness gate's finding - and a receipt that exists but
+cannot be read, records no file hashes, or names a file outside the tools lane
+is reported as `tools-receipt-missing` rather than silently switching the check
+off. Its cost is bounded: at most the managed files the receipt names, each
+read and hashed once.
+
+Two conditions the receipt check cannot reach. A receipt deleted outright
+leaves no managed runtime to check, so `doctor` reports nothing and only the
+Genesis readiness gate (`validate --genesis`) fails on it. A managed file
+deleted outright is never reported as drift either, because every managed tool
+is in `doctor`'s own import graph: the run fails to load with
+`ERR_MODULE_NOT_FOUND` and a non-zero exit before any check runs. Both fail
+visibly; neither produces a named finding.
 
 Drift alone does not say what happened, so each drifted file is classified by
 comparing the installed bytes with the release source. `updateAvailable`
