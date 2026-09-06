@@ -301,23 +301,30 @@ node tools/test-workbench-layout.mjs
 
 It reports one of four verdicts with the reasons behind it and the evidence it
 gathered (`manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`,
-`legacyControlShapes`, `roomContents`), and exits 0 for all four. Only an
-unreadable invocation or a project that is not an ordinary directory exits 1.
+`legacyControlShapes`, `roomContents`), and exits 0 for all four. A lane the
+room will not let it read - `workbench/` or root `tools/` at mode 000, a
+`tools -> tools` symlink loop - is one of the room's own facts: it is reported
+as undetermined rather than counted as absent, and the room still gets a
+verdict. Only the supplied project path itself failing - unreachable, or not an
+ordinary directory - exits 1.
 
 | Verdict | The evidence that produces it |
 |---|---|
 | `genesis` | The room is empty apart from `.git`: nothing to derive filled controls from |
 | `adoption` | A working repository with content, no manifest, no version stamp, and no Workbench-shaped control set |
 | `upgrade` | A `workbench/manifest.json` that reads as a manifest object carrying `schemaVersion`, or a Workbench version stamp in a root control with no manifest (the `upgrade --layout-only` v2-root room) |
-| `unclassifiable` | `workbench/` is present but is not an ordinary directory or carries no readable manifest; a root control cannot be read and nothing else is stamped; or the room is harness-shaped with no manifest and no stamp |
+| `unclassifiable` | `workbench/` is present but is not an ordinary directory or carries no readable manifest; a root control or the room's own top-level listing cannot be read and nothing else is stamped; or the room is harness-shaped with no manifest and no stamp |
 
 Harness-shaped means all seven root controls, or root `tools/` files from the
 managed runtime set in a room that also carries more of the seven controls than
 it is missing. Those filenames (`privacy.mjs`, `sessions.mjs`) are ordinary, so
 one of them alone never makes a room harness-shaped. A `workbench/manifest.json`
-that parses as an unrelated JSON object, an array, or `null` is not this room's
-authority and reads as `unclassifiable`, and nothing is ever read through a
-`workbench/` symlink: another room's manifest cannot classify this one.
+that parses as an unrelated JSON object, an array, or a `schemaVersion` that is
+absent, `null`, or not an integer is not this room's authority and reads as
+`unclassifiable`. Nothing under a `workbench/` that is not an ordinary directory
+is read - not the manifest, and not the managed `workbench/tools/` lane, whose
+receipt would otherwise credit this room with another room's runtime lane - and
+a `workbench/manifest.json` that is itself a symlink is never opened either.
 
 `unclassifiable` is a first-class answer, not an error. A harness-shaped room
 with no manifest and no stamp is produced equally by an unstamped Workbench
@@ -328,8 +335,10 @@ escalates with evidence rather than guessing. A readable manifest reports its
 evidence; the recorded lifecycle is never the verdict, and whether an installed
 room actually needs migrating is `workbench-layout.mjs validate`'s answer. An
 unfilled `[BRACKETED]` control and a version banner that never resolved are
-reported as evidence too, so a straight copy of `templates/` is visible as one
-of the readings rather than mistaken for a room. The rule is recorded in
+reported as evidence and listed among the reasons, under both the harness-shaped
+verdict and the `adoption` one a straight `cp -R templates/.` produces, so a
+copy of the templates is offered as a reading rather than mistaken for a room.
+The rule is recorded in
 [S-044](workbench/specs/S-044-legacy-room-classification/SPEC.md).
 
 ### V3 Adoption migration check

@@ -30,13 +30,30 @@ const VERDICTS = ['genesis', 'adoption', 'upgrade', 'unclassifiable'];
 const BRACKETED_PLACEHOLDER = /\[BRACKETED(?:_[A-Z]+)*\]/;
 const UNRESOLVED_STAMP = /(?:Generated from|Part of) LLM Workbench (?!v\d+\.\d+\.\d+)(\S+)/;
 
+// A path the room will not let us stat is a fact about the room, exactly as an
+// absent path is: a lane at mode 000, a lane behind a symlink loop, or a name
+// under a file are room conditions, never failed invocations. `null` means the
+// room says the path is not there; UNREADABLE means the room will not say.
+// Counting UNREADABLE as absent would report a lane the room may well carry as
+// one it does not, so every caller distinguishes the two.
+const UNREADABLE = Symbol('unreadable');
+const ROOM_CONDITIONS = new Set(['EACCES', 'EPERM', 'ELOOP', 'ENOTDIR', 'ENAMETOOLONG']);
+
 function lstatOrNull(target) {
   try {
     return fs.lstatSync(target);
   } catch (error) {
     if (error.code === 'ENOENT') return null;
+    if (ROOM_CONDITIONS.has(error.code)) return UNREADABLE;
     throw error;
   }
+}
+
+// True only when the room answered that the path is there. An UNREADABLE path
+// is neither present nor absent.
+function reachable(target) {
+  const entry = lstatOrNull(target);
+  return Boolean(entry) && entry !== UNREADABLE;
 }
 
 function fail(code, message, details = {}) {
@@ -70,6 +87,14 @@ function manifestEvidence(project, supportRoot) {
   }
   const manifestPath = path.join(project, relative);
   const entry = lstatOrNull(manifestPath);
+  if (entry === UNREADABLE) {
+    return {
+      path: relative,
+      present: null,
+      readable: false,
+      reason: 'workbench/ does not permit reaching workbench/manifest.json, so the room\'s own authority is undetermined'
+    };
+  }
   if (!entry) return { path: relative, present: false, readable: false, reason: 'no workbench/manifest.json' };
   if (!entry.isFile() || entry.isSymbolicLink()) {
     return { path: relative, present: true, readable: false, reason: 'workbench/manifest.json is not an ordinary file' };
@@ -82,20 +107,25 @@ function manifestEvidence(project, supportRoot) {
   }
   // Parsing is not reading. An unrelated JSON object, an array, or a bare
   // `null` is valid JSON and no room's authority; Rule 1 routes it to
-  // `unclassifiable` rather than reporting an installed Workbench room.
-  if (manifest === null || typeof manifest !== 'object' || Array.isArray(manifest) || manifest.schemaVersion === undefined || manifest.schemaVersion === null) {
+  // `unclassifiable` rather than reporting an installed Workbench room. Every
+  // Workbench manifest records `schemaVersion` as an integer and
+  // `workbench-layout.mjs validate` accepts nothing else, so a room whose
+  // schemaVersion is absent, null, a string, an array, or an object is not
+  // carrying one: it is a near neighbour of a manifest, not this room's
+  // authority.
+  if (manifest === null || typeof manifest !== 'object' || Array.isArray(manifest) || !Number.isInteger(manifest.schemaVersion)) {
     return {
       path: relative,
       present: true,
       readable: false,
-      reason: 'workbench/manifest.json parses but is not a Workbench manifest object carrying schemaVersion'
+      reason: 'workbench/manifest.json parses but is not a Workbench manifest object carrying an integer schemaVersion'
     };
   }
   return {
     path: relative,
     present: true,
     readable: true,
-    schemaVersion: manifest.schemaVersion ?? null,
+    schemaVersion: manifest.schemaVersion,
     workbenchVersion: manifest.workbenchVersion ?? null,
     lifecycle: manifest.provenance?.lifecycle ?? null
   };
@@ -111,6 +141,13 @@ function controlEvidence(project) {
   for (const control of controls) {
     const controlPath = path.join(project, control);
     const entry = lstatOrNull(controlPath);
+    // A control the room will not even stat is present-or-absent unknown, so it
+    // is recorded as unreadable rather than counted among the missing.
+    if (entry === UNREADABLE) {
+      read.present.push(control);
+      read.unreadable.push(control);
+      continue;
+    }
     if (!entry?.isFile() || entry.isSymbolicLink()) {
       read.missing.push(control);
       continue;
@@ -142,6 +179,10 @@ function versionStampEvidence(read) {
 
 function supportRootEvidence(project) {
   const entry = lstatOrNull(path.join(project, 'workbench'));
+  // A room that will not let its own root be stat-ed says nothing about whether
+  // it holds a support root, so `present` is neither true nor false. Rule 1
+  // needs a support root the room actually reported.
+  if (entry === UNREADABLE) return { path: 'workbench', present: null, ordinaryDirectory: false };
   return {
     path: 'workbench',
     present: Boolean(entry),
@@ -149,17 +190,47 @@ function supportRootEvidence(project) {
   };
 }
 
+// Names the room reported as there, and names it would not answer for, kept
+// apart: a lane at mode 000 or behind a symlink loop holds neither an installed
+// tool nor an absent one until the room says.
+function laneReading(lane, names) {
+  const found = [];
+  const unreadable = [];
+  for (const name of names) {
+    const entry = lstatOrNull(path.join(lane, name));
+    if (entry === UNREADABLE) unreadable.push(name);
+    else if (entry) found.push(name);
+  }
+  return { found, unreadable };
+}
+
 // Two independent traces of a Workbench installation: the managed runtime lane
 // with its receipt, and root `tools/` filenames from the managed set, which is
 // what an older room that installed the tools at its root still carries.
-function lifecycleToolsEvidence(project) {
-  const lane = path.join(project, 'workbench', 'tools');
-  const present = (root, name) => Boolean(lstatOrNull(path.join(root, name)));
+function lifecycleToolsEvidence(project, supportRoot) {
+  const rootLane = laneReading(path.join(project, 'tools'), RUNTIME_TOOLS);
+  const root = { lane: 'workbench/tools', rootManagedNames: rootLane.found, rootUnreadable: rootLane.unreadable };
+  // The managed lane is under the support root, so it is gated exactly as the
+  // manifest is: following a `workbench/` symlink would report the receipt and
+  // installed tools of the room the link points at as this room's own managed
+  // runtime lane, which is a lane this room does not carry.
+  if (supportRoot.present && !supportRoot.ordinaryDirectory) {
+    return {
+      ...root,
+      read: false,
+      installed: null,
+      receipt: null,
+      unreadable: [],
+      reason: 'workbench/ is not an ordinary directory, so nothing under it was read'
+    };
+  }
+  const managed = laneReading(path.join(project, 'workbench', 'tools'), [...RUNTIME_TOOLS, RECEIPT_NAME]);
   return {
-    lane: 'workbench/tools',
-    installed: RUNTIME_TOOLS.filter((name) => present(lane, name)),
-    receipt: present(lane, RECEIPT_NAME),
-    rootManagedNames: RUNTIME_TOOLS.filter((name) => present(path.join(project, 'tools'), name))
+    ...root,
+    read: true,
+    installed: managed.found.filter((name) => name !== RECEIPT_NAME),
+    receipt: managed.found.includes(RECEIPT_NAME),
+    unreadable: managed.unreadable
   };
 }
 
@@ -168,13 +239,21 @@ function legacyControlShapesEvidence(project, read) {
     controlsPresent: read.present,
     controlsMissing: read.missing,
     controlsBracketed: read.bracketed,
-    legacyPaths: LEGACY_PATHS.filter((relative) => Boolean(lstatOrNull(path.join(project, relative))))
+    legacyPaths: LEGACY_PATHS.filter((relative) => reachable(path.join(project, relative)))
   };
 }
 
 function roomContentsEvidence(project) {
-  const entries = fs.readdirSync(project).filter((name) => name !== '.git');
-  return { entryCount: entries.length, empty: entries.length === 0 };
+  let entries;
+  try {
+    entries = fs.readdirSync(project).filter((name) => name !== '.git');
+  } catch (error) {
+    if (!ROOM_CONDITIONS.has(error.code)) throw error;
+    // Whether the room is empty or holds a working repository is exactly what
+    // this listing answers, so a room that refuses it leaves both readings open.
+    return { readable: false, entryCount: null, empty: false };
+  }
+  return { readable: true, entryCount: entries.length, empty: entries.length === 0 };
 }
 
 function gather(project) {
@@ -184,10 +263,23 @@ function gather(project) {
     manifest: manifestEvidence(project, supportRoot),
     versionStamp: versionStampEvidence(read),
     supportRoot,
-    lifecycleTools: lifecycleToolsEvidence(project),
+    lifecycleTools: lifecycleToolsEvidence(project, supportRoot),
     legacyControlShapes: legacyControlShapesEvidence(project, read),
     roomContents: roomContentsEvidence(project)
   };
+}
+
+// An unfilled control and a banner that never resolved describe a copy of the
+// templates rather than a room a release installed. That reading is open under
+// more than one verdict, so it is stated once and offered by every branch it
+// applies to: an agent reads the reasons, and a reading only the evidence
+// carries is a reading the reasons hid.
+function unfilledCopyReading(legacyControlShapes, stamp) {
+  const unfilled = [
+    legacyControlShapes.controlsBracketed.length ? `${legacyControlShapes.controlsBracketed.join(', ')} still ${legacyControlShapes.controlsBracketed.length === 1 ? 'carries' : 'carry'} an unfilled [BRACKETED] placeholder` : null,
+    stamp.unresolved.length ? `an unresolved version banner in ${stamp.unresolved.join(', ')}` : null
+  ].filter(Boolean);
+  return unfilled.length ? unfilled.join(', and ') : null;
 }
 
 // The recorded rule, ordered, first match wins. Each branch states the evidence
@@ -215,14 +307,19 @@ function decide(evidence) {
       ]
     };
   }
-  // A control that will not open leaves the stamp evidence incomplete: the room
-  // cannot be told from an unstamped one on partial reads.
-  if (!stamp.stamped.length && stamp.unreadable.length) {
+  // A control that will not open leaves the stamp evidence incomplete, and a
+  // room that will not list itself leaves the genesis and adoption readings
+  // open: on either partial read the room cannot be told from an unstamped one.
+  if (!stamp.stamped.length && (stamp.unreadable.length || !roomContents.readable)) {
+    const undetermined = [
+      stamp.unreadable.length ? `${stamp.unreadable.join(', ')} could not be read` : null,
+      roomContents.readable ? null : 'the room would not list its own top-level contents'
+    ].filter(Boolean);
     return {
       verdict: 'unclassifiable',
       reasons: [
-        `${stamp.unreadable.join(', ')} could not be read, so whether a release stamped this room is undetermined and no readable control settles it.`,
-        'Restore read access to the named control and re-run this classification rather than classifying a room on partial evidence.'
+        `${undetermined.join(', and ')}, so this room's evidence is incomplete and no readable control settles whether a release stamped it.`,
+        'Restore read access to what is named and re-run this classification rather than classifying a room on partial evidence.'
       ]
     };
   }
@@ -243,12 +340,9 @@ function decide(evidence) {
       'An unstamped Workbench room (upgrade) and an independent dialect reusing the same names (adoption) produce exactly this evidence, and the room does not say which.',
       'Establish which from outside the room - its history, its remote, or the owner - rather than guessing; treating an unstamped first adoption as an upgrade loses the live truth an adoption would reconcile.'
     ];
-    const unfilled = [
-      legacyControlShapes.controlsBracketed.length ? `${legacyControlShapes.controlsBracketed.join(', ')} still ${legacyControlShapes.controlsBracketed.length === 1 ? 'carries' : 'carry'} an unfilled [BRACKETED] placeholder` : null,
-      stamp.unresolved.length ? `an unresolved version banner in ${stamp.unresolved.join(', ')}` : null
-    ].filter(Boolean);
-    if (unfilled.length) {
-      reasons.push(`A third reading is open: ${unfilled.join(', and ')}, which is what an unfilled copy of the templates looks like rather than a room any release installed.`);
+    const unfilled = unfilledCopyReading(legacyControlShapes, stamp);
+    if (unfilled) {
+      reasons.push(`A third reading is open: ${unfilled}, which is what an unfilled copy of the templates looks like rather than a room any release installed.`);
     }
     return { verdict: 'unclassifiable', reasons };
   }
@@ -274,19 +368,27 @@ function decide(evidence) {
     legacyControlShapes.controlsPresent.length ? `root controls ${legacyControlShapes.controlsPresent.join(', ')}` : null,
     legacyControlShapes.legacyPaths.length ? `legacy paths ${legacyControlShapes.legacyPaths.join(', ')}` : null
   ].filter(Boolean);
-  return {
-    verdict: 'adoption',
-    reasons: [
-      `The room holds ${roomContents.entryCount} top-level ${roomContents.entryCount === 1 ? 'entry' : 'entries'}${found.length ? `, including ${found.join(' and ')}` : ''}, so there is a working repository to derive filled controls from.`,
-      'No manifest, no version stamp, and no Workbench-shaped control set: there is no installation to upgrade and no ambiguity about one.'
-    ]
-  };
+  const reasons = [
+    `The room holds ${roomContents.entryCount} top-level ${roomContents.entryCount === 1 ? 'entry' : 'entries'}${found.length ? `, including ${found.join(' and ')}` : ''}, so there is a working repository to derive filled controls from.`,
+    'No manifest, no version stamp, and no Workbench-shaped control set: there is no installation to upgrade and no ambiguity about one.'
+  ];
+  // A straight copy of `templates/` lands here, because `templates/` carries no
+  // CLAUDE.md and so is never harness-shaped. Its controls are the templates
+  // themselves, not truth to derive filled controls from, so the reading is
+  // stated rather than left for a reader to find in the evidence.
+  const unfilled = unfilledCopyReading(legacyControlShapes, stamp);
+  if (unfilled) {
+    reasons.push(`A second reading is open: ${unfilled}, which is what an unfilled copy of the templates looks like rather than a repository carrying its own truth.`);
+  }
+  return { verdict: 'adoption', reasons };
 }
 
 export function classify(projectPath) {
   const project = path.resolve(projectPath);
   const entry = lstatOrNull(project);
-  if (!entry || entry.isSymbolicLink() || !entry.isDirectory()) {
+  // The project path is the invocation, not a room condition: if it cannot even
+  // be stat-ed there is no room to report on.
+  if (!entry || entry === UNREADABLE || entry.isSymbolicLink() || !entry.isDirectory()) {
     return fail('invalid-project', `${project} must be an existing ordinary project directory.`);
   }
   const evidence = gather(project);

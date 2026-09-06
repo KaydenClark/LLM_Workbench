@@ -8,7 +8,7 @@
 **Updated:** 2026-09-06
 **Catalog description:** Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone.
 **Blockers:** none
-**Latest event:** Both slices are done, and the classification rule has been repaired after a separate-context review: the harness-shaped predicate is corroborated, a manifest must read as a manifest, a symlinked support root is never read through, and an unreadable control classifies instead of crashing.
+**Latest event:** Both slices are done, and the classification rule has been repaired twice after separate-context review: the second round fixed the classes the first round had fixed only for their named instances - every lane the room will not open is now a room condition rather than an exit 1, and nothing under a non-ordinary support root is read, the managed tools lane included.
 **Next gate:** Independent integration review of `claude/s044-v3-1-2` before it merges into `integration`.
 
 ## Outcome
@@ -73,8 +73,8 @@ read-only way to classify an unversioned room.
    boundary, and verification rules.
 3. A read-only classify command reports `genesis | adoption | upgrade |
    unclassifiable` for a supplied path, with the evidence for the verdict:
-   which of manifest, version stamp, support root, lifecycle tools, and legacy
-   control shapes were found. It writes nothing.
+   which of manifest, version stamp, support root, lifecycle tools, legacy
+   control shapes, and room contents were found. It writes nothing.
 4. `unclassifiable` is a first-class verdict with its reasons listed, not an
    error, so an agent escalates to the owner with evidence rather than guessing.
 
@@ -97,6 +97,35 @@ read-only way to classify an unversioned room.
   refusal is `unreconciled-controls`, and every entry in `error.controls` keeps
   its own distinct `reason` of exactly those two values. Nothing outside
   `tools/workbench-adoption.mjs` read either code, so no consumer breaks.
+- **A room condition is never a crash, and the boundary is the project path.**
+  A lane the room will not let the command `lstat` - `workbench/` or root
+  `tools/` at mode 000, a `tools -> tools` symlink loop - is reported as
+  undetermined and the room still gets a verdict, because a `chmod 000` lane is
+  the same kind of fact as a `chmod 000` control one level down. Undetermined is
+  never folded into absent: a lane that may hold the managed runtime tools must
+  not be reported as one that does not. The only failure left is the supplied
+  project path itself: unreachable, or not an ordinary directory.
+- **Nothing under a non-ordinary support root is read, the managed lane
+  included.** Gating only the manifest left `workbench/tools/` reachable through
+  a `workbench/` symlink, so a room borrowing another room's support root
+  reported that room's tools receipt as its own managed runtime lane. The
+  verdict was unaffected - Rule 1 fires first - but an agent reading
+  `receipt: true` concludes the room carries a lane it does not have. Evidence
+  is read by agents, so a false evidence field is a defect whether or not it
+  moves the verdict.
+- **A `schemaVersion` that is not an integer is not a manifest.** Rule 2 asks
+  whether the room carries its own authority, and every Workbench manifest
+  records an integer `schemaVersion` that `validateManifest` accepts.
+  `{"schemaVersion":"two"}`, `[2]`, `{"n":2}` and `null` satisfied the looser
+  "carries `schemaVersion`" reading and read as installed rooms; they are near
+  neighbours of a manifest, and the rule is tightened rather than the doc
+  loosened. This is rule precision, not a code/doc mismatch: the previous
+  wording was literally satisfied.
+- **A reading only the evidence carries is a reading the reasons hid.** The
+  unfilled-copy reading (a `[BRACKETED]` control, an unresolved version banner)
+  was offered under Rule 4 but not under Rule 7, which is exactly where a
+  straight `cp -R templates/.` lands. Rather than narrowing the prose to "in the
+  evidence", both branches state it: an agent acts on the reasons.
 - **The classifier is a release-checkout tool, not a runtime tool.** It lives at
   `tools/workbench-classify.mjs`, beside `workbench-adoption.mjs` and
   `workbench-upgrade.mjs`, because the room it classifies may carry no installed
@@ -109,9 +138,16 @@ read-only way to classify an unversioned room.
 The verdict is a **route**, not a history: it answers "which of the three
 lifecycle routes does this room's own evidence support, or does it support
 none of them". A room's recorded `provenance.lifecycle` is reported as evidence,
-never as the verdict. Five evidence categories are gathered, all read-only:
-`manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`, and
-`legacyControlShapes`.
+never as the verdict. Six evidence categories are gathered, all read-only:
+`manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`,
+`legacyControlShapes`, and `roomContents`.
+
+A path the room will not let the command `lstat` - a lane at mode 000, a lane
+behind a symlink loop, a name under a file - is a fact about the room, exactly
+as an absent path is, and is reported as undetermined rather than counted as
+absent. Only the supplied project path is different: if that cannot be stat-ed,
+or is not an ordinary directory, there is no room to report on and the command
+refuses the invocation. Nothing else in a room makes it exit non-zero.
 
 Two derived predicates:
 
@@ -136,27 +172,37 @@ Ordered, first match wins:
    `workbench/manifest.json` is absent, unreadable, or not a Workbench manifest
    -> **`unclassifiable`**. A support root without its own authority is neither
    an installed room nor a clean adoption target, and Adoption's preflight
-   already refuses it as `support-root-exists`. Nothing is read through a
-   support root that is not an ordinary directory: following a `workbench/`
-   symlink would report another room's manifest as this room's authority. The
-   room's stamp state is listed as a reason here, because in a stamped room it
-   is the decisive evidence that a release did write here.
-2. `workbench/manifest.json` reads as a JSON object carrying `schemaVersion`
-   -> **`upgrade`**. The room is an installed Workbench room, so it is neither a
-   genesis nor a second adoption; every move from here is an upgrade. Whether it
-   needs one - schema 1 migrate, a version bump, or nothing - is
-   `validateManifest`'s answer, and the classifier reports the manifest's
-   `schemaVersion`, `workbenchVersion`, and `provenance.lifecycle` as evidence
-   so the reader can see which. Parsing is not reading: an unrelated JSON object
-   (`{"name":"my-workbench-app"}`), an array, or a bare `null` is valid JSON and
-   no room's authority, so it falls to Rule 1 rather than claiming an
-   installation.
-3. Not stamped, and a present root control could not be read ->
-   **`unclassifiable`**. A control that will not open leaves the stamp evidence
-   incomplete, so an unstamped room and a stamped one whose only stamp is in the
-   unreadable control are indistinguishable. The unreadable controls are named,
-   and read access is the fix; this is a fact about the room, never a failed
-   invocation.
+   already refuses it as `support-root-exists`. Nothing under a support root
+   that is not an ordinary directory is read - not the manifest, and not the
+   managed `workbench/tools/` lane: following a `workbench/` symlink would
+   report another room's manifest as this room's authority and another room's
+   tools receipt as this room's managed runtime lane. A
+   `workbench/manifest.json` that is not itself an ordinary file is never opened
+   either, for the same reason. The room's stamp state is listed as a reason
+   here, because in a stamped room it is the decisive evidence that a release
+   did write here.
+2. `workbench/manifest.json` reads as a JSON object carrying an integer
+   `schemaVersion` -> **`upgrade`**. The room is an installed Workbench room, so
+   it is neither a genesis nor a second adoption; every move from here is an
+   upgrade. Whether it needs one - schema 1 migrate, a version bump, or
+   nothing - is `validateManifest`'s answer, and the classifier reports the
+   manifest's `schemaVersion`, `workbenchVersion`, and `provenance.lifecycle`
+   as evidence so the reader can see which. Parsing is not reading: an unrelated
+   JSON object (`{"name":"my-workbench-app"}`), an array, or a bare `null` is
+   valid JSON and no room's authority, so it falls to Rule 1 rather than
+   claiming an installation. Neither is a `schemaVersion` the room carries but
+   never filled in (`null`) or filled with the wrong shape (`"two"`, `[2]`,
+   `{"n":2}`): every Workbench manifest records an integer and
+   `validateManifest` accepts nothing else, so those are near neighbours of a
+   manifest rather than one.
+3. Not stamped, and something the room holds could not be read - a present root
+   control, or the room's own top-level listing -> **`unclassifiable`**. A
+   control that will not open leaves the stamp evidence incomplete, so an
+   unstamped room and a stamped one whose only stamp is in the unreadable
+   control are indistinguishable; a room that will not list itself leaves the
+   genesis and adoption readings open, because that listing is exactly what
+   separates them. What could not be read is named, and read access is the fix;
+   this is a fact about the room, never a failed invocation.
 4. Not stamped, no manifest, but harness-shaped -> **`unclassifiable`**. The
    shape says a Workbench-shaped harness; the absent stamp and manifest say no
    release recorded itself. An unstamped Workbench room (upgrade) and an
@@ -172,7 +218,13 @@ Ordered, first match wins:
 6. The room is empty apart from `.git` -> **`genesis`**. No content to derive
    filled controls from.
 7. Otherwise -> **`adoption`**. A working room with real content, no Workbench
-   installation to upgrade, and no Workbench-shaped ambiguity.
+   installation to upgrade, and no Workbench-shaped ambiguity. The unfilled
+   copy reading is offered here too, and for the same reason as under Rule 4: a
+   straight `cp -R templates/.` lands on this branch, because `templates/`
+   carries no `CLAUDE.md` and so is never harness-shaped, and its controls are
+   the templates themselves rather than truth to derive filled controls from. A
+   reading carried only in the evidence is a reading the reasons hid, so both
+   branches state it.
 
 Rule 7 is why a repository carrying only application code and a `README.md`
 is `adoption` and not `genesis`: `templates/ADOPTION.md` already routes a target
@@ -275,6 +327,8 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Full verification run for both slices, with the guardrail baseline captured before and after | Every suite in the `AGENTS.md` list passes at `f265a60`, plus `evals/tasks/task_b_path_safety/test_grade.py`, `render` (40 specs, 11 active, no drift), `doctor` (exit 0, no blocking finding), `check-append-only.py` (CLEAN), `git diff --check` clean, and `git grep -Il $'\r' -- '*.md'` empty. Guardrail: `evaluate-workbench.mjs --path templates --include-controls` scores 106.6/113 both at the base `09bfff7` (from `git archive`) and after this change - no criterion was weakened, and the static score is unchanged because the added Adoption prose is procedure, not a new guardrail surface | No further docs change; the owners named in the two ticket rows carry the change | The `skills/update-harness/SKILL.md` route-selection sentence and any `LEXICON.md` promotion stay deferred as recorded in Remaining Limitations |
 
 | 2026-09-06 | TK-002 | Repaired the recorded classification rule after a separate-context review returned CHANGES REQUESTED: the harness-shaped predicate now corroborates its managed-filename limb, an unreadable manifest shape and a symlinked support root classify instead of misreporting, an unreadable root control is a room condition, and the CLI is guarded by `isMainModule` | Five red cases first, all in `tools/test-workbench-layout.mjs`, each run before any implementation. (1) A vanilla Node app (`README.md`, `package.json`, `src/index.js`, `tools/privacy.mjs`) asserted `adoption`: `AssertionError [ERR_ASSERTION]: one generic managed filename cannot make a room whose own evidence shows six absent controls harness-shaped`, actual `'unclassifiable'`. (2) `workbench/manifest.json` holding `{ "name": "my-workbench-app", "version": "1.0.0" }`: `an unrelated JSON object must not read as an installed Workbench room`, actual `'upgrade'`. (3) A `workbench/` symlink into another initialized room: `another room's manifest, reached through a symlink, cannot make this room an installed room`, actual `'upgrade'`. (4) `chmod 000` on a root control: `{"status":"blocked","error":{"code":"invalid-invocation","message":"EACCES: permission denied, open '.../LEXICON.md'"}}`, `1 !== 0`. (5) Importing the module: `{"status":"blocked","error":{"code":"invalid-invocation","message":"Usage: workbench-classify.mjs classify --project PROJECT ..."}}`, `1 !== 0`. Green after the repair, with the pre-existing 34 cases untouched and unweakened: `tests 40 / pass 40 / fail 0`, including `classify corroborates the root tools/ shape before calling a room harness-shaped`, `classify refuses a workbench/manifest.json that is not a Workbench manifest` (object, array and null), `classify never reads a workbench/ symlink out of the room`, `classify treats an unreadable root control as a room condition, not a crash`, `classify reports the unfilled state of a straight template copy as evidence`, and `importing the classifier does not run its command line`. Every new case that classifies a room also compares the recursive path/size/mtime snapshot before and after | Decisions And Contracts records the repaired rule (corroborated harness-shaped predicate, the manifest shape guard, the support-root symlink refusal, the new unreadable-control rule, and the unfilled-template evidence); `RUNBOOK.md` verdict table and prose updated to match; `templates/ADOPTION.md` re-wrapped one over-long line with no wording change | `skills/update-harness/SKILL.md` stays deferred to S-040/S-041 as before |
+
+| 2026-09-06 | TK-002 | Second repair after the re-review: the crash class and the support-root read gate are fixed for the class rather than the named instance, two mutation-proven coverage holes are pinned, and the prose that overstated the contract is now true | Reds first, each captured before any implementation. (1) The crash class, in one new `tools/test-workbench-layout.mjs` case over four rooms - `workbench/` at mode 000 holding a manifest, root `tools/` at mode 000 with seven stamped controls, a `tools -> tools` symlink loop with seven stamped controls, and a room that will not list itself: `AssertionError [ERR_ASSERTION]: {"status":"blocked","error":{"code":"invalid-invocation","message":"EACCES: permission denied, lstat '.../workbench/manifest.json'"}}`, `1 !== 0`. (2) The borrowed managed lane: `AssertionError [ERR_ASSERTION]: nothing under a support root that is not an ordinary directory may be read, the managed lane included`, actual `undefined`, expected `false` - the base reported `lifecycleTools` `receipt: true` and three installed tools read through the `workbench/` symlink while `manifest` correctly reported nothing. (3) A wrong-typed manifest: `a string schemaVersion must not read as an installed Workbench room`, actual `'upgrade'`. (4) The unfilled reading on the adoption branch: `an unfilled copy of the templates is a reading of the room, so it belongs in the reasons and not only in the evidence`, actual `false`. (5) The two coverage pins are red only under their mutant, which is what makes them pins: deleting `|| manifest.schemaVersion === null` gave `a null schemaVersion must not read as an installed Workbench room`, and deleting Rule 1's whole `stamp.stamped.length ? ... : ...` reason gave `in a stamped room the stamp is the decisive evidence that a release did write here, so Rule 1 must name it`. Green: `tests 46 / pass 46 / fail 0` in `tools/test-workbench-layout.mjs`, no pre-existing case weakened or removed. Every new case that classifies a room still compares the recursive path/size/mtime snapshot before and after, the four `chmod 000` rooms included. Mutation testing over 30 mutations of `tools/workbench-classify.mjs`: 27 caught, 3 survivors each proven equivalent - dropping `Array.isArray(manifest)` is subsumed by `!Number.isInteger(manifest.schemaVersion)` because a JSON array has no `schemaVersion` property; flipping the unlistable room's `empty` to `true` cannot change a verdict because Rule 3 catches every unstamped unlistable room and Rule 5 every stamped one, so Rule 6 is unreachable there; and dropping `entry.isSymbolicLink()` from the project-path guard changes nothing because under `lstat` a symlink is never `isDirectory()` | `RUNBOOK.md`: the exit-1 sentence now names the room conditions that return a verdict instead, the symlink sentence covers the managed lane and a symlinked `manifest.json`, the `unclassifiable` row adds the unlistable room, and the unfilled-copy sentence says the reading is listed among the reasons under both verdicts. This spec: six evidence categories rather than five (`roomContents` was gathered and undeclared, pre-existing), Rule 1 extended to the managed lane, Rule 2 to the integer `schemaVersion`, Rule 3 to the unlistable room, Rule 7 to the unfilled reading, plus four new Decisions And Contracts entries. `templates/ADOPTION.md`: `unclassifiable` also covers a room that will not let something be read | `skills/update-harness/SKILL.md` stays deferred to S-040/S-041 as before. The three equivalent mutants are left as they are: `Array.isArray` and the symlink limb document intent at the seam they guard, and the `empty: false` default is defensive against a future rule reordering |
 
 ## Completion Result
 

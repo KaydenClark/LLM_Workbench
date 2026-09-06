@@ -28,11 +28,13 @@ It reports `genesis`, `adoption`, `upgrade`, or `unclassifiable`, each with the
 evidence that produced it. `unclassifiable` is an answer, not an error: it means
 the room's contents support two readings at once - most often a harness-shaped
 room carrying no manifest and no version stamp, which an unstamped Workbench
-installation and an independent dialect both produce. Establish which from
-outside the room (its history, its remote, or the owner) rather than guessing;
-treating a first adoption as an upgrade loses the live truth an adoption would
-reconcile. The verdict is evidence for a decision, never the decision: it
-selects no route, claims no work, and authorizes no migration.
+installation and an independent dialect both produce. A room that will not let a
+control, a lane, or its own top-level listing be read produces it too; the
+command names what it could not read, and read access is the fix. Establish
+which from outside the room (its history, its remote, or the owner) rather than
+guessing; treating a first adoption as an upgrade loses the live truth an
+adoption would reconcile. The verdict is evidence for a decision, never the
+decision: it selects no route, claims no work, and authorizes no migration.
 
 ## What Adoption Is For
 
