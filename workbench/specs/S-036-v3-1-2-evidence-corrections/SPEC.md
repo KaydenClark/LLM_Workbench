@@ -5,11 +5,11 @@
 **Priority:** 0
 **Owner:** codex-gpt-5
 **Stance:** Builder
-**Updated:** 2026-09-05
+**Updated:** 2026-09-06
 **Catalog description:** Correct the unpublished v3.1.2 candidate where permission, control-fidelity, and source-identity checks overstate what they prove, then rehearse the already-v3 upgrade path and return an exact reviewed candidate for GPT_OS deployment.
 **Blockers:** none
-**Latest event:** Corrective scope reconciled against the referenced review, current integration source, Claude Code 2.1.212, and current Anthropic permission documentation.
-**Next gate:** Claim TK-001 and correct the Claude Code permission model through the template, diagnostic, prose, and tests.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -122,7 +122,7 @@ Verified on 2026-09-05 after refreshing `origin`, at
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Align the shipped Claude permission template, diagnostic, protocols, and tests with one supported `Edit`-rule model that reports restrictive uncertainty | ready | none | pending |
+| TK-001 | Align the shipped Claude permission template, diagnostic, protocols, and tests with one supported `Edit`-rule model that reports restrictive uncertainty | done | none | Red: node tools/test-diagnostics.mjs exposed Edit-only lanes as withheld, and node tools/test-workbench-layout.mjs exposed paired Write rules in the shipped template. Green: test-diagnostics 10/10, test-workbench-layout 31/31, test-workbench-dogfood pass, evaluate-workbench templates 106.6/113, git diff --check pass. Claude Code 2.1.212 native disposable write did not reach a permission decision because the workspace was untrusted and OAuth was expired; no trust or credential state was changed. |
 | TK-002 | Make placeholder fills preserve fixed wording and prove the shipped ADR ownership row detects a removed qualifier in JSON and Markdown | blocked | TK-001 | pending |
 | TK-003 | Fail closed on unverified source identity across layout, adoption, runtime-tool receipts, and skill markers, then rehearse v3.1.1 -> v3.1.2 maintenance preservation | blocked | TK-002 | pending |
 | TK-004 | Reconcile current ownership prose, run the full release gate, independently review the immutable candidate, and land it on `integration` | blocked | TK-003 | pending |
@@ -224,6 +224,7 @@ separate-context integration review.
 |---|---|---|---|---|---|
 | 2026-09-05 | spec | Corrective scope reconciled from the referenced Review Fable Updates conversation and verified against refreshed `origin/integration` at `b3633e5`; no published release or newer Claude correction branch exists | `git fetch --prune origin`; `gh release list`; `gh pr list`; `claude --version` = 2.1.212; Anthropic permission reference read; direct `classifyLines` reproduction = filled 1 / changed 0; source callers and tests traced | S-036 created as the linked owner; completed S-030/S-032/S-034/S-035 evidence preserved | TK-001 through TK-004 |
 | 2026-09-05 | spec | Guardrail baseline captured before harness edits | `node tools/audit-guardrails.mjs --path .` = 78/100; four outcome-evidence recommendations unchanged | No benchmark row yet; record after-score at closeout | TK-001 through TK-004 |
+| 2026-09-06 | TK-001 | Ticket closed | Red: node tools/test-diagnostics.mjs exposed Edit-only lanes as withheld, and node tools/test-workbench-layout.mjs exposed paired Write rules in the shipped template. Green: test-diagnostics 10/10, test-workbench-layout 31/31, test-workbench-dogfood pass, evaluate-workbench templates 106.6/113, git diff --check pass. Claude Code 2.1.212 native disposable write did not reach a permission decision because the workspace was untrusted and OAuth was expired; no trust or credential state was changed. | Updated the root/template Runbooks, Claude settings README, Genesis, Adoption, and shipped Claude settings to one Edit-rule model; documented deny/ask precedence and restrictive-pattern uncertainty. | TK-002 fixed-wording fidelity and shipped ADR owner-row correction. |
 
 ## Completion Result
 

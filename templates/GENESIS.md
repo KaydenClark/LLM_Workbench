@@ -142,11 +142,11 @@ contract match this project's reality. Keep the generic safety rules intact.
 
 Then make the boundary mechanical, not just prose. If `.claude/settings.json`
 was copied in, fill it from the scope you just drew: writable roots and the
-Workbench authorship lanes -> `allow` (Edit and Write), forbidden paths
+Workbench authorship lanes -> `allow` (`Edit`), forbidden paths
 (secrets, credentials, build output) -> `deny`, review-required actions
 (schema/migrations, `git push`, destructive commands, `workbench/tools/`) ->
-`ask`. Edit revises an existing file and Write creates one, so a lane that
-must hold new specs, ADRs, wiki pages, or checkpoints needs both. See
+`ask`. Claude Code applies `Edit` rules to every built-in file-editing tool,
+including creation. See
 `.claude/README.md` for the mapping. If the project will not use Claude Code,
 delete `.claude/` and rely on the prose scope alone.
 
@@ -265,8 +265,8 @@ Do not call bootstrap done on vibes. All of the following must hold:
       `[BRACKETED]` placeholders** in required sections.
 - [ ] The founding prompt is preserved verbatim somewhere durable.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
-- [ ] `.claude/settings.json` is filled from that scope and grants Edit and
-      Write on the declared authorship lanes, or `.claude/` was omitted with a
+- [ ] `.claude/settings.json` is filled from that scope and grants `Edit` on
+      the declared authorship lanes, or `.claude/` was omitted with a
       reason.
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.

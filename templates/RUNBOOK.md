@@ -164,13 +164,15 @@ the spec `next` would select is already complete there, `doctor` reports
 rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
-withholds a manifest-declared authorship lane (no covering `Edit` and `Write`
-`allow` rule, or a `deny` or `ask` rule covering it, since both override
-`allow`) or grants `workbench/tools/` in `allow`; it names each lane, never blocks, and never edits the file. Resolve
-it by adding the paired `Edit(./workbench/<lane>/**)` and
-`Write(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
-or recording the deliberate denial in `AGENTS.md`. The Genesis readiness
-check fails closed on the same finding; a room without the file is unaffected.
+withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,
+a `deny` or `ask` rule covers it, or a restrictive pattern is uncertain) or
+grants `workbench/tools/` in `allow`; it names each lane, never blocks, and
+never edits the file. Claude Code applies `Edit` rules to every built-in
+file-editing tool. Resolve the finding by adding the
+`Edit(./workbench/<lane>/**)` rules, holding `workbench/tools/**` in `ask`,
+simplifying an uncertain restriction, or recording the deliberate restriction
+in `AGENTS.md`. The Genesis readiness check fails closed on the same finding;
+a room without the file is unaffected.
 
 The wiki lane raises `room-brain-unrouted` (attention) when a root control does
 not route back to the room brain: `AGENTS.md` must reference `workbench/wiki/`

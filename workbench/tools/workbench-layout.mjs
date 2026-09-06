@@ -520,27 +520,64 @@ function validateGenesisRuntime(project, expectedVersion) {
   return null;
 }
 
-// The permission file is the mechanical half of the prose Edit Scope. The
-// matcher is deliberately conservative: `./<path>/**` and a covering parent
-// glob such as `./workbench/**` grant, and anything else does not, so a false
-// "drift" is possible but a false "granted" is not. It reports and never
-// rewrites: a room may deny a lane deliberately and record why.
+// The permission file is the mechanical half of the prose Edit Scope. Claude
+// Code applies Edit rules to every built-in tool that edits files; path-scoped
+// Write rules are not a second creation permission. The bounded matcher
+// recognises the documented project-relative forms and reports any restrictive
+// pattern it cannot safely interpret instead of returning a false clear.
 export const PERMISSION_FILE = '.claude/settings.json';
-const permissionTools = ['Edit', 'Write'];
 const permissionBuckets = ['allow', 'ask', 'deny'];
 
-function coveringPrefix(rule, tool) {
-  const match = typeof rule === 'string' ? rule.match(/^(Edit|Write)\(\.\/(.*)\)$/) : null;
-  if (!match || match[1] !== tool) return null;
-  if (match[2] === '**') return '';
-  return match[2].endsWith('/**') ? match[2].slice(0, -3) : null;
+function parsePermissionRule(rule) {
+  if (rule === 'Edit' || rule === 'Write') return { tool: rule, bare: true };
+  const match = typeof rule === 'string' ? rule.match(/^(Edit|Write)\((.*)\)$/) : null;
+  if (!match) return null;
+  return { tool: match[1], bare: false, pattern: match[2] };
 }
 
-function covers(rules, tool, lane) {
-  return rules.some((rule) => {
-    const prefix = coveringPrefix(rule, tool);
-    return prefix !== null && (prefix === '' || prefix === lane || lane.startsWith(`${prefix}/`));
-  });
+function pathRelation(pattern, lane) {
+  if (pattern.startsWith('//') || pattern.startsWith('~/')) return 'disjoint';
+  const relative = pattern.replace(/^\.\//, '').replace(/^\//, '');
+  if (!relative || relative === '**') return 'covers';
+  const simple = relative.match(/^([^*?{}\[\]!]+)\/\*\*$/);
+  if (simple) {
+    const prefix = simple[1].replace(/\/$/, '');
+    if (prefix === lane || lane.startsWith(`${prefix}/`)) return 'covers';
+    if (prefix.startsWith(`${lane}/`)) return 'intersects';
+    return 'disjoint';
+  }
+  if (!/[*?{}\[\]!]/.test(relative)) {
+    if (relative === lane || relative.startsWith(`${lane}/`)) return 'intersects';
+    return 'disjoint';
+  }
+  const fixed = relative.slice(0, relative.search(/[*?{}\[\]!]/)).replace(/\/$/, '');
+  // An unfilled template placeholder is a different top-level path. Once the
+  // template is filled the resulting literal path is evaluated normally.
+  if (!fixed && /^\[[A-Z][A-Z0-9_]*\]/.test(relative)) return 'disjoint';
+  if (!fixed || fixed === lane || fixed.startsWith(`${lane}/`) || lane.startsWith(`${fixed}/`)) return 'uncertain';
+  return 'disjoint';
+}
+
+function ruleRelation(rule, lane) {
+  const parsed = parsePermissionRule(rule);
+  if (!parsed) return null;
+  if (parsed.bare) return 'covers';
+  return pathRelation(parsed.pattern, lane);
+}
+
+function coveringEdit(rules, lane) {
+  return rules.some((rule) => parsePermissionRule(rule)?.tool === 'Edit' && ruleRelation(rule, lane) === 'covers');
+}
+
+function restriction(rules, lane) {
+  for (const rule of rules) {
+    const parsed = parsePermissionRule(rule);
+    if (!parsed) continue;
+    const relation = ruleRelation(rule, lane);
+    if (relation === 'covers' || relation === 'intersects') return { rule, uncertain: false };
+    if (relation === 'uncertain') return { rule, uncertain: true };
+  }
+  return null;
 }
 
 // Null when the file is absent or grants every declared lane; otherwise the
@@ -563,18 +600,20 @@ export function permissionScopeDrift(project, declaredLanes = lanes) {
   const withheld = [];
   for (const [lane, relative] of Object.entries(checked)) {
     const reasons = [];
-    for (const tool of permissionTools) {
-      const denied = covers(buckets.deny, tool, relative);
-      const asked = covers(buckets.ask, tool, relative);
-      const allowed = covers(buckets.allow, tool, relative);
-      if (lane === 'tools') {
-        if (allowed && !asked && !denied) reasons.push(`${tool} is granted in allow; hold the tools lane in ask`);
-      } else if (denied) reasons.push(`${tool} is covered by a deny rule`);
-      // ask overrides allow: a lane in both prompts on every write, which
-      // is the unattended stall this finding exists to name.
-      else if (asked) reasons.push(`${tool} is covered by an ask rule`);
-      else if (!allowed) reasons.push(`no covering ${tool} allow rule`);
-    }
+    const denied = restriction(buckets.deny, relative);
+    const asked = restriction(buckets.ask, relative);
+    const allowed = coveringEdit(buckets.allow, relative);
+    if (lane === 'tools') {
+      if (allowed && !asked && !denied) reasons.push('Edit is granted in allow; hold the tools lane in ask');
+    } else if (denied) {
+      reasons.push(denied.uncertain
+        ? `deny rule cannot safely interpret whether it restricts the lane: ${denied.rule}`
+        : `lane is covered or intersected by a deny rule: ${denied.rule}`);
+    } else if (asked) {
+      reasons.push(asked.uncertain
+        ? `ask rule cannot safely interpret whether it restricts the lane: ${asked.rule}`
+        : `lane is covered or intersected by an ask rule: ${asked.rule}`);
+    } else if (!allowed) reasons.push('no covering Edit allow rule');
     if (reasons.length) withheld.push({ lane, path: relative, reason: reasons.join('; ') });
   }
   return withheld.length ? { control: PERMISSION_FILE, lanes: withheld } : null;
