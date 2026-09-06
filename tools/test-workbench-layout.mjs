@@ -516,6 +516,158 @@ test('Genesis readiness requires a version-matched runtime tools receipt', () =>
   }
 });
 
+// The receipt hash check must be reachable from the room itself: the release
+// installer is never copied into a room, so a room whose managed runtime
+// disagrees with its own receipt has to fail the doctor it carries.
+test('a room whose managed runtime drifts from its receipt fails the doctor it carries', () => {
+  const project = fixture();
+  const quietHome = fixture();
+  const roomDoctor = () => {
+    const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
+    return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
+  };
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    render(project);
+    const clean = roomDoctor();
+    assert.equal(clean.status, 0, `${clean.stderr}`);
+    assert.deepEqual(clean.findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+
+    // An appended comment still parses, so the room's doctor runs; only the
+    // hash the receipt recorded has changed.
+    fs.appendFileSync(path.join(project, 'workbench', 'tools', 'markdown-table.mjs'), '// locally edited\n');
+    const drifted = roomDoctor();
+    const reported = drifted.findings?.find((item) => item.code === 'tools-receipt-drift');
+    assert.ok(reported, `the room's own doctor must report tools-receipt-drift: ${JSON.stringify(drifted.findings)}`);
+    assert.equal(reported.blocks, 'all', 'the registered effect is the contract');
+    assert.deepEqual(reported.drift.map((entry) => [entry.tool, entry.reason]), [['markdown-table.mjs', 'hash']]);
+    assert.equal(drifted.status, 1, 'a drifted managed runtime fails the doctor the room carries');
+    // A room holds no release checkout, so the installed-versus-source
+    // comparison cannot be made there; it is reported as unavailable rather
+    // than guessed at in either direction.
+    assert.equal(reported.drift[0].state, 'source-unavailable');
+    assert.match(reported.drift[0].remedy, /release checkout/);
+
+    // The receipt must not control the SCOPE of its own check. The drift
+    // message above names the key to delete, and deleting it would otherwise
+    // disarm the check for exactly the tampered file while ten other keys
+    // still verify. A room carries no authoritative list of what should be
+    // managed, so the expected set is the lane's own contents: a file the lane
+    // holds that no receipt key accounts for is reported.
+    const receiptPath = path.join(project, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const pruned = { ...receipt.files };
+    delete pruned['markdown-table.mjs'];
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+    const narrowed = roomDoctor();
+    const unaccounted = narrowed.findings?.find((item) => item.code === 'tools-receipt-missing');
+    assert.ok(unaccounted, `a receipt pruned of the tampered file must not read as a clean runtime: ${JSON.stringify(narrowed.findings)}`);
+    assert.match(unaccounted.message, /does not account for markdown-table\.mjs/);
+    assert.equal(unaccounted.blocks, 'all', 'a receipt that verifies less than the lane holds blocks the same way drift does');
+    assert.equal(narrowed.status, 1, 'a pruned receipt fails the doctor the room carries');
+    assert.equal(fs.readFileSync(path.join(project, 'workbench', 'tools', 'markdown-table.mjs'), 'utf8').includes('// locally edited'), true,
+      'the tampered file is still on disk; the pruned receipt is what changed');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
+// The room's coverage check derived its expected set from the lane's own
+// contents, so a managed file deleted together with its receipt key left
+// nothing behind to be missed. Ten of the eleven managed tools are in
+// `doctor`'s own import graph and make the run fail loudly at import time;
+// `sessions.mjs` is imported by none of them, so removing it and its key was a
+// silent, clean run - the one false pass the coverage check could still
+// produce. The authoritative managed set therefore lives in the lane the room
+// installs, not only in the release-side installer a room never carries.
+test('a room names a managed file deleted together with its receipt key', () => {
+  const project = fixture();
+  const quietHome = fixture();
+  const roomDoctor = () => {
+    const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
+    return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
+  };
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    render(project);
+    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+
+    // `sessions.mjs` is the managed tool no doctor import reaches, so this is
+    // the deletion that used to be invisible from inside the room.
+    const receiptPath = path.join(project, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const pruned = { ...receipt.files };
+    delete pruned['sessions.mjs'];
+    fs.rmSync(path.join(project, 'workbench', 'tools', 'sessions.mjs'));
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+
+    const gone = roomDoctor();
+    const missing = gone.findings?.find((item) => item.code === 'tools-receipt-missing');
+    assert.ok(missing, `a managed file removed with its key must not read as a clean runtime: ${JSON.stringify(gone.findings)}`);
+    assert.match(missing.message, /does not account for sessions\.mjs/);
+    assert.equal(missing.blocks, 'all', 'a runtime missing a managed tool blocks the same way drift does');
+    assert.equal(gone.status, 1, 'the room doctor fails on a managed tool that is gone');
+    assert.throws(() => nextWork(project), /tools-receipt-missing/, 'next must refuse a room whose managed runtime is incomplete');
+    // The remedy the message names has to be one that works from a release
+    // checkout: `update --explicit-update` restores both the file and the key.
+    assert.match(missing.message, /workbench-tools\.mjs update .*--explicit-update/);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
+// A receipt key the lane lost and a file the managed runtime never included
+// are different conditions with different repairs, and one message served
+// both. `update --explicit-update` rewrites a lost key, but its changed set is
+// derived from the managed tool list, so it can never adopt a foreign file:
+// naming it there sends the operator to a command that reports `current` and
+// changes nothing.
+test('a room tells a foreign lane file apart from a receipt key it lost', () => {
+  const project = fixture();
+  const quietHome = fixture();
+  const roomDoctor = () => {
+    const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
+    return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
+  };
+  const laneFinding = () => roomDoctor().findings?.find((item) => item.code === 'tools-receipt-missing');
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    render(project);
+    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+
+    const smuggled = path.join(project, 'workbench', 'tools', 'smuggled.mjs');
+    fs.writeFileSync(smuggled, 'export const smuggled = true;\n');
+    const foreign = laneFinding();
+    assert.ok(foreign, `a file the managed runtime does not include must be reported: ${JSON.stringify(roomDoctor().findings)}`);
+    assert.match(foreign.message, /does not account for smuggled\.mjs/);
+    assert.match(foreign.message, /move it out of/, 'the only repair for a foreign file is removing it from the lane');
+    assert.doesNotMatch(foreign.message, /--explicit-update/, 'update cannot adopt a foreign file, so it must not be named here');
+    fs.rmSync(smuggled);
+    assert.deepEqual(roomDoctor().findings, [], 'removing the foreign file clears the finding');
+
+    // The other half of the same message: a key the receipt lost for a file
+    // the lane still holds is repaired by refreshing the receipt.
+    const receiptPath = path.join(project, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+    const pruned = { ...receipt.files };
+    delete pruned['markdown-table.mjs'];
+    fs.writeFileSync(receiptPath, `${JSON.stringify({ ...receipt, files: pruned }, null, 2)}\n`);
+    const lost = laneFinding();
+    assert.ok(lost, 'a pruned key is still reported');
+    assert.match(lost.message, /does not account for markdown-table\.mjs/);
+    assert.match(lost.message, /workbench-tools\.mjs update .*--explicit-update/, 'a lost key is repaired by refreshing the receipt');
+    assert.doesNotMatch(lost.message, /move it out of/, 'the managed file belongs in the lane; the receipt is what is wrong');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
 test('Genesis validation names the failing first-spec predicate and the stray lane entries', () => {
   const project = fixture();
   try {

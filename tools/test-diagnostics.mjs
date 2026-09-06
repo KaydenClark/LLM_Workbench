@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -14,6 +15,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const specTool = path.join(root, 'workbench', 'tools', 'spec-workbench.mjs');
 const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
+const toolsInstaller = path.join(root, 'tools', 'workbench-tools.mjs');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 
 function fixture() {
@@ -222,6 +224,78 @@ function permissionFile(buckets) {
 
 const authorshipLanes = ['docs', 'specs', 'wiki', 'sessions', 'feedback'];
 const laneGrants = authorshipLanes.map((lane) => `Edit(./workbench/${lane}/**)`);
+
+// The managed runtime is checked from the room, not from the release: a room
+// carries no installer, so the registered `all` effect of `tools-receipt-drift`
+// is only real if doctor itself observes the receipt hashes.
+test('a drifted or unreadable managed runtime is a blocking tools finding in the room doctor', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    assert.deepEqual(doctor(dir, { home: quietHome }), []);
+    const installed = spawnSync(process.execPath, [toolsInstaller, 'install', '--project', dir], { cwd: root, encoding: 'utf8' });
+    assert.equal(installed.status, 0, `${installed.stdout}${installed.stderr}`);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'an installed runtime that matches its receipt reports nothing');
+
+    const receiptPath = path.join(dir, 'workbench', 'tools', '.workbench-tools.json');
+    const receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+
+    fs.appendFileSync(path.join(dir, 'workbench', 'tools', 'markdown-table.mjs'), '// locally edited\n');
+    const drifted = doctor(dir, { home: quietHome });
+    assert.deepEqual(drifted.map((item) => [item.code, item.severity, item.scope, item.blocks]), [['tools-receipt-drift', 'error', 'tools', 'all']]);
+    assert.equal(cliDoctor(dir).status, 1, 'an all-effect runtime finding must fail doctor');
+    // `all` is a refusal, not only a doctor exit code: a room whose runtime
+    // disagrees with its receipt is executing bytes nobody verified, so it
+    // must not hand out or claim work either.
+    assert.throws(() => nextWork(dir), /tools-receipt-drift/, 'next must refuse to read a drifted layout');
+    assert.throws(() => claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }), /tools-receipt-drift/, 'claim must refuse a drifted layout');
+
+    // An unreadable receipt must fail visibly rather than silently switching
+    // the integrity check off.
+    fs.writeFileSync(receiptPath, '{ not json\n');
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']]);
+
+    // Nor may a receipt that parses but records no file hashes: an empty map
+    // would switch the check off for every managed file at once, which is the
+    // one outcome the drifted case above must never be able to reach.
+    fs.writeFileSync(receiptPath, JSON.stringify({ ...receipt, files: {} }));
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'an empty files map is a receipt that records nothing, not a clean runtime');
+
+    // A receipt key names a file inside the managed lane. A key that climbs
+    // out of it must never satisfy the lane check with a root control's own
+    // true hash.
+    const escaping = `..${path.sep}..${path.sep}AGENTS.md`;
+    const trueHash = crypto.createHash('sha256').update(fs.readFileSync(path.join(dir, 'AGENTS.md'))).digest('hex');
+    fs.writeFileSync(receiptPath, JSON.stringify({ ...receipt, files: { [escaping]: trueHash } }));
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'a receipt key outside the managed lane must be refused, not resolved');
+
+    // Nor may a receipt name every managed file but one. The drift message
+    // names the key to delete, so pruning it is the cheapest way to switch the
+    // check off for exactly the tampered file. The room compares the receipt's
+    // key set with the lane's own contents, which is the only expected set a
+    // room can derive without an authoritative list.
+    const pruned = { ...receipt.files };
+    delete pruned['markdown-table.mjs'];
+    fs.writeFileSync(receiptPath, JSON.stringify({ ...receipt, files: pruned }));
+    const narrowed = doctor(dir, { home: quietHome });
+    assert.deepEqual(narrowed.map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'a receipt pruned of a file the lane still holds verifies less than the runtime it scopes');
+    assert.match(narrowed[0].message, /does not account for markdown-table\.mjs/);
+    assert.throws(() => nextWork(dir), /tools-receipt-missing/, 'next must refuse a room whose receipt does not cover its lane');
+    assert.throws(() => claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }), /tools-receipt-missing/, 'claim must refuse it too');
+
+    // A foreign file dropped into the managed lane is the same condition seen
+    // from the other side: the lane holds a file no receipt key accounts for.
+    fs.writeFileSync(receiptPath, JSON.stringify(receipt));
+    fs.copyFileSync(path.join(root, 'workbench', 'tools', 'markdown-table.mjs'), path.join(dir, 'workbench', 'tools', 'markdown-table.mjs'));
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'the repaired lane is clean again');
+    fs.writeFileSync(path.join(dir, 'workbench', 'tools', 'smuggled.mjs'), 'export const smuggled = true;\n');
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']], 'an unreceipted file in the managed lane is reported, not ignored');
+    fs.rmSync(path.join(dir, 'workbench', 'tools', 'smuggled.mjs'));
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
 
 test('permission-scope-drift names each withheld authorship lane without blocking doctor', () => {
   const registered = describe('permission-scope-drift');

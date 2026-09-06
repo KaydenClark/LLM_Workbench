@@ -267,11 +267,77 @@ node tools/test-workbench-tools.mjs
 repository, release, commit, and a SHA-256 per file, copies each tool as an
 ordinary `0644` file, and refuses a lane that already carries a receipt, a
 foreign unreceipted file, or a symlink. `verify` reports `tools-receipt-drift`
-with the drifted file names (`source` on this repository). `update` requires
-`--explicit-update`, backs changed files up under the user home's
-`.workbench-tools-backup-*`, records the backup path in the receipt, and
-`rollback` restores that backup. An application's root `tools/` directory is
-never read or written.
+with the drifted file names and, for each, which of the drift states below it
+is in (`source` on this repository). `update` requires `--explicit-update`,
+backs changed files up under the user home's `.workbench-tools-backup-*`,
+records the backup path in the receipt, and `rollback` restores that backup. An
+application's root `tools/` directory is never read or written.
+
+`workbench-tools.mjs` itself is never installed into a room, so the same
+receipt hash check also runs from `workbench/tools/workbench-layout.mjs`, which
+every room does install, and `doctor` reads it. A room therefore verifies the
+runtime it is executing with only the tools it contains, and a drifted managed
+tool fails that room's own `doctor` at the registered `all` effect - which
+`next` and `claim` also enforce, refusing to dispatch or claim a slice until
+the runtime is repaired. The check runs only when the lane carries a receipt -
+an uninstalled or release lane is not a managed runtime, and its absent receipt
+stays the Genesis readiness gate's finding - and a receipt that exists but
+cannot be read, records no file hashes, or names a file outside the tools lane
+is reported as `tools-receipt-missing` rather than silently switching the check
+off. Its cost is bounded: at most the managed files the receipt names plus one
+directory listing of the lane, each file read and hashed once.
+
+The receipt does not decide how much of the runtime gets checked. A drift
+report names the file it found, so deleting that key would otherwise switch the
+check off for exactly the tampered file while every other key went on
+verifying. Both entry points therefore compare the receipt's key set with the
+authoritative managed set - `RUNTIME_TOOLS`, defined in
+`workbench/tools/workbench-layout.mjs` so that a room carries it too - and
+report `tools-receipt-missing` naming what the receipt does not account for,
+whether or not the file is still on disk. Both also list the lane, so a foreign
+file dropped in beside the managed tools is reported. Dotted entries - the
+receipt itself, the installer's transient `.receipt-*` staging directory - are
+not managed runtime and are skipped.
+
+The two conditions carry different remedies, because only one of them has a
+command that repairs it. A managed tool the receipt does not account for is
+repaired by `update --explicit-update`, which rewrites a key the receipt lost
+even when the installed bytes already match the release, and restores a managed
+file the lane lost. A file the managed runtime does not include is repaired
+only by moving it out of the lane: `update` derives its changed set from the
+managed tool list, so it reports `current` and changes nothing, and `install`
+refuses a lane that already carries a receipt.
+
+The list lives in an installed tool rather than in the release-side installer
+because a room never carries `workbench-tools.mjs`. Deriving the expected set
+from the lane's own contents instead left one silent hole: a managed file
+deleted together with its receipt key leaves nothing on disk to be missed. Ten
+of the eleven managed tools are in `doctor`'s own import graph, so deleting one
+of those fails loudly with `ERR_MODULE_NOT_FOUND` before any check runs;
+`sessions.mjs` is imported by none of them, and its deletion read as a clean
+runtime. The list is no less trustworthy than the check that reads it:
+`workbench-layout.mjs` is itself a managed file, so rewriting the list means
+rewriting a managed file, which the hash comparison reports.
+
+One condition the receipt check still cannot reach: a receipt deleted outright
+leaves no managed runtime to check, so `doctor` reports nothing and only the
+Genesis readiness gate (`validate --genesis`) fails on it. A managed file
+deleted outright is now named - by the coverage comparison if its key went with
+it, as `missing-or-not-a-file` drift if the key remains - though for the ten
+tools in the import graph the loader fails first, so what a room sees there is
+a stack trace rather than a finding.
+
+Drift alone does not say what happened, so each drifted file is classified by
+comparing the installed bytes with the release source. `updateAvailable`
+compares the receipt with the source and answers a different question, so it
+never substitutes for this.
+
+| Drift state | What it means | Remedy |
+|---|---|---|
+| `receipt-stale` | the installed bytes are the release source's; the receipt hash is the stale fact | `update --explicit-update`, which backs the replaced files up under the user home and records the backup path in the receipt |
+| `runtime-modified` | the installed bytes match neither the receipt nor the release source | `rollback --backup PATH` from a backup the receipt records, or `update --explicit-update` once the difference is reviewed |
+| `runtime-authentic` | the bytes match both the receipt and the release source; only the file mode drifted | restore mode `0644` on the managed file |
+| `source-unavailable` | no release source was reachable, which is every installed room | run `verify` from a release checkout to classify the drift |
 
 Installation and explicit updates also require a clean Git source lane, an
 `origin`, and a concrete 40-character `HEAD`; source identity is resolved
