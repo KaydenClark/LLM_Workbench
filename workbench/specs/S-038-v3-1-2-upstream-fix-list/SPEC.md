@@ -257,6 +257,7 @@ node tools/evaluate-workbench.mjs --path templates --include-controls
 | 2026-09-06 | TK-002 | Ticket closed and spec completed; the release account is recorded | All six owning specs are `complete` and contained in `integration`: S-041 PR #65, S-043 PR #66, S-040 PR #67, S-042 PR #68, S-039 PR #69, S-044 PR #70, each proved by `git merge-base --is-ancestor`. `origin/main` carries no `workbench/` tree. Full `AGENTS.md` suite on the merged tip `18ffc0d`: 25 node suites plus `evals/tasks/task_b_path_safety/test_grade.py` all pass; `render` leaves no drift; `doctor` exits 0; `check-append-only.py` CLEAN; `git diff --check` clean; no CRLF. Guardrail `78/100` and templates `106.6/113`, measured before the work began and again here with unchanged criteria - neither moved, and the Completion Result says why that is the expected result rather than a disappointing one | Disposition table in the S-035 shape, the release account for Master Workbench, the guardrail before/after with its limitation, and an honest record of what the review gate cost | Publishing `integration` to `main` is owner-only. Every limitation the six specs recorded stays open and routed; none is closed by this ticket |
 | 2026-09-06 | TK-002 | Separate-context review of the closeout found two false claims in it; corrected here | Reviewer verified every completion and containment claim, all eleven disposition rows against the merged tree, all four corrections to the upstream report, the reattribution's `E:/`-path evidence, the guardrail argument by measuring three commits itself, and the faithfulness of the recovered S-036/S-037 cherry-pick - and found two claims false. (1) "Every one of the six capability slices was rejected by its first separate-context review" is wrong: S-041's one slice review APPROVED, recording three caveats. The true count is five of six. It was wrong in the paragraph that exists to let Master Workbench price the review gate, and wrong in the same direction as flattery toward the gate. Corrected in the Completion Result and in `benchmarks/RESULTS.md`, whose row had not yet reached `integration`. (2) The row above claims every limitation "stays open and routed". Completing S-038 and S-043 in this very ticket removed the named owner from two: S-040 routed its presence-only link gap to "a follow-up spec, or an upstream item under S-038", and S-042 named S-043 as its `doctor` hook's owner "if S-043 merges without the hook, this becomes a new linked spec" - which is what happened. Both are now carried in this spec's Remaining Limitations as owed with no current owner. Neither spec is created, per `AGENTS.md`: record the blocker in the existing owner rather than manufacture a queue item. Also surfaced S-044's six missing `classify` snapshots into its Remaining Limitations, where they had lived only in an evidence cell, and corrected the UP-020 row, which juxtaposed the reporting room's 6 + 4 against this repository's zero and invited the inference that S-037 moved this repository from one to the other; the real evidence is S-037's CRLF simulation | The row above is restored byte-for-byte and corrected here rather than edited, because `check-append-only.py` counts it published at `4b4c67c` and amending a pushed commit would be a force-push `AGENTS.md` forbids without approval | The two orphaned follow-ups are owed and unowned; opening specs for them is an owner decision |
 | 2026-09-06 | TK-002 | Second closeout review found the corrected count still wrong and one cause misattributed; corrected here | Reviewer recounted from the evidence logs: "three of those needed four rounds" is wrong - **two** did. Enumerated in the Completion Result so the claim no longer depends on a counting convention: S-039 and S-044 four slice reviews, S-042 three, S-040 and S-043 two, S-041 one. The first correction fixed six-to-five and left the adjacent number unchecked. It also found "Completing S-038 and S-043 in this very ticket" false: S-043 was already `complete` at `18ffc0d` and this branch never touched it, so S-042's fallback fired at PR #66 before this branch existed. Only S-040's item was orphaned here. And it found the `AGENTS.md` citation did not license declining to open the specs - the "no confident next action" and "for yourself" antecedents both fail, while `AGENTS.md` positively requires a new linked spec for a later change to a completed result - and that "visible" was false against the harness's own routes, since `next` returns null and neither item reaches `doctor` or the Taskboard | [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) created to own all three follow-ups, every ticket `blocked` on owner direction so `next` still excludes them; `tools/check-append-only.py` extended to cover `benchmarks/RESULTS.md`, which immediately caught this branch's own in-place edit of that ledger | Whether v3.1.3 takes any of the three is an owner decision |
+| 2026-09-06 | TK-002 | Third closeout review found the corrected count credited four approving reviews that never happened, and three further gate deviations; all four owed reviews were then run | The reviewer recounted from the six evidence logs: `grep -niE "approv"` across all six slice specs returns two hits, S-041's approving row and S-040's gate-deviation row. Only S-041 has an evidenced approving review; S-042's exists only in a header line its own merge commit `6b83f40` wrote. So "add the approving review to each and the totals are 5, 5, 4, 3, 2, 1" was false for four of six. The same recount surfaced that S-039, S-043 and S-044 each merged the repair for a CHANGES REQUESTED verdict with no fresh review, exactly as S-040 had - and that two of them still carried a `Next gate` line naming the review that was skipped. All four owed reviews were run retrospectively on 2026-09-06 against their exact unreviewed ranges. S-043 **approved**. S-039, S-040 and S-044 returned **CHANGES REQUESTED**, two findings rated HIGH: S-040's repair re-published a host description that measurement contradicts, and S-044's repair introduced two new false claims. S-039's repair was sound at its own tree and its merge provably faithful, but nine of its live citations point at unrelated content on `integration` because bare line numbers were pinned to a tree the next commit invalidated | The gate account is rewritten to state the real counts and the four deviations; S-039, S-043 and S-044 each gained a gate-deviation row in the shape S-040's already had; S-039's and S-044's headers and S-042's and S-044's Completion Results are repaired; every finding is routed to S-045; `tools/check-append-only.py` now derives its spec list from the filesystem rather than a hardcoded seven, which had silently excluded S-036, S-037 and S-045 - all three carry rows this branch wrote | The nine stale S-039 citations and roughly 68 further bare citations across the sibling specs stand until S-045 acts. Whether S-042's approving review happened is unresolved; if it did not, the count is four deviations of six rather than four with one unevidenced |
 
 ## Completion Result
 
@@ -310,16 +311,46 @@ review of the slice.
 
 The convention, stated once and applied once: **count reviews that returned
 CHANGES REQUESTED.** On that count S-039 and S-044 took four each, S-042 three,
-S-040 two, S-043 one, and S-041 none - its single review approved. Add the
-approving review to each and the totals are 5, 5, 4, 3, 2, 1. Two earlier drafts
-of this paragraph were wrong: the first said all six were rejected, the second
-said three needed four rounds and then enumerated by mixing both conventions
-inside one list. The routing candidate S-038 took four further reviews before any
-slice existed; they are not counted here. S-041 is the exception: its one
-slice review approved, recording three caveats rather than blocking on them.
-Naming it matters, because six-of-six reads as a gate that catches something
-every time, while five-of-six with one clean pass is a different signal about
-whether four-round churn is the norm or the tail. The findings were real and none was
+S-040 two, S-043 one, and S-041 none - its single review approved. Three earlier
+drafts of this paragraph were wrong: the first said all six were rejected; the
+second said three needed four rounds and then enumerated by mixing both
+conventions inside one list; the third added "add the approving review to each
+and the totals are 5, 5, 4, 3, 2, 1", which credited four approving reviews that
+never happened. Only S-041 has an approving review recorded in an evidence row.
+S-042's is asserted in a header line that its own merge commit `6b83f40` wrote,
+with no row behind it. **The other four - S-039, S-040, S-043 and S-044 - merged
+into `integration` with no approving review at all**, which the next section
+records as gate deviations. For the routing candidate S-038 the evidence log
+carries three review rows before any slice existed, the third of which calls
+itself "Fourth"; whether the unrecorded one makes the total four is not
+resolvable from the log, so no number is asserted here. S-041 is the exception
+among the slices: its one review approved, recording three caveats rather than
+blocking on them. Naming it matters, because six-of-six reads as a gate that
+catches something every time, while five-of-six with one clean pass is a
+different signal about whether four-round churn is the norm or the tail.
+
+**The gate was skipped four times out of six, and skipping it was not free.**
+`AGENTS.md` requires a fresh separate-context review after a CHANGES REQUESTED
+verdict before a candidate combines into `integration`. S-039, S-040, S-043 and
+S-044 each merged the repair for such a verdict without one. All four owed
+reviews were discharged retrospectively on 2026-09-06, against the exact
+unreviewed ranges. **One approved. Three did not.** S-043's delta was clean.
+S-040's repair re-published, under a "Verified in this repository" stamp, a
+description of the reporting host that measurement contradicts - the symlink is
+one level up from where the spec puts it, and the refusal code the spec names is
+unreachable for that layout. S-039's repair was correct at its own tree and its
+merge provably faithful, but it pinned bare line numbers to a tree the very next
+commit invalidated, so nine live citations in that spec - including a checked
+acceptance box with no immutable fallback - point at unrelated content on
+`integration` today. S-044's merge was approved as a faithful union, and its
+repair introduced two new false claims in the paragraph written to correct a
+false claim. Every finding is routed to S-045; none rewrites a completed result.
+
+That is the honest price. The gate is not ceremony: run four times, it caught
+defects three times, including two rated HIGH, in candidates that a green suite
+and a clean `doctor` had already passed.
+
+The findings from the original slice reviews were real too, and none was
 cosmetic: a receipt whose `files` map was `{}` silently disabled the integrity
 check; `next` and `claim` ignored a registered `all` effect, so an agent could
 claim a slice while executing tampered bytes; a vanilla Node app with one file

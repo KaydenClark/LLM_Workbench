@@ -261,7 +261,7 @@ be changed only through a later spec linked by supersession.
 | [S-042 - Repairing Installed State The Harness Wrote](workbench/specs/S-042-installed-state-repair/SPEC.md) | Report and repair the installed state the harness itself produced - seeded lane documents behind the manifest, records without required frontmatter, and provenance placeholders - so a fix upstream reaches a room that already exists. | complete |
 | [S-043 - Diagnostic Output Legibility](workbench/specs/S-043-diagnostic-output-legibility/SPEC.md) | Stop a healthy room from reading as failed by separating what a doctor finding blocks from how loudly it is printed, without changing any blocking semantics. | complete |
 | [S-044 - Legacy Room Classification And Control Reconcile Order](workbench/specs/S-044-legacy-room-classification/SPEC.md) | Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone. | complete |
-| [S-045 - v3.1.2 Follow-Ups Left Without An Owner](workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md) | Own the three follow-ups the v3.1.2 slices recorded and could not close, so owed work appears on the Taskboard and in the spec catalog instead of surviving only as prose inside completed specs. | active |
+| [S-045 - v3.1.2 Follow-Ups Left Without An Owner](workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md) | Own the three follow-ups the v3.1.2 slices recorded and could not close, so owed work has a spec that carries it instead of surviving only as prose inside completed specs. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
