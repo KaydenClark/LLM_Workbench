@@ -515,6 +515,39 @@ test('Genesis readiness requires a version-matched runtime tools receipt', () =>
   }
 });
 
+// The receipt hash check must be reachable from the room itself: the release
+// installer is never copied into a room, so a room whose managed runtime
+// disagrees with its own receipt has to fail the doctor it carries.
+test('a room whose managed runtime drifts from its receipt fails the doctor it carries', () => {
+  const project = fixture();
+  const quietHome = fixture();
+  const roomDoctor = () => {
+    const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
+    return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
+  };
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    render(project);
+    const clean = roomDoctor();
+    assert.equal(clean.status, 0, `${clean.stderr}`);
+    assert.deepEqual(clean.findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+
+    // An appended comment still parses, so the room's doctor runs; only the
+    // hash the receipt recorded has changed.
+    fs.appendFileSync(path.join(project, 'workbench', 'tools', 'markdown-table.mjs'), '// locally edited\n');
+    const drifted = roomDoctor();
+    const reported = drifted.findings?.find((item) => item.code === 'tools-receipt-drift');
+    assert.ok(reported, `the room's own doctor must report tools-receipt-drift: ${JSON.stringify(drifted.findings)}`);
+    assert.equal(reported.blocks, 'all', 'the registered effect is the contract');
+    assert.deepEqual(reported.drift.map((entry) => [entry.tool, entry.reason]), [['markdown-table.mjs', 'hash']]);
+    assert.equal(drifted.status, 1, 'a drifted managed runtime fails the doctor the room carries');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
 test('Genesis validation names the failing first-spec predicate and the stray lane entries', () => {
   const project = fixture();
   try {

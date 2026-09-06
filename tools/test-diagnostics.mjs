@@ -14,6 +14,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const specTool = path.join(root, 'workbench', 'tools', 'spec-workbench.mjs');
 const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
+const toolsInstaller = path.join(root, 'tools', 'workbench-tools.mjs');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 
 function fixture() {
@@ -222,6 +223,33 @@ function permissionFile(buckets) {
 
 const authorshipLanes = ['docs', 'specs', 'wiki', 'sessions', 'feedback'];
 const laneGrants = authorshipLanes.map((lane) => `Edit(./workbench/${lane}/**)`);
+
+// The managed runtime is checked from the room, not from the release: a room
+// carries no installer, so the registered `all` effect of `tools-receipt-drift`
+// is only real if doctor itself observes the receipt hashes.
+test('a drifted or unreadable managed runtime is a blocking tools finding in the room doctor', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    assert.deepEqual(doctor(dir, { home: quietHome }), []);
+    const installed = spawnSync(process.execPath, [toolsInstaller, 'install', '--project', dir], { cwd: root, encoding: 'utf8' });
+    assert.equal(installed.status, 0, `${installed.stdout}${installed.stderr}`);
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'an installed runtime that matches its receipt reports nothing');
+
+    fs.appendFileSync(path.join(dir, 'workbench', 'tools', 'markdown-table.mjs'), '// locally edited\n');
+    const drifted = doctor(dir, { home: quietHome });
+    assert.deepEqual(drifted.map((item) => [item.code, item.severity, item.scope, item.blocks]), [['tools-receipt-drift', 'error', 'tools', 'all']]);
+    assert.equal(cliDoctor(dir).status, 1, 'an all-effect runtime finding must fail doctor');
+
+    // An unreadable receipt must fail visibly rather than silently switching
+    // the integrity check off.
+    fs.writeFileSync(path.join(dir, 'workbench', 'tools', '.workbench-tools.json'), '{ not json\n');
+    assert.deepEqual(doctor(dir, { home: quietHome }).map((item) => [item.code, item.blocks]), [['tools-receipt-missing', 'all']]);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
 
 test('permission-scope-drift names each withheld authorship lane without blocking doctor', () => {
   const registered = describe('permission-scope-drift');

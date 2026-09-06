@@ -2,6 +2,7 @@
 // Manifest schema 2 layout: six lanes, seven collections, untracked-by-default
 // session records, and the Genesis readiness gate. A schema 1 manifest is
 // reported as `upgrade-required` and migrated once, losslessly.
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -52,6 +53,10 @@ function lstatOrNull(target) {
     if (error.code === 'ENOENT') return null;
     throw error;
   }
+}
+
+function sha256(file) {
+  return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 }
 
 function report(status, details = {}) { return { status, ...details }; }
@@ -508,17 +513,19 @@ function validateFirstSpec(project, expectedVersion) {
   return null;
 }
 
+export const TOOLS_RECEIPT = '.workbench-tools.json';
+
 // Readiness also needs the Workbench-managed runtime tools: an installed lane
 // whose receipt names the same release as the manifest.
 function validateGenesisRuntime(project, expectedVersion) {
-  const receiptPath = path.join(project, lanes.tools, '.workbench-tools.json');
+  const receiptPath = path.join(project, lanes.tools, TOOLS_RECEIPT);
   const receiptEntry = lstatOrNull(receiptPath);
   if (!receiptEntry?.isFile() || receiptEntry.isSymbolicLink()) {
     return fail('tools-receipt-missing', `${lanes.tools} must carry the Workbench tools receipt; run workbench-tools.mjs install from the release checkout.`, { control: lanes.tools });
   }
   let receipt;
   try { receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8')); } catch (error) {
-    return fail('tools-receipt-missing', `${lanes.tools}/.workbench-tools.json is unreadable: ${error.message}`, { control: lanes.tools });
+    return fail('tools-receipt-missing', `${lanes.tools}/${TOOLS_RECEIPT} is unreadable: ${error.message}`, { control: lanes.tools });
   }
   if (receipt.source?.release !== expectedVersion) {
     return fail('version-mismatch', `Tools receipt release ${receipt.source?.release} must match manifest Workbench version ${expectedVersion}.`, { control: lanes.tools, reason: 'runtime tools receipt release differs from the manifest' });
@@ -532,6 +539,45 @@ function validateGenesisRuntime(project, expectedVersion) {
     if (versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control, reason: 'wiki stamp differs from the manifest' });
   }
   return null;
+}
+
+// The managed-runtime integrity check, kept in a tool every room carries. The
+// installer that writes the receipt (`tools/workbench-tools.mjs`) is never
+// copied into a room, so without this the registered `all` effect of
+// `tools-receipt-drift` would be unreachable from the room executing the
+// runtime. The cost is bounded: at most the managed files the receipt names,
+// each read and hashed once, and only when a receipt exists.
+export function receiptDrift(laneDir, receipt) {
+  const drift = [];
+  for (const [tool, expected] of Object.entries(receipt.files)) {
+    const file = path.join(laneDir, tool);
+    const entry = lstatOrNull(file);
+    if (!entry?.isFile() || entry.isSymbolicLink()) { drift.push({ tool, reason: 'missing-or-not-a-file' }); continue; }
+    if ((entry.mode & 0o111) !== 0) drift.push({ tool, reason: 'executable-bit' });
+    if (sha256(file) !== expected) drift.push({ tool, reason: 'hash' });
+  }
+  return drift;
+}
+
+// Doctor's half of the same check. A lane with no receipt is not a managed
+// runtime and is reported by the Genesis readiness gate, not here; a receipt
+// that exists and cannot be read is reported, because a corrupt receipt must
+// not silently switch the integrity check off.
+export function managedRuntimeDrift(project, options = {}) {
+  const relative = options.lane ?? lanes.tools;
+  const laneDir = path.join(project, relative);
+  const receiptPath = path.join(laneDir, TOOLS_RECEIPT);
+  const entry = lstatOrNull(receiptPath);
+  if (!entry) return null;
+  const unreadable = (reason) => ({ code: 'tools-receipt-missing', message: `${relative}/${TOOLS_RECEIPT} ${reason}; reinstall the managed runtime from the release checkout`, lane: relative });
+  if (!entry.isFile() || entry.isSymbolicLink()) return unreadable('must be an ordinary file');
+  let receipt;
+  try { receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8')); } catch (error) { return unreadable(`is unreadable: ${error.message}`); }
+  if (!receipt?.files || typeof receipt.files !== 'object' || Array.isArray(receipt.files)) return unreadable('records no managed file hashes');
+  const drift = receiptDrift(laneDir, receipt);
+  if (drift.length === 0) return null;
+  const named = drift.map((item) => `${item.tool} (${item.reason})`).join(', ');
+  return { code: 'tools-receipt-drift', message: `${relative} differs from the hashes ${TOOLS_RECEIPT} recorded: ${named}`, lane: relative, drift };
 }
 
 // The permission file is the mechanical half of the prose Edit Scope. Claude

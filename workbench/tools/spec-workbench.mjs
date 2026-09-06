@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { insideWorkTree, permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -277,6 +277,11 @@ function collectionFindings(root) {
   } catch (error) {
     findings.push(finding('invalid-note', `wiki validation failed: ${error.message}`));
   }
+  // The runtime a room executes is checked against the receipt that installed
+  // it, from the room itself; a lane with no receipt is not a managed runtime
+  // and is the Genesis readiness gate's business, not doctor's.
+  const runtime = managedRuntimeDrift(root, { lane: manifest.lanes?.tools });
+  if (runtime) findings.push(finding(runtime.code, runtime.message, { lane: runtime.lane, ...(runtime.drift ? { drift: runtime.drift } : {}) }));
   // The permission file is the mechanical half of the prose Edit Scope; a
   // declared lane it withholds is named, never rewritten, and never blocks.
   const drift = permissionScopeDrift(root, manifest.lanes);
