@@ -4,7 +4,8 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
-import { MANAGED_MARKER, markerSourceIdentity, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
+import { MANAGED_MARKER, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
+import { sourceIdentity } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
@@ -130,10 +131,9 @@ function preflight(project, home, explicit, layoutOnly = false) {
   return { gitSha: git.stdout.trim(), inventory: inventoryResult.stdout.split('\0').filter(Boolean), destinations };
 }
 
-function updateSkills(destinations, home) {
+function updateSkills(destinations, home, identity) {
   const backupRoot = fs.mkdtempSync(path.join(home, '.workbench-upgrade-backup-'));
   const skillBackups = [];
-  const identity = markerSourceIdentity();
   for (const { engine, root: destinationRoot } of destinations) {
     fs.mkdirSync(destinationRoot, { recursive: true });
     for (const skill of coreSkills) {
@@ -162,12 +162,17 @@ function upgrade(options) {
   const home = path.resolve(options['--home']);
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
+  let skillIdentity;
+  try {
+    const identity = sourceIdentity({ managedPaths: options.layoutOnly ? ['workbench/tools', 'templates'] : ['skills', 'workbench/tools', 'templates'] });
+    if (!options.layoutOnly) skillIdentity = { release: identity.release, commit: identity.commit };
+  } catch (error) { return fail('invalid-source-identity', error.message); }
   const readiness = preflight(project, home, options.explicit, options.layoutOnly);
   if (readiness.status === 'blocked') return readiness;
   const skills = options.layoutOnly ? 'presence-only' : 'explicit-update';
   let skillBackups = [];
   try {
-    if (!options.layoutOnly) skillBackups = updateSkills(readiness.destinations, home);
+    if (!options.layoutOnly) skillBackups = updateSkills(readiness.destinations, home, skillIdentity);
     const adoption = spawnSync(process.execPath, [adoptionTool, 'migrate', '--project', project, '--home', home, '--version', options['--version']], { cwd: root, encoding: 'utf8' });
     const adoptionReport = adoption.stdout ? JSON.parse(adoption.stdout) : null;
     if (adoption.status !== 0 || adoptionReport?.status !== 'complete') {

@@ -224,7 +224,8 @@ function migrate(options) {
   const home = path.resolve(options['--home'] || os.homedir());
   const failure = preflight(project, home);
   if (failure) return failure;
-  const source = sourceIdentity();
+  let source;
+  try { source = sourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
   const residue = {
     rootManagedTools: RUNTIME_TOOLS.filter((name) => Boolean(lstatOrNull(path.join(project, 'tools', name)))),
     movedExternalLinks: movedExternalLinks(project)

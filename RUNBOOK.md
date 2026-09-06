@@ -167,13 +167,13 @@ node tools/test-workbench-layout.mjs
 ```
 
 `init` and `migrate` record the exact Workbench source in
-`provenance.source`. Run from this release checkout they resolve its `origin`
-URL and `HEAD` when `--source-commit SHA` and `--source-repository URL` are
-omitted; an explicit flag always wins. A copy of the tool outside a release
-checkout (the installed `workbench/tools/` copy in a downstream project) cannot
-know the Workbench source and refuses with `invalid-invocation` naming the
-missing flag before writing anything. The placeholder `unrecorded` is never
-written.
+`provenance.source`. Run them from a clean release checkout: they verify its
+`origin`, full 40-character `HEAD`, declared release, and runtime-tool bytes.
+Optional `--source-commit SHA` and `--source-repository URL` values are
+assertions and must match that checkout; they cannot override it. A relocated
+partial copy cannot prove which Workbench bytes it carries and refuses with
+`invalid-source-identity` before writing anything, even when source strings are
+supplied. The placeholders `unrecorded` and `unknown` are never written.
 
 A schema 1 (v3.0 five-lane) manifest validates as `upgrade-required`. Migrate
 it once, losslessly: `workbench/grilling` becomes `workbench/sessions/grilling`
@@ -269,6 +269,13 @@ with the drifted file names (`source` on this repository). `update` requires
 `rollback` restores that backup. An application's root `tools/` directory is
 never read or written.
 
+Installation and explicit updates also require a clean Git source lane, an
+`origin`, and a concrete 40-character `HEAD`; source identity is resolved
+before a destination, receipt, or backup is created. Skill markers apply the
+same rule to the bundled `skills/` bytes. Managed-component updates record the
+new component generation in their receipt or marker without rewriting the
+room manifest's historical adoption source.
+
 Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
 nonregular managed files, and unsafe backup entries before copying or creating
 backups. Resolve the path collision while preserving its target, then retry the
@@ -342,8 +349,8 @@ The JSON report (Markdown with `--format markdown`, also carried in the JSON
 `markdown` field) covers the six templated root controls, `CLAUDE.md` checked
 for exact equality with `@AGENTS.md`, `.claude/settings.json` when present, and
 the seeded wiki contract files plus `MEMORY.md` under the manifest-declared
-wiki lane. Every template line is `filled` (a placeholder line the room
-filled, compared for presence only), `unchanged`, `dropped`, or `changed`
+wiki lane. Every template line is `filled` (a placeholder line whose fixed
+wording remains intact after the room fills its value), `unchanged`, `dropped`, or `changed`
 (nearest word-overlap match at or above 0.5); every room line with no template
 origin is `added`. It states the checkout version and the room's manifest
 release and labels a newer or older template generation instead of pretending
@@ -593,18 +600,20 @@ home); doctor never writes there.
 `permission-scope-drift` (severity `error`, scope `controls`, effect `none`)
 is reported when `.claude/settings.json` exists and withholds a
 manifest-declared authorship lane (`docs`, `specs`, `wiki`, `sessions`, or
-`feedback` lacks a covering `Edit` and `Write` `allow` rule, or a `deny` or
+`feedback` lacks a covering `Edit` `allow` rule, or a `deny` or
 `ask` rule covers it, since both override `allow` and an asked lane prompts on
-every write), or when the `tools` lane is granted in `allow` with no `ask` or
-`deny` rule taking precedence. The finding names each withheld lane with its
+every write), or when the `tools` lane is granted in `allow` without a covering
+`ask` rule holding the whole lane. A `deny` that covers or intersects an allowed
+tools lane remains visible. The finding names each withheld lane with its
 reason; it never edits the file, and a room may deny a lane deliberately and
 record why in `AGENTS.md`. The matcher is conservative: it recognises
-`./<lane>/**` and a covering parent glob such as `./workbench/**`, and treats
-any other shape or an unreadable file as not granting. `validate --genesis`
+bare `Edit`, the documented `path`, `./path`, and `/path` project-relative
+forms, `//path` absolute paths, and `~/path` home-relative paths. A restrictive
+pattern it cannot safely interpret and an unreadable file
+are reported rather than treated as clear. `validate --genesis`
 fails closed on the same condition; a room without the file is unaffected.
-Resolve it by adding the paired `Edit(./workbench/<lane>/**)` and
-`Write(./workbench/<lane>/**)` rules from `templates/.claude/settings.json`
-and moving `workbench/tools/**` to `ask`.
+Resolve it by adding the `Edit(./workbench/<lane>/**)` rules from
+`templates/.claude/settings.json` and moving `workbench/tools/**` to `ask`.
 
 ### Socket Contract Registry
 
@@ -940,7 +949,7 @@ assigned target; it never authorizes a repair or invokes automated repair.
 | feedback discovery returns no candidate unexpectedly | checkout is a worktree/duplicate, origin is not writable-owner, or fingerprint is already pending/processed | `node tools/feedback-automation.mjs discover --projects-root /absolute/projects-root` | repair the canonical checkout or record the pending/processed decision; do not broaden discovery |
 | an automation pauses after a lock, owner gate, or provider failure | the scheduler counted an interruption as idle | inspect the latest `run-outcome` JSON and prior verified-idle count | emit `collision`, `owner_gate`, or `infrastructure_error`; preserve the idle count and retry or wait for the proper wake event |
 | Sol cannot prove a candidate because GitHub or model access is down | transient infrastructure failure | read the PR verdict comment and repeat count | leave the PR open, retry next run, and alert after the second identical failure |
-| `doctor` reports `permission-scope-drift` or `validate --genesis` rejects a room on it | `.claude/settings.json` withholds a manifest-declared authorship lane (no `Edit` and `Write` allow, or a `deny` or `ask` rule covers it) or grants `workbench/tools/` in `allow` | `node workbench/tools/spec-workbench.mjs doctor --json` and read the `lanes` field | add the paired `Edit` and `Write` `allow` rules for each named lane from `templates/.claude/settings.json`, hold `workbench/tools/**` in `ask`, or record the deliberate denial in `AGENTS.md` |
+| `doctor` reports `permission-scope-drift` or `validate --genesis` rejects a room on it | `.claude/settings.json` withholds a manifest-declared authorship lane (no covering `Edit` allow, a `deny` or `ask` rule covers it, or a restrictive shape is uncertain), or grants `workbench/tools/` in `allow` without a covering `ask`; an intersecting tools deny also remains visible | `node workbench/tools/spec-workbench.mjs doctor --json` and read the `lanes` field | add the `Edit` `allow` rule for each named lane from `templates/.claude/settings.json`, hold the whole `workbench/tools/**` lane in `ask`, simplify an uncertain restriction, or record the deliberate denial in `AGENTS.md` |
 
 ## Recovery And Rollback
 

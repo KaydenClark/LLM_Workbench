@@ -62,9 +62,10 @@ the applicable candidate review.
 
 [S-022](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md) records the
 original v3.1 release umbrella, now paused behind S-027. `KaydenClark/LLM_Workbench` is the sole Workbench
-source and release repository; the owner's deployment and its Foundry
-extension adopt released versions and are read-only evidence while v3.1 is
-built ([ADR-0026](workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md)).
+source and release repository. GPT_OS orchestrates authorized portfolio
+deployment, Audit_Workbench audits downstream Harness Feedback Reviews, and
+projects remain read-only evidence while a candidate is built
+([ADR-0026](workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md)).
 Four linked capabilities carry the behavior:
 
 - [S-023](workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md):
@@ -127,29 +128,38 @@ are challenged. It is not a separate independent gate per ticket.
 
 Use real contrasting owner-selected Workbenches for later evidence: useful
 delivery, named verification, and truthful fresh-session continuation. Example
-projects are not assignments. Master Workbench implementation is parked until
-several such proofs establish a concrete registry, observation-audit, or
-visualization need. Foundry development, orchestration, CIC redesign, connectors,
+projects are not assignments. The then-proposed Master Workbench, now named
+Audit_Workbench, was outside that first implementation pending concrete
+registry, observation-audit, or visualization evidence. Foundry development,
+orchestration, CIC redesign, connectors,
 and a dedicated feedback Workbench are outside this first implementation.
 
 ## Accepted V3.1.2 Direction
 
 v3.1.2 is the patch that answers the v3.1.1 upstream fix list compiled by
-Master Workbench from the Cashflow Calculator, Command Information Center, and
+Audit_Workbench from the Cashflow Calculator, Command Information Center, and
 OpenBrain reviews, together with this repository's own v3.1.1 acceptance
 report. S-028 landed the first accepted subset (strict feedback rows, truthful
 migration output, manifest-aware guardrails, feedback harvest as a completion
 condition). Six linked capabilities carry the rest, and one umbrella stamps the
 version last:
 
+| Participant | Owns | Does not own |
+|---|---|---|
+| LLM_Workbench | Canonical templates, portable tools and skills, upgrade procedure, verified version candidates | Portfolio target selection or downstream deployment |
+| GPT_OS | Authorized target selection, deployment, rollout tracking, and recovery | Canonical harness source or a project's product decisions |
+| Audit_Workbench | HFR audit, cross-project evidence, and upstream summary reports | Implementing harness repairs or deploying them |
+| Each project | Its product, filled controls, local work/evidence, and truthful HFR | Upstream template policy or portfolio orchestration |
+
 - [S-029](workbench/specs/S-029-declared-integration-branch/SPEC.md): the
   integration branch as a manifest-declared fact that doctor and the Genesis
   gate check; Genesis, Adoption, and upgrade finish as a commit on a prefixed
   branch; a checkout is told when its selected spec is already complete on
   integration.
-- [S-030](workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md): the
-  template permission file grants Edit and Write on the Workbench authorship
-  lanes, and doctor reports a permission file that withholds a declared lane.
+- [S-030](workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md), as
+  corrected by S-036: the template permission file grants `Edit` on the
+  Workbench authorship lanes, keeps the tools lane prompted, and doctor reports
+  a lane that is withheld or cannot be cleared through the bounded matcher.
 - [S-031](workbench/specs/S-031-installed-skill-generation/SPEC.md): managed
   skill markers record release and commit; doctor names stale or unknown
   installed skills; a review claim about a skill names the copy it read.
@@ -162,15 +172,18 @@ version last:
   inside the repository.
 - [S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md): a report of
   which template-derived control lines a room changed, dropped, or added.
-- [S-035](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md): the
+- [S-035](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md), corrected
+  by [S-036](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md): the
   v3.1.2 stamp after every capability above is complete, the guardrail
-  re-measurement, the disposition of all twelve upstream items, and the
-  reviewed candidate on `integration`.
+  re-measurement, the disposition of all twelve upstream items, truthful
+  permission/fidelity/source evidence, an already-v3 preservation rehearsal,
+  and the reviewed candidate on `integration`.
 
 Invariants these must preserve: findings that only inform stay `attention` or
 `none`-effect (ADR-0020); presence-only setup and explicit-only skill
-replacement are unchanged; nothing in this repository edits a downstream room;
-a version label is not publication.
+replacement are unchanged; this repository prepares the exact upgrade handoff
+but does not edit a downstream room; GPT_OS owns authorized deployment; a
+version label is not publication.
 
 ## Architecture And Invariants
 
@@ -239,6 +252,7 @@ be changed only through a later spec linked by supersession.
 | [S-033 - Room Brain Routing, Wiki Stamps, And Checkpoint Source Bounds](workbench/specs/S-033-silent-gap-diagnostics/SPEC.md) | Close the three v3.1.1 gaps that passed every gate green: an unrouted room brain, wiki files stamped with an older version than the manifest, and checkpoint promotion reading a source outside the repository. | complete |
 | [S-034 - Control Fidelity Report](workbench/specs/S-034-control-fidelity-report/SPEC.md) | Report which template-derived lines a room's hand-reconciled controls changed, dropped, or added, so a deliberate divergence can be recorded and an accidental one is caught. | complete |
 | [S-035 - Workbench v3.1.2 Candidate](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) | Stamp v3.1.2 only after the six v3.1.2 capability specs are complete and green, record the disposition of every v3.1.1 upstream fix-list item, and land the reviewed candidate on integration. | complete |
+| [S-036 - Workbench v3.1.2 Evidence Corrections](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md) | Correct the unpublished v3.1.2 candidate where permission, control-fidelity, and source-identity checks overstate what they prove, then rehearse the already-v3 upgrade path and return an exact reviewed candidate for GPT_OS deployment. | active |
 | [S-038 - Workbench v3.1.2 Upstream Fix List](workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md) | Accept, decline, or correct each of the eleven v3.1.1 upstream items UP-013 through UP-023, route the accepted ones to capability specs, and record the final disposition so Master Workbench can compare v3.1.2 against v3.1.1. | active |
 | [S-039 - Installed Managed-Runtime Integrity](workbench/specs/S-039-installed-runtime-integrity/SPEC.md) | Give an installed room a command that verifies the runtime it is executing, and make a drift report say whether the runtime matches the source or only disagrees with a stale receipt. | active |
 | [S-040 - Skill Gate Route Selection And Link Resolution](workbench/specs/S-040-skill-gate-route-selection/SPEC.md) | Make the shared-skill refusals name the route that clears them and stop the installer's link check from being stricter than the install it guards, so a workstation with a linked skill directory is a route choice rather than a portfolio-wide stop. | active |

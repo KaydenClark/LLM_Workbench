@@ -90,8 +90,16 @@ Settle the target's starting point first:
   do you reconcile specs through the manifest the route just declared
   (`workbench/manifest.json`). Never rerun Adoption for an already-adopted
   room; a second `adoption` record contradicts its first.
-- **A room already on a v3 support root**: no layout route runs; reconcile
-  controls and specs through its existing manifest.
+- **A room already on a v3 support root**: no layout or Adoption route runs.
+  Inventory and hash the project-owned controls, product code, active specs,
+  completed evidence, and Wiki content before reconciling them through the
+  existing manifest. Update only the intended template sections and managed
+  components. Run the release checkout's `workbench-tools.mjs update
+  --explicit-update` for runtime tools, retain its receipt and backup, and
+  compare the project-owned inventory afterward. The manifest's adoption
+  source remains historical; current tool and skill generations belong in
+  their receipts and markers. Exercise rollback from the recorded backup when
+  the upgrade's recovery proof has not already been established.
 
 For the v3 spec-centered Workbench:
 
@@ -158,6 +166,10 @@ Run the same full project suite as the baseline, plus harness-specific checks:
 - the canonical Workbench evaluator when available, recorded as a diagnostic
   rather than product-outcome proof;
 - canonical tool byte comparison when copied;
+- for an already-v3 room, a before/after byte inventory proving that controls,
+  product code, active work, completed evidence, and Wiki content changed only
+  where the owning upgrade spec intended, plus the managed-tool receipt and
+  backup or an exercised rollback;
 - placeholder and stale-version search;
 - retired control-name and duplicate-queue search;
 - control-file stamps and mechanical scope alignment;

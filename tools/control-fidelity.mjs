@@ -174,7 +174,7 @@ function classifyGap(template, room, lines) {
   candidates.sort((a, b) => b.score - a.score || a.distance - b.distance || a.templateLine.index - b.templateLine.index);
   for (const { templateLine, roomLine, score } of candidates) {
     if (templateTaken.has(templateLine.index) || roomTaken.has(roomLine.index)) continue;
-    if (templateLine.placeholders.length) claim('filled', templateLine, roomLine, { similarity: Number(score.toFixed(3)) });
+    if (templateLine.placeholders.length && fixedTextPresent(templateLine, roomLine)) claim('filled', templateLine, roomLine, { similarity: Number(score.toFixed(3)) });
     else claim('changed', templateLine, roomLine, { similarity: Number(score.toFixed(3)) });
   }
   // 2. Placeholder lines matched by shape: the room filled them in order.

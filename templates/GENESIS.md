@@ -142,11 +142,11 @@ contract match this project's reality. Keep the generic safety rules intact.
 
 Then make the boundary mechanical, not just prose. If `.claude/settings.json`
 was copied in, fill it from the scope you just drew: writable roots and the
-Workbench authorship lanes -> `allow` (Edit and Write), forbidden paths
+Workbench authorship lanes -> `allow` (`Edit`), forbidden paths
 (secrets, credentials, build output) -> `deny`, review-required actions
 (schema/migrations, `git push`, destructive commands, `workbench/tools/`) ->
-`ask`. Edit revises an existing file and Write creates one, so a lane that
-must hold new specs, ADRs, wiki pages, or checkpoints needs both. See
+`ask`. Claude Code applies `Edit` rules to every built-in file-editing tool,
+including creation. See
 `.claude/README.md` for the mapping. If the project will not use Claude Code,
 delete `.claude/` and rely on the prose scope alone.
 
@@ -174,10 +174,12 @@ node /PATH/TO/LLM_WORKBENCH/tools/workbench-tools.mjs install \
 ```
 
 Run `init` from the Workbench release checkout: it records that checkout's
-`origin` URL and `HEAD` commit as `provenance.source` in the manifest. Pass
-`--source-commit SHA` and `--source-repository URL` only to pin a different
-source; a copy of the tool outside a release checkout refuses with
-`invalid-invocation` naming the missing flag rather than guessing.
+`origin` URL and full `HEAD` commit as `provenance.source` in the manifest.
+The checkout and its runtime-tool lane must be clean. Optional
+`--source-commit SHA` and `--source-repository URL` values assert that resolved
+identity and must match it; they cannot pin an unrelated source. A partial copy
+outside a verified release checkout refuses with `invalid-source-identity`
+before writing, even when source strings are supplied.
 
 The `init` flags declare, by exact case, the default branch and the branch the
 independent review gate merges into (`git.defaultBranch` and
@@ -265,8 +267,8 @@ Do not call bootstrap done on vibes. All of the following must hold:
       `[BRACKETED]` placeholders** in required sections.
 - [ ] The founding prompt is preserved verbatim somewhere durable.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
-- [ ] `.claude/settings.json` is filled from that scope and grants Edit and
-      Write on the declared authorship lanes, or `.claude/` was omitted with a
+- [ ] `.claude/settings.json` is filled from that scope and grants `Edit` on
+      the declared authorship lanes, or `.claude/` was omitted with a
       reason.
 - [ ] Every command in `RUNBOOK.md` was run and passed; paste or reference the
       result.

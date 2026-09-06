@@ -12,7 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
-import { reportFidelity, summarizeMarkdown } from './control-fidelity.mjs';
+import { classifyLines, reportFidelity, summarizeMarkdown } from './control-fidelity.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(root, 'tools', 'control-fidelity.mjs');
@@ -20,9 +20,7 @@ const productTemplates = path.join(root, 'templates');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
 // The upstream finding (fix list UP-008): a room dropped this qualifier from
-// its ADR ownership row. templates/AGENTS.md carries no ADR ownership row at
-// this release, so the fixture template adds the root control's row to the
-// template ownership table before the room is filled from it.
+// the ADR ownership row shipped by templates/AGENTS.md.
 const adrRow = '| decision rationale, alternatives, supersession | `workbench/docs/adr/` (rule binds only where `canonicalized_in` points) |';
 const adrRowWithoutQualifier = '| decision rationale, alternatives, supersession | `workbench/docs/adr/` |';
 
@@ -50,15 +48,11 @@ function manifest(version, profile = 'project') {
   return `${JSON.stringify({ schemaVersion: 2, workbenchVersion: version, provenance: { lifecycle: 'adoption', source: { release: version } }, lanes: { wiki: 'workbench/wiki' }, wiki: { profile } }, null, 2)}\n`;
 }
 
-// A disposable templates root: the product templates plus the ADR ownership
-// row in AGENTS.md's ownership table.
+// A disposable copy of the shipping templates.
 function fixtureTemplates() {
   const templates = fixture('control-fidelity-templates-');
   fs.cpSync(productTemplates, templates, { recursive: true });
-  const agents = read(templates, 'AGENTS.md');
-  const anchor = '| commands and troubleshooting | `RUNBOOK.md` |';
-  assert.ok(agents.includes(anchor), 'templates/AGENTS.md must still carry the ownership table row this fixture anchors on');
-  write(templates, 'AGENTS.md', agents.replace(anchor, `${anchor}\n${adrRow}`));
+  assert.ok(read(templates, 'AGENTS.md').includes(adrRow), 'templates/AGENTS.md must ship the ADR ownership row under test');
   return templates;
 }
 
@@ -133,6 +127,17 @@ test('a dropped qualifier is one changed entry naming the ADR ownership row and 
   assert.match(summary, /## AGENTS\.md/);
   assert.match(summary, /changed 1/);
   assert.match(summary, /canonicalized_in/);
+});
+
+test('a placeholder fill is changed when it reverses the fixed wording', () => {
+  const template = 'Forbidden without explicit approval: [SECRETS_OR_PRIVATE_PATHS]\n';
+  const room = 'Allowed without explicit approval: secrets/\n';
+  const result = classifyLines(template, room);
+  assert.equal(result.counts.filled, 0);
+  assert.equal(result.counts.changed, 1);
+  assert.equal(result.lines[0].kind, 'changed');
+  assert.equal(result.lines[0].template, template.trim());
+  assert.equal(result.lines[0].room, room.trim());
 });
 
 test('a deleted Branch Completion paragraph produces dropped entries for each of its lines', () => {
