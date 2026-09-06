@@ -8,8 +8,8 @@
 **Updated:** 2026-09-06
 **Catalog description:** Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone.
 **Blockers:** none
-**Latest event:** TK-001 closed: one `unreconciled-controls` refusal now names every failing control with its own reason, the reconcile order, and the template-overwrite warning.
-**Next gate:** Implement TK-002 against the classification rule recorded in Decisions And Contracts.
+**Latest event:** Both slices are done: one `unreconciled-controls` refusal names every failing control, and `tools/workbench-classify.mjs` reports a lifecycle verdict with its evidence and writes nothing.
+**Next gate:** Independent integration review of `claude/s044-v3-1-2` before it merges into `integration`.
 
 ## Outcome
 
@@ -170,7 +170,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Report every missing or unfilled control in one preflight result, with the reconcile order and the template-overwrite warning | done | none | `tools/test-workbench-adoption.mjs` names all four unreconciled controls in one refusal |
-| TK-002 | Add a read-only classify command reporting `genesis \| adoption \| upgrade \| unclassifiable` with its evidence | ready | none | pending |
+| TK-002 | Add a read-only classify command reporting `genesis \| adoption \| upgrade \| unclassifiable` with its evidence | done | none | `tools/test-workbench-layout.mjs` classifies six fixtures and proves the command writes nothing |
 
 ### TK-001 - Name every missing control at once
 
@@ -196,16 +196,16 @@ before and after.
 
 ## Acceptance Criteria
 
-- [ ] A project missing several controls produces one refusal naming each.
-- [ ] The refusal names the reconcile-before-migrate order and the
+- [x] A project missing several controls produces one refusal naming each.
+- [x] The refusal names the reconcile-before-migrate order and the
       template-overwrite warning.
-- [ ] A read-only classify command returns one of the four verdicts with the
+- [x] A read-only classify command returns one of the four verdicts with the
       evidence for it, and writes nothing.
-- [ ] `unclassifiable` lists the reasons the room could not be classified.
-- [ ] `node tools/test-workbench-adoption.mjs`,
+- [x] `unclassifiable` lists the reasons the room could not be classified.
+- [x] `node tools/test-workbench-adoption.mjs`,
       `node tools/test-workbench-layout.mjs`, and
       `node tools/test-workbench-upgrade.mjs` pass, new cases red before green.
-- [ ] The full `AGENTS.md` verification suite passes.
+- [x] The full `AGENTS.md` verification suite passes.
 
 ## Testing Seams
 
@@ -242,15 +242,57 @@ node workbench/tools/spec-workbench.mjs doctor
 
 | 2026-09-06 | TK-001 | One `unreconciled-controls` refusal now names every failing root control with its own reason, the four-step reconcile order, and the template-overwrite warning | Red at `09bfff7`: the new `tools/test-workbench-adoption.mjs` case failed `AssertionError [ERR_ASSERTION]: one refusal must name every unreconciled control with its own distinct reason`, actual `undefined` (the base returns on the first control and carries a singular `error.control`). Green after collecting: `ok - one adoption refusal names every unreconciled control, the reconcile order, and the overwrite warning`. Re-anchored the cited seam first: `missing-control` is at `tools/workbench-adoption.mjs:74` and `bracketed-control` at `:77` in the pre-change tree, and `grep` found no reader of either code outside that file | `templates/ADOPTION.md` Phase 7 states the reconcile order and the overwrite warning once and records that the refusal repeats them; `RUNBOOK.md` V3 Adoption migration check documents the `unreconciled-controls` shape | TK-002 open; the classification rule is now recorded in Decisions And Contracts but not yet implemented |
 
+| 2026-09-06 | TK-002 | `tools/workbench-classify.mjs classify --project PATH` reports `genesis \| adoption \| upgrade \| unclassifiable` with its reasons and five evidence categories, and writes nothing | Red at `b25c24c`: the two new `tools/test-workbench-layout.mjs` cases failed `Error: Cannot find module .../tools/workbench-classify.mjs`, `actual: 1, expected: 0` - no command classified a room. Green after adding the tool: `✔ classify reports a lifecycle verdict with its evidence and writes nothing`, `✔ classify refuses to guess a support root that carries no readable manifest`, `tests 34 / pass 34 / fail 0`. Six fixtures cover all four verdicts; each read-only assertion compares a recursive path/size/mtime snapshot of the room before and against after | `RUNBOOK.md` gains a Room lifecycle classification check with the verdict table; `templates/ADOPTION.md` puts the command in route selection and in Phase 0 step 3 | `skills/update-harness/SKILL.md` is owned by S-040 and S-041 this round, so route selection does not yet read the classifier - recorded as a follow-up rather than edited across lanes. `LEXICON.md` gains no entry: `unclassifiable` is used by one tool and two docs, not across controls |
+
 ## Completion Result
 
-Pending.
+**What changed.** `tools/workbench-adoption.mjs` `preflight` collects every
+unreconciled root control instead of returning on the first, and refuses once as
+`unreconciled-controls` with `error.controls` naming each control and its own
+`missing-control` or `bracketed-control` reason, plus `error.reconcileOrder` and
+`error.templateOverwriteWarning`; the message carries all three. New
+`tools/workbench-classify.mjs` reports a read-only lifecycle verdict with its
+reasons and the `manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`,
+`legacyControlShapes`, and `roomContents` evidence behind it, exiting 0 for all
+four verdicts.
+
+**Why.** An operator with three missing controls previously learned of one per
+migration attempt and was told nothing about how to produce it, and no command
+could tell an arriving agent whether a room was an installation to upgrade or a
+first adoption. Both gaps were being closed by eight and nine rooms
+independently, in judgment rather than in evidence.
+
+**Risks and side effects.** The batched refusal replaces the two single-control
+error codes with one; `grep` found no reader of either outside
+`tools/workbench-adoption.mjs`, and each control keeps its original reason. The
+classifier writes nothing and authorizes nothing, so a wrong verdict costs an
+escalation, not a migration. A harness-shaped room with no manifest and no stamp
+returns `unclassifiable` by design rather than a guess.
+
+**How verified.** Both slices red before green (rows above), then the full
+`AGENTS.md` suite, `evaluate-workbench --path templates --include-controls`,
+`render`, `doctor` (exit 0), and `check-append-only.py` (CLEAN).
+
+Current Verified State above describes the pre-change tree at `b3633e5` and is
+left as the record the evidence rows cite; this section states what the change
+made true instead.
+
+Remaining gate: independent integration review before `claude/s044-v3-1-2`
+merges into `integration`.
 
 ## Remaining Limitations Or Follow-Up Specs
 
 - Classification reads a room's contents. A room whose contents genuinely do not
   determine its history returns `unclassifiable`, and that is the correct
   answer; it does not become determinable by a better classifier.
+- `skills/update-harness/SKILL.md` route selection does not yet read the
+  classifier. That file is owned by S-040 and S-041 in this same round, so the
+  one-sentence edit is deferred rather than made across lanes; the command is
+  reachable from `templates/ADOPTION.md` and `RUNBOOK.md` meanwhile.
+- `LEXICON.md` records none of the four verdicts. `genesis`, `adoption`, and
+  `upgrade` are already the manifest's own lifecycle values, and
+  `unclassifiable` is currently used by one tool and two docs rather than
+  across controls; promote it when a second control depends on it.
 
 ## Supersession
 

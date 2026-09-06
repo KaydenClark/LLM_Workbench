@@ -288,6 +288,40 @@ rendering and checkpoint promotion also reject unsafe destination chains and
 use private temporary files. Legacy Wiki adoption moves existing knowledge
 before seeding only the missing contract files.
 
+### Room lifecycle classification check
+
+Before choosing a lifecycle route for a room, ask the room which route its own
+contents support. The command is read-only: it never writes, claims work,
+selects a route, or authorizes a migration. Run it from this release checkout.
+
+```bash
+node tools/workbench-classify.mjs classify --project /absolute/project
+node tools/test-workbench-layout.mjs
+```
+
+It reports one of four verdicts with the reasons behind it and the evidence it
+gathered (`manifest`, `versionStamp`, `supportRoot`, `lifecycleTools`,
+`legacyControlShapes`, `roomContents`), and exits 0 for all four. Only an
+unreadable invocation or a project that is not an ordinary directory exits 1.
+
+| Verdict | The evidence that produces it |
+|---|---|
+| `genesis` | The room is empty apart from `.git`: nothing to derive filled controls from |
+| `adoption` | A working repository with content, no manifest, no version stamp, and no Workbench-shaped control set |
+| `upgrade` | A readable `workbench/manifest.json`, or a Workbench version stamp in a root control with no manifest (the `upgrade --layout-only` v2-root room) |
+| `unclassifiable` | `workbench/` exists whose manifest cannot be read, or the room is harness-shaped (all seven root controls, or root `tools/` files from the managed runtime set) with no manifest and no stamp |
+
+`unclassifiable` is a first-class answer, not an error. A harness-shaped room
+with no manifest and no stamp is produced equally by an unstamped Workbench
+installation (upgrade) and by an independent dialect reusing the same names
+(adoption); the room does not say which, so the command lists both readings and
+escalates with evidence rather than guessing. A readable manifest reports its
+`schemaVersion`, `workbenchVersion`, and recorded `provenance.lifecycle` as
+evidence; the recorded lifecycle is never the verdict, and whether an installed
+room actually needs migrating is `workbench-layout.mjs validate`'s answer. The
+rule is recorded in
+[S-044](workbench/specs/S-044-legacy-room-classification/SPEC.md).
+
 ### V3 Adoption migration check
 
 Adoption requires seven filled root controls and all core skills in a

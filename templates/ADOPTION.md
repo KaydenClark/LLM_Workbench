@@ -17,6 +17,23 @@ it with `tools/workbench-upgrade.mjs upgrade --layout-only`, run from the
 Workbench release checkout, which records lifecycle `upgrade` instead of a
 second `adoption`.
 
+Ask the room which route its own contents support before choosing one. This
+reads and writes nothing:
+
+```bash
+node tools/workbench-classify.mjs classify --project [ABSOLUTE_PROJECT_PATH]
+```
+
+It reports `genesis`, `adoption`, `upgrade`, or `unclassifiable`, each with the
+evidence that produced it. `unclassifiable` is an answer, not an error: it means
+the room's contents support two readings at once - most often a harness-shaped
+room carrying no manifest and no version stamp, which an unstamped Workbench
+installation and an independent dialect both produce. Establish which from
+outside the room (its history, its remote, or the owner) rather than guessing;
+treating a first adoption as an upgrade loses the live truth an adoption would
+reconcile. The verdict is evidence for a decision, never the decision: it
+selects no route, claims no work, and authorizes no migration.
+
 ## What Adoption Is For
 
 The owner should be able to point an agent at an existing repo - with its own
@@ -93,7 +110,8 @@ next begins.
      design doc; the harness defers visual style to exactly these).
    - **Retire** - superseded or dead docs to archive after migration.
 3. Identify the dialect (which harness version/layout it uses) so you know what is
-   moving where.
+   moving where. Start from `workbench-classify.mjs classify` above and record
+   its verdict, evidence, and any `unclassifiable` reasons in the owning spec.
 
 Output: a migration map (each existing doc -> port / fold / keep / retire) and a
 green baseline run recorded.

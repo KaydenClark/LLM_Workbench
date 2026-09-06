@@ -1059,3 +1059,123 @@ test('HEAD is not a branch name: init refuses it and a symref never satisfies th
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
+
+// S-044 TK-002: an agent arriving at a room must be able to ask the room which
+// lifecycle route its own contents support, and be told `unclassifiable` with
+// reasons when they support two. The recorded rule lives in
+// `workbench/specs/S-044-legacy-room-classification/SPEC.md`.
+const classifier = path.join(root, 'tools', 'workbench-classify.mjs');
+
+function classify(project) {
+  const result = spawnSync(process.execPath, [classifier, 'classify', '--project', project], { cwd: root, encoding: 'utf8' });
+  return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
+}
+
+// A read-only command must leave every path, size, and modification time alone.
+function roomSnapshot(target, base = target, entries = []) {
+  for (const entry of fs.readdirSync(target, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
+    const candidate = path.join(target, entry.name);
+    const stat = fs.lstatSync(candidate);
+    entries.push(`${path.relative(base, candidate)}|${stat.isDirectory() ? 'd' : 'f'}|${stat.size}|${stat.mtimeMs}`);
+    if (stat.isDirectory() && !stat.isSymbolicLink()) roomSnapshot(candidate, base, entries);
+  }
+  return entries;
+}
+
+function legacyRoom(project, { stamp } = {}) {
+  for (const control of controls) {
+    const banner = stamp ? `\n> Part of LLM Workbench ${stamp}.\n` : '\n';
+    fs.writeFileSync(path.join(project, control), `# ${control}\n${banner}\nProject truth.\n`);
+  }
+  fs.mkdirSync(path.join(project, 'specs', 'S-001-legacy'), { recursive: true });
+  fs.writeFileSync(path.join(project, 'specs', 'S-001-legacy', 'SPEC.md'), '# S-001 - Legacy Capability\n');
+  fs.mkdirSync(path.join(project, 'handoffs'), { recursive: true });
+  fs.writeFileSync(path.join(project, 'handoffs', 'recovery.md'), '# Recovery point\n');
+}
+
+test('classify reports a lifecycle verdict with its evidence and writes nothing', () => {
+  const bare = fixture();
+  const legacy = fixture();
+  const current = fixture();
+  const ambiguous = fixture();
+  const working = fixture();
+  try {
+    // 1. A bare directory: nothing to derive filled controls from.
+    const bareBefore = roomSnapshot(bare);
+    const bareResult = classify(bare);
+    assert.equal(bareResult.status, 0, `${bareResult.stdout}${bareResult.stderr}`);
+    assert.equal(bareResult.report.verdict, 'genesis');
+    assert.deepEqual(roomSnapshot(bare), bareBefore, 'classify must write nothing into a bare room');
+
+    // 2. An already-adopted room still on a v2 root: a release stamped it, so
+    //    the layout-only upgrade route is the one its evidence supports.
+    legacyRoom(legacy, { stamp: 'v3.0.0' });
+    const legacyBefore = roomSnapshot(legacy);
+    const legacyResult = classify(legacy);
+    assert.equal(legacyResult.status, 0, `${legacyResult.stdout}${legacyResult.stderr}`);
+    assert.equal(legacyResult.report.verdict, 'upgrade');
+    assert.deepEqual(legacyResult.report.evidence.versionStamp.stamped, controls,
+      'the verdict must report which controls carry a Workbench version stamp');
+    assert.equal(legacyResult.report.evidence.manifest.present, false);
+    assert.ok(legacyResult.report.evidence.legacyControlShapes.legacyPaths.includes('specs'),
+      'the legacy v2 lane shapes found must be reported as evidence');
+    assert.deepEqual(roomSnapshot(legacy), legacyBefore, 'classify must write nothing into a legacy room');
+
+    // 3. A current v3 room: an installed room is neither a genesis nor a second
+    //    adoption, and its recorded lifecycle is evidence rather than verdict.
+    const initialized = run('init', '--project', current, '--provenance', 'adoption', '--version', VERSION);
+    assert.equal(initialized.status, 0, initialized.stdout);
+    const currentBefore = roomSnapshot(current);
+    const currentResult = classify(current);
+    assert.equal(currentResult.status, 0, `${currentResult.stdout}${currentResult.stderr}`);
+    assert.equal(currentResult.report.verdict, 'upgrade');
+    assert.equal(currentResult.report.evidence.manifest.schemaVersion, 2);
+    assert.equal(currentResult.report.evidence.manifest.lifecycle, 'adoption',
+      'the recorded lifecycle is reported as evidence, never as the verdict');
+    assert.deepEqual(roomSnapshot(current), currentBefore, 'classify must write nothing into an installed room');
+
+    // 4. Harness-shaped, but no manifest and no version stamp: an unstamped
+    //    Workbench room and an independent dialect produce the same evidence.
+    legacyRoom(ambiguous);
+    const ambiguousBefore = roomSnapshot(ambiguous);
+    const ambiguousResult = classify(ambiguous);
+    assert.equal(ambiguousResult.status, 0, `${ambiguousResult.stdout}${ambiguousResult.stderr}`);
+    assert.equal(ambiguousResult.report.verdict, 'unclassifiable',
+      'a harness-shaped room with no manifest and no stamp must not be guessed');
+    assert.ok(ambiguousResult.report.reasons.length > 0, 'unclassifiable must list the reasons');
+    assert.ok(ambiguousResult.report.reasons.some((reason) => /upgrade/.test(reason) && /adoption/.test(reason)),
+      'the reasons must name both readings the evidence supports');
+    assert.deepEqual(ambiguousResult.report.evidence.versionStamp.stamped, []);
+    assert.deepEqual(roomSnapshot(ambiguous), ambiguousBefore, 'classify must write nothing into an ambiguous room');
+
+    // 5. A working repository with real content and no Workbench installation.
+    fs.mkdirSync(path.join(working, 'src'));
+    fs.writeFileSync(path.join(working, 'src', 'app.js'), 'export const app = true;\n');
+    fs.writeFileSync(path.join(working, 'README.md'), '# Working project\n');
+    fs.writeFileSync(path.join(working, 'ROADMAP.md'), '# Roadmap\n');
+    const workingResult = classify(working);
+    assert.equal(workingResult.status, 0, `${workingResult.stdout}${workingResult.stderr}`);
+    assert.equal(workingResult.report.verdict, 'adoption');
+    assert.deepEqual(workingResult.report.evidence.legacyControlShapes.controlsPresent, ['README.md']);
+  } finally {
+    for (const project of [bare, legacy, current, ambiguous, working]) fs.rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('classify refuses to guess a support root that carries no readable manifest', () => {
+  const project = fixture();
+  try {
+    fs.mkdirSync(path.join(project, 'workbench', 'specs'), { recursive: true });
+    const before = roomSnapshot(project);
+    const result = classify(project);
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+    assert.equal(result.report.verdict, 'unclassifiable');
+    assert.ok(result.report.reasons.some((reason) => /manifest/.test(reason)),
+      'the reason must name the unreadable support-root authority');
+    assert.equal(result.report.evidence.supportRoot.present, true);
+    assert.equal(result.report.evidence.manifest.readable, false);
+    assert.deepEqual(roomSnapshot(project), before, 'classify must write nothing while refusing');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+  }
+});
