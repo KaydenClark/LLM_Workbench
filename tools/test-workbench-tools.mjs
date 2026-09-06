@@ -180,7 +180,7 @@ test('a drift result separates a stale receipt from a modified runtime and names
     assert.equal(stale.report.error.code, 'tools-receipt-drift');
     assert.deepEqual(stale.report.error.drift.map((entry) => [entry.tool, entry.reason, entry.state]),
       [['markdown-table.mjs', 'hash', 'receipt-stale']]);
-    assert.match(stale.report.error.drift[0].remedy, /update --explicit-update/,
+    assert.match(stale.report.error.drift[0].remedy, /workbench-tools\.mjs update .*--explicit-update/,
       'a stale receipt names the command that refreshes it');
     assert.deepEqual(stale.report.updateAvailable, ['markdown-table.mjs'],
       'the receipt-versus-source comparison rides the drift path too, not only the valid path');

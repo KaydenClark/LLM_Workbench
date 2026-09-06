@@ -263,11 +263,35 @@ node tools/test-workbench-tools.mjs
 repository, release, commit, and a SHA-256 per file, copies each tool as an
 ordinary `0644` file, and refuses a lane that already carries a receipt, a
 foreign unreceipted file, or a symlink. `verify` reports `tools-receipt-drift`
-with the drifted file names (`source` on this repository). `update` requires
-`--explicit-update`, backs changed files up under the user home's
-`.workbench-tools-backup-*`, records the backup path in the receipt, and
-`rollback` restores that backup. An application's root `tools/` directory is
-never read or written.
+with the drifted file names and, for each, which of the drift states below it
+is in (`source` on this repository). `update` requires `--explicit-update`,
+backs changed files up under the user home's `.workbench-tools-backup-*`,
+records the backup path in the receipt, and `rollback` restores that backup. An
+application's root `tools/` directory is never read or written.
+
+`workbench-tools.mjs` itself is never installed into a room, so the same
+receipt hash check also runs from `workbench/tools/workbench-layout.mjs`, which
+every room does install, and `doctor` reads it. A room therefore verifies the
+runtime it is executing with only the tools it contains, and a drifted managed
+tool fails that room's own `doctor` at the registered `all` effect. The check
+runs only when the lane carries a receipt - an uninstalled or release lane is
+not a managed runtime, and its absent receipt stays the Genesis readiness
+gate's finding - and a receipt that exists but cannot be read or records no
+file hashes is reported as `tools-receipt-missing` rather than silently
+switching the check off. Its cost is bounded: at most the managed files the
+receipt names, each read and hashed once.
+
+Drift alone does not say what happened, so each drifted file is classified by
+comparing the installed bytes with the release source. `updateAvailable`
+compares the receipt with the source and answers a different question, so it
+never substitutes for this.
+
+| Drift state | What it means | Remedy |
+|---|---|---|
+| `receipt-stale` | the installed bytes are the release source's; the receipt hash is the stale fact | `update --explicit-update`, which backs the replaced files up under the user home and records the backup path in the receipt |
+| `runtime-modified` | the installed bytes match neither the receipt nor the release source | `rollback --backup PATH` from a backup the receipt records, or `update --explicit-update` once the difference is reviewed |
+| `runtime-authentic` | the bytes match both the receipt and the release source; only the file mode drifted | restore mode `0644` on the managed file |
+| `source-unavailable` | no release source was reachable, which is every installed room | run `verify` from a release checkout to classify the drift |
 
 Installation and explicit updates also require a clean Git source lane, an
 `origin`, and a concrete 40-character `HEAD`; source identity is resolved
