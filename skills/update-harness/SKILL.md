@@ -55,8 +55,20 @@ Run the target's documented full verification suite before editing. Read named
 PASS/FAIL markers and test totals; do not trust a zero process code when the tool
 can print load or parse errors and still exit zero.
 
+If the baseline cannot be taken at all - the suite cannot run for a reason this
+change did not cause and cannot repair - record it in the owning spec's
+`**Baseline:**` field as `unavailable` with one reason from the closed set
+`host-restricted`, `product-broken-as-found`, or `owner-declined-on-boundary`,
+the evidence for that reason, and the statement that the requested change is
+not implicated. A reason outside that set is refused. The change then proceeds
+against that record, and every later completion criterion compares against the
+recorded state instead of a green run and says so. A red baseline is not
+unavailable: it still stops unless the owner explicitly expands the task, and
+`unavailable` never relabels a failing suite.
+
 Completion criterion: every steering file is classified and a reproducible,
-green pre-migration baseline is recorded. If the baseline is red, record the
+green pre-migration baseline is recorded, or the baseline is recorded
+`unavailable` with its reason and evidence. If the baseline is red, record the
 existing failure and stop unless the user explicitly expands the task to fix it.
 
 ## 3. Reconcile the new ownership model
@@ -195,8 +207,10 @@ Record the upgrade in a dedicated stable spec. Close it only when its acceptance
 criteria, proof, documentation impact, and completion result are complete. Then
 render and doctor again so the completed migration leaves the hot board.
 
-Completion criterion: project results match or improve on baseline, harness
-checks are green, and the migration spec contains the exact evidence.
+Completion criterion: project results match or improve on baseline - or, where
+the baseline was recorded `unavailable`, the result compares against that record
+and says so instead of implying a green baseline was taken - harness checks are
+green, and the migration spec contains the exact evidence.
 
 ## 6. Publish through the target's workflow
 
