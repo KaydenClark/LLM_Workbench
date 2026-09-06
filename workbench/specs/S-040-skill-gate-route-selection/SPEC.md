@@ -196,6 +196,8 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | TK-002 | Ticket closed | tools/test-workbench-upgrade.mjs "the shared-skill refusals name the layout-only route that clears them": red against the unmodified 09bfff7 messages with actual "... is not an ordinary directory." not matching /--layout-only/, green after both refusals carry the layoutOnlyRoute clause (7/7 pass); node tools/test-skill-catalog.mjs still passes with the new Route selection section | skills/update-harness/SKILL.md gains a Route selection section before section 1, so the rule is stated before the migration seam runs; RUNBOOK.md checked, no update needed because both refusal codes and both documented routes are unchanged - only the message now names the route | none for this spec; the independent integration review is the remaining owner gate |
 | 2026-09-06 | spec | Both slices verified together on the committed tree at `2f5f9e1` | Full `AGENTS.md` suite: 25 node test files, `evals/tasks/task_b_path_safety/test_grade.py`, `evaluate-workbench --path templates --include-controls`, `render`, and `doctor` all green; each new case was run against the unmodified `09bfff7` implementation before any source edit | `skills/update-harness/SKILL.md` updated; `RUNBOOK.md` and `templates/ADOPTION.md` checked, no update needed - no refusal code and no operator preparation step changed | Spec left `active` with `Pending` completion for the separate-context integration review, matching S-036, S-037 and S-038 |
 | 2026-09-06 | spec | Correcting the previous row's loose word for the evaluator result | `node tools/evaluate-workbench.mjs --path templates --include-controls` exits 0 and scores 106.6/113 with `Team coordination: manager instructions, subagent instructions` outstanding; it is a diagnostic, not a pass/fail gate, and the score is unchanged by this spec because `templates/` is untouched (`git diff --stat 09bfff7 HEAD` lists no path under it) | No documentation change | none |
+| 2026-09-06 | spec | Separate-context review confirmed UP-015 closed as filed and blocked on one false record claim, corrected here | Reviewer rebuilt the reported host shape and confirmed the installer defect is gone: refused with `skill-path-collision` at `09bfff7`, `complete` with a `resolved` target at `ce3da23`. Both reds reproduced as genuine, and the three TK-001 negative cases pass at base, so they are real regression guards. Nine link shapes probed against `resolveSkillLink` with no accept-that-should-refuse; the safety boundary holds, with target bytes and the link itself unchanged and no marker written through it. Blocking finding: Remaining Limitations claimed "No limitation remains from that question", which is false for a host whose skill is symlinked into BOTH discovery roots. Reproduced here: `lstat(...).isDirectory()` returns false for each link while `stat` returns true, so `missingUserSkills` and `hasRequiredUserSkills` both report the skill missing. That makes the installer and the presence gate disagree - new in this candidate - and makes the `--layout-only` route the TK-002 messages name fail on that host. No code change: the Non-Goals bar the presence-only path | The false claim is replaced by the condition, its two consequences, and a correction to UP-015's own premise about what the presence paths accept; routed to a follow-up rather than closed | The presence-only link gap is unfixed and now recorded; it needs a follow-up spec or an upstream item under S-038 |
+
 
 ## Completion Result
 
@@ -205,8 +207,36 @@ Pending.
 
 - The reporting host's `code-review` junction is supported as-is by owner
   decision of 2026-09-06, recorded in
-  [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md). No limitation remains from
-  that question; TK-001 is what makes the junction a supported destination.
+  [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md). TK-001 is what makes that
+  junction a supported *installer* destination.
+- **A limitation this candidate introduces, and does not close.** The
+  presence-only gates judge a skill present with
+  `lstatOrNull(...)?.isDirectory()` - `missingUserSkills`
+  (`tools/workbench-upgrade.mjs:57`) and `hasRequiredUserSkills`
+  (`tools/workbench-adoption.mjs:60`). `lstat` does not follow a link, so a
+  skill reachable only through links in *both* discovery roots is still
+  reported `missing-user-skills`, even though `stat` resolves both to
+  directories. Two consequences follow, and both are new:
+  - **The two tools now disagree.** Before TK-001 the installer and the
+    presence gate agreed on such a host: both refused. After it, the installer
+    reports `complete` with a `resolved` target while the presence gate reports
+    the same skill missing. The harness certifies a host its own gate rejects.
+  - **The route named in the refusals does not complete on that host.** The
+    `--layout-only` clause TK-002 adds to `skill-path-collision` and
+    `unmanaged-skill` is accurate for the reported junction shape, where one
+    root holds an ordinary directory. Where both roots are links, following it
+    reaches `missing-user-skills` instead.
+- **UP-015's Claim is wrong about the consumers, and this spec inherited it.**
+  The upstream item asserts the presence-only paths "accept a skill present in
+  either discovery root". They accept it only when at least one root holds an
+  ordinary directory, never through a link. Current Verified State repeated that
+  premise without testing it. The item is still closed as filed - the installer
+  defect it reproduced is gone - but the premise is corrected here rather than
+  carried forward.
+- Changing the presence-only path is barred by this spec's Non-Goals, so the
+  condition is recorded and routed rather than fixed: it needs a follow-up spec,
+  or an upstream item under
+  [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md).
 - Rooms that already stopped are not retried by this spec.
 
 ## Supersession
