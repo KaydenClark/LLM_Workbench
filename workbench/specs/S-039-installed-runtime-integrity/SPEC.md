@@ -1,15 +1,15 @@
 # S-039 - Installed Managed-Runtime Integrity
 
 **Spec ID:** S-039
-**Status:** active
+**Status:** complete
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** claude-opus-5
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Give an installed room a command that verifies the runtime it is executing, and make a drift report say whether the runtime matches the source or only disagrees with a stale receipt.
 **Blockers:** none
-**Latest event:** Spec captured from upstream items UP-013 and UP-014; both re-verified against `b3633e5`.
-**Next gate:** Claim TK-001 and reproduce the missing emitter red.
+**Latest event:** TK-001 and TK-002 closed; the installed doctor emits the receipt hash check and the drift result classifies each drifted file.
+**Next gate:** none; independent review of `claude/s039-v3-1-2` before integration.
 
 ## Outcome
 
@@ -71,6 +71,9 @@ after PR #63 merged, so following one lands on what it names.
 Gap: no installed emitter for the hash check, and a drift result that withholds
 the comparison that would tell the operator what happened.
 
+This section records the state at capture, which TK-001 and TK-002 closed; the
+Completion Result below names what is true now and where.
+
 ## Desired Behavior
 
 1. An installed room can verify its managed runtime against the receipt using
@@ -118,8 +121,8 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Emit the receipt hash check from an installed path so a drifted room fails `doctor` at its registered `all` effect | ready | none | pending |
-| TK-002 | Report the installed-versus-source comparison inside the drift result and name the supported remedy per state | ready | none | pending |
+| TK-001 | Emit the receipt hash check from an installed path so a drifted room fails `doctor` at its registered `all` effect | done | none | `tools/test-workbench-layout.mjs` "a room whose managed runtime drifts from its receipt fails the doctor it carries" and `tools/test-diagnostics.mjs` "a drifted or unreadable managed runtime is a blocking tools finding in the room doctor", both red before `26eb7e6` |
+| TK-002 | Report the installed-versus-source comparison inside the drift result and name the supported remedy per state | done | none | `tools/test-workbench-tools.mjs` "a drift result separates a stale receipt from a modified runtime and names each remedy" plus the `source-unavailable` assertion in the layout room test, both red before `b573009` |
 
 ### TK-001 - An installed integrity check
 
@@ -143,15 +146,18 @@ the comparison so both paths carry it.
 
 ## Acceptance Criteria
 
-- [ ] A room with a hash-drifted managed tool fails its own `doctor` with
+- [x] A room with a hash-drifted managed tool fails its own `doctor` with
       `tools-receipt-drift`, using only tools installed in the room.
-- [ ] A drift result distinguishes receipt-stale, runtime-modified, and
-      source-unavailable, and each names its supported remedy.
-- [ ] `RUNBOOK.md` describes the installed check and the three states; the
-      effect table at `RUNBOOK.md:586-592` is true of observable behavior.
-- [ ] `node tools/test-workbench-tools.mjs` and `node tools/test-diagnostics.mjs`
+- [x] A drift result distinguishes receipt-stale, runtime-modified, and
+      source-unavailable, and each names its supported remedy. A fourth state,
+      `runtime-authentic`, covers mode-only drift, whose bytes match both the
+      receipt and the source; calling that one of the three would be false.
+- [x] `RUNBOOK.md` describes the installed check and the states; the effect
+      table, unchanged in content and now at `RUNBOOK.md:610-616` after the
+      prose insertion above it, is true of observable behavior.
+- [x] `node tools/test-workbench-tools.mjs` and `node tools/test-diagnostics.mjs`
       pass, with the new cases proved red before green.
-- [ ] The full `AGENTS.md` verification suite passes.
+- [x] The full `AGENTS.md` verification suite passes.
 
 ## Testing Seams
 
@@ -171,9 +177,12 @@ node workbench/tools/spec-workbench.mjs doctor
 ## Documentation Impact
 
 - `RUNBOOK.md` managed runtime tools check: the installed entry point and the
-  three drift states.
-- `LEXICON.md` if the three states need named terms.
-- `AGENTS.md` only if the verification suite gains a command.
+  drift states. Done in `4856985`.
+- `LEXICON.md` if the three states need named terms. Not needed: the states are
+  values of a `verify`/`doctor` report field, documented where that report is
+  documented, not shared project vocabulary other controls speak.
+- `AGENTS.md` only if the verification suite gains a command. Not needed: the
+  new cases run inside suites the file already lists.
 
 ## Append-Only Evidence And Execution Log
 
@@ -184,9 +193,32 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Fresh separate-context review corrected the citations the prior round degraded or missed | `RUNTIME_TOOLS` spans `workbench-tools.mjs:24-36` at both `b3633e5` and the merged tip; the prior round changed a correct range to `24-64`, which covers unrelated helpers, and is reverted. The Current Verified State paragraph still read `:180/:181/:182` for `sourceDrift`, the `tools-receipt-drift` return, and the `updateAvailable` return; true values at the merged tip are `:202/:203/:204`, and `:181` is blank. The append-only row above, rewritten by the prior round, is restored to its original text | No control text changed | TK-001 and TK-002 open |
 | 2026-09-06 | spec | Restored the fresh-review row that the previous commit rewrote | `f963b96` edited the row `7a386fd` had published, to expand it from one rewritten row to two. It is restored byte-for-byte and the expansion is recorded here instead: this spec had two rewritten rows, the capture row (`workbench-layout.mjs:499-521` had become `513-535`, which at `b3633e5` starts mid-loop and ends past the function close in the permission-file section) and the correction row (`RUNBOOK.md:581` had become `588`). Both now carry their first-published text | No control text changed | TK-001 and TK-002 open |
 
+| 2026-09-06 | TK-001 | The receipt hash check now runs from the tool a room installs, and `doctor` reads it | Red at `09bfff7`: the new layout case failed `the room's own doctor must report tools-receipt-drift: []`, and the diagnostics case failed `+ []` against `[['tools-receipt-drift','error','tools','all']]`. Green at `26eb7e6`: `node tools/test-workbench-layout.mjs` 33/33, `node tools/test-diagnostics.mjs` 11/11, `node tools/test-workbench-tools.mjs` 16/16 | `RUNBOOK.md` updated in `4856985` | The seam is `workbench-layout.mjs`, not `RUNTIME_TOOLS` membership for `workbench-tools.mjs`; a lane with no receipt is still only the Genesis gate's finding |
+| 2026-09-06 | TK-002 | Each drifted file is classified by comparing the installed bytes with the release source, and carries its remedy | Red at `26eb7e6`: `verify` returned `state: undefined` for a stale receipt, and the room doctor's drift entry carried `+ undefined - 'source-unavailable'`. Green at `b573009`: `node tools/test-workbench-tools.mjs` 16/16 and `node tools/test-workbench-layout.mjs` 33/33. One assertion regex was tightened, not weakened, from `/update --explicit-update/` to `/workbench-tools\.mjs update .*--explicit-update/` because the remedy names the full invocation | `RUNBOOK.md` state table added in `4856985` | A room still cannot reach a release source, so its own `doctor` reports `source-unavailable`; classifying it needs `verify` from a release checkout |
+| 2026-09-06 | spec | Both slices closed and verified against the full suite | All 25 `tools/test-*.mjs` suites pass, `python3 evals/tasks/task_b_path_safety/test_grade.py` passes, `render` leaves no drift, `doctor` exits 0, `python3 tools/check-append-only.py` CLEAN. Guardrail score before and after is 106.6/113 (`node tools/evaluate-workbench.mjs --path templates --include-controls`); this change touches no template, so the static score is unchanged and no agent-outcome claim is made from it | `RUNBOOK.md` only; `LEXICON.md` and `AGENTS.md` checked, no update needed for the reasons recorded under Documentation Impact | The doctor call site needed two lines in `workbench/tools/spec-workbench.mjs`, which the assigned file lane did not list; no sibling spec was named as its owner and the edit is an import plus one push into `collectionFindings`. Reported to the coordinator rather than left undone. The RUNBOOK effect table is unchanged in content but moved from `:586-592` to `:610-616` by the prose inserted above it |
+
 ## Completion Result
 
-Pending.
+An installed room verifies the runtime it executes with only the tools it
+contains. `workbench/tools/workbench-layout.mjs:574` holds the receipt hash
+comparison and `:596` the doctor entry point; `workbench/tools/spec-workbench.mjs:283`
+reads it, so a drifted managed tool now fails that room's own `doctor` at the
+`all` effect `workbench/tools/diagnostics.mjs:26` registers. The release-side
+`tools/workbench-tools.mjs:198` calls the same function with its source lane,
+so both entry points report identical drift.
+
+A drift entry carries `state` and `remedy`. `receipt-stale` means the installed
+bytes are the release source's and names `update --explicit-update`;
+`runtime-modified` means they match neither and names `rollback`;
+`runtime-authentic` means only the file mode drifted; `source-unavailable`
+means no release checkout was reachable to compare against, which is the state
+every installed room reports. `updateAvailable` still answers the separate
+receipt-versus-source question and now rides the drift path as well as the
+valid path.
+
+No verification path was weakened: a modified runtime still fails `verify` and
+`doctor`, a missing receipt still fails the Genesis gate, and a receipt that
+exists but cannot be read is reported rather than silently disabling the check.
 
 ## Remaining Limitations Or Follow-Up Specs
 
