@@ -592,10 +592,17 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
 
 `doctor --json` prints the findings with their `severity`, `scope`, and
-`blocks` fields; the plain output ends with an `ok - no blocking finding` line
-when only attention or slice findings remain. `doctor --home USER_HOME` names
-the home whose discovery roots the `skills` scope reads (default: the user
-home); doctor never writes there.
+`blocks` fields. The plain output groups them by that effect and is read from
+the top: `blocking (N)` first (effects `all` and `selection`), then
+`selected slice (N)`, then `informational (N)` for everything registered
+`none`. Each header carries its count and its consequence, each row reads
+`code [blocks EFFECT, SEVERITY]: message`, and the output ends with an
+`ok - no blocking finding` line when only attention or slice findings remain.
+Grouping is presentation: an `error` under `informational` is still an `error`
+in the registry and in `--json`; it simply stops nothing.
+
+`doctor --home USER_HOME` names the home whose discovery roots the `skills`
+scope reads (default: the user home); doctor never writes there.
 
 `permission-scope-drift` (severity `error`, scope `controls`, effect `none`)
 is reported when `.claude/settings.json` exists and withholds a

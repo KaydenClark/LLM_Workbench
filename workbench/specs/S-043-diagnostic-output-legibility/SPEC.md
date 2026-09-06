@@ -1,15 +1,15 @@
 # S-043 - Diagnostic Output Legibility
 
 **Spec ID:** S-043
-**Status:** active
+**Status:** complete
 **Priority:** 3
-**Owner:** unassigned
+**Owner:** claude-s043
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Stop a healthy room from reading as failed by separating what a doctor finding blocks from how loudly it is printed, without changing any blocking semantics.
 **Blockers:** none
-**Latest event:** Spec captured from upstream item UP-019; the report's proposed remedy was found already implemented, and the spec is rescoped to the part that is still live.
-**Next gate:** Claim TK-001 and pin the current output shape red.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -93,6 +93,29 @@ consequence; output has no grouping and no summary.
 - **Do not remove information.** `blocks none` stays on the line. The change is
   ordering, grouping, and prominence, not omission.
 - **Machine output is unaffected.** `--json` consumers see the same structure.
+- **TK-001 decided both halves of Desired Behavior 3: a separate section and a
+  lowered display prominence, and no new vocabulary.** The plain report is
+  three counted sections in a fixed order - `blocking` (effects `all` and
+  `selection`), `selected slice`, then `informational` (effect `none`) - each
+  header naming its consequence. Within a row the effect leads and the
+  severity follows it (`code [blocks none, error]: message`) rather than
+  severity leading. The reason for reordering instead of relabelling: the
+  registry is the authority on severity, so inventing a display severity such
+  as `notice` for a `blocks: none` error would put a second, softer vocabulary
+  next to the registered one and make `--json` and the text report disagree
+  about the same finding. Moving the effect to the front of the bracket
+  demotes the word `error` without removing it or contradicting the registry.
+- **The registry pin is a named set, not an enumeration of the registry.**
+  `PINNED_EFFECTS` in `tools/test-diagnostics.mjs` pins the
+  severity/scope/effect triple of every code whose effect stops work plus the
+  eight `error` / `blocks: none` codes, and asserts as an invariant over the
+  whole registry that no code with a blocking effect is `attention` severity.
+  The reason for that shape: S-039 and S-042 are registering new codes in
+  parallel, and an exact whole-registry snapshot would fail the moment either
+  lands, which trains the next agent to edit the pin rather than read it. A
+  named set catches the risk this spec is about - an effect that moves under a
+  presentation change - and tolerates an addition. Its accepted limit: a newly
+  registered blocking code is not pinned until someone adds it.
 
 ## Non-Goals
 
@@ -112,7 +135,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Group and count `doctor` findings by consequence and lower the prominence of `blocks: none` findings, with the registry pinned by test | ready | none | pending |
+| TK-001 | Group and count `doctor` findings by consequence and lower the prominence of `blocks: none` findings, with the registry pinned by test | done | none | node tools/test-diagnostics.mjs: 13/13 pass. Red first at the named seam: the import of formatDoctorReport failed with "SyntaxError: The requested module does not provide an export named formatDoctorReport"; with the seam extracted at the current ungrouped shape the grouping case failed strictEqual with actual "skill-generation-unknown [attention, blocks none]: ... duplicate-id [error, blocks selection]: ..." against the expected grouped report, and the CLI case failed with "unexpected line in a failing doctor report: blocked-slice [error, blocks selected-slice]: S-001/TK-001 waits on S-999". Both green after the grouping change, with the other 11 cases unchanged. cmp of doctor --json before and after on this repository: byte-identical (9729 bytes). |
 
 ### TK-001 - Consequence-first output
 
@@ -127,15 +150,15 @@ cannot move an effect unnoticed. Then implement the rendering change at
 
 ## Acceptance Criteria
 
-- [ ] `doctor` groups findings by consequence and prints a count per group.
-- [ ] A `blocks: none` finding is visually distinct from a blocking one, and
+- [x] `doctor` groups findings by consequence and prints a count per group.
+- [x] A `blocks: none` finding is visually distinct from a blocking one, and
       still shows its code, effect, and message.
-- [ ] `--json` output is unchanged.
-- [ ] A registry pin test fails if any registered code's severity, scope, or
+- [x] `--json` output is unchanged.
+- [x] A registry pin test fails if any registered code's severity, scope, or
       effect changes.
-- [ ] `node tools/test-diagnostics.mjs` and `node tools/test-spec-workbench.mjs`
+- [x] `node tools/test-diagnostics.mjs` and `node tools/test-spec-workbench.mjs`
       pass, new cases red before green.
-- [ ] The full `AGENTS.md` verification suite passes.
+- [x] The full `AGENTS.md` verification suite passes.
 
 ## Testing Seams
 
@@ -164,15 +187,28 @@ node workbench/tools/spec-workbench.mjs doctor
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Spec captured from upstream UP-019 and rescoped | Read `diagnostics.mjs:43-68` (eight `error`/`none` codes, not four) and `spec-workbench.mjs:551-553`; `git show fa04e27:workbench/tools/spec-workbench.mjs:479` shows the proposed remedy already shipped in v3.1.1; this repository's `doctor` prints 32 `skill-generation-unknown` lines above `ok - no blocking finding` on an LF checkout | Blueprint catalog regenerated by render | One slice open; presentation form is a TK-001 decision |
 | 2026-09-06 | spec | Fresh separate-context review found the diagnostics anchor never re-anchored past S-036 | S-036 inserted `invalid-source-identity` at `diagnostics.mjs:27`, shifting every code below it by one. The eight `error`/`blocks: none` codes were still cited as `:43-48,53-54,68`, where `:43` is `stale-register` (`attention`, not one of the eight), `:53` and `:68` are comments, and two of the eight fall outside the ranges. Now cited individually as `:44,45,47,48,49,54,55,69`. The GPT_OS Windows inference is restated: the report gives that room no path at all | No control text changed | One slice open |
+| 2026-09-06 | TK-001 | Ticket closed | node tools/test-diagnostics.mjs: 13/13 pass. Red first at the named seam: the import of formatDoctorReport failed with "SyntaxError: The requested module does not provide an export named formatDoctorReport"; with the seam extracted at the current ungrouped shape the grouping case failed strictEqual with actual "skill-generation-unknown [attention, blocks none]: ... duplicate-id [error, blocks selection]: ..." against the expected grouped report, and the CLI case failed with "unexpected line in a failing doctor report: blocked-slice [error, blocks selected-slice]: S-001/TK-001 waits on S-999". Both green after the grouping change, with the other 11 cases unchanged. cmp of doctor --json before and after on this repository: byte-identical (9729 bytes). | RUNBOOK.md diagnostics section documents the grouped shape; the effect table rows were not touched or reordered. AGENTS.md Authority Order: Docs checked; no update needed - it names the effects (doctor fails on all and selection, next excludes blocked work, claim refuses a slice blocker, attention stays visible) and no effect changed. | Grouping does not reduce the finding count; skill-generation-unknown volume stays with S-031. A blocking code registered after this spec is not in the named pin until added. |
+| 2026-09-06 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+`doctor`'s plain report is grouped by registered effect, counted per group, and
+ordered blocking first. On this repository the run that previously printed 33
+undifferentiated lines above `ok - no blocking finding` now opens with
+`selected slice (1)` - the one finding that actually constrains work - and
+files the other 32 under `informational (32) - reported only; nothing is
+blocked`. No registered severity, scope, or effect changed; `doctor --json` is
+byte-identical to its pre-change output on this repository.
 
 ## Remaining Limitations Or Follow-Up Specs
 
 - Grouping reduces the cost of a large finding list; it does not reduce the
   list. `skill-generation-unknown` volume stays with S-031.
+- The registry pin is a named set, so a blocking code registered after this
+  spec is not pinned until it is added to `PINNED_EFFECTS`. The whole-registry
+  invariant still holds it to `error` severity.
+- Grouping is fixed; there is no ordering or verbosity option, and none was
+  asked for.
 
 ## Supersession
 
