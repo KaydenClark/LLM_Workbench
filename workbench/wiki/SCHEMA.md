@@ -135,6 +135,15 @@ properties and enums, relative source paths, the Design Concept article shape,
 the absence of copied live task state and secret-like material, and reports
 stale notes as attention. `validate` never writes.
 
+`validate` also emits two findings that are not wiki facts at all: `stale-seed`,
+for a seeded lane document whose recorded generation is behind the manifest, and
+`unverified-provenance`, for a manifest whose recorded source identity is a
+placeholder or disagrees with `workbenchVersion`. Both checks live in
+`workbench/tools/workbench-layout.mjs` and are repaired by its `seed-documents`
+and `record-source` commands; they are reported here only because `doctor` wires
+this validator, and `RUNBOOK.md` -> Installed State The Harness Wrote documents
+them. Neither blocks.
+
 `normalize` is the explicit repair for a note missing required properties. It
 inserts only what is absent, never edits a body or overwrites a declared value,
 and lists every note it changed. It fills the least-claiming values the schema

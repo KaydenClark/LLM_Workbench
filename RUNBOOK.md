@@ -558,7 +558,11 @@ sources). A refusal writes nothing. Cite the promoted copy, never the live path.
 ### Wiki Validation
 
 The wiki lane is validated by its own runtime tool; doctor carries the same
-findings for schema 2 projects, none of which blocks selection:
+findings for schema 2 projects, none of which blocks selection. That tool is
+also the emitter of the two installed-state findings described under Installed
+State The Harness Wrote below - `stale-seed` and `unverified-provenance` - which
+are not wiki facts and are repaired with `workbench-layout.mjs`, not with
+anything in the wiki lane:
 
 ```bash
 node workbench/tools/wiki.mjs validate
@@ -605,8 +609,13 @@ which normalize never invents.
 
 ### Installed State The Harness Wrote
 
-Two classes of installed state are reported by `doctor` and repaired by a
-command the room runs itself; neither blocks.
+Two classes of installed state are repaired by a command the room runs itself;
+neither blocks. Both findings are emitted by
+`node workbench/tools/wiki.mjs validate`, which is where a room sees them
+directly, and `doctor` reports them because it wires that validator; the checks
+themselves live in `workbench-layout.mjs`, which owns seeding and provenance.
+That routing is interim - the findings belong behind a dedicated `doctor` hook -
+and it is recorded as a follow-up in S-042.
 
 ```bash
 node workbench/tools/workbench-layout.mjs seed-documents --project /absolute/project
