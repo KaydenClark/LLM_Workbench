@@ -11,6 +11,12 @@
 **Latest event:** Merged into `integration` as PR #64 on 2026-09-06 after two separate-context reviews.
 **Next gate:** None; the capability is complete and contained in `integration`.
 
+> **Citation anchors.** pre=`b3633e5` post=`5561906`. A bare `path:line` citation
+> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
+> Behavior, and at `post` in every other live section. Evidence rows read at the
+> commit each row names and are never re-anchored, because they are append-only.
+> A `git show <sha>:path` citation is absolute and needs no declaration.
+
 ## Outcome
 
 A Workbench room behaves identically on LF and CRLF checkouts. ADR and Wiki

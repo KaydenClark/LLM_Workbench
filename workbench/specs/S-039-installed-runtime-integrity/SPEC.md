@@ -11,6 +11,12 @@
 **Latest event:** Merged into `integration` as PR #69 at `92be949` on 2026-09-06 **with no fresh review after the fourth returned CHANGES REQUESTED**; the owed review ran retrospectively on 2026-09-06 and its findings are owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md).
 **Next gate:** None; the capability is complete and contained in `integration`. The skipped gate is discharged and disclosed, not undone.
 
+> **Citation anchors.** pre=`09bfff7` post=`eb5a32b`. A bare `path:line` citation
+> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
+> Behavior, and at `post` in every other live section. Evidence rows read at the
+> commit each row names and are never re-anchored, because they are append-only.
+> A `git show <sha>:path` citation is absolute and needs no declaration.
+
 ## Outcome
 
 A room can verify the integrity of the runtime tools it is executing using only

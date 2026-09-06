@@ -163,6 +163,7 @@ node tools/test-eval-runner.mjs
 node tools/test-feedback-automation.mjs
 node tools/test-symlink-invocation.mjs
 node tools/test-control-fidelity.mjs
+node tools/test-spec-citation-anchors.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
@@ -190,6 +191,23 @@ owner. Route each truth once:
 | public setup and usage | `README.md` |
 | decision rationale, alternatives, supersession | `workbench/docs/adr/` (rule binds only where `canonicalized_in` points) |
 | durable knowledge and owner-directed design-concept articles | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; never copied task state) |
+
+A citation into a file that changes must say which tree it reads at. Every merge
+into the integration branch moves line numbers, so a bare `path:line` written
+against a branch tip points at unrelated content once that branch lands - which
+is how nine citations in a completed spec came to name the wrong code, one of
+them behind a checked acceptance box. Either anchor the citation itself with
+`git show <sha>:path`, which is absolute and never needs re-anchoring, or
+declare the spec's anchors once near the top:
+
+> **Citation anchors.** pre=`<sha>` post=`<sha>`.
+
+Bare citations then read at `pre` in Outcome, Why It Matters, Current Verified
+State and Desired Behavior, and at `post` in every other live section. Evidence
+rows read at the commit each row names and are never re-anchored, because they
+are append-only. `tools/test-spec-citation-anchors.mjs` holds specs from S-036
+forward to this; earlier specs are grandfathered, since retro-anchoring accepted
+records buys no reader anything.
 
 If no docs change, record `Docs checked; no update needed` with the reason in
 the spec evidence. Final response proof must state: what changed, why, risks or

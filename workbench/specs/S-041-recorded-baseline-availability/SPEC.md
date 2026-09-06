@@ -11,6 +11,12 @@
 **Latest event:** Merged into `integration` as PR #65 at `b22a8da` on 2026-09-06 after separate-context review.
 **Next gate:** None; the capability is complete and contained in `integration`.
 
+> **Citation anchors.** pre=`09bfff7` post=`b22a8da`. A bare `path:line` citation
+> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
+> Behavior, and at `post` in every other live section. Evidence rows read at the
+> commit each row names and are never re-anchored, because they are append-only.
+> A `git show <sha>:path` citation is absolute and needs no declaration.
+
 ## Outcome
 
 The Adoption and update contracts give one answer to "the target has no

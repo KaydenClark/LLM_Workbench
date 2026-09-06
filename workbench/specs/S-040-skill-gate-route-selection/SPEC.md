@@ -11,6 +11,12 @@
 **Latest event:** Merged into `integration` as PR #67 at `627968e` on 2026-09-06 **with no fresh review after the second returned CHANGES REQUESTED**; the owed review ran retrospectively on 2026-09-06 and returned CHANGES REQUESTED with a HIGH finding, owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-005.
 **Next gate:** None; the capability is complete and contained in `integration`.
 
+> **Citation anchors.** pre=`09bfff7` post=`627968e`. A bare `path:line` citation
+> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
+> Behavior, and at `post` in every other live section. Evidence rows read at the
+> commit each row names and are never re-anchored, because they are append-only.
+> A `git show <sha>:path` citation is absolute and needs no declaration.
+
 ## Outcome
 
 An agent that meets the shared-skill gate on a real workstation learns, from the

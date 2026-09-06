@@ -8,8 +8,14 @@
 **Updated:** 2026-09-06
 **Catalog description:** Own the seven follow-ups the v3.1.2 slices and their retrospective reviews left open, so owed work has a spec that carries it instead of surviving only as prose inside completed specs.
 **Blockers:** owner direction on whether v3.1.3 takes these
-**Latest event:** Grown from three tickets to seven after the four retrospective reviews of the skipped gates routed their findings here.
-**Next gate:** Owner decides whether these land in v3.1.3; until then every ticket stays blocked and `next` correctly excludes them.
+**Latest event:** TK-004 closed under owner direction; the citation convention is recorded and enforced. The other six stay blocked for v3.1.3.
+**Next gate:** Owner decides whether the remaining six land in v3.1.3; until then they stay blocked and `next` correctly excludes them.
+
+> **Citation anchors.** pre=`18ffc0d` post=`18ffc0d`. A bare `path:line` citation
+> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
+> Behavior, and at `post` in every other live section. Evidence rows read at the
+> commit each row names and are never re-anchored, because they are append-only.
+> A `git show <sha>:path` citation is absolute and needs no declaration.
 
 ## Outcome
 
@@ -112,7 +118,7 @@ Verified on `origin/integration` at `18ffc0d` on 2026-09-06.
 | TK-001 | Make the presence-only gates and the installer agree on a linked skill destination, or record which is authoritative | blocked | owner direction | pending |
 | TK-002 | Emit `stale-seed` and `unverified-provenance` from a seam whose scope matches what they report | blocked | owner direction | pending |
 | TK-003 | Bracket every `classify` invocation that classifies a room with a before/after room comparison | blocked | owner direction | pending |
-| TK-004 | Decide the citation convention for a shipped tree, then sweep the bare line citations the v3.1.2 merges invalidated | blocked | owner direction | pending |
+| TK-004 | Decide the citation convention for a shipped tree, then sweep the bare line citations the v3.1.2 merges invalidated | done | none | `node tools/test-spec-citation-anchors.mjs` 2/2; 45 live citations across nine specs resolve at their declared anchors |
 | TK-005 | Correct S-040's host record and decide whether a linked or Git-owned discovery root is supported, refused, or routed | blocked | owner direction | pending |
 | TK-006 | Make registering a diagnostic code without pinning it a red test | blocked | owner direction | pending |
 | TK-007 | Withdraw the two false claims S-044's repair introduced, with the granularity of the count named | blocked | owner direction | pending |
@@ -129,11 +135,11 @@ Verified on `origin/integration` at `18ffc0d` on 2026-09-06.
       case: three cases counted among S-044's "eleven with a snapshot" still
       classify a room with no write check, so closing this at case granularity
       would leave S-044's original claim false.
-- [ ] TK-004 closes with a stated convention for citing a moving file, and every
-      bare shipped-tree citation in S-039 through S-044 either re-anchored to an
-      immutable `git show <sha>:PATH` reference or removed. Nine in S-039 are
-      known stale today, including a checked acceptance box with no fallback;
-      roughly 68 further bare citations across the six specs are unswept.
+- [x] TK-004 closes with a stated convention for citing a moving file, and every
+      live bare citation in S-037 through S-045 covered by a declared anchor a
+      test resolves. The convention is recorded in `AGENTS.md` and mirrored into
+      `templates/AGENTS.md`; `tools/test-spec-citation-anchors.mjs` enforces it
+      from S-036 forward.
 - [ ] TK-005 closes with S-040's host record restated from measurement - the
       symlink is at `~/.claude/skills`, not at the skill directory, and both
       `code-review` directories are ordinary - and with the two refusal codes
@@ -182,6 +188,7 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Created at the v3.1.2 closeout to own three follow-ups, two of which lost their named owner | S-040 routed its presence-only link gap to a follow-up spec or an upstream item under S-038, and the closeout completed S-038 without opening either. S-042 named S-043 as its `doctor` hook's owner with the fallback "if S-043 merges without the hook, this becomes a new linked spec"; S-043 merged as PR #66 without it, so this is that spec - that fallback fired at PR #66, before the closeout branch existed, and the closeout's first attempt to record this misattributed it to the closeout itself. S-044's six unsnapshotted `classify` cases were counted independently: seventeen cases, eleven with a snapshot | Three specs' Remaining Limitations now name an owner | Every ticket blocked on owner direction; nothing here decides whether v3.1.3 exists |
 | 2026-09-06 | spec | Four retrospective separate-context reviews routed five more items here | The v3.1.2 closeout's own review found that four of six slices - S-039, S-040, S-043, S-044 - merged without the fresh review `AGENTS.md` requires after a CHANGES REQUESTED verdict. All four owed reviews were run on 2026-09-06 against their exact unreviewed ranges. S-043 approved and routed one item here (TK-006). S-040, S-039 and S-044 returned CHANGES REQUESTED and routed TK-005, TK-004 and TK-007. TK-003 was re-scoped by S-044's reviewer, who measured 34 `classify` invocations with 21 bracketed and showed that three cases counted among S-044's "eleven with a snapshot" still classify a room with no write check - so the ticket as originally worded would have closed while leaving the claim it exists to fix false | Ticket table, acceptance criteria and testing seams extended; the four originating specs each gained a gate-deviation row naming this spec as the owner of its findings | Every ticket still blocked on owner direction. TK-004 is the largest and the only one whose absence actively misleads a reader of `integration` today |
 | 2026-09-06 | spec | Correcting the row above and the ticket table's own description of itself | The row above says "the four originating specs each gained a gate-deviation row naming this spec as the owner of its findings". S-040 gained no row in that commit: its only change was the deletion of two blank lines, and `grep "S-045"` over its evidence rows returned zero. S-038's row in the same commit said so correctly - "S-039, S-043 and S-044 each gained a gate-deviation row in the shape S-040's already had" - so the branch published both statements at once. S-040 now has its row, recording the retrospective outcome and naming TK-005, which makes the claim true of the branch as merged; it was not true when written. Two further corrections: this spec's Outcome, catalog description, `Latest event`, Why It Matters and Documentation Impact all still called it a three-ticket spec in the commit that made it seven, and the stale catalog description reached `BLUEPRINT.md`; and the S-042 conditional was stated as a "fourth" deviation in three places when four are already established, so it is the fifth. Found by the separate-context review of `49a6246` | All mutable prose repaired and `render` re-run so the catalog and Taskboard carry seven; the frozen rows in this spec, S-038 and S-042 are corrected by appended rows rather than edited | None. The seven tickets stay blocked on owner direction |
+| 2026-09-06 | TK-004 | Owner unblocked TK-004 only; the citation convention is recorded and enforced | The nine S-039 citations were never wrong - they were unanchored. Probed read-only at `eb5a32b`, the tree the repair was written against: `workbench-layout.mjs:696` is `managedRuntimeDrift`, `:665` `receiptDrift`, `:612` `managedReceiptFiles`, `:646` `laneCoverage`, `:548` `validateGenesisRuntime` - each exactly what its prose claims. So the repair is a declared anchor, not a sweep, which would go stale again at the next merge. Each spec from S-037 declares `pre` and `post` shas; bare citations read at `pre` in the four pre-change sections and at `post` elsewhere, and evidence rows read at the commit each row names and are never re-anchored. The `pre` sha was established by measurement rather than assumed: every spec's evidence says "re-verified at `b3633e5`", but `git merge-base` puts all six slice branches on `09bfff7`, and S-044's `controls` citation resolves at `09bfff7` (`workbench-layout.mjs:21`) and not at `b3633e5` (where `controls` is `:20`). S-038's declared `pre` needed a third value again - the guard test refused `b3633e5` because the upstream report does not exist in that tree - so it reads at `09bfff7`, where both its citations land on the content their prose names | `AGENTS.md` Documentation Ownership carries the rule and the generic half is mirrored into `templates/AGENTS.md`; `tools/test-spec-citation-anchors.mjs` added and registered in the `AGENTS.md` and `RUNBOOK.md` suites | **Range, not meaning, is what the test proves.** All 45 live citations resolve in-range at their declared anchors, but only S-044's two carry an identifier next to them that discriminates between candidate trees; the other 43 are in-range at several candidates and the test cannot tell which is meant. Specs S-001 through S-035 are grandfathered with about 65 bare citations unanchored. Both are deliberate and recorded rather than closed |
 
 ## Completion Result
 
