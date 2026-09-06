@@ -218,10 +218,14 @@ declare the spec's anchors once near the top:
 
 > **Citation anchors.** pre=`<sha>` post=`<sha>`.
 
-Bare citations then read at `pre` in Outcome, Why It Matters, Current Verified
-State and Desired Behavior, and at `post` in every other live section. Evidence
-rows read at the commit each row names and are never re-anchored, because they
-are append-only. `tools/test-spec-citation-anchors.mjs` holds specs from S-036
+A label immediately before a citation names its tree and wins: "shipped `:M`"
+reads at `post`, "base `:N`" at the sha of the `git show` anchor that introduced
+the path. Unlabelled, a citation reads at `pre` in Outcome, Why It Matters,
+Current Verified State, Desired Behavior and Documentation Impact - all written
+before the change - and at `post` in every other live section. The shorthand
+`` `:N` `` reads against the nearest path already in scope. Evidence rows read at
+the commit each row names and are never re-anchored, because they are
+append-only. `tools/test-spec-citation-anchors.mjs` holds specs from S-036
 forward to this; earlier specs are grandfathered, since retro-anchoring accepted
 records buys no reader anything.
 

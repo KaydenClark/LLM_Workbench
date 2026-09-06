@@ -11,11 +11,13 @@
 **Latest event:** Merged into `integration` as PR #69 at `92be949` on 2026-09-06 **with no fresh review after the fourth returned CHANGES REQUESTED**; the owed review ran retrospectively on 2026-09-06 and its findings are owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md).
 **Next gate:** None; the capability is complete and contained in `integration`. The skipped gate is discharged and disclosed, not undone.
 
-> **Citation anchors.** pre=`09bfff7` post=`eb5a32b`. A bare `path:line` citation
-> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
-> Behavior, and at `post` in every other live section. Evidence rows read at the
-> commit each row names and are never re-anchored, because they are append-only.
-> A `git show <sha>:path` citation is absolute and needs no declaration.
+> **Citation anchors.** pre=`09bfff7` post=`eb5a32b`. A label before a citation names
+> its tree and wins: "shipped `:M`" reads at `post`, "base `:N`" at the `git show`
+> anchor that introduced the path. Unlabelled, a citation reads at `pre` in
+> Outcome, Why It Matters, Current Verified State, Desired Behavior and
+> Documentation Impact, and at `post` elsewhere; the shorthand `` `:N` `` reads
+> against the nearest path in scope. Evidence rows read at the commit each row
+> names and are never re-anchored, because they are append-only.
 
 ## Outcome
 
@@ -353,18 +355,20 @@ hash together. Both are named below rather than claimed closed.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- **Nine bare shipped-tree citations in this spec are stale on `integration`.**
-  The repair `eb5a32b` pinned them to its own branch tree, and the merge
-  `92be949` moved them again. The Completion Result sentence citing
-  `workbench-layout.mjs:696` for `managedRuntimeDrift` now lands on
-  `validateGenesisRuntime` itself, the function that repair existed to
-  re-anchor, and the acceptance criterion
-  beginning "the effect table" is a checked box whose only citation is a bare
-  line number. Line numbers are deliberately not used to point at this spec's
-  own contents here, since that is the defect being described. Found by the retrospective review of the skipped gate;
-  owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-004, together with the
-  convention question behind it, since roughly 68 further bare citations across
-  the sibling specs are the same class.
+- **The bare shipped-tree citations in this spec were unanchored, and now are
+  not.** The repair `eb5a32b` pinned them to its own branch tree and the merge
+  `92be949` moved them again, so the Completion Result sentence citing
+  `workbench-layout.mjs:696` for `managedRuntimeDrift` came to land on
+  `validateGenesisRuntime` itself - the function that repair existed to
+  re-anchor - and the checked acceptance box beginning "the effect table"
+  carried a bare line number with no fallback. Line numbers are deliberately not
+  used to point at this spec's own contents here, since that is the defect being
+  described. Found by the retrospective review of the skipped gate and closed by
+  [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-004, which declared this spec's
+  anchors rather than sweeping the numbers; a sweep would go stale at the next
+  merge. What TK-004 does not establish is that each citation means what its
+  prose says - the test resolves a line's existence at the declared tree, not
+  its content.
 - Rooms already carrying live drift are not repaired here; their disposition is
   an owner decision recorded in [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md).
 - **A deleted receipt is not on `doctor`'s path at all.** `managedRuntimeDrift`
