@@ -39,29 +39,37 @@ review that never reached its target.
 
 ## Current Verified State
 
-Verified in this repository on 2026-09-06. The findings were established at
-`b3633e5`; the `file:line` citations were re-anchored to the post-S-036 tree
-after PR #63 merged, so following one lands on what it names.
+Verified in this repository on 2026-09-06. These are the conditions as they
+stood at the base commit `09bfff7`, before this ticket changed them, so each is
+anchored to `git show 09bfff7:` rather than to a line this ticket then moved.
+TK-001 inserted seventeen lines into `tools/core-skill-installer.mjs` and TK-002
+five into `tools/workbench-upgrade.mjs`, so the shipped line is given alongside.
 
-- `tools/workbench-upgrade.mjs:102` refuses with `explicit-update-required` and
-  names **both** routes: "Skill replacement requires `--explicit-update`; the
-  support-root-only route requires `--layout-only`."
+- `git show 09bfff7:tools/workbench-upgrade.mjs` line 102 (shipped `:107`)
+  refuses with `explicit-update-required` and names **both** routes: "Skill
+  replacement requires `--explicit-update`; the support-root-only route requires
+  `--layout-only`."
 - The two refusals an operator actually reaches on a host with a shared skill
-  name **neither** route:
-  - `:127` `skill-path-collision`: "`${target}` is not an ordinary directory."
-  - `:128` `unmanaged-skill`: "`${target}` is not marked as a Workbench-managed
-    skill and will not be replaced."
-- Both sit *after* the `if (layoutOnly) { ... return ... }` early exit at
-  `:112-116`, so a `--layout-only` run returns before reaching either. Its own
-  gate (`missing-user-skills`, `:114`) checks presence only, via
-  `missingUserSkills` (`:55-58`), which accepts a skill present in either
-  discovery root.
-- `tools/core-skill-installer.mjs:63-76` `validateDestinations` rejects a
-  destination that is a symlink or not a directory with `skill-path-collision`
-  before any mutation. Its own install loop at `:99-106` skips an ordinary
-  existing directory as `already-present` without reading it. The pre-check is
-  therefore stricter than the operation it guards for exactly the case where the
-  operation would do nothing.
+  named **neither** route, at base lines 127 and 128 (shipped `:132`, `:133`):
+  - `skill-path-collision`: "`${target}` is not an ordinary directory."
+  - `unmanaged-skill`: "`${target}` is not marked as a Workbench-managed skill
+    and will not be replaced."
+- Both sit *after* the `if (layoutOnly) { ... return ... }` early exit at base
+  `:112-116` (shipped `:117-121`), so a `--layout-only` run returns before
+  reaching either. Its own gate (`missing-user-skills`, base `:114`, shipped
+  `:119`) checks presence only, via `missingUserSkills` (base and shipped
+  `:55-58`). That gate accepts a skill present in either discovery root **only
+  where that root holds an ordinary directory**: it judges with
+  `lstatOrNull(...)?.isDirectory()`, which does not follow a link, so a linked
+  entry never satisfies it. The upstream item's own claim on this point is
+  wrong; see Remaining Limitations.
+- `git show 09bfff7:tools/core-skill-installer.mjs` lines 63-76 (shipped
+  `:80-100`) `validateDestinations` rejects a destination that is a symlink or
+  not a directory with `skill-path-collision` before any mutation. Its own
+  install loop at base `:99-106` (shipped `:128-135`) skips an ordinary existing
+  directory as `already-present` without reading it. The pre-check is therefore
+  stricter than the operation it guards for exactly the case where the operation
+  would do nothing.
 - Both consumers of the bundle check presence only:
   `tools/workbench-adoption.mjs:58-60` and `tools/workbench-upgrade.mjs:55-58`.
 - Reproduced on the reporting host: `~/.claude/skills/code-review` is a junction
@@ -198,6 +206,8 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Correcting the previous row's loose word for the evaluator result | `node tools/evaluate-workbench.mjs --path templates --include-controls` exits 0 and scores 106.6/113 with `Team coordination: manager instructions, subagent instructions` outstanding; it is a diagnostic, not a pass/fail gate, and the score is unchanged by this spec because `templates/` is untouched (`git diff --stat 09bfff7 HEAD` lists no path under it) | No documentation change | none |
 | 2026-09-06 | spec | Separate-context review confirmed UP-015 closed as filed and blocked on one false record claim, corrected here | Reviewer rebuilt the reported host shape and confirmed the installer defect is gone: refused with `skill-path-collision` at `09bfff7`, `complete` with a `resolved` target at `ce3da23`. Both reds reproduced as genuine, and the three TK-001 negative cases pass at base, so they are real regression guards. Nine link shapes probed against `resolveSkillLink` with no accept-that-should-refuse; the safety boundary holds, with target bytes and the link itself unchanged and no marker written through it. Blocking finding: Remaining Limitations claimed "No limitation remains from that question", which is false for a host whose skill is symlinked into BOTH discovery roots. Reproduced here: `lstat(...).isDirectory()` returns false for each link while `stat` returns true, so `missingUserSkills` and `hasRequiredUserSkills` both report the skill missing. That makes the installer and the presence gate disagree - new in this candidate - and makes the `--layout-only` route the TK-002 messages name fail on that host. No code change: the Non-Goals bar the presence-only path | The false claim is replaced by the condition, its two consequences, and a correction to UP-015's own premise about what the presence paths accept; routed to a follow-up rather than closed | The presence-only link gap is unfixed and now recorded; it needs a follow-up spec or an upstream item under S-038 |
 
+| 2026-09-06 | spec | Separate-context re-review confirmed the recorded limitation accurate and blocked on seven stale citations; corrected here | Reviewer rebuilt the host and reproduced the table this spec records: at `09bfff7` the installer and both presence gates agreed by refusing; at `29cabf5` the installer reports `complete` with a `resolved` target while `missingUserSkills` and `hasRequiredUserSkills` report the same skill missing. It confirmed UP-015's own Claim is wrong at `REPORT-upstream-v3-1-1-summary-2026-09-06.md:113-119`, and that the repair was documentation-only. Blocking finding: `Current Verified State` promised "following one lands on what it names" while seven of its nine citations named lines TK-001 and TK-002 had themselves moved - `:114` for `missing-user-skills` landed on `dirty-project`, and `:112-116` for the early exit landed on git-status plumbing. Every pre-change condition is now anchored to `git show 09bfff7:` with the shipped line alongside, the pattern S-043 was required to adopt for this same defect class | The limitation headline said "both discovery roots" while the mechanism affects any host whose every populated root holds a link; broadened to the mechanism. The sentence claiming the gate accepts a skill in either discovery root is corrected in place rather than only contradicted sixty lines later | The presence-only link gap stays unfixed and routed to a follow-up spec or an upstream item under S-038 |
+
 
 ## Completion Result
 
@@ -214,9 +224,12 @@ Pending.
   `lstatOrNull(...)?.isDirectory()` - `missingUserSkills`
   (`tools/workbench-upgrade.mjs:57`) and `hasRequiredUserSkills`
   (`tools/workbench-adoption.mjs:60`). `lstat` does not follow a link, so a
-  skill reachable only through links in *both* discovery roots is still
-  reported `missing-user-skills`, even though `stat` resolves both to
-  directories. Two consequences follow, and both are new:
+  linked entry never satisfies the gate. Any host where every root that holds
+  the skill holds it as a link is still reported `missing-user-skills`, even
+  though `stat` resolves those links to directories - both roots linked, one
+  root linked and the other absent, or a single root holding only a link. The
+  gate passes only where at least one root holds an ordinary directory. Two
+  consequences follow, and both are new:
   - **The two tools now disagree.** Before TK-001 the installer and the
     presence gate agreed on such a host: both refused. After it, the installer
     reports `complete` with a `resolved` target while the presence gate reports
