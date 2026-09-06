@@ -8,7 +8,7 @@
 **Updated:** 2026-09-06
 **Catalog description:** Report and repair the installed state the harness itself produced - seeded lane documents behind the manifest, records without required frontmatter, and provenance placeholders - so a fix upstream reaches a room that already exists.
 **Blockers:** none
-**Latest event:** A separate-context review passed every adversarial probe of the behavior and rejected the records: six record-accuracy and documentation-ownership repairs are appended, `templates/wiki/SCHEMA.md` is brought level with its installed counterpart, and no shipped behavior changed.
+**Latest event:** Separate-context review approved `7a5529b` on 2026-09-06 after four rounds; the record defects the last two rounds found are corrected and the code has been untouched since its adversarial pass.
 **Next gate:** Independent review of the exact candidate, then merge into `integration`.
 
 ## Outcome

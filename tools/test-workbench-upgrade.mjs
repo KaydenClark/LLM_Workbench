@@ -249,4 +249,41 @@ test('layout-only upgrade still requires presence of every core skill, a clean c
   }
 });
 
+// S-040: both refusals an operator meets on a host with a shared user-scoped
+// skill must name the route that clears them, or every agent that meets one
+// pays for the route selection itself.
+test('the shared-skill refusals name the layout-only route that clears them', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  try {
+    seedProject(project);
+    assert.equal(run(installer, 'install', '--home', home).status, 0);
+    const shared = path.join(home, '.agents', 'skills', 'code-review');
+    const linked = path.join(home, '.claude', 'skills', 'code-review');
+    fs.rmSync(linked, { recursive: true, force: true });
+    fs.symlinkSync(shared, linked, 'dir');
+
+    const collision = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
+    assert.notEqual(collision.status, 0);
+    assert.equal(collision.report.error.code, 'skill-path-collision');
+    assert.match(collision.report.error.message, /--layout-only/,
+      'the skill-path-collision refusal names the supported route');
+
+    fs.rmSync(linked, { force: true });
+    fs.cpSync(shared, linked, { recursive: true });
+    fs.rmSync(path.join(linked, '.workbench-skill.json'), { force: true });
+
+    const unmanaged = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
+    assert.notEqual(unmanaged.status, 0);
+    assert.equal(unmanaged.report.error.code, 'unmanaged-skill');
+    assert.match(unmanaged.report.error.message, /--layout-only/,
+      'the unmanaged-skill refusal names the supported route');
+
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'neither refusal touched the target');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
 console.log('ok - explicit upgrade preserves a rollback point and never changes skills implicitly');

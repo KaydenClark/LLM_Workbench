@@ -6,8 +6,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { EFFECTS, SCOPES, SEVERITIES, describe, isRegistered, registeredCodes } from '../workbench/tools/diagnostics.mjs';
-import { claimWork, doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
+import { EFFECTS, SCOPES, SEVERITIES, describe, finding, isRegistered, registeredCodes } from '../workbench/tools/diagnostics.mjs';
+import { claimWork, doctor, formatDoctorReport, nextWork, render, DOCTOR_GROUPS } from '../workbench/tools/spec-workbench.mjs';
 import { permissionScopeDrift } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -463,6 +463,173 @@ test('a room outside any Git work tree is told so instead of being told to creat
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+// The registered severity/scope/effect triple for every code the registry
+// carries today. A named set rather than a whole-registry equality on purpose:
+// it catches a triple that MOVES on an existing code - the risk a presentation
+// change carries - while a spec registering a genuinely new code is simply not
+// in the set and passes.
+//
+// Attention codes are pinned here too. An earlier draft left them to the
+// invariants below, reasoning that those held them; they did not. A review
+// mutation promoted the unpinned `stale-claim` from ('attention','specs','none')
+// to ('error','specs','selection') and the pin still passed: `pinnedBlocking`
+// is a subset check, so it never notices a code ARRIVING in a blocking effect,
+// and the severity invariant passed because the severity moved to `error` in
+// the same edit. Promoting an attention code into a blocking effect is exactly
+// the change that must not pass unnoticed.
+const PINNED_EFFECTS = {
+  'invalid-manifest': ['error', 'manifest', 'all'],
+  'upgrade-required': ['error', 'manifest', 'all'],
+  'invalid-lane': ['error', 'manifest', 'all'],
+  'unsafe-lane': ['error', 'manifest', 'all'],
+  'invalid-collection': ['error', 'manifest', 'all'],
+  'missing-collection': ['error', 'manifest', 'all'],
+  'invalid-skill-policy': ['error', 'manifest', 'all'],
+  'invalid-wiki-profile': ['error', 'manifest', 'all'],
+  'sessions-not-ignored': ['error', 'sessions', 'all'],
+  'tools-receipt-missing': ['error', 'tools', 'all'],
+  'tools-receipt-drift': ['error', 'tools', 'all'],
+  'invalid-source-identity': ['error', 'tools', 'all'],
+  'unfilled-control': ['error', 'controls', 'all'],
+  'unsafe-control': ['error', 'controls', 'all'],
+  'version-mismatch': ['error', 'controls', 'all'],
+  'missing-first-spec': ['error', 'specs', 'all'],
+  'invalid-first-spec': ['error', 'specs', 'all'],
+  'project-local-skills': ['error', 'controls', 'all'],
+  'malformed-spec': ['error', 'specs', 'selection'],
+  'duplicate-id': ['error', 'specs', 'selection'],
+  'invalid-state': ['error', 'specs', 'selection'],
+  'contradictory-state': ['error', 'specs', 'selection'],
+  'unstable-path': ['error', 'specs', 'selection'],
+  'missing-evidence': ['error', 'specs', 'selection'],
+  'render-drift': ['error', 'specs', 'selection'],
+  'broken-render-target': ['error', 'specs', 'selection'],
+  'blocked-slice': ['error', 'specs', 'selected-slice'],
+  'invalid-adr': ['error', 'adr', 'none'],
+  'untracked-provenance': ['error', 'adr', 'none'],
+  'invalid-note': ['error', 'wiki', 'none'],
+  'copied-task-state': ['error', 'wiki', 'none'],
+  'secret-like-content': ['error', 'wiki', 'none'],
+  'integration-branch-undeclared': ['error', 'git', 'none'],
+  'integration-branch-missing': ['error', 'git', 'none'],
+  'permission-scope-drift': ['error', 'controls', 'none'],
+  'stale-claim': ['attention', 'specs', 'none'],
+  'complete-on-integration': ['attention', 'specs', 'none'],
+  'broken-link': ['attention', 'specs', 'none'],
+  'stale-register': ['attention', 'adr', 'none'],
+  'stale-note': ['attention', 'wiki', 'none'],
+  'room-brain-unrouted': ['attention', 'wiki', 'none'],
+  'stale-stamp': ['attention', 'wiki', 'none'],
+  'stale-skill': ['attention', 'skills', 'none'],
+  'skill-generation-unknown': ['attention', 'skills', 'none']
+};
+
+test('the registered effect of every blocking code is pinned, and no attention code blocks', () => {
+  for (const [code, triple] of Object.entries(PINNED_EFFECTS)) {
+    assert.ok(isRegistered(code), `${code} must stay registered`);
+    const entry = describe(code);
+    assert.deepEqual([entry.severity, entry.scope, entry.blocks], triple, `${code} effect moved`);
+  }
+  const pinnedBlocking = Object.entries(PINNED_EFFECTS).filter(([, triple]) => triple[2] !== 'none').map(([code]) => code).sort();
+  const registeredBlocking = registeredCodes().filter((code) => describe(code).blocks !== 'none').sort();
+  for (const code of pinnedBlocking) assert.ok(registeredBlocking.includes(code), `${code} must still stop work`);
+  for (const code of registeredBlocking) {
+    assert.equal(describe(code).severity, 'error', `${code} blocks work, so it cannot be attention severity`);
+  }
+});
+
+test('doctor plain output groups findings by consequence, counts each group, and prints blocking findings first', () => {
+  const mixed = [
+    finding('skill-generation-unknown', '.claude/skills/auditor has no schema 2 marker'),
+    finding('blocked-slice', 'S-001 TK-001 names S-999'),
+    finding('invalid-adr', 'ADR-0001 is missing required frontmatter'),
+    finding('duplicate-id', 'two packets claim S-001')
+  ];
+  assert.equal(formatDoctorReport(mixed), [
+    'blocking (1) - doctor exits 1 until repaired',
+    '  duplicate-id [blocks selection, error]: two packets claim S-001',
+    'selected slice (1) - next excludes the slice and claim refuses it',
+    '  blocked-slice [blocks selected-slice, error]: S-001 TK-001 names S-999',
+    'informational (2) - reported only; nothing is blocked',
+    '  skill-generation-unknown [blocks none, attention]: .claude/skills/auditor has no schema 2 marker',
+    '  invalid-adr [blocks none, error]: ADR-0001 is missing required frontmatter'
+  ].join('\n'), 'a blocking finding must not be buried among findings that block nothing');
+
+  assert.equal(formatDoctorReport([]), 'ok - spec workbench doctor passed');
+  assert.equal(formatDoctorReport(mixed.filter((item) => item.blocks === 'none')), [
+    'informational (2) - reported only; nothing is blocked',
+    '  skill-generation-unknown [blocks none, attention]: .claude/skills/auditor has no schema 2 marker',
+    '  invalid-adr [blocks none, error]: ADR-0001 is missing required frontmatter',
+    'ok - no blocking finding; attention and slice findings above stay visible'
+  ].join('\n'), 'a room whose findings block nothing still says so on the last line');
+
+  // An effect outside the groups would silently vanish from the report; the
+  // renderer fails visibly instead of printing a report that omits a finding.
+  assert.throws(() => formatDoctorReport([{ code: 'made-up', severity: 'error', blocks: 'somewhere-else', message: 'x' }]), /somewhere-else/);
+});
+
+test('doctor renders the same findings as grouped text and byte-unchanged --json', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tickets: '| TK-001 | Blocked slice | ready | S-999 | pending |', extra: '[missing](../../missing.md)' }));
+    render(dir);
+    write(dir, 'workbench/specs/S-009-duplicate/SPEC.md', spec('S-001'));
+    const findings = doctor(dir, { home: quietHome });
+    assert.ok(findings.some((item) => item.blocks === 'selection'), 'the fixture must carry a blocking finding');
+    assert.ok(findings.some((item) => item.blocks === 'none'), 'the fixture must carry a non-blocking finding');
+
+    // The machine contract: --json is exactly the serialized finding array,
+    // untouched by anything the text report does.
+    const json = spawnSync(process.execPath, [specTool, 'doctor', '--json', '--home', quietHome], { cwd: dir, encoding: 'utf8' });
+    assert.equal(json.stdout, `${JSON.stringify(findings, null, 2)}\n`, '--json output must be byte-unchanged');
+
+    const text = spawnSync(process.execPath, [specTool, 'doctor', '--home', quietHome], { cwd: dir, encoding: 'utf8' });
+    assert.equal(text.status, 1, 'grouping must not change which findings fail doctor');
+    const groups = new Map();
+    let current = null;
+    for (const line of text.stdout.trimEnd().split('\n')) {
+      const header = /^(?<name>[a-z ]+) \((?<count>\d+)\) - /.exec(line);
+      if (header) {
+        current = header.groups.name;
+        groups.set(current, { count: Number(header.groups.count), codes: [] });
+      } else if (line.startsWith('  ')) {
+        groups.get(current).codes.push(line.trim().split(' ')[0]);
+      } else {
+        assert.fail(`unexpected line in a failing doctor report: ${line}`);
+      }
+    }
+    for (const [name, group] of groups) assert.equal(group.count, group.codes.length, `${name} count must match its rows`);
+    assert.deepEqual([...groups.keys()], ['blocking', 'selected slice', 'informational'].filter((name) => groups.has(name)), 'blocking findings come first');
+    assert.deepEqual(groups.get('blocking').codes.sort(), findings.filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => item.code).sort());
+    assert.deepEqual(groups.get('informational').codes.sort(), findings.filter((item) => item.blocks === 'none').map((item) => item.code).sort());
+    assert.equal([...groups.values()].reduce((total, group) => total + group.codes.length, 0), findings.length, 'every finding stays in the report');
+    for (const line of text.stdout.split('\n')) {
+      if (line.startsWith('  ')) assert.match(line, /\[blocks (all|selection|selected-slice|none), (error|attention)\]: /, 'every row keeps its code, effect, severity, and message');
+    }
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// Every registered effect must be reportable. formatDoctorReport throws on an
+// effect that matches no group, and that throw reaches main().catch, which
+// prints the error and NO findings - including real blocking ones. So adding a
+// value to EFFECTS without a group is a total doctor outage, and nothing else
+// in the suite notices: the throw's only other cover passes a hand-made object
+// rather than the vocabulary.
+test('every registered diagnostic effect lands in exactly one doctor group', () => {
+  for (const effect of EFFECTS) {
+    const groups = DOCTOR_GROUPS.filter((group) => group.effects.includes(effect));
+    assert.equal(groups.length, 1, `effect ${effect} must land in exactly one doctor group, found ${groups.length}`);
+  }
+  for (const group of DOCTOR_GROUPS) {
+    for (const effect of group.effects) {
+      assert.ok(EFFECTS.includes(effect), `doctor group ${group.title} names ${effect}, which is not a registered effect`);
+    }
+  }
+});
+
 
 // S-042 TK-001: seeded lane documents are the third class of installed state.
 // Their generation lives in a seed record beside the manifest, never in the
