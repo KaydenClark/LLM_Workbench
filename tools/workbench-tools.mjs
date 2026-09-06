@@ -14,6 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { receiptDrift } from '../workbench/tools/workbench-layout.mjs';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -191,16 +192,15 @@ export function verify(project) {
     catch (error) { return fail('invalid-source-identity', error.message); }
   }
   if (!receipt) return { status: 'invalid', error: { code: 'tools-receipt-missing', message: `${relative} has no ${RECEIPT_NAME}.` } };
-  const drift = [];
-  for (const [tool, expected] of Object.entries(receipt.files)) {
-    const file = path.join(lane, tool);
-    const entry = lstatOrNull(file);
-    if (!entry?.isFile() || entry.isSymbolicLink()) { drift.push({ tool, reason: 'missing-or-not-a-file' }); continue; }
-    if ((entry.mode & 0o111) !== 0) drift.push({ tool, reason: 'executable-bit' });
-    if (sha256(file) !== expected) drift.push({ tool, reason: 'hash' });
-  }
+  // The same comparison an installed room runs from workbench-layout.mjs, here
+  // with the release source available, so each drifted file is classified as a
+  // stale receipt, a modified runtime, or authentic bytes with a drifted mode.
+  const drift = receiptDrift(lane, receipt, { sourceLane });
+  // `updateAvailable` compares the receipt with the source, which says nothing
+  // about the installed bytes; it rides both paths so a drifted room is not
+  // denied the fact that a newer release exists.
   const sourceDrift = RUNTIME_TOOLS.filter((tool) => receipt.files[tool] !== sha256(path.join(sourceLane, tool)));
-  if (drift.length) return { status: 'invalid', error: { code: 'tools-receipt-drift', message: `${relative} differs from its receipt.`, drift }, receipt };
+  if (drift.length) return { status: 'invalid', error: { code: 'tools-receipt-drift', message: `${relative} differs from its receipt.`, drift }, receipt, updateAvailable: sourceDrift };
   return { status: 'valid', lane: relative, receipt, updateAvailable: sourceDrift };
 }
 

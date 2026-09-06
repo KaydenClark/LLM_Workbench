@@ -128,7 +128,7 @@ test('verify reports drift, update requires explicit authorization, backs up, an
     fs.writeFileSync(target, '// locally edited\n');
     const drift = run(installer, 'verify', '--project', dir);
     assert.equal(drift.report.error.code, 'tools-receipt-drift');
-    assert.deepEqual(drift.report.error.drift, [{ tool: 'markdown-table.mjs', reason: 'hash' }]);
+    assert.deepEqual(drift.report.error.drift.map((entry) => [entry.tool, entry.reason, entry.state]), [['markdown-table.mjs', 'hash', 'runtime-modified']]);
 
     const refused = run(installer, 'update', '--project', dir, '--home', home);
     assert.equal(refused.report.error.code, 'explicit-update-required');
@@ -155,6 +155,54 @@ test('verify reports drift, update requires explicit authorization, backs up, an
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+// Reporting drift is not enough to act on: a receipt that has gone stale and a
+// runtime somebody edited both read as `tools-receipt-drift`, and they take
+// opposite remedies. The comparison that separates them is installed bytes
+// against the release source, not the receipt against the release source.
+test('a drift result separates a stale receipt from a modified runtime and names each remedy', () => {
+  const dir = project();
+  try {
+    assert.equal(run(installer, 'install', '--project', dir).report.status, 'installed');
+    const lane = path.join(dir, 'workbench', 'tools');
+    const managed = path.join(lane, 'markdown-table.mjs');
+    const receiptPath = path.join(lane, RECEIPT_NAME);
+    const pristineReceipt = fs.readFileSync(receiptPath, 'utf8');
+    const pristineTool = fs.readFileSync(managed);
+
+    // A stale receipt: the installed bytes are still byte-identical to the release.
+    const receipt = JSON.parse(pristineReceipt);
+    receipt.files['markdown-table.mjs'] = hash('// an earlier release\n');
+    fs.writeFileSync(receiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
+    const stale = run(installer, 'verify', '--project', dir);
+    assert.equal(stale.report.error.code, 'tools-receipt-drift');
+    assert.deepEqual(stale.report.error.drift.map((entry) => [entry.tool, entry.reason, entry.state]),
+      [['markdown-table.mjs', 'hash', 'receipt-stale']]);
+    assert.match(stale.report.error.drift[0].remedy, /update --explicit-update/,
+      'a stale receipt names the command that refreshes it');
+    assert.deepEqual(stale.report.updateAvailable, ['markdown-table.mjs'],
+      'the receipt-versus-source comparison rides the drift path too, not only the valid path');
+
+    // A modified runtime: the installed bytes match neither the receipt nor the release.
+    fs.appendFileSync(managed, '// locally edited\n');
+    const modified = run(installer, 'verify', '--project', dir);
+    assert.deepEqual(modified.report.error.drift.map((entry) => [entry.tool, entry.reason, entry.state]),
+      [['markdown-table.mjs', 'hash', 'runtime-modified']]);
+    assert.match(modified.report.error.drift[0].remedy, /rollback/,
+      'a modified runtime is restored, not blessed by refreshing the receipt');
+
+    // Mode drift alone is neither: the bytes are the release's and the receipt's.
+    fs.writeFileSync(managed, pristineTool);
+    fs.writeFileSync(receiptPath, pristineReceipt);
+    fs.chmodSync(managed, 0o755);
+    const mode = run(installer, 'verify', '--project', dir);
+    assert.deepEqual(mode.report.error.drift.map((entry) => [entry.tool, entry.reason, entry.state]),
+      [['markdown-table.mjs', 'executable-bit', 'runtime-authentic']]);
+    assert.match(mode.report.error.drift[0].remedy, /0644/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
   }
 });
 

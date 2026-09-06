@@ -542,6 +542,11 @@ test('a room whose managed runtime drifts from its receipt fails the doctor it c
     assert.equal(reported.blocks, 'all', 'the registered effect is the contract');
     assert.deepEqual(reported.drift.map((entry) => [entry.tool, entry.reason]), [['markdown-table.mjs', 'hash']]);
     assert.equal(drifted.status, 1, 'a drifted managed runtime fails the doctor the room carries');
+    // A room holds no release checkout, so the installed-versus-source
+    // comparison cannot be made there; it is reported as unavailable rather
+    // than guessed at in either direction.
+    assert.equal(reported.drift[0].state, 'source-unavailable');
+    assert.match(reported.drift[0].remedy, /release checkout/);
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(quietHome, { recursive: true, force: true });

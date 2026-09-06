@@ -541,20 +541,50 @@ function validateGenesisRuntime(project, expectedVersion) {
   return null;
 }
 
+// Drift alone cannot be acted on: a receipt that has gone stale and a runtime
+// somebody edited both report `tools-receipt-drift` and take opposite
+// remedies. The comparison that separates them is the installed bytes against
+// the release source - not the receipt against the release source, which says
+// nothing about what is actually installed. A room carries no release
+// checkout, so there the comparison is reported as unavailable rather than
+// guessed at.
+export const DRIFT_STATES = Object.freeze({
+  'receipt-stale': 'the installed bytes are the release source\'s, so the receipt hash is the stale fact; refresh it with `workbench-tools.mjs update --project PATH --explicit-update`, which backs the replaced files up under the user home and records the backup path in the receipt',
+  'runtime-modified': 'the installed bytes match neither the receipt nor the release source; restore them with `workbench-tools.mjs rollback --project PATH --backup PATH` from a backup the receipt records, or replace them with `workbench-tools.mjs update --project PATH --explicit-update` once the difference is reviewed',
+  'runtime-authentic': 'the installed bytes match both the receipt and the release source, so only the file mode drifted; restore mode 0644 on the managed file',
+  'source-unavailable': 'no release source was available to compare the installed bytes against; run `node tools/workbench-tools.mjs verify --project PATH` from a release checkout to classify this drift'
+});
+
+function driftState(laneDir, tool, installed, matchesReceipt, sourceLane) {
+  if (!sourceLane) return 'source-unavailable';
+  const sourceFile = path.join(sourceLane, tool);
+  const sourceEntry = lstatOrNull(sourceFile);
+  if (!sourceEntry?.isFile() || sourceEntry.isSymbolicLink()) return 'source-unavailable';
+  if (installed === null || installed !== sha256(sourceFile)) return 'runtime-modified';
+  return matchesReceipt ? 'runtime-authentic' : 'receipt-stale';
+}
+
 // The managed-runtime integrity check, kept in a tool every room carries. The
 // installer that writes the receipt (`tools/workbench-tools.mjs`) is never
 // copied into a room, so without this the registered `all` effect of
 // `tools-receipt-drift` would be unreachable from the room executing the
 // runtime. The cost is bounded: at most the managed files the receipt names,
-// each read and hashed once, and only when a receipt exists.
-export function receiptDrift(laneDir, receipt) {
+// each read and hashed once, and only when a receipt exists; the release
+// source is read only for a file that already drifted.
+export function receiptDrift(laneDir, receipt, options = {}) {
+  const sourceLane = options.sourceLane ?? null;
   const drift = [];
+  const entryFor = (tool, reason, installed, matchesReceipt) => {
+    const state = driftState(laneDir, tool, installed, matchesReceipt, sourceLane);
+    return { tool, reason, state, remedy: DRIFT_STATES[state] };
+  };
   for (const [tool, expected] of Object.entries(receipt.files)) {
     const file = path.join(laneDir, tool);
     const entry = lstatOrNull(file);
-    if (!entry?.isFile() || entry.isSymbolicLink()) { drift.push({ tool, reason: 'missing-or-not-a-file' }); continue; }
-    if ((entry.mode & 0o111) !== 0) drift.push({ tool, reason: 'executable-bit' });
-    if (sha256(file) !== expected) drift.push({ tool, reason: 'hash' });
+    if (!entry?.isFile() || entry.isSymbolicLink()) { drift.push(entryFor(tool, 'missing-or-not-a-file', null, false)); continue; }
+    const installed = sha256(file);
+    if ((entry.mode & 0o111) !== 0) drift.push(entryFor(tool, 'executable-bit', installed, installed === expected));
+    if (installed !== expected) drift.push(entryFor(tool, 'hash', installed, false));
   }
   return drift;
 }
@@ -576,7 +606,7 @@ export function managedRuntimeDrift(project, options = {}) {
   if (!receipt?.files || typeof receipt.files !== 'object' || Array.isArray(receipt.files)) return unreadable('records no managed file hashes');
   const drift = receiptDrift(laneDir, receipt);
   if (drift.length === 0) return null;
-  const named = drift.map((item) => `${item.tool} (${item.reason})`).join(', ');
+  const named = drift.map((item) => `${item.tool} (${item.reason}, ${item.state})`).join(', ');
   return { code: 'tools-receipt-drift', message: `${relative} differs from the hashes ${TOOLS_RECEIPT} recorded: ${named}`, lane: relative, drift };
 }
 
