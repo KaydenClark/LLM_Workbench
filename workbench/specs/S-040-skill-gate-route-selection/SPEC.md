@@ -42,8 +42,8 @@ review that never reached its target.
 Verified in this repository on 2026-09-06. These are the conditions as they
 stood at the base commit `09bfff7`, before this ticket changed them, so each is
 anchored to `git show 09bfff7:` rather than to a line this ticket then moved.
-TK-001 inserted seventeen lines into `tools/core-skill-installer.mjs` and TK-002
-five into `tools/workbench-upgrade.mjs`, so the shipped line is given alongside.
+TK-001 and TK-002 both inserted code above the lines they cite, so the shipped
+line is given alongside each base anchor rather than a single global offset.
 
 - `git show 09bfff7:tools/workbench-upgrade.mjs` line 102 (shipped `:107`)
   refuses with `explicit-update-required` and names **both** routes: "Skill
