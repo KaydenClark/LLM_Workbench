@@ -555,7 +555,7 @@ test('doctor plain output groups findings by consequence, counts each group, and
 test('doctor renders the same findings as grouped text and byte-unchanged --json', () => {
   const dir = project();
   try {
-    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tickets: '| TK-001 | Blocked slice | ready | S-999 | pending |', updated: '2026-01-01' }));
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tickets: '| TK-001 | Blocked slice | ready | S-999 | pending |', extra: '[missing](../../missing.md)' }));
     render(dir);
     write(dir, 'workbench/specs/S-009-duplicate/SPEC.md', spec('S-001'));
     const findings = doctor(dir, { home: quietHome });
