@@ -1,15 +1,15 @@
 # S-036 - Workbench v3.1.2 Evidence Corrections
 
 **Spec ID:** S-036
-**Status:** active
+**Status:** complete
 **Priority:** 0
 **Owner:** codex-gpt-5
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Correct the unpublished v3.1.2 candidate where permission, control-fidelity, and source-identity checks overstate what they prove, then rehearse the already-v3 upgrade path and return an exact reviewed candidate for GPT_OS deployment.
 **Blockers:** none
-**Latest event:** Separate-context review of `ec3fcf5` approved the fully aligned candidate; the full release gate is green and one pre-existing tools-lane deny gap is recorded as a follow-up.
-**Next gate:** Open and merge the approved PR into `integration`, then prove remote containment of the exact reviewed commit.
+**Latest event:** Merged into `integration` as PR #63 on 2026-09-06; containment of the exact reviewed commit proved.
+**Next gate:** None; the capability is complete and contained in `integration`. The tools-lane deny gap stays recorded as a follow-up.
 
 ## Outcome
 
@@ -125,7 +125,7 @@ Verified on 2026-09-05 after refreshing `origin`, at
 | TK-001 | Align the shipped Claude permission template, diagnostic, protocols, and tests with one supported `Edit`-rule model that reports restrictive uncertainty | done | none | Red: node tools/test-diagnostics.mjs exposed Edit-only lanes as withheld, and node tools/test-workbench-layout.mjs exposed paired Write rules in the shipped template. Green: test-diagnostics 10/10, test-workbench-layout 31/31, test-workbench-dogfood pass, evaluate-workbench templates 106.6/113, git diff --check pass. Claude Code 2.1.212 native disposable write did not reach a permission decision because the workspace was untrusted and OAuth was expired; no trust or credential state was changed. |
 | TK-002 | Make placeholder fills preserve fixed wording and prove the shipped ADR ownership row detects a removed qualifier in JSON and Markdown | done | TK-001 | Red: test-control-fidelity failed because the shipping AGENTS template lacked its ADR owner row, and the direct Forbidden-to-Allowed placeholder case returned filled 1 / changed 0. Green: test-control-fidelity 15/15, including JSON and Markdown production CLI coverage for the removed canonicalized_in qualifier; test-workbench-layout 31/31; test-workbench-dogfood pass after render; template evaluation 106.6/113 unchanged; git diff --check pass. |
 | TK-003 | Fail closed on unverified source identity across layout, adoption, runtime-tool receipts, and skill markers, then rehearse v3.1.1 -> v3.1.2 maintenance preservation | done | TK-002 | Red: sourceIdentity accepted a non-Git fixture and layout initialization accepted contradictory or relocated caller-supplied source strings. Green: test-workbench-tools 14/14, test-workbench-layout 31/31, core-skill-installer 7/7, workbench-adoption pass, workbench-upgrade 5/5, workbench-round-trip pass, cross-provider-fixture pass, git diff --check pass. The v3.1.1 rehearsal updated and rolled back one managed runtime tool while byte-identical project controls, product code, active spec, completed evidence, and Wiki content survived; the historical manifest source remained v3.1.1 and the component receipt advanced to a concrete current 40-hex commit. |
-| TK-004 | Reconcile current ownership prose, run the full release gate, independently review the immutable candidate, and land it on `integration` | in-progress | TK-003 | Review of `72c5064` reproduced four blockers; red/green correction `b2f802b` now awaits the full gate and fresh exact-SHA review. |
+| TK-004 | Reconcile current ownership prose, run the full release gate, independently review the immutable candidate, and land it on `integration` | done | none | Four immutable-candidate review rounds; the fourth approved `ec3fcf5` and `5a98c00` recorded that approval. Full `AGENTS.md` suite re-run at `5a98c00` before merge: 25 node suites plus the path-safety grader all pass, `doctor` exit 0. Merged as PR #63; `git merge-base --is-ancestor 5a98c00 origin/integration` confirms containment. `origin/main` carries no `workbench/` tree and is untouched. |
 
 ### TK-001 - Permission truth at the public seam
 
@@ -171,12 +171,12 @@ red/green checkpoint, and merge the approved PR to `integration`. Stop before
 
 ## Acceptance Criteria
 
-- [ ] Permission behavior and prose agree with Claude Code 2.1.212 and the current Anthropic reference; valid Edit-only coverage passes and restrictions or unsupported restrictive shapes do not false-clear.
-- [ ] Placeholder fixed-wording changes and the shipped ADR qualifier regression are substantive in structured and Markdown fidelity output.
-- [ ] No supported writer records `commit: "unknown"`; invalid or contradictory supplied source identity fails before mutation.
-- [ ] A disposable v3.1.1 room proves intended already-v3 maintenance preserves project-owned controls, code, work, evidence, and Wiki content with recoverable managed-component updates.
-- [ ] Current ownership prose names LLM_Workbench, GPT_OS, Audit_Workbench, and project responsibilities without rewriting historical evidence.
-- [ ] The unchanged full suite, guardrail after-score, exact-SHA independent review, PR, and remote `integration` containment are recorded; `main` remains untouched.
+- [x] Permission behavior and prose agree with Claude Code 2.1.212 and the current Anthropic reference; valid Edit-only coverage passes and restrictions or unsupported restrictive shapes do not false-clear.
+- [x] Placeholder fixed-wording changes and the shipped ADR qualifier regression are substantive in structured and Markdown fidelity output.
+- [x] No supported writer records `commit: "unknown"`; invalid or contradictory supplied source identity fails before mutation.
+- [x] A disposable v3.1.1 room proves intended already-v3 maintenance preserves project-owned controls, code, work, evidence, and Wiki content with recoverable managed-component updates.
+- [x] Current ownership prose names LLM_Workbench, GPT_OS, Audit_Workbench, and project responsibilities without rewriting historical evidence.
+- [x] The unchanged full suite, guardrail after-score, exact-SHA independent review, PR, and remote `integration` containment are recorded; `main` remains untouched.
 
 ## Testing Seams
 
@@ -235,10 +235,26 @@ separate-context integration review.
 | 2026-09-06 | TK-004 | Third immutable candidate review requested documentation changes | Separate-context review of `bfd84b4eb72b1ea1e14392b797e48f95898b0b3a` found no remaining code defect and confirmed all original blockers closed. It found the Runbook troubleshooting row, template Runbook, Claude README, and a test comment still said any tools-lane allow drifted, contradicting the implemented covering-ask exception. | The review required every current operator and provider surface to describe the same permission contract. | Qualify the four descriptions and submit a new immutable candidate. |
 | 2026-09-06 | TK-004 | Tools permission descriptions aligned at `7e0f3c4` | Root and template prose now say a broad tools allow is accepted only when a covering ask holds the whole lane, while an intersecting deny remains visible. Focused green: diagnostics 10/10; workbench-layout 32/32; workbench-dogfood pass; control-fidelity 15/15; git diff check passed before commit. | Updated root Runbook, template Runbook, Claude README, and the stale regression-test comment; no historical evidence changed. | Full release gate, exact remote SHA, fresh independent review, PR merge, and `integration` containment. |
 | 2026-09-06 | TK-004 | Fourth immutable candidate review approved | Separate-context review of `ec3fcf58a7a91f5ca3dc5e387555a14252e6b73d` on macOS reproduced the corrected behavior and found no blocking defect. Full `AGENTS.md` suite 25/25 pass (layout 32/32, tools 15/15, diagnostics 10/10, upgrade 6/6, control-fidelity 15/15, adr, wiki, sessions, round-trip, dogfood, symlink, path-safety eval); templates evaluation 106.6/113; guardrail 78/100 with the same four outcome-evidence recommendations as the baseline; `render`, `doctor` exit 0, `git diff --check` clean. Differential probe against `b3633e5` confirmed the permission correction is a strict improvement: the baseline false-flagged an Edit-only wiki lane as `no covering Write allow rule` and the candidate clears it. | Docs checked; no update needed - the review challenged implementation and prose without changing owner routing. | One pre-existing gap reproduced at both `b3633e5` and `ec3fcf5` and therefore not a regression of this spec: a `tools` lane whose only matching rule is a covering `deny` and which has no allow rule returns no drift, so a fully withheld tools lane reads as clear. Recorded as a follow-up, not a blocker for this candidate. Second follow-up, introduced by this spec: the new clean-source requirement in `sourceIdentity()` makes the repository's own suite non-hermetic, because fixtures call `workbench-layout.mjs init`. With one uncommitted file under `workbench/tools/`, 8 of 14 init-based tests fail with `invalid-source-identity` regardless of their subject, so the red/green order `AGENTS.md` mandates for tools changes cannot be run without committing first. Shipped adoption behavior is correct and unaffected; the collateral damage is on the development loop and belongs in its own spec. |
+| 2026-09-06 | TK-004 | Ticket closed and spec completed after the approved candidate landed | Merged as PR #63 at `5a98c00`, the exact commit the fourth review approved (`ec3fcf5` plus the record-only commit that recorded that approval). `git merge-base --is-ancestor 5a98c00 origin/integration` returns true; `git ls-tree origin/main` carries no `workbench/` tree. Full `AGENTS.md` suite re-run at `5a98c00` in an isolated worktree before merge: 25 node suites plus `evals/tasks/task_b_path_safety/test_grade.py` all pass, `doctor` exit 0, guardrail 78/100 unchanged | Spec status, latest event, next gate, ticket row, acceptance boxes, and Completion Result reconciled with the merged reality | Ticket state had said `in-progress` while the work was merged, so `next` was returning landed work; that drift is what this row repairs. The pre-existing tools-lane deny gap remains a recorded follow-up |
 
 ## Completion Result
 
-Pending.
+The unpublished v3.1.2 candidate now reports only what its permission,
+control-fidelity, and source-identity checks actually prove. Source identity
+fails closed: a relocated or partial copy is refused with
+`invalid-source-identity` rather than accepting caller-supplied strings as the
+identity of bytes it cannot verify, and no supported writer records
+`commit: "unknown"`.
+
+Landed as PR #63 at `5a98c00`, contained in `integration`. `origin/main`
+carries no `workbench/` tree and is untouched. Full `AGENTS.md` suite re-run at
+the exact reviewed commit before merge: 25 node suites plus the path-safety
+grader all pass; `doctor` exit 0; guardrail 78/100 with unchanged criteria,
+which a correction to reporting fidelity is not expected to move and did not.
+
+Four immutable-candidate review rounds were needed. That count is the honest
+record: each found real overstatement in what the checks proved, which is the
+defect class this spec exists to remove.
 
 ## Remaining Limitations Or Follow-Up Specs
 
