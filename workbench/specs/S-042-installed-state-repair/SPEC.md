@@ -11,6 +11,12 @@
 **Latest event:** Merged into `integration` as PR #68 at `6b83f40` on 2026-09-06; the approving review its Completion Result discusses is asserted in a header line this spec's own merge commit wrote, and no evidence row carries it.
 **Next gate:** None; the capability is complete and contained in `integration`.
 
+> **Citation anchors.** pre=`09bfff7` post=`7a5529b`. A bare `path:line` citation
+> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
+> Behavior, and at `post` in every other live section. Evidence rows read at the
+> commit each row names and are never re-anchored, because they are append-only.
+> A `git show <sha>:path` citation is absolute and needs no declaration.
+
 ## Outcome
 
 Every class of file the harness writes into a room can be reported when it falls
@@ -284,8 +290,8 @@ that exercises both directions of the finding. The evidence log records that
 plainly rather than quoting the red an abandoned draft would have produced.
 
 Merged into `integration` as PR #68 at `6b83f40` on 2026-09-06. The approving
-review this spec's header cites is recorded only in a header line that the merge
-commit itself wrote; no evidence row carries it, so the approval is asserted
+review this spec's header cited before that header was repaired is recorded only
+in a line the merge commit itself wrote; no evidence row carries it, so the approval is asserted
 rather than evidenced. That gap is named here instead of being tidied away.
 
 ## Remaining Limitations Or Follow-Up Specs

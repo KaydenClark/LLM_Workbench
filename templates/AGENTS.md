@@ -143,6 +143,14 @@ Documentation is part of done; the implementing agent is documentation owner.
 Use `Docs checked; no update needed` with a reason when appropriate. The final response proof states what changed, why, risks, and verification. Append spec
 evidence; never duplicate completed proof in the Taskboard.
 
+A citation into a file that changes must say which tree it reads at. Every merge
+moves line numbers, so a bare `path:line` written against a branch tip points at
+unrelated content once that branch lands. Either anchor the citation with
+`git show <sha>:path`, which is absolute, or declare the spec's anchors once
+near the top as `**Citation anchors.** pre=`<sha>` post=`<sha>`` and read bare
+citations at `pre` in the pre-change sections and at `post` in the rest.
+Evidence rows read at the commit each row names and are never re-anchored.
+
 ## Safety And Change Control
 
 - Preserve unrelated dirty work.

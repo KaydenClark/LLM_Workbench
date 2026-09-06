@@ -11,6 +11,12 @@
 **Latest event:** All eleven accepted items landed and their six owning specs are complete and contained in `integration`; the final disposition table and release account are recorded.
 **Next gate:** None. Publishing `integration` to `main` is owner-only and outside this spec.
 
+> **Citation anchors.** pre=`09bfff7` post=`8dfd1a8`. A bare `path:line` citation
+> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
+> Behavior, and at `post` in every other live section. Evidence rows read at the
+> commit each row names and are never re-anchored, because they are append-only.
+> A `git show <sha>:path` citation is absolute and needs no declaration.
+
 ## Outcome
 
 Every item on the second v3.1.1 upstream fix list has a recorded disposition

@@ -11,6 +11,12 @@
 **Latest event:** Merged into `integration` as PR #69 at `92be949` on 2026-09-06 **with no fresh review after the fourth returned CHANGES REQUESTED**; the owed review ran retrospectively on 2026-09-06 and its findings are owned by [S-045](../S-045-v3-1-2-follow-ups/SPEC.md).
 **Next gate:** None; the capability is complete and contained in `integration`. The skipped gate is discharged and disclosed, not undone.
 
+> **Citation anchors.** pre=`09bfff7` post=`eb5a32b`. A bare `path:line` citation
+> reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
+> Behavior, and at `post` in every other live section. Evidence rows read at the
+> commit each row names and are never re-anchored, because they are append-only.
+> A `git show <sha>:path` citation is absolute and needs no declaration.
+
 ## Outcome
 
 A room can verify the integrity of the runtime tools it is executing using only
@@ -349,9 +355,10 @@ hash together. Both are named below rather than claimed closed.
 
 - **Nine bare shipped-tree citations in this spec are stale on `integration`.**
   The repair `eb5a32b` pinned them to its own branch tree, and the merge
-  `92be949` moved them again. The row citing `workbench-layout.mjs:696` for
-  `managedRuntimeDrift` now lands on `validateGenesisRuntime` itself, the
-  function that repair existed to re-anchor, and the acceptance criterion
+  `92be949` moved them again. The Completion Result sentence citing
+  `workbench-layout.mjs:696` for `managedRuntimeDrift` now lands on
+  `validateGenesisRuntime` itself, the function that repair existed to
+  re-anchor, and the acceptance criterion
   beginning "the effect table" is a checked box whose only citation is a bare
   line number. Line numbers are deliberately not used to point at this spec's
   own contents here, since that is the defect being described. Found by the retrospective review of the skipped gate;
