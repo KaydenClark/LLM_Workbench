@@ -1,0 +1,259 @@
+# S-038 - Workbench v3.1.2 Upstream Fix List
+
+**Spec ID:** S-038
+**Status:** active
+**Priority:** 1
+**Owner:** claude-opus-5
+**Stance:** Reconciler
+**Updated:** 2026-09-06
+**Catalog description:** Accept, decline, or correct each of the eleven v3.1.1 upstream items UP-013 through UP-023, route the accepted ones to capability specs, and record the final disposition so Master Workbench can compare v3.1.2 against v3.1.1.
+**Blockers:** none
+**Latest event:** All eleven items re-verified against `b3633e5`; two upstream claims corrected; six capability specs opened; three owner questions carried forward.
+**Next gate:** Owner accepts or declines the routing below and answers the three open questions, in particular UP-017 which blocks S-041.
+
+## Outcome
+
+Every item on the second v3.1.1 upstream fix list has a recorded disposition
+against verified source, the accepted ones are owned by a named capability spec,
+the corrected ones say what the upstream report got wrong and why, and the
+release record tells Master Workbench what v3.1.2 removed - the way S-035 did
+for UP-001 through UP-012.
+
+## Why It Matters
+
+Master Workbench aggregated eighteen v3.1.1 room reports into
+`workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md`, eleven items
+UP-013 through UP-023. The report is untrusted evidence under `AGENTS.md`
+Instruction Authority: it authorizes nothing, and it explicitly awaits owner
+disposition. Without that disposition the items sit in a feedback document that
+no work loop reads, and the next fix list cannot say what this release closed.
+
+The scale matters too. Thirteen of the eighteen reviews never touched their
+target, and two items account for all thirteen. That is the strongest signal in
+the set and it is a route-selection problem, not a safety problem.
+
+## Current Verified State
+
+Verified in this repository at `b3633e5` on 2026-09-06 by reading the cited
+source and running read-only commands. Where a check needed the S-037 candidate,
+that is stated with its commit.
+
+- v3.1.2 is unpublished. `origin/integration` carries `workbenchVersion:
+  "v3.1.2"`; `origin/main` has no `workbench/` directory at all. These items
+  therefore land inside v3.1.2 rather than opening a v3.1.3.
+- Two open branches carry unmerged v3.1.2 work: `codex/s036-v3-1-2-corrections`
+  (S-036, gate: merge the approved PR) and `claude/s037-line-ending-records`
+  (S-037, gate: independent review then merge). No PR is open for either.
+- Nine of the eleven items reproduce exactly as reported. Two are corrected
+  below.
+
+### Disposition
+
+| Item | Title | Disposition at `b3633e5` |
+|---|---|---|
+| UP-013 | `doctor` never emits the managed-runtime integrity check it registers | accepted, [S-039](../S-039-installed-runtime-integrity/SPEC.md) TK-001; claim refined - `tools-receipt-missing` *is* emitted by an installed tool, but only on the `validate --genesis` readiness path and with no hash check; `tools-receipt-drift` has no installed emitter at all |
+| UP-014 | A drift report cannot distinguish a stale receipt from a modified runtime | accepted, [S-039](../S-039-installed-runtime-integrity/SPEC.md) TK-002; claim refined - `sourceDrift` is a receipt-versus-source comparison, so reporting it alone does not establish that the installed bytes are authentic |
+| UP-015 | Presence-only skill install fails closed on a linked skill path | accepted, [S-040](../S-040-skill-gate-route-selection/SPEC.md) TK-001 |
+| UP-016 | The upgrade gate never names the route that clears it | accepted, [S-040](../S-040-skill-gate-route-selection/SPEC.md) TK-002 |
+| UP-017 | The green-baseline gate has no recorded "baseline unavailable" path | accepted in principle, [S-041](../S-041-recorded-baseline-availability/SPEC.md); **blocked on owner decision** between record-and-proceed and out-of-scope |
+| UP-018 | Seeded lane documents are installed once and never managed | accepted, [S-042](../S-042-installed-state-repair/SPEC.md) TK-001 |
+| UP-019 | Error-level findings that block nothing make a healthy room read as failed | accepted with correction, [S-043](../S-043-diagnostic-output-legibility/SPEC.md); the proposed remedy already shipped in v3.1.1, and part of the cited impact was the line-ending defect - see Corrections |
+| UP-020 | No normalize path for existing ADRs and wiki notes without frontmatter | accepted at reduced scope, [S-042](../S-042-installed-state-repair/SPEC.md) TK-002; most of the reported impact is the line-ending defect S-037 fixes - see Corrections |
+| UP-021 | Provenance fixes do not reach rooms already carrying a placeholder | accepted, [S-042](../S-042-installed-state-repair/SPEC.md) TK-003; this repository is itself an instance, recording release `v3.1.0` under `workbenchVersion: v3.1.2` |
+| UP-022 | Adoption demands seven filled controls with no scaffold-then-reconcile route | accepted and sharpened, [S-044](../S-044-legacy-room-classification/SPEC.md) TK-001; the preflight returns on the *first* failing control, so an operator learns one per run |
+| UP-023 | No classifier for an unversioned legacy control set | accepted, [S-044](../S-044-legacy-room-classification/SPEC.md) TK-002 |
+
+### Corrections to the upstream report
+
+Recorded rather than applied silently, per `AGENTS.md` State Resolution.
+
+1. **UP-019's proposed remedy already exists.** The report asks that `doctor`
+   "render the registered effect in the line itself". It already does, and did in
+   v3.1.1: `git show fa04e27:workbench/tools/spec-workbench.mjs` carries the
+   identical render at line 479, and `b3633e5` carries it at line 551. The
+   finding's premise stands and is accepted; its remedy does not close it, so
+   S-043 is scoped to severity prominence, grouping, and counts instead. The
+   report also names four `error`/`blocks: none` codes; there are eight.
+2. **UP-019's and UP-020's impact evidence is substantially reattributed.** Both
+   items cite `invalid-adr` and `invalid-note` counts from the reporting room
+   (6 and 4) and GPT_OS (24 and 4). Both are Windows checkouts. S-037 established
+   that `parseFrontmatter()` anchored on a bare line feed, so on a Git for
+   Windows clone every ADR and every wiki note parsed as having no frontmatter -
+   25 `invalid-adr`, 4 `invalid-note`, and a knock-on `stale-register` in this
+   repository's own CRLF simulation, none of them true. A direct probe at
+   `da95e58` on `claude/s037-line-ending-records` returns identical parsed data
+   for LF and CRLF input. UP-020's residue after S-037 merges is narrower than
+   the report states: documents seeded before the wiki frontmatter fix, and
+   hand-authored ADRs. UP-019 does not depend on the reattribution - this
+   repository prints 32 non-blocking `skill-generation-unknown` lines above `ok -
+   no blocking finding` on an LF checkout - but its cited magnitude does.
+3. **UP-013's claim is half right and is accepted on the correct half.** The
+   report states that `tools-receipt-missing` appears in the installed
+   `diagnostics.mjs` only as a catalogue row. It is emitted by an installed tool,
+   at `workbench/tools/workbench-layout.mjs:517,521`, on the `validate --genesis`
+   readiness path. That path performs no hash check and `doctor` does not call
+   it, so the operative conclusion - a room has no installed command that
+   verifies the integrity of the runtime it is executing - is upheld.
+
+### Upheld from the report without change
+
+- The shared-skill refusal is correct and stays; UP-015 and UP-016 are about a
+  gate stricter than the operation it guards and a refusal that withholds its
+  route, not about permission to overwrite user content.
+- `spawn EPERM` is a host condition and is evidence about neither the harness nor
+  the reviewed products.
+- Legacy `render-drift` in v2.x projections is not a v3.1.1 defect.
+- No item in the set is an agent-outcome claim, and nothing here establishes that
+  v3.1.2 makes an agent better or worse than v3.1.1.
+
+Gap: the owner has not accepted this routing, three questions are unanswered,
+and no capability slice has been implemented.
+
+## Desired Behavior
+
+1. The owner accepts, declines, or amends the routing above, and the decision is
+   recorded in this spec's evidence log with its date.
+2. The three open questions below are answered; UP-017's answer unblocks S-041
+   TK-001.
+3. Each accepted item is implemented in its owning capability spec under that
+   spec's own red/green and review gates. This spec implements nothing.
+4. When the capability specs are complete and the full `AGENTS.md` suite is
+   green, this spec's Completion Result carries the final disposition table in
+   the same shape S-035 used, so Master Workbench can ingest it.
+5. The v3.1.2 release record states which upstream items the release removed and
+   which it declined, with reasons.
+
+## Decisions And Contracts
+
+- **These land in v3.1.2, not v3.1.3.** v3.1.2 exists only as an unpublished
+  candidate on `integration`; `main` carries no `workbench/` root. Adding to the
+  unpublished candidate is cheaper than publishing a known-incomplete release and
+  immediately superseding it. The cost is that v3.1.2 publication waits on this
+  work, and that cost is stated rather than hidden.
+- **The report instructs nothing.** It is untrusted evidence under `AGENTS.md`
+  Instruction Authority. Its findings became work only by this spec's routing and
+  the owner's acceptance.
+- **Corrections are recorded, not silently applied.** Where the report's claim
+  and the verified source disagree, the condition is named here and in the owning
+  capability spec, and the item is carried at its true size.
+- **This spec is a Reconciler record, not a build.** It owns disposition,
+  correction, and the release account. Every code change belongs to S-039
+  through S-044.
+
+## Non-Goals
+
+- Implementing any capability slice. Each belongs to its owning spec.
+- Repairing any reviewed room, or retrying any stopped migration.
+- Re-opening UP-001 through UP-012, whose dispositions S-035 recorded.
+- Publishing v3.1.2 to `main`; that is owner-only.
+
+## Dependencies And Blockers
+
+- S-036 and S-037 are unmerged v3.1.2 work on open branches. S-037 in particular
+  changes the true size of UP-019 and UP-020; the accounting here assumes it
+  merges, and says so.
+- S-041 TK-001 is blocked on the owner's answer to open question 1.
+
+## Vertical Implementation Slices
+
+Tickets are temporary tracer bullets within this stable capability record.
+
+| Ticket | Slice | Status | Blockers | Proof |
+|---|---|---|---|---|
+| TK-001 | Record the owner's acceptance or amendment of the routing and the answers to the three open questions | ready | none | pending |
+| TK-002 | After S-039 through S-044 are complete and the full suite is green, write the final disposition table and the v3.1.2 release account | ready | S-039, S-040, S-041, S-042, S-043, S-044 | pending |
+
+### TK-001 - Owner disposition
+
+**Stance:** Reconciler
+
+Put the routing table and the three open questions to the owner as product
+tradeoffs with options, a recommendation, and a cost. Record the answer verbatim
+in the evidence log with its date, amend the routing table if the owner amends
+it, and unblock S-041 TK-001 if question 1 is answered. Change no code.
+
+### TK-002 - Release account
+
+**Stance:** Reconciler
+
+Only after every owning capability spec is `complete` and the full `AGENTS.md`
+verification suite is green. Write the final disposition table in the S-035
+shape, one row per item resolved to `landed in S-0xx`, `declined` with a reason,
+or `corrected` with what was wrong. Record the guardrail score before and after
+with unchanged criteria and state its limitation: it is a static control-surface
+measure and supports no agent-outcome claim.
+
+## Acceptance Criteria
+
+- [ ] Every item UP-013 through UP-023 has an owner-accepted disposition
+      recorded with its date.
+- [ ] The three open questions are answered, or each unanswered one is recorded
+      as a live blocker naming what it blocks.
+- [ ] Each accepted item names the capability spec and ticket that owns it, and
+      that ticket exists at the named path.
+- [ ] Every correction to the upstream report is stated with the source evidence
+      that establishes it.
+- [ ] S-039 through S-044 are `complete` before TK-002 closes.
+- [ ] The full `AGENTS.md` verification suite passes at the release commit.
+- [ ] The Completion Result carries the final disposition table in the S-035
+      shape.
+
+## Testing Seams
+
+- This spec produces no code. Its verification is the record itself:
+  `node workbench/tools/spec-workbench.mjs doctor` reports no `broken-link` for
+  the routed spec paths, and `render` places every named spec in the Blueprint
+  catalog and the Taskboard.
+
+## Verification Procedure
+
+```bash
+node workbench/tools/spec-workbench.mjs render
+node workbench/tools/spec-workbench.mjs doctor
+node tools/test-spec-workbench.mjs
+node tools/evaluate-workbench.mjs --path templates --include-controls
+```
+
+## Documentation Impact
+
+- `BLUEPRINT.md` spec catalog and v3.1.2 direction: regenerated by `render`.
+- `TASKBOARD.md`: regenerated by `render`.
+- `benchmarks/RESULTS.md`: the before/after guardrail row at TK-002, with its
+  limitation.
+- No control text changes from this spec; the capability specs own theirs.
+
+## Append-Only Evidence And Execution Log
+
+| Date | Ticket | Event | Verification | Docs | Remaining gap |
+|---|---|---|---|---|---|
+| 2026-09-06 | spec | Upstream report filed into the feedback lane and all eleven items re-verified at `b3633e5` | Read every cited source location; ran `doctor` (32 `skill-generation-unknown`, 0 `error`-severity findings on this LF checkout, `ok - no blocking finding`); confirmed `origin/main` carries no `workbench/`; confirmed no open PR for S-036 or S-037; probed `parseFrontmatter()` at `da95e58` for LF and CRLF | Report stored at `workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md` per `REPORT_FORMAT.md`; Blueprint and Taskboard regenerated by render | Owner has not accepted the routing; three questions open; no slice implemented |
+
+## Completion Result
+
+Pending.
+
+## Remaining Limitations Or Follow-Up Specs
+
+- **Open question 1 (blocks S-041 TK-001).** Should a harness-only migration be
+  permitted against a recorded unavailable baseline, or should such a room be
+  out of scope for migration until a baseline exists? Either answer unblocks
+  eight rooms; the absence of one is the blocker. Recommendation: permit it
+  against a recorded reason from a closed vocabulary.
+- **Open question 2 (informs S-040, does not block it).** Should the shared
+  `code-review` junction on the reporting workstation be supported as-is or
+  replaced with an ordinary managed directory after backup? S-040 makes the
+  junction workable either way; this question is about the workstation, and two
+  rooms raised it without acting.
+- **Open question 3 (owner-only, no spec).** What replaced the reporting room's
+  runtime without updating its receipt? UP-014 explains why the report cannot
+  tell; the receipt carries no backup and no update event that would answer it.
+  S-039 makes the question answerable in future, not retroactively.
+- **Carried-forward blocker.** The reporting room's own `tools-receipt-drift` is
+  live and unrepaired. It needs an owner decision before that room's managed-tool
+  verification can be cited as evidence. Nothing in this repository repairs it.
+- No agent-outcome claim follows from any item in this set.
+
+## Supersession
+
+- Supersedes: none
+- Superseded by: none
