@@ -24,7 +24,7 @@ remedy.
 ## Why It Matters
 
 Adoption Phase 0 requires a reproducible green baseline before anything is
-touched (`templates/ADOPTION.md:80-99`), and the update procedure requires
+touched (`templates/ADOPTION.md:81-99`), and the update procedure requires
 stopping on a red one unless the owner separately expands the task
 (`skills/update-harness/SKILL.md:58-60`). There is no third state. Any unrelated
 product or host condition therefore blocks a harness-only migration outright.
