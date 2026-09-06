@@ -39,7 +39,9 @@ review that never reached its target.
 
 ## Current Verified State
 
-Verified in this repository at `b3633e5` on 2026-09-06:
+Verified in this repository on 2026-09-06. The findings were established at
+`b3633e5`; the `file:line` citations were re-anchored to the post-S-036 tree
+after PR #63 merged, so following one lands on what it names.
 
 - `tools/workbench-upgrade.mjs:101` refuses with `explicit-update-required` and
   names **both** routes: "Skill replacement requires `--explicit-update`; the

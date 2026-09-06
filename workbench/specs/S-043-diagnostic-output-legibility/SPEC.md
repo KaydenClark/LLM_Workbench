@@ -36,7 +36,9 @@ information.
 
 ## Current Verified State
 
-Verified in this repository at `b3633e5` on 2026-09-06:
+Verified in this repository on 2026-09-06. The findings were established at
+`b3633e5`; the `file:line` citations were re-anchored to the post-S-036 tree
+after PR #63 merged, so following one lands on what it names.
 
 - `workbench/tools/diagnostics.mjs:43-48,53-54,68` register the eight
   `error` / `blocks: none` codes listed above. The upstream report names four of
@@ -57,7 +59,8 @@ healthy room still reads as failed - but its proposed remedy does not close it,
 so this spec is scoped to what remains: the severity word itself, the absence of
 grouping, and the absence of a count.
 
-A second correction bears on the same evidence. GPT_OS is a Windows room, and
+A second correction bears on the same evidence. GPT_OS appears to be a Windows
+room - the report does not say so, but it cites `E:/` paths - and
 S-037 established that a CRLF checkout produces a large block of untrue
 `invalid-adr` and `invalid-note` findings. An unknown share of its 28 lines was
 that defect rather than this one. The finding does not depend on that share:

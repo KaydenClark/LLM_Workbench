@@ -34,16 +34,20 @@ the set and it is a route-selection problem, not a safety problem.
 
 ## Current Verified State
 
-Verified in this repository at `b3633e5` on 2026-09-06 by reading the cited
-source and running read-only commands. Where a check needed the S-037 candidate,
-that is stated with its commit.
+Verified in this repository on 2026-09-06 by reading the cited source and
+running read-only commands. The findings were established at `b3633e5`; every
+`file:line` citation below was then re-anchored to the post-S-036 tree after
+PR #63 merged, so a Builder following one lands on what it names. Where a check
+needed the S-037 candidate, that is stated with its commit.
 
 - v3.1.2 is unpublished. `origin/integration` carries `workbenchVersion:
   "v3.1.2"`; `origin/main` has no `workbench/` directory at all. These items
   therefore land inside v3.1.2 rather than opening a v3.1.3.
-- Two open branches carry unmerged v3.1.2 work: `codex/s036-v3-1-2-corrections`
-  (S-036, gate: merge the approved PR) and `claude/s037-line-ending-records`
-  (S-037, gate: independent review then merge). No PR is open for either.
+- Both v3.1.2 branches that were open when this spec was written have since
+  moved. `codex/s036-v3-1-2-corrections` (S-036) merged into `integration` as
+  PR #63 on 2026-09-06, which is why `invalid-source-identity` now exists.
+  `claude/s037-line-ending-records` (S-037) is stacked on it and is in its
+  second separate-context review after the first returned CHANGES REQUESTED.
 - Six of the eleven items reproduce exactly as reported. Two carry a claim
   corrected on the merits (UP-013, UP-019); two carry reattributed impact
   evidence (UP-019, UP-020); and two are sharpened or refined beyond the
@@ -82,7 +86,9 @@ Recorded rather than applied silently, per `AGENTS.md` State Resolution.
    there are eight.
 2. **UP-019's and UP-020's impact evidence is substantially reattributed.** Both
    items cite `invalid-adr` and `invalid-note` counts from the reporting room
-   (6 and 4) and GPT_OS (24 and 4). Both are Windows checkouts. S-037 established
+   (6 and 4) and GPT_OS (24 and 4). Both appear to be Windows checkouts - the
+   report never states this, but both cite `E:/` paths, and the failure mode is
+   specific to a CRLF clone. S-037 established
    that `parseFrontmatter()` anchored on a bare line feed, so on a Git for
    Windows clone every ADR and every wiki note parsed as having no frontmatter -
    25 `invalid-adr`, 4 `invalid-note`, and a knock-on `stale-register` in this
@@ -92,11 +98,14 @@ Recorded rather than applied silently, per `AGENTS.md` State Resolution.
    the report states: documents seeded before the wiki frontmatter fix, and
    hand-authored ADRs. UP-019 does not depend on the reattribution - this
    repository prints 32 non-blocking `skill-generation-unknown` lines above `ok -
-   no blocking finding` on an LF checkout - but its cited magnitude does.
+   no blocking finding` on an LF checkout - but its cited magnitude does. Those
+   32 lines are `attention` severity, so they evidence the volume and legibility
+   half of UP-019, not the `error`-that-blocks-nothing half; the eight
+   `error`/`blocks: none` codes in the registry evidence that half.
 3. **UP-013's claim is half right and is accepted on the correct half.** The
    report states that `tools-receipt-missing` appears in the installed
    `diagnostics.mjs` only as a catalogue row. It is emitted by an installed tool,
-   at `workbench/tools/workbench-layout.mjs:503,507`, on the `validate --genesis`
+   at `workbench/tools/workbench-layout.mjs:517,521`, on the `validate --genesis`
    readiness path. That path performs no hash check and `doctor` does not call
    it, so the operative conclusion - a room has no installed command that
    verifies the integrity of the runtime it is executing - is upheld.
@@ -112,8 +121,9 @@ Recorded rather than applied silently, per `AGENTS.md` State Resolution.
 - No item in the set is an agent-outcome claim, and nothing here establishes that
   v3.1.2 makes an agent better or worse than v3.1.1.
 
-Gap: the owner has not accepted this routing, three questions are unanswered,
-and no capability slice has been implemented.
+Gap: no capability slice has been implemented. The owner accepted this routing
+unamended on 2026-09-06 and answered questions 1 and 2; question 3 stays open as
+an owner-only item that blocks no slice.
 
 ## Desired Behavior
 
@@ -155,9 +165,9 @@ and no capability slice has been implemented.
 
 ## Dependencies And Blockers
 
-- S-036 and S-037 are unmerged v3.1.2 work on open branches. S-037 in particular
-  changes the true size of UP-019 and UP-020; the accounting here assumes it
-  merges, and says so.
+- S-036 merged into `integration` on 2026-09-06 as PR #63. S-037 is stacked on
+  it and still in review; it changes the true size of UP-019 and UP-020, and the
+  accounting here assumes it merges, and says so.
 - No spec in this set is blocked. S-041 TK-001 was unblocked by the owner's
   answer to question 1 on 2026-09-06.
 
@@ -236,6 +246,8 @@ node tools/evaluate-workbench.mjs --path templates --include-controls
 |---|---|---|---|---|---|
 | 2026-09-06 | TK-001 | Owner accepted the routing unamended and answered questions 1 and 2 | Question 1: **Option A, record and proceed**, written into S-041 Decisions And Contracts with its accepted cost and the closed reason vocabulary; question 2: support the shared `code-review` junction as-is, which S-040 already handles either way; question 3 left open as owner-only with no owning spec. Decisions recorded only; no code ran and no verification is claimed for them | S-041 Desired Behavior collapsed to Option A; S-040 Non-Goals records the junction answer; render regenerated the projections | Question 3 open and owner-only; every accepted slice still unimplemented |
 | 2026-09-06 | spec | Upstream report filed into the feedback lane and all eleven items re-verified at `b3633e5` | Read every cited source location; ran `doctor` (32 `skill-generation-unknown`, 0 `error`-severity findings on this LF checkout, `ok - no blocking finding`); confirmed `origin/main` carries no `workbench/`; confirmed no open PR for S-036 or S-037; probed `parseFrontmatter()` at `da95e58` for LF and CRLF | Report stored at `workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md` per `REPORT_FORMAT.md`; Blueprint and Taskboard regenerated by render | Owner has not accepted the routing; three questions open; no slice implemented |
+
+| 2026-09-06 | spec | Separate-context review of `a5e7fe0` returned CHANGES REQUESTED; every finding was repaired in this candidate | Reviewer independently re-verified all three Corrections as established, confirmed all eleven UP items route to tickets that exist, and reported `render` with no drift, `doctor` exit 0 with no `broken-link`, `test-spec-workbench` pass, templates 106.6/113. Repaired: the stale `Gap:` line that contradicted TK-001's own `done` row; three stale statements that S-036 was unmerged (it merged as PR #63 on 2026-09-06); `templates/ADOPTION.md:275-276` corrected to `274-275` and `:80-87` to `:81-88`; `workbench-layout.mjs:20` corrected to `:21`; `workbench-layout.mjs:503,507` re-anchored to `:517,521`, `workbench-tools.mjs:181` to `:203`, `RUNBOOK.md:579-584` to `:586-592`, `SKILL.md:186` to `:198`; the `grep -rn classify` claim corrected to four matching files; the "Both are Windows checkouts" and "GPT_OS is a Windows room" statements softened to the inference they are, since the report never says so; and the 32 `skill-generation-unknown` lines qualified as `attention` severity, evidencing UP-019's legibility half rather than its `error`-that-blocks-nothing half. A citation sweep over all seven specs now reports no citation pointing at a blank or out-of-range line | Every `Current Verified State` section now states that findings were established at `b3633e5` and citations re-anchored to the post-S-036 tree, so a Builder following one lands on what it names | Fresh separate-context review of the repaired candidate; every accepted slice still unimplemented |
 
 ## Completion Result
 
