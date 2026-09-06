@@ -296,7 +296,9 @@ Awaiting independent review of the exact candidate and the merge into
   validators and the hook belongs in `workbench/tools/spec-workbench.mjs`,
   which `claude/s043-v3-1-2` held while this landed. Owner: the next spec to
   take the `spec-workbench.mjs` lane, S-043 while its branch is open; if S-043
-  merges without the hook, this becomes a new linked spec. Until then
+  merges without the hook, this becomes a new linked spec. S-043 merged as
+  PR #66 without it, so that fallback fired and the owner is
+  [S-045](../S-045-v3-1-2-follow-ups/SPEC.md) TK-002. Until it is taken up,
   `RUNBOOK.md`, `workbench/wiki/SCHEMA.md`, `templates/wiki/SCHEMA.md`, and the
   `wiki.mjs` usage string all name `wiki.mjs validate` as the emitter, so the
   routing is discoverable rather than surprising.
