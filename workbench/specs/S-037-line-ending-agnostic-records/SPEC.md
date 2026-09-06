@@ -95,7 +95,7 @@ Verified on 2026-09-06 at `ec3fcf58a7a91f5ca3dc5e387555a14252e6b73d`:
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Parse ADR and Wiki frontmatter independently of the line terminator and preserve the room's terminator when adoption adds memory fields | done | none | Red: a new CRLF corpus test in tools/test-adr.mjs failed with `CRLF frontmatter must parse its fields` (data undefined) at ec3fcf5 with a clean tree, 7 pass / 1 fail. Green: 8/8 after the fix; full AGENTS.md suite 25/25 pass on a clean tree; doctor exit 0. A cloned CRLF room went from 25 invalid-adr + 4 invalid-note + 1 stale-register to 0 record findings. |
+| TK-001 | Parse ADR and Wiki frontmatter independently of the line terminator and preserve the room's terminator when adoption adds memory fields | done | none | Red: a new CRLF corpus test in tools/test-adr.mjs failed at ec3fcf5 with a clean tree, 7 pass / 1 fail, with `TypeError: Cannot read properties of null (reading 'status')` at tools/test-adr.mjs:61 - the parser returned `data: null`, so the property access threw before any assertion message could render. Green: 8/8 after the fix; full AGENTS.md suite 25/25 pass on a clean tree; doctor exit 0. A cloned CRLF room went from 25 invalid-adr + 4 invalid-note + 1 stale-register to 0 record findings. |
 | TK-002 | Obtain independent review of the exact candidate and land it on `integration` | ready | TK-001 | Pending. |
 
 ### TK-001 - One parser, any terminator
@@ -121,7 +121,7 @@ the PR into `integration`, merge it, and prove remote containment. Stop before
 - [x] A CRLF ADR corpus parses its fields and list items with no carriage-return residue and reports no `invalid-adr`.
 - [x] A CRLF Wiki corpus reports no `invalid-note` caused by line endings.
 - [x] A simulated CRLF checkout of this repository reports zero record findings from `doctor`.
-- [x] The adoption memory writer preserves the target file's terminator and does not splice when the fence is absent.
+- [x] The adoption memory writer locates the closing fence by the terminator that delimits that fence, splices missing fields in that terminator, and writes a created frontmatter block in the terminator the body already uses.
 - [x] The unchanged full `AGENTS.md` suite passes with the fix applied on a clean tree.
 - [ ] An exact-SHA independent review, PR, and remote `integration` containment are recorded; `main` remains untouched.
 
@@ -168,7 +168,8 @@ constraint is recorded as a follow-up on S-036.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Defect reproduced and scoped while reviewing the S-036 candidate for downstream deployment | Direct `parseFrontmatter` probe returned data for LF and `null` for CRLF; a CRLF clone at `ec3fcf5` reported 25 invalid-adr, 4 invalid-note, 1 stale-register; the same code confirmed present at `b2918ee`, so it is not a v3.1.2 regression | S-037 created as the owning spec; S-036 evidence untouched | TK-001 and TK-002 |
-| 2026-09-06 | TK-001 | Ticket closed | Red: new CRLF corpus test failed at `ec3fcf5` on a clean tree, 7 pass / 1 fail, `CRLF frontmatter must parse its fields`. Green: 8/8; full suite 25/25 pass; template evaluation 106.6/113 and guardrail 78/100 unchanged; doctor exit 0; the CRLF room dropped from 30 record findings to 0 | Docs checked; no update needed - the correction is internal to two parsers and is explained at both seams | TK-002 independent review, PR, and integration containment |
+| 2026-09-06 | TK-001 | Ticket closed | Red: new CRLF corpus test failed at `ec3fcf5` on a clean tree, 7 pass / 1 fail, with `TypeError: Cannot read properties of null (reading 'status')` at `tools/test-adr.mjs:61`. Green: 8/8; full suite 25/25 pass; template evaluation 106.6/113 and guardrail 78/100 unchanged; doctor exit 0; the CRLF room dropped from 30 record findings to 0 | Docs checked; no update needed - the correction is internal to two parsers and is explained at both seams | TK-002 independent review, PR, and integration containment |
+| 2026-09-06 | TK-001 | Separate-context review returned CHANGES REQUESTED; the writer half of the change was repaired and given the test it lacked | Reviewer reproduced a regression against the base commit: `addWikiFrontmatter` derived the terminator from the whole file, so one pasted CRLF line in an otherwise-LF room brain hid the LF fence and the writer returned without writing, dropping five required fields while `migrate` still exited 0 and reported `complete`. The create branch also still joined with a hard-coded line feed, so the checked criterion was false for that branch. Red: three splice cases (all-CRLF, LF fence with one CRLF body line, CR-only) plus one create case added to `tools/test-workbench-adoption.mjs`, failing on the mixed case with `adoption must fill missing required metadata, sensitivity: normal is absent`. Green: both new blocks pass; `locateClosingFence` derives the splice point and terminator from the fence itself and `nativeEol` gives the create branch the body's terminator; an unlocatable fence now throws instead of returning silently | Two false citations corrected in this spec (the unreachable red assertion message, and the acceptance criterion that claimed create-branch behavior that did not exist); BOM and trailing-delimiter whitespace recorded as remaining limitations | TK-002 fresh independent review of the repaired candidate, PR, and integration containment |
 
 ## Completion Result
 
@@ -182,6 +183,12 @@ Pending.
   are unaudited and may leave a trailing carriage return in generated prose.
 - The four unrelated Windows-host test failures remain open and need their own
   spec before the suite can be green on that host.
+- A UTF-8 BOM before the opening `---`, and trailing whitespace after a
+  delimiter, still parse as "no frontmatter" and still report `invalid-adr`
+  with that misleading message. Neither is produced by a `core.autocrlf`
+  checkout, so this spec's outcome holds as worded, but a record re-saved by a
+  Windows editor that adds a BOM hits the adjacent failure mode. Direct probe
+  at the repaired candidate: `BOM+CRLF -> null`, `trailing space -> null`.
 
 ## Supersession
 
