@@ -480,6 +480,16 @@ merges into `integration`.
 
 ## Remaining Limitations Or Follow-Up Specs
 
+- **Six of the seventeen `classify` cases do not compare a before/after
+  snapshot**, so the suite proves the read-only property for eleven of them. The
+  sharpest gap is the EPERM seam probe - the one case that runs the classifier
+  under a monkey-patched `fs`, and it has no write check of its own. The property
+  itself was independently re-proven with 23 `fs` mutators poisoned; adding the
+  six snapshots would make the Proof column's original claim true and is a
+  test-only follow-up. Recorded here because it was previously carried only in an
+  evidence-log cell, where a reader checking what this spec still owes would not
+  find it.
+
 - Classification reads a room's contents. A room whose contents genuinely do not
   determine its history returns `unclassifiable`, and that is the correct
   answer; it does not become determinable by a better classifier.
