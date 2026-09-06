@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-06
 **Catalog description:** Decide and record what a harness-only migration does when the target has no runnable green baseline, so eight rooms blocked by an unrelated product or host condition get one answer instead of eight improvised ones.
-**Blockers:** owner decision on the contract question below
-**Latest event:** Spec captured from upstream item UP-017; the contract question is open and is stated as an owner gate.
-**Next gate:** Owner answers the contract question in Decisions And Contracts; TK-001 is blocked until then.
+**Blockers:** none
+**Latest event:** Owner selected Option A (record and proceed) on 2026-09-06; TK-001 is unblocked and ready.
+**Next gate:** Claim TK-001 and prove red that a spec recording an unavailable baseline with a valid reason proceeds while a red baseline still stops.
 
 ## Outcome
 
@@ -66,36 +66,38 @@ reason, deliberately not run for a privacy or write-boundary reason).
 
 ## Desired Behavior
 
-The desired behavior depends on the owner's answer below. Both options are
-specified so the answer selects rather than starts a design.
+The owner selected **Option A - record and proceed** on 2026-09-06. Option B
+(declare such a room out of scope for migration) was considered and declined
+because it would leave eight rooms permanently unmigratable for reasons the
+harness did not cause and cannot repair.
 
-**Option A - record and proceed.** The owning spec records the baseline as
-`unavailable` with a reason drawn from a closed vocabulary (host-restricted,
-product-broken-as-found, owner-declined-on-boundary), the evidence for that
-reason, and the fact that the harness change is not implicated. A harness-only
-change proceeds against that record. Completion criteria compare against the
-recorded state rather than a green run, and the record travels with the room so
-a later reviewer sees why no baseline exists.
-
-**Option B - out of scope.** The Adoption contract states that a room without a
-runnable baseline is not eligible for migration until one exists, and names what
-the operator must do first. Agents stop, but they stop against a stated rule
-with a named next action rather than an improvised one.
-
-In either case: the state is recorded in the owning spec, not in the Taskboard;
-the record is evidence, not authority; and no path allows a red baseline to be
-reported as green.
+1. The owning spec can record a baseline as `unavailable` with a reason drawn
+   from a **closed** vocabulary: `host-restricted`,
+   `product-broken-as-found`, or `owner-declined-on-boundary`. A reason outside
+   that set is refused; the vocabulary is not free text.
+2. The record carries the evidence for the reason and an explicit statement that
+   the harness change being requested is not implicated in the failure.
+3. A harness-only change proceeds against that record. Its completion criteria
+   compare against the recorded state rather than against a green run, and say
+   so in the completion text rather than implying a green baseline was taken.
+4. The record travels with the room, so a later reviewer sees why no baseline
+   exists without re-deriving it.
+5. A red baseline is unchanged: it still stops unless the owner explicitly
+   expands the task. `unavailable` is a distinct third state, never a way to
+   relabel a failing suite.
+6. Nothing on this path allows a red baseline to be reported as green, and the
+   Workbench-side verification suite still runs green for the harness change
+   itself.
 
 ## Decisions And Contracts
 
-- **OPEN - owner gate.** Should a harness-only migration be permitted against a
-  recorded unavailable baseline (Option A), or should such a room be declared
-  out of scope for migration until a baseline exists (Option B)? Recommendation:
-  Option A, because the harness change is not implicated in any of the eight
-  observed causes and Option B leaves eight rooms permanently unmigratable for
-  reasons outside the harness. Cost of Option A: a recorded exemption is a
-  weaker guarantee than a green run, and the vocabulary must stay closed so it
-  does not become a way to skip verification.
+- **RESOLVED 2026-09-06 - Option A, record and proceed.** The owner selected
+  permitting a harness-only migration against a recorded unavailable baseline,
+  over declaring such a room out of scope. Recorded cost, accepted with the
+  decision: a recorded exemption is a weaker guarantee than a green run, so the
+  reason vocabulary stays closed and enumerated in the tool, not open text, and
+  a test must prove that an unrecognised reason is refused. The mitigation is
+  the closed vocabulary plus the unchanged red-baseline rule below.
 - **`spawn EPERM` is a host condition, not evidence about the harness or the
   product.** Five reports recorded it and each classified it correctly. It
   enters this spec only as an input to the unavailable case.
@@ -113,7 +115,8 @@ reported as green.
 
 ## Dependencies And Blockers
 
-- Owner decision on Option A versus Option B. TK-001 cannot start without it.
+- none. The Option A / Option B decision that blocked TK-001 was answered by
+  the owner on 2026-09-06 and is recorded in Decisions And Contracts.
 
 ## Vertical Implementation Slices
 
@@ -121,29 +124,31 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Write the chosen contract into `templates/ADOPTION.md`, `skills/update-harness/SKILL.md`, and the spec record shape, with a fixture proving the recorded state is honored and cannot be used to report red as green | blocked | owner decision | pending |
+| TK-001 | Write the Option A contract into `templates/ADOPTION.md`, `skills/update-harness/SKILL.md`, and the spec record shape, with a fixture proving the recorded state is honored, the vocabulary is closed, and a red baseline still stops | ready | none | pending |
 
 ### TK-001 - Write the answer down
 
 **Stance:** Builder
 
-Do not start until the owner has selected A or B and the selection is recorded
-in this spec's evidence log. Under Option A, red first: a fixture whose spec
-records an unavailable baseline with a valid reason proceeds, one with a red
-baseline and no owner expansion still stops, and one whose reason is outside the
-closed vocabulary is refused. Under Option B, the change is contract text plus
-the template evaluator, and the proof is the evaluator plus a read-back of the
-stated rule.
+Option A is selected; build it. Red first, three cases in one batch: a fixture
+whose spec records an unavailable baseline with a valid reason proceeds; one
+with a red baseline and no owner expansion still stops; and one whose reason is
+outside the closed vocabulary is refused rather than accepted as free text.
+Then write the contract into `templates/ADOPTION.md` Phase 0 and its completion
+boxes, and into `skills/update-harness/SKILL.md` section 2 and its completion
+criterion, so the two agree word for word on the third state.
 
 ## Acceptance Criteria
 
-- [ ] The owner's selection is recorded in this spec with its date.
+- [x] The owner's selection is recorded in this spec with its date: Option A,
+      record and proceed, 2026-09-06.
 - [ ] `templates/ADOPTION.md` Phase 0 and its completion boxes state the chosen
       contract, including what a room does when no baseline can be taken.
 - [ ] `skills/update-harness/SKILL.md` section 2 and its completion criterion
       agree with `templates/ADOPTION.md`.
-- [ ] Under Option A, the recorded-unavailable path is proved by test and a red
-      baseline still stops without owner expansion.
+- [ ] The recorded-unavailable path is proved by test, a reason outside the
+      closed vocabulary is refused, and a red baseline still stops without owner
+      expansion.
 - [ ] `node tools/evaluate-workbench.mjs --path templates --include-controls`
       and the full `AGENTS.md` verification suite pass.
 
@@ -151,8 +156,9 @@ stated rule.
 
 - The template evaluator (`tools/evaluate-workbench.mjs`) over
   `templates/ADOPTION.md`.
-- Under Option A, the spec-packet parser's handling of the recorded baseline
-  field (`workbench/tools/spec-packet.mjs`, `tools/test-spec-workbench.mjs`).
+- The spec-packet parser's handling of the recorded baseline field and its
+  closed reason vocabulary (`workbench/tools/spec-packet.mjs`,
+  `tools/test-spec-workbench.mjs`).
 
 ## Verification Procedure
 
@@ -177,6 +183,7 @@ node workbench/tools/spec-workbench.mjs doctor
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Spec captured from upstream UP-017; both options specified so the owner selects rather than designs | Read `templates/ADOPTION.md:80-99,265,286,318` and `skills/update-harness/SKILL.md:42-60,164,198`; confirmed only green and red states exist | Blueprint catalog regenerated by render | Owner gate open; TK-001 blocked on it |
+| 2026-09-06 | TK-001 | Owner answered the contract question: **Option A, record and proceed** | Owner decision recorded in chat and written into Decisions And Contracts and Desired Behavior; no code ran and no verification is claimed for it | Desired Behavior collapsed to the selected option; Option B recorded as considered and declined with its reason | TK-001 unblocked and ready; nothing implemented yet |
 
 ## Completion Result
 
@@ -186,6 +193,11 @@ Pending.
 
 - The eight rooms that stopped are not retried by this spec; the contract is
   what unblocks them, and their retries belong to their own owners.
+- Option A trades a strong guarantee for a recorded one. The closed vocabulary
+  bounds that trade but does not eliminate it: a room can still record
+  `product-broken-as-found` for a condition a more patient operator would have
+  fixed. The record makes that visible to a later reviewer rather than
+  preventing it.
 
 ## Supersession
 

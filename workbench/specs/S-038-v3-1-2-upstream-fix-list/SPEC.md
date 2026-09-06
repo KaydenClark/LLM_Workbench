@@ -8,8 +8,8 @@
 **Updated:** 2026-09-06
 **Catalog description:** Accept, decline, or correct each of the eleven v3.1.1 upstream items UP-013 through UP-023, route the accepted ones to capability specs, and record the final disposition so Master Workbench can compare v3.1.2 against v3.1.1.
 **Blockers:** none
-**Latest event:** All eleven items re-verified against `b3633e5`; two upstream claims corrected; six capability specs opened; three owner questions carried forward.
-**Next gate:** Owner accepts or declines the routing below and answers the three open questions, in particular UP-017 which blocks S-041.
+**Latest event:** Owner accepted the routing on 2026-09-06 and answered questions 1 and 2; S-041 is unblocked and question 3 stays open as an owner-only item.
+**Next gate:** Separate-context review of this candidate, then merge into `integration`; capability slices proceed under their own specs.
 
 ## Outcome
 
@@ -55,7 +55,7 @@ that is stated with its commit.
 | UP-014 | A drift report cannot distinguish a stale receipt from a modified runtime | accepted, [S-039](../S-039-installed-runtime-integrity/SPEC.md) TK-002; claim refined - `sourceDrift` is a receipt-versus-source comparison, so reporting it alone does not establish that the installed bytes are authentic |
 | UP-015 | Presence-only skill install fails closed on a linked skill path | accepted, [S-040](../S-040-skill-gate-route-selection/SPEC.md) TK-001 |
 | UP-016 | The upgrade gate never names the route that clears it | accepted, [S-040](../S-040-skill-gate-route-selection/SPEC.md) TK-002 |
-| UP-017 | The green-baseline gate has no recorded "baseline unavailable" path | accepted in principle, [S-041](../S-041-recorded-baseline-availability/SPEC.md); **blocked on owner decision** between record-and-proceed and out-of-scope |
+| UP-017 | The green-baseline gate has no recorded "baseline unavailable" path | accepted, [S-041](../S-041-recorded-baseline-availability/SPEC.md) TK-001; owner selected **Option A, record and proceed** on 2026-09-06, so the spec is unblocked and Option B is recorded as declined |
 | UP-018 | Seeded lane documents are installed once and never managed | accepted, [S-042](../S-042-installed-state-repair/SPEC.md) TK-001 |
 | UP-019 | Error-level findings that block nothing make a healthy room read as failed | accepted with correction, [S-043](../S-043-diagnostic-output-legibility/SPEC.md); the proposed remedy already shipped in v3.1.1, and part of the cited impact was the line-ending defect - see Corrections |
 | UP-020 | No normalize path for existing ADRs and wiki notes without frontmatter | accepted at reduced scope, [S-042](../S-042-installed-state-repair/SPEC.md) TK-002; most of the reported impact is the line-ending defect S-037 fixes - see Corrections |
@@ -152,7 +152,8 @@ and no capability slice has been implemented.
 - S-036 and S-037 are unmerged v3.1.2 work on open branches. S-037 in particular
   changes the true size of UP-019 and UP-020; the accounting here assumes it
   merges, and says so.
-- S-041 TK-001 is blocked on the owner's answer to open question 1.
+- No spec in this set is blocked. S-041 TK-001 was unblocked by the owner's
+  answer to question 1 on 2026-09-06.
 
 ## Vertical Implementation Slices
 
@@ -160,7 +161,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Record the owner's acceptance or amendment of the routing and the answers to the three open questions | ready | none | pending |
+| TK-001 | Record the owner's acceptance or amendment of the routing and the answers to the three open questions | done | none | Owner accepted the routing unamended on 2026-09-06 and answered question 1 (Option A, record and proceed) and question 2 (support the junction as-is); both written into S-041 Decisions And Contracts and into S-040 Non-Goals respectively; question 3 recorded as owner-only with no owning spec; `render` then `doctor` clean, no `broken-link` and no `render-drift` |
 | TK-002 | After S-039 through S-044 are complete and the full suite is green, write the final disposition table and the v3.1.2 release account | ready | S-039, S-040, S-041, S-042, S-043, S-044 | pending |
 
 ### TK-001 - Owner disposition
@@ -185,10 +186,11 @@ measure and supports no agent-outcome claim.
 
 ## Acceptance Criteria
 
-- [ ] Every item UP-013 through UP-023 has an owner-accepted disposition
-      recorded with its date.
-- [ ] The three open questions are answered, or each unanswered one is recorded
-      as a live blocker naming what it blocks.
+- [x] Every item UP-013 through UP-023 has an owner-accepted disposition
+      recorded with its date: accepted unamended 2026-09-06.
+- [x] The three open questions are answered, or each unanswered one is recorded
+      as a live blocker naming what it blocks: 1 and 2 answered, 3 recorded as
+      owner-only and blocking no slice.
 - [ ] Each accepted item names the capability spec and ticket that owns it, and
       that ticket exists at the named path.
 - [ ] Every correction to the upstream report is stated with the source evidence
@@ -226,6 +228,7 @@ node tools/evaluate-workbench.mjs --path templates --include-controls
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-09-06 | TK-001 | Owner accepted the routing unamended and answered questions 1 and 2 | Question 1: **Option A, record and proceed**, written into S-041 Decisions And Contracts with its accepted cost and the closed reason vocabulary; question 2: support the shared `code-review` junction as-is, which S-040 already handles either way; question 3 left open as owner-only with no owning spec. Decisions recorded only; no code ran and no verification is claimed for them | S-041 Desired Behavior collapsed to Option A; S-040 Non-Goals records the junction answer; render regenerated the projections | Question 3 open and owner-only; every accepted slice still unimplemented |
 | 2026-09-06 | spec | Upstream report filed into the feedback lane and all eleven items re-verified at `b3633e5` | Read every cited source location; ran `doctor` (32 `skill-generation-unknown`, 0 `error`-severity findings on this LF checkout, `ok - no blocking finding`); confirmed `origin/main` carries no `workbench/`; confirmed no open PR for S-036 or S-037; probed `parseFrontmatter()` at `da95e58` for LF and CRLF | Report stored at `workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md` per `REPORT_FORMAT.md`; Blueprint and Taskboard regenerated by render | Owner has not accepted the routing; three questions open; no slice implemented |
 
 ## Completion Result
@@ -234,16 +237,16 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- **Open question 1 (blocks S-041 TK-001).** Should a harness-only migration be
-  permitted against a recorded unavailable baseline, or should such a room be
-  out of scope for migration until a baseline exists? Either answer unblocks
-  eight rooms; the absence of one is the blocker. Recommendation: permit it
-  against a recorded reason from a closed vocabulary.
-- **Open question 2 (informs S-040, does not block it).** Should the shared
-  `code-review` junction on the reporting workstation be supported as-is or
-  replaced with an ordinary managed directory after backup? S-040 makes the
-  junction workable either way; this question is about the workstation, and two
-  rooms raised it without acting.
+- **Open question 1 - ANSWERED 2026-09-06.** Should a harness-only migration be
+  permitted against a recorded unavailable baseline? Owner selected **Option A,
+  record and proceed**, with a closed reason vocabulary. S-041 TK-001 is
+  unblocked; the accepted cost is recorded there.
+- **Open question 2 - ANSWERED 2026-09-06.** Should the shared `code-review`
+  junction on the reporting workstation be supported as-is or replaced after
+  backup? Owner selected **support it as-is**. S-040 already makes the junction
+  workable either way, so this closes a workstation question rather than
+  changing the build; two rooms raised it without acting and need not raise it
+  again.
 - **Open question 3 (owner-only, no spec).** What replaced the reporting room's
   runtime without updating its receipt? UP-014 explains why the report cannot
   tell; the receipt carries no backup and no update event that would answer it.

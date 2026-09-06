@@ -102,9 +102,10 @@ strictness does not match its own install behavior.
 
 ## Non-Goals
 
-- Deciding whether the reporting workstation's `code-review` junction should be
-  replaced with an ordinary managed directory. That is open question 2 under
-  [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md) and belongs to the owner.
+- Replacing the reporting workstation's `code-review` junction with an ordinary
+  managed directory. The owner answered open question 2 on 2026-09-06:
+  **support the junction as-is**. TK-001 makes that supported; nothing in this
+  spec migrates, backs up, or rewrites that link.
 - Installing, replacing, or marking any skill on the presence-only path.
 - Retrying any portfolio room's migration.
 
