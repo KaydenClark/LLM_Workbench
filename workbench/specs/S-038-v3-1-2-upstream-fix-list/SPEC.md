@@ -44,8 +44,11 @@ that is stated with its commit.
 - Two open branches carry unmerged v3.1.2 work: `codex/s036-v3-1-2-corrections`
   (S-036, gate: merge the approved PR) and `claude/s037-line-ending-records`
   (S-037, gate: independent review then merge). No PR is open for either.
-- Nine of the eleven items reproduce exactly as reported. Two are corrected
-  below.
+- Six of the eleven items reproduce exactly as reported. Two carry a claim
+  corrected on the merits (UP-013, UP-019); two carry reattributed impact
+  evidence (UP-019, UP-020); and two are sharpened or refined beyond the
+  report's own statement (UP-014, UP-022). Every one of the eleven is accepted;
+  the Corrections section below states what changed and why.
 
 ### Disposition
 
@@ -57,7 +60,7 @@ that is stated with its commit.
 | UP-016 | The upgrade gate never names the route that clears it | accepted, [S-040](../S-040-skill-gate-route-selection/SPEC.md) TK-002 |
 | UP-017 | The green-baseline gate has no recorded "baseline unavailable" path | accepted, [S-041](../S-041-recorded-baseline-availability/SPEC.md) TK-001; owner selected **Option A, record and proceed** on 2026-09-06, so the spec is unblocked and Option B is recorded as declined |
 | UP-018 | Seeded lane documents are installed once and never managed | accepted, [S-042](../S-042-installed-state-repair/SPEC.md) TK-001 |
-| UP-019 | Error-level findings that block nothing make a healthy room read as failed | accepted with correction, [S-043](../S-043-diagnostic-output-legibility/SPEC.md); the proposed remedy already shipped in v3.1.1, and part of the cited impact was the line-ending defect - see Corrections |
+| UP-019 | Error-level findings that block nothing make a healthy room read as failed | accepted with correction, [S-043](../S-043-diagnostic-output-legibility/SPEC.md) TK-001; the report's first proposed remedy already shipped in v3.1.1 and part of the cited impact was the line-ending defect - see Corrections |
 | UP-020 | No normalize path for existing ADRs and wiki notes without frontmatter | accepted at reduced scope, [S-042](../S-042-installed-state-repair/SPEC.md) TK-002; most of the reported impact is the line-ending defect S-037 fixes - see Corrections |
 | UP-021 | Provenance fixes do not reach rooms already carrying a placeholder | accepted, [S-042](../S-042-installed-state-repair/SPEC.md) TK-003; this repository is itself an instance, recording release `v3.1.0` under `workbenchVersion: v3.1.2` |
 | UP-022 | Adoption demands seven filled controls with no scaffold-then-reconcile route | accepted and sharpened, [S-044](../S-044-legacy-room-classification/SPEC.md) TK-001; the preflight returns on the *first* failing control, so an operator learns one per run |
@@ -67,13 +70,16 @@ that is stated with its commit.
 
 Recorded rather than applied silently, per `AGENTS.md` State Resolution.
 
-1. **UP-019's proposed remedy already exists.** The report asks that `doctor`
-   "render the registered effect in the line itself". It already does, and did in
-   v3.1.1: `git show fa04e27:workbench/tools/spec-workbench.mjs` carries the
-   identical render at line 479, and `b3633e5` carries it at line 551. The
-   finding's premise stands and is accepted; its remedy does not close it, so
-   S-043 is scoped to severity prominence, grouping, and counts instead. The
-   report also names four `error`/`blocks: none` codes; there are eight.
+1. **UP-019's first proposed remedy already exists.** The report offers two, and
+   asks first that `doctor` "render the registered effect in the line itself".
+   It already does, and did in v3.1.1: `git show
+   fa04e27:workbench/tools/spec-workbench.mjs` carries the identical render at
+   line 479, and `b3633e5` carries it at line 551. The report's second disjunct -
+   lower the display severity of `blocks: none` findings - is untouched and is
+   what S-043 builds, alongside grouping and counts. So the finding's premise
+   stands, half its remedy is already shipped, and the correction is to the
+   first half only. The report also names four `error`/`blocks: none` codes;
+   there are eight.
 2. **UP-019's and UP-020's impact evidence is substantially reattributed.** Both
    items cite `invalid-adr` and `invalid-note` counts from the reporting room
    (6 and 4) and GPT_OS (24 and 4). Both are Windows checkouts. S-037 established
@@ -90,7 +96,7 @@ Recorded rather than applied silently, per `AGENTS.md` State Resolution.
 3. **UP-013's claim is half right and is accepted on the correct half.** The
    report states that `tools-receipt-missing` appears in the installed
    `diagnostics.mjs` only as a catalogue row. It is emitted by an installed tool,
-   at `workbench/tools/workbench-layout.mjs:517,521`, on the `validate --genesis`
+   at `workbench/tools/workbench-layout.mjs:503,507`, on the `validate --genesis`
    readiness path. That path performs no hash check and `doctor` does not call
    it, so the operative conclusion - a room has no installed command that
    verifies the integrity of the runtime it is executing - is upheld.

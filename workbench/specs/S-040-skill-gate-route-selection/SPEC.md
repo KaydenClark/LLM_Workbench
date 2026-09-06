@@ -195,9 +195,10 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Whether the reporting host's `code-review` junction is supported as-is or
-  replaced after backup remains an owner decision recorded in
-  [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md).
+- The reporting host's `code-review` junction is supported as-is by owner
+  decision of 2026-09-06, recorded in
+  [S-038](../S-038-v3-1-2-upstream-fix-list/SPEC.md). No limitation remains from
+  that question; TK-001 is what makes the junction a supported destination.
 - Rooms that already stopped are not retried by this spec.
 
 ## Supersession
