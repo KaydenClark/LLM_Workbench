@@ -510,6 +510,12 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+export function formatDoctorReport(findings) {
+  const lines = findings.map((item) => `${item.code} [${item.severity}, blocks ${item.blocks}]: ${item.message}`);
+  if (lines.length === 0) return 'ok - spec workbench doctor passed';
+  return `${lines.join('\n')}${blocksSelection(findings) ? '' : '\nok - no blocking finding; attention and slice findings above stay visible'}`;
+}
+
 export function parseCliArgs(argv) {
   const command = argv[0];
   let index = 1;
@@ -547,11 +553,7 @@ async function main() {
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
-  else if (command === 'doctor') {
-    const lines = result.map((item) => `${item.code} [${item.severity}, blocks ${item.blocks}]: ${item.message}`);
-    if (lines.length === 0) console.log('ok - spec workbench doctor passed');
-    else console.log(`${lines.join('\n')}${blocksSelection(result) ? '' : '\nok - no blocking finding; attention and slice findings above stay visible'}`);
-  }
+  else if (command === 'doctor') console.log(formatDoctorReport(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
 }
 
