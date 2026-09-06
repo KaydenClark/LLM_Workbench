@@ -142,6 +142,38 @@ test('the updater refuses a dirty project because HEAD alone is not a full recov
   }
 });
 
+test('the updater validates dirty runtime source before changing installed skills', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  const parent = fixture('workbench-upgrade-source-');
+  const bundle = path.join(parent, 'release');
+  try {
+    seedProject(project);
+    const cloned = spawnSync('git', ['clone', '-q', '--no-local', root, bundle], { cwd: parent, encoding: 'utf8' });
+    assert.equal(cloned.status, 0, cloned.stderr);
+    const bundleInstaller = path.join(bundle, 'tools', 'core-skill-installer.mjs');
+    const bundleUpgrade = path.join(bundle, 'tools', 'workbench-upgrade.mjs');
+    assert.equal(run(bundleInstaller, 'install', '--home', home).status, 0);
+    const installed = path.join(home, '.agents', 'skills', 'genesis', 'SKILL.md');
+    write(home, '.agents/skills/genesis/SKILL.md', '# locally changed genesis\n');
+    fs.appendFileSync(path.join(bundle, 'workbench', 'tools', 'diagnostics.mjs'), '\n// dirty runtime source\n');
+
+    const result = run(bundleUpgrade, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
+
+    assert.notEqual(result.status, 0);
+    assert.equal(result.report.status, 'blocked');
+    assert.equal(result.report.error.code, 'invalid-source-identity');
+    assert.equal(fs.readFileSync(installed, 'utf8'), '# locally changed genesis\n', 'runtime source failure leaves installed skills untouched');
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'runtime source failure leaves the target project untouched');
+    assert.equal(fs.readdirSync(home).filter((name) => name.startsWith('.workbench-upgrade-backup-')).length, 0,
+      'runtime source failure creates no skill backup');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(parent, { recursive: true, force: true });
+  }
+});
+
 // S-032: on a host whose discovery root is a foreign Git repository the
 // explicit path fails closed before its layout phase; --layout-only reads
 // skill presence only, builds the support root, and records `upgrade`.

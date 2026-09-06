@@ -280,11 +280,40 @@ test('permission-scope-drift names each withheld authorship lane without blockin
     write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'], ask: ['Edit(./workbench/tools/**)'] }));
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a parent glob with tools held in ask is the accepted shape');
 
+    // A narrow restriction does not protect the rest of a broadly allowed
+    // tools lane. Both ask and deny regressions must remain visible.
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'], ask: ['Edit(./workbench/tools/private.mjs)'] }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
+    write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit(./workbench/**)'], deny: ['Edit(./workbench/tools/private.mjs)'] }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['tools']);
+
     // Claude Code's documented bare and project-root Edit forms are valid.
     write(dir, '.claude/settings.json', permissionFile({ allow: ['Edit'], ask: ['Edit(/workbench/tools/**)'] }));
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'bare Edit grants authorship while a project-root ask protects tools');
     write(dir, '.claude/settings.json', permissionFile({ allow: authorshipLanes.map((lane) => `Edit(/workbench/${lane}/**)`), ask: ['Edit(/workbench/tools/**)'] }));
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'project-root path rules are supported');
+
+    // Absolute and home-relative restrictions use Claude Code's documented
+    // path forms and must not be discarded as unrelated.
+    write(dir, '.claude/settings.json', permissionFile({
+      allow: laneGrants,
+      ask: ['Edit(./workbench/tools/**)'],
+      deny: [`Edit(/${path.join(dir, 'workbench', 'specs', '**')})`]
+    }));
+    assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['specs']);
+    const priorHome = process.env.HOME;
+    process.env.HOME = path.dirname(dir);
+    try {
+      write(dir, '.claude/settings.json', permissionFile({
+        allow: laneGrants,
+        ask: ['Edit(./workbench/tools/**)'],
+        deny: [`Edit(~/${path.basename(dir)}/workbench/specs/**)`]
+      }));
+      assert.deepEqual(driftLanes(doctor(dir, { home: quietHome })), ['specs']);
+    } finally {
+      if (priorHome === undefined) delete process.env.HOME;
+      else process.env.HOME = priorHome;
+    }
 
     // A bare Write restriction is a real tool restriction, while a bounded
     // matcher must surface a restrictive Edit shape it cannot fully interpret.

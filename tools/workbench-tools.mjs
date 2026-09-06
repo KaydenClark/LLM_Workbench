@@ -55,19 +55,26 @@ function git(args, cwd = productRoot) {
   return result.status === 0 ? result.stdout.trim() : '';
 }
 
+function gitStatus(args, cwd = productRoot) {
+  return spawnSync('git', args, { cwd, encoding: 'utf8' });
+}
+
 export function sourceIdentity(options = {}) {
   const root = path.resolve(options.root ?? productRoot);
-  const managedPaths = options.managedPaths ?? ['workbench/tools'];
+  const managedPaths = [...new Set(['workbench/manifest.json', ...(options.managedPaths ?? ['workbench/tools'])])];
   const manifestPath = path.join(root, 'workbench', 'manifest.json');
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
   const commit = git(['rev-parse', '--verify', 'HEAD'], root);
+  const topLevel = git(['rev-parse', '--show-toplevel'], root);
   const repository = git(['remote', 'get-url', 'origin'], root);
   const release = manifest.workbenchVersion;
   if (!/^[0-9a-f]{40}$/.test(commit)) throw new Error(`${root} is not a verified Git checkout with a concrete HEAD commit.`);
+  if (!topLevel || fs.realpathSync(topLevel) !== fs.realpathSync(root)) throw new Error(`${root} is not the Git checkout root.`);
   if (!repository) throw new Error(`${root} has no origin repository URL.`);
   if (!/^v\d+\.\d+\.\d+$/.test(release ?? '')) throw new Error(`${manifestPath} has no valid Workbench release.`);
-  const dirty = git(['status', '--porcelain', '--', ...managedPaths], root);
-  if (dirty) throw new Error(`The Workbench source has uncommitted changes under ${managedPaths.join(', ')}; commit the exact source candidate before installation.`);
+  const status = gitStatus(['status', '--porcelain', '--', ...managedPaths], root);
+  if (status.status !== 0) throw new Error(`Git status could not verify the Workbench source paths ${managedPaths.join(', ')} as clean.`);
+  if (status.stdout.trim()) throw new Error(`The Workbench source has uncommitted changes under ${managedPaths.join(', ')}; commit the exact source candidate before installation.`);
   return {
     repository,
     release,

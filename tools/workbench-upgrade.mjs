@@ -4,7 +4,8 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
-import { MANAGED_MARKER, markerSourceIdentity, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
+import { MANAGED_MARKER, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
+import { sourceIdentity } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
@@ -162,9 +163,10 @@ function upgrade(options) {
   const sourceFailure = validateSource();
   if (sourceFailure) return sourceFailure;
   let skillIdentity;
-  if (!options.layoutOnly) {
-    try { skillIdentity = markerSourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
-  }
+  try {
+    const identity = sourceIdentity({ managedPaths: options.layoutOnly ? ['workbench/tools'] : ['skills', 'workbench/tools'] });
+    if (!options.layoutOnly) skillIdentity = { release: identity.release, commit: identity.commit };
+  } catch (error) { return fail('invalid-source-identity', error.message); }
   const readiness = preflight(project, home, options.explicit, options.layoutOnly);
   if (readiness.status === 'blocked') return readiness;
   const skills = options.layoutOnly ? 'presence-only' : 'explicit-update';

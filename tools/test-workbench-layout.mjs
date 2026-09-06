@@ -750,6 +750,12 @@ function relocateTool(bundle) {
   return relocatedTool;
 }
 
+function cloneRelease(bundle) {
+  const result = spawnSync('git', ['clone', '-q', '--no-local', root, bundle], { cwd: path.dirname(bundle), encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  return path.join(bundle, 'workbench', 'tools', 'workbench-layout.mjs');
+}
+
 test('init and migrate from the release checkout resolve HEAD and origin when the source flags are omitted', () => {
   const project = fixture();
   const legacy = fixture();
@@ -844,6 +850,28 @@ test('a relocated partial copy refuses init and migrate even when source strings
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(legacy, { recursive: true, force: true });
     fs.rmSync(bundle, { recursive: true, force: true });
+  }
+});
+
+test('init refuses a dirty release template before mutating the target project', () => {
+  const project = fixture();
+  const parent = fixture();
+  const bundle = path.join(parent, 'release');
+  try {
+    const clonedTool = cloneRelease(bundle);
+    fs.appendFileSync(path.join(bundle, 'templates', 'wiki', 'SCHEMA.md'), '\nDirty source template.\n');
+    const result = spawnSync(process.execPath, [clonedTool, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION], {
+      cwd: bundle,
+      encoding: 'utf8'
+    });
+    const report = result.stdout ? JSON.parse(result.stdout) : null;
+    assert.notEqual(result.status, 0, result.stdout);
+    assert.equal(report.error.code, 'invalid-source-identity');
+    assert.match(report.error.message, /uncommitted/);
+    assert.equal(fs.existsSync(path.join(project, 'workbench')), false, 'dirty template bytes fail before target mutation');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(parent, { recursive: true, force: true });
   }
 });
 

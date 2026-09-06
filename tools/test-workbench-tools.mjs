@@ -59,6 +59,25 @@ test('source identity requires a clean Git checkout with a concrete origin and c
     assert.equal(identity.release, VERSION);
     fs.writeFileSync(path.join(dir, 'workbench', 'tools', 'proof.mjs'), 'export const proof = false;\n');
     assert.throws(() => sourceIdentity({ root: dir, managedPaths: ['workbench/tools'] }), /uncommitted/);
+    fs.writeFileSync(path.join(dir, 'workbench', 'tools', 'proof.mjs'), 'export const proof = true;\n');
+    fs.writeFileSync(path.join(dir, 'workbench', 'manifest.json'), `${JSON.stringify({ workbenchVersion: 'v9.9.9' })}\n`);
+    assert.throws(() => sourceIdentity({ root: dir, managedPaths: ['workbench/tools'] }), /uncommitted/,
+      'a dirty release manifest cannot be paired with the previous commit');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('source identity requires the requested root to be the Git checkout root', () => {
+  const dir = fixture('workbench-source-root-');
+  const nested = path.join(dir, 'nested-release');
+  try {
+    fs.mkdirSync(path.join(nested, 'workbench', 'tools'), { recursive: true });
+    fs.writeFileSync(path.join(nested, 'workbench', 'manifest.json'), `${JSON.stringify({ workbenchVersion: VERSION })}\n`);
+    fs.writeFileSync(path.join(nested, 'workbench', 'tools', 'proof.mjs'), 'export const proof = true;\n');
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: dir }).status, 0);
+    assert.equal(spawnSync('git', ['remote', 'add', 'origin', 'https://example.invalid/workbench.git'], { cwd: dir }).status, 0);
+    assert.equal(spawnSync('git', ['add', '.'], { cwd: dir }).status, 0);
+    assert.equal(spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '-qm', 'nested source fixture'], { cwd: dir }).status, 0);
+    assert.throws(() => sourceIdentity({ root: nested, managedPaths: ['workbench/tools'] }), /checkout root/);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
