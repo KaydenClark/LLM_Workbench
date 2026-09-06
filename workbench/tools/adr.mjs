@@ -13,13 +13,18 @@ export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 're
 export const REGISTER_NAME = 'REGISTER.md';
 const ID_PATTERN = /^(\d{4})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
 
+// A record is authored once and checked out on many hosts. Git for Windows
+// rewrites Markdown to CRLF by default, so anchoring on a bare LF would report
+// every ADR and Wiki note as frontmatter-less on those clones. Normalize the
+// line terminator for parsing; the parsed body is read, never written back.
 export function parseFrontmatter(content) {
-  if (!content.startsWith('---\n')) return { data: null, body: content };
-  const end = content.indexOf('\n---\n', 4);
-  if (end < 0) return { data: null, body: content };
+  const text = content.replace(/\r\n?/g, '\n');
+  if (!text.startsWith('---\n')) return { data: null, body: text };
+  const end = text.indexOf('\n---\n', 4);
+  if (end < 0) return { data: null, body: text };
   const data = {};
   let key = null;
-  for (const line of content.slice(4, end).split('\n')) {
+  for (const line of text.slice(4, end).split('\n')) {
     const item = line.match(/^\s+-\s+(.+)$/);
     if (item && key) {
       if (!Array.isArray(data[key])) data[key] = [];
@@ -31,7 +36,7 @@ export function parseFrontmatter(content) {
     key = field[1];
     data[key] = field[2].trim() === '' ? [] : field[2].trim();
   }
-  return { data, body: content.slice(end + 5) };
+  return { data, body: text.slice(end + 5) };
 }
 
 export function listAdrs(root) {

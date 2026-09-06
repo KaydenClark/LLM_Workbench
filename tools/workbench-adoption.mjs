@@ -215,8 +215,11 @@ function addWikiFrontmatter(project, options) {
     .filter(([name]) => parsed.data[name] === undefined)
     .flatMap(([, lines]) => lines);
   if (missing.length === 0) return;
-  const frontmatterEnd = content.indexOf('\n---\n', 4);
-  writeSafeFile(project, memory, `${content.slice(0, frontmatterEnd)}\n${missing.join('\n')}${content.slice(frontmatterEnd)}`);
+  // The room's own file decides the terminator: a CRLF checkout keeps CRLF.
+  const eol = /\r\n/.test(content) ? '\r\n' : '\n';
+  const frontmatterEnd = content.indexOf(`${eol}---${eol}`, 4);
+  if (frontmatterEnd < 0) return;
+  writeSafeFile(project, memory, `${content.slice(0, frontmatterEnd)}${eol}${missing.join(eol)}${content.slice(frontmatterEnd)}`);
 }
 
 function migrate(options) {
