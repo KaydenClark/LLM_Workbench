@@ -56,6 +56,13 @@ invocation of `carry` moves it.
 Do not stop short of that endpoint and report progress as completion. Stopping
 before an already-authorized step is the failure this skill exists to remove.
 
+That endpoint still has one gate `carry` cannot supply for itself. `AGENTS.md`
+Git Rules requires a separate-context review of the exact candidate before it
+combines into the integration branch, and self-review alone never satisfies it.
+A green suite and your own reading are not a PASS. Where no separate context is
+available to review the candidate, that is an **Unavailable resource** under
+section 4 - a reason to stop and say so, never a reason to merge.
+
 ## 3. Run it
 
 Execute through the existing contracts: `/implement` for a ticket's red/green

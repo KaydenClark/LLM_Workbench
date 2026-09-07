@@ -117,5 +117,5 @@ architecture in `BLUEPRINT.md`, and rationale in the ADR collection.
 
 | Term | Definition | Distinction |
 |---|---|---|
-| **v3.0.0** | The completed portable-layout candidate (S-021, S-015) that was never promoted to `main`. | An unreleased internal candidate; v3.1.0 is also preserved and unreleased. S-027 continued that baseline as the v3.1.1 candidate; S-035 stamps v3.1.2 as the current candidate. |
+| **v3.0.0** | The completed portable-layout candidate (S-021, S-015) that was never promoted to `main`. | An unreleased internal candidate; v3.1.0 is also preserved and unreleased. S-027 continued that baseline as the v3.1.1 candidate; S-035 stamped v3.1.2, which reached `main`, and S-049 opens v3.1.3 as the current candidate. |
 | **Foundry** | The owner's downstream coordination extension that adopts released Workbench versions and adds sockets, modules, scheduling, and monitoring. | Read-only evidence during v3.1; never a source, runtime, or prerequisite for the Workbench ([ADR-0026](workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md)). |

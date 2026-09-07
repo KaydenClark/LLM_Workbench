@@ -56,10 +56,10 @@ assert.match(catalog, /\.agents\/skills/,
 assert.match(catalog, /\.claude\/skills/,
   'the catalog must document the Claude user-scoped discovery root');
 
-// S-049: four documents state the bundle's size in prose, and nothing held
-// them to it - `README.md` and `BLUEPRINT.md` both went stale when the bundle
-// grew and an independent review, not a test, caught them. Derive the numbers
-// so a future bundle change fails here instead of shipping a wrong count.
+// S-049: six documents state the bundle's size in prose, and nothing held them
+// to it - `README.md` and `BLUEPRINT.md` both went stale when the bundle grew
+// and an independent review, not a test, caught them. Derive the numbers so a
+// future bundle change fails here instead of shipping a wrong count.
 const bundleSize = coreSkills.length;
 const stanceCount = 4;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
@@ -70,10 +70,26 @@ for (const [relative, expected] of [
   ['README.md', [`closed ${bundleSize}-skill public source bundle`]],
   ['RUNBOOK.md', [`limited to the ${bundleSize} skills`]],
   ['BLUEPRINT.md', [`carries ${workflowWord} setup/planning/delivery workflow skills`]],
-  ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]]
+  ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
+  ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
 ]) {
   assertIncludesAll(read(relative), expected,
     `${relative} states the core bundle size and must match the ${bundleSize} skills in skills/`);
+}
+
+// S-049: `RUNBOOK.md`'s documented Genesis command carried `--version v3.1.2`
+// after the checkout moved to v3.1.3, and `workbench-layout.mjs init` refuses
+// a mismatch with `invalid-source-identity` - a root control shipping a command
+// that cannot run. Every documented `--version` literal must be this release.
+const VERSION = JSON.parse(read('workbench/manifest.json')).workbenchVersion;
+for (const relative of ['RUNBOOK.md', 'templates/ADOPTION.md', 'skills/adoption/SKILL.md',
+  'skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'workbench/tools/workbench-layout.mjs']) {
+  const stale = [...read(relative).matchAll(/--version (v\d+\.\d+\.\d+)/g)]
+    .map((match) => match[1])
+    .filter((version) => version !== VERSION);
+  assert.deepEqual(stale, [],
+    `${relative} documents a --version literal that is not the checkout release ${VERSION}; ` +
+    'workbench-layout.mjs init refuses a mismatch with invalid-source-identity');
 }
 
 const importedNotice = read('THIRD_PARTY_NOTICES.md');
