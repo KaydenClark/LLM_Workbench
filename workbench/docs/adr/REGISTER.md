@@ -29,3 +29,5 @@
 | [0037](0037-independent-review-at-integration.md) | Require independent review when branches combine at integration | accepted | 2026-09-04 | AGENTS.md |
 | [0038](0038-setup-proof-precedes-feedback-reporting.md) | Chat-only setup proof precedes feedback reporting | accepted | 2026-09-04 | RUNBOOK.md, BLUEPRINT.md, workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md |
 | [0039](0039-the-integration-branch-is-a-manifest-declared-fact.md) | The integration branch is a manifest-declared fact | accepted | 2026-09-05 | AGENTS.md, RUNBOOK.md, LEXICON.md |
+| [0040](0040-json-notepads-preserve-objective-continuity.md) | JSON notepads preserve objective continuity | accepted | 2026-09-06 | AGENTS.md, BLUEPRINT.md, LEXICON.md, RUNBOOK.md, workbench/specs/S-046-json-notepad-foundation/SPEC.md |
+| [0041](0041-visible-base62-workbench-identifiers.md) | Visible base-62 Workbench identifiers | accepted | 2026-09-06 | BLUEPRINT.md, LEXICON.md, workbench/specs/S-047-visible-workbench-identifiers/SPEC.md |

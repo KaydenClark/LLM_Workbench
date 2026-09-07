@@ -31,6 +31,26 @@ Core promise:
 - **Portable by default:** plain Markdown and zero-dependency local commands
   work with Codex, Claude Code, Gemini CLI, and ordinary command-line workflows.
 
+## Accepted Notepad Foundation Direction
+
+Meaningful objective work needs usable continuity across interruptions without
+owner reconstruction. New live notepads use JSON, combining a compact current
+view and an ordered work record; shared schema and tooling will support safe
+updates and bounded retrieval. Notes remain local-only until their important
+claims are reconciled into existing durable owners. They do not become Canon
+by being recorded. Ordinary operation needs no new coordination framework.
+
+[S-046](workbench/specs/S-046-json-notepad-foundation/SPEC.md) owns the bounded
+foundation and thin workflow integrations. Its schema/tooling and target
+notepads layout are accepted requirements, not implemented support. Broader
+preservation guarantees and workflow redesign are separate owner tradeoffs.
+[S-047](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) owns visible,
+type-and-Workbench scoped base-62 identifiers with compatible migration;
+[S-048](workbench/specs/S-048-checkpoint-retirement/SPEC.md) owns checkpoint
+rationale, preservation, and retirement. Neither widens the first foundation
+slice into a full historical migration. Current numeric IDs and legacy
+checkpoints remain until their compatible replacements are verified.
+
 ## Accepted V3 Direction
 
 [S-021](workbench/specs/S-021-portable-workbench-v3/SPEC.md) owns the portable
@@ -262,6 +282,9 @@ be changed only through a later spec linked by supersession.
 | [S-043 - Diagnostic Output Legibility](workbench/specs/S-043-diagnostic-output-legibility/SPEC.md) | Stop a healthy room from reading as failed by separating what a doctor finding blocks from how loudly it is printed, without changing any blocking semantics. | complete |
 | [S-044 - Legacy Room Classification And Control Reconcile Order](workbench/specs/S-044-legacy-room-classification/SPEC.md) | Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone. | complete |
 | [S-045 - v3.1.2 Follow-Ups Left Without An Owner](workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md) | Own the seven follow-ups the v3.1.2 slices and their retrospective reviews left open, so owed work has a spec that carries it instead of surviving only as prose inside completed specs. | active |
+| [S-046 - JSON Notepad Foundation](workbench/specs/S-046-json-notepad-foundation/SPEC.md) | Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup. | active |
+| [S-047 - Visible Workbench Identifiers](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Introduce visible base-62 identifiers without parallel IDs or loss of existing references. | planned |
+| [S-048 - Checkpoint Retirement](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately. | planned |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
