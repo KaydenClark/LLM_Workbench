@@ -8,8 +8,8 @@
 **Updated:** 2026-09-07
 **Catalog description:** Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup.
 **Blockers:** none
-**Latest event:** TK-003 claimed by codex.
-**Next gate:** Close TK-003 with verification and documentation proof.
+**Latest event:** TK-003 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -193,7 +193,7 @@ protocol are proposals, not verbatim owner approvals.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
-| TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | in-progress | TK-001 | pending |
+| TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | done | TK-001 | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged |
 | TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | ready | TK-001 | pending |
 
 ### TK-001 - Scope and reconcile
@@ -237,7 +237,7 @@ returns feedback; the acceptance below is not all compressed into TK-002.
 ## Acceptance Criteria
 
 - [x] Source questions and corrections have explicit dispositions; all remaining source material is retained locally in focused JSON records, and promoted truth has durable owners.
-- [ ] Capture/cleanup follow-up: root/template controls and source skills require proactive local capture and permit verified trimming or full cleanup, with manual retained-context proof.
+- [x] Capture/cleanup follow-up: root/template controls and source skills require proactive local capture and permit verified trimming or full cleanup, with manual retained-context proof.
 - [ ] Shared schema, skill, and tool safely create/update/resume an objective note without requiring a model to regenerate its history.
 - [ ] Bounded retrieval excludes unrelated topics, carries corrections/dependencies, and reports pagination without silent loss.
 - [ ] Requested handoff and partial-cleanup demonstrations preserve unfinished material and destination dependencies.
@@ -317,6 +317,61 @@ Guardrail is 78/100 before and after with unchanged criteria; templates score
 control/prior/candidate comparisons, current evidence, and uncertainty reporting.
 No agent-outcome improvement follows from these static results.
 
+## TK-003 Verification Account
+
+Scope: source controls/templates and the grilling/make-it-so skills implement
+agent obligations now. The JSON runtime, installed skill updates, legacy
+checkpoint retirement, and other review notepads remain outside this slice.
+LEXICON meanings and ADR-0040 rationale were checked; no update is needed
+because these decisions refine the existing capture and reconciliation rules.
+
+The focused delivery-skill regression first failed on the missing JSON example,
+then passed after source-skill alignment. An initial sandbox spawn refusal was
+an environment failure; the red/green runs used normal subprocess access.
+The catalog's old promoted-status assertion was replaced with the accepted
+cleanup contract. Its first replacement expected an absent word; that test bug
+was corrected, and the final LF run at `e8eb01d` passes catalog source assertions
+and the capture/cleanup regression. The existing hostile-textconv fixture still
+fails on Windows and also fails at unchanged integration `01eb709`.
+A second red/green check corrects the source skill's impossible promise of a
+final push after every interruption: authorized durable changes must be pushed
+before voluntarily yielding; unexpected Stop can prevent a final action.
+
+Manual demonstration: save a local JSON note with resolved X and unresolved Y
+plus a correction referencing Y, reload and compare all entries, verify X's
+meaning in this spec, trim X, and reload again. Y, its correction link and next
+action remain unchanged. The disposable demonstration file was removed after
+the check. This proves that concrete file operation only; it is not a real
+Stop-button, token-exhaustion, fresh-agent, or tool-mediated recovery trial.
+All 99 original source segments still reconstruct 43,270 bytes with the original
+SHA-256; existing S-046 evidence rows match the unchanged integration checkout.
+The six N-002 source fragments remain necessary for that local index, so cleanup
+will trim promoted decision material while retaining those referenced fragments.
+A sub-minute check is:
+
+```bash
+node --test --test-name-pattern 'notepad skills capture' tools/test-delivery-skills.mjs
+```
+
+Full verification at `6d74385` ran in an isolated LF checkout on Windows
+with normal subprocess access and `PYTHONUTF8=1`: 25 of 33 commands pass,
+including all four append-only history cases and the template evaluator. The
+initial catalog assertion failure is corrected and rechecked at `e8eb01d`; its
+remaining hostile-textconv failure matches baseline. The other seven Node
+failures reproduce on unchanged
+integration `01eb709`: layout classification (four cases), tools (three cases),
+permission-scope diagnostics, branch closeout (three cases), checkpoint file
+mode, round-trip receipt hash drift, and closed-stdout handling. Baseline layout
+comparison ran the four failing classify cases; the candidate ran the full file.
+
+Final governance, citation-anchor, dogfood, evaluator, render and diff checks
+pass; normal-access doctor has zero blockers and 33 informational findings.
+
+Guardrail is 78/100 before and after with unchanged criteria. The remaining
+recommendations are real repeated trials, controls/prior/candidate comparison,
+recent outcome evidence, and uncertainty reporting. These source changes and
+manual file checks do not establish an agent-outcome improvement.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
@@ -325,11 +380,14 @@ No agent-outcome improvement follows from these static results.
 | 2026-09-07 | TK-001 | Source reconciliation and scoped delivery verified | 99 segments reconstruct 43270 bytes and original SHA; all 57 IDs routed; six grouped/index records plus chat source JSON are ignored; ADR/Wiki/render/diff checks pass; full 33-command union at 6f4820d initially 24 pass, eight baseline-reproduced Node failures, Python decoding failure; unchanged Python test passes with PYTHONUTF8=1, giving 25 pass and eight baseline failures; final Runbook delta passes governance/dogfood/citation/evaluator checks | Two ADRs, three specs, root/template Contract, Wiki router, and benchmark record; local source preserved including explicitly noted historical-lane scanner match | Complete runtime remains TK-002 onward; fresh review of final immutable scoping candidate required before integration |
 | 2026-09-07 | TK-001 | Ticket closed | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec | Root/template Contract, ADR-0040/0041, S-046/047/048, Wiki router, benchmark account, and local JSON groups updated | TK-002 onward implement the runtime; final immutable candidate review and integration PR are the scoping closeout gate |
 | 2026-09-07 | TK-003 | Owner authorized capture/cleanup promotion and scoped source-skill alignment; slice claimed | Current origin/integration 01eb709 verified; guardrail baseline 78/100; governance and citation checks pass; normal-access doctor has zero blockers and 33 informational findings | AGENTS, RUNBOOK, BLUEPRINT and generic counterparts carry the decisions | Source-skill alignment, manual demonstration, full verification, independent review and integration pending; full runtime remains unimplemented |
+| 2026-09-07 | TK-003 | Ticket closed | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged | AGENTS/RUNBOOK/BLUEPRINT and generic counterparts, source grilling/make-it-so skills, tests and TK-003 verification account updated; Lexicon and ADR checked without change | Independent review and integration of final immutable candidate pending; full JSON runtime remains TK-002 onward; no installed-skill or recovery-outcome claim |
 
 ## Completion Result
 
 TK-001 delivers the scoped requirements, promoted decisions, and local JSON
-review groups. The full capability remains unimplemented; remaining acceptance
+review groups. TK-003 delivers the capture/cleanup rules and source-skill path,
+with red/green contract checks and the explicitly limited manual demonstration.
+The full capability remains unimplemented; remaining acceptance
 boxes are intentionally open. Final independent review and integration
 containment are recorded against the exact candidate in its integration PR.
 The Windows suite is not fully green; the verification account above separates
