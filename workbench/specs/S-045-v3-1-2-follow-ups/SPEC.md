@@ -11,7 +11,7 @@
 **Latest event:** Spec completed and removed from the hot board.
 **Next gate:** none
 
-> **Citation anchors.** pre=`18ffc0d` post=`18ffc0d`. A bare `path:line` citation
+> **Citation anchors.** pre=`18ffc0d` post=`7150d54`. A bare `path:line` citation
 > reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
 > Behavior, and at `post` in every other live section. Evidence rows read at the
 > commit each row names and are never re-anchored, because they are append-only.
@@ -25,15 +25,16 @@ spec that owns them, rather than surviving only as prose inside a completed spec
 that `AGENTS.md` tells arriving agents not to load. Three came from the slices
 themselves; four more arrived when the retrospective reviews of the four skipped
 gates were finally run. This spec appears on the Taskboard and in the Blueprint
-spec catalog; all seven tickets live inside it. The Taskboard projects one
-current slice per spec, so it shows TK-001 and not the other six - a reader
-reaches all seven by opening this spec, which is the routing that was missing
-before.
+spec catalog; all seven tickets live inside it. While it was active the
+Taskboard projected one current slice per spec, so it showed TK-001 and not the
+other six - a reader reached all seven by opening this spec, which is the
+routing that was missing before. The spec is complete now, so the Taskboard no
+longer lists it and the Blueprint catalog row is its entry point.
 Until 2026-09-07 `next` deliberately did **not** return them: every ticket was
 blocked on owner direction, and `next` excludes a blocked slice - owned and
-owed, but not dispatchable. That direction has arrived, so the six are `ready`
-and dispatchable, with the ordering the owner set carried in the Blockers
-column rather than in prose.
+owed, but not dispatchable. That direction arrived on 2026-09-07, the six were
+unblocked with the ordering the owner set carried in the Blockers column rather
+than in prose, and all seven are now `done` and the spec `complete`.
 
 ## Why It Matters
 
@@ -184,8 +185,17 @@ TK-001 implements, and TK-006 on TK-002.
 - [x] TK-006 closes with `registeredCodes()` asserted equal to the pinned effect
       map, so a code registered without a pin is red at registration. Two codes
       added since S-043 - `stale-seed` and `unverified-provenance` - are outside
-      the pin today, and the reviewed mutation class passes silently against
-      them.
+      the pin today. **The rest of this criterion as written was false and is
+      corrected here rather than ratified**: it claimed "the reviewed mutation
+      class passes silently against them", and it does not. Measured against
+      `origin/integration`'s own test file - moving `unverified-provenance` to
+      severity `warning` fails 2 tests, and moving either code's scope fails 2 -
+      because the emitted-finding assertions already hold severity and scope.
+      What nothing held is a code registered with **no pin at all**: adding one
+      to the registry fails 0 tests there and 1 here. That narrower gap is the
+      real one, and it is what set equality closes. Closed with both codes
+      pinned, so "outside the pin today" describes the pre-state this ticket
+      removed.
 - [x] TK-007 closes with a row appended to S-044 withdrawing "round two's
       wording was true when written" and restating the four-new-cases count with
       its granularity named. The restated count is **five** cases, not four -
@@ -240,6 +250,8 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-07 | TK-007 | Ticket closed | A row appended to S-044 withdraws "round two`s wording was true when written" outright. That clause is the one statement in that log a reader can still take as standing: rows 377 and 378 correct the sentence around it without ever retracting the clause itself. The four-new-cases count is restated with its granularity named, and re-measured rather than copied from row 378, because repeating a record instead of checking it is the fault this whole thread traces back to. The restated numbers: `git show 57c483f -- tools/test-workbench-layout.mjs` adds exactly **five** `test(classify ...` cases, not four; reading each case body out of `git show 57c483f:tools/test-workbench-layout.mjs` gives **two** with no before/after snapshot at all (case granularity) and **three** containing at least one unbracketed `classify` of a room (invocation granularity). No test seam: this is a record repair, and its proof is the re-reading against the named tree. `python3 tools/test-check-append-only.py` passes, and the full AGENTS.md suite is 30/30 green at ef44e8e. | S-044 gains one appended row. Neither of the two rows it withdraws from is edited, per the append-only rule. | The withdrawal lives in a later row, so a reader who stops at row 375 still meets the withdrawn clause with nothing on it to say so. That is inherent to an append-only log, which has no channel for "this was wrong" - only for "here is a later record that says so" - and the same limit is named in the S-045 correcting row about the seven completed specs. |
 | 2026-09-07 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
+| 2026-09-07 | spec | **WITHDRAWN: "none of the seven was true when written".** The correcting row above is itself false, and false by exactly the conflation it accuses the seven specs of | Found by the separate-context review of `origin/integration..288c3d3`, reproduced here before accepting it. `git merge-base --is-ancestor 6d5beef origin/main` proves containment **now**; it says nothing about what `main` carried on `6d5beef`'s author date. `6d5beef` was on `integration`, and reached `main` only as the second parent of `9378ead`. Measured: `9378ead`'s first parent is `08ab78e`, `git merge-base --is-ancestor 6d5beef 08ab78e` exits 1, and `git ls-tree 08ab78e --name-only \| grep -c workbench` returns **0**. So `main` carried no `workbench/` tree at all from `08ab78e` (2026-07-16) until PR #73 merged at **2026-09-06 16:15:35 -0600**. The seven claims were written by `31ee60b` at **05:22:10** and `4b4c67c` at **08:04:29** the same morning - before that merge. **All seven were true when written and went stale the same afternoon** - eight hours and eleven minutes later for the five written by `4b4c67c`, ten hours and fifty-three minutes for S-036 and S-037 by `31ee60b`, stated as a range because a single rounded figure is the kind of imprecision this spec keeps correcting. S-049's original word, "stale", was right, and the row above corrected a correct record into a false one. What stands from that row: **seven** specs carry the claim, not six - S-036 is the seventh - and `origin/main` at `9378ead` carries `v3.1.2` with the sixteen-skill policy today | This row is the record; the row above is left as published, per the append-only rule that row itself describes | The lesson is the row above's own, turned on itself: an ancestry result and a commit date are two facts, and reading them as one is how a checked command produces an unchecked claim. It took an adversarial separate-context reviewer to catch it, which is the argument for that gate rather than for self-review |
+
 ## Completion Result
 
 **What changed.** Two code changes and four record repairs.
@@ -283,6 +295,14 @@ quietly absorbed. The two refusal codes never appear together, because
 validation returns on its first failure. And this host's disagreement runs
 opposite to the one TK-001 was written for - `lstat` through a symlinked
 ancestor resolves it, so the gates accepted the host the installer refused.
+
+**And one thing this spec got wrong.** The correcting row about the seven
+completed specs claimed they were false when written. They were true when
+written and went stale the same afternoon, between eight and eleven hours later;
+the withdrawal is the last evidence row. It is named here rather than left in the log because the row that carried
+the error was written expressly to correct an error of the same kind, and a
+completion result that reported only the successes would be the same failure a
+third time.
 
 ## Remaining Limitations Or Follow-Up Specs
 

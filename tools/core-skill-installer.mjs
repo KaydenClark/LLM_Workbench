@@ -138,9 +138,14 @@ function install(home) {
   const validated = validateDestinations(destinations);
   if (validated.error) return validated.error;
 
+  // `resolvedRoots` names each declared discovery root beside the directory it
+  // actually resolved to. They differ whenever a root is a link, and two
+  // declared roots can resolve to one directory - which is why a skill can be
+  // installed once and reported as already-present for the second engine.
   const report = {
     status: 'complete', requiredSkills: coreSkills, installed: [], skipped: [],
-    gitOwnedRoots: validated.gitOwnedRoots
+    gitOwnedRoots: validated.gitOwnedRoots,
+    resolvedRoots: validated.destinations.map(({ engine, declared, root: resolved }) => ({ engine, declared, resolved }))
   };
   try {
     for (const { engine, root: destinationRoot } of validated.destinations) {
