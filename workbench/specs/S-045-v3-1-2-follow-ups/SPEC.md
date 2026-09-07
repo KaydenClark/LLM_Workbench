@@ -188,14 +188,18 @@ TK-001 implements, and TK-006 on TK-002.
       the pin today. **The rest of this criterion as written was false and is
       corrected here rather than ratified**: it claimed "the reviewed mutation
       class passes silently against them", and it does not. Measured against
-      `origin/integration`'s own test file - moving `unverified-provenance` to
-      severity `warning` fails 2 tests, and moving either code's scope fails 2 -
-      because the emitted-finding assertions already hold severity and scope.
-      What nothing held is a code registered with **no pin at all**: adding one
-      to the registry fails 0 tests there and 1 here. That narrower gap is the
-      real one, and it is what set equality closes. Closed with both codes
-      pinned, so "outside the pin today" describes the pre-state this ticket
-      removed.
+      `origin/integration`'s own test file, by committing each mutation in a
+      throwaway worktree because a dirty tree trips `invalid-source-identity`:
+      **every valid severity or scope move of either code fails exactly 1 test
+      there and 2 here** - the emitted-finding assertion for that code already
+      held both. Moving `unverified-provenance` to severity `warning` fails 2
+      there, but only because `warning` is not a registered severity at all, so
+      the enum test fires as well; that has nothing to do with pinning, and an
+      in-enum move to `error` fails 1. What nothing held is a code registered
+      with **no pin at all**: adding one to the registry fails **0** tests there
+      and **1** here. That narrower gap is the real one, and it is what set
+      equality closes. Closed with both codes pinned, so "outside the pin today"
+      describes the pre-state this ticket removed.
 - [x] TK-007 closes with a row appended to S-044 withdrawing "round two's
       wording was true when written" and restating the four-new-cases count with
       its granularity named. The restated count is **five** cases, not four -

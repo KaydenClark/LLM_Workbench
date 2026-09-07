@@ -622,12 +622,15 @@ test('the registered effect of every blocking code is pinned, and no attention c
 // Two arrived that way after S-043: `stale-seed` and `unverified-provenance`
 // were registered in `diagnostics.mjs` and left outside `PINNED_EFFECTS`. Be
 // precise about what that did and did not cost, because the spec criterion that
-// asked for this test overstated it. Moving either code's severity or scope was
-// NOT silent - the emitted-finding assertions below hold both, and each such
-// mutation fails two tests even without a pin. What nothing held is a code that
-// is registered and never pinned at all: adding one to the registry failed zero
-// tests before this assertion existed. That is the gap set equality closes - it
-// is red at registration, before the code can ever be emitted.
+// asked for this test overstated it, and the first correction of that criterion
+// overstated it again. Moving either code's severity or scope was NOT silent:
+// the emitted-finding assertion for that code holds both, so every valid move
+// failed exactly one test even without a pin, and fails two now. (Moving one to
+// severity `warning` fails two without a pin, but only because `warning` is not
+// in SEVERITIES, so the enum test fires too - an enum failure, not a pin one.)
+// What nothing held is a code that is registered and never pinned at all:
+// adding one failed zero tests before this assertion existed. That is the gap
+// set equality closes - red at registration, before the code can be emitted.
 test('every registered diagnostic code is pinned, so registering one without a pin is red', () => {
   assert.deepEqual(registeredCodes().slice().sort(), Object.keys(PINNED_EFFECTS).sort(),
     'PINNED_EFFECTS must equal the registry exactly: pin the new code with its severity, scope and effect');
