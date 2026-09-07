@@ -164,13 +164,18 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v3.1.2**, a local candidate (recorded in
-`BLUEPRINT.md` and `workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
+current harness version is **v3.1.3** (recorded in `BLUEPRINT.md` and
+`workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
 [`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continued
 that baseline as v3.1.1 and
 [`S-035`](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) stamps the
-v3.1.2 patch candidate; [`S-036`](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md)
-owns its evidence-integrity corrections. Publication remains separately
+v3.1.2 patch; [`S-036`](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md)
+owns its evidence-integrity corrections.
+[`S-049`](workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md)
+opens v3.1.3, because it grows the core skill bundle from sixteen to
+seventeen and v3.1.2 had already reached `main` and downstream rooms at
+sixteen. A bundle change is a release-surface change: v3.1.2 stays frozen at
+its own policy rather than being redefined. Publication remains separately
 owner-controlled. This repo is the source, so its own docs are not stamped.
 
 Portfolio responsibilities stay separate: LLM_Workbench produces the canonical

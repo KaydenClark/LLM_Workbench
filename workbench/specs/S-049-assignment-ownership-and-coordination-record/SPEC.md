@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-07
 **Catalog description:** Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination.
-**Blockers:** owner decision on which version carries the seventeen-skill bundle
-**Latest event:** TK-001 built and green at `a617359`, then blocked: `main` already carries a sixteen-skill v3.1.2 manifest, so growing the bundle inside v3.1.2 redefines a shipped version.
-**Next gate:** Owner picks the version that carries the seventeen-skill bundle; TK-001 then closes and TK-002 waits on a real assignment.
+**Blockers:** none
+**Latest event:** Owner unblocked TK-001: the seventeen-skill bundle is v3.1.3 and v3.1.2 is frozen at sixteen.
+**Next gate:** Close TK-001 with the full suite green at v3.1.3; TK-002 waits on a real assignment.
 
 This spec carries no bare `path:line` citations. Every reference below names a
 file, not a position, so no anchor declaration is required and none goes stale
@@ -116,8 +116,13 @@ Verified on `origin/integration` at `9ec4314` on 2026-09-07.
   recorded on S-038's stale claim that v3.1.2 was unpublished and was not
   verified against `origin/main` before it was written. It is false, and the
   candidate as first pushed (`a617359`) makes `main`'s own manifest
-  `invalid-skill-policy`. The version this bundle belongs to is an open owner
-  decision; see Dependencies And Blockers.
+  `invalid-skill-policy`.
+- **REPLACES IT: the seventeen-skill bundle is v3.1.3, and v3.1.2 is frozen at
+  sixteen.** Owner decision, 2026-09-07, with the owner confirming that rooms
+  outside this repository are running v3.1.2 - so the freeze prevents a live
+  break, not a theoretical one. This is the handling the twelve-to-sixteen
+  growth already received: it bumped v3.1.0 to v3.1.1 and froze v3.1.0 rather
+  than redefining it. A bundle change is a release-surface change.
 - **`carry` sits ahead of the stances in `coreSkills`.** It is a workflow
   skill, and the position keeps every `slice(-4)` stance read and the frozen
   v3.1.1 row exact.
@@ -134,7 +139,9 @@ Verified on `origin/integration` at `9ec4314` on 2026-09-07.
 
 ## Non-Goals
 
-- Deciding whether v3.1.3 exists, or publishing v3.1.2.
+- Publishing v3.1.3, or deciding what else v3.1.3 takes. This spec opens
+  the version because a bundle change requires one; it does not claim the
+  six tickets S-045 holds for v3.1.3.
 - Any automated aggregation, dashboard, or scoring of hand-backs. Counting them
   across runs is a later question that needs runs first.
 - Changing what any agent is authorized to do. `carry` redistributes the burden
@@ -143,24 +150,12 @@ Verified on `origin/integration` at `9ec4314` on 2026-09-07.
 
 ## Dependencies And Blockers
 
-**TK-001 is blocked on one owner decision: which version carries the
-seventeen-skill bundle.** Everything else in TK-001 is built and green; this is
-the only open item. Three resolutions were considered:
-
-1. **Freeze v3.1.2 at sixteen and bump this room to v3.1.3.** Matches the
-   established precedent exactly - the twelve-to-sixteen growth bumped v3.1.0
-   to v3.1.1 and froze v3.1.0. Keeps one bundle per version. Costs opening
-   v3.1.3, which S-045 records as an owner decision.
-2. **Add `'v3.1.2': stancePolicy` to `supportedLegacy`.** A v3.1.2 manifest
-   then validates at either sixteen or seventeen, so `main` and any existing
-   v3.1.2 room stay valid and new rooms get seventeen. Costs the one-policy-
-   per-version property the frozen rows exist to hold.
-3. **Leave v3.1.2 at seventeen only.** What `a617359` does. Breaks `main`'s
-   manifest and any room already on v3.1.2. Rejected.
-
-Whether any downstream room is on a sixteen-skill v3.1.2 manifest is
-information outside this repository, which is why this is an owner question
-rather than a resolvable one.
+Resolved. The owner decided on 2026-09-07 that the seventeen-skill bundle is
+v3.1.3 and that v3.1.2 freezes at sixteen, and confirmed that rooms outside
+this repository are running v3.1.2. Two rejected alternatives are kept because
+the reasons matter: making v3.1.2 accept either size would have cost the
+one-policy-per-version property the frozen rows exist to hold, and leaving
+v3.1.2 at seventeen only would have broken `main` and every downstream room.
 
 TK-002 depends on an assignment being carried in real use.
 
@@ -168,7 +163,7 @@ TK-002 depends on an assignment being carried in real use.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | `/carry` exists as a discoverable core skill and the seventeen-skill bundle validates end to end without redefining any frozen legacy policy | blocked | owner decision on the version carrying the seventeen-skill bundle | full suite 30/30 at `a617359`; bundle placement unresolved |
+| TK-001 | `/carry` exists as a discoverable core skill and the seventeen-skill bundle validates end to end without redefining any frozen legacy policy | in-progress | none | pending |
 | TK-002 | One real assignment is carried under `/carry`, and its hand-backs - or the recorded absence of any - are the first measurement | ready | none | pending |
 
 ## Acceptance Criteria
@@ -182,9 +177,13 @@ TK-002 depends on an assignment being carried in real use.
       contract above, and passes.
 - [ ] `skills/README.md`, `LEXICON.md`, `RUNBOOK.md`, `templates/GENESIS.md`
       and `workbench/manifest.json` all state seventeen consistently.
-- [ ] The layout suite proves a v3.1.1 manifest is valid at the frozen sixteen
-      and invalid at the current seventeen, and that the current version is
-      valid only at seventeen.
+- [ ] The layout suite proves a v3.1.1 manifest and a v3.1.2 manifest are both
+      valid at the frozen sixteen and invalid at the current seventeen, and
+      that the current version is valid only at seventeen.
+- [ ] `origin/main`'s own manifest, extracted to a fixture, validates against
+      this candidate - the regression that blocked TK-001 is gone.
+- [ ] `README.md`, `BLUEPRINT.md` and `workbench/manifest.json` agree that the
+      current harness version is v3.1.3.
 - [ ] The full verification suite named in `AGENTS.md` is green, and `doctor`
       reports no blocking finding.
 - [ ] TK-002 closes with a named assignment, the hand-backs it produced with

@@ -814,6 +814,12 @@ test('each listed legacy version validates only at the policy its release declar
     // twelve-skill bundle belongs to v3.0.0 and v3.1.0 only.
     assert.equal(outcome('v3.1.1', sixteen), 'valid');
     assert.equal(outcome('v3.1.1', twelve), 'invalid-skill-policy');
+    // v3.1.2 shipped to `main` with the sixteen-skill bundle and rooms are on
+    // it, so it is frozen there. `carry` grew the bundle at v3.1.3, and a
+    // v3.1.2 room must not be told its own manifest is invalid.
+    assert.equal(outcome('v3.1.2', sixteen), 'valid');
+    assert.equal(outcome('v3.1.2', current), 'invalid-skill-policy');
+    assert.equal(outcome('v3.1.2', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
     assert.equal(outcome(VERSION, current), 'valid');

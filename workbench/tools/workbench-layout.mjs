@@ -236,13 +236,18 @@ export function validateManifest(project) {
     return fail('invalid-manifest', 'Manifest git block must declare defaultBranch and integrationBranch as Git branch names.', { git: manifest.git });
   }
   // Earlier manifests remain readable at the policy their release declared:
-  // v3.0.0 and v3.1.0 carried the twelve-skill bundle, v3.1.1 the sixteen-skill
-  // bundle with the four stances. Each row is a frozen list, never the live
-  // policy, so a later bundle change keeps older manifests readable. Any other
-  // version must carry the current policy.
+  // v3.0.0 and v3.1.0 carried the twelve-skill bundle, v3.1.1 and v3.1.2 the
+  // sixteen-skill bundle with the four stances. Each row is a frozen list,
+  // never the live policy, so a later bundle change keeps older manifests
+  // readable. Any other version must carry the current policy.
+  //
+  // v3.1.2 reached `main` and downstream rooms with the sixteen-skill bundle
+  // before `carry` grew it, so v3.1.2 is frozen here and the seventeen-skill
+  // bundle is v3.1.3 - the same handling the twelve-to-sixteen growth got when
+  // it bumped v3.1.0 to v3.1.1 rather than redefining v3.1.0 (S-049).
   const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
   const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, ...stanceSkills] };
-  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy };
+  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy, 'v3.1.2': stancePolicy };
   const accepted = [skillPolicy, supportedLegacy[manifest.workbenchVersion]].filter(Boolean).map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
