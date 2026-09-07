@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-07
 **Catalog description:** Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination.
-**Blockers:** none
-**Latest event:** TK-001 claimed by claude; `carry` written and the bundle grown to seventeen.
-**Next gate:** Close TK-001 with the full suite green; TK-002 waits on a real assignment to carry.
+**Blockers:** owner decision on which version carries the seventeen-skill bundle
+**Latest event:** TK-001 built and green at `a617359`, then blocked: `main` already carries a sixteen-skill v3.1.2 manifest, so growing the bundle inside v3.1.2 redefines a shipped version.
+**Next gate:** Owner picks the version that carries the seventeen-skill bundle; TK-001 then closes and TK-002 waits on a real assignment.
 
 This spec carries no bare `path:line` citations. Every reference below names a
 file, not a position, so no anchor declaration is required and none goes stale
@@ -64,10 +64,21 @@ Verified on `origin/integration` at `9ec4314` on 2026-09-07.
   twelve-skill bundle for v3.0.0 and v3.1.0, the sixteen-skill bundle for
   v3.1.1. Any other version must carry the current policy, so growing the
   bundle is a release-boundary change by construction.
-- v3.1.2 is an unpublished local candidate on `integration`; `main` carries no
-  `workbench/` root. S-038 established the precedent that adding to the
-  unpublished candidate is cheaper than publishing a known-incomplete release
-  and immediately superseding it.
+- **`origin/main` at `9378ead` carries `workbench/manifest.json` declaring
+  `v3.1.2` with the sixteen-skill policy.** S-038's Decisions And Contracts
+  says "v3.1.2 exists only as an unpublished candidate on `integration`;
+  `main` carries no `workbench/` root", and `README.md` still calls v3.1.2 "a
+  local candidate". Both are stale: `dce85a2` stamped the v3.1.2 candidate and
+  reached `main` through PR #73, and `main` is thirteen commits behind
+  `integration` today. Verified by `git ls-tree origin/main` and
+  `git show origin/main:workbench/manifest.json`, not by reading the record.
+- **Consequence, reproduced:** extracting `origin/main` into a fixture and
+  running `workbench-layout.mjs validate` from this candidate returns
+  `invalid-skill-policy`. Growing the bundle inside v3.1.2 retroactively
+  redefines a version that has already reached `main`, which is what the
+  frozen `supportedLegacy` rows exist to prevent. The established precedent
+  is the opposite of what this spec first assumed: the twelve-to-sixteen
+  bundle growth bumped v3.1.0 to v3.1.1 and froze v3.1.0's twelve.
 - `workbench/feedback/REPORT_FORMAT.md` already owns cross-assignment harness
   findings, with per-finding cause and smallest bounded next action. Each
   spec's `Append-Only Evidence And Execution Log` already owns per-run,
@@ -101,9 +112,12 @@ Verified on `origin/integration` at `9ec4314` on 2026-09-07.
   harness-level, and the coordination measurement is only meaningful if it runs
   on every assignment in every room, not just this one. Owner decision,
   2026-09-07.
-- **It lands in v3.1.2, not a new version.** v3.1.2 is unpublished, so no room
-  in the wild carries a sixteen-skill v3.1.2 manifest that this would
-  invalidate. This follows S-038's precedent rather than opening v3.1.3.
+- **WITHDRAWN: "It lands in v3.1.2, not a new version."** This decision was
+  recorded on S-038's stale claim that v3.1.2 was unpublished and was not
+  verified against `origin/main` before it was written. It is false, and the
+  candidate as first pushed (`a617359`) makes `main`'s own manifest
+  `invalid-skill-policy`. The version this bundle belongs to is an open owner
+  decision; see Dependencies And Blockers.
 - **`carry` sits ahead of the stances in `coreSkills`.** It is a workflow
   skill, and the position keeps every `slice(-4)` stance read and the frozen
   v3.1.1 row exact.
@@ -129,13 +143,32 @@ Verified on `origin/integration` at `9ec4314` on 2026-09-07.
 
 ## Dependencies And Blockers
 
-None for TK-001. TK-002 depends on an assignment being carried in real use.
+**TK-001 is blocked on one owner decision: which version carries the
+seventeen-skill bundle.** Everything else in TK-001 is built and green; this is
+the only open item. Three resolutions were considered:
+
+1. **Freeze v3.1.2 at sixteen and bump this room to v3.1.3.** Matches the
+   established precedent exactly - the twelve-to-sixteen growth bumped v3.1.0
+   to v3.1.1 and froze v3.1.0. Keeps one bundle per version. Costs opening
+   v3.1.3, which S-045 records as an owner decision.
+2. **Add `'v3.1.2': stancePolicy` to `supportedLegacy`.** A v3.1.2 manifest
+   then validates at either sixteen or seventeen, so `main` and any existing
+   v3.1.2 room stay valid and new rooms get seventeen. Costs the one-policy-
+   per-version property the frozen rows exist to hold.
+3. **Leave v3.1.2 at seventeen only.** What `a617359` does. Breaks `main`'s
+   manifest and any room already on v3.1.2. Rejected.
+
+Whether any downstream room is on a sixteen-skill v3.1.2 manifest is
+information outside this repository, which is why this is an owner question
+rather than a resolvable one.
+
+TK-002 depends on an assignment being carried in real use.
 
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | `/carry` exists as a discoverable core skill and the seventeen-skill bundle validates end to end without redefining any frozen legacy policy | in-progress | none | pending |
+| TK-001 | `/carry` exists as a discoverable core skill and the seventeen-skill bundle validates end to end without redefining any frozen legacy policy | blocked | owner decision on the version carrying the seventeen-skill bundle | full suite 30/30 at `a617359`; bundle placement unresolved |
 | TK-002 | One real assignment is carried under `/carry`, and its hand-backs - or the recorded absence of any - are the first measurement | ready | none | pending |
 
 ## Acceptance Criteria
@@ -192,6 +225,7 @@ against a commit, not a dirty tree.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-07 | spec | Created under owner direction to own a `carry` invocation and the coordination record it produces | The owner's instruction was traced to its source before any design: it is verbatim from the 2026-09-06 advisory conversation preserved in `workbench/feedback/llm-workbench-decision-recovery.zip`, whose framing is that the principles are already written and what is missing is evidence of how much coordination remains the owner's. Three existing skills were read and rejected as owners - `implement` (one ticket's red/green loop), `make-it-so` (input is unsettled decisions needing promotion), the stances (method, not endpoint ownership). Two owner decisions were taken rather than assumed: the name `carry` from four candidates, and core-bundle placement over a repo-local skill | Spec created; Documentation Impact lists the six owners the change touches | TK-002 has no measurement yet; the skill is unproven in real use |
+| 2026-09-07 | TK-001 | Skill, bundle growth and full suite green at `a617359`; then a self-check found this spec's own version claim false and blocked the ticket | Full suite 30/30 green at `a617359`, including `doctor`. Demo artifact: `core-skill-installer.mjs install` into a disposable home wrote 34 skills - seventeen into each of `.agents/skills` and `.claude/skills` - with `carry` carrying a schema 2 marker at release `v3.1.2`, commit `a617359`. The green suite did not catch the real defect: `git ls-tree origin/main` shows `main` carries `workbench/manifest.json` at `v3.1.2` with sixteen skills, so S-038's "main carries no workbench root" is stale and this spec repeated it without checking. Reproduced by extracting `origin/main` to a fixture and running `workbench-layout.mjs validate` from this candidate: `invalid-skill-policy`. No test covers it because every fixture builds its manifest from the live `coreSkills`, so no test ever validates a manifest the current bundle did not write | Current Verified State corrected with the verified facts; the v3.1.2 placement decision marked WITHDRAWN rather than edited away; Dependencies And Blockers now carries the three costed resolutions | The version decision is the owner's and TK-001 cannot close without it. Also uncorrected: `README.md` still calls v3.1.2 "a local candidate", which the same evidence contradicts - out of this spec's scope to fix, and named here so it has an owner |
 
 ## Completion Result
 
