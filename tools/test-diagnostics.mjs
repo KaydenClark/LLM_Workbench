@@ -14,6 +14,7 @@ import { permissionScopeDrift } from '../workbench/tools/workbench-layout.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const specTool = path.join(root, 'workbench', 'tools', 'spec-workbench.mjs');
+const wikiTool = path.join(root, 'workbench', 'tools', 'wiki.mjs');
 const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
 const toolsInstaller = path.join(root, 'tools', 'workbench-tools.mjs');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
@@ -763,6 +764,46 @@ test('placeholder and version-mismatched manifest provenance are reported withou
     manifest.provenance.source = recorded;
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'restoring the recorded identity clears the finding');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// S-045 TK-002: both findings are installed-state facts - a seeded lane
+// document's generation and the manifest's recorded source identity. Neither is
+// a wiki fact. They were emitted from `validateWiki` because doctor wired only
+// two support-root validators and `spec-workbench.mjs` was held by a sibling
+// branch, which S-042 recorded as interim placement. `wiki.mjs validate` is the
+// seam that proves the scope: it must report what the wiki lane knows and
+// nothing else, while doctor still reports both.
+test('the installed-state findings are emitted from a seam whose scope matches, not from the wiki validator', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+
+    const seedRun = spawnSync(process.execPath, [layout, 'seed-documents', '--project', dir], { encoding: 'utf8' });
+    assert.equal(seedRun.status, 0, seedRun.stdout);
+    const record = path.join(dir, 'workbench', '.workbench-seed.json');
+    const seeded = JSON.parse(fs.readFileSync(record, 'utf8'));
+    seeded.documents['workbench/feedback/REPORT_FORMAT.md'].release = 'v3.1.0';
+    fs.writeFileSync(record, `${JSON.stringify(seeded, null, 2)}\n`);
+
+    const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    manifest.provenance.source = { ...manifest.provenance.source, release: 'v3.1.0' };
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+    const wiki = spawnSync(process.execPath, [wikiTool, 'validate', '--path', dir, '--json'], { encoding: 'utf8' });
+    const reported = JSON.parse(wiki.stdout).findings.map((item) => item.code);
+    assert.equal(reported.includes('stale-seed'), false,
+      'a seeded feedback-lane document is not a wiki fact');
+    assert.equal(reported.includes('unverified-provenance'), false,
+      'the manifest source identity is not a wiki fact');
+
+    const codes = doctor(dir, { home: quietHome }).map((item) => item.code).sort();
+    assert.deepEqual(codes, ['stale-seed', 'unverified-provenance'],
+      'doctor still reports both, from the hook whose scope matches them');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

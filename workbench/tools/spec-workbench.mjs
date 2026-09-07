@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, readManagedSkillMarker, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -299,6 +299,15 @@ function collectionFindings(root) {
   } catch (error) {
     findings.push(finding('invalid-note', `wiki validation failed: ${error.message}`));
   }
+  // S-045 TK-002: the two installed-state checks a room's own manifest and seed
+  // record answer. They were emitted from the wiki validator, which made
+  // `wiki.mjs validate` report a feedback-lane fact and a manifest fact to
+  // anyone checking the wiki; S-042 recorded that placement as interim. They
+  // are emitted here, beside the managed-runtime check, because the scope that
+  // matches them is the room's installed state, not any one lane. Both remain
+  // registered `none` and block nothing.
+  findings.push(...seededDocumentFindings(root));
+  findings.push(...provenanceFindings(root));
   // The runtime a room executes is checked against the receipt that installed
   // it, from the room itself; a lane with no receipt is not a managed runtime
   // and is the Genesis readiness gate's business, not doctor's.

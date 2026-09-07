@@ -8,7 +8,7 @@ import { finding } from './diagnostics.mjs';
 import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
 import { insertFrontmatterKeys, parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
-import { provenanceFindings, seededDocumentFindings, versionStamp, wikiContractFiles } from './workbench-layout.mjs';
+import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
 export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'meta']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
@@ -82,20 +82,19 @@ export function validateWiki(root) {
   }
   else findings.push(...roomBrainRouting(root, wikiRelative));
   findings.push(...wikiStamps(root, wikiRoot, wikiRelative, manifest?.workbenchVersion));
-  // The next two checks are not wiki facts: the generation of a room's seeded
-  // lane documents and the source identity its manifest records. Unlike
+  // S-045 TK-002 moved two checks out of here: `stale-seed`, the generation of
+  // a room's seeded lane documents, and `unverified-provenance`, the source
+  // identity its manifest records. Neither is a wiki fact - unlike
   // invalid-wiki-profile and missing-collection above, which are wiki-domain
-  // facts that happen to be stored in the manifest, these belong behind a
-  // dedicated doctor hook in spec-workbench.mjs. Doctor wires exactly two
-  // support-root validators, this one and the ADR validator, and
-  // spec-workbench.mjs was held by a sibling branch when this landed, so
-  // AGENTS.md's non-overlapping file lanes rule kept this ticket out of it.
-  // The placement is therefore interim and is carried as a follow-up in
-  // S-042. Both checks live in workbench-layout.mjs, which owns seeding and
-  // provenance; this validator only carries them to the one report a room
-  // actually reads, and RUNBOOK.md and wiki/SCHEMA.md name it as the emitter.
-  findings.push(...seededDocumentFindings(root));
-  findings.push(...provenanceFindings(root));
+  // facts that happen to be stored in the manifest - so `wiki.mjs validate`
+  // reported a feedback-lane fact and a manifest fact to anyone checking the
+  // wiki. S-042 recorded the placement as interim: doctor wired exactly two
+  // support-root validators, and `spec-workbench.mjs` was held by a sibling
+  // branch, so the non-overlapping file lanes rule kept that ticket out of it.
+  // They are now emitted from `installedStateFindings` in
+  // `spec-workbench.mjs`, next to the managed-runtime check, whose scope is the
+  // room's installed state. The checks themselves still live in
+  // `workbench-layout.mjs`, which owns seeding and provenance.
   for (const name of REQUIRED_COLLECTIONS) {
     const relative = collectionRelative(root, name);
     const entry = fs.existsSync(path.join(root, relative)) ? fs.lstatSync(path.join(root, relative)) : null;
