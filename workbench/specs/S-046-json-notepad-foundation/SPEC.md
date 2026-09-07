@@ -8,8 +8,8 @@
 **Updated:** 2026-09-07
 **Catalog description:** Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup.
 **Blockers:** none
-**Latest event:** TK-001 claimed by codex.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 ## Outcome
 
@@ -161,7 +161,7 @@ protocol are proposals, not verbatim owner approvals.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | in-progress | none | pending |
+| TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
 | TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | ready | TK-001 | pending |
 
 ### TK-001 - Scope and reconcile
@@ -190,7 +190,7 @@ returns feedback; the acceptance below is not all compressed into TK-002.
 
 ## Acceptance Criteria
 
-- [ ] Source questions and corrections have explicit dispositions; all remaining source material is retained locally in focused JSON records, and promoted truth has durable owners.
+- [x] Source questions and corrections have explicit dispositions; all remaining source material is retained locally in focused JSON records, and promoted truth has durable owners.
 - [ ] Shared schema, skill, and tool safely create/update/resume an objective note without requiring a model to regenerate its history.
 - [ ] Bounded retrieval excludes unrelated topics, carries corrections/dependencies, and reports pagination without silent loss.
 - [ ] Requested handoff and partial-cleanup demonstrations preserve unfinished material and destination dependencies.
@@ -214,18 +214,78 @@ above. Record a sub-minute demo command once the CLI exists; do not invent one.
 
 AGENTS owns rules; BLUEPRINT the continuity goal and scope; LEXICON the terms;
 RUNBOOK the available operations; ADR-0040 rationale. Generic controls mirror
-the rules without copying this project's task state. Wiki MEMORY routes to
+the rules without copying this project's task state. The root-only Runbook
+inspection example names an actual local note and is intentionally omitted
+from the generic template. Wiki MEMORY routes to
 these owners and contains no duplicate queue. S-047 and S-048 own follow-ons.
+
+## TK-001 Verification Account
+
+No runtime code or test behavior changed, so a new red/green behavioral test
+is not applicable to TK-001; the implementation slice explicitly requires it.
+
+Candidate `6f4820d` was tested in an isolated LF checkout on Windows with normal
+subprocess access. The 33-command union of the AGENTS and Runbook suites ran:
+24 passed; eight Node commands and the initial Python append-only command
+failed. This is not a fully green suite or an implementation release.
+
+| Failed Node command | Comparison with unchanged integration `8e9c06f` |
+|---|---|
+| test-skill-catalog | Same hostile textconv fixture Windows-path failure; source catalog assertions pass in LF checkout |
+| test-workbench-layout | All four failed classify cases reproduced using the same test-name filter on the baseline |
+| test-workbench-tools | Same three failed cases: installed mode, drift classification, and no-file import |
+| test-diagnostics | Same permission-scope-drift case fails |
+| test-branch-closeout | Same three closeout cases fail |
+| test-sessions | Same checkpoint mode assertion fails (438 versus 420) |
+| test-workbench-round-trip | Same receipt-hash drift after the fixture's Git round trip blocks doctor |
+| test-control-fidelity | Same closed-stdout-pipe case fails |
+
+These failures are recorded, not repaired or exempted by changing criteria.
+The initial Python failure was Windows default decoding of Git history.
+The unchanged test passes with `PYTHONUTF8=1`, including clean-history and all
+three planted-violation cases. Thus 25 of the 33 commands pass with that
+environment correction; the eight baseline Node failures remain. The initial
+working-checkout catalog CRLF regex failure and sandbox child-Git restriction
+are distinct from the normal-permission LF results above.
+
+Additional proof: all 57 source question IDs have a disposition; 99 contiguous
+segments reconstruct the original 43,270 bytes with SHA-256
+`a044de8698bee4b1861aad61287b0b722e3fae33cbd93b8b822144e07ab56f5b`.
+The original remains untouched. The five focused notes plus their index parse
+as JSON; the separate retrieved-chat JSON is also local and ignored. Three
+full conversation turns are preserved. All seven JSON files are Git-ignored.
+
+Privacy: the three specs scan clean. Independent review scanned all seven local
+JSON files: six clean; checkpoint-history matches the scanner's retired host
+handoff-lane pattern because an exact historical mechanism string is preserved.
+It is not a credential or personal data. It remains only in the local source
+record, is not promoted, and no all-JSON-clean claim is made. The original and
+its preserved fragments are retained rather than silently redacted.
+
+ADR validation, Wiki validation, render, and diff checks pass. A normal-permission
+local doctor has zero blockers and 33 informational findings: one existing
+manifest provenance mismatch and 32 unknown installed skill generations.
+Guardrail is 78/100 before and after with unchanged criteria; templates score
+106.6/113. The four remaining guardrail recommendations are real repeated trials,
+control/prior/candidate comparisons, current evidence, and uncertainty reporting.
+No agent-outcome improvement follows from these static results.
 
 ## Append-Only Evidence And Execution Log
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-06 | TK-001 | Scope captured from current owner request, complete local source, and three retrieved conversation turns | Refreshed origin/integration to 8e9c06f; guardrail 78/100 before edits; doctor has no selection blocker but reports installed-generation/provenance observations and sandbox-limited Git observation | Supported decisions and proposals separated in this spec | Promotion, JSON grouping, verification, and review pending |
+| 2026-09-07 | TK-001 | Source reconciliation and scoped delivery verified | 99 segments reconstruct 43270 bytes and original SHA; all 57 IDs routed; six grouped/index records plus chat source JSON are ignored; ADR/Wiki/render/diff checks pass; full 33-command union at 6f4820d initially 24 pass, eight baseline-reproduced Node failures, Python decoding failure; unchanged Python test passes with PYTHONUTF8=1, giving 25 pass and eight baseline failures; final Runbook delta passes governance/dogfood/citation/evaluator checks | Two ADRs, three specs, root/template Contract, Wiki router, and benchmark record; local source preserved including explicitly noted historical-lane scanner match | Complete runtime remains TK-002 onward; fresh review of final immutable scoping candidate required before integration |
+| 2026-09-07 | TK-001 | Ticket closed | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec | Root/template Contract, ADR-0040/0041, S-046/047/048, Wiki router, benchmark account, and local JSON groups updated | TK-002 onward implement the runtime; final immutable candidate review and integration PR are the scoping closeout gate |
 
 ## Completion Result
 
-Pending. The capability is not implemented by writing this spec.
+TK-001 delivers the scoped requirements, promoted decisions, and local JSON
+review groups. The full capability remains unimplemented; remaining acceptance
+boxes are intentionally open. Final independent review and integration
+containment are recorded against the exact candidate in its integration PR.
+The Windows suite is not fully green; the verification account above separates
+pre-existing failures from the scoping result.
 
 ## Remaining Limitations Or Follow-Up Specs
 

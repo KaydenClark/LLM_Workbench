@@ -19,7 +19,10 @@ Load remaining Runbook sections only for the operation being performed.
 For a setup-only Round One assignment, a fresh agent follows that route, checks
 the manifest, relevant Wiki and ADRs, and runs read-only configuration checks.
 Return the result in chat only: no feedback report, handoff, checkpoint,
-self-created task, or other prose artifact. Round One precedes feedback testing.
+self-created task, or other delivered prose artifact. Internal JSON capture
+follows the meaningful-work rule and is reconciled at closeout; it does not
+turn a chat-only setup check into a reporting assignment. Round One precedes
+feedback testing.
 
 ## Prerequisites
 
@@ -694,6 +697,18 @@ rewrite legacy Markdown merely to change its extension. The target layout is
 5. Before cleanup, reconcile important claims into their existing owners; retain
    all remaining unresolved context and active handoff dependencies. JSON does
    not make a whole-file flush safe. Preserve the source during this transition.
+
+For an interim JSON note, ordinary JSON parsing can inspect just the stored
+current view without putting its source history into the agent response:
+
+```powershell
+$note = Get-Content -Raw -LiteralPath 'workbench/sessions/grilling/notepad-preservation-guarantees.json' | ConvertFrom-Json
+$note.current | ConvertTo-Json -Depth 12
+```
+
+This example uses the local scoping record when present. It reads the whole
+file inside PowerShell and prints only `current`; it is not the future bounded
+retrieval API, schema validation, or a correction-aware query.
 
 The current `sessions.mjs` offers `scan` and legacy `checkpoint`, not create,
 append, selective read, or cleanup. Do not claim those APIs already exist.

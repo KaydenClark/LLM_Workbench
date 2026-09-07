@@ -22,7 +22,10 @@ Load remaining Runbook sections only for the operation being performed.
 For a setup-only Round One assignment, a fresh agent follows that route, checks
 the manifest, relevant Wiki and ADRs, and runs read-only configuration checks.
 Return the result in chat only: no feedback report, handoff, checkpoint,
-self-created task, or other prose artifact. Round One precedes feedback testing.
+self-created task, or other delivered prose artifact. Internal JSON capture
+follows the meaningful-work rule and is reconciled at closeout; it does not
+turn a chat-only setup check into a reporting assignment. Round One precedes
+feedback testing.
 
 ## Prerequisites
 
