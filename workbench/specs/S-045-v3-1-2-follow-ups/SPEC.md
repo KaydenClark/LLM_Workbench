@@ -11,7 +11,7 @@
 **Latest event:** Spec completed and removed from the hot board.
 **Next gate:** none
 
-> **Citation anchors.** pre=`18ffc0d` post=`7150d54`. A bare `path:line` citation
+> **Citation anchors.** pre=`18ffc0d` post=`1c74fa7`. A bare `path:line` citation
 > reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
 > Behavior, and at `post` in every other live section. Evidence rows read at the
 > commit each row names and are never re-anchored, because they are append-only.
