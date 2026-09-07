@@ -144,6 +144,10 @@ test('a symlinked discovery root is resolved and installed into, never written o
     assert.equal(fs.existsSync(path.join(real, 'genesis', 'SKILL.md')), true);
     assert.equal(result.report.installed.filter((entry) => entry.skill === 'genesis').length, 1,
       'one directory reached by two roots is written once, not twice');
+    assert.deepEqual(result.report.resolvedRoots, [
+      { engine: 'codex', declared: real, resolved: fs.realpathSync(real) },
+      { engine: 'claude', declared: link, resolved: fs.realpathSync(real) }
+    ], 'the report names each declared root beside the directory it resolved to, so one directory reached twice is visible');
     assert.ok(result.report.skipped.some((entry) => entry.engine === 'claude' && entry.skill === 'genesis'),
       'the second engine finds it already present through the resolved root');
   } finally {

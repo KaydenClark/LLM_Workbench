@@ -91,10 +91,14 @@ export function validateWiki(root) {
   // wiki. S-042 recorded the placement as interim: doctor wired exactly two
   // support-root validators, and `spec-workbench.mjs` was held by a sibling
   // branch, so the non-overlapping file lanes rule kept that ticket out of it.
-  // They are now emitted from `installedStateFindings` in
-  // `spec-workbench.mjs`, next to the managed-runtime check, whose scope is the
-  // room's installed state. The checks themselves still live in
-  // `workbench-layout.mjs`, which owns seeding and provenance.
+  // They are now emitted from `collectionFindings` in `spec-workbench.mjs`,
+  // next to the managed-runtime check, whose scope is the room's installed
+  // state. The checks themselves still live in `workbench-layout.mjs`, which
+  // owns seeding and provenance. One consequence of the move, deliberate:
+  // running here meant running only when a room had a wiki lane, and running
+  // there means running for every schema 2 room. Both codes are registered
+  // `none`, so nothing new blocks - but a wiki-less room now sees two findings
+  // it did not see before, which is the correct scope rather than a regression.
   for (const name of REQUIRED_COLLECTIONS) {
     const relative = collectionRelative(root, name);
     const entry = fs.existsSync(path.join(root, relative)) ? fs.lstatSync(path.join(root, relative)) : null;
