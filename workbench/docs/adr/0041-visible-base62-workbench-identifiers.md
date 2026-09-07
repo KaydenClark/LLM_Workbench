@@ -1,0 +1,30 @@
+---
+status: accepted
+date: 2026-09-06
+canonicalized_in:
+  - BLUEPRINT.md
+  - LEXICON.md
+  - workbench/specs/S-047-visible-workbench-identifiers/SPEC.md
+---
+
+# Visible base-62 Workbench identifiers
+
+The WBID is the visible artifact identifier: its existing type prefix followed
+by a base-62 value in place of the numeric portion. Uniqueness applies within
+the same type and Workbench. Independent Workbenches may each contain ADR-00A;
+S-00A and ADR-00A may coexist. No secondary global identity is introduced.
+
+Considered and superseded: adding a separate WBID beside existing labels. The
+owner explicitly corrected that interpretation. Global uniqueness is deferred
+until connected Workbenches actually need a connection identity.
+
+Consequences: parsers, allocation, case handling, sorting, migration, and
+reference preservation require engineering work under S-047. Existing stable
+paths and numeric IDs are not rewritten by accepting this direction. Alphabet
+order and width are not owner-approved details. The scoping specs use current
+numeric syntax until compatible runtime support exists.
+
+Provenance: source Q17C correction and Q17D uniqueness answer, promoted under
+the current 2026-09-06 owner request and recorded by
+[S-046](../../specs/S-046-json-notepad-foundation/SPEC.md);
+[S-047](../../specs/S-047-visible-workbench-identifiers/SPEC.md) owns implementation.

@@ -670,6 +670,38 @@ budget and is run for the release umbrella, not on every verification pass;
 `node tools/test-cross-provider-fixture.mjs` proves the provider-free half
 (a recoverable planning checkpoint and a fail-closed verify) on every run.
 
+### JSON Notepad Transition
+
+New notepads are JSON. Until the shared lifecycle is implemented, use the
+manifest-declared live collection already available for that workflow; grilling
+uses `workbench/sessions/grilling/`. Do not invent an undeclared collection or
+rewrite legacy Markdown merely to change its extension. The target layout is
+`sessions/notepads/` with local type folders and tracked examples/schema.
+
+1. Resolve the explicit objective or note first; related records share objective
+   context. If no stronger signal exists, inspect the newest-created local note
+   or handoff and check relevance before using it.
+2. Preserve a compact current view (objective, state, unresolved work, next action)
+   and ordered entries containing meaningful source text, findings, uncertainty,
+   and corrections. JSON strings may contain full prose. Field names in interim
+   records are provisional until the shared versioned schema is implemented.
+3. After interruption, load relevant context and verify current controls and
+   actual project state. File availability alone proves neither freshness nor
+   successful recovery. Preserve significant work while it is underway.
+4. For an owner-requested handoff, author a destination-specific compaction from
+   the selected material. Include needed corrections and dependencies. Carry
+   the selected content when the destination cannot read the local note.
+5. Before cleanup, reconcile important claims into their existing owners; retain
+   all remaining unresolved context and active handoff dependencies. JSON does
+   not make a whole-file flush safe. Preserve the source during this transition.
+
+The current `sessions.mjs` offers `scan` and legacy `checkpoint`, not create,
+append, selective read, or cleanup. Do not claim those APIs already exist.
+Schema validation, safe tool-mediated updates, bounded pagination, and scoped
+cleanup require implementation and tests in the assigned notepad spec. Do not
+send a JSON note through the legacy copier and call its `.md` output a JSON
+runtime. Skill prose and human-readable projections may remain Markdown.
+
 ### Session Checkpoints
 
 Live grilling notepads and handoffs stay untracked in
