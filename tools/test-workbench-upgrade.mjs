@@ -286,4 +286,55 @@ test('the shared-skill refusals name the layout-only route that clears them', ()
   }
 });
 
+// S-045 TK-001: the presence-only gate and the installer must agree on a host
+// whose every populated discovery root reaches the skill through a link. The
+// installer accepts such a destination and reports its resolution; before this
+// ticket `missingUserSkills` judged with `lstat(...).isDirectory()`, which does
+// not follow a link, so the same host was refused `missing-user-skills` and the
+// `--layout-only` route the S-040 refusals name did not complete there.
+test('layout-only upgrade completes where every populated discovery root reaches each skill through a link', () => {
+  const project = fixture('workbench-upgrade-project-');
+  const home = fixture('workbench-upgrade-home-');
+  try {
+    seedProject(project);
+    assert.equal(run(installer, 'install', '--home', home).status, 0);
+
+    // Move the whole bundle out of both roots, then leave only links behind, so
+    // no root holds any skill as an ordinary directory.
+    const store = path.join(home, 'shared-skills');
+    fs.mkdirSync(store, { recursive: true });
+    const agents = path.join(home, '.agents', 'skills');
+    const claude = path.join(home, '.claude', 'skills');
+    for (const skill of fs.readdirSync(agents)) {
+      fs.cpSync(path.join(agents, skill), path.join(store, skill), { recursive: true });
+      fs.rmSync(path.join(agents, skill), { recursive: true, force: true });
+      fs.rmSync(path.join(claude, skill), { recursive: true, force: true });
+      fs.symlinkSync(path.join(store, skill), path.join(agents, skill), 'dir');
+      fs.symlinkSync(path.join(store, skill), path.join(claude, skill), 'dir');
+    }
+
+    const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--layout-only');
+
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(result.report.status, 'complete');
+    assert.equal(result.report.skills, 'presence-only');
+    for (const root of [agents, claude]) {
+      assert.equal(fs.lstatSync(path.join(root, 'genesis')).isSymbolicLink(), true, 'the link itself is untouched');
+    }
+    assert.equal(fs.existsSync(path.join(store, 'genesis', 'SKILL.md')), true, 'nothing is written through the link');
+
+    // The installer agrees: it reports the same host as already-present with the
+    // target it resolved, rather than installing over the links.
+    const reinstall = run(installer, 'install', '--home', home);
+    assert.equal(reinstall.status, 0, reinstall.stdout);
+    assert.equal(reinstall.report.installed.length, 0, 'the installer writes nothing where every root reaches the skill through a link');
+    const skipped = reinstall.report.skipped.find((entry) => entry.engine === 'claude' && entry.skill === 'genesis');
+    assert.equal(skipped.reason, 'already-present');
+    assert.equal(skipped.resolved, fs.realpathSync(path.join(store, 'genesis')));
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
 console.log('ok - explicit upgrade preserves a rollback point and never changes skills implicitly');

@@ -750,11 +750,12 @@ sources). A refusal writes nothing. Cite the promoted copy, never the live path.
 ### Wiki Validation
 
 The wiki lane is validated by its own runtime tool; doctor carries the same
-findings for schema 2 projects, none of which blocks selection. That tool is
-also the emitter of the two installed-state findings described under Installed
-State The Harness Wrote below - `stale-seed` and `unverified-provenance` - which
-are not wiki facts and are repaired with `workbench-layout.mjs`, not with
-anything in the wiki lane:
+findings for schema 2 projects, none of which blocks selection. That tool
+reports wiki facts only. The two installed-state findings described under
+Installed State The Harness Wrote below - `stale-seed` and
+`unverified-provenance` - are not wiki facts and are emitted by `doctor`
+itself, not by this validator; both are repaired with `workbench-layout.mjs`,
+not with anything in the wiki lane:
 
 ```bash
 node workbench/tools/wiki.mjs validate

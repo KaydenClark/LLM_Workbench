@@ -59,33 +59,129 @@ test('normal setup installs only missing bundled core skills in both user discov
   }
 });
 
-test('a foreign Git-owned discovery root blocks before either engine is mutated', () => {
+// S-045 TK-005/TK-001: a Git-owned discovery root is SUPPORTED. `26c34e9` added
+// the refusal to stop the harness mutating a user's own versioned skills
+// collection, which is a real risk, but it left that layout with no route at
+// all. The bounded route installs a *missing* skill and never touches Git: the
+// new directory is left untracked, the index and HEAD are unchanged, and
+// nothing already in the collection is read, replaced, or marked. Replacement
+// is a different question - `workbench-upgrade.mjs --explicit-update` still
+// refuses a Git-owned root with `foreign-git-root`.
+test('a Git-owned discovery root installs the missing skills and leaves Git untouched', () => {
   const home = fixtureHome();
   try {
-    fs.mkdirSync(path.join(home, '.agents', 'skills', '.git'), { recursive: true });
+    const gitRoot = path.join(home, '.agents', 'skills');
+    fs.mkdirSync(gitRoot, { recursive: true });
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: gitRoot }).status, 0);
+    fs.writeFileSync(path.join(gitRoot, 'README.md'), '# a personal skills collection\n');
+    const git = (...args) => spawnSync('git', args, { cwd: gitRoot, encoding: 'utf8' });
+    assert.equal(git('add', 'README.md').status, 0);
+    assert.equal(git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '-qm', 'personal').status, 0);
+    const beforeSha = git('rev-parse', 'HEAD').stdout.trim();
+    const beforeIndex = fs.readFileSync(path.join(gitRoot, '.git', 'index'));
+
+    const result = install(home);
+
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(result.report.status, 'complete');
+    assert.equal(
+      fs.readFileSync(path.join(gitRoot, 'genesis', 'SKILL.md'), 'utf8'),
+      fs.readFileSync(path.join(root, 'skills', 'genesis', 'SKILL.md'), 'utf8'));
+    assert.equal(JSON.parse(fs.readFileSync(path.join(gitRoot, 'genesis', '.workbench-skill.json'), 'utf8')).release, VERSION,
+      'the installed copy still carries its marker');
+
+    assert.equal(git('rev-parse', 'HEAD').stdout.trim(), beforeSha, 'no commit was made');
+    assert.deepEqual(fs.readFileSync(path.join(gitRoot, '.git', 'index')), beforeIndex, 'nothing was staged');
+    const status = git('status', '--porcelain').stdout.split('\n').filter(Boolean);
+    assert.ok(status.length > 0, 'the installed skills are visible to the collection owner');
+    assert.ok(status.every((line) => line.startsWith('??')),
+      `every change is untracked, never staged or committed: ${status.join(', ')}`);
+    assert.ok(result.report.gitOwnedRoots.includes(fs.realpathSync(gitRoot)),
+      'the report names the Git-owned root it wrote into, so the operator is not surprised');
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test('a Git-owned parent of a missing discovery root installs into it just the same', () => {
+  const home = fixtureHome();
+  try {
+    const parent = path.join(home, '.agents');
+    fs.mkdirSync(parent, { recursive: true });
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: parent }).status, 0);
+
+    const result = install(home);
+
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(result.report.status, 'complete');
+    assert.equal(fs.existsSync(path.join(parent, 'skills', 'genesis', 'SKILL.md')), true);
+    const status = spawnSync('git', ['status', '--porcelain'], { cwd: parent, encoding: 'utf8' })
+      .stdout.split('\n').filter(Boolean);
+    assert.ok(status.every((line) => line.startsWith('??')), 'nothing is staged in the parent repository');
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+// S-045 TK-005: the layout that sent this ticket here. `~/.claude/skills` is a
+// link to `~/.agents/skills`, so the two discovery roots are one directory. The
+// route resolves the link and writes into the real directory; the link itself
+// is never written over, and the second engine finds the skill already present.
+test('a symlinked discovery root is resolved and installed into, never written over', () => {
+  const home = fixtureHome();
+  try {
+    const real = path.join(home, '.agents', 'skills');
+    const link = path.join(home, '.claude', 'skills');
+    fs.mkdirSync(real, { recursive: true });
+    fs.mkdirSync(path.join(home, '.claude'), { recursive: true });
+    fs.symlinkSync(real, link, 'dir');
+
+    const result = install(home);
+
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(result.report.status, 'complete');
+    assert.equal(fs.lstatSync(link).isSymbolicLink(), true, 'the link itself is untouched');
+    assert.equal(fs.existsSync(path.join(real, 'genesis', 'SKILL.md')), true);
+    assert.equal(result.report.installed.filter((entry) => entry.skill === 'genesis').length, 1,
+      'one directory reached by two roots is written once, not twice');
+    assert.deepEqual(result.report.resolvedRoots, [
+      { engine: 'codex', declared: real, resolved: fs.realpathSync(real) },
+      { engine: 'claude', declared: link, resolved: fs.realpathSync(real) }
+    ], 'the report names each declared root beside the directory it resolved to, so one directory reached twice is visible');
+    assert.ok(result.report.skipped.some((entry) => entry.engine === 'claude' && entry.skill === 'genesis'),
+      'the second engine finds it already present through the resolved root');
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test('a discovery root ancestor that is not a directory still blocks before anything is written', () => {
+  const home = fixtureHome();
+  try {
+    fs.writeFileSync(path.join(home, '.agents'), 'not a directory\n');
 
     const result = install(home);
 
     assert.notEqual(result.status, 0);
     assert.equal(result.report.status, 'blocked');
-    assert.equal(result.report.error.code, 'foreign-git-root');
+    assert.equal(result.report.error.code, 'discovery-root-collision');
     assert.equal(fs.existsSync(path.join(home, '.claude', 'skills')), false);
   } finally {
     fs.rmSync(home, { recursive: true, force: true });
   }
 });
 
-test('a foreign Git-owned parent blocks before a missing discovery root is created', () => {
+test('a dangling discovery root link blocks rather than being silently created', () => {
   const home = fixtureHome();
   try {
-    fs.mkdirSync(path.join(home, '.agents', '.git'), { recursive: true });
+    fs.mkdirSync(path.join(home, '.agents'), { recursive: true });
+    fs.symlinkSync(path.join(home, 'nowhere'), path.join(home, '.agents', 'skills'), 'dir');
 
     const result = install(home);
 
     assert.notEqual(result.status, 0);
     assert.equal(result.report.status, 'blocked');
-    assert.equal(result.report.error.code, 'foreign-git-root');
-    assert.equal(fs.existsSync(path.join(home, '.agents', 'skills')), false);
+    assert.equal(result.report.error.code, 'discovery-root-collision');
     assert.equal(fs.existsSync(path.join(home, '.claude', 'skills')), false);
   } finally {
     fs.rmSync(home, { recursive: true, force: true });

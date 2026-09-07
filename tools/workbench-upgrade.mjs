@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { collections, coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { MANAGED_MARKER, readManagedMarker, writeManagedMarker } from './skill-marker.mjs';
+import { missingSkills } from './skill-presence.mjs';
 import { sourceIdentity } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -49,12 +50,14 @@ function parseOptions(args) {
   return options;
 }
 
-// The layout-only mode reads skill presence exactly as Adoption does: every
-// required core skill must exist in a discovery root, and nothing there is
-// compared, marked, backed up, or replaced.
+// The layout-only mode reads skill presence exactly as Adoption does, and now
+// exactly as the installer does: every required core skill must be reachable in
+// a discovery root, and nothing there is compared, marked, backed up, or
+// replaced. S-045 TK-001 moved the judgment into `skill-presence.mjs` so the
+// gate and the installer cannot drift apart again - `lstat` does not follow a
+// link, so judging with it alone refused a host the installer accepted.
 function missingUserSkills(home) {
-  const roots = [path.join(home, '.agents', 'skills'), path.join(home, '.claude', 'skills')];
-  return coreSkills.filter((skill) => !roots.some((root) => lstatOrNull(path.join(root, skill))?.isDirectory()));
+  return missingSkills(home, coreSkills);
 }
 
 function hashTree(directory, relative = '', entries = []) {

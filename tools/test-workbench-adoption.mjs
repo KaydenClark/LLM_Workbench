@@ -316,6 +316,45 @@ function fixtureSpec() {
   }
 }
 
+// S-045 TK-001: the second of the two presence-only gates. `missingUserSkills`
+// has its own linked-root fixture in `tools/test-workbench-upgrade.mjs`; this is
+// `hasRequiredUserSkills`, so the acceptance criterion's "both presence gates"
+// is proved by a fixture on each rather than by the shared module alone. Sharing
+// `tools/skill-presence.mjs` is a strong argument that the two cannot disagree,
+// but an argument is not a fixture, and this gate previously judged with
+// `lstat(...).isDirectory()`, which does not follow a link.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+
+    // Every populated discovery root reaches every skill through a link, and no
+    // root holds one as an ordinary directory.
+    for (const skill of coreSkills) write(home, `shared-skills/${skill}/SKILL.md`, `# ${skill}\n`);
+    for (const root of ['.agents/skills', '.claude/skills']) {
+      fs.mkdirSync(path.join(home, root), { recursive: true });
+      for (const skill of coreSkills) {
+        fs.symlinkSync(path.join(home, 'shared-skills', skill), path.join(home, root, skill), 'dir');
+      }
+    }
+
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-07');
+
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(JSON.parse(result.stdout).status, 'complete',
+      'a host whose every populated root reaches each skill through a link satisfies the adoption gate');
+    for (const root of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.lstatSync(path.join(home, root, 'genesis')).isSymbolicLink(), true, 'the link itself is untouched');
+    }
+    assert.equal(read(home, 'shared-skills/genesis/SKILL.md'), '# genesis\n', 'nothing is written through the link');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
 console.log('ok - mixed v2 adoption preserves durable truth and blocks collisions');
 
 {

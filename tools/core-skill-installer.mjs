@@ -8,18 +8,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
 import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 import { markerSourceIdentity, writeManagedMarker } from './skill-marker.mjs';
+import { lstatOrNull, presentSkillPath, resolveSkillLink } from './skill-presence.mjs';
 
 function fail(code, message, details = {}) {
   return { status: 'blocked', requiredSkills: coreSkills, installed: [], skipped: [], error: { code, message, ...details } };
-}
-
-function lstatOrNull(target) {
-  try {
-    return fs.lstatSync(target);
-  } catch (error) {
-    if (error.code === 'ENOENT') return null;
-    throw error;
-  }
 }
 
 function validateSource() {
@@ -42,64 +34,90 @@ function validateSource() {
   return null;
 }
 
-function validateDestinationRoot(destination, home) {
-  const homePath = path.resolve(home);
-  for (let current = path.resolve(destination); ; current = path.dirname(current)) {
+// S-045 TK-005 decided a symlinked and/or Git-owned discovery root is
+// supported. `26c34e9` refused both to stop the harness mutating a user's own
+// versioned skills collection, which is a real risk, but it left that layout
+// with no route at all. The bounded route is: resolve the link and write into
+// the real directory, add only a skill that is missing, and never touch Git -
+// no `add`, no `commit`, no `stash`. A root inside a Git repository is reported
+// rather than refused, so the collection's owner is not surprised by an
+// untracked directory appearing in it.
+//
+// This relaxes installation only. Replacing an existing skill is a different
+// question, and `workbench-upgrade.mjs --explicit-update` still refuses a
+// Git-owned root with `foreign-git-root`.
+function resolveDestinationRoot(destination) {
+  const missing = [];
+  let current = path.resolve(destination);
+  for (;;) {
     const entry = lstatOrNull(current);
-    if (entry?.isSymbolicLink() || (entry && !entry.isDirectory())) {
-      return fail('discovery-root-collision',
-        `Discovery root ancestor ${current} must be an ordinary directory or absent.`, { destination, ancestor: current });
+    if (entry) {
+      if (!entry.isSymbolicLink() && !entry.isDirectory()) {
+        return { error: fail('discovery-root-collision',
+          `Discovery root ancestor ${current} must be a directory, a link to one, or absent.`,
+          { destination, ancestor: current }) };
+      }
+      let resolved;
+      try {
+        resolved = fs.realpathSync(current);
+      } catch (error) {
+        if (error.code !== 'ENOENT' && error.code !== 'ELOOP' && error.code !== 'ENOTDIR') throw error;
+        return { error: fail('discovery-root-collision',
+          `Discovery root ancestor ${current} is a link that does not resolve to a directory.`,
+          { destination, ancestor: current }) };
+      }
+      if (!lstatOrNull(resolved)?.isDirectory()) {
+        return { error: fail('discovery-root-collision',
+          `Discovery root ancestor ${current} must be a directory, a link to one, or absent.`,
+          { destination, ancestor: current }) };
+      }
+      return { root: path.join(resolved, ...missing.reverse()) };
     }
-    if (entry && lstatOrNull(path.join(current, '.git'))) {
-      return fail('foreign-git-root',
-        `Discovery root ${destination} is inside Git-owned directory ${current}. Choose a dedicated user-scoped skills root before installing.`,
-        { destination, gitRoot: current });
+    const parent = path.dirname(current);
+    if (parent === current) {
+      return { error: fail('discovery-root-collision',
+        `Discovery root ${destination} has no existing ancestor to install into.`, { destination }) };
     }
-    if (current === homePath) break;
+    missing.push(path.basename(current));
+    current = parent;
   }
-  return null;
 }
 
-// A linked destination is judged by what it resolves to, because the install
-// below skips an existing skill without reading it. Only a resolved directory
-// that already holds the skill is accepted; nothing is ever written through the
-// link.
-function resolveSkillLink(destination) {
-  let resolved;
-  try {
-    resolved = fs.realpathSync(destination);
-  } catch (error) {
-    if (error.code === 'ENOENT' || error.code === 'ELOOP') return null;
-    throw error;
+function gitOwner(directory) {
+  for (let current = directory; ; current = path.dirname(current)) {
+    if (lstatOrNull(path.join(current, '.git'))) return current;
+    const parent = path.dirname(current);
+    if (parent === current) return null;
   }
-  if (!lstatOrNull(resolved)?.isDirectory()) return null;
-  if (!lstatOrNull(path.join(resolved, 'SKILL.md'))?.isFile()) return null;
-  return resolved;
 }
 
-function validateDestinations(destinations, home) {
+function validateDestinations(destinations) {
+  const resolved = [];
+  const gitOwnedRoots = [];
   for (const { engine, root: destinationRoot } of destinations) {
-    const rootFailure = validateDestinationRoot(destinationRoot, home);
-    if (rootFailure) return rootFailure;
+    const outcome = resolveDestinationRoot(destinationRoot);
+    if (outcome.error) return { error: outcome.error };
+    const owner = gitOwner(outcome.root);
+    if (owner && !gitOwnedRoots.includes(owner)) gitOwnedRoots.push(owner);
+    resolved.push({ engine, root: outcome.root, declared: destinationRoot });
     for (const skill of coreSkills) {
-      const destination = path.join(destinationRoot, skill);
+      const destination = path.join(outcome.root, skill);
       const entry = lstatOrNull(destination);
       if (!entry) continue;
       if (entry.isSymbolicLink()) {
-        const resolved = resolveSkillLink(destination);
-        if (resolved) continue;
-        return fail('skill-path-collision',
+        if (resolveSkillLink(destination)) continue;
+        return { error: fail('skill-path-collision',
           `Skill destination ${destination} is a link whose target is not a directory already holding ${skill}/SKILL.md. Remove or relocate the collision, then retry.`,
-          { engine, skill, destination });
+          { engine, skill, destination }) };
       }
       if (!entry.isDirectory()) {
-        return fail('skill-path-collision',
+        return { error: fail('skill-path-collision',
           `Skill destination ${destination} is not an ordinary directory. Remove or relocate the collision, then retry.`,
-          { engine, skill, destination });
+          { engine, skill, destination }) };
       }
     }
   }
-  return null;
+  return { destinations: resolved, gitOwnedRoots };
 }
 
 function parseHome(argv) {
@@ -117,20 +135,26 @@ function install(home) {
   if (sourceFailure) return sourceFailure;
   let identity;
   try { identity = markerSourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
-  const destinationFailure = validateDestinations(destinations, home);
-  if (destinationFailure) return destinationFailure;
+  const validated = validateDestinations(destinations);
+  if (validated.error) return validated.error;
 
-  const report = { status: 'complete', requiredSkills: coreSkills, installed: [], skipped: [] };
+  // `resolvedRoots` names each declared discovery root beside the directory it
+  // actually resolved to. They differ whenever a root is a link, and two
+  // declared roots can resolve to one directory - which is why a skill can be
+  // installed once and reported as already-present for the second engine.
+  const report = {
+    status: 'complete', requiredSkills: coreSkills, installed: [], skipped: [],
+    gitOwnedRoots: validated.gitOwnedRoots,
+    resolvedRoots: validated.destinations.map(({ engine, declared, root: resolved }) => ({ engine, declared, resolved }))
+  };
   try {
-    for (const { engine, root: destinationRoot } of destinations) {
+    for (const { engine, root: destinationRoot } of validated.destinations) {
       fs.mkdirSync(destinationRoot, { recursive: true });
       for (const skill of coreSkills) {
         const destination = path.join(destinationRoot, skill);
-        const entry = lstatOrNull(destination);
-        if (entry) {
-          const skipped = { engine, skill, reason: 'already-present', destination };
-          if (entry.isSymbolicLink()) skipped.resolved = resolveSkillLink(destination);
-          report.skipped.push(skipped);
+        const present = presentSkillPath(destination);
+        if (present) {
+          report.skipped.push({ engine, skill, reason: 'already-present', destination, resolved: present });
           continue;
         }
         fs.cpSync(path.join(sourceRoot, skill), destination, {

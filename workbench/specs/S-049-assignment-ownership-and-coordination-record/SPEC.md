@@ -1,15 +1,15 @@
 # S-049 - Assignment Ownership And The Coordination Record
 
 **Spec ID:** S-049
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** claude
 **Stance:** Builder
 **Updated:** 2026-09-07
 **Catalog description:** Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 No anchor declaration. Every live section below names a file, not a position.
 The only bare `path:line` citations in this spec are in the append-only
@@ -180,7 +180,7 @@ TK-002 depends on an assignment being carried in real use.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | `/carry` exists as a discoverable core skill and the seventeen-skill bundle validates end to end without redefining any frozen legacy policy | done | none | Full AGENTS.md suite 30/30 green at e8f891a and again after these fixes; three separate-context reviews (9ec4314..a617359, ..7020ed3, ..e8f891a), all findings applied; installer demo writes 34 skills with carry marked release v3.1.3; origin/main rebuilt as a fixture returns valid, doctor ok, next null; both new guards mutation-checked |
-| TK-002 | One real assignment is carried under `/carry`, and its hand-backs - or the recorded absence of any - are the first measurement | ready | none | pending |
+| TK-002 | One real assignment is carried under `/carry`, and its hand-backs - or the recorded absence of any - are the first measurement | done | none | THE ASSIGNMENT: S-045, all six tickets the owner unblocked, plus installing `carry` and three record repairs. Carried end to end under this contract - by hand through step 3, since `/carry` was not in any discovery root until the install this run performed, and as an invocable skill from that point. Endpoint named before starting and reached: every ticket closed with named proof, the spec completed, the work on the declared integration branch. **ZERO COORDINATION HAND-BACKS.** The owner supplied nothing to this run. The only input was the resume phrase; every decision the run needed was already recorded in the assigned spec, the handoff, or the grilling notepad, and everything else was resolved from the project. No question was returned to the owner, so none needs testing against section 4. Ticket ordering, slicing and the install route were treated as the implementing agent`s, which is what the owner said in as many words when a prior session put ordering to them - that hand-back is already recorded in the notepad and is not double-counted here. WHAT WAS RUN, so the zero is checkable rather than asserted: full AGENTS.md suite twice, 30/30 both times, at 55cacb3 and ef44e8e; six red-first tests across three files; six mutations, each confirmed to turn a specific test red and then reverted; the install executed against the real host with HEAD and the Git index asserted byte-identical afterwards. |
 
 ## Acceptance Criteria
 
@@ -210,9 +210,11 @@ TK-002 depends on an assignment being carried in real use.
       current harness version is v3.1.3.
 - [x] The full verification suite named in `AGENTS.md` is green, and `doctor`
       reports no blocking finding.
-- [ ] TK-002 closes with a named assignment, the hand-backs it produced with
+- [x] TK-002 closes with a named assignment, the hand-backs it produced with
       their causes and corrections, or an explicit "none, and here is what was
-      run" - not a summary of the delivery.
+      run" - not a summary of the delivery. The assignment was S-045; the answer
+      is none, with the suite runs, red-first tests, mutations and the real
+      install named so the zero is checkable.
 
 ## Testing Seams
 
@@ -267,10 +269,43 @@ against a commit, not a dirty tree.
 | 2026-09-07 | TK-001 | Ticket closed | Full AGENTS.md suite 30/30 green at e8f891a and again after these fixes; three separate-context reviews (9ec4314..a617359, ..7020ed3, ..e8f891a), all findings applied; installer demo writes 34 skills with carry marked release v3.1.3; origin/main rebuilt as a fixture returns valid, doctor ok, next null; both new guards mutation-checked | skills/README.md, README.md, BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, RUNBOOK.md, templates/GENESIS.md, templates/ADOPTION.md, skills/adoption, skills/update-harness, two tool usage strings, three wiki stamps, workbench/manifest.json, benchmarks/RESULTS.md | TK-002 unstarted: carry is unmeasured in real use, which is the point of the spec. carry section 3 boundedness is unpinned prose. The stale main-carries-no-workbench claim survives in six completed specs' append-only evidence |
 | 2026-09-07 | spec | Coordination hand-backs for the run that built this spec, recorded under the owner's instruction | **Zero coordination hand-backs.** The owner supplied three decisions and none was routine coordination: the skill's name (Preference - the owner raised it as open); core-bundle versus repo-local placement (Tradeoff - it changes a public contract); and which version carries the seventeen-skill bundle plus whether downstream rooms are on v3.1.2 (Tradeoff, and Unavailable resource - room inventory outside this repository). The owner never repeated a settled decision, located evidence already in the project, reconciled a routine technical finding, or prompted an already-authorized step. **One defect recorded anyway, because it degraded a question rather than causing one:** the placement question was put to the owner with its cost understated, because it was asked before `origin/main` had been checked. Cause: **incorrect** - `S-038` Decisions And Contracts and `README.md:167` both asserted v3.1.2 was an unpublished candidate, and that was read as verified state instead of as a record. Smallest correction, already made: `README.md` and `BLUEPRINT.md` now carry the verified facts, and `carry` section 1 requires reconciling Canon against verified Actuality before the section 4 ask gate applies, which is the step that was skipped | This row is the record; no other owner needed updating for it | **This is not TK-002's measurement.** This run built `carry`; it was not carried under `carry`, so it measures the run that wrote the instrument. TK-002 needs a different assignment executed under the skill. One run is also an anecdote: the advisory this spec came from asked for three comparable assignments before drawing any conclusion |
 | 2026-09-07 | TK-001 | Fourth and fifth separate-context reviews APPROVED the candidate; the two Low findings each raised were taken | Review 4 approved `9ec4314..46e3286` with one Low finding - the preamble's "no bare `path:line` citations" claim was false, six sit in this log. Review 5 approved the repair `46e3286..27c82fa` and found the repair itself wrong twice: row 6 also carries an unanchored citation, and the paragraph quoted README as saying "unpublished" when `git show 9ec4314:README.md` says "a local candidate". Both were already taken at `e70926f`, found independently. Review 6 approved `27c82fa..e70926f` with one further Low: row 6 *does* name a commit range, it just does not resolve at that range's head, so "without naming a commit" was the wrong category. Taken here. Review 6 also proved the frozen row load-bearing by deleting it and watching a room rebuilt from `origin/main` flip to `invalid`, confirmed `TASKBOARD.md` byte-identical across two renders, and confirmed the citation guard is not vacuous - a declared anchor pointing past end-of-file fails with a range error | This spec's preamble only; no evidence row touched across `46e3286..HEAD` | **The preamble was wrong three times in three consecutive repairs**, and each was caught by a reviewer or a guard rather than by the writing. The paragraph now records all three. This candidate is not re-reviewed a seventh time for a six-word phrasing swap in a disclosure whose substance review 6 verified correct and pre-dispositioned as optional; the suite is re-run and that reasoning is stated here rather than left implicit |
+| 2026-09-07 | TK-002 | Ticket closed | THE ASSIGNMENT: S-045, all six tickets the owner unblocked, plus installing `carry` and three record repairs. Carried end to end under this contract - by hand through step 3, since `/carry` was not in any discovery root until the install this run performed, and as an invocable skill from that point. Endpoint named before starting and reached: every ticket closed with named proof, the spec completed, the work on the declared integration branch. **ZERO COORDINATION HAND-BACKS.** The owner supplied nothing to this run. The only input was the resume phrase; every decision the run needed was already recorded in the assigned spec, the handoff, or the grilling notepad, and everything else was resolved from the project. No question was returned to the owner, so none needs testing against section 4. Ticket ordering, slicing and the install route were treated as the implementing agent`s, which is what the owner said in as many words when a prior session put ordering to them - that hand-back is already recorded in the notepad and is not double-counted here. WHAT WAS RUN, so the zero is checkable rather than asserted: full AGENTS.md suite twice, 30/30 both times, at 55cacb3 and ef44e8e; six red-first tests across three files; six mutations, each confirmed to turn a specific test red and then reverted; the install executed against the real host with HEAD and the Git index asserted byte-identical afterwards. | This row is the measurement, and the run`s findings live in the records they belong to rather than here: S-045 carries TK-005`s restated host record and the correcting row on the seven completed specs, and S-044 carries TK-007`s withdrawal and TK-003`s coverage row. Three defects in the run`s own inputs were found by measuring rather than by reading, and each was repaired in the record that carried it: the two refusal codes never appear together, this host`s gate/installer disagreement runs opposite to the one TK-001 was written for, and the stale `main` claim is in seven specs rather than six and was false when written rather than having gone stale. None of the three cost the owner anything, so none is a hand-back; they are recorded because a run that only reported its successes would make the zero above worth less. | ONE RUN IS AN ANECDOTE. The advisory this spec came from asked for three comparable assignments before drawing any conclusion, and this is the first. It is also a favourable case: the assignment arrived as a written handoff whose Verified section had already paid for the expensive measurements, so this run inherited work whose absence is exactly what would have produced hand-backs. A run that starts from a cold spec with no handoff is the harder test and has not been done. The zero is also self-scored - `tools/test-skill-catalog.mjs` pins that `carry` names the four reasons and the four causes, but no test can check that an agent classified a hand-back correctly or noticed one it should have recorded. |
+| 2026-09-07 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+
+| 2026-09-07 | TK-002 | Two corrections to the row above, both raised by the separate-context review of `origin/integration..288c3d3` and both reproduced before acceptance | **1. WITHDRAWN: "the stale `main` claim ... was false when written rather than having gone stale".** It was true when written. `main` sat at `08ab78e`, carrying no `workbench/` tree, until PR #73 merged at 2026-09-06 16:15:35 -0600; the seven claims were written at 05:22:10 and 08:04:29 that morning. The full measurement is in S-045's own withdrawal row. The error was reading `git merge-base --is-ancestor` - a containment fact about today - as a fact about what `main` held on a commit's author date. **2. The row above overstates its own scope.** "The owner supplied nothing to this run" and "no question was returned to the owner" are true of this run in the narrow sense that no owner message arrived after the resume phrase, but the run executed seven owner decisions that a prior grilling session obtained and the handoff carried - which tickets land in v3.1.3 and that TK-005 goes first, that this session's successor owns them, that `carry` is installed through a fixed route rather than hand-copied, that a symlinked or Git-owned discovery root is supported, that the stale `main` claim gets one folded correcting row rather than a new spec - the one the S-045 correcting row correctly attributes to the owner - that v3.1.3 does not publish, and that `templates/GENESIS.md`'s hardcoded count stays. Classified rather than left implicit: those are **Preference** and **Tradeoff** decisions under `skills/carry/SKILL.md` section 4, so none is a hand-back, and section 5 says answering them is the owner's proper involvement. The count stands at **zero hand-backs**; what changes is that the row no longer implies the run needed no owner input at all, only that it needed none *live* | This row is the record; the row above is left as published | **The zero survives both corrections, but it is worth less than it looked.** The run inherited seven settled decisions and a handoff whose Verified section had already paid for the expensive measurements. That is precisely the condition under which hand-backs do not occur, so this first measurement says more about the quality of the handoff than about the skill. Run two should start from a cold spec |
 
 ## Completion Result
 
-Pending.
+**What changed.** `carry` exists as the seventeenth core-bundle skill, the
+bundle validates end to end without redefining any frozen legacy policy, and the
+skill has now been carried once in real use with its coordination record taken.
+
+**The measurement, which is the point of the spec.** One assignment - S-045,
+six tickets plus an install and three record repairs - was carried to its
+authorized endpoint and produced **zero coordination hand-backs**. The evidence
+row for TK-002 names what was run so the zero can be checked rather than
+believed.
+
+**What the zero is worth, stated plainly.** One run is an anecdote, and this
+one was the easy case: the assignment arrived as a written handoff whose
+Verified section had already paid for the measurements whose absence is what
+would have produced hand-backs, and with seven owner decisions already settled.
+The instrument now exists and has been used once. Whether it shows anything is a
+question for the next two runs, and the harder test is a cold spec with no
+handoff in front of it.
+
+**The run's own record needed correcting twice**, both times by the
+separate-context reviewer rather than by the writer - see the last evidence row.
+One was a false statement, that the seven completed specs' `main` claim was
+false when written; the other was an overstatement of scope, that the run took
+no owner input at all. That is the honest headline for a spec about measuring
+what a run costs the owner: this one cost the owner nothing live, and still
+needed an independent reader to catch both.
+
+**Verification.** TK-001's proof stands as recorded: the full `AGENTS.md` suite
+30/30 at `e8f891a`, six separate-context reviews, both new guards
+mutation-checked, and `origin/main` rebuilt as a fixture returning valid. TK-002
+adds two more green 30/30 runs of the same suite, at `55cacb3` and `ef44e8e`.
 
 ## Remaining Limitations Or Follow-Up Specs
 
