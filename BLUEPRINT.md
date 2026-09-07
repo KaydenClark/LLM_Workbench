@@ -61,11 +61,16 @@ view and an ordered work record; shared schema and tooling will support safe
 updates and bounded retrieval. Notes remain local-only until their important
 claims are reconciled into existing durable owners. They do not become Canon
 by being recorded. Ordinary operation needs no new coordination framework.
+The preservation target is conversation interruption through token exhaustion
+or Stop: save important context while work proceeds. Computer-crash, device-loss,
+and cross-machine recovery are outside this guarantee. After reconciliation,
+resolved material may be trimmed from a retained note or the fully reconciled
+record deleted; retaining unfinished context remains mandatory.
 
 [S-046](workbench/specs/S-046-json-notepad-foundation/SPEC.md) owns the bounded
 foundation and thin workflow integrations. Its schema/tooling and target
 notepads layout are accepted requirements, not implemented support. Broader
-preservation guarantees and workflow redesign are separate owner tradeoffs.
+backup/transport guarantees and workflow redesign remain outside this scope.
 [S-047](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) owns visible,
 type-and-Workbench scoped base-62 identifiers with compatible migration;
 [S-048](workbench/specs/S-048-checkpoint-retirement/SPEC.md) owns checkpoint

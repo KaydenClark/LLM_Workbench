@@ -8,7 +8,7 @@
 **Updated:** 2026-09-07
 **Catalog description:** Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
+**Latest event:** TK-003 closed with proof.
 **Next gate:** Complete TK-002.
 
 ## Outcome
@@ -44,6 +44,12 @@ Inspected at `8e9c06f6f98825925e7da6cce59fb68768b589d7` on 2026-09-06:
   tool. The owner supplied the local notepad for this assignment; no claim is
   made that it is byte-identical to the historical attachment.
 
+Inspection for the 2026-09-07 capture/cleanup follow-up at
+`01eb70919e36d3a401efd268e69e9926b28df532`: the shared runtime is still
+unimplemented. Source skills retain conflicting Markdown/checkpoint examples.
+This follow-up implements the two owner decisions in controls and source skills;
+it does not implement TK-002, update installed skills, or certify recovery.
+
 ## Desired Behavior
 
 1. A shared notepad skill guides judgment; deterministic tooling owns structural
@@ -57,7 +63,10 @@ Inspected at `8e9c06f6f98825925e7da6cce59fb68768b589d7` on 2026-09-06:
 3. Preserve directives, source-backed findings, proposals, owner decisions,
    verification results, uncertainty, blockers, and explicit corrections when
    losing them would impair continuation. No mandatory turn timer or exhaustive
-   event checklist is accepted. Labels never grant authority or verify truth.
+   event checklist is accepted. Save important context promptly as work proceeds,
+   before token exhaustion or Stop; do not rely on a closeout write. An immediate
+   interruption can preempt an unsaved write. Labels never grant authority or
+   verify truth.
 4. Discover by explicit assignment, note identity, or objective relationship;
    when no stronger signal exists, use the most recently created local note or
    handoff, checking relevance before acting. Reconcile current controls and
@@ -70,10 +79,12 @@ Inspected at `8e9c06f6f98825925e7da6cce59fb68768b589d7` on 2026-09-06:
    or initiated by the owner. Use the active note as source. A pointer requires
    destination access and retention while needed; otherwise carry selected
    content. Handoff creation alone needs no separate objective note.
-7. Reconcile important material into its proper owner or verified result before
-   scoped cleanup. Unfinished work and active handoff dependencies prevent
-   disposal. Partial promotion is not permission to flush the rest. A tool can
-   check declared dispositions, not decide whether the reasoning is sufficient.
+7. Reconcile important material into its durable owner before scoped cleanup.
+   Promoted material may be trimmed from a retained note; flush or delete the
+   whole record only when everything important is reconciled and no unfinished
+   work or active handoff still depends on it. Preserve correction/dependency
+   context needed by retained material. No routine archive is required. A tool
+   can check declared dispositions, not decide whether reasoning is sufficient.
 8. Target layout: manifest-declared `sessions/notepads/`, local-only type
    folders, tracked `sessions/notepads/templates/` examples/schema, and local
    `sessions/handoffs/`. Until that migration is implemented, keep new JSON
@@ -102,6 +113,26 @@ Inspected at `8e9c06f6f98825925e7da6cce59fb68768b589d7` on 2026-09-06:
   TK-001 does not implement or certify the complete runtime described above.
   No downstream installation update, checkpoint deletion, or release is included.
 
+### Capture And Cleanup Follow-Up (2026-09-07)
+
+The owner explicitly invoked make-it-so for two settled preservation decisions:
+
+- **P-1:** saved local context supports continuation after token exhaustion or
+  pressing Stop. Important context must be written during work, before either
+  interruption; computer crashes, device loss, and machine transfer are outside
+  this decision. No final-write guarantee, turn timer, or automatic capture is
+  implied.
+- **P-2:** after all important material is reconciled into durable owners, normal
+  cleanup may flush or delete the record. A retained note may instead be trimmed
+  of promoted material while preserving remaining work and its dependencies.
+  This normal cleanup is already authorized; no routine archive is required.
+
+TK-003 delivers these rules and the source-skill path with a local manual
+capture/reload/partial-cleanup demonstration. The full schema/CLI runtime stays
+in TK-002 and later foundation slices. Those slices inherit the capture and
+cleanup requirements; they are not newly assigned by this follow-up. Do not
+retire historical checkpoints (S-048) or alter installed skills in this slice.
+
 ## Source Reconciliation And Promotion
 
 Owner decision of 2026-09-06: "Notepads need to become JSON from here on out,
@@ -124,10 +155,10 @@ requirements stand here without depending on an ignored source path.
 | 5A, 5B, 17B | Objective and note relationships already settled; metadata is engineering | This spec; S-047 for visible identifiers |
 | 6, 6A, 6B | Writer/correction mechanics were open; proposed single writer and explicit links | Foundation engineering note; no simultaneous-writer guarantee accepted |
 | 7, 7A, 7B | Recovery outcome and newest-created fallback settled; procedure is engineering | This spec and RUNBOOK |
-| 8 | Local-only settled; device-loss and cross-machine guarantees remain open | Preservation grilling note |
+| 8 | P-1 settled: capture before token exhaustion or Stop; device loss and cross-machine recovery outside scope | Capture And Cleanup Follow-Up; AGENTS and RUNBOOK |
 | 8A, 8B, 8C | Checkpoint triggers/lineage questions displaced by retirement decision | S-048; keep historical questions locally, not foundation blockers |
 | 9, 9A, 17, 17A | Separate tailored handoff and no autonomous future work settled | This spec; Contract |
-| 9B, 9C | Reconcile before disposal settled; elaborate receipt/archive policy not accepted | Basic safety here; preservation note retains tradeoffs |
+| 9B, 9C | P-2 settled: trim promoted material or delete fully reconciled records; preserve remaining dependencies | Capture And Cleanup Follow-Up; AGENTS and RUNBOOK |
 | 10 | Consume active objective records accepted as foundation integration | This spec |
 | 10A, 10B | Whole delivery phase redesign/receipts not accepted | Workflow grilling note |
 | 11, 11A, 11B | Meaningful-work coverage and trivial-chat exemption settled | This spec; extra templates are engineering examples |
@@ -162,6 +193,7 @@ protocol are proposals, not verbatim owner approvals.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
+| TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | done | TK-001 | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged |
 | TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | ready | TK-001 | pending |
 
 ### TK-001 - Scope and reconcile
@@ -172,6 +204,20 @@ Current owner-assigned delivery: source coverage, explicit disposition, generic
 Contract parity, JSON review records, privacy/ignore checks, and documentation
 verification. The grouped records stay local. Integrate only after a separate
 context reviews the immutable candidate. No runtime outcome claim is allowed.
+
+### TK-003 - Capture And Cleanup Rules
+
+**Stance:** Builder
+
+Path: owner decisions -> root/template controls -> source grilling/make-it-so
+instructions -> local JSON capture, reload, and partial cleanup -> verified
+retained context and durable-owner references. No runtime code changes are
+needed to make these agent obligations usable now. Verify documentation and
+skill consistency with the existing suite, and manually demonstrate that a
+saved finding survives a fresh read and that cleanup preserves unresolved work
+and its correction dependencies. This is a manual file demonstration, not a
+real Stop-button or token-exhaustion trial. Record guardrail before/after and
+independent integration review. Do not create an archive or commit live notes.
 
 ### TK-002 - First complete JSON continuity path
 
@@ -191,6 +237,7 @@ returns feedback; the acceptance below is not all compressed into TK-002.
 ## Acceptance Criteria
 
 - [x] Source questions and corrections have explicit dispositions; all remaining source material is retained locally in focused JSON records, and promoted truth has durable owners.
+- [x] Capture/cleanup follow-up: root/template controls and source skills require proactive local capture and permit verified trimming or full cleanup, with manual retained-context proof.
 - [ ] Shared schema, skill, and tool safely create/update/resume an objective note without requiring a model to regenerate its history.
 - [ ] Bounded retrieval excludes unrelated topics, carries corrections/dependencies, and reports pagination without silent loss.
 - [ ] Requested handoff and partial-cleanup demonstrations preserve unfinished material and destination dependencies.
@@ -270,6 +317,61 @@ Guardrail is 78/100 before and after with unchanged criteria; templates score
 control/prior/candidate comparisons, current evidence, and uncertainty reporting.
 No agent-outcome improvement follows from these static results.
 
+## TK-003 Verification Account
+
+Scope: source controls/templates and the grilling/make-it-so skills implement
+agent obligations now. The JSON runtime, installed skill updates, legacy
+checkpoint retirement, and other review notepads remain outside this slice.
+LEXICON meanings and ADR-0040 rationale were checked; no update is needed
+because these decisions refine the existing capture and reconciliation rules.
+
+The focused delivery-skill regression first failed on the missing JSON example,
+then passed after source-skill alignment. An initial sandbox spawn refusal was
+an environment failure; the red/green runs used normal subprocess access.
+The catalog's old promoted-status assertion was replaced with the accepted
+cleanup contract. Its first replacement expected an absent word; that test bug
+was corrected, and the final LF run at `e8eb01d` passes catalog source assertions
+and the capture/cleanup regression. The existing hostile-textconv fixture still
+fails on Windows and also fails at unchanged integration `01eb709`.
+A second red/green check corrects the source skill's impossible promise of a
+final push after every interruption: authorized durable changes must be pushed
+before voluntarily yielding; unexpected Stop can prevent a final action.
+
+Manual demonstration: save a local JSON note with resolved X and unresolved Y
+plus a correction referencing Y, reload and compare all entries, verify X's
+meaning in this spec, trim X, and reload again. Y, its correction link and next
+action remain unchanged. The disposable demonstration file was removed after
+the check. This proves that concrete file operation only; it is not a real
+Stop-button, token-exhaustion, fresh-agent, or tool-mediated recovery trial.
+All 99 original source segments still reconstruct 43,270 bytes with the original
+SHA-256; existing S-046 evidence rows match the unchanged integration checkout.
+The six N-002 source fragments remain necessary for that local index, so cleanup
+will trim promoted decision material while retaining those referenced fragments.
+A sub-minute check is:
+
+```bash
+node --test --test-name-pattern 'notepad skills capture' tools/test-delivery-skills.mjs
+```
+
+Full verification at `6d74385` ran in an isolated LF checkout on Windows
+with normal subprocess access and `PYTHONUTF8=1`: 25 of 33 commands pass,
+including all four append-only history cases and the template evaluator. The
+initial catalog assertion failure is corrected and rechecked at `e8eb01d`; its
+remaining hostile-textconv failure matches baseline. The other seven Node
+failures reproduce on unchanged
+integration `01eb709`: layout classification (four cases), tools (three cases),
+permission-scope diagnostics, branch closeout (three cases), checkpoint file
+mode, round-trip receipt hash drift, and closed-stdout handling. Baseline layout
+comparison ran the four failing classify cases; the candidate ran the full file.
+
+Final governance, citation-anchor, dogfood, evaluator, render and diff checks
+pass; normal-access doctor has zero blockers and 33 informational findings.
+
+Guardrail is 78/100 before and after with unchanged criteria. The remaining
+recommendations are real repeated trials, controls/prior/candidate comparison,
+recent outcome evidence, and uncertainty reporting. These source changes and
+manual file checks do not establish an agent-outcome improvement.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
@@ -277,11 +379,15 @@ No agent-outcome improvement follows from these static results.
 | 2026-09-06 | TK-001 | Scope captured from current owner request, complete local source, and three retrieved conversation turns | Refreshed origin/integration to 8e9c06f; guardrail 78/100 before edits; doctor has no selection blocker but reports installed-generation/provenance observations and sandbox-limited Git observation | Supported decisions and proposals separated in this spec | Promotion, JSON grouping, verification, and review pending |
 | 2026-09-07 | TK-001 | Source reconciliation and scoped delivery verified | 99 segments reconstruct 43270 bytes and original SHA; all 57 IDs routed; six grouped/index records plus chat source JSON are ignored; ADR/Wiki/render/diff checks pass; full 33-command union at 6f4820d initially 24 pass, eight baseline-reproduced Node failures, Python decoding failure; unchanged Python test passes with PYTHONUTF8=1, giving 25 pass and eight baseline failures; final Runbook delta passes governance/dogfood/citation/evaluator checks | Two ADRs, three specs, root/template Contract, Wiki router, and benchmark record; local source preserved including explicitly noted historical-lane scanner match | Complete runtime remains TK-002 onward; fresh review of final immutable scoping candidate required before integration |
 | 2026-09-07 | TK-001 | Ticket closed | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec | Root/template Contract, ADR-0040/0041, S-046/047/048, Wiki router, benchmark account, and local JSON groups updated | TK-002 onward implement the runtime; final immutable candidate review and integration PR are the scoping closeout gate |
+| 2026-09-07 | TK-003 | Owner authorized capture/cleanup promotion and scoped source-skill alignment; slice claimed | Current origin/integration 01eb709 verified; guardrail baseline 78/100; governance and citation checks pass; normal-access doctor has zero blockers and 33 informational findings | AGENTS, RUNBOOK, BLUEPRINT and generic counterparts carry the decisions | Source-skill alignment, manual demonstration, full verification, independent review and integration pending; full runtime remains unimplemented |
+| 2026-09-07 | TK-003 | Ticket closed | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged | AGENTS/RUNBOOK/BLUEPRINT and generic counterparts, source grilling/make-it-so skills, tests and TK-003 verification account updated; Lexicon and ADR checked without change | Independent review and integration of final immutable candidate pending; full JSON runtime remains TK-002 onward; no installed-skill or recovery-outcome claim |
 
 ## Completion Result
 
 TK-001 delivers the scoped requirements, promoted decisions, and local JSON
-review groups. The full capability remains unimplemented; remaining acceptance
+review groups. TK-003 delivers the capture/cleanup rules and source-skill path,
+with red/green contract checks and the explicitly limited manual demonstration.
+The full capability remains unimplemented; remaining acceptance
 boxes are intentionally open. Final independent review and integration
 containment are recorded against the exact candidate in its integration PR.
 The Windows suite is not fully green; the verification account above separates
@@ -291,7 +397,7 @@ pre-existing failures from the scoping result.
 
 - [S-047](../S-047-visible-workbench-identifiers/SPEC.md): visible WBID compatibility and migration.
 - [S-048](../S-048-checkpoint-retirement/SPEC.md): checkpoint rationale and lossless retirement.
-- Preservation guarantees, wider workflow redesign, and release/evidence choices remain in local focused grilling notes; they do not block TK-002's bounded proposal.
+- Capture and cleanup decisions are settled in this spec. Wider workflow redesign and release/evidence choices remain in local focused grilling notes; they do not block TK-002's bounded proposal.
 
 ## Routine Coordination Record
 

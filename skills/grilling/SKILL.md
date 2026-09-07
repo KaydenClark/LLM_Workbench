@@ -9,9 +9,9 @@ skill promotes the notepad, so `grilling` can also run on its own.
 
 Read `workbench/manifest.json` first. The live notepad lives in the
 manifest-declared `grilling` collection (`workbench/sessions/grilling/`), which
-stays untracked by default; only a deliberately promoted, privacy-checked copy
-in `workbench/sessions/checkpoints/` is durable, and only `/checkpoint` or
-`/make-it-so` promotes it.
+stays untracked. Use JSON for new notes under the current Contract and preserve
+legacy sources. Promote supported claims into their durable owners under
+existing authorization; recording them locally does not make them Canon.
 
 Grill the user relentlessly about every aspect of this until we reach a shared
 understanding. Walk down each branch of the decision tree, resolving dependencies
@@ -26,53 +26,54 @@ to me and wait for my answer.
 
 ## The notepad (start here, before asking anything)
 
-Keep a running notepad of the whole session so nothing is lost to a context
-compaction or a hand-off to another assistant. The notepad is the working record;
-it is not canonical until it is promoted.
+Keep important working context in the notepad as it becomes available,
+before token exhaustion or Stop can interrupt the conversation. Do not rely on a final write after interruption;
+a Stop can preempt an unsaved write. The note supports local continuation and
+is not a computer-crash or device-loss guarantee. It is not Canon.
 
 1. Explore enough to build the real decision tree.
-2. Create the notepad at `workbench/sessions/grilling/<topic-slug>-<YYYY-MM-DD>.md`
-   (use the current date; the collection exists in every v3.1 layout). Header it exactly:
-   `STATUS: PROVISIONAL — not canonical until /make-it-so`
+2. Create or resume a JSON notepad in the manifest-declared live collection,
+   using the current date for a new note. Keep its status `PROVISIONAL` until
+   settled claims are reconciled; the record remains local and untracked.
 3. Write the FULL planned question list up front, so I see the terrain before
    answering. It is a best-effort map; it will flex.
 
-Format — stable IDs that are never renumbered, one status tag per line:
+Interim JSON example, not the future shared production schema:
 
-```markdown
-# Grilling — <topic>
-STATUS: PROVISIONAL — not canonical until /make-it-so   |   Started <date>
-
-## Planned questions
-1. [open]      <question>
-2. [open]      <question>
-   2A. [open]  <sub-question / dependency of 2>
-3. [open]      <question>
-
-## Spawned branches
+```json
+{
+  "status": "PROVISIONAL",
+  "objective": "The agreed topic",
+  "current": {
+    "questions": [{ "id": "1", "status": "open", "question": "First decision" }],
+    "next_action": "Ask question 1 with a recommendation"
+  },
+  "entries": []
+}
 ```
 
-- A sub-question or dependency nests as `2A`, `2B` under its parent.
-- A NEW line of questioning I open appends to the bottom under
-  `## Spawned branches` as the next top-level number; never renumber the items
-  above it.
-- Tags: `[open]` (unasked/undecided), `[tentative]` (leaning, revisit),
-  `[locked]` (decided).
+Keep stable question IDs; never renumber them. Dependencies may use `2A`,
+`2B`; new branches append new IDs. Statuses are `open` (undecided),
+`tentative` (revisit), and `locked` (decided). Preserve source wording,
+uncertainty, and corrections in ordered entries, with a compact current view.
+Fields are illustrative until the shared schema and tooling are implemented.
 
 ## During the interview
 
 - Ask the next `[open]` question with your recommendation.
-- After I confirm an answer, immediately flip that line to `[locked]` (or
-  `[tentative]`) and append the one-line result in the notepad, before asking the
-  next question. This tiny per-answer write is the entire cost.
+- After I confirm an answer, immediately update its status to `locked` (or
+  `tentative`) and save the answer and meaningful correction context in the
+  notepad before asking the next question. Capture other important findings
+  during investigation as well; do not wait for the interview to end.
 - Do not act on it until I confirm we have reached a shared understanding, and do
   not touch canonical files during the interview.
 
 ## Resuming after a compaction or model switch
 
-The notepad is the durable record, not the chat. If the conversation is
-compressed, truncated, or handed to another assistant, re-read the notepad and
-continue at the first `[open]` line. Never re-ask a `[locked]` question.
+After compaction, token exhaustion, Stop, or a model switch, read the saved
+notepad, verify the current Contract and relevant live state, and continue at
+the first `open` question. Never re-ask a `locked` question. File availability
+alone does not prove successful recovery.
 
 ## Exits
 
@@ -82,7 +83,8 @@ lookalike phrase said in passing:
 - `/make-it-so` — I am done; confirm the approvals, promote the notepad's
   locked decisions to canon, implement them, and push the results to the
   remote.
-- `/checkpoint` — save and stop for now; commit the notepad to resume later.
+- `/checkpoint` — save and stop for now under the current Contract. Keep live
+  JSON notes local; the Runbook owns legacy checkpoint limits.
 
 Only those invoked skills end the interview. Continue only within the standing
 project authority and safety boundaries.

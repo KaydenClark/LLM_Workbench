@@ -82,3 +82,24 @@ test('independence applies at integration, not every ticket close', () => {
     assert.match(content, /assigned SPEC and TASK/);
   }
 });
+
+
+test('notepad skills capture before interruption and preserve unresolved cleanup context', () => {
+  const grilling = read('skills/grilling/SKILL.md');
+  const example = grilling.match(/```json\r?\n([\s\S]*?)```/);
+  assert.ok(example, 'the executable example must create a JSON notepad');
+  const note = JSON.parse(example[1]);
+  assert.equal(note.status, 'PROVISIONAL');
+  assert.ok(Array.isArray(note.current.questions));
+  assert.ok(Array.isArray(note.entries));
+  assert.match(grilling, /before token exhaustion or Stop/);
+  assert.match(grilling, /before asking the next question/);
+  const promote = read('skills/make-it-so/SKILL.md');
+  assert.match(promote, /verify.*durable owners/s);
+  assert.match(promote, /Trim.*reconciled material/s);
+  assert.match(promote, /Preserve unresolved.*handoff dependencies/s);
+  assert.match(promote, /delete.*only when.*nothing still depends/s);
+  assert.doesNotMatch(promote, /Mark the notepad .*PROMOTED/);
+  assert.match(promote, /Before voluntarily yielding/);
+  assert.match(promote, /Stop.*final push/s);
+});

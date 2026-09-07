@@ -154,10 +154,10 @@ assertIncludesAll(makeItSo, [
   '`to-tickets`',
   '`TASKBOARD.md`',
   '`/implement`',
-  'STATUS: PROMOTED'
+  'Trim only reconciled material'
 ], 'make-it-so');
-assert.match(makeItSo, /pushed commit, never\s+local-only progress/,
-  'make-it-so must forbid yielding with local-only progress');
+assert.match(makeItSo, /Before voluntarily yielding[\s\S]*push the authorized durable changes/,
+  'make-it-so must save authorized durable changes before voluntarily yielding');
 
 const checkpoint = read('skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
