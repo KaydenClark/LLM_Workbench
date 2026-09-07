@@ -9,6 +9,7 @@ import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 import { writeSafeFile } from '../workbench/tools/workbench-paths.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
+import { missingSkills } from './skill-presence.mjs';
 import { RUNTIME_TOOLS, sourceIdentity } from './workbench-tools.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -55,9 +56,11 @@ function parseOptions(args) {
   return options;
 }
 
+// The same judgment the installer and the layout-only gate use. See
+// `skill-presence.mjs`: it lives in one place so the three cannot disagree
+// about one host, which is what S-045 TK-001 was opened to repair.
 function hasRequiredUserSkills(home) {
-  const destinations = [path.join(home, '.agents', 'skills'), path.join(home, '.claude', 'skills')];
-  return coreSkills.filter((skill) => !destinations.some((root) => lstatOrNull(path.join(root, skill))?.isDirectory()));
+  return missingSkills(home, coreSkills);
 }
 
 // Producing a missing control is the same procedure every time, and eight rooms
