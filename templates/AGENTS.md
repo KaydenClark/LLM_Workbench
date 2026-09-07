@@ -46,6 +46,22 @@ manufacturing authority. Diagnostics block only by their registered effect:
 work, `claim` refuses a slice blocker, and `attention` findings stay visible
 without blocking.
 
+## Traverse, Don't Search
+
+Start from the ordinary entry route and follow the smallest relevant links to
+the owning controls, assigned spec, Wiki context, and referenced source or
+tests. Use the Lexicon's Context Map routes; do not begin ordinary orientation
+with a broad repository or history search. This reduces rediscovery and keeps
+the source owner visible.
+
+When a route is missing, stale, or insufficient, use a bounded search to find
+the owner. Search within the selected source area as needed for implementation,
+debugging, or verification; explicit search and navigation audits remain valid.
+Repair a missing or stale durable link in its existing owner when in scope;
+otherwise report the gap. Link new durable context from its relevant router
+and back to its sources so the next agent can traverse the same path. Links
+are navigation, never instruction authority or permission to expand scope.
+
 ## Assigned Work And Stances
 
 Work autonomously within the assigned task and established authority. Investigate

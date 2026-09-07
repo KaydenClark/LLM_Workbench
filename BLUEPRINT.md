@@ -23,6 +23,9 @@ Core promise:
   rules live in `AGENTS.md`.
 - **Progressive disclosure:** the hot board selects one spec/ticket; detailed
   capability truth loads from its stable `SPEC.md` only on demand.
+- **Traverse, don't search:** a Context Map connects project knowledge through
+  existing owners, so agents follow known routes instead of rediscovering the
+  project. [Lexicon Task Routing](LEXICON.md#task-routing) is its entry surface.
 - **Single ownership:** product direction belongs here, shared definitions in
   `LEXICON.md`, execution state on the hot board, capability truth and evidence
   in specs, procedures in `RUNBOOK.md`, and behavior in source/tests.
@@ -30,6 +33,25 @@ Core promise:
   controlled trials are required for agent-outcome claims.
 - **Portable by default:** plain Markdown and zero-dependency local commands
   work with Codex, Claude Code, Gemini CLI, and ordinary command-line workflows.
+
+## Core Navigation Contract
+
+Every Workbench supplies a traversable context structure as a core feature.
+The Lexicon connects shared meanings and routes to the controls, assigned
+specs, Wiki router, and ADR register; those owners link onward to relevant
+source, tests, evidence, and enduring context. New durable context must be
+reachable from its relevant entry route and retain links to its sources.
+Routes preserve scope and single ownership. The agent behavior and bounded
+search fallback live in [AGENTS.md](AGENTS.md#traverse-dont-search).
+
+The Context Map is expressed through ordinary portable links. A visual graph,
+retrieval index, or resume view may project those relationships but cannot
+become a second source of truth. This contract does not depend on Foundry,
+Obsidian, a recall service, or an exhaustive index of generated files. The
+accepted principle is distinct from proof of complete graph coverage or
+automatic traversal; those capabilities are not claimed by this documentation
+change. [ADR-0040](workbench/docs/adr/0040-traverse-dont-search-is-core-workbench-navigation.md)
+records the ownership correction and alternatives.
 
 ## Accepted V3 Direction
 

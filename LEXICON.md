@@ -16,6 +16,19 @@ manifest-declared Wiki `MEMORY.md` for task-relevant durable knowledge and the
 ADR `REGISTER.md` for decision rationale. Read only the relevant linked owners.
 `TASKBOARD.md` is a dashboard, not a prerequisite reading archive.
 
+These are the Context Map's entry routes. Follow the smallest applicable route:
+
+| Need | Route to the owner |
+|---|---|
+| Accepted terminology and product direction | This Lexicon -> [Blueprint](BLUEPRINT.md) |
+| Assigned work, evidence, and implementation | [Manifest](workbench/manifest.json) -> assigned stable spec -> its referenced source/tests |
+| Durable knowledge and design concepts | [Wiki router](workbench/wiki/MEMORY.md) -> relevant note -> its governing sources |
+| Decision rationale | [ADR register](workbench/docs/adr/REGISTER.md) -> decision -> its `canonicalized_in` owner |
+| Commands and recovery | [Runbook](RUNBOOK.md) -> relevant procedure -> named tool |
+
+The Wiki retains its single `MEMORY.md` router. This table connects existing
+owners; it does not add a second Wiki index or copy their contents.
+
 ## Ownership Rules
 
 - Add a term after the parties have agreed on its meaning, not while it is still
@@ -33,6 +46,8 @@ ADR `REGISTER.md` for decision rationale. Read only the relevant linked owners.
 | Term | Definition | Distinction |
 |---|---|---|
 | **Design concept** | The shared understanding between the parties working on a project about what that project is. | It exists between participants. `BLUEPRINT.md` helps them reconstruct it but is not itself the design concept. |
+| **Traverse, don't search** | The core Workbench navigation principle: reach task-relevant context by following links from known entry points to its owners. | Bounded search repairs missing routes or investigates the selected source area; broad rediscovery is not ordinary entry. `AGENTS.md` owns the behavior. |
+| **Context Map** | The navigable relationships among Workbench concepts, controls, specs, Wiki context, and referenced source/evidence, entered through this Lexicon's Task Routing. | Existing owners hold the information; any rendered map is a source-derived Projection, not another truth store or authority. No graph service or Obsidian dependency is required. |
 | **Workbench** | The reusable operating harness that gives agents safe rules, progressively disclosed project truth, executable work, and proof requirements. | It governs the workflow; it is not the product being built. |
 | **Skill** | A named, reusable behavior that makes an agent follow a predictable process for one kind of work. | A skill is an interaction or execution front door, not a new truth store. |
 | **Flow** | A short sequence of skills that moves work from one recognizable state to another. | A flow composes skills; it does not duplicate their instructions. |
