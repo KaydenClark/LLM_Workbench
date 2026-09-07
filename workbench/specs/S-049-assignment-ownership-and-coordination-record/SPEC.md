@@ -14,12 +14,19 @@
 No anchor declaration. Every live section below names a file, not a position.
 The only bare `path:line` citations in this spec are in the append-only
 evidence log, which `AGENTS.md` and `tools/test-spec-citation-anchors.mjs` both
-read at the commit each row names rather than at a declared anchor. Row 8 is
-the one row that names no commit: its README citation reads at
-`git show 9ec4314:README.md`, where that line called v3.1.2 an unpublished
-local candidate. This paragraph is
-itself a correction - it previously claimed the spec carried no bare `path:line`
-citations at all, which stopped being true at `7020ed3`.
+read at the commit each row names rather than at a declared anchor. Two rows
+carry a bare citation without naming a commit, so both are named here: row 6's
+two citations read at `git show 7020ed3:RUNBOOK.md` and
+`git show 7020ed3:workbench/tools/workbench-layout.mjs`, the tree the second
+review examined; row 8's README citation reads at `git show 9ec4314:README.md`,
+where that line called v3.1.2 a local candidate. Rows 4 and 5 carry bare
+citations and do name their commits, and both resolve there.
+
+This paragraph is itself a correction, twice over. It first claimed the spec
+carried no bare `path:line` citations at all, which stopped being true at
+`7020ed3`. The repair of that claim then said row 8 was the only unanchored
+row, which was also false - row 6 has the same gap. Recorded plainly because
+this release's pattern is corrections that carry the defect they correct.
 
 ## Outcome
 
