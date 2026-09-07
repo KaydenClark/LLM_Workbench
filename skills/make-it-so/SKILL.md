@@ -33,18 +33,19 @@ The input is the settled decisions being approved. Resolve it in this order:
    visibly, leave it untouched, and continue with the conversation fallback.
 3. **Conversation fallback.** With no matching notepad, the settled decisions
    of the current conversation are the input. Write them into a new notepad at
-   `workbench/sessions/grilling/<topic-slug>-<YYYY-MM-DD>.md` first — each decision
-   as a `[locked]` line, anything unsettled as `[open]` — so the promotion has
+   `workbench/sessions/grilling/<topic-slug>-<YYYY-MM-DD>.json` first, using the
+   current Contract: decisions `locked`, unsettled items `open`, with source
+   context and corrections preserved in ordered entries. This gives promotion
    the same durable record a grilling would leave. If the conversation has no
    settled decisions to write, say so and stop; there is nothing to authorize.
 
 Then, in order:
 
-1. Summarize and lock the agreed scope from the notepad, then promote the
-   notepad as the durable planning record:
-   `node workbench/tools/sessions.mjs checkpoint --from <notepad> --topic <topic-slug>`.
-   The promoted copy in `workbench/sessions/checkpoints/` is what specs and
-   ADRs cite; the live notepad is not evidence.
+1. Summarize and lock the agreed scope from the notepad. Keep important working
+   context saved as work proceeds; token exhaustion or Stop may prevent another
+   write. Route supported claims directly to their durable owners in the steps
+   below; a copied live record is not required. Preserve existing checkpoints
+   under their current retention rules; the live notepad is not durable evidence.
 2. `to-docs` — route every `[locked]` decision that belongs in existing control
    files to its owner. Record an ADR only when warranted: a consequential
    decision with meaningful alternatives or reversal cost gets
@@ -70,9 +71,13 @@ Then, in order:
    environment), record the blocker in the spec, push the truthful checkpoint,
    and continue with the next eligible ticket; report every skipped slice
    visibly at the end.
-10. Mark the notepad `STATUS: PROMOTED — <date>` and report the durable
-    doc/spec/ticket paths plus the pushed branches and commits that now hold
-    the work.
+10. After promotion, verify the material in its durable owners before cleanup.
+    Trim only reconciled material from a retained note. Preserve unresolved
+    context, corrections needed by remaining work, and active handoff dependencies.
+    Flush or delete the whole record only when all important material has been
+    reconciled and nothing still depends on it. No routine archive or redundant
+    approval is required. Report the durable doc/spec/ticket paths and the pushed
+    branches and commits that hold the work.
 
 `make it so` authorizes durable planning, implementation, and remote
 checkpoints from the settled decisions. It does not broaden standing project
