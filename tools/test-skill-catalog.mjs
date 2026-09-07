@@ -83,7 +83,8 @@ for (const [relative, expected] of [
 // that cannot run. Every documented `--version` literal must be this release.
 const VERSION = JSON.parse(read('workbench/manifest.json')).workbenchVersion;
 for (const relative of ['RUNBOOK.md', 'templates/ADOPTION.md', 'skills/adoption/SKILL.md',
-  'skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'workbench/tools/workbench-layout.mjs']) {
+  'skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'tools/workbench-adoption.mjs',
+  'workbench/tools/workbench-layout.mjs']) {
   const stale = [...read(relative).matchAll(/--version (v\d+\.\d+\.\d+)/g)]
     .map((match) => match[1])
     .filter((version) => version !== VERSION);
@@ -270,6 +271,10 @@ for (const cause of ['missing', 'inaccessible', 'incorrect', 'simply not followe
   assert.ok(carry.includes(`*${cause}*`),
     `carry must classify a hand-back cause as ${cause}`);
 }
+assertIncludesAll(carry, [
+  'self-review alone never satisfies it',
+  'never a reason to merge'
+], 'carry section 2 must forbid self-review at the integration gate');
 assert.match(carry, /Do not answer one with a new framework/,
   'carry must forbid answering a hand-back with a new framework');
 assert.match(carry, /Stopping\s+before an already-authorized step/,
