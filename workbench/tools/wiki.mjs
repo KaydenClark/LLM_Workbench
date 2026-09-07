@@ -211,7 +211,7 @@ if (isMainModule(import.meta.url)) {
     const pathIndex = rest.indexOf('--path');
     const root = findRoot(pathIndex >= 0 ? rest[pathIndex + 1] : process.cwd());
     const dateIndex = rest.indexOf('--date');
-    if (!['validate', 'normalize'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json] (validate also reports the installed-state findings stale-seed and unverified-provenance, which workbench-layout.mjs repairs; see RUNBOOK.md)');
+    if (!['validate', 'normalize'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json] (validate reports wiki facts only; the installed-state findings stale-seed and unverified-provenance come from doctor and are repaired with workbench-layout.mjs; see RUNBOOK.md)');
     if (command === 'normalize') {
       const result = normalizeWiki(root, { date: dateIndex >= 0 ? rest[dateIndex + 1] : undefined });
       console.log(json ? JSON.stringify(result, null, 2) : (result.changed.length ? result.changed.map((entry) => `${entry.note}: inserted ${entry.inserted.join(', ')}`).join('\n') : 'ok - every note already carries its required properties'));

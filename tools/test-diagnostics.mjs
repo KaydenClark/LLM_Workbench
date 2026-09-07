@@ -795,7 +795,7 @@ test('the installed-state findings are emitted from a seam whose scope matches, 
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 
     const wiki = spawnSync(process.execPath, [wikiTool, 'validate', '--path', dir, '--json'], { encoding: 'utf8' });
-    const reported = JSON.parse(wiki.stdout).findings.map((item) => item.code);
+    const reported = JSON.parse(wiki.stdout).map((item) => item.code);
     assert.equal(reported.includes('stale-seed'), false,
       'a seeded feedback-lane document is not a wiki fact');
     assert.equal(reported.includes('unverified-provenance'), false,
