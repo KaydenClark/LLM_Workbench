@@ -225,6 +225,7 @@ against a commit, not a dirty tree.
 |---|---|---|---|---|---|
 | 2026-09-07 | spec | Created under owner direction to own a `carry` invocation and the coordination record it produces | The owner's instruction was traced to its source before any design: it is verbatim from the 2026-09-06 advisory conversation preserved in `workbench/feedback/llm-workbench-decision-recovery.zip`, whose framing is that the principles are already written and what is missing is evidence of how much coordination remains the owner's. Three existing skills were read and rejected as owners - `implement` (one ticket's red/green loop), `make-it-so` (input is unsettled decisions needing promotion), the stances (method, not endpoint ownership). Two owner decisions were taken rather than assumed: the name `carry` from four candidates, and core-bundle placement over a repo-local skill | Spec created; Documentation Impact lists the six owners the change touches | TK-002 has no measurement yet; the skill is unproven in real use |
 | 2026-09-07 | TK-001 | Skill, bundle growth and full suite green at `a617359`; then a self-check found this spec's own version claim false and blocked the ticket | Full suite 30/30 green at `a617359`, including `doctor`. Demo artifact: `core-skill-installer.mjs install` into a disposable home wrote 34 skills - seventeen into each of `.agents/skills` and `.claude/skills` - with `carry` carrying a schema 2 marker at release `v3.1.2`, commit `a617359`. The green suite did not catch the real defect: `git ls-tree origin/main` shows `main` carries `workbench/manifest.json` at `v3.1.2` with sixteen skills, so S-038's "main carries no workbench root" is stale and this spec repeated it without checking. Reproduced by extracting `origin/main` to a fixture and running `workbench-layout.mjs validate` from this candidate: `invalid-skill-policy`. No test covers it because every fixture builds its manifest from the live `coreSkills`, so no test ever validates a manifest the current bundle did not write | Current Verified State corrected with the verified facts; the v3.1.2 placement decision marked WITHDRAWN rather than edited away; Dependencies And Blockers now carries the three costed resolutions | The version decision is the owner's and TK-001 cannot close without it. Also uncorrected: `README.md` still calls v3.1.2 "a local candidate", which the same evidence contradicts - out of this spec's scope to fix, and named here so it has an owner |
+| 2026-09-07 | TK-001 | Owner chose v3.1.3 with v3.1.2 frozen; implemented, and one of this branch's own new assertions was wrong | Red first: `outcome('v3.1.2', sixteen)` returned `invalid-skill-policy` before the frozen row and `valid` after. `origin/main` extracted to a fixture now validates against this candidate, so the regression that blocked TK-001 is gone. A second assertion added in the same edit - `outcome('v3.1.2', current) === 'invalid-skill-policy'` - was false and was removed rather than accommodated: `accepted` has always been `[current policy, frozen row]`, so every listed legacy version also validates at the current policy. Proved pre-existing rather than assumed, by initializing a v3.1.3 room, relabelling its manifest `v3.1.1` while keeping the seventeen-skill policy, and getting `valid` - and by reading the same `const accepted` line at `9ec4314`. The version bump also broke three wiki stamps and the Taskboard projection | `README.md` and `BLUEPRINT.md` moved to v3.1.3 and stopped calling v3.1.2 an unpublished candidate; the three `workbench/wiki` contract stamps re-stamped; `render` re-run | `unverified-provenance` still reports `provenance.source.release "v3.1.0"` against `workbenchVersion v3.1.3`. Pre-existing and attention-only - the condition is `source.release !== workbenchVersion`, which already held at v3.1.2 - and left alone because v3.1.0 is the release this room was actually adopted from |
 
 ## Completion Result
 
@@ -244,6 +245,18 @@ Pending.
 - **Hand-back rows are per-spec by design, so there is no cross-run view.**
   Aggregating them is deliberately out of scope until enough runs exist to know
   what a useful aggregate would be.
+- **A frozen legacy row constrains only downward.** `accepted` is
+  `[current policy, frozen row]`, so a v3.1.2 manifest validates at sixteen
+  *or* at the current seventeen; only the twelve-skill bundle is refused. That
+  is long-standing behaviour this spec did not introduce and did not tighten -
+  tightening it would change how every listed legacy version validates, which
+  is outside a spec about growing the bundle. Named here so the freeze is not
+  read as stronger than it is.
+- **`unverified-provenance` is still reported.** This room's
+  `provenance.source.release` is `v3.1.0`, the release it was adopted from,
+  and the finding fires whenever that differs from `workbenchVersion`. It was
+  already firing at v3.1.2. Repairing it would mean recording a source
+  identity this room does not have.
 
 ## Supersession
 

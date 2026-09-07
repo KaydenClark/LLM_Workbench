@@ -816,9 +816,12 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.1.1', twelve), 'invalid-skill-policy');
     // v3.1.2 shipped to `main` with the sixteen-skill bundle and rooms are on
     // it, so it is frozen there. `carry` grew the bundle at v3.1.3, and a
-    // v3.1.2 room must not be told its own manifest is invalid.
+    // v3.1.2 room must not be told its own manifest is invalid. Note that
+    // `accepted` is [current policy, frozen row], so a listed legacy version
+    // also validates at the current policy - long-standing behaviour, not
+    // something the freeze changes, and the reason there is no
+    // `outcome('v3.1.2', current) === 'invalid-skill-policy'` line here.
     assert.equal(outcome('v3.1.2', sixteen), 'valid');
-    assert.equal(outcome('v3.1.2', current), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.2', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
