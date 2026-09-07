@@ -226,6 +226,11 @@ conversation needs none. Preserve source fidelity, uncertainty, and corrections;
 maintain a compact current view and an append-oriented work record. Templates
 are examples, not a universal checklist. Notes neither authorize work nor prove
 claims. On resume obey the current Contract and verify relevant live state.
+Save important context promptly as work proceeds, before token exhaustion or
+an owner pressing Stop can interrupt the conversation. Do not defer capture to
+closeout or rely on a final write after Stop. This obligation covers saved local
+context for conversation continuation, not computer crashes or device loss;
+an interruption can still preempt an unsaved write.
 
 New notepads use JSON, including when older workflow examples say Markdown.
 Use existing manifest-declared live collections until the shared schema, tooling,
@@ -236,9 +241,12 @@ or personal data, or unsafe tool output; retain only safe recovery references.
 
 Promote only supported claims, under existing authorization, directly into their
 proper durable owners. Cite those owners, never an ignored live path as durable
-evidence. Retain unresolved material in the live notes. Delete a resolved note
-only after reconciliation leaves no important information or active handoff
-that still depends on it. No autonomous task or handoff creation follows.
+evidence. Retain unresolved material in the live notes. Once reconciliation into
+durable owners leaves no important information or active handoff that still
+depends on the record, normal cleanup may flush or delete it. A retained note
+may instead be trimmed of promoted material, preserving any context and
+correction links still needed by its remaining work. No routine archive is
+required. No autonomous task or handoff creation follows.
 
 Existing privacy-checked checkpoints and their references remain available
 until deliberate retirement reconciles them; the legacy command is

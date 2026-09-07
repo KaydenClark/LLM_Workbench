@@ -52,7 +52,11 @@ the project glossary.
 Meaningful objective work preserves working context in local JSON notepads.
 The current view and ordered work record support continuation and scoped
 handoffs; shared schema/tooling must preserve sources and corrections without
-making notes authoritative. Reconcile important material before disposal.
+making notes authoritative. Save important context while work proceeds so it
+can support continuation after token exhaustion or Stop; computer-crash,
+device-loss, and cross-machine recovery are outside this guarantee. Reconcile
+important material into durable owners before trimming it from a retained note
+or deleting a fully reconciled record; preserve unfinished context.
 Record implemented support and remaining gaps in the assigned capability spec;
 accepting this direction does not prove automatic capture or recovery.
 
