@@ -11,9 +11,15 @@
 **Latest event:** TK-001 closed with proof.
 **Next gate:** Complete TK-002.
 
-This spec carries no bare `path:line` citations. Every reference below names a
-file, not a position, so no anchor declaration is required and none goes stale
-at the next merge.
+No anchor declaration. Every live section below names a file, not a position.
+The only bare `path:line` citations in this spec are in the append-only
+evidence log, which `AGENTS.md` and `tools/test-spec-citation-anchors.mjs` both
+read at the commit each row names rather than at a declared anchor. Row 8 is
+the one row that names no commit: its README citation reads at
+`git show 9ec4314:README.md`, where that line called v3.1.2 an unpublished
+local candidate. This paragraph is
+itself a correction - it previously claimed the spec carried no bare `path:line`
+citations at all, which stopped being true at `7020ed3`.
 
 ## Outcome
 
