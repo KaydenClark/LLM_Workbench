@@ -100,4 +100,6 @@ test('notepad skills capture before interruption and preserve unresolved cleanup
   assert.match(promote, /Preserve unresolved.*handoff dependencies/s);
   assert.match(promote, /delete.*only when.*nothing still depends/s);
   assert.doesNotMatch(promote, /Mark the notepad .*PROMOTED/);
+  assert.match(promote, /Before voluntarily yielding/);
+  assert.match(promote, /Stop.*final push/s);
 });

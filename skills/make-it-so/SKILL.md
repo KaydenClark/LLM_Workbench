@@ -64,9 +64,10 @@ Then, in order:
    itself must be remotely recoverable before any code changes.
 8. Implement the promoted tickets here, one at a time, using the `/implement`
    contract: claim the slice, drive it red/green, update owning docs, make a
-   truthful checkpoint commit, push it, review, and close. Every stopping
-   point — done, blocked, or interrupted — is a pushed commit, never
-   local-only progress.
+   truthful checkpoint commit, push it, review, and close. Before voluntarily yielding
+   at a done or blocked boundary, push the authorized durable changes. Unexpected
+   token exhaustion or Stop may prevent a final push; preserve important context
+   locally during work so continuation does not depend on that final action.
 9. If a ticket cannot proceed (blocked dependency, failing gate, missing
    environment), record the blocker in the spec, push the truthful checkpoint,
    and continue with the next eligible ticket; report every skipped slice
