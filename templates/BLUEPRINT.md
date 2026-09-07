@@ -47,6 +47,15 @@ Put accepted project-wide definitions in `LEXICON.md`; the Blueprint helps
 participants recover the design concept but is not itself the design concept or
 the project glossary.
 
+## Objective Continuity
+
+Meaningful objective work preserves working context in local JSON notepads.
+The current view and ordered work record support continuation and scoped
+handoffs; shared schema/tooling must preserve sources and corrections without
+making notes authoritative. Reconcile important material before disposal.
+Record implemented support and remaining gaps in the assigned capability spec;
+accepting this direction does not prove automatic capture or recovery.
+
 ## Non-Goals
 
 - [Non-goal]

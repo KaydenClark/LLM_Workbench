@@ -288,15 +288,31 @@ removed only with owner approval.
 
 ## Session Records And Checkpoints
 
-Live grilling notepads and handoffs are working records: they live untracked
-in the manifest-declared `workbench/sessions/grilling/` and
-`workbench/sessions/handoffs/` collections and are never evidence. A record
-becomes durable only through a deliberate, privacy-checked promotion into the
-tracked `workbench/sessions/checkpoints/` collection
-(`node workbench/tools/sessions.mjs checkpoint --from PATH --topic slug`);
-every durable reference from a spec, ADR, or control targets that promoted
-copy. A promotion that hits secret-like content, an absolute home path, or an
-email address stops with the line number and writes nothing.
+Create or resume a local JSON notepad when meaningful objective work produces
+context whose loss would impair continuation or a focused handoff. Trivial
+conversation needs none. Preserve source fidelity, uncertainty, and corrections;
+maintain a compact current view and an append-oriented work record. Templates
+are examples, not a universal checklist. Notes neither authorize work nor prove
+claims. On resume obey the current Contract and verify relevant live state.
+
+New notepads use JSON, including when older workflow examples say Markdown.
+Use existing manifest-declared live collections until the shared schema, tooling,
+and notepads layout are implemented. Preserve legacy Markdown sources. Live
+notes and handoffs stay local-only and untracked. Do not record secrets,
+credentials, authentication/recovery material, raw private financial, medical,
+or personal data, or unsafe tool output; retain only safe recovery references.
+
+Promote only supported claims, under existing authorization, directly into their
+proper durable owners. Cite those owners, never an ignored live path as durable
+evidence. Retain unresolved material in the live notes. Delete a resolved note
+only after reconciliation leaves no important information or active handoff
+that still depends on it. No autonomous task or handoff creation follows.
+
+Existing privacy-checked checkpoints and their references remain available
+until deliberate retirement reconciles them; the legacy command is
+`node workbench/tools/sessions.mjs checkpoint --from PATH --topic slug`.
+It refuses secret-like content, absolute home paths, and email addresses before
+writing. A copied record is preservation, not blanket promotion of its claims.
 
 ## Long Session Control
 

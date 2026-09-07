@@ -40,7 +40,8 @@ This extends [ADR-0035](0035-reduced-entry-and-assigned-autonomy.md) and preserv
 the base/extension boundary in
 [ADR-0015](0015-workbench-base-and-foundry-capabilities.md). Other historical
 Foundry concepts discussed during the comparison remain recommendations;
-this decision does not adopt them or settle the notepad redesign.
+this decision does not adopt them or change the independently accepted
+notepad and identifier decisions in ADR-0040 and ADR-0041.
 
 Provenance: direct owner instruction in the 2026-09-06 conversation to lock
 "Traverse, don't search" into the Workbench as a core feature. Historical
