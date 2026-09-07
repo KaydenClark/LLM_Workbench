@@ -56,6 +56,26 @@ assert.match(catalog, /\.agents\/skills/,
 assert.match(catalog, /\.claude\/skills/,
   'the catalog must document the Claude user-scoped discovery root');
 
+// S-049: four documents state the bundle's size in prose, and nothing held
+// them to it - `README.md` and `BLUEPRINT.md` both went stale when the bundle
+// grew and an independent review, not a test, caught them. Derive the numbers
+// so a future bundle change fails here instead of shipping a wrong count.
+const bundleSize = coreSkills.length;
+const stanceCount = 4;
+const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+  'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
+const workflowWord = words[bundleSize - stanceCount];
+for (const [relative, expected] of [
+  ['skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`]],
+  ['README.md', [`closed ${bundleSize}-skill public source bundle`]],
+  ['RUNBOOK.md', [`limited to the ${bundleSize} skills`]],
+  ['BLUEPRINT.md', [`carries ${workflowWord} setup/planning/delivery workflow skills`]],
+  ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]]
+]) {
+  assertIncludesAll(read(relative), expected,
+    `${relative} states the core bundle size and must match the ${bundleSize} skills in skills/`);
+}
+
 const importedNotice = read('THIRD_PARTY_NOTICES.md');
 assertIncludesAll(importedNotice, [
   'Copyright (c) 2026 Matt Pocock',

@@ -77,8 +77,10 @@ node workbench/tools/spec-workbench.mjs doctor
 ```
 
 If one slice genuinely cannot proceed, record the blocker in its spec, push the
-truthful checkpoint, and carry the next eligible slice. Report every slice you
-skipped and why. A partial result reported as partial is honest; a partial
+truthful checkpoint, and carry the next eligible slice **within the named
+assignment**. A ticket-scoped invocation ends at that ticket; it does not walk
+into the next spec, and it never selects work. Report every slice you skipped
+and why. A partial result reported as partial is honest; a partial
 result reported as done is not.
 
 ## 4. The gate on asking
@@ -88,11 +90,16 @@ Before returning a question to the owner, answer this one first:
 > **What specifically prevents me from resolving this from the available
 > sources and continuing within the existing authorization?**
 
-Ask the owner only when the answer is one of four things:
+`AGENTS.md` Safety And Change Control sets the governing gate - proceed on
+low-risk reversible in-scope decisions, and ask only when the answer changes
+architecture, a public contract, safety, or destructive risk. The four reasons
+below restate that gate for an assigned run; where they appear to differ,
+`AGENTS.md` wins under Instruction Authority. Ask the owner only when the
+answer is one of four things:
 
 | Reason | What it looks like |
 |---|---|
-| **Preference** | The choice expresses the owner's taste or intent for the product, and the sources do not already record it. |
+| **Preference** | The choice expresses the owner's taste or intent for the product, the sources do not already record it, and it is not a low-risk reversible in-scope call you should simply make and state. |
 | **Tradeoff** | Two supported options differ in a way that changes architecture, a public contract, or reversal cost. |
 | **Authorization** | The action is outside standing permission - destructive, published, paid, credential-bearing, or new scope. |
 | **Unavailable resource** | Access, a credential, a service, or information only the owner holds. |

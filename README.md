@@ -66,7 +66,7 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the closed 16-skill public source bundle. It is copied only into
+- `skills/` - the closed 17-skill public source bundle. It is copied only into
   user-scoped discovery roots during a missing-only brand-new install; this
   repository does not use it as a project-local discovery tree.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
