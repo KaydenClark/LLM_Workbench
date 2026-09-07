@@ -154,7 +154,7 @@ assertIncludesAll(makeItSo, [
   '`to-tickets`',
   '`TASKBOARD.md`',
   '`/implement`',
-  'reconciliation'
+  'Trim only reconciled material'
 ], 'make-it-so');
 assert.match(makeItSo, /pushed commit, never\s+local-only progress/,
   'make-it-so must forbid yielding with local-only progress');

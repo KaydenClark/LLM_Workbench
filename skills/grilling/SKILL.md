@@ -26,8 +26,8 @@ to me and wait for my answer.
 
 ## The notepad (start here, before asking anything)
 
-Keep important working context in the notepad as it becomes available, before token exhaustion or Stop
-can interrupt the conversation. Do not rely on a final write after interruption;
+Keep important working context in the notepad as it becomes available,
+before token exhaustion or Stop can interrupt the conversation. Do not rely on a final write after interruption;
 a Stop can preempt an unsaved write. The note supports local continuation and
 is not a computer-crash or device-loss guarantee. It is not Canon.
 
