@@ -185,9 +185,17 @@ TK-001 implements, and TK-006 on TK-002.
 - [x] TK-006 closes with `registeredCodes()` asserted equal to the pinned effect
       map, so a code registered without a pin is red at registration. Two codes
       added since S-043 - `stale-seed` and `unverified-provenance` - are outside
-      the pin today, and the reviewed mutation class passes silently against
-      them. Closed with both pinned and the equality asserted, so "outside the
-      pin today" describes the pre-state this ticket removed.
+      the pin today. **The rest of this criterion as written was false and is
+      corrected here rather than ratified**: it claimed "the reviewed mutation
+      class passes silently against them", and it does not. Measured against
+      `origin/integration`'s own test file - moving `unverified-provenance` to
+      severity `warning` fails 2 tests, and moving either code's scope fails 2 -
+      because the emitted-finding assertions already hold severity and scope.
+      What nothing held is a code registered with **no pin at all**: adding one
+      to the registry fails 0 tests there and 1 here. That narrower gap is the
+      real one, and it is what set equality closes. Closed with both codes
+      pinned, so "outside the pin today" describes the pre-state this ticket
+      removed.
 - [x] TK-007 closes with a row appended to S-044 withdrawing "round two's
       wording was true when written" and restating the four-new-cases count with
       its granularity named. The restated count is **five** cases, not four -
