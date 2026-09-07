@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-09-05
 **Status:** active
-**Harness version:** v3.1.2 (local candidate; publication pending)
+**Harness version:** v3.1.3 (v3.1.2 shipped to `main`; v3.1.3 publication pending)
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
@@ -87,8 +87,8 @@ stands on its own; it has no dependency on completing Foundry.
 - The seven root controls remain universally discoverable. Durable support
   records move behind one lowercase `workbench/manifest.json` authority with
   declared specs, Wiki, grilling, handoff, and feedback lanes.
-- LLM Workbench carries twelve setup/planning/delivery workflow skills plus
-  four portable stance skills under S-027. On a brand-new installation it supplies a required skill only when
+- LLM Workbench carries thirteen setup/planning/delivery workflow skills plus
+  four portable stance skills, under S-027 and S-049. On a brand-new installation it supplies a required skill only when
   that skill is missing from user-scoped discovery.
 - Existing installed skills are accepted by presence and remain untouched.
   Exact synchronization occurs only after an explicit skill-update request and
@@ -101,9 +101,11 @@ stands on its own; it has no dependency on completing Foundry.
   operations rather than one monolithic lifecycle program.
 
 v3.0.0 and v3.1.0 are preserved unreleased candidates. S-027 continued the
-v3.1 baseline as v3.1.1, and S-035 stamps the v3.1.2 patch candidate. A version
-label is not publication; the owner alone promotes integration to main, after
-the applicable candidate review.
+v3.1 baseline as v3.1.1, and S-035 stamps the v3.1.2 patch, which reached
+`main`. S-049 opens v3.1.3 for the seventeen-skill core bundle, because a
+bundle change is a release-surface change and v3.1.2 is frozen at its own
+sixteen-skill policy. A version label is not publication; the owner alone
+promotes integration to main, after the applicable candidate review.
 
 ## Accepted V3.1 Direction
 
@@ -312,6 +314,7 @@ be changed only through a later spec linked by supersession.
 | [S-046 - JSON Notepad Foundation](workbench/specs/S-046-json-notepad-foundation/SPEC.md) | Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup. | active |
 | [S-047 - Visible Workbench Identifiers](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Introduce visible base-62 identifiers without parallel IDs or loss of existing references. | planned |
 | [S-048 - Checkpoint Retirement](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately. | planned |
+| [S-049 - Assignment Ownership And The Coordination Record](workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md) | Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health

@@ -18,7 +18,10 @@ const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
-export const coreSkills = [...legacyCoreSkills, 'builder', 'auditor', 'reviewer', 'reconciler'];
+const stanceSkills = ['builder', 'auditor', 'reviewer', 'reconciler'];
+// `carry` joins the workflow half of the bundle, ahead of the stances, so the
+// frozen v3.1.1 row below and every `slice(-4)` stance read stay exact.
+export const coreSkills = [...legacyCoreSkills, 'carry', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -233,13 +236,18 @@ export function validateManifest(project) {
     return fail('invalid-manifest', 'Manifest git block must declare defaultBranch and integrationBranch as Git branch names.', { git: manifest.git });
   }
   // Earlier manifests remain readable at the policy their release declared:
-  // v3.0.0 and v3.1.0 carried the twelve-skill bundle, v3.1.1 the sixteen-skill
-  // bundle with the four stances. Each row is a frozen list, never the live
-  // policy, so a later bundle change keeps older manifests readable. Any other
-  // version must carry the current policy.
+  // v3.0.0 and v3.1.0 carried the twelve-skill bundle, v3.1.1 and v3.1.2 the
+  // sixteen-skill bundle with the four stances. Each row is a frozen list,
+  // never the live policy, so a later bundle change keeps older manifests
+  // readable. Any other version must carry the current policy.
+  //
+  // v3.1.2 reached `main` and downstream rooms with the sixteen-skill bundle
+  // before `carry` grew it, so v3.1.2 is frozen here and the seventeen-skill
+  // bundle is v3.1.3 - the same handling the twelve-to-sixteen growth got when
+  // it bumped v3.1.0 to v3.1.1 rather than redefining v3.1.0 (S-049).
   const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
-  const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, 'builder', 'auditor', 'reviewer', 'reconciler'] };
-  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy };
+  const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, ...stanceSkills] };
+  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy, 'v3.1.2': stancePolicy };
   const accepted = [skillPolicy, supportedLegacy[manifest.workbenchVersion]].filter(Boolean).map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
@@ -1051,7 +1059,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.2 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | record-source --project PATH [--version v3.1.2] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.1.2] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.3 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.3] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | record-source --project PATH [--version v3.1.3] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.1.3] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current', 'recorded', 'seeded'].includes(result.status)) process.exitCode = 1;
   } catch (error) {
