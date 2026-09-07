@@ -314,7 +314,7 @@ be changed only through a later spec linked by supersession.
 | [S-046 - JSON Notepad Foundation](workbench/specs/S-046-json-notepad-foundation/SPEC.md) | Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup. | active |
 | [S-047 - Visible Workbench Identifiers](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Introduce visible base-62 identifiers without parallel IDs or loss of existing references. | planned |
 | [S-048 - Checkpoint Retirement](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately. | planned |
-| [S-049 - Assignment Ownership And The Coordination Record](workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md) | Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination. | active |
+| [S-049 - Assignment Ownership And The Coordination Record](workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md) | Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination. | complete |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
