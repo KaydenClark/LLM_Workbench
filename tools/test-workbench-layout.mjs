@@ -800,8 +800,11 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    const sixteen = manifest.skillPolicy.required;
-    const twelve = sixteen.slice(0, 12);
+    const current = manifest.skillPolicy.required;
+    const twelve = current.slice(0, 12);
+    // v3.1.1's frozen row is the twelve workflow skills plus the four stances.
+    // The current bundle also carries `carry`, so the two are not the same list.
+    const sixteen = [...twelve, ...current.slice(-4)];
     const outcome = (workbenchVersion, required) => {
       fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion, skillPolicy: { ...manifest.skillPolicy, required } }));
       const { report } = run('validate', '--project', project);
@@ -813,33 +816,36 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.1.1', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
-    assert.equal(outcome(VERSION, sixteen), 'valid');
+    assert.equal(outcome(VERSION, current), 'valid');
+    assert.equal(outcome(VERSION, sixteen), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, twelve), 'invalid-skill-policy');
     // An unlisted well-formed version must carry the current policy.
-    assert.equal(outcome('v9.9.9', sixteen), 'valid');
+    assert.equal(outcome('v9.9.9', current), 'valid');
+    assert.equal(outcome('v9.9.9', sixteen), 'invalid-skill-policy');
     assert.equal(outcome('v9.9.9', twelve), 'invalid-skill-policy');
     // A version that is not vMAJOR.MINOR.PATCH is a malformed manifest.
-    assert.equal(outcome('3.1.1', sixteen), 'invalid-manifest');
-    assert.equal(outcome('unknown', sixteen), 'invalid-manifest');
+    assert.equal(outcome('3.1.1', current), 'invalid-manifest');
+    assert.equal(outcome('unknown', current), 'invalid-manifest');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
 test('the v3.1.1 legacy row is the frozen sixteen-skill bundle, not the live current policy', () => {
   const project = fixture();
-  const sixteen = [...coreSkills];
+  const current = [...coreSkills];
+  const sixteen = [...current.slice(0, 12), ...current.slice(-4)];
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     // Grow the live policy in-process; the exported array backs skillPolicy.required.
-    coreSkills.push('seventeenth');
+    coreSkills.push('eighteenth');
     fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion: 'v3.1.1', skillPolicy: { ...manifest.skillPolicy, required: sixteen } }));
     assert.equal(validateManifest(project).status, 'valid', 'a v3.1.1 sixteen-skill manifest stays readable when the current bundle grows');
     fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion: VERSION, skillPolicy: { ...manifest.skillPolicy, required: sixteen } }));
     assert.equal(validateManifest(project).error?.code, 'invalid-skill-policy', 'the current version must carry the grown bundle');
   } finally {
     coreSkills.length = 0;
-    coreSkills.push(...sixteen);
+    coreSkills.push(...current);
     fs.rmSync(project, { recursive: true, force: true });
   }
 });

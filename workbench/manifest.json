@@ -48,6 +48,7 @@
       "to-tickets",
       "tracer-bullet",
       "update-harness",
+      "carry",
       "builder",
       "auditor",
       "reviewer",

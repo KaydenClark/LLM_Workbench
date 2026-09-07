@@ -18,7 +18,10 @@ const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
-export const coreSkills = [...legacyCoreSkills, 'builder', 'auditor', 'reviewer', 'reconciler'];
+const stanceSkills = ['builder', 'auditor', 'reviewer', 'reconciler'];
+// `carry` joins the workflow half of the bundle, ahead of the stances, so the
+// frozen v3.1.1 row below and every `slice(-4)` stance read stay exact.
+export const coreSkills = [...legacyCoreSkills, 'carry', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -238,7 +241,7 @@ export function validateManifest(project) {
   // policy, so a later bundle change keeps older manifests readable. Any other
   // version must carry the current policy.
   const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
-  const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, 'builder', 'auditor', 'reviewer', 'reconciler'] };
+  const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, ...stanceSkills] };
   const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy };
   const accepted = [skillPolicy, supportedLegacy[manifest.workbenchVersion]].filter(Boolean).map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {

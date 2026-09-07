@@ -12,7 +12,7 @@ const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
+  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'carry', 'builder', 'auditor', 'reviewer', 'reconciler'
 ];
 
 function fixtureHome() {
