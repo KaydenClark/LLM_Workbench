@@ -2,14 +2,14 @@
 
 **Spec ID:** S-045
 **Status:** active
-**Priority:** 4
-**Owner:** unassigned
+**Priority:** 2
+**Owner:** claude
 **Stance:** Builder
-**Updated:** 2026-09-06
+**Updated:** 2026-09-07
 **Catalog description:** Own the seven follow-ups the v3.1.2 slices and their retrospective reviews left open, so owed work has a spec that carries it instead of surviving only as prose inside completed specs.
-**Blockers:** owner direction on whether v3.1.3 takes these
-**Latest event:** TK-004 closed under owner direction; the citation convention is recorded and enforced. The other six stay blocked for v3.1.3.
-**Next gate:** Owner decides whether the remaining six land in v3.1.3; until then they stay blocked and `next` correctly excludes them.
+**Blockers:** none
+**Latest event:** TK-005 claimed by claude.
+**Next gate:** Close TK-005 with verification and documentation proof.
 
 > **Citation anchors.** pre=`18ffc0d` post=`18ffc0d`. A bare `path:line` citation
 > reads at `pre` in Outcome, Why It Matters, Current Verified State and Desired
@@ -29,9 +29,11 @@ spec catalog; all seven tickets live inside it. The Taskboard projects one
 current slice per spec, so it shows TK-001 and not the other six - a reader
 reaches all seven by opening this spec, which is the routing that was missing
 before.
-`next` deliberately does **not** return them: every ticket is blocked on owner
-direction, and `next` excludes a blocked slice. Owned and owed, not
-dispatchable.
+Until 2026-09-07 `next` deliberately did **not** return them: every ticket was
+blocked on owner direction, and `next` excludes a blocked slice - owned and
+owed, but not dispatchable. That direction has arrived, so the six are `ready`
+and dispatchable, with the ordering the owner set carried in the Blockers
+column rather than in prose.
 
 ## Why It Matters
 
@@ -97,9 +99,29 @@ Verified on `origin/integration` at `18ffc0d` on 2026-09-06.
 
 - **This spec owns the items; it does not re-decide them.** Each was recorded and
   reviewed in its originating spec. Nothing here reopens a completed result.
-- **Every ticket is blocked pending owner direction.** These are v3.1.2 residue,
-  not v3.1.2 scope. `next` excludes a blocked slice, so creating this spec makes
-  the work visible without dispatching it.
+- **WITHDRAWN: "Every ticket is blocked pending owner direction."** True from
+  2026-09-06 until the owner's direction arrived. It is superseded, not deleted,
+  because the ticket table it described is the one a reader of an earlier commit
+  sees.
+- **REPLACES IT: all six remaining tickets land in v3.1.3, TK-005 first.** Owner
+  decision, 2026-09-07. "TK-005 first" is the owner's only ordering constraint
+  and is declared in the Blockers column of the other five; ordering and slicing
+  beyond it are the implementing agent's, which the owner stated in as many
+  words when the question was put to them. TK-006 additionally declares TK-002,
+  because TK-002 moves where the two unpinned codes are registered from and
+  TK-006 pins the registered set.
+- **A symlinked and/or Git-owned discovery root is SUPPORTED.** Owner decision,
+  2026-09-07. This is TK-005's required decision; TK-001 implements it. The
+  supported route resolves the link, writes the missing skill into the real
+  directory, and never touches Git - no `add`, no `commit`, no `stash`. The
+  installed copy still carries its `.workbench-skill.json` marker. The guards
+  the decision replaces were not wrong about their intent: `26c34e9` added them
+  to stop the harness mutating a user's own versioned skills collection. What
+  they lacked was a supported route for the layout they refused, so the refusal
+  was total rather than bounded.
+- **v3.1.3 does not publish.** This work is delivered to the declared
+  `git.integrationBranch`. Whether and when `integration` reaches `main` is the
+  owner's, and no ticket here plans for it.
 
 ## Non-Goals
 
@@ -109,19 +131,22 @@ Verified on `origin/integration` at `18ffc0d` on 2026-09-06.
 
 ## Dependencies And Blockers
 
-- Owner direction. Until it arrives every ticket below stays `blocked`.
+Resolved on 2026-09-07. The owner unblocked all six remaining tickets for
+v3.1.3 and sequenced TK-005 first. The only dependencies left are the two the
+ticket table declares: TK-001 on TK-005, because TK-005 makes the decision
+TK-001 implements, and TK-006 on TK-002.
 
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Make the presence-only gates and the installer agree on a linked skill destination, or record which is authoritative | blocked | owner direction | pending |
-| TK-002 | Emit `stale-seed` and `unverified-provenance` from a seam whose scope matches what they report | blocked | owner direction | pending |
-| TK-003 | Bracket every `classify` invocation that classifies a room with a before/after room comparison | blocked | owner direction | pending |
+| TK-001 | Make the presence-only gates and the installer agree on a linked skill destination, or record which is authoritative | ready | TK-005 | pending |
+| TK-002 | Emit `stale-seed` and `unverified-provenance` from a seam whose scope matches what they report | ready | TK-005 | pending |
+| TK-003 | Bracket every `classify` invocation that classifies a room with a before/after room comparison | ready | TK-005 | pending |
 | TK-004 | Decide the citation convention for a shipped tree, then sweep the bare line citations the v3.1.2 merges invalidated | done | none | `node tools/test-spec-citation-anchors.mjs` 2/2; 45 live citations across nine specs resolve at their declared anchors |
-| TK-005 | Correct S-040's host record and decide whether a linked or Git-owned discovery root is supported, refused, or routed | blocked | owner direction | pending |
-| TK-006 | Make registering a diagnostic code without pinning it a red test | blocked | owner direction | pending |
-| TK-007 | Withdraw the two false claims S-044's repair introduced, with the granularity of the count named | blocked | owner direction | pending |
+| TK-005 | Correct S-040's host record and decide whether a linked or Git-owned discovery root is supported, refused, or routed | in-progress | none | pending |
+| TK-006 | Make registering a diagnostic code without pinning it a red test | ready | TK-002 | pending |
+| TK-007 | Withdraw the two false claims S-044's repair introduced, with the granularity of the count named | ready | TK-005 | pending |
 
 ## Acceptance Criteria
 
@@ -190,17 +215,22 @@ node workbench/tools/spec-workbench.mjs doctor
 | 2026-09-06 | spec | Correcting the row above and the ticket table's own description of itself | The row above says "the four originating specs each gained a gate-deviation row naming this spec as the owner of its findings". S-040 gained no row in that commit: its only change was the deletion of two blank lines, and `grep "S-045"` over its evidence rows returned zero. S-038's row in the same commit said so correctly - "S-039, S-043 and S-044 each gained a gate-deviation row in the shape S-040's already had" - so the branch published both statements at once. S-040 now has its row, recording the retrospective outcome and naming TK-005, which makes the claim true of the branch as merged; it was not true when written. Two further corrections: this spec's Outcome, catalog description, `Latest event`, Why It Matters and Documentation Impact all still called it a three-ticket spec in the commit that made it seven, and the stale catalog description reached `BLUEPRINT.md`; and the S-042 conditional was stated as a "fourth" deviation in three places when four are already established, so it is the fifth. Found by the separate-context review of `49a6246` | All mutable prose repaired and `render` re-run so the catalog and Taskboard carry seven; the frozen rows in this spec, S-038 and S-042 are corrected by appended rows rather than edited | None. The seven tickets stay blocked on owner direction |
 | 2026-09-06 | TK-004 | Owner unblocked TK-004 only; the citation convention is recorded and enforced | The nine S-039 citations were never wrong - they were unanchored. Probed read-only at `eb5a32b`, the tree the repair was written against: `workbench-layout.mjs:696` is `managedRuntimeDrift`, `:665` `receiptDrift`, `:612` `managedReceiptFiles`, `:646` `laneCoverage`, `:548` `validateGenesisRuntime` - each exactly what its prose claims. So the repair is a declared anchor, not a sweep, which would go stale again at the next merge. Each spec from S-037 declares `pre` and `post` shas; bare citations read at `pre` in the four pre-change sections and at `post` elsewhere, and evidence rows read at the commit each row names and are never re-anchored. The `pre` sha was established by measurement rather than assumed: every spec's evidence says "re-verified at `b3633e5`", but `git merge-base` puts all six slice branches on `09bfff7`, and S-044's `controls` citation resolves at `09bfff7` (`workbench-layout.mjs:21`) and not at `b3633e5` (where `controls` is `:20`). S-038's declared `pre` needed a third value again - the guard test refused `b3633e5` because the upstream report does not exist in that tree - so it reads at `09bfff7`, where both its citations land on the content their prose names | `AGENTS.md` Documentation Ownership carries the rule and the generic half is mirrored into `templates/AGENTS.md`; `tools/test-spec-citation-anchors.mjs` added and registered in the `AGENTS.md` and `RUNBOOK.md` suites | **Range, not meaning, is what the test proves.** All 45 live citations resolve in-range at their declared anchors, but only S-044's two carry an identifier next to them that discriminates between candidate trees; the other 43 are in-range at several candidates and the test cannot tell which is meant. Specs S-001 through S-035 are grandfathered with about 65 bare citations unanchored. Both are deliberate and recorded rather than closed |
 
+| 2026-09-07 | spec | Owner direction arrived; the six remaining tickets are unblocked for v3.1.3 and TK-005's decision is recorded ahead of the ticket that implements it | The two refusal codes TK-005 must record were reproduced rather than carried over from the record that named them. On this host, `~/.claude/skills` is a symlink to `~/.agents/skills` (`readlink`), and `~/.agents/skills` is a Git root whose remote is `KaydenClark/skills` (`git -C ~/.agents/skills rev-parse --show-toplevel` and `remote -v`); `carry` is absent from both. `core-skill-installer.mjs install` against the real home returns `blocked` / `foreign-git-root` on `~/.agents/skills`. It reports **one** code, not two: `validateDestinations` returns on its first failure and `.agents` is checked first, so `discovery-root-collision` on the symlinked `.claude/skills` is never reached on this host. Each code was therefore isolated in its own disposable fixture home - a symlinked `.claude/skills` with no Git anywhere returns `discovery-root-collision`; a `.git` inside `.agents/skills` returns `foreign-git-root` | Header fields, Outcome, Decisions And Contracts, Dependencies And Blockers, the ticket table and the stale TK-004 limitation | The decision is recorded; no code implements it yet. TK-001 is the ticket that does, and it declares TK-005 as its blocker so the tool enforces the order rather than prose asking for it |
+
 ## Completion Result
 
 Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Whether any of these seven is worth doing is an owner decision. This spec
-  makes them reachable; it does not argue for them.
-- TK-004 is the one with a live cost: until it closes, nine citations in S-039
-  on `integration` point at unrelated content, one of them behind a checked
-  acceptance box. That is a reader-facing defect in a merged, completed spec.
+- Whether any of these seven was worth doing was an owner decision, taken on
+  2026-09-06 for TK-004 and on 2026-09-07 for the other six. This spec made them
+  reachable; it did not argue for them.
+- TK-004 was the one with a live cost, and it is closed: the nine unanchored
+  S-039 citations now resolve at a declared anchor that
+  `tools/test-spec-citation-anchors.mjs` checks. Its two residual limits are
+  recorded in its own evidence row - the test proves range, not meaning, and
+  S-001 through S-035 stay grandfathered.
 - **The widened orphan scan will flag legitimate prose under an evidence table.**
   `check-append-only.py` now reads to the next heading rather than stopping at
   the first blank line, which is what closed the blind spot that swallowed
