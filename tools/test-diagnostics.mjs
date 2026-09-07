@@ -597,7 +597,9 @@ const PINNED_EFFECTS = {
   'room-brain-unrouted': ['attention', 'wiki', 'none'],
   'stale-stamp': ['attention', 'wiki', 'none'],
   'stale-skill': ['attention', 'skills', 'none'],
-  'skill-generation-unknown': ['attention', 'skills', 'none']
+  'skill-generation-unknown': ['attention', 'skills', 'none'],
+  'stale-seed': ['attention', 'feedback', 'none'],
+  'unverified-provenance': ['attention', 'manifest', 'none']
 };
 
 test('the registered effect of every blocking code is pinned, and no attention code blocks', () => {
@@ -612,6 +614,20 @@ test('the registered effect of every blocking code is pinned, and no attention c
   for (const code of registeredBlocking) {
     assert.equal(describe(code).severity, 'error', `${code} blocks work, so it cannot be attention severity`);
   }
+});
+
+// S-045 TK-006: the assertions above are all subset checks, in both directions
+// - every pinned code is registered, and every registered blocking code is an
+// error. Neither notices a code that is registered and simply never pinned.
+// Two arrived that way after S-043: `stale-seed` and `unverified-provenance`
+// were registered in `diagnostics.mjs` and left outside `PINNED_EFFECTS`, so
+// the mutation class the pin exists to catch - moving a code's severity, scope,
+// or blocking effect - passed silently against them for as long as they were
+// unpinned. Set equality is what closes it: a code registered without a pin is
+// red at registration, before it can ever be emitted.
+test('every registered diagnostic code is pinned, so registering one without a pin is red', () => {
+  assert.deepEqual(registeredCodes().slice().sort(), Object.keys(PINNED_EFFECTS).sort(),
+    'PINNED_EFFECTS must equal the registry exactly: pin the new code with its severity, scope and effect');
 });
 
 test('doctor plain output groups findings by consequence, counts each group, and prints blocking findings first', () => {
