@@ -19,8 +19,10 @@ composes the existing skills - it replaces none of them and adds no new store.
 
 ## 1. Recover the assignment before asking about it
 
-The assignment is whatever the owner named. Recover its state from the project
-rather than from the owner:
+The assignment is whatever the owner named. `carry` does not choose work: with
+no spec or ticket named, say so and stop - selection is `next`, and inventing a
+queue item for yourself is exactly what `AGENTS.md` forbids. Recover the named
+assignment's state from the project rather than from the owner:
 
 ```bash
 node workbench/tools/spec-workbench.mjs doctor
