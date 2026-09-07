@@ -82,6 +82,21 @@ history. Human-authored product prose stays outside the markers.
 
 ## Workbench Entry And Delivery Boundaries
 
+### Core Navigation Contract
+
+**Traverse, don't search** is a core Workbench feature. The Context Map connects
+shared meanings, controls, assigned specs, Wiki context, and referenced
+source/evidence through existing owners. Enter through
+[Lexicon Task Routing](LEXICON.md#task-routing); new durable context must be
+reachable from its relevant entry route and link back to its sources.
+[AGENTS.md](AGENTS.md#traverse-dont-search) owns the behavior and bounded search
+fallback. Ordinary portable links provide this structure; a visual graph or
+retrieval index is a source-derived view, not a second truth store. Foundry,
+Obsidian, and a recall service are not prerequisites. Link coverage and any
+automated traversal capability require their own verification.
+
+### Entry And Delivery
+
 The seven-control Contract enters through AGENTS -> RUNBOOK -> LEXICON, then
 assigned work and task-relevant owners. This Blueprint loads for architecture
 and cross-cutting direction. SPEC and TASK assign portable stances; stances
