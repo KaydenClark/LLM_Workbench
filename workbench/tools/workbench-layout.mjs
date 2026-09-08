@@ -484,6 +484,8 @@ export function seedLaneDocuments(project, options = {}) {
 // Check every consumed source and destination, including record-only paths,
 // before a lifecycle command changes its manifest or ignore file.
 function preflightSeedDocuments(project, options = {}) {
+  const rootEntry = lstatOrNull(path.resolve(project));
+  if (!rootEntry?.isDirectory() || rootEntry.isSymbolicLink()) return fail('invalid-project', 'Seed destination must be an ordinary project directory.');
   const templates = templateRoot();
   if (!templates) return fail('invalid-source-identity', 'A clean Workbench release checkout is required to seed documents.');
   try {

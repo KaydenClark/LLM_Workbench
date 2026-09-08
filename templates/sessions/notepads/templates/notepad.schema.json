@@ -27,11 +27,13 @@
     },
     "id": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "type": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "status": {
       "enum": [
@@ -43,15 +45,18 @@
     },
     "title": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "created_at": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "updated_at": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "objective": {
       "type": "object",
@@ -60,9 +65,6 @@
       ],
       "properties": {
         "key": {
-          "type": "string"
-        },
-        "focus": {
           "type": "string"
         }
       }
@@ -75,17 +77,11 @@
       "properties": {
         "state": {
           "type": "string"
-        },
-        "unresolved": {
-          "type": "array"
-        },
-        "next_action": {
-          "type": "string"
         }
       }
     },
     "relationships": {
-      "type": "object"
+      "description": "Optional workflow relationships; the runtime preserves their supplied shape."
     },
     "entries": {
       "type": "array",
@@ -114,7 +110,7 @@
             ]
           },
           "topic": {
-            "type": "string"
+            "description": "Optional classification preserved from existing records."
           },
           "content": {
             "type": "string"

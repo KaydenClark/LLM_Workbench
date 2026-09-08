@@ -694,7 +694,12 @@ collections and seed examples with recorded hashes. This moves no old note,
 preserves earlier provenance and the room version, and reports the layout source
 separately. Existing adjusted examples are retained and reported by the seeded
 document mechanism. Repeated migration reports `current`; use `seed-documents`
-to refresh untouched seeded examples. On a room without the new declaration,
+to refresh untouched seeded examples. Seeding verifies the clean release and
+ordinary source, destination and receipt paths before writing or recording. An
+asserted version must match the source checkout. Validation checks effective Git
+ignore rules and already tracked live files in Git worktrees; outside Git its
+`ignoreVerification` says `not-a-git-worktree`, and no tracking guarantee follows.
+On a room without the new declaration,
 bare note names still use the legacy grilling collection. Never rewrite legacy
 Markdown merely to change its extension.
 
