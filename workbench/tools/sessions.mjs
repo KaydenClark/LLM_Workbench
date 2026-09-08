@@ -13,7 +13,7 @@ import { parseSpecPacket } from './spec-packet.mjs';
 import { validateSpecCandidate } from './spec-workbench.mjs';
 import { listAdrs, validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
-import { controls } from './workbench-layout.mjs';
+import { controls, containsPlaceholder } from './workbench-layout.mjs';
 import { laneRelative, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 
 function lstatOrNull(target) {
@@ -71,28 +71,58 @@ function evidenceRows(content) {
   return section.split(/\r?\n/).filter(line => /^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line));
 }
 
+function decodedStrings(value) {
+  if (typeof value === 'string') return [value];
+  if (Array.isArray(value)) return value.flatMap(decodedStrings);
+  if (value && typeof value === 'object') return Object.entries(value).flatMap(([key, item]) => [key, ...decodedStrings(item)]);
+  return [];
+}
+
+function canonicalReference(target) {
+  const missing = [];
+  let existing = target;
+  while (!fs.existsSync(existing)) {
+    const parent = path.dirname(existing);
+    if (parent === existing) throw new Error('Cannot resolve citation ancestry');
+    missing.unshift(path.basename(existing));
+    existing = parent;
+  }
+  return path.join(fs.realpathSync.native(existing), ...missing);
+}
+
+function markdownReferences(content) {
+  const references = [];
+  for (const pattern of [
+    /\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)]+))/g,
+    /^ {0,3}\[[^\]\n]+\]:\s*(?:<([^>\n]+)>|(\S+))/gm
+  ]) {
+    for (const match of content.matchAll(pattern)) references.push(match[1] ?? match[2]);
+  }
+  return references;
+}
+
 function validatePromotionOwner(root, destination, content, original) {
   if (destination.relative === 'CLAUDE.md') {
     if (content.trim() !== '@AGENTS.md') throw new Error('CLAUDE.md must remain the AGENTS adapter');
     return 'control';
   }
-  if (path.extname(destination.relative) !== '.md' || !content.trim() || !/^#\s+\S/m.test(content)) throw new Error('A durable Markdown owner needs nonempty content and a title');
+  if (path.extname(destination.relative) !== '.md' || !content.trim() || !/^\uFEFF?#\s+\S/m.test(content)) throw new Error('A durable Markdown owner needs nonempty content and a title');
   const beneath = relative => destination.relative.startsWith(`${relative}/`);
   const forbidden = [...UNTRACKED_COLLECTIONS, 'checkpoints', 'notepad-templates'].map(name => collectionRelative(root, name));
   if (forbidden.some(beneath)) throw new Error('A live record, template or frozen checkpoint cannot be the promotion destination');
   // Candidate text is authored by the agent. A link to an ignored working
   // record is not durable provenance, even if that source currently exists.
-  for (const match of content.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
-    const reference = decodeURIComponent(match[1].split('#')[0]);
+  for (const citation of markdownReferences(content)) {
+    const reference = decodeURIComponent(citation.split('#')[0]);
     if (!reference || /^[a-z][a-z0-9+.-]*:/i.test(reference)) continue;
     const target = path.resolve(path.dirname(destination.absolute), reference);
-    const relative = path.relative(fs.realpathSync.native(root), fs.existsSync(target) ? fs.realpathSync.native(target) : target).split(path.sep).join('/');
+    const relative = path.relative(fs.realpathSync.native(root), canonicalReference(target)).split(path.sep).join('/');
     if (UNTRACKED_COLLECTIONS.some(name => relative.startsWith(`${collectionRelative(root, name)}/`)) && !relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) throw new Error('Durable provenance cannot cite an ignored live record');
   }
   const overrides = { contentOverrides: new Map([[destination.absolute, content]]) };
   let findings = [];
   if (controls.includes(destination.relative)) {
-    if (/\[BRACKETED(?:_[A-Z]+)*\]/.test(content)) throw new Error('A root control cannot contain template placeholders');
+    if (containsPlaceholder(content) || /\[BRACKETED(?:_[A-Z]+)*\]/.test(content)) throw new Error('A root control cannot contain template placeholders');
     return 'control';
   }
   if (beneath(laneRelative(root, 'specs')) && path.basename(destination.absolute) === 'SPEC.md') {
@@ -143,17 +173,17 @@ export function promote(root, options) {
     original = fs.readFileSync(destination.absolute);
     if (!/^[a-f0-9]{64}$/i.test(String(options.expected ?? '')) || digest(original) !== options.expected.toLowerCase()) throw new Error('Destination hash is stale or invalid; read and reconcile again');
     const draftBytes = fs.readFileSync(draft.absolute);
-    const content = new TextDecoder('utf-8', { fatal: true }).decode(draftBytes);
-    const hits = scanPrivacy(JSON.stringify(selected.entries)).concat(scanPrivacy(content));
+    const content = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(draftBytes);
+    const hits = decodedStrings(selected.entries).flatMap(scanPrivacy).concat(scanPrivacy(content));
     if (hits.length) return { status: 'blocked', error: finding('secret-like-content', 'Selected material or authored destination contains private content'), hits };
     const owner = validatePromotionOwner(root, destination, content, original.toString('utf8'));
     if (!fs.readFileSync(source.absolute).equals(sourceBytes) || !fs.readFileSync(destination.absolute).equals(original) || !fs.readFileSync(draft.absolute).equals(draftBytes)) throw new Error('Source, destination or draft changed during validation; read and reconcile again');
     backupDirectory = fs.mkdtempSync(path.join(path.dirname(destination.absolute), '.promotion-'));
     fs.writeFileSync(path.join(backupDirectory, 'original.md'), original, { flag: 'wx', mode: 0o600 });
     attempted = true;
-    writeSafeFile(root, destination.absolute, content);
+    writeSafeFile(root, destination.absolute, draftBytes);
     const after = fs.readFileSync(destination.absolute);
-    if (!after.equals(Buffer.from(content))) throw new Error('Destination read-back disagrees with the authored bytes');
+    if (!after.equals(draftBytes)) throw new Error('Destination read-back disagrees with the authored bytes');
     let recoveryResidue = null;
     try { fs.rmSync(backupDirectory, { recursive: true }); backupDirectory = null; }
     catch { recoveryResidue = path.relative(root, backupDirectory).split(path.sep).join('/'); }

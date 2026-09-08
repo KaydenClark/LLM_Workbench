@@ -164,6 +164,41 @@ test('invalid UTF-8 draft bytes are refused without lossy replacement', () => {
     assert.deepEqual(snapshot(dir, options), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('valid UTF-8 BOM draft preserves the exact authored bytes and hash', () => {
+  const { dir, options } = fixture();
+  try {
+    fs.writeFileSync(path.join(dir, options.content), '\uFEFF# Runbook\n\nA supported rule.\n');
+    const before = snapshot(dir, options);
+    const result = sessions.promote(dir, options);
+    assert.equal(result.status, 'promoted', JSON.stringify(result));
+    assert.deepEqual(fs.readFileSync(path.join(dir, options.to)), before[2]);
+    assert.equal(result.destination.sha256, hash(before[2]));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const failure of ['decoded-private-path', 'project-placeholder', 'version-placeholder', 'reference-citation', 'missing-live-citation']) {
+  test(`promotion refuses ${failure} before changing any file`, () => {
+    const { dir, options } = fixture();
+    try {
+      if (failure === 'decoded-private-path') {
+        // Historical notes can predate the current append-time privacy check.
+        const note = JSON.parse(fs.readFileSync(path.join(dir, options.from), 'utf8'));
+        note.entries[0].content = 'Earlier line.\n/Users/synthetic-review/private-reference';
+        fs.writeFileSync(path.join(dir, options.from), JSON.stringify(note));
+      }
+      if (failure === 'project-placeholder') fs.appendFileSync(path.join(dir, options.content), '\n[PROJECT_NAME]\n');
+      if (failure === 'version-placeholder') fs.appendFileSync(path.join(dir, options.content), '\n[HARNESS_VERSION]\n');
+      if (failure === 'reference-citation') fs.appendFileSync(path.join(dir, options.content), `\n[Evidence][live]\n\n[live]: ${options.from}\n`);
+      if (failure === 'missing-live-citation') fs.appendFileSync(path.join(dir, options.content), '\n[Evidence](workbench/sessions/notepads/work/missing.json)\n');
+      const before = snapshot(dir, options);
+      // macOS temporary roots exercise /var versus /private/var identity.
+      const result = sessions.promote(dir, options);
+      assert.equal(result.status, 'blocked', JSON.stringify(result));
+      assert.deepEqual(snapshot(dir, options), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
 test('a failed restoration retains a verified original backup and reports partial recovery', () => {
   const { dir, options } = fixture();
   const before = snapshot(dir, options);

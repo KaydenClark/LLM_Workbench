@@ -180,7 +180,7 @@ function parseOptions(args, required, flags = []) {
   return options;
 }
 
-function containsPlaceholder(content) {
+export function containsPlaceholder(content) {
   for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) {
     if (templateVocabulary.has(match[0])) return true;
   }

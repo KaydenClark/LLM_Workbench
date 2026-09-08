@@ -146,6 +146,14 @@ partial result with an original backup; this is an explicit recovery limit,
 not a claim every possible I/O failure leaves the destination unchanged.
 Operational adoption/upgrade recovery and checkpoint retirement remain TK-003.
 
+Candidate `1df7317` passed the full 37-command union. Independent review still
+reproduced four P2 gaps: UTF-8 BOM byte loss, decoded-string privacy bypass,
+reference-style and missing-leaf alias citations into ignored records, and
+supported template placeholders. Six regressions failed as expected before
+repair. The repair preserves original draft bytes, scans decoded strings,
+checks both Markdown link forms with canonical ancestry, and shares the layout
+placeholder vocabulary. Repaired verification and fresh review remain open.
+
 ### Actual local owner reconciliation
 
 The direct-promotion command was used for this selected verification account,
@@ -154,6 +162,9 @@ verification at `738b7c8` passes 20 promotion cases and the existing spec
 lifecycle, ADR, Wiki and legacy sessions checks. These results remain bounded;
 full-suite and independent review are separate gates. The source note and draft
 remain available for their unresolved context and are not durable citations.
+The [curated read-back receipt](direct-promotion-result.json) pins the actual
+command candidate and original/source/draft/result hashes. Independent review
+verified those observations; the later defects above limit the general claim.
 
 ## Acceptance Criteria
 
