@@ -41,8 +41,9 @@ node workbench/tools/notepads.mjs create --note NAME --objective OBJECTIVE_KEY \
   --title "TITLE" --focus "WHAT THIS NOTE IS FOR"
 ```
 
-Live notes stay local and untracked, in a manifest-declared live collection.
-Never commit one, and never cite one as durable evidence.
+Live notes stay local and untracked, in a live collection `workbench/manifest.json`
+declares; `--collection` names which one, and grilling is the default. Never
+commit one, and never cite one as durable evidence.
 
 ## 2. Save it when you learn it, not at closeout
 
