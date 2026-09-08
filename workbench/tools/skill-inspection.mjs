@@ -30,9 +30,11 @@ function compare(left, right) {
   for (let index = 0; index < 3; index += 1) if (left[index] !== right[index]) return left[index] < right[index] ? -1 : 1;
   return 0;
 }
-function rangeState(range, room) {
+export const CORE_COMPATIBILITY_MINIMUM = 'v3.1.4';
+
+function rangeState(range, room, producingRelease) {
   const minimum = version(range?.minimum), maximum = version(range?.maximum), current = version(room);
-  if (!minimum || !maximum || !current || compare(minimum, maximum) > 0) return 'unknown';
+  if (range?.minimum !== CORE_COMPATIBILITY_MINIMUM || range?.maximum !== producingRelease || !minimum || !maximum || !current || compare(minimum, maximum) > 0) return 'unknown';
   return compare(current, minimum) >= 0 && compare(current, maximum) <= 0 ? 'compatible' : 'incompatible';
 }
 
@@ -92,8 +94,8 @@ export function inspectSkills(manifest, home) {
         continue;
       }
       generations.add(`${marker.release}@${marker.commit}`);
-      const compatible = rangeState(marker.compatibleRooms, manifest.workbenchVersion);
-      if (compatible === 'unknown') findings.push(finding('skill-compatibility-unknown', `${relative} declares no valid room compatibility range.`, details));
+      const compatible = rangeState(marker.compatibleRooms, manifest.workbenchVersion, marker.release);
+      if (compatible === 'unknown') findings.push(finding('skill-compatibility-unknown', `${relative} declares no valid room compatibility range.`, { ...details, release: marker.release, expected: manifest.workbenchVersion }));
       else if (compatible === 'incompatible') findings.push(finding('incompatible-core', `${relative} core ${marker.release} supports ${marker.compatibleRooms.minimum} through ${marker.compatibleRooms.maximum}; this room runs ${manifest.workbenchVersion}.`, { ...details, release: marker.release, expected: manifest.workbenchVersion }));
     }
     if (sources.size > 1) findings.push(finding('skill-source-conflict', `${skill} resolves to separate maintained implementations across discovery roots.`, { skill }));

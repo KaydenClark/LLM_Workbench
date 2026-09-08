@@ -168,6 +168,8 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 
 | 2026-09-08 | TK-002 | Read-only core compatibility and discovery inspection candidate prepared | Initial test draft had a syntax error and was corrected; valid four-case suite then failed against the frozen 434ef6b public doctor behavior through a test adapter. New inspection passes all four: inclusive differing-release bounds, missing/broken entries, unknown/modified content, separate sources/extra Codex discovery/mixed generations, with unchanged home snapshots | Root and generic diagnostic procedures, schema 2 range extension and this bounded decision documented | Integration fixtures, full 39-command union and independent review pending; configured-host workflow proof is not inferred |
 
+| 2026-09-08 | TK-002 | Full checks passed at 7a449cced784edf68aea08ec63c416ea957fed84, but independent review rejected an overstated marker range | 39 of 39 commands passed. Review reproduced a producing release claiming support through v9.0.0. New regression demonstrated red; shared baseline floor and exact producing-release ceiling now reject widened or reversed ranges as unknown. Five focused inspection tests green | Existing declared range policy enforced; inspection remains read-only and attention-only | Fresh immutable full suite and independent re-review pending; no native workflow or integration claim |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.

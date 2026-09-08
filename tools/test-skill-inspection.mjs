@@ -52,6 +52,22 @@ test('missing and broken discovery entries remain visible without installing rep
   } finally { fs.rmSync(home, { recursive: true, force: true }); }
 });
 
+test('a marker cannot widen the supported contract beyond its baseline floor or producing release', () => {
+  for (const range of [
+    { minimum: 'v3.1.4', maximum: 'v9.0.0' },
+    { minimum: 'v3.0.0', maximum: 'v3.2.0' },
+    { minimum: 'v3.2.0', maximum: 'v3.1.4' }
+  ]) {
+    const home = fixture();
+    try {
+      seed(home, 'genesis', { compatibleRooms: range });
+      const before = snapshot(home);
+      assert.deepEqual(codes(home), ['skill-compatibility-unknown', 'skill-compatibility-unknown']);
+      assert.deepEqual(snapshot(home), before);
+    } finally { fs.rmSync(home, { recursive: true, force: true }); }
+  }
+});
+
 test('unknown generation, undeclared compatibility and modified content are distinct', () => {
   for (const shape of ['generation', 'range', 'content']) {
     const home = fixture();

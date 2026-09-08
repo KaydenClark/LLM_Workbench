@@ -177,7 +177,7 @@ function snapshot(directory) {
   return entries;
 }
 
-test('doctor --home reports a stale or unknown installed skill generation per required skill, never writes to the home, and reads schema 1 as unknown', () => {
+test('doctor --home reports unknown generation or compatibility per required skill, never writes to the home, and reads schema 1 as unknown', () => {
   const dir = project(VERSION);
   const home = fixture();
   try {
@@ -201,10 +201,10 @@ test('doctor --home reports a stale or unknown installed skill generation per re
       ['skill-generation-unknown', 'attention', 'skills', 'none', 'auditor'],
       ['skill-generation-unknown', 'attention', 'skills', 'none', 'builder'],
       ['skill-generation-unknown', 'attention', 'skills', 'none', 'reviewer'],
-      ['incompatible-core', 'attention', 'skills', 'none', 'genesis']
+      ['skill-compatibility-unknown', 'attention', 'skills', 'none', 'genesis']
     ].flatMap(row => ['.agents/skills', '.claude/skills'].map(discovery => [...row, discovery])).concat([['core-generation-conflict', 'attention', 'skills', 'none', undefined, undefined]]).sort());
-    assert.equal(findings.find((item) => item.code === 'incompatible-core').release, 'v0.0.0');
-    assert.match(findings.find((item) => item.code === 'incompatible-core').message, /v0\.0\.0.*v\d+\.\d+\.\d+|v\d+\.\d+\.\d+.*v0\.0\.0/);
+    assert.equal(findings.find((item) => item.code === 'skill-compatibility-unknown').release, 'v0.0.0');
+    assert.match(findings.find((item) => item.code === 'skill-compatibility-unknown').message, /valid room compatibility range/);
     assert.deepEqual(snapshot(home), before, 'doctor never writes to the home');
     const cli = cliDoctor(dir, home);
     assert.equal(cli.status, 0, 'skill findings are attention and never block');

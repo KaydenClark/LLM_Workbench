@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { MANAGED_SKILL_MARKER, MANAGED_SKILL_SOURCE, readManagedSkillMarker } from '../workbench/tools/workbench-layout.mjs';
-import { skillContentHash } from '../workbench/tools/skill-inspection.mjs';
+import { skillContentHash, CORE_COMPATIBILITY_MINIMUM } from '../workbench/tools/skill-inspection.mjs';
 export { skillContentHash } from '../workbench/tools/skill-inspection.mjs';
 import { sourceIdentity } from './workbench-tools.mjs';
 
@@ -22,7 +22,7 @@ export function markerSourceIdentity() {
 }
 
 export function managedMarker(skillDirectory, identity = markerSourceIdentity()) {
-  return { schemaVersion: MARKER_SCHEMA_VERSION, source: MARKER_SOURCE, release: identity.release, commit: identity.commit, contentHash: skillContentHash(skillDirectory), compatibleRooms: { minimum: 'v3.1.4', maximum: identity.release } };
+  return { schemaVersion: MARKER_SCHEMA_VERSION, source: MARKER_SOURCE, release: identity.release, commit: identity.commit, contentHash: skillContentHash(skillDirectory), compatibleRooms: { minimum: CORE_COMPATIBILITY_MINIMUM, maximum: identity.release } };
 }
 
 export function writeManagedMarker(skillDirectory, identity = markerSourceIdentity()) {
