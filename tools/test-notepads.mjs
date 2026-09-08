@@ -630,6 +630,46 @@ test('the CLI reports every result as JSON and fails closed on a refusal', () =>
   }
 });
 
+// Split a documented shell command the way a shell would, honouring the two
+// quote styles the Runbook and skills actually use.
+function argvOf(command) {
+  const argv = [];
+  for (const [, single, double, bare] of command.matchAll(/'([^']*)'|"([^"]*)"|(\S+)/g)) {
+    argv.push(single ?? double ?? bare);
+  }
+  return argv;
+}
+
+test("the grilling skill's documented command produces the record it shows", () => {
+  const dir = project();
+  try {
+    // The skill has twice drifted from the runtime: first showing a shape the
+    // tool did not write, then instructing a write no path could perform. The
+    // command and the example are held to each other here so the next drift
+    // fails rather than ships.
+    const skill = fs.readFileSync(path.join(root, 'skills', 'grilling', 'SKILL.md'), 'utf8');
+    const documented = skill.match(/```bash\r?\n([\s\S]*?)```/);
+    const example = skill.match(/```json\r?\n([\s\S]*?)```/);
+    assert.ok(documented && example, 'the skill must show a create command and the record it writes');
+    assert.match(documented[1], /notepads\.mjs create/, 'the documented command is a notepad create');
+
+    const argv = argvOf(documented[1].replace(/\\\r?\n/g, ' '))
+      .filter((token) => !['node', 'workbench/tools/notepads.mjs'].includes(token))
+      .map((token) => token.replace('TOPIC-YYYY-MM-DD', 'topic-2026-01-31').replace('OBJECTIVE_KEY', 'objective-key'));
+    const run = spawnSync(process.execPath, [notepadsTool, ...argv, '--path', dir], { encoding: 'utf8' });
+    assert.equal(run.status, 0, run.stdout || run.stderr);
+    assert.equal(JSON.parse(run.stdout).status, 'created');
+
+    const written = JSON.parse(fs.readFileSync(path.join(dir, JSON.parse(run.stdout).note), 'utf8'));
+    const shown = JSON.parse(example[1]);
+    // Timestamps are the only fields a run cannot reproduce from a document.
+    for (const record of [written, shown]) delete record.created_at, delete record.updated_at;
+    assert.deepEqual(written, shown, 'the example must be what the documented command actually writes');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('the notepad runtime is a managed tool and its live records stay untracked', () => {
   const dir = project();
   try {

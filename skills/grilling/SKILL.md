@@ -43,6 +43,8 @@ Create it through the shared runtime, which writes the schema for you:
 ```bash
 node workbench/tools/notepads.mjs create --note TOPIC-YYYY-MM-DD \
   --objective OBJECTIVE_KEY --title "The agreed topic" --focus "What we are deciding" \
+  --state "Question list written; nothing answered yet" \
+  --next-action "Ask question 1 with a recommendation" \
   --view-field 'questions=[{"id":"1","status":"open","question":"First decision"}]'
 ```
 
