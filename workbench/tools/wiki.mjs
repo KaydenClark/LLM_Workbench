@@ -16,7 +16,7 @@ export const SENSITIVITIES = Object.freeze(['normal', 'private', 'restricted']);
 export const KNOWLEDGE_ROLES = Object.freeze(['canonical', 'curated', 'derived', 'historical']);
 export const REQUIRED_PROPERTIES = Object.freeze(['type', 'status', 'sensitivity', 'knowledge_role', 'provenance', 'source_paths', 'last_verified']);
 const REQUIRED_COLLECTIONS = Object.freeze(['design-concepts', 'guidebooks', 'archive']);
-const LIVE_STATE_MARKERS = [/<!--\s*hot-specs:start\s*-->/, /<!--\s*spec-catalog:start\s*-->/, /^\|\s*TK-\d{3}\s*\|.*\|\s*(?:ready|in-progress|blocked|done|deferred)\s*\|/m];
+const LIVE_STATE_MARKERS = [/<!--\s*hot-specs:start\s*-->/, /<!--\s*spec-catalog:start\s*-->/, /^\|\s*TK-[0-9A-Za-z]+\s*\|.*\|\s*(?:ready|in-progress|blocked|done|deferred)\s*\|/m];
 
 function walkMarkdown(directory, files = []) {
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {

@@ -2177,3 +2177,20 @@ for (const failure of ['ignored-template', 'trackable-live']) {
     } finally { fs.rmSync(project, { recursive: true, force: true }); }
   });
 }
+
+test('Genesis accepts an alphanumeric first spec and ticket without changing its chosen path', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    const oldPath = path.join(project, 'workbench/specs/S-001-first');
+    const chosen = path.join(project, 'workbench/specs/S-00A-first');
+    fs.renameSync(oldPath, chosen);
+    const file = path.join(chosen, 'SPEC.md');
+    fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replaceAll('S-001', 'S-00A').replaceAll('TK-001', 'TK-00A'));
+    render(project);
+    const result = run('validate', '--project', project, '--genesis').report;
+    assert.equal(result.status, 'valid', JSON.stringify(result));
+    assert.equal(nextWork(project).specId, 'S-00A');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});

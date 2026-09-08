@@ -188,6 +188,35 @@ Workbench` stamp naming a version other than `workbench/manifest.json`; refresh
 the stamp when the harness is upgraded (`validate --genesis` fails the same
 files with `version-mismatch`).
 
+### Visible Identifiers
+
+```bash
+node workbench/tools/spec-workbench.mjs next-id --prefix S --json
+node workbench/tools/spec-workbench.mjs next-id S-### --prefix TK --json
+node workbench/tools/adr.mjs new --title "Decision title"
+```
+
+`next-id` is a read-only proposal, not a reservation or permission to create work.
+Ticket proposals require the assigned spec and reserve labels from all specs in
+the Workbench. Write the returned label only during authorized planning, then
+render and run doctor before requesting another. ADR `new` writes a proposed
+record through the existing exclusive-publication path. Existing paths stay fixed.
+
+New durable labels contain at least one letter, so they cannot reuse historical
+decimal IDs that are no longer present. Spec/ticket minimum width is three;
+ADR allocation keeps width four. Width grows without truncation using alphabet
+`0-9 A-Z a-z`. Sorting uses suffix length then that alphabet, independent of
+locale; it is label ordering, not creation chronology. Case-folded and leading-zero
+collisions are refused. Letter-bearing ticket labels are unique across the room;
+legacy numeric ticket references retain their existing spec-qualified scope and
+are not claimed globally unique. Their bytes and lookup routes are preserved.
+
+Spec parsing, selection, blockers, claim/close, rendering, Genesis readiness,
+ADR registers, Wiki copied-task-state checks, guardrail contradiction checks and
+citation-anchor coverage accept the new syntax. Existing numeric syntax remains
+readable. Socket/team registry IDs and internal entry sequence IDs keep their
+existing formats; these commands do not allocate those artifact types.
+
 ### JSON Notepads
 
 Visible note identifiers can be allocated without changing existing note paths:
@@ -216,7 +245,7 @@ inventory is reconciled; they are preserved. Ordinary `create --note NAME`
 remains available for legacy named context. Allocation assumes one writer and
 checks current records; it supplies neither a distributed lock nor an eternal
 registry of deleted local notes. Active handoff retention still prevents source
-cleanup. This note command does not change spec, ticket or ADR allocation and parsing.
+cleanup. Durable spec/ticket/ADR behavior is described above.
 
 New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
 and updates. A new layout declares `sessions/notepads/`: bare names create

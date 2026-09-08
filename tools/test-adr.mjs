@@ -100,19 +100,19 @@ test('validation rejects unknown canonicalization targets, untracked provenance,
   }
 });
 
-test('new allocates the next number as a proposed record with a canonicalization slot', () => {
+test('new allocates an unused letter-bearing label as a proposed record with a canonicalization slot', () => {
   const dir = fixture();
   try {
     fs.writeFileSync(path.join(dir, 'workbench', 'docs', 'adr', '0007-gap.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
     const created = newAdr(dir, { title: 'Checkpoints are the durable session record', date: '2026-09-04' });
-    assert.equal(created.number, '0008');
-    assert.equal(path.basename(created.filePath), '0008-checkpoints-are-the-durable-session-record.md');
+    assert.equal(created.number, '000A');
+    assert.equal(path.basename(created.filePath), '000A-checkpoints-are-the-durable-session-record.md');
     const content = fs.readFileSync(created.filePath, 'utf8');
     assert.match(content, /^---\nstatus: proposed\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS\.md\n---/);
     assert.match(content, /^# Checkpoints are the durable session record$/m);
     const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Another decision'], { cwd: dir, encoding: 'utf8' });
     assert.equal(cli.status, 0, cli.stderr);
-    assert.equal(JSON.parse(cli.stdout).number, '0009');
+    assert.equal(JSON.parse(cli.stdout).number, '000B');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

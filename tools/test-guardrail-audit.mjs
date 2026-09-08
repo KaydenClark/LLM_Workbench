@@ -149,3 +149,8 @@ assert.ok(localAudit.score < 100, 'current harness should not claim perfect evid
 assert.ok(localAudit.recommendations.length > 0, 'north-star audit should expose the next improvement');
 
 console.log(`ok - guardrail audit self-test passed; local north-star score ${localAudit.score}/100`);
+
+assert.equal(taskStatePasses({
+  'workbench/manifest.json': JSON.stringify({ schemaVersion: 2, lanes: { specs: 'workbench/specs' } }),
+  'workbench/specs/S-00A-contradictory/SPEC.md': contradictorySpec.replaceAll('S-101', 'S-00A').replaceAll('TK-001', 'TK-00A')
+}), false, 'alphanumeric spec/ticket IDs cannot hide contradictory task state');

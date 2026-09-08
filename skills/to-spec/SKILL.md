@@ -13,7 +13,7 @@ not restart grilling or implement the capability.
 
 1. Verify the project root, nearest controls, existing specs, and relevant source
    or tests. Reuse an existing owning spec when the capability already has one;
-   otherwise allocate the next unused stable ID and path.
+   otherwise obtain a read-only proposal with `spec-workbench.mjs next-id --prefix S --json` and write the returned visible ID only within the authorized planning scope. Existing stable paths never change.
 2. Separate confirmed decisions from assumptions and unresolved owner choices.
    Record unresolved choices as blockers instead of inventing answers.
 3. Capture the outcome, why it matters, verified current state, desired behavior,

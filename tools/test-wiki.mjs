@@ -332,3 +332,12 @@ test('normalize inserts only the missing required properties and leaves every no
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
+
+test('alphanumeric ticket tables remain forbidden copied live task state', () => {
+  const project = seededWiki();
+  try {
+    const target = path.join(project, 'workbench/wiki/Copied ID.md');
+    fs.writeFileSync(target, note({}, '# Copied\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00A | Slice | ready | none | pending |\n'));
+    assert.ok(validateWiki(project).some(item => item.code === 'copied-task-state' && /task state|live state/i.test(item.message)));
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});

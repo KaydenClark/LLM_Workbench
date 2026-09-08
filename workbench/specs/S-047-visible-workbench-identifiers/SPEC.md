@@ -148,6 +148,25 @@ its receipt names that exact candidate. Guardrail score remains 78/100 with four
 outcome-evidence recommendations. Spec/ticket/ADR compatibility remains TK-002;
 no overall identifier or release acceptance is closed here.
 
+## TK-002 Consumer Coverage
+
+The [consumer inventory](consumer-inventory.json) records the parser, allocator,
+route, sort, diagnostic, render, citation, workflow and installation owners,
+including unchanged consumers and explicitly remaining formats. Internal entry
+sequence IDs and socket/actor registries retain their existing contracts.
+
+New spec/ticket proposals and ADR allocation require a letter in the suffix.
+This distinguishes new durable labels from decimal history, including removed
+numeric IDs, while retaining the accepted base-62 alphabet and width growth.
+Old numeric ticket references remain qualified by spec; new letter-bearing
+labels are checked across the entire Workbench. `next-id` is explicitly a
+read-only proposal, never a reservation or authorization to manufacture work.
+Sorting is suffix-length/alphabet ordering independent of locale, not chronology.
+
+Five public consumer cases and Genesis, Wiki, guardrail and citation-coverage
+regressions exposed numeric-only gaps before repair. Their final repaired
+results, full verification and independent review remain pending below.
+
 ## Acceptance Criteria
 
 - [ ] The accepted visible-ID semantics work through allocation and lookup.

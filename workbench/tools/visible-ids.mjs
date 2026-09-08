@@ -25,7 +25,16 @@ export function encodeBase62(value) {
   return suffix;
 }
 
-export function allocateVisibleId(prefix, ids, { width = 3 } = {}) {
+export function compareVisibleIds(left, right) {
+  const a = visibleIdParts(left);
+  const b = visibleIdParts(right);
+  if (!a || !b || a.prefix !== b.prefix) return left === right ? 0 : left < right ? -1 : 1;
+  const x = a.suffix.replace(/^0+/, '') || '0';
+  const y = b.suffix.replace(/^0+/, '') || '0';
+  return x.length - y.length || (x === y ? 0 : x < y ? -1 : 1);
+}
+
+export function allocateVisibleId(prefix, ids, { width = 3, requireLetter = false } = {}) {
   if (!PREFIX.test(prefix)) throw new Error('A type prefix must be 1-16 uppercase letters/digits, starting with a letter');
   if (!Number.isInteger(width) || width < 1 || width > 32) throw new Error('Minimum identifier width must be an integer from 1 through 32');
   if (!Array.isArray(ids) || ids.some(id => typeof id !== 'string')) throw new Error('Occupied identifiers must be an array of strings');
@@ -40,6 +49,7 @@ export function allocateVisibleId(prefix, ids, { width = 3 } = {}) {
   // and surface collisions; this allocator does not provide a distributed lock.
   for (let ordinal = 1n; ; ordinal++) {
     const id = `${prefix}-${encodeBase62(ordinal).padStart(width, '0')}`;
+    if (requireLetter && !/[A-Za-z]/.test(visibleIdParts(id).suffix)) continue;
     if (!occupied.has(visibleIdKey(id))) return id;
   }
 }

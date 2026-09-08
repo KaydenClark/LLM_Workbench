@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { BASE62_ALPHABET, encodeBase62, allocateVisibleId, visibleIdKey } from '../workbench/tools/visible-ids.mjs';
+import { BASE62_ALPHABET, encodeBase62, allocateVisibleId, visibleIdKey, compareVisibleIds } from '../workbench/tools/visible-ids.mjs';
 
 test('base62 encoding has explicit alphabet and grows without truncation', () => {
   assert.equal(BASE62_ALPHABET, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
@@ -25,4 +25,10 @@ test('allocation skips case and leading-zero aliases, then grows past its minimu
   assert.throws(() => allocateVisibleId('N', ['N-00A', 'N-00a']), /collision/i);
   assert.throws(() => allocateVisibleId('../N', []));
   assert.throws(() => allocateVisibleId('N', [], { width: 0 }));
+});
+
+
+test('durable allocation can distinguish legacy numeric labels and sort independently of locale', () => {
+  assert.equal(allocateVisibleId('TK', ['TK-001'], { requireLetter: true }), 'TK-00A');
+  assert.deepEqual(['S-1000', 'S-00z', 'S-00A', 'S-010', 'S-001'].sort(compareVisibleIds), ['S-001', 'S-00A', 'S-00z', 'S-010', 'S-1000']);
 });

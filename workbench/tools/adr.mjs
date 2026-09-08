@@ -7,11 +7,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
+import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
-const ID_PATTERN = /^(\d{4})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
+const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
 
 // A record is authored once and checked out on many hosts. Git for Windows
 // rewrites Markdown to CRLF by default, so anchoring on a bare LF would report
@@ -86,8 +87,8 @@ export function listAdrs(root) {
   return fs.readdirSync(directory, { withFileTypes: true })
     .filter((entry) => entry.isFile() && ID_PATTERN.test(entry.name))
     .map((entry) => entry.name)
-    .sort()
-    .map((name) => readAdr(root, path.join(directory, name)));
+    .map((name) => readAdr(root, path.join(directory, name)))
+    .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
 function readAdr(root, filePath) {
@@ -104,9 +105,10 @@ export function validateAdrs(root) {
   const adrs = listAdrs(root);
   const numbers = new Map();
   for (const adr of adrs) {
-    const seen = numbers.get(adr.number) ?? [];
-    seen.push(adr.name);
-    numbers.set(adr.number, seen);
+    const key = visibleIdKey(`ADR-${adr.number}`);
+    const seen = numbers.get(key) ?? { number: adr.number, names: [] };
+    seen.names.push(adr.name);
+    numbers.set(key, seen);
     const data = adr.data;
     if (!data) {
       findings.push(finding('invalid-adr', `${adr.relativePath} has no frontmatter`, { adr: adr.name }));
@@ -139,7 +141,7 @@ export function validateAdrs(root) {
       }
     }
   }
-  for (const [number, names] of numbers) {
+  for (const { number, names } of numbers.values()) {
     if (names.length > 1) findings.push(finding('invalid-adr', `ADR number ${number} is used by ${names.join(', ')}`, { number }));
   }
   const registerPath = path.join(collectionPath(root, 'adr'), REGISTER_NAME);
@@ -205,8 +207,8 @@ export function newAdr(root, options) {
   if (!slug) throw new Error('title must contain letters or digits');
   const directory = collectionPath(root, 'adr');
   assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
-  const numbers = listAdrs(root).map((adr) => Number(adr.number));
-  const next = String((numbers.length ? Math.max(...numbers) : 0) + 1).padStart(4, '0');
+  const occupied = listAdrs(root).map(adr => `ADR-${adr.number}`);
+  const next = allocateVisibleId('ADR', occupied, { width: 4, requireLetter: true }).slice(4);
   const filePath = path.join(directory, `${next}-${slug}.md`);
   if (fs.existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const date = options.date ?? new Date().toISOString().slice(0, 10);

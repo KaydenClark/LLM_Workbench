@@ -753,7 +753,7 @@ function validateFirstSpec(project, expectedVersion) {
   const entries = fs.readdirSync(specsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith('.'));
   const names = entries.map((entry) => entry.name).sort();
   if (entries.length === 0) return fail('missing-first-spec', 'Genesis must create a first spec in workbench/specs.');
-  if (entries.length !== 1 || !entries[0].isDirectory() || !/^S-\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entries[0].name)) {
+  if (entries.length !== 1 || !entries[0].isDirectory() || !/^S-[0-9A-Za-z]{3,}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entries[0].name)) {
     return fail('invalid-first-spec', 'Genesis must create one stable S-###-slug/SPEC.md packet.', { entries: names, reason: `the specs lane must contain exactly one stable S-###-slug directory; found ${names.join(', ')}` });
   }
   const expectedId = entries[0].name.slice(0, 5);

@@ -48,7 +48,7 @@ export function parseSpecPacket(content, filePath, root) {
   const fields = {};
   for (const match of content.matchAll(/^\*\*([^*]+):\*\*\s*(.+)$/gm)) fields[match[1].trim()] = match[2].trim();
   const id = fields['Spec ID'];
-  if (!id || !/^S-\d{3}$/.test(id)) throw new Error(`${path.relative(root, filePath)} has an invalid or missing Spec ID`);
+  if (!id || !/^S-[0-9A-Za-z]{3,}$/.test(id)) throw new Error(`${path.relative(root, filePath)} has an invalid or missing Spec ID`);
   const titleMatch = content.match(new RegExp(`^# ${id} - (.+)$`, 'm'));
   if (!titleMatch) throw new Error(`${id} has no matching title`);
   const required = ['Status', 'Priority', 'Owner', 'Updated', 'Catalog description', 'Blockers', 'Latest event', 'Next gate'];
@@ -78,9 +78,10 @@ export function parseSpecPacket(content, filePath, root) {
 function parseTickets(value, specId) {
   const tickets = [];
   for (const line of value.split('\n')) {
-    if (!/^\|\s*TK-\d+\s*\|/.test(line)) continue;
+    if (!/^\|\s*TK-/.test(line)) continue;
     const cells = parseMarkdownTableRow(line);
     if (cells.length !== 5) throw new Error(`${specId} has a malformed ticket row`);
+    if (!/^TK-[0-9A-Za-z]+$/.test(cells[0])) throw new Error(`${specId} has an invalid ticket ID: ${cells[0]}`);
     tickets.push({ id: cells[0], slice: cells[1], status: cells[2], blockers: cells[3], proof: cells[4] });
   }
   if (tickets.length === 0) throw new Error(`${specId} has no implementation slices`);
