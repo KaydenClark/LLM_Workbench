@@ -51,6 +51,62 @@ export function liveCitations(text) {
   return out;
 }
 
+// A bare SHA in a live section is the same promise as a `path:line`: a reader
+// is invited to go and look. S-046 shipped three citations to commits that had
+// been squashed away before the push - including, twice, inside the very row
+// written to correct a previous wrong citation. A discarded commit is a real
+// object until it is collected and then it is nothing, so "it resolved when I
+// wrote it" is not the property that matters; reachability is.
+const SHA = /`([0-9a-f]{7,40})`/g;
+
+export function liveShas(text) {
+  const out = [];
+  let section = null;
+  for (const line of text.split('\n')) {
+    if (line.startsWith('## ')) section = line.slice(3).trim();
+    if (section === EVIDENCE) continue;
+    for (const m of line.matchAll(SHA)) out.push(m[1]);
+  }
+  return [...new Set(out)];
+}
+
+function commitReachable(sha, cache) {
+  if (!cache.has(sha)) {
+    let verdict;
+    try {
+      const type = execFileSync('git', ['cat-file', '-t', sha], { cwd: root, encoding: 'utf8' }).trim();
+      // Only commits are held to this. A spec may quote a blob or tree hash,
+      // and a 64-character content hash never matches the pattern at all.
+      if (type !== 'commit') verdict = 'not-a-commit';
+      else {
+        // Contained in some branch, not an ancestor of HEAD: a spec may
+        // legitimately name a commit on another branch - S-049 cites
+        // `origin/main`, which this branch does not descend from. What must
+        // never survive is a commit contained in nothing, which is what a
+        // squash leaves behind and what the collector eventually removes.
+        const branches = execFileSync('git', ['branch', '-a', '--contains', sha], { cwd: root, encoding: 'utf8' }).trim();
+        verdict = branches ? 'reachable' : 'unreachable';
+      }
+    } catch (error) {
+      verdict = error.status === 1 ? 'unreachable' : 'unknown-object';
+    }
+    cache.set(sha, verdict);
+  }
+  return cache.get(sha);
+}
+
+test('every commit a live spec section cites is reachable from this branch', () => {
+  const cache = new Map();
+  const orphaned = [];
+  for (const dir of anchoredSpecs()) {
+    for (const sha of liveShas(fs.readFileSync(path.join(SPECS, dir, 'SPEC.md'), 'utf8'))) {
+      if (commitReachable(sha, cache) === 'unreachable') orphaned.push(`${dir} cites ${sha}`);
+    }
+  }
+  assert.deepEqual(orphaned, [],
+    'a live section cites a commit that is not an ancestor of HEAD; a squashed or discarded commit cannot be followed and will be garbage-collected');
+});
+
 function treeFiles(sha, cache) {
   if (!cache.has(sha)) {
     cache.set(sha, execFileSync('git', ['ls-tree', '-r', '--name-only', sha], { cwd: root, encoding: 'utf8' }).split('\n'));
