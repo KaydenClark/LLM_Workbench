@@ -44,7 +44,9 @@
     "release": "25.5.0",
     "architecture": "arm64",
     "model": "not reported by captured native events",
-    "configuration": "isolated HOME; existing authentication through CODEX_HOME; ignore-user-config; ephemeral; workspace-write; no security bypass or credential copying"
+    "configuration": "isolated HOME; existing authentication through CODEX_HOME; ignore-user-config; ephemeral; workspace-write; no security bypass or credential copying",
+    "configurationEvidence": "Parent-observed launch arguments and environment; these settings are not emitted in the hashed native JSON events and were not independently reconstructed.",
+    "cliVersionEvidence": "Parent-observed at invocation; independent current binary recheck reports 0.144.3 but is not a historical launcher record."
   },
   "runtime": {
     "installedFiles": 15,
@@ -70,7 +72,7 @@
     "completedCommands": 36,
     "result": "independent useful checks and revision-checked save completed; supervising process subsequently committed/pushed only to local bare remote"
   },
-  "independentReview": "pending",
+  "independentReview": "The immutable receipt review and verdict belong to the S-050 append-only evidence log.",
   "limits": [
     "Local bare remote only; no private service or transport verification.",
     "Explicit installed-skill invocation; no automatic discovery claim.",
