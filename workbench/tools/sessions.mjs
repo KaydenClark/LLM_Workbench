@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // Reconcile selected live-note material into existing durable owners.
-// The legacy checkpoint copy remains callable until recovery consumers migrate.
+// Legacy checkpoint invocation is a refusal-only compatibility boundary.
 // Privacy and structure checks never certify semantic fidelity or authority.
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionRelative, findRoot, isMainModule } from './workbench-paths.mjs';
 import { scanPrivacy } from './privacy.mjs';
 import { readNote, resolveNote } from './notepads.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -16,43 +16,8 @@ import { validateWiki } from './wiki.mjs';
 import { controls, containsPlaceholder } from './workbench-layout.mjs';
 import { laneRelative, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
 
-function lstatOrNull(target) {
-  try { return fs.lstatSync(target); } catch (error) {
-    if (error.code === 'ENOENT') return null;
-    throw error;
-  }
-}
-
-export function checkpoint(root, options) {
-  const source = path.resolve(root, requireValue(options.from, '--from is required'));
-  const topic = requireValue(options.topic, '--topic is required');
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(topic)) throw new Error('--topic must be a lowercase slug');
-  // The source shares the destination's boundary: it must resolve inside the
-  // repository root and no component of its path may be a symbolic link. The
-  // privacy scan below still gates what the file contains.
-  try { assertSafeReadPath(root, source); } catch (error) {
-    return { status: 'blocked', error: finding('invalid-note', `refused to promote ${options.from}: ${error.message}`) };
-  }
-  const entry = lstatOrNull(source);
-  if (!entry || entry.isSymbolicLink() || !entry.isFile()) {
-    return { status: 'blocked', error: finding('invalid-note', `${source} must be an ordinary file`) };
-  }
-  const content = fs.readFileSync(source, 'utf8');
-  const hits = scanPrivacy(content);
-  if (hits.length > 0) {
-    return { status: 'blocked', error: finding('secret-like-content', `refused to promote ${path.relative(root, source)}: ${hits.map((hit) => `line ${hit.line} (${hit.label})`).join(', ')}`), hits };
-  }
-  const date = options.date ?? new Date().toISOString().slice(0, 10);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error(`Invalid date: ${date}`);
-  const directory = collectionPath(root, 'checkpoints');
-  const destination = path.join(directory, `${topic}-${date}.md`);
-  assertSafeWritePath(root, destination);
-  if (lstatOrNull(destination)) return { status: 'blocked', error: finding('invalid-note', `${path.relative(root, destination)} already exists; promote under a new date or topic`) };
-  const stamped = content.startsWith('<!-- checkpoint')
-    ? content
-    : `<!-- checkpoint: promoted ${date} from ${path.relative(root, source).split(path.sep).join('/')} -->\n${content}`;
-  writeSafeFile(root, destination, stamped, { exclusive: true });
-  return { status: 'promoted', source: path.relative(root, source).split(path.sep).join('/'), checkpoint: `${collectionRelative(root, 'checkpoints')}/${topic}-${date}.md` };
+export function checkpoint() {
+  return { status: 'blocked', error: finding('invalid-note', 'Checkpoint copy creation is retired; use notepads for local continuity and sessions.mjs promote for selected durable-owner reconciliation. Existing checkpoint history remains unchanged.') };
 }
 
 function digest(value) { return createHash('sha256').update(value).digest('hex'); }

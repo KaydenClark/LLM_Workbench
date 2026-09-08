@@ -198,7 +198,8 @@ assert.match(makeItSo, /Before voluntarily yielding[\s\S]*push the authorized du
 
 const checkpoint = read('skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
-assert.match(checkpoint, /PAUSED/, 'checkpoint must mark the notepad paused for resume');
+assert.match(checkpoint, /copying is retired/i, 'checkpoint must retire copy creation');
+assert.match(checkpoint, /writes nothing/, 'legacy invocation must explain its no-write refusal');
 
 const toDocs = read('skills/to-docs/SKILL.md');
 assertIncludesAll(toDocs, [

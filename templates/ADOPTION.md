@@ -296,9 +296,9 @@ root `MEMORY.md`, `feedback/`, `grilling diary/`, and `handoffs/` to their
 manifest-declared lanes and collections (legacy grilling records become the
 untracked `workbench/sessions/grilling/`; legacy handoffs become the tracked
 `workbench/sessions/checkpoints/`). It preserves a legacy project-local
-`skills/` folder as `workbench/sessions/checkpoints/adoption-legacy-skills/`
+`skills/` folder as `workbench/sessions/recovery/adoption-legacy-skills/`
 only after every required core skill is already user-scoped. It writes the
-explicit recovery record at `workbench/sessions/checkpoints/adoption-recovery.json`,
+explicit recovery record at `workbench/sessions/recovery/adoption-recovery.json`,
 moves a root `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
 `workbench/feedback/`, installs the runtime tools, renders the projections, and
 checks doctor before reporting completion. It also declares the integration

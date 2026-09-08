@@ -1,6 +1,6 @@
 ---
 name: grilling
-description: Grill the user relentlessly about a plan, decision, or idea, one question at a time, keeping a running notepad of every decision. A reusable primitive; end with /make-it-so to promote or /checkpoint to pause. Use when the user wants to stress-test thinking or uses any 'grill' trigger phrase.
+description: Grill the user relentlessly about a plan, decision, or idea, one question at a time, keeping a running notepad of every decision. A reusable primitive; end with /make-it-so to promote or /notepad to preserve local context. Use when the user wants to stress-test thinking or uses any 'grill' trigger phrase.
 ---
 
 This is the core interview primitive. It runs the questioning and keeps a running
@@ -109,8 +109,8 @@ lookalike phrase said in passing:
 - `/make-it-so` — I am done; confirm the approvals, promote the notepad's
   locked decisions to canon, implement them, and push the results to the
   remote.
-- `/checkpoint` — save and stop for now under the current Contract. Keep live
-  JSON notes local; the Runbook owns legacy checkpoint limits.
+- `/notepad` — preserve current state and unresolved context locally under the
+  current Contract. Legacy `/checkpoint` copying is retired.
 
 Only those invoked skills end the interview. Continue only within the standing
 project authority and safety boundaries.

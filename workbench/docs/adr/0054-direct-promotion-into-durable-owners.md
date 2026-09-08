@@ -3,6 +3,8 @@ status: accepted
 date: 2026-09-08
 canonicalized_in:
   - BLUEPRINT.md
+  - AGENTS.md
+  - RUNBOOK.md
   - workbench/specs/S-048-checkpoint-retirement/SPEC.md
 ---
 
@@ -35,3 +37,11 @@ Provenance: owner-requested v3.2.0 implementation and make-it-so promotion,
 [S-050](../../specs/S-050-workbench-v3-2-0-release/SPEC.md).
 Historical source statuses and lineage remain in its complete reconciliation.
 Acceptance of this decision is not a claim its runtime or outcome is implemented.
+
+## Operational recovery disposition
+
+The separate recovery destination is the ignored `sessions/recovery/`
+collection. It carries new operational receipts and legacy-skill backups,
+not notepad history or durable citations. Existing checkpoint files and old
+recovery paths stay intact. Legacy v2 handoffs retain their existing migration
+mapping to historical checkpoints; the new copier is retired independently.

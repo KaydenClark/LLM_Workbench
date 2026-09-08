@@ -160,15 +160,15 @@ doctor.
 
 Genesis uses the bounded layout helper to create and validate its declared
 support root. Schema 2 declares six lowercase lanes (`docs`, `specs`, `wiki`,
-`sessions`, `feedback`, `tools`) and nine collections (`docs/adr`,
+`sessions`, `feedback`, `tools`) and ten collections (`docs/adr`,
 `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
 `sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`,
-`sessions/notepads`, `sessions/notepads/templates`), the wiki
+`sessions/notepads`, `sessions/notepads/templates`, `sessions/recovery`), the wiki
 profile, and the exact source release and commit. `workbench/sessions/.gitignore`
 keeps `grilling/` and `handoffs/` untracked, and also denies the legacy spaced
 `grilling diary/` name that a stale installed skill may still write (an
 existing ignore file keeps its project rules and validates without that line);
-only `checkpoints/` is durable.
+checkpoint history and reusable templates remain tracked; operational recovery stays local.
 Exercise it from a disposable project directory:
 
 ```bash
@@ -365,7 +365,7 @@ backup and can be restored.
 
 Layout initialization and schema migration preserve existing session ignore
 rules and reject linked destination paths before writes. ADR creation, register
-rendering and checkpoint promotion also reject unsafe destination chains and
+rendering and direct owner promotion also reject unsafe destination chains and
 use private temporary files. Legacy Wiki adoption moves existing knowledge
 before seeding only the missing contract files.
 
@@ -465,9 +465,9 @@ privacy, boundary, and verification rules it already holds
 machine reader). It moves only documented durable lanes into their schema 2
 destinations (legacy `grilling diary/` into the untracked grilling collection,
 legacy `handoffs/` into the tracked checkpoints collection), preserves
-project-local skills under `workbench/sessions/checkpoints/adoption-legacy-skills/`
+project-local skills under `workbench/sessions/recovery/adoption-legacy-skills/`
 after user-scoped core readiness, writes
-`workbench/sessions/checkpoints/adoption-recovery.json`, moves a root
+`workbench/sessions/recovery/adoption-recovery.json`, moves a root
 `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
 `workbench/feedback/WORKBENCH_FEEDBACK.md`, installs the receipt-backed runtime
 tools into `workbench/tools/`, then renders and validates the manifest-declared
@@ -517,7 +517,7 @@ One command moves a v2-root room (root `specs/`, no `workbench/`) onto the v3
 support root and records `provenance.lifecycle: upgrade`; it has two exclusive
 modes. Both require a clean, committed target with no support root, and both
 record the pre-migration SHA, tracked path inventory, and tools receipt in
-`workbench/sessions/checkpoints/upgrade-recovery.json`.
+`workbench/sessions/recovery/upgrade-recovery.json`.
 
 `--layout-only` is the route for an already-adopted room and for any host whose
 discovery root the tool must not touch. It requires every core skill to be
@@ -620,8 +620,8 @@ node tools/test-workbench-round-trip.mjs
 
 It creates a bare remote, runs Genesis with this candidate's tools (init,
 tools install, seven controls, wiki router, feedback lane, first spec),
-passes `validate --genesis` and doctor, writes a live notepad, promotes it as
-a checkpoint, claims the first slice, pushes the planning checkpoint (the
+passes `validate --genesis` and doctor, writes a live JSON notepad, reconciles selected claims
+into the spec owner, claims the first slice, pushes the planning checkpoint (the
 notepad never enters the commit), deletes the working clone, resumes from a
 fresh clone with a scrubbed environment using only repository state, drives a
 red/green slice, closes, renders, passes doctor, pushes, reads the remote SHA
@@ -662,8 +662,8 @@ node tools/cross-provider-resume.mjs resume-prompt --workspace /disposable/works
 node tools/cross-provider-resume.mjs verify --workspace /disposable/workspace --transcript /disposable/workspace/transcript.txt
 ```
 
-`plan` builds a bare remote, runs Genesis with this candidate, promotes a
-checkpoint, claims the first slice, pushes the planning checkpoint, destroys
+`plan` builds a bare remote, runs Genesis with this candidate, reconciles selected claims
+into the spec owner, claims the first slice, pushes the planning checkpoint, destroys
 the planning clone, and installs the candidate skills into an isolated
 provider home (`provider-home/.codex/skills` for Codex). Between `plan` and
 `verify`, run the other provider from a fresh clone of `origin.git` with its
@@ -843,7 +843,7 @@ on, and `state`, `unresolved` and `next_action` keep their own flags.
 An interim `scope-1` record reads as it is and migrates once, preserving its
 recorded text and timestamps, before it can be written to.
 
-`sessions.mjs` keeps `scan` and the legacy `checkpoint` copier. Do not send a
+`sessions.mjs` keeps `scan`; legacy `checkpoint` invocation refuses new copies. Do not send a
 JSON note through that copier and call its `.md` output a notepad operation.
 Skill prose and human-readable projections may remain Markdown.
 
@@ -904,30 +904,33 @@ restores original bytes. If the filesystem also refuses restoration, the command
 returns `partial`, exits nonzero and retains the named original backup for
 recovery; do not retry or trim blindly. A leftover `recoveryResidue` names a
 backup whose cleanup failed. No crash-proof or machine-loss guarantee is claimed.
-Legacy checkpoint creation remains available only until S-048 recovery migration.
+Legacy checkpoint creation is retired; existing checkpoint history remains available.
 
-### Session Checkpoints
+### Frozen Checkpoint History And Operational Recovery
 
-Live grilling notepads and handoffs stay untracked in
-`workbench/sessions/grilling/` and `workbench/sessions/handoffs/`. Promote a
-record only deliberately:
+Existing files in `workbench/sessions/checkpoints/` retain their bytes and
+citations. `sessions.mjs checkpoint` is retired and returns a nonzero refusal
+without creating a copy. Use the direct owner promotion procedure above for
+selected durable claims; local notes preserve unresolved continuation context.
+
+New adoption and upgrade recovery receipts and legacy-skill backups use the
+ignored `workbench/sessions/recovery/` collection. These operational records are
+not notes or durable provenance. Old recovery receipts remain at their original
+paths; rollback uses the explicit recorded Git SHA or backup, not an assumed
+latest filename. Preserve receipts and backups until verified recovery or their
+owning operation establishes that they are no longer needed.
+
+For a restoration rehearsal, preserve the changed target, restore the tracked
+project from the receipt's pre-migration SHA, and compare every original tracked
+file and Git state. Restore a changed managed skill from its recorded backup
+and read back its bytes. A fixture pass alone does not establish a downstream
+release, native provider callability, or crash recovery.
 
 ```bash
-node workbench/tools/sessions.mjs checkpoint --from workbench/sessions/grilling/topic-YYYY-MM-DD.md --topic topic
 node workbench/tools/sessions.mjs scan --file PATH
 node tools/test-sessions.mjs
-node tools/test-notepads.mjs
+node tools/test-workbench-upgrade.mjs
 ```
-
-`checkpoint` copies an ordinary file byte for byte (after one stamp comment
-naming the source and date) into `workbench/sessions/checkpoints/<topic>-<date>.md`
-with mode `0644`, and refuses with `secret-like-content` and the offending
-line numbers when the shared `privacy.mjs` patterns match; `invalid-note`
-covers a symlink, a non-file, an existing destination, or a `--from` that
-resolves outside the repository root or passes through a symbolic link
-(source and destination share one boundary, `assertSafeReadPath` beside
-`assertSafeWritePath`; the untracked session collections are the intended
-sources). A refusal writes nothing. Cite the promoted copy, never the live path.
 
 ### Wiki Validation
 

@@ -145,7 +145,7 @@ export function validateAdrs(root, options = {}) {
       if (relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) continue;
       for (const collection of IGNORED_COLLECTIONS) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
-          findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; promote it to checkpoints first`, { adr: adr.name, target: relative }));
+          findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
         }
       }
     }
@@ -237,7 +237,7 @@ export function newAdr(root, options) {
     '',
     'Consequences: [what changes for tools, controls, or agents; name the control that carries the rule].',
     '',
-    'Provenance: [the promoted checkpoint or owner decision, by repository-relative path].',
+    'Provenance: [the reconciled durable owner or preserved historical decision, by repository-relative path].',
     ''
   ].join('\n');
   writeSafeFile(root, filePath, content, { exclusive: true });

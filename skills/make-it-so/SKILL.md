@@ -3,7 +3,7 @@ name: make-it-so
 description: Kayden's universal "approved — build it and save it" command, with or without a grilling session. Confirms pending approvals, promotes the settled decisions (grilling notepad or current conversation) into canonical docs and specs, implements the promoted tickets, and pushes every result to the remote. Invoke it explicitly; it never fires from someone saying the phrase in passing. Runs to-docs, to-spec, to-tickets, then the implement loop until progress is remotely recoverable.
 ---
 
-The universal execution authorization, and the counterpart to `/checkpoint`.
+The universal execution authorization; local continuation uses the notepad workflow.
 Invoke it explicitly — it must never trigger just because someone said "make it
 so" in conversation.
 

@@ -115,7 +115,7 @@ Settle the target's starting point first:
   and reads that presence only; it migrates the legacy lanes once through the
   Adoption seam, installs the receipt-backed runtime tools, records
   `provenance.lifecycle: upgrade` with the exact source commit, and writes
-  `workbench/sessions/checkpoints/upgrade-recovery.json` with
+  `workbench/sessions/recovery/upgrade-recovery.json` with
   `skills: "presence-only"`. It works on a host whose discovery root is a
   foreign Git repository because it never touches one. Only after it completes
   do you reconcile specs through the manifest the route just declared

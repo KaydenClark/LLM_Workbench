@@ -255,11 +255,12 @@ may instead be trimmed of promoted material, preserving any context and
 correction links still needed by its remaining work. No routine archive is
 required. No autonomous task or handoff creation follows.
 
-Existing privacy-checked checkpoints and their references remain available
-until deliberate retirement reconciles them; the legacy command is
-`node workbench/tools/sessions.mjs checkpoint --from PATH --topic slug`.
-It refuses secret-like content, absolute home paths, and email addresses before
-writing. A copied record is preservation, not blanket promotion of its claims.
+Existing privacy-checked checkpoints and their citations are frozen history.
+The legacy `sessions.mjs checkpoint` command refuses new copies without writing.
+Reconcile selected claims into their durable owners with `sessions.mjs promote`;
+retain local notes for unresolved context. Operational receipts and backups live
+in the separate ignored `sessions/recovery/` collection, outside note discovery.
+A preserved historical copy is not blanket promotion of its claims.
 
 ## Long Session Control
 

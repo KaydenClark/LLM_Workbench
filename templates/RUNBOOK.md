@@ -359,9 +359,19 @@ on, and `state`, `unresolved` and `next_action` keep their own flags.
 An interim `scope-1` record reads as it is and migrates once, preserving its
 recorded text and timestamps, before it can be written to.
 
-`sessions.mjs` keeps `scan` and the legacy `checkpoint` copier. Do not send a
+`sessions.mjs` keeps `scan`; legacy `checkpoint` invocation refuses new copies. Do not send a
 JSON note through that copier and call its `.md` output a notepad operation.
 Skill prose and human-readable projections may remain Markdown.
+
+### Frozen History And Operational Recovery
+
+Existing `sessions/checkpoints/` files and citations remain unchanged.
+The legacy `sessions.mjs checkpoint` command refuses new copies. New selected
+claims follow direct owner promotion below. Operational receipts and backups
+use the ignored `sessions/recovery/` collection declared by the manifest;
+notepad discovery excludes it. Preserve old recovery references, and restore
+from the recorded Git SHA or explicit backup with byte read-back before claiming
+recovery. Do not treat local operational recovery as durable provenance.
 
 ### Direct Owner Promotion
 
@@ -400,7 +410,7 @@ restores original bytes. If the filesystem also refuses restoration, the command
 returns `partial`, exits nonzero and retains the named original backup for
 recovery; do not retry or trim blindly. A leftover `recoveryResidue` names a
 backup whose cleanup failed. No crash-proof or machine-loss guarantee is claimed.
-Legacy checkpoint creation remains available only until active recovery consumers migrate.
+Legacy checkpoint creation is retired; existing checkpoint history remains available.
 
 ## Evaluation And Benchmarking
 
@@ -673,8 +683,8 @@ backup and can be restored.
 
 Layout initialization and schema migration preserve existing session ignore
 rules and reject linked destination paths before writes. ADR creation, register
-rendering and checkpoint promotion also reject unsafe destination chains and
-use private temporary files; checkpoint promotion refuses a `--from` source
+rendering and direct owner promotion also reject unsafe destination chains and
+use private temporary files; direct promotion refuses a `--from` source
 outside the repository root, or one reached through a symbolic link, with
 `invalid-note` and writes nothing. Legacy Wiki adoption moves existing
 knowledge before seeding only the missing contract files.

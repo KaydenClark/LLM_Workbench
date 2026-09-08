@@ -151,8 +151,8 @@ Actual Mac/Windows Claude/Codex round-trip proof is required for that claim.
 Promotion writes selected, privacy/validity-checked material directly to its named
 durable owner, verifies read-back and faithful reconciliation, then permits scoped
 source cleanup. Preserve unfinished/correction/transfer dependencies. Existing
-checkpoints freeze as history after active consumer migration; operational recovery
-is separately declared and legacy rollback remains usable. No new permanent
+checkpoints remain frozen history; new copy creation is retired. Operational
+recovery uses the ignored `sessions/recovery/` collection; legacy rollback remains usable. No new permanent
 handoff store substitutes for checkpoints. Capability checks cannot replace
 semantic judgment or authorization.
 

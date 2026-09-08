@@ -202,7 +202,8 @@ manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
 `feedback`, `tools`) and their collections; live grilling and handoff records
 under `workbench/sessions/` stay untracked. Reusable schema/examples in
 `sessions/notepads/templates/` are tracked; `sessions/checkpoints/`
-is durable. Do not create a project-local `skills/` discovery directory.
+retains frozen history. Operational `sessions/recovery/` stays ignored and is
+excluded from notepad discovery. Do not create a project-local `skills/` discovery directory.
 
 The readiness gate (`validate --genesis`) accepts only an actionable first
 packet, so shape it exactly like this before running the gate:

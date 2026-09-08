@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // The composed Workbench round trip, mechanically and provider-free:
 // Genesis from this candidate -> planning checkpoint pushed (spec, claim,
-// promoted checkpoint) -> forced interruption -> fresh clone resumes from
+// reconciled owner) -> forced interruption -> fresh clone resumes from
 // repository state only -> red/green slice -> close -> render -> doctor ->
 // push -> remote read-back, with Foundry absent throughout.
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -92,15 +93,23 @@ try {
   assert.equal(readiness.status, 'valid', JSON.stringify(readiness));
   node(first, tool(first), 'doctor');
 
-  // ---- Planning checkpoint: notepad, promotion, claim, push ----------------
-  write(first, 'workbench/sessions/grilling/greeting-2026-09-04.md', '# Grilling — greeting\nSTATUS: PROMOTED — 2026-09-04\n\n1. [locked] Greet by name; default to World.\n');
-  const promoted = JSON.parse(node(first, path.join(first, 'workbench', 'tools', 'sessions.mjs'), 'checkpoint', '--from', 'workbench/sessions/grilling/greeting-2026-09-04.md', '--topic', 'greeting', '--date', DATE));
+  // ---- Selected claim reconciliation, claim, push -------------------------
+  const notes = path.join(first, 'workbench/tools/notepads.mjs');
+  const note = JSON.parse(node(first, notes, 'create', '--note', 'greeting', '--objective', 'greeting', '--title', 'Greeting decisions'));
+  node(first, notes, 'append', '--note', note.note, '--revision', '1', '--kind', 'decision', '--content', 'Greet by name; default to World.');
+  const owner = 'workbench/specs/S-001-greeting/SPEC.md';
+  const beforeOwner = fs.readFileSync(path.join(first, owner));
+  const authored = beforeOwner.toString('utf8') + '\n## Reconciled Decision\n\nGreet by name; default to World.\n';
+  write(first, 'workbench/sessions/handoffs/greeting-draft.md', authored);
+  const promoted = JSON.parse(node(first, path.join(first, 'workbench/tools/sessions.mjs'), 'promote', '--from', note.note, '--revision', '2', '--entries', 'decision-001', '--to', owner, '--expected', createHash('sha256').update(beforeOwner).digest('hex'), '--content', 'workbench/sessions/handoffs/greeting-draft.md'));
   assert.equal(promoted.status, 'promoted');
+  assert.equal(promoted.destination.sha256, createHash('sha256').update(authored).digest('hex'));
   node(first, tool(first), 'claim', 'S-001', '--agent', 'planner');
   node(first, tool(first), 'render');
   git(first, 'add', '-A');
   const tracked = git(first, 'ls-files');
-  assert.match(tracked, /workbench\/sessions\/checkpoints\/greeting-2026-09-04\.md/, 'the promoted checkpoint is tracked');
+  assert.match(tracked, /workbench\/specs\/S-001-greeting\/SPEC\.md/, 'the reconciled owner is tracked');
+  assert.doesNotMatch(tracked, /workbench\/sessions\/(?:notepads\/work|handoffs)\/greeting/, 'source and draft stay local');
   assert.doesNotMatch(tracked, /workbench\/sessions\/grilling\/greeting/, 'the live notepad never enters the commit');
   git(first, 'commit', '-q', '-m', 'Planning checkpoint: S-001 claimed');
   git(first, 'push', '-q', 'origin', 'main');
@@ -115,7 +124,8 @@ try {
   git(workspace, 'clone', '-q', remote, second);
   assert.equal(git(second, 'rev-parse', 'HEAD'), planningSha);
   assert.equal(fs.existsSync(path.join(second, 'workbench', 'sessions', 'grilling', 'greeting-2026-09-04.md')), false, 'the untracked notepad did not travel');
-  assert.equal(fs.existsSync(path.join(second, 'workbench', 'sessions', 'checkpoints', 'greeting-2026-09-04.md')), true, 'the promoted checkpoint did');
+  assert.match(fs.readFileSync(path.join(second, owner), 'utf8'), /Greet by name; default to World/, 'the reconciled claim travels in its owner');
+  assert.equal(fs.existsSync(path.join(second, note.note)), false, 'the local JSON note did not travel');
   const receipt = JSON.parse(fs.readFileSync(path.join(second, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
   assert.equal(receipt.source.release, VERSION, 'the resumer runs the exact receipt-backed candidate tools');
   node(second, tool(second), 'doctor');

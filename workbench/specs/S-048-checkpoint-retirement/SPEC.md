@@ -178,7 +178,14 @@ files, citations and prior recovery references retain their bytes and paths.
 Legacy v2 durable handoffs still migrate into the historical checkpoint location
 for compatibility; new copies are refused. The retained checkpoint skill becomes
 an explanatory compatibility entry pending S-051's core catalog reconciliation.
-Implementation, actual changed-target restoration and review remain open.
+At `19c2de0`, adoption and upgrade recovery checks pass. The local
+[restoration rehearsal](recovery-restoration-result.json) upgraded a working
+legacy counter project, preserved its changed support tree, restored every
+tracked original file from the receipt's Git SHA and restored a changed managed
+skill from its recorded backup. Before/after hashes match, Git is clean, and
+the counter prints `2` before upgrade, after upgrade and after restoration.
+This is one local operational rehearsal; complete retirement, full verification,
+independent review and release integration remain open.
 
 ## Acceptance Criteria
 
