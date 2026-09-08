@@ -307,3 +307,28 @@ test('different notes from isolated room clones retain both revisions without fo
   for(const [room,note,name] of [[f.project,f.note,'selected'],[second,created.note,'independent']]) assert.equal(git(f.remote,'show',`${final.remoteSha}:workbenches/${f.id}/sessions/notepads/work/${name}.json`),fs.readFileSync(path.join(room,note),'utf8').trim());
  } finally {fs.rmSync(f.base,{recursive:true,force:true});}
 });
+
+test('failed acknowledgment after resume retains recovery and permits an explicit retry', () => {
+ const f=fixture(); const rename=fs.renameSync;
+ try {
+  configured(f);const other=createNote(f.project,{note:'second',objective:'transport-proof',title:'Second continuity'}).note;
+  const notes=[f.note,other];
+  assert.equal(transport.syncNotes(f.project,{notes,direction:'push'},fixtureVerification).status,'confirmed');
+  const second=path.join(f.base,'resume-room');git(f.base,'clone','-q',f.project,second);
+  assert.equal(transport.configureTransport(second,{checkout:f.checkout,branch:'main',acknowledgePrivate:true},fixtureVerification).status,'configured');
+  assert.equal(transport.syncNotes(second,{notes,direction:'resume'},fixtureVerification).status,'confirmed');
+  const before=notes.map(n=>fs.readFileSync(path.join(second,n)));const stateFile=path.join(second,'workbench/sessions/recovery/transport/state.json');
+  const stateBefore=fs.readFileSync(stateFile);
+  for(const note of notes) {const v=JSON.parse(fs.readFileSync(path.join(f.project,note)));appendEntry(f.project,{note,revision:v.revision,kind:'finding',topic:'remote-change',content:'Preserve this new remote progress.'});}
+  assert.equal(transport.syncNotes(f.project,{notes,direction:'push'},fixtureVerification).status,'confirmed');
+  fs.renameSync=(a,b)=>{if(b===stateFile){const e=new Error('Injected write failure');e.code='EACCES';throw e;}return rename(a,b);};
+  const result=transport.syncNotes(second,{notes,direction:'resume'},fixtureVerification);fs.renameSync=rename;
+  assert.equal(result.status,'partial',JSON.stringify(result));assert.equal(result.acknowledged,false);
+  assert.deepEqual(result.appliedNotes,notes);assert.ok(result.recoveryRecord);
+  assert.deepEqual(fs.readFileSync(stateFile),stateBefore);
+  assert.deepEqual(fs.readFileSync(path.join(second,other)),fs.readFileSync(path.join(f.project,other)));
+  const receipt=JSON.parse(fs.readFileSync(path.resolve(second,result.recoveryRecord)));
+  for(let i=0;i<notes.length;i++)assert.deepEqual(fs.readFileSync(path.resolve(second,receipt.notes[i].backup)),before[i]);
+ const retried=transport.syncNotes(second,{notes,direction:'resume'},fixtureVerification);assert.equal(retried.status,'confirmed');assert.ok(fs.existsSync(path.resolve(second,result.recoveryRecord)),'Earlier recovery remains available until deliberate reconciliation');
+ } finally {fs.renameSync=rename;fs.rmSync(f.base,{recursive:true,force:true});}
+});
