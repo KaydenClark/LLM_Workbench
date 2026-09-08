@@ -323,5 +323,5 @@ for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec'
 assert.doesNotMatch(toSpec, /stable `specs\/S-###-slug\/SPEC\.md`/,
   'to-spec must not direct v3 projects to the retired root specs path');
 
-console.log();
+console.log(`ok - the portable ${bundleSize}-skill source bundle and retired discovery boundary are aligned`);
 await import('./test-delivery-skills.mjs');
