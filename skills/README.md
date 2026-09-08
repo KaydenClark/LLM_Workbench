@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 18-skill bundle (fourteen workflow skills and four stances),
+is a closed 20-skill bundle (sixteen workflow skills and four stances),
 counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
@@ -22,6 +22,8 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `tracer-bullet` | Cut a capability into vertically testable slices. |
 | `update-harness` | Reconcile an adopted project with the current Workbench contract. |
 | `carry` | Own an assigned spec or ticket to its already-authorized endpoint and record what the owner still had to supply. |
+| `save` | Persist authorized work and verify its actual local or remote recovery boundary. |
+| `promote` | Reconcile selected supported claims directly into their existing durable owners. |
 | `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `builder` | Deliver the assigned result with useful verification and truthful documentation. |
 | `auditor` | Determine whether named claims hold on the assigned target and evidence. |
@@ -51,18 +53,18 @@ Each skill the installer or the explicit upgrade (`tools/workbench-upgrade.mjs`)
 writes carries `.workbench-skill.json` beside its `SKILL.md`:
 
 ```json
-{"schemaVersion":2,"source":"LLM Workbench core","release":"vX.Y.Z","commit":"<40-hex>","contentHash":"<sha256>"}
+{"schemaVersion":2,"source":"LLM Workbench core","release":"vX.Y.Z","commit":"<40-hex>","contentHash":"<sha256>","compatibleRooms":{"minimum":"v3.1.4","maximum":"vX.Y.Z"}}
 ```
 
-`release` and `commit` are the clean checked-out Workbench's verified identity at write time
-(the same source identity the runtime tools receipt records); `contentHash` is
-SHA-256 over the skill's file paths and bytes, excluding the marker. Schema 1
-markers (`schemaVersion` 1, `source` only) were written before the generation
-was recorded: readers still treat them as managed, and a room's
-`spec-workbench.mjs doctor --home` reports them as `skill-generation-unknown`
-and a schema 2 marker whose `release` differs from the manifest as
-`stale-skill`. Doctor only reads the home; the explicit upgrade rewrites every
-managed marker at this release's generation.
+The verified clean source checkout supplies the producing release and commit.
+The hash covers relative file paths and bytes, excluding this marker. The room
+inspector distinguishes unknown generation, changed content, missing/broken
+entries, duplicate sources and an incompatible declared room range. The valid
+range starts at the v3.1.4 notepad baseline and ends at the producing release;
+legacy or widened declarations remain unknown. Different releases within that
+range are compatible by this structural check. Read-only inspection neither
+repairs the home nor proves native-host callability or workflow reliability.
+The Runbook owns the diagnostic codes and explicit update/recovery procedures.
 
 ## Retired and preserved source
 
@@ -75,7 +77,7 @@ The upstream baselines are covered by the [tracked third-party notice](../THIRD_
 
 ## Stance discovery
 
-Builder, Auditor, Reviewer and Reconciler ship as flat skill directories in both
+Builder, Auditor, Reviewer and Reconciler ship as flat canonical directories with Claude adapters in the
 user discovery roots, so Claude's one-level scan sees them directly. If a user
 separately stores a stance below `stances/`, that nested installation also needs
 a flat top-level symlink. The missing-only installer never replaces a foreign

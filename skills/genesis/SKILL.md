@@ -22,7 +22,8 @@ real code, history, or project controls, route to `/adoption` instead.
    tools, copy and fill the wiki router, create one stable spec under the
    manifest-declared path, and record exact Runbook commands. From then on run
    the project's own `node workbench/tools/spec-workbench.mjs ...` copies. Do
-   not leave a project-local skill tree or second proof store.
+   not copy global core into a project-local skill tree or create a second proof store.
+   Authorized room-local extensions follow the Runbook ownership procedure.
 4. Establish Git recovery immediately. When the current authorization and
    authenticated repository namespace permit remote creation, create a private
    remote if none was supplied. Never infer public visibility, change

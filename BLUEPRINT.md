@@ -90,7 +90,7 @@ stands on its own; it has no dependency on completing Foundry.
 - The seven root controls remain universally discoverable. Durable support
   records move behind one lowercase `workbench/manifest.json` authority with
   declared specs, Wiki, grilling, handoff, and feedback lanes.
-- LLM Workbench carries fourteen setup/planning/delivery workflow skills plus
+- LLM Workbench carries sixteen setup/planning/delivery workflow skills plus
   four portable stance skills, under S-027 and S-049. On a brand-new installation it supplies a required skill only when
   that skill is missing from user-scoped discovery.
 - Existing installed skills are accepted by presence and remain untouched.

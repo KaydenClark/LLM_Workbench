@@ -66,7 +66,7 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the closed 18-skill public source bundle. Missing-only setup installs canonical
+- `skills/` - the closed 20-skill public source bundle. Missing-only setup installs canonical
   source under `.agents/skills` and Claude adapters to that source; this
   repository does not use it as a project-local discovery tree.
 - `skills-pending/` - preserved selected baselines that remain non-invocable

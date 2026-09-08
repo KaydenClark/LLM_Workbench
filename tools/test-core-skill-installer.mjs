@@ -10,10 +10,8 @@ import test from 'node:test';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
-const coreSkills = [
-  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'carry', 'notepad', 'builder', 'auditor', 'reviewer', 'reconciler'
-];
+import { coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
+const coreSkills = [...runtimeCoreSkills];
 
 function fixtureHome() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-skills-'));

@@ -46,7 +46,9 @@ Then, in order:
    write. Route supported claims directly to their durable owners in the steps
    below; a copied live record is not required. Preserve existing checkpoints
    under their current retention rules; the live notepad is not durable evidence.
-2. `to-docs` — route every `[locked]` decision that belongs in existing control
+2. Compose core `promote` for selected supported notepad material through the
+   public direct-promotion seam; use `save` for its actual persistence boundary.
+   `to-docs` — route every `[locked]` decision that belongs in existing control
    files to its owner. Record an ADR only when warranted: a consequential
    decision with meaningful alternatives or reversal cost gets
    `node workbench/tools/adr.mjs new --title "..."` in the manifest `adr`

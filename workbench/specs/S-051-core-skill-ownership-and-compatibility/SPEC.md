@@ -123,6 +123,16 @@ registered attention severity and effect none; diagnostics never repair a home.
 
 Reconcile existing personal skill behavior by read-only inspection; implement Workbench-native core workflows after S-046/S-048 public seams exist. Verify local skill source/discovery behavior and fresh isolated installation, full suite, documentation and independent integration review.
 
+The machine catalog adds save/promote while retaining the checkpoint retirement
+notice. Counts derive from that catalog; v3.1.4's eighteen-skill policy remains
+a frozen readable legacy row while this unstamped release candidate develops.
+Save persists authorized results without intrinsic file planes or a delivery
+grant. Promote handles selected supported material beyond grilling and composes
+save on the already-promoted result; neither creates an implementation loop.
+Room-local extension source uses project `.agents/skills/NAME` with a generated
+Claude adapter, independent of global core and personal catalog acceptance.
+Native-host invocation remains separate from installed-path mechanics.
+
 ## Acceptance Criteria
 
 - [x] One core source/global identity and provider discovery adapters work without duplicate maintained implementations.
@@ -171,8 +181,10 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | 2026-09-08 | TK-002 | Full checks passed at 7a449cced784edf68aea08ec63c416ea957fed84, but independent review rejected an overstated marker range | 39 of 39 commands passed. Review reproduced a producing release claiming support through v9.0.0. New regression demonstrated red; shared baseline floor and exact producing-release ceiling now reject widened or reversed ranges as unknown. Five focused inspection tests green | Existing declared range policy enforced; inspection remains read-only and attention-only | Fresh immutable full suite and independent re-review pending; no native workflow or integration claim |
 | 2026-09-08 | TK-002 | Ticket closed | bc1347812d8c7402bade8991a7a41e5023f04e8e: inspection 5/5, installer 27/27, diagnostics 19/19, full 39/39 and independent bounded repair review PASS; range overstatement regression repaired | Root and generic diagnostic procedures and schema 2 range policy reconciled; read-only attention effects pinned | TK-003 portable composition and actual configured-host invocation; final S-050 integration and downstream gates remain open |
 
-## Completion Result
+| 2026-09-08 | TK-002 | Repaired candidate bc1347812d8c7402bade8991a7a41e5023f04e8e completed every required check | Full 39 of 39 pass; independent re-review confirms widened ranges unknown, inclusive bounds preserved, read-only snapshots unchanged. Guardrail 78 unchanged with four outcome-evidence recommendations | Diagnostic procedure reconciled | Native workflow, full release integration and Example delivery remain open |
+| 2026-09-08 | TK-003 | Portable composition implementation candidate prepared | New installed-project public-seam test demonstrated RED because save was absent from core. Reconciled personal prior art read-only; added core save/promote with existing notepad and direct-promotion seams. Catalog checks pass with twenty skills; installed workflow verification pending clean candidate | Core catalog, root and generic Runbook, composition skills and room-local ownership route reconciled | No personal source mutation, native callability or release stamp; targeted/full verification and independent review pending |
 
+## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.
 

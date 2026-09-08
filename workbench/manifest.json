@@ -60,6 +60,8 @@
       "update-harness",
       "carry",
       "notepad",
+      "save",
+      "promote",
       "builder",
       "auditor",
       "reviewer",

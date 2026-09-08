@@ -378,6 +378,41 @@ notepad discovery excludes it. Preserve old recovery references, and restore
 from the recorded Git SHA or explicit backup with byte read-back before claiming
 recovery. Do not treat local operational recovery as durable provenance.
 
+### Portable Save, Promote And Room-Local Skills
+
+`save` preserves already-authorized work in its existing owners, updates local
+continuation through `notepad`, and reports the recovery boundary actually
+verified. `promote` distills selected supported material, including corrections,
+through the direct owner promotion command below, then composes `save` for the
+already-promoted result. Neither starts implementation or grants broader scope.
+Explicit invocation and composition are distinct from mention. A promotion that
+was already performed must not be recursively promoted by save.
+
+The core machine catalog is `coreSkills` in the layout runtime; documentation
+and tests derive its size from that catalog. The current candidate includes
+save/promote while preserving checkpoint as a no-write compatibility notice.
+The v3.1.4 eighteen-skill manifest policy remains readable as a frozen legacy
+row; adding candidate source does not publish or stamp v3.2.0.
+
+For an authorized room-specific extension, keep its sole source at the project
+path `.agents/skills/NAME/SKILL.md`. Choose a name absent from required core and
+both global and project discovery roots; preserve any collision for explicit
+reconciliation. Track that source under the room's own Git policy. Create only
+a missing project `.claude/skills/NAME` directory symlink resolving to the same
+source, and ignore this generated adapter in project Git. On Windows, use a
+supported directory adapter only after checking the actual host; inability to
+create it leaves that discovery gate open. Do not duplicate implementation bytes
+or add `.codex/skills`. Compare resolved paths and then invoke the extension in
+the actual configured application. File presence and a valid alias alone do
+not prove native discovery or callability.
+
+Global installation does not publish room-local source into a personal catalog.
+That acceptance is a separately authorized operation. The global doctor
+`--home` inspection covers the declared global core; inspect project extension
+names and adapters separately. A new room needs no local extension and no
+personal catalog for core save/promote/notepad operation. Genesis's prohibition
+on a root `skills/` core shadow does not prohibit this room-owned source route.
+
 ### Direct Owner Promotion
 
 Reconcile selected claims into an existing owner; keep their corrections and

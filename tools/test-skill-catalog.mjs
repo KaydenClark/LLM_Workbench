@@ -7,10 +7,8 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = path.join(root, 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
-const coreSkills = [
-  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'carry', 'notepad', 'builder', 'auditor', 'reviewer', 'reconciler'
-].sort();
+import { coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
+const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
   for (const term of requiredTerms) {
