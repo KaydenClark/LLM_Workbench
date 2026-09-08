@@ -79,7 +79,7 @@ export function plan(workspace, date = new Date().toISOString().slice(0, 10)) {
   sh(planning, process.execPath, [tool, 'doctor']);
   const notes = path.join(planning, 'workbench/tools/notepads.mjs');
   const note = JSON.parse(sh(planning, process.execPath, [notes, 'create', '--note', 'greeting', '--objective', 'greeting', '--title', 'Greeting decisions']));
-  sh(planning, process.execPath, [notes, 'append', '--note', note.note, '--revision', '1', '--kind', 'decision', '--content', 'Greet by name; default to World. Tests use node:test with no dependencies.']);
+  sh(planning, process.execPath, [notes, 'append', '--note', note.note, '--revision', '1', '--kind', 'decision', '--topic', 'greeting', '--content', 'Greet by name; default to World. Tests use node:test with no dependencies.']);
   const owner = 'workbench/specs/S-001-greeting/SPEC.md';
   const before = fs.readFileSync(path.join(planning, owner));
   write(planning, 'workbench/sessions/handoffs/greeting-draft.md', before.toString('utf8') + '\n## Reconciled Decision\n\nGreet by name; default to World. Tests use node:test with no dependencies.\n');

@@ -96,7 +96,7 @@ try {
   // ---- Selected claim reconciliation, claim, push -------------------------
   const notes = path.join(first, 'workbench/tools/notepads.mjs');
   const note = JSON.parse(node(first, notes, 'create', '--note', 'greeting', '--objective', 'greeting', '--title', 'Greeting decisions'));
-  node(first, notes, 'append', '--note', note.note, '--revision', '1', '--kind', 'decision', '--content', 'Greet by name; default to World.');
+  node(first, notes, 'append', '--note', note.note, '--revision', '1', '--kind', 'decision', '--topic', 'greeting', '--content', 'Greet by name; default to World.');
   const owner = 'workbench/specs/S-001-greeting/SPEC.md';
   const beforeOwner = fs.readFileSync(path.join(first, owner));
   const authored = beforeOwner.toString('utf8') + '\n## Reconciled Decision\n\nGreet by name; default to World.\n';
