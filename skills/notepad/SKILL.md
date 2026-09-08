@@ -103,8 +103,9 @@ silently, so never report a partial read as the whole record.
 ## 4. Reconcile before cleanup, and preserve what is still needed
 
 Promote supported claims into their durable owners under existing
-authorization - the assigned spec, an ADR, the Wiki, a root control - and cite
-those owners, never the note. Then remove only what has actually landed:
+authorization - the assigned spec, a decision record in `workbench/docs/adr`,
+the Wiki, a root control - and cite those owners, never the note. Then remove
+only what has actually landed:
 
 ```bash
 node workbench/tools/notepads.mjs trim --note NOTE --revision N \
