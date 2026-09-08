@@ -43,6 +43,15 @@ const registry = Object.freeze({
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   'invalid-adr': entry('error', 'adr', 'none', 'an ADR is missing required frontmatter or names an unknown canonicalization target'),
   'untracked-provenance': entry('error', 'adr', 'none', 'a durable reference targets an untracked session path'),
+  // notepads: refusals the runtime returns to its caller. None of them blocks,
+  // because a live note is local working context that no selection depends on;
+  // each is a fail-closed answer to one write or read, not a project state.
+  'duplicate-identity': entry('error', 'sessions', 'none', 'a notepad or entry identity already exists in the record'),
+  'stale-revision': entry('error', 'sessions', 'none', 'a notepad write names a revision other than the one on disk'),
+  'malformed-json': entry('error', 'sessions', 'none', 'a JSON record is not parseable'),
+  'legacy-schema': entry('error', 'sessions', 'none', 'a record is an earlier notepad schema with no revision to check; migrate it first'),
+  'retained-dependency': entry('error', 'sessions', 'none', 'a trim would strand material that a retained entry still corrects or depends on'),
+  'write-failed': entry('error', 'sessions', 'none', 'a record could not be published; the previous valid file is unchanged'),
   'stale-note': entry('attention', 'wiki', 'none', 'a wiki note is marked stale'),
   'invalid-note': entry('error', 'wiki', 'none', 'a wiki note violates the schema'),
   'copied-task-state': entry('error', 'wiki', 'none', 'a wiki note copies live task state'),
