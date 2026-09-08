@@ -237,14 +237,18 @@ function resumeWithRecovery(root, paths, downloads, state, confirmed) {
   let directory = null, recoveryRecord = null;
   if (changed.length) {
     directory = fs.mkdtempSync(path.join(paths.directory, 'resume-'));fs.chmodSync(directory, 0o700);
+    const backupPaths = changed.map((note, index) => note.bytes === null ? null : path.join(directory, `note-${index}.json`));
+    const stateBackup = path.join(directory, 'state-before.json');
+    recoveryRecord = path.relative(root, path.join(directory, 'recovery.json'));
+    // Ignore exceptions can re-include individual children. Validate every
+    // destination before any original note bytes enter the recovery tree.
+    for (const file of [...backupPaths.filter(Boolean), stateBackup, path.join(root, recoveryRecord)]) ignored(root, file);
     const notes = changed.map((note, index) => {
-      const backup = note.bytes === null ? null : path.join(directory, `note-${index}.json`);
+      const backup = backupPaths[index];
       if (backup) { writeSafeFile(root, backup, note.bytes);fs.chmodSync(backup, 0o600);if (digest(ordinary(root, backup)) !== note.hash) refuse('recovery-readback-failed', 'Resume backup did not match the original note; no note was replaced.'); }
       return { note: note.relative, beforeHash: note.hash, afterHash: note.remoteHash, backup: backup && path.relative(root, backup), mode: note.bytes === null ? null : fs.statSync(note.absolute).mode & 0o777 };
     });
-    const stateBackup = path.join(directory, 'state-before.json');
     writeLocal(root, stateBackup, state);
-    recoveryRecord = path.relative(root, path.join(directory, 'recovery.json'));
     writeLocal(root, path.join(root, recoveryRecord), { schemaVersion: 1, operation: 'resume', lastConfirmedRemoteSha: previousSha, fetchedRemoteSha: confirmed, stateBackup: path.relative(root, stateBackup), notes });
   }
   const appliedNotes = [], attemptedNotes = [];

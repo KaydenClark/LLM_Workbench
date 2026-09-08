@@ -181,6 +181,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 
 | 2026-09-08 | TK-003 | Interrupted multi-note resume reproduced incomplete error reporting at verified 6700ca0 | Public probe injects second-note rename failure after first note is replaced; runtime returned generic blocked with no named partial application or original backup. Regression demonstrated RED. Prepared before-write recovery plans and original snapshots, explicit partial results, acknowledgment read-back and successful cleanup; added lock, rejected-push and different-note clone checks | Root and generic procedure now distinguish caught partial recovery from atomicity or crash guarantees | Clean candidate green/full checks and independent recovery review pending; private repository lookup remains unavailable with current credentials, not proven nonexistent |
 
+| 2026-09-08 | TK-003 | Recovery candidate e7eecd4 passed 16 tests; b7b297d added passing acknowledgment-failure retry case | Independent review reproduced effective ignore exceptions exposing original-note backups after an interrupted resume. New regression demonstrated RED before repair. Every planned backup, prior-state and receipt destination is now checked before private recovery bytes are copied | Docs checked; existing ignored recovery boundary remains unchanged | Repaired targeted/full checks and independent re-review pending; earlier b7 full suite remains separate historical evidence |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.

@@ -332,3 +332,25 @@ test('failed acknowledgment after resume retains recovery and permits an explici
  const retried=transport.syncNotes(second,{notes,direction:'resume'},fixtureVerification);assert.equal(retried.status,'confirmed');assert.ok(fs.existsSync(path.resolve(second,result.recoveryRecord)),'Earlier recovery remains available until deliberate reconciliation');
  } finally {fs.renameSync=rename;fs.rmSync(f.base,{recursive:true,force:true});}
 });
+
+test('resume refuses re-included backup destinations before copying any private originals', () => {
+ const f=fixture(); const rename=fs.renameSync;
+ try {
+  configured(f);const other=createNote(f.project,{note:'second',objective:'transport-proof',title:'Second continuity'}).note;
+  const notes=[f.note,other];
+  assert.equal(transport.syncNotes(f.project,{notes,direction:'push'},fixtureVerification).status,'confirmed');
+  const second=path.join(f.base,'resume-room');git(f.base,'clone','-q',f.project,second);
+  assert.equal(transport.configureTransport(second,{checkout:f.checkout,branch:'main',acknowledgePrivate:true},fixtureVerification).status,'configured');
+  assert.equal(transport.syncNotes(second,{notes,direction:'resume'},fixtureVerification).status,'confirmed');
+  const before=notes.map(n=>fs.readFileSync(path.join(second,n)));const stateFile=path.join(second,'workbench/sessions/recovery/transport/state.json');
+  const stateBefore=fs.readFileSync(stateFile);
+  for(const note of notes) {const v=JSON.parse(fs.readFileSync(path.join(f.project,note)));appendEntry(f.project,{note,revision:v.revision,kind:'finding',topic:'remote-change',content:'Preserve this new remote progress.'});}
+  assert.equal(transport.syncNotes(f.project,{notes,direction:'push'},fixtureVerification).status,'confirmed');
+  fs.appendFileSync(path.join(second,'workbench/sessions/.gitignore'),'\n!recovery/\nrecovery/*\n!recovery/transport/\nrecovery/transport/*\n!recovery/transport/resume-*/\nrecovery/transport/resume-*/*\n!recovery/transport/resume-*/note-*.json\n');
+  const result=transport.syncNotes(second,{notes,direction:'resume'},fixtureVerification);
+  assert.equal(result.status,'blocked',JSON.stringify(result));assert.equal(result.error.reason,'not-ignored');
+  for(let i=0;i<notes.length;i++)assert.deepEqual(fs.readFileSync(path.join(second,notes[i])),before[i]);
+  assert.deepEqual(fs.readFileSync(stateFile),stateBefore);
+  assert.equal(git(second,'status','--porcelain','--untracked-files=all').includes('note-'),false,'No original private bytes may be copied into a re-included backup');
+ } finally {fs.renameSync=rename;fs.rmSync(f.base,{recursive:true,force:true});}
+});
