@@ -2091,7 +2091,23 @@ test('operational recovery is local and separate from note history, and nine-col
     assert.equal(run('validate', '--project', project).report.status, 'valid');
     fs.appendFileSync(path.join(project, 'workbench/sessions/.gitignore'), '\n!recovery/private.json\n');
     fs.writeFileSync(path.join(project, 'workbench/sessions/recovery/private.json'), '{}');
-    assert.equal(run('validate', '--project', project).report.status, 'blocked', 'an effective recovery ignore leak is refused');
+    assert.equal(run('validate', '--project', project).report.error.code, 'sessions-not-ignored', 'an effective recovery ignore leak is refused');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('adding recovery refuses pre-existing unmanaged recovery contents before mutation', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const file = path.join(project, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    delete manifest.collections.recovery;
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    const occupied = path.join(project, 'workbench/sessions/recovery/owner.json');
+    fs.writeFileSync(occupied, '{"owner":"existing"}');
+    const before = [file, occupied, path.join(project, 'workbench/sessions/.gitignore')].map(file => fs.readFileSync(file));
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.error.code, 'lane-collision');
+    assert.deepEqual([file, occupied, path.join(project, 'workbench/sessions/.gitignore')].map(file => fs.readFileSync(file)), before);
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 

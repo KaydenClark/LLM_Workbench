@@ -160,13 +160,6 @@ function preflight(project, home) {
   if (legacySkills && (legacySkills.isSymbolicLink() || !legacySkills.isDirectory())) {
     return fail('legacy-path-collision', `${path.join(project, 'skills')} must be an ordinary directory when present.`, { source: 'skills' });
   }
-  const recoveryPath = path.join(project, recoveryLane, 'adoption-recovery.json');
-  if (lstatOrNull(path.join(project, 'handoffs', 'adoption-recovery.json'))) {
-    return fail('recovery-collision', `${recoveryPath} would overwrite an existing legacy recovery record.`);
-  }
-  if (legacySkills && lstatOrNull(path.join(project, 'handoffs', 'adoption-legacy-skills'))) {
-    return fail('recovery-collision', `${path.join(project, recoveryLane, 'adoption-legacy-skills')} would overwrite an existing legacy recovery directory.`);
-  }
   return null;
 }
 

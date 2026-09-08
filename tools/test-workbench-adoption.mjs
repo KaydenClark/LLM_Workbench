@@ -131,6 +131,8 @@ function fixtureSpec() {
     write(project, 'feedback/WORKBENCH_FEEDBACK.md', '# Feedback\n');
     write(project, 'grilling diary/decision.md', '# Provisional decision\n');
     write(project, 'handoffs/recovery.md', '# Recovery point\n');
+    write(project, 'handoffs/adoption-recovery.json', '{"legacy":"keep"}\n');
+    write(project, 'handoffs/adoption-legacy-skills/old.md', '# Earlier backup\n');
     write(project, 'skills/custom/SKILL.md', '# Legacy project-local skill\n');
     write(project, 'tools/app.mjs', 'export const app = true;\n');
     write(project, 'tools/spec-workbench.mjs', 'export const duplicate = true;\n');
@@ -152,6 +154,8 @@ function fixtureSpec() {
     assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Feedback\n');
     assert.equal(read(project, 'workbench/sessions/grilling/decision.md'), '# Provisional decision\n');
     assert.equal(read(project, 'workbench/sessions/checkpoints/recovery.md'), '# Recovery point\n');
+    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-recovery.json'), '{"legacy":"keep"}\n');
+    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-legacy-skills/old.md'), '# Earlier backup\n');
     assert.equal(read(project, 'workbench/sessions/recovery/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
     assert.equal(report.recoveryPath, 'workbench/sessions/recovery/adoption-recovery.json');
     assert.equal(JSON.parse(read(project, 'workbench/manifest.json')).schemaVersion, 2, 'adoption must produce schema 2');

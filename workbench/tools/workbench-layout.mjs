@@ -663,6 +663,10 @@ export function migrate(options) {
     }
     const unsafe = preflightLayout(project);
     if (unsafe) return unsafe;
+    const recovery = path.join(project, collections.recovery);
+    if (!manifest.collections.recovery && lstatOrNull(recovery) && fs.readdirSync(recovery).some(name => name !== '.gitkeep')) {
+      return fail('lane-collision', 'The undeclared operational recovery location contains existing material; reconcile it before migration.');
+    }
     const source = sourceIdentity({ ...options, '--version': options['--version'] ?? manifest.workbenchVersion });
     if (source.status) return source;
     const seedFailure = preflightSeedDocuments(project);
