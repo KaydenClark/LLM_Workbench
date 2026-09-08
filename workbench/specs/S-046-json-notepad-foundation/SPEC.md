@@ -479,6 +479,12 @@ suite's. And the claim was carried forward across rounds without re-measuring,
 which is the same defect as a test scoped to the case its author was thinking
 about - the finding the reviews kept returning.
 
+The number, so nobody repeats the guess: `tools/test-check-append-only.py`
+takes **23 minutes** on this host, timed uncontended and passing. The 300-second
+budget that hid the violation was not close, and a 25-minute budget still loses
+to any concurrent work. Anyone verifying this command should run it alone and
+wait for it rather than bound it, and read a timeout as "not yet known".
+
 The suite is not fully green on Windows and no claim is made that it is.
 
 **The 24/6-versus-22/8 disagreement was the shell, not the clone.** The fifth
