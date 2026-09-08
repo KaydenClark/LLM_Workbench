@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** TK-001 claimed by codex.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -81,7 +81,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Define and install one authoritative core source with adapters | in-progress | none | pending |
+| TK-001 | Define and install one authoritative core source with adapters | done | none | d2ecc5cf049509160c9ae1460b970eee48175772: installer 27/27, upgrade 8/8, full 37/37, independent repair review PASS; all seven reproduced ownership and alias findings resolved |
 | TK-002 | Diagnose tested compatibility and discovery failures | ready | TK-001 | pending |
 | TK-003 | Compose portable save and promote into a self-sufficient bundle | ready | TK-002 | pending |
 
@@ -117,10 +117,10 @@ Reconcile existing personal skill behavior by read-only inspection; implement Wo
 
 ## Acceptance Criteria
 
-- [ ] One core source/global identity and provider discovery adapters work without duplicate maintained implementations.
+- [x] One core source/global identity and provider discovery adapters work without duplicate maintained implementations.
 - [ ] Core save/promote/notepad compose through actual public seams without Foundry or personal-catalog dependency.
 - [ ] Tested explicit compatibility range and missing/conflicting/broken/incompatible diagnostics match actual installation.
-- [ ] Presence-only preservation, explicit-update backups/rollback and safe external migration plan are verified.
+- [x] Presence-only preservation, explicit-update backups/rollback and safe external migration plan are verified.
 - [ ] Fresh isolated-home setup and configured-host invocation evidence distinguish discovery from real callability.
 
 ## Testing Seams
@@ -154,6 +154,9 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | 2026-09-08 | TK-001 | Re-review of 30c9430 confirmed the original four repairs and found two further tracked-path edge cases | Whitespace-trimmed NUL inventory and deleted tracked case-alias regressions both demonstrated red. Preserve exact inventory bytes and reserve tracked core names case-insensitively, including missing leaves; repaired installer 26 of 26 pass without skips | Migration plan names case-insensitive tracked-core preservation | Fresh review and final full verification pending; no personal catalog or integration mutation |
 
 | 2026-09-08 | TK-001 | Re-review of dfdfa8c found deleted case-aliased ancestry still bypassed tracked protection | New deleted Skills ancestor regression demonstrated red; complete planned path reservation fixes it, all 27 installer tests pass. Prior 30c9430 full run passed 35 of 37; doctor and dogfood both exposed stale Taskboard after S-052 claim, now rendered | Migration plan explicitly reserves complete tracked path case aliases on every host | Final independent review and fresh full suite pending; S-052 identity tests separately demonstrated missing behavior and remain unimplemented |
+| 2026-09-08 | TK-001 | Ticket closed | d2ecc5cf049509160c9ae1460b970eee48175772: installer 27/27, upgrade 8/8, full 37/37, independent repair review PASS; all seven reproduced ownership and alias findings resolved | Canonical install/update/rollback procedures and generic adoption route reconciled; tracked-core migration plan preserves separate personal-repository authorization | TK-002 compatibility diagnostics and TK-003 composition/native invocation; final S-050 release integration review and downstream gates remain open |
+
+| 2026-09-08 | TK-001 | Frozen candidate d2ecc5cf049509160c9ae1460b970eee48175772 passed full verification and independent repair review | 37 of 37 commands green; installer 27 of 27 and upgrade 8 of 8; independent adversarial read-back confirmed ownership, whitespace and complete path-alias preservation. Guardrail 78 of 100 unchanged | Procedures and migration plan reconciled | Four unchanged outcome recommendations: repeated real trials, matched controls/prior comparison, current dated benchmark, effect and uncertainty ledger. No agent-outcome, native invocation or integration claim |
 
 ## Completion Result
 
