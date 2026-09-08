@@ -952,10 +952,14 @@ enforcement or agent reliability. Remote transport is optional.
 
 From the pinned producer checkout, run `node tools/configured-host.mjs --probe
 CONFIG.json`. The explicitly supplied JSON names `root` (producer checkout),
+`sourceCommit` (the expected full 40-character producer commit),
+`sourceRepository` (the expected producer `origin` URL),
 `cwd` (authorized temporary adapter location), `home`, nonempty `lanes` (existing
 writable directories), `skill` (a declared SKILL.md path), and optional `node`
 (runtime executable). The command creates and removes private temporary probes
-only in those locations. It executes managed doctor and parses actual ADRs;
+only in those locations. Before executing managed doctor, it verifies that
+`root` is the named Git checkout root at the expected commit and origin, with
+clean manifest, managed-tool, and ADR inputs. It executes managed doctor and parses actual ADRs;
 line-ending variants are structural evidence. Its exit code fails on a failed
 operation; zero may include unverified checks and is not blanket compatibility.
 Native discovery/invocation always needs a separate provider trace. Record the
