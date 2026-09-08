@@ -118,7 +118,7 @@ Expected result:
 
 ### Core-skill setup check
 
-The public source bundle is limited to the manifest-declared core catalog in
+The public source bundle is intentionally limited to the 17 skills in
 `skills/README.md`. Test the missing-only installer against a disposable user
 home without touching a real account:
 
