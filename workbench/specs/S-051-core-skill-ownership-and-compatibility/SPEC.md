@@ -98,8 +98,10 @@ install does not certify an existing foreign skill as Workbench core. Newly
 managed entries are excluded from a containing Git repository without staging
 or committing personal source. Tracked core migration remains an explicit
 separate plan; no actual personal repository is changed here. Explicit update
-and recorded-backup rollback must operate on the same canonical source and
-adapter topology. All installation proof uses isolated homes.
+and recorded-backup rollback operate on the same canonical source and adapter
+topology. The [tracked-core migration plan](tracked-core-migration.md) retains
+the separate personal-repository authorization boundary. All installation proof
+uses isolated homes.
 
 ### TK-002 - Diagnose tested compatibility and discovery failures
 
@@ -144,6 +146,8 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Complete release assignment specified from owner request and reconciled packet | All 17 handoff source hashes match; upstream integration 212762774b5cb7c065ab573bb487752fe98eff4c; Example refreshed to bf8a2fa5d7b7403fda07e3c8573db1d8348fe3f4, 12 tour tests pass and doctor has zero blockers | This spec owns its requirements; source packet retained locally | Implementation and acceptance remain pending |
+
+| 2026-09-08 | TK-001 | Canonical installer and explicit maintenance candidate prepared; implementation still under full verification | Normal installer 15 tests green at 619aa84; explicit maintenance red/green, incomplete recovery record red/green; current 20 installer and 8 upgrade tests pass. Upgrade now delegates to canonical updater and retains coreRecovery. Legacy separate copies restore, newer edits and damaged backups are preserved, tracked core refuses before mutation | Runbook, public orientation, update-harness and generic adoption procedure reconciled; tracked-core migration plan linked | Immutable full suite and independent review pending; no external personal repository changed |
 
 ## Completion Result
 

@@ -33,7 +33,7 @@ modes, and only one of them touches a user-scoped skill:
 - `--explicit-update` additionally replaces Workbench-managed skills, and is
   used only when replacing them is the point of the run.
 
-A same-named user-scoped skill that is shared, linked, or unmanaged is a reason
+A same-named user-scoped skill whose ownership must remain untouched is a reason
 to choose `--layout-only`, not a workstation to reconcile first. The
 `skill-path-collision` and `unmanaged-skill` refusals belong to
 `--explicit-update` alone; a `--layout-only` run returns before either is
@@ -157,9 +157,9 @@ command's other mode, `tools/workbench-upgrade.mjs upgrade --explicit-update`,
 run against a disposable or verified user home, combines the layout phase with
 skill replacement: it updates only skills bearing the Workbench-managed marker,
 backs up changed skill directories first, and records the pre-migration Git
-SHA, inventory, and backups in the same recovery record. It fails closed when a
-discovery root is inside a foreign Git repository or a same-named skill is
-unmanaged. Normal setup remains presence-only; never use `--explicit-update`
+SHA, inventory, and backups in the same recovery record. It uses the canonical core updater and its recorded-backup rollback. It fails
+closed for tracked core source, a Git-owned provider home, or an unmanaged
+same-named skill; ignored managed core inside a personal catalog is supported. Normal setup remains presence-only; never use `--explicit-update`
 merely because a same-named skill exists.
 
 Map capabilities, not every historical ticket. Create completed specs only for

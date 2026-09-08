@@ -3,13 +3,15 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceRoot = path.join(root, 'skills');
 import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
-import { markerSourceIdentity, writeManagedMarker } from './skill-marker.mjs';
+import { markerSourceIdentity, writeManagedMarker, readManagedMarker, skillContentHash } from './skill-marker.mjs';
 import { lstatOrNull, presentSkillPath, resolveSkillLink } from './skill-presence.mjs';
+import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 function fail(code, message, details = {}) {
   return { status: 'blocked', requiredSkills: coreSkills, installed: [], skipped: [], error: { code, message, ...details } };
@@ -35,18 +37,10 @@ function validateSource() {
   return null;
 }
 
-// S-045 TK-005 decided a symlinked and/or Git-owned discovery root is
-// supported. `26c34e9` refused both to stop the harness mutating a user's own
-// versioned skills collection, which is a real risk, but it left that layout
-// with no route at all. The bounded route is: resolve the link and write into
-// the real directory, add only a skill that is missing, and never touch Git -
-// no `add`, no `commit`, no `stash`. A root inside a Git repository is reported
-// rather than refused, so the collection's owner is not surprised by an
-// untracked directory appearing in it.
-//
-// This relaxes installation only. Replacing an existing skill is a different
-// question, and `workbench-upgrade.mjs --explicit-update` still refuses a
-// Git-owned root with `foreign-git-root`.
+// Resolve supported linked discovery roots before writing. Normal setup adds
+// only missing names; explicit replacement additionally verifies management,
+// excludes managed paths from personal Git, and records restorable backups.
+// Neither path stages or commits personal source.
 function resolveDestinationRoot(destination) {
   const missing = [];
   let current = path.resolve(destination);
@@ -130,11 +124,11 @@ function gitRead(directory, args) {
   return result.stdout.trim();
 }
 
-function exclusionPlans(destinations) {
+function exclusionPlans(destinations, all = false) {
   const plans = new Map();
   for (const { root: directory } of destinations) {
     const owner = gitOwner(directory);
-    const missing = coreSkills.filter(skill => !presentSkillPath(path.join(directory, skill)));
+    const missing = coreSkills.filter(skill => all || !presentSkillPath(path.join(directory, skill)));
     if (!missing.length) continue;
     const file = owner
       ? path.join(gitRead(owner, ['rev-parse', '--path-format=absolute', '--git-common-dir']), 'info', 'exclude')
@@ -250,12 +244,166 @@ function install(home) {
   }
 }
 
-try {
+function entryHash(target) {
+  const entry = lstatOrNull(target);
+  if (!entry) return null;
+  const hash = createHash('sha256');
+  if (entry.isSymbolicLink()) return hash.update('link\0').update(fs.readlinkSync(target)).digest('hex');
+  if (!entry.isDirectory()) throw new Error('Managed core entries must be ordinary directories or recorded adapters');
+  function walk(directory, relative = '') {
+    for (const name of fs.readdirSync(directory).sort()) {
+      const file = path.join(directory, name), child = relative + name;
+      const stat = fs.lstatSync(file);
+      if (stat.isDirectory()) { hash.update(`directory\0${child}\0`); walk(file, child + '/'); }
+      else if (stat.isFile() && stat.nlink === 1) hash.update(`file\0${child}\0${stat.mode & 0o777}\0`).update(fs.readFileSync(file)).update('\0');
+      else throw new Error('Managed core content must not contain links or special files');
+    }
+  }
+  walk(target);
+  return hash.digest('hex');
+}
+
+function maintenanceDestinations(home) {
+  const validated = validateDestinations([
+    { engine: 'codex', root: path.join(home, '.agents/skills') },
+    { engine: 'claude', root: path.join(home, '.claude/skills') }
+  ]);
+  if (validated.error) throw Object.assign(new Error(validated.error.error.message), { code: validated.error.error.code });
+  return validated.destinations;
+}
+
+function restoreEntries(backup, entries) {
+  for (const entry of entries) {
+    const saved = path.join(backup, entry.engine, entry.skill);
+    if (entry.before !== null && entryHash(saved) !== entry.before) throw new Error('Recorded core backup bytes do not match their recovery hash');
+  }
+  for (const entry of entries) {
+    if (lstatOrNull(entry.destination)) fs.rmSync(entry.destination, { recursive: true });
+    if (entry.before !== null) fs.cpSync(path.join(backup, entry.engine, entry.skill), entry.destination, { recursive: true, force: false, errorOnExist: true, verbatimSymlinks: true });
+    if (entryHash(entry.destination) !== entry.before) throw new Error('Core restoration read-back failed');
+  }
+}
+
+export function updateCoreSkills(home, { explicit = false } = {}) {
+  if (!explicit) return fail('explicit-update-required', 'Core replacement requires --explicit-update.');
+  let backup; let entries = []; let attempted = false;
+  try {
+    const sourceFailure = validateSource();
+    if (sourceFailure) return sourceFailure;
+    const identity = markerSourceIdentity();
+    if (gitOwner(path.resolve(home))) return fail('foreign-git-root', 'The provider home itself is Git-owned; choose a private backup home before explicit core replacement.');
+    const destinations = maintenanceDestinations(home);
+    const canonicalRoot = destinations.find(item => item.engine === 'codex').root;
+    const visited = new Set();
+    for (const { engine, root: directory } of destinations) {
+      for (const skill of coreSkills) {
+        const destination = path.join(directory, skill);
+        if (visited.has(destination)) continue;
+        visited.add(destination);
+        const stat = lstatOrNull(destination);
+        if (stat && !readManagedMarker(destination)) return fail('unmanaged-skill', 'Explicit update preserves an unmanaged same-named skill; reconcile its ownership first.', { engine, skill });
+        if (engine === 'codex' && stat?.isSymbolicLink()) return fail('skill-path-collision', 'Canonical core source is linked; prepare its ownership migration before replacement.', { skill });
+        const before = entryHash(destination);
+        entries.push({ engine, skill, destination, before, contentChanged: Boolean(stat?.isDirectory() && skillContentHash(destination) !== skillContentHash(path.join(sourceRoot, skill))) });
+      }
+    }
+    const exclusions = exclusionPlans(destinations, true);
+    // Backup storage must remain outside a Git-owned home. A personal .agents
+    // checkout is supported; versioning the entire home needs an explicit route.
+
+    backup = fs.mkdtempSync(path.join(home, '.workbench-core-backup-'));
+    for (const entry of entries) {
+      if (entry.before === null) continue;
+      const saved = path.join(backup, entry.engine, entry.skill);
+      fs.mkdirSync(path.dirname(saved), { recursive: true });
+      fs.cpSync(entry.destination, saved, { recursive: true, force: false, errorOnExist: true, verbatimSymlinks: true });
+      if (entryHash(saved) !== entry.before) throw new Error('Core backup read-back failed');
+    }
+    const record = { schemaVersion: 1, home: fs.realpathSync(home), source: identity, entries };
+    const recordPath = path.join(backup, 'recovery.json');
+    fs.writeFileSync(recordPath, JSON.stringify(record, null, 2) + '\n', { mode: 0o600 });
+    if (entries.some(entry => entryHash(entry.destination) !== entry.before)) throw new Error('Installed core changed during backup; read and reconcile again');
+    writeExclusions(exclusions);
+    attempted = true;
+    for (const entry of entries) {
+      if (lstatOrNull(entry.destination)) fs.rmSync(entry.destination, { recursive: true });
+      fs.mkdirSync(path.dirname(entry.destination), { recursive: true });
+      if (entry.engine === 'codex') {
+        fs.cpSync(path.join(sourceRoot, entry.skill), entry.destination, { recursive: true, force: false, errorOnExist: true });
+        writeManagedMarker(entry.destination, identity);
+      } else fs.symlinkSync(path.relative(path.dirname(entry.destination), path.join(canonicalRoot, entry.skill)), entry.destination, 'dir');
+    }
+    for (const entry of entries) {
+      const resolved = fs.realpathSync(entry.destination);
+      const canonical = fs.realpathSync(path.join(canonicalRoot, entry.skill));
+      if (resolved !== canonical || skillContentHash(resolved) !== skillContentHash(path.join(sourceRoot, entry.skill))) throw new Error('Updated core or adapter read-back failed');
+      entry.after = entryHash(entry.destination);
+    }
+    fs.writeFileSync(recordPath, JSON.stringify(record, null, 2) + '\n', { mode: 0o600 });
+    return { status: 'updated', backup, source: identity, skillBackups: entries.filter(entry => entry.contentChanged).map(entry => ({ engine: entry.engine, skill: entry.skill, path: path.join(backup, entry.engine, entry.skill) })), verification: 'source identity, recorded backups, canonical adapter targets and content read-back' };
+  } catch (error) {
+    if (attempted) {
+      try { restoreEntries(backup, entries); }
+      catch (restore) { return { status: 'partial', backup, error: { code: 'core-recovery-required', message: `${error.message}; restoration failed: ${restore.message}` } }; }
+    }
+    return { ...fail(error.code ?? 'core-update-failed', error.message), ...(backup ? { backup } : {}) };
+  }
+}
+
+export function rollbackCoreSkills(home, backupPath) {
+  let attempted = false;
+  try {
+    if (!backupPath) throw new Error('--backup must name a recorded core backup');
+    const backup = path.resolve(backupPath), homePath = fs.realpathSync(home);
+    if (path.dirname(fs.realpathSync(backup)) !== homePath || !path.basename(backup).startsWith('.workbench-core-backup-') || fs.lstatSync(backup).isSymbolicLink()) throw new Error('Backup must be an ordinary recorded directory in this provider home');
+    const file = path.join(backup, 'recovery.json');
+    if (!fs.lstatSync(file).isFile() || fs.lstatSync(file).nlink !== 1) throw new Error('Recovery metadata must be an ordinary file');
+    const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (record.schemaVersion !== 1 || record.home !== homePath || !Array.isArray(record.entries) || !record.entries.length) throw new Error('Core recovery metadata does not match this home');
+    const destinations = maintenanceDestinations(home);
+    const expected = new Set(destinations.flatMap(item => coreSkills.map(skill => path.join(item.root, skill))));
+    if (record.entries.length !== expected.size) throw new Error('Recovery must name the complete installed core destination set');
+    const seen = new Set();
+    const entries = record.entries.map(entry => {
+      if (entry.before !== null && !/^[a-f0-9]{64}$/.test(entry.before ?? '')) throw new Error('Recovery has an invalid original entry hash');
+      if (!coreSkills.includes(entry.skill) || !['codex', 'claude'].includes(entry.engine)) throw new Error('Recovery names an unknown core destination');
+      const destination = path.join(destinations.find(item => item.engine === entry.engine).root, entry.skill);
+      if (destination !== entry.destination || seen.has(destination)) throw new Error('Recovery destination changed or is duplicated');
+      seen.add(destination);
+      if (typeof entry.after !== 'string' || entryHash(destination) !== entry.after) throw new Error('Core changed after update; preserve the new work before rollback');
+      const savedRoot = path.join(backup, entry.engine);
+      if (lstatOrNull(savedRoot)?.isSymbolicLink()) throw new Error('Backup ancestry must not be linked');
+      return { ...entry, destination };
+    });
+    // Validate every saved entry before restoring any current entry.
+    for (const entry of entries) if (entry.before !== null && entryHash(path.join(backup, entry.engine, entry.skill)) !== entry.before) throw new Error('Core backup is missing or changed');
+    attempted = true;
+    restoreEntries(backup, entries);
+    return { status: 'rolled-back', backup, restored: entries.length, verification: 'original entry hashes and adapter topology read back; managed privacy exclusions retained' };
+  } catch (error) {
+    return { status: attempted ? 'partial' : 'blocked', error: { code: 'core-rollback-failed', message: error.message } };
+  }
+}
+
+if (isMainModule(import.meta.url)) try {
   const [command, ...args] = process.argv.slice(2);
-  if (command !== 'install') throw new Error('Usage: node tools/core-skill-installer.mjs install [--home USER_HOME]');
-  const report = install(parseHome(args));
+  let report;
+  if (command === 'install') report = install(parseHome(args));
+  else {
+    const options = {};
+    for (let index = 0; index < args.length; index += 1) {
+      const key = args[index];
+      if (!['--home', '--backup', '--explicit-update'].includes(key) || Object.hasOwn(options, key)) throw new Error('Unknown or duplicate maintenance argument');
+      options[key] = key === '--explicit-update' ? true : args[++index];
+      if (!options[key]) throw new Error('Missing maintenance argument value');
+    }
+    const home = path.resolve(options['--home'] ?? os.homedir());
+    if (command === 'update' && !options['--backup']) report = updateCoreSkills(home, { explicit: options['--explicit-update'] === true });
+    else if (command === 'rollback' && !options['--explicit-update']) report = rollbackCoreSkills(home, options['--backup']);
+    else throw new Error('Usage: core-skill-installer.mjs install|update|rollback [--home HOME] [--explicit-update] [--backup DIR]');
+  }
   process.stdout.write(`${JSON.stringify(report)}\n`);
-  if (report.status !== 'complete') process.exitCode = 1;
+  if (!['complete', 'updated', 'rolled-back'].includes(report.status)) process.exitCode = 1;
 } catch (error) {
   process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
   process.exitCode = 1;

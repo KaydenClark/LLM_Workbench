@@ -122,8 +122,7 @@ Expected result:
 
 ### Core-skill setup check
 
-The public source bundle is intentionally limited to the 18 skills in
-`skills/README.md`. Test the missing-only installer against a disposable user
+The public source bundle is the closed catalog in `skills/README.md`. Test the missing-only installer against a disposable user
 home without touching a real account:
 
 ```bash
@@ -131,11 +130,32 @@ node tools/core-skill-installer.mjs install --home /tmp/workbench-user-home
 node tools/test-core-skill-installer.mjs
 ```
 
-The installer writes only missing core skill directories into
-`.agents/skills` and `.claude/skills`. It preserves existing names without a
-content comparison. Missing-only installation supports Git-owned and linked
-discovery roots without changing their tracked source. Unsafe path collisions
-block before mutation; a valid existing skill link is preserved.
+The installer writes missing canonical core directories into `.agents/skills`
+and missing Claude directory adapters into `.claude/skills`. Both applications
+then read the same implementation. Existing names and valid links remain
+untouched; presence does not certify their ownership or compatibility. Linked
+and Git-owned discovery roots are supported. New managed paths are ignored
+through the owning Git repository's local exclusions (or a discovery-root
+ignore file). No personal source is staged or committed. Unsafe collisions
+block before installation.
+
+For an explicitly authorized core replacement, use the same release checkout:
+
+```bash
+node tools/core-skill-installer.mjs update --home /tmp/workbench-user-home --explicit-update
+node tools/core-skill-installer.mjs rollback --home /tmp/workbench-user-home --backup /tmp/workbench-user-home/.workbench-core-backup-RECORDED
+```
+
+Update verifies the source identity and managed ownership, records original
+bytes and adapter topology under the named home, then installs the canonical
+release and reads it back. Rollback verifies the complete recovery record,
+backup hashes and unchanged installed output before restoring originals.
+Newer local edits block rollback. Backup exclusions remain after restoration.
+Keep the backup until its recovery value is deliberately retired; neither
+command transfers live sessions or claims crash-safe transactions. Tracked
+core source needs the [explicit migration plan](workbench/specs/S-051-core-skill-ownership-and-compatibility/tracked-core-migration.md).
+A Git-owned provider home is refused because its backup would be versioned;
+a Git-owned `.agents` catalog with ignored managed core is supported.
 
 Every skill the installer or the explicit upgrade writes carries the managed
 skill marker `.workbench-skill.json` (schema 2): `source`, the `release` and
@@ -537,10 +557,12 @@ node tools/workbench-upgrade.mjs upgrade \
 
 `--explicit-update` is the only path that replaces a skill. It is limited to
 skills that the installer marked as Workbench-managed and blocks an unmanaged
-same-named skill or a discovery root inside a Git worktree before mutation. For
-each changed managed skill it creates a copy under the user home's
-`.workbench-upgrade-backup-*` directory, then runs the same layout phase and
-records the backups with `skills: "explicit-update"`:
+same-named skill, tracked core source, or a Git-owned provider home before
+mutation. It delegates to the canonical core updater above, retains the
+`.workbench-core-backup-*` recovery record, then runs the same layout phase.
+The upgrade receipt records `coreRecovery`, changed `skillBackups`, and
+`skills: "explicit-update"`. A later layout failure retains that core backup
+and reports partial completion:
 
 ```bash
 node tools/workbench-upgrade.mjs upgrade \

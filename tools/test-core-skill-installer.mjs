@@ -30,6 +30,110 @@ function install(home) {
   };
 }
 
+function maintain(home, command, ...args) {
+  const result = spawnSync(process.execPath, [installer, command, '--home', home, ...args], { cwd: root, encoding: 'utf8' });
+  return { ...result, report: JSON.parse(result.stdout) };
+}
+
+test('explicit update preserves changed core bytes in a backup and rollback restores both content and adapter topology', () => {
+  const home = fixtureHome();
+  try {
+    assert.equal(install(home).status, 0);
+    const canonical = path.join(home, '.agents/skills/genesis');
+    const adapter = path.join(home, '.claude/skills/genesis');
+    const changed = '# Changed managed core before update\n';
+    fs.writeFileSync(path.join(canonical, 'SKILL.md'), changed);
+    const withoutAuthorization = maintain(home, 'update');
+    assert.equal(withoutAuthorization.report.error.code, 'explicit-update-required');
+    assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), changed);
+    const result = maintain(home, 'update', '--explicit-update');
+    assert.equal(result.report.status, 'updated', result.stdout);
+    assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'skills/genesis/SKILL.md'), 'utf8'));
+    assert.equal(fs.realpathSync(adapter), fs.realpathSync(canonical));
+    const restored = maintain(home, 'rollback', '--backup', result.report.backup);
+    assert.equal(restored.report.status, 'rolled-back', restored.stdout);
+    assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), changed);
+    assert.equal(fs.realpathSync(adapter), fs.realpathSync(canonical));
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('rollback refuses a newer local skill change and preserves it', () => {
+  const home = fixtureHome();
+  try {
+    assert.equal(install(home).status, 0);
+    const file = path.join(home, '.agents/skills/genesis/SKILL.md');
+    fs.writeFileSync(file, '# Prior change\n');
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'updated', updated.stdout);
+    fs.writeFileSync(file, '# New work after update\n');
+    const refused = maintain(home, 'rollback', '--backup', updated.report.backup);
+    assert.equal(refused.report.status, 'blocked');
+    assert.equal(fs.readFileSync(file, 'utf8'), '# New work after update\n');
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('rollback validates the complete recorded destination set before changing any core', () => {
+  for (const damage of ['missing-entry', 'changed-backup']) {
+    const home = fixtureHome();
+    try {
+      assert.equal(install(home).status, 0);
+      const file = path.join(home, '.agents/skills/genesis/SKILL.md');
+      fs.writeFileSync(file, '# Before update\n');
+      const updated = maintain(home, 'update', '--explicit-update');
+      assert.equal(updated.report.status, 'updated', updated.stdout);
+      const current = fs.readFileSync(file);
+      const recordPath = path.join(updated.report.backup, 'recovery.json');
+      const record = JSON.parse(fs.readFileSync(recordPath));
+      if (damage === 'missing-entry') {
+        record.entries.pop();
+        fs.writeFileSync(recordPath, JSON.stringify(record));
+      } else fs.appendFileSync(path.join(updated.report.backup, 'codex/genesis/SKILL.md'), 'changed backup');
+      const refused = maintain(home, 'rollback', '--backup', updated.report.backup);
+      assert.equal(refused.report.status, 'blocked', damage + ': ' + refused.stdout);
+      assert.deepEqual(fs.readFileSync(file), current, damage + ' leaves current core unchanged');
+    } finally { fs.rmSync(home, { recursive: true, force: true }); }
+  }
+});
+
+test('explicit maintenance converges legacy copies and rollback restores each original implementation', () => {
+  const home = fixtureHome();
+  try {
+    assert.equal(install(home).status, 0);
+    const canonical = path.join(home, '.agents/skills/genesis');
+    const adapter = path.join(home, '.claude/skills/genesis');
+    fs.unlinkSync(adapter);
+    fs.cpSync(canonical, adapter, { recursive: true });
+    fs.writeFileSync(path.join(adapter, 'SKILL.md'), '# Legacy Claude implementation\n');
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'updated', updated.stdout);
+    assert.equal(fs.realpathSync(adapter), fs.realpathSync(canonical));
+    assert.equal(maintain(home, 'rollback', '--backup', updated.report.backup).report.status, 'rolled-back');
+    assert.equal(fs.lstatSync(adapter).isSymbolicLink(), false);
+    assert.equal(fs.readFileSync(path.join(adapter, 'SKILL.md'), 'utf8'), '# Legacy Claude implementation\n');
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('explicit maintenance permits ignored managed core in personal Git and refuses tracked core without mutation', () => {
+  const home = fixtureHome();
+  try {
+    const personal = path.join(home, '.agents');
+    fs.mkdirSync(personal);
+    assert.equal(spawnSync('git', ['init', '-q', personal]).status, 0);
+    assert.equal(install(home).status, 0);
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'updated', updated.stdout);
+    assert.equal(spawnSync('git', ['status', '--porcelain'], { cwd: personal, encoding: 'utf8' }).stdout, '');
+    assert.equal(spawnSync('git', ['add', '-f', 'skills/genesis'], { cwd: personal }).status, 0);
+    const before = fs.readFileSync(path.join(personal, 'skills/genesis/SKILL.md'));
+    const backups = fs.readdirSync(home).filter(name => name.startsWith('.workbench-core-backup-'));
+    const refused = maintain(home, 'update', '--explicit-update');
+    assert.equal(refused.report.status, 'blocked', refused.stdout);
+    assert.match(refused.report.error.message, /tracked-core migration/);
+    assert.deepEqual(fs.readFileSync(path.join(personal, 'skills/genesis/SKILL.md')), before);
+    assert.deepEqual(fs.readdirSync(home).filter(name => name.startsWith('.workbench-core-backup-')), backups);
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
 test('normal setup installs only missing bundled core skills in both user discovery roots', () => {
   const home = fixtureHome();
   try {
