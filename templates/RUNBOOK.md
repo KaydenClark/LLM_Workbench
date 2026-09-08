@@ -940,3 +940,24 @@ Local assignment uses an exclusive `workbench/.identity.lock`. A busy result
 preserves the existing writer's lock; after interruption, verify that writer is
 inactive before deliberately removing its stale lock. This is local writer
 serialization, not a cross-clone transaction or a crash-recovery claim.
+
+### Configured-host capability checks
+
+The minimum is writable declared lanes (relative, home-relative and absolute),
+native skill discovery and invocation, Node execution of managed tools, the
+selected directory adapter, and checkout record syntax. Evidence is scoped to
+the actual host/application/configuration. Missing capabilities affect dependent
+operations only; unavailable checks stay unverified. Capability does not prove
+enforcement or agent reliability. Remote transport is optional.
+
+From the pinned producer checkout, run `node tools/configured-host.mjs --probe
+CONFIG.json`. The explicitly supplied JSON names `root` (producer checkout),
+`cwd` (authorized temporary adapter location), `home`, nonempty `lanes` (existing
+writable directories), `skill` (a declared SKILL.md path), and optional `node`
+(runtime executable). The command creates and removes private temporary probes
+only in those locations. It executes managed doctor and parses actual ADRs;
+line-ending variants are structural evidence. Its exit code fails on a failed
+operation; zero may include unverified checks and is not blanket compatibility.
+Native discovery/invocation always needs a separate provider trace. Record the
+provider, model if reported, configuration, OS, exact source and operations;
+explicit skill-path invocation alone does not prove automatic discovery.

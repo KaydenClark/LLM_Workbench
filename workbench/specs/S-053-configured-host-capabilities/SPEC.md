@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate.
 **Blockers:** none
-**Latest event:** TK-002 claimed by codex.
-**Next gate:** Close TK-002 with verification and documentation proof.
+**Latest event:** TK-003 claimed by codex.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -78,8 +78,8 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Agree the concrete host capability floor | done | none | Recorded five-check docket recovered; owner renewed implementation on 2026-09-08 |
-| TK-002 | Implement operation-scoped host conformance checks | in-progress | TK-001 | pending |
-| TK-003 | Verify supported hosts and reconcile evidence claims | ready | TK-002 | pending |
+| TK-002 | Implement operation-scoped host conformance checks | done | TK-001 | New public probe seam RED missing module then GREEN 4 tests; missing lanes and runtimes remain operation-scoped; no native discovery inference |
+| TK-003 | Verify supported hosts and reconcile evidence claims | in-progress | TK-002 | pending |
 
 ### TK-001 - Agree the concrete host capability floor
 
@@ -131,6 +131,7 @@ Configured-host guidance in RUNBOOK and generic counterpart, CAND-P and ADR-0005
 | 2026-09-08 | spec | Complete release assignment specified from owner request and reconciled packet | All 17 handoff source hashes match; upstream integration 212762774b5cb7c065ab573bb487752fe98eff4c; Example refreshed to bf8a2fa5d7b7403fda07e3c8573db1d8348fe3f4, 12 tour tests pass and doctor has zero blockers | This spec owns its requirements; source packet retained locally | Implementation and acceptance remain pending |
 
 | 2026-09-08 | TK-001 | Recovered Claude docket five-check proposal and applied renewed owner implementation authorization | Original proposal covers writable path forms, discovery/invocation, Node, adapters and checkout syntax; later substituted checklist withdrawn | This spec restores the exact baseline before implementation; no historical approval invented | Actual native provider and unavailable device results must remain qualified |
+| 2026-09-08 | TK-002 | Ticket closed | New public probe seam RED missing module then GREEN 4 tests; missing lanes and runtimes remain operation-scoped; no native discovery inference | Root and generic Runbook document exact five checks and explicit temporary write contract | Full suite and actual local report; native discovery and unavailable Windows/provider claims remain unverified |
 
 ## Completion Result
 
