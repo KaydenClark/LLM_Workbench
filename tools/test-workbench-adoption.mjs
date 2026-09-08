@@ -168,6 +168,7 @@ function fixtureSpec() {
     const receipt = JSON.parse(read(project, 'workbench/tools/.workbench-tools.json'));
     assert.equal(receipt.source.release, VERSION, 'adoption installs receipt-backed runtime tools');
     const manifest = JSON.parse(read(project, 'workbench/manifest.json'));
+    assert.match(manifest.workbenchId, /^WB-[0-9A-Za-z]{22}$/, 'actual adoption assigns an independent room namespace');
     assert.notEqual(manifest.provenance.source.commit, 'unrecorded');
     assert.equal(manifest.provenance.source.commit, receipt.source.commit,
       'manifest and managed-tools receipt must record one source commit');

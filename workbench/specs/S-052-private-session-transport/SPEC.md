@@ -150,6 +150,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 
 | 2026-09-08 | TK-001 | Stable room identity implementation candidate prepared | Two public lifecycle tests demonstrated RED at d2ecc5c: initializer omitted identity and identify command was absent. Implementation adds random base-62 identity, explicit assign-once command, validation, local assignment lock and preservation through migration; green verification pending clean source commit | Root and generic Runbook guidance, Lexicon definition and this bounded decision updated; full source verification list includes identity test | No transport configuration or cross-device proof; targeted and full verification pending |
 
+| 2026-09-08 | TK-001 | First identity candidate 43d3756 passed initial public lifecycle and actual adoption tests | Identity 2 of 2 and visible-ID 4 of 4 green; adoption passed; layout 63 of 67, with four relocated partial-tool fixtures missing the new visible-ids dependency. Manifest alias test demonstrated RED when existing identity was read through a link; ordinary unshared manifest preflight added before reading, and fixture dependency closure repaired | Lifecycle and lock guidance already recorded; actual adoption now explicitly checks room namespace | Clean repaired-candidate targeted verification and full suite pending; no transport implementation or readiness claim |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.

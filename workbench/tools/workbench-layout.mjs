@@ -650,9 +650,11 @@ export function recordSource(options) {
 export function identify(options) {
   if (Object.keys(options).some(key => key !== '--project')) return fail('invalid-invocation', 'identify accepts only --project; independent rooms receive identity during initialization.');
   const project = path.resolve(options['--project']);
+  const manifestPath = path.join(project, 'workbench/manifest.json');
+  try { assertSafeWritePath(project, manifestPath); }
+  catch (error) { return fail('identity-write-failed', error.message); }
   const validation = validateManifest(project);
   if (validation.status !== 'valid') return validation;
-  const manifestPath = path.join(project, 'workbench/manifest.json');
   const lock = path.join(project, 'workbench/.identity.lock');
   let descriptor;
   try {

@@ -750,7 +750,7 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
     // Every module the layout tool imports is itself a managed runtime tool
   // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
   // release checkout around them, which is the condition under test.
-  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs', 'visible-ids.mjs']) {
       fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
     }
 
@@ -930,7 +930,7 @@ function relocateTool(bundle) {
   // Every module the layout tool imports is itself a managed runtime tool
   // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
   // release checkout around them, which is the condition under test.
-  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs', 'visible-ids.mjs']) {
     fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
   }
   return relocatedTool;

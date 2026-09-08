@@ -6,6 +6,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { allocateWorkbenchId, isWorkbenchId } from '../workbench/tools/visible-ids.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(root, 'workbench/tools/workbench-layout.mjs');
@@ -78,4 +79,39 @@ test('legacy room identity is assigned explicitly once and malformed identity ne
       assert.deepEqual(fs.readFileSync(manifestPath(room)), before);
     }
   } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('identity assignment preserves occupied locks and refuses linked or shared manifests', () => {
+  const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-identity-'));
+  try {
+    const room = create(parent, 'room');
+    const file = manifestPath(room);
+    const original = fs.readFileSync(file);
+    const lock = path.join(room, 'workbench/.identity.lock');
+    fs.writeFileSync(lock, 'another writer');
+    assert.equal(run('identify', room).error.code, 'identity-busy');
+    assert.equal(fs.readFileSync(lock, 'utf8'), 'another writer');
+    assert.deepEqual(fs.readFileSync(file), original);
+    fs.unlinkSync(lock);
+    const saved = path.join(parent, 'original-manifest.json');
+    fs.renameSync(file, saved);
+    for (const shape of ['symlink', 'hardlink']) {
+      if (shape === 'symlink') fs.symlinkSync(saved, file);
+      else fs.linkSync(saved, file);
+      assert.equal(run('identify', room).status, 'invalid', shape);
+      assert.deepEqual(fs.readFileSync(saved), original);
+      assert.equal(fs.existsSync(lock), false);
+      fs.unlinkSync(file);
+    }
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('connection allocation validates occupied namespace identities and keeps artifact labels separate', () => {
+  const ids = Array.from({ length: 32 }, () => allocateWorkbenchId());
+  assert.equal(new Set(ids).size, ids.length);
+  assert.ok(ids.every(isWorkbenchId));
+  assert.ok(!ids.includes(allocateWorkbenchId(ids)));
+  assert.throws(() => allocateWorkbenchId(['S-001']), /valid WB/);
+  assert.throws(() => allocateWorkbenchId([ids[0], ids[0]]), /collision/);
+  assert.throws(() => allocateWorkbenchId(['WB-000000000000000000000A', 'WB-000000000000000000000a']), /collision/);
 });
