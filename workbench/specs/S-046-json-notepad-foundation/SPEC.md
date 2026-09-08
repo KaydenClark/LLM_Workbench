@@ -464,6 +464,78 @@ a copied control using them would read as unfilled in the room that copied it.
 `test-workbench-layout` now also pins v3.1.3's frozen seventeen-skill row, so
 that freeze is tested rather than assumed.
 
+The first independent review of `517f27e` returned CHANGES REQUIRED with ten
+findings, and the candidate was green on its own suite and clean on `doctor`
+when it was submitted. Every finding was checked against the code and every
+one held. Recorded by severity, with what each would have cost a reader:
+
+- **HIGH, `trim` stranded a correction.** The guard walked one direction only:
+  it refused to remove material a retained entry depends on, but allowed
+  removing a correction while keeping the claim it corrected. The note would
+  then be the sole local record of a fact the agent already knew was wrong,
+  and a scoped read would return it with nothing marking it superseded - the
+  read path treats a correction as required context for its target, so the two
+  halves of the tool disagreed about what a correction is. This is the
+  documented cleanup path, and it contradicts `AGENTS.md` and Desired
+  Behavior 7. The link now binds in both directions.
+- **MEDIUM-HIGH, the blocked-write test could not fail on POSIX.** Both
+  load-bearing assertions sat behind `if (blocked.status === 'blocked')`, and
+  the block was produced by clearing the file's write bit - but publication
+  renames over the destination, and POSIX `rename` needs write permission on
+  the directory, not the target. On Linux and macOS the append simply
+  succeeded and the test passed having asserted nothing. This is the seam
+  TK-002 names by name. It now forces the failure with a second hard link,
+  which blocks the rename on every platform, and asserts unconditionally.
+- **MEDIUM, the privacy scan did not cover what four controls promised.**
+  `AGENTS.md`, both Runbooks and the skill state without qualification that
+  new material is scanned; `--next-action`, `--unresolved`, `--topic`,
+  `--source-file`, `--question-id` and `--durable-owner` were not. Every
+  supplied string is scanned now, rather than narrowing the promise.
+- **MEDIUM, a generated entry id collided after a trim.** The default counted
+  from the entry count, which shrinks, so the documented
+  reconcile-then-keep-working path failed with a refusal naming an id the
+  agent never chose. It counts from the highest suffix the kind has used.
+- **MEDIUM, `migrate` could brick a record one way.** A legacy `revision` in a
+  `scope-1` file won over the seeded value, producing a record that could no
+  longer be read, appended to, or migrated again - while reporting success.
+  Latent, since none of the five live records carries the key. The legacy
+  value is now preserved in `extensions.migrated_revision` instead.
+- **LOW, no command validated its own output.** `--id ""` passed `??`,
+  because an empty string is not nullish, and wrote a dead file. `publish`
+  now validates before writing, which closes this class rather than this case.
+- **LOW, three prose overstatements.** The skill claimed the revision check
+  meant "two writers cannot silently overwrite each other", which describes a
+  lock; it is check-then-act, and this spec already records that no
+  simultaneous-writer guarantee was accepted. `list` was the one subcommand
+  that would read a tracked collection. And the grilling skill introduced its
+  example as "the record it writes" when `create` writes no `questions` field.
+- **LOW, no benchmark row.** S-049 added one for this exact class of change,
+  citing the `AGENTS.md` before/after rule. `benchmarks/RESULTS.md` now
+  carries the row.
+
+The review also confirmed, independently, the three consequential claims this
+account makes: the six failures match the baseline case for case, the five
+`scope-1` records validate unmodified with the stated entry counts, and the
+guardrail is 78/100 on both trees. It went further than this account had by
+building a real v3.1.3 room from the baseline release and driving the
+candidate at it: the room stays clean and unblocked at v3.1.3, the new
+release reports `tools-receipt-missing` naming `notepads.mjs` with a remedy
+that works, and `update --explicit-update` installs the tool and refreshes
+the receipt to twelve files at v3.1.4. No existing room breaks.
+
+Two claims the review could not confirm, corrected here. The live
+demonstration figures below are not reproducible as written, because the note
+has been written to since and now reports `matched: 6`; the behaviour is
+reproducible and was re-confirmed, the specific numbers are a snapshot of a
+record that keeps moving. And the ticket row reads as though one of the five
+`scope-1` records was migrated: all five remain `scope-1`, and the migrated
+record is a sixth, this assignment's own working note.
+
+What this cost is the point of recording it. The defects were not found by
+the suite, by `doctor`, or by the author re-reading the diff. Three of them -
+the stranded correction, the untestable test, and the unscanned fields - sit
+exactly where this capability claims its value, and the first two would have
+shipped a runtime that quietly loses the corrections it exists to preserve.
 Guardrail is 78/100 before and after with unchanged criteria, measured on the
 baseline checkout and the candidate with the same tool. All four remaining
 recommendations are Outcome evidence: real repeated trials, control/prior/

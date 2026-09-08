@@ -328,19 +328,18 @@ test('a blocked write leaves the previous valid note in place', () => {
     appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'x', 'entry-id': 'x-1', content: 'The one entry that must survive.' });
     const before = fs.readFileSync(notePath, 'utf8');
 
-    // The failure has to be forced the same way on every platform. Clearing
-    // the file's write bit does not do it: publication renames a fresh file
-    // over the destination, and POSIX rename needs write permission on the
-    // directory, not on the target - so the append simply succeeded there and
-    // an earlier version of this test skipped its own assertions. Replacing
-    // the collection directory with a file blocks the rename everywhere.
-    const collection = path.dirname(notePath);
-    const stash = `${collection}-stash`;
-    fs.renameSync(collection, stash);
-    fs.writeFileSync(collection, 'not a directory\n');
+    // The failure has to be forced the same way on every platform, and after
+    // the record has been read rather than before. Clearing the file's write
+    // bit does not do it: publication renames a fresh file over the
+    // destination, and POSIX rename needs write permission on the directory,
+    // not on the target - so the append simply succeeded there and an earlier
+    // version of this test skipped its own assertions. A second hard link
+    // does it everywhere: the note still reads, and the write path refuses to
+    // rename over a file something else also points at.
+    const link = path.join(path.dirname(notePath), 'second-name.json');
+    fs.linkSync(notePath, link);
     const blocked = appendEntry(dir, { note: created.note, revision: 2, kind: 'finding', topic: 'x', content: 'Interrupted.' });
-    fs.rmSync(collection, { force: true });
-    fs.renameSync(stash, collection);
+    fs.rmSync(link, { force: true });
 
     assert.equal(blocked.status, 'blocked', 'the write must fail, not be skipped');
     assert.equal(blocked.error.code, 'write-failed');
