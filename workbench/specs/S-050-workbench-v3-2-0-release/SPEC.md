@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project.
 **Blockers:** live-device-and-private-repository-access (final rollout readiness only)
-**Latest event:** TK-004 review failed the already-merged candidate; producer identity repair is green locally.
-**Next gate:** Push and independently review the repaired immutable candidate, then integrate it before closing TK-004.
+**Latest event:** TK-004 closed with proof.
+**Next gate:** Complete TK-005.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -103,7 +103,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-001 | Promote and push the complete reconciled scope | done | none | 33 required commands pass; independent planning PASS cb12c23; 181 records, 19 candidates and 59 mappings preserved; remote plan verified |
 | TK-002 | Reconcile ADRs and all included documentation contracts | done | TK-001 | Full 33-command suite passes at fixed 87244cc; independent bounded documentation PASS; guardrail78 unchanged |
 | TK-003 | Converge capability implementations and useful continuity proof | done | none | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved |
-| TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | in-progress | TK-003 | pending |
+| TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | done | TK-003 | 16c8278 full42 PASS; configured-host10 and source-identity18 PASS; independent corrective review PASS; PR81 merged as integration5ceef14 with exact candidate containment and zero tree delta |
 | TK-005 | Deliver Example v3.2.0 and fresh project acceptance | ready | TK-004 | pending |
 | TK-006 | Reconcile release receipts and readiness verdict | ready | TK-005 | pending |
 
@@ -194,6 +194,7 @@ claims/status/lineage, not private transcripts.
 | 2026-09-08 | TK-003 | Local convergence evidence reviewed; external acceptance remains blocked | Runtime candidate db540ec27a272d61283262ee48d46fe9ebf8f7af passed full 41 of 41 and independent transport review. Evidence candidate 3394cf86b44b4c62a8e695fe8d08bd3749434894 passed full 41 of 41; final receipt qualification 2933a72e43971894f82c2f260ba8d3421024c26a independently PASS. Useful generated project85ac45b fresh-clone tests14, runtime15 hashes, saved original/corrections and native36-command trace independently confirmed. Guardrail78 unchanged, four outcome-evidence recommendations retained | Receipt distinguishes producer-observed launcher facts from independently checked native events; S-052 implementation001-003 closed with live004 explicitly blocked. Existing S-053 owns the unaccepted capability-floor proposal | Owner agreement on host floor and actual private-repository/Mac-Windows-Claude-Codex access are unresolved. No v3.2.0 stamp, upstream integration, Example upgrade/integration or rollout readiness. This is the first explicit blocked continuation audit after completing available local work |
 | 2026-09-08 | TK-003 | Ticket closed | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved | S053 exact five-check baseline and local result; actual cross-device readiness remains S052TK004 and S050TK006 | Stamp and review upstream; Example integration; actual cross-device final readiness |
 | 2026-09-08 | TK-004 | Separate-context review rejected the exact 563a6e69657a6fe2594e86bda523cb60567342b7 candidate after PR80 had already merged it | Full42, append-only, held-out path safety, evaluator106.6 and doctor passed, but an ordinary non-Git root containing expected filenames executed a substituted managed child and reported PASS; review verdict FAIL. Regression reproduced RED, then producer Git root, expected commit/origin and clean consumed-input checks made ten configured-host tests GREEN | RUNBOOK and generic counterpart now require explicit sourceCommit/sourceRepository and name the producer preflight | Commit and push repair, full suite, fresh independent review and corrective integration remain pending; PR80 did not satisfy the review gate |
+| 2026-09-08 | TK-004 | Ticket closed | 16c8278 full42 PASS; configured-host10 and source-identity18 PASS; independent corrective review PASS; PR81 merged as integration5ceef14 with exact candidate containment and zero tree delta | RUNBOOK and template producer preflight updated; S050 and S053 evidence record PR80 gate failure and repaired result | Example reviewed integration and actual Mac/Windows Claude/Codex private-transport readiness evidence |
 
 ## Completion Result
 
