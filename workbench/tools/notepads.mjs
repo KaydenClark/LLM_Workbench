@@ -241,14 +241,14 @@ function sequenceFrom(entries, existing = {}) {
   return marks;
 }
 
-function publish(root, resolved, note) {
+function publish(root, resolved, note, { exclusive = false } = {}) {
   const { missing, invalid } = checkStructure(note);
   if (missing.length || invalid.length) {
     return blocked('invalid-note', `${resolved.relative} was not updated: the result would not be a valid notepad`, { missing, invalid });
   }
   const serialized = `${JSON.stringify(note, null, 2)}\n`;
   try {
-    writeSafeFile(root, resolved.absolute, serialized);
+    writeSafeFile(root, resolved.absolute, serialized, { exclusive });
   } catch (error) {
     return blocked('write-failed', `${resolved.relative} was not updated: ${error.message}; the previous valid record is unchanged`);
   }
@@ -346,7 +346,7 @@ export function createNote(root, options) {
     entries: [],
     extensions: { durable_owners: [] }
   };
-  const failure = publish(root, resolved, note);
+  const failure = publish(root, resolved, note, { exclusive: true });
   if (failure) return failure;
   return { status: 'created', note: resolved.relative, id: note.id, objective, revision: note.revision };
 }

@@ -999,3 +999,24 @@ test('visible ID allocation refuses ambiguous unreadable inventory before writin
     assert.equal(fs.readdirSync(path.join(dir, 'workbench/sessions/notepads/work')).length, 1);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('new note publication preserves a file created after preflight', () => {
+  const dir = project();
+  const target = path.join(dir, 'workbench/sessions/notepads/work/racing-note.json');
+  const mkdir = fs.mkdirSync;
+  const existing = 'Existing bytes from a competing creator.\n';
+  let injected = false;
+  try {
+    fs.mkdirSync = function (directory, options) {
+      if (!injected && path.resolve(directory) === path.dirname(target)) {
+        injected = true;
+        fs.writeFileSync(target, existing);
+      }
+      return mkdir.call(fs, directory, options);
+    };
+    const result = createNote(dir, { note: 'racing-note', objective: 'notepad-runtime', title: 'Cannot replace the competitor' });
+    assert.equal(injected, true);
+    assert.equal(result.status, 'blocked');
+    assert.equal(fs.readFileSync(target, 'utf8'), existing);
+  } finally { fs.mkdirSync = mkdir; fs.rmSync(dir, { recursive: true, force: true }); }
+});
