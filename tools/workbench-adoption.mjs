@@ -358,7 +358,7 @@ function migrate(options) {
 
 try {
   const [command, ...args] = process.argv.slice(2);
-  if (command !== 'migrate') throw new Error('Usage: workbench-adoption.mjs migrate --project PROJECT --home USER_HOME --version v3.1.4');
+  if (command !== 'migrate') throw new Error('Usage: workbench-adoption.mjs migrate --project PROJECT --home USER_HOME --version v3.2.0');
   const result = migrate(parseOptions(args));
   process.stdout.write(`${JSON.stringify(result)}\n`);
   if (result.status !== 'complete') process.exitCode = 1;
