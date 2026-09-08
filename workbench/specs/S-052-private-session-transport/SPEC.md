@@ -176,6 +176,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 
 | 2026-09-08 | TK-002 | Initial candidate 7daa575 passed full checks but independent review found four boundary gaps | Full 41 of 41 pass. Review reproduced project Git accepted as transport, case-aliased namespace ancestry, unchecked foreign namespace in a post-push descendant, and lossy UTF-8 validation. Four regression groups demonstrated RED at 843fc93. Repair separates project/transport common dirs, remotes and lineage, reserves planned ancestor case, revalidates final fetched namespace, and validates exact UTF-8 plus every decoded JSON string including duplicate-key values | Root and generic procedure names strict repository separation, final acknowledgment checks and byte/privacy bounds | Clean repaired-candidate targeted/full verification and independent re-review pending; TK-003 interrupted/offline/conflict recovery and real device/provider gates remain open |
 
+| 2026-09-08 | TK-002 | Candidate 32c3085c7b4c3bda36761791fc5e4ee02f72eb6a passed full checks but second review found two further boundaries | Full 41 of 41 pass; ten transport tests pass. Independent review reproduced minified home-path privacy bypass and inherited Git routing variables spoofing ignored checks. Both regressions demonstrated RED; independent decoded-string scans and consistent Git environment isolation now prepared | Docs checked; existing privacy and project exclusion contracts require these repairs without a contract change | Clean twelve-test candidate, full verification and fresh independent review pending; actual private service and device gates remain open |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.

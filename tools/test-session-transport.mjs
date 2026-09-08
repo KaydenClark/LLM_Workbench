@@ -210,3 +210,30 @@ test('invalid UTF-8 and privacy hidden in duplicate JSON keys never reach remote
     } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
   }
 });
+
+test('privacy scans each decoded string with its own boundaries in minified JSON', () => {
+  const f = fixture();
+  try {
+    configured(f);const before = git(f.remote, 'rev-parse', 'main'), file = path.join(f.project, f.note);
+    const value = JSON.parse(fs.readFileSync(file));value.title = '/Users/fixture-review/private-context';
+    const bytes = Buffer.from(JSON.stringify(value));fs.writeFileSync(file, bytes);
+    assert.equal(transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification).status, 'blocked');
+    assert.equal(git(f.remote, 'rev-parse', 'main'), before);assert.deepEqual(fs.readFileSync(file), bytes);
+  } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
+});
+
+test('ignore verification cannot inherit another repository through Git routing variables', () => {
+  const f = fixture();
+  const prior = { GIT_DIR: process.env.GIT_DIR, GIT_WORK_TREE: process.env.GIT_WORK_TREE };
+  try {
+    configured(f);git(f.project, 'add', '-f', f.note);
+    assert.equal(transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification).status, 'blocked');
+    const other = path.join(f.base, 'other-git');fs.mkdirSync(other);git(other, 'init', '-q');fs.writeFileSync(path.join(other, '.git/info/exclude'), 'workbench/sessions/\n');
+    process.env.GIT_DIR = path.join(other, '.git');process.env.GIT_WORK_TREE = other;
+    const result = transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification);
+    assert.equal(result.status, 'blocked', JSON.stringify(result));assert.equal(result.acknowledged, false);
+  } finally {
+    for (const [key, value] of Object.entries(prior)) { if (value === undefined) delete process.env[key];else process.env[key] = value; }
+    fs.rmSync(f.base, { recursive: true, force: true });
+  }
+});

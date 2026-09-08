@@ -16,10 +16,13 @@ const objectId = value => /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(value);
 class Refusal extends Error { constructor(code, message) { super(message); this.code = code; } }
 const refuse = (code, message) => { throw new Refusal(code, message); };
 const blocked = error => ({ status: 'blocked', acknowledged: false, error: { code: 'session-transport-blocked', reason: error.code ?? 'transport-failure', message: error instanceof Refusal ? error.message : 'Transport refused an unsafe or unreadable input; preserve local work and inspect the configured paths.' } });
-function git(cwd, args, { input, env = {} } = {}) {
+function gitEnvironment(env = {}) {
   const inherited = { ...process.env };
   for (const key of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR']) delete inherited[key];
-  const result = spawnSync('git', args, { cwd, input, env: { ...inherited, ...env }, maxBuffer: 20 * 1024 * 1024 });
+  return { ...inherited, ...env };
+}
+function git(cwd, args, { input, env = {} } = {}) {
+  const result = spawnSync('git', args, { cwd, input, env: gitEnvironment(env), maxBuffer: 20 * 1024 * 1024 });
   if (result.status !== 0) refuse('git-unavailable', `Git ${args[0]} did not complete; no remote acknowledgment is established.`);
   return result.stdout;
 }
@@ -36,7 +39,7 @@ function localPaths(root) {
 }
 function ignored(root, file) {
   assertSafeWritePath(root, file);
-  const result = spawnSync('git', ['check-ignore', '--quiet', '--', path.relative(root, file)], { cwd: root });
+  const result = spawnSync('git', ['check-ignore', '--quiet', '--', path.relative(root, file)], { cwd: root, env: gitEnvironment() });
   if (result.status !== 0) refuse('not-ignored', 'Private transport configuration and live records must be ignored and untracked in project Git.');
 }
 function writeLocal(root, file, value) {
@@ -141,8 +144,9 @@ function safeNote(bytes) {
   if (shape.missing.length || shape.invalid.length) refuse('invalid-note', 'Selected record does not satisfy the supported notepad schema.');
   // Decode every original JSON string, including overwritten duplicate keys;
   // validating only the parsed object could hide private bytes still uploaded.
+  const strings = [...text.matchAll(/"(?:[^"\\]|\\.)*"/g)].map(match => JSON.parse(match[0]));
   const decoded = text.replace(/"(?:[^"\\]|\\.)*"/g, token => JSON.parse(token));
-  if (scanPrivacy(decoded).length) refuse('private-content', 'Selected record contains privacy-sensitive material; retain it locally and author a safe record.');
+  if (strings.some(value => scanPrivacy(value).length) || scanPrivacy(decoded).length) refuse('private-content', 'Selected record contains privacy-sensitive material; retain it locally and author a safe record.');
   return value;
 }
 function selection(root, values, identity, direction) {
