@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Introduce visible base-62 identifiers without parallel IDs or loss of existing references.
 **Blockers:** none
-**Latest event:** TK-001 claimed by codex.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-002 claimed by codex.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 ## Outcome
 
@@ -67,8 +67,8 @@ or a lossy migration must be brought back as a concrete product tradeoff.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Allocate and retrieve one new visible notepad ID through a tested CLI while legacy numeric records still resolve | in-progress | none | pending |
-| TK-002 | Extend visible-ID compatibility through spec ticket and ADR consumers without renaming historical paths | ready | TK-001 | pending |
+| TK-001 | Allocate and retrieve one new visible notepad ID through a tested CLI while legacy numeric records still resolve | done | none | ffa02b1e4680e012db5bfd13e3938f25e390376b:45 notepad and3 allocator cases green after public red regressions; full35-command union green; independent bounded repair review PASS; receipt-backed installed CLI allocation and explicit ID lookup pass; guardrail78/100 unchanged |
+| TK-002 | Extend visible-ID compatibility through spec ticket and ADR consumers without renaming historical paths | in-progress | TK-001 | pending |
 
 ### TK-001 - Compatibility tracer bullet
 
@@ -141,8 +141,12 @@ explicit selectors and destination reservations at `8e9978a`; a third reservatio
 case drove alias handling independent of filesystem sensitivity at `2bc4284`.
 The publication-race regression separately failed before exclusive creation was
 added. The repaired target passes 45 notepad cases and three allocator cases.
-Final full-suite and fresh review are still pending; spec/ticket/ADR compatibility
-remains TK-002. No overall identifier or release acceptance is closed here.
+Final candidate `ffa02b1e4680e012db5bfd13e3938f25e390376b` passed the full
+35-command union and a fresh independent bounded review. The repaired installed
+runtime allocated N-001 and retrieved it through explicit identity selection;
+its receipt names that exact candidate. Guardrail score remains 78/100 with four
+outcome-evidence recommendations. Spec/ticket/ADR compatibility remains TK-002;
+no overall identifier or release acceptance is closed here.
 
 ## Acceptance Criteria
 
@@ -172,6 +176,7 @@ allocation behavior once implemented. Root and generic templates stay aligned.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Accepted identity direction captured without inventing compatibility details | S-046 source reconciliation Q17C/Q17D; numeric consumers inspected at 8e9c06f | ADR-0041, LEXICON, and this spec | Runtime allocation and migration unimplemented |
+| 2026-09-08 | TK-001 | Ticket closed | ffa02b1e4680e012db5bfd13e3938f25e390376b:45 notepad and3 allocator cases green after public red regressions; full35-command union green; independent bounded repair review PASS; receipt-backed installed CLI allocation and explicit ID lookup pass; guardrail78/100 unchanged | Root/template Runbook, core notepad skill, managed packaging and S047 compatibility/adverse-review account updated; scanner criteria unchanged | TK002 spec ticket ADR consumers and whole-release integration remain; no eternal deleted-ID registry or distributed allocator claim |
 
 ## Completion Result
 
