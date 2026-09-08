@@ -15,6 +15,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -28,10 +29,13 @@ const ANCHOR = /\*\*Citation anchors\.\*\*\s*pre=`([0-9a-f]{7,40})`\s*post=`([0-
 const PRE_SECTIONS = new Set(['Outcome', 'Why It Matters', 'Current Verified State', 'Desired Behavior']);
 const EVIDENCE = 'Append-Only Evidence And Execution Log';
 
-export function anchoredSpecs() {
-  return fs.readdirSync(SPECS)
-    .filter((d) => /^S-\d{3}-/.test(d) && Number(d.slice(2, 5)) >= FIRST_ANCHORED)
-    .filter((d) => fs.existsSync(path.join(SPECS, d, 'SPEC.md')))
+export function anchoredSpecs(directory = SPECS) {
+  return fs.readdirSync(directory)
+    .filter((name) => {
+      const suffix = /^S-([0-9A-Za-z]{3,})-/.exec(name)?.[1];
+      return suffix && (!/^\d+$/.test(suffix) || BigInt(suffix) >= BigInt(FIRST_ANCHORED));
+    })
+    .filter((d) => fs.existsSync(path.join(directory, d, 'SPEC.md')))
     .sort();
 }
 
@@ -51,6 +55,19 @@ export function liveCitations(text) {
   return out;
 }
 
+// A withdrawn check, recorded rather than silently dropped. This branch cited
+// three commits it had squashed away, so a test was added here requiring every
+// commit a live spec section names to be contained in some branch. It fails in
+// an ordinary clone on correct content: `git clone` copies the whole object
+// store but only `refs/heads/*`, so S-049's legitimate citation of a merge on
+// `origin/main` arrives as an object no ref in the clone contains, because the
+// clone's `origin/main` is the source's local `main`, not the remote's. Skipping
+// absent objects does not help - the object is present. The property is only
+// checkable where the orphan exists, the authoring repository, and a mandatory
+// suite command that goes red on a correct spec in every clone is worse than no
+// check at all. The practice it was meant to enforce is kept as a practice:
+// verify `git branch -a --contains` before writing a commit into a durable
+// record. S-046 records the withdrawal and its reason.
 function treeFiles(sha, cache) {
   if (!cache.has(sha)) {
     cache.set(sha, execFileSync('git', ['ls-tree', '-r', '--name-only', sha], { cwd: root, encoding: 'utf8' }).split('\n'));
@@ -109,4 +126,16 @@ test('every declared anchor still resolves the citations it covers', () => {
   }
   assert.deepEqual(failures, [],
     `declared citation anchors no longer resolve:\n  ${failures.join('\n  ')}`);
+});
+
+
+test('new alphanumeric and grown spec IDs remain in citation-anchor coverage', () => {
+  const folder = fs.mkdtempSync(path.join(os.tmpdir(), 'citation-identities-'));
+  try {
+    for (const name of ['S-001-legacy', 'S-036-rule', 'S-00A-new', 'S-1000-grown']) {
+      fs.mkdirSync(path.join(folder, name));
+      fs.writeFileSync(path.join(folder, name, 'SPEC.md'), '# Fixture');
+    }
+    assert.deepEqual(anchoredSpecs(folder), ['S-00A-new', 'S-036-rule', 'S-1000-grown']);
+  } finally { fs.rmSync(folder, { recursive: true, force: true }); }
 });

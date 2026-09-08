@@ -10,10 +10,7 @@ import { doctor, nextWork } from '../workbench/tools/spec-workbench.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-adoption.mjs');
-const coreSkills = [
-  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
-];
+import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adoption-'));
@@ -131,7 +128,11 @@ function fixtureSpec() {
     write(project, 'feedback/WORKBENCH_FEEDBACK.md', '# Feedback\n');
     write(project, 'grilling diary/decision.md', '# Provisional decision\n');
     write(project, 'handoffs/recovery.md', '# Recovery point\n');
+    write(project, 'handoffs/adoption-recovery.json', '{"legacy":"keep"}\n');
+    write(project, 'handoffs/adoption-legacy-skills/old.md', '# Earlier backup\n');
     write(project, 'skills/custom/SKILL.md', '# Legacy project-local skill\n');
+    fs.symlinkSync('SKILL.md', path.join(project, 'skills/custom/alias.md'));
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: project }).status, 0);
     write(project, 'tools/app.mjs', 'export const app = true;\n');
     write(project, 'tools/spec-workbench.mjs', 'export const duplicate = true;\n');
     write(project, 'schema.sql', '-- project schema\n');
@@ -152,8 +153,11 @@ function fixtureSpec() {
     assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Feedback\n');
     assert.equal(read(project, 'workbench/sessions/grilling/decision.md'), '# Provisional decision\n');
     assert.equal(read(project, 'workbench/sessions/checkpoints/recovery.md'), '# Recovery point\n');
-    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
-    assert.equal(report.recoveryPath, 'workbench/sessions/checkpoints/adoption-recovery.json');
+    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-recovery.json'), '{"legacy":"keep"}\n');
+    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-legacy-skills/old.md'), '# Earlier backup\n');
+    assert.equal(read(project, 'workbench/sessions/recovery/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
+    assert.equal(fs.readlinkSync(path.join(project, 'workbench/sessions/recovery/adoption-legacy-skills/custom/alias.md')), 'SKILL.md');
+    assert.equal(report.recoveryPath, 'workbench/sessions/recovery/adoption-recovery.json');
     assert.equal(JSON.parse(read(project, 'workbench/manifest.json')).schemaVersion, 2, 'adoption must produce schema 2');
     assert.equal(read(project, 'AGENTS.md'), '# AGENTS.md\n\nProject-specific adoption truth.\n');
     assert.equal(read(project, 'tools/app.mjs'), 'export const app = true;\n', 'an application root tools directory is never absorbed');
@@ -161,6 +165,7 @@ function fixtureSpec() {
     const receipt = JSON.parse(read(project, 'workbench/tools/.workbench-tools.json'));
     assert.equal(receipt.source.release, VERSION, 'adoption installs receipt-backed runtime tools');
     const manifest = JSON.parse(read(project, 'workbench/manifest.json'));
+    assert.match(manifest.workbenchId, /^WB-[0-9A-Za-z]{22}$/, 'actual adoption assigns an independent room namespace');
     assert.notEqual(manifest.provenance.source.commit, 'unrecorded');
     assert.equal(manifest.provenance.source.commit, receipt.source.commit,
       'manifest and managed-tools receipt must record one source commit');
@@ -310,6 +315,45 @@ function fixtureSpec() {
       'adoption declares an existing integration-named branch by its exact case');
     assert.equal(report.residue.missingIntegrationBranch, null);
     assert.equal(report.findings.some((issue) => issue.scope === 'git'), false, 'a resolving declared branch is not a finding');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
+// S-045 TK-001: the second of the two presence-only gates. `missingUserSkills`
+// has its own linked-root fixture in `tools/test-workbench-upgrade.mjs`; this is
+// `hasRequiredUserSkills`, so the acceptance criterion's "both presence gates"
+// is proved by a fixture on each rather than by the shared module alone. Sharing
+// `tools/skill-presence.mjs` is a strong argument that the two cannot disagree,
+// but an argument is not a fixture, and this gate previously judged with
+// `lstat(...).isDirectory()`, which does not follow a link.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+
+    // Every populated discovery root reaches every skill through a link, and no
+    // root holds one as an ordinary directory.
+    for (const skill of coreSkills) write(home, `shared-skills/${skill}/SKILL.md`, `# ${skill}\n`);
+    for (const root of ['.agents/skills', '.claude/skills']) {
+      fs.mkdirSync(path.join(home, root), { recursive: true });
+      for (const skill of coreSkills) {
+        fs.symlinkSync(path.join(home, 'shared-skills', skill), path.join(home, root, skill), 'dir');
+      }
+    }
+
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-07');
+
+    assert.equal(result.status, 0, result.stdout);
+    assert.equal(JSON.parse(result.stdout).status, 'complete',
+      'a host whose every populated root reaches each skill through a link satisfies the adoption gate');
+    for (const root of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.lstatSync(path.join(home, root, 'genesis')).isSymbolicLink(), true, 'the link itself is untouched');
+    }
+    assert.equal(read(home, 'shared-skills/genesis/SKILL.md'), '# genesis\n', 'nothing is written through the link');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });

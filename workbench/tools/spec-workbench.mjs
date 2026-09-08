@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { inspectSkills } from './skill-inspection.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, readAtRef, readManagedSkillMarker, resolveBranchRefs, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -10,6 +11,7 @@ import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
+import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const SPEC_STATUSES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
 const TICKET_STATUSES = new Set(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
@@ -41,14 +43,14 @@ function refuseBlockedRuntime(rootDir) {
   throw error;
 }
 
-function selectCandidate(specs) {
+function selectCandidate(specs, { specId, readyOnly = false } = {}) {
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   const candidates = [];
   for (const spec of specs) {
-    if (spec.status !== 'active') continue;
+    if (spec.status !== 'active' || (specId && spec.id !== specId)) continue;
     const satisfied = new Set([...completed, ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)]);
     for (const ticket of spec.tickets) {
-      const resumable = ticket.status === 'in-progress';
+      const resumable = !readyOnly && ticket.status === 'in-progress';
       const eligible = ticket.status === 'ready' && blockersSatisfied(ticket.blockers, satisfied);
       if (!resumable && !eligible) continue;
       candidates.push({
@@ -65,7 +67,7 @@ function selectCandidate(specs) {
       });
     }
   }
-  candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || a.specId.localeCompare(b.specId) || a.ticketId.localeCompare(b.ticketId));
+  candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.ticketId, b.ticketId));
   if (candidates.length === 0) return null;
   const { rank: _rank, ...result } = candidates[0];
   return result;
@@ -74,6 +76,21 @@ function selectCandidate(specs) {
 export function showSpec(rootDir, id) {
   const spec = findSpec(rootDir, id);
   return { ...publicSpec(spec), body: spec.content };
+}
+
+export function nextIdentity(rootDir, specId, options = {}) {
+  refuseBlockedRuntime(rootDir);
+  const specs = loadSpecs(rootDir);
+  const prefix = options.prefix;
+  if (!['S', 'TK'].includes(prefix)) throw new Error('--prefix must be S or TK');
+  if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Ticket identity proposals require an existing assigned spec ID');
+  if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
+  const occupied = prefix === 'S' ? specs.map(spec => spec.id) : specs.flatMap(spec => spec.tickets.map(ticket => ticket.id));
+  // Letter-bearing new durable labels do not reuse removed historical decimal
+  // IDs. Numeric tickets also retain their old spec-qualified interpretation.
+  const reservations = [...new Map(occupied.map(id => [visibleIdKey(id), id])).values()];
+  const id = allocateVisibleId(prefix, reservations, { requireLetter: true });
+  return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}) };
 }
 
 export function claimWork(rootDir, id, options) {
@@ -85,11 +102,8 @@ export function claimWork(rootDir, id, options) {
   if (matches.length !== 1) throw new Error(matches.length ? `Duplicate spec ID: ${id}` : `Unknown spec ID: ${id}`);
   const spec = matches[0];
   if (spec.status !== 'active') throw new Error(`${id} is ${spec.status}, not active`);
-  const satisfied = new Set([
-    ...specs.filter((item) => ['complete', 'superseded'].includes(item.status)).map((item) => item.id),
-    ...spec.tickets.filter((item) => item.status === 'done').map((item) => item.id)
-  ]);
-  const ticket = spec.tickets.find((item) => item.status === 'ready' && blockersSatisfied(item.blockers, satisfied));
+  const candidate = selectCandidate(specs, { specId: id, readyOnly: true });
+  const ticket = spec.tickets.find((item) => item.id === candidate?.ticketId);
   if (!ticket) {
     const blocked = spec.tickets.find((item) => item.status === 'ready');
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
@@ -175,12 +189,26 @@ export function doctor(rootDir, options = {}) {
   } catch (error) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
-  const byId = new Map();
+  issues.push(...packetFindings(specs, options));
+  checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
+  checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
+  issues.push(...collectionFindings(root));
+  issues.push(...skillFindings(root, options.home));
+  issues.push(...gitFindings(root, specs));
+  return issues;
+}
+
+// Validate proposed spec bytes without touching files or inspecting the host.
+export function validateSpecCandidate(root, filePath, content) {
+  const specs = loadSpecs(root, { allowDuplicates: true, contentOverrides: new Map([[path.resolve(filePath), content]]) });
+  return packetFindings(specs);
+}
+
+function packetFindings(specs, options = {}) {
+  const issues = [];
+  issues.push(...identityFindings(specs));
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of specs) {
-    const seen = byId.get(spec.id) ?? [];
-    seen.push(spec.relativePath);
-    byId.set(spec.id, seen);
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
     const satisfied = new Set([...completed, ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)]);
@@ -204,51 +232,15 @@ export function doctor(rootDir, options = {}) {
     }
     for (const link of localLinks(spec.content)) {
       const target = path.resolve(path.dirname(spec.filePath), link);
-      if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) issues.push(finding('broken-link', `${spec.id} links to missing ${link}`, { specId: spec.id }));
+      if (!target.startsWith(spec.root + path.sep) || !fs.existsSync(target)) issues.push(finding('broken-link', `${spec.id} links to missing ${link}`, { specId: spec.id }));
     }
   }
-  for (const [id, paths] of byId) {
-    if (paths.length > 1) issues.push(finding('duplicate-id', `${id} appears in ${paths.join(', ')}`, { specId: id }));
-  }
-  checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
-  checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
-  issues.push(...collectionFindings(root));
-  issues.push(...skillFindings(root, options.home));
-  issues.push(...gitFindings(root, specs));
   return issues;
 }
 
-// Installed core skills: for each skill the manifest requires, read its
-// managed marker in every declared discovery root under the user home
-// (`--home`, default the user home). A schema 2 marker whose release differs
-// from the manifest is stale; a present skill without a Workbench-managed
-// schema 2 marker (missing, schema 1, or another source) is of unknown
-// generation. A missing skill is Adoption preflight's finding. The home is
-// only ever read.
+// Inspection reports ownership and compatibility without changing the home.
 function skillFindings(root, home) {
-  const manifest = readManifest(root);
-  if (!manifest || manifest.schemaVersion !== 2) return [];
-  const required = Array.isArray(manifest.skillPolicy?.required) ? manifest.skillPolicy.required : [];
-  const discovery = Array.isArray(manifest.skillPolicy?.discovery) ? manifest.skillPolicy.discovery : [];
-  const homeDir = path.resolve(home ?? os.homedir());
-  const findings = [];
-  for (const discoveryRoot of discovery) {
-    for (const skill of required) {
-      const installed = path.join(homeDir, discoveryRoot, skill);
-      if (!isDirectory(installed)) continue;
-      const marker = readManagedSkillMarker(installed);
-      if (marker?.schemaVersion !== 2 || typeof marker.release !== 'string') {
-        findings.push(finding('skill-generation-unknown', `${discoveryRoot}/${skill} has no schema 2 marker; which Workbench generation it came from is unknown`, { skill, root: discoveryRoot }));
-      } else if (marker.release !== manifest.workbenchVersion) {
-        findings.push(finding('stale-skill', `${discoveryRoot}/${skill} records release ${marker.release}; the manifest runs ${manifest.workbenchVersion}`, { skill, root: discoveryRoot, release: marker.release, expected: manifest.workbenchVersion }));
-      }
-    }
-  }
-  return findings;
-}
-
-function isDirectory(target) {
-  try { return fs.statSync(target).isDirectory(); } catch { return false; }
+  return inspectSkills(readManifest(root), path.resolve(home ?? os.homedir()));
 }
 
 // The declared integration branch is the review gate's merge target. Its
@@ -299,6 +291,15 @@ function collectionFindings(root) {
   } catch (error) {
     findings.push(finding('invalid-note', `wiki validation failed: ${error.message}`));
   }
+  // S-045 TK-002: the two installed-state checks a room's own manifest and seed
+  // record answer. They were emitted from the wiki validator, which made
+  // `wiki.mjs validate` report a feedback-lane fact and a manifest fact to
+  // anyone checking the wiki; S-042 recorded that placement as interim. They
+  // are emitted here, beside the managed-runtime check, because the scope that
+  // matches them is the room's installed state, not any one lane. Both remain
+  // registered `none` and block nothing.
+  findings.push(...seededDocumentFindings(root));
+  findings.push(...provenanceFindings(root));
   // The runtime a room executes is checked against the receipt that installed
   // it, from the room itself; a lane with no receipt is not a managed runtime
   // and is the Genesis readiness gate's business, not doctor's.
@@ -322,17 +323,35 @@ function loadSpecs(rootDir, options = {}) {
     if (fs.existsSync(filePath)) paths.push(filePath);
   }
   const specs = paths.sort().map((filePath) => ({
-    ...parseSpecPacket(fs.readFileSync(filePath, 'utf8'), filePath, root),
+    ...parseSpecPacket(options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8'), filePath, root),
     specsPrefix
   }));
   if (!options.allowDuplicates) {
-    const ids = new Set();
-    for (const spec of specs) {
-      if (ids.has(spec.id)) throw new Error(`Duplicate spec ID: ${spec.id}`);
-      ids.add(spec.id);
-    }
+    const collision = identityFindings(specs)[0];
+    if (collision) throw new Error(collision.message);
   }
   return specs;
+}
+
+function identityFindings(specs) {
+  const findings = [];
+  const specIds = new Map();
+  const globalTickets = new Map();
+  for (const spec of specs) {
+    const specKey = visibleIdKey(spec.id);
+    if (specIds.has(specKey)) findings.push(finding('duplicate-id', `Duplicate spec ID: ${spec.id} conflicts with ${specIds.get(specKey)}`, { specId: spec.id }));
+    else specIds.set(specKey, spec.id);
+    const localTickets = new Map();
+    for (const ticket of spec.tickets) {
+      const key = visibleIdKey(ticket.id);
+      if (localTickets.has(key)) findings.push(finding('duplicate-id', `Duplicate ticket ID: ${spec.id}/${ticket.id}`, { specId: spec.id, ticketId: ticket.id }));
+      localTickets.set(key, ticket.id);
+      if (/^TK-\d+$/.test(ticket.id)) continue;
+      if (globalTickets.has(key)) findings.push(finding('duplicate-id', `Duplicate ticket ID: ${spec.id}/${ticket.id} conflicts with ${globalTickets.get(key)}`, { specId: spec.id, ticketId: ticket.id }));
+      else globalTickets.set(key, `${spec.id}/${ticket.id}`);
+    }
+  }
+  return findings;
 }
 
 function resolveSpecsRoot(root) {
@@ -355,7 +374,7 @@ function renderCatalog(specs) {
     '| Spec | Description | Status |',
     '|---|---|---|'
   ];
-  for (const spec of specs.sort((a, b) => a.id.localeCompare(b.id))) {
+  for (const spec of specs.sort((a, b) => compareVisibleIds(a.id, b.id))) {
     lines.push(`| [${spec.id} - ${escapeCell(spec.title)}](${spec.relativePath}) | ${escapeCell(spec.description)} | ${escapeCell(spec.status)} |`);
   }
   if (specs.length === 0) lines.push('| none | No specs recorded yet. | n/a |');
@@ -363,7 +382,7 @@ function renderCatalog(specs) {
 }
 
 function renderHotBoard(specs) {
-  const hot = specs.filter((spec) => isHot(spec)).sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id));
+  const hot = specs.filter((spec) => isHot(spec)).sort((a, b) => a.priority - b.priority || compareVisibleIds(a.id, b.id));
   const lines = [
     '| Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |',
     '|---|---|---|---|---|---|'
@@ -591,6 +610,7 @@ async function main() {
   const root = options.path ?? process.cwd();
   let result;
   if (command === 'next') result = nextWork(root);
+  else if (command === 'next-id') result = nextIdentity(root, id, options);
   else if (command === 'show') result = showSpec(root, id);
   else if (command === 'claim') result = claimWork(root, id, options);
   else if (command === 'close') result = closeTicket(root, id, options);
@@ -600,7 +620,7 @@ async function main() {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|show|claim|close|complete|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|complete|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);

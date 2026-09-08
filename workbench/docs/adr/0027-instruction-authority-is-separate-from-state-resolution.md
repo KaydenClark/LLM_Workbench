@@ -14,3 +14,7 @@ Considered and rejected: a single precedence list that placed source above the a
 Consequences: no artifact can broaden scope by being higher in a list; drift is repaired in the touched owner rather than resolved by a universal shortcut; the no-governance-tax rule follows, because ordinary owner-directed work needs no extra ceremony to establish which list applies.
 
 Provenance: owner-reviewed v3.1 greenlight decision, promoted 2026-09-04; see the tracked checkpoint `llm-workbench-v3-1-plan-2026-09-04.md` in the manifest-declared checkpoint collection.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+Composition inherits the assigned intersection of authority; read-only applies to the named target. Proof and review cannot manufacture owner authorization. See [ADR-0045](0045-skill-composition-within-inherited-scope.md).

@@ -200,8 +200,10 @@ coherent capability. Put 1-3 one-context tracer-bullet tickets in its
 implementation table and record the Genesis result in its evidence log. The
 manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
 `feedback`, `tools`) and their collections; live grilling and handoff records
-under `workbench/sessions/` stay untracked, and only `sessions/checkpoints/`
-is durable. Do not create a project-local `skills/` discovery directory.
+under `workbench/sessions/` stay untracked. Reusable schema/examples in
+`sessions/notepads/templates/` are tracked; `sessions/checkpoints/`
+retains frozen history. Operational `sessions/recovery/` stays ignored and is
+excluded from notepad discovery. Do not create a project-local `skills/` discovery directory.
 
 The readiness gate (`validate --genesis`) accepts only an actionable first
 packet, so shape it exactly like this before running the gate:
@@ -274,7 +276,7 @@ Do not call bootstrap done on vibes. All of the following must hold:
       result.
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] `workbench/manifest.json` is schema 2 and declares the six support
-      lanes, seven collections, wiki profile, exact 16-skill policy, version,
+      lanes, ten collections, wiki profile, exact 20-skill policy, version,
       the `git` block, and Genesis provenance with its source commit; the layout validator
       passes with `--genesis`. When it fails, its JSON `message` names the
       failing control or predicate, and first-spec and generated-region

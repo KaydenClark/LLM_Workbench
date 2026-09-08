@@ -271,14 +271,18 @@ by hand everywhere else. The migration's own refusal repeats this order and
 warning, and names every unreconciled control at once rather than the first.
 
 Install or verify the closed core bundle in the intended user home, then run the
-bounded migration seam:
+bounded migration seam. Missing-only setup uses canonical `.agents/skills`
+source and Claude adapters, preserving existing names. Explicit core replacement
+uses the release checkout's `core-skill-installer.mjs update --explicit-update`;
+retain its recorded backup for `rollback --backup`. Never migrate tracked
+personal core source as an incidental adoption repair:
 
 ```bash
 node tools/core-skill-installer.mjs install --home [USER_HOME]
 node tools/workbench-adoption.mjs migrate \
   --project [ABSOLUTE_PROJECT_PATH] \
   --home [USER_HOME] \
-  --version v3.1.2
+  --version v3.2.0
 node tools/workbench-tools.mjs verify --project [ABSOLUTE_PROJECT_PATH]
 node workbench/tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
 node workbench/tools/spec-workbench.mjs next --json
@@ -296,9 +300,9 @@ root `MEMORY.md`, `feedback/`, `grilling diary/`, and `handoffs/` to their
 manifest-declared lanes and collections (legacy grilling records become the
 untracked `workbench/sessions/grilling/`; legacy handoffs become the tracked
 `workbench/sessions/checkpoints/`). It preserves a legacy project-local
-`skills/` folder as `workbench/sessions/checkpoints/adoption-legacy-skills/`
+`skills/` folder as `workbench/sessions/recovery/adoption-legacy-skills/`
 only after every required core skill is already user-scoped. It writes the
-explicit recovery record at `workbench/sessions/checkpoints/adoption-recovery.json`,
+explicit recovery record at `workbench/sessions/recovery/adoption-recovery.json`,
 moves a root `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
 `workbench/feedback/`, installs the runtime tools, renders the projections, and
 checks doctor before reporting completion. It also declares the integration

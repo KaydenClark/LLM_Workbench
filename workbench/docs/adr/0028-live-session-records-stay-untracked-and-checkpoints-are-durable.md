@@ -16,3 +16,7 @@ Considered and rejected: force-adding a cited live notepad in place. It leaves t
 Consequences: `/checkpoint` and `/make-it-so` promote through the checkpoint collection; `doctor` reports a durable reference into an untracked collection as a defect; the `journal/` name remains unused because it is occupied by an append-only ledger concept in downstream deployments.
 
 Provenance: owner-reviewed v3.1 greenlight decision, promoted 2026-09-04; see the tracked checkpoint `llm-workbench-v3-1-plan-2026-09-04.md` in the manifest-declared checkpoint collection.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+The local-only transport and checkpoint-only destination are narrowed by the accepted private-transport and direct-promotion decisions. Historical citations and privacy rules remain; S-048 migrates active consumers before retirement. See [ADR-0051](0051-optional-private-git-transport-for-session-continuity.md), [ADR-0054](0054-direct-promotion-into-durable-owners.md).

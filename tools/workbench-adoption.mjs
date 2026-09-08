@@ -9,6 +9,7 @@ import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 import { writeSafeFile } from '../workbench/tools/workbench-paths.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
+import { missingSkills } from './skill-presence.mjs';
 import { RUNTIME_TOOLS, sourceIdentity } from './workbench-tools.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,7 +29,7 @@ const legacyLanes = [
   { source: 'grilling diary', destination: collections.grilling },
   { source: 'handoffs', destination: collections.checkpoints }
 ];
-const recoveryLane = collections.checkpoints;
+const recoveryLane = collections.recovery;
 
 function lstatOrNull(target) {
   try {
@@ -55,9 +56,11 @@ function parseOptions(args) {
   return options;
 }
 
+// The same judgment the installer and the layout-only gate use. See
+// `skill-presence.mjs`: it lives in one place so the three cannot disagree
+// about one host, which is what S-045 TK-001 was opened to repair.
 function hasRequiredUserSkills(home) {
-  const destinations = [path.join(home, '.agents', 'skills'), path.join(home, '.claude', 'skills')];
-  return coreSkills.filter((skill) => !destinations.some((root) => lstatOrNull(path.join(root, skill))?.isDirectory()));
+  return missingSkills(home, coreSkills);
 }
 
 // Producing a missing control is the same procedure every time, and eight rooms
@@ -156,13 +159,6 @@ function preflight(project, home) {
   const legacySkills = lstatOrNull(path.join(project, 'skills'));
   if (legacySkills && (legacySkills.isSymbolicLink() || !legacySkills.isDirectory())) {
     return fail('legacy-path-collision', `${path.join(project, 'skills')} must be an ordinary directory when present.`, { source: 'skills' });
-  }
-  const recoveryPath = path.join(project, recoveryLane, 'adoption-recovery.json');
-  if (lstatOrNull(path.join(project, 'handoffs', 'adoption-recovery.json'))) {
-    return fail('recovery-collision', `${recoveryPath} would overwrite an existing legacy recovery record.`);
-  }
-  if (legacySkills && lstatOrNull(path.join(project, 'handoffs', 'adoption-legacy-skills'))) {
-    return fail('recovery-collision', `${path.join(project, recoveryLane, 'adoption-legacy-skills')} would overwrite an existing legacy recovery directory.`);
   }
   return null;
 }
@@ -362,7 +358,7 @@ function migrate(options) {
 
 try {
   const [command, ...args] = process.argv.slice(2);
-  if (command !== 'migrate') throw new Error('Usage: workbench-adoption.mjs migrate --project PROJECT --home USER_HOME --version v3.1.0');
+  if (command !== 'migrate') throw new Error('Usage: workbench-adoption.mjs migrate --project PROJECT --home USER_HOME --version v3.2.0');
   const result = migrate(parseOptions(args));
   process.stdout.write(`${JSON.stringify(result)}\n`);
   if (result.status !== 'complete') process.exitCode = 1;

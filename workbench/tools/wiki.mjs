@@ -8,7 +8,7 @@ import { finding } from './diagnostics.mjs';
 import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
 import { insertFrontmatterKeys, parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
-import { provenanceFindings, seededDocumentFindings, versionStamp, wikiContractFiles } from './workbench-layout.mjs';
+import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
 export const NOTE_TYPES = Object.freeze(['memory', 'project', 'person', 'machine', 'guidebook', 'design-concept', 'meta']);
 export const NOTE_STATUSES = Object.freeze(['active', 'partial', 'stale', 'archived']);
@@ -16,7 +16,7 @@ export const SENSITIVITIES = Object.freeze(['normal', 'private', 'restricted']);
 export const KNOWLEDGE_ROLES = Object.freeze(['canonical', 'curated', 'derived', 'historical']);
 export const REQUIRED_PROPERTIES = Object.freeze(['type', 'status', 'sensitivity', 'knowledge_role', 'provenance', 'source_paths', 'last_verified']);
 const REQUIRED_COLLECTIONS = Object.freeze(['design-concepts', 'guidebooks', 'archive']);
-const LIVE_STATE_MARKERS = [/<!--\s*hot-specs:start\s*-->/, /<!--\s*spec-catalog:start\s*-->/, /^\|\s*TK-\d{3}\s*\|.*\|\s*(?:ready|in-progress|blocked|done|deferred)\s*\|/m];
+const LIVE_STATE_MARKERS = [/<!--\s*hot-specs:start\s*-->/, /<!--\s*spec-catalog:start\s*-->/, /^\|\s*TK-[0-9A-Za-z]+\s*\|.*\|\s*(?:ready|in-progress|blocked|done|deferred)\s*\|/m];
 
 function walkMarkdown(directory, files = []) {
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
@@ -68,7 +68,7 @@ function wikiStamps(root, wikiRoot, wikiRelative, expectedVersion) {
   return findings;
 }
 
-export function validateWiki(root) {
+export function validateWiki(root, options = {}) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
   const wikiRelative = laneRelative(root, 'wiki');
@@ -82,20 +82,23 @@ export function validateWiki(root) {
   }
   else findings.push(...roomBrainRouting(root, wikiRelative));
   findings.push(...wikiStamps(root, wikiRoot, wikiRelative, manifest?.workbenchVersion));
-  // The next two checks are not wiki facts: the generation of a room's seeded
-  // lane documents and the source identity its manifest records. Unlike
+  // S-045 TK-002 moved two checks out of here: `stale-seed`, the generation of
+  // a room's seeded lane documents, and `unverified-provenance`, the source
+  // identity its manifest records. Neither is a wiki fact - unlike
   // invalid-wiki-profile and missing-collection above, which are wiki-domain
-  // facts that happen to be stored in the manifest, these belong behind a
-  // dedicated doctor hook in spec-workbench.mjs. Doctor wires exactly two
-  // support-root validators, this one and the ADR validator, and
-  // spec-workbench.mjs was held by a sibling branch when this landed, so
-  // AGENTS.md's non-overlapping file lanes rule kept this ticket out of it.
-  // The placement is therefore interim and is carried as a follow-up in
-  // S-042. Both checks live in workbench-layout.mjs, which owns seeding and
-  // provenance; this validator only carries them to the one report a room
-  // actually reads, and RUNBOOK.md and wiki/SCHEMA.md name it as the emitter.
-  findings.push(...seededDocumentFindings(root));
-  findings.push(...provenanceFindings(root));
+  // facts that happen to be stored in the manifest - so `wiki.mjs validate`
+  // reported a feedback-lane fact and a manifest fact to anyone checking the
+  // wiki. S-042 recorded the placement as interim: doctor wired exactly two
+  // support-root validators, and `spec-workbench.mjs` was held by a sibling
+  // branch, so the non-overlapping file lanes rule kept that ticket out of it.
+  // They are now emitted from `collectionFindings` in `spec-workbench.mjs`,
+  // next to the managed-runtime check, whose scope is the room's installed
+  // state. The checks themselves still live in `workbench-layout.mjs`, which
+  // owns seeding and provenance. One consequence of the move, deliberate:
+  // running here meant running only when a room had a wiki lane, and running
+  // there means running for every schema 2 room. Both codes are registered
+  // `none`, so nothing new blocks - but a wiki-less room now sees two findings
+  // it did not see before, which is the correct scope rather than a regression.
   for (const name of REQUIRED_COLLECTIONS) {
     const relative = collectionRelative(root, name);
     const entry = fs.existsSync(path.join(root, relative)) ? fs.lstatSync(path.join(root, relative)) : null;
@@ -109,7 +112,7 @@ export function validateWiki(root) {
   const basenames = new Map();
   for (const file of walkMarkdown(wikiRoot)) {
     const relative = path.relative(root, file).split(path.sep).join('/');
-    const content = fs.readFileSync(file, 'utf8');
+    const content = options.contentOverrides?.get(file) ?? fs.readFileSync(file, 'utf8');
     const inArchive = file.startsWith(archive + path.sep);
     const basename = path.basename(file, '.md');
     basenames.set(basename, [...(basenames.get(basename) ?? []), relative]);
@@ -212,7 +215,7 @@ if (isMainModule(import.meta.url)) {
     const pathIndex = rest.indexOf('--path');
     const root = findRoot(pathIndex >= 0 ? rest[pathIndex + 1] : process.cwd());
     const dateIndex = rest.indexOf('--date');
-    if (!['validate', 'normalize'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json] (validate also reports the installed-state findings stale-seed and unverified-provenance, which workbench-layout.mjs repairs; see RUNBOOK.md)');
+    if (!['validate', 'normalize'].includes(command)) throw new Error('Usage: wiki.mjs validate [--path PROJECT] [--json] | normalize [--path PROJECT] [--date YYYY-MM-DD] [--json] (validate reports wiki facts only; the installed-state findings stale-seed and unverified-provenance come from doctor and are repaired with workbench-layout.mjs; see RUNBOOK.md)');
     if (command === 'normalize') {
       const result = normalizeWiki(root, { date: dateIndex >= 0 ? rest[dateIndex + 1] : undefined });
       console.log(json ? JSON.stringify(result, null, 2) : (result.changed.length ? result.changed.map((entry) => `${entry.note}: inserted ${entry.inserted.join(', ')}`).join('\n') : 'ok - every note already carries its required properties'));

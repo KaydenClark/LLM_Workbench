@@ -1,0 +1,26 @@
+{
+  "candidate": "9a1ea30687bafad3d2ef3d98562ca954aea03b55",
+  "trial": "Actual local selected verification into existing S048 spec",
+  "result": {
+    "status": "promoted",
+    "source": {
+      "id": "v32-layout",
+      "revision": 25,
+      "sha256": "3081b6b2c89f04999513cd62884f1f157818d94e7b6f68606166cb94b336aaa2",
+      "selected": [
+        "verification-002"
+      ],
+      "context": []
+    },
+    "destination": {
+      "path": "workbench/specs/S-048-checkpoint-retirement/SPEC.md",
+      "owner": "spec",
+      "before": "0bbbbf69a3dc1d929327de82defbcc84b66f4f7559a295fae6a638fda40487fd",
+      "sha256": "01f92c135c4790dc587da0119e903bc3de5e257babf741397b8bfbc7ce16d2bd"
+    },
+    "sourceRetained": true,
+    "verification": "privacy, owner structure, expected hashes and byte read-back; semantic fidelity and authorization are agent judgments"
+  },
+  "independent_readback": "Source hash and revision, destination hash and authored draft hash independently match. Source and draft remain.",
+  "limitation": "One local runtime invocation; not semantic authorization certification, fresh-provider or private transport proof, full suite, integration or release readiness."
+}

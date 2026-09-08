@@ -29,6 +29,28 @@ note (`AGENTS.md` -> State Resolution). The wiki is a map, not a Governance
 Plane: it routes to Canon, Grounding, and verified Actuality and authorizes
 nothing.
 
+## Notepad Foundation Routing
+
+For accepted objective continuity and JSON direction, follow
+[S-046](../specs/S-046-json-notepad-foundation/SPEC.md) and
+[ADR-0040](../docs/adr/0040-json-notepads-preserve-objective-continuity.md).
+Visible identifier semantics belong to
+[S-047](../specs/S-047-visible-workbench-identifiers/SPEC.md) and
+[ADR-0041](../docs/adr/0041-visible-base62-workbench-identifiers.md).
+Checkpoint rationale and retirement belong to
+[S-048](../specs/S-048-checkpoint-retirement/SPEC.md).
+The shared runtime is `workbench/tools/notepads.mjs`; its operations are
+documented in [RUNBOOK](../../RUNBOOK.md) and its judgment in the `notepad`
+skill. This router does not copy their state or the local grilling queue.
+
+## Release And Distribution Routing
+
+The reconciled release scope and complete historical inventory live in
+[S-050](../specs/S-050-workbench-v3-2-0-release/SPEC.md). Follow its named owners
+for skill ownership/compatibility, optional private session transport and the
+configured-host capability floor. This route preserves their open gates without
+copying task state here.
+
 ## Leaving The Wiki
 
 | Go to | For |

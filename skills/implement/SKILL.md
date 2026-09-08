@@ -9,7 +9,8 @@ owns one ticket and one durable writer lane.
 
 For v3 work, `workbench/manifest.json` is the support-path authority; the
 manifest-aware spec tool resolves the assigned `SPEC.md`. Do not write a root
-`specs/` fallback or a project-local skills tree.
+`specs/` fallback or copy the global core into a project-local skills tree.
+Authorized room-local extensions follow the Runbook ownership procedure.
 
 ## 1. Situate the slice
 

@@ -23,6 +23,13 @@ function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-layout-'));
 }
 
+function healthySkillHome() {
+  const home = fixture();
+  const result = spawnSync(process.execPath, [path.join(root, 'tools/core-skill-installer.mjs'), 'install', '--home', home], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stdout);
+  return home;
+}
+
 function run(...args) {
   const result = spawnSync(process.execPath, [tool, ...args], { cwd: root, encoding: 'utf8' });
   return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
@@ -142,7 +149,7 @@ test('the committed placeholder vocabulary exactly matches the shipped Genesis t
 
 test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   try {
     const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.equal(initialized.status, 0, initialized.stderr);
@@ -200,7 +207,11 @@ test('the sessions ignore denies the legacy grilling diary name, keeps project r
       assert.equal(spawnSync('git', ['check-ignore', '-q', relative], { cwd: project }).status, 0, `${relative} must be ignored`);
     }
     assert.notEqual(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/checkpoints/topic-2026-09-05.md'], { cwd: project }).status, 0, 'checkpoints stay trackable');
-    // An ignore file written before the legacy line existed is still valid.
+    // A prior layout with the prior ignore file is still valid.
+    const manifestFile = path.join(project, 'workbench/manifest.json');
+    const oldManifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    delete oldManifest.collections.recovery; delete oldManifest.collections.notepads; delete oldManifest.collections['notepad-templates'];
+    fs.writeFileSync(manifestFile, JSON.stringify(oldManifest));
     fs.writeFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), 'grilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n');
     assert.equal(run('validate', '--project', project).report.status, 'valid');
   } finally {
@@ -521,7 +532,7 @@ test('Genesis readiness requires a version-matched runtime tools receipt', () =>
 // disagrees with its own receipt has to fail the doctor it carries.
 test('a room whose managed runtime drifts from its receipt fails the doctor it carries', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
@@ -584,7 +595,7 @@ test('a room whose managed runtime drifts from its receipt fails the doctor it c
 // installs, not only in the release-side installer a room never carries.
 test('a room names a managed file deleted together with its receipt key', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
@@ -628,7 +639,7 @@ test('a room names a managed file deleted together with its receipt key', () => 
 // changes nothing.
 test('a room tells a foreign lane file apart from a receipt key it lost', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
@@ -746,7 +757,7 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
     // Every module the layout tool imports is itself a managed runtime tool
   // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
   // release checkout around them, which is the condition under test.
-  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs', 'visible-ids.mjs']) {
       fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
     }
 
@@ -800,8 +811,13 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    const sixteen = manifest.skillPolicy.required;
-    const twelve = sixteen.slice(0, 12);
+    const current = manifest.skillPolicy.required;
+    const twelve = current.slice(0, 12);
+    // v3.1.1's frozen row is the twelve workflow skills plus the four stances.
+    // The current bundle also carries `carry` and `notepad`, so neither frozen
+    // row is the same list as the live policy.
+    const sixteen = [...twelve, ...current.slice(-4)];
+    const seventeen = [...twelve, 'carry', ...current.slice(-4)];
     const outcome = (workbenchVersion, required) => {
       fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion, skillPolicy: { ...manifest.skillPolicy, required } }));
       const { report } = run('validate', '--project', project);
@@ -811,35 +827,53 @@ test('each listed legacy version validates only at the policy its release declar
     // twelve-skill bundle belongs to v3.0.0 and v3.1.0 only.
     assert.equal(outcome('v3.1.1', sixteen), 'valid');
     assert.equal(outcome('v3.1.1', twelve), 'invalid-skill-policy');
+    // v3.1.2 shipped to `main` with the sixteen-skill bundle and rooms are on
+    // it, so it is frozen there. `carry` grew the bundle at v3.1.3, and a
+    // v3.1.2 room must not be told its own manifest is invalid. Note that
+    // `accepted` is [current policy, frozen row], so a listed legacy version
+    // also validates at the current policy - long-standing behaviour, not
+    // something the freeze changes, and the reason there is no
+    // `outcome('v3.1.2', current) === 'invalid-skill-policy'` line here.
+    assert.equal(outcome('v3.1.2', sixteen), 'valid');
+    assert.equal(outcome('v3.1.2', twelve), 'invalid-skill-policy');
+    // v3.1.3 stamped the seventeen-skill bundle and `notepad` grew it to
+    // eighteen at v3.1.4, so v3.1.3 freezes in turn. Each frozen row is exact:
+    // v3.1.3 does not accept v3.1.2's sixteen.
+    assert.equal(outcome('v3.1.3', seventeen), 'valid');
+    assert.equal(outcome('v3.1.3', sixteen), 'invalid-skill-policy');
+    assert.equal(outcome('v3.1.3', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
-    assert.equal(outcome(VERSION, sixteen), 'valid');
+    assert.equal(outcome(VERSION, current), 'valid');
+    assert.equal(outcome(VERSION, sixteen), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, twelve), 'invalid-skill-policy');
     // An unlisted well-formed version must carry the current policy.
-    assert.equal(outcome('v9.9.9', sixteen), 'valid');
+    assert.equal(outcome('v9.9.9', current), 'valid');
+    assert.equal(outcome('v9.9.9', sixteen), 'invalid-skill-policy');
     assert.equal(outcome('v9.9.9', twelve), 'invalid-skill-policy');
     // A version that is not vMAJOR.MINOR.PATCH is a malformed manifest.
-    assert.equal(outcome('3.1.1', sixteen), 'invalid-manifest');
-    assert.equal(outcome('unknown', sixteen), 'invalid-manifest');
+    assert.equal(outcome('3.1.1', current), 'invalid-manifest');
+    assert.equal(outcome('unknown', current), 'invalid-manifest');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
 test('the v3.1.1 legacy row is the frozen sixteen-skill bundle, not the live current policy', () => {
   const project = fixture();
-  const sixteen = [...coreSkills];
+  const current = [...coreSkills];
+  const sixteen = [...current.slice(0, 12), ...current.slice(-4)];
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     // Grow the live policy in-process; the exported array backs skillPolicy.required.
-    coreSkills.push('seventeenth');
+    coreSkills.push('eighteenth');
     fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion: 'v3.1.1', skillPolicy: { ...manifest.skillPolicy, required: sixteen } }));
     assert.equal(validateManifest(project).status, 'valid', 'a v3.1.1 sixteen-skill manifest stays readable when the current bundle grows');
     fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion: VERSION, skillPolicy: { ...manifest.skillPolicy, required: sixteen } }));
     assert.equal(validateManifest(project).error?.code, 'invalid-skill-policy', 'the current version must carry the grown bundle');
   } finally {
     coreSkills.length = 0;
-    coreSkills.push(...sixteen);
+    coreSkills.push(...current);
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
@@ -903,7 +937,7 @@ function relocateTool(bundle) {
   // Every module the layout tool imports is itself a managed runtime tool
   // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
   // release checkout around them, which is the condition under test.
-  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs', 'visible-ids.mjs']) {
     fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
   }
   return relocatedTool;
@@ -1230,17 +1264,17 @@ test('seed-documents records a verifiable generation and never rewrites an adjus
     const document = path.join(project, relative);
     const recordPath = path.join(project, 'workbench', '.workbench-seed.json');
     const template = fs.readFileSync(path.join(root, 'templates', 'feedback', 'REPORT_FORMAT.md'));
-    assert.equal(fs.existsSync(recordPath), false, 'init writes no seed record; seeding a lane document is an explicit command');
+    assert.equal(Object.keys(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents).length, 4, 'init records the four notepad schema/example seeds');
 
     const seeded = run('seed-documents', '--project', project);
     assert.equal(seeded.status, 0, seeded.stdout);
-    assert.deepEqual(seeded.report.written, [{ document: relative, action: 'seeded' }]);
+    assert.deepEqual(seeded.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'seeded' }]);
     assert.deepEqual(seeded.report.retained, []);
     assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'));
     assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
 
     const again = run('seed-documents', '--project', project);
-    assert.deepEqual(again.report.written, [{ document: relative, action: 'recorded' }], 'byte equality with the release copy is evidence of the generation');
+    assert.deepEqual(again.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'recorded' }], 'byte equality with the release copy is evidence of the generation');
 
     // A copy still identical to what an older release seeded is refreshed.
     const older = `${template.toString('utf8')}\nSeeded by an older release.\n`;
@@ -1249,13 +1283,13 @@ test('seed-documents records a verifiable generation and never rewrites an adjus
     record.documents[relative] = { release: 'v3.1.0', contentHash: createHash('sha256').update(Buffer.from(older)).digest('hex') };
     fs.writeFileSync(recordPath, `${JSON.stringify(record, null, 2)}\n`);
     const refreshed = run('seed-documents', '--project', project);
-    assert.deepEqual(refreshed.report.written, [{ document: relative, action: 'refreshed' }]);
+    assert.deepEqual(refreshed.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'refreshed' }]);
     assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'), 'an untouched older copy is brought current without a reinstall');
     assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
 
     fs.appendFileSync(document, '\nLocal note this room added.\n');
     const adjusted = run('seed-documents', '--project', project);
-    assert.deepEqual(adjusted.report.written, [], 'a repair never rewrites content it did not add');
+    assert.deepEqual(adjusted.report.written.filter(entry => entry.document === relative), [], 'a repair never rewrites content it did not add');
     assert.deepEqual(adjusted.report.retained.map((entry) => entry.document), [relative]);
     assert.match(adjusted.report.retained[0].reason, /changed after it was seeded/);
     assert.match(fs.readFileSync(document, 'utf8'), /Local note this room added\./);
@@ -1467,10 +1501,12 @@ test('classify corroborates the root tools/ shape before calling a room harness-
     legacyRoom(unstamped);
     fs.mkdirSync(path.join(unstamped, 'tools'));
     fs.writeFileSync(path.join(unstamped, 'tools', 'privacy.mjs'), 'export const privacy = true;\n');
+    const unstampedBefore = roomSnapshot(unstamped);
     const unstampedResult = classify(unstamped);
     assert.equal(unstampedResult.status, 0, `${unstampedResult.stdout}${unstampedResult.stderr}`);
     assert.equal(unstampedResult.report.verdict, 'unclassifiable',
       'a genuine unstamped Workbench room must still refuse to be guessed');
+    assert.deepEqual(roomSnapshot(unstamped), unstampedBefore, 'classify must write nothing into an unstamped room');
   } finally {
     for (const project of [vanilla, unstamped]) fs.rmSync(project, { recursive: true, force: true });
   }
@@ -1534,21 +1570,25 @@ test('classify treats an unreadable root control as a room condition, not a cras
   try {
     legacyRoom(stamped, { stamp: 'v3.0.0' });
     fs.chmodSync(path.join(stamped, 'LEXICON.md'), 0o000);
+    const stampedBefore = roomSnapshot(stamped);
     const stampedResult = classify(stamped);
     assert.equal(stampedResult.status, 0, `${stampedResult.stdout}${stampedResult.stderr}`);
     assert.equal(stampedResult.report.status, 'classified', 'an unreadable control is a room condition, not an unreadable invocation');
     assert.equal(stampedResult.report.verdict, 'upgrade', 'the six readable controls still carry the stamp');
     assert.deepEqual(stampedResult.report.evidence.versionStamp.unreadable, ['LEXICON.md'],
       'the control that could not be read must be reported as evidence');
+    assert.deepEqual(roomSnapshot(stamped), stampedBefore, 'classify must write nothing into a room with an unreadable control');
 
     fs.writeFileSync(path.join(working, 'README.md'), '# Working project\n');
     fs.mkdirSync(path.join(working, 'src'));
     fs.writeFileSync(path.join(working, 'src', 'app.js'), 'export const app = true;\n');
     fs.chmodSync(path.join(working, 'README.md'), 0o000);
+    const workingBefore = roomSnapshot(working);
     const workingResult = classify(working);
     assert.equal(workingResult.status, 0, `${workingResult.stdout}${workingResult.stderr}`);
     assert.equal(workingResult.report.verdict, 'unclassifiable',
       'a control that cannot be read leaves the stamp evidence incomplete, so the room cannot be classified');
+    assert.deepEqual(roomSnapshot(working), workingBefore, 'classify must write nothing into a working room with an unreadable control');
   } finally {
     for (const [project, control] of [[stamped, 'LEXICON.md'], [working, 'README.md']]) {
       try { fs.chmodSync(path.join(project, control), 0o644); } catch { /* already gone */ }
@@ -1571,6 +1611,7 @@ test('classify reports the unfilled state of a straight template copy as evidenc
     for (const control of controls) {
       fs.writeFileSync(path.join(copied, control), `# ${control}\n\n> Part of LLM Workbench v[HARNESS_VERSION].\n\n[BRACKETED_PROJECT]\n`);
     }
+    const before = roomSnapshot(copied);
     const result = classify(copied);
     assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
     assert.equal(result.report.verdict, 'unclassifiable');
@@ -1580,6 +1621,7 @@ test('classify reports the unfilled state of a straight template copy as evidenc
       'a banner whose version never resolved is not a Workbench version stamp, and the difference must be visible');
     assert.ok(result.report.reasons.some((reason) => /\[BRACKETED\] placeholder/.test(reason)),
       'the reasons must offer the unfilled-template-copy reading the evidence supports');
+    assert.deepEqual(roomSnapshot(copied), before, 'classify must write nothing into a straight template copy');
   } finally {
     fs.rmSync(copied, { recursive: true, force: true });
   }
@@ -1717,18 +1759,22 @@ test('classify names the room\'s stamp state in both readings of an unreadable s
   try {
     legacyRoom(stamped, { stamp: 'v3.0.0' });
     fs.mkdirSync(path.join(stamped, 'workbench', 'specs'), { recursive: true });
+    const stampedBefore = roomSnapshot(stamped);
     const stampedResult = classify(stamped);
     assert.equal(stampedResult.status, 0, `${stampedResult.stdout}${stampedResult.stderr}`);
     assert.equal(stampedResult.report.verdict, 'unclassifiable');
     assert.ok(stampedResult.report.reasons.some((reason) => /carry a Workbench version stamp \(v3\.0\.0\)/.test(reason)),
       'in a stamped room the stamp is the decisive evidence that a release did write here, so Rule 1 must name it');
+    assert.deepEqual(roomSnapshot(stamped), stampedBefore, 'classify must write nothing into a stamped room with an unreadable support root');
 
     fs.mkdirSync(path.join(unstamped, 'workbench', 'specs'), { recursive: true });
+    const unstampedBefore = roomSnapshot(unstamped);
     const unstampedResult = classify(unstamped);
     assert.equal(unstampedResult.status, 0, `${unstampedResult.stdout}${unstampedResult.stderr}`);
     assert.equal(unstampedResult.report.verdict, 'unclassifiable');
     assert.ok(unstampedResult.report.reasons.some((reason) => /No root control carries a Workbench version stamp/.test(reason)),
       'an unstamped room must say so, because nothing outside workbench/ then corroborates an installation');
+    assert.deepEqual(roomSnapshot(unstamped), unstampedBefore, 'classify must write nothing into an unstamped room with an unreadable support root');
   } finally {
     for (const project of [stamped, unstamped]) fs.rmSync(project, { recursive: true, force: true });
   }
@@ -1743,17 +1789,20 @@ test('classify offers the unfilled-template-copy reading from the adoption branc
     for (const control of controls.filter((name) => name !== 'CLAUDE.md')) {
       fs.writeFileSync(path.join(copied, control), `# ${control}\n\n> Part of LLM Workbench v[HARNESS_VERSION].\n\n[BRACKETED_PROJECT]\n`);
     }
+    const copiedBefore = roomSnapshot(copied);
     const result = classify(copied);
     assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
     assert.equal(result.report.verdict, 'adoption');
     assert.ok(result.report.reasons.some((reason) => /\[BRACKETED\] placeholder/.test(reason)),
       'an unfilled copy of the templates is a reading of the room, so it belongs in the reasons and not only in the evidence');
+    assert.deepEqual(roomSnapshot(copied), copiedBefore, 'classify must write nothing into a template copy on the adoption branch');
 
     // A banner that never resolved is the same reading reached by the other
     // limb: a filled body does not make a copied banner a release's stamp.
     for (const control of controls.filter((name) => name !== 'CLAUDE.md')) {
       fs.writeFileSync(path.join(banner, control), `# ${control}\n\n> Part of LLM Workbench v[HARNESS_VERSION].\n\nProject truth.\n`);
     }
+    const bannerBefore = roomSnapshot(banner);
     const bannerResult = classify(banner);
     assert.equal(bannerResult.status, 0, `${bannerResult.stdout}${bannerResult.stderr}`);
     assert.equal(bannerResult.report.verdict, 'adoption');
@@ -1761,6 +1810,7 @@ test('classify offers the unfilled-template-copy reading from the adoption branc
       'a filled body carries no [BRACKETED] placeholder, so only the banner limb is left to offer the reading');
     assert.ok(bannerResult.report.reasons.some((reason) => /unresolved version banner/.test(reason)),
       'a version banner that never resolved must offer the unfilled-copy reading on its own');
+    assert.deepEqual(roomSnapshot(banner), bannerBefore, 'classify must write nothing into a room whose banner never resolved');
   } finally {
     for (const project of [copied, banner]) fs.rmSync(project, { recursive: true, force: true });
   }
@@ -1774,6 +1824,13 @@ test('classify refuses a project path it cannot stat or that is not an ordinary 
     // A project path the invocation cannot even reach is not a room condition:
     // there is no room to report evidence about.
     fs.mkdirSync(path.join(parent, 'room'));
+    fs.writeFileSync(path.join(parent, 'room', 'README.md'), '# Unreachable room\n');
+    // Snapshotted around the seal rather than around the call, because the
+    // parent is unreadable for the duration of the invocation. Neither of the
+    // two calls in this test classifies a room - both refuse the project path
+    // itself - so they sit outside the acceptance criterion's wording. They are
+    // bracketed anyway: a refusal that writes is still a write.
+    const sealedBefore = roomSnapshot(path.join(parent, 'room'));
     fs.chmodSync(parent, 0o000);
     const sealed = classify(path.join(parent, 'room'));
     fs.chmodSync(parent, 0o755);
@@ -1781,16 +1838,19 @@ test('classify refuses a project path it cannot stat or that is not an ordinary 
     assert.equal(sealed.report.status, 'blocked');
     assert.equal(sealed.report.error.code, 'invalid-project',
       'an unreachable project path is a refused invocation, named rather than leaked as a filesystem error');
+    assert.deepEqual(roomSnapshot(path.join(parent, 'room')), sealedBefore, 'classify must write nothing while refusing an unreachable project path');
 
     // A symlink is a pointer to a room, not the room: classifying it would
     // report another directory's contents under this path.
     fs.writeFileSync(path.join(target, 'README.md'), '# Target\n');
     const link = path.join(parent, 'link');
     fs.symlinkSync(target, link, 'dir');
+    const targetBefore = roomSnapshot(target);
     const linked = classify(link);
     assert.notEqual(linked.status, 0, linked.stdout);
     assert.equal(linked.report.error.code, 'invalid-project',
       'a project path that is a symlink must be refused rather than classified as the room it points at');
+    assert.deepEqual(roomSnapshot(target), targetBefore, 'classify must write nothing into the room a refused symlink points at');
   } finally {
     try { fs.chmodSync(parent, 0o755); } catch { /* already restored */ }
     for (const project of [parent, target]) fs.rmSync(project, { recursive: true, force: true });
@@ -1881,6 +1941,7 @@ test('classify never reads a lifecycle lane borrowed below an ordinary support r
     //    lane that was never read because it belongs to another room.
     fs.mkdirSync(path.join(absent, 'workbench'));
     fs.writeFileSync(path.join(absent, 'workbench', 'manifest.json'), '{ "schemaVersion": 2, "workbenchVersion": "v3.1.2" }\n');
+    const absentBefore = roomSnapshot(absent);
     const absentResult = classify(absent);
     assert.equal(absentResult.status, 0, `${absentResult.stdout}${absentResult.stderr}`);
     assert.equal(absentResult.report.evidence.lifecycleTools.read, true,
@@ -1889,6 +1950,7 @@ test('classify never reads a lifecycle lane borrowed below an ordinary support r
       'a room with no managed lane carries no installed runtime tools');
     assert.equal(absentResult.report.evidence.lifecycleTools.receipt, false,
       'a room with no managed lane carries no installation receipt');
+    assert.deepEqual(roomSnapshot(absent), absentBefore, 'classify must write nothing into a room with no managed lane');
   } finally {
     for (const project of [installed, relative, absolute, leaves, absent]) fs.rmSync(project, { recursive: true, force: true });
   }
@@ -1927,12 +1989,14 @@ test('classify never counts a root tools/ lane borrowed from another room as thi
     fs.mkdirSync(path.join(shaped, 'tools'));
     fs.symlinkSync(path.join(installed, 'tools', 'privacy.mjs'), path.join(shaped, 'tools', 'privacy.mjs'));
     fs.mkdirSync(path.join(shaped, 'tools', 'sessions.mjs'));
+    const shapedBefore = roomSnapshot(shaped);
     const shapedResult = classify(shaped);
     assert.equal(shapedResult.status, 0, `${shapedResult.stdout}${shapedResult.stderr}`);
     assert.deepEqual(shapedResult.report.evidence.lifecycleTools.rootManagedNames, [],
       'a managed name that is a link out of the room, or a directory wearing it, is not a managed runtime file');
     assert.equal(shapedResult.report.verdict, 'adoption',
       'neither shape is the trace of an installation, so neither makes the room harness-shaped');
+    assert.deepEqual(roomSnapshot(shaped), shapedBefore, 'classify must write nothing into a room with a borrowed managed name one level in');
   } finally {
     for (const project of [installed, borrower, shaped]) fs.rmSync(project, { recursive: true, force: true });
   }
@@ -1983,6 +2047,10 @@ test('classify answers an EPERM lane at the stat seam the room conditions are de
     // EPERM is a room condition no fixture can produce on demand, so it is
     // pinned at the seam it is declared over rather than left to a platform.
     const sealed = path.join(project, 'tools', 'privacy.mjs');
+    // The one case that runs the classifier in-process under a monkey-patched
+    // `fs`, and the one S-044's reviewer named as the reason to count by
+    // invocation rather than by case. It writes nothing either, and now says so.
+    const before = roomSnapshot(project);
     const probe = spawnSync(process.execPath, ['--input-type=module', '-e', `
       import fs from 'node:fs';
       const lstatSync = fs.lstatSync;
@@ -2003,7 +2071,178 @@ test('classify answers an EPERM lane at the stat seam the room conditions are de
     assert.equal(report.verdict, 'upgrade', 'the seven stamped controls still classify the room');
     assert.deepEqual(report.evidence.lifecycleTools.rootUnreadable, ['privacy.mjs'],
       'the name the room refused must be reported as undetermined');
+    assert.deepEqual(roomSnapshot(project), before, 'classify must write nothing into a room with an EPERM lane name');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
+
+test('operational recovery is local and separate from note history, and nine-collection layouts migrate without moving history', () => {
+  const project = fixture();
+  try {
+    gitRoom(project);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const file = path.join(project, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(manifest.collections.recovery, 'workbench/sessions/recovery');
+    assert.equal(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/recovery/receipt.json'], { cwd: project }).status, 0);
+    const historic = path.join(project, 'workbench/sessions/checkpoints/upgrade-recovery.json');
+    fs.writeFileSync(historic, '{"legacy":"preserved"}\r\n');
+    const original = fs.readFileSync(historic);
+    delete manifest.collections.recovery;
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    fs.rmSync(path.join(project, 'workbench/sessions/recovery'), { recursive: true });
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.status, 'migrated');
+    assert.deepEqual(fs.readFileSync(historic), original);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    fs.appendFileSync(path.join(project, 'workbench/sessions/.gitignore'), '\n!recovery/private.json\n');
+    fs.writeFileSync(path.join(project, 'workbench/sessions/recovery/private.json'), '{}');
+    assert.equal(run('validate', '--project', project).report.error.code, 'sessions-not-ignored', 'an effective recovery ignore leak is refused');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('adding recovery refuses pre-existing unmanaged recovery contents before mutation', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const file = path.join(project, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    delete manifest.collections.recovery;
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    const occupied = path.join(project, 'workbench/sessions/recovery/owner.json');
+    fs.writeFileSync(occupied, '{"owner":"existing"}');
+    const before = [file, occupied, path.join(project, 'workbench/sessions/.gitignore')].map(file => fs.readFileSync(file));
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.error.code, 'lane-collision');
+    assert.deepEqual([file, occupied, path.join(project, 'workbench/sessions/.gitignore')].map(file => fs.readFileSync(file)), before);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('new notepad layout separates ignored typed notes from tracked examples and preserves legacy paths on migration', () => {
+  const project = fixture();
+  try {
+    gitRoom(project);
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
+    assert.equal(initialized.status, 0, initialized.stdout);
+    const file = path.join(project, 'workbench/manifest.json');
+    let manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(manifest.collections.notepads, 'workbench/sessions/notepads');
+    assert.equal(manifest.collections['notepad-templates'], 'workbench/sessions/notepads/templates');
+    for (const name of ['notepad.schema.json', 'work.example.json', 'grilling.example.json', 'handoff.example.json']) {
+      assert.ok(fs.existsSync(path.join(project, manifest.collections['notepad-templates'], name)), `shipped ${name}`);
+      assert.notEqual(spawnSync('git', ['check-ignore', '-q', `${manifest.collections['notepad-templates']}/${name}`], { cwd: project }).status, 0);
+    }
+    assert.equal(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/notepads/work/live.json'], { cwd: project }).status, 0);
+    const legacy = path.join(project, 'workbench/sessions/grilling/legacy.md');
+    fs.writeFileSync(legacy, 'Legacy wording remains byte-identical.\r\n');
+    const original = fs.readFileSync(legacy);
+    delete manifest.collections.recovery;
+    delete manifest.collections.notepads;
+    delete manifest.collections['notepad-templates'];
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    fs.rmSync(path.join(project, 'workbench/sessions/notepads'), { recursive: true });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'earlier schema 2 rooms remain readable');
+    const migrated = run('migrate', '--project', project, '--version', VERSION);
+    assert.equal(migrated.report.status, 'migrated', migrated.stdout);
+    assert.deepEqual(fs.readFileSync(legacy), original);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+for (const surface of ['receipt', 'templates']) {
+  test(`layout migration preflights the ${surface} before changing any project bytes`, () => {
+    const project = fixture(); const outside = fixture();
+    try {
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+      const manifestFile = path.join(project, 'workbench/manifest.json');
+      const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+      delete manifest.collections.recovery;
+    delete manifest.collections.notepads; delete manifest.collections['notepad-templates'];
+      fs.writeFileSync(manifestFile, JSON.stringify(manifest));
+      const receipt = path.join(project, 'workbench/.workbench-seed.json');
+      const templates = path.join(project, 'workbench/sessions/notepads/templates');
+      const target = surface === 'receipt' ? receipt : templates;
+      const external = path.join(outside, surface);
+      fs.cpSync(target, external, { recursive: true });
+      fs.rmSync(target, { recursive: true });
+      fs.symlinkSync(external, target, surface === 'receipt' ? 'file' : process.platform === 'win32' ? 'junction' : 'dir');
+      const before = fs.readFileSync(manifestFile);
+      const ignored = fs.readFileSync(path.join(project, 'workbench/sessions/.gitignore'));
+      const result = run('migrate', '--project', project, '--version', VERSION);
+      assert.notEqual(result.status, 0, result.stdout);
+      assert.deepEqual(fs.readFileSync(manifestFile), before, 'refusal leaves the earlier manifest intact');
+      assert.deepEqual(fs.readFileSync(path.join(project, 'workbench/sessions/.gitignore')), ignored, 'refusal preserves project ignore bytes');
+    } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+  });
+}
+
+test('seeding refuses an invented release and linked destination even when bytes match', () => {
+  const project = fixture(); const outside = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const receipt = path.join(project, 'workbench/.workbench-seed.json');
+    const before = fs.readFileSync(receipt);
+    const invented = run('seed-documents', '--project', project, '--version', 'v99.9.9');
+    assert.notEqual(invented.status, 0, invented.stdout);
+    assert.deepEqual(fs.readFileSync(receipt), before);
+    const templates = path.join(project, 'workbench/sessions/notepads/templates');
+    fs.cpSync(templates, outside, { recursive: true }); fs.rmSync(templates, { recursive: true });
+    fs.symlinkSync(outside, templates, process.platform === 'win32' ? 'junction' : 'dir');
+    const linked = run('seed-documents', '--project', project, '--version', VERSION);
+    assert.notEqual(linked.status, 0, linked.stdout);
+    assert.deepEqual(fs.readFileSync(receipt), before);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
+
+test('seeding refuses a committed external source symlink before copying or receipting it', () => {
+  const project = fixture(); const bundle = fixture(); const outside = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const cloned = spawnSync('git', ['clone', '-q', '--no-hardlinks', root, bundle], { encoding: 'utf8' });
+    assert.equal(cloned.status, 0, cloned.stderr);
+    const source = path.join(bundle, 'templates/sessions/notepads/templates/notepad.schema.json');
+    const external = path.join(outside, 'schema.json'); fs.writeFileSync(external, '{"synthetic":"outside-source"}\n');
+    fs.rmSync(source); fs.symlinkSync(external, source, 'file');
+    git(bundle, 'add', 'templates/sessions/notepads/templates/notepad.schema.json');
+    git(bundle, 'commit', '-qm', 'Synthetic linked source fixture');
+    const before = fs.readFileSync(path.join(project, 'workbench/.workbench-seed.json'));
+    const result = spawnSync(process.execPath, [path.join(bundle, 'workbench/tools/workbench-layout.mjs'), 'seed-documents', '--project', project, '--version', VERSION], { encoding: 'utf8' });
+    assert.notEqual(result.status, 0, result.stdout);
+    assert.deepEqual(fs.readFileSync(path.join(project, 'workbench/.workbench-seed.json')), before);
+    assert.ok(!fs.readFileSync(path.join(project, 'workbench/sessions/notepads/templates/notepad.schema.json'), 'utf8').includes('outside-source'));
+  } finally { for (const dir of [project, bundle, outside]) fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const failure of ['ignored-template', 'trackable-live']) {
+  test(`layout validation rejects effective ${failure} Git rules`, () => {
+    const project = fixture();
+    try {
+      gitRoom(project);
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+      const file = path.join(project, 'workbench/sessions/.gitignore');
+      const rules = fs.readFileSync(file, 'utf8');
+      fs.writeFileSync(file, failure === 'ignored-template' ? rules.replace('notepads/*', 'notepads/') : `${rules}\n!notepads/work/\n!notepads/work/**\n`);
+      assert.equal(run('validate', '--project', project).report.status, 'invalid', 'actual Git interpretation, not just a matching line, gates validation');
+    } finally { fs.rmSync(project, { recursive: true, force: true }); }
+  });
+}
+
+for (const suffix of ['00A', '100A', '1000']) {
+test(`Genesis accepts first spec and ticket suffix ${suffix} without truncation or path changes`, () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    const oldPath = path.join(project, 'workbench/specs/S-001-first');
+    const chosen = path.join(project, `workbench/specs/S-${suffix}-first`);
+    fs.renameSync(oldPath, chosen);
+    const file = path.join(chosen, 'SPEC.md');
+    fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replaceAll('S-001', `S-${suffix}`).replaceAll('TK-001', `TK-${suffix}`));
+    render(project);
+    const result = run('validate', '--project', project, '--genesis').report;
+    assert.equal(result.status, 'valid', JSON.stringify(result));
+    assert.equal(nextWork(project).specId, `S-${suffix}`);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+}

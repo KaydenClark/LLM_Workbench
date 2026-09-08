@@ -35,7 +35,7 @@ assert.deepEqual(doctor(root).filter((issue) => issue.blocks === 'all' || issue.
   'doctor must resolve only the manifest-declared spec lane');
 const selected = nextWork(root);
 if (selected) {
-  assert.match(selected.path, /^workbench\/specs\/S-\d{3}-[^/]+\/SPEC\.md$/,
+  assert.match(selected.path, /^workbench\/specs\/S-[0-9A-Za-z]{3,}-[^/]+\/SPEC\.md$/,
     'active dogfood work must resolve from the manifest-declared spec lane');
   assert.equal(fs.existsSync(path.join(root, selected.path)), true,
     'the selected manifest-declared spec must exist');

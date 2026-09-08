@@ -11,8 +11,8 @@ state the proposed destinations, then update only owners whose durable truth
 changed:
 
 For a v3 project, first read `workbench/manifest.json`. It declares the support
-lanes; do not create a root `specs/`, project-local `skills/`, or parallel
-truth store.
+lanes; do not create a root `specs/`, project-local `skills/` core shadow, or parallel
+truth store. Authorized room-local extensions follow the Runbook ownership procedure.
 
 - accepted shared definitions -> `LEXICON.md`;
 - product direction, cross-cutting architecture, invariants, and non-goals ->

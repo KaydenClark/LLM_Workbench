@@ -7,10 +7,8 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = path.join(root, 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
-const coreSkills = [
-  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'builder', 'auditor', 'reviewer', 'reconciler'
-].sort();
+import { coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
+const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
   for (const term of requiredTerms) {
@@ -34,9 +32,9 @@ const catalogNames = catalogRegion[1]
   .sort();
 
 assert.deepEqual(catalogNames, coreSkills,
-  'the documented source bundle must contain exactly the locked 16 skills');
+  `the documented source bundle must contain exactly the locked ${coreSkills.length} skills`);
 assert.deepEqual(directoryNames(skillsRoot), coreSkills,
-  'live discovery source must contain exactly the locked 16 skills');
+  `live discovery source must contain exactly the locked ${coreSkills.length} skills`);
 for (const skill of coreSkills) {
   const source = path.join(skillsRoot, skill, 'SKILL.md');
   assert.ok(fs.statSync(source).isFile(), `${skill} must contain SKILL.md`);
@@ -55,6 +53,43 @@ assert.match(catalog, /\.agents\/skills/,
   'the catalog must document the Codex user-scoped discovery root');
 assert.match(catalog, /\.claude\/skills/,
   'the catalog must document the Claude user-scoped discovery root');
+
+// S-049: six documents state the bundle's size in prose, and nothing held them
+// to it - `README.md` and `BLUEPRINT.md` both went stale when the bundle grew
+// and an independent review, not a test, caught them. Derive the numbers so a
+// future bundle change fails here instead of shipping a wrong count.
+const bundleSize = coreSkills.length;
+const stanceCount = 4;
+const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+  'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
+const workflowWord = words[bundleSize - stanceCount];
+for (const [relative, expected] of [
+  ['skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`]],
+  ['README.md', [`closed ${bundleSize}-skill public source bundle`]],
+  ['RUNBOOK.md', [`limited to the ${bundleSize} skills`]],
+  ['BLUEPRINT.md', [`carries ${workflowWord} setup/planning/delivery workflow skills`]],
+  ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
+  ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
+]) {
+  assertIncludesAll(read(relative), expected,
+    `${relative} states the core bundle size and must match the ${bundleSize} skills in skills/`);
+}
+
+// S-049: `RUNBOOK.md`'s documented Genesis command carried `--version v3.1.2`
+// after the checkout moved to v3.1.3, and `workbench-layout.mjs init` refuses
+// a mismatch with `invalid-source-identity` - a root control shipping a command
+// that cannot run. Every documented `--version` literal must be this release.
+const VERSION = JSON.parse(read('workbench/manifest.json')).workbenchVersion;
+for (const relative of ['RUNBOOK.md', 'templates/ADOPTION.md', 'skills/adoption/SKILL.md',
+  'skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'tools/workbench-adoption.mjs',
+  'workbench/tools/workbench-layout.mjs']) {
+  const stale = [...read(relative).matchAll(/--version (v\d+\.\d+\.\d+)/g)]
+    .map((match) => match[1])
+    .filter((version) => version !== VERSION);
+  assert.deepEqual(stale, [],
+    `${relative} documents a --version literal that is not the checkout release ${VERSION}; ` +
+    'workbench-layout.mjs init refuses a mismatch with invalid-source-identity');
+}
 
 const importedNotice = read('THIRD_PARTY_NOTICES.md');
 assertIncludesAll(importedNotice, [
@@ -154,14 +189,15 @@ assertIncludesAll(makeItSo, [
   '`to-tickets`',
   '`TASKBOARD.md`',
   '`/implement`',
-  'STATUS: PROMOTED'
+  'Trim only reconciled material'
 ], 'make-it-so');
-assert.match(makeItSo, /pushed commit, never\s+local-only progress/,
-  'make-it-so must forbid yielding with local-only progress');
+assert.match(makeItSo, /Before voluntarily yielding[\s\S]*push the authorized durable changes/,
+  'make-it-so must save authorized durable changes before voluntarily yielding');
 
 const checkpoint = read('skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
-assert.match(checkpoint, /PAUSED/, 'checkpoint must mark the notepad paused for resume');
+assert.match(checkpoint, /copying is retired/i, 'checkpoint must retire copy creation');
+assert.match(checkpoint, /writes nothing/, 'legacy invocation must explain its no-write refusal');
 
 const toDocs = read('skills/to-docs/SKILL.md');
 assertIncludesAll(toDocs, [
@@ -211,6 +247,38 @@ assertIncludesAll(implement, [
   'node workbench/tools/spec-workbench.mjs close S-###', 'truthful checkpoint', 'commit and push', '`git.integrationBranch`'
 ], 'implement');
 
+// S-049: carry owns an assigned unit of work to its authorized endpoint and
+// records what the owner still had to supply. Both halves are load-bearing: a
+// carry that delivers without the coordination record measures nothing.
+const carry = read('skills/carry/SKILL.md');
+assertIncludesAll(carry, [
+  'already-assigned',
+  'assigned `SPEC.md`',
+  'node workbench/tools/spec-workbench.mjs show S-###',
+  'node workbench/tools/spec-workbench.mjs close S-###',
+  '`git.integrationBranch`',
+  'Append-Only Evidence And Execution Log',
+  'workbench/feedback/REPORT_FORMAT.md'
+], 'carry');
+assert.match(carry, /`carry` grants nothing/,
+  'carry must state that it adds no authority');
+for (const reason of ['Preference', 'Tradeoff', 'Authorization', 'Unavailable resource']) {
+  assert.ok(carry.includes(`**${reason}**`),
+    `carry must name ${reason} as a reason the owner is asked`);
+}
+for (const cause of ['missing', 'inaccessible', 'incorrect', 'simply not followed']) {
+  assert.ok(carry.includes(`*${cause}*`),
+    `carry must classify a hand-back cause as ${cause}`);
+}
+assertIncludesAll(carry, [
+  'self-review alone never satisfies it',
+  'never a reason to merge'
+], 'carry section 2 must forbid self-review at the integration gate');
+assert.match(carry, /Do not answer one with a new framework/,
+  'carry must forbid answering a hand-back with a new framework');
+assert.match(carry, /Stopping\s+before an already-authorized step/,
+  'carry must name stopping short of the authorized endpoint as the failure it removes');
+
 const codeReview = read('skills/code-review/SKILL.md');
 assertIncludesAll(codeReview, [
   'fixed diff', '`BASE_SHA`', '`HEAD_SHA`',
@@ -246,7 +314,7 @@ assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workben
 assert.match(read('RUNBOOK.md'), /--layout-only/, 'the Runbook must document the layout-only mode');
 assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
 
-for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'implement', 'code-review']) {
+for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
   const skill = read(`skills/${name}/SKILL.md`);
   assert.match(skill, /workbench\/manifest\.json/,
     `${name} must route durable v3 workflow records through the manifest`);
@@ -254,5 +322,5 @@ for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec'
 assert.doesNotMatch(toSpec, /stable `specs\/S-###-slug\/SPEC\.md`/,
   'to-spec must not direct v3 projects to the retired root specs path');
 
-console.log('ok - the portable 16-skill source bundle and retired discovery boundary are aligned');
+console.log(`ok - the portable ${bundleSize}-skill source bundle and retired discovery boundary are aligned`);
 await import('./test-delivery-skills.mjs');

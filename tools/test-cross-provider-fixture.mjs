@@ -6,17 +6,27 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { plan, verify } from './cross-provider-resume.mjs';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-cross-provider-'));
 try {
   const record = plan(workspace, '2026-09-04');
   assert.match(record.planningSha, /^[0-9a-f]{40}$/);
   assert.equal(fs.existsSync(path.join(workspace, 'planning-clone')), false, 'the planning context is destroyed after the push');
-  assert.equal(fs.existsSync(path.join(record.codexHome, 'skills', 'implement', 'SKILL.md')), true, 'the isolated home carries the candidate skills');
-  assert.equal(record.installedSkills, 32);
+  assert.equal(fs.existsSync(path.join(record.providerHome, '.agents', 'skills', 'implement', 'SKILL.md')), true, 'the isolated home carries canonical candidate skills');
+  assert.equal(fs.existsSync(path.join(record.codexHome, 'config.toml')), false, 'the fixture must not weaken host sandbox or approval settings');
+  assert.equal(fs.existsSync(path.join(record.codexHome, 'skills')), false, 'the fixture must not create duplicate Codex discovery');
+  // The installer writes the whole bundle into both user-scoped discovery
+  // roots, so this is the bundle size times two - derived, so growing the
+  // bundle does not silently re-freeze this count at an older size.
+  const bundleSize = fs.readdirSync(path.join(root, 'skills'), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory()).length;
+  assert.equal(record.installedSkills, bundleSize * 2);
   for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
-    assert.ok(fs.statSync(path.join(record.codexHome, 'skills', stance, 'SKILL.md')).isFile());
+    assert.ok(fs.statSync(path.join(record.providerHome, '.agents', 'skills', stance, 'SKILL.md')).isFile());
   }
   const remoteHead = execFileSync('git', ['ls-remote', record.remote, 'main'], { encoding: 'utf8' }).split('\t')[0];
   assert.equal(remoteHead, record.planningSha, 'the planning checkpoint is remotely recoverable');

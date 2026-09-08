@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createHash } from 'node:crypto';
 // The primary v3.1 acceptance fixture: one provider plans and pushes, the
 // planning context is destroyed, and a different provider resumes from a
 // clean clone using repository state only, with isolated candidate skills and
@@ -76,10 +77,15 @@ export function plan(workspace, date = new Date().toISOString().slice(0, 10)) {
   const readiness = JSON.parse(sh(planning, process.execPath, [path.join(planning, 'workbench', 'tools', 'workbench-layout.mjs'), 'validate', '--project', planning, '--genesis']));
   if (readiness.status !== 'valid') throw new Error(`Genesis readiness failed: ${JSON.stringify(readiness)}`);
   sh(planning, process.execPath, [tool, 'doctor']);
-  write(planning, `workbench/sessions/grilling/greeting-${date}.md`, `# Grilling — greeting\nSTATUS: PROMOTED — ${date}\n\n1. [locked] Greet by name; default to World.\n2. [locked] Tests use node:test with no dependencies.\n`);
-  const promoted = JSON.parse(sh(planning, process.execPath, [path.join(planning, 'workbench', 'tools', 'sessions.mjs'), 'checkpoint', '--from', `workbench/sessions/grilling/greeting-${date}.md`, '--topic', 'greeting', '--date', date]));
+  const notes = path.join(planning, 'workbench/tools/notepads.mjs');
+  const note = JSON.parse(sh(planning, process.execPath, [notes, 'create', '--note', 'greeting', '--objective', 'greeting', '--title', 'Greeting decisions']));
+  sh(planning, process.execPath, [notes, 'append', '--note', note.note, '--revision', '1', '--kind', 'decision', '--topic', 'greeting', '--content', 'Greet by name; default to World. Tests use node:test with no dependencies.']);
+  const owner = 'workbench/specs/S-001-greeting/SPEC.md';
+  const before = fs.readFileSync(path.join(planning, owner));
+  write(planning, 'workbench/sessions/handoffs/greeting-draft.md', before.toString('utf8') + '\n## Reconciled Decision\n\nGreet by name; default to World. Tests use node:test with no dependencies.\n');
+  const promoted = JSON.parse(sh(planning, process.execPath, [path.join(planning, 'workbench/tools/sessions.mjs'), 'promote', '--from', note.note, '--revision', '2', '--entries', 'decision-001', '--to', owner, '--expected', createHash('sha256').update(before).digest('hex'), '--content', 'workbench/sessions/handoffs/greeting-draft.md']));
   if (promoted.status !== 'promoted') throw new Error(JSON.stringify(promoted));
-  sh(planning, process.execPath, [tool, 'claim', 'S-001', '--agent', 'claude-fable-5-1']);
+  sh(planning, process.execPath, [tool, 'claim', 'S-001', '--agent', 'fixture-planner']);
   sh(planning, process.execPath, [tool, 'render']);
   git(planning, 'add', '-A');
   git(planning, 'commit', '-q', '-m', 'Planning checkpoint: S-001/TK-001 claimed by the planning provider');
@@ -96,11 +102,9 @@ export function plan(workspace, date = new Date().toISOString().slice(0, 10)) {
   if (install.status !== 'complete') throw new Error(JSON.stringify(install));
   const codexHome = path.join(home, '.codex');
   fs.mkdirSync(codexHome, { recursive: true });
-  fs.symlinkSync(path.join(home, '.agents', 'skills'), path.join(codexHome, 'skills'));
-  // The proof isolates skills and tools, not the shell: the resumer must be
-  // able to commit and push, and the workspace-write sandbox refuses writes
-  // under .git, so the isolated home runs unsandboxed like an owner session.
-  fs.writeFileSync(path.join(codexHome, 'config.toml'), 'approval_policy = "never"\nsandbox_mode = "danger-full-access"\n');
+  // Candidate skills use canonical .agents storage and the installer's
+  // supported provider adapters. Host security and authentication stay with
+  // the configured host; a fixture never supplies permission bypasses.
   const record = { version: VERSION, candidate: git(product, 'rev-parse', 'HEAD'), remote, planningSha, providerHome: home, codexHome, installedSkills: install.installed.length, date };
   fs.writeFileSync(path.join(workspace, 'plan.json'), `${JSON.stringify(record, null, 2)}\n`);
   return record;
@@ -139,7 +143,7 @@ export function verify(workspace, transcriptPath) {
   if (receipt.source.release !== record.version || receipt.source.commit !== record.candidate) failures.push('the resumer did not run the exact candidate tools');
   const files = git(check, 'ls-files');
   if (FOUNDRY_SIGNS.test(files)) failures.push('a Foundry path exists in the repository');
-  if (/workbench\/sessions\/grilling\/greeting/.test(files)) failures.push('the live notepad was committed');
+  if (/workbench\/sessions\/(?:grilling|notepads\/work|handoffs)\/greeting/.test(files)) failures.push('the live notepad was committed');
   let transcriptFindings = 'not scanned';
   if (transcriptPath) {
     const transcript = fs.readFileSync(transcriptPath, 'utf8');

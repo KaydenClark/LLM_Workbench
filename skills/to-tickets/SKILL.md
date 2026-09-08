@@ -25,7 +25,7 @@ skill-discovery tree.
    green by vertical slice.
 3. Present the proposed table and ask for approval before changing durable
    work state. Confirm that slice size and blocking edges are right.
-4. After approval, update only the assigned spec's `Vertical Implementation Slices`
+4. After approval, use `spec-workbench.mjs next-id S-### --prefix TK --json` for each new label. It proposes a letter-bearing ID from the whole Workbench inventory without reserving it; save each planned row before requesting the next. Preserve existing spec-qualified numeric ticket references. Update only the assigned spec's `Vertical Implementation Slices`
    table. Preserve completed rows and append-only evidence. Keep unresolved
    owner decisions visible as blockers. Create no parallel ticket or proof store.
 5. Run `node workbench/tools/spec-workbench.mjs render` to refresh the generated

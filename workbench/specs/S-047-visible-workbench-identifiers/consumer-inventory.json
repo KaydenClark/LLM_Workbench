@@ -1,0 +1,133 @@
+{
+  "baseline_commit": "c546bdc",
+  "scope": "S-047 staged visible identity consumers; source paths are navigational owners, not instructions.",
+  "consumers": [
+    {
+      "path": "workbench/tools/visible-ids.mjs",
+      "disposition": "Shared alphabet, collision key, label ordering and allocation; new durable proposals require a letter."
+    },
+    {
+      "path": "workbench/tools/notepads.mjs",
+      "disposition": "Visible note allocation and explicit ID selection; legacy filename/path selector unchanged; source retention and current-record collision checks."
+    },
+    {
+      "path": "workbench/tools/spec-packet.mjs",
+      "disposition": "Spec and ticket parsing accepts alphanumeric suffixes; malformed ticket rows remain visible failures."
+    },
+    {
+      "path": "workbench/tools/spec-workbench.mjs",
+      "disposition": "Read-only proposals, selection, claim/close, blockers, rendering and duplicate diagnostics; old numeric tickets remain spec-qualified."
+    },
+    {
+      "path": "workbench/tools/adr.mjs",
+      "disposition": "Mixed filename parsing, letter-bearing allocation, deterministic register ordering and case/leading-zero collision checks."
+    },
+    {
+      "path": "workbench/tools/wiki.mjs",
+      "disposition": "Copied live task-state exclusion includes alphanumeric ticket labels."
+    },
+    {
+      "path": "workbench/tools/workbench-layout.mjs",
+      "disposition": "Genesis first-spec path validation accepts grown/alphanumeric IDs; packages shared runtime helper."
+    },
+    {
+      "path": "workbench/tools/workbench-paths.mjs",
+      "disposition": "Collection/manifest paths remain lowercase; this rule does not constrain artifact IDs within a declared collection."
+    },
+    {
+      "path": "tools/audit-guardrails.mjs",
+      "disposition": "Spec path routing and ticket contradiction checks include new labels; criteria unchanged."
+    },
+    {
+      "path": "tools/test-spec-citation-anchors.mjs",
+      "disposition": "Alphanumeric and grown numeric spec IDs remain covered; pre-S036 numeric grandfathering remains explicit."
+    },
+    {
+      "path": "tools/check-append-only.py",
+      "disposition": "Enumerates directories containing SPEC.md, independent of numeric spelling; no parser change needed."
+    },
+    {
+      "path": "tools/test-workbench-dogfood.mjs",
+      "disposition": "Selected path assertion follows supported visible spec syntax."
+    },
+    {
+      "path": "skills/to-spec/SKILL.md",
+      "disposition": "Requests a read-only spec-ID proposal during authorized planning and preserves stable paths."
+    },
+    {
+      "path": "skills/to-tickets/SKILL.md",
+      "disposition": "Requests each new ticket label from whole-Workbench inventory after saving the previous row; no implicit work authorization."
+    },
+    {
+      "path": "skills/notepad/SKILL.md",
+      "disposition": "Routes new note identities and explicit selectors through public runtime."
+    },
+    {
+      "path": "tools/workbench-adoption.mjs",
+      "disposition": "Uses shared spec parsing/layout; preserves existing paths and labels."
+    },
+    {
+      "path": "tools/workbench-upgrade.mjs",
+      "disposition": "Uses shared adoption/layout and installed runtime, rather than allocating artifact IDs."
+    },
+    {
+      "path": "tools/workbench-tools.mjs",
+      "disposition": "Packages the shared helper through RUNTIME_TOOLS and verified receipts."
+    },
+    {
+      "path": "tools/cross-provider-resume.mjs",
+      "disposition": "Existing numeric first-spec/ticket fixture remains a legacy-compatibility case; no current agent result inferred."
+    },
+    {
+      "path": "tools/test-workbench-round-trip.mjs",
+      "disposition": "Retains a numeric lifecycle fixture; new syntax has a separate public Genesis/lifecycle test."
+    },
+    {
+      "path": "tools/socket-registry/schema.mjs",
+      "disposition": "K numeric identifiers retain their existing socket-registry contract; not allocated by this release seam."
+    },
+    {
+      "path": "tools/socket-contract.mjs",
+      "disposition": "P/F/C/K/M numeric enrolled-actor IDs remain outside this staged artifact allocator."
+    },
+    {
+      "path": "tools/team-coordination-demo.mjs",
+      "disposition": "Uses existing registry/fixture identifiers; no new actor-ID allocation promise."
+    },
+    {
+      "path": "workbench/tools/template-placeholders.mjs",
+      "disposition": "S-### is an existing instructional placeholder, not a numeric parser."
+    },
+    {
+      "path": "AGENTS.md",
+      "disposition": "Verification includes shared allocator and consumer tests; authority and stable-path rules remain."
+    },
+    {
+      "path": "LEXICON.md",
+      "disposition": "Names preserved legacy numeric ticket scope and new Workbench-wide letter-bearing scope."
+    },
+    {
+      "path": "RUNBOOK.md",
+      "disposition": "Owns CLI selector, proposal, width, alphabet, sorting, collision and remaining-format rules."
+    },
+    {
+      "path": "templates/LEXICON.md",
+      "disposition": "Mirrors accepted visible-ID semantics for a generated room."
+    },
+    {
+      "path": "templates/RUNBOOK.md",
+      "disposition": "Mirrors supported commands and explicit legacy/remaining-format boundaries."
+    },
+    {
+      "path": "templates/SPEC.md",
+      "disposition": "Existing numeric example remains valid; planning skills obtain new durable labels from the proposal command."
+    }
+  ],
+  "verification": "Numeric-only parser/route searches plus owner traversal; targeted and full candidate results are recorded in SPEC.md.",
+  "remaining_formats": [
+    "Socket/actor registry IDs retain numeric format.",
+    "Internal ordered entry IDs such as finding-001 retain sequence/high-water semantics.",
+    "Legacy arbitrary note IDs and explicit filenames remain readable; unrecognized JSON inventories must be reconciled before visible-ID allocation."
+  ],
+  "preservation": "No existing spec, ADR, checkpoint or note path was renamed. Historical numeric tickets are not claimed globally unique. New durable proposals do not reserve a record or grant planning authority."
+}

@@ -1,0 +1,121 @@
+#!/usr/bin/env node
+// Explicit, temporary local probes. A filesystem check cannot attest provider
+// discovery, sandbox enforcement, another device, or agent reliability.
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
+import { parseFrontmatter } from '../workbench/tools/adr.mjs';
+import { isMainModule, assertSafeReadPath } from '../workbench/tools/workbench-paths.mjs';
+import { sourceIdentity } from './workbench-tools.mjs';
+
+export function probeConfiguredHost(options) {
+  const { lanes, skill, sourceCommit, sourceRepository, node = process.execPath } = options;
+  let { root, cwd, home } = options;
+  for (const [name, value] of Object.entries({ root, cwd, home, skill, sourceCommit, sourceRepository, node })) {
+    if (typeof value !== 'string' || !value || value.includes('\0')) throw new Error(`Invalid ${name} declaration.`);
+  }
+  if (!/^[0-9a-f]{40}$/.test(sourceCommit)) throw new Error('Invalid sourceCommit declaration.');
+  if (!Array.isArray(lanes) || !lanes.length || lanes.some(lane => typeof lane !== 'string' || !lane || lane.includes('\0') || (lane.startsWith('~') && !lane.startsWith('~/')))) throw new Error('Invalid writable lane declarations.');
+  root = path.resolve(root); cwd = path.resolve(cwd); home = path.resolve(home);
+  const checks = [];
+  const results = lanes.map(lane => {
+    const form = lane.startsWith('~/') ? 'home' : path.isAbsolute(lane) ? 'absolute' : 'relative';
+    const target = form === 'home' ? path.resolve(home, lane.slice(2)) : path.resolve(cwd, lane);
+    let temporary;
+    const result = { form, status: 'pass' };
+    try {
+      // The caller declares the lane. Never create a missing lane or alter its files.
+      if (!fs.statSync(target).isDirectory()) throw new Error('not a directory');
+      temporary = fs.mkdtempSync(path.join(target, '.workbench-probe-'));
+      const file = path.join(temporary, 'probe.json');
+      fs.writeFileSync(file, '{"probe":true}\n', { flag: 'wx', mode: 0o600 });
+      if (fs.readFileSync(file, 'utf8') !== '{"probe":true}\n') throw new Error('read-back mismatch');
+    } catch (error) { result.status = 'fail'; result.reason = error.code ?? error.message; }
+    finally {
+      if (temporary) try { fs.rmSync(temporary, { recursive: true }); }
+      catch (error) { result.status = 'fail'; result.reason = `cleanup:${error.code}`; result.recovery = temporary; }
+    }
+    return result;
+  });
+  checks.push({ capability: 'writable-lanes', status: results.every(r => r.status === 'pass') ? 'pass' : 'fail', results, scope: 'declared lanes under this runner only' });
+  let readable = false;
+  try { readable = fs.statSync(skill).isFile() && fs.readFileSync(skill).length > 0; } catch {}
+  checks.push({ capability: 'native-skill-discovery-and-invocation', status: 'unverified', readable, reason: 'Requires a native provider discovery and invocation trace; readable bytes are insufficient.' });
+  const nodeCheck = { capability: 'node-managed-tools', status: 'unverified', exit: null, reason: null, scope: 'managed doctor execution from a verified producer checkout; diagnostics retain their own effects' };
+  try {
+    // Child tools read the manifest before reporting anything. Validate their
+    // input and source paths before spawning, not only in the later parser check.
+    for (const relative of ['workbench/manifest.json', ...RUNTIME_TOOLS.map(name => `workbench/tools/${name}`)]) {
+      const file = path.join(root, relative);
+      assertSafeReadPath(root, file);
+      if (!fs.lstatSync(file).isFile()) throw new Error('managed source must be an ordinary file');
+    }
+    const manifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json'), 'utf8'));
+    for (const relative of [...Object.values(manifest.lanes ?? {}), ...Object.values(manifest.collections ?? {})]) {
+      if (typeof relative !== 'string' || path.isAbsolute(relative)) throw new Error('invalid declared source lane');
+      assertSafeReadPath(root, path.resolve(root, relative));
+    }
+    nodeCheck.source = sourceIdentity({ root, managedPaths: ['workbench/manifest.json', 'workbench/tools', 'workbench/docs/adr'] });
+    if (nodeCheck.source.commit !== sourceCommit) throw new Error('Configured sourceCommit does not match the producer checkout commit.');
+    if (nodeCheck.source.repository !== sourceRepository) throw new Error('Configured sourceRepository does not match the producer checkout origin.');
+    const execution = spawnSync(node, [path.resolve(root, 'workbench/tools/spec-workbench.mjs'), 'doctor'], { cwd: root, encoding: 'utf8', timeout: 30000, maxBuffer: 8 * 1024 * 1024 });
+    nodeCheck.status = execution.error ? 'unverified' : execution.status === 0 ? 'pass' : 'fail';
+    nodeCheck.exit = execution.status;
+    nodeCheck.reason = execution.error?.code ?? null;
+  } catch (error) {
+    nodeCheck.status = ['ENOENT', 'EACCES', 'EPERM'].includes(error.code) ? 'unverified' : 'fail';
+    nodeCheck.reason = error.code ?? error.message;
+  }
+  checks.push(nodeCheck);
+  let temporary;
+  const adapter = { capability: 'directory-adapter', status: 'pass', mechanism: process.platform === 'win32' ? 'junction' : 'symlink', scope: 'temporary directory under declared cwd only' };
+  try {
+    temporary = fs.mkdtempSync(path.join(cwd, '.workbench-adapter-probe-'));
+    const canonical = path.join(temporary, 'canonical');
+    fs.mkdirSync(canonical);
+    fs.writeFileSync(path.join(canonical, 'probe'), 'adapter');
+    fs.symlinkSync(canonical, path.join(temporary, 'alias'), process.platform === 'win32' ? 'junction' : 'dir');
+    if (fs.readFileSync(path.join(temporary, 'alias/probe'), 'utf8') !== 'adapter') throw new Error('adapter read-back mismatch');
+  } catch (error) { adapter.status = 'unverified'; adapter.reason = error.code ?? error.message; }
+  finally {
+    if (temporary) try { fs.rmSync(temporary, { recursive: true }); }
+    catch (error) { adapter.status = 'fail'; adapter.reason = `cleanup:${error.code}`; adapter.recovery = temporary; }
+  }
+  checks.push(adapter);
+  const syntax = { capability: 'checkout-record-syntax', status: 'pass', records: 0, scope: 'actual local ADR checkout; LF/CRLF/CR variants are structural checks only' };
+  try {
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    assertSafeReadPath(root, manifestFile);
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    const relative = manifest.collections.adr;
+    const lane = path.resolve(root, relative);
+    assertSafeReadPath(root, lane);
+    for (const name of fs.readdirSync(lane).filter(name => /^[0-9A-Za-z]{3,}-.+\.md$/.test(name))) {
+      const record = path.join(lane, name);
+      assertSafeReadPath(root, record);
+      if (!fs.lstatSync(record).isFile()) throw new Error('record must be an ordinary file');
+      const content = fs.readFileSync(record, 'utf8');
+      const parsed = parseFrontmatter(content);
+      if (!parsed.data?.status) throw new Error('invalid checkout record');
+      for (const eol of ['\n', '\r\n', '\r']) {
+        const variant = parseFrontmatter(content.replace(/\r\n?/g, '\n').replaceAll('\n', eol));
+        if (JSON.stringify(variant) !== JSON.stringify(parsed)) throw new Error('line-ending mismatch');
+      }
+      syntax.records++;
+    }
+    if (!syntax.records) { syntax.status = 'unverified'; syntax.reason = 'no checkout records available'; }
+  } catch (error) { syntax.status = ['ENOENT', 'EACCES', 'EPERM'].includes(error.code) ? 'unverified' : 'fail'; syntax.reason = error.code ?? error.message; }
+  checks.push(syntax);
+  return { evidence: 'local-runner-capability-probe', host: { platform: process.platform, release: os.release(), architecture: process.arch, runnerNode: process.version }, checks, enforcement: 'unverified', reliability: 'unverified' };
+}
+
+if (isMainModule(import.meta.url)) {
+  try {
+    if (process.argv.length !== 4 || process.argv[2] !== '--probe') throw new Error('Usage: configured-host.mjs --probe CONFIG.json (writes temporary probes only in declared lanes and cwd)');
+    const report = probeConfiguredHost(JSON.parse(fs.readFileSync(process.argv[3], 'utf8')));
+    process.stdout.write(JSON.stringify(report, null, 2) + '\n');
+    process.exitCode = report.checks.some(check => check.status === 'fail') ? 1 : 0;
+  } catch (error) { process.stderr.write(error.message + '\n'); process.exitCode = 1; }
+}

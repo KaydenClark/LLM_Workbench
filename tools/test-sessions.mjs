@@ -6,7 +6,9 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 import { checkpoint, scanFile } from '../workbench/tools/sessions.mjs';
+import { listNotes } from '../workbench/tools/notepads.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
@@ -23,89 +25,56 @@ function project() {
 
 const NOTEPAD = '# Grilling — topic\nSTATUS: PROVISIONAL\n\n1. [locked] Decision one.\n';
 
-test('checkpoint promotes a clean live notepad into the tracked checkpoints collection', () => {
-  const dir = project();
-  try {
-    const live = path.join(dir, 'workbench', 'sessions', 'grilling', 'topic-2026-09-04.md');
-    fs.writeFileSync(live, NOTEPAD);
-    const ignored = spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/grilling/topic-2026-09-04.md'], { cwd: dir });
-    assert.equal(ignored.status, 0, 'the live notepad is untracked by default');
-    const result = checkpoint(dir, { from: 'workbench/sessions/grilling/topic-2026-09-04.md', topic: 'topic', date: '2026-09-04' });
-    assert.equal(result.status, 'promoted');
-    assert.equal(result.checkpoint, 'workbench/sessions/checkpoints/topic-2026-09-04.md');
-    const promoted = fs.readFileSync(path.join(dir, result.checkpoint), 'utf8');
-    assert.match(promoted, /^<!-- checkpoint: promoted 2026-09-04 from workbench\/sessions\/grilling\/topic-2026-09-04\.md -->\n/);
-    assert.equal(promoted.replace(/^<!-- checkpoint:[^\n]*\n/, ''), NOTEPAD, 'the promoted copy is byte-identical below the stamp');
-    assert.equal((fs.statSync(path.join(dir, result.checkpoint)).mode & 0o777), 0o644);
-    const tracked = spawnSync('git', ['check-ignore', '-q', result.checkpoint], { cwd: dir });
-    assert.notEqual(tracked.status, 0, 'the checkpoint is not ignored');
-    assert.equal(checkpoint(dir, { from: 'workbench/sessions/grilling/topic-2026-09-04.md', topic: 'topic', date: '2026-09-04' }).error.code, 'invalid-note', 'a duplicate destination is refused');
-    assert.throws(() => checkpoint(dir, { from: live, topic: 'Bad Topic' }), /lowercase slug/);
-  } finally {
-    fs.rmSync(dir, { recursive: true, force: true });
+test('every preserved checkpoint still matches the pinned retirement inventory', () => {
+  const inventory = JSON.parse(fs.readFileSync(path.join(root, 'workbench/specs/S-048-checkpoint-retirement/checkpoint-inventory.json')));
+  for (const record of inventory.records) {
+    const bytes = fs.readFileSync(path.join(root, record.path));
+    assert.equal(bytes.length, record.bytes, record.path);
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), record.sha256, record.path);
   }
 });
 
-test('checkpoint refuses secret-like content, private paths, and unsafe sources without writing anything', () => {
+test('operational recovery is excluded from note discovery', () => {
   const dir = project();
   try {
-    const grilling = path.join(dir, 'workbench', 'sessions', 'grilling');
-    fs.writeFileSync(path.join(grilling, 'leak.md'), `${NOTEPAD}\nToken: ghp_A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0\n`);
-    fs.writeFileSync(path.join(grilling, 'home.md'), `${NOTEPAD}\nSee /Users/someone/private/notes.md\n`);
-    fs.writeFileSync(path.join(grilling, 'mail.md'), `${NOTEPAD}\nContact owner@example.com\n`);
-    for (const [name, label] of [['leak.md', 'API token'], ['home.md', 'absolute home path'], ['mail.md', 'email address']]) {
-      const refused = checkpoint(dir, { from: `workbench/sessions/grilling/${name}`, topic: 'refused', date: '2026-09-04' });
-      assert.equal(refused.status, 'blocked', name);
-      assert.equal(refused.error.code, 'secret-like-content');
-      assert.ok(refused.hits.some((hit) => hit.label === label && hit.line === 6), `${name} names the ${label} line: ${JSON.stringify(refused.hits)}`);
-      assert.equal(fs.existsSync(path.join(dir, 'workbench', 'sessions', 'checkpoints', 'refused-2026-09-04.md')), false, 'nothing is written on refusal');
-    }
-    fs.symlinkSync(path.join(grilling, 'leak.md'), path.join(grilling, 'link.md'));
-    assert.equal(checkpoint(dir, { from: 'workbench/sessions/grilling/link.md', topic: 'link' }).error.code, 'invalid-note');
-    const scanned = scanFile(dir, 'workbench/sessions/grilling/leak.md');
-    assert.equal(scanned.status, 'blocked');
-    const cli = spawnSync(process.execPath, [sessionsTool, 'checkpoint', '--from', 'workbench/sessions/grilling/leak.md', '--topic', 'leak'], { cwd: dir, encoding: 'utf8' });
-    assert.equal(cli.status, 1);
-    assert.equal(JSON.parse(cli.stdout).error.code, 'secret-like-content');
-  } finally {
-    fs.rmSync(dir, { recursive: true, force: true });
-  }
+    fs.writeFileSync(path.join(dir, 'workbench/sessions/recovery/adoption-recovery.json'), '{"operational":"receipt"}');
+    const listed = listNotes(dir);
+    assert.equal(listed.status, 'listed');
+    assert.deepEqual(listed.notes, []);
+    assert.equal(listNotes(dir, { collection: 'recovery' }).status, 'blocked');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('checkpoint refuses a linked destination collection without writing outside', () => {
-  const dir = project(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'session-outside-'));
+test('retired checkpoint invocation preserves source and frozen history without creating a copy', () => {
+  const dir = project();
   try {
-    fs.writeFileSync(path.join(dir, 'note.md'), NOTEPAD);
-    const destination = path.join(dir, 'workbench', 'sessions', 'checkpoints');
-    fs.rmSync(destination, { recursive: true }); fs.symlinkSync(outside, destination);
-    const result = spawnSync(process.execPath, [sessionsTool, 'checkpoint', '--path', dir, '--from', 'note.md', '--topic', 'topic'], { encoding: 'utf8' });
-    assert.notEqual(result.status, 0);
-    assert.deepEqual(fs.readdirSync(outside), []);
-  } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+    const live = 'workbench/sessions/grilling/topic.md';
+    const frozen = 'workbench/sessions/checkpoints/historical.md';
+    fs.writeFileSync(path.join(dir, live), NOTEPAD);
+    fs.writeFileSync(path.join(dir, frozen), '# Historical evidence\r\n');
+    const before = [live, frozen].map(file => fs.readFileSync(path.join(dir, file)));
+    const result = checkpoint(dir, { from: live, topic: 'new-copy' });
+    assert.equal(result.status, 'blocked');
+    assert.match(result.error.message, /retired.*promote/s);
+    const cli = spawnSync(process.execPath, [sessionsTool, 'checkpoint', '--path', dir, '--from', live, '--topic', 'new-copy'], { encoding: 'utf8' });
+    assert.equal(cli.status, 1);
+    assert.match(JSON.parse(cli.stdout).error.message, /retired/);
+    assert.deepEqual([live, frozen].map(file => fs.readFileSync(path.join(dir, file))), before);
+    assert.deepEqual(fs.readdirSync(path.join(dir, 'workbench/sessions/checkpoints')).sort(), ['.gitkeep', 'historical.md']);
+    assert.notEqual(spawnSync('git', ['check-ignore', '-q', frozen], { cwd: dir }).status, 0);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('checkpoint refuses a source outside the repository root and writes nothing', () => {
-  const dir = project(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'session-outside-'));
+test('privacy scanning remains available after retiring copied checkpoints', () => {
+  const dir = project();
   try {
-    fs.writeFileSync(path.join(outside, 'notes.md'), NOTEPAD);
-    const checkpoints = path.join(dir, 'workbench', 'sessions', 'checkpoints');
-    // A linked directory inside the repository must not reach outside either.
-    fs.symlinkSync(outside, path.join(dir, 'workbench', 'sessions', 'handoffs', 'link'));
-    for (const from of [path.join(outside, 'notes.md'), path.join('..', path.basename(outside), 'notes.md'), path.join(outside, 'missing.md'), 'workbench/sessions/handoffs/link/notes.md']) {
-      const refused = checkpoint(dir, { from, topic: 'outside', date: '2026-09-04' });
-      assert.equal(refused.status, 'blocked', from);
-      assert.equal(refused.error.code, 'invalid-note', from);
-      assert.match(refused.error.message, /repository root/, 'the refusal names the boundary');
-      assert.deepEqual(fs.readdirSync(checkpoints).filter((name) => name !== '.gitkeep'), [], 'nothing is written on refusal');
+    for (const [text, label] of [['See /Users/synthetic/private/file', 'absolute home path'], ['Contact owner@example.com', 'email address']]) {
+      fs.writeFileSync(path.join(dir, 'scan.md'), '# Synthetic fixture\n' + text);
+      const result = scanFile(dir, 'scan.md');
+      assert.equal(result.status, 'blocked');
+      assert.ok(result.hits.some(hit => hit.label === label));
     }
-    assert.equal(checkpoint(dir, { from: dir, topic: 'root' }).error.code, 'invalid-note', 'the root itself is not a source');
-    const cli = spawnSync(process.execPath, [sessionsTool, 'checkpoint', '--path', dir, '--from', path.join(outside, 'notes.md'), '--topic', 'outside'], { encoding: 'utf8' });
-    assert.equal(cli.status, 1);
-    assert.equal(JSON.parse(cli.stdout).error.code, 'invalid-note');
-    assert.deepEqual(fs.readdirSync(checkpoints).filter((name) => name !== '.gitkeep'), []);
-    fs.writeFileSync(path.join(dir, 'workbench', 'sessions', 'handoffs', 'inside.md'), NOTEPAD);
-    const promoted = checkpoint(dir, { from: 'workbench/sessions/handoffs/inside.md', topic: 'inside', date: '2026-09-04' });
-    assert.equal(promoted.status, 'promoted', 'an in-repository source still promotes');
-    assert.equal(promoted.checkpoint, 'workbench/sessions/checkpoints/inside-2026-09-04.md');
-  } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+    fs.writeFileSync(path.join(dir, 'scan.md'), '# Safe source\n');
+    assert.equal(scanFile(dir, 'scan.md').status, 'clean');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

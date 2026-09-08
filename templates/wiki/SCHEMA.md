@@ -27,6 +27,10 @@ not folders or properties that give the wiki authority. Wiki content cannot
 authorize a change to Actuality; only the current user request, `AGENTS.md`,
 and the explicitly assigned spec instruct.
 
+A recall/search index is derived from named sources and remains rebuildable;
+it neither owns Wiki knowledge nor supplies authority. No recall database or
+additional index service is required by this boundary.
+
 ## Profile And Collections
 
 `workbench/manifest.json` declares the wiki profile:
@@ -135,14 +139,15 @@ properties and enums, relative source paths, the Design Concept article shape,
 the absence of copied live task state and secret-like material, and reports
 stale notes as attention. `validate` never writes.
 
-`validate` also emits two findings that are not wiki facts at all: `stale-seed`,
-for a seeded lane document whose recorded generation is behind the manifest, and
-`unverified-provenance`, for a manifest whose recorded source identity is a
-placeholder or disagrees with `workbenchVersion`. Both checks live in
+`validate` reports wiki facts only. Two findings it used to carry are not wiki
+facts and no longer come from here: `stale-seed`, for a seeded lane document
+whose recorded generation is behind the manifest, and `unverified-provenance`,
+for a manifest whose recorded source identity is a placeholder or disagrees with
+`workbenchVersion`. `doctor` emits both, from the installed-state hook beside
+its managed-runtime check; the checks themselves live in
 `workbench/tools/workbench-layout.mjs` and are repaired by its `seed-documents`
-and `record-source` commands; they are reported here only because `doctor` wires
-this validator, and `RUNBOOK.md` -> Installed State The Harness Wrote documents
-them. Neither blocks.
+and `record-source` commands. `RUNBOOK.md` -> Installed State The Harness Wrote
+documents them. Neither blocks.
 
 `normalize` is the explicit repair for a note missing required properties. It
 inserts only what is absent, never edits a body or overwrites a declared value,
