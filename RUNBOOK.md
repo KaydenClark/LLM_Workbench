@@ -710,13 +710,15 @@ node tools/cross-provider-resume.mjs verify --workspace /disposable/workspace --
 `plan` builds a bare remote, runs Genesis with this candidate, reconciles selected claims
 into the spec owner, claims the first slice, pushes the planning checkpoint, destroys
 the planning clone, and installs the candidate skills into an isolated
-provider home (`provider-home/.codex/skills` for Codex). Between `plan` and
-`verify`, run the other provider from a fresh clone of `origin.git` with its
-home pointed at that isolated directory and the printed prompt, capturing its
-output to a transcript; provider authentication stays the owner's action and
-is never copied. The isolated home runs the provider unsandboxed (the
-workspace-write sandbox refuses the `.git` writes a commit needs), so run the
-proof only in a disposable workspace. `verify` clones fresh and proves the remote advanced, the
+provider home (canonical `provider-home/.agents/skills` with installer-managed
+Claude adapters; no duplicate Codex skill tree). Between `plan` and `verify`,
+run the other provider from a fresh clone of `origin.git` with its home pointed
+at that isolated directory and the printed prompt, capturing its output to a
+transcript. Provider authentication and security settings stay with the
+configured host and are never copied or weakened by the fixture. Use a
+disposable workspace. If the host refuses a required operation, preserve that
+result as unavailable or incomplete; it is not a reason to bypass its controls.
+`verify` clones fresh and proves the remote advanced, the
 ticket closed with proof, the test and CLI pass, doctor is clean, the tools
 receipt names the exact candidate, the live notepad never travelled, and the
 transcript names nothing outside the repository. This proof spends provider
