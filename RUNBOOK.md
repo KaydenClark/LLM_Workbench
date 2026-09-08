@@ -216,7 +216,7 @@ checkpoint history and reusable templates remain tracked; operational recovery s
 Exercise it from a disposable project directory:
 
 ```bash
-node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.1.4 --integration-branch integration
+node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.2.0 --integration-branch integration
 node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-project
 node tools/test-workbench-layout.mjs
 ```
@@ -491,7 +491,7 @@ control-reconciliation phases:
 node tools/workbench-adoption.mjs migrate \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.4
+  --version v3.2.0
 node workbench/tools/workbench-layout.mjs validate --project /absolute/project
 node workbench/tools/spec-workbench.mjs next --json
 node workbench/tools/spec-workbench.mjs doctor
@@ -575,7 +575,7 @@ when the discovery root is inside a foreign Git repository:
 node tools/workbench-upgrade.mjs upgrade \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.4 \
+  --version v3.2.0 \
   --layout-only
 ```
 
@@ -592,7 +592,7 @@ and reports partial completion:
 node tools/workbench-upgrade.mjs upgrade \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.4 \
+  --version v3.2.0 \
   --explicit-update
 node tools/test-workbench-upgrade.mjs
 ```

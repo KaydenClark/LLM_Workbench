@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-09-05
 **Status:** active
-**Harness version:** v3.1.4 (v3.1.2 shipped to `main`; v3.1.3 and v3.1.4 publication pending)
+**Harness version:** v3.2.0 (integration candidate; publication to `main` remains owner-controlled)
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 

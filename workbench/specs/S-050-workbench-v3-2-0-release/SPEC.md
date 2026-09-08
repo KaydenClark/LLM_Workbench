@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project.
 **Blockers:** live-device-and-private-repository-access (final rollout readiness only)
-**Latest event:** Local capability work and useful native continuation verified; external acceptance gates remain.
-**Next gate:** Complete S-053 local conformance, verify v3.2.0 and integrate the upstream update.
+**Latest event:** TK-004 claimed by codex.
+**Next gate:** Close TK-004 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -102,8 +102,8 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 |---|---|---|---|---|
 | TK-001 | Promote and push the complete reconciled scope | done | none | 33 required commands pass; independent planning PASS cb12c23; 181 records, 19 candidates and 59 mappings preserved; remote plan verified |
 | TK-002 | Reconcile ADRs and all included documentation contracts | done | TK-001 | Full 33-command suite passes at fixed 87244cc; independent bounded documentation PASS; guardrail78 unchanged |
-| TK-003 | Converge capability implementations and useful continuity proof | ready | none | Local slices and bounded useful continuity verified; S-052/TK-004 and S-053 remain open |
-| TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | ready | TK-003 | pending |
+| TK-003 | Converge capability implementations and useful continuity proof | done | none | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved |
+| TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | in-progress | TK-003 | pending |
 | TK-005 | Deliver Example v3.2.0 and fresh project acceptance | ready | TK-004 | pending |
 | TK-006 | Reconcile release receipts and readiness verdict | ready | TK-005 | pending |
 
@@ -192,6 +192,7 @@ claims/status/lineage, not private transcripts.
 | 2026-09-08 | TK-003 | Development candidate 157d547 generated a useful independent Queue Summary project and native saved-objective continuation | Bootstrap 429fb1c readiness independently passes; implementation 2f32f51 fresh clone passes fourteen tests, doctor and sample. Native Codex CLI 0.144.3 recovered original/correction, verified empty/mixed inputs and fourteen tests, saved note6 to8; parent corrected earlier readiness-report error and read back note10. Local bare branch recovery85ac45b verified; runtime15 exact hashes and distinct room ID checked | [Bounded technical receipt](genesis-continuation-result.json) preserves model-unreported, explicit-invocation, local-remote and source-version limits; inaccurate post-implementation Genesis-readiness claim explicitly withdrawn | Independent receipt review pending. This development rehearsal does not satisfy final v3.2.0, Example integration, actual private service, Windows or Claude gates |
 
 | 2026-09-08 | TK-003 | Local convergence evidence reviewed; external acceptance remains blocked | Runtime candidate db540ec27a272d61283262ee48d46fe9ebf8f7af passed full 41 of 41 and independent transport review. Evidence candidate 3394cf86b44b4c62a8e695fe8d08bd3749434894 passed full 41 of 41; final receipt qualification 2933a72e43971894f82c2f260ba8d3421024c26a independently PASS. Useful generated project85ac45b fresh-clone tests14, runtime15 hashes, saved original/corrections and native36-command trace independently confirmed. Guardrail78 unchanged, four outcome-evidence recommendations retained | Receipt distinguishes producer-observed launcher facts from independently checked native events; S-052 implementation001-003 closed with live004 explicitly blocked. Existing S-053 owns the unaccepted capability-floor proposal | Owner agreement on host floor and actual private-repository/Mac-Windows-Claude-Codex access are unresolved. No v3.2.0 stamp, upstream integration, Example upgrade/integration or rollout readiness. This is the first explicit blocked continuation audit after completing available local work |
+| 2026-09-08 | TK-003 | Ticket closed | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved | S053 exact five-check baseline and local result; actual cross-device readiness remains S052TK004 and S050TK006 | Stamp and review upstream; Example integration; actual cross-device final readiness |
 
 ## Completion Result
 

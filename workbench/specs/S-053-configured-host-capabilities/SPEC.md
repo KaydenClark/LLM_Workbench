@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate.
 **Blockers:** none
-**Latest event:** TK-003 claimed by codex.
-**Next gate:** Close TK-003 with verification and documentation proof.
+**Latest event:** TK-003 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -79,7 +79,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 |---|---|---|---|---|
 | TK-001 | Agree the concrete host capability floor | done | none | Recorded five-check docket recovered; owner renewed implementation on 2026-09-08 |
 | TK-002 | Implement operation-scoped host conformance checks | done | TK-001 | New public probe seam RED missing module then GREEN 4 tests; missing lanes and runtimes remain operation-scoped; no native discovery inference |
-| TK-003 | Verify supported hosts and reconcile evidence claims | in-progress | TK-002 | pending |
+| TK-003 | Verify supported hosts and reconcile evidence claims | done | TK-002 | Actual local report four runner checks pass; native discovery and unavailable hosts explicitly unverified; full42 before review repair and focused6 after repair |
 
 ### TK-001 - Agree the concrete host capability floor
 
@@ -102,9 +102,9 @@ Record host application/model/configuration/OS and exact candidate. Test approve
 ## Acceptance Criteria
 
 - [x] Owner-agreed minimum precedes schema, diagnostic and test architecture choices.
-- [ ] Actual host results name each capability and unavailable/inconclusive limits.
-- [ ] Missing capability affects dependent work only; discovery and real callability are distinct.
-- [ ] No inferred enforcement or model-reliability claim follows from operational/structural success.
+- [x] Actual host results name each capability and unavailable/inconclusive limits.
+- [x] Missing capability affects dependent work only; discovery and real callability are distinct.
+- [x] No inferred enforcement or model-reliability claim follows from operational/structural success.
 
 ## Testing Seams
 
@@ -133,9 +133,15 @@ Configured-host guidance in RUNBOOK and generic counterpart, CAND-P and ADR-0005
 | 2026-09-08 | TK-001 | Recovered Claude docket five-check proposal and applied renewed owner implementation authorization | Original proposal covers writable path forms, discovery/invocation, Node, adapters and checkout syntax; later substituted checklist withdrawn | This spec restores the exact baseline before implementation; no historical approval invented | Actual native provider and unavailable device results must remain qualified |
 | 2026-09-08 | TK-002 | Ticket closed | New public probe seam RED missing module then GREEN 4 tests; missing lanes and runtimes remain operation-scoped; no native discovery inference | Root and generic Runbook document exact five checks and explicit temporary write contract | Full suite and actual local report; native discovery and unavailable Windows/provider claims remain unverified |
 
+| 2026-09-08 | TK-003 | Actual local report and independent probe corrections | 39ee853 full42 passes; review found relative-cwd alias, linked ADR and malformed-status defects. New tests demonstrated RED and six tests GREEN at 2320164a5a704b1d3659b3228fa0af12644054b9; actual Darwin25.5 arm64 Node26.3 runner report checks writable forms, managed doctor, symlink and40 ADRs | [Local result](local-host-result.json) keeps native discovery, enforcement and reliability unverified; current environment only | Final stamped full suite and separate-context integration review; actual unavailable hosts remain unverified |
+| 2026-09-08 | TK-003 | Ticket closed | Actual local report four runner checks pass; native discovery and unavailable hosts explicitly unverified; full42 before review repair and focused6 after repair | S053 local-host-result.json and Runbook distinguish actual local runner from native/provider/enforcement claims | Final stamped full suite and upstream integration review; Windows/native Claude and native discovery are unverified |
+
 ## Completion Result
 
-Pending. No v3.2.0 readiness, publication, or downstream delivery claim.
+Local conformance command implemented. The [actual local result](local-host-result.json)
+records four runner checks passing and native discovery/invocation unverified.
+Windows and native Claude are not claimed supported by this result. Upstream
+integration review remains with S-050; no rollout readiness claim.
 
 ## Remaining Limitations Or Follow-Up Specs
 
