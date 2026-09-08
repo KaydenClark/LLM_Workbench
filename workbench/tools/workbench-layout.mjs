@@ -689,6 +689,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'adr.mjs',
   'diagnostics.mjs',
   'markdown-table.mjs',
+  'notepads.mjs',
   'privacy.mjs',
   'sessions.mjs',
   'spec-packet.mjs',
