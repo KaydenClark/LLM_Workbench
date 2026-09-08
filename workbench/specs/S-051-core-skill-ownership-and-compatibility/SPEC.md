@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** TK-003 claimed by codex.
-**Next gate:** Close TK-003 with verification and documentation proof.
+**Latest event:** TK-003 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -83,7 +83,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 |---|---|---|---|---|
 | TK-001 | Define and install one authoritative core source with adapters | done | none | d2ecc5cf049509160c9ae1460b970eee48175772: installer 27/27, upgrade 8/8, full 37/37, independent repair review PASS; all seven reproduced ownership and alias findings resolved |
 | TK-002 | Diagnose tested compatibility and discovery failures | done | TK-001 | bc1347812d8c7402bade8991a7a41e5023f04e8e: inspection 5/5, installer 27/27, diagnostics 19/19, full 39/39 and independent bounded repair review PASS; range overstatement regression repaired |
-| TK-003 | Compose portable save and promote into a self-sufficient bundle | in-progress | TK-002 | pending |
+| TK-003 | Compose portable save and promote into a self-sufficient bundle | done | TK-002 | 6f6be660b51fb249f0f66ad76af2f25b9065154d: full 40/40, independent final composition review PASS; installed composition 1/1, installer 27/27, layout 67/67; native Codex local invocation receipt independently read back at bf0bc31 with identical relevant skill bytes |
 
 ### TK-001 - Define and install one authoritative core source with adapters
 
@@ -131,15 +131,19 @@ grant. Promote handles selected supported material beyond grilling and composes
 save on the already-promoted result; neither creates an implementation loop.
 Room-local extension source uses project `.agents/skills/NAME` with a generated
 Claude adapter, independent of global core and personal catalog acceptance.
-Native-host invocation remains separate from installed-path mechanics.
+Native-host invocation remains separate from installed-path mechanics. The
+[native composition result](native-composition-result.json) records one actual
+Codex CLI invocation using isolated installed source and local runtime. Explicit
+source paths were supplied, so automatic discovery is not independently proven.
+The CLI respected its Git write refusal; only local bytes were recovered.
 
 ## Acceptance Criteria
 
 - [x] One core source/global identity and provider discovery adapters work without duplicate maintained implementations.
-- [ ] Core save/promote/notepad compose through actual public seams without Foundry or personal-catalog dependency.
+- [x] Core save/promote/notepad compose through actual public seams without Foundry or personal-catalog dependency.
 - [x] Tested explicit compatibility range and missing/conflicting/broken/incompatible diagnostics match actual installation.
 - [x] Presence-only preservation, explicit-update backups/rollback and safe external migration plan are verified.
-- [ ] Fresh isolated-home setup and configured-host invocation evidence distinguish discovery from real callability.
+- [x] Fresh isolated-home setup and configured-host invocation evidence distinguish discovery from real callability.
 
 ## Testing Seams
 
@@ -185,6 +189,9 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | 2026-09-08 | TK-003 | Portable composition implementation candidate prepared | New installed-project public-seam test demonstrated RED because save was absent from core. Reconciled personal prior art read-only; added core save/promote with existing notepad and direct-promotion seams. Catalog checks pass with twenty skills; installed workflow verification pending clean candidate | Core catalog, root and generic Runbook, composition skills and room-local ownership route reconciled | No personal source mutation, native callability or release stamp; targeted/full verification and independent review pending |
 
 | 2026-09-08 | TK-003 | Candidate bf0bc31c8fcca78ce7bb4e7bb697bb1f3b3ee8c0 passed bounded independent composition review | Installed composition 1 of 1, installer 27 of 27, layout 67 of 67; full run 39 of 40. Adoption fixture still seeded the old eighteen-name catalog and correctly refused missing save/promote. Fixture now imports the runtime catalog; targeted adoption passes. Reviewer verified frozen legacy policy and tracked local-source clone with ignored adapter recreation and matching output | Existing procedure distinguishes filesystem/Git mechanics from native invocation; no new substantive review finding | Fresh corrected-candidate full verification and review pending; native Codex isolated invocation review is still running; no integration claim |
+| 2026-09-08 | TK-003 | Ticket closed | 6f6be660b51fb249f0f66ad76af2f25b9065154d: full 40/40, independent final composition review PASS; installed composition 1/1, installer 27/27, layout 67/67; native Codex local invocation receipt independently read back at bf0bc31 with identical relevant skill bytes | Core catalog, native save/promote, composition routes, generic/root Runbook and room-local source ownership reconciled; native-composition-result.json records bounded proof and limitations | Final S-050 release integration and Example validation; native automatic discovery not independently established, CLI Git write refused, real Windows/Claude/private transport gates remain S-052/S-053 |
+
+| 2026-09-08 | TK-003 | All scoped composition checks passed at immutable 6f6be660b51fb249f0f66ad76af2f25b9065154d | Full 40 of 40, independent final review PASS, guardrail 78 unchanged with four outcome-evidence recommendations. Actual Codex CLI 0.144.3 isolated-home invocation on bf0bc31 used byte-identical relevant skills; selected correction promoted and independently read back, note revision 9 retained original/correction/blocker. CLI sandbox refused Git metadata write; doctor correctly reported incomplete fixture owners | Native receipt linked from the owning slice; global/project source routes and composition responsibilities documented | No automatic-discovery, Claude/Windows, private remote, full-room Genesis, Example delivery or repeated-outcome inference; final S-050 release review and containment remain open |
 
 ## Completion Result
 

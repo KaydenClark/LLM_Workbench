@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-08",
+  "candidate": "bf0bc31c8fcca78ce7bb4e7bb697bb1f3b3ee8c0",
+  "kind": "bounded-native-local-invocation",
+  "host": {
+    "system": "Darwin",
+    "release": "25.5.0",
+    "architecture": "arm64",
+    "provider": "Codex CLI",
+    "cliVersion": "0.144.3",
+    "model": "not reported by captured CLI events",
+    "configuration": "isolated HOME; existing auth via CODEX_HOME; user config omitted; ephemeral; workspace-write sandbox; rules not disabled"
+  },
+  "skills": {
+    "notepad": {
+      "contentHash": "f5b52e6176eb9aeb09ea42b697e24526736807974e8bedf95f64d6f7d98c3ebf",
+      "marker": {
+        "schemaVersion": 2,
+        "source": "LLM Workbench core",
+        "release": "v3.1.4",
+        "commit": "bf0bc31c8fcca78ce7bb4e7bb697bb1f3b3ee8c0",
+        "contentHash": "b6507ec0e7968c1a533195d0cd50b5ba8c4a2eea12c042428cbc80fa474e72b9",
+        "compatibleRooms": {
+          "minimum": "v3.1.4",
+          "maximum": "v3.1.4"
+        }
+      }
+    },
+    "promote": {
+      "contentHash": "c829770ebf654d6a41c1e2df020eb013e61b616df27964e94196bc795d5dc05b",
+      "marker": {
+        "schemaVersion": 2,
+        "source": "LLM Workbench core",
+        "release": "v3.1.4",
+        "commit": "bf0bc31c8fcca78ce7bb4e7bb697bb1f3b3ee8c0",
+        "contentHash": "3214218159537796ecce64444cd5c72e3dc9bc652076daa9f9d72097e89752cb",
+        "compatibleRooms": {
+          "minimum": "v3.1.4",
+          "maximum": "v3.1.4"
+        }
+      }
+    },
+    "save": {
+      "contentHash": "6d7ec1c5d770bdd766ac8ffdef921ae500682efe4ec6f3c2f4479fa30ded43ff",
+      "marker": {
+        "schemaVersion": 2,
+        "source": "LLM Workbench core",
+        "release": "v3.1.4",
+        "commit": "bf0bc31c8fcca78ce7bb4e7bb697bb1f3b3ee8c0",
+        "contentHash": "1a2684671df3906fe3cbbcae788f6c5f9c39786c6f0e18d058409e89fb696d51",
+        "compatibleRooms": {
+          "minimum": "v3.1.4",
+          "maximum": "v3.1.4"
+        }
+      }
+    },
+    "to-docs": {
+      "contentHash": "0b03aa52eee2ccbdcbe8fa652cc8fa5c9df5ba89c93a77806d499da1ba89ee0d",
+      "marker": {
+        "schemaVersion": 2,
+        "source": "LLM Workbench core",
+        "release": "v3.1.4",
+        "commit": "bf0bc31c8fcca78ce7bb4e7bb697bb1f3b3ee8c0",
+        "contentHash": "39fa8393af49addc40a319730e5a60db8db8261348f1e054210421f789dfda11",
+        "compatibleRooms": {
+          "minimum": "v3.1.4",
+          "maximum": "v3.1.4"
+        }
+      }
+    }
+  },
+  "evidence": {
+    "promptHash": "eff137d0854f017e104dbb2cc3f9edc920a0d9e438f1e272b2dea0edfe0576f7",
+    "eventsHash": "557a10181e3124c8de31f4b9faf7a01aa08c22ba0a0ab3b4c712f8818ff3ac2d",
+    "resultHash": "1f30497e4419bc258456335b0fac8629ba145a8dfa941a55b84b7c7118399d81",
+    "commandCount": 16,
+    "sourceRevisionAtPromotion": 5,
+    "promotedEntries": [
+      "finding-001",
+      "correction-001"
+    ],
+    "owner": {
+      "path": "RUNBOOK.md",
+      "sha256": "dd29ec7458478eec3bdfdadd3394bb9c14c941914a36f67debc162023a8beafc"
+    },
+    "note": {
+      "path": "workbench/sessions/notepads/work/demo-reconciliation.json",
+      "revision": 9,
+      "sha256": "ac36c47d31edbbcfadfd2fd676f5cdf6b11f6caa4ebd5fbda202ccb6b7abf982",
+      "originalAndCorrectionRetained": true,
+      "unresolvedBlockerRetained": true
+    },
+    "independentReadBack": true
+  },
+  "discovery": {
+    "nativeAgentReported": "available",
+    "verified": "Explicit installed-source invocation and command execution; automatic discovery not independently established because prompt supplied the isolated source path."
+  },
+  "limits": [
+    "Disposable incomplete room fixture; not Genesis readiness or Example delivery.",
+    "Native sandbox refused Git metadata write; no local commit or remote recovery exists.",
+    "Room doctor reports missing Blueprint, Taskboard, Wiki router and integration branch, as expected for this bounded fixture.",
+    "No Claude, Windows, private Git transport, cross-device round trip or repeated-outcome claim.",
+    "Private catalog and upstream developer checkout excluded from the review prompt; no credentials copied or configuration changed."
+  ]
+}
