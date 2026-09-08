@@ -87,6 +87,7 @@ node tools/test-governance-core.mjs
 node tools/test-branch-closeout.mjs
 node tools/test-wiki.mjs
 node tools/test-sessions.mjs
+node tools/test-notepads.mjs
 node tools/test-workbench-round-trip.mjs
 node tools/test-cross-provider-fixture.mjs
 node tools/test-portability-matrix.mjs
@@ -759,6 +760,7 @@ record only deliberately:
 node workbench/tools/sessions.mjs checkpoint --from workbench/sessions/grilling/topic-YYYY-MM-DD.md --topic topic
 node workbench/tools/sessions.mjs scan --file PATH
 node tools/test-sessions.mjs
+node tools/test-notepads.mjs
 ```
 
 `checkpoint` copies an ordinary file byte for byte (after one stamp comment

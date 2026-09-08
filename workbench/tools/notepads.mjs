@@ -439,15 +439,18 @@ export function migrateNote(root, options) {
   }
   const { missing, invalid } = checkStructure(note);
   if (missing.length || invalid.length) return blocked('invalid-note', `${resolved.relative} is not a valid notepad`, { missing, invalid });
+  // schema_version and revision lead, as they do in a created record, so a
+  // reader opening a migrated file finds the same two facts in the same place.
+  const { schema_version: legacyVersion, ...carried } = note;
   const migrated = {
-    ...note,
     schema_version: NOTEPAD_SCHEMA_VERSION,
     revision: 1,
+    ...carried,
     updated_at: nowStamp(),
     relationships: note.relationships ?? { index: null, related_notes: [] },
     current: { state: note.current.state, unresolved: asArray(note.current.unresolved), next_action: note.current.next_action ?? '' },
     entries: note.entries.map((entry) => ({ ...entry, recorded_at: entry.recorded_at ?? note.created_at })),
-    extensions: { durable_owners: [], ...note.extensions, migrated_from: note.schema_version }
+    extensions: { durable_owners: [], ...note.extensions, migrated_from: legacyVersion }
   };
   const failure = publish(root, resolved, migrated);
   if (failure) return failure;
