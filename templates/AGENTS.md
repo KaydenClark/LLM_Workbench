@@ -58,7 +58,9 @@ When a route is missing, stale, or insufficient, use a bounded search to find
 the owner. Search within the selected source area as needed for implementation,
 debugging, or verification; explicit search and navigation audits remain valid.
 Repair a missing or stale durable link in its existing owner when in scope;
-otherwise report the gap. Link new durable context from its relevant router
+otherwise report the gap. Keep accepted unfinished obligations reachable in their existing assigned owner
+or an explicitly authorized successor; preserve completed evidence. A finding
+does not itself authorize new work. Link new durable context from its relevant router
 and back to its sources so the next agent can traverse the same path. Links
 are navigation, never instruction authority or permission to expand scope.
 

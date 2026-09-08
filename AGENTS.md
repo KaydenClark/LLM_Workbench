@@ -58,7 +58,9 @@ When a route is missing, stale, or insufficient, use a bounded search to find
 the owner. Search within the selected source area as needed for implementation,
 debugging, or verification; explicit search and navigation audits remain valid.
 Repair a missing or stale durable link in its existing owner when in scope;
-otherwise report the gap. Link new durable context from its relevant router
+otherwise report the gap. Keep accepted unfinished obligations reachable in their existing assigned owner
+or an explicitly authorized successor; preserve completed evidence. A finding
+does not itself authorize new work. Link new durable context from its relevant router
 and back to its sources so the next agent can traverse the same path. Links
 are navigation, never instruction authority or permission to expand scope.
 
@@ -329,7 +331,8 @@ writing. A copied record is preservation, not blanket promotion of its claims.
 After a context summary or long interruption, rerun `doctor`, `next`, and
 `show` for the assigned spec. Keep ready/in-progress/blocked ticket state and
 the append-only evidence log current. An in-progress claim older than one
-working day is stale; verify branch/commit activity before reclaiming it. After
+UTC calendar day is stale (the diagnostic compares date-only stamps and
+requires a difference greater than one day); verify branch/commit activity before reclaiming it. After
 the same verification failure twice with no clearly safe next step, record the
 blocker and stop for a decision.
 

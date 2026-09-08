@@ -60,3 +60,12 @@ Add a condition to `outcomes/conditions/conditions.json` with `"type": "path"`
 and a file list. That lets an external `AGENTS.md`, `CLAUDE.md`, or Cursor-rule
 style template compete against LLM Workbench on the same task suite.
 
+## Resource And Comparison Accounting
+
+Record evaluated and reviewer models separately. When trials use delegated
+workers, include total delegated tokens and cost where the host exposes them;
+mark unavailable usage unknown rather than reporting the parent-only number as
+the total. Resource accounting is an evaluation boundary, not a required
+coordinator. Keep held-out tasks, condition-blind judgment, prior/candidate/control
+comparisons and uncertainty when claiming improvement; honest incompleteness and
+actual achieved state matter more than identical generated wording.

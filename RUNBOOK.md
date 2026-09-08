@@ -118,7 +118,7 @@ Expected result:
 
 ### Core-skill setup check
 
-The public source bundle is intentionally limited to the 17 skills in
+The public source bundle is limited to the manifest-declared core catalog in
 `skills/README.md`. Test the missing-only installer against a disposable user
 home without touching a real account:
 
@@ -129,8 +129,9 @@ node tools/test-core-skill-installer.mjs
 
 The installer writes only missing core skill directories into
 `.agents/skills` and `.claude/skills`. It preserves existing names without a
-content comparison and blocks before mutation when either discovery root is
-Git-owned or a required skill path collides with a file or symlink.
+content comparison. Missing-only installation supports Git-owned and linked
+discovery roots without changing their tracked source. Unsafe path collisions
+block before mutation; a valid existing skill link is preserved.
 
 Every skill the installer or the explicit upgrade writes carries the managed
 skill marker `.workbench-skill.json` (schema 2): `source`, the `release` and
@@ -1240,3 +1241,42 @@ harness dialect is preserved on `codex/structured-metadata-guardrails`.
 
 If a command changed durable project state, append evidence to the owning spec.
 For routine read-only runs, a final response note is enough.
+
+## Evidence And Continuation Practices
+
+Size a ticket so a fresh context can recover its inputs, exercise one useful
+behavior at its public seam and finish named verification. There is no accepted
+universal byte or token threshold. Unknown consequential product choices belong
+in a decision slice of the already assigned spec before dependent implementation;
+this does not authorize creating a task from an unassigned finding.
+
+Saving context or authoring a requested handoff does not terminate a session.
+Continue to the authorized endpoint. Preserve the complete original question
+inventory and stable IDs/statuses/corrections; a compact view routes to retained
+sources rather than replacing them. Multiple objective-linked notes are allowed,
+with an unambiguous active resume route. Stale migrated discovery paths belong
+in the existing ownership/migration assignment.
+
+When partitioning evidence, preserve previously published rows byte-for-byte and
+link successor work from its owner; do not rewrite an old result to match newer
+truth. Name which immutable tree each claim reads. A generated projection names
+its sources and freshness limits; no cached observer service is implied.
+
+The claim-age diagnostic compares UTC calendar date stamps and reports a claim
+older than one calendar day (strictly greater than 86,400,000 milliseconds).
+The old prose saying working day was inaccurate. Historical GPT_OS local-day
+Preflight and ref-deduplication rules remain scoped historical requirements,
+not an automatically imported Workbench algorithm.
+
+Author small ADRs for independently changing consequential decisions with real
+alternatives or reversal cost. Binding rules stay in current owners. A semantic
+review checks agreement; text presence alone cannot establish fidelity.
+Portable record parsing treats LF, CRLF and CR as syntax variations; read-only
+validation never normalizes files as a side effect.
+
+Keep setup human-readable and staged through the documented Genesis, adoption
+and explicit-upgrade routes. Verify every consumed source lane before mutation,
+then installed behavior in the actual room. Project-owned schemas/templates and
+promoted Wiki knowledge travel in project Git; optional private session transport
+handles live working context separately. A clean upstream test is not downstream
+acceptance. Recheck actual destination refs and preserve unknown remote state.

@@ -989,7 +989,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "RUNBOOK / tracer-bullet"
       }
     },
     {
@@ -1209,7 +1211,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "workbench/wiki/SCHEMA.md"
       }
     },
     {
@@ -1710,7 +1714,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "ADR authoring guidance"
       }
     },
     {
@@ -2271,7 +2277,9 @@
           "S-048",
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "RUNBOOK.md; CAND-Q"
       }
     },
     {
@@ -2377,7 +2385,9 @@
           "S-046",
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "S-046; CAND-F"
       }
     },
     {
@@ -2751,7 +2761,9 @@
           "S-051",
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "skills composition guidance; CAND-E"
       }
     },
     {
@@ -2793,7 +2805,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "skills/README.md"
       }
     },
     {
@@ -2837,7 +2851,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "skills authoring guidance"
       }
     },
     {
@@ -2969,7 +2985,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "RUNBOOK / wayfinder"
       }
     },
     {
@@ -3783,7 +3801,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "README.md / RUNBOOK.md"
       }
     },
     {
@@ -3959,7 +3979,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "workbench/feedback/REPORT_FORMAT.md"
       }
     },
     {
@@ -4001,7 +4023,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "workbench/feedback/REPORT_FORMAT.md"
       }
     },
     {
@@ -4043,7 +4067,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "workbench/feedback/REPORT_FORMAT.md; Audit owner"
       }
     },
     {
@@ -4087,7 +4113,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "workbench/feedback/REPORT_FORMAT.md"
       }
     },
     {
@@ -4429,7 +4457,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "workbench/feedback/REPORT_FORMAT.md"
       }
     },
     {
@@ -5306,7 +5336,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "RUNBOOK.md; diagnostic owner"
       }
     },
     {
@@ -5350,7 +5382,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "RUNBOOK.md"
       }
     },
     {
@@ -5955,7 +5989,9 @@
           "S-052",
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "RUNBOOK.md; CAND-N scope note"
       }
     },
     {
@@ -6351,7 +6387,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "Projection guidance; ADR-0042"
       }
     },
     {
@@ -6654,7 +6692,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "evals / outcomes README"
       }
     },
     {
@@ -7106,7 +7146,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "skills/README.md"
       }
     },
     {
@@ -7681,7 +7723,9 @@
         "owners": [
           "S-050/TK-002"
         ],
-        "proof": "pending"
+        "proof": "pending",
+        "documentation": "Current owning guidance reconciled in S-050/TK-002; capability-specific runtime and installed behavior remain pending under named specs.",
+        "documentation_owner": "RUNBOOK.md; S-037"
       }
     },
     {
@@ -8924,5 +8968,67 @@
       "relationship": "Retain historical downstream mapping; no upstream record created automatically",
       "proposal": "Original scope, supersession and open status remain in the source packet"
     }
-  ]
+  ],
+  "release_adr_map": {
+    "CAND-A": {
+      "number": "0043",
+      "path": "workbench/docs/adr/0043-workbench-continuity-through-maintained-owners.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-C": {
+      "number": "0044",
+      "path": "workbench/docs/adr/0044-evidence-for-claims-of-improved-agent-outcomes.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-E": {
+      "number": "0045",
+      "path": "workbench/docs/adr/0045-skill-composition-within-inherited-scope.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-F": {
+      "number": "0046",
+      "path": "workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-G": {
+      "number": "0047",
+      "path": "workbench/docs/adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-H": {
+      "number": "0048",
+      "path": "workbench/docs/adr/0048-identity-across-release-adoption-installed-bytes-and-runtime.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-J": {
+      "number": "0049",
+      "path": "workbench/docs/adr/0049-unavailable-baseline-for-a-bounded-harness-only-change.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-K": {
+      "number": "0050",
+      "path": "workbench/docs/adr/0050-visible-deliberate-control-divergence.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-N": {
+      "number": "0051",
+      "path": "workbench/docs/adr/0051-optional-private-git-transport-for-session-continuity.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-O": {
+      "number": "0052",
+      "path": "workbench/docs/adr/0052-node-javascript-remains-the-portable-runtime.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-P": {
+      "number": "0053",
+      "path": "workbench/docs/adr/0053-minimum-configured-host-capability-and-evidence-boundaries.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    },
+    "CAND-Q": {
+      "number": "0054",
+      "path": "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
+      "status": "accepted decision; implementation acceptance remains in assigned spec"
+    }
+  }
 }

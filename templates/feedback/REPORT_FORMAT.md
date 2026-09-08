@@ -59,3 +59,25 @@ A separate-context reviewer checks consequential claims and recommendations
 with the fixed candidate before integration. Earlier reviews are supports,
 not mandatory independent ceremonies. Record actual review coverage and limits;
 never manufacture an independent PASS from self-review.
+
+## Models And Evidence States
+
+Record `evaluated_model` separately from `reviewer_model`, plus the actual
+host/application, configuration, OS and tested revision. For a structural
+inspection with no evaluated model, use `not-applicable`; when unknown, say
+`unknown`. The reporting agent's model is not automatically the evaluated one.
+
+Label each claim's evidence: source inspection, observed use, behavioral test,
+or repeated outcome trial. Record passed, failed, unavailable, interrupted,
+inconclusive and missing-evidence states without turning absent proof into a
+pass. A host operation succeeding proves that operation in that configuration;
+it establishes neither forbidden-operation enforcement nor future model reliability.
+An execution failure alone does not identify a harness defect: reproduce the
+failing assumption and separate environmental limits from causal findings.
+
+One finding may have several observations and recurrences. Preserve each
+observation's target revision, scope and state. `not-retested` is not `resolved`;
+closing a finding requires the relevant correction and verification. Existing
+report keys disambiguate occurrences; they do not implement a central longitudinal
+finding store. Independent review applications may own that store; this portable
+format keeps a standalone destination and imposes no service prerequisite.

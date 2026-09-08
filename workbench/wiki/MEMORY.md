@@ -41,6 +41,14 @@ Checkpoint rationale and retirement belong to
 [S-048](../specs/S-048-checkpoint-retirement/SPEC.md).
 This router does not copy their state or the local grilling queue.
 
+## Release And Distribution Routing
+
+The reconciled release scope and complete historical inventory live in
+[S-050](../specs/S-050-workbench-v3-2-0-release/SPEC.md). Follow its named owners
+for skill ownership/compatibility, optional private session transport and the
+configured-host capability floor. This route preserves their open gates without
+copying task state here.
+
 ## Leaving The Wiki
 
 | Go to | For |

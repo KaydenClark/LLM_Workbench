@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 17-skill bundle (thirteen workflow skills and four stances) for a
+is a closed bundle derived from the manifest and catalog below for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
 
@@ -38,9 +38,9 @@ node tools/core-skill-installer.mjs install [--home USER_HOME]
 It supplies a missing core skill only from this directory into the user-scoped
 Codex-compatible `.agents/skills` and Claude `.claude/skills` roots. Normal
 setup is presence-only: an existing same-named skill is accepted without a
-content comparison or replacement. A Git-owned discovery root or a path
-collision blocks before either discovery root is changed and returns exact
-remediation in its JSON result. Replacing an existing skill is reserved for the
+content comparison or replacement. A Git-owned or linked discovery root permits missing-only installation into
+its resolved directory without changing tracked source. Unsafe path collisions
+block before either discovery root is changed and return exact remediation. Replacing an existing skill is reserved for the
 explicit-update flow, not normal setup.
 
 ## Managed skill marker
@@ -79,3 +79,17 @@ separately stores a stance below `stances/`, that nested installation also needs
 a flat top-level symlink. The missing-only installer never replaces a foreign
 symlink or rearranges existing installations. SPEC and TASK assign a stance;
 loading one changes method without changing authority or spawning an agent.
+
+## Composition And Authoring
+
+Invocation is distinct from mention or routing. Avoid incidental everyday-word
+triggers; renaming or retiring an existing public entrypoint needs an explicit
+compatibility change. `implement` remains supported. Compose independently
+usable primitives within inherited authorization and retain one behavior owner.
+The accepted ownership/adapter target is described in BLUEPRINT; S-051 owns its
+implementation. A globally available optional skill is not thereby a core feature.
+
+Evaluate repeatable process and achieved state, not identical generated wording.
+Omit inapplicable empty prose where it adds no meaning, while preserving required
+empty collections and intentional schema/template scaffolding. A proposed metadata
+schema is not part of the contract merely because it can be searched mechanically.

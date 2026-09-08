@@ -106,3 +106,20 @@ binding behavior lives in `AGENTS.md`, cross-cutting architecture in
 | Term | Definition | Distinction / aliases to avoid |
 |---|---|---|
 | **[TERM]** | [ONE-SENTENCE DEFINITION] | [WHAT THIS IS NOT OR WHICH ALIASES TO AVOID] |
+
+## Continuity And Evidence Boundaries
+
+- **Workbench connection identity:** the stable namespace selected for optional
+  private session transport. Clones/worktrees share it; independent rooms differ.
+  It is distinct from each visible, type-scoped artifact identifier.
+- **Private session transport:** explicitly configured synchronization of selected
+  live working records. Private Git retention changes recoverability, not the
+  record's authority or durable project ownership.
+- **Direct promotion:** deliberate selected-claim reconciliation into a named
+  durable owner, with privacy/validity checks and verified destination recovery
+  before scoped source cleanup. It is not merely a copy or commit.
+- **Configured-host capability:** an operation exercised in the actual host and
+  configuration. It does not establish machine enforcement or model reliability.
+- **Core compatibility:** the explicit supported range between one selected
+  installed global core release and room versions; a version difference alone
+  is not proof of incompatibility.
