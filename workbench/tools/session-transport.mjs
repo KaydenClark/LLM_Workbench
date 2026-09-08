@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { checkStructure, resolveNote } from './notepads.mjs';
 import { scanPrivacy } from './privacy.mjs';
 import { isWorkbenchId, visibleIdKey } from './visible-ids.mjs';
-import { readManifest, collectionPath, collectionRelative, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, findRoot, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
+import { collectionPath, collectionRelative, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, findRoot, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 
 const digest = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const objectId = value => /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(value);
@@ -30,6 +30,7 @@ function ordinary(root, file) {
   return fs.readFileSync(file);
 }
 function localPaths(root) {
+  ordinary(root, path.join(root, 'workbench/manifest.json'));
   const recovery = collectionPath(root, 'recovery');
   return { directory: path.join(recovery, 'transport'), config: path.join(recovery, 'transport/config.json'), state: path.join(recovery, 'transport/state.json'), lock: path.join(recovery, 'transport/operation.lock') };
 }
@@ -49,9 +50,8 @@ function withLock(root, file, operation) {
   try { return operation(); } finally { fs.closeSync(fd);fs.unlinkSync(file); }
 }
 function roomIdentity(root) {
-  const manifest = readManifest(root);
+  const manifest = JSON.parse(ordinary(root, path.join(root, 'workbench/manifest.json')));
   if (!isWorkbenchId(manifest?.workbenchId)) refuse('invalid-workbench-identity', 'Assign and commit the stable Workbench identity before configuring transport.');
-  ordinary(root, path.join(root, 'workbench/manifest.json'));
   const committed = JSON.parse(gitText(root, ['show', 'HEAD:workbench/manifest.json']));
   if (committed.workbenchId !== manifest.workbenchId) refuse('identity-not-committed', 'Commit this room identity before transport or cloning.');
   const roots = gitText(root, ['rev-list', '--max-parents=0', 'HEAD']).split('\n').sort();

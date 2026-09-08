@@ -78,3 +78,62 @@ test('privacy and path refusals preserve source and remote', () => {
     assert.deepEqual(fs.readFileSync(file), bytes);assert.equal(git(f.remote, 'rev-parse', 'main'), before);
   } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
 });
+
+test('fresh clone resumes selected continuity, later remote updates and competing edits remain explicit', () => {
+  assert.equal(typeof transport?.syncNotes, 'function');
+  const f = fixture();
+  try {
+    configured(f);
+    const pushed = transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification);assert.equal(pushed.status, 'confirmed');
+    const second = path.join(f.base, 'second-room');git(f.base, 'clone', '-q', f.project, second);
+    assert.equal(transport.configureTransport(second, { checkout: f.checkout, branch: 'main', acknowledgePrivate: true }, fixtureVerification).status, 'configured');
+    assert.equal(fs.existsSync(path.join(second, f.note)), false);
+    assert.equal(transport.syncNotes(second, { notes: [f.note], direction: 'resume' }, fixtureVerification).status, 'confirmed');
+    assert.deepEqual(fs.readFileSync(path.join(second, f.note)), fs.readFileSync(path.join(f.project, f.note)));
+    assert.equal(appendEntry(f.project, { note: f.note, revision: 2, kind: 'finding', topic: 'remote-progress', content: 'The first clone completed its local check.' }).status, 'appended');
+    assert.equal(transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification).status, 'confirmed');
+    assert.equal(transport.syncNotes(second, { notes: [f.note], direction: 'resume' }, fixtureVerification).status, 'confirmed');
+    assert.deepEqual(fs.readFileSync(path.join(second, f.note)), fs.readFileSync(path.join(f.project, f.note)));
+    assert.equal(appendEntry(f.project, { note: f.note, revision: 3, kind: 'finding', topic: 'competing-progress', content: 'The first clone has another result.' }).status, 'appended');
+    assert.equal(appendEntry(second, { note: f.note, revision: 3, kind: 'finding', topic: 'competing-progress', content: 'The second clone has a competing result.' }).status, 'appended');
+    assert.equal(transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification).status, 'confirmed');
+    const remote = git(f.remote, 'rev-parse', 'main'), local = fs.readFileSync(path.join(second, f.note));
+    for (const direction of ['push', 'resume']) {
+      const result = transport.syncNotes(second, { notes: [f.note], direction }, fixtureVerification);
+      assert.equal(result.status, 'conflict', JSON.stringify(result));assert.equal(result.acknowledged, false);
+      assert.deepEqual(fs.readFileSync(path.join(second, f.note)), local);assert.equal(git(f.remote, 'rev-parse', 'main'), remote);
+    }
+  } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
+});
+
+test('offline push keeps the newer local record and last confirmed remote SHA', () => {
+  assert.equal(typeof transport?.syncNotes, 'function');
+  const f = fixture();
+  try {
+    configured(f);const first = transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification);assert.equal(first.status, 'confirmed');
+    assert.equal(appendEntry(f.project, { note: f.note, revision: 2, kind: 'finding', topic: 'offline-progress', content: 'Local progress remains available offline.' }).status, 'appended');
+    const bytes = fs.readFileSync(path.join(f.project, f.note));
+    fs.renameSync(f.remote, f.remote + '.offline');
+    const pending = transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification);
+    assert.equal(pending.status, 'pending');assert.equal(pending.acknowledged, false);assert.equal(pending.lastConfirmedRemoteSha, first.remoteSha);assert.equal(pending.pendingUpload, true);
+    assert.deepEqual(fs.readFileSync(path.join(f.project, f.note)), bytes);
+    fs.renameSync(f.remote + '.offline', f.remote);
+    const resumed = transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification);
+    assert.equal(resumed.status, 'confirmed');assert.notEqual(resumed.remoteSha, first.remoteSha);
+  } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
+});
+
+test('linked manifest is refused before its contents are read', () => {
+  assert.equal(typeof transport?.configureTransport, 'function');
+  const f = fixture();
+  const read = fs.readFileSync;
+  try {
+    const manifest = path.join(f.project, 'workbench/manifest.json'), outside = path.join(f.base, 'outside-manifest.json');
+    fs.renameSync(manifest, outside);fs.symlinkSync(outside, manifest);
+    let readUnsafeManifest = false;
+    fs.readFileSync = function(file, ...args) { if (path.resolve(String(file)) === manifest) readUnsafeManifest = true;return read.call(this, file, ...args); };
+    assert.equal(transport.configureTransport(f.project, { checkout: f.checkout, branch: 'main', acknowledgePrivate: true }, fixtureVerification).status, 'blocked');
+    assert.equal(transport.transportStatus(f.project).status, 'blocked');
+    assert.equal(readUnsafeManifest, false, 'validate manifest path before reading external content');
+  } finally { fs.readFileSync = read;fs.rmSync(f.base, { recursive: true, force: true }); }
+});

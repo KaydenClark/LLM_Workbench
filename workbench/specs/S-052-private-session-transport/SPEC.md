@@ -172,6 +172,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 
 | 2026-09-08 | TK-002 | Optional private transport public seams demonstrated missing behavior | Three tests failed with explicit missing configure/sync assertions before implementation. Initial module and selected-note/privacy tests prepared; first post-implementation run correctly refused dirty consumed runtime source before fixture initialization, so no green behavior claim yet | Root and generic Runbook record opt-in GitHub verification, namespace/selection mapping, acknowledgment and preservation limits | Clean candidate targeted verification, offline/conflict hardening, full suite and independent review pending; actual private repository and Windows/provider gates remain open |
 
+| 2026-09-08 | TK-002 | Initial clean transport candidate 7daa5753590e4c3ae21f442a5ff01dd2a83b2f28 passed baseline tests | Transport 3 of 3 and diagnostics 19 of 19 pass. Additional fresh-clone resume, competing-edit refusal and offline recovery cases also pass, for 5 total before repair. A linked-manifest regression then demonstrated read-before-preflight and status accepting an unsafe manifest; ordinary manifest preflight now precedes routing/identity reads | Positive metadata is simulated only in local bare-Git tests; no real private service claim | Clean repaired-candidate verification pending; independent adversarial review and initial full 41-command run continue; TK-003 and real device/provider gates remain open |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.
