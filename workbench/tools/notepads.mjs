@@ -366,12 +366,13 @@ export function allocateNote(root, options) {
   try {
     const prefix = requireValue(options.prefix, '--prefix is required');
     const occupied = inventory.notes.map(note => note.id);
+    const destinationAliases = new Set(inventory.notes.map(note => visibleIdKey(path.basename(note.note, '.json'))).filter(Boolean));
     // A legacy filename may carry a different ID. Reserve that destination
     // spelling too, rather than repeatedly proposing a file we cannot create.
     for (;;) {
       id = allocateVisibleId(prefix, occupied);
       const destination = resolveNote(root, id, options.collection ?? defaultCollection(root));
-      if (!fs.existsSync(destination.absolute)) break;
+      if (!destinationAliases.has(visibleIdKey(id)) && !fs.existsSync(destination.absolute)) break;
       occupied.push(id);
     }
   }

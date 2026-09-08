@@ -1050,3 +1050,14 @@ test('allocation skips a legacy filename whose visible ID belongs to another rec
     assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('allocation reserves visible destination aliases independently of filesystem sensitivity', () => {
+  const dir = project();
+  try {
+    const original = seed(dir, { note: 'N-0001', id: 'legacy-name' });
+    const before = fs.readFileSync(path.join(dir, original.note));
+    const result = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Reserve destination aliases']);
+    assert.equal(result.json.id, 'N-002');
+    assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
