@@ -14,3 +14,7 @@ notepads/*
 !notepads/.gitkeep
 # Legacy notepad path a stale installed skill may still write; never tracked.
 grilling diary/
+
+# Operational rollback material is local, not session history.
+recovery/*
+!recovery/.gitkeep

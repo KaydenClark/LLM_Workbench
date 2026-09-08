@@ -29,7 +29,7 @@ const legacyLanes = [
   { source: 'grilling diary', destination: collections.grilling },
   { source: 'handoffs', destination: collections.checkpoints }
 ];
-const recoveryLane = collections.checkpoints;
+const recoveryLane = collections.recovery;
 
 function lstatOrNull(target) {
   try {

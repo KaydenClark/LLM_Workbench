@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -29,7 +29,7 @@ export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md'
 // The spaced `grilling diary/` name is a legacy path a stale installed skill
 // may still write; denying it keeps a live notepad untrackable before the
 // checkpoint privacy scan runs. `validate` does not require the line.
-export const SESSIONS_IGNORE = `# Live session records stay local; only checkpoints/ is durable evidence.\ngrilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n# Local typed notepads; reusable schema/examples remain tracked.\nnotepads/*\n!notepads/templates/\n!notepads/.gitkeep\n# Legacy notepad path a stale installed skill may still write; never tracked.\ngrilling diary/\n`;
+export const SESSIONS_IGNORE = `# Live session records stay local; checkpoint history is frozen.\ngrilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n# Local typed notepads; reusable schema/examples remain tracked.\nnotepads/*\n!notepads/templates/\n!notepads/.gitkeep\n# Legacy notepad path a stale installed skill may still write; never tracked.\ngrilling diary/\n# Operational rollback material is local, not session history.\nrecovery/*\n!recovery/.gitkeep\n`;
 // The managed skill marker every installed core skill carries; one reader for
 // the installer, the explicit upgrade, and doctor. Schema 1 (source only) and
 // schema 2 (source, release, commit, contentHash) both prove management.
@@ -67,7 +67,8 @@ export const seededLaneDocuments = [
     lane: 'sessions', name: `notepads/templates/${name}`, template: `sessions/notepads/templates/${name}`
   }))
 ];
-const legacyCollections = Object.fromEntries(Object.entries(collections).filter(([name]) => !['notepads', 'notepad-templates'].includes(name)));
+const notepadCollections = Object.fromEntries(Object.entries(collections).filter(([name]) => name !== 'recovery'));
+const legacyCollections = Object.fromEntries(Object.entries(notepadCollections).filter(([name]) => !['notepads', 'notepad-templates'].includes(name)));
 
 
 function lstatOrNull(target) {
@@ -212,6 +213,7 @@ function verifyNotepadIgnores(project, manifest) {
   if (!manifest.collections.notepads) return { verification: 'legacy-layout' };
   if (!insideWorkTree(project)) return { verification: 'not-a-git-worktree' };
   const base = manifest.collections.notepads;
+  const localBases = [base, manifest.collections.recovery].filter(Boolean);
   const templates = manifest.collections['notepad-templates'];
   const live = new Set([`${base}/work/live.json`, `${base}/grilling/live.json`, `${base}/new-type/live.json`]);
   const tracked = new Set(seededLaneDocuments.filter(document => document.lane === 'sessions').map(document => `${lanes.sessions}/${document.name}`));
@@ -227,17 +229,17 @@ function verifyNotepadIgnores(project, manifest) {
       else if (entry.name !== '.gitkeep') live.add(child);
     }
   }
-  try { walk(base); } catch (error) { return { failure: fail('sessions-not-ignored', error.message) }; }
+  try { for (const relative of localBases) walk(relative); } catch (error) { return { failure: fail('sessions-not-ignored', error.message) }; }
   const paths = [...live, ...tracked];
   const checked = spawnSync('git', ['check-ignore', '--no-index', '-z', '--stdin'], { cwd: project, encoding: 'utf8', input: `${paths.join('\0')}\0` });
   if (![0, 1].includes(checked.status)) return { failure: fail('sessions-not-ignored', 'Git could not verify effective notepad ignore rules.') };
   const ignored = new Set(checked.stdout.split('\0').filter(Boolean));
   const leaked = [...live].filter(file => !ignored.has(file));
   const hidden = [...tracked].filter(file => ignored.has(file));
-  const indexed = spawnSync('git', ['ls-files', '-z', '--', base], { cwd: project, encoding: 'utf8' });
+  const indexed = spawnSync('git', ['ls-files', '-z', '--', ...localBases], { cwd: project, encoding: 'utf8' });
   if (indexed.status !== 0) return { failure: fail('sessions-not-ignored', 'Git could not inspect already tracked notepad paths.') };
   const published = indexed.stdout.split('\0').filter(file => file && !file.startsWith(`${templates}/`) && !file.endsWith('/.gitkeep'));
-  if (leaked.length || hidden.length || published.length) return { failure: fail('sessions-not-ignored', 'Live notepads must remain ignored and untracked; reusable schema/examples must remain trackable.', { leaked, hidden, published }) };
+  if (leaked.length || hidden.length || published.length) return { failure: fail('sessions-not-ignored', 'Live notepads and operational recovery must remain ignored and untracked; reusable schema/examples must remain trackable.', { leaked, hidden, published }) };
   return { verification: 'git' };
 }
 
@@ -256,7 +258,7 @@ export function validateManifest(project) {
   if (JSON.stringify(manifest.lanes) !== JSON.stringify(lanes)) {
     return fail('invalid-lane', 'Manifest lanes must exactly match the six v3.1 support lanes.', { lanes: manifest.lanes });
   }
-  if (![collections, legacyCollections].some(shape => JSON.stringify(manifest.collections) === JSON.stringify(shape))) {
+  if (![collections, notepadCollections, legacyCollections].some(shape => JSON.stringify(manifest.collections) === JSON.stringify(shape))) {
     return fail('invalid-collection', 'Manifest collections must match the current layout or the preserved v3.1 collection set.', { collections: manifest.collections });
   }
   for (const lane of Object.values(manifest.lanes)) {
@@ -271,7 +273,7 @@ export function validateManifest(project) {
   const ignoreEntry = lstatOrNull(ignore);
   if (!ignoreEntry?.isFile() || ignoreEntry.isSymbolicLink()) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must keep live session records untracked.`);
   const ignoreContent = fs.readFileSync(ignore, 'utf8');
-  for (const name of UNTRACKED_COLLECTIONS.filter(name => manifest.collections[name])) {
+  for (const name of IGNORED_COLLECTIONS.filter(name => manifest.collections[name])) {
     if (!new RegExp(`^${name}/\\*?$`, 'm').test(ignoreContent)) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must ignore ${name}/.`, { collection: name });
   }
   if (!WIKI_PROFILES.includes(manifest.wiki?.profile)) return fail('invalid-wiki-profile', `Manifest wiki.profile must be one of ${WIKI_PROFILES.join(', ')}.`);
@@ -665,7 +667,7 @@ export function migrate(options) {
     if (source.status) return source;
     const seedFailure = preflightSeedDocuments(project);
     if (seedFailure) return seedFailure;
-    for (const name of ['notepads', 'notepad-templates']) fs.mkdirSync(path.join(project, collections[name]), { recursive: true });
+    for (const name of ['notepads', 'notepad-templates', 'recovery']) fs.mkdirSync(path.join(project, collections[name]), { recursive: true });
     writeSessionsIgnore(project);
     const updated = { ...manifest, collections, provenance: { ...manifest.provenance, layout: { source } } };
     writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);

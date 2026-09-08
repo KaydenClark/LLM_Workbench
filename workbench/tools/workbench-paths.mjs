@@ -23,11 +23,14 @@ export const COLLECTIONS = Object.freeze({
   handoffs: 'workbench/sessions/handoffs',
   checkpoints: 'workbench/sessions/checkpoints',
   notepads: 'workbench/sessions/notepads',
-  'notepad-templates': 'workbench/sessions/notepads/templates'
+  'notepad-templates': 'workbench/sessions/notepads/templates',
+  recovery: 'workbench/sessions/recovery'
 });
 // Live records stay untracked. The templates subcollection is explicitly
 // excluded from live-note operations and remains tracked in project Git.
 export const UNTRACKED_COLLECTIONS = Object.freeze(['grilling', 'handoffs', 'notepads']);
+// Operational recovery is private local state, but never a notepad collection.
+export const IGNORED_COLLECTIONS = Object.freeze([...UNTRACKED_COLLECTIONS, 'recovery']);
 export const WIKI_PROFILES = Object.freeze(['project', 'deployment']);
 
 export function manifestPath(root) {

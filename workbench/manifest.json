@@ -38,7 +38,8 @@
     "handoffs": "workbench/sessions/handoffs",
     "checkpoints": "workbench/sessions/checkpoints",
     "notepads": "workbench/sessions/notepads",
-    "notepad-templates": "workbench/sessions/notepads/templates"
+    "notepad-templates": "workbench/sessions/notepads/templates",
+    "recovery": "workbench/sessions/recovery"
   },
   "wiki": {
     "profile": "project"

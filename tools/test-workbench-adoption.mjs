@@ -152,8 +152,8 @@ function fixtureSpec() {
     assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Feedback\n');
     assert.equal(read(project, 'workbench/sessions/grilling/decision.md'), '# Provisional decision\n');
     assert.equal(read(project, 'workbench/sessions/checkpoints/recovery.md'), '# Recovery point\n');
-    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
-    assert.equal(report.recoveryPath, 'workbench/sessions/checkpoints/adoption-recovery.json');
+    assert.equal(read(project, 'workbench/sessions/recovery/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
+    assert.equal(report.recoveryPath, 'workbench/sessions/recovery/adoption-recovery.json');
     assert.equal(JSON.parse(read(project, 'workbench/manifest.json')).schemaVersion, 2, 'adoption must produce schema 2');
     assert.equal(read(project, 'AGENTS.md'), '# AGENTS.md\n\nProject-specific adoption truth.\n');
     assert.equal(read(project, 'tools/app.mjs'), 'export const app = true;\n', 'an application root tools directory is never absorbed');

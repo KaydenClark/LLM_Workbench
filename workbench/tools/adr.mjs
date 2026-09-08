@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
@@ -143,7 +143,7 @@ export function validateAdrs(root, options = {}) {
       const target = path.resolve(path.dirname(adr.filePath), link);
       const relative = path.relative(root, target).split(path.sep).join('/');
       if (relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) continue;
-      for (const collection of UNTRACKED_COLLECTIONS) {
+      for (const collection of IGNORED_COLLECTIONS) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
           findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; promote it to checkpoints first`, { adr: adr.name, target: relative }));
         }

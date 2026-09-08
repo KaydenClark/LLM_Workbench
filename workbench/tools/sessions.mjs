@@ -14,7 +14,7 @@ import { validateSpecCandidate } from './spec-workbench.mjs';
 import { listAdrs, validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { controls, containsPlaceholder } from './workbench-layout.mjs';
-import { laneRelative, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
+import { laneRelative, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
 
 function lstatOrNull(target) {
   try { return fs.lstatSync(target); } catch (error) {
@@ -108,7 +108,7 @@ function validatePromotionOwner(root, destination, content, original) {
   }
   if (path.extname(destination.relative) !== '.md' || !content.trim() || !/^\uFEFF?#\s+\S/m.test(content)) throw new Error('A durable Markdown owner needs nonempty content and a title');
   const beneath = relative => destination.relative.startsWith(`${relative}/`);
-  const forbidden = [...UNTRACKED_COLLECTIONS, 'checkpoints', 'notepad-templates'].map(name => collectionRelative(root, name));
+  const forbidden = [...IGNORED_COLLECTIONS, 'checkpoints', 'notepad-templates'].map(name => collectionRelative(root, name));
   if (forbidden.some(beneath)) throw new Error('A live record, template or frozen checkpoint cannot be the promotion destination');
   // Candidate text is authored by the agent. A link to an ignored working
   // record is not durable provenance, even if that source currently exists.
@@ -117,7 +117,7 @@ function validatePromotionOwner(root, destination, content, original) {
     if (!reference || /^[a-z][a-z0-9+.-]*:/i.test(reference)) continue;
     const target = path.resolve(path.dirname(destination.absolute), reference);
     const relative = path.relative(fs.realpathSync.native(root), canonicalReference(target)).split(path.sep).join('/');
-    if (UNTRACKED_COLLECTIONS.some(name => relative.startsWith(`${collectionRelative(root, name)}/`)) && !relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) throw new Error('Durable provenance cannot cite an ignored live record');
+    if (IGNORED_COLLECTIONS.some(name => relative.startsWith(`${collectionRelative(root, name)}/`)) && !relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) throw new Error('Durable provenance cannot cite an ignored live record');
   }
   const overrides = { contentOverrides: new Map([[destination.absolute, content]]) };
   let findings = [];

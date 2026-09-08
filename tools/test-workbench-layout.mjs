@@ -203,7 +203,7 @@ test('the sessions ignore denies the legacy grilling diary name, keeps project r
     // A prior layout with the prior ignore file is still valid.
     const manifestFile = path.join(project, 'workbench/manifest.json');
     const oldManifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
-    delete oldManifest.collections.notepads; delete oldManifest.collections['notepad-templates'];
+    delete oldManifest.collections.recovery; delete oldManifest.collections.notepads; delete oldManifest.collections['notepad-templates'];
     fs.writeFileSync(manifestFile, JSON.stringify(oldManifest));
     fs.writeFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), 'grilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n');
     assert.equal(run('validate', '--project', project).report.status, 'valid');
@@ -2070,6 +2070,31 @@ test('classify answers an EPERM lane at the stat seam the room conditions are de
   }
 });
 
+test('operational recovery is local and separate from note history, and nine-collection layouts migrate without moving history', () => {
+  const project = fixture();
+  try {
+    gitRoom(project);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const file = path.join(project, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(manifest.collections.recovery, 'workbench/sessions/recovery');
+    assert.equal(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/recovery/receipt.json'], { cwd: project }).status, 0);
+    const historic = path.join(project, 'workbench/sessions/checkpoints/upgrade-recovery.json');
+    fs.writeFileSync(historic, '{"legacy":"preserved"}\r\n');
+    const original = fs.readFileSync(historic);
+    delete manifest.collections.recovery;
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    fs.rmSync(path.join(project, 'workbench/sessions/recovery'), { recursive: true });
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.status, 'migrated');
+    assert.deepEqual(fs.readFileSync(historic), original);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    fs.appendFileSync(path.join(project, 'workbench/sessions/.gitignore'), '\n!recovery/private.json\n');
+    fs.writeFileSync(path.join(project, 'workbench/sessions/recovery/private.json'), '{}');
+    assert.equal(run('validate', '--project', project).report.status, 'blocked', 'an effective recovery ignore leak is refused');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
 test('new notepad layout separates ignored typed notes from tracked examples and preserves legacy paths on migration', () => {
   const project = fixture();
   try {
@@ -2088,6 +2113,7 @@ test('new notepad layout separates ignored typed notes from tracked examples and
     const legacy = path.join(project, 'workbench/sessions/grilling/legacy.md');
     fs.writeFileSync(legacy, 'Legacy wording remains byte-identical.\r\n');
     const original = fs.readFileSync(legacy);
+    delete manifest.collections.recovery;
     delete manifest.collections.notepads;
     delete manifest.collections['notepad-templates'];
     fs.writeFileSync(file, JSON.stringify(manifest));
@@ -2108,7 +2134,8 @@ for (const surface of ['receipt', 'templates']) {
       assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
       const manifestFile = path.join(project, 'workbench/manifest.json');
       const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
-      delete manifest.collections.notepads; delete manifest.collections['notepad-templates'];
+      delete manifest.collections.recovery;
+    delete manifest.collections.notepads; delete manifest.collections['notepad-templates'];
       fs.writeFileSync(manifestFile, JSON.stringify(manifest));
       const receipt = path.join(project, 'workbench/.workbench-seed.json');
       const templates = path.join(project, 'workbench/sessions/notepads/templates');
