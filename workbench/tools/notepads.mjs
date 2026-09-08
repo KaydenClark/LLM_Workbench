@@ -262,7 +262,14 @@ export function setCurrent(root, options) {
   const unresolved = options.unresolved === undefined ? (note.current.unresolved ?? []) : asArray(options.unresolved);
   const status = options.status ?? note.status;
   if (!NOTE_STATUSES.includes(status)) return blocked('invalid-note', `--status must be one of ${NOTE_STATUSES.join(', ')}`, { status });
-  const leak = scanNew([state, nextAction, ...unresolved]);
+  // Only what this call supplies is new material. Rescanning the view carried
+  // forward would let one stored line refuse every later update, which is the
+  // opposite of the preserved-history rule the append path follows.
+  const leak = scanNew([
+    options.state === undefined ? null : state,
+    options['next-action'] === undefined ? null : nextAction,
+    ...(options.unresolved === undefined ? [] : unresolved)
+  ]);
   if (leak) return leak;
   const updated = {
     ...note,

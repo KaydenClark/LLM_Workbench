@@ -296,6 +296,30 @@ test('the runtime refuses malformed JSON, an invalid structure, a path escape, a
   }
 });
 
+test('a stored line the scanner matches does not refuse every later update', () => {
+  const dir = project();
+  try {
+    const created = seed(dir);
+    // A preserved source fragment may legitimately quote a matching string.
+    // Only material this call supplies is new, so carrying the stored view
+    // forward must not be read as an attempt to record it again.
+    const notePath = path.join(dir, created.note);
+    const stored = JSON.parse(fs.readFileSync(notePath, 'utf8'));
+    stored.current.state = 'The historical record quotes owner@example.com verbatim.';
+    fs.writeFileSync(notePath, `${JSON.stringify(stored, null, 2)}\n`);
+
+    const untouched = setCurrent(dir, { note: created.note, revision: 1, 'next-action': 'Advance the next action only.' });
+    assert.equal(untouched.status, 'updated', JSON.stringify(untouched));
+    assert.equal(JSON.parse(fs.readFileSync(notePath, 'utf8')).current.state, stored.current.state, 'the carried view is unchanged');
+
+    const supplied = setCurrent(dir, { note: created.note, revision: 2, state: 'Now write ghp_A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0 into the view.' });
+    assert.equal(supplied.status, 'blocked');
+    assert.equal(supplied.error.code, 'secret-like-content', 'newly supplied material is still refused');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('a blocked write leaves the previous valid note in place', () => {
   const dir = project();
   try {
