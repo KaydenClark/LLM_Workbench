@@ -199,17 +199,23 @@ rewrite legacy Markdown merely to change its extension. The target layout is
 not implemented yet, so nothing writes there.
 
 ```bash
-node workbench/tools/notepads.mjs list [--objective KEY]
+node workbench/tools/notepads.mjs list --objective KEY
 node workbench/tools/notepads.mjs create --note NAME --objective KEY --title "TITLE" --focus "FOCUS"
 node workbench/tools/notepads.mjs read --note NOTE --view current
-node workbench/tools/notepads.mjs read --note NOTE --topic TOPIC [--limit N] [--cursor N]
-node workbench/tools/notepads.mjs append --note NOTE --revision N --kind KIND --topic TOPIC --content "TEXT" [--corrects ENTRY_ID] [--depends-on ENTRY_ID] [--source-file PATH]
-node workbench/tools/notepads.mjs current --note NOTE --revision N --state "STATE" --next-action "NEXT" [--unresolved "OPEN"]
-node workbench/tools/notepads.mjs trim --note NOTE --revision N --entry ENTRY_ID [--durable-owner PATH]
+node workbench/tools/notepads.mjs read --note NOTE --topic TOPIC --limit N --cursor N
+node workbench/tools/notepads.mjs append --note NOTE --revision N --kind KIND --topic TOPIC --content "TEXT"
+node workbench/tools/notepads.mjs current --note NOTE --revision N --state "STATE" --next-action "NEXT"
+node workbench/tools/notepads.mjs trim --note NOTE --revision N --entry ENTRY_ID
 node workbench/tools/notepads.mjs validate --note NOTE
 node workbench/tools/notepads.mjs migrate --note NOTE
-node tools/test-notepads.mjs
 ```
+
+Only `--note` and the revision a write checks are always required. `list`
+takes `--objective` or no filter at all; `read` takes `--topic`, `--entry`,
+`--kind`, `--limit` and `--cursor`; `append` takes `--corrects`,
+`--depends-on`, `--interpretation` and `--source-file`; `current` takes
+`--unresolved` once per open item; `trim` takes `--durable-owner` to record
+where the removed material now lives.
 
 Kinds are `directive`, `source_record`, `finding`, `proposal`, `decision`,
 `correction`, `verification`, and `blocker`. A kind names what a record is for
