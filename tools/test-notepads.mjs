@@ -439,6 +439,65 @@ test('no command publishes a record that would fail its own schema', () => {
   }
 });
 
+test('the CLI refuses a flag it does not recognise instead of dropping it', () => {
+  const dir = project();
+  try {
+    const created = cli(dir, ['create', '--note', 'typo', '--objective', 'typo', '--title', 'Typo']);
+    assert.equal(created.json.status, 'created');
+    cli(dir, ['append', '--note', created.json.note, '--revision', '1', '--kind', 'finding', '--topic', 'x', '--entry-id', 'f-1', '--content', 'Eleven tools.']);
+
+    // A dropped `--corects` writes a correction with no link, and a later read
+    // returns the superseded claim with nothing marking it corrected - the
+    // same loss the trim guard prevents, reached by a typo and invisible to
+    // that guard, because the link was never recorded at all.
+    const typo = cli(dir, ['append', '--note', created.json.note, '--revision', '2', '--kind', 'correction', '--topic', 'x', '--corects', 'f-1', '--content', 'Twelve.']);
+    assert.equal(typo.status, 1, 'a misspelled flag must not exit 0');
+    assert.equal(typo.json.error.code, 'invalid-invocation');
+    assert.match(typo.json.error.message, /--corects/, 'the refusal names the flag it did not recognise');
+    assert.match(typo.json.error.message, /--corrects/, 'and lists the ones it does accept');
+    assert.equal(JSON.parse(fs.readFileSync(path.join(dir, created.json.note), 'utf8')).entries.length, 1, 'nothing was written');
+
+    // A flag that is real for another subcommand is still not real for this one.
+    assert.equal(cli(dir, ['list', '--topic', 'x']).json.error.code, 'invalid-invocation');
+    assert.equal(cli(dir, ['read', '--note', created.json.note, '--durable-owner', 'x']).json.error.code, 'invalid-invocation');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a workflow field can be written into the current view and survives later updates', () => {
+  const dir = project();
+  try {
+    // `current` preserved an unknown field once present, but nothing could put
+    // one there, which left the grilling skill instructing a hand edit outside
+    // every guarantee this runtime makes.
+    const created = createNote(dir, {
+      note: 'grill', objective: 'grill', title: 'Grill',
+      'view-field': ['questions=[{"id":"1","status":"open","question":"First decision"}]']
+    });
+    assert.equal(created.status, 'created');
+    const stored = () => JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8')).current;
+    assert.deepEqual(stored().questions, [{ id: '1', status: 'open', question: 'First decision' }], 'JSON values parse as JSON');
+
+    assert.equal(setCurrent(dir, { note: created.note, revision: 1, state: 'Question one answered.' }).status, 'updated');
+    assert.deepEqual(stored().questions.length, 1, 'an unrelated update preserves it');
+
+    const replaced = setCurrent(dir, { note: created.note, revision: 2, 'view-field': ['questions=[{"id":"1","status":"locked","question":"First decision"}]'] });
+    assert.equal(replaced.status, 'updated');
+    assert.equal(stored().questions[0].status, 'locked');
+    assert.equal(stored().state, 'Question one answered.', 'and setting the field alone leaves the state alone');
+
+    assert.equal(setCurrent(dir, { note: created.note, revision: 3, 'view-field': ['owner=codex'] }).status, 'updated');
+    assert.equal(stored().owner, 'codex', 'a value that is not JSON is kept as the string it is');
+
+    for (const bad of ['state=x', 'unresolved=[]', 'next_action=x', 'noequals', 'Bad=1']) {
+      assert.throws(() => setCurrent(dir, { note: created.note, revision: 4, 'view-field': [bad] }), /view-field/, bad);
+    }
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('every supplied string is privacy-scanned, not only the content field', () => {
   const dir = project();
   try {
@@ -450,7 +509,11 @@ test('every supplied string is privacy-scanned, not only the content field', () 
     // privacy-scanned before it can reach the file."
     for (const [label, options] of [
       ['--next-action', { note: 'leak-a', objective: 'leak', title: 'Leak', 'next-action': `Use ${TOKEN}.` }],
-      ['--unresolved', { note: 'leak-b', objective: 'leak', title: 'Leak', unresolved: [`Rotate ${TOKEN}.`] }]
+      ['--unresolved', { note: 'leak-b', objective: 'leak', title: 'Leak', unresolved: [`Rotate ${TOKEN}.`] }],
+      ['--index', { note: 'leak-c', objective: 'leak', title: 'Leak', index: TOKEN }],
+      ['--related', { note: 'leak-d', objective: 'leak', title: 'Leak', related: [HOME] }],
+      ['--focus', { note: 'leak-e', objective: 'leak', title: 'Leak', focus: `Rotate ${TOKEN}.` }],
+      ['--view-field', { note: 'leak-f', objective: 'leak', title: 'Leak', 'view-field': [`questions=["${TOKEN}"]`] }]
     ]) {
       const refused = createNote(dir, options);
       assert.equal(refused.status, 'blocked', label);

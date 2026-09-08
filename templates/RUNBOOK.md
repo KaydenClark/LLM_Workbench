@@ -204,7 +204,7 @@ node workbench/tools/notepads.mjs create --note NAME --objective KEY --title "TI
 node workbench/tools/notepads.mjs read --note NOTE --view current
 node workbench/tools/notepads.mjs read --note NOTE --topic TOPIC --limit N --cursor N
 node workbench/tools/notepads.mjs append --note NOTE --revision N --kind KIND --topic TOPIC --content "TEXT"
-node workbench/tools/notepads.mjs current --note NOTE --revision N --state "STATE" --next-action "NEXT"
+node workbench/tools/notepads.mjs current --note NOTE --revision N --state "STATE" --next-action "NEXT" --view-field NAME=VALUE
 node workbench/tools/notepads.mjs trim --note NOTE --revision N --entry ENTRY_ID
 node workbench/tools/notepads.mjs validate --note NOTE
 node workbench/tools/notepads.mjs migrate --note NOTE
@@ -214,7 +214,8 @@ Only `--note` and the revision a write checks are always required. `list`
 takes `--objective` or no filter at all; `read` takes `--topic`, `--entry`,
 `--kind`, `--limit` and `--cursor`; `append` takes `--corrects`,
 `--depends-on`, `--interpretation` and `--source-file`; `current` takes
-`--unresolved` once per open item; `trim` takes `--durable-owner` to record
+`--unresolved` once per open item and `--view-field` for a field this workflow
+keeps in the current view; `trim` takes `--durable-owner` to record
 where the removed material now lives.
 
 Kinds are `directive`, `source_record`, `finding`, `proposal`, `decision`,
@@ -262,7 +263,19 @@ rescanned, because an old record may legitimately quote a matching string.
 A refused or failed write leaves the previous valid record unchanged.
 
 `trim` removes named reconciled entries and refuses with `retained-dependency`
-rather than stranding material a retained entry still corrects or depends on.
+rather than breaking a link in either direction: removing material a retained
+entry still depends on is refused, and so is removing a correction while
+keeping the claim it corrects, which would leave the record asserting a fact
+already known to be wrong with nothing marking it superseded. Trim both halves
+together once the correction has landed in its durable owner.
+
+A subcommand refuses any flag it does not recognise, naming the ones it does.
+A dropped `--corects` would otherwise report a correction appended and write
+an entry with no link at all. A workflow that keeps its own field in the
+current view writes it with `--view-field name=value`, JSON when the value
+parses as JSON and the raw string otherwise; `current` preserves it from then
+on, and `state`, `unresolved` and `next_action` keep their own flags.
+
 An interim `scope-1` record reads as it is and migrates once, preserving its
 recorded text and timestamps, before it can be written to.
 

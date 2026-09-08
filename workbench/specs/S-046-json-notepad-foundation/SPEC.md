@@ -381,8 +381,13 @@ skill updates, checkpoint retirement, and a fresh-agent recovery trial are
 not in this slice and their acceptance boxes stay open.
 
 Red then green at the public seams. `tools/test-notepads.mjs` failed first on
-the missing module, then on each behaviour in turn, and now passes thirteen
-cases: create and duplicate identity; append with a revision check, a
+the missing module, then on each behaviour in turn. Thirteen cases carried the
+original candidate and seven more were added by the two review rounds below,
+for twenty green: the bidirectional trim guard, an id that survives a trim, a
+command validating its own output, the widened privacy scan, the `list`
+collection boundary, an unrecognised flag refused rather than dropped, and a
+workflow field written into the current view and preserved across updates. The
+original thirteen were: create and duplicate identity; append with a revision check, a
 duplicate entry id, a dangling correction target and an unsupported kind;
 topic-scoped read that excludes an unrelated topic and carries a correction;
 explicit pagination; resume from the current view alone; discovery by
@@ -513,6 +518,55 @@ one held. Recorded by severity, with what each would have cost a reader:
 - **LOW, no benchmark row.** S-049 added one for this exact class of change,
   citing the `AGENTS.md` before/after rule. `benchmarks/RESULTS.md` now
   carries the row.
+
+A second independent review, of the repaired candidate, returned CHANGES
+REQUIRED again. Two of its findings were real defects in the repairs
+themselves, and one of them repeats the exact class the first review caught:
+
+- **The widened privacy scan missed `--index`.** The repair added seven fields
+  and left one, so a token or an absolute home path supplied as the index
+  relationship was written verbatim. Worse, the regression test was titled
+  "every supplied string is privacy-scanned" while asserting only six of them,
+  so it could not fail for the field still open - a test that cannot fail for
+  the defect it names, which is what the first review had just caught in the
+  blocked-write case. Both are repaired, and the test now covers `--index`,
+  `--related`, `--focus` and `--view-field` as well.
+- **An unrecognised flag was accepted and discarded.** `parseArgs` refused a
+  bare argument and a missing value but took any `--key`. A mistyped
+  `--corects finding-001` therefore exited 0, reported a correction appended,
+  and wrote an entry with no link at all. A later read then returns the
+  superseded claim with nothing marking it corrected - the same loss the
+  bidirectional trim guard exists to prevent, reached by a typo, and invisible
+  to that guard because the link was never recorded. Each subcommand now
+  declares the flags it accepts and refuses the rest by name.
+
+The second review also found that the first repair to the grilling skill had
+replaced an inaccurate sentence with an impossible instruction: it told the
+agent to write the question list in with the note's other current-view fields,
+when no path existed to do that. `current` preserved an unknown field once it
+was present, but nothing could put one there, so the only route was a hand
+edit outside the privacy scan and the structural check the same document
+promises. `--view-field name=value` is that missing path, and the skill now
+names it. The remaining findings were documentation drift this account had
+introduced: it claimed thirteen green cases when the candidate had eighteen,
+described the trim guard in one direction after making it bidirectional, and
+left a benchmark row naming a pre-repair commit. All are corrected, the
+benchmark ledger by appending rather than editing.
+
+One thing the second review verified that this account had asserted from a
+single run: the baseline comparison. It built its own clean LF checkout of
+`2127627` and confirmed the same six commands fail with the same case names.
+Its first attempt used a `git worktree`, which inherited `core.autocrlf=true`
+and produced a spurious mismatch - worth recording, because it is the same
+host condition that makes the ordinary working copy unusable for this suite.
+
+Two review rounds, twelve accepted findings, and the pattern across them is
+not that the code was careless but that the checks agreed with the code
+instead of with the contract. A test named for a property it did not assert,
+a scan list that grew by enumeration and stopped one short, a guard written
+in the direction the author was thinking in - each passed a green suite and a
+clean `doctor`. That is the cost the gate is for, and recording it here is
+the only way it stays priceable.
 
 The review also confirmed, independently, the three consequential claims this
 account makes: the six failures match the baseline case for case, the five

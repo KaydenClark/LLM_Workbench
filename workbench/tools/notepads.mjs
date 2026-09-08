@@ -204,7 +204,8 @@ export function createNote(root, options) {
   if (fs.existsSync(resolved.absolute)) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }
-  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, ...asArray(options.unresolved), ...asArray(options.related)]);
+  const view = parseViewFields(options['view-field']);
+  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options['view-field'])]);
   if (leak) return leak;
   const stamp = nowStamp();
   const note = {
@@ -218,7 +219,7 @@ export function createNote(root, options) {
     created_at: stamp,
     updated_at: stamp,
     relationships: { index: options.index ?? null, related_notes: asArray(options.related) },
-    current: { state: options.state ?? title, unresolved: asArray(options.unresolved), next_action: options['next-action'] ?? '' },
+    current: { state: options.state ?? title, unresolved: asArray(options.unresolved), next_action: options['next-action'] ?? '', ...view },
     entries: [],
     extensions: { durable_owners: [] }
   };
@@ -282,10 +283,12 @@ export function setCurrent(root, options) {
   // Only what this call supplies is new material. Rescanning the view carried
   // forward would let one stored line refuse every later update, which is the
   // opposite of the preserved-history rule the append path follows.
+  const view = parseViewFields(options['view-field']);
   const leak = scanNew([
     options.state === undefined ? null : state,
     options['next-action'] === undefined ? null : nextAction,
-    ...(options.unresolved === undefined ? [] : unresolved)
+    ...(options.unresolved === undefined ? [] : unresolved),
+    ...asArray(options['view-field'])
   ]);
   if (leak) return leak;
   const updated = {
@@ -296,7 +299,7 @@ export function setCurrent(root, options) {
     // Spread the stored view first: a workflow may carry its own field there
     // (grilling keeps its stable-ID question list), and an update of the state
     // must not silently drop it.
-    current: { ...note.current, state, unresolved, next_action: nextAction }
+    current: { ...note.current, state, unresolved, next_action: nextAction, ...view }
   };
   const failure = publish(root, resolved, updated);
   if (failure) return failure;
@@ -485,9 +488,10 @@ export function migrateNote(root, options) {
   if (missing.length || invalid.length) return blocked('invalid-note', `${resolved.relative} is not a valid notepad`, { missing, invalid });
   // schema_version and revision lead, as they do in a created record, so a
   // reader opening a migrated file finds the same two facts in the same place.
-  // Both fields are set after the spread, not before it: a legacy record
-  // carrying its own `revision` would otherwise win and migrate to a value the
-  // schema rejects, leaving a file that can no longer be read or migrated.
+  // Both fields lead, and both are destructured out of `carried` so the spread
+  // cannot put a legacy value back: without that, a `scope-1` record carrying
+  // its own `revision` would win and migrate to a value the schema rejects,
+  // leaving a file that can no longer be read or migrated.
   const { schema_version: legacyVersion, revision: legacyRevision, ...carried } = note;
   const migrated = {
     schema_version: NOTEPAD_SCHEMA_VERSION,
@@ -513,21 +517,63 @@ export function migrateNote(root, options) {
 
 // Repeated flags collect into an array so `--entry a --entry b` and
 // `--unresolved "..." --unresolved "..."` say what they mean.
-const MULTI = new Set(['entry', 'unresolved', 'related', 'durable-owner', 'depends-on']);
+const MULTI = new Set(['entry', 'unresolved', 'related', 'durable-owner', 'depends-on', 'view-field']);
+
+// What each subcommand accepts, by exact name. An unrecognised flag is a
+// refusal, not something to accept and drop: `--corects finding-001` would
+// otherwise exit 0 reporting a correction appended, having written an entry
+// with no link at all - the same superseded-claim loss the trim guard exists
+// to prevent, reached by a typo and invisible to that guard because the link
+// was never recorded.
+const OPTIONS = Object.freeze({
+  create: ['path', 'note', 'collection', 'objective', 'title', 'focus', 'type', 'status', 'id', 'index', 'related', 'state', 'next-action', 'unresolved', 'view-field'],
+  append: ['path', 'note', 'collection', 'revision', 'kind', 'topic', 'content', 'entry-id', 'corrects', 'depends-on', 'interpretation', 'question-id', 'source-file', 'source-line-start', 'source-line-end', 'source-sha256'],
+  current: ['path', 'note', 'collection', 'revision', 'state', 'next-action', 'unresolved', 'status', 'view-field'],
+  read: ['path', 'note', 'collection', 'topic', 'entry', 'kind', 'limit', 'cursor', 'view'],
+  list: ['path', 'collection', 'objective'],
+  validate: ['path', 'note', 'collection'],
+  trim: ['path', 'note', 'collection', 'revision', 'entry', 'durable-owner'],
+  migrate: ['path', 'note', 'collection']
+});
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
+  const accepted = OPTIONS[command];
+  if (!accepted) throw new Error(USAGE);
   const options = {};
   for (let index = 0; index < rest.length; index += 1) {
     const arg = rest[index];
     if (!arg.startsWith('--')) throw new Error(`Unknown argument: ${arg}`);
     const key = arg.slice(2);
+    if (!accepted.includes(key)) throw new Error(`${command} does not accept --${key}; it accepts ${accepted.map((name) => `--${name}`).join(', ')}`);
     const value = rest[++index];
     if (value === undefined) throw new Error(`--${key} needs a value`);
     if (MULTI.has(key)) options[key] = [...(options[key] ?? []), value];
     else options[key] = value;
   }
   return { command, options };
+}
+
+// A workflow may keep its own field in the current view - grilling keeps its
+// stable-ID question list there. `current` preserves such a field once it
+// exists, but nothing could put one there in the first place, which left the
+// grilling skill instructing a hand edit outside every guarantee this runtime
+// makes. `--view-field name=value` is that missing path: JSON when the value
+// parses as JSON, the raw string otherwise.
+const RESERVED_VIEW_FIELDS = new Set(['state', 'unresolved', 'next_action']);
+
+export function parseViewFields(values) {
+  const fields = {};
+  for (const raw of asArray(values)) {
+    const split = String(raw).indexOf('=');
+    if (split < 1) throw new Error(`--view-field must be NAME=VALUE; got ${JSON.stringify(raw)}`);
+    const name = raw.slice(0, split);
+    if (!/^[a-z][a-z0-9_]*$/.test(name)) throw new Error(`--view-field name ${JSON.stringify(name)} must be a lowercase identifier`);
+    if (RESERVED_VIEW_FIELDS.has(name)) throw new Error(`--view-field cannot set ${name}; use its own flag`);
+    const value = raw.slice(split + 1);
+    try { fields[name] = JSON.parse(value); } catch { fields[name] = value; }
+  }
+  return fields;
 }
 
 const USAGE = 'Usage: notepads.mjs create|append|current|read|list|validate|trim|migrate [options] (see RUNBOOK.md)';

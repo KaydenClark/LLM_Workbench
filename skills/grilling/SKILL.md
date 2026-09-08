@@ -42,13 +42,14 @@ Create it through the shared runtime, which writes the schema for you:
 
 ```bash
 node workbench/tools/notepads.mjs create --note TOPIC-YYYY-MM-DD \
-  --objective OBJECTIVE_KEY --title "The agreed topic" --focus "What we are deciding"
+  --objective OBJECTIVE_KEY --title "The agreed topic" --focus "What we are deciding" \
+  --view-field 'questions=[{"id":"1","status":"open","question":"First decision"}]'
 ```
 
-Then add the question list to the current view. The runtime has no flag for it,
-because it is this workflow's own field rather than a schema one; write it in
-with the note's other current-view fields the first time, and `current`
-preserves it across every later update:
+`questions` is this workflow's own field rather than a schema one, so it goes in
+through `--view-field`, and `current` preserves it across every later update.
+Rewrite the whole list with `--view-field` again when a status changes. The
+record that command writes:
 
 ```json
 {
@@ -77,8 +78,8 @@ Keep stable question IDs; never renumber them. Dependencies may use `2A`,
 `2B`; new branches append new IDs. Statuses are `open` (undecided),
 `tentative` (revisit), and `locked` (decided). Preserve source wording,
 uncertainty, and corrections in ordered entries, with a compact current view.
-`current.questions` is this workflow’s own field; `notepads.mjs current`
-preserves it across an update rather than dropping it.
+Record each answer as an entry as it is given, and rewrite the question list
+with `notepads.mjs current --view-field questions=...` when a status changes.
 
 ## During the interview
 

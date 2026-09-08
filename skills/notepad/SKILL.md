@@ -115,9 +115,13 @@ node workbench/tools/notepads.mjs trim --note NOTE --revision N \
   --entry ENTRY_ID --durable-owner workbench/specs/S-###-slug/SPEC.md
 ```
 
-A trim that would strand material a retained entry still corrects or depends on
-is refused as `retained-dependency`. That refusal is the mechanism doing its
-job; keep both entries rather than working around it.
+The link binds in both directions, and a trim that would break it either way is
+refused as `retained-dependency`. Removing something a retained entry still
+depends on is refused. So is removing a correction while keeping the claim it
+corrects: that would leave the note as the only local record of a fact you
+already knew was wrong, with nothing marking it superseded. Trim both halves
+together once the correction has landed in its durable owner, or keep both.
+That refusal is the mechanism doing its job; do not work around it.
 
 Delete the whole record only when everything important is reconciled and no
 unfinished work or active handoff still depends on it. This is normal cleanup -
