@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** TK-002 claimed by codex.
-**Next gate:** Close TK-002 with verification and documentation proof.
+**Latest event:** TK-003 claimed by codex.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -82,8 +82,8 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Define and install one authoritative core source with adapters | done | none | d2ecc5cf049509160c9ae1460b970eee48175772: installer 27/27, upgrade 8/8, full 37/37, independent repair review PASS; all seven reproduced ownership and alias findings resolved |
-| TK-002 | Diagnose tested compatibility and discovery failures | in-progress | TK-001 | pending |
-| TK-003 | Compose portable save and promote into a self-sufficient bundle | ready | TK-002 | pending |
+| TK-002 | Diagnose tested compatibility and discovery failures | done | TK-001 | bc1347812d8c7402bade8991a7a41e5023f04e8e: inspection 5/5, installer 27/27, diagnostics 19/19, full 39/39 and independent bounded repair review PASS; range overstatement regression repaired |
+| TK-003 | Compose portable save and promote into a self-sufficient bundle | in-progress | TK-002 | pending |
 
 ### TK-001 - Define and install one authoritative core source with adapters
 
@@ -127,7 +127,7 @@ Reconcile existing personal skill behavior by read-only inspection; implement Wo
 
 - [x] One core source/global identity and provider discovery adapters work without duplicate maintained implementations.
 - [ ] Core save/promote/notepad compose through actual public seams without Foundry or personal-catalog dependency.
-- [ ] Tested explicit compatibility range and missing/conflicting/broken/incompatible diagnostics match actual installation.
+- [x] Tested explicit compatibility range and missing/conflicting/broken/incompatible diagnostics match actual installation.
 - [x] Presence-only preservation, explicit-update backups/rollback and safe external migration plan are verified.
 - [ ] Fresh isolated-home setup and configured-host invocation evidence distinguish discovery from real callability.
 
@@ -169,8 +169,10 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | 2026-09-08 | TK-002 | Read-only core compatibility and discovery inspection candidate prepared | Initial test draft had a syntax error and was corrected; valid four-case suite then failed against the frozen 434ef6b public doctor behavior through a test adapter. New inspection passes all four: inclusive differing-release bounds, missing/broken entries, unknown/modified content, separate sources/extra Codex discovery/mixed generations, with unchanged home snapshots | Root and generic diagnostic procedures, schema 2 range extension and this bounded decision documented | Integration fixtures, full 39-command union and independent review pending; configured-host workflow proof is not inferred |
 
 | 2026-09-08 | TK-002 | Full checks passed at 7a449cced784edf68aea08ec63c416ea957fed84, but independent review rejected an overstated marker range | 39 of 39 commands passed. Review reproduced a producing release claiming support through v9.0.0. New regression demonstrated red; shared baseline floor and exact producing-release ceiling now reject widened or reversed ranges as unknown. Five focused inspection tests green | Existing declared range policy enforced; inspection remains read-only and attention-only | Fresh immutable full suite and independent re-review pending; no native workflow or integration claim |
+| 2026-09-08 | TK-002 | Ticket closed | bc1347812d8c7402bade8991a7a41e5023f04e8e: inspection 5/5, installer 27/27, diagnostics 19/19, full 39/39 and independent bounded repair review PASS; range overstatement regression repaired | Root and generic diagnostic procedures and schema 2 range policy reconciled; read-only attention effects pinned | TK-003 portable composition and actual configured-host invocation; final S-050 integration and downstream gates remain open |
 
 ## Completion Result
+
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.
 
