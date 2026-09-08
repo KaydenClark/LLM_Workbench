@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately.
 **Blockers:** none
-**Latest event:** TK-001 claimed by codex.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-002 claimed by codex.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 ## Outcome
 
@@ -72,8 +72,8 @@ continuation path and preservation of every still-needed claim/reference.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Trace one checkpoint from original rationale through inbound references and reconcile it to a proposed disposition with a checkable continuation example | in-progress | none | pending |
-| TK-002 | Promote selected safe material directly into its durable owner with verified read-back before source cleanup | ready | TK-001 | pending |
+| TK-001 | Trace one checkpoint from original rationale through inbound references and reconcile it to a proposed disposition with a checkable continuation example | done | none | d607b29c1bb9e26430b7008920b586146a87f601:full36-command union PASS; complete6-file inventory hashes and518 keyword/104 explicit coordinates independently reproduced at16988da; bounded disposition review PASS; copied reviewed artifacts byte-identical and privacy clean; S046 actual bounded continuity result retained |
+| TK-002 | Promote selected safe material directly into its durable owner with verified read-back before source cleanup | in-progress | TK-001 | pending |
 | TK-003 | Freeze checkpoint history and migrate active recovery consumers without breaking rollback | ready | TK-002 | pending |
 
 ### TK-001 - Evidence to disposition
@@ -156,6 +156,7 @@ Historical evidence rows remain append-only.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Separate retirement assignment captured | Source Q18 and final owner answer reconciled in S-046; current checkpoint consumers inspected at 8e9c06f | This spec; Contract transition states that legacy checkpoints remain | Full inventory, rationale investigation, disposition, and retirement |
+| 2026-09-08 | TK-001 | Ticket closed | d607b29c1bb9e26430b7008920b586146a87f601:full36-command union PASS; complete6-file inventory hashes and518 keyword/104 explicit coordinates independently reproduced at16988da; bounded disposition review PASS; copied reviewed artifacts byte-identical and privacy clean; S046 actual bounded continuity result retained | S048 disposition and complete pinned inventory linked from its stable spec; repository-specific history needs no generic template copy | TK002 direct promotion and TK003 operational recovery/rollback migration; no deletion or release readiness claim |
 
 ## Completion Result
 
