@@ -200,7 +200,11 @@ test('the sessions ignore denies the legacy grilling diary name, keeps project r
       assert.equal(spawnSync('git', ['check-ignore', '-q', relative], { cwd: project }).status, 0, `${relative} must be ignored`);
     }
     assert.notEqual(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/checkpoints/topic-2026-09-05.md'], { cwd: project }).status, 0, 'checkpoints stay trackable');
-    // An ignore file written before the legacy line existed is still valid.
+    // A prior layout with the prior ignore file is still valid.
+    const manifestFile = path.join(project, 'workbench/manifest.json');
+    const oldManifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    delete oldManifest.collections.notepads; delete oldManifest.collections['notepad-templates'];
+    fs.writeFileSync(manifestFile, JSON.stringify(oldManifest));
     fs.writeFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), 'grilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n');
     assert.equal(run('validate', '--project', project).report.status, 'valid');
   } finally {

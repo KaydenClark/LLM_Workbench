@@ -121,7 +121,10 @@ Settle the target's starting point first:
   do you reconcile specs through the manifest the route just declared
   (`workbench/manifest.json`). Never rerun Adoption for an already-adopted
   room; a second `adoption` record contradicts its first.
-- **A room already on a v3 support root**: no layout or Adoption route runs.
+- **A room already on a v3 support root**: never rerun Adoption. Run the
+  release checkout's `workbench-layout.mjs migrate --project PATH --version VERSION`
+  for additive declared collections. It preserves old note paths and reports
+  its exact layout source. Seeded schema/examples retain adjusted room copies.
   Inventory and hash the project-owned controls, product code, active specs,
   completed evidence, and Wiki content before reconciling them through the
   existing manifest. Update only the intended template sections and managed

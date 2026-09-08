@@ -131,6 +131,7 @@ export function validateAdrs(root) {
     for (const link of localLinks(adr.body)) {
       const target = path.resolve(path.dirname(adr.filePath), link);
       const relative = path.relative(root, target).split(path.sep).join('/');
+      if (relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) continue;
       for (const collection of UNTRACKED_COLLECTIONS) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
           findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; promote it to checkpoints first`, { adr: adr.name, target: relative }));

@@ -157,9 +157,10 @@ doctor.
 
 Genesis uses the bounded layout helper to create and validate its declared
 support root. Schema 2 declares six lowercase lanes (`docs`, `specs`, `wiki`,
-`sessions`, `feedback`, `tools`) and seven collections (`docs/adr`,
+`sessions`, `feedback`, `tools`) and nine collections (`docs/adr`,
 `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
-`sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`), the wiki
+`sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`,
+`sessions/notepads`, `sessions/notepads/templates`), the wiki
 profile, and the exact source release and commit. `workbench/sessions/.gitignore`
 keeps `grilling/` and `handoffs/` untracked, and also denies the legacy spaced
 `grilling diary/` name that a stale installed skill may still write (an

@@ -191,3 +191,15 @@ test('normalize inserts only the missing required frontmatter keys and leaves ev
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('durable references distinguish tracked notepad templates from ignored live records', () => {
+  const dir = fixture();
+  try {
+    const file = path.join(dir, 'workbench/docs/adr/0001-notepad.md');
+    fs.writeFileSync(file, adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n', '[Schema](../../sessions/notepads/templates/notepad.schema.json)\n'));
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir).filter(item => item.code === 'untracked-provenance'), []);
+    fs.appendFileSync(file, '[Live](../../sessions/notepads/work/live.json)\n');
+    assert.equal(validateAdrs(dir).filter(item => item.code === 'untracked-provenance').length, 1);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Manifest schema 2 layout: six lanes, seven collections, untracked-by-default
+// Manifest schema 2 layout: six lanes, additive collections, untracked-by-default
 // session records, and the Genesis readiness gate. A schema 1 manifest is
 // reported as `upgrade-required` and migrated once, losslessly.
 import crypto from 'node:crypto';

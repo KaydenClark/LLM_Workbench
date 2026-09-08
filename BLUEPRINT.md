@@ -126,7 +126,7 @@ Four linked capabilities carry the behavior:
 
 - [S-023](workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md):
   manifest schema 2 with six lowercase lanes (`docs`, `specs`, `wiki`,
-  `sessions`, `feedback`, `tools`) and seven declared collections; a lossless
+  `sessions`, `feedback`, `tools`) and nine declared collections; a lossless
   schema 1 migration; Workbench-managed runtime tools in `workbench/tools/`
   with receipts while an application's root `tools/` stays application-owned;
   untracked-by-default session records with tracked checkpoints
