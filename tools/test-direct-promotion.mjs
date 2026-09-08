@@ -154,3 +154,37 @@ test('unrecognized ADR filenames cannot bypass the ADR validator', () => {
     assert.equal(fs.readFileSync(path.join(dir, options.to), 'utf8'), '# Original\n');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('invalid UTF-8 draft bytes are refused without lossy replacement', () => {
+  const { dir, options } = fixture();
+  try {
+    fs.writeFileSync(path.join(dir, options.content), Buffer.concat([Buffer.from('# Runbook\n\n'), Buffer.from([0xff])]));
+    const before = snapshot(dir, options);
+    assert.equal(sessions.promote(dir, options).status, 'blocked');
+    assert.deepEqual(snapshot(dir, options), before);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+test('a failed restoration retains a verified original backup and reports partial recovery', () => {
+  const { dir, options } = fixture();
+  const before = snapshot(dir, options);
+  const originalRename = fs.renameSync; const originalRead = fs.readFileSync;
+  let published = false; let injected = false;
+  try {
+    fs.renameSync = function(from, to) {
+      if (String(to) === path.join(dir, options.to)) {
+        if (published) throw new Error('Injected restoration refusal');
+        published = true;
+      }
+      return originalRename.call(fs, from, to);
+    };
+    fs.readFileSync = function(file, ...args) {
+      if (published && !injected && String(file) === path.join(dir, options.to)) { injected = true; throw new Error('Injected destination read refusal'); }
+      return originalRead.call(fs, file, ...args);
+    };
+    const result = sessions.promote(dir, options);
+    assert.equal(result.status, 'partial');
+    assert.equal(result.error.code, 'promotion-recovery-required');
+    assert.deepEqual(fs.readFileSync(path.join(dir, result.recovery)), before[1]);
+    assert.deepEqual(fs.readFileSync(path.join(dir, options.from)), before[0]);
+  } finally { fs.renameSync = originalRename; fs.readFileSync = originalRead; fs.rmSync(dir, { recursive: true, force: true }); }
+});

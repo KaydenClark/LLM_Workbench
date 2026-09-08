@@ -1,10 +1,7 @@
 #!/usr/bin/env node
-// Session records: promote a live notepad or handoff into the tracked
-// checkpoints collection after a fail-closed privacy scan.
-//
-// Live grilling and handoff records are untracked by default; only a
-// promoted checkpoint is durable evidence. A scan hit stops promotion with the
-// line number and writes nothing.
+// Reconcile selected live-note material into existing durable owners.
+// The legacy checkpoint copy remains callable until recovery consumers migrate.
+// Privacy and structure checks never certify semantic fidelity or authority.
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
@@ -145,11 +142,12 @@ export function promote(root, options) {
     assertSafeWritePath(root, destination.absolute);
     original = fs.readFileSync(destination.absolute);
     if (!/^[a-f0-9]{64}$/i.test(String(options.expected ?? '')) || digest(original) !== options.expected.toLowerCase()) throw new Error('Destination hash is stale or invalid; read and reconcile again');
-    const content = fs.readFileSync(draft.absolute, 'utf8');
+    const draftBytes = fs.readFileSync(draft.absolute);
+    const content = new TextDecoder('utf-8', { fatal: true }).decode(draftBytes);
     const hits = scanPrivacy(JSON.stringify(selected.entries)).concat(scanPrivacy(content));
     if (hits.length) return { status: 'blocked', error: finding('secret-like-content', 'Selected material or authored destination contains private content'), hits };
     const owner = validatePromotionOwner(root, destination, content, original.toString('utf8'));
-    if (!fs.readFileSync(source.absolute).equals(sourceBytes) || !fs.readFileSync(destination.absolute).equals(original)) throw new Error('Source or destination changed during validation; read and reconcile again');
+    if (!fs.readFileSync(source.absolute).equals(sourceBytes) || !fs.readFileSync(destination.absolute).equals(original) || !fs.readFileSync(draft.absolute).equals(draftBytes)) throw new Error('Source, destination or draft changed during validation; read and reconcile again');
     backupDirectory = fs.mkdtempSync(path.join(path.dirname(destination.absolute), '.promotion-'));
     fs.writeFileSync(path.join(backupDirectory, 'original.md'), original, { flag: 'wx', mode: 0o600 });
     attempted = true;

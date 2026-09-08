@@ -867,7 +867,46 @@ reconcile them without discarding their source bytes. This does not block other
 work or grant the tool authority to choose what is important. Writes and cleanup
 assume one writer per note; revision checks are not simultaneous-writer locks.
 
-### Session Checkpoints
+### Direct Owner Promotion
+
+Reconcile selected claims into an existing owner; keep their corrections and
+unfinished context in the working note. The author selects the proper owner,
+checks current authorization and distills faithful candidate text. A note label,
+ID or tool result grants no authority. This command neither commits nor cleans
+up the source.
+
+```bash
+node workbench/tools/sessions.mjs promote --from NOTE --revision N \
+  --entries finding-001,correction-001 --to OWNER.md --expected SHA256 \
+  --content AUTHORED_DRAFT.md
+```
+
+`--expected` is the SHA-256 of the destination bytes just read. The source must
+be a valid local JSON note. The separate authored draft and existing destination
+must be ordinary, singly linked files inside the project. Drafts are temporary
+authored documents, not new notepad records; keep them ignored until deliberately
+reconciled. The command requires every selected entry, carries its corrections
+and dependencies, refuses private material, stale inputs and ignored-note
+citations, and validates the proposed owner before writing. Existing controls,
+specs, ADRs, Wiki and docs/feedback Markdown owners are supported; create new
+owners through their ordinary authorized workflow first.
+
+Spec checks reuse lifecycle diagnostics and preserve existing append-only rows;
+ADR and Wiki checks reuse their validators. Controls/documents receive heading
+and placeholder checks, not a semantic policy audit. Run the owner's normal
+checks too. Successful output names source selection/context, old/new hashes and
+verified destination bytes. Reconcile remaining source dependencies before a
+separate notepad trim; unchanged source and draft do not prove cleanup is safe.
+
+Use one writer. Revision/hash checks are sequential guards, not filesystem locks
+or concurrent-write protection. A recoverable publication/read-back failure
+restores original bytes. If the filesystem also refuses restoration, the command
+returns `partial`, exits nonzero and retains the named original backup for
+recovery; do not retry or trim blindly. A leftover `recoveryResidue` names a
+backup whose cleanup failed. No crash-proof or machine-loss guarantee is claimed.
+Legacy checkpoint creation remains available only until S-048 recovery migration.
+
+## Session Checkpoints
 
 Live grilling notepads and handoffs stay untracked in
 `workbench/sessions/grilling/` and `workbench/sessions/handoffs/`. Promote a
