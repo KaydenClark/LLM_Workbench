@@ -10,10 +10,7 @@ import { doctor, nextWork } from '../workbench/tools/spec-workbench.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-adoption.mjs');
-const coreSkills = [
-  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'carry', 'notepad', 'builder', 'auditor', 'reviewer', 'reconciler'
-];
+import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adoption-'));
