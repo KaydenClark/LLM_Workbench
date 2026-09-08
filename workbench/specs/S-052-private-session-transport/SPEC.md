@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling.
 **Blockers:** none
-**Latest event:** Owner assigned the reconciled v3.2.0 release through Example integration.
-**Next gate:** Allocate stable room identity and preserve it across lifecycle operations.
+**Latest event:** TK-001 claimed by codex.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -78,7 +78,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Allocate stable room identity and preserve it across lifecycle operations | ready | none | pending |
+| TK-001 | Allocate stable room identity and preserve it across lifecycle operations | in-progress | none | pending |
 | TK-002 | Synchronize selected safe notes and report acknowledgment | ready | TK-001 | pending |
 | TK-003 | Preserve conflicting/offline revisions under serialized sync | ready | TK-002 | pending |
 | TK-004 | Prove real Mac Windows Claude Codex continuation | blocked | live-device-and-private-repository-access | pending |

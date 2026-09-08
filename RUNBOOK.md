@@ -122,7 +122,8 @@ Expected result:
 
 ### Core-skill setup check
 
-The public source bundle is the closed catalog in `skills/README.md`. Test the missing-only installer against a disposable user
+The public source bundle is intentionally limited to the 18 skills in
+`skills/README.md`. Test the missing-only installer against a disposable user
 home without touching a real account:
 
 ```bash

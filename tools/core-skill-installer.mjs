@@ -54,7 +54,7 @@ function resolveDestinationRoot(destination) {
       }
       let resolved;
       try {
-        resolved = fs.realpathSync(current);
+        resolved = fs.realpathSync.native(current);
       } catch (error) {
         if (error.code !== 'ENOENT' && error.code !== 'ELOOP' && error.code !== 'ENOTDIR') throw error;
         return { error: fail('discovery-root-collision',
@@ -140,10 +140,23 @@ function exclusionPlans(destinations, all = false) {
     }
     const entry = lstatOrNull(file);
     if (entry && (!entry.isFile() || entry.isSymbolicLink() || entry.nlink > 1)) throw new Error('Managed exclusions require an ordinary, unshared file');
+    const tracked = owner ? gitRead(owner, ['ls-files', '-z']).split('\0').filter(Boolean).map(relative => {
+      const target = path.resolve(owner, relative);
+      const parent = resolveDestinationRoot(path.dirname(target));
+      if (parent.error) throw new Error('Tracked core ancestry cannot be resolved safely');
+      return path.join(parent.root, path.basename(target));
+    }) : [];
     const plan = plans.get(file) ?? { file, owner, original: entry ? fs.readFileSync(file) : null, paths: new Set() };
     for (const skill of missing) {
       const relative = path.relative(owner ?? directory, path.join(directory, skill)).split(path.sep).join('/');
-      if (owner && gitRead(owner, ['ls-files', '--', relative])) throw new Error('A missing core path is still tracked; prepare an owner-reviewed tracked-core migration first');
+      const destination = path.join(directory, skill);
+      const installed = lstatOrNull(destination);
+      const physical = installed?.isDirectory() ? fs.realpathSync.native(destination) : destination;
+      if (tracked.some(target => {
+        const indexed = lstatOrNull(target);
+        return target === physical || target.startsWith(physical + path.sep) ||
+          (installed && indexed && installed.dev === indexed.dev && installed.ino === indexed.ino);
+      })) throw new Error('A core path is still tracked; prepare an owner-reviewed tracked-core migration first');
       plan.paths.add(relative);
     }
     plans.set(file, plan);
@@ -291,7 +304,7 @@ export function updateCoreSkills(home, { explicit = false } = {}) {
     const sourceFailure = validateSource();
     if (sourceFailure) return sourceFailure;
     const identity = markerSourceIdentity();
-    if (gitOwner(path.resolve(home))) return fail('foreign-git-root', 'The provider home itself is Git-owned; choose a private backup home before explicit core replacement.');
+    if (gitOwner(fs.realpathSync.native(home))) return fail('foreign-git-root', 'The provider home itself is Git-owned; choose a private backup home before explicit core replacement.');
     const destinations = maintenanceDestinations(home);
     const canonicalRoot = destinations.find(item => item.engine === 'codex').root;
     const visited = new Set();
@@ -319,7 +332,7 @@ export function updateCoreSkills(home, { explicit = false } = {}) {
       fs.cpSync(entry.destination, saved, { recursive: true, force: false, errorOnExist: true, verbatimSymlinks: true });
       if (entryHash(saved) !== entry.before) throw new Error('Core backup read-back failed');
     }
-    const record = { schemaVersion: 1, home: fs.realpathSync(home), source: identity, entries };
+    const record = { schemaVersion: 1, home: fs.realpathSync.native(home), source: identity, entries };
     const recordPath = path.join(backup, 'recovery.json');
     fs.writeFileSync(recordPath, JSON.stringify(record, null, 2) + '\n', { mode: 0o600 });
     if (entries.some(entry => entryHash(entry.destination) !== entry.before)) throw new Error('Installed core changed during backup; read and reconcile again');
@@ -334,8 +347,8 @@ export function updateCoreSkills(home, { explicit = false } = {}) {
       } else fs.symlinkSync(path.relative(path.dirname(entry.destination), path.join(canonicalRoot, entry.skill)), entry.destination, 'dir');
     }
     for (const entry of entries) {
-      const resolved = fs.realpathSync(entry.destination);
-      const canonical = fs.realpathSync(path.join(canonicalRoot, entry.skill));
+      const resolved = fs.realpathSync.native(entry.destination);
+      const canonical = fs.realpathSync.native(path.join(canonicalRoot, entry.skill));
       if (resolved !== canonical || skillContentHash(resolved) !== skillContentHash(path.join(sourceRoot, entry.skill))) throw new Error('Updated core or adapter read-back failed');
       entry.after = entryHash(entry.destination);
     }
@@ -354,13 +367,18 @@ export function rollbackCoreSkills(home, backupPath) {
   let attempted = false;
   try {
     if (!backupPath) throw new Error('--backup must name a recorded core backup');
-    const backup = path.resolve(backupPath), homePath = fs.realpathSync(home);
-    if (path.dirname(fs.realpathSync(backup)) !== homePath || !path.basename(backup).startsWith('.workbench-core-backup-') || fs.lstatSync(backup).isSymbolicLink()) throw new Error('Backup must be an ordinary recorded directory in this provider home');
+    const backup = path.resolve(backupPath), homePath = fs.realpathSync.native(home);
+    if (path.dirname(fs.realpathSync.native(backup)) !== homePath || !path.basename(backup).startsWith('.workbench-core-backup-') || fs.lstatSync(backup).isSymbolicLink()) throw new Error('Backup must be an ordinary recorded directory in this provider home');
     const file = path.join(backup, 'recovery.json');
     if (!fs.lstatSync(file).isFile() || fs.lstatSync(file).nlink !== 1) throw new Error('Recovery metadata must be an ordinary file');
     const record = JSON.parse(fs.readFileSync(file, 'utf8'));
     if (record.schemaVersion !== 1 || record.home !== homePath || !Array.isArray(record.entries) || !record.entries.length) throw new Error('Core recovery metadata does not match this home');
+    if (gitOwner(homePath)) throw new Error('The provider home became Git-owned; reconcile backup ownership before rollback');
     const destinations = maintenanceDestinations(home);
+    // Recheck current Git ownership as well as bytes: an owner may have begun
+    // tracking an installed skill after the update. Read-only planning refuses
+    // that migration before restoration can change a tracked implementation.
+    exclusionPlans(destinations, true);
     const expected = new Set(destinations.flatMap(item => coreSkills.map(skill => path.join(item.root, skill))));
     if (record.entries.length !== expected.size) throw new Error('Recovery must name the complete installed core destination set');
     const seen = new Set();

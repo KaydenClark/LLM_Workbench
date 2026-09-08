@@ -196,17 +196,17 @@ test('doctor --home reports a stale or unknown installed skill generation per re
     const findings = doctor(dir, { home });
 
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.skill, item.root]).sort(), [
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'auditor', '.claude/skills'],
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'builder', '.agents/skills'],
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'reviewer', '.agents/skills'],
-      ['stale-skill', 'attention', 'skills', 'none', 'genesis', '.claude/skills']
-    ]);
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'auditor'],
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'builder'],
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'reviewer'],
+      ['stale-skill', 'attention', 'skills', 'none', 'genesis']
+    ].flatMap(row => ['.agents/skills', '.claude/skills'].map(discovery => [...row, discovery])).sort());
     assert.equal(findings.find((item) => item.code === 'stale-skill').release, 'v0.0.0');
     assert.match(findings.find((item) => item.code === 'stale-skill').message, /v0\.0\.0.*v\d+\.\d+\.\d+|v\d+\.\d+\.\d+.*v0\.0\.0/);
     assert.deepEqual(snapshot(home), before, 'doctor never writes to the home');
     const cli = cliDoctor(dir, home);
     assert.equal(cli.status, 0, 'skill findings are attention and never block');
-    assert.equal(cli.findings.length, 4);
+    assert.equal(cli.findings.length, 8, 'both discovery entries expose the same changed canonical markers');
     assert.equal(nextWork(dir).ticketId, 'TK-001');
     assert.ok(SCOPES.includes('skills'));
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a missing skill is Adoption preflight\'s finding, not doctor\'s');

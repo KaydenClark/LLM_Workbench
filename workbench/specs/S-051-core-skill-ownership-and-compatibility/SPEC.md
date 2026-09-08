@@ -149,6 +149,8 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 
 | 2026-09-08 | TK-001 | Canonical installer and explicit maintenance candidate prepared; implementation still under full verification | Normal installer 15 tests green at 619aa84; explicit maintenance red/green, incomplete recovery record red/green; current 20 installer and 8 upgrade tests pass. Upgrade now delegates to canonical updater and retains coreRecovery. Legacy separate copies restore, newer edits and damaged backups are preserved, tracked core refuses before mutation | Runbook, public orientation, update-harness and generic adoption procedure reconciled; tracked-core migration plan linked | Immutable full suite and independent review pending; no external personal repository changed |
 
+| 2026-09-08 | TK-001 | Independent review rejected 1392fae with four reproduced ownership and case-alias gaps | Full suite 35 of 37 passed; catalog prose and canonical-adapter diagnostics fixture failed. Review reproduced linked-home Git backup escape, newly tracked rollback overwrite, tracked case-alias overwrite, and duplicate physical roots. Four regression cases demonstrated red; repaired installer 24 tests green, with tracked directory and adapter aliases covered | Restored catalog-checked counts; diagnostics fixture now expects both adapters to expose canonical marker changes | Fresh immutable full suite and independent re-review pending; no integration approval |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.

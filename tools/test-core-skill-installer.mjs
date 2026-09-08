@@ -134,6 +134,82 @@ test('explicit maintenance permits ignored managed core in personal Git and refu
   } finally { fs.rmSync(home, { recursive: true, force: true }); }
 });
 
+test('explicit update resolves provider-home ownership before creating backups', () => {
+  const container = fixtureHome();
+  try {
+    const repository = path.join(container, 'repository');
+    const actual = path.join(repository, 'home');
+    const home = path.join(container, 'linked-home');
+    fs.mkdirSync(actual, { recursive: true });
+    fs.symlinkSync(actual, home, 'dir');
+    assert.equal(spawnSync('git', ['init', '-q', repository]).status, 0);
+    assert.equal(install(home).status, 0);
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'blocked', updated.stdout);
+    assert.equal(updated.report.error.code, 'foreign-git-root');
+    assert.equal(fs.readdirSync(actual).some(name => name.startsWith('.workbench-core-backup-')), false);
+  } finally { fs.rmSync(container, { recursive: true, force: true }); }
+});
+
+test('rollback refuses core paths newly tracked after the update', () => {
+  const home = fixtureHome();
+  try {
+    assert.equal(install(home).status, 0);
+    const file = path.join(home, '.agents/skills/genesis/SKILL.md');
+    fs.writeFileSync(file, '# Old local implementation\n');
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'updated', updated.stdout);
+    const personal = path.join(home, '.agents');
+    assert.equal(spawnSync('git', ['init', '-q', personal]).status, 0);
+    assert.equal(spawnSync('git', ['add', '-f', 'skills/genesis'], { cwd: personal }).status, 0);
+    const before = fs.readFileSync(file);
+    const refused = maintain(home, 'rollback', '--backup', updated.report.backup);
+    assert.equal(refused.report.status, 'blocked', refused.stdout);
+    assert.match(refused.report.error.message, /tracked-core migration/);
+    assert.deepEqual(fs.readFileSync(file), before);
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('core replacement refuses tracked case aliases on a case-insensitive filesystem', t => {
+  for (const provider of ['.agents', '.claude']) {
+  const home = fixtureHome();
+  try {
+    const personal = path.join(home, provider);
+    fs.mkdirSync(personal);
+    assert.equal(spawnSync('git', ['init', '-q', personal]).status, 0);
+    assert.equal(install(home).status, 0);
+    const lower = path.join(personal, 'skills/genesis');
+    const upper = path.join(personal, 'skills/Genesis');
+    fs.renameSync(lower, upper);
+    if (!fs.existsSync(lower)) { t.skip('filesystem is case-sensitive'); return; }
+    const file = path.join(upper, 'SKILL.md');
+    fs.writeFileSync(file, '# Tracked case alias\n');
+    assert.equal(spawnSync('git', ['add', '-f', 'skills/Genesis'], { cwd: personal }).status, 0);
+    const refused = maintain(home, 'update', '--explicit-update');
+    assert.equal(refused.report.status, 'blocked', refused.stdout);
+    assert.equal(fs.readFileSync(file, 'utf8'), '# Tracked case alias\n');
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+  }
+});
+
+test('case-aliased discovery roots retain one physical core implementation through update and rollback', t => {
+  const home = fixtureHome();
+  try {
+    const shared = path.join(home, 'shared');
+    fs.mkdirSync(shared);
+    if (!fs.existsSync(path.join(home, 'SHARED'))) { t.skip('filesystem is case-sensitive'); return; }
+    for (const [provider, target] of [['.agents', '../shared'], ['.claude', '../SHARED']]) {
+      fs.mkdirSync(path.join(home, provider));
+      fs.symlinkSync(target, path.join(home, provider, 'skills'), 'dir');
+    }
+    assert.equal(install(home).status, 0);
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'updated', updated.stdout);
+    assert.equal(fs.lstatSync(path.join(shared, 'genesis')).isDirectory(), true);
+    assert.equal(maintain(home, 'rollback', '--backup', updated.report.backup).report.status, 'rolled-back');
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
 test('normal setup installs only missing bundled core skills in both user discovery roots', () => {
   const home = fixtureHome();
   try {
