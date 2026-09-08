@@ -343,9 +343,10 @@ test('a blocked write leaves the previous valid note in place', () => {
     // bit does not do it: publication renames a fresh file over the
     // destination, and POSIX rename needs write permission on the directory,
     // not on the target - so the append simply succeeded there and an earlier
-    // version of this test skipped its own assertions. A second hard link
-    // does it everywhere: the note still reads, and the write path refuses to
-    // rename over a file something else also points at.
+    // version of this test skipped its own assertions. A second hard link does
+    // it everywhere - not because rename fails over a hard link (it succeeds on
+    // Windows and on POSIX) but because `assertSafeWritePath` refuses `nlink > 1`
+    // before any I/O. The note still reads; only the write is refused.
     const link = path.join(path.dirname(notePath), 'second-name.json');
     fs.linkSync(notePath, link);
     const blocked = appendEntry(dir, { note: created.note, revision: 2, kind: 'finding', topic: 'x', content: 'Interrupted.' });
@@ -411,6 +412,19 @@ test('a generated entry id survives a trim', () => {
     assert.equal(trimEntries(dir, { note: created.note, revision: 6, entry: ['finding-002', 'finding-003', 'finding-004'] }).status, 'trimmed');
     const after = appendEntry(dir, { note: created.note, revision: 7, kind: 'finding', topic: 'x', content: 'Recorded after the record was emptied.' });
     assert.equal(after.entry, 'finding-005', 'the high-water mark survives an empty record');
+
+    // The mark governs a supplied id too. Testing only the generated path left
+    // `--entry-id finding-002` free to write different material under an id the
+    // record itself proves was used and trimmed - which is the loss the mark
+    // exists to prevent, under a guarantee both Runbooks state unqualified.
+    const reused = appendEntry(dir, { note: created.note, revision: 8, kind: 'finding', topic: 'x', 'entry-id': 'finding-002', content: 'Different material under a spent id.' });
+    assert.equal(reused.status, 'blocked');
+    assert.equal(reused.error.code, 'duplicate-identity');
+    assert.match(reused.error.message, /already used finding-002/);
+    assert.equal(appendEntry(dir, { note: created.note, revision: 8, kind: 'finding', topic: 'x', 'entry-id': 'finding-009', content: 'A number the kind has not reached.' }).status, 'appended',
+      'a number above the mark is still the caller\'s to choose');
+    // A prefix with no mark yet may legitimately start at zero.
+    assert.equal(appendEntry(dir, { note: created.note, revision: 9, kind: 'finding', topic: 'x', 'entry-id': 'source-0', content: 'First use of a new prefix.' }).status, 'appended');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -450,6 +464,8 @@ test('no command publishes a record that would fail its own schema', () => {
     assert.equal(validateNote(dir, file).status, 'valid', 'the migrated record reads back');
     const stored = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
     assert.equal(stored.extensions.migrated_revision, 0, 'the legacy value is preserved, not dropped');
+    assert.deepEqual(stored.extensions.migrated_from, ['scope-1'], 'the migration chain is a list, not a replaced value');
+    assert.equal(stored.extensions.updated_at_before_migration, legacy.updated_at, 'the record\'s last update time survives its own migration');
     assert.equal(appendEntry(dir, { note: file, revision: 1, kind: 'finding', topic: 'x', content: 'Still writable.' }).status, 'appended');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

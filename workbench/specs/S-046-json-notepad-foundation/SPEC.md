@@ -481,16 +481,25 @@ about - the finding the reviews kept returning.
 
 The suite is not fully green on Windows and no claim is made that it is.
 
-One measurement is unreconciled and is left named rather than resolved. This
-account reports 24 pass / 6 fail of the runnable union, measured in isolated LF
-clones. The fourth review measured 22 / 8 on the same candidate, with
-`test-branch-closeout` and `test-control-fidelity` also failing. Both pass here
-in a single-branch clone and in a full clone with every ref present, so the
-difference is environmental and unexplained rather than a disagreement about
-the candidate. TK-001's account lists both commands among its failures, so the
-reviewer's result is the one with precedent on this host. Neither figure is
-withdrawn; what both agree on is the relative claim, which is the one that
-carries weight: the same commands fail on the unchanged baseline.
+**The 24/6-versus-22/8 disagreement was the shell, not the clone.** The fifth
+review resolved it. `tools/test-branch-closeout.mjs` spawns `bash` and
+`tools/test-control-fidelity.mjs` spawns `sh`. Neither is on the Windows
+machine PATH - `C:\Program Files\Git\cmd` carries `git.exe` and `gh`, while
+`Git\bin` and `Git\usr\bin` do not appear - and Git Bash injects `/usr/bin`
+into its own PATH. One clone, one commit, one Node: both files pass from Git
+Bash and fail from PowerShell, where `spawnSync` returns `status: null` with
+`ENOENT`. Two correct measurements of different shells, and nothing about the
+candidate differs between them. This account's figures are Git Bash figures
+and say so from here on.
+
+That resolution exposes a defect in `tools/test-branch-closeout.mjs`, which is
+outside this range and is recorded as a gap rather than repaired here: its two
+cases asserting `notEqual(result.status, 0)` **pass vacuously** where the
+interpreter is absent, because a process that never spawned is trivially "not
+zero". Under PowerShell they report green having proved nothing. The owner is
+whoever next touches that file; the smallest correction is to assert
+`result.error === undefined` first, or to resolve the interpreter and skip with
+a named reason when it is missing.
 
 That timeout hid a real violation of this branch's own making, and the
 sequence is worth recording exactly. `close` published an evidence row. Three
@@ -543,8 +552,13 @@ one held. Recorded by severity, with what each would have cost a reader:
   renames over the destination, and POSIX `rename` needs write permission on
   the directory, not the target. On Linux and macOS the append simply
   succeeded and the test passed having asserted nothing. This is the seam
-  TK-002 names by name. It now forces the failure with a second hard link,
-  which blocks the rename on every platform, and asserts unconditionally.
+  TK-002 names by name. It now forces the failure with a second hard link and
+  asserts unconditionally. The link is not what blocks the write - a rename
+  over a hard-linked destination succeeds on Windows and on POSIX. What
+  refuses is `assertSafeWritePath`, whose `nlink > 1` guard runs before any
+  I/O, which is why the refusal is platform-independent. The repair is sound;
+  the mechanism was misdescribed here for two rounds, in the account whose
+  subject is mechanism accuracy.
 - **MEDIUM, the privacy scan did not cover what four controls promised.**
   `AGENTS.md`, both Runbooks and the skill state without qualification that
   new material is scanned; `--next-action`, `--unresolved`, `--topic`,

@@ -180,12 +180,23 @@ function scanNew(parts) {
 // after a trim, because the entries that proved the number were the ones being
 // removed. Trim records the mark for what it removes, so the guarantee reaches
 // records that predate the field.
+const ID_PARTS = /^([a-z_]+)-(\d+)$/;
+
+// A stored mark is data like any other, and a hand-authored record can carry
+// anything. `null` means this prefix has no usable mark - either none recorded
+// or a value that is not a whole number - which is different from a mark of
+// zero, because an explicit `x-0` is a legitimate first use of `x`.
+function markOf(sequence, prefix) {
+  const stored = Number(sequence?.[prefix]);
+  return Number.isInteger(stored) && stored >= 0 ? stored : null;
+}
+
 function sequenceFrom(entries, existing = {}) {
   const marks = { ...existing };
   for (const entry of entries) {
-    const suffix = /^([a-z_]+)-(\d+)$/.exec(entry?.id ?? '');
-    if (!suffix) continue;
-    marks[suffix[1]] = Math.max(Number(marks[suffix[1]] ?? 0), Number(suffix[2]));
+    const parts = ID_PARTS.exec(entry?.id ?? '');
+    if (!parts) continue;
+    marks[parts[1]] = Math.max(markOf(marks, parts[1]) ?? 0, Number(parts[2]));
   }
   return marks;
 }
@@ -263,10 +274,20 @@ export function appendEntry(root, options) {
   const highest = note.entries.reduce((top, entry) => {
     const suffix = new RegExp(`^${kind}-(\\d+)$`).exec(entry.id);
     return suffix ? Math.max(top, Number(suffix[1])) : top;
-  }, Number(sequence[kind] ?? 0));
+  }, markOf(sequence, kind) ?? 0);
   const id = options['entry-id'] ?? `${kind}-${String(highest + 1).padStart(3, '0')}`;
   if (!ENTRY_ID.test(id)) return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} is not an identifier`);
   if (existing.has(id)) return blocked('duplicate-identity', `${resolved.relative} already carries entry ${id}`, { entry: id });
+  // The mark governs a supplied id too, not only a generated one. Consulting it
+  // only when generating left `--entry-id finding-002` free to write different
+  // material under an id the record itself proves was already used and trimmed -
+  // which is the whole loss the mark exists to prevent, and both Runbooks state
+  // the guarantee without qualifying it to generated ids.
+  const parts = ID_PARTS.exec(id);
+  const mark = parts ? markOf(sequence, parts[1]) : null;
+  if (options['entry-id'] && parts && mark !== null && Number(parts[2]) <= mark) {
+    return blocked('duplicate-identity', `${resolved.relative} has already used ${id}; ${parts[1]} has reached ${mark} and an id is never reused, so choose a higher number or let the runtime generate one`, { entry: id, mark });
+  }
   const corrects = options.corrects ?? null;
   const dependsOn = asArray(options['depends-on']);
   for (const link of [...(corrects ? [corrects] : []), ...dependsOn]) {
@@ -559,7 +580,13 @@ export function migrateNote(root, options) {
     extensions: {
       durable_owners: [],
       ...note.extensions,
-      migrated_from: legacyVersion,
+      // Appended, never replaced: a record that has migrated before keeps the
+      // whole chain, and its last recorded update time is preserved rather than
+      // overwritten by the migration's own stamp. Both were quietly lost in a
+      // command whose comment promises nothing is.
+      migrated_from: [...asArray(note.extensions?.migrated_from), legacyVersion],
+      migrated_at: nowStamp(),
+      ...(note.updated_at === undefined ? {} : { updated_at_before_migration: note.updated_at }),
       entry_sequence: sequenceFrom(note.entries, note.extensions?.entry_sequence),
       ...(legacyRevision === undefined ? {} : { migrated_revision: legacyRevision })
     }

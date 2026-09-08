@@ -51,64 +51,19 @@ export function liveCitations(text) {
   return out;
 }
 
-// A bare SHA in a live section is the same promise as a `path:line`: a reader
-// is invited to go and look. S-046 shipped three citations to commits that had
-// been squashed away before the push - including, twice, inside the very row
-// written to correct a previous wrong citation. A discarded commit is a real
-// object until it is collected and then it is nothing, so "it resolved when I
-// wrote it" is not the property that matters; reachability is.
-const SHA = /`([0-9a-f]{7,40})`/g;
-
-export function liveShas(text) {
-  const out = [];
-  let section = null;
-  for (const line of text.split('\n')) {
-    if (line.startsWith('## ')) section = line.slice(3).trim();
-    if (section === EVIDENCE) continue;
-    for (const m of line.matchAll(SHA)) out.push(m[1]);
-  }
-  return [...new Set(out)];
-}
-
-function gitOk(args) {
-  try {
-    return { ok: true, out: execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() };
-  } catch {
-    return { ok: false, out: '' };
-  }
-}
-
-function commitReachable(sha, cache) {
-  if (!cache.has(sha)) {
-    // Absent is not a verdict. A single-branch or shallow clone simply does not
-    // have every commit a spec may legitimately name - S-049 cites a merge on
-    // `origin/main`, which this branch does not descend from - and failing on
-    // what the checkout happens to lack would make a mandatory suite command
-    // depend on the reviewer's ref set rather than on the content. What this
-    // holds is the one case that is a defect wherever it is observed: the
-    // object is present, it is a commit, and nothing points at it. That is what
-    // a squash leaves behind, and what the collector eventually removes.
-    if (!gitOk(['cat-file', '-e', `${sha}^{commit}`]).ok) cache.set(sha, 'absent');
-    else {
-      const branches = gitOk(['branch', '-a', '--contains', sha]);
-      cache.set(sha, branches.ok && branches.out ? 'reachable' : 'unreachable');
-    }
-  }
-  return cache.get(sha);
-}
-
-test('every commit a live spec section cites is reachable from this branch', () => {
-  const cache = new Map();
-  const orphaned = [];
-  for (const dir of anchoredSpecs()) {
-    for (const sha of liveShas(fs.readFileSync(path.join(SPECS, dir, 'SPEC.md'), 'utf8'))) {
-      if (commitReachable(sha, cache) === 'unreachable') orphaned.push(`${dir} cites ${sha}`);
-    }
-  }
-  assert.deepEqual(orphaned, [],
-    'a live section cites a commit this checkout holds but no branch contains; a squashed or discarded commit cannot be followed and will be garbage-collected');
-});
-
+// A withdrawn check, recorded rather than silently dropped. This branch cited
+// three commits it had squashed away, so a test was added here requiring every
+// commit a live spec section names to be contained in some branch. It fails in
+// an ordinary clone on correct content: `git clone` copies the whole object
+// store but only `refs/heads/*`, so S-049's legitimate citation of a merge on
+// `origin/main` arrives as an object no ref in the clone contains, because the
+// clone's `origin/main` is the source's local `main`, not the remote's. Skipping
+// absent objects does not help - the object is present. The property is only
+// checkable where the orphan exists, the authoring repository, and a mandatory
+// suite command that goes red on a correct spec in every clone is worse than no
+// check at all. The practice it was meant to enforce is kept as a practice:
+// verify `git branch -a --contains` before writing a commit into a durable
+// record. S-046 records the withdrawal and its reason.
 function treeFiles(sha, cache) {
   if (!cache.has(sha)) {
     cache.set(sha, execFileSync('git', ['ls-tree', '-r', '--name-only', sha], { cwd: root, encoding: 'utf8' }).split('\n'));
