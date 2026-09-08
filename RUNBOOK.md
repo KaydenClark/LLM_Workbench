@@ -1280,3 +1280,14 @@ then installed behavior in the actual room. Project-owned schemas/templates and
 promoted Wiki knowledge travel in project Git; optional private session transport
 handles live working context separately. A clean upstream test is not downstream
 acceptance. Recheck actual destination refs and preserve unknown remote state.
+
+When an assigned evidence record needs partitioning, first pin the source commit
+and preserve the original published file. Keep each distinct introduction and
+its provenance with the material it introduces; never merge those boundaries
+into a new narrative. In the existing owning spec, record each successor part's
+stable path, source range or entry IDs, count and content hash, plus total source
+and resulting counts. Verify that the parts account for all selected material
+exactly once, with exclusions explicitly named, and read back their bytes against
+the pinned source. Append a route from the existing owner to the parts; leave
+published rows and prior citations intact. No automatic size cap or routine
+partition is required. Never weaken validators or discard evidence to fit a cap.
