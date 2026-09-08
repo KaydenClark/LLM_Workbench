@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project.
 **Blockers:** none
-**Latest event:** TK-002 claimed by codex.
-**Next gate:** Close TK-002 with verification and documentation proof.
+**Latest event:** TK-003 claimed by codex.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -101,8 +101,8 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Promote and push the complete reconciled scope | done | none | 33 required commands pass; independent planning PASS cb12c23; 181 records, 19 candidates and 59 mappings preserved; remote plan verified |
-| TK-002 | Reconcile ADRs and all included documentation contracts | in-progress | TK-001 | pending |
-| TK-003 | Converge capability implementations and useful continuity proof | ready | TK-002 | pending |
+| TK-002 | Reconcile ADRs and all included documentation contracts | done | TK-001 | Full 33-command suite passes at fixed 87244cc; independent bounded documentation PASS; guardrail78 unchanged |
+| TK-003 | Converge capability implementations and useful continuity proof | in-progress | TK-002 | pending |
 | TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | ready | TK-003 | pending |
 | TK-005 | Deliver Example v3.2.0 and fresh project acceptance | ready | TK-004 | pending |
 | TK-006 | Reconcile release receipts and readiness verdict | ready | TK-005 | pending |
@@ -183,6 +183,9 @@ claims/status/lineage, not private transcripts.
 
 | 2026-09-08 | TK-001 | Planning candidate verified and independently reviewed | All 33 required commands passed on the planning tree beginning at 18d9235, with generated board refreshed during the run; final cb12c23 delta passed independent planning review, doctor and citations; all 181 original row fields, 19 candidates and 59 mappings preserved; privacy scan clean; guardrail 78/100 unchanged | 12 ADRs and owning current direction, stable capability assignments and Example S-003 recorded | Runtime implementation, transport/host gates and release/Example acceptance remain open; no outcome gain claimed |
 | 2026-09-08 | TK-001 | Ticket closed | 33 required commands pass; independent planning PASS cb12c23; 181 records, 19 candidates and 59 mappings preserved; remote plan verified | Stable specs and 12 ADRs/current owners promoted; Example S-003 independently reviewed and pushed | TK-002 onward; no v3.2.0 implementation or readiness claim |
+
+| 2026-09-08 | TK-002 | Documentation reconciliation verified after independent corrections | Full 33-command suite passed on clean fixed candidate 87244cc; independent bounded docs review PASS; R088 no pooling, R099 source/use states and R121 exact partition accounting corrected; initial catalog wording regression fixed with tests unchanged, contaminated dirty-source upgrade/diagnostic attempts retained and clean reruns pass; guardrail 78/100 unchanged | Root and generic report/operational/skill/Wiki/evaluation owners reconciled; runtime-specific contracts remain assigned to their capability owners | Runtime implementation and installed/live-host acceptance remain open; no generalized outcome claim |
+| 2026-09-08 | TK-002 | Ticket closed | Full 33-command suite passes at fixed 87244cc; independent bounded documentation PASS; guardrail78 unchanged | All included documentation guidance reconciled; runtime-specific owners remain explicit | S-046/047/048/051/052/053 implementation and Example acceptance |
 
 ## Completion Result
 

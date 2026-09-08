@@ -195,7 +195,8 @@ protocol are proposals, not verbatim owner approvals.
 | TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
 | TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | done | TK-001 | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged |
 | TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | ready | TK-001 | pending |
-| TK-004 | Migrate live JSON layout and ship schema/examples through managed installation without moving legacy sources | ready | TK-002 | pending |
+| TK-006 | Repair reviewed discovery chronology, safe discovery paths and decoded-field privacy before using the candidate | ready | TK-002 | pending |
+| TK-004 | Migrate live JSON layout and ship schema/examples through managed installation without moving legacy sources | ready | TK-006 | pending |
 | TK-005 | Prove authored handoff, retained-context cleanup and real fresh-agent recovery through installed skills | ready | TK-004 | pending |
 
 ### TK-001 - Scope and reconcile
@@ -255,6 +256,22 @@ last confirmed saved boundary; a synthetic fixture is only mechanical proof.
 S-052 separately owns optional transport; local foundation stays independent.
 The fetched unpublished TK-002 candidate requires review and repairs before reuse;
 its historical evidence and outstanding acceptance are preserved.
+
+### TK-006 - Reconcile the reused candidate before delivery
+
+**Stance:** Builder
+
+The independent review of a9bf47c9d029feb662ec79f5240e0439a0fcdb76 against
+212762774b5cb7c065ab573bb487752fe98eff4c reproduced three defects despite
+21 passing notepad tests: list sorts newest-updated rather than newest-created;
+list reads external symlink metadata that read refuses; create/current scan raw
+view-field JSON before decoding, allowing escaped new private values through.
+Reuse the candidate with its append-only history intact, then add failing public
+regressions for all three. Correct ordering, apply ordinary-path read boundaries
+to discovery, and scan decoded new fields without rescanning preserved history.
+Run targeted and full suites, preserve all existing evidence and record the exact
+new reviewed candidate. Existing TK-002 closure is historical, not an integration
+PASS. TK-004/005 still own remaining layout and actual continuity acceptance.
 
 ## Acceptance Criteria
 
