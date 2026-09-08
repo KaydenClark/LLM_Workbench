@@ -188,6 +188,23 @@ export function doctor(rootDir, options = {}) {
   } catch (error) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
+  issues.push(...packetFindings(specs, options));
+  checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
+  checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
+  issues.push(...collectionFindings(root));
+  issues.push(...skillFindings(root, options.home));
+  issues.push(...gitFindings(root, specs));
+  return issues;
+}
+
+// Validate proposed spec bytes without touching files or inspecting the host.
+export function validateSpecCandidate(root, filePath, content) {
+  const specs = loadSpecs(root, { allowDuplicates: true, contentOverrides: new Map([[path.resolve(filePath), content]]) });
+  return packetFindings(specs);
+}
+
+function packetFindings(specs, options = {}) {
+  const issues = [];
   issues.push(...identityFindings(specs));
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of specs) {
@@ -217,11 +234,6 @@ export function doctor(rootDir, options = {}) {
       if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) issues.push(finding('broken-link', `${spec.id} links to missing ${link}`, { specId: spec.id }));
     }
   }
-  checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
-  checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
-  issues.push(...collectionFindings(root));
-  issues.push(...skillFindings(root, options.home));
-  issues.push(...gitFindings(root, specs));
   return issues;
 }
 
@@ -338,7 +350,7 @@ function loadSpecs(rootDir, options = {}) {
     if (fs.existsSync(filePath)) paths.push(filePath);
   }
   const specs = paths.sort().map((filePath) => ({
-    ...parseSpecPacket(fs.readFileSync(filePath, 'utf8'), filePath, root),
+    ...parseSpecPacket(options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8'), filePath, root),
     specsPrefix
   }));
   if (!options.allowDuplicates) {

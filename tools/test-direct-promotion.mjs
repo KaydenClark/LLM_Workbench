@@ -107,3 +107,50 @@ for (const failure of ['write', 'read-back']) {
     } finally { fs.renameSync = originalRename; fs.readFileSync = originalRead; fs.rmSync(dir, { recursive: true, force: true }); }
   });
 }
+
+const specBody = '# S-001 - Promotion fixture\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 1\n**Owner:** test\n**Updated:** 2026-09-08\n**Catalog description:** Verify promotion.\n**Blockers:** none\n**Latest event:** Started.\n**Next gate:** Verify.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | Verify | ready | none | pending |\n\n## Append-Only Evidence And Execution Log\n\n| Date | Ticket | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-08 | plan | Original evidence | Checked | Current | Implementation |\n';
+const ownerCases = [
+  ['spec', 'workbench/specs/S-001-promotion/SPEC.md', specBody, value => value.replace('**Status:** active', '**Status:** invalid')],
+  ['adr', 'workbench/docs/adr/000A-promotion.md', '---\nstatus: proposed\ndate: 2026-09-08\ncanonicalized_in:\n  - RUNBOOK.md\n---\n\n# Promotion rationale\n', value => value.replace('status: proposed', 'status: invalid')],
+  ['wiki', 'workbench/wiki/promotion.md', '---\ntype: project\nstatus: active\nsensitivity: normal\nknowledge_role: curated\nprovenance:\n  - Verified source\nsource_paths:\n  - RUNBOOK.md\nlast_verified: 2026-09-08\n---\n\n# Promotion knowledge\n', value => value.replace('type: project', 'type: invalid')]
+];
+for (const [owner, file, original, invalidate] of ownerCases) {
+  test(`${owner} promotion validates candidate owner structure before publishing`, () => {
+    const { dir, options } = fixture();
+    try {
+      options.to = file;
+      fs.mkdirSync(path.dirname(path.join(dir, file)), { recursive: true });
+      fs.writeFileSync(path.join(dir, file), original);
+      options.expected = hash(original);
+      fs.writeFileSync(path.join(dir, options.content), invalidate(original));
+      const refused = sessions.promote(dir, options);
+      assert.equal(refused.status, 'blocked', JSON.stringify(refused));
+      assert.equal(fs.readFileSync(path.join(dir, file), 'utf8'), original);
+      fs.writeFileSync(path.join(dir, options.content), original + '\nThe corrected supported rule.\n');
+      const result = sessions.promote(dir, options);
+      assert.equal(result.status, 'promoted', JSON.stringify(result));
+      assert.equal(result.destination.owner, owner);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+test('spec promotion cannot rewrite an existing append-only evidence row', () => {
+  const { dir, options } = fixture();
+  try {
+    options.to = ownerCases[0][1];
+    fs.mkdirSync(path.dirname(path.join(dir, options.to)), { recursive: true });
+    fs.writeFileSync(path.join(dir, options.to), specBody);
+    options.expected = hash(specBody);
+    fs.writeFileSync(path.join(dir, options.content), specBody.replace('Original evidence', 'Rewritten evidence'));
+    assert.equal(sessions.promote(dir, options).status, 'blocked');
+    assert.equal(fs.readFileSync(path.join(dir, options.to), 'utf8'), specBody);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+test('unrecognized ADR filenames cannot bypass the ADR validator', () => {
+  const { dir, options } = fixture();
+  try {
+    options.to = 'workbench/docs/adr/unrecognized.md';
+    fs.writeFileSync(path.join(dir, options.to), '# Original\n'); options.expected = hash('# Original\n');
+    assert.equal(sessions.promote(dir, options).status, 'blocked');
+    assert.equal(fs.readFileSync(path.join(dir, options.to), 'utf8'), '# Original\n');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

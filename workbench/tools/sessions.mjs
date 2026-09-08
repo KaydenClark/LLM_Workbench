@@ -13,7 +13,8 @@ import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath,
 import { scanPrivacy } from './privacy.mjs';
 import { readNote, resolveNote } from './notepads.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
-import { validateAdrs } from './adr.mjs';
+import { validateSpecCandidate } from './spec-workbench.mjs';
+import { listAdrs, validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { controls } from './workbench-layout.mjs';
 import { laneRelative, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
@@ -103,9 +104,15 @@ function validatePromotionOwner(root, destination, content, original) {
     if (before.id !== after.id) throw new Error('Promotion cannot change the existing spec identity');
     const oldRows = evidenceRows(original); const newRows = evidenceRows(content);
     if (oldRows.some((row, index) => newRows[index] !== row)) throw new Error('Promotion cannot rewrite append-only spec evidence');
+    const existing = new Set(validateSpecCandidate(root, destination.absolute, original).map(issue => JSON.stringify(issue)));
+    const invalid = validateSpecCandidate(root, destination.absolute, content).filter(issue => issue.severity === 'error' && (issue.specId === after.id || !existing.has(JSON.stringify(issue))));
+    if (invalid.length) throw new Error(invalid.map(issue => issue.message).join('; '));
     return 'spec';
   }
-  if (beneath(collectionRelative(root, 'adr'))) findings = validateAdrs(root, overrides).filter(issue => issue.severity === 'error');
+  if (beneath(collectionRelative(root, 'adr'))) {
+    if (!listAdrs(root).some(record => record.filePath === destination.absolute)) throw new Error('Destination is not a recognized ADR record');
+    findings = validateAdrs(root, overrides).filter(issue => issue.severity === 'error');
+  }
   else if (beneath(laneRelative(root, 'wiki'))) findings = validateWiki(root, overrides).filter(issue => issue.severity === 'error' && (issue.note === destination.relative || issue.message.includes(destination.relative)));
   else if (beneath(laneRelative(root, 'docs')) || beneath(laneRelative(root, 'feedback'))) return 'document';
   else throw new Error('Destination must be an existing control, spec, ADR, Wiki or docs/feedback Markdown owner');
