@@ -49,6 +49,14 @@ Schema and examples under `notepads/templates/` are tracked and cannot be live
 notes. Never
 commit one, and never cite one as durable evidence.
 
+For a new visible identity, use `notepads.mjs allocate --prefix N` with the
+same objective/title fields (H can name a handoff type). The returned ID is the
+visible label and filename; no second identity is added. Read an allocated or
+legacy visible ID through `--note ID`, even when its existing filename differs.
+Use one writer, preserve existing paths, and reconcile unreadable or ambiguous
+inventory before allocating. The Runbook owns alphabet, width and collision
+rules; neither an ID nor allocation grants authority.
+
 ## 2. Save it when you learn it, not at closeout
 
 Write during the work. Token exhaustion or the owner pressing Stop can end the

@@ -190,6 +190,32 @@ files with `version-mismatch`).
 
 ### JSON Notepads
 
+Visible note identifiers can be allocated without changing existing note paths:
+
+```bash
+node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY --title "TITLE"
+node workbench/tools/notepads.mjs read --note N-001 --view current
+```
+
+Choose the artifact type prefix explicitly (for example N for objective notes,
+H for handoffs); it is the prefix in the visible ID, not another identity field.
+Allocation uses alphabet `0-9 A-Z a-z`, starts at one with minimum width three,
+and grows without truncation. It chooses the first unoccupied label; identifiers
+do not encode chronology. Legacy numeric labels reserve their existing text and
+are never decoded as a base-62 allocation high-water mark or renamed. Prefixes
+have independent scopes within the room. Case-folded and leading-zero variants
+reserve the same value, so N-00A, N-00a and N-000A cannot be allocated twice.
+Those restrictions deliberately avoid aliases on case-insensitive filesystems.
+
+Bare visible IDs resolve through the local inventory, including legacy records
+whose filenames differ from their IDs. Explicit paths retain their old behavior.
+Unreadable records or ambiguous IDs refuse identifier operations until their
+inventory is reconciled; they are preserved. Ordinary `create --note NAME`
+remains available for legacy named context. Allocation assumes one writer and
+checks current records; it supplies neither a distributed lock nor an eternal
+registry of deleted local notes. Active handoff retention still prevents source
+cleanup. This note command does not change spec, ticket or ADR allocation and parsing.
+
 New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
 and updates. A new layout declares `sessions/notepads/`: bare names create
 `notepads/work/NAME.json`; explicit project-relative paths select another local

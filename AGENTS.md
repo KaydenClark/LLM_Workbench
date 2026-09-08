@@ -170,6 +170,7 @@ node tools/test-branch-closeout.mjs
 node tools/test-wiki.mjs
 node tools/test-sessions.mjs
 node tools/test-notepads.mjs
+node tools/test-visible-ids.mjs
 node tools/test-workbench-round-trip.mjs
 node tools/test-cross-provider-fixture.mjs
 node tools/test-portability-matrix.mjs

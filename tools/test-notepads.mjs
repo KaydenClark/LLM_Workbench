@@ -955,3 +955,47 @@ for (const operation of ['read', 'create']) {
     } finally { fs.rmSync(dir, { recursive: true, force: true }); }
   });
 }
+
+test('visible ID allocation and lookup preserve existing note paths and independent prefixes', () => {
+  const dir = project();
+  try {
+    seed(dir, { note: 'legacy-numeric', id: 'N-010' });
+    const before = fs.readFileSync(path.join(dir, 'workbench/sessions/notepads/work/legacy-numeric.json'));
+    for (let i = 1; i <= 9; i++) seed(dir, { note: `reserved-${i}`, id: `N-${String(i).padStart(3, '0')}` });
+    const allocated = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Allocated note']);
+    assert.equal(allocated.status, 0, allocated.stdout);
+    assert.equal(allocated.json.id, 'N-00A');
+    assert.equal(allocated.json.note, 'workbench/sessions/notepads/work/N-00A.json');
+    assert.equal(cli(dir, ['read', '--note', 'N-00A', '--view', 'current']).json.id, 'N-00A');
+    assert.equal(cli(dir, ['read', '--note', 'N-010', '--view', 'current']).json.note, 'workbench/sessions/notepads/work/legacy-numeric.json');
+    assert.deepEqual(fs.readFileSync(path.join(dir, 'workbench/sessions/notepads/work/legacy-numeric.json')), before);
+    const other = cli(dir, ['allocate', '--prefix', 'H', '--collection', 'handoffs', '--type', 'handoff', '--objective', 'notepad-runtime', '--title', 'Independent type']);
+    assert.equal(other.json.id, 'H-001');
+    assert.ok(listNotes(dir).notes.some(note => note.id === 'N-00A'));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const alias of ['N-00A', 'N-00a', 'N-000A']) {
+  test(`visible ID collision ${alias} is refused without rewriting the existing note`, () => {
+    const dir = project();
+    try {
+      const existing = seed(dir, { note: 'original-id', id: 'N-00A' });
+      const before = fs.readFileSync(path.join(dir, existing.note));
+      const result = createNote(dir, { note: 'collision-id', objective: 'notepad-runtime', title: 'Collision', id: alias });
+      assert.equal(result.error?.code, 'duplicate-identity', JSON.stringify(result));
+      assert.equal(fs.existsSync(path.join(dir, 'workbench/sessions/notepads/work/collision-id.json')), false);
+      assert.deepEqual(fs.readFileSync(path.join(dir, existing.note)), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+
+test('visible ID allocation refuses ambiguous unreadable inventory before writing', () => {
+  const dir = project();
+  try {
+    fs.writeFileSync(path.join(dir, 'workbench/sessions/notepads/work/broken.json'), '{');
+    const result = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Cannot establish uniqueness']);
+    assert.equal(result.json.error?.code, 'invalid-note');
+    assert.ok(result.json.error.unreadable.includes('workbench/sessions/notepads/work/broken.json'));
+    assert.equal(fs.readdirSync(path.join(dir, 'workbench/sessions/notepads/work')).length, 1);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

@@ -21,6 +21,7 @@ import path from 'node:path';
 import { finding } from './diagnostics.mjs';
 import { assertSafeReadPath, assertSafeWritePath, collectionPath, collectionRelative, findRoot, isMainModule, readManifest, writeSafeFile, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 import { scanPrivacy } from './privacy.mjs';
+import { allocateVisibleId, visibleIdKey } from './visible-ids.mjs';
 
 export const NOTEPAD_SCHEMA_VERSION = 'notepad-1';
 // The interim shape the scoping slice wrote by hand. It reads and migrates;
@@ -107,6 +108,14 @@ export function resolveNote(root, value, collection = defaultCollection(root)) {
 }
 
 function readRaw(root, value, collection) {
+  if (visibleIdKey(value)) {
+    const inventory = listNotes(root, collection ? { collection } : {});
+    if (inventory.status === 'blocked') return { error: inventory };
+    if (inventory.unreadable.length) return { error: blocked('invalid-note', 'Identifier lookup cannot establish uniqueness while live records are unreadable.', { unreadable: inventory.unreadable }) };
+    const matches = inventory.notes.filter(note => visibleIdKey(note.id) === visibleIdKey(value));
+    if (matches.length > 1) return { error: blocked('duplicate-identity', `Visible identifier ${value} is ambiguous`, { notes: matches.map(note => note.note) }) };
+    if (matches.length === 1) value = matches[0].note;
+  }
   let resolved;
   try { resolved = resolveNote(root, value, collection); } catch (error) { return { error: blocked('invalid-note', error.message) }; }
   let text;
@@ -308,6 +317,13 @@ export function createNote(root, options) {
   if (fs.existsSync(resolved.absolute)) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }
+  const id = options.id === undefined ? path.basename(resolved.absolute, '.json') : requireValue(options.id, '--id must not be empty');
+  if (visibleIdKey(id)) {
+    const inventory = listNotes(root);
+    if (inventory.unreadable.length) return blocked('invalid-note', 'Creation cannot establish identifier uniqueness while live records are unreadable.', { unreadable: inventory.unreadable });
+    const collision = inventory.notes.find(note => visibleIdKey(note.id) === visibleIdKey(id));
+    if (collision) return blocked('duplicate-identity', `Visible identifier ${id} conflicts with ${collision.id}`, { note: collision.note });
+  }
   const retained = [];
   try { for (const value of asArray(options.retains)) { const source = retainedSource(root, value); retained.push(source.note + (source.entry ? `#${source.entry}` : '')); } }
   catch (error) { return blocked('invalid-note', error.message); }
@@ -318,7 +334,7 @@ export function createNote(root, options) {
   const note = {
     schema_version: NOTEPAD_SCHEMA_VERSION,
     revision: 1,
-    id: options.id === undefined ? path.basename(resolved.absolute, '.json') : requireValue(options.id, '--id must not be empty'),
+    id,
     type,
     status,
     title,
@@ -333,6 +349,15 @@ export function createNote(root, options) {
   const failure = publish(root, resolved, note);
   if (failure) return failure;
   return { status: 'created', note: resolved.relative, id: note.id, objective, revision: note.revision };
+}
+
+export function allocateNote(root, options) {
+  const inventory = listNotes(root);
+  if (inventory.unreadable.length) return blocked('invalid-note', 'Allocation cannot establish uniqueness while live records are unreadable.', { unreadable: inventory.unreadable });
+  let id;
+  try { id = allocateVisibleId(requireValue(options.prefix, '--prefix is required'), inventory.notes.map(note => note.id)); }
+  catch (error) { return blocked('invalid-note', error.message); }
+  return createNote(root, { ...options, id, note: id });
 }
 
 export function appendEntry(root, options) {
@@ -719,6 +744,7 @@ const MULTI = new Set(['entry', 'unresolved', 'related', 'durable-owner', 'depen
 // was never recorded.
 const OPTIONS = Object.freeze({
   create: ['path', 'note', 'collection', 'objective', 'title', 'focus', 'type', 'status', 'id', 'index', 'related', 'state', 'next-action', 'unresolved', 'view-field', 'retains'],
+  allocate: ['path', 'prefix', 'collection', 'objective', 'title', 'focus', 'type', 'status', 'index', 'related', 'state', 'next-action', 'unresolved', 'view-field', 'retains'],
   append: ['path', 'note', 'collection', 'revision', 'kind', 'topic', 'content', 'entry-id', 'corrects', 'depends-on', 'interpretation', 'question-id', 'source-file', 'source-line-start', 'source-line-end', 'source-sha256'],
   current: ['path', 'note', 'collection', 'revision', 'state', 'next-action', 'unresolved', 'status', 'view-field'],
   read: ['path', 'note', 'collection', 'topic', 'entry', 'kind', 'limit', 'cursor', 'view'],
@@ -769,7 +795,7 @@ export function parseViewFields(values) {
   return fields;
 }
 
-const USAGE = 'Usage: notepads.mjs create|append|current|read|list|validate|trim|migrate|delete [options] (see RUNBOOK.md)';
+const USAGE = 'Usage: notepads.mjs create|append|current|read|list|validate|trim|migrate|delete|allocate [options] (see RUNBOOK.md)';
 
 if (isMainModule(import.meta.url)) {
   try {
@@ -777,6 +803,7 @@ if (isMainModule(import.meta.url)) {
     const root = findRoot(options.path ?? process.cwd());
     let result;
     if (command === 'create') result = createNote(root, options);
+    else if (command === 'allocate') result = allocateNote(root, options);
     else if (command === 'append') result = appendEntry(root, options);
     else if (command === 'current') result = setCurrent(root, options);
     else if (command === 'read') result = readNote(root, options);

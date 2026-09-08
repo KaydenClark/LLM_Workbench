@@ -809,6 +809,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'spec-packet.mjs',
   'spec-workbench.mjs',
   'template-placeholders.mjs',
+  'visible-ids.mjs',
   'wiki.mjs',
   'workbench-layout.mjs',
   'workbench-paths.mjs'
