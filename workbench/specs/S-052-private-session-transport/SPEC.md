@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling.
 **Blockers:** none
-**Latest event:** TK-001 claimed by codex.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Complete TK-002.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -78,7 +78,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Allocate stable room identity and preserve it across lifecycle operations | in-progress | none | pending |
+| TK-001 | Allocate stable room identity and preserve it across lifecycle operations | done | none | 434ef6b71fb88d5febbd87b60f4f6d55651a06a9: identity 6/6, full 38/38, independent concurrency and preservation review PASS; actual source identity assigned once and second invocation preserved it |
 | TK-002 | Synchronize selected safe notes and report acknowledgment | ready | TK-001 | pending |
 | TK-003 | Preserve conflicting/offline revisions under serialized sync | ready | TK-002 | pending |
 | TK-004 | Prove real Mac Windows Claude Codex continuation | blocked | live-device-and-private-repository-access | pending |
@@ -118,7 +118,7 @@ Actual configured Mac/Windows and Claude/Codex save/resume a useful assigned obj
 
 ## Acceptance Criteria
 
-- [ ] Stable Workbench connection identity and independent-room regeneration preserve artifact semantics.
+- [x] Stable Workbench connection identity and independent-room regeneration preserve artifact semantics.
 - [ ] Opt-in transport maps only selected safe live collections and leaves local work independent.
 - [ ] Remote acknowledgment, offline pending state, serialized sync and conflicting revisions are proven at public seams.
 - [ ] Real Mac/Windows Claude/Codex round trip preserves objective/corrections/next action; fixtures are not substituted.
@@ -155,6 +155,9 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 | 2026-09-08 | TK-001 | Independent review rejected d5f8e33 because lifecycle writers bypassed identity serialization | Public review reproduced occupied-lock migration, competing initialization IDs, competing legacy migration IDs in 4 of 4 trials, and record-source erasing a concurrent identify result in 4 of 4 trials. Added legacy-lock regression demonstrated RED. Shared lock now covers initialization, migration, identify and record-source with fresh reads; concurrent public CLI regression added | Existing local-lock guidance now applies to all identity-producing or preserving lifecycle writers | Repaired-candidate targeted/full checks and independent re-review pending; no namespace assigned to actual source or Example yet |
 
 | 2026-09-08 | TK-001 | Shared lifecycle lock repair 33db7aa passed targeted public checks | Identity 6 of 6, selected lifecycle 4 of 4 and actual adoption passed. Earlier d5f8e33 full run passed 37 of 38; diagnostics required explicit severity/scope/effect pins for three new identity codes, now added without changing their registered effect | Assigned identity and concurrent source-record preservation remain distinct from transport; no actual room namespace changed yet | Independent re-review and repaired full 38-command run pending |
+| 2026-09-08 | TK-001 | Ticket closed | 434ef6b71fb88d5febbd87b60f4f6d55651a06a9: identity 6/6, full 38/38, independent concurrency and preservation review PASS; actual source identity assigned once and second invocation preserved it | Root and generic lifecycle guidance, manifest field and lock recovery documented; artifact identities remain separately scoped | TK-002 optional private transport, TK-003 offline/conflict serialization and TK-004 actual Mac/Windows Claude/Codex proof remain open; final integration pending |
+
+| 2026-09-08 | TK-001 | Frozen 434ef6b71fb88d5febbd87b60f4f6d55651a06a9 completed full verification and independent concurrency review | 38 of 38 commands pass; identity 6 of 6; independent four concurrent writer combinations preserve one final namespace and clean their own locks. Actual source assigned WB-4oRql1XWpf6VgsNwHUXW4Q and second invocation returned current unchanged. Guardrail 78 unchanged with four outcome-evidence recommendations | Stable manifest identity and lifecycle procedures reconciled | Optional private transport, offline/conflict handling, real device/provider proof and final integration remain open; no rollout readiness claim |
 
 ## Completion Result
 
