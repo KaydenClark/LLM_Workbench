@@ -919,7 +919,10 @@ The current implementation verifies the selected `workbench_sessions` GitHub
 repository through authenticated `gh` metadata. It never creates a remote,
 copies credentials, changes visibility or accepts public/unknown visibility.
 Start with an existing local clone of that private repository, an initialized
-branch and working local Git commit identity. Assign and commit this room's
+branch and working local Git commit identity. The transport must have a distinct
+Git store, remote and root lineage from the project; a project worktree or clone
+is not a transport repository. This boundary is rechecked during use and final
+remote read-back. Assign and commit this room's
 `workbenchId` before cloning or configuring it.
 
 ```bash
@@ -937,8 +940,10 @@ A committed room identity plus root commit lineage protects the selected remote
 namespace `workbenches/<WBID>/`; its small `workbench.json` contains no machine
 path. Only explicitly selected valid JSON live notes, grilling records and
 handoffs map beneath `sessions/`. Templates, schemas, durable owners and recovery
-files never become selected notes. Unsafe paths and decoded privacy matches
-refuse before upload. Transport names use plain alphanumeric/dot/dash/underscore
+files never become selected notes. Unsafe paths, non-UTF-8 JSON and decoded privacy matches
+refuse before upload, including private strings hidden by duplicate JSON keys.
+Selected path ancestry reserves one case spelling across platforms; final
+acknowledgment rechecks namespace identity and path aliases as well as note bytes. Transport names use plain alphanumeric/dot/dash/underscore
 path components; unsupported existing names remain local unchanged.
 
 Push after a meaningful save or before switching devices. Resume fetches before

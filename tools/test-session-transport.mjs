@@ -137,3 +137,76 @@ test('linked manifest is refused before its contents are read', () => {
     assert.equal(readUnsafeManifest, false, 'validate manifest path before reading external content');
   } finally { fs.readFileSync = read;fs.rmSync(f.base, { recursive: true, force: true }); }
 });
+
+test('project Git, its worktrees and clones cannot become the transport store', () => {
+  for (const shape of ['same-root', 'worktree', 'clone']) {
+    const f = fixture();
+    try {
+      git(f.project, 'remote', 'add', 'origin', f.remote);
+      let checkout = f.project;
+      if (shape === 'worktree') { checkout = path.join(f.base, 'room-worktree');git(f.project, 'worktree', 'add', '-q', '-b', 'fixture-worktree', checkout); }
+      if (shape === 'clone') { checkout = path.join(f.base, 'room-clone');git(f.base, 'clone', '-q', f.project, checkout); }
+      const before = git(f.remote, 'rev-parse', 'main');
+      const result = transport.configureTransport(f.project, { checkout, branch: 'main', acknowledgePrivate: true }, fixtureVerification);
+      assert.equal(result.status, 'blocked', shape + ': ' + JSON.stringify(result));assert.equal(git(f.remote, 'rev-parse', 'main'), before);
+    } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
+  }
+});
+
+test('namespace and selected ancestors reserve canonical case even when leaf names differ', () => {
+  for (const shape of ['container', 'metadata', 'sessions']) {
+    const f = fixture();
+    try {
+      configured(f);
+      const metadata = { schemaVersion: 1, workbenchId: f.id, gitRoots: git(f.project, 'rev-list', '--max-parents=0', 'HEAD').split('\n').sort() };
+      const prefix = `workbenches/${f.id}`;
+      const file = shape === 'container' ? `Workbenches/${f.id}/workbench.json` : shape === 'metadata' ? `${prefix}/WORKBENCH.json` : `${prefix}/workbench.json`;
+      fs.mkdirSync(path.dirname(path.join(f.checkout, file)), { recursive: true });fs.writeFileSync(path.join(f.checkout, file), JSON.stringify(metadata));
+      if (shape === 'sessions') {
+        const other = path.join(f.checkout, prefix, 'Sessions/notepads/work/other.json');fs.mkdirSync(path.dirname(other), { recursive: true });fs.copyFileSync(path.join(f.project, f.note), other);
+      }
+      git(f.checkout, 'add', '.');git(f.checkout, 'commit', '-qm', 'Seed namespace alias');git(f.checkout, 'push', '-q', 'origin', 'main');
+      const before = git(f.remote, 'rev-parse', 'main');
+      assert.equal(transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification).status, 'blocked', shape);
+      assert.equal(git(f.remote, 'rev-parse', 'main'), before);
+    } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
+  }
+});
+
+test('post-push descendant must retain the expected namespace before acknowledgment', () => {
+  const f = fixture();
+  try {
+    configured(f);
+    const hook = `#!/usr/bin/env node
+const fs = require('node:fs'), {spawnSync} = require('node:child_process');
+const [old, next, ref] = fs.readFileSync(0, 'utf8').trim().split(/\\s+/);
+const env = {...process.env, GIT_INDEX_FILE: ${JSON.stringify(path.join(f.base, 'hook-index'))}};
+function git(args, input) { const r = spawnSync('git', ['-c', 'user.name=Race fixture', '-c', 'user.email=race@example.invalid', ...args], {env, input, encoding:'utf8'}); if (r.status !== 0) throw Error(r.stderr); return r.stdout.trim(); }
+git(['read-tree', next]);
+const oid = git(['hash-object', '-w', '--stdin'], ${JSON.stringify(JSON.stringify({ schemaVersion: 1, workbenchId: f.id, gitRoots: ['b'.repeat(40)] }) + '\n')});
+git(['update-index', '--add', '--cacheinfo', '100644,' + oid + ',' + ${JSON.stringify(`workbenches/${f.id}/workbench.json`)}]);
+const tree = git(['write-tree']), commit = git(['commit-tree', tree, '-p', next], 'Concurrent namespace change\\n');git(['update-ref', ref, commit, next]);
+`;
+    fs.writeFileSync(path.join(f.remote, 'hooks/post-receive'), hook, { mode: 0o755 });
+    const bytes = fs.readFileSync(path.join(f.project, f.note));
+    const result = transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification);
+    assert.equal(result.status, 'blocked', JSON.stringify(result));assert.equal(result.acknowledged, false);
+    assert.equal(transport.transportStatus(f.project).lastConfirmedRemoteSha, null);
+    assert.deepEqual(fs.readFileSync(path.join(f.project, f.note)), bytes);
+  } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
+});
+
+test('invalid UTF-8 and privacy hidden in duplicate JSON keys never reach remote history', () => {
+  for (const shape of ['utf8', 'duplicate-key']) {
+    const f = fixture();
+    try {
+      configured(f);const before = git(f.remote, 'rev-parse', 'main'), file = path.join(f.project, f.note);
+      let bytes = fs.readFileSync(file);
+      if (shape === 'utf8') bytes[bytes.indexOf('Selected continuity')] = 255;
+      else bytes = Buffer.from(bytes.toString().replace('"title":', '"title": "fixture\\u0040example.invalid", "title":'));
+      fs.writeFileSync(file, bytes);
+      assert.equal(transport.syncNotes(f.project, { notes: [f.note], direction: 'push' }, fixtureVerification).status, 'blocked', shape);
+      assert.equal(git(f.remote, 'rev-parse', 'main'), before);assert.deepEqual(fs.readFileSync(file), bytes);
+    } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
+  }
+});

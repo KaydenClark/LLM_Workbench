@@ -66,6 +66,23 @@ function remoteInfo(checkout) {
   if (fetch.length !== 1 || push.length !== 1 || fetch[0] !== push[0]) refuse('ambiguous-remote', 'Transport requires one identical effective origin fetch and push URL.');
   return { checkout: resolved, remote: fetch[0], common: path.resolve(resolved, gitText(resolved, ['rev-parse', '--git-common-dir'])) };
 }
+function remoteKey(value) {
+  const github = /^(?:https:\/\/github\.com\/|git@github\.com:)([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)$/.exec(value);
+  if (github) return github[1].replace(/\.git$/, '').toLowerCase();
+  return value;
+}
+function assertSeparateStore(root, info, identity, ref = 'HEAD') {
+  const projectCommon = path.resolve(root, gitText(root, ['rev-parse', '--git-common-dir']));
+  if (fs.realpathSync.native(projectCommon) === fs.realpathSync.native(info.common)) refuse('project-transport-overlap', 'Transport must use a separate Git repository, never the project or one of its worktrees.');
+  for (const remote of gitText(root, ['remote']).split('\n').filter(Boolean)) {
+    for (const flag of [[], ['--push']]) {
+      const urls = gitText(root, ['remote', 'get-url', ...flag, '--all', remote]).split('\n');
+      if (urls.some(url => remoteKey(url) === remoteKey(info.remote))) refuse('project-transport-overlap', 'Project and session transport must not publish to the same remote repository.');
+    }
+  }
+  const roots = gitText(info.checkout, ['rev-list', '--max-parents=0', ref]).split('\n');
+  if (roots.some(sha => identity.gitRoots.includes(sha))) refuse('project-transport-overlap', 'Transport cannot reuse project Git lineage, including a separate clone of that project.');
+}
 function verifyPrivate(remote) {
   const match = /^(?:https:\/\/github\.com\/|git@github\.com:)([A-Za-z0-9_.-]+)\/(workbench_sessions)(?:\.git)?$/.exec(remote);
   if (!match) refuse('unsupported-private-verification', 'This transport verifies the selected private workbench_sessions repository on GitHub; no other remote is implicitly trusted.');
@@ -103,7 +120,9 @@ export function configureTransport(root, options, dependencies = {}) {
   try {
     if (options.acknowledgePrivate !== true) refuse('private-acknowledgment-required', 'Acknowledge private Git history retention, privacy limits and that notes do not transfer code or processes.');
     if (!isBranchName(options.branch) || typeof options.checkout !== 'string') refuse('invalid-transport-config', 'Name an existing transport checkout and branch.');
-    const identity = roomIdentity(root), info = remoteInfo(options.checkout), proof = verify(info, dependencies), paths = localPaths(root);
+    const identity = roomIdentity(root), info = remoteInfo(options.checkout);
+    assertSeparateStore(root, info, identity);
+    const proof = verify(info, dependencies), paths = localPaths(root);
     ignored(root, paths.config);
     return withLock(root, paths.lock, () => {
       const existing = loadConfig(root);
@@ -115,14 +134,16 @@ export function configureTransport(root, options, dependencies = {}) {
   } catch (error) { return blocked(error); }
 }
 function safeNote(bytes) {
-  let value;try { value = JSON.parse(bytes.toString('utf8')); } catch { refuse('invalid-note', 'Selected record is not valid JSON.'); }
+  let value, text;
+  try { text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);value = JSON.parse(text); }
+  catch { refuse('invalid-note', 'Selected record is not valid UTF-8 JSON.'); }
   const shape = checkStructure(value);
   if (shape.missing.length || shape.invalid.length) refuse('invalid-note', 'Selected record does not satisfy the supported notepad schema.');
-  function scan(item) {
-    if (typeof item === 'string') { if (scanPrivacy(item).length) refuse('private-content', 'Selected record contains privacy-sensitive material; retain it locally and author a safe record.'); }
-    else if (item && typeof item === 'object') for (const [key, child] of Object.entries(item)) { scan(key);scan(child); }
-  }
-  scan(value);return value;
+  // Decode every original JSON string, including overwritten duplicate keys;
+  // validating only the parsed object could hide private bytes still uploaded.
+  const decoded = text.replace(/"(?:[^"\\]|\\.)*"/g, token => JSON.parse(token));
+  if (scanPrivacy(decoded).length) refuse('private-content', 'Selected record contains privacy-sensitive material; retain it locally and author a safe record.');
+  return value;
 }
 function selection(root, values, identity, direction) {
   if (!Array.isArray(values) || !values.length) refuse('selection-required', 'Select at least one live note explicitly.');
@@ -159,12 +180,34 @@ function fetchRemote(info, config) {
   git(info.checkout, ['fetch', '--no-tags', 'origin', `refs/heads/${config.branch}:${ref}`]);
   const sha = gitText(info.checkout, ['rev-parse', ref]);if (!objectId(sha)) refuse('invalid-remote-head', 'Fetched transport branch has no concrete commit.');return sha;
 }
+function assertPathCase(tree, names) {
+  const expected = new Map();
+  for (const name of names) {
+    let prefix = '';
+    for (const part of name.split('/')) {
+      prefix = prefix ? `${prefix}/${part}` : part;
+      const key = prefix.toLowerCase();
+      if (expected.has(key) && expected.get(key) !== prefix) refuse('note-path-collision', 'Selected path ancestors collide case-insensitively.');
+      expected.set(key, prefix);
+    }
+  }
+  for (const item of tree) {
+    let prefix = '';
+    for (const part of item.name.split('/')) {
+      prefix = prefix ? `${prefix}/${part}` : part;
+      const canonical = expected.get(prefix.toLowerCase());
+      if (canonical && canonical !== prefix) refuse('note-path-collision', 'Remote path ancestry differs from the selected canonical spelling.');
+    }
+  }
+}
 function verifyNamespace(info, config, tree) {
+  const metadataPath = `workbenches/${config.identity.workbenchId}/workbench.json`;
+  assertPathCase(tree, [metadataPath]);
   for (const item of tree) {
     const name = item.name.split('/');
     if (name[0] === 'workbenches' && visibleIdKey(name[1]) === visibleIdKey(config.identity.workbenchId) && name[1] !== config.identity.workbenchId) refuse('namespace-collision', 'Remote namespace collides with this Workbench identity.');
   }
-  const metadataPath = `workbenches/${config.identity.workbenchId}/workbench.json`, bytes = blob(info.checkout, tree, metadataPath);
+  const bytes = blob(info.checkout, tree, metadataPath);
   if (bytes !== null && JSON.stringify(JSON.parse(bytes)) !== JSON.stringify(config.identity)) refuse('namespace-collision', 'Remote namespace belongs to different room lineage; preserve both rooms.');
   if (bytes === null && tree.some(item => item.name.startsWith(`workbenches/${config.identity.workbenchId}/`))) refuse('namespace-collision', 'Existing namespace has no verifiable room identity.');
   return metadataPath;
@@ -195,10 +238,13 @@ export function syncNotes(root, options, dependencies = {}) {
       state = loadState(root);
       const selected = selection(root, options.notes, config.identity, options.direction);
       const info = remoteInfo(config.checkout);
+      assertSeparateStore(root, info, config.identity);
       if (info.remote !== config.remote) refuse('remote-changed', 'The effective origin changed; preserve the existing connection and reverify it explicitly.');
       verify(info, dependencies);
       return withLock(info.common, path.join(info.common, 'workbench-session-transport.lock'), () => {
         const sha = fetchRemote(info, config), tree = inventory(info.checkout, sha), metadataPath = verifyNamespace(info, config, tree);
+        assertSeparateStore(root, info, config.identity, sha);
+        assertPathCase(tree, selected.map(note => note.remotePath));
         if (state.remoteSha) git(info.checkout, ['merge-base', '--is-ancestor', state.remoteSha, sha]);
         const conflicts = [], updates = [], downloads = [];
         for (const note of selected) {
@@ -223,6 +269,9 @@ export function syncNotes(root, options, dependencies = {}) {
             confirmed = fetchRemote(info, config);git(info.checkout, ['merge-base', '--is-ancestor', candidate, confirmed]);
           }
           const readBack = inventory(info.checkout, confirmed);
+          assertSeparateStore(root, info, config.identity, confirmed);
+          verifyNamespace(info, config, readBack);
+          assertPathCase(readBack, selected.map(note => note.remotePath));
           for (const note of selected) if (digest(blob(info.checkout, readBack, note.remotePath) ?? Buffer.alloc(0)) !== note.hash) refuse('remote-readback-failed', 'Remote bytes do not match the selected save; retain local data and retry after reconciliation.');
           for (const note of selected) state.files[note.remotePath] = note.hash;
         } else {
