@@ -146,6 +146,15 @@ partial result with an original backup; this is an explicit recovery limit,
 not a claim every possible I/O failure leaves the destination unchanged.
 Operational adoption/upgrade recovery and checkpoint retirement remain TK-003.
 
+### Actual local owner reconciliation
+
+The direct-promotion command was used for this selected verification account,
+authored from the ongoing work note into its existing S-048 owner. Targeted
+verification at `738b7c8` passes 20 promotion cases and the existing spec
+lifecycle, ADR, Wiki and legacy sessions checks. These results remain bounded;
+full-suite and independent review are separate gates. The source note and draft
+remain available for their unresolved context and are not durable citations.
+
 ## Acceptance Criteria
 
 - [ ] Original rationale and limits of the historical proof are documented from evidence.
