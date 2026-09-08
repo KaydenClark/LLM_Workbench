@@ -164,8 +164,16 @@ read-only proposal, never a reservation or authorization to manufacture work.
 Sorting is suffix-length/alphabet ordering independent of locale, not chronology.
 
 Five public consumer cases and Genesis, Wiki, guardrail and citation-coverage
-regressions exposed numeric-only gaps before repair. Their final repaired
-results, full verification and independent review remain pending below.
+regressions exposed numeric-only gaps before repair. Candidate `16988da94dac455355aecf3c6f9d80b933b03574` passed the full 36-command
+union and scored 78/100 with the same four outcome recommendations. Independent
+review nevertheless returned CHANGES REQUIRED: Genesis truncated grown IDs;
+allowed legacy numeric ticket aliases conflicted during proposal allocation;
+and ADR enumeration omitted matching nonordinary entries. Two grown-width
+Genesis cases and five reservation/unsafe-entry cases reproduced these failures.
+The repair extracts the full directory ID, collapses only already-validated
+reservations by identity key, and refuses unreadable/nonordinary ADR inventory
+without following links. Historical record bytes and references stay intact.
+Repaired green results and fresh independent review remain pending.
 
 ## Acceptance Criteria
 

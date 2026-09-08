@@ -87,7 +87,8 @@ export function nextIdentity(rootDir, specId, options = {}) {
   const occupied = prefix === 'S' ? specs.map(spec => spec.id) : specs.flatMap(spec => spec.tickets.map(ticket => ticket.id));
   // Letter-bearing new durable labels do not reuse removed historical decimal
   // IDs. Numeric tickets also retain their old spec-qualified interpretation.
-  const id = allocateVisibleId(prefix, [...new Set(occupied)], { requireLetter: true });
+  const reservations = [...new Map(occupied.map(id => [visibleIdKey(id), id])).values()];
+  const id = allocateVisibleId(prefix, reservations, { requireLetter: true });
   return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}) };
 }
 

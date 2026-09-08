@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
@@ -83,9 +83,17 @@ export function insertFrontmatterKeys(content, fields, label) {
 
 export function listAdrs(root) {
   const directory = collectionPath(root, 'adr');
+  assertSafeReadPath(root, directory);
   if (!fs.existsSync(directory)) return [];
   return fs.readdirSync(directory, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && ID_PATTERN.test(entry.name))
+    .filter((entry) => ID_PATTERN.test(entry.name))
+    .map((entry) => {
+      const stat = fs.lstatSync(path.join(directory, entry.name));
+      if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink > 1) {
+        throw new Error(`${entry.name} must be an ordinary, singly linked ADR file; allocation cannot ignore an occupied identity`);
+      }
+      return entry;
+    })
     .map((entry) => entry.name)
     .map((name) => readAdr(root, path.join(directory, name)))
     .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
@@ -102,7 +110,9 @@ function readAdr(root, filePath) {
 
 export function validateAdrs(root) {
   const findings = [];
-  const adrs = listAdrs(root);
+  let adrs;
+  try { adrs = listAdrs(root); }
+  catch (error) { return [finding('invalid-adr', error.message)]; }
   const numbers = new Map();
   for (const adr of adrs) {
     const key = visibleIdKey(`ADR-${adr.number}`);

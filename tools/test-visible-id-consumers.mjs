@@ -94,3 +94,37 @@ test('ADR allocation, register and duplicate checks consume mixed labels without
     assert.throws(() => newAdr(dir, { title: 'Refuse collision' }), /collision/i);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('numeric ticket aliases in different legacy specs reserve one label without blocking a new proposal', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001', [['TK-001', 'ready', 'none']]);
+    const second = spec(dir, 'S-002', [['TK-0001', 'ready', 'none']]);
+    const original = fs.readFileSync(second);
+    assert.ok(!workbench.doctor(dir).some(issue => issue.code === 'duplicate-id'));
+    const result = cli(dir, ['next-id', 'S-001', '--prefix', 'TK']);
+    assert.equal(result.status, 0, result.stdout || result.stderr);
+    assert.equal(result.json.id, 'TK-00A');
+    assert.deepEqual(fs.readFileSync(second), original);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const kind of ['symlink', 'dangling-symlink', 'directory', 'hardlink']) {
+  test(`nonordinary ADR name (${kind}) is diagnosed and blocks allocation without following it`, () => {
+    const dir = room();
+    try {
+      const folder = path.join(dir, 'workbench/docs/adr');
+      const target = path.join(dir, 'target.md');
+      fs.writeFileSync(target, 'Original bytes');
+      const occupied = path.join(folder, '000A-existing.md');
+      if (kind === 'directory') fs.mkdirSync(occupied);
+      else if (kind === 'hardlink') fs.linkSync(target, occupied);
+      else fs.symlinkSync(kind === 'symlink' ? target : path.join(dir, 'absent.md'), occupied);
+      const before = fs.readdirSync(folder);
+      assert.ok(validateAdrs(dir).some(issue => issue.code === 'invalid-adr' && /ordinary|unsafe|link/i.test(issue.message)), 'unsafe identity inventory is visible');
+      assert.throws(() => newAdr(dir, { title: 'Must refuse' }), /ordinary|unsafe|link/i);
+      assert.deepEqual(fs.readdirSync(folder), before);
+      assert.equal(fs.readFileSync(target, 'utf8'), 'Original bytes');
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}

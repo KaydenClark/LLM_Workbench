@@ -756,7 +756,7 @@ function validateFirstSpec(project, expectedVersion) {
   if (entries.length !== 1 || !entries[0].isDirectory() || !/^S-[0-9A-Za-z]{3,}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entries[0].name)) {
     return fail('invalid-first-spec', 'Genesis must create one stable S-###-slug/SPEC.md packet.', { entries: names, reason: `the specs lane must contain exactly one stable S-###-slug directory; found ${names.join(', ')}` });
   }
-  const expectedId = entries[0].name.slice(0, 5);
+  const expectedId = entries[0].name.match(/^(S-[0-9A-Za-z]+)-/)[1];
   const specPath = path.join(specsRoot, entries[0].name, 'SPEC.md');
   const specEntry = lstatOrNull(specPath);
   if (!specEntry || specEntry.isSymbolicLink() || !specEntry.isFile()) return fail('invalid-first-spec', 'The first spec must be an ordinary SPEC.md file.', { specPath, reason: 'SPEC.md is missing, a symlink, or not a regular file' });
