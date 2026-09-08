@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** Owner assigned the reconciled v3.2.0 release through Example integration.
-**Next gate:** Define and install one authoritative core source with adapters.
+**Latest event:** TK-001 claimed by codex.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -81,7 +81,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Define and install one authoritative core source with adapters | ready | none | pending |
+| TK-001 | Define and install one authoritative core source with adapters | in-progress | none | pending |
 | TK-002 | Diagnose tested compatibility and discovery failures | ready | TK-001 | pending |
 | TK-003 | Compose portable save and promote into a self-sufficient bundle | ready | TK-002 | pending |
 
@@ -90,6 +90,16 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 **Stance:** Builder
 
 Trace tools/core-skill-installer.mjs, skill-presence.mjs, source-identity and existing installer/upgrade tests. Red/green canonical physical source and adapter behavior, existing Git-root missing-only install, conflicts and rollback; document migration plan.
+
+The physical global core lives in `.agents/skills/<name>`; missing Claude
+entries become directory adapters to that same implementation. Existing names
+remain untouched and their generation/conflicts stay visible. A missing-only
+install does not certify an existing foreign skill as Workbench core. Newly
+managed entries are excluded from a containing Git repository without staging
+or committing personal source. Tracked core migration remains an explicit
+separate plan; no actual personal repository is changed here. Explicit update
+and recorded-backup rollback must operate on the same canonical source and
+adapter topology. All installation proof uses isolated homes.
 
 ### TK-002 - Diagnose tested compatibility and discovery failures
 
