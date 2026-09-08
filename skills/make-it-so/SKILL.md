@@ -18,7 +18,7 @@ changes, or genuinely new scope.
 Resolve every durable planning and delivery record through
 `workbench/manifest.json`; it is the sole support-path authority after setup.
 Live notepads live in its `grilling` collection (`workbench/sessions/grilling/`),
-promoted checkpoints in `workbench/sessions/checkpoints/`, decision records in
+frozen historical checkpoints in `workbench/sessions/checkpoints/`, decision records in
 `workbench/docs/adr/`, and the runtime tools in `workbench/tools/`.
 
 ## Resolve the input first

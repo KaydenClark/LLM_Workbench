@@ -19,7 +19,9 @@ Provider-native enforcement hooks would add a maintenance commitment not
 selected here. Discovery adapters and evaluation launchers are distinct and
 remain allowed.
 
-Consequences: S-053 retains the proposed minimum pending owner agreement. Claim enforcement
+Consequences: S-053 records the recovered five-check docket baseline under the
+renewed owner implementation request: writable path forms, native skill
+discovery/invocation, Node execution, directory adapters and checkout syntax. Claim enforcement
 only where a running mechanism controls the operation and evidence supports it;
 that mechanism need not be owned by Workbench. S-036's blocked trust/auth probe
 proved neither live permission enforcement success nor failure.

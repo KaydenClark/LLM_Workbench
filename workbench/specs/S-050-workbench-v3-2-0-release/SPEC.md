@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-08
 **Catalog description:** Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project.
-**Blockers:** owner-capability-agreement; live-device-and-private-repository-access
+**Blockers:** live-device-and-private-repository-access (final rollout readiness only)
 **Latest event:** Local capability work and useful native continuation verified; external acceptance gates remain.
-**Next gate:** Resolve S-053 owner capability agreement and S-052 actual private repository/device access before final convergence.
+**Next gate:** Complete S-053 local conformance, verify v3.2.0 and integrate the upstream update.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -78,8 +78,8 @@ main publication and rollout to other active rooms remain owner-only/outside sco
 | V32-05 | S-052 and S-053 | Optional private continuity and agreed configured-host floor |
 | V32-07/08/09 | Example S-003 | Upgrade, usable fresh project and reviewed Example integration |
 
-The concrete host minimum is proposed in S-053 and awaits the owner; no schema
-or diagnostic architecture is selected in its place. A real second device and
+The recovered five-check host minimum in S-053 is the current implementation
+baseline under the renewed owner request. A real second device and
 private repository access must be established before cross-device acceptance.
 The three suggested Design Concept articles remain proposals, excluded here.
 
@@ -102,7 +102,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 |---|---|---|---|---|
 | TK-001 | Promote and push the complete reconciled scope | done | none | 33 required commands pass; independent planning PASS cb12c23; 181 records, 19 candidates and 59 mappings preserved; remote plan verified |
 | TK-002 | Reconcile ADRs and all included documentation contracts | done | TK-001 | Full 33-command suite passes at fixed 87244cc; independent bounded documentation PASS; guardrail78 unchanged |
-| TK-003 | Converge capability implementations and useful continuity proof | blocked | owner-capability-agreement; live-device-and-private-repository-access | Local slices and bounded useful continuity verified; S-052/TK-004 and S-053 remain open |
+| TK-003 | Converge capability implementations and useful continuity proof | ready | none | Local slices and bounded useful continuity verified; S-052/TK-004 and S-053 remain open |
 | TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | ready | TK-003 | pending |
 | TK-005 | Deliver Example v3.2.0 and fresh project acceptance | ready | TK-004 | pending |
 | TK-006 | Reconcile release receipts and readiness verdict | ready | TK-005 | pending |
@@ -123,7 +123,7 @@ Write the 12 focused records and targeted amendments; route each rule to current
 
 **Stance:** Builder
 
-Carry S-046/047/048/051/052/053 individually; investigate existing S-046 implementation instead of duplicating it. Require each acceptance to name actual evidence. Dependencies are checked in this ticket before closure; capability specs must not depend on completion of this release spec.
+Carry S-046/047/048/051/052/053 individually; investigate existing S-046 implementation instead of duplicating it. Require each acceptance to name actual evidence. Dependencies are checked in this ticket before closure; capability specs must not depend on completion of this release spec. Local implementation convergence permits upstream and Example verification; S-052/TK-004 actual cross-device proof remains a final TK-006 readiness gate, not a blocker of offline installation or integration.
 
 ### TK-004 - Verify and integrate the immutable upstream v3.2.0 candidate
 
@@ -195,17 +195,18 @@ claims/status/lineage, not private transcripts.
 
 ## Completion Result
 
-Blocked at TK-003 on the reserved host-capability agreement and actual private
-repository/device/provider access. Verified local work is recoverable on the
-release branch. Version remains the v3.1.4 development candidate; final v3.2.0
-stamp, upstream integration and Example delivery are pending. No rollout
-readiness or publication claim.
+Implementation resumed under the renewed owner request. Upstream v3.2.0 and
+Example integration are authorized; final rollout readiness retains the actual
+cross-device evidence boundary. No publication or readiness claim yet.
 
 ## Remaining Limitations Or Follow-Up Specs
 
 See [release owner](../S-050-workbench-v3-2-0-release/SPEC.md) for the complete assigned set,
-source inventory, exclusions and externally gated acceptance. Zero routine
-coordination hand-backs so far; the reserved host decision is a real owner gate.
+source inventory, exclusions and externally gated acceptance. One routine coordination hand-back occurred: the agent missed the recorded five
+checks, substituted another list and blocked unrelated release work on optional
+live transport. The owner corrected the direction. The smallest correction is
+the restored S-053 baseline and operation-scoped dependency edges above; final
+readiness still requires the original actual cross-device evidence.
 
 ## Supersession
 
