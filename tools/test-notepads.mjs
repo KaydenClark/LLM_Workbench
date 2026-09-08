@@ -596,7 +596,17 @@ test('the interim scope-1 records read and migrate without regenerating their hi
       // carry: rebuilding the view from three named fields made this the one
       // lossy path in the command whose purpose is lifting a record intact,
       // and it dropped the field `--view-field` exists to create.
-      current: { state: 'Decisions reconciled into durable owners.', unresolved: [], next_action: 'Retain referenced source fragments.', questions: [{ id: '1', status: 'locked' }], owner_answers: ['yes'] },
+      // Shaped like the records this actually runs on. Four of the five live
+      // `scope-1` notes keep structured owner tradeoffs in `unresolved`, and a
+      // fixture with `unresolved: []` could not fail when migration stringified
+      // them into "[object Object]".
+      current: {
+        state: 'Decisions reconciled into durable owners.',
+        unresolved: [{ id: 'W-1', kind: 'owner_tradeoff', question: 'Does this survive?', cost: 'Losing it is silent.' }],
+        next_action: 'Retain referenced source fragments.',
+        questions: [{ id: '1', status: 'locked' }],
+        owner_answers: ['yes']
+      },
       entries: [{ id: 'source-027', kind: 'source_record', topic: 'preservation', content: '8. [open] What durability guarantee is required?', interpretation: 'Historical source.', question_id: '8' }],
       extensions: { format_status: 'Interim JSON working shape.', durable_owners: [] }
     };
@@ -622,6 +632,7 @@ test('the interim scope-1 records read and migrate without regenerating their hi
     assert.equal(stored.created_at, legacy.created_at, 'migration keeps the original creation time');
     assert.deepEqual(stored.current.questions, [{ id: '1', status: 'locked' }], 'a workflow field in the current view survives migration');
     assert.deepEqual(stored.current.owner_answers, ['yes'], 'and so does every other field the record carried there');
+    assert.deepEqual(stored.current.unresolved, legacy.current.unresolved, 'unresolved is carried, not coerced: structured material must not become "[object Object]"');
     assert.equal(appendEntry(dir, { note: file, revision: 1, kind: 'finding', topic: 'preservation', content: 'Now writable.' }).status, 'appended');
     assert.equal(migrateNote(dir, { note: file }).error.code, 'invalid-note', 'a migrated record is not migrated twice');
   } finally {

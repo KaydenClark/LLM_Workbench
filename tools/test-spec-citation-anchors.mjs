@@ -70,27 +70,29 @@ export function liveShas(text) {
   return [...new Set(out)];
 }
 
+function gitOk(args) {
+  try {
+    return { ok: true, out: execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() };
+  } catch {
+    return { ok: false, out: '' };
+  }
+}
+
 function commitReachable(sha, cache) {
   if (!cache.has(sha)) {
-    let verdict;
-    try {
-      const type = execFileSync('git', ['cat-file', '-t', sha], { cwd: root, encoding: 'utf8' }).trim();
-      // Only commits are held to this. A spec may quote a blob or tree hash,
-      // and a 64-character content hash never matches the pattern at all.
-      if (type !== 'commit') verdict = 'not-a-commit';
-      else {
-        // Contained in some branch, not an ancestor of HEAD: a spec may
-        // legitimately name a commit on another branch - S-049 cites
-        // `origin/main`, which this branch does not descend from. What must
-        // never survive is a commit contained in nothing, which is what a
-        // squash leaves behind and what the collector eventually removes.
-        const branches = execFileSync('git', ['branch', '-a', '--contains', sha], { cwd: root, encoding: 'utf8' }).trim();
-        verdict = branches ? 'reachable' : 'unreachable';
-      }
-    } catch (error) {
-      verdict = error.status === 1 ? 'unreachable' : 'unknown-object';
+    // Absent is not a verdict. A single-branch or shallow clone simply does not
+    // have every commit a spec may legitimately name - S-049 cites a merge on
+    // `origin/main`, which this branch does not descend from - and failing on
+    // what the checkout happens to lack would make a mandatory suite command
+    // depend on the reviewer's ref set rather than on the content. What this
+    // holds is the one case that is a defect wherever it is observed: the
+    // object is present, it is a commit, and nothing points at it. That is what
+    // a squash leaves behind, and what the collector eventually removes.
+    if (!gitOk(['cat-file', '-e', `${sha}^{commit}`]).ok) cache.set(sha, 'absent');
+    else {
+      const branches = gitOk(['branch', '-a', '--contains', sha]);
+      cache.set(sha, branches.ok && branches.out ? 'reachable' : 'unreachable');
     }
-    cache.set(sha, verdict);
   }
   return cache.get(sha);
 }
@@ -104,7 +106,7 @@ test('every commit a live spec section cites is reachable from this branch', () 
     }
   }
   assert.deepEqual(orphaned, [],
-    'a live section cites a commit that is not an ancestor of HEAD; a squashed or discarded commit cannot be followed and will be garbage-collected');
+    'a live section cites a commit this checkout holds but no branch contains; a squashed or discarded commit cannot be followed and will be garbage-collected');
 });
 
 function treeFiles(sha, cache) {

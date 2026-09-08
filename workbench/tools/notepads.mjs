@@ -174,6 +174,22 @@ function scanNew(parts) {
 // input and not its output can report success while leaving a record that can
 // no longer be read, appended to, or migrated - the one-way corruption of
 // history this runtime exists to prevent.
+// The high-water mark each id prefix has reached, folded over whatever the
+// record already remembered. Seeding it only for records this runtime created
+// left every earlier record - migrated or hand-written - free to reuse an id
+// after a trim, because the entries that proved the number were the ones being
+// removed. Trim records the mark for what it removes, so the guarantee reaches
+// records that predate the field.
+function sequenceFrom(entries, existing = {}) {
+  const marks = { ...existing };
+  for (const entry of entries) {
+    const suffix = /^([a-z_]+)-(\d+)$/.exec(entry?.id ?? '');
+    if (!suffix) continue;
+    marks[suffix[1]] = Math.max(Number(marks[suffix[1]] ?? 0), Number(suffix[2]));
+  }
+  return marks;
+}
+
 function publish(root, resolved, note) {
   const { missing, invalid } = checkStructure(note);
   if (missing.length || invalid.length) {
@@ -269,14 +285,17 @@ export function appendEntry(root, options) {
     if (options['source-line-end']) entry.source.line_end = Number(options['source-line-end']);
     if (options['source-sha256']) entry.source.sha256 = String(options['source-sha256']);
   }
-  const suffix = new RegExp(`^${kind}-(\\d+)$`).exec(id);
+  // Bump from the id's own prefix, not from `--kind`: `--entry-id
+  // decision-005` under `--kind finding` must advance the `decision` mark, or
+  // the fifth later `decision` append reuses it.
+  const suffix = /^([a-z_]+)-(\d+)$/.exec(id);
   const updated = {
     ...note,
     revision: note.revision + 1,
     updated_at: nowStamp(),
     entries: [...note.entries, entry],
     extensions: suffix
-      ? { ...note.extensions, entry_sequence: { ...sequence, [kind]: Math.max(Number(sequence[kind] ?? 0), Number(suffix[1])) } }
+      ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(Number(sequence[suffix[1]] ?? 0), Number(suffix[2])) } }
       : note.extensions
   };
   const failure = publish(root, resolved, updated);
@@ -483,7 +502,11 @@ export function trimEntries(root, options) {
     revision: note.revision + 1,
     updated_at: nowStamp(),
     entries: retained,
-    extensions: { ...note.extensions, durable_owners: [...owners] }
+    extensions: {
+      ...note.extensions,
+      durable_owners: [...owners],
+      entry_sequence: sequenceFrom(note.entries, note.extensions?.entry_sequence)
+    }
   };
   const failure = publish(root, resolved, updated);
   if (failure) return failure;
@@ -523,7 +546,13 @@ export function migrateNote(root, options) {
     // lossy path in a command whose whole purpose is lifting a record without
     // losing anything. `setCurrent` has spread for the same reason since the
     // grilling question list first needed it.
-    current: { ...note.current, state: note.current.state, unresolved: asArray(note.current.unresolved), next_action: note.current.next_action ?? '' },
+    // Carried, not coerced. `asArray` stringifies, and the live scope-1
+    // records keep structured owner tradeoffs in `unresolved` - objects that
+    // `String()` flattens to "[object Object]", permanently and in place. The
+    // round that added the spread left the coercion on top of it and tightened
+    // the documented promise at the same time. The schema does not require
+    // these to be strings, so migration carries whatever the record holds.
+    current: { ...note.current, state: note.current.state, unresolved: note.current.unresolved ?? [], next_action: note.current.next_action ?? '' },
     entries: note.entries.map((entry) => ({ ...entry, recorded_at: entry.recorded_at ?? note.created_at })),
     // A legacy `revision` is preserved rather than dropped, because the point
     // of migration is that nothing recorded is lost on the way across.
@@ -531,6 +560,7 @@ export function migrateNote(root, options) {
       durable_owners: [],
       ...note.extensions,
       migrated_from: legacyVersion,
+      entry_sequence: sequenceFrom(note.entries, note.extensions?.entry_sequence),
       ...(legacyRevision === undefined ? {} : { migrated_revision: legacyRevision })
     }
   };
