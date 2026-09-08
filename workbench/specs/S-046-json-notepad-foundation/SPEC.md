@@ -711,6 +711,27 @@ recommendations are Outcome evidence: real repeated trials, control/prior/
 candidate comparison, recent outcome evidence, and reported uncertainty. A
 shipped runtime and a green targeted suite are not an agent-outcome result.
 
+## v3.2.0 Layout Verification
+
+The additive layout candidate `050f07d4ec2793b33f0810ce14c203be1a295f6c`
+passed the full 34-command union, but independent review returned CHANGES
+REQUIRED. It reproduced unverified seed source/version acceptance, linked
+record-only destinations, receipt failure after partial migration, ineffective
+ignore rules passing validation, and a required-topic schema mismatch. This
+result is not a layout acceptance or integration PASS.
+
+Repairs at `2a33aff` and `42840a6` verify clean source identity and ordinary
+source/destination/receipt paths before any seeding or layout mutation, including
+byte-equal record-only cases. Migration reports incomplete seeding with its
+repair route instead of returning current. In a Git worktree, validation uses
+Git's effective rules and tracked inventory; outside Git its result names that
+limitation. Existing valid records retain optional topic and workflow fields.
+The populated-record, migration, source/destination and effective-ignore cases
+failed before repair; the existing linked-directory migration case already
+passed and was retained as coverage. Targeted verification now passes 29
+notepad cases and 62 layout cases. Final full-suite and fresh review remain
+open until recorded below. No legacy record was moved or deleted.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
