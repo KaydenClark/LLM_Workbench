@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-08
 **Catalog description:** Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling.
-**Blockers:** none
-**Latest event:** TK-003 claimed by codex.
-**Next gate:** Close TK-003 with verification and documentation proof.
+**Blockers:** live-device-and-private-repository-access
+**Latest event:** TK-003 closed with proof.
+**Next gate:** Establish actual private repository and Mac/Windows Claude/Codex access for TK-004.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -80,7 +80,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 |---|---|---|---|---|
 | TK-001 | Allocate stable room identity and preserve it across lifecycle operations | done | none | 434ef6b71fb88d5febbd87b60f4f6d55651a06a9: identity 6/6, full 38/38, independent concurrency and preservation review PASS; actual source identity assigned once and second invocation preserved it |
 | TK-002 | Synchronize selected safe notes and report acknowledgment | done | TK-001 | 6700ca0f31c785385473b0b84529bf71aa6ad205: transport 12/12, full 41/41, independent bounded review PASS with six additional adversarial cases; guardrail 78 unchanged |
-| TK-003 | Preserve conflicting/offline revisions under serialized sync | in-progress | TK-002 | pending |
+| TK-003 | Preserve conflicting/offline revisions under serialized sync | done | TK-002 | db540ec27a272d61283262ee48d46fe9ebf8f7af: transport 18/18 including explicit conflict reconciliation, full 41/41, independent TK-003 review PASS; preserved backup and remote ancestry read-back |
 | TK-004 | Prove real Mac Windows Claude Codex continuation | blocked | live-device-and-private-repository-access | pending |
 
 ### TK-001 - Allocate stable room identity and preserve it across lifecycle operations
@@ -131,9 +131,9 @@ Actual configured Mac/Windows and Claude/Codex save/resume a useful assigned obj
 
 - [x] Stable Workbench connection identity and independent-room regeneration preserve artifact semantics.
 - [x] Opt-in transport maps only selected safe live collections and leaves local work independent.
-- [ ] Remote acknowledgment, offline pending state, serialized sync and conflicting revisions are proven at public seams.
+- [x] Remote acknowledgment, offline pending state, serialized sync and conflicting revisions are proven at public seams.
 - [ ] Real Mac/Windows Claude/Codex round trip preserves objective/corrections/next action; fixtures are not substituted.
-- [ ] Privacy, Git history retention, code/process exclusions and source/destination recovery are documented and reviewed.
+- [x] Privacy, Git history retention, code/process exclusions and source/destination recovery are documented and reviewed.
 
 ## Testing Seams
 
@@ -182,10 +182,13 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 | 2026-09-08 | TK-003 | Interrupted multi-note resume reproduced incomplete error reporting at verified 6700ca0 | Public probe injects second-note rename failure after first note is replaced; runtime returned generic blocked with no named partial application or original backup. Regression demonstrated RED. Prepared before-write recovery plans and original snapshots, explicit partial results, acknowledgment read-back and successful cleanup; added lock, rejected-push and different-note clone checks | Root and generic procedure now distinguish caught partial recovery from atomicity or crash guarantees | Clean candidate green/full checks and independent recovery review pending; private repository lookup remains unavailable with current credentials, not proven nonexistent |
 
 | 2026-09-08 | TK-003 | Recovery candidate e7eecd4 passed 16 tests; b7b297d added passing acknowledgment-failure retry case | Independent review reproduced effective ignore exceptions exposing original-note backups after an interrupted resume. New regression demonstrated RED before repair. Every planned backup, prior-state and receipt destination is now checked before private recovery bytes are copied | Docs checked; existing ignored recovery boundary remains unchanged | Repaired targeted/full checks and independent re-review pending; earlier b7 full suite remains separate historical evidence |
+| 2026-09-08 | TK-003 | Ticket closed | db540ec27a272d61283262ee48d46fe9ebf8f7af: transport 18/18 including explicit conflict reconciliation, full 41/41, independent TK-003 review PASS; preserved backup and remote ancestry read-back | Root and generic Runbook document serialization, rejected/offline uploads, partial resumes, ignored recovery, explicit conflict reconciliation and limits | TK-004 actual private repository and Mac Windows Claude Codex continuation remains blocked on access; final release and Example integration remain open |
 
 ## Completion Result
 
-Pending. No v3.2.0 readiness, publication, or downstream delivery claim.
+Local implementation tickets TK-001 through TK-003 are verified and closed.
+TK-004 remains blocked on actual private repository and device/provider access.
+No v3.2.0 readiness, publication, or downstream delivery claim.
 
 ## Remaining Limitations Or Follow-Up Specs
 
