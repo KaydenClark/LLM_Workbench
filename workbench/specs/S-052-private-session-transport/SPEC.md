@@ -28,6 +28,10 @@ plan or upstream-only green result cannot establish Example readiness.
 The pre-anchor has no transport tool or stable Workbench connection identity.
 S-046 local runtime is pending integration. No actual private repository,
 Windows host or Claude/Codex round-trip access is verified in this task.
+Read-only lookup on 2026-09-08 could not resolve the selected
+KaydenClark/workbench_sessions repository with current credentials; unavailable
+or inaccessible is the verified result, not proven nonexistence. The exposed
+connected-host capability offers local only; Windows access is not established.
 
 ## Desired Behavior
 

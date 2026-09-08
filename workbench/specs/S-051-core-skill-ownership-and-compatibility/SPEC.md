@@ -25,7 +25,7 @@ plan or upstream-only green result cannot establish Example readiness.
 
 ## Current Verified State
 
-Current source owns 18 required skills; installed make-it-so is older than source.
+Current source owns 17 required skills; installed make-it-so is older than source.
 The inspector reports unknown generation but does not report absent required
 core skills. Existing installer tests already allow missing installation into
 Git-owned/linked roots; blanket refusal prose is drift. Two separate discovery
