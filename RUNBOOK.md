@@ -956,6 +956,15 @@ versions and require explicit reconciliation; there is no force push, implicit
 remote deletion or promise of machine-crash recovery. Keep one active note writer;
 other Git clients and local note writers do not automatically honor these locks.
 
+Before replacing resumed notes, the helper retains original bytes and prior
+acknowledgment state in an ignored, restricted recovery directory. A write or
+read-back failure reports `partial`, names attempted and completed note writes,
+and points to the recovery record without acknowledging success. Inspect the
+record and compare current hashes before restoring anything; reconcile changes
+explicitly and retry. Successful resumes remove their temporary backups; a
+cleanup failure names retained recovery residue. This is observable recovery
+for caught failures, not an atomic multi-file or machine-crash guarantee.
+
 The helper uses a temporary Git index to preserve the checkout's existing files
 and staging area. Transport errors use registered effect-none diagnostics and
 never block local Workbench selection. Preserve failed-operation state and

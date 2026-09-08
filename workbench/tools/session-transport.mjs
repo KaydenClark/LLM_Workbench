@@ -231,6 +231,48 @@ function publishSnapshot(info, config, parent, updates, directory) {
     return commit;
   } finally { fs.rmSync(temporary, { recursive: true, force: true }); }
 }
+function resumeWithRecovery(root, paths, downloads, state, confirmed) {
+  const changed = downloads.filter(note => note.hash !== note.remoteHash);
+  const previousSha = state.remoteSha;
+  let directory = null, recoveryRecord = null;
+  if (changed.length) {
+    directory = fs.mkdtempSync(path.join(paths.directory, 'resume-'));fs.chmodSync(directory, 0o700);
+    const notes = changed.map((note, index) => {
+      const backup = note.bytes === null ? null : path.join(directory, `note-${index}.json`);
+      if (backup) { writeSafeFile(root, backup, note.bytes);fs.chmodSync(backup, 0o600);if (digest(ordinary(root, backup)) !== note.hash) refuse('recovery-readback-failed', 'Resume backup did not match the original note; no note was replaced.'); }
+      return { note: note.relative, beforeHash: note.hash, afterHash: note.remoteHash, backup: backup && path.relative(root, backup), mode: note.bytes === null ? null : fs.statSync(note.absolute).mode & 0o777 };
+    });
+    const stateBackup = path.join(directory, 'state-before.json');
+    writeLocal(root, stateBackup, state);
+    recoveryRecord = path.relative(root, path.join(directory, 'recovery.json'));
+    writeLocal(root, path.join(root, recoveryRecord), { schemaVersion: 1, operation: 'resume', lastConfirmedRemoteSha: previousSha, fetchedRemoteSha: confirmed, stateBackup: path.relative(root, stateBackup), notes });
+  }
+  const appliedNotes = [], attemptedNotes = [];
+  try {
+    for (const note of changed) {
+      const current = fs.existsSync(note.absolute) ? digest(ordinary(root, note.absolute)) : null;
+      if (current !== note.hash) refuse('local-note-changed', 'A local note changed during resume; preserve recovery and reconcile it.');
+      attemptedNotes.push(note.relative);
+      writeSafeFile(root, note.absolute, note.remoteBytes);fs.chmodSync(note.absolute, 0o600);
+      if (digest(ordinary(root, note.absolute)) !== note.remoteHash) refuse('local-readback-failed', 'Resumed note read-back failed; preserve its original backup and remote revision.');
+      appliedNotes.push(note.relative);
+    }
+    const updated = { ...state, remoteSha: confirmed, files: { ...state.files } };
+    for (const note of downloads) updated.files[note.remotePath] = note.remoteHash;
+    writeLocal(root, paths.state, updated);
+    if (JSON.stringify(JSON.parse(ordinary(root, paths.state))) !== JSON.stringify(updated)) refuse('state-readback-failed', 'Resume acknowledgment read-back failed; preserve recovery before retrying.');
+  } catch (error) {
+    if (!recoveryRecord) throw error;
+    return { status: 'partial', acknowledged: false, lastConfirmedRemoteSha: previousSha, fetchedRemoteSha: confirmed, attemptedNotes, appliedNotes, recoveryRecord, error: blocked(error).error, recovery: 'Inspect the retained plan, original note backups and prior acknowledgment state. Compare current hashes before restoring anything; reconcile explicitly and retry. No automatic rollback or current acknowledgment occurred.' };
+  }
+  let recoveryResidue;
+  if (directory) {
+    try { fs.rmSync(directory, { recursive: true }); }
+    catch { recoveryResidue = recoveryRecord; }
+  }
+  return { status: 'confirmed', acknowledged: true, remoteSha: confirmed, lastConfirmedRemoteSha: confirmed, notes: downloads.map(note => note.relative), pendingUpload: false, ...(recoveryResidue ? { recoveryResidue } : {}) };
+}
+
 export function syncNotes(root, options, dependencies = {}) {
   let state;
   try {
@@ -283,11 +325,7 @@ export function syncNotes(root, options, dependencies = {}) {
             const current = fs.existsSync(note.absolute) ? digest(ordinary(root, note.absolute)) : null;
             if (current !== note.hash) refuse('local-note-changed', 'A local note changed during resume; retain it and retry after reconciliation.');
           }
-          for (const note of downloads) {
-            writeSafeFile(root, note.absolute, note.remoteBytes);
-            if (digest(ordinary(root, note.absolute)) !== note.remoteHash) refuse('local-readback-failed', 'Resumed note read-back failed; the remote version remains available.');
-            state.files[note.remotePath] = note.remoteHash;
-          }
+          return resumeWithRecovery(root, paths, downloads, state, confirmed);
         }
         state.remoteSha = confirmed;writeLocal(root, paths.state, state);
         const newerLocal = options.direction === 'push' && selected.some(note => digest(ordinary(root, note.absolute)) !== note.hash);

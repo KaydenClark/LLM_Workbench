@@ -237,3 +237,73 @@ test('ignore verification cannot inherit another repository through Git routing 
     fs.rmSync(f.base, { recursive: true, force: true });
   }
 });
+
+test('interrupted multi-note resume names partial application and preserves recovery bytes', () => {
+ const f=fixture(); const rename=fs.renameSync;
+ try {
+  configured(f);const other=createNote(f.project,{note:'second',objective:'transport-proof',title:'Second continuity'}).note;
+  const notes=[f.note,other];
+  assert.equal(transport.syncNotes(f.project,{notes,direction:'push'},fixtureVerification).status,'confirmed');
+  const second=path.join(f.base,'resume-room');git(f.base,'clone','-q',f.project,second);
+  assert.equal(transport.configureTransport(second,{checkout:f.checkout,branch:'main',acknowledgePrivate:true},fixtureVerification).status,'configured');
+  assert.equal(transport.syncNotes(second,{notes,direction:'resume'},fixtureVerification).status,'confirmed');
+  const before=notes.map(n=>fs.readFileSync(path.join(second,n)));const stateFile=path.join(second,'workbench/sessions/recovery/transport/state.json');
+  const stateBefore=fs.readFileSync(stateFile);
+  for(const note of notes) {const v=JSON.parse(fs.readFileSync(path.join(f.project,note)));appendEntry(f.project,{note,revision:v.revision,kind:'finding',topic:'remote-change',content:'Preserve this new remote progress.'});}
+  assert.equal(transport.syncNotes(f.project,{notes,direction:'push'},fixtureVerification).status,'confirmed');
+  fs.renameSync=(a,b)=>{if(b===path.join(second,other)){const e=new Error('Injected write failure');e.code='EACCES';throw e;}return rename(a,b);};
+  const result=transport.syncNotes(second,{notes,direction:'resume'},fixtureVerification);fs.renameSync=rename;
+  assert.equal(result.status,'partial',JSON.stringify(result));assert.equal(result.acknowledged,false);
+  assert.deepEqual(result.appliedNotes,[f.note]);assert.ok(result.recoveryRecord);
+  assert.deepEqual(fs.readFileSync(stateFile),stateBefore);
+  assert.deepEqual(fs.readFileSync(path.join(second,other)),before[1]);
+  const receipt=JSON.parse(fs.readFileSync(path.resolve(second,result.recoveryRecord)));
+  for(let i=0;i<notes.length;i++)assert.deepEqual(fs.readFileSync(path.resolve(second,receipt.notes[i].backup)),before[i]);
+ } finally {fs.renameSync=rename;fs.rmSync(f.base,{recursive:true,force:true});}
+});
+
+test('occupied operation locks refuse without touching notes or remote and recover only after deliberate removal', () => {
+ const f=fixture();
+ try {
+  configured(f);const before=fs.readFileSync(path.join(f.project,f.note)), sha=git(f.remote,'rev-parse','main');
+  const locks=[path.join(f.project,'workbench/sessions/recovery/transport/operation.lock'),path.join(f.checkout,'.git/workbench-session-transport.lock')];
+  for(const lock of locks) {
+   fs.writeFileSync(lock,'Retained owner lock');
+   const r=transport.syncNotes(f.project,{notes:[f.note],direction:'push'},fixtureVerification);
+   assert.equal(r.status,'blocked');assert.equal(r.error.reason,'transport-busy');assert.equal(fs.readFileSync(lock,'utf8'),'Retained owner lock');
+   assert.deepEqual(fs.readFileSync(path.join(f.project,f.note)),before);assert.equal(git(f.remote,'rev-parse','main'),sha);
+   fs.unlinkSync(lock);
+  }
+  assert.equal(transport.syncNotes(f.project,{notes:[f.note],direction:'push'},fixtureVerification).status,'confirmed');
+ } finally {fs.rmSync(f.base,{recursive:true,force:true});}
+});
+
+test('rejected pushes preserve last confirmation and local progress, then retry without force', () => {
+ const f=fixture();
+ try {
+  configured(f);const initial=transport.syncNotes(f.project,{notes:[f.note],direction:'push'},fixtureVerification);
+  assert.equal(initial.status,'confirmed');
+  appendEntry(f.project,{note:f.note,revision:2,kind:'finding',topic:'pending',content:'Keep this local progress after a rejected upload.'});
+  const before=fs.readFileSync(path.join(f.project,f.note));const hook=path.join(f.remote,'hooks/pre-receive');fs.writeFileSync(hook,'#!/bin/sh\nexit 1\n',{mode:0o700});
+  const r=transport.syncNotes(f.project,{notes:[f.note],direction:'push'},fixtureVerification);
+  assert.equal(r.status,'pending');assert.equal(r.acknowledged,false);assert.equal(r.lastConfirmedRemoteSha,initial.remoteSha);
+  assert.equal(git(f.remote,'rev-parse','main'),initial.remoteSha);assert.deepEqual(fs.readFileSync(path.join(f.project,f.note)),before);
+  assert.equal(transport.transportStatus(f.project).lastConfirmedRemoteSha,initial.remoteSha);
+  fs.unlinkSync(hook);const retry=transport.syncNotes(f.project,{notes:[f.note],direction:'push'},fixtureVerification);assert.equal(retry.status,'confirmed');
+  git(f.remote,'merge-base','--is-ancestor',initial.remoteSha,retry.remoteSha);
+ } finally {fs.rmSync(f.base,{recursive:true,force:true});}
+});
+
+test('different notes from isolated room clones retain both revisions without force or checkout replacement', () => {
+ const f=fixture();
+ try {
+  configured(f);assert.equal(transport.syncNotes(f.project,{notes:[f.note],direction:'push'},fixtureVerification).status,'confirmed');
+  const second=path.join(f.base,'second-room');git(f.base,'clone','-q',f.project,second);
+  assert.equal(transport.configureTransport(second,{checkout:f.checkout,branch:'main',acknowledgePrivate:true},fixtureVerification).status,'configured');
+  const created=createNote(second,{note:'independent',objective:'transport-proof',title:'Separate note'});
+  assert.equal(created.status,'created');assert.equal(transport.syncNotes(second,{notes:[created.note],direction:'push'},fixtureVerification).status,'confirmed');
+  appendEntry(f.project,{note:f.note,revision:2,kind:'finding',topic:'first-note',content:'Keep both independent note changes.'});
+  const final=transport.syncNotes(f.project,{notes:[f.note],direction:'push'},fixtureVerification);assert.equal(final.status,'confirmed');
+  for(const [room,note,name] of [[f.project,f.note,'selected'],[second,created.note,'independent']]) assert.equal(git(f.remote,'show',`${final.remoteSha}:workbenches/${f.id}/sessions/notepads/work/${name}.json`),fs.readFileSync(path.join(room,note),'utf8').trim());
+ } finally {fs.rmSync(f.base,{recursive:true,force:true});}
+});

@@ -130,7 +130,7 @@ Actual configured Mac/Windows and Claude/Codex save/resume a useful assigned obj
 ## Acceptance Criteria
 
 - [x] Stable Workbench connection identity and independent-room regeneration preserve artifact semantics.
-- [ ] Opt-in transport maps only selected safe live collections and leaves local work independent.
+- [x] Opt-in transport maps only selected safe live collections and leaves local work independent.
 - [ ] Remote acknowledgment, offline pending state, serialized sync and conflicting revisions are proven at public seams.
 - [ ] Real Mac/Windows Claude/Codex round trip preserves objective/corrections/next action; fixtures are not substituted.
 - [ ] Privacy, Git history retention, code/process exclusions and source/destination recovery are documented and reviewed.
@@ -178,6 +178,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 
 | 2026-09-08 | TK-002 | Candidate 32c3085c7b4c3bda36761791fc5e4ee02f72eb6a passed full checks but second review found two further boundaries | Full 41 of 41 pass; ten transport tests pass. Independent review reproduced minified home-path privacy bypass and inherited Git routing variables spoofing ignored checks. Both regressions demonstrated RED; independent decoded-string scans and consistent Git environment isolation now prepared | Docs checked; existing privacy and project exclusion contracts require these repairs without a contract change | Clean twelve-test candidate, full verification and fresh independent review pending; actual private service and device gates remain open |
 | 2026-09-08 | TK-002 | Ticket closed | 6700ca0f31c785385473b0b84529bf71aa6ad205: transport 12/12, full 41/41, independent bounded review PASS with six additional adversarial cases; guardrail 78 unchanged | Root and generic optional transport procedure, repository separation, privacy and acknowledgment limits documented | TK-003 interruption/serialization recovery including reproduced partial multi-note resume; TK-004 actual private service and Mac Windows Claude Codex continuation; final release integration remain open |
+
+| 2026-09-08 | TK-003 | Interrupted multi-note resume reproduced incomplete error reporting at verified 6700ca0 | Public probe injects second-note rename failure after first note is replaced; runtime returned generic blocked with no named partial application or original backup. Regression demonstrated RED. Prepared before-write recovery plans and original snapshots, explicit partial results, acknowledgment read-back and successful cleanup; added lock, rejected-push and different-note clone checks | Root and generic procedure now distinguish caught partial recovery from atomicity or crash guarantees | Clean candidate green/full checks and independent recovery review pending; private repository lookup remains unavailable with current credentials, not proven nonexistent |
 
 ## Completion Result
 
