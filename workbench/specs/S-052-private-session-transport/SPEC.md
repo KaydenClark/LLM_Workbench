@@ -152,6 +152,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 
 | 2026-09-08 | TK-001 | First identity candidate 43d3756 passed initial public lifecycle and actual adoption tests | Identity 2 of 2 and visible-ID 4 of 4 green; adoption passed; layout 63 of 67, with four relocated partial-tool fixtures missing the new visible-ids dependency. Manifest alias test demonstrated RED when existing identity was read through a link; ordinary unshared manifest preflight added before reading, and fixture dependency closure repaired | Lifecycle and lock guidance already recorded; actual adoption now explicitly checks room namespace | Clean repaired-candidate targeted verification and full suite pending; no transport implementation or readiness claim |
 
+| 2026-09-08 | TK-001 | Independent review rejected d5f8e33 because lifecycle writers bypassed identity serialization | Public review reproduced occupied-lock migration, competing initialization IDs, competing legacy migration IDs in 4 of 4 trials, and record-source erasing a concurrent identify result in 4 of 4 trials. Added legacy-lock regression demonstrated RED. Shared lock now covers initialization, migration, identify and record-source with fresh reads; concurrent public CLI regression added | Existing local-lock guidance now applies to all identity-producing or preserving lifecycle writers | Repaired-candidate targeted/full checks and independent re-review pending; no namespace assigned to actual source or Example yet |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.

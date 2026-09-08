@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { allocateWorkbenchId, isWorkbenchId } from '../workbench/tools/visible-ids.mjs';
@@ -114,4 +114,73 @@ test('connection allocation validates occupied namespace identities and keeps ar
   assert.throws(() => allocateWorkbenchId(['S-001']), /valid WB/);
   assert.throws(() => allocateWorkbenchId([ids[0], ids[0]]), /collision/);
   assert.throws(() => allocateWorkbenchId(['WB-000000000000000000000A', 'WB-000000000000000000000a']), /collision/);
+});
+
+test('every legacy migration respects the existing identity writer before changing the manifest', () => {
+  const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-identity-'));
+  try {
+    for (const shape of ['current', 'legacy-nine', 'schema-one']) {
+      const room = create(parent, shape);
+      let manifest = read(room);
+      delete manifest.workbenchId;
+      if (shape === 'legacy-nine') delete manifest.collections.recovery;
+      if (shape === 'schema-one') {
+        fs.rmSync(path.join(room, 'workbench'), { recursive: true });
+        const lanes = { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' };
+        for (const lane of Object.values(lanes)) fs.mkdirSync(path.join(room, lane), { recursive: true });
+        manifest = { schemaVersion: 1, workbenchVersion: 'v3.0.0', provenance: { lifecycle: 'genesis' }, lanes };
+      }
+      fs.writeFileSync(manifestPath(room), JSON.stringify(manifest));
+      const before = fs.readFileSync(manifestPath(room));
+      const lock = path.join(room, 'workbench/.identity.lock');
+      fs.writeFileSync(lock, 'other writer');
+      const busy = run('migrate', room, '--version', version);
+      assert.equal(busy.error?.code, 'identity-busy', shape + ': ' + JSON.stringify(busy));
+      assert.deepEqual(fs.readFileSync(manifestPath(room)), before);
+      assert.equal(fs.readFileSync(lock, 'utf8'), 'other writer');
+      fs.unlinkSync(lock);
+      const migrated = run('migrate', room, '--version', version);
+      assert.equal(migrated.status, 'migrated', shape + ': ' + JSON.stringify(migrated));
+      assert.match(read(room).workbenchId, /^WB-[0-9A-Za-z]{22}$/);
+    }
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
+});
+
+test('concurrent lifecycle writers never report competing identities or erase an assigned namespace', async () => {
+  const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-identity-'));
+  function concurrent(command, room, ...args) {
+    return new Promise((resolve, reject) => {
+      const child = spawn(process.execPath, [tool, command, '--project', room, ...args]);
+      let output = '', error = '';
+      child.stdout.on('data', chunk => { output += chunk; });
+      child.stderr.on('data', chunk => { error += chunk; });
+      child.on('error', reject);
+      child.on('close', () => {
+        try { resolve(JSON.parse(output)); } catch { reject(new Error(error || output)); }
+      });
+    });
+  }
+  try {
+    const room = path.join(parent, 'room');
+    fs.mkdirSync(room);
+    const initialized = await Promise.all([1, 2].map(() => concurrent('init', room, '--provenance', 'genesis', '--version', version)));
+    assert.equal(initialized.filter(result => result.status === 'initialized').length, 1, JSON.stringify(initialized));
+    assert.equal(read(room).workbenchId, initialized.find(result => result.status === 'initialized').manifest.workbenchId);
+    for (const competing of ['migrate', 'record-source']) {
+      const manifest = read(room);
+      delete manifest.workbenchId;
+      fs.writeFileSync(manifestPath(room), JSON.stringify(manifest));
+      const results = await Promise.all([concurrent('identify', room), concurrent(competing, room)]);
+      for (const result of results) {
+        if (result.status === 'invalid') assert.equal(result.error.code, 'identity-busy', JSON.stringify(result));
+      }
+      // A busy assigner is retried after its competing writer finishes.
+      const assigned = run('identify', room);
+      assert.ok(['current', 'identified'].includes(assigned.status), JSON.stringify(assigned));
+      const reported = results.map(result => result.workbenchId ?? result.manifest?.workbenchId).filter(Boolean);
+      assert.ok(reported.every(id => id === read(room).workbenchId), JSON.stringify(results));
+      assert.equal(assigned.workbenchId, read(room).workbenchId);
+      assert.equal(fs.existsSync(path.join(room, 'workbench/.identity.lock')), false);
+    }
+  } finally { fs.rmSync(parent, { recursive: true, force: true }); }
 });

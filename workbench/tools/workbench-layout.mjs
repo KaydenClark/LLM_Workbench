@@ -386,28 +386,31 @@ export function initialize(options) {
   if (source.status) return source;
   const seedFailure = preflightSeedDocuments(project, { notepadOnly: true });
   if (seedFailure) return seedFailure;
-  const manifest = {
-    schemaVersion: SCHEMA_VERSION,
-    workbenchVersion: options['--version'],
-    workbenchId: allocateWorkbenchId(),
-    provenance: { lifecycle: options['--provenance'], source },
-    git: declaration.git,
-    lanes,
-    collections,
-    wiki: { profile: options['--wiki-profile'] ?? 'project' },
-    skillPolicy
-  };
-  for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
-    if (options.deferWikiSeed && relative.startsWith(`${lanes.wiki}/`)) continue;
-    const target = path.join(project, relative);
-    fs.mkdirSync(target, { recursive: true });
-    if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
-  }
-  writeSessionsIgnore(project);
-  const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options);
-  fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-  const documents = writeSeedDocuments(project, { ...options, notepadOnly: true });
-  return report('initialized', { manifestPath, manifest, seeded, documents });
+  return withIdentityLock(project, () => {
+    if (lstatOrNull(manifestPath)) return fail('manifest-exists', `${manifestPath} already exists.`);
+    const manifest = {
+      schemaVersion: SCHEMA_VERSION,
+      workbenchVersion: options['--version'],
+      workbenchId: allocateWorkbenchId(),
+      provenance: { lifecycle: options['--provenance'], source },
+      git: declaration.git,
+      lanes,
+      collections,
+      wiki: { profile: options['--wiki-profile'] ?? 'project' },
+      skillPolicy
+    };
+    for (const relative of [...Object.values(lanes), ...Object.values(collections)]) {
+      if (options.deferWikiSeed && relative.startsWith(`${lanes.wiki}/`)) continue;
+      const target = path.join(project, relative);
+      fs.mkdirSync(target, { recursive: true });
+      if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
+    }
+    writeSessionsIgnore(project);
+    const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options);
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    const documents = writeSeedDocuments(project, { ...options, notepadOnly: true });
+    return report('initialized', { manifestPath, manifest, seeded, documents });
+  }, { initialize: true });
 }
 
 function gitValue(cwd, args) {
@@ -630,6 +633,11 @@ export function provenanceFindings(project) {
 // manifest changes, and a source it cannot verify is never written.
 export function recordSource(options) {
   const project = path.resolve(options['--project']);
+  return withIdentityLock(project, () => recordSourceUnlocked(options));
+}
+
+function recordSourceUnlocked(options) {
+  const project = path.resolve(options['--project']);
   const { manifest, manifestPath, failure } = readManifestFile(project);
   if (failure) return failure;
   if (manifest.schemaVersion === 1) {
@@ -650,29 +658,40 @@ export function recordSource(options) {
 export function identify(options) {
   if (Object.keys(options).some(key => key !== '--project')) return fail('invalid-invocation', 'identify accepts only --project; independent rooms receive identity during initialization.');
   const project = path.resolve(options['--project']);
+  return withIdentityLock(project, () => identifyUnlocked(project));
+}
+
+function withIdentityLock(project, operation, { initialize = false } = {}) {
   const manifestPath = path.join(project, 'workbench/manifest.json');
-  try { assertSafeWritePath(project, manifestPath); }
-  catch (error) { return fail('identity-write-failed', error.message); }
-  const validation = validateManifest(project);
-  if (validation.status !== 'valid') return validation;
   const lock = path.join(project, 'workbench/.identity.lock');
   let descriptor;
   try {
+    assertSafeWritePath(project, manifestPath);
+    if (initialize) fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
+    else {
+      const existing = readManifestFile(project);
+      if (existing.failure) return existing.failure;
+    }
     assertSafeWritePath(project, lock);
     descriptor = fs.openSync(lock, 'wx', 0o600);
-    const current = validateManifest(project);
-    if (current.status !== 'valid') return current;
-    if (current.manifest.workbenchId) return report('current', { workbenchId: current.manifest.workbenchId });
-    const workbenchId = allocateWorkbenchId();
-    const updated = { ...current.manifest, workbenchId };
-    writeSafeFile(project, manifestPath, JSON.stringify(updated, null, 2) + '\n');
-    if (JSON.parse(fs.readFileSync(manifestPath, 'utf8')).workbenchId !== workbenchId) throw new Error('Workbench identity read-back failed');
-    return report('identified', { workbenchId });
+    return operation();
   } catch (error) {
     return fail(error.code === 'EEXIST' ? 'identity-busy' : 'identity-write-failed', error.code === 'EEXIST' ? 'Identity assignment is already active; preserve the lock and retry after its owner finishes.' : error.message);
   } finally {
     if (descriptor !== undefined) { fs.closeSync(descriptor); fs.unlinkSync(lock); }
   }
+}
+
+function identifyUnlocked(project) {
+  const current = validateManifest(project);
+  if (current.status !== 'valid') return current;
+  if (current.manifest.workbenchId) return report('current', { workbenchId: current.manifest.workbenchId });
+  const workbenchId = allocateWorkbenchId();
+  const updated = { ...current.manifest, workbenchId };
+  const manifestPath = path.join(project, 'workbench/manifest.json');
+  writeSafeFile(project, manifestPath, JSON.stringify(updated, null, 2) + '\n');
+  if (JSON.parse(fs.readFileSync(manifestPath, 'utf8')).workbenchId !== workbenchId) throw new Error('Workbench identity read-back failed');
+  return report('identified', { workbenchId });
 }
 
 function validateManifestShape(manifest) {
@@ -686,6 +705,11 @@ function validateManifestShape(manifest) {
 // grilling lane into sessions, its tracked handoffs checkpoints into
 // sessions/checkpoints, and gains docs, tools, and the seven collections.
 export function migrate(options) {
+  const project = path.resolve(options['--project']);
+  return withIdentityLock(project, () => migrateUnlocked(options));
+}
+
+function migrateUnlocked(options) {
   const project = path.resolve(options['--project']);
   const { manifest, manifestPath, failure } = readManifestFile(project);
   if (failure) return failure;
@@ -701,7 +725,7 @@ export function migrate(options) {
         .filter(relative => !seeds?.documents?.[relative] || !lstatOrNull(path.join(project, relative))?.isFile());
       if (missing.length) return fail('missing-collection', 'Notepad layout seeding is incomplete; run seed-documents from the clean release checkout before retrying migrate.', { missing });
       if (!manifest.workbenchId) {
-        const assigned = identify({ '--project': project });
+        const assigned = identifyUnlocked(project);
         if (!['identified', 'current'].includes(assigned.status)) return assigned;
         return report('migrated', { manifestPath, manifest: { ...manifest, workbenchId: assigned.workbenchId }, moved: [] });
       }

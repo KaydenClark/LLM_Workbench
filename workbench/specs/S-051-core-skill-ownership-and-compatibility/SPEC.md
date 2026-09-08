@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-002 claimed by codex.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -82,7 +82,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Define and install one authoritative core source with adapters | done | none | d2ecc5cf049509160c9ae1460b970eee48175772: installer 27/27, upgrade 8/8, full 37/37, independent repair review PASS; all seven reproduced ownership and alias findings resolved |
-| TK-002 | Diagnose tested compatibility and discovery failures | ready | TK-001 | pending |
+| TK-002 | Diagnose tested compatibility and discovery failures | in-progress | TK-001 | pending |
 | TK-003 | Compose portable save and promote into a self-sufficient bundle | ready | TK-002 | pending |
 
 ### TK-001 - Define and install one authoritative core source with adapters
