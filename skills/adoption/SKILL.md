@@ -32,7 +32,7 @@ v3 support root through `/update-harness`, which runs
    The helper moves only unambiguous durable v2 lanes, including a legacy root
    `MEMORY.md` and a root feedback file, into the manifest-declared schema 2
    lanes and collections, preserves a project-local `skills/` folder under
-   `workbench/sessions/checkpoints/`, installs the receipt-backed runtime
+   `workbench/sessions/recovery/`, installs the receipt-backed runtime
    tools into `workbench/tools/`, declares `git.integrationBranch` by the
    exact case of an existing integration-named branch (listing an unresolved
    one as `residue.missingIntegrationBranch`), renders the projections, and

@@ -217,19 +217,25 @@ function verifyNotepadIgnores(project, manifest) {
   const templates = manifest.collections['notepad-templates'];
   const live = new Set([`${base}/work/live.json`, `${base}/grilling/live.json`, `${base}/new-type/live.json`]);
   const tracked = new Set(seededLaneDocuments.filter(document => document.lane === 'sessions').map(document => `${lanes.sessions}/${document.name}`));
-  function walk(relative) {
+  function walk(relative, opaqueLinks = false) {
     if (relative === templates) return;
     live.add(`${relative}/.workbench-live-probe.json`);
     const directory = path.join(project, relative);
     assertSafeReadPath(project, directory);
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
       const child = `${relative}/${entry.name}`;
-      if (entry.isSymbolicLink()) throw new Error(`Linked live path ${child} cannot establish ordinary note storage.`);
-      if (entry.isDirectory()) walk(child);
+      if (entry.isSymbolicLink()) {
+        if (!opaqueLinks) throw new Error(`Linked live path ${child} cannot establish ordinary note storage.`);
+        // Backups preserve original links. Check that the link itself is
+        // ignored, without reading or following its possibly external target.
+        live.add(child);
+        continue;
+      }
+      if (entry.isDirectory()) walk(child, opaqueLinks);
       else if (entry.name !== '.gitkeep') live.add(child);
     }
   }
-  try { for (const relative of localBases) walk(relative); } catch (error) { return { failure: fail('sessions-not-ignored', error.message) }; }
+  try { for (const relative of localBases) walk(relative, relative === manifest.collections.recovery); } catch (error) { return { failure: fail('sessions-not-ignored', error.message) }; }
   const paths = [...live, ...tracked];
   const checked = spawnSync('git', ['check-ignore', '--no-index', '-z', '--stdin'], { cwd: project, encoding: 'utf8', input: `${paths.join('\0')}\0` });
   if (![0, 1].includes(checked.status)) return { failure: fail('sessions-not-ignored', 'Git could not verify effective notepad ignore rules.') };

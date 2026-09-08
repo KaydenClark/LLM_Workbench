@@ -134,6 +134,8 @@ function fixtureSpec() {
     write(project, 'handoffs/adoption-recovery.json', '{"legacy":"keep"}\n');
     write(project, 'handoffs/adoption-legacy-skills/old.md', '# Earlier backup\n');
     write(project, 'skills/custom/SKILL.md', '# Legacy project-local skill\n');
+    fs.symlinkSync('SKILL.md', path.join(project, 'skills/custom/alias.md'));
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: project }).status, 0);
     write(project, 'tools/app.mjs', 'export const app = true;\n');
     write(project, 'tools/spec-workbench.mjs', 'export const duplicate = true;\n');
     write(project, 'schema.sql', '-- project schema\n');
@@ -157,6 +159,7 @@ function fixtureSpec() {
     assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-recovery.json'), '{"legacy":"keep"}\n');
     assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-legacy-skills/old.md'), '# Earlier backup\n');
     assert.equal(read(project, 'workbench/sessions/recovery/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
+    assert.equal(fs.readlinkSync(path.join(project, 'workbench/sessions/recovery/adoption-legacy-skills/custom/alias.md')), 'SKILL.md');
     assert.equal(report.recoveryPath, 'workbench/sessions/recovery/adoption-recovery.json');
     assert.equal(JSON.parse(read(project, 'workbench/manifest.json')).schemaVersion, 2, 'adoption must produce schema 2');
     assert.equal(read(project, 'AGENTS.md'), '# AGENTS.md\n\nProject-specific adoption truth.\n');

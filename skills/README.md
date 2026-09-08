@@ -10,7 +10,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | Skill | Purpose |
 |---|---|
 | `adoption` | Migrate an existing project into the Workbench once while preserving project truth and recovery. |
-| `checkpoint` | Save an in-progress decision record as a recoverable handoff. |
+| `checkpoint` | Compatibility notice for retired checkpoint copying; route scoped continuity to notepad. |
 | `code-review` | Independently review a fixed implementation diff against its owning spec. |
 | `genesis` | Create a new greenfield Workbench project from a founding prompt. |
 | `grilling` | Run the question-at-a-time decision interview. |

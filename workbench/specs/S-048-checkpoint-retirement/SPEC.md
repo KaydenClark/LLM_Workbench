@@ -184,8 +184,16 @@ legacy counter project, preserved its changed support tree, restored every
 tracked original file from the receipt's Git SHA and restored a changed managed
 skill from its recorded backup. Before/after hashes match, Git is clean, and
 the counter prints `2` before upgrade, after upgrade and after restoration.
-This is one local operational rehearsal; complete retirement, full verification,
-independent review and release integration remain open.
+This is one local operational rehearsal. Independent review reproduced all
+12 file hashes, backup/restored skill hashes, clean Git state and output.
+Candidate `5a39bf7` passed 34 of 37 full-suite commands; the ADR register,
+dogfood and doctor checks exposed stale generated projections. Review also
+reproduced a legacy skill link preserved into recovery but rejected after
+migration by the live-note traversal rule, and identified three stale skill
+consumers. The repair checks backup links as opaque ignored entries without
+following them, retains strict notepad link rules, reconciles current guidance
+and regenerates the projections. Repaired full verification and review remain
+open; no integration or release claim follows.
 
 ## Acceptance Criteria
 

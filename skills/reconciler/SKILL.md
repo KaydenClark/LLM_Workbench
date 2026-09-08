@@ -30,7 +30,7 @@ Resolve the assigned packet and support lanes through `workbench/manifest.json`.
 Route truth once using `/to-docs`: requirements and proof to the assigned
 spec, meanings to Lexicon, procedures to Runbook, rationale to the manifest
 `workbench/docs/adr/` collection. Render projections from specs. Use
-`/checkpoint` only when material session reasoning must survive. Do not invent
+`/notepad` to preserve material session reasoning locally. Do not invent
 a handoff, new task or evidence, or mark unmet acceptance complete.
 
 ## Completion / Exit Condition
