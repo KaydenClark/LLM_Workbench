@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Introduce visible base-62 identifiers without parallel IDs or loss of existing references.
 **Blockers:** none
-**Latest event:** TK-002 claimed by codex.
-**Next gate:** Close TK-002 with verification and documentation proof.
+**Latest event:** TK-002 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 ## Outcome
 
@@ -68,7 +68,7 @@ or a lossy migration must be brought back as a concrete product tradeoff.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Allocate and retrieve one new visible notepad ID through a tested CLI while legacy numeric records still resolve | done | none | ffa02b1e4680e012db5bfd13e3938f25e390376b:45 notepad and3 allocator cases green after public red regressions; full35-command union green; independent bounded repair review PASS; receipt-backed installed CLI allocation and explicit ID lookup pass; guardrail78/100 unchanged |
-| TK-002 | Extend visible-ID compatibility through spec ticket and ADR consumers without renaming historical paths | in-progress | TK-001 | pending |
+| TK-002 | Extend visible-ID compatibility through spec ticket and ADR consumers without renaming historical paths | done | TK-001 | c78e24661de6a28259c4f9520c6e06ee617d83a3:11 consumer,4 allocator,65 layout,10 ADR and45 notepad cases; full36-command union passes; independent repaired candidate PASS; guardrail78 unchanged with4 outcome recommendations |
 
 ### TK-001 - Compatibility tracer bullet
 
@@ -179,14 +179,20 @@ all three repairs but found a further selection mismatch: mixed ready tickets
 could make next choose TK-00A while claim used table order and started TK-010.
 An expected red regression drives one shared candidate selector for both paths;
 claim still starts an eligible ready ticket in its explicitly assigned spec.
-Final repaired results and review remain pending.
+Final candidate `c78e24661de6a28259c4f9520c6e06ee617d83a3` passes all 36
+required commands, including 11 consumer, four allocator, 65 layout, 10 ADR
+and 45 notepad cases. Independent review passes after checking all repairs,
+dependency filtering and assigned-spec isolation. Guardrail remains 78/100 with
+four outcome-evidence recommendations; no comparative outcome gain is claimed.
+The one-command demo is `node tools/test-visible-id-consumers.mjs` (about two
+seconds). Integration delivery remains the whole-release S-050 gate.
 
 ## Acceptance Criteria
 
-- [ ] The accepted visible-ID semantics work through allocation and lookup.
-- [ ] Legacy references and stable paths are preserved with named compatibility proof.
-- [ ] Collision, case, width/growth, and alphabet behavior are explicit and tested.
-- [ ] A consumer inventory and staged migration account for specs, tickets, ADRs, notes, and other supported artifacts.
+- [x] The accepted visible-ID semantics work through allocation and lookup.
+- [x] Legacy references and stable paths are preserved with named compatibility proof.
+- [x] Collision, case, width/growth, and alphabet behavior are explicit and tested.
+- [x] A consumer inventory and staged migration account for specs, tickets, ADRs, notes, and other supported artifacts.
 - [ ] Root/template docs, full suite, guardrail comparison, and independent review agree with implemented support.
 
 ## Testing Seams
@@ -210,10 +216,12 @@ allocation behavior once implemented. Root and generic templates stay aligned.
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Accepted identity direction captured without inventing compatibility details | S-046 source reconciliation Q17C/Q17D; numeric consumers inspected at 8e9c06f | ADR-0041, LEXICON, and this spec | Runtime allocation and migration unimplemented |
 | 2026-09-08 | TK-001 | Ticket closed | ffa02b1e4680e012db5bfd13e3938f25e390376b:45 notepad and3 allocator cases green after public red regressions; full35-command union green; independent bounded repair review PASS; receipt-backed installed CLI allocation and explicit ID lookup pass; guardrail78/100 unchanged | Root/template Runbook, core notepad skill, managed packaging and S047 compatibility/adverse-review account updated; scanner criteria unchanged | TK002 spec ticket ADR consumers and whole-release integration remain; no eternal deleted-ID registry or distributed allocator claim |
+| 2026-09-08 | TK-002 | Ticket closed | c78e24661de6a28259c4f9520c6e06ee617d83a3:11 consumer,4 allocator,65 layout,10 ADR and45 notepad cases; full36-command union passes; independent repaired candidate PASS; guardrail78 unchanged with4 outcome recommendations | Root/template Lexicon and Runbook, planning skills, ADR0041, consumer inventory and adverse-review account updated; historical paths retained | Whole-release integration review and remote containment remain S050; legacy numeric ticket labels stay spec-qualified |
 
 ## Completion Result
 
-Pending.
+Both implementation tickets are verified. Final whole-release integration and
+remote containment remain S-050; no release readiness is claimed here.
 
 ## Remaining Limitations Or Follow-Up Specs
 

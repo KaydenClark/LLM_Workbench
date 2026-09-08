@@ -111,6 +111,20 @@ New core save/promote composition is S-051; the base must not depend on personal
 skills. Red/green privacy, path escape, stale destination, write/read-back
 failure, retained-source and legacy rollback cases; full suite and review.
 
+## TK-001 Preservation Account
+
+The [disposition](checkpoint-disposition.md) explains original rationale, the
+representative dependency trace and the continuation route. Its complete
+[inventory](checkpoint-inventory.json) pins six retained files (five records
+plus `.gitkeep`), 104 explicit references and 518 keyword coordinates across
+104 files to `16988da94dac455355aecf3c6f9d80b933b03574`. Existing files and
+citations remain unchanged; tentative, corrected and adverse history is retained.
+Independent review reproduced the complete coordinate set and all hashes and
+passed the bounded disposition. Both artifacts pass the shared privacy scan.
+S-046 supplies an actual bounded same-provider fresh-context continuation;
+TK-002/TK-003 still own direct promotion and operational rollback replacement.
+No migration, deletion, cross-host or release claim follows from this inventory.
+
 ## Acceptance Criteria
 
 - [ ] Original rationale and limits of the historical proof are documented from evidence.

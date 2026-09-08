@@ -1,0 +1,1709 @@
+{
+  "at": "16988da94dac455355aecf3c6f9d80b933b03574",
+  "scope": "Git-tracked ordinary UTF-8 files only; checkpoint keyword inventory plus explicit collection/path references. Live ignored notes are not durable evidence.",
+  "records": [
+    {
+      "path": "workbench/sessions/checkpoints/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "disposition": "retain frozen historical bytes and citations"
+    },
+    {
+      "path": "workbench/sessions/checkpoints/llm-workbench-v3-1-plan-2026-09-04.md",
+      "sha256": "6a582fc9da59c72b23b9d02909eba130dc434b24578bf11ee09b535e61d0ee55",
+      "bytes": 8895,
+      "disposition": "retain frozen historical bytes and citations"
+    },
+    {
+      "path": "workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md",
+      "sha256": "41ea2c2ea68e430819ebbf1c299dc1827cb1a6fadaaf1d36867a495542eef08a",
+      "bytes": 5173,
+      "disposition": "retain frozen historical bytes and citations"
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
+      "sha256": "a39c3198b224002fb6eafd85e9789c79b967e4bf1c367a6688009b880519c955",
+      "bytes": 31442,
+      "disposition": "retain frozen historical bytes and citations"
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-redesign-2026-09-04.md",
+      "sha256": "7afe1075bdb49c594fdfe444a165092de893813199e2d58531ede6d57bf33c6c",
+      "bytes": 22654,
+      "disposition": "retain frozen historical bytes and citations"
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-pivot-stability-2026-09-04.md",
+      "sha256": "4e0b7cbc13802ea833a0b9955d88b95b8623a57244f8dd424ebb4305e364639c",
+      "bytes": 1587,
+      "disposition": "retain frozen historical bytes and citations"
+    }
+  ],
+  "references": [
+    {
+      "path": "LEXICON.md",
+      "line": 107,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "LEXICON.md",
+      "line": 109,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "RUNBOOK.md",
+      "line": 164,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "RUNBOOK.md",
+      "line": 195,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "RUNBOOK.md",
+      "line": 467,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "RUNBOOK.md",
+      "line": 469,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "RUNBOOK.md",
+      "line": 519,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "RUNBOOK.md",
+      "line": 883,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "skills/adoption/SKILL.md",
+      "line": 35,
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051."
+    },
+    {
+      "path": "skills/checkpoint/SKILL.md",
+      "line": 35,
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051."
+    },
+    {
+      "path": "skills/checkpoint/SKILL.md",
+      "line": 54,
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051."
+    },
+    {
+      "path": "skills/make-it-so/SKILL.md",
+      "line": 21,
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051."
+    },
+    {
+      "path": "skills/update-harness/SKILL.md",
+      "line": 118,
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051."
+    },
+    {
+      "path": "templates/ADOPTION.md",
+      "line": 298,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "templates/ADOPTION.md",
+      "line": 299,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "templates/ADOPTION.md",
+      "line": 301,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "templates/GENESIS.md",
+      "line": 204,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "templates/LEXICON.md",
+      "line": 96,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "templates/LEXICON.md",
+      "line": 98,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "tools/test-notepads.mjs",
+      "line": 588,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-portability-matrix.mjs",
+      "line": 26,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-portability-matrix.mjs",
+      "line": 32,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-portability-matrix.mjs",
+      "line": 33,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-sessions.mjs",
+      "line": 35,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-sessions.mjs",
+      "line": 61,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-sessions.mjs",
+      "line": 79,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-sessions.mjs",
+      "line": 91,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-sessions.mjs",
+      "line": 109,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-skill-catalog.mjs",
+      "line": 185,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-skill-catalog.mjs",
+      "line": 200,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-adoption.mjs",
+      "line": 154,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-adoption.mjs",
+      "line": 155,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-adoption.mjs",
+      "line": 156,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-dogfood.mjs",
+      "line": 21,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-dogfood.mjs",
+      "line": 28,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-layout.mjs",
+      "line": 202,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-layout.mjs",
+      "line": 244,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-round-trip.mjs",
+      "line": 118,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/test-workbench-upgrade.mjs",
+      "line": 85,
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases."
+    },
+    {
+      "path": "tools/workbench-adoption.mjs",
+      "line": 30,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "tools/workbench-adoption.mjs",
+      "line": 32,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "tools/workbench-upgrade.mjs",
+      "line": 195,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md",
+      "line": 12,
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale."
+    },
+    {
+      "path": "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md",
+      "line": 11,
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale."
+    },
+    {
+      "path": "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md",
+      "line": 15,
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale."
+    },
+    {
+      "path": "workbench/docs/adr/0034-required-steps-must-enable-delivery.md",
+      "line": 17,
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale."
+    },
+    {
+      "path": "workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md",
+      "line": 18,
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale."
+    },
+    {
+      "path": "workbench/docs/adr/0036-stances-change-method-not-authority.md",
+      "line": 17,
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale."
+    },
+    {
+      "path": "workbench/docs/adr/0037-independent-review-at-integration.md",
+      "line": 16,
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale."
+    },
+    {
+      "path": "workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md",
+      "line": 18,
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale."
+    },
+    {
+      "path": "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
+      "line": 41,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/manifest.json",
+      "line": 39,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "workbench/sessions/checkpoints/llm-workbench-v3-1-plan-2026-09-04.md",
+      "line": 55,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/sessions/checkpoints/llm-workbench-v3-1-plan-2026-09-04.md",
+      "line": 91,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/sessions/checkpoints/llm-workbench-v3-1-plan-2026-09-04.md",
+      "line": 140,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md",
+      "line": 13,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
+      "line": 328,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
+      "line": 329,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-redesign-2026-09-04.md",
+      "line": 291,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-redesign-2026-09-04.md",
+      "line": 292,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md",
+      "line": 112,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md",
+      "line": 176,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md",
+      "line": 55,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md",
+      "line": 66,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md",
+      "line": 107,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md",
+      "line": 153,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md",
+      "line": 168,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md",
+      "line": 21,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md",
+      "line": 87,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md",
+      "line": 129,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md",
+      "line": 69,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "line": 48,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "line": 54,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "line": 60,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "line": 66,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "line": 72,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "line": 78,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "line": 169,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 870,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 2251,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3152,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3199,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3244,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3287,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3330,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3375,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3588,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3635,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 3770,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7248,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7373,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7416,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7461,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7518,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7563,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7606,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7651,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7694,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "line": 7780,
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof."
+    },
+    {
+      "path": "workbench/tools/sessions.mjs",
+      "line": 42,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "workbench/tools/sessions.mjs",
+      "line": 50,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "workbench/tools/workbench-layout.mjs",
+      "line": 645,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "workbench/tools/workbench-layout.mjs",
+      "line": 685,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    },
+    {
+      "path": "workbench/tools/workbench-paths.mjs",
+      "line": 24,
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts."
+    }
+  ],
+  "keyword_consumers": [
+    {
+      "path": "AGENTS.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        294,
+        329,
+        331
+      ]
+    },
+    {
+      "path": "BLUEPRINT.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        79,
+        82,
+        132,
+        134,
+        154,
+        227,
+        301,
+        308,
+        323,
+        384,
+        386
+      ]
+    },
+    {
+      "path": "LEXICON.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        107,
+        109
+      ]
+    },
+    {
+      "path": "RUNBOOK.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        21,
+        164,
+        170,
+        194,
+        195,
+        367,
+        466,
+        467,
+        469,
+        519,
+        623,
+        665,
+        679,
+        805,
+        845,
+        869,
+        876,
+        882,
+        883
+      ]
+    },
+    {
+      "path": "benchmarks/RESULTS.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        16
+      ]
+    },
+    {
+      "path": "skills-archive/optional-active-2026-09-01/brainstorm/SKILL.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        20
+      ]
+    },
+    {
+      "path": "skills-pending/diagnosing-bugs/SKILL.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        92
+      ]
+    },
+    {
+      "path": "skills-pending/loop-me/SKILL.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        18,
+        21,
+        22,
+        23
+      ]
+    },
+    {
+      "path": "skills/README.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        13
+      ]
+    },
+    {
+      "path": "skills/adoption/SKILL.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        16,
+        35,
+        52
+      ]
+    },
+    {
+      "path": "skills/carry/SKILL.md",
+      "disposition": "Retain Git commit recovery semantics; clarify overloaded checkpoint wording without treating it as the retired session-copy CLI.",
+      "lines": [
+        87
+      ]
+    },
+    {
+      "path": "skills/checkpoint/SKILL.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        2,
+        3,
+        19,
+        32,
+        35,
+        39,
+        52,
+        54
+      ]
+    },
+    {
+      "path": "skills/genesis/SKILL.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        30
+      ]
+    },
+    {
+      "path": "skills/grilling/SKILL.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        3,
+        112,
+        113
+      ]
+    },
+    {
+      "path": "skills/implement/SKILL.md",
+      "disposition": "Retain Git commit recovery semantics; clarify overloaded checkpoint wording without treating it as the retired session-copy CLI.",
+      "lines": [
+        50,
+        54,
+        58,
+        72,
+        74,
+        92
+      ]
+    },
+    {
+      "path": "skills/make-it-so/SKILL.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        6,
+        21,
+        47,
+        67,
+        72,
+        84
+      ]
+    },
+    {
+      "path": "skills/notepad/SKILL.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        153
+      ]
+    },
+    {
+      "path": "skills/reconciler/SKILL.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        33
+      ]
+    },
+    {
+      "path": "skills/update-harness/SKILL.md",
+      "disposition": "Retire new checkpoint-creation instructions; compose core notepad save and direct owner promotion under S048/S051.",
+      "lines": [
+        118
+      ]
+    },
+    {
+      "path": "team templates/MANAGER.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        5,
+        18,
+        113
+      ]
+    },
+    {
+      "path": "team templates/README.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "templates/.claude/README.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "templates/ADOPTION.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        298,
+        299,
+        301
+      ]
+    },
+    {
+      "path": "templates/AGENTS.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        223,
+        258,
+        260
+      ]
+    },
+    {
+      "path": "templates/BLUEPRINT.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        154,
+        156
+      ]
+    },
+    {
+      "path": "templates/GENESIS.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        204
+      ]
+    },
+    {
+      "path": "templates/LEXICON.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        96,
+        98
+      ]
+    },
+    {
+      "path": "templates/RUNBOOK.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        24,
+        322,
+        362,
+        637,
+        638
+      ]
+    },
+    {
+      "path": "tools/cross-provider-resume.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        8,
+        80,
+        85,
+        89,
+        129
+      ]
+    },
+    {
+      "path": "tools/team-coordination-demo.mjs",
+      "disposition": "Retain optional coordination demonstration snapshot; it does not call sessions checkpoint or write its collection.",
+      "lines": [
+        31,
+        32,
+        38
+      ]
+    },
+    {
+      "path": "tools/test-adr.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        107,
+        109,
+        112
+      ]
+    },
+    {
+      "path": "tools/test-core-skill-installer.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        14
+      ]
+    },
+    {
+      "path": "tools/test-cross-provider-fixture.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        2,
+        30,
+        32,
+        35
+      ]
+    },
+    {
+      "path": "tools/test-governance-core.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        15,
+        152
+      ]
+    },
+    {
+      "path": "tools/test-notepads.mjs",
+      "disposition": "Retain assertion that live-note creation does not create a checkpoint side effect.",
+      "lines": [
+        588
+      ]
+    },
+    {
+      "path": "tools/test-portability-matrix.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        26,
+        32,
+        33
+      ]
+    },
+    {
+      "path": "tools/test-sessions.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        9,
+        26,
+        33,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        49,
+        57,
+        61,
+        64,
+        67,
+        75,
+        79,
+        81,
+        87,
+        91,
+        95,
+        99,
+        101,
+        102,
+        105,
+        107,
+        109
+      ]
+    },
+    {
+      "path": "tools/test-skill-catalog.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        11,
+        179,
+        185,
+        199,
+        200,
+        201,
+        248,
+        318
+      ]
+    },
+    {
+      "path": "tools/test-workbench-adoption.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        14,
+        154,
+        155,
+        156
+      ]
+    },
+    {
+      "path": "tools/test-workbench-dogfood.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        21,
+        22,
+        28,
+        29
+      ]
+    },
+    {
+      "path": "tools/test-workbench-layout.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        180,
+        202,
+        218,
+        228,
+        244
+      ]
+    },
+    {
+      "path": "tools/test-workbench-round-trip.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        3,
+        4,
+        95,
+        97,
+        103,
+        105,
+        108,
+        118
+      ]
+    },
+    {
+      "path": "tools/test-workbench-upgrade.mjs",
+      "disposition": "Migrate active fixture consumers to direct owner promotion or operational recovery; preserve legacy compatibility cases.",
+      "lines": [
+        85
+      ]
+    },
+    {
+      "path": "tools/workbench-adoption.mjs",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        24,
+        30,
+        32
+      ]
+    },
+    {
+      "path": "tools/workbench-upgrade.mjs",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        195
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0025-planes-classify-claims-not-whole-artifacts.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        19
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        18
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        16
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        10,
+        12,
+        16,
+        18,
+        22
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0030-every-workbench-declares-a-design-concepts-collection.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        11,
+        15,
+        17
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0034-required-steps-must-enable-delivery.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        16,
+        18,
+        22
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0036-stances-change-method-not-authority.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0037-independent-review-at-integration.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        16
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        18
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        40,
+        41,
+        51
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        23
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        6,
+        18,
+        19,
+        22,
+        24,
+        28
+      ]
+    },
+    {
+      "path": "workbench/docs/adr/REGISTER.md",
+      "disposition": "Retain decision history and citations; explain active consumer migration in existing supersession rationale.",
+      "lines": [
+        20,
+        46
+      ]
+    },
+    {
+      "path": "workbench/feedback/REPORT-boundaries-2026-09-05.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        7,
+        28,
+        90
+      ]
+    },
+    {
+      "path": "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        41,
+        271
+      ]
+    },
+    {
+      "path": "workbench/feedback/REPORT-v3-1-1-acceptance-2026-09-05.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        51,
+        130,
+        138,
+        149
+      ]
+    },
+    {
+      "path": "workbench/manifest.json",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        39,
+        49
+      ]
+    },
+    {
+      "path": "workbench/sessions/.gitignore",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        1,
+        6
+      ]
+    },
+    {
+      "path": "workbench/sessions/checkpoints/llm-workbench-v3-1-plan-2026-09-04.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        6,
+        55,
+        63,
+        91,
+        139,
+        140
+      ]
+    },
+    {
+      "path": "workbench/sessions/checkpoints/s022-cross-provider-resume-2026-09-04.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        1,
+        12,
+        13,
+        29,
+        52,
+        58,
+        59
+      ]
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        1,
+        3,
+        57,
+        110,
+        152,
+        232,
+        248,
+        266,
+        283,
+        321,
+        328,
+        329
+      ]
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-boundaries-redesign-2026-09-04.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        1,
+        50,
+        103,
+        145,
+        225,
+        250,
+        284,
+        291,
+        292
+      ]
+    },
+    {
+      "path": "workbench/sessions/checkpoints/workbench-pivot-stability-2026-09-04.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        1,
+        2,
+        4,
+        19
+      ]
+    },
+    {
+      "path": "workbench/specs/S-011-agent-skills-adoption/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        215,
+        235,
+        302,
+        306,
+        307
+      ]
+    },
+    {
+      "path": "workbench/specs/S-014-workbench-release-candidate/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        28,
+        131,
+        329,
+        330,
+        332
+      ]
+    },
+    {
+      "path": "workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        154,
+        183,
+        184,
+        185,
+        186,
+        187
+      ]
+    },
+    {
+      "path": "workbench/specs/S-020-spec-native-team-coordination/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        54,
+        88,
+        138,
+        146,
+        155
+      ]
+    },
+    {
+      "path": "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        47,
+        49,
+        98,
+        100,
+        213,
+        243,
+        254
+      ]
+    },
+    {
+      "path": "workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        63,
+        111,
+        112,
+        119,
+        120,
+        175,
+        176
+      ]
+    },
+    {
+      "path": "workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        22,
+        55,
+        58,
+        66,
+        79,
+        107,
+        109,
+        117,
+        153,
+        168
+      ]
+    },
+    {
+      "path": "workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        144
+      ]
+    },
+    {
+      "path": "workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        12,
+        21,
+        23,
+        35,
+        36,
+        46,
+        48,
+        56,
+        64,
+        69,
+        87,
+        89,
+        94,
+        120,
+        129,
+        131,
+        137,
+        138,
+        139
+      ]
+    },
+    {
+      "path": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        54,
+        69,
+        149,
+        162,
+        169,
+        172,
+        189,
+        221
+      ]
+    },
+    {
+      "path": "workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        17,
+        29,
+        220
+      ]
+    },
+    {
+      "path": "workbench/specs/S-031-installed-skill-generation/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        37,
+        40,
+        123,
+        187
+      ]
+    },
+    {
+      "path": "workbench/specs/S-033-silent-gap-diagnostics/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        1,
+        9,
+        17,
+        29,
+        31,
+        70,
+        81,
+        103,
+        122,
+        126,
+        134,
+        141,
+        158,
+        169,
+        170,
+        171,
+        173,
+        187,
+        191,
+        219,
+        223
+      ]
+    },
+    {
+      "path": "workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        144,
+        265
+      ]
+    },
+    {
+      "path": "workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        169
+      ]
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        32,
+        37,
+        49,
+        109,
+        114,
+        134,
+        159,
+        170,
+        181,
+        325,
+        345,
+        363,
+        402,
+        419,
+        495,
+        740,
+        748,
+        810,
+        817
+      ]
+    },
+    {
+      "path": "workbench/specs/S-046-json-notepad-foundation/continuity-result-2026-09-08.json",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        4,
+        46,
+        48,
+        54,
+        60,
+        66,
+        72,
+        78,
+        90,
+        91,
+        102,
+        116,
+        128,
+        139,
+        156,
+        169,
+        200
+      ]
+    },
+    {
+      "path": "workbench/specs/S-047-visible-workbench-identifiers/consumer-inventory.json",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        132
+      ]
+    },
+    {
+      "path": "workbench/specs/S-048-checkpoint-retirement/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        1,
+        9,
+        16,
+        23,
+        25,
+        30,
+        31,
+        44,
+        57,
+        63,
+        75,
+        77,
+        83,
+        93,
+        94,
+        97,
+        108,
+        117,
+        144,
+        148,
+        152,
+        154
+      ]
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        76,
+        90
+      ]
+    },
+    {
+      "path": "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        12,
+        19,
+        870,
+        1909,
+        1916,
+        1956,
+        1963,
+        2002,
+        2009,
+        2046,
+        2053,
+        2092,
+        2099,
+        2148,
+        2155,
+        2194,
+        2201,
+        2235,
+        2237,
+        2240,
+        2247,
+        2251,
+        2292,
+        2299,
+        2340,
+        2347,
+        2351,
+        2400,
+        2407,
+        2454,
+        2461,
+        2586,
+        2588,
+        3152,
+        3199,
+        3244,
+        3287,
+        3330,
+        3375,
+        3542,
+        3588,
+        3635,
+        3770,
+        7054,
+        7248,
+        7373,
+        7416,
+        7461,
+        7518,
+        7563,
+        7606,
+        7651,
+        7694,
+        7780,
+        8369,
+        8423,
+        8427,
+        8428,
+        8440,
+        8703
+      ]
+    },
+    {
+      "path": "workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        71
+      ]
+    },
+    {
+      "path": "workbench/specs/S-052-private-session-transport/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        68
+      ]
+    },
+    {
+      "path": "workbench/specs/S-053-configured-host-capabilities/SPEC.md",
+      "disposition": "Retain historical evidence and existing citations; update only live S048/S050 acceptance and append-only proof.",
+      "lines": [
+        59
+      ]
+    },
+    {
+      "path": "workbench/tools/adr.mjs",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        139,
+        231
+      ]
+    },
+    {
+      "path": "workbench/tools/diagnostics.mjs",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        56,
+        62,
+        64
+      ]
+    },
+    {
+      "path": "workbench/tools/privacy.mjs",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        2
+      ]
+    },
+    {
+      "path": "workbench/tools/sessions.mjs",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        3,
+        6,
+        21,
+        42,
+        46,
+        48,
+        50,
+        80,
+        82
+      ]
+    },
+    {
+      "path": "workbench/tools/workbench-layout.mjs",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        18,
+        31,
+        32,
+        644,
+        645,
+        685
+      ]
+    },
+    {
+      "path": "workbench/tools/workbench-paths.mjs",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        24,
+        193
+      ]
+    },
+    {
+      "path": "workbench/wiki/MEMORY.md",
+      "disposition": "Reconcile active runtime, controls, layout or navigation to frozen history and separate promotion/recovery contracts.",
+      "lines": [
+        40,
+        41
+      ]
+    }
+  ],
+  "limitation": "A keyword inventory identifies source coordinates, not semantic correctness or completed migration. TK002/TK003 own implementation and proof."
+}
