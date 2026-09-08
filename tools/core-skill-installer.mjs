@@ -155,11 +155,13 @@ function exclusionPlans(destinations, all = false) {
       const physical = installed?.isDirectory() ? fs.realpathSync.native(destination) : destination;
       if (tracked.some(target => {
         const indexed = lstatOrNull(target);
-        // Reserve core names case-insensitively across hosts, including a
-        // tracked leaf deleted from the worktree (which has no inode to compare).
-        const relative = path.relative(directory, target).split(path.sep);
-        const reserved = relative[0]?.toLowerCase() === skill.toLowerCase();
-        return reserved || target === physical || target.startsWith(physical + path.sep) ||
+        // Reserve tracked core paths case-insensitively across hosts, including
+        // deleted ancestry with no inode. A portable catalog must reconcile
+        // case-only path alternatives before either implementation is replaced.
+        const key = target.toLowerCase();
+        const reserved = [destination, physical].some(candidate =>
+          key === candidate.toLowerCase() || key.startsWith(candidate.toLowerCase() + path.sep));
+        return reserved ||
           (installed && indexed && installed.dev === indexed.dev && installed.ino === indexed.ino);
       })) throw new Error('A core path is still tracked; prepare an owner-reviewed tracked-core migration first');
       plan.paths.add(relative);

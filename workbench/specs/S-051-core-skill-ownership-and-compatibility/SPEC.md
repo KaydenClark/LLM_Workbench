@@ -153,6 +153,8 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 
 | 2026-09-08 | TK-001 | Re-review of 30c9430 confirmed the original four repairs and found two further tracked-path edge cases | Whitespace-trimmed NUL inventory and deleted tracked case-alias regressions both demonstrated red. Preserve exact inventory bytes and reserve tracked core names case-insensitively, including missing leaves; repaired installer 26 of 26 pass without skips | Migration plan names case-insensitive tracked-core preservation | Fresh review and final full verification pending; no personal catalog or integration mutation |
 
+| 2026-09-08 | TK-001 | Re-review of dfdfa8c found deleted case-aliased ancestry still bypassed tracked protection | New deleted Skills ancestor regression demonstrated red; complete planned path reservation fixes it, all 27 installer tests pass. Prior 30c9430 full run passed 35 of 37; doctor and dogfood both exposed stale Taskboard after S-052 claim, now rendered | Migration plan explicitly reserves complete tracked path case aliases on every host | Final independent review and fresh full suite pending; S-052 identity tests separately demonstrated missing behavior and remain unimplemented |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.

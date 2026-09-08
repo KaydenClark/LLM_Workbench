@@ -24,9 +24,10 @@ disposition. Never force-add managed core to make a setup check pass.
 
 Review a concrete change that removes selected core paths from tracking while
 preserving their files, excludes the managed paths, and retains all personal
-source under its chosen ownership. The release installer reserves tracked core names case-insensitively, including
-deleted tracked paths, and refuses their replacement;
-it does not perform this migration. Inspect the proposed index diff before
+source under its chosen ownership. The release installer reserves tracked core
+paths case-insensitively, including deleted ancestry, and refuses replacement.
+Case-only alternatives require explicit reconciliation on every host, including
+a case-sensitive host. The installer does not perform this migration. Inspect the proposed index diff before
 committing any change to the personal repository.
 
 Then explicitly update the global core from the verified release checkout.

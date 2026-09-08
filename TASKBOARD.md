@@ -21,7 +21,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 | [S-047](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Acceptance / owner gate | codex | none | TK-002 closed with proof. | Confirm acceptance criteria and completion result. |
 | [S-048](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Acceptance / owner gate | codex | none | All implementation slices verified; release integration remains open. | Reconcile S-051 core catalog and pass the S-050 independent integration gate. |
 | [S-051](workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md) | TK-001: Define and install one authoritative core source with adapters (in-progress) | codex | none | TK-001 claimed by codex. | Close TK-001 with verification and documentation proof. |
-| [S-052](workbench/specs/S-052-private-session-transport/SPEC.md) | TK-001: Allocate stable room identity and preserve it across lifecycle operations (ready) | codex | none | Owner assigned the reconciled v3.2.0 release through Example integration. | Allocate stable room identity and preserve it across lifecycle operations. |
+| [S-052](workbench/specs/S-052-private-session-transport/SPEC.md) | TK-001: Allocate stable room identity and preserve it across lifecycle operations (in-progress) | codex | none | TK-001 claimed by codex. | Close TK-001 with verification and documentation proof. |
 | [S-053](workbench/specs/S-053-configured-host-capabilities/SPEC.md) | TK-002: Implement operation-scoped host conformance checks (ready) | codex | TK-001 | Owner assigned the reconciled v3.2.0 release through Example integration. | Agree the concrete host capability floor. |
 <!-- hot-specs:end -->
 

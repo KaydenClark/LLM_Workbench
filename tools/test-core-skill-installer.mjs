@@ -229,6 +229,24 @@ test('tracked core inventory preserves leading whitespace in a discovery path', 
   } finally { fs.rmSync(home, { recursive: true, force: true }); }
 });
 
+test('normal setup preserves a deleted tracked case-alias discovery ancestor', () => {
+  const home = fixtureHome();
+  try {
+    const personal = path.join(home, '.claude');
+    fs.mkdirSync(personal);
+    assert.equal(spawnSync('git', ['init', '-q', personal]).status, 0);
+    assert.equal(install(home).status, 0);
+    fs.renameSync(path.join(personal, 'skills'), path.join(personal, 'Skills'));
+    assert.equal(spawnSync('git', ['add', '-f', 'Skills/genesis'], { cwd: personal }).status, 0);
+    fs.rmSync(path.join(personal, 'Skills'), { recursive: true });
+    const before = spawnSync('git', ['status', '--porcelain', '-z'], { cwd: personal, encoding: 'utf8' }).stdout;
+    const refused = install(home);
+    assert.equal(refused.report.status, 'blocked', refused.stdout);
+    assert.equal(fs.existsSync(path.join(personal, 'skills')), false);
+    assert.equal(spawnSync('git', ['status', '--porcelain', '-z'], { cwd: personal, encoding: 'utf8' }).stdout, before);
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
 test('normal setup preserves a deleted tracked case-alias adapter', () => {
   const home = fixtureHome();
   try {
