@@ -8,13 +8,15 @@ import { spawnSync } from 'node:child_process';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
 import { isMainModule, assertSafeReadPath } from '../workbench/tools/workbench-paths.mjs';
+import { sourceIdentity } from './workbench-tools.mjs';
 
 export function probeConfiguredHost(options) {
-  const { lanes, skill, node = process.execPath } = options;
+  const { lanes, skill, sourceCommit, sourceRepository, node = process.execPath } = options;
   let { root, cwd, home } = options;
-  for (const [name, value] of Object.entries({ root, cwd, home, skill, node })) {
+  for (const [name, value] of Object.entries({ root, cwd, home, skill, sourceCommit, sourceRepository, node })) {
     if (typeof value !== 'string' || !value || value.includes('\0')) throw new Error(`Invalid ${name} declaration.`);
   }
+  if (!/^[0-9a-f]{40}$/.test(sourceCommit)) throw new Error('Invalid sourceCommit declaration.');
   if (!Array.isArray(lanes) || !lanes.length || lanes.some(lane => typeof lane !== 'string' || !lane || lane.includes('\0') || (lane.startsWith('~') && !lane.startsWith('~/')))) throw new Error('Invalid writable lane declarations.');
   root = path.resolve(root); cwd = path.resolve(cwd); home = path.resolve(home);
   const checks = [];
@@ -41,7 +43,7 @@ export function probeConfiguredHost(options) {
   let readable = false;
   try { readable = fs.statSync(skill).isFile() && fs.readFileSync(skill).length > 0; } catch {}
   checks.push({ capability: 'native-skill-discovery-and-invocation', status: 'unverified', readable, reason: 'Requires a native provider discovery and invocation trace; readable bytes are insufficient.' });
-  const nodeCheck = { capability: 'node-managed-tools', status: 'unverified', exit: null, reason: null, scope: 'managed doctor execution; diagnostics retain their own effects' };
+  const nodeCheck = { capability: 'node-managed-tools', status: 'unverified', exit: null, reason: null, scope: 'managed doctor execution from a verified producer checkout; diagnostics retain their own effects' };
   try {
     // Child tools read the manifest before reporting anything. Validate their
     // input and source paths before spawning, not only in the later parser check.
@@ -55,6 +57,9 @@ export function probeConfiguredHost(options) {
       if (typeof relative !== 'string' || path.isAbsolute(relative)) throw new Error('invalid declared source lane');
       assertSafeReadPath(root, path.resolve(root, relative));
     }
+    nodeCheck.source = sourceIdentity({ root, managedPaths: ['workbench/manifest.json', 'workbench/tools', 'workbench/docs/adr'] });
+    if (nodeCheck.source.commit !== sourceCommit) throw new Error('Configured sourceCommit does not match the producer checkout commit.');
+    if (nodeCheck.source.repository !== sourceRepository) throw new Error('Configured sourceRepository does not match the producer checkout origin.');
     const execution = spawnSync(node, [path.resolve(root, 'workbench/tools/spec-workbench.mjs'), 'doctor'], { cwd: root, encoding: 'utf8', timeout: 30000, maxBuffer: 8 * 1024 * 1024 });
     nodeCheck.status = execution.error ? 'unverified' : execution.status === 0 ? 'pass' : 'fail';
     nodeCheck.exit = execution.status;

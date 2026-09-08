@@ -4,14 +4,29 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { spawnSync } from 'node:child_process';
 import { probeConfiguredHost } from './configured-host.mjs';
+import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 const root = path.resolve(import.meta.dirname, '..');
+function git(directory, ...args) {
+  const result = spawnSync('git', args, { cwd: directory, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout.trim();
+}
 function fixture() {
   const home = fs.mkdtempSync(path.join(os.tmpdir(), 'wb-host-test-'));
   fs.mkdirSync(path.join(home, 'relative'));
   fs.mkdirSync(path.join(home, 'skills/demo'), { recursive: true });
   fs.writeFileSync(path.join(home, 'skills/demo/SKILL.md'), '# Fixture skill\n');
-  return { root, home, cwd: home, lanes: ['relative', '~/relative', path.join(home, 'relative')], skill: path.join(home, 'skills/demo/SKILL.md') };
+  return {
+    root,
+    home,
+    cwd: home,
+    lanes: ['relative', '~/relative', path.join(home, 'relative')],
+    skill: path.join(home, 'skills/demo/SKILL.md'),
+    sourceCommit: git(root, 'rev-parse', 'HEAD'),
+    sourceRepository: git(root, 'remote', 'get-url', 'origin')
+  };
 }
 test('actual probes preserve lanes and never promote file readability to native discovery', () => {
   const options = fixture();
@@ -93,5 +108,53 @@ test('linked manifest is rejected before the managed child can consume it', () =
     assert.equal(fs.existsSync(marker), false, 'unsafe source must not reach child execution');
     assert.equal(report.checks[2].status, 'fail');
     assert.equal(report.checks[0].status, 'pass');
+  } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
+});
+test('an ordinary non-Git directory cannot impersonate the pinned producer checkout', () => {
+  const options = fixture();
+  try {
+    const project = path.join(options.home, 'project');
+    const tools = path.join(project, 'workbench/tools');
+    fs.mkdirSync(tools, { recursive: true });
+    fs.writeFileSync(path.join(project, 'workbench/manifest.json'), JSON.stringify({
+      workbenchVersion: 'v3.2.0',
+      lanes: { tools: 'workbench/tools' },
+      collections: { adr: 'workbench/docs/adr' }
+    }));
+    const marker = path.join(options.home, 'child-ran');
+    for (const name of RUNTIME_TOOLS) {
+      const content = name === 'spec-workbench.mjs'
+        ? `import fs from 'node:fs'; fs.writeFileSync(${JSON.stringify(marker)}, 'ran');`
+        : '// ordinary fixture file\n';
+      fs.writeFileSync(path.join(tools, name), content);
+    }
+    const report = probeConfiguredHost({ ...options, root: project });
+    assert.equal(fs.existsSync(marker), false, 'unverified producer bytes must not reach child execution');
+    assert.equal(report.checks[2].status, 'fail');
+  } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
+});
+test('a producer checkout at the wrong commit cannot execute managed tools', () => {
+  const options = fixture();
+  try {
+    const report = probeConfiguredHost({ ...options, sourceCommit: '0'.repeat(40) });
+    assert.equal(report.checks[2].status, 'fail');
+    assert.match(report.checks[2].reason, /commit/i);
+  } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
+});
+test('a dirty producer checkout cannot execute modified managed tools', () => {
+  const options = fixture();
+  try {
+    const project = path.join(options.home, 'project');
+    const clone = spawnSync('git', ['clone', '-q', '--shared', root, project], { encoding: 'utf8' });
+    assert.equal(clone.status, 0, clone.stderr);
+    fs.appendFileSync(path.join(project, 'workbench/tools/sessions.mjs'), '\n// dirty fixture\n');
+    const report = probeConfiguredHost({
+      ...options,
+      root: project,
+      sourceCommit: git(project, 'rev-parse', 'HEAD'),
+      sourceRepository: git(project, 'remote', 'get-url', 'origin')
+    });
+    assert.equal(report.checks[2].status, 'fail');
+    assert.match(report.checks[2].reason, /uncommitted/i);
   } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
 });
