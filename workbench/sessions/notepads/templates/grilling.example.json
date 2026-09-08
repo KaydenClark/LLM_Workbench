@@ -1,0 +1,28 @@
+{
+  "schema_version": "notepad-1",
+  "revision": 1,
+  "id": "[NOTE_ID]",
+  "type": "grilling",
+  "status": "PROVISIONAL",
+  "title": "[TITLE]",
+  "objective": {
+    "key": "[OBJECTIVE_KEY]",
+    "focus": "[AUTHORIZED_OBJECTIVE]"
+  },
+  "created_at": "[UTC_TIMESTAMP]",
+  "updated_at": "[UTC_TIMESTAMP]",
+  "relationships": {
+    "index": null,
+    "related_notes": []
+  },
+  "current": {
+    "state": "[LAST_CONFIRMED_STATE]",
+    "unresolved": [],
+    "next_action": "[NEXT_AUTHORIZED_ACTION]",
+    "questions": []
+  },
+  "entries": [],
+  "extensions": {
+    "durable_owners": []
+  }
+}

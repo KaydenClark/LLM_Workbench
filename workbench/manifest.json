@@ -8,6 +8,13 @@
       "repository": "https://github.com/KaydenClark/LLM_Workbench",
       "release": "v3.1.0",
       "commit": "57fb22fbbde012c1c8741d46558a9628fae28b82"
+    },
+    "layout": {
+      "source": {
+        "repository": "https://github.com/KaydenClark/LLM_Workbench.git",
+        "release": "v3.1.4",
+        "commit": "aa02fe7b5f56d6e77f0d9ac77fe923f9e67a21ce"
+      }
     }
   },
   "git": {
@@ -29,7 +36,9 @@
     "archive": "workbench/wiki/archive",
     "grilling": "workbench/sessions/grilling",
     "handoffs": "workbench/sessions/handoffs",
-    "checkpoints": "workbench/sessions/checkpoints"
+    "checkpoints": "workbench/sessions/checkpoints",
+    "notepads": "workbench/sessions/notepads",
+    "notepad-templates": "workbench/sessions/notepads/templates"
   },
   "wiki": {
     "profile": "project"

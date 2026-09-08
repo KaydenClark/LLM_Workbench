@@ -3,3 +3,14 @@ grilling/*
 !grilling/.gitkeep
 handoffs/*
 !handoffs/.gitkeep
+# Live session records stay local; only checkpoints/ is durable evidence.
+grilling/*
+!grilling/.gitkeep
+handoffs/*
+!handoffs/.gitkeep
+# Local typed notepads; reusable schema/examples remain tracked.
+notepads/*
+!notepads/templates/
+!notepads/.gitkeep
+# Legacy notepad path a stale installed skill may still write; never tracked.
+grilling diary/
