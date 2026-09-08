@@ -29,7 +29,7 @@ const legacyLanes = [
   { source: 'grilling diary', destination: collections.grilling },
   { source: 'handoffs', destination: collections.checkpoints }
 ];
-const recoveryLane = collections.checkpoints;
+const recoveryLane = collections.recovery;
 
 function lstatOrNull(target) {
   try {
@@ -159,13 +159,6 @@ function preflight(project, home) {
   const legacySkills = lstatOrNull(path.join(project, 'skills'));
   if (legacySkills && (legacySkills.isSymbolicLink() || !legacySkills.isDirectory())) {
     return fail('legacy-path-collision', `${path.join(project, 'skills')} must be an ordinary directory when present.`, { source: 'skills' });
-  }
-  const recoveryPath = path.join(project, recoveryLane, 'adoption-recovery.json');
-  if (lstatOrNull(path.join(project, 'handoffs', 'adoption-recovery.json'))) {
-    return fail('recovery-collision', `${recoveryPath} would overwrite an existing legacy recovery record.`);
-  }
-  if (legacySkills && lstatOrNull(path.join(project, 'handoffs', 'adoption-legacy-skills'))) {
-    return fail('recovery-collision', `${path.join(project, recoveryLane, 'adoption-legacy-skills')} would overwrite an existing legacy recovery directory.`);
   }
   return null;
 }
@@ -365,7 +358,7 @@ function migrate(options) {
 
 try {
   const [command, ...args] = process.argv.slice(2);
-  if (command !== 'migrate') throw new Error('Usage: workbench-adoption.mjs migrate --project PROJECT --home USER_HOME --version v3.1.3');
+  if (command !== 'migrate') throw new Error('Usage: workbench-adoption.mjs migrate --project PROJECT --home USER_HOME --version v3.2.0');
   const result = migrate(parseOptions(args));
   process.stdout.write(`${JSON.stringify(result)}\n`);
   if (result.status !== 'complete') process.exitCode = 1;

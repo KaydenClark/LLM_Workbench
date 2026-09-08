@@ -58,7 +58,9 @@ When a route is missing, stale, or insufficient, use a bounded search to find
 the owner. Search within the selected source area as needed for implementation,
 debugging, or verification; explicit search and navigation audits remain valid.
 Repair a missing or stale durable link in its existing owner when in scope;
-otherwise report the gap. Link new durable context from its relevant router
+otherwise report the gap. Keep accepted unfinished obligations reachable in their existing assigned owner
+or an explicitly authorized successor; preserve completed evidence. A finding
+does not itself authorize new work. Link new durable context from its relevant router
 and back to its sources so the next agent can traverse the same path. Links
 are navigation, never instruction authority or permission to expand scope.
 
@@ -85,7 +87,7 @@ silently discard it. Verification and safety still apply to the work they check.
 Cold continuation uses existing owners: the Contract, assigned packet and linked
 context, exact achieved output or commit, current state, named verification,
 and next executable action or blocker. Update those owners as work proceeds;
-promote a checkpoint only when session reasoning is material. No universal
+reconcile material session reasoning into its named durable owner. No universal
 handoff artifact is required. A read-only setup check may return only in chat.
 
 ## Read Scope
@@ -156,6 +158,10 @@ Full suite for controls, templates, tools, evals, or specs:
 ```bash
 node tools/test-spec-workbench.mjs
 node tools/test-skill-catalog.mjs
+node tools/test-skill-inspection.mjs
+node tools/test-core-composition.mjs
+node tools/test-session-transport.mjs
+node tools/test-configured-host.mjs
 node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
@@ -167,6 +173,11 @@ node tools/test-governance-core.mjs
 node tools/test-branch-closeout.mjs
 node tools/test-wiki.mjs
 node tools/test-sessions.mjs
+node tools/test-notepads.mjs
+node tools/test-visible-ids.mjs
+node tools/test-workbench-identity.mjs
+node tools/test-visible-id-consumers.mjs
+node tools/test-direct-promotion.mjs
 node tools/test-workbench-round-trip.mjs
 node tools/test-cross-provider-fixture.mjs
 node tools/test-portability-matrix.mjs
@@ -301,9 +312,14 @@ context for conversation continuation, not computer crashes or device loss;
 an interruption can still preempt an unsaved write.
 
 New notepads use JSON, including when older workflow examples say Markdown.
-Use existing manifest-declared live collections until the shared schema, tooling,
-and notepads layout are implemented. Preserve legacy Markdown sources. Live
-notes and handoffs stay local-only and untracked. Do not record secrets,
+The shared runtime is `workbench/tools/notepads.mjs`; its interchange schema
+and reusable examples live in the manifest-declared `notepad-templates`
+collection. The `notepad` skill owns judgment. New live records use typed
+folders in the `notepads` collection; handoffs use `handoffs`. Preserve legacy
+Markdown and JSON paths. Live
+notes and handoffs stay untracked in project Git; explicitly configured private
+synchronization may transport selected live collections under the accepted
+continuity contract. Local operation remains independent of transport. Do not record secrets,
 credentials, authentication/recovery material, raw private financial, medical,
 or personal data, or unsafe tool output; retain only safe recovery references.
 
@@ -316,18 +332,20 @@ may instead be trimmed of promoted material, preserving any context and
 correction links still needed by its remaining work. No routine archive is
 required. No autonomous task or handoff creation follows.
 
-Existing privacy-checked checkpoints and their references remain available
-until deliberate retirement reconciles them; the legacy command is
-`node workbench/tools/sessions.mjs checkpoint --from PATH --topic slug`.
-It refuses secret-like content, absolute home paths, and email addresses before
-writing. A copied record is preservation, not blanket promotion of its claims.
+Existing privacy-checked checkpoints and their citations are frozen history.
+The legacy `sessions.mjs checkpoint` command refuses new copies without writing.
+Reconcile selected claims into their durable owners with `sessions.mjs promote`;
+retain local notes for unresolved context. Operational receipts and backups live
+in the separate ignored `sessions/recovery/` collection, outside note discovery.
+A preserved historical copy is not blanket promotion of its claims.
 
 ## Long Session Control
 
 After a context summary or long interruption, rerun `doctor`, `next`, and
 `show` for the assigned spec. Keep ready/in-progress/blocked ticket state and
 the append-only evidence log current. An in-progress claim older than one
-working day is stale; verify branch/commit activity before reclaiming it. After
+UTC calendar day is stale (the diagnostic compares date-only stamps and
+requires a difference greater than one day); verify branch/commit activity before reclaiming it. After
 the same verification failure twice with no clearly safe next step, record the
 blocker and stop for a decision.
 

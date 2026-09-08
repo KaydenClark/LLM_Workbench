@@ -12,7 +12,12 @@ export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessio
 export const EFFECTS = Object.freeze(['all', 'selection', 'selected-slice', 'none']);
 
 const registry = Object.freeze({
+  'session-transport-blocked': entry('error', 'sessions', 'none', 'an optional transport operation was refused; local note use remains independent'),
+  'session-transport-pending': entry('attention', 'sessions', 'none', 'optional transport has no fresh acknowledgment; preserve local notes and last confirmed SHA'),
   // manifest and layout: the routing every consumer depends on
+  'invalid-workbench-identity': entry('error', 'manifest', 'all', 'a declared Workbench connection identity is malformed; do not silently regenerate it'),
+  'identity-busy': entry('error', 'manifest', 'none', 'another local identity writer holds the assignment lock'),
+  'identity-write-failed': entry('error', 'manifest', 'none', 'Workbench identity assignment could not be verified'),
   'invalid-manifest': entry('error', 'manifest', 'all', 'the manifest is unreadable or malformed'),
   'upgrade-required': entry('error', 'manifest', 'all', 'the manifest is an older schema; run the one-time migration'),
   'invalid-lane': entry('error', 'manifest', 'all', 'a declared lane path is unsafe or not the v3.1 contract'),
@@ -43,10 +48,26 @@ const registry = Object.freeze({
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   'invalid-adr': entry('error', 'adr', 'none', 'an ADR is missing required frontmatter or names an unknown canonicalization target'),
   'untracked-provenance': entry('error', 'adr', 'none', 'a durable reference targets an untracked session path'),
+  // notepads: refusals the runtime returns to its caller. None of them blocks,
+  // because a live note is local working context that no selection depends on;
+  // each is a fail-closed answer to one write or read, not a project state.
+  'duplicate-identity': entry('error', 'sessions', 'none', 'a notepad or entry identity already exists in the record'),
+  'stale-revision': entry('error', 'sessions', 'none', 'a notepad write names a revision other than the one on disk'),
+  'malformed-json': entry('error', 'sessions', 'none', 'a JSON record is not parseable'),
+  'legacy-schema': entry('error', 'sessions', 'none', 'a record is an earlier notepad schema with no revision to check; migrate it first'),
+  'retained-dependency': entry('error', 'sessions', 'none', 'a trim would strand material that a retained entry still corrects or depends on'),
+  'promotion-recovery-required': entry('error', 'sessions', 'none', 'a promotion read-back and restoration failed; retain the reported original backup for recovery'),
+  'write-failed': entry('error', 'sessions', 'none', 'a record could not be published; the previous valid file is unchanged'),
   'stale-note': entry('attention', 'wiki', 'none', 'a wiki note is marked stale'),
-  'invalid-note': entry('error', 'wiki', 'none', 'a wiki note violates the schema'),
+  // These two are shared: the wiki validator, the checkpoint promoter, and the
+  // notepad runtime all emit them. Their `scope` names the lane they were
+  // registered for, not the lane of the emitter, so a notepad refusal reports
+  // `wiki` - a coarse label in machine-readable output, with no effect on
+  // behavior, since both are registered `none`. Splitting them per lane is a
+  // registry change with its own test and belongs to the diagnostics owner.
+  'invalid-note': entry('error', 'wiki', 'none', 'a wiki note, checkpoint source, or notepad violates its schema'),
   'copied-task-state': entry('error', 'wiki', 'none', 'a wiki note copies live task state'),
-  'secret-like-content': entry('error', 'wiki', 'none', 'a note or checkpoint contains secret-like material'),
+  'secret-like-content': entry('error', 'wiki', 'none', 'a wiki note, checkpoint, or notepad write contains secret-like material'),
   'room-brain-unrouted': entry('attention', 'wiki', 'none', 'a root control does not route to the room brain'),
   'stale-stamp': entry('attention', 'wiki', 'none', 'a wiki contract file or the room brain is stamped with a version other than the manifest'),
   // git: the review gate's merge target is a declared fact; its absence is
@@ -60,6 +81,14 @@ const registry = Object.freeze({
   'invalid-first-spec': entry('error', 'specs', 'all', 'the first spec is not an actionable packet'),
   'project-local-skills': entry('error', 'controls', 'all', 'a project-local skills tree shadows user-scoped discovery'),
   // installed skills: doctor reads the user home and never writes to it
+  'skill-missing': entry('attention', 'skills', 'none', 'a required core discovery entry is absent'),
+  'skill-discovery-broken': entry('attention', 'skills', 'none', 'core discovery or content is broken, unsafe or unreadable'),
+  'skill-content-modified': entry('attention', 'skills', 'none', 'core bytes differ from the recorded content identity'),
+  'skill-compatibility-unknown': entry('attention', 'skills', 'none', 'the core marker declares no valid tested room range'),
+  'incompatible-core': entry('attention', 'skills', 'none', 'the room version lies outside the declared core compatibility range'),
+  'skill-source-conflict': entry('attention', 'skills', 'none', 'a core name has conflicting physical source ownership'),
+  'skill-duplicate-discovery': entry('attention', 'skills', 'none', 'a deprecated additional discovery entry duplicates the core catalog'),
+  'core-generation-conflict': entry('attention', 'skills', 'none', 'installed core skills declare multiple global generations'),
   'stale-skill': entry('attention', 'skills', 'none', 'an installed core skill records a release other than the manifest workbenchVersion'),
   'skill-generation-unknown': entry('attention', 'skills', 'none', 'an installed core skill has no schema 2 marker, so its generation is unknown'),
   // The permission file is the mechanical half of the prose Edit Scope. A

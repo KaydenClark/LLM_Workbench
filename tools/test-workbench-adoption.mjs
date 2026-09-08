@@ -10,10 +10,7 @@ import { doctor, nextWork } from '../workbench/tools/spec-workbench.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-adoption.mjs');
-const coreSkills = [
-  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'carry', 'builder', 'auditor', 'reviewer', 'reconciler'
-];
+import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adoption-'));
@@ -131,7 +128,11 @@ function fixtureSpec() {
     write(project, 'feedback/WORKBENCH_FEEDBACK.md', '# Feedback\n');
     write(project, 'grilling diary/decision.md', '# Provisional decision\n');
     write(project, 'handoffs/recovery.md', '# Recovery point\n');
+    write(project, 'handoffs/adoption-recovery.json', '{"legacy":"keep"}\n');
+    write(project, 'handoffs/adoption-legacy-skills/old.md', '# Earlier backup\n');
     write(project, 'skills/custom/SKILL.md', '# Legacy project-local skill\n');
+    fs.symlinkSync('SKILL.md', path.join(project, 'skills/custom/alias.md'));
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: project }).status, 0);
     write(project, 'tools/app.mjs', 'export const app = true;\n');
     write(project, 'tools/spec-workbench.mjs', 'export const duplicate = true;\n');
     write(project, 'schema.sql', '-- project schema\n');
@@ -152,8 +153,11 @@ function fixtureSpec() {
     assert.equal(read(project, 'workbench/feedback/WORKBENCH_FEEDBACK.md'), '# Feedback\n');
     assert.equal(read(project, 'workbench/sessions/grilling/decision.md'), '# Provisional decision\n');
     assert.equal(read(project, 'workbench/sessions/checkpoints/recovery.md'), '# Recovery point\n');
-    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
-    assert.equal(report.recoveryPath, 'workbench/sessions/checkpoints/adoption-recovery.json');
+    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-recovery.json'), '{"legacy":"keep"}\n');
+    assert.equal(read(project, 'workbench/sessions/checkpoints/adoption-legacy-skills/old.md'), '# Earlier backup\n');
+    assert.equal(read(project, 'workbench/sessions/recovery/adoption-legacy-skills/custom/SKILL.md'), '# Legacy project-local skill\n');
+    assert.equal(fs.readlinkSync(path.join(project, 'workbench/sessions/recovery/adoption-legacy-skills/custom/alias.md')), 'SKILL.md');
+    assert.equal(report.recoveryPath, 'workbench/sessions/recovery/adoption-recovery.json');
     assert.equal(JSON.parse(read(project, 'workbench/manifest.json')).schemaVersion, 2, 'adoption must produce schema 2');
     assert.equal(read(project, 'AGENTS.md'), '# AGENTS.md\n\nProject-specific adoption truth.\n');
     assert.equal(read(project, 'tools/app.mjs'), 'export const app = true;\n', 'an application root tools directory is never absorbed');
@@ -161,6 +165,7 @@ function fixtureSpec() {
     const receipt = JSON.parse(read(project, 'workbench/tools/.workbench-tools.json'));
     assert.equal(receipt.source.release, VERSION, 'adoption installs receipt-backed runtime tools');
     const manifest = JSON.parse(read(project, 'workbench/manifest.json'));
+    assert.match(manifest.workbenchId, /^WB-[0-9A-Za-z]{22}$/, 'actual adoption assigns an independent room namespace');
     assert.notEqual(manifest.provenance.source.commit, 'unrecorded');
     assert.equal(manifest.provenance.source.commit, receipt.source.commit,
       'manifest and managed-tools receipt must record one source commit');

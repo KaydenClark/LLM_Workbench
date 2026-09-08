@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-09-05
 **Status:** active
-**Harness version:** v3.1.3 (v3.1.2 shipped to `main`; v3.1.3 publication pending)
+**Harness version:** v3.2.0 (integration candidate; publication to `main` remains owner-controlled)
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
@@ -58,8 +58,9 @@ records the ownership correction and alternatives.
 Meaningful objective work needs usable continuity across interruptions without
 owner reconstruction. New live notepads use JSON, combining a compact current
 view and an ordered work record; shared schema and tooling will support safe
-updates and bounded retrieval. Notes remain local-only until their important
-claims are reconciled into existing durable owners. They do not become Canon
+updates and bounded retrieval. Live notes remain excluded from project Git; explicitly configured private
+transport is accepted separately below. Important claims are reconciled into
+existing durable owners. They do not become Canon
 by being recorded. Ordinary operation needs no new coordination framework.
 The preservation target is conversation interruption through token exhaustion
 or Stop: save important context while work proceeds. Computer-crash, device-loss,
@@ -68,8 +69,10 @@ resolved material may be trimmed from a retained note or the fully reconciled
 record deleted; retaining unfinished context remains mandatory.
 
 [S-046](workbench/specs/S-046-json-notepad-foundation/SPEC.md) owns the bounded
-foundation and thin workflow integrations. Its schema/tooling and target
-notepads layout are accepted requirements, not implemented support. Broader
+foundation and thin workflow integrations. Its shared schema, managed runtime
+`workbench/tools/notepads.mjs`, and `notepad` skill are implemented in v3.1.4;
+the additive `sessions/notepads/` layout now keeps local type folders beside
+tracked schema/examples and preserves legacy paths. Broader
 backup/transport guarantees and workflow redesign remain outside this scope.
 [S-047](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) owns visible,
 type-and-Workbench scoped base-62 identifiers with compatible migration;
@@ -87,7 +90,7 @@ stands on its own; it has no dependency on completing Foundry.
 - The seven root controls remain universally discoverable. Durable support
   records move behind one lowercase `workbench/manifest.json` authority with
   declared specs, Wiki, grilling, handoff, and feedback lanes.
-- LLM Workbench carries thirteen setup/planning/delivery workflow skills plus
+- LLM Workbench carries sixteen setup/planning/delivery workflow skills plus
   four portable stance skills, under S-027 and S-049. On a brand-new installation it supplies a required skill only when
   that skill is missing from user-scoped discovery.
 - Existing installed skills are accepted by presence and remain untouched.
@@ -104,7 +107,11 @@ v3.0.0 and v3.1.0 are preserved unreleased candidates. S-027 continued the
 v3.1 baseline as v3.1.1, and S-035 stamps the v3.1.2 patch, which reached
 `main`. S-049 opens v3.1.3 for the seventeen-skill core bundle, because a
 bundle change is a release-surface change and v3.1.2 is frozen at its own
-sixteen-skill policy. A version label is not publication; the owner alone
+sixteen-skill policy. S-046 opens v3.1.4 on the same rule: the shared JSON
+notepad runtime adds a managed tool and grows the bundle to eighteen, and
+v3.1.3 is frozen at seventeen. A label freezes when it is stamped, not when it
+is published - v3.1.0 was never released and was still frozen rather than
+redefined. A version label is not publication; the owner alone
 promotes integration to main, after the applicable candidate review.
 
 ## Accepted V3.1 Direction
@@ -119,7 +126,7 @@ Four linked capabilities carry the behavior:
 
 - [S-023](workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md):
   manifest schema 2 with six lowercase lanes (`docs`, `specs`, `wiki`,
-  `sessions`, `feedback`, `tools`) and seven declared collections; a lossless
+  `sessions`, `feedback`, `tools`) and nine declared collections; a lossless
   schema 1 migration; Workbench-managed runtime tools in `workbench/tools/`
   with receipts while an application's root `tools/` stays application-owned;
   untracked-by-default session records with tracked checkpoints
@@ -312,9 +319,13 @@ be changed only through a later spec linked by supersession.
 | [S-044 - Legacy Room Classification And Control Reconcile Order](workbench/specs/S-044-legacy-room-classification/SPEC.md) | Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone. | complete |
 | [S-045 - v3.1.2 Follow-Ups Left Without An Owner](workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md) | Own the seven follow-ups the v3.1.2 slices and their retrospective reviews left open, so owed work has a spec that carries it instead of surviving only as prose inside completed specs. | complete |
 | [S-046 - JSON Notepad Foundation](workbench/specs/S-046-json-notepad-foundation/SPEC.md) | Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup. | active |
-| [S-047 - Visible Workbench Identifiers](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Introduce visible base-62 identifiers without parallel IDs or loss of existing references. | planned |
-| [S-048 - Checkpoint Retirement](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately. | planned |
+| [S-047 - Visible Workbench Identifiers](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Introduce visible base-62 identifiers without parallel IDs or loss of existing references. | active |
+| [S-048 - Checkpoint Retirement](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately. | active |
 | [S-049 - Assignment Ownership And The Coordination Record](workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md) | Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination. | complete |
+| [S-050 - Workbench v3.2.0 Release](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) | Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project. | active |
+| [S-051 - Core Skill Ownership And Compatibility](workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md) | Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership. | active |
+| [S-052 - Private Session Transport](workbench/specs/S-052-private-session-transport/SPEC.md) | Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling. | active |
+| [S-053 - Configured Host Capabilities](workbench/specs/S-053-configured-host-capabilities/SPEC.md) | Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate. | active |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
@@ -327,3 +338,70 @@ be changed only through a later spec linked by supersession.
 - harness changes record baseline, after-state, limitations, and documentation
   impact without weakening audit criteria;
 - published version changes occur only after behavior is proven.
+
+## Accepted Continuity And Distribution Direction
+
+The Workbench's continuity promise spans maintained controls, specs, Wiki,
+source, verified achieved state and objective notes. A fresh capable agent must
+recover authorized work from those owners; notes preserve unfinished reasoning.
+A real useful continuation demonstrates that workflow. Only repeated controlled,
+held-out, condition-blind trials with uncertainty support improved agent-outcome
+claims; static checks and a single demonstration do not. Preserve criteria and
+failed results. Interface acceptance applies to the product's actual interface.
+
+The portable runtime stays Node/JavaScript; Python retains evaluation and existing
+append-only checks. Both languages deserialize JSON; no intrinsic Python JSON
+penalty is asserted. Skills compose reusable independent behavior within inherited
+scope. Mention, routing, invocation and authorization are distinct; a helper
+cannot enlarge its caller's authority. Read-only names the target, while permitted
+local working capture remains within the assignment.
+
+Core skills are exclusively upstream-owned and sufficient without a personal
+catalog, including reconciled save/promote/notepad. Optional personal/shared
+skills and room-local source remain distinct ownership scopes. One selected
+global core release carries a tested room compatibility range. The global
+.agents/skills root holds managed ignored/excluded core installation alongside
+optional personal source; Claude discovery adapts the same source. One source
+per skill and one discovery entry per application; no third .codex/skills catalog.
+Normal setup preserves existing names; explicit replacement backs up differences.
+Room-local promotion into a personal catalog remains owner-directed.
+
+Optional private workbench_sessions Git transport is the accepted cross-device
+direction. Stable Workbench identity survives clone/worktree/rename; independent
+instantiation receives a new identity, separate from artifact IDs. Selected live
+notes/grilling/handoffs map under workbenches/<WBID>/sessions/; schemas/templates
+and promoted knowledge stay in project Git. Live records remain ignored there,
+non-authoritative, and privacy bounded. Fetch before resume; meaningful saves
+and device switching require explicit push/remote acknowledgment, with offline
+pending status and last confirmed revision. Serialize sync, preserve conflicts,
+and never silently overwrite or force push. Git history retention is accepted;
+transport does not move unpushed code or running processes. Local use is independent.
+Actual Mac/Windows Claude/Codex round-trip proof is required for that claim.
+
+Promotion writes selected, privacy/validity-checked material directly to its named
+durable owner, verifies read-back and faithful reconciliation, then permits scoped
+source cleanup. Preserve unfinished/correction/transfer dependencies. Existing
+checkpoints remain frozen history; new copy creation is retired. Operational
+recovery uses the ignored `sessions/recovery/` collection; legacy rollback remains usable. No new permanent
+handoff store substitutes for checkpoints. Capability checks cannot replace
+semantic judgment or authorization.
+
+Genesis, adoption and explicit upgrade have different allowed effects and
+preservation contracts. Verify all consumed source lanes before mutation.
+Separate release, historical adoption, installed manifest, tool/skill bytes,
+executing runtime and downstream acceptance identities. Verify the actual remote
+ref and object; inaccessible remote state remains unknown. Control divergence is
+visible and deliberate against a matched template generation; fidelity stays a
+report. A recorded unavailable baseline is distinct from measured red and never
+waives release acceptance; use the existing closed baseline policy.
+
+Supported-host claims require a small agreed operational floor checked in the
+actual configured environment. Agree requirements before choosing schema,
+diagnostics or tests. Missing capabilities affect dependent work only; unavailable
+checks stay unverified. Capability, actual enforcement and model reliability need
+separate evidence. New native enforcement hooks are outside core; discovery and
+evaluation adapters are distinct. Enforcement needs a running mechanism with
+supporting evidence, whether host-owned or Workbench-owned.
+
+
+Implementation and rollout proof for this accepted direction are owned by [S-050](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) and its linked capability specs; v3.2.0 is not yet delivered.

@@ -1,0 +1,43 @@
+{
+  "candidate": "19c2de0ab8ee35e9c32da9e8d84ee2b0d7363fac",
+  "status": "passed",
+  "method": "Local disposable legacy project upgraded through public CLI, upgraded support preserved, original tracked project restored from receipt Git SHA, changed managed skill restored from recorded backup.",
+  "preMigrationCommit": "b67bb7100fb6582be1a48e556a9bef86eb429555",
+  "filesBefore": {
+    "AGENTS.md": "8691824ae4ee6e1ec8f3e1734a33bd043190457ae48f7dbadcc56fa01d3160c8",
+    "BLUEPRINT.md": "35b27a31765d5a553da4475860ffc9cfe3ab9df4220570fae0bf4ceacda2f3d1",
+    "CLAUDE.md": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+    "LEXICON.md": "4ed1eff20d39808b0daa2a068ba4532e9ae5ec69837d5a7f5dac635a72a453d0",
+    "MEMORY.md": "9ff034f81fe8418b745dc02f88684d23b4f369ca5b21dc11df5a03f050d7ee3f",
+    "README.md": "338088cdc33428e54f26f47cbe7540de5f1524b41870f6d314555135a6e44259",
+    "RUNBOOK.md": "74136b4b91ad86a0302e2c215ddae813d7e6e7a33a038c677ed3ff2a22d3c9e4",
+    "TASKBOARD.md": "b03d91e70e8ab12633af65aa81a5f765bef4d3dc5a5125182fa23b9c6b94d7a0",
+    "handoffs/adoption-recovery.json": "82bfea5d9f15ee3837271e732dd0fb5585cdb225950ecff379ae83261471f488",
+    "skills/local/SKILL.md": "ee41c271767300533c2dc303e4dbf7b858661f6dff17f77fa4f52f5feab502a3",
+    "specs/S-001-recovery/SPEC.md": "2a97702f9e667dc9fe1442de23d383571f3b2c36c6933c80d79f39aab2887a82",
+    "src/count.mjs": "397bfb1096e7124d787d386fd73b0abc2d2fce3c000d1732362aa5f1f957b757"
+  },
+  "filesAfter": {
+    "AGENTS.md": "8691824ae4ee6e1ec8f3e1734a33bd043190457ae48f7dbadcc56fa01d3160c8",
+    "BLUEPRINT.md": "35b27a31765d5a553da4475860ffc9cfe3ab9df4220570fae0bf4ceacda2f3d1",
+    "CLAUDE.md": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+    "LEXICON.md": "4ed1eff20d39808b0daa2a068ba4532e9ae5ec69837d5a7f5dac635a72a453d0",
+    "MEMORY.md": "9ff034f81fe8418b745dc02f88684d23b4f369ca5b21dc11df5a03f050d7ee3f",
+    "README.md": "338088cdc33428e54f26f47cbe7540de5f1524b41870f6d314555135a6e44259",
+    "RUNBOOK.md": "74136b4b91ad86a0302e2c215ddae813d7e6e7a33a038c677ed3ff2a22d3c9e4",
+    "TASKBOARD.md": "b03d91e70e8ab12633af65aa81a5f765bef4d3dc5a5125182fa23b9c6b94d7a0",
+    "handoffs/adoption-recovery.json": "82bfea5d9f15ee3837271e732dd0fb5585cdb225950ecff379ae83261471f488",
+    "skills/local/SKILL.md": "ee41c271767300533c2dc303e4dbf7b858661f6dff17f77fa4f52f5feab502a3",
+    "specs/S-001-recovery/SPEC.md": "2a97702f9e667dc9fe1442de23d383571f3b2c36c6933c80d79f39aab2887a82",
+    "src/count.mjs": "397bfb1096e7124d787d386fd73b0abc2d2fce3c000d1732362aa5f1f957b757"
+  },
+  "originalSkillSha256": "57aa67965ac6f39ab42fb517bd6734d18f9466d7fa60c81f75a95c523083dd35",
+  "restoredSkillSha256": "57aa67965ac6f39ab42fb517bd6734d18f9466d7fa60c81f75a95c523083dd35",
+  "newRecovery": "workbench/sessions/recovery/upgrade-recovery.json",
+  "legacyRecoveryPreserved": true,
+  "originalApplicationOutput": "2",
+  "upgradedApplicationOutput": "2",
+  "restoredApplicationOutput": "2",
+  "restoredGitStatus": "clean",
+  "limitation": "One local operational restoration rehearsal; no native provider, cross-device transport, release integration or crash recovery claim."
+}

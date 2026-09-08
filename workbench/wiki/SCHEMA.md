@@ -12,7 +12,7 @@ last_verified: 2026-09-04
 
 # Wiki Schema and CRUD Contract
 
-> Generated from LLM Workbench v3.1.3.
+> Generated from LLM Workbench v3.2.0.
 
 ## Purpose And Ownership
 
@@ -26,6 +26,10 @@ Grounding or Enduring Context, but those are roles of claims in an operation,
 not folders or properties that give the wiki authority. Wiki content cannot
 authorize a change to Actuality; only the current user request, `AGENTS.md`,
 and the explicitly assigned spec instruct.
+
+A recall/search index is derived from named sources and remains rebuildable;
+it neither owns Wiki knowledge nor supplies authority. No recall database or
+additional index service is required by this boundary.
 
 ## Profile And Collections
 

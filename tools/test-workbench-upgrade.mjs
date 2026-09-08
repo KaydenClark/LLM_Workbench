@@ -82,11 +82,15 @@ test('explicit upgrade backs up a changed managed skill, migrates once, and reco
     const backup = result.report.skillBackups.find((entry) => entry.engine === 'codex' && entry.skill === 'genesis');
     assert.ok(backup, 'the changed managed skill must be backed up');
     assert.equal(fs.readFileSync(path.join(backup.path, 'SKILL.md'), 'utf8'), '# changed installed genesis\n');
-    assert.equal(result.report.recoveryPath, path.join('workbench', 'sessions', 'checkpoints', 'upgrade-recovery.json'));
+    assert.equal(result.report.recoveryPath, path.join('workbench', 'sessions', 'recovery', 'upgrade-recovery.json'));
+    assert.equal(spawnSync('git', ['check-ignore', '-q', result.report.recoveryPath], { cwd: project }).status, 0, 'new recovery stays local');
     const recovery = JSON.parse(fs.readFileSync(path.join(project, result.report.recoveryPath), 'utf8'));
     assert.equal(recovery.preMigration.gitSha, beforeSha);
     assert.ok(recovery.preMigration.inventory.includes('specs/S-101-upgrade/SPEC.md'));
     assert.equal(recovery.skillBackups.length, 1);
+    assert.equal(recovery.coreRecovery, result.report.coreRecovery);
+    assert.equal(fs.existsSync(path.join(recovery.coreRecovery, 'recovery.json')), true);
+    assert.equal(fs.realpathSync(path.join(home, '.claude/skills/genesis')), fs.realpathSync(path.join(home, '.agents/skills/genesis')));
     assert.equal(fs.readFileSync(path.join(project, 'tools', 'app.mjs'), 'utf8'), 'export const app = true;\n', 'an application root tools directory survives an explicit upgrade');
     const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
     assert.equal(receipt.source.release, VERSION, 'explicit upgrade installs receipt-backed runtime tools');
@@ -166,7 +170,7 @@ test('the updater validates every consumed source lane before changing installed
       assert.equal(result.report.error.code, 'invalid-source-identity', dirtyRelative);
       assert.equal(fs.readFileSync(installed, 'utf8'), '# locally changed genesis\n', `${dirtyRelative} failure leaves installed skills untouched`);
       assert.equal(fs.existsSync(path.join(project, 'workbench')), false, `${dirtyRelative} failure leaves the target project untouched`);
-      assert.equal(fs.readdirSync(home).filter((name) => name.startsWith('.workbench-upgrade-backup-')).length, 0,
+      assert.equal(fs.readdirSync(home).filter((name) => name.startsWith('.workbench-upgrade-backup-') || name.startsWith('.workbench-core-backup-')).length, 0,
         `${dirtyRelative} failure creates no skill backup`);
     } finally {
       fs.rmSync(project, { recursive: true, force: true });
@@ -208,7 +212,7 @@ test('layout-only upgrade completes on a Git-owned discovery root without touchi
     assert.equal(result.report.skills, 'presence-only');
     assert.equal(fs.readFileSync(path.join(home, '.agents', 'skills', 'genesis', 'SKILL.md'), 'utf8'), '# locally changed genesis\n', 'layout-only never replaces a skill');
     assert.equal(fs.existsSync(path.join(home, '.agents', 'skills', 'genesis', '.workbench-skill.json')), false, 'layout-only never writes a marker');
-    assert.equal(fs.readdirSync(home).filter((name) => name.startsWith('.workbench-upgrade-backup-')).length, 0, 'layout-only creates no backup directory');
+    assert.equal(fs.readdirSync(home).filter((name) => name.startsWith('.workbench-upgrade-backup-') || name.startsWith('.workbench-core-backup-')).length, 0, 'layout-only creates no backup directory');
     assert.equal(fs.existsSync(path.join(project, 'specs')), false);
     const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
     assert.equal(manifest.provenance.lifecycle, 'upgrade');
@@ -261,7 +265,7 @@ test('the shared-skill refusals name the layout-only route that clears them', ()
     const shared = path.join(home, '.agents', 'skills', 'code-review');
     const linked = path.join(home, '.claude', 'skills', 'code-review');
     fs.rmSync(linked, { recursive: true, force: true });
-    fs.symlinkSync(shared, linked, 'dir');
+    fs.symlinkSync(path.join(home, 'missing-core'), linked, 'dir');
 
     const collision = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--explicit-update');
     assert.notEqual(collision.status, 0);

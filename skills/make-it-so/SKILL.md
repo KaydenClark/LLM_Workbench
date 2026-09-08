@@ -3,7 +3,7 @@ name: make-it-so
 description: Kayden's universal "approved — build it and save it" command, with or without a grilling session. Confirms pending approvals, promotes the settled decisions (grilling notepad or current conversation) into canonical docs and specs, implements the promoted tickets, and pushes every result to the remote. Invoke it explicitly; it never fires from someone saying the phrase in passing. Runs to-docs, to-spec, to-tickets, then the implement loop until progress is remotely recoverable.
 ---
 
-The universal execution authorization, and the counterpart to `/checkpoint`.
+The universal execution authorization; local continuation uses the notepad workflow.
 Invoke it explicitly — it must never trigger just because someone said "make it
 so" in conversation.
 
@@ -18,7 +18,7 @@ changes, or genuinely new scope.
 Resolve every durable planning and delivery record through
 `workbench/manifest.json`; it is the sole support-path authority after setup.
 Live notepads live in its `grilling` collection (`workbench/sessions/grilling/`),
-promoted checkpoints in `workbench/sessions/checkpoints/`, decision records in
+frozen historical checkpoints in `workbench/sessions/checkpoints/`, decision records in
 `workbench/docs/adr/`, and the runtime tools in `workbench/tools/`.
 
 ## Resolve the input first
@@ -46,7 +46,9 @@ Then, in order:
    write. Route supported claims directly to their durable owners in the steps
    below; a copied live record is not required. Preserve existing checkpoints
    under their current retention rules; the live notepad is not durable evidence.
-2. `to-docs` — route every `[locked]` decision that belongs in existing control
+2. Compose core `promote` for selected supported notepad material through the
+   public direct-promotion seam; use `save` for its actual persistence boundary.
+   `to-docs` — route every `[locked]` decision that belongs in existing control
    files to its owner. Record an ADR only when warranted: a consequential
    decision with meaningful alternatives or reversal cost gets
    `node workbench/tools/adr.mjs new --title "..."` in the manifest `adr`

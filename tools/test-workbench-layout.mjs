@@ -23,6 +23,13 @@ function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-layout-'));
 }
 
+function healthySkillHome() {
+  const home = fixture();
+  const result = spawnSync(process.execPath, [path.join(root, 'tools/core-skill-installer.mjs'), 'install', '--home', home], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stdout);
+  return home;
+}
+
 function run(...args) {
   const result = spawnSync(process.execPath, [tool, ...args], { cwd: root, encoding: 'utf8' });
   return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
@@ -142,7 +149,7 @@ test('the committed placeholder vocabulary exactly matches the shipped Genesis t
 
 test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   try {
     const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.equal(initialized.status, 0, initialized.stderr);
@@ -200,7 +207,11 @@ test('the sessions ignore denies the legacy grilling diary name, keeps project r
       assert.equal(spawnSync('git', ['check-ignore', '-q', relative], { cwd: project }).status, 0, `${relative} must be ignored`);
     }
     assert.notEqual(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/checkpoints/topic-2026-09-05.md'], { cwd: project }).status, 0, 'checkpoints stay trackable');
-    // An ignore file written before the legacy line existed is still valid.
+    // A prior layout with the prior ignore file is still valid.
+    const manifestFile = path.join(project, 'workbench/manifest.json');
+    const oldManifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    delete oldManifest.collections.recovery; delete oldManifest.collections.notepads; delete oldManifest.collections['notepad-templates'];
+    fs.writeFileSync(manifestFile, JSON.stringify(oldManifest));
     fs.writeFileSync(path.join(project, 'workbench', 'sessions', '.gitignore'), 'grilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n');
     assert.equal(run('validate', '--project', project).report.status, 'valid');
   } finally {
@@ -521,7 +532,7 @@ test('Genesis readiness requires a version-matched runtime tools receipt', () =>
 // disagrees with its own receipt has to fail the doctor it carries.
 test('a room whose managed runtime drifts from its receipt fails the doctor it carries', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
@@ -584,7 +595,7 @@ test('a room whose managed runtime drifts from its receipt fails the doctor it c
 // installs, not only in the release-side installer a room never carries.
 test('a room names a managed file deleted together with its receipt key', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
@@ -628,7 +639,7 @@ test('a room names a managed file deleted together with its receipt key', () => 
 // changes nothing.
 test('a room tells a foreign lane file apart from a receipt key it lost', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
@@ -746,7 +757,7 @@ test('a relocated Genesis CLI retains its complete embedded placeholder vocabula
     // Every module the layout tool imports is itself a managed runtime tool
   // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
   // release checkout around them, which is the condition under test.
-  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs', 'visible-ids.mjs']) {
       fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
     }
 
@@ -803,8 +814,10 @@ test('each listed legacy version validates only at the policy its release declar
     const current = manifest.skillPolicy.required;
     const twelve = current.slice(0, 12);
     // v3.1.1's frozen row is the twelve workflow skills plus the four stances.
-    // The current bundle also carries `carry`, so the two are not the same list.
+    // The current bundle also carries `carry` and `notepad`, so neither frozen
+    // row is the same list as the live policy.
     const sixteen = [...twelve, ...current.slice(-4)];
+    const seventeen = [...twelve, 'carry', ...current.slice(-4)];
     const outcome = (workbenchVersion, required) => {
       fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion, skillPolicy: { ...manifest.skillPolicy, required } }));
       const { report } = run('validate', '--project', project);
@@ -823,6 +836,12 @@ test('each listed legacy version validates only at the policy its release declar
     // `outcome('v3.1.2', current) === 'invalid-skill-policy'` line here.
     assert.equal(outcome('v3.1.2', sixteen), 'valid');
     assert.equal(outcome('v3.1.2', twelve), 'invalid-skill-policy');
+    // v3.1.3 stamped the seventeen-skill bundle and `notepad` grew it to
+    // eighteen at v3.1.4, so v3.1.3 freezes in turn. Each frozen row is exact:
+    // v3.1.3 does not accept v3.1.2's sixteen.
+    assert.equal(outcome('v3.1.3', seventeen), 'valid');
+    assert.equal(outcome('v3.1.3', sixteen), 'invalid-skill-policy');
+    assert.equal(outcome('v3.1.3', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
     assert.equal(outcome(VERSION, current), 'valid');
@@ -918,7 +937,7 @@ function relocateTool(bundle) {
   // Every module the layout tool imports is itself a managed runtime tool
   // (`RUNTIME_TOOLS`), so a relocated copy carries them; what it lacks is the
   // release checkout around them, which is the condition under test.
-  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs']) {
+  for (const helper of ['diagnostics.mjs', 'spec-packet.mjs', 'markdown-table.mjs', 'template-placeholders.mjs', 'workbench-paths.mjs', 'visible-ids.mjs']) {
     fs.copyFileSync(path.join(runtime, helper), path.join(partialTools, helper));
   }
   return relocatedTool;
@@ -1245,17 +1264,17 @@ test('seed-documents records a verifiable generation and never rewrites an adjus
     const document = path.join(project, relative);
     const recordPath = path.join(project, 'workbench', '.workbench-seed.json');
     const template = fs.readFileSync(path.join(root, 'templates', 'feedback', 'REPORT_FORMAT.md'));
-    assert.equal(fs.existsSync(recordPath), false, 'init writes no seed record; seeding a lane document is an explicit command');
+    assert.equal(Object.keys(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents).length, 4, 'init records the four notepad schema/example seeds');
 
     const seeded = run('seed-documents', '--project', project);
     assert.equal(seeded.status, 0, seeded.stdout);
-    assert.deepEqual(seeded.report.written, [{ document: relative, action: 'seeded' }]);
+    assert.deepEqual(seeded.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'seeded' }]);
     assert.deepEqual(seeded.report.retained, []);
     assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'));
     assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
 
     const again = run('seed-documents', '--project', project);
-    assert.deepEqual(again.report.written, [{ document: relative, action: 'recorded' }], 'byte equality with the release copy is evidence of the generation');
+    assert.deepEqual(again.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'recorded' }], 'byte equality with the release copy is evidence of the generation');
 
     // A copy still identical to what an older release seeded is refreshed.
     const older = `${template.toString('utf8')}\nSeeded by an older release.\n`;
@@ -1264,13 +1283,13 @@ test('seed-documents records a verifiable generation and never rewrites an adjus
     record.documents[relative] = { release: 'v3.1.0', contentHash: createHash('sha256').update(Buffer.from(older)).digest('hex') };
     fs.writeFileSync(recordPath, `${JSON.stringify(record, null, 2)}\n`);
     const refreshed = run('seed-documents', '--project', project);
-    assert.deepEqual(refreshed.report.written, [{ document: relative, action: 'refreshed' }]);
+    assert.deepEqual(refreshed.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'refreshed' }]);
     assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'), 'an untouched older copy is brought current without a reinstall');
     assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
 
     fs.appendFileSync(document, '\nLocal note this room added.\n');
     const adjusted = run('seed-documents', '--project', project);
-    assert.deepEqual(adjusted.report.written, [], 'a repair never rewrites content it did not add');
+    assert.deepEqual(adjusted.report.written.filter(entry => entry.document === relative), [], 'a repair never rewrites content it did not add');
     assert.deepEqual(adjusted.report.retained.map((entry) => entry.document), [relative]);
     assert.match(adjusted.report.retained[0].reason, /changed after it was seeded/);
     assert.match(fs.readFileSync(document, 'utf8'), /Local note this room added\./);
@@ -2057,3 +2076,173 @@ test('classify answers an EPERM lane at the stat seam the room conditions are de
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
+
+test('operational recovery is local and separate from note history, and nine-collection layouts migrate without moving history', () => {
+  const project = fixture();
+  try {
+    gitRoom(project);
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const file = path.join(project, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(manifest.collections.recovery, 'workbench/sessions/recovery');
+    assert.equal(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/recovery/receipt.json'], { cwd: project }).status, 0);
+    const historic = path.join(project, 'workbench/sessions/checkpoints/upgrade-recovery.json');
+    fs.writeFileSync(historic, '{"legacy":"preserved"}\r\n');
+    const original = fs.readFileSync(historic);
+    delete manifest.collections.recovery;
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    fs.rmSync(path.join(project, 'workbench/sessions/recovery'), { recursive: true });
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.status, 'migrated');
+    assert.deepEqual(fs.readFileSync(historic), original);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    fs.appendFileSync(path.join(project, 'workbench/sessions/.gitignore'), '\n!recovery/private.json\n');
+    fs.writeFileSync(path.join(project, 'workbench/sessions/recovery/private.json'), '{}');
+    assert.equal(run('validate', '--project', project).report.error.code, 'sessions-not-ignored', 'an effective recovery ignore leak is refused');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('adding recovery refuses pre-existing unmanaged recovery contents before mutation', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const file = path.join(project, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    delete manifest.collections.recovery;
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    const occupied = path.join(project, 'workbench/sessions/recovery/owner.json');
+    fs.writeFileSync(occupied, '{"owner":"existing"}');
+    const before = [file, occupied, path.join(project, 'workbench/sessions/.gitignore')].map(file => fs.readFileSync(file));
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.error.code, 'lane-collision');
+    assert.deepEqual([file, occupied, path.join(project, 'workbench/sessions/.gitignore')].map(file => fs.readFileSync(file)), before);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('new notepad layout separates ignored typed notes from tracked examples and preserves legacy paths on migration', () => {
+  const project = fixture();
+  try {
+    gitRoom(project);
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
+    assert.equal(initialized.status, 0, initialized.stdout);
+    const file = path.join(project, 'workbench/manifest.json');
+    let manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(manifest.collections.notepads, 'workbench/sessions/notepads');
+    assert.equal(manifest.collections['notepad-templates'], 'workbench/sessions/notepads/templates');
+    for (const name of ['notepad.schema.json', 'work.example.json', 'grilling.example.json', 'handoff.example.json']) {
+      assert.ok(fs.existsSync(path.join(project, manifest.collections['notepad-templates'], name)), `shipped ${name}`);
+      assert.notEqual(spawnSync('git', ['check-ignore', '-q', `${manifest.collections['notepad-templates']}/${name}`], { cwd: project }).status, 0);
+    }
+    assert.equal(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/notepads/work/live.json'], { cwd: project }).status, 0);
+    const legacy = path.join(project, 'workbench/sessions/grilling/legacy.md');
+    fs.writeFileSync(legacy, 'Legacy wording remains byte-identical.\r\n');
+    const original = fs.readFileSync(legacy);
+    delete manifest.collections.recovery;
+    delete manifest.collections.notepads;
+    delete manifest.collections['notepad-templates'];
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    fs.rmSync(path.join(project, 'workbench/sessions/notepads'), { recursive: true });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'earlier schema 2 rooms remain readable');
+    const migrated = run('migrate', '--project', project, '--version', VERSION);
+    assert.equal(migrated.report.status, 'migrated', migrated.stdout);
+    assert.deepEqual(fs.readFileSync(legacy), original);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+for (const surface of ['receipt', 'templates']) {
+  test(`layout migration preflights the ${surface} before changing any project bytes`, () => {
+    const project = fixture(); const outside = fixture();
+    try {
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+      const manifestFile = path.join(project, 'workbench/manifest.json');
+      const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+      delete manifest.collections.recovery;
+    delete manifest.collections.notepads; delete manifest.collections['notepad-templates'];
+      fs.writeFileSync(manifestFile, JSON.stringify(manifest));
+      const receipt = path.join(project, 'workbench/.workbench-seed.json');
+      const templates = path.join(project, 'workbench/sessions/notepads/templates');
+      const target = surface === 'receipt' ? receipt : templates;
+      const external = path.join(outside, surface);
+      fs.cpSync(target, external, { recursive: true });
+      fs.rmSync(target, { recursive: true });
+      fs.symlinkSync(external, target, surface === 'receipt' ? 'file' : process.platform === 'win32' ? 'junction' : 'dir');
+      const before = fs.readFileSync(manifestFile);
+      const ignored = fs.readFileSync(path.join(project, 'workbench/sessions/.gitignore'));
+      const result = run('migrate', '--project', project, '--version', VERSION);
+      assert.notEqual(result.status, 0, result.stdout);
+      assert.deepEqual(fs.readFileSync(manifestFile), before, 'refusal leaves the earlier manifest intact');
+      assert.deepEqual(fs.readFileSync(path.join(project, 'workbench/sessions/.gitignore')), ignored, 'refusal preserves project ignore bytes');
+    } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+  });
+}
+
+test('seeding refuses an invented release and linked destination even when bytes match', () => {
+  const project = fixture(); const outside = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const receipt = path.join(project, 'workbench/.workbench-seed.json');
+    const before = fs.readFileSync(receipt);
+    const invented = run('seed-documents', '--project', project, '--version', 'v99.9.9');
+    assert.notEqual(invented.status, 0, invented.stdout);
+    assert.deepEqual(fs.readFileSync(receipt), before);
+    const templates = path.join(project, 'workbench/sessions/notepads/templates');
+    fs.cpSync(templates, outside, { recursive: true }); fs.rmSync(templates, { recursive: true });
+    fs.symlinkSync(outside, templates, process.platform === 'win32' ? 'junction' : 'dir');
+    const linked = run('seed-documents', '--project', project, '--version', VERSION);
+    assert.notEqual(linked.status, 0, linked.stdout);
+    assert.deepEqual(fs.readFileSync(receipt), before);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
+
+test('seeding refuses a committed external source symlink before copying or receipting it', () => {
+  const project = fixture(); const bundle = fixture(); const outside = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const cloned = spawnSync('git', ['clone', '-q', '--no-hardlinks', root, bundle], { encoding: 'utf8' });
+    assert.equal(cloned.status, 0, cloned.stderr);
+    const source = path.join(bundle, 'templates/sessions/notepads/templates/notepad.schema.json');
+    const external = path.join(outside, 'schema.json'); fs.writeFileSync(external, '{"synthetic":"outside-source"}\n');
+    fs.rmSync(source); fs.symlinkSync(external, source, 'file');
+    git(bundle, 'add', 'templates/sessions/notepads/templates/notepad.schema.json');
+    git(bundle, 'commit', '-qm', 'Synthetic linked source fixture');
+    const before = fs.readFileSync(path.join(project, 'workbench/.workbench-seed.json'));
+    const result = spawnSync(process.execPath, [path.join(bundle, 'workbench/tools/workbench-layout.mjs'), 'seed-documents', '--project', project, '--version', VERSION], { encoding: 'utf8' });
+    assert.notEqual(result.status, 0, result.stdout);
+    assert.deepEqual(fs.readFileSync(path.join(project, 'workbench/.workbench-seed.json')), before);
+    assert.ok(!fs.readFileSync(path.join(project, 'workbench/sessions/notepads/templates/notepad.schema.json'), 'utf8').includes('outside-source'));
+  } finally { for (const dir of [project, bundle, outside]) fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const failure of ['ignored-template', 'trackable-live']) {
+  test(`layout validation rejects effective ${failure} Git rules`, () => {
+    const project = fixture();
+    try {
+      gitRoom(project);
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+      const file = path.join(project, 'workbench/sessions/.gitignore');
+      const rules = fs.readFileSync(file, 'utf8');
+      fs.writeFileSync(file, failure === 'ignored-template' ? rules.replace('notepads/*', 'notepads/') : `${rules}\n!notepads/work/\n!notepads/work/**\n`);
+      assert.equal(run('validate', '--project', project).report.status, 'invalid', 'actual Git interpretation, not just a matching line, gates validation');
+    } finally { fs.rmSync(project, { recursive: true, force: true }); }
+  });
+}
+
+for (const suffix of ['00A', '100A', '1000']) {
+test(`Genesis accepts first spec and ticket suffix ${suffix} without truncation or path changes`, () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    const oldPath = path.join(project, 'workbench/specs/S-001-first');
+    const chosen = path.join(project, `workbench/specs/S-${suffix}-first`);
+    fs.renameSync(oldPath, chosen);
+    const file = path.join(chosen, 'SPEC.md');
+    fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replaceAll('S-001', `S-${suffix}`).replaceAll('TK-001', `TK-${suffix}`));
+    render(project);
+    const result = run('validate', '--project', project, '--genesis').report;
+    assert.equal(result.status, 'valid', JSON.stringify(result));
+    assert.equal(nextWork(project).specId, `S-${suffix}`);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+}

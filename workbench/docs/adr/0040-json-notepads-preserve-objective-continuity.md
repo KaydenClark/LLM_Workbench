@@ -45,3 +45,7 @@ Provenance: current owner's 2026-09-06 scoping and promotion instruction, reconc
 against the corrected grilling answers and all three turns of the referenced
 conversation in [S-046](../../specs/S-046-json-notepad-foundation/SPEC.md).
 The assistant's example field names and CLI are proposals, not accepted APIs.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+The whole-Workbench continuity promise is separately owned; optional private transport is now selected and direct promotion replaces checkpoint-only destinations. Local JSON capture stays independent and historical source inventories remain intact. See [ADR-0043](0043-workbench-continuity-through-maintained-owners.md), [ADR-0051](0051-optional-private-git-transport-for-session-continuity.md), [ADR-0054](0054-direct-promotion-into-durable-owners.md).

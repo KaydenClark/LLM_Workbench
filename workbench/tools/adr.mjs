@@ -7,11 +7,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
+import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
-const ID_PATTERN = /^(\d{4})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
+const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
 
 // A record is authored once and checked out on many hosts. Git for Windows
 // rewrites Markdown to CRLF by default, so anchoring on a bare LF would report
@@ -80,18 +81,25 @@ export function insertFrontmatterKeys(content, fields, label) {
   return { content: `${content.slice(0, fence.index)}${fence.eol}${lines.join(fence.eol)}${content.slice(fence.index)}`, inserted: missing.map(([name]) => name) };
 }
 
-export function listAdrs(root) {
+export function listAdrs(root, options = {}) {
   const directory = collectionPath(root, 'adr');
+  assertSafeReadPath(root, directory);
   if (!fs.existsSync(directory)) return [];
   return fs.readdirSync(directory, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && ID_PATTERN.test(entry.name))
+    .filter((entry) => ID_PATTERN.test(entry.name))
+    .map((entry) => {
+      const stat = fs.lstatSync(path.join(directory, entry.name));
+      if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink > 1) {
+        throw new Error(`${entry.name} must be an ordinary, singly linked ADR file; allocation cannot ignore an occupied identity`);
+      }
+      return entry;
+    })
     .map((entry) => entry.name)
-    .sort()
-    .map((name) => readAdr(root, path.join(directory, name)));
+    .map((name) => readAdr(root, path.join(directory, name), options.contentOverrides?.get(path.join(directory, name))))
+    .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
-function readAdr(root, filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
+function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8')) {
   const { data, body } = parseFrontmatter(content);
   const name = path.basename(filePath);
   const [, number, slug] = name.match(ID_PATTERN);
@@ -99,14 +107,17 @@ function readAdr(root, filePath) {
   return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body };
 }
 
-export function validateAdrs(root) {
+export function validateAdrs(root, options = {}) {
   const findings = [];
-  const adrs = listAdrs(root);
+  let adrs;
+  try { adrs = listAdrs(root, options); }
+  catch (error) { return [finding('invalid-adr', error.message)]; }
   const numbers = new Map();
   for (const adr of adrs) {
-    const seen = numbers.get(adr.number) ?? [];
-    seen.push(adr.name);
-    numbers.set(adr.number, seen);
+    const key = visibleIdKey(`ADR-${adr.number}`);
+    const seen = numbers.get(key) ?? { number: adr.number, names: [] };
+    seen.names.push(adr.name);
+    numbers.set(key, seen);
     const data = adr.data;
     if (!data) {
       findings.push(finding('invalid-adr', `${adr.relativePath} has no frontmatter`, { adr: adr.name }));
@@ -131,14 +142,15 @@ export function validateAdrs(root) {
     for (const link of localLinks(adr.body)) {
       const target = path.resolve(path.dirname(adr.filePath), link);
       const relative = path.relative(root, target).split(path.sep).join('/');
-      for (const collection of UNTRACKED_COLLECTIONS) {
+      if (relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) continue;
+      for (const collection of IGNORED_COLLECTIONS) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
-          findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; promote it to checkpoints first`, { adr: adr.name, target: relative }));
+          findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
         }
       }
     }
   }
-  for (const [number, names] of numbers) {
+  for (const { number, names } of numbers.values()) {
     if (names.length > 1) findings.push(finding('invalid-adr', `ADR number ${number} is used by ${names.join(', ')}`, { number }));
   }
   const registerPath = path.join(collectionPath(root, 'adr'), REGISTER_NAME);
@@ -204,8 +216,8 @@ export function newAdr(root, options) {
   if (!slug) throw new Error('title must contain letters or digits');
   const directory = collectionPath(root, 'adr');
   assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
-  const numbers = listAdrs(root).map((adr) => Number(adr.number));
-  const next = String((numbers.length ? Math.max(...numbers) : 0) + 1).padStart(4, '0');
+  const occupied = listAdrs(root).map(adr => `ADR-${adr.number}`);
+  const next = allocateVisibleId('ADR', occupied, { width: 4, requireLetter: true }).slice(4);
   const filePath = path.join(directory, `${next}-${slug}.md`);
   if (fs.existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const date = options.date ?? new Date().toISOString().slice(0, 10);
@@ -225,7 +237,7 @@ export function newAdr(root, options) {
     '',
     'Consequences: [what changes for tools, controls, or agents; name the control that carries the rule].',
     '',
-    'Provenance: [the promoted checkpoint or owner decision, by repository-relative path].',
+    'Provenance: [the reconciled durable owner or preserved historical decision, by repository-relative path].',
     ''
   ].join('\n');
   writeSafeFile(root, filePath, content, { exclusive: true });

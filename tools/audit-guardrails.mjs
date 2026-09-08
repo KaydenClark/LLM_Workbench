@@ -352,11 +352,11 @@ function hasContradictorySpecState(files) {
   if (!specPattern) return true;
   for (const [name, content] of Object.entries(files)) {
     if (!specPattern.test(name)) continue;
-    const id = content.match(/^\*\*Spec ID:\*\*\s*(S-\d{3})/m)?.[1];
+    const id = content.match(/^\*\*Spec ID:\*\*\s*(S-[0-9A-Za-z]{3,})/m)?.[1];
     const status = content.match(/^\*\*Status:\*\*\s*([^\n]+)/m)?.[1]?.trim();
     if (!id || !status) return true;
     if (['complete', 'superseded'].includes(status)) {
-      if (/^\|\s*TK-\d+\s*\|.*\|\s*(?:ready|in-progress|blocked|deferred)\s*\|/m.test(content)) return true;
+      if (/^\|\s*TK-[0-9A-Za-z]+\s*\|.*\|\s*(?:ready|in-progress|blocked|deferred)\s*\|/m.test(content)) return true;
       if ((files['TASKBOARD.md'] ?? '').includes(`| [${id}](`)) return true;
     }
   }
@@ -365,12 +365,12 @@ function hasContradictorySpecState(files) {
 
 function specFilePattern(files) {
   const raw = files['workbench/manifest.json'];
-  if (raw === undefined) return /^specs\/S-\d{3}-[^/]+\/SPEC\.md$/;
+  if (raw === undefined) return /^specs\/S-[0-9A-Za-z]{3,}-[^/]+\/SPEC\.md$/;
   const manifest = safeJson(raw);
   if (![1, SCHEMA_VERSION].includes(manifest?.schemaVersion)) return null;
   const lane = manifest?.lanes?.specs;
   if (!isSafeRelative(lane)) return null;
-  return new RegExp(`^${escapeRegExp(lane)}\/S-\\d{3}-[^/]+\/SPEC\\.md$`);
+  return new RegExp(`^${escapeRegExp(lane)}\/S-[0-9A-Za-z]{3,}-[^/]+\/SPEC\\.md$`);
 }
 
 function escapeRegExp(value) {

@@ -24,8 +24,10 @@ function fixture() {
 }
 
 // Doctor reads the user home for installed skills; fixtures that assert an
-// exact finding list read an empty disposable home so host state stays out.
+// exact finding lists use a healthy isolated core installation so host state stays out.
 const quietHome = fixture();
+const quietInstalled = spawnSync(process.execPath, [installer, 'install', '--home', quietHome], { cwd: root, encoding: 'utf8' });
+assert.equal(quietInstalled.status, 0, quietInstalled.stdout);
 process.on('exit', () => fs.rmSync(quietHome, { recursive: true, force: true }));
 
 function write(project, relative, content) {
@@ -175,7 +177,7 @@ function snapshot(directory) {
   return entries;
 }
 
-test('doctor --home reports a stale or unknown installed skill generation per required skill, never writes to the home, and reads schema 1 as unknown', () => {
+test('doctor --home reports unknown generation or compatibility per required skill, never writes to the home, and reads schema 1 as unknown', () => {
   const dir = project(VERSION);
   const home = fixture();
   try {
@@ -186,7 +188,7 @@ test('doctor --home reports a stale or unknown installed skill generation per re
     assert.deepEqual(doctor(dir, { home }), [], 'a freshly installed bundle from this release is neither stale nor unknown');
 
     const staleMarker = path.join(home, '.claude', 'skills', 'genesis', '.workbench-skill.json');
-    fs.writeFileSync(staleMarker, JSON.stringify({ ...JSON.parse(fs.readFileSync(staleMarker, 'utf8')), release: 'v0.0.0' }));
+    fs.writeFileSync(staleMarker, JSON.stringify({ ...JSON.parse(fs.readFileSync(staleMarker, 'utf8')), release: 'v0.0.0', compatibleRooms: { minimum: 'v0.0.0', maximum: 'v0.0.0' } }));
     fs.rmSync(path.join(home, '.agents', 'skills', 'builder', '.workbench-skill.json'));
     fs.writeFileSync(path.join(home, '.agents', 'skills', 'reviewer', '.workbench-skill.json'), '{"schemaVersion":1,"source":"LLM Workbench core"}\n');
     // A schema 2 marker from another source is not a Workbench generation even when it names the manifest release.
@@ -196,20 +198,26 @@ test('doctor --home reports a stale or unknown installed skill generation per re
     const findings = doctor(dir, { home });
 
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.skill, item.root]).sort(), [
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'auditor', '.claude/skills'],
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'builder', '.agents/skills'],
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'reviewer', '.agents/skills'],
-      ['stale-skill', 'attention', 'skills', 'none', 'genesis', '.claude/skills']
-    ]);
-    assert.equal(findings.find((item) => item.code === 'stale-skill').release, 'v0.0.0');
-    assert.match(findings.find((item) => item.code === 'stale-skill').message, /v0\.0\.0.*v\d+\.\d+\.\d+|v\d+\.\d+\.\d+.*v0\.0\.0/);
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'auditor'],
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'builder'],
+      ['skill-generation-unknown', 'attention', 'skills', 'none', 'reviewer'],
+      ['skill-compatibility-unknown', 'attention', 'skills', 'none', 'genesis']
+    ].flatMap(row => ['.agents/skills', '.claude/skills'].map(discovery => [...row, discovery])).concat([['core-generation-conflict', 'attention', 'skills', 'none', undefined, undefined]]).sort());
+    assert.equal(findings.find((item) => item.code === 'skill-compatibility-unknown').release, 'v0.0.0');
+    assert.match(findings.find((item) => item.code === 'skill-compatibility-unknown').message, /valid room compatibility range/);
     assert.deepEqual(snapshot(home), before, 'doctor never writes to the home');
     const cli = cliDoctor(dir, home);
     assert.equal(cli.status, 0, 'skill findings are attention and never block');
-    assert.equal(cli.findings.length, 4);
+    assert.equal(cli.findings.length, 9, 'both discovery entries expose canonical marker changes and mixed global generation');
     assert.equal(nextWork(dir).ticketId, 'TK-001');
     assert.ok(SCOPES.includes('skills'));
-    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a missing skill is Adoption preflight\'s finding, not doctor\'s');
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a healthy declared compatible core has no skill findings');
+    const empty = fixture();
+    try {
+      const absent = doctor(dir, { home: empty }).filter(item => item.scope === 'skills');
+      assert.equal(absent.length, JSON.parse(fs.readFileSync(path.join(dir, 'workbench/manifest.json'))).skillPolicy.required.length * 2);
+      assert.ok(absent.every(item => item.code === 'skill-missing' && item.blocks === 'none'));
+    } finally { fs.rmSync(empty, { recursive: true, force: true }); }
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
@@ -554,6 +562,11 @@ test('a room outside any Git work tree is told so instead of being told to creat
 // the same edit. Promoting an attention code into a blocking effect is exactly
 // the change that must not pass unnoticed.
 const PINNED_EFFECTS = {
+  'invalid-workbench-identity': ['error', 'manifest', 'all'],
+  'identity-busy': ['error', 'manifest', 'none'],
+  'session-transport-blocked': ['error', 'sessions', 'none'],
+  'session-transport-pending': ['attention', 'sessions', 'none'],
+  'identity-write-failed': ['error', 'manifest', 'none'],
   'invalid-manifest': ['error', 'manifest', 'all'],
   'upgrade-required': ['error', 'manifest', 'all'],
   'invalid-lane': ['error', 'manifest', 'all'],
@@ -586,6 +599,13 @@ const PINNED_EFFECTS = {
   'invalid-note': ['error', 'wiki', 'none'],
   'copied-task-state': ['error', 'wiki', 'none'],
   'secret-like-content': ['error', 'wiki', 'none'],
+  'duplicate-identity': ['error', 'sessions', 'none'],
+  'stale-revision': ['error', 'sessions', 'none'],
+  'malformed-json': ['error', 'sessions', 'none'],
+  'legacy-schema': ['error', 'sessions', 'none'],
+  'retained-dependency': ['error', 'sessions', 'none'],
+  'write-failed': ['error', 'sessions', 'none'],
+  'promotion-recovery-required': ['error', 'sessions', 'none'],
   'integration-branch-undeclared': ['error', 'git', 'none'],
   'integration-branch-missing': ['error', 'git', 'none'],
   'permission-scope-drift': ['error', 'controls', 'none'],
@@ -596,6 +616,14 @@ const PINNED_EFFECTS = {
   'stale-note': ['attention', 'wiki', 'none'],
   'room-brain-unrouted': ['attention', 'wiki', 'none'],
   'stale-stamp': ['attention', 'wiki', 'none'],
+  'skill-missing': ['attention', 'skills', 'none'],
+  'skill-discovery-broken': ['attention', 'skills', 'none'],
+  'skill-content-modified': ['attention', 'skills', 'none'],
+  'skill-compatibility-unknown': ['attention', 'skills', 'none'],
+  'incompatible-core': ['attention', 'skills', 'none'],
+  'skill-source-conflict': ['attention', 'skills', 'none'],
+  'skill-duplicate-discovery': ['attention', 'skills', 'none'],
+  'core-generation-conflict': ['attention', 'skills', 'none'],
   'stale-skill': ['attention', 'skills', 'none'],
   'skill-generation-unknown': ['attention', 'skills', 'none'],
   'stale-seed': ['attention', 'feedback', 'none'],
@@ -739,7 +767,7 @@ test('a seeded lane document whose recorded generation is behind the manifest is
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a room with no seed record names no generation and reports nothing');
     const seedRun = spawnSync(process.execPath, [layout, 'seed-documents', '--project', dir], { encoding: 'utf8' });
     assert.equal(seedRun.status, 0, seedRun.stdout);
-    assert.deepEqual(JSON.parse(seedRun.stdout).written, [{ document: 'workbench/feedback/REPORT_FORMAT.md', action: 'seeded' }]);
+    assert.deepEqual(JSON.parse(seedRun.stdout).written.filter(entry => entry.document === 'workbench/feedback/REPORT_FORMAT.md'), [{ document: 'workbench/feedback/REPORT_FORMAT.md', action: 'seeded' }]);
     const record = path.join(dir, 'workbench', '.workbench-seed.json');
     assert.equal(fs.existsSync(record), true, 'seed-documents records the generation of each seeded lane document');
     const seeded = JSON.parse(fs.readFileSync(record, 'utf8'));

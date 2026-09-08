@@ -33,7 +33,7 @@ modes, and only one of them touches a user-scoped skill:
 - `--explicit-update` additionally replaces Workbench-managed skills, and is
   used only when replacing them is the point of the run.
 
-A same-named user-scoped skill that is shared, linked, or unmanaged is a reason
+A same-named user-scoped skill whose ownership must remain untouched is a reason
 to choose `--layout-only`, not a workstation to reconcile first. The
 `skill-path-collision` and `unmanaged-skill` refusals belong to
 `--explicit-update` alone; a `--layout-only` run returns before either is
@@ -107,7 +107,7 @@ Settle the target's starting point first:
   node tools/workbench-upgrade.mjs upgrade \
     --project [ABSOLUTE_PROJECT_PATH] \
     --home [USER_HOME] \
-    --version v3.1.3 \
+    --version v3.2.0 \
     --layout-only
   ```
 
@@ -115,13 +115,16 @@ Settle the target's starting point first:
   and reads that presence only; it migrates the legacy lanes once through the
   Adoption seam, installs the receipt-backed runtime tools, records
   `provenance.lifecycle: upgrade` with the exact source commit, and writes
-  `workbench/sessions/checkpoints/upgrade-recovery.json` with
+  `workbench/sessions/recovery/upgrade-recovery.json` with
   `skills: "presence-only"`. It works on a host whose discovery root is a
   foreign Git repository because it never touches one. Only after it completes
   do you reconcile specs through the manifest the route just declared
   (`workbench/manifest.json`). Never rerun Adoption for an already-adopted
   room; a second `adoption` record contradicts its first.
-- **A room already on a v3 support root**: no layout or Adoption route runs.
+- **A room already on a v3 support root**: never rerun Adoption. Run the
+  release checkout's `workbench-layout.mjs migrate --project PATH --version VERSION`
+  for additive declared collections. It preserves old note paths and reports
+  its exact layout source. Seeded schema/examples retain adjusted room copies.
   Inventory and hash the project-owned controls, product code, active specs,
   completed evidence, and Wiki content before reconciling them through the
   existing manifest. Update only the intended template sections and managed
@@ -154,9 +157,9 @@ command's other mode, `tools/workbench-upgrade.mjs upgrade --explicit-update`,
 run against a disposable or verified user home, combines the layout phase with
 skill replacement: it updates only skills bearing the Workbench-managed marker,
 backs up changed skill directories first, and records the pre-migration Git
-SHA, inventory, and backups in the same recovery record. It fails closed when a
-discovery root is inside a foreign Git repository or a same-named skill is
-unmanaged. Normal setup remains presence-only; never use `--explicit-update`
+SHA, inventory, and backups in the same recovery record. It uses the canonical core updater and its recorded-backup rollback. It fails
+closed for tracked core source, a Git-owned provider home, or an unmanaged
+same-named skill; ignored managed core inside a personal catalog is supported. Normal setup remains presence-only; never use `--explicit-update`
 merely because a same-named skill exists.
 
 Map capabilities, not every historical ticket. Create completed specs only for

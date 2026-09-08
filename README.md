@@ -66,8 +66,8 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the closed 17-skill public source bundle. It is copied only into
-  user-scoped discovery roots during a missing-only brand-new install; this
+- `skills/` - the closed 20-skill public source bundle. Missing-only setup installs canonical
+  source under `.agents/skills` and Claude adapters to that source; this
   repository does not use it as a project-local discovery tree.
 - `skills-pending/` - preserved selected baselines that remain non-invocable
   until their Workbench rewrites pass review.
@@ -164,7 +164,7 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v3.1.3** (recorded in `BLUEPRINT.md` and
+current harness version is **v3.2.0** (recorded in `BLUEPRINT.md` and
 `workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
 [`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continued
 that baseline as v3.1.1 and
@@ -175,8 +175,16 @@ owns its evidence-integrity corrections.
 opens v3.1.3, because it grows the core skill bundle from sixteen to
 seventeen and v3.1.2 had already reached `main` and downstream rooms at
 sixteen. A bundle change is a release-surface change: v3.1.2 stays frozen at
-its own policy rather than being redefined. Publication remains separately
-owner-controlled. This repo is the source, so its own docs are not stamped.
+its own policy rather than being redefined.
+[`S-046`](workbench/specs/S-046-json-notepad-foundation/SPEC.md) stamps v3.1.4
+under the same rule, adding the shared JSON notepad runtime as a managed tool
+and the `notepad` skill as the eighteenth in the bundle; v3.1.3 freezes at
+seventeen. Publication remains separately
+owner-controlled. S-050 consolidates the reconciled v3.2.0 update: shared JSON
+notepads, visible identities, direct promotion with frozen checkpoint history,
+twenty core skills, optional private session transport and scoped host checks.
+Actual cross-device acceptance and rollout readiness remain explicitly separate.
+This repo is the source, so its own docs are not stamped.
 
 Portfolio responsibilities stay separate: LLM_Workbench produces the canonical
 harness and exact upgrade handoff; GPT_OS selects authorized targets and owns

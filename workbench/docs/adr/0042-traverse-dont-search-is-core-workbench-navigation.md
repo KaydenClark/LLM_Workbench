@@ -47,3 +47,7 @@ Provenance: direct owner instruction in the 2026-09-06 conversation to lock
 "Traverse, don't search" into the Workbench as a core feature. Historical
 Foundry terminology was inspected as supporting context, not as authority for
 this change.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+An acknowledged unfinished obligation must remain reachable through its existing assigned owner or an explicitly authorized successor. Preserve completed evidence. This does not authorize creating work from every recommendation. See [ADR-0043](0043-workbench-continuity-through-maintained-owners.md).
