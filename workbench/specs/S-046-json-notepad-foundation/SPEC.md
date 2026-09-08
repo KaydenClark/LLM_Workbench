@@ -428,7 +428,8 @@ A sub-minute demo:
 node --test tools/test-notepads.mjs
 ```
 
-Full verification at `8b387be` ran in an isolated LF checkout on Windows with
+Full verification at `8b387be`, and again unchanged at the repaired candidate
+`b27dfb9`, ran in an isolated LF checkout on Windows with
 normal subprocess access and `PYTHONUTF8=1`. The ordinary working copy is CRLF
 under `core.autocrlf=true` and several checks read LF-anchored source, so the
 suite is not meaningful there; that is a host condition, not a result. The
