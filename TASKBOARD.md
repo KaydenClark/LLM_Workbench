@@ -21,7 +21,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 | [S-047](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Acceptance / owner gate | codex | none | TK-002 closed with proof. | Confirm acceptance criteria and completion result. |
 | [S-048](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Acceptance / owner gate | codex | none | All implementation slices verified; release integration remains open. | Reconcile S-051 core catalog and pass the S-050 independent integration gate. |
 | [S-051](workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md) | Acceptance / owner gate | codex | none | TK-003 closed with proof. | Confirm acceptance criteria and completion result. |
-| [S-052](workbench/specs/S-052-private-session-transport/SPEC.md) | TK-002: Synchronize selected safe notes and report acknowledgment (in-progress) | codex | TK-001 | TK-002 claimed by codex. | Close TK-002 with verification and documentation proof. |
+| [S-052](workbench/specs/S-052-private-session-transport/SPEC.md) | TK-003: Preserve conflicting/offline revisions under serialized sync (in-progress) | codex | TK-002 | TK-003 claimed by codex. | Close TK-003 with verification and documentation proof. |
 | [S-053](workbench/specs/S-053-configured-host-capabilities/SPEC.md) | TK-002: Implement operation-scoped host conformance checks (ready) | codex | TK-001 | Owner assigned the reconciled v3.2.0 release through Example integration. | Agree the concrete host capability floor. |
 <!-- hot-specs:end -->
 

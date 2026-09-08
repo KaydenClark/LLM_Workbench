@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling.
 **Blockers:** none
-**Latest event:** TK-002 claimed by codex.
-**Next gate:** Close TK-002 with verification and documentation proof.
+**Latest event:** TK-003 claimed by codex.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -79,8 +79,8 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Allocate stable room identity and preserve it across lifecycle operations | done | none | 434ef6b71fb88d5febbd87b60f4f6d55651a06a9: identity 6/6, full 38/38, independent concurrency and preservation review PASS; actual source identity assigned once and second invocation preserved it |
-| TK-002 | Synchronize selected safe notes and report acknowledgment | in-progress | TK-001 | pending |
-| TK-003 | Preserve conflicting/offline revisions under serialized sync | ready | TK-002 | pending |
+| TK-002 | Synchronize selected safe notes and report acknowledgment | done | TK-001 | 6700ca0f31c785385473b0b84529bf71aa6ad205: transport 12/12, full 41/41, independent bounded review PASS with six additional adversarial cases; guardrail 78 unchanged |
+| TK-003 | Preserve conflicting/offline revisions under serialized sync | in-progress | TK-002 | pending |
 | TK-004 | Prove real Mac Windows Claude Codex continuation | blocked | live-device-and-private-repository-access | pending |
 
 ### TK-001 - Allocate stable room identity and preserve it across lifecycle operations
@@ -177,6 +177,7 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 | 2026-09-08 | TK-002 | Initial candidate 7daa575 passed full checks but independent review found four boundary gaps | Full 41 of 41 pass. Review reproduced project Git accepted as transport, case-aliased namespace ancestry, unchecked foreign namespace in a post-push descendant, and lossy UTF-8 validation. Four regression groups demonstrated RED at 843fc93. Repair separates project/transport common dirs, remotes and lineage, reserves planned ancestor case, revalidates final fetched namespace, and validates exact UTF-8 plus every decoded JSON string including duplicate-key values | Root and generic procedure names strict repository separation, final acknowledgment checks and byte/privacy bounds | Clean repaired-candidate targeted/full verification and independent re-review pending; TK-003 interrupted/offline/conflict recovery and real device/provider gates remain open |
 
 | 2026-09-08 | TK-002 | Candidate 32c3085c7b4c3bda36761791fc5e4ee02f72eb6a passed full checks but second review found two further boundaries | Full 41 of 41 pass; ten transport tests pass. Independent review reproduced minified home-path privacy bypass and inherited Git routing variables spoofing ignored checks. Both regressions demonstrated RED; independent decoded-string scans and consistent Git environment isolation now prepared | Docs checked; existing privacy and project exclusion contracts require these repairs without a contract change | Clean twelve-test candidate, full verification and fresh independent review pending; actual private service and device gates remain open |
+| 2026-09-08 | TK-002 | Ticket closed | 6700ca0f31c785385473b0b84529bf71aa6ad205: transport 12/12, full 41/41, independent bounded review PASS with six additional adversarial cases; guardrail 78 unchanged | Root and generic optional transport procedure, repository separation, privacy and acknowledgment limits documented | TK-003 interruption/serialization recovery including reproduced partial multi-note resume; TK-004 actual private service and Mac Windows Claude Codex continuation; final release integration remain open |
 
 ## Completion Result
 
