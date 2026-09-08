@@ -966,8 +966,8 @@ test('visible ID allocation and lookup preserve existing note paths and independ
     assert.equal(allocated.status, 0, allocated.stdout);
     assert.equal(allocated.json.id, 'N-00A');
     assert.equal(allocated.json.note, 'workbench/sessions/notepads/work/N-00A.json');
-    assert.equal(cli(dir, ['read', '--note', 'N-00A', '--view', 'current']).json.id, 'N-00A');
-    assert.equal(cli(dir, ['read', '--note', 'N-010', '--view', 'current']).json.note, 'workbench/sessions/notepads/work/legacy-numeric.json');
+    assert.equal(cli(dir, ['read', '--id', 'N-00A', '--view', 'current']).json.id, 'N-00A');
+    assert.equal(cli(dir, ['read', '--id', 'N-010', '--view', 'current']).json.note, 'workbench/sessions/notepads/work/legacy-numeric.json');
     assert.deepEqual(fs.readFileSync(path.join(dir, 'workbench/sessions/notepads/work/legacy-numeric.json')), before);
     const other = cli(dir, ['allocate', '--prefix', 'H', '--collection', 'handoffs', '--type', 'handoff', '--objective', 'notepad-runtime', '--title', 'Independent type']);
     assert.equal(other.json.id, 'H-001');
@@ -1019,4 +1019,34 @@ test('new note publication preserves a file created after preflight', () => {
     assert.equal(result.status, 'blocked');
     assert.equal(fs.readFileSync(target, 'utf8'), existing);
   } finally { fs.mkdirSync = mkdir; fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('identity lookup and legacy filename lookup remain explicit and cannot shadow each other', () => {
+  const dir = project();
+  try {
+    const original = seed(dir, { note: 'N-001', id: 'different-note' });
+    const before = fs.readFileSync(path.join(dir, original.note));
+    const unmatched = cli(dir, ['read', '--id', 'N-001', '--view', 'current']);
+    assert.equal(unmatched.json.error?.code, 'invalid-note');
+    assert.equal(cli(dir, ['read', '--note', 'N-001', '--view', 'current']).json.id, 'different-note');
+    const actual = seed(dir, { note: 'identity-source', id: 'N-001' });
+    assert.equal(cli(dir, ['read', '--id', 'N-001', '--view', 'current']).json.note, actual.note);
+    assert.equal(cli(dir, ['read', '--note', 'N-001', '--view', 'current']).json.note, original.note);
+    const both = cli(dir, ['read', '--note', original.note, '--id', 'N-001']);
+    assert.equal(both.json.error?.code, 'invalid-invocation');
+    const updated = cli(dir, ['current', '--id', 'N-001', '--revision', '1', '--state', 'Identity-selected update']);
+    assert.equal(updated.json.status, 'updated');
+    assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('allocation skips a legacy filename whose visible ID belongs to another record', () => {
+  const dir = project();
+  try {
+    const original = seed(dir, { note: 'N-001', id: 'different-note' });
+    const before = fs.readFileSync(path.join(dir, original.note));
+    const allocated = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Skip occupied filename']);
+    assert.equal(allocated.json.id, 'N-002', allocated.stdout);
+    assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

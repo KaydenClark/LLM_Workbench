@@ -7,22 +7,22 @@ const PREFIX = /^[A-Z][A-Z0-9]{0,15}$/;
 export function visibleIdParts(value) {
   if (typeof value !== 'string') return null;
   const match = /^([A-Z][A-Z0-9]{0,15})-([0-9A-Za-z]+)$/.exec(value);
-  return match ? { prefix: match[1], token: match[2] } : null;
+  return match ? { prefix: match[1], suffix: match[2] } : null;
 }
 
 export function visibleIdKey(value) {
   const parsed = visibleIdParts(value);
-  return parsed ? `${parsed.prefix}-${(parsed.token.replace(/^0+/, '') || '0').toUpperCase()}` : null;
+  return parsed ? `${parsed.prefix}-${(parsed.suffix.replace(/^0+/, '') || '0').toUpperCase()}` : null;
 }
 
 export function encodeBase62(value) {
   if (typeof value !== 'bigint' || value < 0n) throw new Error('Base-62 encoding requires a nonnegative bigint');
-  let token = '';
+  let suffix = '';
   do {
-    token = BASE62_ALPHABET[Number(value % 62n)] + token;
+    suffix = BASE62_ALPHABET[Number(value % 62n)] + suffix;
     value /= 62n;
   } while (value);
-  return token;
+  return suffix;
 }
 
 export function allocateVisibleId(prefix, ids, { width = 3 } = {}) {

@@ -107,14 +107,17 @@ export function resolveNote(root, value, collection = defaultCollection(root)) {
   return { absolute: path.resolve(root, canonicalRelative), relative: canonicalRelative.split(path.sep).join('/') };
 }
 
-function readRaw(root, value, collection) {
-  if (visibleIdKey(value)) {
+function readRaw(root, value, collection, byId = false) {
+  if (byId) {
+    value = requireValue(value, '--id is required');
     const inventory = listNotes(root, collection ? { collection } : {});
     if (inventory.status === 'blocked') return { error: inventory };
     if (inventory.unreadable.length) return { error: blocked('invalid-note', 'Identifier lookup cannot establish uniqueness while live records are unreadable.', { unreadable: inventory.unreadable }) };
-    const matches = inventory.notes.filter(note => visibleIdKey(note.id) === visibleIdKey(value));
+    const key = visibleIdKey(value);
+    const matches = inventory.notes.filter(note => key ? visibleIdKey(note.id) === key : note.id === value);
     if (matches.length > 1) return { error: blocked('duplicate-identity', `Visible identifier ${value} is ambiguous`, { notes: matches.map(note => note.note) }) };
-    if (matches.length === 1) value = matches[0].note;
+    if (!matches.length) return { error: blocked('invalid-note', `No note has identifier ${value}; use --note with an explicit filename/path to read a legacy named record.`) };
+    value = matches[0].note;
   }
   let resolved;
   try { resolved = resolveNote(root, value, collection); } catch (error) { return { error: blocked('invalid-note', error.message) }; }
@@ -128,6 +131,11 @@ function readRaw(root, value, collection) {
     return { resolved, error: blocked('malformed-json', `${resolved.relative} is not parseable JSON: ${error.message}`) };
   }
   return { resolved, note, text };
+}
+
+function readSelected(root, options, collection = options.collection) {
+  if (options.id !== undefined && options.note !== undefined) return { error: blocked('invalid-note', 'Choose either --id or --note, not both') };
+  return readRaw(root, options.id ?? options.note, collection, options.id !== undefined);
 }
 
 // Structural validation only. It says whether a record can be read and written
@@ -168,8 +176,8 @@ export function checkStructure(note) {
   return { missing, invalid };
 }
 
-export function validateNote(root, note, collection) {
-  const loaded = readRaw(root, note, collection);
+export function validateNote(root, note, collection, byId = false) {
+  const loaded = readRaw(root, note, collection, byId);
   if (loaded.error) return loaded.error;
   const { missing, invalid } = checkStructure(loaded.note);
   if (missing.length || invalid.length) {
@@ -187,7 +195,7 @@ export function validateNote(root, note, collection) {
 // Load a record for a write: valid, current-generation, and at the revision
 // the caller says it read. Anything else refuses before touching the file.
 function loadForWrite(root, options, collection) {
-  const loaded = readRaw(root, options.note, collection);
+  const loaded = readSelected(root, options, collection);
   if (loaded.error) return loaded.error;
   const { missing, invalid } = checkStructure(loaded.note);
   if (missing.length || invalid.length) return blocked('invalid-note', `${loaded.resolved.relative} is not a valid notepad`, { missing, invalid });
@@ -355,7 +363,18 @@ export function allocateNote(root, options) {
   const inventory = listNotes(root);
   if (inventory.unreadable.length) return blocked('invalid-note', 'Allocation cannot establish uniqueness while live records are unreadable.', { unreadable: inventory.unreadable });
   let id;
-  try { id = allocateVisibleId(requireValue(options.prefix, '--prefix is required'), inventory.notes.map(note => note.id)); }
+  try {
+    const prefix = requireValue(options.prefix, '--prefix is required');
+    const occupied = inventory.notes.map(note => note.id);
+    // A legacy filename may carry a different ID. Reserve that destination
+    // spelling too, rather than repeatedly proposing a file we cannot create.
+    for (;;) {
+      id = allocateVisibleId(prefix, occupied);
+      const destination = resolveNote(root, id, options.collection ?? defaultCollection(root));
+      if (!fs.existsSync(destination.absolute)) break;
+      occupied.push(id);
+    }
+  }
   catch (error) { return blocked('invalid-note', error.message); }
   return createNote(root, { ...options, id, note: id });
 }
@@ -518,7 +537,7 @@ function select(note, options) {
 }
 
 export function readNote(root, options) {
-  const loaded = readRaw(root, options.note, options.collection);
+  const loaded = readSelected(root, options);
   if (loaded.error) return loaded.error;
   const { note, resolved } = loaded;
   const { missing, invalid } = checkStructure(note);
@@ -674,7 +693,7 @@ export function deleteNote(root, options) {
 // recorded text, timestamps, and question routes are carried across unchanged,
 // and only the fields the runtime needs to write safely are added.
 export function migrateNote(root, options) {
-  const loaded = readRaw(root, options.note, options.collection);
+  const loaded = readSelected(root, options);
   if (loaded.error) return loaded.error;
   const { note, resolved } = loaded;
   if (note.schema_version === NOTEPAD_SCHEMA_VERSION) {
@@ -745,14 +764,14 @@ const MULTI = new Set(['entry', 'unresolved', 'related', 'durable-owner', 'depen
 const OPTIONS = Object.freeze({
   create: ['path', 'note', 'collection', 'objective', 'title', 'focus', 'type', 'status', 'id', 'index', 'related', 'state', 'next-action', 'unresolved', 'view-field', 'retains'],
   allocate: ['path', 'prefix', 'collection', 'objective', 'title', 'focus', 'type', 'status', 'index', 'related', 'state', 'next-action', 'unresolved', 'view-field', 'retains'],
-  append: ['path', 'note', 'collection', 'revision', 'kind', 'topic', 'content', 'entry-id', 'corrects', 'depends-on', 'interpretation', 'question-id', 'source-file', 'source-line-start', 'source-line-end', 'source-sha256'],
-  current: ['path', 'note', 'collection', 'revision', 'state', 'next-action', 'unresolved', 'status', 'view-field'],
-  read: ['path', 'note', 'collection', 'topic', 'entry', 'kind', 'limit', 'cursor', 'view'],
+  append: ['path', 'note', 'id', 'collection', 'revision', 'kind', 'topic', 'content', 'entry-id', 'corrects', 'depends-on', 'interpretation', 'question-id', 'source-file', 'source-line-start', 'source-line-end', 'source-sha256'],
+  current: ['path', 'note', 'id', 'collection', 'revision', 'state', 'next-action', 'unresolved', 'status', 'view-field'],
+  read: ['path', 'note', 'id', 'collection', 'topic', 'entry', 'kind', 'limit', 'cursor', 'view'],
   list: ['path', 'collection', 'objective'],
-  validate: ['path', 'note', 'collection'],
-  trim: ['path', 'note', 'collection', 'revision', 'entry', 'durable-owner'],
-  delete: ['path', 'note', 'collection', 'revision'],
-  migrate: ['path', 'note', 'collection']
+  validate: ['path', 'note', 'id', 'collection'],
+  trim: ['path', 'note', 'id', 'collection', 'revision', 'entry', 'durable-owner'],
+  delete: ['path', 'note', 'id', 'collection', 'revision'],
+  migrate: ['path', 'note', 'id', 'collection']
 });
 
 function parseArgs(argv) {
@@ -770,6 +789,7 @@ function parseArgs(argv) {
     if (MULTI.has(key)) options[key] = [...(options[key] ?? []), value];
     else options[key] = value;
   }
+  if (!['create', 'allocate'].includes(command) && options.id !== undefined && options.note !== undefined) throw new Error('Choose either --id or --note, not both');
   return { command, options };
 }
 
@@ -808,7 +828,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'current') result = setCurrent(root, options);
     else if (command === 'read') result = readNote(root, options);
     else if (command === 'list') result = listNotes(root, options);
-    else if (command === 'validate') result = validateNote(root, options.note, options.collection);
+    else if (command === 'validate') result = validateNote(root, options.id ?? options.note, options.collection, options.id !== undefined);
     else if (command === 'trim') result = trimEntries(root, options);
     else if (command === 'migrate') result = migrateNote(root, options);
     else if (command === 'delete') result = deleteNote(root, options);

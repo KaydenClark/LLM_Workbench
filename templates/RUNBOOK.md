@@ -194,7 +194,7 @@ Visible note identifiers can be allocated without changing existing note paths:
 
 ```bash
 node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY --title "TITLE"
-node workbench/tools/notepads.mjs read --note N-001 --view current
+node workbench/tools/notepads.mjs read --id N-001 --view current
 ```
 
 Choose the artifact type prefix explicitly (for example N for objective notes,
@@ -207,8 +207,10 @@ have independent scopes within the room. Case-folded and leading-zero variants
 reserve the same value, so N-00A, N-00a and N-000A cannot be allocated twice.
 Those restrictions deliberately avoid aliases on case-insensitive filesystems.
 
-Bare visible IDs resolve through the local inventory, including legacy records
-whose filenames differ from their IDs. Explicit paths retain their old behavior.
+`--id` resolves through the local inventory, including legacy records whose
+filenames differ from their IDs. It refuses unmatched or ambiguous identifiers.
+`--note` retains its original filename/path behavior; never combine the selectors.
+Allocation skips occupied destination names even when their stored IDs differ.
 Unreadable records or ambiguous IDs refuse identifier operations until their
 inventory is reconciled; they are preserved. Ordinary `create --note NAME`
 remains available for legacy named context. Allocation assumes one writer and
