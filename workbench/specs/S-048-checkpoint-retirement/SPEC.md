@@ -1,15 +1,15 @@
 # S-048 - Checkpoint Retirement
 
 **Spec ID:** S-048
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** codex
 **Stance:** Reconciler
-**Updated:** 2026-09-06
+**Updated:** 2026-09-08
 **Catalog description:** Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately.
 **Blockers:** none
-**Latest event:** Owner-requested follow-on separated from the notepad foundation.
-**Next gate:** Inventory rationale, artifacts, and consumers before proposing any deletion.
+**Latest event:** TK-001 claimed by codex.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 ## Outcome
 
@@ -72,7 +72,7 @@ continuation path and preservation of every still-needed claim/reference.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Trace one checkpoint from original rationale through inbound references and reconcile it to a proposed disposition with a checkable continuation example | ready | none | pending |
+| TK-001 | Trace one checkpoint from original rationale through inbound references and reconcile it to a proposed disposition with a checkable continuation example | in-progress | none | pending |
 | TK-002 | Promote selected safe material directly into its durable owner with verified read-back before source cleanup | ready | TK-001 | pending |
 | TK-003 | Freeze checkpoint history and migrate active recovery consumers without breaking rollback | ready | TK-002 | pending |
 
