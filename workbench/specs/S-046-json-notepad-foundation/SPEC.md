@@ -540,6 +540,17 @@ record, which is how the citations in this spec and in `benchmarks/RESULTS.md`
 were checked. The evidence row that announced the check is superseded by an
 appended row rather than edited.
 
+**How to re-check the mutation-testing claims in this account, because the
+obvious way is silently invalid.** `project()` in `tools/test-notepads.mjs`
+calls `workbench-layout init`, which refuses with `invalid-source-identity`
+whenever `workbench/tools/` has uncommitted changes. Editing `notepads.mjs` in
+place therefore turns **all 21 cases red for a reason unrelated to the
+mutation**, and that red is indistinguishable from a genuine one. Every
+mutation reported here was run with the mutation committed first, and a
+reviewer who checks them without doing the same will observe nothing either
+way. The seventh review independently hit this and re-ran; it is recorded
+because the trap is invisible from the output.
+
 The general lesson is not about this row. A verification step that times out
 is an unmeasured step, and calling it "not a failure" made it read as a
 measured one for three rounds. The account above says the check passes on both

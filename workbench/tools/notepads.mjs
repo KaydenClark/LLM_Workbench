@@ -199,7 +199,10 @@ function sequenceFrom(entries, existing = {}) {
   const marks = { ...existing };
   for (const entry of entries) {
     const parts = ID_PARTS.exec(entry?.id ?? '');
-    if (!parts) continue;
+    // An out-of-range suffix is skipped rather than folded in: a record written
+    // before the seam bounded them would otherwise store a mark that reads back
+    // as unusable, destroying the whole prefix's history.
+    if (!parts || !Number.isSafeInteger(Number(parts[2]))) continue;
     marks[parts[1]] = Math.max(markOf(marks, parts[1]) ?? 0, Number(parts[2]));
   }
   return marks;
@@ -236,13 +239,18 @@ export function createNote(root, options) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }
   const view = parseViewFields(options['view-field']);
-  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options['view-field'])]);
+  // The basename is scanned too. With `--id` omitted it becomes the record's
+  // `id`, so the same string refused through `--id` was being written through
+  // `--note`. Its live-collection and `.json` constraints bound where the file
+  // goes, not what the name contains.
+  const basename = path.basename(resolved.absolute, '.json');
+  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, basename, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options['view-field'])]);
   if (leak) return leak;
   const stamp = nowStamp();
   const note = {
     schema_version: NOTEPAD_SCHEMA_VERSION,
     revision: 1,
-    id: options.id === undefined ? path.basename(resolved.absolute, '.json') : requireValue(options.id, '--id must not be empty'),
+    id: options.id === undefined ? basename : requireValue(options.id, '--id must not be empty'),
     type,
     status,
     title,
@@ -277,10 +285,22 @@ export function appendEntry(root, options) {
   const sequence = note.extensions?.entry_sequence ?? {};
   const highest = note.entries.reduce((top, entry) => {
     const suffix = new RegExp(`^${kind}-(\\d+)$`).exec(entry.id);
-    return suffix ? Math.max(top, Number(suffix[1])) : top;
+    // Skip an out-of-range suffix, as `sequenceFrom` does: a record written
+    // before the seam bounded them must not wedge its own generation.
+    return suffix && Number.isSafeInteger(Number(suffix[1])) ? Math.max(top, Number(suffix[1])) : top;
   }, markOf(sequence, kind) ?? 0);
   const id = options['entry-id'] ?? `${kind}-${String(highest + 1).padStart(3, '0')}`;
   if (!ENTRY_ID.test(id)) return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} is not an identifier`);
+  // Bound the suffix at the seam, so nothing out of range ever enters a record.
+  // Bounding only the stored mark left the number that produces it unbounded:
+  // one 23-digit id made every later generated append for that kind fail as
+  // `finding-1e+23` - an error naming a flag the caller never passed - and the
+  // prefix's whole high-water mark became unreadable, so previously cited ids
+  // came back naming different material.
+  const supplied = ID_PARTS.exec(id);
+  if (supplied && !Number.isSafeInteger(Number(supplied[2]))) {
+    return blocked('invalid-note', `entry id ${id} numbers past the safe integer range; an id the mark cannot track would let a cited id be reused`, { entry: id });
+  }
   if (existing.has(id)) return blocked('duplicate-identity', `${resolved.relative} already carries entry ${id}`, { entry: id });
   // The mark governs a supplied id too, not only a generated one. Consulting it
   // only when generating left `--entry-id finding-002` free to write different

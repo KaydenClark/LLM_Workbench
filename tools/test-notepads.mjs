@@ -438,6 +438,26 @@ test('a generated entry id survives a trim', () => {
     assert.match(healed.entry, /^finding-\d+$/, 'a corrupt mark must not produce finding-NaN');
     const writtenMark = JSON.parse(fs.readFileSync(notePath, 'utf8')).extensions.entry_sequence.finding;
     assert.ok(Number.isInteger(writtenMark), `the mark written back must be a whole number, got ${JSON.stringify(writtenMark)}`);
+
+    // An id numbering past the safe integer range is refused at the seam. It
+    // matches ENTRY_ID and the tracked prefix-number shape, so nothing else
+    // catches it: one such id made every later generated append for its kind
+    // fail as `finding-1e+23`, and destroyed the prefix's whole high-water mark
+    // so previously cited ids came back naming different material.
+    const huge = appendEntry(dir, { note: created.note, revision: JSON.parse(fs.readFileSync(notePath, 'utf8')).revision, kind: 'finding', topic: 'x', 'entry-id': 'finding-99999999999999999999999', content: 'Past the range the mark can track.' });
+    assert.equal(huge.status, 'blocked');
+    assert.equal(huge.error.code, 'invalid-note');
+    assert.match(huge.error.message, /safe integer range/);
+
+    // A record written before the seam bounded them must still generate ids.
+    const legacyHuge = JSON.parse(fs.readFileSync(notePath, 'utf8'));
+    legacyHuge.entries.push({ id: 'finding-99999999999999999999999', kind: 'finding', topic: 'x', content: 'Already on disk.', recorded_at: '2026-09-06T00:00:00Z' });
+    fs.writeFileSync(notePath, `${JSON.stringify(legacyHuge, null, 2)}\n`);
+    const afterHuge = appendEntry(dir, { note: created.note, revision: legacyHuge.revision, kind: 'finding', topic: 'x', content: 'After the out-of-range entry.' });
+    assert.equal(afterHuge.status, 'appended', JSON.stringify(afterHuge));
+    assert.match(afterHuge.entry, /^finding-\d{3}$/, 'an out-of-range entry already on disk must not wedge generation');
+    const marks = JSON.parse(fs.readFileSync(notePath, 'utf8')).extensions.entry_sequence;
+    assert.ok(Number.isSafeInteger(marks.finding), `the stored mark stays trackable, got ${JSON.stringify(marks.finding)}`);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -543,10 +563,12 @@ test('a workflow field can be written into the current view and survives later u
   }
 });
 
-// Named for what it asserts. `--objective` and `--note` are not in it: both are
-// structurally constrained (a lowercase slug, and a path inside a live
-// collection) before any value reaches the record, so neither can carry a
-// credential. Every field that accepts free text is here.
+// Named for what it asserts, and enumerating every field each `scanNew` call
+// covers rather than sampling them. `--objective` is the one supplied value not
+// scanned: a lowercase slug cannot carry a credential. `--note` is scanned,
+// because its basename becomes the record's `id` when `--id` is omitted - an
+// earlier version of this comment claimed the path constraints made that safe,
+// which confused where the file goes with what its name contains.
 test('every free-text field is privacy-scanned, not only the content field', () => {
   const dir = project();
   try {
@@ -558,7 +580,7 @@ test('every free-text field is privacy-scanned, not only the content field', () 
     // privacy-scanned before it can reach the file."
     // Every field `createNote` scans, one per case. An earlier version of this
     // test asserted six of them under a name claiming it covered them all, and
-    // the round that repaired that asserted ten of twenty under a comment saying
+    // the round that repaired that asserted ten of the full set under a comment saying
     // the same. Each drop from a scan list has to go red here, so the list is
     // enumerated rather than sampled.
     let n = 0;
@@ -573,7 +595,12 @@ test('every free-text field is privacy-scanned, not only the content field', () 
       ['--title', { note: 'leak-title', objective: 'leak', title: `Leak ${TOKEN}` }],
       ['--state', leakCase({ state: `Rotate ${TOKEN}.` })],
       ['--id', leakCase({ id: TOKEN })],
-      ['--type', leakCase({ type: TOKEN })]
+      ['--type', leakCase({ type: TOKEN })],
+      // With --id omitted the basename becomes the record's id, so the same
+      // string refused through --id was being written through --note. Its
+      // live-collection and .json constraints bound where the file goes, not
+      // what the name contains.
+      ['--note', { note: TOKEN, objective: 'leak', title: 'Leak' }]
     ]) {
       const refused = createNote(dir, options);
       assert.equal(refused.status, 'blocked', label);
@@ -596,7 +623,7 @@ test('every free-text field is privacy-scanned, not only the content field', () 
     }
     assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8')).entries, [], 'no refused append reached the file');
 
-    // `current` supplies three of its own, and `trim` one.
+    // `current` supplies four of its own, and `trim` one.
     for (const [label, options] of [
       ['current --state', { state: `Rotate ${TOKEN}.` }],
       ['current --next-action', { 'next-action': `Use ${TOKEN}.` }],
