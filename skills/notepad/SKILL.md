@@ -62,11 +62,13 @@ node workbench/tools/notepads.mjs append --note NOTE --revision N \
   --source-file PATH --interpretation "WHAT IT MEANS HERE"
 ```
 
-Every write names the revision you read. A mismatch is refused as
-`stale-revision` with the current revision, so two writers cannot silently
-overwrite each other - read again and re-apply. New material is privacy-scanned
-before it can reach the file; record a safe reference rather than a secret,
-credential, or raw private data.
+Every write names the revision you read. A write against a revision that has
+moved is refused as `stale-revision` naming the current one - read again and
+re-apply. This is a check, not a lock: it catches the sequential case, where
+your note moved while you were working. Two writers that both read the same
+revision at the same moment would both pass it, so one writer per note remains
+the rule. New material is privacy-scanned before it can reach the file; record
+a safe reference rather than a secret, credential, or raw private data.
 
 Correct in place by linking, never by rewriting history:
 

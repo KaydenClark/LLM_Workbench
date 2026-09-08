@@ -328,16 +328,168 @@ test('a blocked write leaves the previous valid note in place', () => {
     appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'x', 'entry-id': 'x-1', content: 'The one entry that must survive.' });
     const before = fs.readFileSync(notePath, 'utf8');
 
-    fs.chmodSync(notePath, 0o444);
+    // The failure has to be forced the same way on every platform. Clearing
+    // the file's write bit does not do it: publication renames a fresh file
+    // over the destination, and POSIX rename needs write permission on the
+    // directory, not on the target - so the append simply succeeded there and
+    // an earlier version of this test skipped its own assertions. Replacing
+    // the collection directory with a file blocks the rename everywhere.
+    const collection = path.dirname(notePath);
+    const stash = `${collection}-stash`;
+    fs.renameSync(collection, stash);
+    fs.writeFileSync(collection, 'not a directory\n');
     const blocked = appendEntry(dir, { note: created.note, revision: 2, kind: 'finding', topic: 'x', content: 'Interrupted.' });
-    fs.chmodSync(notePath, 0o644);
-    // Windows honours the read-only bit; POSIX root does not. Either way the
-    // previous valid file must still parse and still hold its entry.
-    if (blocked.status === 'blocked') assert.equal(blocked.error.code, 'write-failed');
-    const after = JSON.parse(fs.readFileSync(notePath, 'utf8'));
+    fs.rmSync(collection, { force: true });
+    fs.renameSync(stash, collection);
+
+    assert.equal(blocked.status, 'blocked', 'the write must fail, not be skipped');
+    assert.equal(blocked.error.code, 'write-failed');
+    assert.match(blocked.error.message, /previous valid record is unchanged/);
+    assert.equal(fs.readFileSync(notePath, 'utf8'), before, 'the refused write left the record byte-identical');
     assert.equal(validateNote(dir, created.note).status, 'valid', 'the note on disk is still valid after the attempt');
-    assert.ok(after.entries.some((entry) => entry.id === 'x-1'), 'the earlier entry survived');
-    if (blocked.status === 'blocked') assert.deepEqual(after, JSON.parse(before), 'the refused write left the record exactly as it was');
+    assert.deepEqual(JSON.parse(before).entries.map((entry) => entry.id), ['x-1'], 'and still holds the entry that had to survive');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('trim refuses to remove a correction while keeping what it corrects', () => {
+  const dir = project();
+  try {
+    const created = seed(dir);
+    appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'x', 'entry-id': 'f-1', content: 'The lane carries eleven tools.' });
+    appendEntry(dir, { note: created.note, revision: 2, kind: 'correction', topic: 'x', 'entry-id': 'c-1', corrects: 'f-1', content: 'It carries twelve.' });
+
+    // The link binds both ways. Dropping the correction alone would leave the
+    // note as the only local record of a fact already known to be wrong, and a
+    // scoped read would hand it back with nothing marking it superseded.
+    const orphaned = trimEntries(dir, { note: created.note, revision: 3, entry: ['c-1'] });
+    assert.equal(orphaned.status, 'blocked');
+    assert.equal(orphaned.error.code, 'retained-dependency');
+    assert.match(orphaned.error.message, /f-1/, 'the refusal names the entry that would be left uncorrected');
+    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8')).entries.map((entry) => entry.id), ['f-1', 'c-1']);
+
+    const together = trimEntries(dir, { note: created.note, revision: 3, entry: ['f-1', 'c-1'] });
+    assert.equal(together.status, 'trimmed', 'trimming both halves of a settled correction is allowed');
+    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8')).entries, []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a generated entry id survives a trim', () => {
+  const dir = project();
+  try {
+    const created = seed(dir);
+    for (let index = 0; index < 3; index += 1) {
+      appendEntry(dir, { note: created.note, revision: 1 + index, kind: 'finding', topic: 'x', content: `Finding ${index}.` });
+    }
+    const stored = () => JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8')).entries.map((entry) => entry.id);
+    assert.deepEqual(stored(), ['finding-001', 'finding-002', 'finding-003']);
+
+    // Counting from the entry count would hand the next append `finding-003`,
+    // which a survivor already holds - and the documented reconcile-then-keep-
+    // working path uses no --entry-id at all.
+    assert.equal(trimEntries(dir, { note: created.note, revision: 4, entry: ['finding-001'] }).status, 'trimmed');
+    const next = appendEntry(dir, { note: created.note, revision: 5, kind: 'finding', topic: 'x', content: 'Recorded after the trim.' });
+    assert.equal(next.status, 'appended', JSON.stringify(next));
+    assert.equal(next.entry, 'finding-004');
+    assert.deepEqual(stored(), ['finding-002', 'finding-003', 'finding-004']);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('no command publishes a record that would fail its own schema', () => {
+  const dir = project();
+  try {
+    // A blank --id and --type pass `??` because an empty string is not nullish.
+    for (const options of [{ id: '' }, { type: '' }]) {
+      assert.throws(() => createNote(dir, { note: 'blank', objective: 'blank', title: 'Blank', ...options }), /must not be empty/);
+    }
+    assert.equal(fs.existsSync(path.join(dir, 'workbench', 'sessions', 'grilling', 'blank.json')), false, 'nothing was written');
+
+    // A legacy record carrying its own `revision` must not migrate to a value
+    // the schema rejects, which would leave a file that can never be read,
+    // appended to, or migrated again.
+    const legacy = {
+      schema_version: 'scope-1',
+      revision: 0,
+      id: 'N-9',
+      type: 'grilling',
+      status: 'PROVISIONAL',
+      title: 'Legacy with its own revision',
+      objective: { key: 'legacy' },
+      created_at: '2026-09-06T00:00:00Z',
+      updated_at: '2026-09-06T00:00:00Z',
+      current: { state: 'Carried across.', unresolved: [], next_action: '' },
+      entries: [],
+      extensions: {}
+    };
+    const file = 'workbench/sessions/grilling/legacy-revision.json';
+    fs.writeFileSync(path.join(dir, file), `${JSON.stringify(legacy, null, 2)}\n`);
+    const migrated = migrateNote(dir, { note: file });
+    assert.equal(migrated.status, 'migrated');
+    assert.equal(migrated.revision, 1, 'the schema value wins over the legacy one');
+    assert.equal(validateNote(dir, file).status, 'valid', 'the migrated record reads back');
+    const stored = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+    assert.equal(stored.extensions.migrated_revision, 0, 'the legacy value is preserved, not dropped');
+    assert.equal(appendEntry(dir, { note: file, revision: 1, kind: 'finding', topic: 'x', content: 'Still writable.' }).status, 'appended');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('every supplied string is privacy-scanned, not only the content field', () => {
+  const dir = project();
+  try {
+    const created = seed(dir);
+    const TOKEN = 'ghp_A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0';
+    const HOME = '/Users/someone/private/notes.md';
+
+    // The controls promise this without qualification: "New material is
+    // privacy-scanned before it can reach the file."
+    for (const [label, options] of [
+      ['--next-action', { note: 'leak-a', objective: 'leak', title: 'Leak', 'next-action': `Use ${TOKEN}.` }],
+      ['--unresolved', { note: 'leak-b', objective: 'leak', title: 'Leak', unresolved: [`Rotate ${TOKEN}.`] }]
+    ]) {
+      const refused = createNote(dir, options);
+      assert.equal(refused.status, 'blocked', label);
+      assert.equal(refused.error.code, 'secret-like-content', label);
+      assert.equal(fs.existsSync(path.join(dir, 'workbench', 'sessions', 'grilling', `${options.note}.json`)), false, `${label} wrote nothing`);
+    }
+
+    for (const [label, options] of [
+      ['--topic', { kind: 'finding', topic: TOKEN, content: 'Fine content.' }],
+      ['--source-file', { kind: 'finding', topic: 'x', content: 'Fine content.', 'source-file': HOME }],
+      ['--interpretation', { kind: 'finding', topic: 'x', content: 'Fine content.', interpretation: `Compare ${TOKEN}.` }]
+    ]) {
+      const refused = appendEntry(dir, { note: created.note, revision: 1, ...options });
+      assert.equal(refused.status, 'blocked', label);
+      assert.equal(refused.error.code, 'secret-like-content', label);
+    }
+    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8')).entries, [], 'no refused append reached the file');
+
+    appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'x', 'entry-id': 'x-1', content: 'Reconciled.' });
+    const owner = trimEntries(dir, { note: created.note, revision: 2, entry: ['x-1'], 'durable-owner': HOME });
+    assert.equal(owner.status, 'blocked', '--durable-owner');
+    assert.equal(owner.error.code, 'secret-like-content');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('list observes the same live-collection boundary every other subcommand enforces', () => {
+  const dir = project();
+  try {
+    seed(dir);
+    assert.equal(listNotes(dir, { collection: 'grilling' }).status, 'listed');
+    assert.equal(listNotes(dir, { collection: 'handoffs' }).status, 'listed');
+    for (const tracked of ['checkpoints', 'adr']) {
+      const refused = listNotes(dir, { collection: tracked });
+      assert.equal(refused.status, 'blocked', tracked);
+      assert.equal(refused.error.code, 'invalid-note', tracked);
+    }
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

@@ -170,7 +170,15 @@ function scanNew(parts) {
   return hits.length ? { status: 'blocked', error: finding('secret-like-content', `refused to record content matching ${[...new Set(hits.map((hit) => hit.label))].join(', ')}`), hits } : null;
 }
 
+// Nothing reaches disk unless it would read back. A tool that validates its
+// input and not its output can report success while leaving a record that can
+// no longer be read, appended to, or migrated - the one-way corruption of
+// history this runtime exists to prevent.
 function publish(root, resolved, note) {
+  const { missing, invalid } = checkStructure(note);
+  if (missing.length || invalid.length) {
+    return blocked('invalid-note', `${resolved.relative} was not updated: the result would not be a valid notepad`, { missing, invalid });
+  }
   const serialized = `${JSON.stringify(note, null, 2)}\n`;
   try {
     writeSafeFile(root, resolved.absolute, serialized);
@@ -186,7 +194,9 @@ export function createNote(root, options) {
   const objective = requireValue(options.objective, '--objective is required');
   if (!SLUG.test(objective)) throw new Error('--objective must be a lowercase slug');
   const title = requireValue(options.title, '--title is required');
-  const type = options.type ?? collection;
+  // `??` accepts an empty string, so an explicitly blank --id or --type would
+  // otherwise pass straight through into a record that fails its own schema.
+  const type = options.type === undefined ? collection : requireValue(options.type, '--type must not be empty');
   const status = options.status ?? 'PROVISIONAL';
   if (!NOTE_STATUSES.includes(status)) throw new Error(`--status must be one of ${NOTE_STATUSES.join(', ')}`);
   let resolved;
@@ -194,13 +204,13 @@ export function createNote(root, options) {
   if (fs.existsSync(resolved.absolute)) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }
-  const leak = scanNew([title, options.focus, options.state]);
+  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, ...asArray(options.unresolved), ...asArray(options.related)]);
   if (leak) return leak;
   const stamp = nowStamp();
   const note = {
     schema_version: NOTEPAD_SCHEMA_VERSION,
     revision: 1,
-    id: options.id ?? path.basename(resolved.absolute, '.json'),
+    id: options.id === undefined ? path.basename(resolved.absolute, '.json') : requireValue(options.id, '--id must not be empty'),
     type,
     status,
     title,
@@ -226,7 +236,14 @@ export function appendEntry(root, options) {
   const topic = requireValue(options.topic, '--topic is required');
   const content = requireValue(options.content, '--content is required');
   const existing = new Set(note.entries.map((entry) => entry.id));
-  const id = options['entry-id'] ?? `${kind}-${String(note.entries.length + 1).padStart(3, '0')}`;
+  // Count from the highest suffix this kind has ever used, not from the entry
+  // count: a trim shrinks the array, and counting from its length hands the
+  // next append an id a survivor already holds.
+  const highest = note.entries.reduce((top, entry) => {
+    const suffix = new RegExp(`^${kind}-(\\d+)$`).exec(entry.id);
+    return suffix ? Math.max(top, Number(suffix[1])) : top;
+  }, 0);
+  const id = options['entry-id'] ?? `${kind}-${String(highest + 1).padStart(3, '0')}`;
   if (!ENTRY_ID.test(id)) return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} is not an identifier`);
   if (existing.has(id)) return blocked('duplicate-identity', `${resolved.relative} already carries entry ${id}`, { entry: id });
   const corrects = options.corrects ?? null;
@@ -234,7 +251,7 @@ export function appendEntry(root, options) {
   for (const link of [...(corrects ? [corrects] : []), ...dependsOn]) {
     if (!existing.has(link)) return blocked('invalid-note', `entry ${link} is not in ${resolved.relative}; a correction or dependency must name material the note already holds`, { entry: link });
   }
-  const leak = scanNew([content, options.interpretation]);
+  const leak = scanNew([content, options.interpretation, topic, id, options['question-id'], options['source-file'], options['source-sha256']]);
   if (leak) return leak;
   const entry = { id, kind, topic, content, recorded_at: nowStamp() };
   if (options.interpretation) entry.interpretation = String(options.interpretation);
@@ -363,6 +380,12 @@ export function readNote(root, options) {
 }
 
 export function listNotes(root, options = {}) {
+  // Discovery observes the same boundary every other subcommand enforces: a
+  // notepad is local by contract, so a tracked collection is not a place to
+  // look for one.
+  if (options.collection && !UNTRACKED_COLLECTIONS.includes(options.collection)) {
+    return blocked('invalid-note', `--collection must be one of ${UNTRACKED_COLLECTIONS.join(', ')}; a notepad does not live in a tracked collection`, { collection: options.collection });
+  }
   const collections = options.collection ? [options.collection] : UNTRACKED_COLLECTIONS;
   const notes = [];
   const unreadable = [];
@@ -408,17 +431,31 @@ export function trimEntries(root, options) {
   const absent = [...remove].filter((id) => !present.has(id));
   if (absent.length) return blocked('invalid-note', `${resolved.relative} does not carry ${absent.join(', ')}`, { entry: absent });
   const retained = note.entries.filter((entry) => !remove.has(entry.id));
+  const retainedIds = new Set(retained.map((entry) => entry.id));
   const stranded = [];
   for (const entry of retained) {
     for (const link of [...(entry.corrects ? [entry.corrects] : []), ...asArray(entry.depends_on)]) {
-      if (remove.has(link)) stranded.push({ retained: entry.id, removed: link });
+      if (remove.has(link)) stranded.push({ retained: entry.id, removed: link, reason: 'needs' });
     }
   }
+  // The link binds in both directions. Removing a correction while keeping
+  // what it corrects leaves the note as the sole local record of a fact the
+  // agent already knew was wrong, and a scoped read returns it with nothing
+  // marking it superseded - the read path treats a correction as required
+  // context for its target, so the two halves of the tool would disagree
+  // about what a correction is.
+  for (const entry of note.entries) {
+    if (!remove.has(entry.id) || !entry.corrects) continue;
+    if (retainedIds.has(entry.corrects)) stranded.push({ retained: entry.corrects, removed: entry.id, reason: 'corrected by' });
+  }
   if (stranded.length) {
-    return blocked('retained-dependency', `${resolved.relative} keeps ${stranded.map((link) => `${link.retained} (needs ${link.removed})`).join(', ')}; trim the dependent material first or keep both`, { stranded });
+    return blocked('retained-dependency', `${resolved.relative} keeps ${stranded.map((link) => `${link.retained} (${link.reason} ${link.removed})`).join(', ')}; trim the linked material together or keep both`, { stranded });
   }
   const owners = new Set(asArray(note.extensions.durable_owners));
-  for (const owner of asArray(options['durable-owner'])) owners.add(owner);
+  const suppliedOwners = asArray(options['durable-owner']);
+  const leak = scanNew(suppliedOwners);
+  if (leak) return leak;
+  for (const owner of suppliedOwners) owners.add(owner);
   const updated = {
     ...note,
     revision: note.revision + 1,
@@ -448,7 +485,10 @@ export function migrateNote(root, options) {
   if (missing.length || invalid.length) return blocked('invalid-note', `${resolved.relative} is not a valid notepad`, { missing, invalid });
   // schema_version and revision lead, as they do in a created record, so a
   // reader opening a migrated file finds the same two facts in the same place.
-  const { schema_version: legacyVersion, ...carried } = note;
+  // Both fields are set after the spread, not before it: a legacy record
+  // carrying its own `revision` would otherwise win and migrate to a value the
+  // schema rejects, leaving a file that can no longer be read or migrated.
+  const { schema_version: legacyVersion, revision: legacyRevision, ...carried } = note;
   const migrated = {
     schema_version: NOTEPAD_SCHEMA_VERSION,
     revision: 1,
@@ -457,7 +497,14 @@ export function migrateNote(root, options) {
     relationships: note.relationships ?? { index: null, related_notes: [] },
     current: { state: note.current.state, unresolved: asArray(note.current.unresolved), next_action: note.current.next_action ?? '' },
     entries: note.entries.map((entry) => ({ ...entry, recorded_at: entry.recorded_at ?? note.created_at })),
-    extensions: { durable_owners: [], ...note.extensions, migrated_from: legacyVersion }
+    // A legacy `revision` is preserved rather than dropped, because the point
+    // of migration is that nothing recorded is lost on the way across.
+    extensions: {
+      durable_owners: [],
+      ...note.extensions,
+      migrated_from: legacyVersion,
+      ...(legacyRevision === undefined ? {} : { migrated_revision: legacyRevision })
+    }
   };
   const failure = publish(root, resolved, migrated);
   if (failure) return failure;

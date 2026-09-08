@@ -45,7 +45,10 @@ node workbench/tools/notepads.mjs create --note TOPIC-YYYY-MM-DD \
   --objective OBJECTIVE_KEY --title "The agreed topic" --focus "What we are deciding"
 ```
 
-The record it writes keeps the question list in its current view:
+Then add the question list to the current view. The runtime has no flag for it,
+because it is this workflow's own field rather than a schema one; write it in
+with the note's other current-view fields the first time, and `current`
+preserves it across every later update:
 
 ```json
 {
