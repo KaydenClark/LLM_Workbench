@@ -118,7 +118,7 @@ Expected result:
 
 ### Core-skill setup check
 
-The public source bundle is intentionally limited to the 17 skills in
+The public source bundle is intentionally limited to the 18 skills in
 `skills/README.md`. Test the missing-only installer against a disposable user
 home without touching a real account:
 
@@ -166,7 +166,7 @@ only `checkpoints/` is durable.
 Exercise it from a disposable project directory:
 
 ```bash
-node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.1.3 --integration-branch integration
+node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.1.4 --integration-branch integration
 node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-project
 node tools/test-workbench-layout.mjs
 ```
@@ -441,7 +441,7 @@ control-reconciliation phases:
 node tools/workbench-adoption.mjs migrate \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.3
+  --version v3.1.4
 node workbench/tools/workbench-layout.mjs validate --project /absolute/project
 node workbench/tools/spec-workbench.mjs next --json
 node workbench/tools/spec-workbench.mjs doctor
@@ -525,7 +525,7 @@ when the discovery root is inside a foreign Git repository:
 node tools/workbench-upgrade.mjs upgrade \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.3 \
+  --version v3.1.4 \
   --layout-only
 ```
 
@@ -540,7 +540,7 @@ records the backups with `skills: "explicit-update"`:
 node tools/workbench-upgrade.mjs upgrade \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.1.3 \
+  --version v3.1.4 \
   --explicit-update
 node tools/test-workbench-upgrade.mjs
 ```
@@ -673,13 +673,32 @@ budget and is run for the release umbrella, not on every verification pass;
 `node tools/test-cross-provider-fixture.mjs` proves the provider-free half
 (a recoverable planning checkpoint and a fail-closed verify) on every run.
 
-### JSON Notepad Transition
+### JSON Notepads
 
-New notepads are JSON. Until the shared lifecycle is implemented, use the
-manifest-declared live collection already available for that workflow; grilling
-uses `workbench/sessions/grilling/`. Do not invent an undeclared collection or
+New notepads are JSON, and `workbench/tools/notepads.mjs` is the shared runtime
+that owns their structure. Live notes stay in the manifest-declared live
+collection already available for that workflow; grilling uses
+`workbench/sessions/grilling/`. Do not invent an undeclared collection or
 rewrite legacy Markdown merely to change its extension. The target layout is
-`sessions/notepads/` with local type folders and tracked examples/schema.
+`sessions/notepads/` with local type folders and tracked examples/schema; it is
+not implemented yet, so nothing writes there.
+
+```bash
+node workbench/tools/notepads.mjs list [--objective KEY]
+node workbench/tools/notepads.mjs create --note NAME --objective KEY --title "TITLE" --focus "FOCUS"
+node workbench/tools/notepads.mjs read --note NOTE --view current
+node workbench/tools/notepads.mjs read --note NOTE --topic TOPIC [--limit N] [--cursor N]
+node workbench/tools/notepads.mjs append --note NOTE --revision N --kind KIND --topic TOPIC --content "TEXT" [--corrects ENTRY_ID] [--depends-on ENTRY_ID] [--source-file PATH]
+node workbench/tools/notepads.mjs current --note NOTE --revision N --state "STATE" --next-action "NEXT" [--unresolved "OPEN"]
+node workbench/tools/notepads.mjs trim --note NOTE --revision N --entry ENTRY_ID [--durable-owner PATH]
+node workbench/tools/notepads.mjs validate --note NOTE
+node workbench/tools/notepads.mjs migrate --note NOTE
+node tools/test-notepads.mjs
+```
+
+Kinds are `directive`, `source_record`, `finding`, `proposal`, `decision`,
+`correction`, `verification`, and `blocker`. A kind names what a record is for
+a reader; it never grants authority or verifies a claim.
 
 1. Resolve the explicit objective or note first; related records share objective
    context. If no stronger signal exists, inspect the newest-created local note
@@ -689,8 +708,8 @@ rewrite legacy Markdown merely to change its extension. The target layout is
    and corrections. Save important context as it becomes available, before
    continuing work that would leave it only in the conversation. Token exhaustion
    or Stop may prevent another write; do not wait for closeout. JSON strings may
-   contain full prose. Field names in interim records are provisional until the
-   shared versioned schema is implemented.
+   contain full prose. A workflow may keep its own field in the current view;
+   `current` preserves it across an update.
 3. After interruption, load relevant context and verify current controls and
    actual project state. File availability alone proves neither freshness nor
    successful recovery. Preserve significant work while it is underway.
@@ -706,24 +725,29 @@ rewrite legacy Markdown merely to change its extension. The target layout is
    cleanup. Preserve legacy sources and existing checkpoints under their current
    retention rules.
 
-For an interim JSON note, ordinary JSON parsing can inspect just the stored
-current view without putting its source history into the agent response:
+`read --view current` returns the resumption view and the revision to write
+against without putting entry history into the response. A topic read carries
+the corrections and declared dependencies of what it selected, each entry
+marked `match` or `context`, and reports `page.matched`, `page.returned`,
+`page.has_more`, and `page.next_cursor`: a bounded read never truncates
+silently, so never report a slice as the whole record.
 
-```powershell
-$note = Get-Content -Raw -LiteralPath 'workbench/sessions/grilling/notepad-preservation-guarantees.json' | ConvertFrom-Json
-$note.current | ConvertTo-Json -Depth 12
-```
+Every write names the revision it read. A mismatch is refused as
+`stale-revision` naming the current one, `create` refuses an existing name and
+`append` an existing entry id as `duplicate-identity`, and a correction or
+dependency naming material the note does not hold is refused too. New material
+is privacy-scanned before it can reach the file; preserved history is not
+rescanned, because an old record may legitimately quote a matching string.
+A refused or failed write leaves the previous valid record unchanged.
 
-This example uses the local scoping record when present. It reads the whole
-file inside PowerShell and prints only `current`; it is not the future bounded
-retrieval API, schema validation, or a correction-aware query.
+`trim` removes named reconciled entries and refuses with `retained-dependency`
+rather than stranding material a retained entry still corrects or depends on.
+An interim `scope-1` record reads as it is and migrates once, preserving its
+recorded text and timestamps, before it can be written to.
 
-The current `sessions.mjs` offers `scan` and legacy `checkpoint`, not create,
-append, selective read, or cleanup. Do not claim those APIs already exist.
-Schema validation, safe tool-mediated updates, bounded pagination, and scoped
-cleanup require implementation and tests in the assigned notepad spec. Do not
-send a JSON note through the legacy copier and call its `.md` output a JSON
-runtime. Skill prose and human-readable projections may remain Markdown.
+`sessions.mjs` keeps `scan` and the legacy `checkpoint` copier. Do not send a
+JSON note through that copier and call its `.md` output a notepad operation.
+Skill prose and human-readable projections may remain Markdown.
 
 ### Session Checkpoints
 

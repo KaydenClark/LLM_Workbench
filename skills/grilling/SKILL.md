@@ -38,17 +38,35 @@ is not a computer-crash or device-loss guarantee. It is not Canon.
 3. Write the FULL planned question list up front, so I see the terrain before
    answering. It is a best-effort map; it will flex.
 
-Interim JSON example, not the future shared production schema:
+Create it through the shared runtime, which writes the schema for you:
+
+```bash
+node workbench/tools/notepads.mjs create --note TOPIC-YYYY-MM-DD \
+  --objective OBJECTIVE_KEY --title "The agreed topic" --focus "What we are deciding"
+```
+
+The record it writes keeps the question list in its current view:
 
 ```json
 {
+  "schema_version": "notepad-1",
+  "revision": 1,
+  "id": "topic-2026-01-31",
+  "type": "grilling",
   "status": "PROVISIONAL",
-  "objective": "The agreed topic",
+  "title": "The agreed topic",
+  "objective": { "key": "objective-key", "focus": "What we are deciding" },
+  "created_at": "2026-01-31T00:00:00.000Z",
+  "updated_at": "2026-01-31T00:00:00.000Z",
+  "relationships": { "index": null, "related_notes": [] },
   "current": {
+    "state": "Question list written; nothing answered yet",
+    "unresolved": [],
     "questions": [{ "id": "1", "status": "open", "question": "First decision" }],
     "next_action": "Ask question 1 with a recommendation"
   },
-  "entries": []
+  "entries": [],
+  "extensions": { "durable_owners": [] }
 }
 ```
 
@@ -56,7 +74,8 @@ Keep stable question IDs; never renumber them. Dependencies may use `2A`,
 `2B`; new branches append new IDs. Statuses are `open` (undecided),
 `tentative` (revisit), and `locked` (decided). Preserve source wording,
 uncertainty, and corrections in ordered entries, with a compact current view.
-Fields are illustrative until the shared schema and tooling are implemented.
+`current.questions` is this workflow’s own field; `notepads.mjs current`
+preserves it across an update rather than dropping it.
 
 ## During the interview
 

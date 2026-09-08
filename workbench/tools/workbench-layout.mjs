@@ -19,9 +19,10 @@ const legacyCoreSkills = [
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
 const stanceSkills = ['builder', 'auditor', 'reviewer', 'reconciler'];
-// `carry` joins the workflow half of the bundle, ahead of the stances, so the
-// frozen v3.1.1 row below and every `slice(-4)` stance read stay exact.
-export const coreSkills = [...legacyCoreSkills, 'carry', ...stanceSkills];
+// `carry` and `notepad` join the workflow half of the bundle, ahead of the
+// stances, so the frozen rows below and every `slice(-4)` stance read stay
+// exact.
+export const coreSkills = [...legacyCoreSkills, 'carry', 'notepad', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -244,10 +245,15 @@ export function validateManifest(project) {
   // v3.1.2 reached `main` and downstream rooms with the sixteen-skill bundle
   // before `carry` grew it, so v3.1.2 is frozen here and the seventeen-skill
   // bundle is v3.1.3 - the same handling the twelve-to-sixteen growth got when
-  // it bumped v3.1.0 to v3.1.1 rather than redefining v3.1.0 (S-049).
+  // it bumped v3.1.0 to v3.1.1 rather than redefining v3.1.0 (S-049). v3.1.3
+  // is frozen for the same reason one step later: `notepad` grows the bundle
+  // to eighteen in v3.1.4 (S-046). A label is frozen once it is stamped, not
+  // once it is published - v3.1.0 was never released and was still frozen
+  // rather than redefined.
   const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
   const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, ...stanceSkills] };
-  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy, 'v3.1.2': stancePolicy };
+  const carryPolicy = { ...skillPolicy, required: [...legacyCoreSkills, 'carry', ...stanceSkills] };
+  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy, 'v3.1.2': stancePolicy, 'v3.1.3': carryPolicy };
   const accepted = [skillPolicy, supportedLegacy[manifest.workbenchVersion]].filter(Boolean).map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
@@ -678,10 +684,10 @@ export const TOOLS_RECEIPT = '.workbench-tools.json';
 // installer `tools/workbench-tools.mjs`, which is never copied into a room.
 // Deriving the expected set from the lane's own contents instead left one
 // condition unreachable from inside a room: a managed file deleted together
-// with its receipt key leaves nothing on disk to be missed. Ten of the eleven
+// with its receipt key leaves nothing on disk to be missed. Ten of the twelve
 // tools are in `doctor`'s own import graph, so deleting one of those fails
-// loudly at import time - but `sessions.mjs` is imported by none of them, and
-// its deletion was a silent clean run. A room now carries the authoritative
+// loudly at import time - but `sessions.mjs` and `notepads.mjs` are imported
+// by none of them, and deleting one was a silent clean run. A room now carries the authoritative
 // set, and it is no less trustworthy than the check that reads it: this file
 // is itself managed, so rewriting the list means rewriting a managed file,
 // which the receipt hash comparison reports.
@@ -1060,7 +1066,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.3 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.3] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | record-source --project PATH [--version v3.1.3] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.1.3] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.4 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.4] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | record-source --project PATH [--version v3.1.4] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.1.4] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current', 'recorded', 'seeded'].includes(result.status)) process.exitCode = 1;
   } catch (error) {

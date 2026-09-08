@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 17-skill bundle (thirteen workflow skills and four stances) for a
+is a closed 18-skill bundle (fourteen workflow skills and four stances) for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
 
@@ -21,6 +21,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `tracer-bullet` | Cut a capability into vertically testable slices. |
 | `update-harness` | Reconcile an adopted project with the current Workbench contract. |
 | `carry` | Own an assigned spec or ticket to its already-authorized endpoint and record what the owner still had to supply. |
+| `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `builder` | Deliver the assigned result with useful verification and truthful documentation. |
 | `auditor` | Determine whether named claims hold on the assigned target and evidence. |
 | `reviewer` | Challenge candidate correctness, downstream impact and consequential claims. |

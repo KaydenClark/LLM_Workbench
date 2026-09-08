@@ -269,7 +269,10 @@ export function setCurrent(root, options) {
     revision: note.revision + 1,
     status,
     updated_at: nowStamp(),
-    current: { state, unresolved, next_action: nextAction }
+    // Spread the stored view first: a workflow may carry its own field there
+    // (grilling keeps its stable-ID question list), and an update of the state
+    // must not silently drop it.
+    current: { ...note.current, state, unresolved, next_action: nextAction }
   };
   const failure = publish(root, resolved, updated);
   if (failure) return failure;

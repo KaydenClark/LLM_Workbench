@@ -2,7 +2,7 @@
 
 **Last reviewed:** 2026-09-05
 **Status:** active
-**Harness version:** v3.1.3 (v3.1.2 shipped to `main`; v3.1.3 publication pending)
+**Harness version:** v3.1.4 (v3.1.2 shipped to `main`; v3.1.3 and v3.1.4 publication pending)
 **Source root:** this repository
 **Remote:** `github.com/KaydenClark/LLM_Workbench`
 
@@ -68,8 +68,10 @@ resolved material may be trimmed from a retained note or the fully reconciled
 record deleted; retaining unfinished context remains mandatory.
 
 [S-046](workbench/specs/S-046-json-notepad-foundation/SPEC.md) owns the bounded
-foundation and thin workflow integrations. Its schema/tooling and target
-notepads layout are accepted requirements, not implemented support. Broader
+foundation and thin workflow integrations. Its shared schema, managed runtime
+`workbench/tools/notepads.mjs`, and `notepad` skill are implemented in v3.1.4;
+the target `sessions/notepads/` layout remains an accepted requirement, so live
+JSON notes stay in the declared live collections until it lands. Broader
 backup/transport guarantees and workflow redesign remain outside this scope.
 [S-047](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) owns visible,
 type-and-Workbench scoped base-62 identifiers with compatible migration;
@@ -87,7 +89,7 @@ stands on its own; it has no dependency on completing Foundry.
 - The seven root controls remain universally discoverable. Durable support
   records move behind one lowercase `workbench/manifest.json` authority with
   declared specs, Wiki, grilling, handoff, and feedback lanes.
-- LLM Workbench carries thirteen setup/planning/delivery workflow skills plus
+- LLM Workbench carries fourteen setup/planning/delivery workflow skills plus
   four portable stance skills, under S-027 and S-049. On a brand-new installation it supplies a required skill only when
   that skill is missing from user-scoped discovery.
 - Existing installed skills are accepted by presence and remain untouched.
@@ -104,7 +106,11 @@ v3.0.0 and v3.1.0 are preserved unreleased candidates. S-027 continued the
 v3.1 baseline as v3.1.1, and S-035 stamps the v3.1.2 patch, which reached
 `main`. S-049 opens v3.1.3 for the seventeen-skill core bundle, because a
 bundle change is a release-surface change and v3.1.2 is frozen at its own
-sixteen-skill policy. A version label is not publication; the owner alone
+sixteen-skill policy. S-046 opens v3.1.4 on the same rule: the shared JSON
+notepad runtime adds a managed tool and grows the bundle to eighteen, and
+v3.1.3 is frozen at seventeen. A label freezes when it is stamped, not when it
+is published - v3.1.0 was never released and was still frozen rather than
+redefined. A version label is not publication; the owner alone
 promotes integration to main, after the applicable candidate review.
 
 ## Accepted V3.1 Direction

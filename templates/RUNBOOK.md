@@ -188,13 +188,32 @@ Workbench` stamp naming a version other than `workbench/manifest.json`; refresh
 the stamp when the harness is upgraded (`validate --genesis` fails the same
 files with `version-mismatch`).
 
-### JSON Notepad Transition
+### JSON Notepads
 
-New notepads are JSON. Until the shared lifecycle is implemented, use the
-manifest-declared live collection already available for that workflow; grilling
-uses `workbench/sessions/grilling/`. Do not invent an undeclared collection or
+New notepads are JSON, and `workbench/tools/notepads.mjs` is the shared runtime
+that owns their structure. Live notes stay in the manifest-declared live
+collection already available for that workflow; grilling uses
+`workbench/sessions/grilling/`. Do not invent an undeclared collection or
 rewrite legacy Markdown merely to change its extension. The target layout is
-`sessions/notepads/` with local type folders and tracked examples/schema.
+`sessions/notepads/` with local type folders and tracked examples/schema; it is
+not implemented yet, so nothing writes there.
+
+```bash
+node workbench/tools/notepads.mjs list [--objective KEY]
+node workbench/tools/notepads.mjs create --note NAME --objective KEY --title "TITLE" --focus "FOCUS"
+node workbench/tools/notepads.mjs read --note NOTE --view current
+node workbench/tools/notepads.mjs read --note NOTE --topic TOPIC [--limit N] [--cursor N]
+node workbench/tools/notepads.mjs append --note NOTE --revision N --kind KIND --topic TOPIC --content "TEXT" [--corrects ENTRY_ID] [--depends-on ENTRY_ID] [--source-file PATH]
+node workbench/tools/notepads.mjs current --note NOTE --revision N --state "STATE" --next-action "NEXT" [--unresolved "OPEN"]
+node workbench/tools/notepads.mjs trim --note NOTE --revision N --entry ENTRY_ID [--durable-owner PATH]
+node workbench/tools/notepads.mjs validate --note NOTE
+node workbench/tools/notepads.mjs migrate --note NOTE
+node tools/test-notepads.mjs
+```
+
+Kinds are `directive`, `source_record`, `finding`, `proposal`, `decision`,
+`correction`, `verification`, and `blocker`. A kind names what a record is for
+a reader; it never grants authority or verifies a claim.
 
 1. Resolve the explicit objective or note first; related records share objective
    context. If no stronger signal exists, inspect the newest-created local note
@@ -204,8 +223,8 @@ rewrite legacy Markdown merely to change its extension. The target layout is
    and corrections. Save important context as it becomes available, before
    continuing work that would leave it only in the conversation. Token exhaustion
    or Stop may prevent another write; do not wait for closeout. JSON strings may
-   contain full prose. Field names in interim records are provisional until the
-   shared versioned schema is implemented.
+   contain full prose. A workflow may keep its own field in the current view;
+   `current` preserves it across an update.
 3. After interruption, load relevant context and verify current controls and
    actual project state. File availability alone proves neither freshness nor
    successful recovery. Preserve significant work while it is underway.
@@ -221,12 +240,29 @@ rewrite legacy Markdown merely to change its extension. The target layout is
    cleanup. Preserve legacy sources and existing checkpoints under their current
    retention rules.
 
-The current `sessions.mjs` offers `scan` and legacy `checkpoint`, not create,
-append, selective read, or cleanup. Do not claim those APIs already exist.
-Schema validation, safe tool-mediated updates, bounded pagination, and scoped
-cleanup require implementation and tests in the assigned notepad spec. Do not
-send a JSON note through the legacy copier and call its `.md` output a JSON
-runtime. Skill prose and human-readable projections may remain Markdown.
+`read --view current` returns the resumption view and the revision to write
+against without putting entry history into the response. A topic read carries
+the corrections and declared dependencies of what it selected, each entry
+marked `match` or `context`, and reports `page.matched`, `page.returned`,
+`page.has_more`, and `page.next_cursor`: a bounded read never truncates
+silently, so never report a slice as the whole record.
+
+Every write names the revision it read. A mismatch is refused as
+`stale-revision` naming the current one, `create` refuses an existing name and
+`append` an existing entry id as `duplicate-identity`, and a correction or
+dependency naming material the note does not hold is refused too. New material
+is privacy-scanned before it can reach the file; preserved history is not
+rescanned, because an old record may legitimately quote a matching string.
+A refused or failed write leaves the previous valid record unchanged.
+
+`trim` removes named reconciled entries and refuses with `retained-dependency`
+rather than stranding material a retained entry still corrects or depends on.
+An interim `scope-1` record reads as it is and migrates once, preserving its
+recorded text and timestamps, before it can be written to.
+
+`sessions.mjs` keeps `scan` and the legacy `checkpoint` copier. Do not send a
+JSON note through that copier and call its `.md` output a notepad operation.
+Skill prose and human-readable projections may remain Markdown.
 
 ## Evaluation And Benchmarking
 

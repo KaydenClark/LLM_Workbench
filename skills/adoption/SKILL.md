@@ -26,7 +26,7 @@ v3 support root through `/update-harness`, which runs
    node tools/workbench-adoption.mjs migrate \
      --project [ABSOLUTE_PROJECT_PATH] \
      --home [USER_HOME] \
-     --version v3.1.3
+     --version v3.1.4
    ```
 
    The helper moves only unambiguous durable v2 lanes, including a legacy root

@@ -3,13 +3,13 @@
 **Spec ID:** S-046
 **Status:** active
 **Priority:** 1
-**Owner:** codex
+**Owner:** claude-opus-5
 **Stance:** Builder
-**Updated:** 2026-09-07
+**Updated:** 2026-09-08
 **Catalog description:** Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup.
 **Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-002 claimed by claude-opus-5.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 ## Outcome
 
@@ -194,7 +194,7 @@ protocol are proposals, not verbatim owner approvals.
 |---|---|---|---|---|
 | TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
 | TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | done | TK-001 | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged |
-| TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | ready | TK-001 | pending |
+| TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | in-progress | TK-001 | pending |
 
 ### TK-001 - Scope and reconcile
 
