@@ -137,7 +137,7 @@ function exclusionPlans(destinations) {
     const missing = coreSkills.filter(skill => !presentSkillPath(path.join(directory, skill)));
     if (!missing.length) continue;
     const file = owner
-      ? gitRead(owner, ['rev-parse', '--path-format=absolute', '--git-path', 'info/exclude'])
+      ? path.join(gitRead(owner, ['rev-parse', '--path-format=absolute', '--git-common-dir']), 'info', 'exclude')
       : path.join(directory, '.gitignore');
     for (let ancestor = path.dirname(file); ; ancestor = path.dirname(ancestor)) {
       const current = lstatOrNull(ancestor);

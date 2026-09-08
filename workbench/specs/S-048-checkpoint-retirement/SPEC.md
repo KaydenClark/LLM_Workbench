@@ -9,7 +9,7 @@
 **Catalog description:** Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately.
 **Blockers:** none
 **Latest event:** All implementation slices verified; release integration remains open.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Next gate:** Reconcile S-051 core catalog and pass the S-050 independent integration gate.
 
 ## Outcome
 
@@ -233,7 +233,9 @@ Historical evidence rows remain append-only.
 
 ## Completion Result
 
-Pending. No checkpoint has been removed by this assignment.
+All three implementation slices are verified. Checkpoint creation is retired;
+existing history and recovery references remain intact. Final capability
+completion awaits S-051 catalog reconciliation and the S-050 integration gate.
 
 ## Remaining Limitations Or Follow-Up Specs
 
