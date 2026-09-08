@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
 import { isMainModule, assertSafeReadPath } from '../workbench/tools/workbench-paths.mjs';
 
@@ -40,8 +41,29 @@ export function probeConfiguredHost(options) {
   let readable = false;
   try { readable = fs.statSync(skill).isFile() && fs.readFileSync(skill).length > 0; } catch {}
   checks.push({ capability: 'native-skill-discovery-and-invocation', status: 'unverified', readable, reason: 'Requires a native provider discovery and invocation trace; readable bytes are insufficient.' });
-  const execution = spawnSync(node, [path.resolve(root, 'workbench/tools/spec-workbench.mjs'), 'doctor'], { cwd: root, encoding: 'utf8', timeout: 30000, maxBuffer: 8 * 1024 * 1024 });
-  checks.push({ capability: 'node-managed-tools', status: execution.error ? 'unverified' : execution.status === 0 ? 'pass' : 'fail', exit: execution.status, reason: execution.error?.code ?? null, scope: 'managed doctor execution; diagnostics retain their own effects' });
+  const nodeCheck = { capability: 'node-managed-tools', status: 'unverified', exit: null, reason: null, scope: 'managed doctor execution; diagnostics retain their own effects' };
+  try {
+    // Child tools read the manifest before reporting anything. Validate their
+    // input and source paths before spawning, not only in the later parser check.
+    for (const relative of ['workbench/manifest.json', ...RUNTIME_TOOLS.map(name => `workbench/tools/${name}`)]) {
+      const file = path.join(root, relative);
+      assertSafeReadPath(root, file);
+      if (!fs.lstatSync(file).isFile()) throw new Error('managed source must be an ordinary file');
+    }
+    const manifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json'), 'utf8'));
+    for (const relative of [...Object.values(manifest.lanes ?? {}), ...Object.values(manifest.collections ?? {})]) {
+      if (typeof relative !== 'string' || path.isAbsolute(relative)) throw new Error('invalid declared source lane');
+      assertSafeReadPath(root, path.resolve(root, relative));
+    }
+    const execution = spawnSync(node, [path.resolve(root, 'workbench/tools/spec-workbench.mjs'), 'doctor'], { cwd: root, encoding: 'utf8', timeout: 30000, maxBuffer: 8 * 1024 * 1024 });
+    nodeCheck.status = execution.error ? 'unverified' : execution.status === 0 ? 'pass' : 'fail';
+    nodeCheck.exit = execution.status;
+    nodeCheck.reason = execution.error?.code ?? null;
+  } catch (error) {
+    nodeCheck.status = ['ENOENT', 'EACCES', 'EPERM'].includes(error.code) ? 'unverified' : 'fail';
+    nodeCheck.reason = error.code ?? error.message;
+  }
+  checks.push(nodeCheck);
   let temporary;
   const adapter = { capability: 'directory-adapter', status: 'pass', mechanism: process.platform === 'win32' ? 'junction' : 'symlink', scope: 'temporary directory under declared cwd only' };
   try {

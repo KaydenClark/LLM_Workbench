@@ -79,3 +79,19 @@ test('linked records are refused before read and malformed ordinary records fail
     assert.equal(probeConfiguredHost({ ...options, root: project }).checks[4].status, 'unverified');
   } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
 });
+test('linked manifest is rejected before the managed child can consume it', () => {
+  const options = fixture();
+  try {
+    const project = path.join(options.home, 'project');
+    fs.mkdirSync(path.join(project, 'workbench/tools'), { recursive: true });
+    const external = path.join(options.home, 'manifest.json');
+    fs.copyFileSync(path.join(root, 'workbench/manifest.json'), external);
+    fs.symlinkSync(external, path.join(project, 'workbench/manifest.json'));
+    const marker = path.join(options.home, 'child-ran');
+    fs.writeFileSync(path.join(project, 'workbench/tools/spec-workbench.mjs'), `import fs from 'node:fs'; fs.writeFileSync(${JSON.stringify(marker)}, 'ran');`);
+    const report = probeConfiguredHost({ ...options, root: project });
+    assert.equal(fs.existsSync(marker), false, 'unsafe source must not reach child execution');
+    assert.equal(report.checks[2].status, 'fail');
+    assert.equal(report.checks[0].status, 'pass');
+  } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
+});
