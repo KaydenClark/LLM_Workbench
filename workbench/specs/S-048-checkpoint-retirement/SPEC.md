@@ -125,6 +125,27 @@ S-046 supplies an actual bounded same-provider fresh-context continuation;
 TK-002/TK-003 still own direct promotion and operational rollback replacement.
 No migration, deletion, cross-host or release claim follows from this inventory.
 
+## TK-002 Implementation Account
+
+The initial 13 public promotion cases failed before the command existed.
+Candidate `b24b4d9` made them green: selected entries with correction context,
+retained source/draft, privacy/path/identity failures, stale source/destination
+and recoverable write/read-back restoration. Further owner regressions exposed
+invalid spec-state acceptance and ignored ADR filenames; `9eebe02` added shared
+candidate validation and passed 18 promotion cases, but its lifecycle self-test
+caught a missing root reference in the extracted spec validator. The repair at
+`738b7c8` passes that existing self-test and 20 promotion cases, including invalid
+UTF-8 refusal and an original backup retained when restoration also fails.
+The new recovery diagnostic requires an explicit effect pin; it is nonblocking
+outside the failed command. Full suite, actual owner read-back and independent
+review remain open; targeted passes alone are not completion.
+
+The command checks existing Markdown owners and does not decide authorization,
+semantic fidelity or cleanup. Irrecoverable filesystem restoration returns a
+partial result with an original backup; this is an explicit recovery limit,
+not a claim every possible I/O failure leaves the destination unchanged.
+Operational adoption/upgrade recovery and checkpoint retirement remain TK-003.
+
 ## Acceptance Criteria
 
 - [ ] Original rationale and limits of the historical proof are documented from evidence.

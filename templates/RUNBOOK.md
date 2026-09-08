@@ -363,6 +363,45 @@ recorded text and timestamps, before it can be written to.
 JSON note through that copier and call its `.md` output a notepad operation.
 Skill prose and human-readable projections may remain Markdown.
 
+### Direct Owner Promotion
+
+Reconcile selected claims into an existing owner; keep their corrections and
+unfinished context in the working note. The author selects the proper owner,
+checks current authorization and distills faithful candidate text. A note label,
+ID or tool result grants no authority. This command neither commits nor cleans
+up the source.
+
+```bash
+node workbench/tools/sessions.mjs promote --from NOTE --revision N \
+  --entries finding-001,correction-001 --to OWNER.md --expected SHA256 \
+  --content AUTHORED_DRAFT.md
+```
+
+`--expected` is the SHA-256 of the destination bytes just read. The source must
+be a valid local JSON note. The separate authored draft and existing destination
+must be ordinary, singly linked files inside the project. Drafts are temporary
+authored documents, not new notepad records; keep them ignored until deliberately
+reconciled. The command requires every selected entry, carries its corrections
+and dependencies, refuses private material, stale inputs and ignored-note
+citations, and validates the proposed owner before writing. Existing controls,
+specs, ADRs, Wiki and docs/feedback Markdown owners are supported; create new
+owners through their ordinary authorized workflow first.
+
+Spec checks reuse lifecycle diagnostics and preserve existing append-only rows;
+ADR and Wiki checks reuse their validators. Controls receive heading and placeholder checks; other documents receive a
+heading check. These are not semantic policy audits. Run the owner's normal
+checks too. Successful output names source selection/context, old/new hashes and
+verified destination bytes. Reconcile remaining source dependencies before a
+separate notepad trim; unchanged source and draft do not prove cleanup is safe.
+
+Use one writer. Revision/hash checks are sequential guards, not filesystem locks
+or concurrent-write protection. A recoverable publication/read-back failure
+restores original bytes. If the filesystem also refuses restoration, the command
+returns `partial`, exits nonzero and retains the named original backup for
+recovery; do not retry or trim blindly. A leftover `recoveryResidue` names a
+backup whose cleanup failed. No crash-proof or machine-loss guarantee is claimed.
+Legacy checkpoint creation remains available only until active recovery consumers migrate.
+
 ## Evaluation And Benchmarking
 
 Use this section to prove whether the workbench or project process is improving.

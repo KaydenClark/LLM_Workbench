@@ -892,8 +892,8 @@ specs, ADRs, Wiki and docs/feedback Markdown owners are supported; create new
 owners through their ordinary authorized workflow first.
 
 Spec checks reuse lifecycle diagnostics and preserve existing append-only rows;
-ADR and Wiki checks reuse their validators. Controls/documents receive heading
-and placeholder checks, not a semantic policy audit. Run the owner's normal
+ADR and Wiki checks reuse their validators. Controls receive heading and placeholder checks; other documents receive a
+heading check. These are not semantic policy audits. Run the owner's normal
 checks too. Successful output names source selection/context, old/new hashes and
 verified destination bytes. Reconcile remaining source dependencies before a
 separate notepad trim; unchanged source and draft do not prove cleanup is safe.
@@ -906,7 +906,7 @@ recovery; do not retry or trim blindly. A leftover `recoveryResidue` names a
 backup whose cleanup failed. No crash-proof or machine-loss guarantee is claimed.
 Legacy checkpoint creation remains available only until S-048 recovery migration.
 
-## Session Checkpoints
+### Session Checkpoints
 
 Live grilling notepads and handoffs stay untracked in
 `workbench/sessions/grilling/` and `workbench/sessions/handoffs/`. Promote a

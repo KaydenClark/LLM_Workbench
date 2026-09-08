@@ -592,6 +592,7 @@ const PINNED_EFFECTS = {
   'legacy-schema': ['error', 'sessions', 'none'],
   'retained-dependency': ['error', 'sessions', 'none'],
   'write-failed': ['error', 'sessions', 'none'],
+  'promotion-recovery-required': ['error', 'sessions', 'none'],
   'integration-branch-undeclared': ['error', 'git', 'none'],
   'integration-branch-missing': ['error', 'git', 'none'],
   'permission-scope-drift': ['error', 'controls', 'none'],
