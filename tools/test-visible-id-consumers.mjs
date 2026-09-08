@@ -128,3 +128,12 @@ for (const kind of ['symlink', 'dangling-symlink', 'directory', 'hardlink']) {
     } finally { fs.rmSync(dir, { recursive: true, force: true }); }
   });
 }
+test('next and claim agree for out-of-order mixed ready ticket labels', () => {
+ const dir=room();
+ try {
+  spec(dir, 'S-00A', [['TK-010','ready','none'],['TK-00A','ready','none']]);
+  const selected=workbench.nextWork(dir);
+  const claimed=workbench.claimWork(dir, selected.specId, {agent:'test'});
+  assert.equal(claimed.tickets.find(ticket=>ticket.status==='in-progress').id, selected.ticketId);
+ } finally {fs.rmSync(dir,{recursive:true,force:true});}
+});

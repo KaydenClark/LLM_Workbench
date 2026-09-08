@@ -173,7 +173,13 @@ Genesis cases and five reservation/unsafe-entry cases reproduced these failures.
 The repair extracts the full directory ID, collapses only already-validated
 reservations by identity key, and refuses unreadable/nonordinary ADR inventory
 without following links. Historical record bytes and references stay intact.
-Repaired green results and fresh independent review remain pending.
+Candidate `ff706cb0a07a66f9932e5313298c575e16d32905` passes 10 consumer,
+10 ADR, 65 layout cases and the full 36-command union. Fresh review confirmed
+all three repairs but found a further selection mismatch: mixed ready tickets
+could make next choose TK-00A while claim used table order and started TK-010.
+An expected red regression drives one shared candidate selector for both paths;
+claim still starts an eligible ready ticket in its explicitly assigned spec.
+Final repaired results and review remain pending.
 
 ## Acceptance Criteria
 

@@ -42,14 +42,14 @@ function refuseBlockedRuntime(rootDir) {
   throw error;
 }
 
-function selectCandidate(specs) {
+function selectCandidate(specs, { specId, readyOnly = false } = {}) {
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   const candidates = [];
   for (const spec of specs) {
-    if (spec.status !== 'active') continue;
+    if (spec.status !== 'active' || (specId && spec.id !== specId)) continue;
     const satisfied = new Set([...completed, ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)]);
     for (const ticket of spec.tickets) {
-      const resumable = ticket.status === 'in-progress';
+      const resumable = !readyOnly && ticket.status === 'in-progress';
       const eligible = ticket.status === 'ready' && blockersSatisfied(ticket.blockers, satisfied);
       if (!resumable && !eligible) continue;
       candidates.push({
@@ -101,11 +101,8 @@ export function claimWork(rootDir, id, options) {
   if (matches.length !== 1) throw new Error(matches.length ? `Duplicate spec ID: ${id}` : `Unknown spec ID: ${id}`);
   const spec = matches[0];
   if (spec.status !== 'active') throw new Error(`${id} is ${spec.status}, not active`);
-  const satisfied = new Set([
-    ...specs.filter((item) => ['complete', 'superseded'].includes(item.status)).map((item) => item.id),
-    ...spec.tickets.filter((item) => item.status === 'done').map((item) => item.id)
-  ]);
-  const ticket = spec.tickets.find((item) => item.status === 'ready' && blockersSatisfied(item.blockers, satisfied));
+  const candidate = selectCandidate(specs, { specId: id, readyOnly: true });
+  const ticket = spec.tickets.find((item) => item.id === candidate?.ticketId);
   if (!ticket) {
     const blocked = spec.tickets.find((item) => item.status === 'ready');
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
