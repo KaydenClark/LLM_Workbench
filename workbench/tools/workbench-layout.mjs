@@ -29,7 +29,7 @@ export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md'
 // The spaced `grilling diary/` name is a legacy path a stale installed skill
 // may still write; denying it keeps a live notepad untrackable before the
 // checkpoint privacy scan runs. `validate` does not require the line.
-export const SESSIONS_IGNORE = `# Live session records stay local; only checkpoints/ is durable evidence.\ngrilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n# Legacy notepad path a stale installed skill may still write; never tracked.\ngrilling diary/\n`;
+export const SESSIONS_IGNORE = `# Live session records stay local; only checkpoints/ is durable evidence.\ngrilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n# Local typed notepads; reusable schema/examples remain tracked.\nnotepads/*\n!notepads/templates/\n!notepads/.gitkeep\n# Legacy notepad path a stale installed skill may still write; never tracked.\ngrilling diary/\n`;
 // The managed skill marker every installed core skill carries; one reader for
 // the installer, the explicit upgrade, and doctor. Schema 1 (source only) and
 // schema 2 (source, release, commit, contentHash) both prove management.
@@ -61,7 +61,14 @@ export const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/REA
 export const SEED_RECORD = 'workbench/.workbench-seed.json';
 export const SEED_SCHEMA_VERSION = 1;
 export const SEED_SOURCE = 'LLM Workbench seeded documents';
-export const seededLaneDocuments = [{ lane: 'feedback', name: 'REPORT_FORMAT.md', template: 'feedback/REPORT_FORMAT.md' }];
+export const seededLaneDocuments = [
+  { lane: 'feedback', name: 'REPORT_FORMAT.md', template: 'feedback/REPORT_FORMAT.md' },
+  ...['notepad.schema.json', 'work.example.json', 'grilling.example.json', 'handoff.example.json'].map(name => ({
+    lane: 'sessions', name: `notepads/templates/${name}`, template: `sessions/notepads/templates/${name}`
+  }))
+];
+const legacyCollections = Object.fromEntries(Object.entries(collections).filter(([name]) => !['notepads', 'notepad-templates'].includes(name)));
+
 
 function lstatOrNull(target) {
   try { return fs.lstatSync(target); } catch (error) {
@@ -213,8 +220,8 @@ export function validateManifest(project) {
   if (JSON.stringify(manifest.lanes) !== JSON.stringify(lanes)) {
     return fail('invalid-lane', 'Manifest lanes must exactly match the six v3.1 support lanes.', { lanes: manifest.lanes });
   }
-  if (JSON.stringify(manifest.collections) !== JSON.stringify(collections)) {
-    return fail('invalid-collection', 'Manifest collections must exactly match the seven v3.1 collections.', { collections: manifest.collections });
+  if (![collections, legacyCollections].some(shape => JSON.stringify(manifest.collections) === JSON.stringify(shape))) {
+    return fail('invalid-collection', 'Manifest collections must match the current layout or the preserved v3.1 collection set.', { collections: manifest.collections });
   }
   for (const lane of Object.values(manifest.lanes)) {
     if (!isSafeRelative(lane)) return fail('invalid-lane', `Manifest lane ${lane} is unsafe.`);
@@ -228,7 +235,7 @@ export function validateManifest(project) {
   const ignoreEntry = lstatOrNull(ignore);
   if (!ignoreEntry?.isFile() || ignoreEntry.isSymbolicLink()) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must keep live session records untracked.`);
   const ignoreContent = fs.readFileSync(ignore, 'utf8');
-  for (const name of UNTRACKED_COLLECTIONS) {
+  for (const name of UNTRACKED_COLLECTIONS.filter(name => manifest.collections[name])) {
     if (!new RegExp(`^${name}/\\*?$`, 'm').test(ignoreContent)) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must ignore ${name}/.`, { collection: name });
   }
   if (!WIKI_PROFILES.includes(manifest.wiki?.profile)) return fail('invalid-wiki-profile', `Manifest wiki.profile must be one of ${WIKI_PROFILES.join(', ')}.`);
@@ -348,7 +355,8 @@ export function initialize(options) {
   writeSessionsIgnore(project);
   const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options);
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-  return report('initialized', { manifestPath, manifest, seeded });
+  const documents = seedLaneDocuments(project, options);
+  return report('initialized', { manifestPath, manifest, seeded, documents });
 }
 
 function gitValue(cwd, args) {
@@ -566,7 +574,21 @@ export function migrate(options) {
   const project = path.resolve(options['--project']);
   const { manifest, manifestPath, failure } = readManifestFile(project);
   if (failure) return failure;
-  if (manifest.schemaVersion === SCHEMA_VERSION) return report('current', { manifestPath, manifest });
+  if (manifest.schemaVersion === SCHEMA_VERSION) {
+    const valid = validateManifest(project);
+    if (valid.status !== 'valid') return valid;
+    if (JSON.stringify(manifest.collections) === JSON.stringify(collections)) return report('current', { manifestPath, manifest });
+    const unsafe = preflightLayout(project);
+    if (unsafe) return unsafe;
+    const source = sourceIdentity({ ...options, '--version': options['--version'] ?? manifest.workbenchVersion });
+    if (source.status) return source;
+    for (const name of ['notepads', 'notepad-templates']) fs.mkdirSync(path.join(project, collections[name]), { recursive: true });
+    writeSessionsIgnore(project);
+    const updated = { ...manifest, collections, provenance: { ...manifest.provenance, layout: { source } } };
+    writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
+    const documents = seedLaneDocuments(project, { '--version': source.release });
+    return report('migrated', { manifestPath, manifest: updated, moved: [], documents });
+  }
   if (manifest.schemaVersion !== 1) return fail('invalid-manifest', 'Only schema 1 manifests can be migrated.');
   if (JSON.stringify(manifest.lanes) !== JSON.stringify(legacyLanes)) return fail('invalid-lane', 'Schema 1 lanes are not the v3.0 layout; reconcile them before migrating.');
   const unsafe = preflightLayout(project, Object.values(legacyLanes));
@@ -616,7 +638,8 @@ export function migrate(options) {
   const seeded = seedWiki(project, { '--version': migrated.workbenchVersion, ...options });
   const validation = validateManifest(project);
   if (validation.status !== 'valid') return report('partial', { moved, error: validation.error });
-  return report('migrated', { manifestPath, manifest: migrated, moved, seeded });
+  const documents = seedLaneDocuments(project, { '--version': migrated.workbenchVersion });
+  return report('migrated', { manifestPath, manifest: migrated, moved, seeded, documents });
 }
 
 function validateGenesisControl(project, control, expectedVersion) {

@@ -49,7 +49,7 @@ test('create writes a valid note into the declared live collection and refuses a
   const dir = project();
   try {
     const created = seed(dir);
-    assert.equal(created.note, 'workbench/sessions/grilling/topic-note.json');
+    assert.equal(created.note, 'workbench/sessions/notepads/work/topic-note.json');
     assert.equal(created.revision, 1);
     const stored = JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8'));
     assert.equal(stored.schema_version, NOTEPAD_SCHEMA_VERSION);
@@ -277,14 +277,14 @@ test('the runtime refuses malformed JSON, an invalid structure, a path escape, a
     const created = seed(dir);
     const notePath = path.join(dir, created.note);
 
-    fs.writeFileSync(path.join(dir, 'workbench', 'sessions', 'grilling', 'broken.json'), '{ "schema_version": ');
-    const malformed = validateNote(dir, 'workbench/sessions/grilling/broken.json');
+    fs.writeFileSync(path.join(dir, 'workbench', 'sessions', 'notepads', 'work', 'broken.json'), '{ "schema_version": ');
+    const malformed = validateNote(dir, 'workbench/sessions/notepads/work/broken.json');
     assert.equal(malformed.status, 'blocked');
     assert.equal(malformed.error.code, 'malformed-json');
-    assert.equal(appendEntry(dir, { note: 'workbench/sessions/grilling/broken.json', revision: 1, kind: 'finding', topic: 'x', content: 'No.' }).error.code, 'malformed-json');
+    assert.equal(appendEntry(dir, { note: 'workbench/sessions/notepads/work/broken.json', revision: 1, kind: 'finding', topic: 'x', content: 'No.' }).error.code, 'malformed-json');
 
-    fs.writeFileSync(path.join(dir, 'workbench', 'sessions', 'grilling', 'shapeless.json'), JSON.stringify({ schema_version: NOTEPAD_SCHEMA_VERSION, id: 'N-1' }));
-    const shapeless = validateNote(dir, 'workbench/sessions/grilling/shapeless.json');
+    fs.writeFileSync(path.join(dir, 'workbench', 'sessions', 'notepads', 'work', 'shapeless.json'), JSON.stringify({ schema_version: NOTEPAD_SCHEMA_VERSION, id: 'N-1' }));
+    const shapeless = validateNote(dir, 'workbench/sessions/notepads/work/shapeless.json');
     assert.equal(shapeless.error.code, 'invalid-note');
     assert.ok(shapeless.error.missing.length > 0, 'the refusal names what is missing');
 
@@ -437,7 +437,7 @@ test('no command publishes a record that would fail its own schema', () => {
     for (const options of [{ id: '' }, { type: '' }]) {
       assert.throws(() => createNote(dir, { note: 'blank', objective: 'blank', title: 'Blank', ...options }), /must not be empty/);
     }
-    assert.equal(fs.existsSync(path.join(dir, 'workbench', 'sessions', 'grilling', 'blank.json')), false, 'nothing was written');
+    assert.equal(fs.existsSync(path.join(dir, 'workbench', 'sessions', 'notepads', 'work', 'blank.json')), false, 'nothing was written');
 
     // A legacy record carrying its own `revision` must not migrate to a value
     // the schema rejects, which would leave a file that can never be read,
@@ -456,7 +456,7 @@ test('no command publishes a record that would fail its own schema', () => {
       entries: [],
       extensions: {}
     };
-    const file = 'workbench/sessions/grilling/legacy-revision.json';
+    const file = 'workbench/sessions/notepads/work/legacy-revision.json';
     fs.writeFileSync(path.join(dir, file), `${JSON.stringify(legacy, null, 2)}\n`);
     const migrated = migrateNote(dir, { note: file });
     assert.equal(migrated.status, 'migrated');
@@ -555,7 +555,7 @@ test('every free-text field is privacy-scanned, not only the content field', () 
       const refused = createNote(dir, options);
       assert.equal(refused.status, 'blocked', label);
       assert.equal(refused.error.code, 'secret-like-content', label);
-      assert.equal(fs.existsSync(path.join(dir, 'workbench', 'sessions', 'grilling', `${options.note}.json`)), false, `${label} wrote nothing`);
+      assert.equal(fs.existsSync(path.join(dir, 'workbench', 'sessions', 'notepads', 'work', `${options.note}.json`)), false, `${label} wrote nothing`);
     }
 
     for (const [label, options] of [
@@ -626,7 +626,7 @@ test('the interim scope-1 records read and migrate without regenerating their hi
       entries: [{ id: 'source-027', kind: 'source_record', topic: 'preservation', content: '8. [open] What durability guarantee is required?', interpretation: 'Historical source.', question_id: '8' }],
       extensions: { format_status: 'Interim JSON working shape.', durable_owners: [] }
     };
-    const file = 'workbench/sessions/grilling/notepad-preservation-guarantees.json';
+    const file = 'workbench/sessions/notepads/work/notepad-preservation-guarantees.json';
     fs.writeFileSync(path.join(dir, file), `${JSON.stringify(legacy, null, 2)}\n`);
 
     const validated = validateNote(dir, file);
@@ -747,7 +747,7 @@ for (const operation of ['create', 'current']) {
     const dir = project();
     try {
       const created = operation === 'current' ? seed(dir) : null;
-      const target = path.join(dir, created?.note ?? 'workbench/sessions/grilling/escaped.json');
+      const target = path.join(dir, created?.note ?? 'workbench/sessions/notepads/work/escaped.json');
       const before = created ? fs.readFileSync(target, 'utf8') : null;
       for (const value of [String.raw`{"nested":["\u002fUsers/example/private"]}`, String.raw`{"nested":["\u0073k-abcdefghijklmnopqrstuvwxyz123456"]}`]) {
         const options = { note: created?.note ?? 'escaped', objective: 'privacy-check', title: 'Safe title', revision: 1, 'view-field': `context=${value}` };
@@ -800,5 +800,18 @@ test('discovery uses creation chronology even when the older note was updated la
     }
     assert.equal(setCurrent(dir, { note: older.note, revision: 1, state: 'Recently resumed' }).status, 'updated');
     assert.deepEqual(listNotes(dir).notes.map((note) => note.note), [newer.note, older.note]);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('typed local notes are discoverable and tracked schema/examples cannot become live notes', () => {
+  const dir = project();
+  try {
+    const note = seed(dir, { note: 'workbench/sessions/notepads/grilling/typed.json', type: 'grilling' });
+    assert.equal(listNotes(dir).notes[0].note, note.note);
+    assert.equal(readNote(dir, { note: note.note }).status, 'read');
+    const tracked = 'workbench/sessions/notepads/templates/work.example.json';
+    assert.equal(createNote(dir, { note: tracked, objective: 'boundary', title: 'Must refuse' }).status, 'blocked');
+    assert.equal(readNote(dir, { note: tracked }).status, 'blocked');
+    assert.ok(listNotes(dir).notes.every((entry) => !entry.note.includes('/templates/')));
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

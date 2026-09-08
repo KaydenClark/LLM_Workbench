@@ -21,11 +21,13 @@ export const COLLECTIONS = Object.freeze({
   archive: 'workbench/wiki/archive',
   grilling: 'workbench/sessions/grilling',
   handoffs: 'workbench/sessions/handoffs',
-  checkpoints: 'workbench/sessions/checkpoints'
+  checkpoints: 'workbench/sessions/checkpoints',
+  notepads: 'workbench/sessions/notepads',
+  'notepad-templates': 'workbench/sessions/notepads/templates'
 });
-// Live session collections stay untracked by default; only checkpoints are
-// durable. A durable reference into an untracked collection is a defect.
-export const UNTRACKED_COLLECTIONS = Object.freeze(['grilling', 'handoffs']);
+// Live records stay untracked. The templates subcollection is explicitly
+// excluded from live-note operations and remains tracked in project Git.
+export const UNTRACKED_COLLECTIONS = Object.freeze(['grilling', 'handoffs', 'notepads']);
 export const WIKI_PROFILES = Object.freeze(['project', 'deployment']);
 
 export function manifestPath(root) {

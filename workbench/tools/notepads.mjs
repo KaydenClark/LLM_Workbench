@@ -19,14 +19,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { assertSafeReadPath, collectionPath, collectionRelative, findRoot, isMainModule, writeSafeFile, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
+import { assertSafeReadPath, collectionPath, collectionRelative, findRoot, isMainModule, readManifest, writeSafeFile, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 import { scanPrivacy } from './privacy.mjs';
 
 export const NOTEPAD_SCHEMA_VERSION = 'notepad-1';
 // The interim shape the scoping slice wrote by hand. It reads and migrates;
 // it is never written to in place, because it carries no revision to check.
 export const LEGACY_SCHEMA_VERSIONS = Object.freeze(['scope-1']);
-export const DEFAULT_COLLECTION = 'grilling';
+export const DEFAULT_COLLECTION = 'notepads';
+
+function defaultCollection(root) {
+  return readManifest(root)?.collections?.notepads ? DEFAULT_COLLECTION : 'grilling';
+}
 
 // Kinds name what a record is for a reader, not how much it is trusted. A
 // label never grants authority or verifies a claim.
@@ -60,14 +64,17 @@ function asArray(value) {
 // project-relative path. Both resolve to one absolute path that must stay
 // inside a declared live collection: a notepad is local by contract, so a
 // path escape is refused before anything is read or written.
-export function resolveNote(root, value, collection = DEFAULT_COLLECTION) {
+export function resolveNote(root, value, collection = defaultCollection(root)) {
   const raw = requireValue(value, '--note is required');
   const relative = raw.includes('/') || raw.includes(path.sep) || raw.endsWith('.json')
     ? raw
-    : `${collectionRelative(root, collection)}/${raw}.json`;
+    : `${collectionRelative(root, collection)}/${collection === 'notepads' ? 'work/' : ''}${raw}.json`;
   const absolute = path.resolve(root, relative);
   assertSafeReadPath(root, absolute);
-  const live = UNTRACKED_COLLECTIONS.map((name) => collectionPath(root, name));
+  const templates = collectionPath(root, 'notepad-templates');
+  if (absolute === templates || absolute.startsWith(`${templates}${path.sep}`)) throw new Error('tracked notepad templates are not live records');
+  const declared = readManifest(root)?.collections ?? {};
+  const live = UNTRACKED_COLLECTIONS.filter(name => declared[name]).map((name) => collectionPath(root, name));
   if (!live.some((directory) => absolute.startsWith(`${directory}${path.sep}`))) {
     throw new Error(`a notepad must live in a declared live collection (${UNTRACKED_COLLECTIONS.join(', ')}); ${raw} does not`);
   }
@@ -224,7 +231,7 @@ function viewStrings(value) {
 }
 
 export function createNote(root, options) {
-  const collection = options.collection ?? DEFAULT_COLLECTION;
+  const collection = options.collection ?? defaultCollection(root);
   const name = requireValue(options.note, '--note is required');
   const objective = requireValue(options.objective, '--objective is required');
   if (!SLUG.test(objective)) throw new Error('--objective must be a lowercase slug');
@@ -460,40 +467,41 @@ export function listNotes(root, options = {}) {
   const collections = options.collection ? [options.collection] : UNTRACKED_COLLECTIONS;
   const notes = [];
   const unreadable = [];
-  for (const name of collections) {
-    const directory = collectionPath(root, name);
+  const declared = readManifest(root)?.collections ?? {};
+  const templates = collectionPath(root, 'notepad-templates');
+  function walk(directory, name) {
+    if (directory === templates) return;
     let files;
     try {
       assertSafeReadPath(root, directory);
-      if (!fs.existsSync(directory)) continue;
-      files = fs.readdirSync(directory);
+      if (!fs.existsSync(directory)) return;
+      files = fs.readdirSync(directory, { withFileTypes: true });
     } catch {
       unreadable.push(path.relative(root, directory).split(path.sep).join('/'));
-      continue;
+      return;
     }
     for (const file of files) {
-      if (!file.endsWith('.json')) continue;
-      const absolute = path.join(directory, file);
+      const absolute = path.join(directory, file.name);
       const relative = path.relative(root, absolute).split(path.sep).join('/');
+      // Never follow a link even to decide whether it contains JSON notes.
+      if (file.isSymbolicLink()) { unreadable.push(relative); continue; }
+      if (file.isDirectory()) { walk(absolute, name); continue; }
+      if (!file.name.endsWith('.json')) continue;
       let parsed;
-      try { assertSafeReadPath(root, absolute); parsed = JSON.parse(fs.readFileSync(absolute, 'utf8')); } catch { unreadable.push(relative); continue; }
+      try { assertSafeReadPath(root, absolute); parsed = JSON.parse(fs.readFileSync(absolute, 'utf8')); }
+      catch { unreadable.push(relative); continue; }
       const { missing, invalid } = checkStructure(parsed);
       if (missing.length || invalid.length) { unreadable.push(relative); continue; }
       if (options.objective && parsed.objective.key !== options.objective) continue;
       notes.push({
-        note: relative,
-        collection: name,
-        id: parsed.id,
-        title: parsed.title,
-        objective: parsed.objective.key,
-        note_status: parsed.status,
-        schema_version: parsed.schema_version,
-        revision: parsed.revision ?? 0,
-        created_at: parsed.created_at,
-        updated_at: parsed.updated_at
+        note: relative, collection: name, id: parsed.id, title: parsed.title,
+        objective: parsed.objective.key, note_status: parsed.status,
+        schema_version: parsed.schema_version, revision: parsed.revision ?? 0,
+        created_at: parsed.created_at, updated_at: parsed.updated_at
       });
     }
   }
+  for (const name of collections.filter(name => declared[name])) walk(collectionPath(root, name), name);
   // Newest-created first: the fallback the Contract names when no explicit
   // note or objective is supplied. The reader still checks relevance.
   notes.sort((left, right) => right.created_at.localeCompare(left.created_at) || left.note.localeCompare(right.note));

@@ -2065,3 +2065,34 @@ test('classify answers an EPERM lane at the stat seam the room conditions are de
     fs.rmSync(project, { recursive: true, force: true });
   }
 });
+
+test('new notepad layout separates ignored typed notes from tracked examples and preserves legacy paths on migration', () => {
+  const project = fixture();
+  try {
+    gitRoom(project);
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
+    assert.equal(initialized.status, 0, initialized.stdout);
+    const file = path.join(project, 'workbench/manifest.json');
+    let manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(manifest.collections.notepads, 'workbench/sessions/notepads');
+    assert.equal(manifest.collections['notepad-templates'], 'workbench/sessions/notepads/templates');
+    for (const name of ['notepad.schema.json', 'work.example.json', 'grilling.example.json', 'handoff.example.json']) {
+      assert.ok(fs.existsSync(path.join(project, manifest.collections['notepad-templates'], name)), `shipped ${name}`);
+      assert.notEqual(spawnSync('git', ['check-ignore', '-q', `${manifest.collections['notepad-templates']}/${name}`], { cwd: project }).status, 0);
+    }
+    assert.equal(spawnSync('git', ['check-ignore', '-q', 'workbench/sessions/notepads/work/live.json'], { cwd: project }).status, 0);
+    const legacy = path.join(project, 'workbench/sessions/grilling/legacy.md');
+    fs.writeFileSync(legacy, 'Legacy wording remains byte-identical.\r\n');
+    const original = fs.readFileSync(legacy);
+    delete manifest.collections.notepads;
+    delete manifest.collections['notepad-templates'];
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    fs.rmSync(path.join(project, 'workbench/sessions/notepads'), { recursive: true });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'earlier schema 2 rooms remain readable');
+    const migrated = run('migrate', '--project', project, '--version', VERSION);
+    assert.equal(migrated.report.status, 'migrated', migrated.stdout);
+    assert.deepEqual(fs.readFileSync(legacy), original);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project, '--version', VERSION).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
