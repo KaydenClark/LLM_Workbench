@@ -154,6 +154,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 
 | 2026-09-08 | TK-001 | Independent review rejected d5f8e33 because lifecycle writers bypassed identity serialization | Public review reproduced occupied-lock migration, competing initialization IDs, competing legacy migration IDs in 4 of 4 trials, and record-source erasing a concurrent identify result in 4 of 4 trials. Added legacy-lock regression demonstrated RED. Shared lock now covers initialization, migration, identify and record-source with fresh reads; concurrent public CLI regression added | Existing local-lock guidance now applies to all identity-producing or preserving lifecycle writers | Repaired-candidate targeted/full checks and independent re-review pending; no namespace assigned to actual source or Example yet |
 
+| 2026-09-08 | TK-001 | Shared lifecycle lock repair 33db7aa passed targeted public checks | Identity 6 of 6, selected lifecycle 4 of 4 and actual adoption passed. Earlier d5f8e33 full run passed 37 of 38; diagnostics required explicit severity/scope/effect pins for three new identity codes, now added without changing their registered effect | Assigned identity and concurrent source-record preservation remain distinct from transport; no actual room namespace changed yet | Independent re-review and repaired full 38-command run pending |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.

@@ -554,6 +554,9 @@ test('a room outside any Git work tree is told so instead of being told to creat
 // the same edit. Promoting an attention code into a blocking effect is exactly
 // the change that must not pass unnoticed.
 const PINNED_EFFECTS = {
+  'invalid-workbench-identity': ['error', 'manifest', 'all'],
+  'identity-busy': ['error', 'manifest', 'none'],
+  'identity-write-failed': ['error', 'manifest', 'none'],
   'invalid-manifest': ['error', 'manifest', 'all'],
   'upgrade-required': ['error', 'manifest', 'all'],
   'invalid-lane': ['error', 'manifest', 'all'],
