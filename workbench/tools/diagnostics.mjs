@@ -13,6 +13,9 @@ export const EFFECTS = Object.freeze(['all', 'selection', 'selected-slice', 'non
 
 const registry = Object.freeze({
   // manifest and layout: the routing every consumer depends on
+  'invalid-workbench-identity': entry('error', 'manifest', 'all', 'a declared Workbench connection identity is malformed; do not silently regenerate it'),
+  'identity-busy': entry('error', 'manifest', 'none', 'another local identity writer holds the assignment lock'),
+  'identity-write-failed': entry('error', 'manifest', 'none', 'Workbench identity assignment could not be verified'),
   'invalid-manifest': entry('error', 'manifest', 'all', 'the manifest is unreadable or malformed'),
   'upgrade-required': entry('error', 'manifest', 'all', 'the manifest is an older schema; run the one-time migration'),
   'invalid-lane': entry('error', 'manifest', 'all', 'a declared lane path is unsafe or not the v3.1 contract'),

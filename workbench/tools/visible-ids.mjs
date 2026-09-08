@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 // Visible labels are identities, not timestamps or a second global key.
 // Legacy numeric labels are compared as occupied text, never decoded as a
 // base-62 high-water mark or rewritten during allocation.
@@ -52,4 +53,22 @@ export function allocateVisibleId(prefix, ids, { width = 3, requireLetter = fals
     if (requireLetter && !/[A-Za-z]/.test(visibleIdParts(id).suffix)) continue;
     if (!occupied.has(visibleIdKey(id))) return id;
   }
+}
+
+// Connection identities namespace independent rooms; visible artifact labels
+// remain scoped inside them. Reuse the alphabet without reallocating artifacts.
+export function isWorkbenchId(value) {
+  return typeof value === 'string' && /^WB-[0-9A-Za-z]{22}$/.test(value);
+}
+
+export function allocateWorkbenchId(occupied = []) {
+  if (!Array.isArray(occupied) || occupied.some(id => !isWorkbenchId(id))) throw new Error('Occupied Workbench identities must be valid WB identifiers');
+  const keys = new Set(occupied.map(visibleIdKey));
+  if (keys.size !== occupied.length) throw new Error('Workbench identity collision in the selected inventory');
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    const entropy = BigInt('0x' + randomBytes(16).toString('hex'));
+    const id = 'WB-' + encodeBase62(entropy).padStart(22, '0');
+    if (!keys.has(visibleIdKey(id))) return id;
+  }
+  throw new Error('Could not allocate an unoccupied Workbench identity');
 }

@@ -11,6 +11,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
+import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
 import { COLLECTIONS, LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
@@ -258,6 +259,7 @@ export function validateManifest(project) {
   if (manifest.schemaVersion !== SCHEMA_VERSION || !/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) {
     return fail('invalid-manifest', 'Manifest schemaVersion or workbenchVersion is invalid.');
   }
+  if (Object.hasOwn(manifest, 'workbenchId') && !isWorkbenchId(manifest.workbenchId)) return fail('invalid-workbench-identity', 'Manifest workbenchId must be a WB connection identity; never regenerate malformed identity silently.');
   if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance?.lifecycle)) {
     return fail('invalid-manifest', 'Manifest provenance.lifecycle is invalid.');
   }
@@ -387,6 +389,7 @@ export function initialize(options) {
   const manifest = {
     schemaVersion: SCHEMA_VERSION,
     workbenchVersion: options['--version'],
+    workbenchId: allocateWorkbenchId(),
     provenance: { lifecycle: options['--provenance'], source },
     git: declaration.git,
     lanes,
@@ -641,6 +644,35 @@ export function recordSource(options) {
   return report('recorded', { manifestPath, source });
 }
 
+// Assign once in an existing room. Commit this manifest before making clones
+// of a legacy room so they share its connection identity. No machine path is
+// stored in the project, and read-only validation never allocates an identity.
+export function identify(options) {
+  if (Object.keys(options).some(key => key !== '--project')) return fail('invalid-invocation', 'identify accepts only --project; independent rooms receive identity during initialization.');
+  const project = path.resolve(options['--project']);
+  const validation = validateManifest(project);
+  if (validation.status !== 'valid') return validation;
+  const manifestPath = path.join(project, 'workbench/manifest.json');
+  const lock = path.join(project, 'workbench/.identity.lock');
+  let descriptor;
+  try {
+    assertSafeWritePath(project, lock);
+    descriptor = fs.openSync(lock, 'wx', 0o600);
+    const current = validateManifest(project);
+    if (current.status !== 'valid') return current;
+    if (current.manifest.workbenchId) return report('current', { workbenchId: current.manifest.workbenchId });
+    const workbenchId = allocateWorkbenchId();
+    const updated = { ...current.manifest, workbenchId };
+    writeSafeFile(project, manifestPath, JSON.stringify(updated, null, 2) + '\n');
+    if (JSON.parse(fs.readFileSync(manifestPath, 'utf8')).workbenchId !== workbenchId) throw new Error('Workbench identity read-back failed');
+    return report('identified', { workbenchId });
+  } catch (error) {
+    return fail(error.code === 'EEXIST' ? 'identity-busy' : 'identity-write-failed', error.code === 'EEXIST' ? 'Identity assignment is already active; preserve the lock and retry after its owner finishes.' : error.message);
+  } finally {
+    if (descriptor !== undefined) { fs.closeSync(descriptor); fs.unlinkSync(lock); }
+  }
+}
+
 function validateManifestShape(manifest) {
   if (!/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) return fail('invalid-version', 'Workbench version must use vMAJOR.MINOR.PATCH.');
   if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance.lifecycle)) return fail('invalid-provenance', 'Provenance must be genesis, adoption, or upgrade.');
@@ -655,6 +687,7 @@ export function migrate(options) {
   const project = path.resolve(options['--project']);
   const { manifest, manifestPath, failure } = readManifestFile(project);
   if (failure) return failure;
+  if (Object.hasOwn(manifest, 'workbenchId') && !isWorkbenchId(manifest.workbenchId)) return fail('invalid-workbench-identity', 'Malformed Workbench identity must be reconciled before migration.');
   if (manifest.schemaVersion === SCHEMA_VERSION) {
     const valid = validateManifest(project);
     if (valid.status !== 'valid') return valid;
@@ -665,6 +698,11 @@ export function migrate(options) {
       const missing = seededLaneDocuments.filter(document => document.lane === 'sessions').map(document => `${lanes.sessions}/${document.name}`)
         .filter(relative => !seeds?.documents?.[relative] || !lstatOrNull(path.join(project, relative))?.isFile());
       if (missing.length) return fail('missing-collection', 'Notepad layout seeding is incomplete; run seed-documents from the clean release checkout before retrying migrate.', { missing });
+      if (!manifest.workbenchId) {
+        const assigned = identify({ '--project': project });
+        if (!['identified', 'current'].includes(assigned.status)) return assigned;
+        return report('migrated', { manifestPath, manifest: { ...manifest, workbenchId: assigned.workbenchId }, moved: [] });
+      }
       return report('current', { manifestPath, manifest });
     }
     const unsafe = preflightLayout(project);
@@ -679,7 +717,7 @@ export function migrate(options) {
     if (seedFailure) return seedFailure;
     for (const name of ['notepads', 'notepad-templates', 'recovery']) fs.mkdirSync(path.join(project, collections[name]), { recursive: true });
     writeSessionsIgnore(project);
-    const updated = { ...manifest, collections, provenance: { ...manifest.provenance, layout: { source } } };
+    const updated = { ...manifest, workbenchId: manifest.workbenchId ?? allocateWorkbenchId(), collections, provenance: { ...manifest.provenance, layout: { source } } };
     writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
     const documents = writeSeedDocuments(project, { '--version': source.release });
     return report('migrated', { manifestPath, manifest: updated, moved: [], documents });
@@ -724,6 +762,7 @@ export function migrate(options) {
   const migrated = {
     schemaVersion: SCHEMA_VERSION,
     workbenchVersion: options['--version'] ?? manifest.workbenchVersion,
+    workbenchId: manifest.workbenchId ?? allocateWorkbenchId(),
     provenance: { ...manifest.provenance, migratedFrom: 1, source },
     git: declaration.git,
     lanes,
@@ -1179,6 +1218,7 @@ if (isMainModule(import.meta.url)) {
     let result;
     if (command === 'init') result = initialize(parseOptions(args, ['--project', '--provenance', '--version']));
     else if (command === 'migrate') result = migrate(parseOptions(args, ['--project']));
+    else if (command === 'identify') result = identify(parseOptions(args, ['--project']));
     else if (command === 'record-source') result = recordSource(parseOptions(args, ['--project']));
     else if (command === 'seed-documents') {
       const options = parseOptions(args, ['--project']);
@@ -1187,9 +1227,9 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.4 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.4] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | record-source --project PATH [--version v3.1.4] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.1.4] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.1.4 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.1.4] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | identify --project PATH | record-source --project PATH [--version v3.1.4] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.1.4] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
-    if (!['initialized', 'valid', 'migrated', 'current', 'recorded', 'seeded'].includes(result.status)) process.exitCode = 1;
+    if (!['initialized', 'valid', 'migrated', 'current', 'recorded', 'seeded', 'identified'].includes(result.status)) process.exitCode = 1;
   } catch (error) {
     process.stdout.write(`${JSON.stringify(fail('invalid-invocation', error.message))}\n`);
     process.exitCode = 1;

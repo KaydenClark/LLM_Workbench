@@ -89,6 +89,15 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 
 Red/green same-room clone/worktree versus independent Genesis/adoption identity, rename stability, collision/invalid input rejection and existing artifact references. Share implementation with S-047 without changing its uniqueness scope.
 
+The additive `workbenchId` field uses `WB-` plus 22 base-62 characters from
+128 random bits. It reuses the visible-ID alphabet and collision key without
+reallocating artifact labels. Missing identity in legacy rooms is assigned by
+explicit `identify` or migration, then committed before cloning. Read-only
+validation leaves missing identity untouched; malformed identity is refused.
+Local assignment serializes with an exclusive lock. A selected transport
+inventory must reject namespace collisions; random allocation alone does not
+prove global uniqueness.
+
 ### TK-002 - Synchronize selected safe notes and report acknowledgment
 
 **Stance:** Builder
@@ -138,6 +147,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Complete release assignment specified from owner request and reconciled packet | All 17 handoff source hashes match; upstream integration 212762774b5cb7c065ab573bb487752fe98eff4c; Example refreshed to bf8a2fa5d7b7403fda07e3c8573db1d8348fe3f4, 12 tour tests pass and doctor has zero blockers | This spec owns its requirements; source packet retained locally | Implementation and acceptance remain pending |
+
+| 2026-09-08 | TK-001 | Stable room identity implementation candidate prepared | Two public lifecycle tests demonstrated RED at d2ecc5c: initializer omitted identity and identify command was absent. Implementation adds random base-62 identity, explicit assign-once command, validation, local assignment lock and preservation through migration; green verification pending clean source commit | Root and generic Runbook guidance, Lexicon definition and this bounded decision updated; full source verification list includes identity test | No transport configuration or cross-device proof; targeted and full verification pending |
 
 ## Completion Result
 

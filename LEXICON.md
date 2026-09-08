@@ -124,7 +124,9 @@ architecture in `BLUEPRINT.md`, and rationale in the ADR collection.
 ## Continuity And Evidence Boundaries
 
 - **Workbench connection identity:** the stable namespace selected for optional
-  private session transport. Clones/worktrees share it; independent rooms differ.
+  private session transport, stored as `workbenchId` in the manifest.
+  Clones/worktrees share it; independent initialization assigns a new
+  128-bit random base-62 namespace.
   It is distinct from each visible, type-scoped artifact identifier.
 - **Private session transport:** explicitly configured synchronization of selected
   live working records. Private Git retention changes recoverability, not the

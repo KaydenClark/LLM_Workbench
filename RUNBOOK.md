@@ -89,6 +89,7 @@ node tools/test-wiki.mjs
 node tools/test-sessions.mjs
 node tools/test-notepads.mjs
 node tools/test-visible-ids.mjs
+node tools/test-workbench-identity.mjs
 node tools/test-visible-id-consumers.mjs
 node tools/test-direct-promotion.mjs
 node tools/test-workbench-round-trip.mjs
@@ -1498,3 +1499,32 @@ exactly once, with exclusions explicitly named, and read back their bytes agains
 the pinned source. Append a route from the existing owner to the parts; leave
 published rows and prior citations intact. No automatic size cap or routine
 partition is required. Never weaken validators or discard evidence to fit a cap.
+
+
+### Workbench connection identity
+
+`workbench/manifest.json` stores `workbenchId`, a `WB-` identifier containing
+128 random bits encoded in the shared base-62 alphabet. New Genesis/adoption
+initialization assigns a new identity. Clone, worktree, rename, relocation and
+maintenance preserve the manifest's identity; visible artifact IDs retain their
+existing room scope. No path, credential or remote configuration enters this
+field. Global uniqueness is probabilistic; transport must check its selected
+namespace inventory before association.
+
+For an existing room without the field, explicitly assign it once:
+
+```bash
+node workbench/tools/workbench-layout.mjs identify --project .
+```
+
+Commit that manifest before cloning the legacy room. Repeated assignment reads
+back the existing value without rewriting it. Read-only validation never assigns
+identity; ordinary legacy local work remains available without transport.
+Migration assigns missing identity and preserves existing valid identity.
+Malformed identity is refused, never silently regenerated. Independent projects
+use fresh initialization rather than copying another project's manifest.
+
+Local assignment uses an exclusive `workbench/.identity.lock`. A busy result
+preserves the existing writer's lock; after interruption, verify that writer is
+inactive before deliberately removing its stale lock. This is local writer
+serialization, not a cross-clone transaction or a crash-recovery claim.
