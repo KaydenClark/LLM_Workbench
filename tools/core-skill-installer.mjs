@@ -121,7 +121,7 @@ function validateDestinations(destinations) {
 function gitRead(directory, args) {
   const result = spawnSync('git', args, { cwd: directory, encoding: 'utf8' });
   if (result.status !== 0) throw new Error(`Git could not inspect managed skill exclusions: ${result.stderr.trim()}`);
-  return result.stdout.trim();
+  return args.includes('-z') ? result.stdout : result.stdout.replace(/\r?\n$/, '');
 }
 
 function exclusionPlans(destinations, all = false) {
@@ -149,12 +149,17 @@ function exclusionPlans(destinations, all = false) {
     const plan = plans.get(file) ?? { file, owner, original: entry ? fs.readFileSync(file) : null, paths: new Set() };
     for (const skill of missing) {
       const relative = path.relative(owner ?? directory, path.join(directory, skill)).split(path.sep).join('/');
+      if (/[\r\n]/.test(relative)) throw new Error('Managed exclusion paths must not contain line breaks');
       const destination = path.join(directory, skill);
       const installed = lstatOrNull(destination);
       const physical = installed?.isDirectory() ? fs.realpathSync.native(destination) : destination;
       if (tracked.some(target => {
         const indexed = lstatOrNull(target);
-        return target === physical || target.startsWith(physical + path.sep) ||
+        // Reserve core names case-insensitively across hosts, including a
+        // tracked leaf deleted from the worktree (which has no inode to compare).
+        const relative = path.relative(directory, target).split(path.sep);
+        const reserved = relative[0]?.toLowerCase() === skill.toLowerCase();
+        return reserved || target === physical || target.startsWith(physical + path.sep) ||
           (installed && indexed && installed.dev === indexed.dev && installed.ino === indexed.ino);
       })) throw new Error('A core path is still tracked; prepare an owner-reviewed tracked-core migration first');
       plan.paths.add(relative);

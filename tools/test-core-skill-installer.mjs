@@ -210,6 +210,45 @@ test('case-aliased discovery roots retain one physical core implementation throu
   } finally { fs.rmSync(home, { recursive: true, force: true }); }
 });
 
+test('tracked core inventory preserves leading whitespace in a discovery path', () => {
+  const home = fixtureHome();
+  try {
+    const personal = path.join(home, 'personal');
+    const directory = path.join(personal, ' skills');
+    fs.mkdirSync(directory, { recursive: true });
+    fs.mkdirSync(path.join(home, '.agents'));
+    fs.symlinkSync(directory, path.join(home, '.agents/skills'), 'dir');
+    assert.equal(spawnSync('git', ['init', '-q', personal]).status, 0);
+    assert.equal(install(home).status, 0);
+    const file = path.join(directory, 'genesis/SKILL.md');
+    fs.writeFileSync(file, '# Tracked implementation under spaced directory\n');
+    assert.equal(spawnSync('git', ['add', '-f', ' skills/genesis/SKILL.md'], { cwd: personal }).status, 0);
+    const refused = maintain(home, 'update', '--explicit-update');
+    assert.equal(refused.report.status, 'blocked', refused.stdout);
+    assert.equal(fs.readFileSync(file, 'utf8'), '# Tracked implementation under spaced directory\n');
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('normal setup preserves a deleted tracked case-alias adapter', () => {
+  const home = fixtureHome();
+  try {
+    const personal = path.join(home, '.claude');
+    fs.mkdirSync(personal);
+    assert.equal(spawnSync('git', ['init', '-q', personal]).status, 0);
+    assert.equal(install(home).status, 0);
+    const lower = path.join(personal, 'skills/genesis');
+    const upper = path.join(personal, 'skills/Genesis');
+    fs.renameSync(lower, upper);
+    assert.equal(spawnSync('git', ['add', '-f', 'skills/Genesis'], { cwd: personal }).status, 0);
+    fs.unlinkSync(upper);
+    const before = spawnSync('git', ['status', '--porcelain', '-z'], { cwd: personal, encoding: 'utf8' }).stdout;
+    const refused = install(home);
+    assert.equal(refused.report.status, 'blocked', refused.stdout);
+    assert.equal(fs.existsSync(lower), false);
+    assert.equal(spawnSync('git', ['status', '--porcelain', '-z'], { cwd: personal, encoding: 'utf8' }).stdout, before);
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
 test('normal setup installs only missing bundled core skills in both user discovery roots', () => {
   const home = fixtureHome();
   try {
