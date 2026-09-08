@@ -51,6 +51,19 @@ export function liveCitations(text) {
   return out;
 }
 
+// A withdrawn check, recorded rather than silently dropped. This branch cited
+// three commits it had squashed away, so a test was added here requiring every
+// commit a live spec section names to be contained in some branch. It fails in
+// an ordinary clone on correct content: `git clone` copies the whole object
+// store but only `refs/heads/*`, so S-049's legitimate citation of a merge on
+// `origin/main` arrives as an object no ref in the clone contains, because the
+// clone's `origin/main` is the source's local `main`, not the remote's. Skipping
+// absent objects does not help - the object is present. The property is only
+// checkable where the orphan exists, the authoring repository, and a mandatory
+// suite command that goes red on a correct spec in every clone is worse than no
+// check at all. The practice it was meant to enforce is kept as a practice:
+// verify `git branch -a --contains` before writing a commit into a durable
+// record. S-046 records the withdrawal and its reason.
 function treeFiles(sha, cache) {
   if (!cache.has(sha)) {
     cache.set(sha, execFileSync('git', ['ls-tree', '-r', '--name-only', sha], { cwd: root, encoding: 'utf8' }).split('\n'));

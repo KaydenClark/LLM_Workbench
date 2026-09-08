@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "workbenchVersion": "v3.1.3",
+  "workbenchVersion": "v3.1.4",
   "provenance": {
     "lifecycle": "adoption",
     "migratedFrom": 1,
@@ -49,6 +49,7 @@
       "tracer-bullet",
       "update-harness",
       "carry",
+      "notepad",
       "builder",
       "auditor",
       "reviewer",

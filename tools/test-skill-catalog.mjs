@@ -9,7 +9,7 @@ const skillsRoot = path.join(root, 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
 const coreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
-  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'carry', 'builder', 'auditor', 'reviewer', 'reconciler'
+  'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness', 'carry', 'notepad', 'builder', 'auditor', 'reviewer', 'reconciler'
 ].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
@@ -34,9 +34,9 @@ const catalogNames = catalogRegion[1]
   .sort();
 
 assert.deepEqual(catalogNames, coreSkills,
-  'the documented source bundle must contain exactly the locked 17 skills');
+  `the documented source bundle must contain exactly the locked ${coreSkills.length} skills`);
 assert.deepEqual(directoryNames(skillsRoot), coreSkills,
-  'live discovery source must contain exactly the locked 17 skills');
+  `live discovery source must contain exactly the locked ${coreSkills.length} skills`);
 for (const skill of coreSkills) {
   const source = path.join(skillsRoot, skill, 'SKILL.md');
   assert.ok(fs.statSync(source).isFile(), `${skill} must contain SKILL.md`);
@@ -315,7 +315,7 @@ assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workben
 assert.match(read('RUNBOOK.md'), /--layout-only/, 'the Runbook must document the layout-only mode');
 assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
 
-for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'implement', 'code-review', 'carry']) {
+for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
   const skill = read(`skills/${name}/SKILL.md`);
   assert.match(skill, /workbench\/manifest\.json/,
     `${name} must route durable v3 workflow records through the manifest`);
@@ -323,5 +323,5 @@ for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec'
 assert.doesNotMatch(toSpec, /stable `specs\/S-###-slug\/SPEC\.md`/,
   'to-spec must not direct v3 projects to the retired root specs path');
 
-console.log('ok - the portable 17-skill source bundle and retired discovery boundary are aligned');
+console.log(`ok - the portable ${bundleSize}-skill source bundle and retired discovery boundary are aligned`);
 await import('./test-delivery-skills.mjs');

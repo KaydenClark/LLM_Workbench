@@ -39,7 +39,9 @@ Visible identifier semantics belong to
 [ADR-0041](../docs/adr/0041-visible-base62-workbench-identifiers.md).
 Checkpoint rationale and retirement belong to
 [S-048](../specs/S-048-checkpoint-retirement/SPEC.md).
-This router does not copy their state or the local grilling queue.
+The shared runtime is `workbench/tools/notepads.mjs`; its operations are
+documented in [RUNBOOK](../../RUNBOOK.md) and its judgment in the `notepad`
+skill. This router does not copy their state or the local grilling queue.
 
 ## Release And Distribution Routing
 

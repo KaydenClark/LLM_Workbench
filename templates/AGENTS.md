@@ -235,8 +235,10 @@ context for conversation continuation, not computer crashes or device loss;
 an interruption can still preempt an unsaved write.
 
 New notepads use JSON, including when older workflow examples say Markdown.
-Use existing manifest-declared live collections until the shared schema, tooling,
-and notepads layout are implemented. Preserve legacy Markdown sources. Live
+The shared schema and its runtime are `workbench/tools/notepads.mjs`; the
+`notepad` skill owns the judgment it cannot. Keep live notes in the existing
+manifest-declared live collections until the notepads layout is implemented.
+Preserve legacy Markdown sources. Live
 notes and handoffs stay untracked in project Git; explicitly configured private
 synchronization may transport selected live collections under the accepted
 continuity contract. Local operation remains independent of transport. Do not record secrets,

@@ -803,8 +803,10 @@ test('each listed legacy version validates only at the policy its release declar
     const current = manifest.skillPolicy.required;
     const twelve = current.slice(0, 12);
     // v3.1.1's frozen row is the twelve workflow skills plus the four stances.
-    // The current bundle also carries `carry`, so the two are not the same list.
+    // The current bundle also carries `carry` and `notepad`, so neither frozen
+    // row is the same list as the live policy.
     const sixteen = [...twelve, ...current.slice(-4)];
+    const seventeen = [...twelve, 'carry', ...current.slice(-4)];
     const outcome = (workbenchVersion, required) => {
       fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion, skillPolicy: { ...manifest.skillPolicy, required } }));
       const { report } = run('validate', '--project', project);
@@ -823,6 +825,12 @@ test('each listed legacy version validates only at the policy its release declar
     // `outcome('v3.1.2', current) === 'invalid-skill-policy'` line here.
     assert.equal(outcome('v3.1.2', sixteen), 'valid');
     assert.equal(outcome('v3.1.2', twelve), 'invalid-skill-policy');
+    // v3.1.3 stamped the seventeen-skill bundle and `notepad` grew it to
+    // eighteen at v3.1.4, so v3.1.3 freezes in turn. Each frozen row is exact:
+    // v3.1.3 does not accept v3.1.2's sixteen.
+    assert.equal(outcome('v3.1.3', seventeen), 'valid');
+    assert.equal(outcome('v3.1.3', sixteen), 'invalid-skill-policy');
+    assert.equal(outcome('v3.1.3', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
     assert.equal(outcome(VERSION, current), 'valid');

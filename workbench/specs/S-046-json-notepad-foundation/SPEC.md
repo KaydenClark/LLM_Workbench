@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-07
+**Updated:** 2026-09-08
 **Catalog description:** Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup.
 **Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-006 claimed by codex.
+**Next gate:** Close TK-006 with verification and documentation proof.
 
 ## Outcome
 
@@ -194,8 +194,8 @@ protocol are proposals, not verbatim owner approvals.
 |---|---|---|---|---|
 | TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
 | TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | done | TK-001 | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged |
-| TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | ready | TK-001 | pending |
-| TK-006 | Repair reviewed discovery chronology, safe discovery paths and decoded-field privacy before using the candidate | ready | TK-002 | pending |
+| TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | done | TK-001 | Red/green public-seam cases in tools/test-notepads.mjs, each mutation-tested to confirm it fails for the defect it names; all five hand-written scope-1 records validate unmodified against the shipped schema, and a sixth record - this assignment's own working note - migrated and took a correction-carrying scoped read on this repository; the 31-command union passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria; four independent reviews at the pushed tips 517f27e, 7254ffd, cedda79 and 2396017 |
+| TK-006 | Repair reviewed discovery chronology, safe discovery paths and decoded-field privacy before using the candidate | in-progress | TK-002 | pending |
 | TK-004 | Migrate live JSON layout and ship schema/examples through managed installation without moving legacy sources | ready | TK-006 | pending |
 | TK-005 | Prove authored handoff, retained-context cleanup and real fresh-agent recovery through installed skills | ready | TK-004 | pending |
 
@@ -278,7 +278,7 @@ PASS. TK-004/005 still own remaining layout and actual continuity acceptance.
 - [x] Source questions and corrections have explicit dispositions; all remaining source material is retained locally in focused JSON records, and promoted truth has durable owners.
 - [x] Capture/cleanup follow-up: root/template controls and source skills require proactive local capture and permit verified trimming or full cleanup, with manual retained-context proof.
 - [ ] Shared schema, skill, and tool safely create/update/resume an objective note without requiring a model to regenerate its history.
-- [ ] Bounded retrieval excludes unrelated topics, carries corrections/dependencies, and reports pagination without silent loss.
+- [x] Bounded retrieval excludes unrelated topics, carries corrections/dependencies, and reports pagination without silent loss.
 - [ ] Requested handoff and partial-cleanup demonstrations preserve unfinished material and destination dependencies.
 - [ ] Root/template controls, source workflows, layout, managed-tool packaging, and explicitly authorized installed paths agree on the supported behavior.
 - [ ] A fresh agent without the original conversation resumes real agent-authored work; cross-provider and interruption limits are recorded honestly.
@@ -411,6 +411,306 @@ recommendations are real repeated trials, controls/prior/candidate comparison,
 recent outcome evidence, and uncertainty reporting. These source changes and
 manual file checks do not establish an agent-outcome improvement.
 
+## TK-002 Verification Account
+
+Scope: the shared schema, the managed runtime `workbench/tools/notepads.mjs`,
+the `notepad` skill, the controls that describe them, and the v3.1.4 stamp a
+release-surface change requires. The `sessions/notepads/` layout, installed
+skill updates, checkpoint retirement, and a fresh-agent recovery trial are
+not in this slice and their acceptance boxes stay open.
+
+Red then green at the public seams. `tools/test-notepads.mjs` failed first on
+the missing module, then on each behaviour in turn. Thirteen cases carried the
+original candidate and the three review rounds below added the rest: the
+bidirectional trim guard, an id that survives a trim and never returns to name
+different material, a command validating its own output, the widened privacy
+scan, the `list` collection boundary, an unrecognised flag refused rather than
+dropped, a `--view` value refused rather than fallen through, a workflow field
+written into the current view and carried across both an update and a
+migration, and the grilling skill's documented command bound to the record it
+shows. Every one of them was mutation-tested: the guard was removed and the
+case confirmed red, rather than read and assumed. The original thirteen were:
+create and duplicate identity; append with a revision check, a
+duplicate entry id, a dangling correction target and an unsupported kind;
+topic-scoped read that excludes an unrelated topic and carries a correction;
+explicit pagination; resume from the current view alone; discovery by
+objective with a most-recently-updated fallback; trim that refuses to strand a
+retained dependency; malformed JSON, invalid structure, path escape and
+privacy rejection; a stored line the scanner matches not refusing every later
+update while newly supplied material still is; a blocked write leaving the
+previous valid record; legacy `scope-1` read and one-way migration; the CLI
+JSON contract and its non-zero exit; and managed-runtime packaging with the
+receipt hash.
+
+Two defects in this slice were found by re-reading its own output rather than
+by a test, and both are recorded because neither had a failing check.
+A shell-quoted patch expanded a template literal away and left an empty
+`console.log()` in `tools/test-skill-catalog.mjs`: no assertion depended on
+it, so the checker ran clean and simply stopped reporting what it had
+verified. And `current` rescanned the view it carried forward, so one stored
+line matching the privacy scanner would have refused every later update -
+the opposite of the preserved-history rule the append path follows. The
+second now has a regression case; the first is a log line no seam observes.
+
+Live demonstration on this repository’s own working note, not a fixture: the
+hand-written `scope-1` record validated, migrated once with its recorded text
+and creation time intact, then took a sourced finding, a second finding, and a
+correction linked to it; the current view was saved; a fresh scoped read of
+topic `verification` with `--limit 2` returned two matches, carried the
+correction as `context` even though it fell outside the page, excluded all
+three entries on other topics, and reported `matched: 3, returned: 2,
+has_more: true, next_cursor: 2`. This is a real agent-authored record through
+the shipped CLI. It is not a fresh-agent, cross-provider, Stop-button, or
+token-exhaustion recovery trial, and no such claim is made.
+
+The schema is the interim shape made explicit, not a redesign of it: all five
+hand-written `scope-1` review records from TK-001 validate unmodified against
+it (`entries` 6, 7, 8, 20 and 64), and `list` returns them alongside the five
+files in the same directory that are not notepads - two spec projections, the
+review index, the retrieved chat array, and an ad-hoc upgrade record - which it
+names as unreadable rather than failing on.
+
+A sub-minute demo:
+
+```bash
+node --test tools/test-notepads.mjs
+```
+
+Full verification ran at `8b387be` and again, unchanged, at each repaired
+candidate through `2396017`, in an isolated LF checkout on Windows with
+normal subprocess access and `PYTHONUTF8=1`. The ordinary working copy is CRLF
+under `core.autocrlf=true` and several checks read LF-anchored source, so the
+suite is not meaningful there; that is a host condition, not a result. The
+31-command union passes 24, fails six, and exceeds this run's 300-second budget
+on one. The unchanged v3.1.3 baseline `2127627` runs the same union without
+`test-notepads` and passes 23, fails the same six, and exceeds the same budget.
+Every failing case matches by name on both trees:
+
+| Failing command | Case, identical on baseline and candidate |
+|---|---|
+| `test-skill-catalog` | the hostile-textconv fixture it imports from `test-delivery-skills`; the catalog's own bundle and version assertions pass |
+| `test-workbench-layout` | the same four `classify` cases |
+| `test-workbench-tools` | the same three cases: installed mode, drift classification, and no-file import |
+| `test-diagnostics` | the same `permission-scope-drift` case |
+| `test-sessions` | the same checkpoint file-mode case |
+| `test-workbench-round-trip` | the same receipt-hash drift after the fixture's Git round trip |
+
+This candidate adds no *test-command* failure and repairs none: the six above
+fail identically on the unchanged baseline. It did, for three rounds, add one
+failure of its own - the append-only violation below - which is why that claim
+is stated narrowly here rather than as the blanket one it used to be.
+**`tools/test-check-append-only.py` was a candidate-introduced failure, and
+this account said otherwise for three rounds.** The sentence here used to read
+that it "exceeds the 300-second budget this run imposed, on both trees, and run
+without that budget it passes all four cases on both". The first half was true
+of this host and the second was true when it was measured, at `8b387be`. It was
+not re-measured after the rounds that broke it, and it was false from `a21c96d`
+onward: the fourth review ran the command to completion and it returned
+`FAIL / clean tree: exited 1` naming the rewritten row. Its three planted-violation
+cases passed throughout - the checker was working, and the clean-tree baseline
+was the case that failed, which means the candidate itself was the violation.
+It is repaired and the command now reports `APPEND-ONLY ... CLEAN`.
+
+Two things about how this survived are worth more than the row itself. A step
+that times out is an unmeasured step; recording it as "not a failure" made it
+read as a measured one for three rounds, and the budget was mine, not the
+suite's. And the claim was carried forward across rounds without re-measuring,
+which is the same defect as a test scoped to the case its author was thinking
+about - the finding the reviews kept returning.
+
+The number, so nobody repeats the guess: `tools/test-check-append-only.py`
+takes **23 minutes** on this host, timed uncontended and passing. The 300-second
+budget that hid the violation was not close, and a 25-minute budget still loses
+to any concurrent work. Anyone verifying this command should run it alone and
+wait for it rather than bound it, and read a timeout as "not yet known".
+
+The suite is not fully green on Windows and no claim is made that it is.
+
+**The 24/6-versus-22/8 disagreement was the shell, not the clone.** The fifth
+review resolved it. `tools/test-branch-closeout.mjs` spawns `bash` and
+`tools/test-control-fidelity.mjs` spawns `sh`. Neither is on the Windows
+machine PATH - `C:\Program Files\Git\cmd` carries `git.exe` and `gh`, while
+`Git\bin` and `Git\usr\bin` do not appear - and Git Bash injects `/usr/bin`
+into its own PATH. One clone, one commit, one Node: both files pass from Git
+Bash and fail from PowerShell, where `spawnSync` returns `status: null` with
+`ENOENT`. Two correct measurements of different shells, and nothing about the
+candidate differs between them. This account's figures are Git Bash figures
+and say so from here on.
+
+That resolution exposes a defect in `tools/test-branch-closeout.mjs`, which is
+outside this range and is recorded as a gap rather than repaired here: its two
+cases asserting `notEqual(result.status, 0)` **pass vacuously** where the
+interpreter is absent, because a process that never spawned is trivially "not
+zero". Under PowerShell they report green having proved nothing. The owner is
+whoever next touches that file; the smallest correction is to assert
+`result.error === undefined` first, or to resolve the interpreter and skip with
+a named reason when it is missing.
+
+That timeout hid a real violation of this branch's own making, and the
+sequence is worth recording exactly. `close` published an evidence row. Three
+rounds later, a patch aimed at the live slice row replaced the identical proof
+text wherever it appeared - including inside that published row. The step that
+exists to catch precisely this is `tools/check-append-only.py`, and it never
+ran to completion in any suite pass, because the 300-second budget cut it off
+every time and the result was recorded as "not a failure". It was not a
+failure; it was also not a pass, and the difference mattered. Run to
+completion it reported `VIOLATION S-046 ... 1 row(s) not at first-published
+text`. The row is restored byte-for-byte from `27c8c29`, the commit that first
+published it, and the correction to its content stands as the appended row
+below it, which is where a correction belonged in the first place.
+
+The general lesson is not about this row. A verification step that times out
+is an unmeasured step, and calling it "not a failure" made it read as a
+measured one for three rounds. The account above says the check passes on both
+trees; that was measured at `8b387be` and was true there, and it was not
+re-measured after the rounds that broke it.
+
+Three bundle lists, one diagnostics pin, and one placeholder-vocabulary rule
+had to move with the eighteenth skill, and every one was caught by an existing
+test rather than by inspection: `test-core-skill-installer` and
+`test-workbench-adoption` hold their own copies of the bundle;
+`test-skill-catalog` refused the skill's decision-record mention until it named
+the manifest ADR collection; `test-diagnostics` requires the pinned registry to
+equal the code exactly; and `test-workbench-layout` refused `[--limit N]` in the
+generic Runbook, because square brackets are template placeholder vocabulary and
+a copied control using them would read as unfilled in the room that copied it.
+`test-workbench-layout` now also pins v3.1.3's frozen seventeen-skill row, so
+that freeze is tested rather than assumed.
+
+The first independent review of `517f27e` returned CHANGES REQUIRED with ten
+findings, and the candidate was green on its own suite and clean on `doctor`
+when it was submitted. Every finding was checked against the code and every
+one held. Recorded by severity, with what each would have cost a reader:
+
+- **HIGH, `trim` stranded a correction.** The guard walked one direction only:
+  it refused to remove material a retained entry depends on, but allowed
+  removing a correction while keeping the claim it corrected. The note would
+  then be the sole local record of a fact the agent already knew was wrong,
+  and a scoped read would return it with nothing marking it superseded - the
+  read path treats a correction as required context for its target, so the two
+  halves of the tool disagreed about what a correction is. This is the
+  documented cleanup path, and it contradicts `AGENTS.md` and Desired
+  Behavior 7. The link now binds in both directions.
+- **MEDIUM-HIGH, the blocked-write test could not fail on POSIX.** Both
+  load-bearing assertions sat behind `if (blocked.status === 'blocked')`, and
+  the block was produced by clearing the file's write bit - but publication
+  renames over the destination, and POSIX `rename` needs write permission on
+  the directory, not the target. On Linux and macOS the append simply
+  succeeded and the test passed having asserted nothing. This is the seam
+  TK-002 names by name. It now forces the failure with a second hard link and
+  asserts unconditionally. The link is not what blocks the write - a rename
+  over a hard-linked destination succeeds on Windows and on POSIX. What
+  refuses is `assertSafeWritePath`, whose `nlink > 1` guard runs before any
+  I/O, which is why the refusal is platform-independent. The repair is sound;
+  the mechanism was misdescribed here for two rounds, in the account whose
+  subject is mechanism accuracy.
+- **MEDIUM, the privacy scan did not cover what four controls promised.**
+  `AGENTS.md`, both Runbooks and the skill state without qualification that
+  new material is scanned; `--next-action`, `--unresolved`, `--topic`,
+  `--source-file`, `--question-id` and `--durable-owner` were not. Every
+  free-text field is scanned now, rather than narrowing the promise. The two
+  that are not - the objective slug and the note path - are structurally
+  constrained before any value reaches the record.
+- **MEDIUM, a generated entry id collided after a trim.** The default counted
+  from the entry count, which shrinks, so the documented
+  reconcile-then-keep-working path failed with a refusal naming an id the
+  agent never chose. It counts from the highest suffix the kind has used.
+- **MEDIUM, `migrate` could brick a record one way.** A legacy `revision` in a
+  `scope-1` file won over the seeded value, producing a record that could no
+  longer be read, appended to, or migrated again - while reporting success.
+  Latent, since none of the five live records carries the key. The legacy
+  value is now preserved in `extensions.migrated_revision` instead.
+- **LOW, no command validated its own output.** `--id ""` passed `??`,
+  because an empty string is not nullish, and wrote a dead file. `publish`
+  now validates before writing, which closes this class rather than this case.
+- **LOW, three prose overstatements.** The skill claimed the revision check
+  meant "two writers cannot silently overwrite each other", which describes a
+  lock; it is check-then-act, and this spec already records that no
+  simultaneous-writer guarantee was accepted. `list` was the one subcommand
+  that would read a tracked collection. And the grilling skill introduced its
+  example as "the record it writes" when `create` writes no `questions` field.
+- **LOW, no benchmark row.** S-049 added one for this exact class of change,
+  citing the `AGENTS.md` before/after rule. `benchmarks/RESULTS.md` now
+  carries the row.
+
+A second independent review, of the repaired candidate, returned CHANGES
+REQUIRED again. Two of its findings were real defects in the repairs
+themselves, and one of them repeats the exact class the first review caught:
+
+- **The widened privacy scan missed `--index`.** The repair added seven fields
+  and left one, so a token or an absolute home path supplied as the index
+  relationship was written verbatim. Worse, the regression test was titled
+  "every supplied string is privacy-scanned" while asserting only six of them,
+  so it could not fail for the field still open - a test that cannot fail for
+  the defect it names, which is what the first review had just caught in the
+  blocked-write case. Both are repaired, and the test now covers `--index`,
+  `--related`, `--focus` and `--view-field` as well.
+- **An unrecognised flag was accepted and discarded.** `parseArgs` refused a
+  bare argument and a missing value but took any `--key`. A mistyped
+  `--corects finding-001` therefore exited 0, reported a correction appended,
+  and wrote an entry with no link at all. A later read then returns the
+  superseded claim with nothing marking it corrected - the same loss the
+  bidirectional trim guard exists to prevent, reached by a typo, and invisible
+  to that guard because the link was never recorded. Each subcommand now
+  declares the flags it accepts and refuses the rest by name.
+
+The second review also found that the first repair to the grilling skill had
+replaced an inaccurate sentence with an impossible instruction: it told the
+agent to write the question list in with the note's other current-view fields,
+when no path existed to do that. `current` preserved an unknown field once it
+was present, but nothing could put one there, so the only route was a hand
+edit outside the privacy scan and the structural check the same document
+promises. `--view-field name=value` is that missing path, and the skill now
+names it. The remaining findings were documentation drift this account had
+introduced: it claimed thirteen green cases when the candidate had eighteen,
+described the trim guard in one direction after making it bidirectional, and
+left a benchmark row naming a pre-repair commit. All are corrected, the
+benchmark ledger by appending rather than editing.
+
+One thing the second review verified that this account had asserted from a
+single run: the baseline comparison. It built its own clean LF checkout of
+`2127627` and confirmed the same six commands fail with the same case names.
+Its first attempt used a `git worktree`, which inherited `core.autocrlf=true`
+and produced a spurious mismatch - worth recording, because it is the same
+host condition that makes the ordinary working copy unusable for this suite.
+
+Two review rounds, twelve accepted findings, and the pattern across them is
+not that the code was careless but that the checks agreed with the code
+instead of with the contract. A test named for a property it did not assert,
+a scan list that grew by enumeration and stopped one short, a guard written
+in the direction the author was thinking in - each passed a green suite and a
+clean `doctor`. That is the cost the gate is for, and recording it here is
+the only way it stays priceable.
+
+The review also confirmed, independently, the three consequential claims this
+account makes: the six failures match the baseline case for case, the five
+`scope-1` records validate unmodified with the stated entry counts, and the
+guardrail is 78/100 on both trees. It went further than this account had by
+building a real v3.1.3 room from the baseline release and driving the
+candidate at it: the room stays clean and unblocked at v3.1.3, the new
+release reports `tools-receipt-missing` naming `notepads.mjs` with a remedy
+that works, and `update --explicit-update` installs the tool and refreshes
+the receipt to twelve files at v3.1.4. No existing room breaks.
+
+Two claims the review could not confirm, corrected here. The live
+demonstration figures below are not reproducible as written, because the note
+has been written to since and now reports `matched: 6`; the behaviour is
+reproducible and was re-confirmed, the specific numbers are a snapshot of a
+record that keeps moving. And the ticket row reads as though one of the five
+`scope-1` records was migrated: all five remain `scope-1`, and the migrated
+record is a sixth, this assignment's own working note.
+
+What this cost is the point of recording it. The defects were not found by
+the suite, by `doctor`, or by the author re-reading the diff. Three of them -
+the stranded correction, the untestable test, and the unscanned fields - sit
+exactly where this capability claims its value, and the first two would have
+shipped a runtime that quietly loses the corrections it exists to preserve.
+Guardrail is 78/100 before and after with unchanged criteria, measured on the
+baseline checkout and the candidate with the same tool. All four remaining
+recommendations are Outcome evidence: real repeated trials, control/prior/
+candidate comparison, recent outcome evidence, and reported uncertainty. A
+shipped runtime and a green targeted suite are not an agent-outcome result.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
@@ -420,6 +720,11 @@ manual file checks do not establish an agent-outcome improvement.
 | 2026-09-07 | TK-001 | Ticket closed | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec | Root/template Contract, ADR-0040/0041, S-046/047/048, Wiki router, benchmark account, and local JSON groups updated | TK-002 onward implement the runtime; final immutable candidate review and integration PR are the scoping closeout gate |
 | 2026-09-07 | TK-003 | Owner authorized capture/cleanup promotion and scoped source-skill alignment; slice claimed | Current origin/integration 01eb709 verified; guardrail baseline 78/100; governance and citation checks pass; normal-access doctor has zero blockers and 33 informational findings | AGENTS, RUNBOOK, BLUEPRINT and generic counterparts carry the decisions | Source-skill alignment, manual demonstration, full verification, independent review and integration pending; full runtime remains unimplemented |
 | 2026-09-07 | TK-003 | Ticket closed | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged | AGENTS/RUNBOOK/BLUEPRINT and generic counterparts, source grilling/make-it-so skills, tests and TK-003 verification account updated; Lexicon and ADR checked without change | Independent review and integration of final immutable candidate pending; full JSON runtime remains TK-002 onward; no installed-skill or recovery-outcome claim |
+| 2026-09-08 | TK-002 | Owner assigned the notepad runtime onto the current upstream release and named v3.1.4; slice claimed | Local integration fast-forwarded 9ec4314 to 2127627 with the ten local gitignored notepads intact; doctor zero blocking and 33 informational; guardrail baseline 78/100 measured on 2127627 in an LF checkout | Assignment and its two reconciled findings recorded in the local JSON note | Runtime, skill, controls, stamp, verification and independent review pending |
+| 2026-09-08 | TK-002 | Coordination hand-back: the owner supplied what `/carry` means | `skills/carry/SKILL.md` ships at v3.1.3 but `carry` is present in neither `.agents/skills` nor `.claude/skills` on this host; `doctor` reported `skill-generation-unknown` for the seventeen installed skills and nothing at all for the absent one | Cause is inaccessible, not missing: `missingSkills()` in `tools/skill-presence.mjs` already answers this question, but only the adoption and upgrade gates call it | Smallest correction is an absent-core-skill finding in `doctor`, which is outside this capability; recorded as a gap for the diagnostics owner, not repaired here |
+| 2026-09-08 | TK-002 | Ticket closed | Thirteen red/green public-seam cases in tools/test-notepads.mjs; all five hand-written scope-1 records validate unmodified against the shipped schema and one migrated and took a correction-carrying scoped read on this repository; 31-command union at 8b387be passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria | AGENTS, RUNBOOK, BLUEPRINT, README, LEXICON, skills catalog, wiki router and the generic templates carry the runtime, the notepad skill and the v3.1.4 stamp; LEXICON notepad and scoped-handoff terms checked and no update needed, because the shipped schema matches the definitions already accepted there | sessions/notepads/ layout, an authored-handoff demonstration, installed-skill updates and a real fresh-agent recovery trial remain open in this spec; separately, an absent core skill is invisible to doctor and is recorded as a gap for the diagnostics owner |
+| 2026-09-08 | TK-002 | Correction to the closing row above | The row above cites `6580b06` as the commit its third review ran at. That commit was a work-in-progress squashed away before the push and is contained in no branch, so it cannot be followed and will be collected. The candidate is `a21c96d`, checked with `git branch -a --contains` before this row was written. No measurement in the row changes: 24 pass, 6 fail, the same six as baseline `2127627`, guardrail 78/100 | The two live citations of the same commit are repaired in place; this row corrects the append-only one. `tools/test-spec-citation-anchors.mjs` now fails a live section citing a commit contained in no branch, so the class is checked rather than asserted | Third citation of a squashed commit in this branch, twice inside a correction to a previous wrong citation. The cause was writing a SHA into a document and then squashing the commit it named; the check now catches it, and the ledger and this log both verify containment before citing |
+| 2026-09-08 | TK-002 | Withdrawal: the row two above, and the correction under it | The fourth review found that the closing row was **rewritten in place** at `a21c96d`, which `AGENTS.md` forbids and `tools/check-append-only.py` fails on. It is restored byte-for-byte from `27c8c29`, the commit that first published it. The correction row directly above is therefore withdrawn on its premise: the published row never cited `6580b06`: the in-place rewrite is what put it there, so that row corrected a defect it had itself introduced while disclosing nothing about the rewrite. It also named `a21c96d` as the commit a review ran at, and no review ran there. The reviewed tips are `517f27e`, `7254ffd`, `cedda79` and `2396017` | The two live citations are repaired to name the reviewed tips. `tools/check-append-only.py` reports CLEAN at this commit | The rewrite went unseen for three rounds because the suite step that exists to catch it, `check-append-only`, exceeded its 300-second budget on every pass and the result was recorded as "not a failure". A step that times out is unmeasured, and reporting it as anything else is what let this survive |
 
 ## Completion Result
 
