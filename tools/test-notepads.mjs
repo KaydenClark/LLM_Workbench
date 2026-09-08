@@ -13,7 +13,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { NOTEPAD_SCHEMA_VERSION, LEGACY_SCHEMA_VERSIONS, createNote, appendEntry, setCurrent, readNote, validateNote, listNotes, trimEntries, migrateNote } from '../workbench/tools/notepads.mjs';
+import { NOTEPAD_SCHEMA_VERSION, LEGACY_SCHEMA_VERSIONS, checkStructure, createNote, appendEntry, setCurrent, readNote, validateNote, listNotes, trimEntries, migrateNote } from '../workbench/tools/notepads.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -25,6 +25,7 @@ function project() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-notepads-'));
   const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', VERSION], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout);
+  fs.mkdirSync(path.join(dir, 'workbench/sessions/notepads/work'), { recursive: true });
   return dir;
 }
 
@@ -813,5 +814,26 @@ test('typed local notes are discoverable and tracked schema/examples cannot beco
     assert.equal(createNote(dir, { note: tracked, objective: 'boundary', title: 'Must refuse' }).status, 'blocked');
     assert.equal(readNote(dir, { note: tracked }).status, 'blocked');
     assert.ok(listNotes(dir).notes.every((entry) => !entry.note.includes('/templates/')));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('shipped examples satisfy the shared runtime and legacy bare-name lookup stays unchanged', () => {
+  const dir = project();
+  try {
+    const templates = path.join(dir, 'workbench/sessions/notepads/templates');
+    const schema = JSON.parse(fs.readFileSync(path.join(templates, 'notepad.schema.json'), 'utf8'));
+    assert.equal(schema.properties.schema_version.const, NOTEPAD_SCHEMA_VERSION);
+    for (const type of ['work', 'grilling', 'handoff']) {
+      const example = JSON.parse(fs.readFileSync(path.join(templates, `${type}.example.json`), 'utf8'));
+      assert.deepEqual(checkStructure(example), { missing: [], invalid: [] });
+      assert.ok(schema.required.every(key => Object.hasOwn(example, key)));
+    }
+    const file = path.join(dir, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    delete manifest.collections.notepads; delete manifest.collections['notepad-templates'];
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    const old = seed(dir, { note: 'legacy' });
+    assert.equal(old.note, 'workbench/sessions/grilling/legacy.json');
+    assert.equal(readNote(dir, { note: 'legacy' }).status, 'read');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

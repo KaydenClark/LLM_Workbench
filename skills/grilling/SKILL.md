@@ -41,7 +41,7 @@ is not a computer-crash or device-loss guarantee. It is not Canon.
 Create it through the shared runtime, which writes the schema for you:
 
 ```bash
-node workbench/tools/notepads.mjs create --note TOPIC-YYYY-MM-DD \
+node workbench/tools/notepads.mjs create --note TOPIC-YYYY-MM-DD --type grilling \
   --objective OBJECTIVE_KEY --title "The agreed topic" --focus "What we are deciding" \
   --state "Question list written; nothing answered yet" \
   --next-action "Ask question 1 with a recommendation" \

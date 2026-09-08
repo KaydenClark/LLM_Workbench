@@ -1253,17 +1253,17 @@ test('seed-documents records a verifiable generation and never rewrites an adjus
     const document = path.join(project, relative);
     const recordPath = path.join(project, 'workbench', '.workbench-seed.json');
     const template = fs.readFileSync(path.join(root, 'templates', 'feedback', 'REPORT_FORMAT.md'));
-    assert.equal(fs.existsSync(recordPath), false, 'init writes no seed record; seeding a lane document is an explicit command');
+    assert.equal(Object.keys(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents).length, 4, 'init records the four notepad schema/example seeds');
 
     const seeded = run('seed-documents', '--project', project);
     assert.equal(seeded.status, 0, seeded.stdout);
-    assert.deepEqual(seeded.report.written, [{ document: relative, action: 'seeded' }]);
+    assert.deepEqual(seeded.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'seeded' }]);
     assert.deepEqual(seeded.report.retained, []);
     assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'));
     assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
 
     const again = run('seed-documents', '--project', project);
-    assert.deepEqual(again.report.written, [{ document: relative, action: 'recorded' }], 'byte equality with the release copy is evidence of the generation');
+    assert.deepEqual(again.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'recorded' }], 'byte equality with the release copy is evidence of the generation');
 
     // A copy still identical to what an older release seeded is refreshed.
     const older = `${template.toString('utf8')}\nSeeded by an older release.\n`;
@@ -1272,13 +1272,13 @@ test('seed-documents records a verifiable generation and never rewrites an adjus
     record.documents[relative] = { release: 'v3.1.0', contentHash: createHash('sha256').update(Buffer.from(older)).digest('hex') };
     fs.writeFileSync(recordPath, `${JSON.stringify(record, null, 2)}\n`);
     const refreshed = run('seed-documents', '--project', project);
-    assert.deepEqual(refreshed.report.written, [{ document: relative, action: 'refreshed' }]);
+    assert.deepEqual(refreshed.report.written.filter(entry => entry.document === relative), [{ document: relative, action: 'refreshed' }]);
     assert.equal(fs.readFileSync(document, 'utf8'), template.toString('utf8'), 'an untouched older copy is brought current without a reinstall');
     assert.equal(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents[relative].release, VERSION);
 
     fs.appendFileSync(document, '\nLocal note this room added.\n');
     const adjusted = run('seed-documents', '--project', project);
-    assert.deepEqual(adjusted.report.written, [], 'a repair never rewrites content it did not add');
+    assert.deepEqual(adjusted.report.written.filter(entry => entry.document === relative), [], 'a repair never rewrites content it did not add');
     assert.deepEqual(adjusted.report.retained.map((entry) => entry.document), [relative]);
     assert.match(adjusted.report.retained[0].reason, /changed after it was seeded/);
     assert.match(fs.readFileSync(document, 'utf8'), /Local note this room added\./);

@@ -238,7 +238,7 @@ export function createNote(root, options) {
   const title = requireValue(options.title, '--title is required');
   // `??` accepts an empty string, so an explicitly blank --id or --type would
   // otherwise pass straight through into a record that fails its own schema.
-  const type = options.type === undefined ? collection : requireValue(options.type, '--type must not be empty');
+  const type = options.type === undefined ? (collection === 'notepads' ? 'work' : collection) : requireValue(options.type, '--type must not be empty');
   const status = options.status ?? 'PROVISIONAL';
   if (!NOTE_STATUSES.includes(status)) throw new Error(`--status must be one of ${NOTE_STATUSES.join(', ')}`);
   let resolved;

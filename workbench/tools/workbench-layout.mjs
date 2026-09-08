@@ -355,7 +355,7 @@ export function initialize(options) {
   writeSessionsIgnore(project);
   const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options);
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-  const documents = seedLaneDocuments(project, options);
+  const documents = seedLaneDocuments(project, { ...options, notepadOnly: true });
   return report('initialized', { manifestPath, manifest, seeded, documents });
 }
 
@@ -442,7 +442,7 @@ export function seedLaneDocuments(project, options) {
   const documents = { ...record.documents };
   const written = [];
   const retained = [];
-  for (const document of seededLaneDocuments) {
+  for (const document of seededLaneDocuments.filter(document => !options.notepadOnly || document.lane === 'sessions')) {
     const relative = `${lanes[document.lane]}/${document.name}`;
     const destination = path.join(root, relative);
     const source = path.join(templates, document.template);

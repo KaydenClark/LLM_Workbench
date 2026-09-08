@@ -42,7 +42,11 @@ node workbench/tools/notepads.mjs create --note NAME --objective OBJECTIVE_KEY \
 ```
 
 Live notes stay local and untracked, in a live collection `workbench/manifest.json`
-declares; `--collection` names which one, and grilling is the default. Never
+declares. Bare names use `notepads/work/` on the new layout, or the legacy
+grilling collection when that room has not migrated. Explicit relative paths
+select other local type folders; `--collection handoffs` selects handoffs.
+Schema and examples under `notepads/templates/` are tracked and cannot be live
+notes. Never
 commit one, and never cite one as durable evidence.
 
 ## 2. Save it when you learn it, not at closeout

@@ -745,7 +745,7 @@ test('a seeded lane document whose recorded generation is behind the manifest is
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a room with no seed record names no generation and reports nothing');
     const seedRun = spawnSync(process.execPath, [layout, 'seed-documents', '--project', dir], { encoding: 'utf8' });
     assert.equal(seedRun.status, 0, seedRun.stdout);
-    assert.deepEqual(JSON.parse(seedRun.stdout).written, [{ document: 'workbench/feedback/REPORT_FORMAT.md', action: 'seeded' }]);
+    assert.deepEqual(JSON.parse(seedRun.stdout).written.filter(entry => entry.document === 'workbench/feedback/REPORT_FORMAT.md'), [{ document: 'workbench/feedback/REPORT_FORMAT.md', action: 'seeded' }]);
     const record = path.join(dir, 'workbench', '.workbench-seed.json');
     assert.equal(fs.existsSync(record), true, 'seed-documents records the generation of each seeded lane document');
     const seeded = JSON.parse(fs.readFileSync(record, 'utf8'));

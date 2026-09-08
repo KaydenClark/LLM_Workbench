@@ -71,8 +71,8 @@ record deleted; retaining unfinished context remains mandatory.
 [S-046](workbench/specs/S-046-json-notepad-foundation/SPEC.md) owns the bounded
 foundation and thin workflow integrations. Its shared schema, managed runtime
 `workbench/tools/notepads.mjs`, and `notepad` skill are implemented in v3.1.4;
-the target `sessions/notepads/` layout remains an accepted requirement, so live
-JSON notes stay in the declared live collections until it lands. Broader
+the additive `sessions/notepads/` layout now keeps local type folders beside
+tracked schema/examples and preserves legacy paths. Broader
 backup/transport guarantees and workflow redesign remain outside this scope.
 [S-047](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) owns visible,
 type-and-Workbench scoped base-62 identifiers with compatible migration;

@@ -190,13 +190,25 @@ files with `version-mismatch`).
 
 ### JSON Notepads
 
-New notepads are JSON, and `workbench/tools/notepads.mjs` is the shared runtime
-that owns their structure. Live notes stay in the manifest-declared live
-collection already available for that workflow; grilling uses
-`workbench/sessions/grilling/`. Do not invent an undeclared collection or
-rewrite legacy Markdown merely to change its extension. The target layout is
-`sessions/notepads/` with local type folders and tracked examples/schema; it is
-not implemented yet, so nothing writes there.
+New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
+and updates. A new layout declares `sessions/notepads/`: bare names create
+`notepads/work/NAME.json`; explicit project-relative paths select another local
+type folder. Handoffs use the declared `handoffs` collection. The tracked
+`notepad-templates` subcollection carries `notepad.schema.json` and work,
+grilling and handoff examples; live-note commands refuse that subcollection.
+The schema describes new `notepad-1` interchange, while the runtime additionally
+checks unique entry IDs, links and revision safety. Legacy `scope-1` reading and
+migration remain supported without moving or regenerating source history.
+
+Existing schema 2 rooms remain valid. From the clean release checkout run
+`workbench-layout.mjs migrate --project PATH --version VERSION` to add the two
+collections and seed examples with recorded hashes. This moves no old note,
+preserves earlier provenance and the room version, and reports the layout source
+separately. Existing adjusted examples are retained and reported by the seeded
+document mechanism. Repeated migration reports `current`; use `seed-documents`
+to refresh untouched seeded examples. On a room without the new declaration,
+bare note names still use the legacy grilling collection. Never rewrite legacy
+Markdown merely to change its extension.
 
 ```bash
 node workbench/tools/notepads.mjs list --objective KEY
