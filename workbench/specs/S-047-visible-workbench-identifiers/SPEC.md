@@ -1,15 +1,15 @@
 # S-047 - Visible Workbench Identifiers
 
 **Spec ID:** S-047
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-06
+**Updated:** 2026-09-08
 **Catalog description:** Introduce visible base-62 identifiers without parallel IDs or loss of existing references.
 **Blockers:** none
-**Latest event:** Accepted identity direction separated from the notepad foundation.
-**Next gate:** Review compatibility defaults and implement the first allocation/read-back slice when assigned.
+**Latest event:** TK-001 claimed by codex.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 ## Outcome
 
@@ -67,7 +67,7 @@ or a lossy migration must be brought back as a concrete product tradeoff.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Allocate and retrieve one new visible notepad ID through a tested CLI while legacy numeric records still resolve | ready | none | pending |
+| TK-001 | Allocate and retrieve one new visible notepad ID through a tested CLI while legacy numeric records still resolve | in-progress | none | pending |
 | TK-002 | Extend visible-ID compatibility through spec ticket and ADR consumers without renaming historical paths | ready | TK-001 | pending |
 
 ### TK-001 - Compatibility tracer bullet

@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup.
 **Blockers:** none
-**Latest event:** TK-005 claimed by codex.
-**Next gate:** Close TK-005 with verification and documentation proof.
+**Latest event:** TK-005 closed with proof.
+**Next gate:** Record whole-release independent review and integration containment under S-050.
 
 ## Outcome
 
@@ -197,7 +197,7 @@ protocol are proposals, not verbatim owner approvals.
 | TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | done | TK-001 | Red/green public-seam cases in tools/test-notepads.mjs, each mutation-tested to confirm it fails for the defect it names; all five hand-written scope-1 records validate unmodified against the shipped schema, and a sixth record - this assignment's own working note - migrated and took a correction-carrying scoped read on this repository; the 31-command union passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria; four independent reviews at the pushed tips 517f27e, 7254ffd, cedda79 and 2396017 |
 | TK-006 | Repair reviewed discovery chronology, safe discovery paths and decoded-field privacy before using the candidate | done | TK-002 | a2338e7: five expected red regressions then 26/26 notepad tests green; full 34-command union passes unchanged; separate-context review PASS on exact candidate; guardrail 78/100 unchanged |
 | TK-004 | Migrate live JSON layout and ship schema/examples through managed installation without moving legacy sources | done | TK-006 | 1c5bd36a7e5baa904ab104ef7b92bd8464f9ecad:29notepad and62layout cases pass; full34-command union passes unchanged; separate-context repair review PASS; source room migrated with no legacy moves; guardrail78/100 unchanged |
-| TK-005 | Prove authored handoff, retained-context cleanup and real fresh-agent recovery through installed skills | in-progress | TK-004 | pending |
+| TK-005 | Prove authored handoff, retained-context cleanup and real fresh-agent recovery through installed skills | done | TK-004 | bbda20d5010bce634a76deaf2f5b55c6f0a4fdf7: four case-alias regressions red then36 targeted green; full34-command union green; separate-context repair review PASS; one actual fresh-context installed-skill recovery completed useful inventory, with hashes independently read back; guardrail78/100 unchanged |
 
 ### TK-001 - Scope and reconcile
 
@@ -277,11 +277,11 @@ PASS. TK-004/005 still own remaining layout and actual continuity acceptance.
 
 - [x] Source questions and corrections have explicit dispositions; all remaining source material is retained locally in focused JSON records, and promoted truth has durable owners.
 - [x] Capture/cleanup follow-up: root/template controls and source skills require proactive local capture and permit verified trimming or full cleanup, with manual retained-context proof.
-- [ ] Shared schema, skill, and tool safely create/update/resume an objective note without requiring a model to regenerate its history.
+- [x] Shared schema, skill, and tool safely create/update/resume an objective note without requiring a model to regenerate its history.
 - [x] Bounded retrieval excludes unrelated topics, carries corrections/dependencies, and reports pagination without silent loss.
-- [ ] Requested handoff and partial-cleanup demonstrations preserve unfinished material and destination dependencies.
-- [ ] Root/template controls, source workflows, layout, managed-tool packaging, and explicitly authorized installed paths agree on the supported behavior.
-- [ ] A fresh agent without the original conversation resumes real agent-authored work; cross-provider and interruption limits are recorded honestly.
+- [x] Requested handoff and partial-cleanup demonstrations preserve unfinished material and destination dependencies.
+- [x] Root/template controls, source workflows, layout, managed-tool packaging, and explicitly authorized installed paths agree on the supported behavior.
+- [x] A fresh agent without the original conversation resumes real agent-authored work; cross-provider and interruption limits are recorded honestly.
 - [ ] Full verification, unchanged-criteria guardrail comparison, and independent integration review are recorded for the implemented candidate.
 
 ## Testing Seams
@@ -785,17 +785,24 @@ requires full verification and fresh independent review below.
 | 2026-09-08 | TK-002 | Withdrawal: the row two above, and the correction under it | The fourth review found that the closing row was **rewritten in place** at `a21c96d`, which `AGENTS.md` forbids and `tools/check-append-only.py` fails on. It is restored byte-for-byte from `27c8c29`, the commit that first published it. The correction row directly above is therefore withdrawn on its premise: the published row never cited `6580b06`: the in-place rewrite is what put it there, so that row corrected a defect it had itself introduced while disclosing nothing about the rewrite. It also named `a21c96d` as the commit a review ran at, and no review ran there. The reviewed tips are `517f27e`, `7254ffd`, `cedda79` and `2396017` | The two live citations are repaired to name the reviewed tips. `tools/check-append-only.py` reports CLEAN at this commit | The rewrite went unseen for three rounds because the suite step that exists to catch it, `check-append-only`, exceeded its 300-second budget on every pass and the result was recorded as "not a failure". A step that times out is unmeasured, and reporting it as anything else is what let this survive |
 | 2026-09-08 | TK-006 | Ticket closed | a2338e7: five expected red regressions then 26/26 notepad tests green; full 34-command union passes unchanged; separate-context review PASS on exact candidate; guardrail 78/100 unchanged | Notepad discovery skill aligned with newest-created contract; public tests cover decoded values and safe file/collection paths; historical evidence preserved | TK-004 schema/layout and TK-005 actual installed-skill continuity remain; no v3.2.0 readiness claim |
 | 2026-09-08 | TK-004 | Ticket closed | 1c5bd36a7e5baa904ab104ef7b92bd8464f9ecad:29notepad and62layout cases pass; full34-command union passes unchanged; separate-context repair review PASS; source room migrated with no legacy moves; guardrail78/100 unchanged | Root and generic controls, notepad/grilling/update-harness skills, schema/examples, seeded receipts and S-046 review-correction account aligned; new helpers preserve old7 layout and legacy note lookup | TK-005 actual authored handoff, cleanup and fresh-context installed-skill recovery remain; no release readiness or integration claim |
+| 2026-09-08 | TK-005 | Ticket closed | bbda20d5010bce634a76deaf2f5b55c6f0a4fdf7: four case-alias regressions red then36 targeted green; full34-command union green; separate-context repair review PASS; one actual fresh-context installed-skill recovery completed useful inventory, with hashes independently read back; guardrail78/100 unchanged | Root/template Runbook and source notepad skill aligned; curated continuity result and adverse-review/repair account preserved in S-046 | Whole-release integration and S051 native discovery remain; no Windows, cross-provider, interruption, crash or transport outcome claimed |
 
 ## Completion Result
 
-TK-001 delivers the scoped requirements, promoted decisions, and local JSON
-review groups. TK-003 delivers the capture/cleanup rules and source-skill path,
-with red/green contract checks and the explicitly limited manual demonstration.
-The full capability remains unimplemented; remaining acceptance
-boxes are intentionally open. Final independent review and integration
-containment are recorded against the exact candidate in its integration PR.
-The Windows suite is not fully green; the verification account above separates
-pre-existing failures from the scoping result.
+The implemented foundation at `bbda20d5010bce634a76deaf2f5b55c6f0a4fdf7`
+passes 36 targeted notepad cases and the full 34-command union. Separate-context
+repair review passed the exact candidate; guardrail score remains 78/100 with
+the same four outcome-evidence recommendations. Source workflows, root/template
+controls, tracked examples and isolated installed skills agree on the bounded
+local foundation. Existing global installed copies remain outside this trial;
+S-051 owns the release installation and native discovery contract.
+
+The authored-handoff trial completed useful work in a fresh agent context, with
+partial cleanup and unfinished/dependency cleanup refusals demonstrated. Its
+exact candidate, adverse review, later repairs and limits are recorded above.
+Historical Windows scoping failures remain history; no current Windows run is
+claimed. All tickets are closed, but final release integration containment is
+still open under S-050 and the last acceptance box remains unchecked.
 
 ## Remaining Limitations Or Follow-Up Specs
 
