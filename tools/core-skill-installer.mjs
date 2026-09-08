@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -115,9 +116,72 @@ function validateDestinations(destinations) {
           `Skill destination ${destination} is not an ordinary directory. Remove or relocate the collision, then retry.`,
           { engine, skill, destination }) };
       }
+      if (!lstatOrNull(path.join(destination, 'SKILL.md'))?.isFile()) {
+        return { error: fail('skill-path-collision', `Existing ${destination} has no ordinary SKILL.md; preserve and reconcile it before installing adapters.`, { engine, skill, destination }) };
+      }
     }
   }
   return { destinations: resolved, gitOwnedRoots };
+}
+
+function gitRead(directory, args) {
+  const result = spawnSync('git', args, { cwd: directory, encoding: 'utf8' });
+  if (result.status !== 0) throw new Error(`Git could not inspect managed skill exclusions: ${result.stderr.trim()}`);
+  return result.stdout.trim();
+}
+
+function exclusionPlans(destinations) {
+  const plans = new Map();
+  for (const { root: directory } of destinations) {
+    const owner = gitOwner(directory);
+    const missing = coreSkills.filter(skill => !presentSkillPath(path.join(directory, skill)));
+    if (!missing.length) continue;
+    const file = owner
+      ? gitRead(owner, ['rev-parse', '--path-format=absolute', '--git-path', 'info/exclude'])
+      : path.join(directory, '.gitignore');
+    for (let ancestor = path.dirname(file); ; ancestor = path.dirname(ancestor)) {
+      const current = lstatOrNull(ancestor);
+      if (current && (current.isSymbolicLink() || !current.isDirectory())) throw new Error('Managed exclusion ancestors must be ordinary directories');
+      if (path.dirname(ancestor) === ancestor) break;
+    }
+    const entry = lstatOrNull(file);
+    if (entry && (!entry.isFile() || entry.isSymbolicLink() || entry.nlink > 1)) throw new Error('Managed exclusions require an ordinary, unshared file');
+    const plan = plans.get(file) ?? { file, owner, original: entry ? fs.readFileSync(file) : null, paths: new Set() };
+    for (const skill of missing) {
+      const relative = path.relative(owner ?? directory, path.join(directory, skill)).split(path.sep).join('/');
+      if (owner && gitRead(owner, ['ls-files', '--', relative])) throw new Error('A missing core path is still tracked; prepare an owner-reviewed tracked-core migration first');
+      plan.paths.add(relative);
+    }
+    plans.set(file, plan);
+  }
+  return [...plans.values()];
+}
+
+function writeExclusions(plans) {
+  const written = [];
+  try {
+    for (const plan of plans) {
+      fs.mkdirSync(path.dirname(plan.file), { recursive: true });
+      const before = plan.original ?? Buffer.alloc(0);
+      // No trailing slash: the same exclusion must cover a directory adapter.
+      const lines = [...plan.paths].map(relative => '/' + relative.replace(/[\\!# *?\[\]]/g, '\\$&'));
+      const addition = (before.length && before.at(-1) !== 10 ? '\n' : '') + '# Workbench managed core; personal source remains owner-controlled.\n' + lines.join('\n') + '\n';
+      fs.writeFileSync(plan.file, Buffer.concat([before, Buffer.from(addition)]));
+      written.push(plan);
+      if (plan.owner) {
+        for (const relative of plan.paths) {
+          const checked = spawnSync('git', ['check-ignore', '--no-index', '-q', '--', relative], { cwd: plan.owner });
+          if (checked.status !== 0) throw new Error('Project ignore rules override the managed core exclusion; reconcile them before installing');
+        }
+      }
+    }
+  } catch (error) {
+    for (const plan of written.reverse()) {
+      if (plan.original) fs.writeFileSync(plan.file, plan.original);
+      else fs.unlinkSync(plan.file);
+    }
+    throw error;
+  }
 }
 
 function parseHome(argv) {
@@ -137,6 +201,9 @@ function install(home) {
   try { identity = markerSourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
   const validated = validateDestinations(destinations);
   if (validated.error) return validated.error;
+  let exclusions;
+  try { exclusions = exclusionPlans(validated.destinations); }
+  catch (error) { return fail('skill-exclusion-conflict', error.message); }
 
   // `resolvedRoots` names each declared discovery root beside the directory it
   // actually resolved to. They differ whenever a root is a link, and two
@@ -148,6 +215,8 @@ function install(home) {
     resolvedRoots: validated.destinations.map(({ engine, declared, root: resolved }) => ({ engine, declared, resolved }))
   };
   try {
+    writeExclusions(exclusions);
+    const canonicalRoot = validated.destinations.find(destination => destination.engine === 'codex').root;
     for (const { engine, root: destinationRoot } of validated.destinations) {
       fs.mkdirSync(destinationRoot, { recursive: true });
       for (const skill of coreSkills) {
@@ -157,14 +226,15 @@ function install(home) {
           report.skipped.push({ engine, skill, reason: 'already-present', destination, resolved: present });
           continue;
         }
-        fs.cpSync(path.join(sourceRoot, skill), destination, {
-          recursive: true,
-          force: false,
-          errorOnExist: true,
-          verbatimSymlinks: true
-        });
-        const marker = writeManagedMarker(destination, identity);
-        report.installed.push({ engine, skill, destination, release: marker.release, commit: marker.commit });
+        if (engine === 'claude') {
+          const canonical = path.join(canonicalRoot, skill);
+          fs.symlinkSync(path.relative(destinationRoot, canonical), destination, 'dir');
+          report.installed.push({ engine, skill, destination, kind: 'adapter', canonical });
+        } else {
+          fs.cpSync(path.join(sourceRoot, skill), destination, { recursive: true, force: false, errorOnExist: true, verbatimSymlinks: true });
+          const marker = writeManagedMarker(destination, identity);
+          report.installed.push({ engine, skill, destination, kind: 'implementation', release: marker.release, commit: marker.commit });
+        }
       }
     }
     return report;

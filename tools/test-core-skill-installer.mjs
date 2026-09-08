@@ -45,7 +45,7 @@ test('normal setup installs only missing bundled core skills in both user discov
     assert.equal(fs.readFileSync(path.join(existing, 'SKILL.md'), 'utf8'), 'foreign genesis\n');
     assert.equal(
       fs.readFileSync(path.join(home, '.claude', 'skills', 'genesis', 'SKILL.md'), 'utf8'),
-      fs.readFileSync(path.join(root, 'skills', 'genesis', 'SKILL.md'), 'utf8')
+      'foreign genesis\n'
     );
     assert.equal(
       fs.readFileSync(path.join(home, '.agents', 'skills', 'adoption', 'SKILL.md'), 'utf8'),
@@ -93,14 +93,60 @@ test('a Git-owned discovery root installs the missing skills and leaves Git unto
     assert.equal(git('rev-parse', 'HEAD').stdout.trim(), beforeSha, 'no commit was made');
     assert.deepEqual(fs.readFileSync(path.join(gitRoot, '.git', 'index')), beforeIndex, 'nothing was staged');
     const status = git('status', '--porcelain').stdout.split('\n').filter(Boolean);
-    assert.ok(status.length > 0, 'the installed skills are visible to the collection owner');
-    assert.ok(status.every((line) => line.startsWith('??')),
-      `every change is untracked, never staged or committed: ${status.join(', ')}`);
+    assert.deepEqual(status, [], 'managed core stays excluded from personal Git state');
+    assert.equal(git('check-ignore', '-q', 'genesis/SKILL.md').status, 0);
     assert.ok(result.report.gitOwnedRoots.includes(fs.realpathSync(gitRoot)),
       'the report names the Git-owned root it wrote into, so the operator is not surprised');
   } finally {
     fs.rmSync(home, { recursive: true, force: true });
   }
+});
+
+test('fresh installation stores one implementation and gives Claude an adapter that survives loss of the source checkout', () => {
+  const home = fixtureHome();
+  try {
+    const result = install(home);
+    assert.equal(result.status, 0, result.stdout);
+    for (const skill of coreSkills) {
+      const canonical = path.join(home, '.agents/skills', skill);
+      const adapter = path.join(home, '.claude/skills', skill);
+      assert.equal(fs.lstatSync(canonical).isSymbolicLink(), false);
+      assert.equal(fs.lstatSync(adapter).isSymbolicLink(), true);
+      assert.equal(fs.realpathSync(adapter), fs.realpathSync(canonical));
+      assert.ok(fs.realpathSync(adapter).startsWith(fs.realpathSync(home) + path.sep));
+    }
+    assert.equal(fs.existsSync(path.join(home, '.codex/skills')), false);
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('linked Git exclusion metadata is refused before creating managed core', () => {
+  const home = fixtureHome();
+  try {
+    const directory = path.join(home, '.agents/skills');
+    fs.mkdirSync(directory, { recursive: true });
+    assert.equal(spawnSync('git', ['init', '-q'], { cwd: directory }).status, 0);
+    const outside = path.join(home, 'unrelated-info');
+    fs.mkdirSync(outside);
+    fs.writeFileSync(path.join(outside, 'exclude'), '# Preserve unrelated bytes\n');
+    fs.rmSync(path.join(directory, '.git/info'), { recursive: true });
+    fs.symlinkSync(outside, path.join(directory, '.git/info'), 'dir');
+    const result = install(home);
+    assert.equal(result.report.status, 'blocked', result.stdout);
+    assert.equal(fs.readFileSync(path.join(outside, 'exclude'), 'utf8'), '# Preserve unrelated bytes\n');
+    assert.equal(fs.existsSync(path.join(directory, 'genesis')), false);
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
+});
+
+test('an existing empty core directory is preserved and reported before creating a broken adapter', () => {
+  const home = fixtureHome();
+  try {
+    const existing = path.join(home, '.agents/skills/genesis');
+    fs.mkdirSync(existing, { recursive: true });
+    const result = install(home);
+    assert.equal(result.report.error?.code, 'skill-path-collision', result.stdout);
+    assert.deepEqual(fs.readdirSync(existing), []);
+    assert.equal(fs.existsSync(path.join(home, '.claude/skills/genesis')), false);
+  } finally { fs.rmSync(home, { recursive: true, force: true }); }
 });
 
 test('a Git-owned parent of a missing discovery root installs into it just the same', () => {
@@ -216,8 +262,11 @@ test('all four stances are available through one-level discovery and a repeated 
       for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
         const file = path.join(home, provider, 'skills', stance, 'SKILL.md');
         assert.equal(fs.readFileSync(file, 'utf8'), fs.readFileSync(path.join(root, 'skills', stance, 'SKILL.md'), 'utf8'));
-        fs.writeFileSync(file, 'existing stance instructions\n');
       }
+    }
+    for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
+      fs.writeFileSync(path.join(home, '.agents/skills', stance, 'SKILL.md'), 'existing stance instructions\n');
+      assert.equal(fs.readFileSync(path.join(home, '.claude/skills', stance, 'SKILL.md'), 'utf8'), 'existing stance instructions\n');
     }
     const repeated = install(home);
     assert.equal(repeated.status, 0, repeated.stdout);
