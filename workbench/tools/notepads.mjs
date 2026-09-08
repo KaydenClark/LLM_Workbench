@@ -67,7 +67,9 @@ function filesystemPath(value) {
   const missing = [];
   let current = path.resolve(value);
   for (;;) {
-    try { return path.join(fs.realpathSync(current), ...missing); }
+    // Node's JavaScript realpath preserves case aliases on macOS; the native
+    // filesystem call returns the actual entry spelling on that filesystem.
+    try { return path.join(fs.realpathSync.native(current), ...missing); }
     catch (error) {
       if (error.code !== 'ENOENT') throw error;
       const parent = path.dirname(current);

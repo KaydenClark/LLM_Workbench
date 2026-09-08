@@ -732,6 +732,43 @@ passed and was retained as coverage. Targeted verification now passes 29
 notepad cases and 62 layout cases. Final full-suite and fresh review remain
 open until recorded below. No legacy record was moved or deleted.
 
+## v3.2.0 Authored Handoff And Cleanup Verification
+
+The real trial at `2da258764332a880e82aafd2cbd66b74f96fc990` used a disposable
+clone and the candidate installer in an isolated provider directory. A separately
+authored handoff pointed to retained source entries from the actual S-048
+checkpoint investigation. The source carried the later frozen-history decision
+as a correction to the earlier folder-removal tradeoff, and the inventory finding
+depended on that correction. Material already owned by TK-004 was partially
+trimmed; trimming the destination-retained slice and deleting the unfinished
+source both refused. All source and destination live records remain local.
+
+A fresh Codex desktop subagent with no inherited conversation read the actual
+installed notepad skill explicitly, recovered scoped correction/dependency
+closure, checked current controls and Git state, verified the five checkpoint
+Markdown files plus `.gitkeep`, and returned concrete consumer classifications.
+The coordinator independently rehashed all six paths and read back handoff
+revision 4, last saved at 2026-09-08T08:29:04.735Z. The tracked trial tree stayed
+clean. The useful result and its commit-anchored sources are retained in
+[the continuity result](continuity-result-2026-09-08.json).
+
+This is one same-provider local fresh-context result on Darwin 25.5.0 arm64.
+The exact model identifier was not exposed. Explicit installed-file invocation
+is not native automatic discovery; no actual Stop, token-exhaustion, crash,
+cross-provider, Windows transport or rollback trial ran. It completes the bounded
+inventory investigation, not S-048 or overall release readiness.
+
+Candidate `2da2587` passed 32 targeted cases and the full 34-command union, but
+independent review returned CHANGES REQUIRED: case aliases could bypass active
+retention and enter tracked templates. Four public regressions reproduced
+whole-note deletion, entry trim, template read and new-leaf creation. The first repair
+at `afbe690` still failed all four regressions because the JavaScript realpath
+call preserved input casing on this Mac. The follow-up uses native filesystem
+resolution, including existing ancestors of a missing destination, before
+checking collection boundaries and retention. Ordinary-path/symlink checks
+remain in force. The final repaired candidate still
+requires full verification and fresh independent review below.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
