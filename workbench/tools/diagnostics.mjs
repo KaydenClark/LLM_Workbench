@@ -12,6 +12,8 @@ export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessio
 export const EFFECTS = Object.freeze(['all', 'selection', 'selected-slice', 'none']);
 
 const registry = Object.freeze({
+  'session-transport-blocked': entry('error', 'sessions', 'none', 'an optional transport operation was refused; local note use remains independent'),
+  'session-transport-pending': entry('attention', 'sessions', 'none', 'optional transport has no fresh acknowledgment; preserve local notes and last confirmed SHA'),
   // manifest and layout: the routing every consumer depends on
   'invalid-workbench-identity': entry('error', 'manifest', 'all', 'a declared Workbench connection identity is malformed; do not silently regenerate it'),
   'identity-busy': entry('error', 'manifest', 'none', 'another local identity writer holds the assignment lock'),

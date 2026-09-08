@@ -104,6 +104,17 @@ prove global uniqueness.
 
 After S-046 schema/layout seam exists, implement opt-in configured local clone mapping, explicit private remote validation and acknowledgment; test offline pending state, clean fetch/push, idempotence, exclusion of project-owned data, path and privacy refusal.
 
+The first transport implementation uses an existing local checkout and branch,
+positive GitHub private metadata for the selected workbench_sessions repository,
+and explicit private-history acknowledgment. Other private hosting providers
+remain unsupported until their visibility can be verified. No credentials or
+remote are provisioned. Local recovery configuration holds paths and per-note
+confirmed hashes. Remote namespace metadata holds only stable identity and Git
+root lineage. Git index plumbing snapshots selected notes while preserving the
+configured checkout's files and staging area. Basic conflict refusal retains
+both locations; TK-003 owns adversarial serialization/offline/recovery proof.
+Fixture metadata injection is not a private-service or cross-device claim.
+
 ### TK-003 - Preserve conflicting/offline revisions under serialized sync
 
 **Stance:** Builder
@@ -158,6 +169,8 @@ AGENTS/BLUEPRINT/LEXICON/RUNBOOK and generic owners, lifecycle manifests/tools, 
 | 2026-09-08 | TK-001 | Ticket closed | 434ef6b71fb88d5febbd87b60f4f6d55651a06a9: identity 6/6, full 38/38, independent concurrency and preservation review PASS; actual source identity assigned once and second invocation preserved it | Root and generic lifecycle guidance, manifest field and lock recovery documented; artifact identities remain separately scoped | TK-002 optional private transport, TK-003 offline/conflict serialization and TK-004 actual Mac/Windows Claude/Codex proof remain open; final integration pending |
 
 | 2026-09-08 | TK-001 | Frozen 434ef6b71fb88d5febbd87b60f4f6d55651a06a9 completed full verification and independent concurrency review | 38 of 38 commands pass; identity 6 of 6; independent four concurrent writer combinations preserve one final namespace and clean their own locks. Actual source assigned WB-4oRql1XWpf6VgsNwHUXW4Q and second invocation returned current unchanged. Guardrail 78 unchanged with four outcome-evidence recommendations | Stable manifest identity and lifecycle procedures reconciled | Optional private transport, offline/conflict handling, real device/provider proof and final integration remain open; no rollout readiness claim |
+
+| 2026-09-08 | TK-002 | Optional private transport public seams demonstrated missing behavior | Three tests failed with explicit missing configure/sync assertions before implementation. Initial module and selected-note/privacy tests prepared; first post-implementation run correctly refused dirty consumed runtime source before fixture initialization, so no green behavior claim yet | Root and generic Runbook record opt-in GitHub verification, namespace/selection mapping, acknowledgment and preservation limits | Clean candidate targeted verification, offline/conflict hardening, full suite and independent review pending; actual private repository and Windows/provider gates remain open |
 
 ## Completion Result
 

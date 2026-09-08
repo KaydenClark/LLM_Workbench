@@ -886,6 +886,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'notepads.mjs',
   'privacy.mjs',
   'sessions.mjs',
+  'session-transport.mjs',
   'spec-packet.mjs',
   'spec-workbench.mjs',
   'template-placeholders.mjs',

@@ -78,6 +78,7 @@ node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-core-composition.mjs
+node tools/test-session-transport.mjs
 node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
@@ -910,6 +911,57 @@ cleanup with named paths because retention cannot be established; repair or
 reconcile them without discarding their source bytes. This does not block other
 work or grant the tool authority to choose what is important. Writes and cleanup
 assume one writer per note; revision checks are not simultaneous-writer locks.
+
+### Optional Private Session Transport
+
+Transport is optional; ordinary local notepad commands remain independent.
+The current implementation verifies the selected `workbench_sessions` GitHub
+repository through authenticated `gh` metadata. It never creates a remote,
+copies credentials, changes visibility or accepts public/unknown visibility.
+Start with an existing local clone of that private repository, an initialized
+branch and working local Git commit identity. Assign and commit this room's
+`workbenchId` before cloning or configuring it.
+
+```bash
+node workbench/tools/session-transport.mjs configure --checkout PRIVATE_CHECKOUT \
+  --branch BRANCH --acknowledge-private-history
+node workbench/tools/session-transport.mjs status
+node workbench/tools/session-transport.mjs push --note NOTE
+node workbench/tools/session-transport.mjs resume --note NOTE
+```
+
+The explicit acknowledgment accepts retained private Git history, the privacy
+scan's limits, and that notes cannot transfer unpushed code or running processes.
+Machine paths and connection state stay in the ignored local recovery collection.
+A committed room identity plus root commit lineage protects the selected remote
+namespace `workbenches/<WBID>/`; its small `workbench.json` contains no machine
+path. Only explicitly selected valid JSON live notes, grilling records and
+handoffs map beneath `sessions/`. Templates, schemas, durable owners and recovery
+files never become selected notes. Unsafe paths and decoded privacy matches
+refuse before upload. Transport names use plain alphanumeric/dot/dash/underscore
+path components; unsupported existing names remain local unchanged.
+
+Push after a meaningful save or before switching devices. Resume fetches before
+writing selected local notes. A confirmed result names the freshly fetched
+remote SHA and checks selected bytes. Unchanged saves make no new commit. Private
+metadata/fetch/push failure reports pending with the last confirmed SHA; it never
+claims current acknowledgment. A local operation lock and a transport Git lock
+serialize participating commands. Revision conflicts preserve local and remote
+versions and require explicit reconciliation; there is no force push, implicit
+remote deletion or promise of machine-crash recovery. Keep one active note writer;
+other Git clients and local note writers do not automatically honor these locks.
+
+The helper uses a temporary Git index to preserve the checkout's existing files
+and staging area. Transport errors use registered effect-none diagnostics and
+never block local Workbench selection. Preserve failed-operation state and
+inspect it before retrying. A stale lock is an explicit recovery condition,
+never automatically stolen. Deleting current data does not erase private Git
+history; historical erasure is outside this tool.
+
+Local bare-repository tests inject simulated private metadata only at the module
+testing seam. They do not verify a private service or real device/provider round
+trip. Actual private-repository, Mac/Windows and Claude/Codex continuation gates
+remain separate from these mechanical tests.
 
 ### Portable Save, Promote And Room-Local Skills
 

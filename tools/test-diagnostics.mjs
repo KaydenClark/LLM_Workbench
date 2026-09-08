@@ -564,6 +564,8 @@ test('a room outside any Git work tree is told so instead of being told to creat
 const PINNED_EFFECTS = {
   'invalid-workbench-identity': ['error', 'manifest', 'all'],
   'identity-busy': ['error', 'manifest', 'none'],
+  'session-transport-blocked': ['error', 'sessions', 'none'],
+  'session-transport-pending': ['attention', 'sessions', 'none'],
   'identity-write-failed': ['error', 'manifest', 'none'],
   'invalid-manifest': ['error', 'manifest', 'all'],
   'upgrade-required': ['error', 'manifest', 'all'],
