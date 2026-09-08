@@ -68,7 +68,7 @@ function wikiStamps(root, wikiRoot, wikiRelative, expectedVersion) {
   return findings;
 }
 
-export function validateWiki(root) {
+export function validateWiki(root, options = {}) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
   const wikiRelative = laneRelative(root, 'wiki');
@@ -112,7 +112,7 @@ export function validateWiki(root) {
   const basenames = new Map();
   for (const file of walkMarkdown(wikiRoot)) {
     const relative = path.relative(root, file).split(path.sep).join('/');
-    const content = fs.readFileSync(file, 'utf8');
+    const content = options.contentOverrides?.get(file) ?? fs.readFileSync(file, 'utf8');
     const inArchive = file.startsWith(archive + path.sep);
     const basename = path.basename(file, '.md');
     basenames.set(basename, [...(basenames.get(basename) ?? []), relative]);

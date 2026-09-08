@@ -51,6 +51,7 @@ const registry = Object.freeze({
   'malformed-json': entry('error', 'sessions', 'none', 'a JSON record is not parseable'),
   'legacy-schema': entry('error', 'sessions', 'none', 'a record is an earlier notepad schema with no revision to check; migrate it first'),
   'retained-dependency': entry('error', 'sessions', 'none', 'a trim would strand material that a retained entry still corrects or depends on'),
+  'promotion-recovery-required': entry('error', 'sessions', 'none', 'a promotion read-back and restoration failed; retain the reported original backup for recovery'),
   'write-failed': entry('error', 'sessions', 'none', 'a record could not be published; the previous valid file is unchanged'),
   'stale-note': entry('attention', 'wiki', 'none', 'a wiki note is marked stale'),
   // These two are shared: the wiki validator, the checkpoint promoter, and the

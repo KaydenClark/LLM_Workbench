@@ -172,6 +172,7 @@ node tools/test-sessions.mjs
 node tools/test-notepads.mjs
 node tools/test-visible-ids.mjs
 node tools/test-visible-id-consumers.mjs
+node tools/test-direct-promotion.mjs
 node tools/test-workbench-round-trip.mjs
 node tools/test-cross-provider-fixture.mjs
 node tools/test-portability-matrix.mjs

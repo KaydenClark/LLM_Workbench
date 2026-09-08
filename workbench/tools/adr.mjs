@@ -81,7 +81,7 @@ export function insertFrontmatterKeys(content, fields, label) {
   return { content: `${content.slice(0, fence.index)}${fence.eol}${lines.join(fence.eol)}${content.slice(fence.index)}`, inserted: missing.map(([name]) => name) };
 }
 
-export function listAdrs(root) {
+export function listAdrs(root, options = {}) {
   const directory = collectionPath(root, 'adr');
   assertSafeReadPath(root, directory);
   if (!fs.existsSync(directory)) return [];
@@ -95,12 +95,11 @@ export function listAdrs(root) {
       return entry;
     })
     .map((entry) => entry.name)
-    .map((name) => readAdr(root, path.join(directory, name)))
+    .map((name) => readAdr(root, path.join(directory, name), options.contentOverrides?.get(path.join(directory, name))))
     .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
-function readAdr(root, filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
+function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8')) {
   const { data, body } = parseFrontmatter(content);
   const name = path.basename(filePath);
   const [, number, slug] = name.match(ID_PATTERN);
@@ -108,10 +107,10 @@ function readAdr(root, filePath) {
   return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body };
 }
 
-export function validateAdrs(root) {
+export function validateAdrs(root, options = {}) {
   const findings = [];
   let adrs;
-  try { adrs = listAdrs(root); }
+  try { adrs = listAdrs(root, options); }
   catch (error) { return [finding('invalid-adr', error.message)]; }
   const numbers = new Map();
   for (const adr of adrs) {
