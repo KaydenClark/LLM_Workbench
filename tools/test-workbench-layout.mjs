@@ -23,6 +23,13 @@ function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-layout-'));
 }
 
+function healthySkillHome() {
+  const home = fixture();
+  const result = spawnSync(process.execPath, [path.join(root, 'tools/core-skill-installer.mjs'), 'install', '--home', home], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stdout);
+  return home;
+}
+
 function run(...args) {
   const result = spawnSync(process.execPath, [tool, ...args], { cwd: root, encoding: 'utf8' });
   return { ...result, report: result.stdout ? JSON.parse(result.stdout) : null };
@@ -142,7 +149,7 @@ test('the committed placeholder vocabulary exactly matches the shipped Genesis t
 
 test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   try {
     const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION);
     assert.equal(initialized.status, 0, initialized.stderr);
@@ -525,7 +532,7 @@ test('Genesis readiness requires a version-matched runtime tools receipt', () =>
 // disagrees with its own receipt has to fail the doctor it carries.
 test('a room whose managed runtime drifts from its receipt fails the doctor it carries', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
@@ -588,7 +595,7 @@ test('a room whose managed runtime drifts from its receipt fails the doctor it c
 // installs, not only in the release-side installer a room never carries.
 test('a room names a managed file deleted together with its receipt key', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
@@ -632,7 +639,7 @@ test('a room names a managed file deleted together with its receipt key', () => 
 // changes nothing.
 test('a room tells a foreign lane file apart from a receipt key it lost', () => {
   const project = fixture();
-  const quietHome = fixture();
+  const quietHome = healthySkillHome();
   const roomDoctor = () => {
     const result = spawnSync(process.execPath, [path.join(project, 'workbench', 'tools', 'spec-workbench.mjs'), 'doctor', '--json', '--home', quietHome], { cwd: project, encoding: 'utf8' });
     return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };

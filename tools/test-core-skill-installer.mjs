@@ -531,9 +531,10 @@ test('an installed core skill carries a schema 2 marker naming the release, comm
     const markers = ['.agents', '.claude'].map((provider) =>
       JSON.parse(fs.readFileSync(path.join(home, provider, 'skills', 'genesis', '.workbench-skill.json'), 'utf8')));
     for (const marker of markers) {
-      assert.deepEqual(Object.keys(marker).sort(), ['commit', 'contentHash', 'release', 'schemaVersion', 'source']);
+      assert.deepEqual(Object.keys(marker).sort(), ['commit', 'compatibleRooms', 'contentHash', 'release', 'schemaVersion', 'source']);
       assert.equal(marker.schemaVersion, 2);
       assert.equal(marker.source, 'LLM Workbench core');
+      assert.deepEqual(marker.compatibleRooms, { minimum: 'v3.1.4', maximum: VERSION });
       assert.equal(marker.release, VERSION, 'the marker names the release of the checkout that installed it');
       assert.match(marker.commit, /^[0-9a-f]{40}$/);
       assert.match(marker.contentHash, /^[0-9a-f]{64}$/);

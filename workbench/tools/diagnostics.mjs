@@ -79,6 +79,14 @@ const registry = Object.freeze({
   'invalid-first-spec': entry('error', 'specs', 'all', 'the first spec is not an actionable packet'),
   'project-local-skills': entry('error', 'controls', 'all', 'a project-local skills tree shadows user-scoped discovery'),
   // installed skills: doctor reads the user home and never writes to it
+  'skill-missing': entry('attention', 'skills', 'none', 'a required core discovery entry is absent'),
+  'skill-discovery-broken': entry('attention', 'skills', 'none', 'core discovery or content is broken, unsafe or unreadable'),
+  'skill-content-modified': entry('attention', 'skills', 'none', 'core bytes differ from the recorded content identity'),
+  'skill-compatibility-unknown': entry('attention', 'skills', 'none', 'the core marker declares no valid tested room range'),
+  'incompatible-core': entry('attention', 'skills', 'none', 'the room version lies outside the declared core compatibility range'),
+  'skill-source-conflict': entry('attention', 'skills', 'none', 'a core name has conflicting physical source ownership'),
+  'skill-duplicate-discovery': entry('attention', 'skills', 'none', 'a deprecated additional discovery entry duplicates the core catalog'),
+  'core-generation-conflict': entry('attention', 'skills', 'none', 'installed core skills declare multiple global generations'),
   'stale-skill': entry('attention', 'skills', 'none', 'an installed core skill records a release other than the manifest workbenchVersion'),
   'skill-generation-unknown': entry('attention', 'skills', 'none', 'an installed core skill has no schema 2 marker, so its generation is unknown'),
   // The permission file is the mechanical half of the prose Edit Scope. A

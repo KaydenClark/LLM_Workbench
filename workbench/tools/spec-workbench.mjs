@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { inspectSkills } from './skill-inspection.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, readManagedSkillMarker, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -237,37 +238,9 @@ function packetFindings(specs, options = {}) {
   return issues;
 }
 
-// Installed core skills: for each skill the manifest requires, read its
-// managed marker in every declared discovery root under the user home
-// (`--home`, default the user home). A schema 2 marker whose release differs
-// from the manifest is stale; a present skill without a Workbench-managed
-// schema 2 marker (missing, schema 1, or another source) is of unknown
-// generation. A missing skill is Adoption preflight's finding. The home is
-// only ever read.
+// Inspection reports ownership and compatibility without changing the home.
 function skillFindings(root, home) {
-  const manifest = readManifest(root);
-  if (!manifest || manifest.schemaVersion !== 2) return [];
-  const required = Array.isArray(manifest.skillPolicy?.required) ? manifest.skillPolicy.required : [];
-  const discovery = Array.isArray(manifest.skillPolicy?.discovery) ? manifest.skillPolicy.discovery : [];
-  const homeDir = path.resolve(home ?? os.homedir());
-  const findings = [];
-  for (const discoveryRoot of discovery) {
-    for (const skill of required) {
-      const installed = path.join(homeDir, discoveryRoot, skill);
-      if (!isDirectory(installed)) continue;
-      const marker = readManagedSkillMarker(installed);
-      if (marker?.schemaVersion !== 2 || typeof marker.release !== 'string') {
-        findings.push(finding('skill-generation-unknown', `${discoveryRoot}/${skill} has no schema 2 marker; which Workbench generation it came from is unknown`, { skill, root: discoveryRoot }));
-      } else if (marker.release !== manifest.workbenchVersion) {
-        findings.push(finding('stale-skill', `${discoveryRoot}/${skill} records release ${marker.release}; the manifest runs ${manifest.workbenchVersion}`, { skill, root: discoveryRoot, release: marker.release, expected: manifest.workbenchVersion }));
-      }
-    }
-  }
-  return findings;
-}
-
-function isDirectory(target) {
-  try { return fs.statSync(target).isDirectory(); } catch { return false; }
+  return inspectSkills(readManifest(root), path.resolve(home ?? os.homedir()));
 }
 
 // The declared integration branch is the review gate's merge target. Its

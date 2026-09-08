@@ -33,7 +33,9 @@ export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md'
 export const SESSIONS_IGNORE = `# Live session records stay local; checkpoint history is frozen.\ngrilling/*\n!grilling/.gitkeep\nhandoffs/*\n!handoffs/.gitkeep\n# Local typed notepads; reusable schema/examples remain tracked.\nnotepads/*\n!notepads/templates/\n!notepads/.gitkeep\n# Legacy notepad path a stale installed skill may still write; never tracked.\ngrilling diary/\n# Operational rollback material is local, not session history.\nrecovery/*\n!recovery/.gitkeep\n`;
 // The managed skill marker every installed core skill carries; one reader for
 // the installer, the explicit upgrade, and doctor. Schema 1 (source only) and
-// schema 2 (source, release, commit, contentHash) both prove management.
+// schema 2 (source, release, commit, contentHash) both record management.
+// Current schema 2 markers also declare compatibleRooms minimum/maximum;
+// older markers keep their generation while compatibility remains unknown.
 export const MANAGED_SKILL_MARKER = '.workbench-skill.json';
 export const MANAGED_SKILL_SOURCE = 'LLM Workbench core';
 export function readManagedSkillMarker(skillDirectory) {
@@ -887,6 +889,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'spec-workbench.mjs',
   'template-placeholders.mjs',
   'visible-ids.mjs',
+  'skill-inspection.mjs',
   'wiki.mjs',
   'workbench-layout.mjs',
   'workbench-paths.mjs'

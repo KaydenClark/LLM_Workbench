@@ -76,6 +76,7 @@ node tools/test-spec-workbench.mjs
 node tools/test-team-coordination.mjs
 node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
+node tools/test-skill-inspection.mjs
 node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
@@ -170,13 +171,31 @@ installed bundle against the room's manifest without touching it:
 node workbench/tools/spec-workbench.mjs doctor --home /tmp/workbench-user-home
 ```
 
-`--home` defaults to the user home and is only ever read. For each required
-skill present in a discovery root, `stale-skill` (attention) means its marker
-records a release other than the manifest `workbenchVersion`, and
-`skill-generation-unknown` (attention) means it has no schema 2 marker, which
-is how a foreign Git-owned skill root shows up. Neither blocks; a missing
-skill is Adoption preflight's finding. Repair is the explicit upgrade, never
-doctor.
+`--home` defaults to the user home and is only ever read. A current schema 2
+marker declares `compatibleRooms.minimum` and `.maximum`, inclusive. The
+source baseline starts at v3.1.4 and the maximum is the producing release.
+Compare the room version with this explicit range; equality of release strings
+alone establishes nothing. Older complete generation markers without a range
+remain readable and report unknown compatibility. Exact installed runtime
+receipts and configured-host workflow proof remain separate evidence.
+
+| Finding | Meaning |
+|---|---|
+| `skill-missing` | A required discovery entry is absent. |
+| `skill-discovery-broken` | A link, skill file or content tree is unsafe or unreadable. |
+| `skill-generation-unknown` | The managed generation identity is incomplete or invalid. |
+| `skill-content-modified` | Current bytes differ from the marker; preserve the edits. |
+| `skill-compatibility-unknown` | No valid explicit room range is declared. |
+| `incompatible-core` | The room lies outside that declared range. |
+| `skill-source-conflict` | Same-named entries maintain distinct sources or link canonical per-skill source. |
+| `skill-duplicate-discovery` | A deprecated `.codex/skills` entry adds another Codex catalog. |
+| `core-generation-conflict` | Required core skills declare multiple global generations. |
+
+All skill findings are attention with effect `none`: they expose the affected
+capability without blocking unrelated selection. Normal setup preserves existing
+entries, doctor never repairs them, and explicit update retains its separate
+ownership and recovery checks. These checks establish filesystem discovery and
+declared compatibility, not native invocation or agent reliability.
 
 ### V3 support-root check
 

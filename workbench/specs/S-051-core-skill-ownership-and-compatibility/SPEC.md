@@ -109,6 +109,14 @@ uses isolated homes.
 
 Test compatible differing release versus incompatible range, invalid/unknown marker, missing core, conflicting same names, broken links and valid aliases. No mutation on read-only diagnostics. Keep configured-host callability distinct from file discovery.
 
+Current schema 2 markers add an inclusive `compatibleRooms` range. The floor
+is the v3.1.4 typed-notepad baseline; the ceiling is the producing release.
+Unknown legacy ranges remain unknown even when release strings match. Matching
+recorded content and one canonical generation are separate checks. The range
+comparison is structural evidence; exact runtime receipts and configured-host
+workflow trials retain their own acceptance gates. Every new skill finding has
+registered attention severity and effect none; diagnostics never repair a home.
+
 ### TK-003 - Compose portable save and promote into a self-sufficient bundle
 
 **Stance:** Builder
@@ -157,6 +165,8 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | 2026-09-08 | TK-001 | Ticket closed | d2ecc5cf049509160c9ae1460b970eee48175772: installer 27/27, upgrade 8/8, full 37/37, independent repair review PASS; all seven reproduced ownership and alias findings resolved | Canonical install/update/rollback procedures and generic adoption route reconciled; tracked-core migration plan preserves separate personal-repository authorization | TK-002 compatibility diagnostics and TK-003 composition/native invocation; final S-050 release integration review and downstream gates remain open |
 
 | 2026-09-08 | TK-001 | Frozen candidate d2ecc5cf049509160c9ae1460b970eee48175772 passed full verification and independent repair review | 37 of 37 commands green; installer 27 of 27 and upgrade 8 of 8; independent adversarial read-back confirmed ownership, whitespace and complete path-alias preservation. Guardrail 78 of 100 unchanged | Procedures and migration plan reconciled | Four unchanged outcome recommendations: repeated real trials, matched controls/prior comparison, current dated benchmark, effect and uncertainty ledger. No agent-outcome, native invocation or integration claim |
+
+| 2026-09-08 | TK-002 | Read-only core compatibility and discovery inspection candidate prepared | Initial test draft had a syntax error and was corrected; valid four-case suite then failed against the frozen 434ef6b public doctor behavior through a test adapter. New inspection passes all four: inclusive differing-release bounds, missing/broken entries, unknown/modified content, separate sources/extra Codex discovery/mixed generations, with unchanged home snapshots | Root and generic diagnostic procedures, schema 2 range extension and this bounded decision documented | Integration fixtures, full 39-command union and independent review pending; configured-host workflow proof is not inferred |
 
 ## Completion Result
 
