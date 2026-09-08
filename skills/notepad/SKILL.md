@@ -67,8 +67,9 @@ moved is refused as `stale-revision` naming the current one - read again and
 re-apply. This is a check, not a lock: it catches the sequential case, where
 your note moved while you were working. Two writers that both read the same
 revision at the same moment would both pass it, so one writer per note remains
-the rule. New material is privacy-scanned before it can reach the file; record
-a safe reference rather than a secret, credential, or raw private data.
+the rule. Every free-text field you supply is privacy-scanned before it can
+reach the file; record a safe reference rather than a secret, credential, or
+raw private data.
 
 Correct in place by linking, never by rewriting history:
 
@@ -129,8 +130,9 @@ no archive and no extra approval. Legacy Markdown sources and existing
 checkpoints keep their own retention rules; do not rewrite one merely to change
 its extension.
 
-An interim `scope-1` record reads as it is and migrates once, preserving its
-recorded text and timestamps, before it can be written to:
+An interim `scope-1` record reads as it is and migrates once, carrying its
+recorded text, timestamps, and every field its current view holds, before it can
+be written to:
 
 ```bash
 node workbench/tools/notepads.mjs migrate --note NOTE

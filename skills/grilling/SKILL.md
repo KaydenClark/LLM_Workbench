@@ -48,8 +48,9 @@ node workbench/tools/notepads.mjs create --note TOPIC-YYYY-MM-DD \
   --view-field 'questions=[{"id":"1","status":"open","question":"First decision"}]'
 ```
 
-`questions` is this workflow's own field rather than a schema one, so it goes in
-through `--view-field`, and `current` preserves it across every later update.
+`--objective` takes a lowercase slug. `questions` is this workflow's own field
+rather than a schema one, so it goes in through `--view-field`, and `current`
+preserves it across every later update.
 Rewrite the whole list with `--view-field` again when a status changes. The
 record that command writes:
 

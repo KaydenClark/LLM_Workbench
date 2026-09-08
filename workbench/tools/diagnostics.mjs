@@ -53,9 +53,15 @@ const registry = Object.freeze({
   'retained-dependency': entry('error', 'sessions', 'none', 'a trim would strand material that a retained entry still corrects or depends on'),
   'write-failed': entry('error', 'sessions', 'none', 'a record could not be published; the previous valid file is unchanged'),
   'stale-note': entry('attention', 'wiki', 'none', 'a wiki note is marked stale'),
-  'invalid-note': entry('error', 'wiki', 'none', 'a wiki note violates the schema'),
+  // These two are shared: the wiki validator, the checkpoint promoter, and the
+  // notepad runtime all emit them. Their `scope` names the lane they were
+  // registered for, not the lane of the emitter, so a notepad refusal reports
+  // `wiki` - a coarse label in machine-readable output, with no effect on
+  // behavior, since both are registered `none`. Splitting them per lane is a
+  // registry change with its own test and belongs to the diagnostics owner.
+  'invalid-note': entry('error', 'wiki', 'none', 'a wiki note, checkpoint source, or notepad violates its schema'),
   'copied-task-state': entry('error', 'wiki', 'none', 'a wiki note copies live task state'),
-  'secret-like-content': entry('error', 'wiki', 'none', 'a note or checkpoint contains secret-like material'),
+  'secret-like-content': entry('error', 'wiki', 'none', 'a wiki note, checkpoint, or notepad write contains secret-like material'),
   'room-brain-unrouted': entry('attention', 'wiki', 'none', 'a root control does not route to the room brain'),
   'stale-stamp': entry('attention', 'wiki', 'none', 'a wiki contract file or the room brain is stamped with a version other than the manifest'),
   // git: the review gate's merge target is a declared fact; its absence is

@@ -207,6 +207,16 @@ test('a fresh reader resumes the objective from the current view alone', () => {
 
     const stale = setCurrent(dir, { note: created.note, revision: 2, state: 'Written blind.' });
     assert.equal(stale.error.code, 'stale-revision');
+
+    // `--view` is refused by value the way a flag is refused by name: falling
+    // through on a typo would return the whole entry history where the caller
+    // asked for the compact view.
+    for (const view of ['curent', 'entries', '']) {
+      const refused = readNote(dir, { note: created.note, view });
+      assert.equal(refused.status, 'blocked', JSON.stringify(view));
+      assert.equal(refused.error.code, 'invalid-note', JSON.stringify(view));
+    }
+    assert.ok(Array.isArray(readNote(dir, { note: created.note }).entries), 'omitting --view still reads entries');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -394,6 +404,13 @@ test('a generated entry id survives a trim', () => {
     assert.equal(next.status, 'appended', JSON.stringify(next));
     assert.equal(next.entry, 'finding-004');
     assert.deepEqual(stored(), ['finding-002', 'finding-003', 'finding-004']);
+
+    // Counting from the survivors alone is not enough either: trim the whole
+    // kind and the sequence would restart, so an id already cited in a durable
+    // owner could come back naming different material.
+    assert.equal(trimEntries(dir, { note: created.note, revision: 6, entry: ['finding-002', 'finding-003', 'finding-004'] }).status, 'trimmed');
+    const after = appendEntry(dir, { note: created.note, revision: 7, kind: 'finding', topic: 'x', content: 'Recorded after the record was emptied.' });
+    assert.equal(after.entry, 'finding-005', 'the high-water mark survives an empty record');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -498,7 +515,11 @@ test('a workflow field can be written into the current view and survives later u
   }
 });
 
-test('every supplied string is privacy-scanned, not only the content field', () => {
+// Named for what it asserts. `--objective` and `--note` are not in it: both are
+// structurally constrained (a lowercase slug, and a path inside a live
+// collection) before any value reaches the record, so neither can carry a
+// credential. Every field that accepts free text is here.
+test('every free-text field is privacy-scanned, not only the content field', () => {
   const dir = project();
   try {
     const created = seed(dir);
@@ -571,7 +592,11 @@ test('the interim scope-1 records read and migrate without regenerating their hi
       created_at: '2026-09-06T21:42:12.355675-06:00',
       updated_at: '2026-09-07T05:08:01.076Z',
       relationships: { index: 'N-000', related_notes: ['N-001'] },
-      current: { state: 'Decisions reconciled into durable owners.', unresolved: [], next_action: 'Retain referenced source fragments.' },
+      // A workflow field in the current view is exactly what migration must
+      // carry: rebuilding the view from three named fields made this the one
+      // lossy path in the command whose purpose is lifting a record intact,
+      // and it dropped the field `--view-field` exists to create.
+      current: { state: 'Decisions reconciled into durable owners.', unresolved: [], next_action: 'Retain referenced source fragments.', questions: [{ id: '1', status: 'locked' }], owner_answers: ['yes'] },
       entries: [{ id: 'source-027', kind: 'source_record', topic: 'preservation', content: '8. [open] What durability guarantee is required?', interpretation: 'Historical source.', question_id: '8' }],
       extensions: { format_status: 'Interim JSON working shape.', durable_owners: [] }
     };
@@ -595,6 +620,8 @@ test('the interim scope-1 records read and migrate without regenerating their hi
     assert.deepEqual(stored.entries[0].content, legacy.entries[0].content, 'migration preserves the recorded source text exactly');
     assert.equal(stored.entries[0].question_id, '8');
     assert.equal(stored.created_at, legacy.created_at, 'migration keeps the original creation time');
+    assert.deepEqual(stored.current.questions, [{ id: '1', status: 'locked' }], 'a workflow field in the current view survives migration');
+    assert.deepEqual(stored.current.owner_answers, ['yes'], 'and so does every other field the record carried there');
     assert.equal(appendEntry(dir, { note: file, revision: 1, kind: 'finding', topic: 'preservation', content: 'Now writable.' }).status, 'appended');
     assert.equal(migrateNote(dir, { note: file }).error.code, 'invalid-note', 'a migrated record is not migrated twice');
   } finally {

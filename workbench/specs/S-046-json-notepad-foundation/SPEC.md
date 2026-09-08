@@ -194,7 +194,7 @@ protocol are proposals, not verbatim owner approvals.
 |---|---|---|---|---|
 | TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
 | TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | done | TK-001 | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged |
-| TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | done | TK-001 | Thirteen red/green public-seam cases in tools/test-notepads.mjs; all five hand-written scope-1 records validate unmodified against the shipped schema and one migrated and took a correction-carrying scoped read on this repository; 31-command union at 8b387be passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria |
+| TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | done | TK-001 | Red/green public-seam cases in tools/test-notepads.mjs, each mutation-tested to confirm it fails for the defect it names; all five hand-written scope-1 records validate unmodified against the shipped schema, and a sixth record - this assignment's own working note - migrated and took a correction-carrying scoped read on this repository; the 31-command union passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria; three independent reviews, the last at 6580b06 |
 
 ### TK-001 - Scope and reconcile
 
@@ -382,12 +382,16 @@ not in this slice and their acceptance boxes stay open.
 
 Red then green at the public seams. `tools/test-notepads.mjs` failed first on
 the missing module, then on each behaviour in turn. Thirteen cases carried the
-original candidate and seven more were added by the two review rounds below,
-for twenty green: the bidirectional trim guard, an id that survives a trim, a
-command validating its own output, the widened privacy scan, the `list`
-collection boundary, an unrecognised flag refused rather than dropped, and a
-workflow field written into the current view and preserved across updates. The
-original thirteen were: create and duplicate identity; append with a revision check, a
+original candidate and the three review rounds below added the rest: the
+bidirectional trim guard, an id that survives a trim and never returns to name
+different material, a command validating its own output, the widened privacy
+scan, the `list` collection boundary, an unrecognised flag refused rather than
+dropped, a `--view` value refused rather than fallen through, a workflow field
+written into the current view and carried across both an update and a
+migration, and the grilling skill's documented command bound to the record it
+shows. Every one of them was mutation-tested: the guard was removed and the
+case confirmed red, rather than read and assumed. The original thirteen were:
+create and duplicate identity; append with a revision check, a
 duplicate entry id, a dangling correction target and an unsupported kind;
 topic-scoped read that excludes an unrelated topic and carries a correction;
 explicit pagination; resume from the current view alone; discovery by
@@ -433,8 +437,8 @@ A sub-minute demo:
 node --test tools/test-notepads.mjs
 ```
 
-Full verification at `8b387be`, and again unchanged at the repaired candidate
-`b27dfb9`, ran in an isolated LF checkout on Windows with
+Full verification ran at `8b387be` and again, unchanged, at each repaired
+candidate through `6580b06`, in an isolated LF checkout on Windows with
 normal subprocess access and `PYTHONUTF8=1`. The ordinary working copy is CRLF
 under `core.autocrlf=true` and several checks read LF-anchored source, so the
 suite is not meaningful there; that is a host condition, not a result. The
@@ -496,7 +500,9 @@ one held. Recorded by severity, with what each would have cost a reader:
   `AGENTS.md`, both Runbooks and the skill state without qualification that
   new material is scanned; `--next-action`, `--unresolved`, `--topic`,
   `--source-file`, `--question-id` and `--durable-owner` were not. Every
-  supplied string is scanned now, rather than narrowing the promise.
+  free-text field is scanned now, rather than narrowing the promise. The two
+  that are not - the objective slug and the note path - are structurally
+  constrained before any value reaches the record.
 - **MEDIUM, a generated entry id collided after a trim.** The default counted
   from the entry count, which shrinks, so the documented
   reconcile-then-keep-working path failed with a refusal naming an id the
@@ -608,7 +614,7 @@ shipped runtime and a green targeted suite are not an agent-outcome result.
 | 2026-09-07 | TK-003 | Ticket closed | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged | AGENTS/RUNBOOK/BLUEPRINT and generic counterparts, source grilling/make-it-so skills, tests and TK-003 verification account updated; Lexicon and ADR checked without change | Independent review and integration of final immutable candidate pending; full JSON runtime remains TK-002 onward; no installed-skill or recovery-outcome claim |
 | 2026-09-08 | TK-002 | Owner assigned the notepad runtime onto the current upstream release and named v3.1.4; slice claimed | Local integration fast-forwarded 9ec4314 to 2127627 with the ten local gitignored notepads intact; doctor zero blocking and 33 informational; guardrail baseline 78/100 measured on 2127627 in an LF checkout | Assignment and its two reconciled findings recorded in the local JSON note | Runtime, skill, controls, stamp, verification and independent review pending |
 | 2026-09-08 | TK-002 | Coordination hand-back: the owner supplied what `/carry` means | `skills/carry/SKILL.md` ships at v3.1.3 but `carry` is present in neither `.agents/skills` nor `.claude/skills` on this host; `doctor` reported `skill-generation-unknown` for the seventeen installed skills and nothing at all for the absent one | Cause is inaccessible, not missing: `missingSkills()` in `tools/skill-presence.mjs` already answers this question, but only the adoption and upgrade gates call it | Smallest correction is an absent-core-skill finding in `doctor`, which is outside this capability; recorded as a gap for the diagnostics owner, not repaired here |
-| 2026-09-08 | TK-002 | Ticket closed | Thirteen red/green public-seam cases in tools/test-notepads.mjs; all five hand-written scope-1 records validate unmodified against the shipped schema and one migrated and took a correction-carrying scoped read on this repository; 31-command union at 8b387be passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria | AGENTS, RUNBOOK, BLUEPRINT, README, LEXICON, skills catalog, wiki router and the generic templates carry the runtime, the notepad skill and the v3.1.4 stamp; LEXICON notepad and scoped-handoff terms checked and no update needed, because the shipped schema matches the definitions already accepted there | sessions/notepads/ layout, an authored-handoff demonstration, installed-skill updates and a real fresh-agent recovery trial remain open in this spec; separately, an absent core skill is invisible to doctor and is recorded as a gap for the diagnostics owner |
+| 2026-09-08 | TK-002 | Ticket closed | Red/green public-seam cases in tools/test-notepads.mjs, each mutation-tested to confirm it fails for the defect it names; all five hand-written scope-1 records validate unmodified against the shipped schema, and a sixth record - this assignment's own working note - migrated and took a correction-carrying scoped read on this repository; the 31-command union passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria; three independent reviews, the last at 6580b06 | AGENTS, RUNBOOK, BLUEPRINT, README, LEXICON, skills catalog, wiki router and the generic templates carry the runtime, the notepad skill and the v3.1.4 stamp; LEXICON notepad and scoped-handoff terms checked and no update needed, because the shipped schema matches the definitions already accepted there | sessions/notepads/ layout, an authored-handoff demonstration, installed-skill updates and a real fresh-agent recovery trial remain open in this spec; separately, an absent core skill is invisible to doctor and is recorded as a gap for the diagnostics owner |
 
 ## Completion Result
 

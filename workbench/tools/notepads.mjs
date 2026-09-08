@@ -238,12 +238,16 @@ export function appendEntry(root, options) {
   const content = requireValue(options.content, '--content is required');
   const existing = new Set(note.entries.map((entry) => entry.id));
   // Count from the highest suffix this kind has ever used, not from the entry
-  // count: a trim shrinks the array, and counting from its length hands the
-  // next append an id a survivor already holds.
+  // count and not from the survivors alone. A trim shrinks the array, so the
+  // count hands the next append an id a survivor already holds; and reading
+  // only the survivors lets a trimmed id come back to name different material
+  // after the original has been cited in a durable owner. The high-water mark
+  // is remembered, so an id is never reused for something else.
+  const sequence = note.extensions?.entry_sequence ?? {};
   const highest = note.entries.reduce((top, entry) => {
     const suffix = new RegExp(`^${kind}-(\\d+)$`).exec(entry.id);
     return suffix ? Math.max(top, Number(suffix[1])) : top;
-  }, 0);
+  }, Number(sequence[kind] ?? 0));
   const id = options['entry-id'] ?? `${kind}-${String(highest + 1).padStart(3, '0')}`;
   if (!ENTRY_ID.test(id)) return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} is not an identifier`);
   if (existing.has(id)) return blocked('duplicate-identity', `${resolved.relative} already carries entry ${id}`, { entry: id });
@@ -265,7 +269,16 @@ export function appendEntry(root, options) {
     if (options['source-line-end']) entry.source.line_end = Number(options['source-line-end']);
     if (options['source-sha256']) entry.source.sha256 = String(options['source-sha256']);
   }
-  const updated = { ...note, revision: note.revision + 1, updated_at: nowStamp(), entries: [...note.entries, entry] };
+  const suffix = new RegExp(`^${kind}-(\\d+)$`).exec(id);
+  const updated = {
+    ...note,
+    revision: note.revision + 1,
+    updated_at: nowStamp(),
+    entries: [...note.entries, entry],
+    extensions: suffix
+      ? { ...note.extensions, entry_sequence: { ...sequence, [kind]: Math.max(Number(sequence[kind] ?? 0), Number(suffix[1])) } }
+      : note.extensions
+  };
   const failure = publish(root, resolved, updated);
   if (failure) return failure;
   return { status: 'appended', note: resolved.relative, entry: id, revision: updated.revision };
@@ -376,6 +389,12 @@ export function readNote(root, options) {
     updated_at: note.updated_at,
     current: note.current
   };
+  // `--view` is refused by value the way `parseArgs` refuses a flag by name.
+  // Falling through on `--view curent` would silently return the whole entry
+  // history where the caller asked for the compact resume view.
+  if (options.view !== undefined && options.view !== 'current') {
+    return blocked('invalid-note', `--view accepts only "current"; got ${JSON.stringify(options.view)}. Omit it to read entries.`, { view: options.view });
+  }
   if (options.view === 'current') return head;
   let selected;
   try { selected = select(note, options); } catch (error) { return blocked('invalid-note', error.message); }
@@ -499,7 +518,12 @@ export function migrateNote(root, options) {
     ...carried,
     updated_at: nowStamp(),
     relationships: note.relationships ?? { index: null, related_notes: [] },
-    current: { state: note.current.state, unresolved: asArray(note.current.unresolved), next_action: note.current.next_action ?? '' },
+    // Spread the stored view: a workflow field there is exactly what migration
+    // must carry, and rebuilding from three named fields made this the one
+    // lossy path in a command whose whole purpose is lifting a record without
+    // losing anything. `setCurrent` has spread for the same reason since the
+    // grilling question list first needed it.
+    current: { ...note.current, state: note.current.state, unresolved: asArray(note.current.unresolved), next_action: note.current.next_action ?? '' },
     entries: note.entries.map((entry) => ({ ...entry, recorded_at: entry.recorded_at ?? note.created_at })),
     // A legacy `revision` is preserved rather than dropped, because the point
     // of migration is that nothing recorded is lost on the way across.
