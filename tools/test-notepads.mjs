@@ -851,3 +851,62 @@ test('the published schema accepts an existing valid entry without an optional t
     assert.ok(schema.properties.entries.items.required.every(key => Object.hasOwn(note.entries[0], key)), 'schema required fields agree with preserved runtime-valid records');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('whole cleanup refuses unfinished context and deletes only an empty reconciled record', () => {
+  const dir = project();
+  try {
+    const created = seed(dir);
+    const file = path.join(dir, created.note);
+    const original = fs.readFileSync(file);
+    const active = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
+    assert.equal(active.json.error.code, 'retained-dependency');
+    assert.deepEqual(fs.readFileSync(file), original);
+    assert.equal(setCurrent(dir, { note: created.note, revision: 1, status: 'RECONCILED', unresolved: ['Still needed'] }).status, 'updated');
+    assert.equal(cli(dir, ['delete', '--note', created.note, '--revision', '2']).json.error.code, 'retained-dependency');
+    setCurrent(dir, { note: created.note, revision: 2, unresolved: [] });
+    appendEntry(dir, { note: created.note, revision: 3, kind: 'finding', topic: 'open', content: 'Must survive until reconciled.' });
+    assert.equal(cli(dir, ['delete', '--note', created.note, '--revision', '4']).json.error.code, 'retained-dependency');
+    trimEntries(dir, { note: created.note, revision: 4, entry: ['finding-001'] });
+    assert.equal(cli(dir, ['delete', '--note', created.note, '--revision', '4']).json.error.code, 'stale-revision');
+    const deleted = cli(dir, ['delete', '--note', created.note, '--revision', '5']);
+    assert.equal(deleted.json.status, 'deleted');
+    assert.equal(fs.existsSync(file), false);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('an authored handoff retains its source slice until the destination is reconciled', () => {
+  const dir = project();
+  try {
+    const created = seed(dir);
+    appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'x', 'entry-id': 'x-1', content: 'X must remain accessible to the receiving context.' });
+    appendEntry(dir, { note: created.note, revision: 2, kind: 'finding', topic: 'y', 'entry-id': 'y-1', content: 'Y is already reconciled.' });
+    const handoff = cli(dir, ['create', '--collection', 'handoffs', '--note', 'destination', '--type', 'handoff', '--objective', 'notepad-runtime', '--title', 'Destination-specific handoff', '--retains', `${created.note}#x-1`]);
+    assert.equal(handoff.status, 0, handoff.stdout);
+    const source = path.join(dir, created.note);
+    const before = fs.readFileSync(source);
+    const denied = trimEntries(dir, { note: created.note, revision: 3, entry: ['x-1'] });
+    assert.equal(denied.error.code, 'retained-dependency');
+    assert.deepEqual(fs.readFileSync(source), before);
+    assert.equal(trimEntries(dir, { note: created.note, revision: 3, entry: ['y-1'] }).status, 'trimmed');
+    setCurrent(dir, { note: handoff.json.note, revision: 1, status: 'RECONCILED' });
+    assert.equal(trimEntries(dir, { note: created.note, revision: 4, entry: ['x-1'] }).status, 'trimmed');
+    setCurrent(dir, { note: created.note, revision: 5, status: 'RECONCILED' });
+    assert.equal(cli(dir, ['delete', '--note', created.note, '--revision', '6']).json.status, 'deleted');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('whole cleanup refuses a retained whole-note pointer and unreadable dependency records', () => {
+  const dir = project();
+  try {
+    const created = seed(dir, { status: 'RECONCILED' });
+    const handoff = cli(dir, ['create', '--collection', 'handoffs', '--note', 'pointer', '--objective', 'notepad-runtime', '--title', 'Retain source', '--retains', created.note]);
+    assert.equal(handoff.status, 0, handoff.stdout);
+    assert.equal(cli(dir, ['delete', '--note', created.note, '--revision', '1']).json.error.code, 'retained-dependency');
+    setCurrent(dir, { note: handoff.json.note, revision: 1, status: 'RECONCILED' });
+    fs.writeFileSync(path.join(dir, 'workbench/sessions/handoffs/broken.json'), '{');
+    const unknown = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
+    assert.equal(unknown.json.error.code, 'retained-dependency');
+    assert.ok(unknown.json.error.unreadable.includes('workbench/sessions/handoffs/broken.json'));
+    assert.equal(fs.existsSync(path.join(dir, created.note)), true);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

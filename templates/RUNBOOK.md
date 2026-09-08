@@ -225,6 +225,7 @@ node workbench/tools/notepads.mjs current --note NOTE --revision N --state "STAT
 node workbench/tools/notepads.mjs trim --note NOTE --revision N --entry ENTRY_ID
 node workbench/tools/notepads.mjs validate --note NOTE
 node workbench/tools/notepads.mjs migrate --note NOTE
+node workbench/tools/notepads.mjs delete --note NOTE --revision N
 ```
 
 Only `--note` and the revision a write checks are always required. `list`
@@ -309,6 +310,26 @@ Skill prose and human-readable projections may remain Markdown.
 
 Use this section to prove whether the workbench or project process is improving.
 The goal is evidence, not taste.
+
+An owner-requested handoff is separately authored for its destination. Create it
+with `--collection handoffs --type handoff` and add the concise context it needs.
+When it points to retained source instead of carrying all selected content,
+repeat `--retains NOTE` or `--retains NOTE#ENTRY_ID` during creation. These
+canonical pointers live in `relationships.retained_sources`. An active pointer
+blocks whole deletion; a whole-note pointer blocks any trim, while an entry
+pointer blocks removal of that entry. Related-note navigation alone does not
+claim retention. The agent must still inspect prose pointers and destination
+access; the tool checks declared dependencies, not semantic sufficiency.
+
+Reconcile the destination before releasing retention: set its status to
+`RECONCILED`, clear unresolved items with `--unresolved ""`, and clear its next
+action with `--next-action ""`. Source cleanup remains a separate decision.
+Whole `delete` requires the source to be reconciled with no entries, unresolved
+items, next action, or active declared retainer. Unreadable live records block
+cleanup with named paths because retention cannot be established; repair or
+reconcile them without discarding their source bytes. This does not block other
+work or grant the tool authority to choose what is important. Writes and cleanup
+assume one writer per note; revision checks are not simultaneous-writer locks.
 
 ### Benchmark-Driven Improvement
 

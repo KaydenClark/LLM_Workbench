@@ -19,7 +19,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { assertSafeReadPath, collectionPath, collectionRelative, findRoot, isMainModule, readManifest, writeSafeFile, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, collectionPath, collectionRelative, findRoot, isMainModule, readManifest, writeSafeFile, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 import { scanPrivacy } from './privacy.mjs';
 
 export const NOTEPAD_SCHEMA_VERSION = 'notepad-1';
@@ -230,6 +230,44 @@ function viewStrings(value) {
   return Object.entries(value).flatMap(([key, child]) => [key, ...viewStrings(child)]);
 }
 
+function retainedSource(root, value) {
+  const parts = value.split('#');
+  if (parts.length > 2 || (parts.length === 2 && !ENTRY_ID.test(parts[1]))) throw new Error('A retained source must name NOTE or NOTE#ENTRY_ID');
+  const loaded = readRaw(root, parts[0]);
+  if (loaded.error) throw new Error(loaded.error.error.message);
+  const checked = checkStructure(loaded.note);
+  if (checked.missing.length || checked.invalid.length) throw new Error('A retained source must be a valid readable note');
+  if (parts[1] && !loaded.note.entries.some(entry => entry.id === parts[1])) throw new Error(`Retained entry ${parts[1]} does not exist in its source note`);
+  return { note: loaded.resolved.relative, entry: parts[1] ?? null };
+}
+
+// Retention is explicit. Prose pointers and whether a claim is sufficiently
+// reconciled remain agent judgment, never a guarantee manufactured by a flag.
+function retentionBlocker(root, resolved, removed = null) {
+  const discovery = listNotes(root);
+  if (discovery.unreadable.length) return blocked('retained-dependency', 'Cleanup cannot establish retention while live records are unreadable; inspect and reconcile the named records first.', { unreadable: discovery.unreadable });
+  const retainedBy = [];
+  for (const item of discovery.notes) {
+    if (item.note === resolved.relative) continue;
+    const loaded = readRaw(root, item.note);
+    if (loaded.error) return blocked('retained-dependency', 'A dependency record changed during cleanup; read it again before retrying.');
+    const other = loaded.note;
+    if (other.status === 'RECONCILED' && !asArray(other.current.unresolved).some(value => value.trim()) && !String(other.current.next_action ?? '').trim()) continue;
+    for (const pointer of asArray(other.relationships?.retained_sources)) {
+      // Retention pointers are canonical project-relative paths as stored by
+      // create. Do not require their source entry to remain present to enforce
+      // a pointer someone wrote before this command existed.
+      const parts = pointer.split('#');
+      let source;
+      try { source = resolveNote(root, parts[0]); }
+      catch { return blocked('retained-dependency', `Malformed retained source in ${item.note}; reconcile it before cleanup.`); }
+      if (parts.length > 2 || (parts.length === 2 && !ENTRY_ID.test(parts[1]))) return blocked('retained-dependency', `Malformed retained source in ${item.note}; reconcile it before cleanup.`);
+      if (source.relative === resolved.relative && (!removed || !parts[1] || removed.has(parts[1]))) retainedBy.push({ note: item.note, entry: parts[1] ?? null });
+    }
+  }
+  return retainedBy.length ? blocked('retained-dependency', 'An active record retains this source; reconcile that destination before removing its context.', { retainedBy }) : null;
+}
+
 export function createNote(root, options) {
   const collection = options.collection ?? defaultCollection(root);
   const name = requireValue(options.note, '--note is required');
@@ -246,8 +284,11 @@ export function createNote(root, options) {
   if (fs.existsSync(resolved.absolute)) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }
+  const retained = [];
+  try { for (const value of asArray(options.retains)) { const source = retainedSource(root, value); retained.push(source.note + (source.entry ? `#${source.entry}` : '')); } }
+  catch (error) { return blocked('invalid-note', error.message); }
   const view = parseViewFields(options['view-field']);
-  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options['view-field']), ...viewStrings(view)]);
+  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options.retains), ...asArray(options['view-field']), ...viewStrings(view)]);
   if (leak) return leak;
   const stamp = nowStamp();
   const note = {
@@ -260,7 +301,7 @@ export function createNote(root, options) {
     objective: { key: objective, focus: options.focus ?? '' },
     created_at: stamp,
     updated_at: stamp,
-    relationships: { index: options.index ?? null, related_notes: asArray(options.related) },
+    relationships: { index: options.index ?? null, related_notes: asArray(options.related), ...(retained.length ? { retained_sources: retained } : {}) },
     current: { state: options.state ?? title, unresolved: asArray(options.unresolved), next_action: options['next-action'] ?? '', ...view },
     entries: [],
     extensions: { durable_owners: [] }
@@ -345,7 +386,7 @@ export function setCurrent(root, options) {
   const { note, resolved } = loaded;
   const state = options.state === undefined ? note.current.state : requireValue(options.state, '--state must not be empty');
   const nextAction = options['next-action'] === undefined ? (note.current.next_action ?? '') : String(options['next-action']);
-  const unresolved = options.unresolved === undefined ? (note.current.unresolved ?? []) : asArray(options.unresolved);
+  const unresolved = options.unresolved === undefined ? (note.current.unresolved ?? []) : asArray(options.unresolved).filter(value => value.trim());
   const status = options.status ?? note.status;
   if (!NOTE_STATUSES.includes(status)) return blocked('invalid-note', `--status must be one of ${NOTE_STATUSES.join(', ')}`, { status });
   // Only what this call supplies is new material. Rescanning the view carried
@@ -543,6 +584,8 @@ export function trimEntries(root, options) {
   const leak = scanNew(suppliedOwners);
   if (leak) return leak;
   for (const owner of suppliedOwners) owners.add(owner);
+  const retainedElsewhere = retentionBlocker(root, resolved, remove);
+  if (retainedElsewhere) return retainedElsewhere;
   const updated = {
     ...note,
     revision: note.revision + 1,
@@ -562,6 +605,25 @@ export function trimEntries(root, options) {
 // Lift an interim record onto the current schema without regenerating it: the
 // recorded text, timestamps, and question routes are carried across unchanged,
 // and only the fields the runtime needs to write safely are added.
+export function deleteNote(root, options) {
+  const loaded = loadForWrite(root, options, options.collection);
+  if (loaded.status === 'blocked') return loaded;
+  const { note, resolved } = loaded;
+  if (note.status !== 'RECONCILED' || note.entries.length || asArray(note.current.unresolved).some(value => value.trim()) || String(note.current.next_action ?? '').trim()) {
+    return blocked('retained-dependency', 'Whole cleanup requires RECONCILED status, no remaining entries, no unresolved items and no next action; reconcile and trim first.');
+  }
+  const retained = retentionBlocker(root, resolved);
+  if (retained) return retained;
+  try {
+    assertSafeWritePath(root, resolved.absolute);
+    // The runtime assumes one writer. Recheck after inspecting dependencies;
+    // this catches intervening changes but is not a simultaneous-writer lock.
+    if (fs.readFileSync(resolved.absolute, 'utf8') !== loaded.text) return blocked('stale-revision', 'The source changed during cleanup; read it again before retrying.');
+    fs.unlinkSync(resolved.absolute);
+  } catch (error) { return blocked('write-failed', `Cleanup refused: ${error.message}`); }
+  return { status: 'deleted', note: resolved.relative, id: note.id, revision: note.revision };
+}
+
 export function migrateNote(root, options) {
   const loaded = readRaw(root, options.note, options.collection);
   if (loaded.error) return loaded.error;
@@ -623,7 +685,7 @@ export function migrateNote(root, options) {
 
 // Repeated flags collect into an array so `--entry a --entry b` and
 // `--unresolved "..." --unresolved "..."` say what they mean.
-const MULTI = new Set(['entry', 'unresolved', 'related', 'durable-owner', 'depends-on', 'view-field']);
+const MULTI = new Set(['entry', 'unresolved', 'related', 'durable-owner', 'depends-on', 'view-field', 'retains']);
 
 // What each subcommand accepts, by exact name. An unrecognised flag is a
 // refusal, not something to accept and drop: `--corects finding-001` would
@@ -632,13 +694,14 @@ const MULTI = new Set(['entry', 'unresolved', 'related', 'durable-owner', 'depen
 // to prevent, reached by a typo and invisible to that guard because the link
 // was never recorded.
 const OPTIONS = Object.freeze({
-  create: ['path', 'note', 'collection', 'objective', 'title', 'focus', 'type', 'status', 'id', 'index', 'related', 'state', 'next-action', 'unresolved', 'view-field'],
+  create: ['path', 'note', 'collection', 'objective', 'title', 'focus', 'type', 'status', 'id', 'index', 'related', 'state', 'next-action', 'unresolved', 'view-field', 'retains'],
   append: ['path', 'note', 'collection', 'revision', 'kind', 'topic', 'content', 'entry-id', 'corrects', 'depends-on', 'interpretation', 'question-id', 'source-file', 'source-line-start', 'source-line-end', 'source-sha256'],
   current: ['path', 'note', 'collection', 'revision', 'state', 'next-action', 'unresolved', 'status', 'view-field'],
   read: ['path', 'note', 'collection', 'topic', 'entry', 'kind', 'limit', 'cursor', 'view'],
   list: ['path', 'collection', 'objective'],
   validate: ['path', 'note', 'collection'],
   trim: ['path', 'note', 'collection', 'revision', 'entry', 'durable-owner'],
+  delete: ['path', 'note', 'collection', 'revision'],
   migrate: ['path', 'note', 'collection']
 });
 
@@ -682,7 +745,7 @@ export function parseViewFields(values) {
   return fields;
 }
 
-const USAGE = 'Usage: notepads.mjs create|append|current|read|list|validate|trim|migrate [options] (see RUNBOOK.md)';
+const USAGE = 'Usage: notepads.mjs create|append|current|read|list|validate|trim|migrate|delete [options] (see RUNBOOK.md)';
 
 if (isMainModule(import.meta.url)) {
   try {
@@ -697,6 +760,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') result = validateNote(root, options.note, options.collection);
     else if (command === 'trim') result = trimEntries(root, options);
     else if (command === 'migrate') result = migrateNote(root, options);
+    else if (command === 'delete') result = deleteNote(root, options);
     else throw new Error(USAGE);
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (result.status === 'blocked') process.exitCode = 1;

@@ -128,8 +128,19 @@ already knew was wrong, with nothing marking it superseded. Trim both halves
 together once the correction has landed in its durable owner, or keep both.
 That refusal is the mechanism doing its job; do not work around it.
 
+Author a requested handoff separately with `--collection handoffs --type handoff`.
+For a pointer-based handoff, repeat `--retains NOTE` or `--retains NOTE#ENTRY_ID`
+when creating it. Confirm destination access and preserve the declared source
+until that destination is reconciled. The tool checks these explicit pointers;
+prose references and semantic sufficiency still need your judgment.
+
 Delete the whole record only when everything important is reconciled and no
-unfinished work or active handoff still depends on it. This is normal cleanup -
+unfinished work or active handoff still depends on it. After verified partial
+trim, set `--status RECONCILED --unresolved "" --next-action ""` through `current`,
+then run `notepads.mjs delete --note NOTE --revision N`. It refuses remaining
+entries or active declared retainers. Named unreadable live records also refuse
+cleanup until their dependencies can be established; preserve them while
+reconciling the issue. This is normal cleanup -
 no archive and no extra approval. Legacy Markdown sources and existing
 checkpoints keep their own retention rules; do not rewrite one merely to change
 its extension.
