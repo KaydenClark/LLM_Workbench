@@ -53,3 +53,29 @@ test('unavailable Node and missing skill stay operation scoped', () => {
     assert.equal(report.checks[0].status, 'pass');
   } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
 });
+test('relative cwd supports directory adapters', () => {
+  const options = fixture();
+  try {
+    options.cwd = path.relative(process.cwd(), options.home);
+    assert.equal(probeConfiguredHost(options).checks[3].status, 'pass');
+  } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
+});
+test('linked records are refused before read and malformed ordinary records fail', () => {
+  const options = fixture();
+  try {
+    const project = path.join(options.home, 'project');
+    const adr = path.join(project, 'workbench/docs/adr');
+    fs.mkdirSync(adr, { recursive: true });
+    fs.writeFileSync(path.join(project, 'workbench/manifest.json'), JSON.stringify({ collections: { adr: 'workbench/docs/adr' } }));
+    const outside = path.join(options.home, 'outside.md');
+    fs.writeFileSync(outside, '---\nstatus: accepted\n---\n# Outside\n');
+    const record = path.join(adr, '001-test.md');
+    fs.symlinkSync(outside, record);
+    assert.equal(probeConfiguredHost({ ...options, root: project }).checks[4].status, 'fail');
+    fs.unlinkSync(record);
+    fs.writeFileSync(record, 'Malformed record');
+    assert.equal(probeConfiguredHost({ ...options, root: project }).checks[4].status, 'fail');
+    fs.unlinkSync(record);
+    assert.equal(probeConfiguredHost({ ...options, root: project }).checks[4].status, 'unverified');
+  } finally { fs.rmSync(options.home, { recursive: true, force: true }); }
+});

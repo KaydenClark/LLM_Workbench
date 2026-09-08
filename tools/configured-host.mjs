@@ -6,14 +6,16 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
-import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
+import { isMainModule, assertSafeReadPath } from '../workbench/tools/workbench-paths.mjs';
 
 export function probeConfiguredHost(options) {
-  const { root, cwd, home, lanes, skill, node = process.execPath } = options;
+  const { lanes, skill, node = process.execPath } = options;
+  let { root, cwd, home } = options;
   for (const [name, value] of Object.entries({ root, cwd, home, skill, node })) {
     if (typeof value !== 'string' || !value || value.includes('\0')) throw new Error(`Invalid ${name} declaration.`);
   }
   if (!Array.isArray(lanes) || !lanes.length || lanes.some(lane => typeof lane !== 'string' || !lane || lane.includes('\0') || (lane.startsWith('~') && !lane.startsWith('~/')))) throw new Error('Invalid writable lane declarations.');
+  root = path.resolve(root); cwd = path.resolve(cwd); home = path.resolve(home);
   const checks = [];
   const results = lanes.map(lane => {
     const form = lane.startsWith('~/') ? 'home' : path.isAbsolute(lane) ? 'absolute' : 'relative';
@@ -57,12 +59,17 @@ export function probeConfiguredHost(options) {
   checks.push(adapter);
   const syntax = { capability: 'checkout-record-syntax', status: 'pass', records: 0, scope: 'actual local ADR checkout; LF/CRLF/CR variants are structural checks only' };
   try {
-    const manifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json'), 'utf8'));
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    assertSafeReadPath(root, manifestFile);
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
     const relative = manifest.collections.adr;
     const lane = path.resolve(root, relative);
-    if (!lane.startsWith(path.resolve(root) + path.sep)) throw new Error('invalid ADR lane');
+    assertSafeReadPath(root, lane);
     for (const name of fs.readdirSync(lane).filter(name => /^[0-9A-Za-z]{3,}-.+\.md$/.test(name))) {
-      const content = fs.readFileSync(path.join(lane, name), 'utf8');
+      const record = path.join(lane, name);
+      assertSafeReadPath(root, record);
+      if (!fs.lstatSync(record).isFile()) throw new Error('record must be an ordinary file');
+      const content = fs.readFileSync(record, 'utf8');
       const parsed = parseFrontmatter(content);
       if (!parsed.data?.status) throw new Error('invalid checkout record');
       for (const eol of ['\n', '\r\n', '\r']) {
@@ -71,10 +78,10 @@ export function probeConfiguredHost(options) {
       }
       syntax.records++;
     }
-    if (!syntax.records) throw new Error('no checkout records available');
-  } catch (error) { syntax.status = 'unverified'; syntax.reason = error.code ?? error.message; }
+    if (!syntax.records) { syntax.status = 'unverified'; syntax.reason = 'no checkout records available'; }
+  } catch (error) { syntax.status = ['ENOENT', 'EACCES', 'EPERM'].includes(error.code) ? 'unverified' : 'fail'; syntax.reason = error.code ?? error.message; }
   checks.push(syntax);
-  return { evidence: 'local-runner-capability-probe', host: { platform: process.platform, release: os.release(), architecture: process.arch, node: process.version }, checks, enforcement: 'unverified', reliability: 'unverified' };
+  return { evidence: 'local-runner-capability-probe', host: { platform: process.platform, release: os.release(), architecture: process.arch, runnerNode: process.version }, checks, enforcement: 'unverified', reliability: 'unverified' };
 }
 
 if (isMainModule(import.meta.url)) {
