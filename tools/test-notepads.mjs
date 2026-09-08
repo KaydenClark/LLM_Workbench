@@ -14,6 +14,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { NOTEPAD_SCHEMA_VERSION, LEGACY_SCHEMA_VERSIONS, createNote, appendEntry, setCurrent, readNote, validateNote, listNotes, trimEntries, migrateNote } from '../workbench/tools/notepads.mjs';
+import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
@@ -275,7 +276,7 @@ test('the runtime refuses malformed JSON, an invalid structure, a path escape, a
     fs.writeFileSync(path.join(dir, 'workbench', 'sessions', 'grilling', 'shapeless.json'), JSON.stringify({ schema_version: NOTEPAD_SCHEMA_VERSION, id: 'N-1' }));
     const shapeless = validateNote(dir, 'workbench/sessions/grilling/shapeless.json');
     assert.equal(shapeless.error.code, 'invalid-note');
-    assert.ok(shapeless.error.details.missing.length > 0, 'the refusal names what is missing');
+    assert.ok(shapeless.error.missing.length > 0, 'the refusal names what is missing');
 
     for (const escape of ['../../outside.json', path.join(os.tmpdir(), 'outside.json')]) {
       const refused = readNote(dir, { note: escape });
@@ -398,9 +399,12 @@ test('the notepad runtime is a managed tool and its live records stay untracked'
     const created = seed(dir);
     const ignored = spawnSync('git', ['check-ignore', '-q', created.note], { cwd: dir });
     assert.equal(ignored.status, 0, 'a live notepad is untracked by default');
-    const source = fs.readFileSync(path.join(root, 'workbench', 'tools', 'workbench-layout.mjs'), 'utf8');
-    assert.match(source, /'notepads\.mjs'/, 'notepads.mjs is one of the Workbench-managed runtime tools');
-    assert.ok(fs.existsSync(path.join(dir, 'workbench', 'tools', 'notepads.mjs')), 'an initialised room carries the runtime');
+    assert.ok(RUNTIME_TOOLS.includes('notepads.mjs'), 'notepads.mjs is one of the Workbench-managed runtime tools');
+    const installed = spawnSync(process.execPath, [path.join(root, 'tools', 'workbench-tools.mjs'), 'install', '--project', dir], { encoding: 'utf8' });
+    assert.equal(installed.status, 0, installed.stdout);
+    assert.ok(fs.existsSync(path.join(dir, 'workbench', 'tools', 'notepads.mjs')), 'installing the managed runtime puts it in the room');
+    const receipt = JSON.parse(fs.readFileSync(path.join(dir, 'workbench', 'tools', '.workbench-tools.json'), 'utf8'));
+    assert.ok(receipt.files['notepads.mjs'], 'the tools receipt hashes the runtime like every other managed tool');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
