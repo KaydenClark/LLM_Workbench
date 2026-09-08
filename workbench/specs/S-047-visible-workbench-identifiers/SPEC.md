@@ -95,6 +95,55 @@ Workbench connection identity under S-052 is a namespace, not another ID on
 each artifact. Test old/new mixed lookup and duplicates at public CLI seams;
 record full consumer coverage and remaining unsupported artifacts explicitly.
 
+## Evaluated Compatibility Defaults
+
+The first note slice uses alphabet `0-9 A-Z a-z`, minimum width three, and
+unbounded width growth through BigInt arithmetic. Allocation selects the first
+unoccupied label without decoding old numeric labels as an ordinal high-water
+mark. Case-folded and leading-zero aliases reserve one identity; prefixes have
+independent Workbench scopes. Existing visible IDs and filenames remain intact.
+The allocator also reserves existing destination-name aliases, including a
+legacy filename whose stored ID differs. Creation publishes exclusively; a file
+appearing after preflight is preserved. One writer remains the supported model.
+
+`--note` keeps its original filename/path semantics. `--id` explicitly selects
+stored identity and refuses unknown or ambiguous matches; it cannot silently
+fall back to a different record's filename. Unreadable inventory blocks identity
+allocation/lookup until reconciled. No perpetual registry of deleted local notes,
+distributed lock, chronology encoding or automatic renumbering is claimed.
+
+The TK-002 consumer inventory found 49 existing specs carrying `TK-001` at
+`f074b9e3e34a64d868be68a2419b2532cb7f6389`. The two accepted requirements—type
+and Workbench uniqueness for new visible IDs, and preservation of legacy
+references—require an explicit compatibility boundary: existing numeric ticket
+references remain spec-qualified and unchanged; they are not retroactively
+claimed globally unique. New ticket allocation must reserve the whole Workbench
+inventory while tolerating the pre-existing numeric repetitions as reservations.
+Case/alias collisions and new duplicate labels need explicit diagnostics. This
+is the preservation-safe engineering interpretation of the accepted requirements,
+not a new owner decision or implementation claim. TK-002 tests and review must
+challenge it before delivery.
+
+## TK-001 Verification Account
+
+Initial public allocation/duplicate/inventory cases failed before implementation;
+the shared encoder/allocator seam was absent. Candidate `f074b9e` passed 42
+notepad, three allocator and 62 layout cases, with a receipt-backed installed
+runtime allocating and reading a visible note. Its full 35-command union passed
+34 checks; the privacy test flagged ordinary identifier variable names as
+credential assignments. These are source-code expressions, not credentials.
+The names were changed to suffix; the scanner and criteria were unchanged.
+
+Independent review returned CHANGES REQUIRED despite those targeted passes:
+unmatched identity lookup could return a legacy filename with a different ID,
+and that filename could stall allocation. Two expected red regressions drove
+explicit selectors and destination reservations at `8e9978a`; a third reservation
+case drove alias handling independent of filesystem sensitivity at `2bc4284`.
+The publication-race regression separately failed before exclusive creation was
+added. The repaired target passes 45 notepad cases and three allocator cases.
+Final full-suite and fresh review are still pending; spec/ticket/ADR compatibility
+remains TK-002. No overall identifier or release acceptance is closed here.
+
 ## Acceptance Criteria
 
 - [ ] The accepted visible-ID semantics work through allocation and lookup.
