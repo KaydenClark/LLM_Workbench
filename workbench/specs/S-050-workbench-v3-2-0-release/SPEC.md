@@ -189,6 +189,8 @@ claims/status/lineage, not private transcripts.
 
 | 2026-09-08 | TK-003 | Convergence found historical cross-provider fixture contradicting current core and host boundaries | Separate public fixture assertions demonstrated RED for duplicate Codex discovery and host permission-bypass configuration. Fixture now retains canonical core installation, leaves host security configuration unchanged, and identifies its planner as a fixture rather than an unobserved provider/model | Runbook procedure reconciled; no generic counterpart exists for this producer-only evaluation launcher | Clean targeted/full verification and independent convergence review pending; no actual native/provider support claim follows |
 
+| 2026-09-08 | TK-003 | Development candidate 157d547 generated a useful independent Queue Summary project and native saved-objective continuation | Bootstrap 429fb1c readiness independently passes; implementation 2f32f51 fresh clone passes fourteen tests, doctor and sample. Native Codex CLI 0.144.3 recovered original/correction, verified empty/mixed inputs and fourteen tests, saved note6 to8; parent corrected earlier readiness-report error and read back note10. Local bare branch recovery85ac45b verified; runtime15 exact hashes and distinct room ID checked | [Bounded technical receipt](genesis-continuation-result.json) preserves model-unreported, explicit-invocation, local-remote and source-version limits; inaccurate post-implementation Genesis-readiness claim explicitly withdrawn | Independent receipt review pending. This development rehearsal does not satisfy final v3.2.0, Example integration, actual private service, Windows or Claude gates |
+
 ## Completion Result
 
 Pending. No v3.2.0 readiness, publication, or downstream delivery claim.
