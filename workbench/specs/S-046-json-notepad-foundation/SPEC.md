@@ -194,7 +194,7 @@ protocol are proposals, not verbatim owner approvals.
 |---|---|---|---|---|
 | TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
 | TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | done | TK-001 | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged |
-| TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | done | TK-001 | Red/green public-seam cases in tools/test-notepads.mjs, each mutation-tested to confirm it fails for the defect it names; all five hand-written scope-1 records validate unmodified against the shipped schema, and a sixth record - this assignment's own working note - migrated and took a correction-carrying scoped read on this repository; the 31-command union passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria; four independent reviews at the pushed tips 517f27e, 7254ffd, cedda79 and 2396017 |
+| TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | done | TK-001 | Red/green public-seam cases in tools/test-notepads.mjs, each mutation-tested to confirm it fails for the defect it names; all five hand-written scope-1 records validate unmodified against the shipped schema, and a sixth record - this assignment's own working note - migrated and took a correction-carrying scoped read on this repository; the 31-command union passes 25 and fails six with nothing unmeasured, where the unchanged v3.1.3 baseline 2127627 passes 24 and fails the same six case for case by name, both measured from Git Bash under identical budgets; guardrail 78/100 before and after with unchanged criteria; six independent reviews at the pushed tips 517f27e, 7254ffd, cedda79, 2396017, 1f00625 and a9bf47c |
 
 ### TK-001 - Scope and reconcile
 
@@ -442,10 +442,13 @@ candidate through `2396017`, in an isolated LF checkout on Windows with
 normal subprocess access and `PYTHONUTF8=1`. The ordinary working copy is CRLF
 under `core.autocrlf=true` and several checks read LF-anchored source, so the
 suite is not meaningful there; that is a host condition, not a result. The
-31-command union passes 24, fails six, and exceeds this run's 300-second budget
-on one. The unchanged v3.1.3 baseline `2127627` runs the same union without
-`test-notepads` and passes 23, fails the same six, and exceeds the same budget.
-Every failing case matches by name on both trees:
+31-command union passes 25 and fails six, with **nothing unmeasured**. The
+unchanged v3.1.3 baseline `2127627` runs the same union without `test-notepads`
+and passes 24 and fails the same six. Both were re-measured from Git Bash on a
+quiet machine under identical budgets, so the two numbers are comparable rather
+than one measured and one bounded; the earlier figures in this account were
+24 and 23 with `check-append-only` timing out, and that step now completes and
+passes on both trees. Every failing case matches by name on both:
 
 | Failing command | Case, identical on baseline and candidate |
 |---|---|
@@ -519,6 +522,23 @@ completion it reported `VIOLATION S-046 ... 1 row(s) not at first-published
 text`. The row is restored byte-for-byte from `27c8c29`, the commit that first
 published it, and the correction to its content stands as the appended row
 below it, which is where a correction belonged in the first place.
+
+**A check added in this branch was withdrawn, and this is where that is
+recorded.** Round 4 added a case to `tools/test-spec-citation-anchors.mjs`
+requiring every commit a live spec section names to be contained in some
+branch, after this branch cited three commits it had squashed away. Round 6
+removed it. It went red in an ordinary `git clone` on correct content: a clone
+copies the whole object store but only `refs/heads/*`, so S-049's legitimate
+citation of a merge on `origin/main` arrives as an object present in the clone
+that no ref there contains. The single-branch case is the opposite and no
+better - the object is absent entirely, so the check passes vacuously. It could
+therefore be red on a correct spec or silently useless depending on how the
+reader cloned, which is not a property of the content, and it was a mandatory
+suite command. The practice it was meant to enforce is kept as a practice:
+verify `git branch -a --contains` before writing a commit into a durable
+record, which is how the citations in this spec and in `benchmarks/RESULTS.md`
+were checked. The evidence row that announced the check is superseded by an
+appended row rather than edited.
 
 The general lesson is not about this row. A verification step that times out
 is an unmeasured step, and calling it "not a failure" made it read as a
@@ -686,6 +706,7 @@ shipped runtime and a green targeted suite are not an agent-outcome result.
 | 2026-09-08 | TK-002 | Ticket closed | Thirteen red/green public-seam cases in tools/test-notepads.mjs; all five hand-written scope-1 records validate unmodified against the shipped schema and one migrated and took a correction-carrying scoped read on this repository; 31-command union at 8b387be passes 24 where the unchanged v3.1.3 baseline 2127627 passes 23, failing the same six commands case for case by name; guardrail 78/100 before and after with unchanged criteria | AGENTS, RUNBOOK, BLUEPRINT, README, LEXICON, skills catalog, wiki router and the generic templates carry the runtime, the notepad skill and the v3.1.4 stamp; LEXICON notepad and scoped-handoff terms checked and no update needed, because the shipped schema matches the definitions already accepted there | sessions/notepads/ layout, an authored-handoff demonstration, installed-skill updates and a real fresh-agent recovery trial remain open in this spec; separately, an absent core skill is invisible to doctor and is recorded as a gap for the diagnostics owner |
 | 2026-09-08 | TK-002 | Correction to the closing row above | The row above cites `6580b06` as the commit its third review ran at. That commit was a work-in-progress squashed away before the push and is contained in no branch, so it cannot be followed and will be collected. The candidate is `a21c96d`, checked with `git branch -a --contains` before this row was written. No measurement in the row changes: 24 pass, 6 fail, the same six as baseline `2127627`, guardrail 78/100 | The two live citations of the same commit are repaired in place; this row corrects the append-only one. `tools/test-spec-citation-anchors.mjs` now fails a live section citing a commit contained in no branch, so the class is checked rather than asserted | Third citation of a squashed commit in this branch, twice inside a correction to a previous wrong citation. The cause was writing a SHA into a document and then squashing the commit it named; the check now catches it, and the ledger and this log both verify containment before citing |
 | 2026-09-08 | TK-002 | Withdrawal: the row two above, and the correction under it | The fourth review found that the closing row was **rewritten in place** at `a21c96d`, which `AGENTS.md` forbids and `tools/check-append-only.py` fails on. It is restored byte-for-byte from `27c8c29`, the commit that first published it. The correction row directly above is therefore withdrawn on its premise: the published row never cited `6580b06`: the in-place rewrite is what put it there, so that row corrected a defect it had itself introduced while disclosing nothing about the rewrite. It also named `a21c96d` as the commit a review ran at, and no review ran there. The reviewed tips are `517f27e`, `7254ffd`, `cedda79` and `2396017` | The two live citations are repaired to name the reviewed tips. `tools/check-append-only.py` reports CLEAN at this commit | The rewrite went unseen for three rounds because the suite step that exists to catch it, `check-append-only`, exceeded its 300-second budget on every pass and the result was recorded as "not a failure". A step that times out is unmeasured, and reporting it as anything else is what let this survive |
+| 2026-09-08 | TK-002 | Withdrawal: the containment check announced two rows above | That row's Docs column says "`tools/test-spec-citation-anchors.mjs` now fails a live section citing a commit contained in no branch, so the class is checked rather than asserted". The check was removed in `8736beb` and the class is **not** mechanically checked. It went red in an ordinary clone on correct content and passed vacuously in a single-branch one, so its verdict depended on how the reader cloned rather than on the content, in a mandatory suite command | The live TK-002 account now records the withdrawal and its reason. The sixth review found that the source comment claimed this spec recorded it while the spec did not, which is why this row exists | The practice is kept by hand: verify `git branch -a --contains` before citing a commit in a durable record. Nothing mechanically prevents the squashed-SHA class from recurring |
 
 ## Completion Result
 

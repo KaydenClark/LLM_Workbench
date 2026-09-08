@@ -741,10 +741,13 @@ is privacy-scanned before it can reach the file; preserved history is not
 rescanned, because an old record may legitimately quote a matching string.
 A refused or failed write leaves the previous valid record unchanged.
 
-An id is never reused. `append` remembers the highest number each id prefix has
-reached in `extensions.entry_sequence`, and `trim` records the mark for what it
-removes, so an id already cited in a durable owner cannot come back naming
-different material after the entry that proved the number is gone.
+A numbered id is never reused. `append` remembers the highest number each id
+prefix has reached in `extensions.entry_sequence`, and `trim` records the mark
+for what it removes, so an id already cited in a durable owner cannot come back
+naming different material after the entry that proved the number is gone. The
+mechanism tracks ids shaped `prefix-number`, which is every id the runtime
+generates; an `--entry-id` of another shape records no mark and is not held to
+one, so give a hand-chosen id that shape if it may ever be cited.
 
 `trim` removes named reconciled entries and refuses with `retained-dependency`
 rather than breaking a link in either direction: removing material a retained

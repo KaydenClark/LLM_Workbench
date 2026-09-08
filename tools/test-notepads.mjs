@@ -425,6 +425,19 @@ test('a generated entry id survives a trim', () => {
       'a number above the mark is still the caller\'s to choose');
     // A prefix with no mark yet may legitimately start at zero.
     assert.equal(appendEntry(dir, { note: created.note, revision: 9, kind: 'finding', topic: 'x', 'entry-id': 'source-0', content: 'First use of a new prefix.' }).status, 'appended');
+
+    // A hand-corrupted mark must not wedge its prefix or be written back as a
+    // value that reads as something else. Raw Number() gave `finding-NaN` on
+    // read and stored NaN - JSON `null` - on write, which reads back as 0.
+    const notePath = path.join(dir, created.note);
+    const corrupt = JSON.parse(fs.readFileSync(notePath, 'utf8'));
+    corrupt.extensions.entry_sequence = { finding: 'abc' };
+    fs.writeFileSync(notePath, `${JSON.stringify(corrupt, null, 2)}\n`);
+    const healed = appendEntry(dir, { note: created.note, revision: corrupt.revision, kind: 'finding', topic: 'x', content: 'Appended over a corrupt mark.' });
+    assert.equal(healed.status, 'appended');
+    assert.match(healed.entry, /^finding-\d+$/, 'a corrupt mark must not produce finding-NaN');
+    const writtenMark = JSON.parse(fs.readFileSync(notePath, 'utf8')).extensions.entry_sequence.finding;
+    assert.ok(Number.isInteger(writtenMark), `the mark written back must be a whole number, got ${JSON.stringify(writtenMark)}`);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -464,8 +477,7 @@ test('no command publishes a record that would fail its own schema', () => {
     assert.equal(validateNote(dir, file).status, 'valid', 'the migrated record reads back');
     const stored = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
     assert.equal(stored.extensions.migrated_revision, 0, 'the legacy value is preserved, not dropped');
-    assert.deepEqual(stored.extensions.migrated_from, ['scope-1'], 'the migration chain is a list, not a replaced value');
-    assert.equal(stored.extensions.updated_at_before_migration, legacy.updated_at, 'the record\'s last update time survives its own migration');
+    assert.deepEqual(stored.extensions.migrated_from, ['scope-1'], 'a record with no prior migration starts the chain');
     assert.equal(appendEntry(dir, { note: file, revision: 1, kind: 'finding', topic: 'x', content: 'Still writable.' }).status, 'appended');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
@@ -544,13 +556,24 @@ test('every free-text field is privacy-scanned, not only the content field', () 
 
     // The controls promise this without qualification: "New material is
     // privacy-scanned before it can reach the file."
+    // Every field `createNote` scans, one per case. An earlier version of this
+    // test asserted six of them under a name claiming it covered them all, and
+    // the round that repaired that asserted ten of twenty under a comment saying
+    // the same. Each drop from a scan list has to go red here, so the list is
+    // enumerated rather than sampled.
+    let n = 0;
+    const leakCase = (extra) => ({ note: `leak-${n += 1}`, objective: 'leak', title: 'Leak', ...extra });
     for (const [label, options] of [
-      ['--next-action', { note: 'leak-a', objective: 'leak', title: 'Leak', 'next-action': `Use ${TOKEN}.` }],
-      ['--unresolved', { note: 'leak-b', objective: 'leak', title: 'Leak', unresolved: [`Rotate ${TOKEN}.`] }],
-      ['--index', { note: 'leak-c', objective: 'leak', title: 'Leak', index: TOKEN }],
-      ['--related', { note: 'leak-d', objective: 'leak', title: 'Leak', related: [HOME] }],
-      ['--focus', { note: 'leak-e', objective: 'leak', title: 'Leak', focus: `Rotate ${TOKEN}.` }],
-      ['--view-field', { note: 'leak-f', objective: 'leak', title: 'Leak', 'view-field': [`questions=["${TOKEN}"]`] }]
+      ['--next-action', leakCase({ 'next-action': `Use ${TOKEN}.` })],
+      ['--unresolved', leakCase({ unresolved: [`Rotate ${TOKEN}.`] })],
+      ['--index', leakCase({ index: TOKEN })],
+      ['--related', leakCase({ related: [HOME] })],
+      ['--focus', leakCase({ focus: `Rotate ${TOKEN}.` })],
+      ['--view-field', leakCase({ 'view-field': [`questions=["${TOKEN}"]`] })],
+      ['--title', { note: 'leak-title', objective: 'leak', title: `Leak ${TOKEN}` }],
+      ['--state', leakCase({ state: `Rotate ${TOKEN}.` })],
+      ['--id', leakCase({ id: TOKEN })],
+      ['--type', leakCase({ type: TOKEN })]
     ]) {
       const refused = createNote(dir, options);
       assert.equal(refused.status, 'blocked', label);
@@ -561,13 +584,29 @@ test('every free-text field is privacy-scanned, not only the content field', () 
     for (const [label, options] of [
       ['--topic', { kind: 'finding', topic: TOKEN, content: 'Fine content.' }],
       ['--source-file', { kind: 'finding', topic: 'x', content: 'Fine content.', 'source-file': HOME }],
-      ['--interpretation', { kind: 'finding', topic: 'x', content: 'Fine content.', interpretation: `Compare ${TOKEN}.` }]
+      ['--interpretation', { kind: 'finding', topic: 'x', content: 'Fine content.', interpretation: `Compare ${TOKEN}.` }],
+      ['--content', { kind: 'finding', topic: 'x', content: `Use ${TOKEN}.` }],
+      ['--entry-id', { kind: 'finding', topic: 'x', content: 'Fine content.', 'entry-id': TOKEN }],
+      ['--question-id', { kind: 'finding', topic: 'x', content: 'Fine content.', 'question-id': TOKEN }],
+      ['--source-sha256', { kind: 'finding', topic: 'x', content: 'Fine content.', 'source-sha256': TOKEN }]
     ]) {
       const refused = appendEntry(dir, { note: created.note, revision: 1, ...options });
       assert.equal(refused.status, 'blocked', label);
       assert.equal(refused.error.code, 'secret-like-content', label);
     }
     assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8')).entries, [], 'no refused append reached the file');
+
+    // `current` supplies three of its own, and `trim` one.
+    for (const [label, options] of [
+      ['current --state', { state: `Rotate ${TOKEN}.` }],
+      ['current --next-action', { 'next-action': `Use ${TOKEN}.` }],
+      ['current --unresolved', { unresolved: [`Rotate ${TOKEN}.`] }],
+      ['current --view-field', { 'view-field': [`questions=["${TOKEN}"]`] }]
+    ]) {
+      const refused = setCurrent(dir, { note: created.note, revision: 1, ...options });
+      assert.equal(refused.status, 'blocked', label);
+      assert.equal(refused.error.code, 'secret-like-content', label);
+    }
 
     appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'x', 'entry-id': 'x-1', content: 'Reconciled.' });
     const owner = trimEntries(dir, { note: created.note, revision: 2, entry: ['x-1'], 'durable-owner': HOME });
@@ -624,7 +663,11 @@ test('the interim scope-1 records read and migrate without regenerating their hi
         owner_answers: ['yes']
       },
       entries: [{ id: 'source-027', kind: 'source_record', topic: 'preservation', content: '8. [open] What durability guarantee is required?', interpretation: 'Historical source.', question_id: '8' }],
-      extensions: { format_status: 'Interim JSON working shape.', durable_owners: [] }
+      // A record that has migrated before, with a last-update time distinct
+      // from its creation time. An empty `extensions` could not distinguish a
+      // chained `migrated_from` from a replaced one, and equal timestamps could
+      // not distinguish preserving `updated_at` from writing `created_at`.
+      extensions: { format_status: 'Interim JSON working shape.', durable_owners: [], migrated_from: 'scope-0' }
     };
     const file = 'workbench/sessions/grilling/notepad-preservation-guarantees.json';
     fs.writeFileSync(path.join(dir, file), `${JSON.stringify(legacy, null, 2)}\n`);
@@ -649,6 +692,9 @@ test('the interim scope-1 records read and migrate without regenerating their hi
     assert.deepEqual(stored.current.questions, [{ id: '1', status: 'locked' }], 'a workflow field in the current view survives migration');
     assert.deepEqual(stored.current.owner_answers, ['yes'], 'and so does every other field the record carried there');
     assert.deepEqual(stored.current.unresolved, legacy.current.unresolved, 'unresolved is carried, not coerced: structured material must not become "[object Object]"');
+    assert.deepEqual(stored.extensions.migrated_from, ['scope-0', 'scope-1'], 'the migration chain appends; an earlier migration is not replaced');
+    assert.notEqual(legacy.updated_at, legacy.created_at, 'the fixture must be able to tell those two apart');
+    assert.equal(stored.extensions.updated_at_before_migration, legacy.updated_at, 'the pre-migration update time is preserved, and is not the creation time');
     assert.equal(appendEntry(dir, { note: file, revision: 1, kind: 'finding', topic: 'preservation', content: 'Now writable.' }).status, 'appended');
     assert.equal(migrateNote(dir, { note: file }).error.code, 'invalid-note', 'a migrated record is not migrated twice');
   } finally {

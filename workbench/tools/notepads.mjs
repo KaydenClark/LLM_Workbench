@@ -188,7 +188,11 @@ const ID_PARTS = /^([a-z_]+)-(\d+)$/;
 // zero, because an explicit `x-0` is a legitimate first use of `x`.
 function markOf(sequence, prefix) {
   const stored = Number(sequence?.[prefix]);
-  return Number.isInteger(stored) && stored >= 0 ? stored : null;
+  // Bounded as well as whole. At 1e21 `String()` switches to exponential, so a
+  // mark that large would generate `finding-1e+21`, fail the identifier test,
+  // and wedge the prefix permanently behind an error naming a flag the caller
+  // never passed. Out of range reads as no mark, like any other unusable value.
+  return Number.isSafeInteger(stored) && stored >= 0 ? stored : null;
 }
 
 function sequenceFrom(entries, existing = {}) {
@@ -316,7 +320,12 @@ export function appendEntry(root, options) {
     updated_at: nowStamp(),
     entries: [...note.entries, entry],
     extensions: suffix
-      ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(Number(sequence[suffix[1]] ?? 0), Number(suffix[2])) } }
+      // Read the stored mark through `markOf` here too. Raw `Number()` turned a
+      // corrupt value into `Math.max(NaN, n)` = NaN, which serializes as JSON
+      // `null` - and `markOf` reads a stored `null` back as 0, not as "no mark",
+      // so the record would carry a value meaning the opposite of what the
+      // reader documents.
+      ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(markOf(sequence, suffix[1]) ?? 0, Number(suffix[2])) } }
       : note.extensions
   };
   const failure = publish(root, resolved, updated);
