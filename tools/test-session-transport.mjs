@@ -103,6 +103,23 @@ test('fresh clone resumes selected continuity, later remote updates and competin
       assert.equal(result.status, 'conflict', JSON.stringify(result));assert.equal(result.acknowledged, false);
       assert.deepEqual(fs.readFileSync(path.join(second, f.note)), local);assert.equal(git(f.remote, 'rev-parse', 'main'), remote);
     }
+    // Explicit reconciliation: retain the competing local source, accept the
+    // inspected remote baseline, then re-author the retained local finding.
+    const backup = path.join(second, 'workbench/sessions/recovery/conflict-selected.json');
+    git(second, 'check-ignore', '--quiet', '--', path.relative(second, backup));
+    fs.writeFileSync(backup, local, { mode: 0o600, flag: 'wx' });
+    const accepted = Buffer.from(git(f.checkout, 'show', `${remote}:workbenches/${f.id}/sessions/notepads/work/selected.json`) + '\n');
+    assert.deepEqual(accepted, fs.readFileSync(path.join(f.project, f.note)));
+    fs.writeFileSync(path.join(second, f.note), accepted);
+    assert.equal(transport.syncNotes(second, { notes: [f.note], direction: 'resume' }, fixtureVerification).status, 'confirmed');
+    const retained = JSON.parse(local).entries.at(-1);
+    assert.equal(appendEntry(second, { note: f.note, revision: JSON.parse(accepted).revision, kind: 'finding', topic: 'reconciled-local-progress', content: retained.content }).status, 'appended');
+    const reconciled = transport.syncNotes(second, { notes: [f.note], direction: 'push' }, fixtureVerification);
+    assert.equal(reconciled.status, 'confirmed');git(f.remote, 'merge-base', '--is-ancestor', remote, reconciled.remoteSha);
+    const merged = JSON.parse(git(f.remote, 'show', `${reconciled.remoteSha}:workbenches/${f.id}/sessions/notepads/work/selected.json`));
+    assert.ok(merged.entries.some(entry => entry.content === 'The first clone has another result.'));
+    assert.ok(merged.entries.some(entry => entry.content === retained.content));
+    assert.deepEqual(fs.readFileSync(backup), local, 'original competing evidence remains available');
   } finally { fs.rmSync(f.base, { recursive: true, force: true }); }
 });
 
