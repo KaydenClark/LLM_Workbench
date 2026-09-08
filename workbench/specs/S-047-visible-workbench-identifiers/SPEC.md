@@ -68,6 +68,7 @@ or a lossy migration must be brought back as a concrete product tradeoff.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Allocate and retrieve one new visible notepad ID through a tested CLI while legacy numeric records still resolve | ready | none | pending |
+| TK-002 | Extend visible-ID compatibility through spec ticket and ADR consumers without renaming historical paths | ready | TK-001 | pending |
 
 ### TK-001 - Compatibility tracer bullet
 
@@ -77,6 +78,22 @@ Trace allocation -> storage -> discovery -> CLI lookup -> tests. Demonstrate
 duplicate refusal, independent type scopes, leading zero and case behavior,
 and unchanged legacy lookup. Coordinate the shared notepad seam with S-046;
 do not force every artifact migration into the first slice.
+
+### v3.2.0 assigned completion (2026-09-08)
+
+**Stance:** Builder
+
+[S-050](../S-050-workbench-v3-2-0-release/SPEC.md) assigns this capability through
+verified delivery. TK-001 tests the note allocator first. TK-002 inventories
+all parser, sorting, route, CLI, diagnostic, rendering, citation and allocator
+consumers of specs, tickets and ADRs, then enables the same visible syntax.
+Engineering defaults: alphabet 0-9 A-Z a-z, no silent numeric reinterpretation,
+legacy numeric labels resolve exactly; new allocation refuses case-folded
+collisions on supported filesystems. Width/growth must be tested and documented
+before selection, and IDs never rename existing stable spec paths. Independent
+Workbench connection identity under S-052 is a namespace, not another ID on
+each artifact. Test old/new mixed lookup and duplicates at public CLI seams;
+record full consumer coverage and remaining unsupported artifacts explicitly.
 
 ## Acceptance Criteria
 

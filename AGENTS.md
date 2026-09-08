@@ -85,7 +85,7 @@ silently discard it. Verification and safety still apply to the work they check.
 Cold continuation uses existing owners: the Contract, assigned packet and linked
 context, exact achieved output or commit, current state, named verification,
 and next executable action or blocker. Update those owners as work proceeds;
-promote a checkpoint only when session reasoning is material. No universal
+reconcile material session reasoning into its named durable owner. No universal
 handoff artifact is required. A read-only setup check may return only in chat.
 
 ## Read Scope
@@ -303,7 +303,9 @@ an interruption can still preempt an unsaved write.
 New notepads use JSON, including when older workflow examples say Markdown.
 Use existing manifest-declared live collections until the shared schema, tooling,
 and notepads layout are implemented. Preserve legacy Markdown sources. Live
-notes and handoffs stay local-only and untracked. Do not record secrets,
+notes and handoffs stay untracked in project Git; explicitly configured private
+synchronization may transport selected live collections under the accepted
+continuity contract. Local operation remains independent of transport. Do not record secrets,
 credentials, authentication/recovery material, raw private financial, medical,
 or personal data, or unsafe tool output; retain only safe recovery references.
 

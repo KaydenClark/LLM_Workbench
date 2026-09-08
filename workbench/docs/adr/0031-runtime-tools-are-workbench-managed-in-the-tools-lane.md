@@ -15,3 +15,7 @@ Considered and rejected: copying runtime tools into the application's root `tool
 Consequences: no active consumer names a root tools path for a runtime tool after migration; the product repository dogfoods the split, keeping setup, migration, evaluation, and test tooling in its own root `tools/`.
 
 Provenance: owner-reviewed v3.1 greenlight decision, promoted 2026-09-04; see the tracked checkpoint `llm-workbench-v3-1-plan-2026-09-04.md` in the manifest-declared checkpoint collection.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+Skill source/installation ownership, lifecycle preservation and layered component identity are distinct concerns. A historical adoption source is not a current runtime receipt. See [ADR-0046](0046-core-personal-shared-and-room-local-skill-ownership.md), [ADR-0047](0047-preservation-contracts-for-genesis-adoption-and-upgrade.md), [ADR-0048](0048-identity-across-release-adoption-installed-bytes-and-runtime.md).

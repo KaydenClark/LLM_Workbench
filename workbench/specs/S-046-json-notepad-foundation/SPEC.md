@@ -195,6 +195,8 @@ protocol are proposals, not verbatim owner approvals.
 | TK-001 | Reconcile the supplied sources into Contract/ADRs/specs and lossless focused JSON grilling records | done | none | 99 source segments, 57 question routes, byte-identical source reconstruction; ADR/Wiki/render/diff and targeted documentation checks pass; 25 of 33 suite commands pass after UTF-8 rerun, eight Node failures reproduced on baseline; full verification account in this spec |
 | TK-003 | Preserve context before conversation interruption and trim only reconciled material through controls and source skills | done | TK-001 | Capture and Stop-boundary regressions red/green; manual JSON reload and partial cleanup pass; source reconstruction intact; full suite 25/33 with final catalog correction verified and eight baseline-reproduced Windows failures; guardrail 78/100 unchanged |
 | TK-002 | One agent saves an objective finding with a correction, then a fresh reader retrieves only that topic through the shared skill, schema, and CLI | ready | TK-001 | pending |
+| TK-004 | Migrate live JSON layout and ship schema/examples through managed installation without moving legacy sources | ready | TK-002 | pending |
+| TK-005 | Prove authored handoff, retained-context cleanup and real fresh-agent recovery through installed skills | ready | TK-004 | pending |
 
 ### TK-001 - Scope and reconcile
 
@@ -233,6 +235,26 @@ Test public seams red then green for invalid structure, malformed JSON,
 duplicate identity, stale revision, blocked/interrupted write, path escape,
 privacy rejection, and correction chains. Add later slices after this path
 returns feedback; the acceptance below is not all compressed into TK-002.
+
+### v3.2.0 assigned completion (2026-09-08)
+
+**Stance:** Builder
+
+The current owner assignment, coordinated by [S-050](../S-050-workbench-v3-2-0-release/SPEC.md),
+extends the earlier scoping endpoint through implementation and reviewed delivery.
+TK-004 declares sessions/notepads and tracked templates/schema using supported
+layout/upgrade tooling, with ignored live type folders. Preserve all legacy
+Markdown/JSON paths and source references. Red/green fresh and upgrade routes,
+managed receipts, ignored live content and shipped schema/template validation.
+TK-005 exercises a real agent-authored useful objective, separately authored
+requested handoff, accessible retained sources, partial cleanup and full cleanup
+refusal while unresolved/correction/dependency material remains. A fresh context
+uses the actual installed skill and note without this conversation, verifies
+live project state and completes the assigned task. Name actual model/host and
+last confirmed saved boundary; a synthetic fixture is only mechanical proof.
+S-052 separately owns optional transport; local foundation stays independent.
+The fetched unpublished TK-002 candidate requires review and repairs before reuse;
+its historical evidence and outstanding acceptance are preserved.
 
 ## Acceptance Criteria
 

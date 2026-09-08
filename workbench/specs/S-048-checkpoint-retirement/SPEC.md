@@ -73,6 +73,8 @@ continuation path and preservation of every still-needed claim/reference.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Trace one checkpoint from original rationale through inbound references and reconcile it to a proposed disposition with a checkable continuation example | ready | none | pending |
+| TK-002 | Promote selected safe material directly into its durable owner with verified read-back before source cleanup | ready | TK-001 | pending |
+| TK-003 | Freeze checkpoint history and migrate active recovery consumers without breaking rollback | ready | TK-002 | pending |
 
 ### TK-001 - Evidence to disposition
 
@@ -82,6 +84,32 @@ Read relevant history and consumers, show one representative checkpoint's
 complete dependency path, preserve its needed claims, and demonstrate how a
 fresh agent would continue. Return a reviewed disposition before widening
 removal. This is a read/reconcile slice, not an automatic deletion command.
+
+### v3.2.0 direct promotion decision (2026-09-08)
+
+**Stance:** Reconciler
+
+The current owner request accepts CAND-Q and assigns completion through
+[S-050](../S-050-workbench-v3-2-0-release/SPEC.md). Freeze existing checkpoint
+contents and citations as retained history; create no new promoted checkpoints
+after migration. The durability crossing is selected-claim reconciliation into
+a named ADR/spec/Wiki/control owner, never committing a raw note or handoff.
+TK-001 inventories all checkpoint files/citations and sessions, adoption, upgrade,
+rollback, manifest and skill consumers. The accepted disposition is a frozen
+historical remnant; no deletion decision remains to be re-asked.
+TK-002 provides a privacy/validity-checked direct promotion seam with explicit
+selected material and destination, expected destination revision, safe write,
+and read-back of the resulting bytes. Agent judgment verifies authorization,
+semantic fidelity and owner selection; the tool cannot certify those judgments.
+Failure must preserve source and destination; cleanup remains a separate
+operation requiring verified reconciliation and preserved remaining dependencies.
+TK-003 declares operational recovery separately from session history, preserves
+existing backup/rollback references and restores a changed target in a real
+adoption/upgrade rehearsal. Retire active checkpoint CLI/skill dependencies,
+update all current consumers and tests, retain historical evidence unchanged.
+New core save/promote composition is S-051; the base must not depend on personal
+skills. Red/green privacy, path escape, stale destination, write/read-back
+failure, retained-source and legacy rollback cases; full suite and review.
 
 ## Acceptance Criteria
 

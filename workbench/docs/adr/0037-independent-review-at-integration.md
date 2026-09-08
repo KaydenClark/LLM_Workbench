@@ -14,3 +14,7 @@ Considered and rejected: Independent review of every intermediate change duplica
 Consequences: Consequential report claims and recommendations receive the same challenge as code. Changed candidates require fresh review; review grants neither repair nor publication authority.
 
 Provenance: owner authorized locked Q4 in [the boundaries checkpoint](../../sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md) on 2026-09-04. The locked answers supersede earlier recommendations in that record.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+Proof, reviewer judgment and owner authorization remain distinct. Target movement triggers comparison of the resulting candidate; unchanged assessed results need no invented ceremony. Changed results require fresh review. Remote uncertainty stays unknown; downstream completion requires its owning acceptance, not an upstream-only test. See [ADR-0048](0048-identity-across-release-adoption-installed-bytes-and-runtime.md).

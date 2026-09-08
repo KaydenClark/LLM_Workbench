@@ -28,3 +28,7 @@ Provenance: source Q17C correction and Q17D uniqueness answer, promoted under
 the current 2026-09-06 owner request and recorded by
 [S-046](../../specs/S-046-json-notepad-foundation/SPEC.md);
 [S-047](../../specs/S-047-visible-workbench-identifiers/SPEC.md) owns implementation.
+
+## v3.2.0 reconciliation (2026-09-08)
+
+The later selected Workbench connection identity names a namespace across clones. It does not add a parallel secondary ID to every artifact or change artifact type-scoped uniqueness. See [ADR-0051](0051-optional-private-git-transport-for-session-continuity.md).
