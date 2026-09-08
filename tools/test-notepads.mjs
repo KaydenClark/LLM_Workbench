@@ -837,3 +837,17 @@ test('shipped examples satisfy the shared runtime and legacy bare-name lookup st
     assert.equal(readNote(dir, { note: 'legacy' }).status, 'read');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('the published schema accepts an existing valid entry without an optional topic', () => {
+  const dir = project();
+  try {
+    const created = seed(dir);
+    const file = path.join(dir, created.note);
+    const note = JSON.parse(fs.readFileSync(file, 'utf8'));
+    note.entries.push({ id: 'finding-1', kind: 'finding', content: 'Preserved unclassified context.' });
+    fs.writeFileSync(file, JSON.stringify(note));
+    assert.equal(validateNote(dir, created.note).status, 'valid');
+    const schema = JSON.parse(fs.readFileSync(path.join(dir, 'workbench/sessions/notepads/templates/notepad.schema.json'), 'utf8'));
+    assert.ok(schema.properties.entries.items.required.every(key => Object.hasOwn(note.entries[0], key)), 'schema required fields agree with preserved runtime-valid records');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

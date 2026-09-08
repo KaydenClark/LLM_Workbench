@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, declaredGit, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SCHEMA_VERSION, UNTRACKED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -205,6 +205,42 @@ function ordinaryDirectory(project, relative) {
   return Boolean(entry) && !entry.isSymbolicLink() && entry.isDirectory();
 }
 
+// Git's own interpretation includes later negations, parent rules and host
+// excludes. Outside a Git worktree we can check structure only; readiness
+// subsequently requires Git and repeats this effective-boundary check.
+function verifyNotepadIgnores(project, manifest) {
+  if (!manifest.collections.notepads) return { verification: 'legacy-layout' };
+  if (!insideWorkTree(project)) return { verification: 'not-a-git-worktree' };
+  const base = manifest.collections.notepads;
+  const templates = manifest.collections['notepad-templates'];
+  const live = new Set([`${base}/work/live.json`, `${base}/grilling/live.json`, `${base}/new-type/live.json`]);
+  const tracked = new Set(seededLaneDocuments.filter(document => document.lane === 'sessions').map(document => `${lanes.sessions}/${document.name}`));
+  function walk(relative) {
+    if (relative === templates) return;
+    live.add(`${relative}/.workbench-live-probe.json`);
+    const directory = path.join(project, relative);
+    assertSafeReadPath(project, directory);
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const child = `${relative}/${entry.name}`;
+      if (entry.isSymbolicLink()) throw new Error(`Linked live path ${child} cannot establish ordinary note storage.`);
+      if (entry.isDirectory()) walk(child);
+      else if (entry.name !== '.gitkeep') live.add(child);
+    }
+  }
+  try { walk(base); } catch (error) { return { failure: fail('sessions-not-ignored', error.message) }; }
+  const paths = [...live, ...tracked];
+  const checked = spawnSync('git', ['check-ignore', '--no-index', '-z', '--stdin'], { cwd: project, encoding: 'utf8', input: `${paths.join('\0')}\0` });
+  if (![0, 1].includes(checked.status)) return { failure: fail('sessions-not-ignored', 'Git could not verify effective notepad ignore rules.') };
+  const ignored = new Set(checked.stdout.split('\0').filter(Boolean));
+  const leaked = [...live].filter(file => !ignored.has(file));
+  const hidden = [...tracked].filter(file => ignored.has(file));
+  const indexed = spawnSync('git', ['ls-files', '-z', '--', base], { cwd: project, encoding: 'utf8' });
+  if (indexed.status !== 0) return { failure: fail('sessions-not-ignored', 'Git could not inspect already tracked notepad paths.') };
+  const published = indexed.stdout.split('\0').filter(file => file && !file.startsWith(`${templates}/`) && !file.endsWith('/.gitkeep'));
+  if (leaked.length || hidden.length || published.length) return { failure: fail('sessions-not-ignored', 'Live notepads must remain ignored and untracked; reusable schema/examples must remain trackable.', { leaked, hidden, published }) };
+  return { verification: 'git' };
+}
+
 export function validateManifest(project) {
   const { manifest, failure } = readManifestFile(project);
   if (failure) return failure;
@@ -265,7 +301,9 @@ export function validateManifest(project) {
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
   }
-  return report('valid', { manifest });
+  const ignored = verifyNotepadIgnores(project, manifest);
+  if (ignored.failure) return ignored.failure;
+  return report('valid', { manifest, ignoreVerification: ignored.verification });
 }
 
 function templateRoot() {
@@ -336,6 +374,8 @@ export function initialize(options) {
   }
   const source = sourceIdentity(options);
   if (source.status) return source;
+  const seedFailure = preflightSeedDocuments(project, { notepadOnly: true });
+  if (seedFailure) return seedFailure;
   const manifest = {
     schemaVersion: SCHEMA_VERSION,
     workbenchVersion: options['--version'],
@@ -355,7 +395,7 @@ export function initialize(options) {
   writeSessionsIgnore(project);
   const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options);
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-  const documents = seedLaneDocuments(project, { ...options, notepadOnly: true });
+  const documents = writeSeedDocuments(project, { ...options, notepadOnly: true });
   return report('initialized', { manifestPath, manifest, seeded, documents });
 }
 
@@ -429,7 +469,38 @@ export function seedWiki(project, options) {
 // hash this command recorded when it last wrote it. A copy the room adjusted,
 // or one whose generation this command cannot establish from bytes it can see,
 // is retained untouched and reported by name.
-export function seedLaneDocuments(project, options) {
+export function seedLaneDocuments(project, options = {}) {
+  const { manifest, failure } = readManifestFile(path.resolve(project));
+  if (failure) return failure;
+  const source = sourceIdentity({ ...options, '--version': options['--version'] ?? manifest.workbenchVersion });
+  if (source.status) return source;
+  const seedFailure = preflightSeedDocuments(project);
+  if (seedFailure) return seedFailure;
+  const unsafe = preflightSeedDocuments(project, options);
+  if (unsafe) return unsafe;
+  return writeSeedDocuments(project, { ...options, '--version': source.release });
+}
+
+// Check every consumed source and destination, including record-only paths,
+// before a lifecycle command changes its manifest or ignore file.
+function preflightSeedDocuments(project, options = {}) {
+  const templates = templateRoot();
+  if (!templates) return fail('invalid-source-identity', 'A clean Workbench release checkout is required to seed documents.');
+  try {
+    assertSafeWritePath(project, path.join(project, SEED_RECORD));
+    for (const document of seededLaneDocuments.filter(document => !options.notepadOnly || document.lane === 'sessions')) {
+      const source = path.join(templates, document.template);
+      assertSafeReadPath(path.dirname(templates), source);
+      if (!lstatOrNull(source)?.isFile()) return fail('invalid-source-identity', `Missing ordinary seed source: ${document.template}`);
+      const destination = path.join(project, lanes[document.lane], document.name);
+      assertSafeReadPath(project, destination);
+      assertSafeWritePath(project, destination);
+    }
+  } catch (error) { return fail('lane-collision', error.message); }
+  return null;
+}
+
+function writeSeedDocuments(project, options) {
   const root = path.resolve(project);
   const templates = templateRoot();
   if (!templates) return fail('invalid-source-identity', 'This copy is not inside a verified Workbench release checkout; seeded lane documents cannot be copied from bytes it cannot verify.');
@@ -577,16 +648,26 @@ export function migrate(options) {
   if (manifest.schemaVersion === SCHEMA_VERSION) {
     const valid = validateManifest(project);
     if (valid.status !== 'valid') return valid;
-    if (JSON.stringify(manifest.collections) === JSON.stringify(collections)) return report('current', { manifestPath, manifest });
+    if (JSON.stringify(manifest.collections) === JSON.stringify(collections)) {
+      try { assertSafeReadPath(project, path.join(project, SEED_RECORD)); }
+      catch (error) { return fail('lane-collision', error.message); }
+      const seeds = readSeedRecord(project);
+      const missing = seededLaneDocuments.filter(document => document.lane === 'sessions').map(document => `${lanes.sessions}/${document.name}`)
+        .filter(relative => !seeds?.documents?.[relative] || !lstatOrNull(path.join(project, relative))?.isFile());
+      if (missing.length) return fail('missing-collection', 'Notepad layout seeding is incomplete; run seed-documents from the clean release checkout before retrying migrate.', { missing });
+      return report('current', { manifestPath, manifest });
+    }
     const unsafe = preflightLayout(project);
     if (unsafe) return unsafe;
     const source = sourceIdentity({ ...options, '--version': options['--version'] ?? manifest.workbenchVersion });
     if (source.status) return source;
+    const seedFailure = preflightSeedDocuments(project);
+    if (seedFailure) return seedFailure;
     for (const name of ['notepads', 'notepad-templates']) fs.mkdirSync(path.join(project, collections[name]), { recursive: true });
     writeSessionsIgnore(project);
     const updated = { ...manifest, collections, provenance: { ...manifest.provenance, layout: { source } } };
     writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
-    const documents = seedLaneDocuments(project, { '--version': source.release });
+    const documents = writeSeedDocuments(project, { '--version': source.release });
     return report('migrated', { manifestPath, manifest: updated, moved: [], documents });
   }
   if (manifest.schemaVersion !== 1) return fail('invalid-manifest', 'Only schema 1 manifests can be migrated.');
@@ -610,6 +691,8 @@ export function migrate(options) {
   }
   const source = sourceIdentity({ ...options, '--version': options['--version'] ?? manifest.workbenchVersion });
   if (source.status) return source;
+  const seedFailure = preflightSeedDocuments(project);
+  if (seedFailure) return seedFailure;
   const moved = [];
   fs.mkdirSync(path.join(project, lanes.sessions), { recursive: true });
   for (const move of moves) {
@@ -638,7 +721,7 @@ export function migrate(options) {
   const seeded = seedWiki(project, { '--version': migrated.workbenchVersion, ...options });
   const validation = validateManifest(project);
   if (validation.status !== 'valid') return report('partial', { moved, error: validation.error });
-  const documents = seedLaneDocuments(project, { '--version': migrated.workbenchVersion });
+  const documents = writeSeedDocuments(project, { '--version': migrated.workbenchVersion });
   return report('migrated', { manifestPath, manifest: migrated, moved, seeded, documents });
 }
 

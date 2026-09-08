@@ -94,7 +94,6 @@
         "required": [
           "id",
           "kind",
-          "topic",
           "content"
         ],
         "properties": {

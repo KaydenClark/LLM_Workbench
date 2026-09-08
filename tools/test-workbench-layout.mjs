@@ -2100,3 +2100,80 @@ test('new notepad layout separates ignored typed notes from tracked examples and
     assert.equal(run('migrate', '--project', project, '--version', VERSION).report.status, 'current');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
+
+for (const surface of ['receipt', 'templates']) {
+  test(`layout migration preflights the ${surface} before changing any project bytes`, () => {
+    const project = fixture(); const outside = fixture();
+    try {
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+      const manifestFile = path.join(project, 'workbench/manifest.json');
+      const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+      delete manifest.collections.notepads; delete manifest.collections['notepad-templates'];
+      fs.writeFileSync(manifestFile, JSON.stringify(manifest));
+      const receipt = path.join(project, 'workbench/.workbench-seed.json');
+      const templates = path.join(project, 'workbench/sessions/notepads/templates');
+      const target = surface === 'receipt' ? receipt : templates;
+      const external = path.join(outside, surface);
+      fs.cpSync(target, external, { recursive: true });
+      fs.rmSync(target, { recursive: true });
+      fs.symlinkSync(external, target, surface === 'receipt' ? 'file' : process.platform === 'win32' ? 'junction' : 'dir');
+      const before = fs.readFileSync(manifestFile);
+      const ignored = fs.readFileSync(path.join(project, 'workbench/sessions/.gitignore'));
+      const result = run('migrate', '--project', project, '--version', VERSION);
+      assert.notEqual(result.status, 0, result.stdout);
+      assert.deepEqual(fs.readFileSync(manifestFile), before, 'refusal leaves the earlier manifest intact');
+      assert.deepEqual(fs.readFileSync(path.join(project, 'workbench/sessions/.gitignore')), ignored, 'refusal preserves project ignore bytes');
+    } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+  });
+}
+
+test('seeding refuses an invented release and linked destination even when bytes match', () => {
+  const project = fixture(); const outside = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const receipt = path.join(project, 'workbench/.workbench-seed.json');
+    const before = fs.readFileSync(receipt);
+    const invented = run('seed-documents', '--project', project, '--version', 'v99.9.9');
+    assert.notEqual(invented.status, 0, invented.stdout);
+    assert.deepEqual(fs.readFileSync(receipt), before);
+    const templates = path.join(project, 'workbench/sessions/notepads/templates');
+    fs.cpSync(templates, outside, { recursive: true }); fs.rmSync(templates, { recursive: true });
+    fs.symlinkSync(outside, templates, process.platform === 'win32' ? 'junction' : 'dir');
+    const linked = run('seed-documents', '--project', project, '--version', VERSION);
+    assert.notEqual(linked.status, 0, linked.stdout);
+    assert.deepEqual(fs.readFileSync(receipt), before);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
+
+test('seeding refuses a committed external source symlink before copying or receipting it', () => {
+  const project = fixture(); const bundle = fixture(); const outside = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const cloned = spawnSync('git', ['clone', '-q', '--no-hardlinks', root, bundle], { encoding: 'utf8' });
+    assert.equal(cloned.status, 0, cloned.stderr);
+    const source = path.join(bundle, 'templates/sessions/notepads/templates/notepad.schema.json');
+    const external = path.join(outside, 'schema.json'); fs.writeFileSync(external, '{"synthetic":"outside-source"}\n');
+    fs.rmSync(source); fs.symlinkSync(external, source, 'file');
+    git(bundle, 'add', 'templates/sessions/notepads/templates/notepad.schema.json');
+    git(bundle, 'commit', '-qm', 'Synthetic linked source fixture');
+    const before = fs.readFileSync(path.join(project, 'workbench/.workbench-seed.json'));
+    const result = spawnSync(process.execPath, [path.join(bundle, 'workbench/tools/workbench-layout.mjs'), 'seed-documents', '--project', project, '--version', VERSION], { encoding: 'utf8' });
+    assert.notEqual(result.status, 0, result.stdout);
+    assert.deepEqual(fs.readFileSync(path.join(project, 'workbench/.workbench-seed.json')), before);
+    assert.ok(!fs.readFileSync(path.join(project, 'workbench/sessions/notepads/templates/notepad.schema.json'), 'utf8').includes('outside-source'));
+  } finally { for (const dir of [project, bundle, outside]) fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const failure of ['ignored-template', 'trackable-live']) {
+  test(`layout validation rejects effective ${failure} Git rules`, () => {
+    const project = fixture();
+    try {
+      gitRoom(project);
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+      const file = path.join(project, 'workbench/sessions/.gitignore');
+      const rules = fs.readFileSync(file, 'utf8');
+      fs.writeFileSync(file, failure === 'ignored-template' ? rules.replace('notepads/*', 'notepads/') : `${rules}\n!notepads/work/\n!notepads/work/**\n`);
+      assert.equal(run('validate', '--project', project).report.status, 'invalid', 'actual Git interpretation, not just a matching line, gates validation');
+    } finally { fs.rmSync(project, { recursive: true, force: true }); }
+  });
+}
