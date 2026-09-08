@@ -910,3 +910,48 @@ test('whole cleanup refuses a retained whole-note pointer and unreadable depende
     assert.equal(fs.existsSync(path.join(dir, created.note)), true);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+for (const operation of ['delete-pointer-alias', 'trim-source-alias']) {
+  test(`retention preserves actual file identity for ${operation}`, (t) => {
+    const dir = project();
+    try {
+      const created = seed(dir, { note: 'case-source', status: 'RECONCILED' });
+      const alias = created.note.replace('case-source.json', 'CASE-SOURCE.json');
+      if (!fs.existsSync(path.join(dir, alias))) return t.skip('requires a case-insensitive filesystem');
+      let revision = 1;
+      if (operation === 'trim-source-alias') {
+        appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'retention', 'entry-id': 'finding-1', content: 'Retain this evidence.' });
+        revision = 2;
+      }
+      const pointer = operation === 'delete-pointer-alias' ? alias : `${created.note}#finding-1`;
+      const handoff = createNote(dir, { note: 'case-handoff', collection: 'handoffs', type: 'handoff', objective: 'notepad-runtime', title: 'Pending destination', status: 'ACTIVE', retains: [pointer] });
+      assert.equal(handoff.status, 'created');
+      const before = fs.readFileSync(path.join(dir, created.note));
+      const run = operation === 'delete-pointer-alias'
+        ? cli(dir, ['delete', '--note', created.note, '--revision', String(revision)])
+        : cli(dir, ['trim', '--note', alias, '--revision', String(revision), '--entry', 'finding-1']);
+      assert.equal(run.json.error?.code, 'retained-dependency', JSON.stringify(run.json));
+      assert.deepEqual(fs.readFileSync(path.join(dir, created.note)), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+
+for (const operation of ['read', 'create']) {
+  test(`tracked template boundaries use existing filesystem spelling for ${operation}`, (t) => {
+    const dir = project();
+    try {
+      const alias = 'workbench/sessions/notepads/TEMPLATES';
+      if (!fs.existsSync(path.join(dir, alias))) return t.skip('requires a case-insensitive filesystem');
+      const example = path.join(dir, alias, 'work.example.json');
+      const before = fs.readFileSync(example);
+      if (operation === 'read') {
+        assert.equal(readNote(dir, { note: `${alias}/work.example.json` }).error?.code, 'invalid-note');
+      } else {
+        const created = createNote(dir, { note: `${alias}/alias-note.json`, objective: 'notepad-runtime', title: 'Must remain outside templates' });
+        assert.equal(created.error?.code, 'invalid-note');
+        assert.equal(fs.existsSync(path.join(dir, alias, 'alias-note.json')), false);
+      }
+      assert.deepEqual(fs.readFileSync(example), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}

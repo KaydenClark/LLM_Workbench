@@ -60,6 +60,24 @@ function asArray(value) {
   return Array.isArray(value) ? value.map((item) => String(item)) : [String(value)];
 }
 
+// Resolve the spelling of existing ancestors as well as an existing leaf.
+// A missing note under TEMPLATES must still be excluded on a case-insensitive
+// filesystem. Callers check ordinary-path safety before resolving aliases.
+function filesystemPath(value) {
+  const missing = [];
+  let current = path.resolve(value);
+  for (;;) {
+    try { return path.join(fs.realpathSync(current), ...missing); }
+    catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+      const parent = path.dirname(current);
+      if (parent === current) throw error;
+      missing.unshift(path.basename(current));
+      current = parent;
+    }
+  }
+}
+
 // `--note` accepts either a bare name inside the live collection or a
 // project-relative path. Both resolve to one absolute path that must stay
 // inside a declared live collection: a notepad is local by contract, so a
@@ -69,17 +87,21 @@ export function resolveNote(root, value, collection = defaultCollection(root)) {
   const relative = raw.includes('/') || raw.includes(path.sep) || raw.endsWith('.json')
     ? raw
     : `${collectionRelative(root, collection)}/${collection === 'notepads' ? 'work/' : ''}${raw}.json`;
-  const absolute = path.resolve(root, relative);
-  assertSafeReadPath(root, absolute);
-  const templates = collectionPath(root, 'notepad-templates');
-  if (absolute === templates || absolute.startsWith(`${templates}${path.sep}`)) throw new Error('tracked notepad templates are not live records');
+  const requested = path.resolve(root, relative);
+  assertSafeReadPath(root, requested);
+  const actual = filesystemPath(requested);
+  const templates = filesystemPath(collectionPath(root, 'notepad-templates'));
+  if (actual === templates || actual.startsWith(`${templates}${path.sep}`)) throw new Error('tracked notepad templates are not live records');
   const declared = readManifest(root)?.collections ?? {};
-  const live = UNTRACKED_COLLECTIONS.filter(name => declared[name]).map((name) => collectionPath(root, name));
-  if (!live.some((directory) => absolute.startsWith(`${directory}${path.sep}`))) {
+  const live = UNTRACKED_COLLECTIONS.filter(name => declared[name]).map((name) => filesystemPath(collectionPath(root, name)));
+  if (!live.some((directory) => actual.startsWith(`${directory}${path.sep}`))) {
     throw new Error(`a notepad must live in a declared live collection (${UNTRACKED_COLLECTIONS.join(', ')}); ${raw} does not`);
   }
-  if (path.extname(absolute) !== '.json') throw new Error(`a notepad must be a .json file; ${raw} is not`);
-  return { absolute, relative: path.relative(root, absolute).split(path.sep).join('/') };
+  if (path.extname(actual) !== '.json') throw new Error(`a notepad must be a .json file; ${raw} is not`);
+  const canonicalRelative = path.relative(filesystemPath(root), actual);
+  // Keep the caller's root spelling so the shared write-boundary check also
+  // works when the project was reached through a platform root alias.
+  return { absolute: path.resolve(root, canonicalRelative), relative: canonicalRelative.split(path.sep).join('/') };
 }
 
 function readRaw(root, value, collection) {
@@ -602,9 +624,6 @@ export function trimEntries(root, options) {
   return { status: 'trimmed', note: resolved.relative, removed: [...remove], remaining: retained.length, revision: updated.revision };
 }
 
-// Lift an interim record onto the current schema without regenerating it: the
-// recorded text, timestamps, and question routes are carried across unchanged,
-// and only the fields the runtime needs to write safely are added.
 export function deleteNote(root, options) {
   const loaded = loadForWrite(root, options, options.collection);
   if (loaded.status === 'blocked') return loaded;
@@ -624,6 +643,9 @@ export function deleteNote(root, options) {
   return { status: 'deleted', note: resolved.relative, id: note.id, revision: note.revision };
 }
 
+// Lift an interim record onto the current schema without regenerating it: the
+// recorded text, timestamps, and question routes are carried across unchanged,
+// and only the fields the runtime needs to write safely are added.
 export function migrateNote(root, options) {
   const loaded = readRaw(root, options.note, options.collection);
   if (loaded.error) return loaded.error;
