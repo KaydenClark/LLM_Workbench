@@ -448,9 +448,9 @@ Every failing case matches by name on both trees:
 
 This candidate therefore adds no failure and repairs none.
 `tools/test-check-append-only.py` is not a failure: it exceeds the 300-second
-budget this run imposed, on both trees, and passes all four cases on the
-baseline when run without that budget. The suite is not fully green on Windows
-and no claim is made that it is.
+budget this run imposed, on both trees, and run without that budget it passes
+all four cases on both - clean tree, in-place rewrite, orphan row, and rewritten
+row. The suite is not fully green on Windows and no claim is made that it is.
 
 Three bundle lists, one diagnostics pin, and one placeholder-vocabulary rule
 had to move with the eighteenth skill, and every one was caught by an existing
