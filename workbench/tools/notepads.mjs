@@ -215,6 +215,14 @@ function publish(root, resolved, note) {
   return null;
 }
 
+// Scan decoded new fields, including nested keys and string values. Scanning
+// their JSON spelling alone misses escaped paths and credentials.
+function viewStrings(value) {
+  if (typeof value === 'string') return [value];
+  if (value === null || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([key, child]) => [key, ...viewStrings(child)]);
+}
+
 export function createNote(root, options) {
   const collection = options.collection ?? DEFAULT_COLLECTION;
   const name = requireValue(options.note, '--note is required');
@@ -232,7 +240,7 @@ export function createNote(root, options) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }
   const view = parseViewFields(options['view-field']);
-  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options['view-field'])]);
+  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options['view-field']), ...viewStrings(view)]);
   if (leak) return leak;
   const stamp = nowStamp();
   const note = {
@@ -341,7 +349,8 @@ export function setCurrent(root, options) {
     options.state === undefined ? null : state,
     options['next-action'] === undefined ? null : nextAction,
     ...(options.unresolved === undefined ? [] : unresolved),
-    ...asArray(options['view-field'])
+    ...asArray(options['view-field']),
+    ...viewStrings(view)
   ]);
   if (leak) return leak;
   const updated = {
@@ -453,13 +462,21 @@ export function listNotes(root, options = {}) {
   const unreadable = [];
   for (const name of collections) {
     const directory = collectionPath(root, name);
-    if (!fs.existsSync(directory)) continue;
-    for (const file of fs.readdirSync(directory)) {
+    let files;
+    try {
+      assertSafeReadPath(root, directory);
+      if (!fs.existsSync(directory)) continue;
+      files = fs.readdirSync(directory);
+    } catch {
+      unreadable.push(path.relative(root, directory).split(path.sep).join('/'));
+      continue;
+    }
+    for (const file of files) {
       if (!file.endsWith('.json')) continue;
       const absolute = path.join(directory, file);
       const relative = path.relative(root, absolute).split(path.sep).join('/');
       let parsed;
-      try { parsed = JSON.parse(fs.readFileSync(absolute, 'utf8')); } catch { unreadable.push(relative); continue; }
+      try { assertSafeReadPath(root, absolute); parsed = JSON.parse(fs.readFileSync(absolute, 'utf8')); } catch { unreadable.push(relative); continue; }
       const { missing, invalid } = checkStructure(parsed);
       if (missing.length || invalid.length) { unreadable.push(relative); continue; }
       if (options.objective && parsed.objective.key !== options.objective) continue;
@@ -472,15 +489,15 @@ export function listNotes(root, options = {}) {
         note_status: parsed.status,
         schema_version: parsed.schema_version,
         revision: parsed.revision ?? 0,
-        updated_at: parsed.updated_at,
-        mtime: fs.statSync(absolute).mtimeMs
+        created_at: parsed.created_at,
+        updated_at: parsed.updated_at
       });
     }
   }
-  // Newest-updated first: the fallback the Contract names when no explicit
+  // Newest-created first: the fallback the Contract names when no explicit
   // note or objective is supplied. The reader still checks relevance.
-  notes.sort((left, right) => right.updated_at.localeCompare(left.updated_at) || right.mtime - left.mtime || right.revision - left.revision);
-  return { status: 'listed', notes: notes.map(({ mtime, ...rest }) => rest), unreadable };
+  notes.sort((left, right) => right.created_at.localeCompare(left.created_at) || left.note.localeCompare(right.note));
+  return { status: 'listed', notes, unreadable };
 }
 
 export function trimEntries(root, options) {

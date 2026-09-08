@@ -222,7 +222,7 @@ test('a fresh reader resumes the objective from the current view alone', () => {
   }
 });
 
-test('list discovers by objective and falls back to the most recently updated note', () => {
+test('list discovers by objective and falls back to the most recently created note', () => {
   const dir = project();
   try {
     const first = seed(dir, { note: 'older', objective: 'objective-a', title: 'Older' });
@@ -231,7 +231,7 @@ test('list discovers by objective and falls back to the most recently updated no
 
     const all = listNotes(dir, {});
     assert.equal(all.status, 'listed');
-    assert.equal(all.notes[0].note, second.note, 'the most recently updated note is offered first');
+    assert.equal(all.notes[0].note, second.note, 'the most recently created note is offered first');
     assert.equal(all.notes.length, 2);
     assert.ok(all.notes.every((entry) => typeof entry.objective === 'string' && typeof entry.revision === 'number'));
 
@@ -740,4 +740,65 @@ test('the notepad runtime is a managed tool and its live records stay untracked'
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+for (const operation of ['create', 'current']) {
+  test(`${operation} scans decoded nested view values and preserves bytes on refusal`, () => {
+    const dir = project();
+    try {
+      const created = operation === 'current' ? seed(dir) : null;
+      const target = path.join(dir, created?.note ?? 'workbench/sessions/grilling/escaped.json');
+      const before = created ? fs.readFileSync(target, 'utf8') : null;
+      for (const value of [String.raw`{"nested":["\u002fUsers/example/private"]}`, String.raw`{"nested":["\u0073k-abcdefghijklmnopqrstuvwxyz123456"]}`]) {
+        const options = { note: created?.note ?? 'escaped', objective: 'privacy-check', title: 'Safe title', revision: 1, 'view-field': `context=${value}` };
+        const result = operation === 'create' ? createNote(dir, options) : setCurrent(dir, options);
+        assert.equal(result.status, 'blocked');
+        assert.equal(result.error.code, 'secret-like-content');
+        assert.equal(fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null, before);
+      }
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+
+for (const linked of ['file', 'collection']) {
+  test(`discovery refuses an external symbolic-link ${linked} without exposing its metadata`, () => {
+    const dir = project();
+    const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'notepad-outside-'));
+    try {
+      const created = seed(dir);
+      const collection = path.dirname(path.join(dir, created.note));
+      const outsideFile = path.join(outside, 'external.json');
+      const note = JSON.parse(fs.readFileSync(path.join(dir, created.note), 'utf8'));
+      note.title = 'Outside metadata must not escape';
+      fs.writeFileSync(outsideFile, JSON.stringify(note));
+      let unsafe;
+      if (linked === 'file') {
+        unsafe = path.join(collection, 'external.json');
+        fs.symlinkSync(outsideFile, unsafe, 'file');
+      } else {
+        fs.rmSync(collection, { recursive: true });
+        unsafe = collection;
+        fs.symlinkSync(outside, unsafe, process.platform === 'win32' ? 'junction' : 'dir');
+      }
+      const result = listNotes(dir);
+      assert.ok(!JSON.stringify(result).includes(note.title), 'external metadata is never read back');
+      assert.ok(result.unreadable.includes(path.relative(dir, unsafe).split(path.sep).join('/')), 'the unsafe location is explicitly reported');
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+  });
+}
+
+test('discovery uses creation chronology even when the older note was updated last', () => {
+  const dir = project();
+  try {
+    const older = seed(dir, { note: 'older' });
+    const newer = seed(dir, { note: 'newer' });
+    for (const [created, stamp] of [[older, '2026-01-01T00:00:00.000Z'], [newer, '2026-02-01T00:00:00.000Z']]) {
+      const file = path.join(dir, created.note);
+      const note = JSON.parse(fs.readFileSync(file, 'utf8'));
+      note.created_at = stamp; note.updated_at = stamp;
+      fs.writeFileSync(file, JSON.stringify(note));
+    }
+    assert.equal(setCurrent(dir, { note: older.note, revision: 1, state: 'Recently resumed' }).status, 'updated');
+    assert.deepEqual(listNotes(dir).notes.map((note) => note.note), [newer.note, older.note]);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

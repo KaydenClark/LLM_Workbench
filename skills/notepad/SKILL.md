@@ -24,7 +24,7 @@ Meaningful objective work needs a note; trivial conversation does not. The test
 is survival value: would losing this impair continuation or a focused handoff?
 
 Resume by the strongest available signal - an explicit note the owner named,
-then the objective key, then the most recently updated local note - and check
+then the objective key, then the most recently created local note - and check
 relevance before using it:
 
 ```bash
