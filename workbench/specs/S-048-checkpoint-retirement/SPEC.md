@@ -8,8 +8,8 @@
 **Updated:** 2026-09-08
 **Catalog description:** Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately.
 **Blockers:** none
-**Latest event:** TK-002 claimed by codex.
-**Next gate:** Close TK-002 with verification and documentation proof.
+**Latest event:** TK-003 claimed by codex.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 ## Outcome
 
@@ -73,8 +73,8 @@ continuation path and preservation of every still-needed claim/reference.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Trace one checkpoint from original rationale through inbound references and reconcile it to a proposed disposition with a checkable continuation example | done | none | d607b29c1bb9e26430b7008920b586146a87f601:full36-command union PASS; complete6-file inventory hashes and518 keyword/104 explicit coordinates independently reproduced at16988da; bounded disposition review PASS; copied reviewed artifacts byte-identical and privacy clean; S046 actual bounded continuity result retained |
-| TK-002 | Promote selected safe material directly into its durable owner with verified read-back before source cleanup | in-progress | TK-001 | pending |
-| TK-003 | Freeze checkpoint history and migrate active recovery consumers without breaking rollback | ready | TK-002 | pending |
+| TK-002 | Promote selected safe material directly into its durable owner with verified read-back before source cleanup | done | TK-001 | dbacc662363b36d34ebb08ca13a4c9b2d3161a34: 26 direct-promotion cases red/green; full37 union PASS; independent bounded review PASS including BOM/CRLF exact bytes and alias/symlink citation refusal; actual local owner read-back receipt independently verified |
+| TK-003 | Freeze checkpoint history and migrate active recovery consumers without breaking rollback | in-progress | TK-002 | pending |
 
 ### TK-001 - Evidence to disposition
 
@@ -152,7 +152,10 @@ reference-style and missing-leaf alias citations into ignored records, and
 supported template placeholders. Six regressions failed as expected before
 repair. The repair preserves original draft bytes, scans decoded strings,
 checks both Markdown link forms with canonical ancestry, and shares the layout
-placeholder vocabulary. Repaired verification and fresh review remain open.
+placeholder vocabulary. Repaired candidate `dbacc662` passed all 26 promotion
+cases, the full 37-command union and fresh independent review. Guardrail remains
+78/100 with four outstanding repeated-outcome recommendations; this slice does
+not establish a reliability gain.
 
 ### Actual local owner reconciliation
 
@@ -165,6 +168,17 @@ remain available for their unresolved context and are not durable citations.
 The [curated read-back receipt](direct-promotion-result.json) pins the actual
 command candidate and original/source/draft/result hashes. Independent review
 verified those observations; the later defects above limit the general claim.
+
+## TK-003 Recovery Migration
+
+New operational receipts and legacy-skill backups use the ignored
+`workbench/sessions/recovery/` collection. This is local rollback material,
+excluded from note discovery and from durable provenance. Existing checkpoint
+files, citations and prior recovery references retain their bytes and paths.
+Legacy v2 durable handoffs still migrate into the historical checkpoint location
+for compatibility; new copies are refused. The retained checkpoint skill becomes
+an explanatory compatibility entry pending S-051's core catalog reconciliation.
+Implementation, actual changed-target restoration and review remain open.
 
 ## Acceptance Criteria
 
@@ -198,6 +212,7 @@ Historical evidence rows remain append-only.
 |---|---|---|---|---|---|
 | 2026-09-06 | spec | Separate retirement assignment captured | Source Q18 and final owner answer reconciled in S-046; current checkpoint consumers inspected at 8e9c06f | This spec; Contract transition states that legacy checkpoints remain | Full inventory, rationale investigation, disposition, and retirement |
 | 2026-09-08 | TK-001 | Ticket closed | d607b29c1bb9e26430b7008920b586146a87f601:full36-command union PASS; complete6-file inventory hashes and518 keyword/104 explicit coordinates independently reproduced at16988da; bounded disposition review PASS; copied reviewed artifacts byte-identical and privacy clean; S046 actual bounded continuity result retained | S048 disposition and complete pinned inventory linked from its stable spec; repository-specific history needs no generic template copy | TK002 direct promotion and TK003 operational recovery/rollback migration; no deletion or release readiness claim |
+| 2026-09-08 | TK-002 | Ticket closed | dbacc662363b36d34ebb08ca13a4c9b2d3161a34: 26 direct-promotion cases red/green; full37 union PASS; independent bounded review PASS including BOM/CRLF exact bytes and alias/symlink citation refusal; actual local owner read-back receipt independently verified | S048 implementation account and linked receipt; root/template Runbook direct promotion; guardrail78 unchanged with four repeated-outcome recommendations | TK003 operational recovery migration and checkpoint retirement; S051 core composition; no integration or rollout readiness claim |
 
 ## Completion Result
 
