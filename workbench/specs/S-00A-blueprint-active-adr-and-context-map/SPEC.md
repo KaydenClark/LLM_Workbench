@@ -8,8 +8,8 @@
 **Updated:** 2026-09-09
 **Catalog description:** Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls.
 **Blockers:** none
-**Latest event:** TK-00A claimed by codex.
-**Next gate:** Close TK-00A with verification and documentation proof.
+**Latest event:** TK-00B closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -156,8 +156,8 @@ outside this documentation-and-tooling capability.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00A | Validate active ADR lifecycle and render active/history projections | in-progress | none | Red lifecycle/register regressions; green ADR tests and full suite |
-| TK-00B | Reconcile Blueprint claim disposition and main-readiness review contract | blocked | TK-00A | Claim inventory, structural/link checks, review fixture, full suite |
+| TK-00A | Validate active ADR lifecycle and render active/history projections | done | none | b490657 ADR14 and full43PASS; c1600d1 independent S00A semantic/evaluator PASS and targeted checks |
+| TK-00B | Reconcile Blueprint claim disposition and main-readiness review contract | done | TK-00A | c1600d1 independent semantic/evaluator PASS;166root+59template source segments byte-exact; destination/owner tests GREEN; full43b490PASS |
 
 ### TK-00A - Validate active ADR lifecycle and render active/history projections
 
@@ -218,6 +218,8 @@ release owner. The claim-disposition inventory is the durable migration record.
 | 2026-09-08 | spec | Created from the locked Blueprint and ADR grilling record under explicit make-it-so | Read current controls, ADR-0002/0025, ADR tooling/tests, the release owner, and the locked decision record; doctor has no blocker | Successor ADR and root/template ownership wording promoted; durable implementation scope recorded | Lifecycle tooling, complete claim disposition, review contract, full verification, and independent review remain pending |
 | 2026-09-09 | spec | Corrected overstated promotion status and recorded complete question-to-owner reconciliation | Live ADR directory contains no claimed ADR-000A; JSON source current view lists 22 locked questions; every question is mapped above to a Contract owner or stable spec | This spec now carries the durable disposition; source remains local for recovery | Implement the named planned capabilities; no source cleanup requested |
 | 2026-09-09 | spec | Made the Blueprint definition, rebuild sequence, and future review test explicit after handoff review | The prior handoff and spec named an eight-section shape but did not enumerate it or provide a receiver-facing rebuild/check procedure | Eight sections, claim-disposition sequence, and semantic review checklist now live in this spec and the refreshed Markdown handoff | TK-00A/TK-00B remain unimplemented; current root/template Blueprints are not yet rebuilt |
+| 2026-09-09 | TK-00A | Ticket closed | b490657 ADR14 and full43PASS; c1600d1 independent S00A semantic/evaluator PASS and targeted checks | Active/history ADR projections and owning root/template controls reconciled; historical bodies and claim source bytes preserved | TK-00B closure and final candidate integration remain |
+| 2026-09-09 | TK-00B | Ticket closed | c1600d1 independent semantic/evaluator PASS;166root+59template source segments byte-exact; destination/owner tests GREEN; full43b490PASS | Eight-section Blueprint, exact claim dispositions, active ADR Canon and independent main-readiness checklist reconciled in both root and generic controls | Final full repeat and exact integration review remain; no main publication approval |
 
 ## Completion Result
 
