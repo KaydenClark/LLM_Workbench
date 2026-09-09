@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup.
 **Blockers:** none
-**Latest event:** TK-005 closed with proof.
-**Next gate:** Record whole-release independent review and integration containment under S-050.
+**Latest event:** TK-007 claimed by codex.
+**Next gate:** Close TK-007 with verification and documentation proof.
 
 ## Outcome
 
@@ -198,6 +198,7 @@ protocol are proposals, not verbatim owner approvals.
 | TK-006 | Repair reviewed discovery chronology, safe discovery paths and decoded-field privacy before using the candidate | done | TK-002 | a2338e7: five expected red regressions then 26/26 notepad tests green; full 34-command union passes unchanged; separate-context review PASS on exact candidate; guardrail 78/100 unchanged |
 | TK-004 | Migrate live JSON layout and ship schema/examples through managed installation without moving legacy sources | done | TK-006 | 1c5bd36a7e5baa904ab104ef7b92bd8464f9ecad:29notepad and62layout cases pass; full34-command union passes unchanged; separate-context repair review PASS; source room migrated with no legacy moves; guardrail78/100 unchanged |
 | TK-005 | Prove authored handoff, retained-context cleanup and real fresh-agent recovery through installed skills | done | TK-004 | bbda20d5010bce634a76deaf2f5b55c6f0a4fdf7: four case-alias regressions red then36 targeted green; full34-command union green; separate-context repair review PASS; one actual fresh-context installed-skill recovery completed useful inventory, with hashes independently read back; guardrail78/100 unchanged |
+| TK-007 | Repair confirmed basename/sequence regressions and continuity gates | in-progress | none | Public-CLI red/green, no-write refusal, native capture/resume |
 
 ### TK-001 - Scope and reconcile
 
@@ -272,6 +273,21 @@ to discovery, and scan decoded new fields without rescanning preserved history.
 Run targeted and full suites, preserve all existing evidence and record the exact
 new reviewed candidate. Existing TK-002 closure is historical, not an integration
 PASS. TK-004/005 still own remaining layout and actual continuity acceptance.
+
+## Renewed v3.2 Notepad Repair
+
+The owner-supplied `notepad definiton.txt` is audit evidence, not a new authority.
+Reproduce its two reported public-CLI regressions at the current tree: private
+material in a note basename and unsafe integer entry sequence poisoning.
+Forward-port only confirmed fixes; never merge the older runtime wholesale.
+Add refusal tests proving no writes, safe subsequent append and legacy validation.
+Enforce capture at the existing workflow boundaries: create/resume and read the
+revision before dependent work; confirm append/current results before advancing;
+validate and read back actual state before voluntary pause or requested handoff.
+Existing revision, privacy and dependency consumers are machine checks. Skill
+compliance is an agent obligation; no host hook or arbitrary-action interception
+is claimed. Prove save-before-next-question and stale-view correction in S-051
+native trials. Preserve unresolved and handoff dependencies during cleanup.
 
 ## Acceptance Criteria
 

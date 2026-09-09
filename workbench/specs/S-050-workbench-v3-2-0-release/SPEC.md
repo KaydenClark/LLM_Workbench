@@ -93,7 +93,7 @@ The three suggested Design Concept articles remain proposals, excluded here.
 
 New coordination services, Foundry revival, Python runtime rewrite, paid services,
 credential changes, raw transcript publication, mass checkpoint deletion, or
-personal skills repository mutation. Proposed Design Concept articles remain
+unrelated personal skills repository mutation. Proposed Design Concept articles remain
 uncreated and outside this implementation absent explicit owner direction.
 
 ## Dependencies And Blockers
@@ -155,6 +155,17 @@ immutable receipts, installed manifest/tool/skill and control-fidelity results,
 and host/model/machine evidence. State S-00C through S-00E as planned follow-on
 work rather than fresh-project proof. Report ready only if every v3.2 acceptance
 passes; readiness authorizes no further rollout.
+
+## Renewed Coherence Acceptance
+
+The current owner request adds S-051 TK-004 through TK-006 and S-046 TK-007 as
+v3.2 completion requirements. Preserve completed tickets and append-only proof;
+those bounded results do not establish repaired installed behavior. S-00A owns
+the already-locked Blueprint and independent main-readiness criteria; no new
+architecture interview or v3.2.1 activation follows. Review the repaired immutable
+candidate independently before upstream integration, then carry S-00B through
+Workbench Template integration. Main approval/merge and unrelated rooms remain
+excluded. Record unavailable native or cross-device environments explicitly.
 
 ## Acceptance Criteria
 

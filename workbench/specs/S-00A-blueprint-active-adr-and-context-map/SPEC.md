@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls.
 **Blockers:** none
-**Latest event:** Locked Blueprint and ADR decisions are durably reconciled below; active-ADR lifecycle mechanics and complete claim disposition remain to implement.
-**Next gate:** Claim TK-00A and add the failing ADR lifecycle/register cases before changing tooling.
+**Latest event:** TK-00A claimed by codex.
+**Next gate:** Close TK-00A with verification and documentation proof.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -156,7 +156,7 @@ outside this documentation-and-tooling capability.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00A | Validate active ADR lifecycle and render active/history projections | ready | none | Red lifecycle/register regressions; green ADR tests and full suite |
+| TK-00A | Validate active ADR lifecycle and render active/history projections | in-progress | none | Red lifecycle/register regressions; green ADR tests and full suite |
 | TK-00B | Reconcile Blueprint claim disposition and main-readiness review contract | blocked | TK-00A | Claim inventory, structural/link checks, review fixture, full suite |
 
 ### TK-00A - Validate active ADR lifecycle and render active/history projections

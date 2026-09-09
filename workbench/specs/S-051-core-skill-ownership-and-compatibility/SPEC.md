@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** TK-004 claimed by codex.
+**Next gate:** Close TK-004 with verification and documentation proof.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -47,8 +47,8 @@ copies are the current distribution behavior, not the selected target.
   are visible without replacing skills during doctor or normal setup.
 - Presence-only setup preserves existing names; explicit replacement verifies
   source identity, backs up differing bytes and supports rollback. Prepare
-  legacy tracked-core migration with inventory and recovery; do not mutate
-  the external personal repository in this assignment.
+  legacy tracked-core migration with inventory and recovery; the renewed owner request authorizes only the necessary core migration in
+  the external personal catalog, with recoverable originals and unrelated skills preserved.
 - Composition inherits scope. Read-only names its target; helpers may capture
   ignored working context within scope. Mention/routing is not invocation.
   Independently callable primitives remain caller-agnostic and do not grant
@@ -69,7 +69,7 @@ main publication and rollout to other active rooms remain owner-only/outside sco
 
 New coordination services, Foundry revival, Python runtime rewrite, paid services,
 credential changes, raw transcript publication, mass checkpoint deletion, or
-personal skills repository mutation. Proposed Design Concept articles remain
+unrelated personal skills repository mutation. Proposed Design Concept articles remain
 uncreated and outside this implementation absent explicit owner direction.
 
 ## Dependencies And Blockers
@@ -84,6 +84,9 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-001 | Define and install one authoritative core source with adapters | done | none | d2ecc5cf049509160c9ae1460b970eee48175772: installer 27/27, upgrade 8/8, full 37/37, independent repair review PASS; all seven reproduced ownership and alias findings resolved |
 | TK-002 | Diagnose tested compatibility and discovery failures | done | TK-001 | bc1347812d8c7402bade8991a7a41e5023f04e8e: inspection 5/5, installer 27/27, diagnostics 19/19, full 39/39 and independent bounded repair review PASS; range overstatement regression repaired |
 | TK-003 | Compose portable save and promote into a self-sufficient bundle | done | TK-002 | 6f6be660b51fb249f0f66ad76af2f25b9065154d: full 40/40, independent final composition review PASS; installed composition 1/1, installer 27/27, layout 67/67; native Codex local invocation receipt independently read back at bf0bc31 with identical relevant skill bytes |
+| TK-004 | Repair scope-preserving core composition, handoff, routing and evidence review | in-progress | none | Red/green contracts and behavioral acceptance |
+| TK-005 | Migrate personal core ownership and install independently reviewed source | blocked | TK-004 | Recoverable originals, reviewed migration, installed read-back |
+| TK-006 | Verify actual Codex and Claude ordinary-prompt workflows | blocked | TK-005 | Fresh host traces and explicit unavailable gates |
 
 ### TK-001 - Define and install one authoritative core source with adapters
 
@@ -136,6 +139,65 @@ Native-host invocation remains separate from installed-path mechanics. The
 Codex CLI invocation using isolated installed source and local runtime. Explicit
 source paths were supplied, so automatic discovery is not independently proven.
 The CLI respected its Git write refusal; only local bytes were recovered.
+
+### TK-004 - Repair coherent scoped behavior
+
+**Stance:** Builder
+
+The 2026-09-09 owner activates this follow-up from review task
+`01a083f1-d913-7010-b6a2-23472aceb8f0` at source `5c90494`.
+Preserve the review corrections: the Blueprint grilling created and updated JSON;
+the two push escalations were rejected before execution. Do not repeat the false
+claims that no note existed or no attempt occurred.
+
+Repair ordinary behavior selection in the existing entry route, core grilling
+and its exits, Markdown handoff as a maintained core primitive, scoped
+make-it-so/promote/save/carry composition, and independent evidence review.
+The narrower requested endpoint always survives composition. A specification-only
+handoff must never instruct its recipient to implement, publish or merge.
+Review distinguishes task/integration correctness, whole-Workbench main-readiness
+and actual behavioral acceptance; a review request grants no main merge.
+
+### TK-005 - Migrate and install reviewed core with recoverable originals
+
+**Stance:** Builder
+
+Inventory actual global discovery and personal-catalog ownership before changes.
+Review a concrete core-only migration, preserve originals plus link topology,
+remove only selected core tracking/duplicate discovery and install the reviewed
+source as managed state. Preserve every unrelated personal file, index change,
+and branch. Retain recovery receipts and verify actual installed hashes and both
+provider adapters. The owner authorization replaces the earlier plan-only
+restriction for this slice; historical isolated-home proof remains qualified.
+
+### TK-006 - Prove ordinary-prompt behavior in actual installed hosts
+
+**Stance:** Builder
+
+Run fresh Codex and Claude using ordinary task prompts without supplied skill
+paths or explicit skill invocation. Record provider/version/model, prompt,
+source/installed hashes, observed skill reads, ordered note writes and results.
+Test grilling decision/correction capture before subsequent questioning, stale
+current-view correction on fresh resume, a Markdown specification-only handoff
+and recipient scope, and evidence-backed stopping/delivery. Preserve failed,
+rejected, interrupted and unavailable results separately. Explicit-path fixtures
+remain useful but do not count as automatic discovery. Missing environments
+block only their dependent acceptance and never become a PASS.
+
+## Repair Acceptance (added; historical checked evidence retained)
+
+- [ ] An installed core alone supplies handoff and all composed dependencies;
+      routing runs already-authorized behavior without requiring a second prompt.
+- [ ] Grilling composes JSON capture and supports preserve, promote-only,
+      specification-only, handoff and authorized execution exits.
+- [ ] A specification-only handoff includes exact scope and accessible context;
+      an independently started recipient produces specifications only.
+- [ ] Review verdicts inspect failed/rejected tool calls and separate attempted,
+      rejected-before-execution, command-failed, local-success and remote-accepted.
+- [ ] Real mixed-install migration retains recoverable original bytes/topology,
+      changes only core ownership, and matches reviewed installed source.
+- [ ] Fresh Codex and Claude ordinary-prompt trials meet TK-006 or explicitly
+      retain unavailable/failed acceptance without reliability overstatement.
 
 ## Acceptance Criteria
 

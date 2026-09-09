@@ -289,6 +289,11 @@ be changed only through a later spec linked by supersession.
 | [S-007 - Safe Feedback Helper Import](workbench/specs/S-007-feedback-helper-import/SPEC.md) | Allow the feedback helper to be imported when Node has no script path. | complete |
 | [S-008 - Windows Verification Portability](workbench/specs/S-008-windows-verification-portability/SPEC.md) | Keep context output, spec-doctor, and eval-runner verification stable across Windows and POSIX hosts. | complete |
 | [S-009 - Git-Write Constrained Adoption](workbench/specs/S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
+| [S-00A - Blueprint, Active ADR, And Context Map Rebuild](workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md) | Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls. | active |
+| [S-00B - Workbench Template Reformation](workbench/specs/S-00B-workbench-template-reformation/SPEC.md) | Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there. | active |
+| [S-00C - Project Evidence And Blueprint Grilling](workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md) | Prepare a project-informed Blueprint grilling record from verified project evidence. | planned |
+| [S-00D - Genesis From Blueprint And Active ADRs](workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md) | Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality. | planned |
+| [S-00E - Fresh Workbench Template To Project Proof](workbench/specs/S-00E-fresh-template-project-proof/SPEC.md) | Prove the complete fresh-copy path from Workbench Template through a useful independent project. | planned |
 | [S-010 - Canonical Evaluator Entry Detection](workbench/specs/S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
 | [S-011 - Agent Skills Adoption](workbench/specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |
 | [S-012 - Reproducible Adoption Provenance](workbench/specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
@@ -325,10 +330,11 @@ be changed only through a later spec linked by supersession.
 | [S-047 - Visible Workbench Identifiers](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Introduce visible base-62 identifiers without parallel IDs or loss of existing references. | active |
 | [S-048 - Checkpoint Retirement](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately. | active |
 | [S-049 - Assignment Ownership And The Coordination Record](workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md) | Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination. | complete |
-| [S-050 - Workbench v3.2.0 Release](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) | Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project. | active |
+| [S-050 - Workbench v3.2.0 Release](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) | Deliver the reconciled v3.2.0 capability set and prove the Workbench Template update and reviewed integration. | active |
 | [S-051 - Core Skill Ownership And Compatibility](workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md) | Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership. | active |
 | [S-052 - Private Session Transport](workbench/specs/S-052-private-session-transport/SPEC.md) | Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling. | active |
 | [S-053 - Configured Host Capabilities](workbench/specs/S-053-configured-host-capabilities/SPEC.md) | Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate. | active |
+| [S-054 - Workbench v3.2.1 Review-Boundary Integrity](workbench/specs/S-054-v3-2-1-review-boundary-integrity/SPEC.md) | Make an integration review bind to the exact resulting candidate and refuse target movement before merge. | planned |
 <!-- spec-catalog:end -->
 
 ## Cross-Cutting Health
