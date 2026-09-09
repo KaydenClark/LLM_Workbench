@@ -182,17 +182,19 @@ and the `notepad` skill as the eighteenth in the bundle; v3.1.3 freezes at
 seventeen. Publication remains separately
 owner-controlled. S-050 consolidates the reconciled v3.2.0 update: shared JSON
 notepads, visible identities, direct promotion with frozen checkpoint history,
-twenty core skills, optional private session transport and scoped host checks.
+twenty-one core skills, optional private session transport and scoped host checks.
+The owner explicitly waived the frozen-label rule for this repair only; original
+twenty-skill v3.2.0 manifests remain readable, and commit/content identities
+distinguish the repaired bundle.
 Actual cross-device acceptance and rollout readiness remain explicitly separate.
 This repo is the source, so its own docs are not stamped.
 
-Portfolio responsibilities stay separate: LLM_Workbench produces the canonical
-harness and exact upgrade handoff; GPT_OS selects authorized targets and owns
-deployment, rollout tracking, and recovery; Audit_Workbench audits project HFRs
-and compiles upstream reports; each project owns its product, filled controls,
-local evidence, and truthful feedback. A fix landing here is upstream
-implementation evidence, not proof that a downstream project has deployed or
-benefited from it.
+LLM_Workbench produces the canonical harness and scoped update instructions.
+Named project owners authorize installation, recovery and local verification.
+Historical GPT_OS/Audit_Workbench examples in ADR-0026 explain earlier roles;
+they do not authorize a new portfolio rollout. A fix landing here proves
+upstream implementation, not that a downstream project has deployed or benefited
+from it. This assignment explicitly updates the Workbench Template only.
 
 The portable layout and skill-install contract is implemented in
 [`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate

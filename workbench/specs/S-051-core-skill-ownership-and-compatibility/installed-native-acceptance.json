@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-09",
+  "scope": "Single synthetic native acceptance sequence, actual global discovery, existing local macOS host. This is not repeated controlled outcome evidence.",
+  "producerCoreCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+  "installedCore": [
+    {
+      "name": "adoption",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "0b35a038ebf0f2308ff172492e91ad71ff101e7e681151623955eef2a1e94c25",
+      "skillSha256": "738f133d323997f1f9bff8d691b3cee5a3e284dd3a9d53c201502ab30af92198"
+    },
+    {
+      "name": "checkpoint",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "b01336d7836278f6f4484fac3a7f489b4b7ec2b39d1de76182feb849677ce43b",
+      "skillSha256": "7bbb0eefd9e367af86bdd79d6722ca4d6b03ddfc2bdc08246fbbdb005cd2d08f"
+    },
+    {
+      "name": "code-review",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "43902b5ee71f1d9d9b3d412a5dbed6d8575fe98fcc2b2f5ca4aefd11ddb454a0",
+      "skillSha256": "c6f851f1410bba03edcaf8fd0d98c485ba1013bbb8edcb9b62926bebdd13bed8"
+    },
+    {
+      "name": "genesis",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "6d6fe3207edc22853bb855d622b4e4dcafe7055d67bbfc05895593afe275ebbd",
+      "skillSha256": "852deb8a94d1b40ff30fe3d6b230c8609d89f5b0765c332c622a5ead11356b75"
+    },
+    {
+      "name": "grilling",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "abfe60b567db3cc401fba5a6339218495fe068f40b98d2b4eddd10e06e3d862a",
+      "skillSha256": "1d4de296a26ae9c22aa8ae3a10332dc90d5e0b0b226694c5b370c8bcc72f032a"
+    },
+    {
+      "name": "implement",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "fb6c719a2caaa827102738f4028576ac0976859fbd0a0f5e9e2004d18c16c3bf",
+      "skillSha256": "b4f2db29a623f4d636d197d13635a489f1763dc0f3fe0471eb49f690f3f36f4e"
+    },
+    {
+      "name": "make-it-so",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "f417bd2725608ea1508fef000342d87fde4c9956723d2d41ab569a37217d0db5",
+      "skillSha256": "4e34875105b35a21becdceed444e2e6da86ee943bdef80950a0d73524d6b0769"
+    },
+    {
+      "name": "to-docs",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "3b0a5d50a7ed6844e5ee2ec765064db78e804d1e25814c213c41ac2af94b2fa2",
+      "skillSha256": "408c34668aa659d91a15aea1a0e566b4e3a95cb79b89b27a045576f3bc7fc832"
+    },
+    {
+      "name": "to-spec",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "7813a152813e19316369b7c1addc3303ef9f599caace1d0072857fdd50d730ce",
+      "skillSha256": "defc5e27d574ce8dfb3afd823a3a18508bf1eeb26f6fceeb35b0c6e9799a2b85"
+    },
+    {
+      "name": "to-tickets",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "3c4e3c7224f97fe7a8ec3a3609ef1b307338c615108e795bebbacbb67effd1fc",
+      "skillSha256": "a76015ba57019f258397cbe01c7c318d5d96abf0bc9d3783b284f45953c3aed1"
+    },
+    {
+      "name": "tracer-bullet",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "c67f1c5abd5360350735e71d1d5087a5058f5c8602ef880b2814207ce4a3741d",
+      "skillSha256": "239f4ab54600c204fd414dadfcc43b318b5b1b3a1281128ee3fb484d6c7f0d6a"
+    },
+    {
+      "name": "update-harness",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "ffb7a10a4b983278532e109642cc9f48879cc354c1047897958924a2c71be3f8",
+      "skillSha256": "c02692c3228333e44d8c46adc1c2594e7190bedcb797d2fa54cba24276191052"
+    },
+    {
+      "name": "carry",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "333a13fce85ad3ac414ffc4c7369eee767edcc17a0a0733357fa351172fdbe7c",
+      "skillSha256": "3e03be478014950ff7359f494a8ab2fe9ea4589edf75b03fcdc2d3278acd4442"
+    },
+    {
+      "name": "notepad",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "dfeff1c61f2175ec64ad46ca2f3575f2d11ab327c04dd377d40413ab49438cb9",
+      "skillSha256": "afb9109d4a7b67e167a6570bc85dae9f6981a10ae9cc47c0a3a35040c0a54280"
+    },
+    {
+      "name": "save",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "ac480325607aaf2ce895fb3b845aeb4512143abf569ac7194b9cb5a3601ba772",
+      "skillSha256": "1740964229863b04a7349d8090f3d8cd4d5dbee8c205a96c4da0999b9ba6f4c6"
+    },
+    {
+      "name": "promote",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "6c63fbaceb0d244f7c05583c41f0e448847b68d354a8103e9651d4e32a93fb20",
+      "skillSha256": "85a75ca32df2dd3476e1d63fbd8de9dc6499848dadcc47a14f9f7c00df32df59"
+    },
+    {
+      "name": "handoff",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "34d6768d013df17f1ab517a72851255e3576de19128331084bda06fd4c224502",
+      "skillSha256": "c6cb0870c3d699791e311a9cd3ab3d0baf8290ead8ce6ef6a828b366bd9ca9dc"
+    },
+    {
+      "name": "builder",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "77ad51d9861dd13f9b16e334e1534e72483ffd58f21df9598b224bfac5dac311",
+      "skillSha256": "47e68e1d1b78aa5c6276f606fff31149c2fbd5e6f7cf05213b60a886a3b0a4d4"
+    },
+    {
+      "name": "auditor",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "e2a4071880ad86f5ab311966fd2d0c790eb86f0347ed50db82b564dc107eb2b7",
+      "skillSha256": "7e9a5dc9e714ac181bd137c44b025eb4197d3826d243c747d0f94ae200dfd07b"
+    },
+    {
+      "name": "reviewer",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "43cd98b761af893901f0d4e2737d213b023e93637201de7637b494f9fbca0a79",
+      "skillSha256": "beff598aadfac94efeebcf2845e4459ed4071fafc0b68136072a62c8414bfd9d"
+    },
+    {
+      "name": "reconciler",
+      "sourceCommit": "64397ad757b3a3a9bd535497e2c7912a58cd0497",
+      "contentHash": "c4dd17c9a2f5e92153e3a95b8ff16546ffc41b821296071fee41e57c12e1ba09",
+      "skillSha256": "3f1cdec6610499369917a0d7354d5b69cc9864bf28fc7b4c52bc68d655e098bf"
+    }
+  ],
+  "migration": {
+    "originalCatalogCommit": "0e3cd8c982cddc5c9db7ad8d4610ca8483aa0d80",
+    "localMigrationCommit": "8832f07d701bacfb75f04a873e01e15b1afe968e",
+    "originalDirectoriesVerified": 20,
+    "unrelatedTrackedFilesVerified": 104,
+    "sourceOwnership": "upstream-managed excluded core, independent personal catalog retains unrelated source",
+    "recovery": "Exact originals, Git bundle, original exclusion and adapter topology preserved privately; precommit restore and postcommit attention rehearsals passed.",
+    "personalPublication": "No personal-catalog push or main merge",
+    "adapter": "Claude root resolves to canonical .agents; deprecated Codex alias relocated recoverably"
+  },
+  "trials": [
+    {
+      "provider": "Codex",
+      "version": "0.144.3",
+      "model": "gpt-5.3-codex-spark",
+      "status": "failed-behavior",
+      "observed": "Host removed all skill descriptions and omitted154 skills after exceeding2percent budget. Response askedQ1 without reading controls or saving a note.",
+      "claimLimit": "Bounded explicit helper use earlier succeeded; ordinary-prompt acceptance on this crowded catalog did not."
+    },
+    {
+      "provider": "Claude",
+      "version": "2.1.212",
+      "model": "claude-opus-4-8[1m]",
+      "status": "unavailable",
+      "observed": "OAuth session expired and could not be refreshed. Discovery init listed installed skills, but native behavior did not run. Result subtype success had is_error true and is treated as failure.",
+      "modelStatus": "reported by initialization; no successful model response",
+      "discoveryObservation": "Native initialization listed the Workbench core names. The skills inventory also repeated code-review with a host-provided command; authenticated precedence/callability remains unverified. This is not a second installed core directory."
+    },
+    {
+      "provider": "Codex",
+      "version": "0.144.3",
+      "model": "gpt-6-astra",
+      "status": "unavailable",
+      "observed": "CLI warned model metadata absent then server400 required a newer Codex version. No native behavior acceptance."
+    },
+    {
+      "provider": "Codex",
+      "version": "0.144.3",
+      "model": "gpt-5.5",
+      "status": "passed-bounded-workflow",
+      "sourceCore": "b490657 then d2111e6 for repaired recipient; installed core now64397ad with only later carry guidance change",
+      "promptKind": "Ordinary-language interview and spec-only handoff/recipient prompts, no supplied skill paths or explicit skill invocation",
+      "observedSkillReads": [
+        "grilling",
+        "notepad",
+        "handoff",
+        "to-spec"
+      ],
+      "orderedWrites": [
+        "question map created revision1 before Q1",
+        "accepted answer appended decision-001 revision2 then current3 before Q2",
+        "correction-001 explicitly linked to decision-001 revision4; current5 stopped interview; Markdown dependency declared current6",
+        "intentional fixture intervention made only current view stale at revision7, preserving source entries",
+        "first fresh recipient drafted only planned specification/prose acceptance, preserved Q2-Q8 open, but left stale current view unchanged: behavioral failure",
+        "reviewed to-spec composition repair; second fresh recipient resumed an existing spec and repaired current view to revision8 with correct specification-only endpoint and Q2-Q8 next gate"
+      ],
+      "fixtureDifference": "Repaired recipient inherited the first recipient draft; it proves existing-owner recovery, not identical blank-state repetition.",
+      "handoff": "Readable local Markdown carrying exact scope, correction, open questions, accessible source and one resume action. Original template-not-installed gap led to reviewed bundled handoff asset.",
+      "scopeCheck": "No implementation, executable tests, commit, push or publication; only planned spec, generated catalog and ignored working context.",
+      "stopClaim": "Interview stopped on explicit request; final reports qualified local capture and no remote delivery. No immediate UI Stop or crash-recovery guarantee."
+    }
+  ],
+  "remainingEnvironments": [
+    "Claude authenticated native behavior unavailable",
+    "Astra CLI execution unavailable on installed version",
+    "Windows host and real private cross-device transport unavailable; S052 gate remains open"
+  ],
+  "rawEvidence": [
+    {
+      "name": "v32-codex-question-events.jsonl",
+      "sha256": "8b08d2149023dd70fcfdf779295c279ddabfe6de960edebef9d2dd708ead650c",
+      "retention": "private local acceptance evidence; raw host transcripts are not published",
+      "types": [
+        "turn.completed"
+      ]
+    },
+    {
+      "name": "v32-claude-question-events.jsonl",
+      "sha256": "8d898ebe3805449967532c20cbfa190b929c420fd274853631a56bc11b9eb476",
+      "retention": "private local acceptance evidence; raw host transcripts are not published",
+      "types": [
+        "result"
+      ]
+    },
+    {
+      "name": "v32-codex-full-question-events.jsonl",
+      "sha256": "54d36c968dd721ed84d0dc492f66038ae5875cf886b2d1096d303be5e744a966",
+      "retention": "private local acceptance evidence; raw host transcripts are not published",
+      "types": [
+        "turn.failed"
+      ]
+    },
+    {
+      "name": "v32-codex55-question-events.jsonl",
+      "sha256": "3171f8ce97d5b2c1de247c0f917bdd3f201d8d36a98816b5fc5239177e4cba42",
+      "retention": "private local acceptance evidence; raw host transcripts are not published",
+      "types": [
+        "turn.completed"
+      ]
+    },
+    {
+      "name": "v32-codex55-answer-events.jsonl",
+      "sha256": "02273251c4ea353718f231b9abf1307de1b7ab7cdff76749de9563754c96eb06",
+      "retention": "private local acceptance evidence; raw host transcripts are not published",
+      "types": [
+        "turn.completed"
+      ]
+    },
+    {
+      "name": "v32-codex55-handoff-events.jsonl",
+      "sha256": "2a8fe8174b3938821e22fb58c01a45fc87899b22b9e8df5b6ced1b059855ae7a",
+      "retention": "private local acceptance evidence; raw host transcripts are not published",
+      "types": [
+        "turn.completed"
+      ]
+    },
+    {
+      "name": "v32-codex55-recipient-events.jsonl",
+      "sha256": "f1726c8b9ff59a04adae6989b9cfa94396bc64465e422a94fa9dcb62da452cf0",
+      "retention": "private local acceptance evidence; raw host transcripts are not published",
+      "types": [
+        "turn.completed"
+      ]
+    },
+    {
+      "name": "v32-codex55-recipient-repair-events.jsonl",
+      "sha256": "01a58357b85c0dc5ee712b3829eb598768e3913a4cc951203cd49ddfbfb3f5ae",
+      "retention": "private local acceptance evidence; raw host transcripts are not published",
+      "types": [
+        "turn.completed"
+      ]
+    }
+  ],
+  "evidenceHandling": {
+    "retainedFailures": [
+      "Spark discovery truncation",
+      "Astra client refusal",
+      "Claude OAuth failure",
+      "missing handoff asset handled explicitly before repair",
+      "native invalid note-validation/help invocations refused without writes",
+      "first recipient stale-current failure",
+      "migration pre-execution automatic refusal then reviewed safer retry",
+      "two public-push automatic refusals before execution; owner annotation then verified Git acceptance"
+    ],
+    "publicRecovery": "origin codex/v32-coherence-repair advanced d9fbf95 to d2111e6 after permitted retry; this is recoverability, not integrated delivery"
+  },
+  "notepadVerification": {
+    "revision": 8,
+    "entryIds": [
+      "decision-001",
+      "correction-001"
+    ],
+    "sourceEntriesPreserved": true,
+    "currentReconciled": true,
+    "activeMarkdownDependencyRetained": true
+  }
+}

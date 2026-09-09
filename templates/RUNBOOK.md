@@ -582,7 +582,7 @@ retained; Markdown handoffs are intentionally readable rather than tool-managed
 JSON records. Existing JSON handoffs remain legacy local sources and are not
 newly created.
 
-Reconcile the destination before releasing retention: set its status to
+For a legacy JSON retaining destination, reconcile it before releasing retention: set its status to
 `RECONCILED`, clear unresolved items with `--unresolved ""`, and clear its next
 action with `--next-action ""`. Source cleanup remains a separate decision.
 Whole `delete` requires the source to be reconciled with no entries, unresolved

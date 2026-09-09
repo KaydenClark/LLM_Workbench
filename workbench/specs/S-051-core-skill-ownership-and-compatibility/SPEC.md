@@ -8,8 +8,8 @@
 **Updated:** 2026-09-09
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** TK-005 closed with proof.
-**Next gate:** Complete TK-006.
+**Latest event:** TK-006 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -94,7 +94,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-003 | Compose portable save and promote into a self-sufficient bundle | done | TK-002 | 6f6be660b51fb249f0f66ad76af2f25b9065154d: full 40/40, independent final composition review PASS; installed composition 1/1, installer 27/27, layout 67/67; native Codex local invocation receipt independently read back at bf0bc31 with identical relevant skill bytes |
 | TK-004 | Repair scope-preserving core composition, handoff, routing and evidence review | done | none | d2111e6 core source independently reviewed; mechanical composition/50notepad regressions pass; actual native failures drove bundled handoff asset and to-spec continuation repair |
 | TK-005 | Migrate personal core ownership and install independently reviewed source | done | TK-004 | Reviewed original0e3cd8c to local catalog8832f07;20 original dirs and104 unrelated files verified;21 canonical installed skills now d2111e6;Claude alias same bytes;deprecatedCodex alias recoverable;recovery failure rehearsals PASS |
-| TK-006 | Verify actual Codex and Claude ordinary-prompt workflows | blocked | TK-005 | Fresh host traces and explicit unavailable gates |
+| TK-006 | Verify actual Codex and Claude ordinary-prompt workflows | done | TK-005 | installed-native-acceptance.json:actual21markers64397ad;GPT5.5 automatic skill reads,questionmap1/answer2-current3/correction4-current6/stale7-repaired8;spec-onlyrecipient;ClaudeOAuth/AstraCLI/Sparkbudget failures retained |
 
 ### TK-001 - Define and install one authoritative core source with adapters
 
@@ -202,19 +202,29 @@ accepted retry from an unresolved platform gate. This does not authorize main
 or unrelated data export, or changes that bypass platform approval controls.
 Actual tool results, not revised prose, determine whether the gate is resolved.
 
+## Installed Acceptance Receipt
+
+[Installed and native acceptance](installed-native-acceptance.json) records the
+exact source/installed identities, preserved originals, ordered native writes,
+failed and unavailable trials, source-led corrections and successful recovery.
+Codex GPT-5.5 passed the bounded scenarios. Claude authentication, Astra on this
+CLI, and Spark ordinary discovery did not pass; their exact boundaries remain
+visible. These observations do not prove generalized reliability or S-052's
+cross-device contract.
+
 ## Repair Acceptance (added; historical checked evidence retained)
 
-- [ ] An installed core alone supplies handoff and all composed dependencies;
+- [x] An installed core alone supplies handoff and all composed dependencies;
       routing runs already-authorized behavior without requiring a second prompt.
-- [ ] Grilling composes JSON capture and supports preserve, promote-only,
+- [x] Grilling composes JSON capture and supports preserve, promote-only,
       specification-only, handoff and authorized execution exits.
-- [ ] A specification-only handoff includes exact scope and accessible context;
+- [x] A specification-only handoff includes exact scope and accessible context;
       an independently started recipient produces specifications only.
-- [ ] Review verdicts inspect failed/rejected tool calls and separate attempted,
+- [x] Review verdicts inspect failed/rejected tool calls and separate attempted,
       rejected-before-execution, command-failed, local-success and remote-accepted.
-- [ ] Real mixed-install migration retains recoverable original bytes/topology,
+- [x] Real mixed-install migration retains recoverable original bytes/topology,
       changes only core ownership, and matches reviewed installed source.
-- [ ] Fresh Codex and Claude ordinary-prompt trials meet TK-006 or explicitly
+- [x] Fresh Codex and Claude ordinary-prompt trials meet TK-006 or explicitly
       retain unavailable/failed acceptance without reliability overstatement.
 
 ## Acceptance Criteria
@@ -274,6 +284,8 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | 2026-09-08 | TK-003 | All scoped composition checks passed at immutable 6f6be660b51fb249f0f66ad76af2f25b9065154d | Full 40 of 40, independent final review PASS, guardrail 78 unchanged with four outcome-evidence recommendations. Actual Codex CLI 0.144.3 isolated-home invocation on bf0bc31 used byte-identical relevant skills; selected correction promoted and independently read back, note revision 9 retained original/correction/blocker. CLI sandbox refused Git metadata write; doctor correctly reported incomplete fixture owners | Native receipt linked from the owning slice; global/project source routes and composition responsibilities documented | No automatic-discovery, Claude/Windows, private remote, full-room Genesis, Example delivery or repeated-outcome inference; final S-050 release review and containment remain open |
 | 2026-09-09 | TK-004 | Ticket closed | d2111e6 core source independently reviewed; mechanical composition/50notepad regressions pass; actual native failures drove bundled handoff asset and to-spec continuation repair | Core skill scopes, Markdown handoff dependencies, ordinary routing, evidence categories and reviewer criteria reconciled | Installed migration and native host acceptance tracked separately in TK005/TK006 |
 | 2026-09-09 | TK-005 | Ticket closed | Reviewed original0e3cd8c to local catalog8832f07;20 original dirs and104 unrelated files verified;21 canonical installed skills now d2111e6;Claude alias same bytes;deprecatedCodex alias recoverable;recovery failure rehearsals PASS | Private recovery receipts and safe installed-acceptance report; no personal catalog push or main merge | TK006 actual native acceptance and unavailable environments; full integration review pending |
+| 2026-09-09 | TK-006 | Ticket closed | installed-native-acceptance.json:actual21markers64397ad;GPT5.5 automatic skill reads,questionmap1/answer2-current3/correction4-current6/stale7-repaired8;spec-onlyrecipient;ClaudeOAuth/AstraCLI/Sparkbudget failures retained | Safe durable receipt distinguishes successful observations, failed first attempts, unavailable hosts, local migration and actual public recovery; no reliability inference | Final exact-candidate integration review; Claude authentication and S052 external host/transport readiness remain unverified |
+| 2026-09-09 | TK-006 | Owner annotation restated the assigned delivery intent after two public recovery pushes were rejected before execution; one coordination hand-back | Verified configured PUBLIC destination; owner then said Fix this too please /make-it-so; retry naming exact destination, candidate, payload and renewed instruction executed successfully, remote d9fbf95 to d2111e6 | Carry now presents existing authorization concretely and preserves actual refusal/result pairs; cause was authorization context not accepted by automatic review, not a missing Git attempt | This repairs the observed operation and guidance; it neither overrides platform review nor guarantees future approval |
 
 ## Completion Result
 
