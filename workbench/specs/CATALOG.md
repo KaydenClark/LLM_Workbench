@@ -15,7 +15,7 @@ Derived from stable specs; includes completed history.
 | [S-008 - Windows Verification Portability](S-008-windows-verification-portability/SPEC.md) | Keep context output, spec-doctor, and eval-runner verification stable across Windows and POSIX hosts. | complete |
 | [S-009 - Git-Write Constrained Adoption](S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
 | [S-00A - Blueprint, Active ADR, And Context Map Rebuild](S-00A-blueprint-active-adr-and-context-map/SPEC.md) | Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls. | complete |
-| [S-00B - Workbench Template Reformation](S-00B-workbench-template-reformation/SPEC.md) | Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there. | active |
+| [S-00B - Workbench Template Reformation](S-00B-workbench-template-reformation/SPEC.md) | Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there. | complete |
 | [S-00C - Project Evidence And Blueprint Grilling](S-00C-project-evidence-and-blueprint-grilling/SPEC.md) | Prepare a project-informed Blueprint grilling record from verified project evidence. | planned |
 | [S-00D - Genesis From Blueprint And Active ADRs](S-00D-genesis-from-blueprint-and-adrs/SPEC.md) | Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality. | planned |
 | [S-00E - Fresh Workbench Template To Project Proof](S-00E-fresh-template-project-proof/SPEC.md) | Prove the complete fresh-copy path from Workbench Template through a useful independent project. | planned |
@@ -59,4 +59,5 @@ Derived from stable specs; includes completed history.
 | [S-051 - Core Skill Ownership And Compatibility](S-051-core-skill-ownership-and-compatibility/SPEC.md) | Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership. | active |
 | [S-052 - Private Session Transport](S-052-private-session-transport/SPEC.md) | Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling. | active |
 | [S-053 - Configured Host Capabilities](S-053-configured-host-capabilities/SPEC.md) | Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate. | active |
+| [S-054 - Workbench v3.2.1 Review-Boundary Integrity](S-054-v3-2-1-review-boundary-integrity/SPEC.md) | Make an integration review bind to the exact resulting candidate and refuse target movement before merge. | planned |
 <!-- spec-catalog:end -->

@@ -1022,4 +1022,3 @@ not proof of non-occurrence. Behavioral acceptance separately records actual
 provider/version/model, prompt, source/installed hashes and observed skill use;
 explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable
 checks remain unverified. Repeated controlled trials are needed for reliability.
-

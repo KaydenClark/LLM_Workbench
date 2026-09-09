@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "repairVersion": "v3.2.0",
+  "frozenLabelWaiver": "User explicitly waived frozen label for this repair only; original20 policy remains readable; repaired21 named by source/hash. S054 remains deferred.",
+  "sourceCandidate": "6e024ec0e697814a9b1c8d8f3d47d04664e6a501",
+  "verification": {
+    "commands": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exit": 0,
+        "logSha256": "676c6b1bb78f63acf2e1be32f07956dcc0bef3d48dc829c9cf0c512bd37831a7"
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exit": 0,
+        "logSha256": "b052cab1b97d95287287b423a8f6dfad019f04d7e20a9af5522155645327a983"
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exit": 0,
+        "logSha256": "70fd46a38b3c9dfeb67c910c61cf893c4095615586ad76662d037f6c82b3a474"
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exit": 0,
+        "logSha256": "3d5df2c7f98ae61c3d8f8e93c952d4433498c7dd1993a9d903bc115aeb94e521"
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exit": 0,
+        "logSha256": "ceaca05e6f02cdd8cab17abe6471f5c99f35606e01a1d59713a1ca61ba44f327"
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exit": 0,
+        "logSha256": "3483afbf594cedbba43a7a86957c3a0d2ec6dbb2cfab662cd99dc0a529103c9a"
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exit": 0,
+        "logSha256": "34339191e2305843505ff5ca56d5a5914c4f7ec9ad8dc45d5db7955b78af88fb"
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exit": 0,
+        "logSha256": "a7945e9bcede536c2f695c98475feea4b1aae7362127e4d110f15f24c53276f2"
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exit": 0,
+        "logSha256": "93df8db89dda5ad67b4d3cca60e029b53c4a39b6d2a3f89f0c68ee6b16ccbc1d"
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exit": 0,
+        "logSha256": "27f32d9c32e36804dc4007e0f9c91d6887dbffe2126867da2a1110aea194a3a6"
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exit": 0,
+        "logSha256": "22125bd21cc6ccb7f62a300cc156ea5cab78f3db755556f39a9879d16d7a181d"
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exit": 0,
+        "logSha256": "56d2e3ba3b53b2930ef148e99b5fd9e4209fe121bbdc349052fe6952e82a3d90"
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exit": 0,
+        "logSha256": "85d15932553d5193448d15a524dab0c61fd502212322e75236df045a4098d7e1"
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exit": 0,
+        "logSha256": "61bc9407689d724197c431c98db844b13cfbec39ca6dbc9d0880a7212904c657"
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exit": 0,
+        "logSha256": "5bb5fcd04d6ee87fa49ec9cc92e4343e9d906b904df83d0613a99499801323de"
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exit": 0,
+        "logSha256": "c11ef6d72915b3f4d392c509338b41f4c2e2253d0cd4cdd52d38fc0dc647cd3f"
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exit": 0,
+        "logSha256": "b253d584aa79306e83b670340cd4f20af68b252b496a82ea46c0e8a5d1d8400d"
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exit": 0,
+        "logSha256": "4af8031ea3a00555687a2891a7da551873ef2f07d4b8b5e820f5c7b3d91fe20a"
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exit": 0,
+        "logSha256": "d1b2baf2ca631920b1993018572cc78689bc62d70164b7b2895837dfa75a5cde"
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exit": 0,
+        "logSha256": "8baa1117d2bac04d6e076e8b46a5d94d660d7b241b5ae579188a047b1628bd89"
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exit": 0,
+        "logSha256": "ed0d6275b587c057ad75f05890e5c9a3243efaabf339627a08c143b195bd180a"
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exit": 0,
+        "logSha256": "855648b960e374facd5760217e943f301d03d2fac90047822226e2ab02fc6a52"
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exit": 0,
+        "logSha256": "34fb8ae4ed101056153f3c663870c1520329def39e9df76b0412e2783fa49357"
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exit": 0,
+        "logSha256": "0d46bb09ff30cda7bd64454e7772e2d71a82d52a227c07de7a7bc7e6622c3cc4"
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exit": 0,
+        "logSha256": "4cedcdbf38344fc6d6bc454ef80a75dfef5b4fdd3ae6cfb205b0fd7af45544b5"
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exit": 0,
+        "logSha256": "454923d3d6d8ecc5633ee80b56a4478a0d5ca404582318e03dfeba51fda5b142"
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exit": 0,
+        "logSha256": "5edca15bea0b229bb194025549b2ca7d1e9c08d549d28169904fa162f06c6ac2"
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exit": 0,
+        "logSha256": "2f9a0468ee094a221fb6e84b551484e3ed279bb371f694dbc9993980bb6ab887"
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exit": 0,
+        "logSha256": "373b04e4a2607c087192de6b9e5890b8340195fc3bd4c17b1a681168289d2051"
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exit": 0,
+        "logSha256": "6f0f4a88425cd465e3f9b9fbb1ed61a07f4b6182d20fc71da78f8e39713af2a1"
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exit": 0,
+        "logSha256": "e0ef32e1edb1645577979090997c74ea4e9c92c98a9da29a9f4d67c42f42498b"
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exit": 0,
+        "logSha256": "419bf47a8c683370dac56456a05da467520cb2e244d98c73d2ff1606d3c8b78d"
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exit": 0,
+        "logSha256": "841f64c4c0bb3461589e16e36202cc8ad61a5542f704c807193d3f1723e1ea12"
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exit": 0,
+        "logSha256": "d57a4bfed1b72097ffe39602a7cfae5d10915ad9c0111bffdcd8f197e255b682"
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exit": 0,
+        "logSha256": "de9caa1aa5bb186240ba85c361d1f7cbf21bed144b37ac73802cb624751c6558"
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exit": 0,
+        "logSha256": "6ef9d5cdc30e692f4253cc12b30fbcc21225f442710df42f9eb079d608b12b3a"
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exit": 0,
+        "logSha256": "d6fa5a56b40932f5071d39e5a9b9e2d7984981dc8baadc92dee888f6bbf66187"
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exit": 0,
+        "logSha256": "bd0149c9b483b4ad4fa7e29309e544eda90aaccca0628e5235947f85beaa2195"
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exit": 0,
+        "logSha256": "041184157bc5f7a860a4237953c1e939f45648909301c5716e4481a3280c2348"
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exit": 0,
+        "logSha256": "6ec8d17dfd2ee91d6546ca545e1602cb61a2d33fba3db8e3564f525ca830ce61"
+      },
+      {
+        "command": "node tools/test-team-coordination.mjs",
+        "exit": 0,
+        "logSha256": "3e105068c0fd2ef9dc5edf775b2742b7144f6c00d66af20bb07ef495cb079840"
+      },
+      {
+        "command": "node tools/test-team-coordination-demo.mjs",
+        "exit": 0,
+        "logSha256": "0fb9e546e326d750d8f92b13bc6dc93b017d4d097e79de0c05381a39879668da"
+      },
+      {
+        "command": "node tools/test-socket-contract.mjs",
+        "exit": 0,
+        "logSha256": "b4e41aea140124647f3d1e0b81cb018939dfb21744358ef5b7807e88da1e5b99"
+      }
+    ],
+    "passed": 43,
+    "total": 43
+  },
+  "sourceReview": {
+    "candidate": "6e024ec0e697814a9b1c8d8f3d47d04664e6a501",
+    "verdict": "CHANGES REQUIRED",
+    "finding": "Live S051 summary incorrectly said zero coordination hand-backs; changed to one without editing append-only row. Final corrected evidence candidate requires review.",
+    "independentChecks": "50 notepad,14ADR,composition,Blueprint,doctor;21actual corefiles/markers and8native rawhashes;ordinary launch calls and refusal/success pairs verified"
+  },
+  "sourceIntegration": "Pending corrected immutable review",
+  "template": {
+    "candidate": "d14553c29c7812cb192c5c104dd4f719a8d181a0",
+    "review": "fresh-context independent PASS after two documentary corrections",
+    "integration": "df6335922832e93466bd32e9c0cbe577baa668c2",
+    "pr": "https://github.com/KaydenClark/Example_Workbench/pull/5",
+    "reviewedCandidateContained": true,
+    "treeDifference": false,
+    "freshRemoteClone": "19 tests,syntax,layout,doctor pass;clean checkout",
+    "runtime": "15hashes match6e;receipt truthfully64397ad",
+    "branch": "v3.2.0 retained",
+    "owner": "S00B and target S00A",
+    "personalizationClaim": false
+  },
+  "installedNativeEvidence": "../S-051-core-skill-ownership-and-compatibility/installed-native-acceptance.json",
+  "guardrails": {
+    "beforeOriginalCriteria": 78,
+    "afterOriginalCriteria": 66.9,
+    "afterOwnerAwareCriteria": 78,
+    "rubricChange": "Legacy Blueprint status/version/table checks migrated to actual owners; weights and outcome criteria retained, negative tests independently verified. Raw before/after reduction preserved.",
+    "remaining": "Four outcome-evidence recommendations; no improved agent reliability claim"
+  },
+  "remainingGates": [
+    "Claude authentication and ordinary native behavior unavailable",
+    "Astra needs newer installed Codex client",
+    "Spark ordinary discovery failed skill budget",
+    "Actual Windows/private Mac-Windows Claude-Codex transport remains S052TK004 and final S050 readiness gate"
+  ],
+  "mainApprovedOrMerged": false,
+  "unrelatedRoomsUpdated": false,
+  "portfolioAutomationAdded": false
+}

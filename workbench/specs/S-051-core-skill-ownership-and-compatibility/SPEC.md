@@ -294,8 +294,11 @@ Pending. No v3.2.0 readiness, publication, or downstream delivery claim.
 ## Remaining Limitations Or Follow-Up Specs
 
 See [release owner](../S-050-workbench-v3-2-0-release/SPEC.md) for the complete assigned set,
-source inventory, exclusions and externally gated acceptance. Zero routine
-coordination hand-backs so far; the reserved host decision is a real owner gate.
+source inventory, exclusions and externally gated acceptance. One routine
+coordination hand-back is recorded above: the owner restated assigned delivery
+intent after automatic review rejected the scoped public push. Carry now supplies
+the verified destination, payload and authorization with the actual tool request.
+Unavailable host access remains a separate resource gate.
 
 ## Supersession
 

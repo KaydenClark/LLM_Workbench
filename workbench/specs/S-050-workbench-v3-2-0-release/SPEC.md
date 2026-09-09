@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Deliver the reconciled v3.2.0 capability set and prove the Workbench Template update and reviewed integration.
 **Blockers:** live-device-and-private-repository-access (final rollout readiness only)
-**Latest event:** TK-004 closed with proof.
-**Next gate:** Complete S-00A, then carry the Workbench Template update through TK-005.
+**Latest event:** TK-005 closed with proof.
+**Next gate:** Complete TK-006.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -117,7 +117,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-002 | Reconcile ADRs and all included documentation contracts | done | TK-001 | Full 33-command suite passes at fixed 87244cc; independent bounded documentation PASS; guardrail78 unchanged |
 | TK-003 | Converge capability implementations and useful continuity proof | done | none | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved |
 | TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | done | TK-003 | 16c8278 full42 PASS; configured-host10 and source-identity18 PASS; independent corrective review PASS; PR81 merged as integration5ceef14 with exact candidate containment and zero tree delta |
-| TK-005 | Deliver Workbench Template v3.2.0 and reviewed integration | blocked | TK-004; S-00A | pending |
+| TK-005 | Deliver Workbench Template v3.2.0 and reviewed integration | done | TK-004, S-00A | S00A complete;S00B Template PR5 integrationdf63359 contains reviewed d14553c;fresh remote clone19tests/syntax/layout/doctor passes;v3.2.0 retained |
 | TK-006 | Reconcile release receipts and readiness verdict | ready | TK-005 | pending |
 
 ### TK-001 - Promote and push the complete reconciled scope
@@ -228,6 +228,7 @@ claims/status/lineage, not private transcripts.
 | 2026-09-08 | TK-003 | Ticket closed | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved | S053 exact five-check baseline and local result; actual cross-device readiness remains S052TK004 and S050TK006 | Stamp and review upstream; Example integration; actual cross-device final readiness |
 | 2026-09-08 | TK-004 | Separate-context review rejected the exact 563a6e69657a6fe2594e86bda523cb60567342b7 candidate after PR80 had already merged it | Full42, append-only, held-out path safety, evaluator106.6 and doctor passed, but an ordinary non-Git root containing expected filenames executed a substituted managed child and reported PASS; review verdict FAIL. Regression reproduced RED, then producer Git root, expected commit/origin and clean consumed-input checks made ten configured-host tests GREEN | RUNBOOK and generic counterpart now require explicit sourceCommit/sourceRepository and name the producer preflight | Commit and push repair, full suite, fresh independent review and corrective integration remain pending; PR80 did not satisfy the review gate |
 | 2026-09-08 | TK-004 | Ticket closed | 16c8278 full42 PASS; configured-host10 and source-identity18 PASS; independent corrective review PASS; PR81 merged as integration5ceef14 with exact candidate containment and zero tree delta | RUNBOOK and template producer preflight updated; S050 and S053 evidence record PR80 gate failure and repaired result | Example reviewed integration and actual Mac/Windows Claude/Codex private-transport readiness evidence |
+| 2026-09-09 | TK-005 | Ticket closed | S00A complete;S00B Template PR5 integrationdf63359 contains reviewed d14553c;fresh remote clone19tests/syntax/layout/doctor passes;v3.2.0 retained | S00B and targetS00A own Template closeout;repair-integration-acceptance.json preserves exact source,installed and native limits | Repaired source final independent integration review and actual S052 Mac/Windows Claude/Codex private transport remain |
 
 ## Completion Result
 

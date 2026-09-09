@@ -1,15 +1,15 @@
 # S-00B - Workbench Template Reformation
 
 **Spec ID:** S-00B
-**Status:** active
+**Status:** complete
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
 **Updated:** 2026-09-09
 **Catalog description:** Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there.
 **Blockers:** S-00A
-**Latest event:** TK-00C claimed by codex.
-**Next gate:** Close TK-00C with verification and documentation proof.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -63,7 +63,7 @@ mutation begins only after its own controls and current dirty state are read.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00C | Update and validate the Workbench Template against the settled ownership model | in-progress | S-00A | Room-local tests, control-fidelity disposition, separate review, integration containment |
+| TK-00C | Update and validate the Workbench Template against the settled ownership model | done | S-00A | Template independent PASSd14553c;PR5 integrationdf63359 exact containment/zero tree difference;fresh remote clone19tests/syntax/layout/doctor PASS;15runtime hashes match6e024ec |
 
 ### TK-00C - Update and validate the Workbench Template against the settled ownership model
 
@@ -77,15 +77,15 @@ the target integration branch.
 
 ## Acceptance Criteria
 
-- [ ] The target room's current controls follow S-00A without losing deliberate
+- [x] The target room's current controls follow S-00A without losing deliberate
       local differences or historical evidence.
-- [ ] Product orientation identifies a copyable Workbench Template and avoids
+- [x] Product orientation identifies a copyable Workbench Template and avoids
       an Example-specific fictional application.
-- [ ] Control-fidelity disposition and room-local tests identify the exact
+- [x] Control-fidelity disposition and room-local tests identify the exact
       upstream candidate used.
-- [ ] The reviewed `v3.2.0` candidate is integrated to that room's integration
+- [x] The reviewed `v3.2.0` candidate is integrated to that room's integration
       branch and read back from its remote.
-- [ ] Evidence states that later personalized Genesis/fresh-copy proof remains
+- [x] Evidence states that later personalized Genesis/fresh-copy proof remains
       outside this v3.2 acceptance.
 
 ## Testing Seams
@@ -110,10 +110,19 @@ spec. Do not alter unrelated downstream rooms.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Created the stable Workbench Template owner from the locked decision | Target room not touched in this planning pass | Scope distinguishes Template update from future personalization | S-00A, target inspection, implementation, verification, review, and integration remain pending |
+| 2026-09-09 | TK-00C | Ticket closed | Template independent PASSd14553c;PR5 integrationdf63359 exact containment/zero tree difference;fresh remote clone19tests/syntax/layout/doctor PASS;15runtime hashes match6e024ec | Template controls,tour,lossless Blueprint and complete fidelity disposition,local S00A and source S050 receipt | none for Template update;future personalization S00C-E and native external environments remain unproved |
+| 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+The Workbench Template update is delivered through target PR5 at integration
+df6335922832e93466bd32e9c0cbe577baa668c2, containing the exact independently
+reviewed d14553c candidate with no tree difference. A fresh remote clone passes
+all19 tour tests, syntax, layout and doctor. Complete control-fidelity and source
+disposition preserve valid local differences and historical evidence. Runtime15
+hashes match upstream6e024ec; the installer receipt retains its actual64397ad source.
+The v3.2.0 branch is retained; main is untouched. This is an explicit Template
+update; later personalization and Genesis remain S-00C through S-00E.
 
 ## Remaining Limitations Or Follow-Up Specs
 
