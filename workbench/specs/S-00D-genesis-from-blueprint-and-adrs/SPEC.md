@@ -8,8 +8,8 @@
 **Updated:** 2026-09-09
 **Catalog description:** Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality.
 **Blockers:** S-00C
-**Latest event:** Owner activated S-00A through S-00E for v3.2.1 delivery to integration.
-**Next gate:** Execute the assigned vertical slice, verify acceptance, and review the immutable v3.2.1 candidate before integration.
+**Latest event:** TK-00E claimed by codex-v321-manager.
+**Next gate:** Close TK-00E with verification and documentation proof.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -48,7 +48,7 @@ S-00C and explicit owner activation are required.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00E | Derive a valid scoped room from locked project inputs | ready | S-00C | Red source/authority cases; green disposable-room derivation and validation |
+| TK-00E | Derive a valid scoped room from locked project inputs | in-progress | S-00C | Red source/authority cases; green disposable-room derivation and validation |
 
 ## Acceptance Criteria
 

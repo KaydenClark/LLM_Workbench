@@ -1,17 +1,17 @@
 # S-00C - Project Evidence And Blueprint Grilling
 
 **Spec ID:** S-00C
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** codex-v321-manager
 **Stance:** Builder
 **Updated:** 2026-09-09
 **Catalog description:** Prepare a project-informed Blueprint grilling record from verified project evidence.
 **Blockers:** none
-**Latest event:** TK-00D claimed by codex-v321-manager.
-**Next gate:** Close TK-00D with verification and documentation proof.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
-> **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
+> **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`6e5b0807688c0eed86d1ef3c5759f1c7742456eb`.
 
 ## Outcome
 
@@ -49,7 +49,7 @@ because this planned capability is not v3.2 delivery.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00D | Collect bounded evidence and prepare a Blueprint grilling record | in-progress | none | Red provenance/privacy cases; green prepared-record seam and targeted verification |
+| TK-00D | Collect bounded evidence and prepare a Blueprint grilling record | done | none | e935ac3 full44:43PASS plus stale doc-command selector repaired2f01f31; notepads50/50PASS; source/privacy CLI PASS; native Puffer intake4sources2openquestions |
 
 ### TK-00D Delivery Contract
 
@@ -63,10 +63,10 @@ not intake of an unnamed personal project.
 
 ## Acceptance Criteria
 
-- [ ] A named project yields a bounded, source-linked evidence intake.
-- [ ] The prepared grilling record distinguishes facts, uncertainty, and owner
+- [x] A named project yields a bounded, source-linked evidence intake.
+- [x] The prepared grilling record distinguishes facts, uncertainty, and owner
       questions without promoting decisions.
-- [ ] Privacy, source safety, and no-authority boundaries are tested.
+- [x] Privacy, source safety, and no-authority boundaries are tested.
 
 ## Verification Procedure
 
@@ -84,10 +84,25 @@ and the derived project owner's own durable records.
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Created planned stage two from the locked destination | Decision source reconciled; no implementation run | Destination and non-goal recorded without claiming delivery | Explicit activation and all implementation/proof remain pending |
 | 2026-09-09 | spec | Owner activated the named S-00A through S-00E run for v3.2.1; manager is the single durable spec writer | Recovered c0ac60a integration and completed A/B records; guardrail baseline 78/100 | Existing ticket preserved as a complete CLI/input-to-output/test slice; no new coordination store | Implementation and exact-candidate review remain; zero coordination hand-backs |
+| 2026-09-09 | TK-00D | Ticket closed | e935ac3 full44:43PASS plus stale doc-command selector repaired2f01f31; notepads50/50PASS; source/privacy CLI PASS; native Puffer intake4sources2openquestions | Runtime inventory, grilling/Genesis skills, Runbook, Wiki routing and evidence updated | Combined exact-candidate review and integration remain with the assigned v3.2.1 run |
+| 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+The installed public preparation CLI creates one provisional grilling JSON
+note from bounded named sources, preserving their hashes and caller assertions
+while leaving questions open. The native Puffer-Pond preparation returned four
+source records and two open questions; later demonstration decisions remain
+separately attributed to the manager, not to an invented owner interview.
+
+The public seam tests first failed with the missing implementation and now pass
+source/path/privacy/forged-decision/refusal cases. The full 44-command run at
+e935ac3 passed 43 commands and identified one stale documented-command selector;
+2f01f31 fixes that selector and the complete notepad test passes 50/50.
+The remaining 43 commands passed unchanged, including append-only history.
+Guardrails remain 78/100. Final combined candidate review and integration stay
+with this authorized S-00A through S-00E run; no broader reliability is claimed.
+
 
 ## Remaining Limitations Or Follow-Up Specs
 
