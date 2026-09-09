@@ -1011,7 +1011,7 @@ installed acceptance and semantic ownership. For the Blueprint, require all
 applicable destination sections, no status/version/evidence/catalog material,
 only materially relevant active ADR links, lossless removed-claim disposition,
 and root/template agreement. Record an explicit semantic pass/fail verdict;
-structure and link checks alone are insufficient. Only Kayden approves/merges main.
+structure and link checks alone are insufficient. Only the owner approves/merges main.
 
 For incident claims inspect original call/result pairs, including failed,
 rejected and interrupted calls. Record coverage and missing/truncated evidence.

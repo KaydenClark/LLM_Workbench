@@ -158,6 +158,14 @@ Confirm destination access and retain source context until the needed material
 is durable or otherwise safely available. Existing JSON handoffs are legacy
 sources; do not create another one.
 
+Declare active Markdown transfer dependencies through `current --view-field
+'active_handoffs=["workbench/sessions/handoffs/NAME.md"]'` with the current
+revision. Trim and delete refuse while this list is nonempty, even if the file
+is missing; a missing destination cannot prove safe release. After verifying
+that the transfer no longer depends on this note, explicitly clear the list
+with `--view-field 'active_handoffs=[]'`. Undeclared prose dependencies remain
+agent judgment; the tool does not infer them from Markdown.
+
 Delete the whole record only when everything important is reconciled and no
 unfinished work or active handoff still depends on it. After verified partial
 trim, set `--status RECONCILED --unresolved "" --next-action ""` through `current`,

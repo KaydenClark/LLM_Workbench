@@ -177,6 +177,11 @@ export function validateAdrs(root, options = {}) {
       findings.push(finding('stale-register', `${collectionRelative(root, 'adr')}/${REGISTER_NAME} is stale; run adr register`));
     }
   }
+  const historyPath = path.join(collectionPath(root, 'adr'), HISTORY_NAME);
+  if (adrs.length > 0) {
+    const history = fs.existsSync(historyPath) ? fs.readFileSync(historyPath, 'utf8') : null;
+    if (history === null || history.replaceAll('\r\n', '\n') !== renderRegister(adrs, { history: true })) findings.push(finding('stale-register', `${collectionRelative(root, 'adr')}/${HISTORY_NAME} is stale; run adr register`));
+  }
   return findings;
 }
 

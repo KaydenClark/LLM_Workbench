@@ -1069,3 +1069,75 @@ test('safe sequences stay per prefix and arbitrary legacy entry IDs remain suppo
     assert.ok(checkStructure(record).invalid.some(x => /suffix/.test(x)));
   } finally { fs.rmSync(dir, {recursive:true,force:true}); }
 });
+
+test('all new handoff spellings refuse JSON without creating a file', () => {
+  const dir = project();
+  try {
+    for (const args of [
+      ['--note','workbench/sessions/handoffs/new.json'],
+      ['--note','typed','--type','handoff'],
+      ['--note','typed-plural','--type','handoffs']
+    ]) {
+      const r = cli(dir,['create',...args,'--objective','handoff-refusal','--title','Safe handoff']);
+      assert.equal(r.status,1,r.stdout);
+      assert.equal(r.json.error.code,'invalid-note');
+    }
+    assert.deepEqual(fs.readdirSync(path.join(dir,'workbench/sessions/handoffs')),[]);
+  } finally { fs.rmSync(dir,{recursive:true,force:true}); }
+});
+
+function historicalHandoff(dir, name, retained) {
+  const note = {
+    schema_version:'notepad-1',revision:1,id:name,type:'handoff',status:'ACTIVE',title:'Historical handoff',
+    objective:{key:'legacy-retention'},created_at:'2026-09-08T00:00:00Z',updated_at:'2026-09-08T00:00:00Z',
+    current:{state:'Legacy source remains needed',unresolved:[],next_action:''},entries:[],
+    relationships:{index:null,related_notes:[],retained_sources:retained},extensions:{}
+  };
+  const target=`workbench/sessions/handoffs/${name}.json`;
+  fs.writeFileSync(path.join(dir,target),JSON.stringify(note));return target;
+}
+
+test('legacy retained slice and unreadable handoffs still prevent premature cleanup', () => {
+  const dir=project();
+  try {
+    const n=seed(dir);
+    appendEntry(dir,{note:n.note,revision:1,kind:'finding',topic:'x',content:'Needed','entry-id':'x-1'});
+    appendEntry(dir,{note:n.note,revision:2,kind:'finding',topic:'y',content:'Reconciled','entry-id':'y-1'});
+    const old=historicalHandoff(dir,'legacy-slice',[n.note+'#x-1']);
+    const before=fs.readFileSync(path.join(dir,n.note));
+    assert.equal(trimEntries(dir,{note:n.note,revision:3,entry:['x-1']}).error.code,'retained-dependency');
+    assert.deepEqual(fs.readFileSync(path.join(dir,n.note)),before);
+    assert.equal(trimEntries(dir,{note:n.note,revision:3,entry:['y-1']}).status,'trimmed');
+    assert.equal(setCurrent(dir,{note:old,revision:1,status:'RECONCILED'}).status,'updated');
+    assert.equal(trimEntries(dir,{note:n.note,revision:4,entry:['x-1']}).status,'trimmed');
+    setCurrent(dir,{note:n.note,revision:5,status:'RECONCILED'});
+    fs.writeFileSync(path.join(dir,'workbench/sessions/handoffs/broken.json'),'{');
+    assert.equal(cli(dir,['delete','--note',n.note,'--revision','6']).json.error.code,'retained-dependency');
+  } finally {fs.rmSync(dir,{recursive:true,force:true});}
+});
+for(const operation of ['whole-note','entry']) test(`legacy ${operation} retainer preserves case-aliased source identity`, t=>{
+  const dir=project();
+  try {
+    const n=seed(dir,{note:'case-source',status:'RECONCILED'});
+    const alias=n.note.replace('case-source','CASE-SOURCE');
+    if(!fs.existsSync(path.join(dir,alias))) return t.skip('case-insensitive filesystem required');
+    if(operation==='entry') appendEntry(dir,{note:n.note,revision:1,kind:'finding',topic:'x',content:'Retain','entry-id':'x-1'});
+    historicalHandoff(dir,'legacy-alias',[alias+(operation==='entry'?'#x-1':'')]);
+    const before=fs.readFileSync(path.join(dir,n.note));
+    const r=operation==='entry'?trimEntries(dir,{note:n.note,revision:2,entry:['x-1']}):cli(dir,['delete','--note',n.note,'--revision','1']).json;
+    assert.equal(r.error.code,'retained-dependency');assert.deepEqual(fs.readFileSync(path.join(dir,n.note)),before);
+  } finally {fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('declared Markdown handoff dependency blocks cleanup until explicitly reconciled',()=>{
+ const dir=project();try{
+  const n=seed(dir);appendEntry(dir,{note:n.note,revision:1,kind:'finding',topic:'x',content:'Needed'});
+  const handoff='workbench/sessions/handoffs/recipient.md';fs.writeFileSync(path.join(dir,handoff),'# Recipient\n\nSpecification only.');
+  setCurrent(dir,{note:n.note,revision:2,'view-field':[`active_handoffs=${JSON.stringify([handoff])}`]});
+  const before=fs.readFileSync(path.join(dir,n.note));
+  assert.equal(trimEntries(dir,{note:n.note,revision:3,entry:['finding-001']}).error?.code,'retained-dependency');
+  assert.deepEqual(fs.readFileSync(path.join(dir,n.note)),before);
+  setCurrent(dir,{note:n.note,revision:3,'view-field':['active_handoffs=[]']});
+  assert.equal(trimEntries(dir,{note:n.note,revision:4,entry:['finding-001']}).status,'trimmed');
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});

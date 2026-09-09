@@ -24,9 +24,10 @@ sources; never generate a new JSON handoff or use a Foundry temporary store.
    include the necessary safe content and identify the access limitation.
    Do not copy secrets or raw private data.
 4. Validate the source note and read its current view back before transfer.
-   Retain context that the handoff needs. A Markdown handoff has no automatic
-   JSON retainer: record the dependency in the note's current view and do not
-   trim/delete its required entries while transfer still depends on them.
+   Retain context that the handoff needs. Before transferring, declare the dependency with `notepads.mjs current`
+   using `--view-field 'active_handoffs=["workbench/sessions/handoffs/NAME.md"]'`
+   and the current revision. Cleanup refuses while this list is nonempty.
+   Clear it only after verifying the transfer no longer needs the source.
 5. Read the authored Markdown as the recipient: can they state the job, limits,
    relevant decisions, evidence limits and one executable next step? Check every
    reference and scope statement. If a fresh-context read-back is available,

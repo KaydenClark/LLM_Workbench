@@ -175,6 +175,7 @@ export function checkStructure(note) {
       }
     }
   }
+  if (note.current?.active_handoffs !== undefined && (!Array.isArray(note.current.active_handoffs) || note.current.active_handoffs.some(value => typeof value !== 'string' || !value.trim()))) invalid.push('active_handoffs must be an array of nonempty Markdown handoff references');
   const sequence = note.extensions?.entry_sequence;
   if (sequence !== undefined) {
     if (!sequence || typeof sequence !== 'object' || Array.isArray(sequence)) invalid.push('entry_sequence must be an object');
@@ -301,6 +302,9 @@ function retainedSource(root, value) {
 // Retention is explicit. Prose pointers and whether a claim is sufficiently
 // reconciled remain agent judgment, never a guarantee manufactured by a flag.
 function retentionBlocker(root, resolved, removed = null) {
+  const source = readRaw(root, resolved.relative);
+  if (source.error) return source.error;
+  if (asArray(source.note.current?.active_handoffs).length) return blocked('retained-dependency', 'An active Markdown handoff needs this source; reconcile the transfer before clearing active_handoffs and retrying cleanup.', { handoffs: source.note.current.active_handoffs });
   const discovery = listNotes(root);
   if (discovery.unreadable.length) return blocked('retained-dependency', 'Cleanup cannot establish retention while live records are unreadable; inspect and reconcile the named records first.', { unreadable: discovery.unreadable });
   const retainedBy = [];
@@ -327,7 +331,7 @@ function retentionBlocker(root, resolved, removed = null) {
 
 export function createNote(root, options) {
   const collection = options.collection ?? defaultCollection(root);
-  if (collection === 'handoffs') {
+  if (collection === 'handoffs' || ['handoff', 'handoffs'].includes(options.type)) {
     return blocked('invalid-note', 'Handoffs are authored as human-readable .md files in the handoffs collection, not JSON notepads. Use templates/HANDOFF.md.');
   }
   const name = requireValue(options.note, '--note is required');
@@ -341,6 +345,7 @@ export function createNote(root, options) {
   if (!NOTE_STATUSES.includes(status)) throw new Error(`--status must be one of ${NOTE_STATUSES.join(', ')}`);
   let resolved;
   try { resolved = resolveNote(root, name, collection); } catch (error) { return blocked('invalid-note', error.message); }
+  if (path.relative(collectionPath(root, 'handoffs'), resolved.absolute).split(path.sep)[0] !== '..') return blocked('invalid-note', 'New handoffs must be authored Markdown, not JSON notepads.');
   if (fs.existsSync(resolved.absolute)) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }

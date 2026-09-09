@@ -128,7 +128,7 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
       `${relative} contains root specs authority outside the one bounded Adoption migration source`);
   }
   assert.match(fs.readFileSync(adoptionPath, 'utf8'), /The migration moves[\s\S]{0,200}`specs\/`[\s\S]{0,200}manifest-declared lanes/);
-  for (const relative of ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
+  for (const relative of ['AGENTS.md', 'LEXICON.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
     assert.match(fs.readFileSync(path.join(templateRoot, relative), 'utf8'), /workbench\/specs\//, `${relative} does not name the manifest-default spec lane`);
   }
   // Exactly seven root controls: the feedback return channel lives in its lane.

@@ -35,7 +35,7 @@ test('a valid corpus validates, registers deterministically, and reports a stale
     const collection = path.join(dir, 'workbench', 'docs', 'adr');
     fs.writeFileSync(path.join(collection, '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
     const stale = validateAdrs(dir);
-    assert.deepEqual(stale.map((item) => [item.code, item.severity, item.blocks]), [['stale-register', 'attention', 'none']]);
+    assert.deepEqual(stale.map((item) => [item.code, item.severity, item.blocks]), [['stale-register', 'attention', 'none'], ['stale-register', 'attention', 'none']]);
     const written = writeRegister(dir);
     assert.equal(written.count, 1);
     assert.equal(fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8'), renderRegister(listAdrs(dir)));
@@ -264,4 +264,16 @@ test('history output safety is preflighted before either projection changes', ()
     assert.equal(fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8'), 'old register');
     assert.equal(fs.readFileSync(target, 'utf8'), 'retain');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
+
+test('missing and stale history are reported without rewriting history',()=>{
+ const dir=fixture();try{
+  const file=path.join(dir,'workbench/docs/adr/0001-decision.md');fs.writeFileSync(file,adr('accepted','canonicalized_in:\n  - AGENTS.md\n'));writeRegister(dir);
+  const history=path.join(dir,'workbench/docs/adr/HISTORY.md');
+  for(const state of ['missing','stale']){
+   if(state==='missing')fs.rmSync(history);else fs.writeFileSync(history,'stale history');
+   assert.ok(validateAdrs(dir).some(x=>x.code==='stale-register'&&x.message.includes('HISTORY.md')));
+   if(state==='stale')assert.equal(fs.readFileSync(history,'utf8'),'stale history');
+  }
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
