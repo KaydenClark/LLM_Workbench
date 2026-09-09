@@ -1,15 +1,15 @@
 # S-051 - Core Skill Ownership And Compatibility
 
 **Spec ID:** S-051
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** codex
 **Stance:** Builder
 **Updated:** 2026-09-09
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** TK-006 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -287,9 +287,20 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | 2026-09-09 | TK-006 | Ticket closed | installed-native-acceptance.json:actual21markers64397ad;GPT5.5 automatic skill reads,questionmap1/answer2-current3/correction4-current6/stale7-repaired8;spec-onlyrecipient;ClaudeOAuth/AstraCLI/Sparkbudget failures retained | Safe durable receipt distinguishes successful observations, failed first attempts, unavailable hosts, local migration and actual public recovery; no reliability inference | Final exact-candidate integration review; Claude authentication and S052 external host/transport readiness remain unverified |
 | 2026-09-09 | TK-006 | Owner annotation restated the assigned delivery intent after two public recovery pushes were rejected before execution; one coordination hand-back | Verified configured PUBLIC destination; owner then said Fix this too please /make-it-so; retry naming exact destination, candidate, payload and renewed instruction executed successfully, remote d9fbf95 to d2111e6 | Carry now presents existing authorization concretely and preserves actual refusal/result pairs; cause was authorization context not accepted by automatic review, not a missing Git attempt | This repairs the observed operation and guidance; it neither overrides platform review nor guarantees future approval |
 
+| 2026-09-09 | spec | Repaired v3.2.0 integration gate reconciled | Fresh independent PASS 7f9fe2101e5b693f5085c3ed5acee65e73eda445; PR84 remote integration b937f7deac3669307041e86e4b5fc84cd167f818 contains exact candidate with zero tree difference; full6e43PASS and63540/43 plus3corrected clean7f9rerunsPASS; fresh remote clone core/catalog/Blueprint/doctor PASS | Current root/template and core owners agree; S050 repair receipt retains actual native failures and unavailable environments; historical evidence unchanged | No main readiness or real Windows/private cross-device claim; S052TK004 remains external |
+| 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+
 ## Completion Result
 
-Pending. No v3.2.0 readiness, publication, or downstream delivery claim.
+Repaired core composition, compatibility, scoped migration and installed native
+acceptance are delivered through independently reviewed7f9fe21 and PR84 at
+integrationb937f7d. All21 global core identities match reviewed source; original
+core directories, catalog history and unrelated personal skills remain recoverable.
+The actual GPT-5.5 sequence proves ordered capture, correction, specification-only
+Markdown handoff and fresh existing-owner recovery after the first failed trial.
+Claude OAuth and Astra client execution are unavailable; Spark ordinary discovery
+failed the host budget. These limits and the one repaired coordination hand-back
+remain in the safe installed receipt; no generalized reliability claim follows.
 
 ## Remaining Limitations Or Follow-Up Specs
 
