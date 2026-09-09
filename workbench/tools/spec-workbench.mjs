@@ -181,7 +181,7 @@ export function render(rootDir) {
   } else {
     const catalogPath = path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md');
     assertSafeWritePath(root, catalogPath);
-    const relativeCatalog = renderCatalog(specs).replaceAll('](workbench/specs/', '](').replaceAll('](specs/', '](');
+    const relativeCatalog = renderCatalog(specs).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, '](');
     writeSafeFile(root, catalogPath, `# Spec Catalog\n\nDerived from stable specs; includes completed history.\n\n${CATALOG_START}\n${relativeCatalog}\n${CATALOG_END}\n`);
   }
   atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs)));
@@ -200,7 +200,7 @@ export function doctor(rootDir, options = {}) {
   issues.push(...packetFindings(specs, options));
   const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
-  else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs).replaceAll('](workbench/specs/', '](').replaceAll('](specs/', ']('), issues);
+  else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root, options.home));

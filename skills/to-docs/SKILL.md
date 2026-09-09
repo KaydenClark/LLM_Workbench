@@ -15,7 +15,7 @@ lanes; do not create a root `specs/`, project-local `skills/` core shadow, or pa
 truth store. Authorized room-local extensions follow the Runbook ownership procedure.
 
 - accepted shared definitions -> `LEXICON.md`;
-- product direction, cross-cutting architecture, invariants, and non-goals ->
+- desired product destination, integrated design, qualities and non-goals ->
   `BLUEPRINT.md`;
 - capability requirements, decisions, acceptance, proof, or completion -> the
   assigned `SPEC.md`;
@@ -28,8 +28,8 @@ truth store. Authorized room-local extensions follow the Runbook ownership proce
   (`workbench/wiki/`, per its `SCHEMA.md`), never a copied live queue;
 - rationale, alternatives, and consequences of a consequential decision -> an
   ADR in the manifest `adr` collection (`workbench/docs/adr/`) whose
-  `canonicalized_in` names the control that carries the rule; the rule itself
-  still goes to that owner.
+  `canonicalized_in` names operational owners. Active accepted decision claims
+  are architectural Canon; do not duplicate the rule merely to make it bind.
 
 If capability truth needs a new spec and none is assigned, route to `/to-spec`.
 Do not create an ad hoc document or another truth store. Preserve append-only

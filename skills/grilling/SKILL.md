@@ -9,7 +9,7 @@ reconciliation after the user selects that endpoint; execution is separate.
 
 Read `workbench/manifest.json` first. The live notepad lives in the
 manifest-declared `notepads` collection, in its `grilling` type folder;
-legacy paths stay readable and untracked. Use JSON for new notes under the current Contract and preserve
+legacy `workbench/sessions/grilling/` paths stay readable and untracked. Use JSON for new notes under the current Contract and preserve
 legacy sources. Promote supported claims into their durable owners under
 existing authorization; recording them locally does not make them Canon.
 
@@ -42,7 +42,7 @@ is not a computer-crash or device-loss guarantee. It is not Canon.
 Create it through the shared runtime, which writes the schema for you:
 
 ```bash
-node workbench/tools/notepads.mjs create --note TOPIC-YYYY-MM-DD --type grilling \
+node workbench/tools/notepads.mjs create --note workbench/sessions/notepads/grilling/TOPIC-YYYY-MM-DD.json --type grilling \
   --objective OBJECTIVE_KEY --title "The agreed topic" --focus "What we are deciding" \
   --state "Question list written; nothing answered yet" \
   --next-action "Ask question 1 with a recommendation" \

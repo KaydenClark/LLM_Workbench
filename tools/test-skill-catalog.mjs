@@ -172,26 +172,20 @@ assertIncludesAll(grilling, [
   'decisions, though, are mine',
   'Do not act on it until I confirm',
   'notepad',
-  '/make-it-so',
-  '/checkpoint'
+  '`make-it-so`',
+  '`promote`',
+  '`handoff`',
+  'Before a voluntary'
 ], 'grilling');
 
 const makeItSo = read('skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
-  'workbench/sessions/grilling',
-  'workbench/sessions/checkpoints',
-  'workbench/docs/adr',
-  'only when warranted',
-  'notepad',
-  '`to-docs`',
-  '`to-spec`',
-  '`to-tickets`',
-  '`TASKBOARD.md`',
-  '`/implement`',
-  'Trim only reconciled material'
+  'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tickets`',
+  '`save`', '`carry`', '`implement`', 'specification-only',
+  'current request controls every step', 'Stop here', 'main publication'
 ], 'make-it-so');
-assert.match(makeItSo, /Before voluntarily yielding[\s\S]*push the authorized durable changes/,
-  'make-it-so must save authorized durable changes before voluntarily yielding');
+assert.doesNotMatch(makeItSo, /every pending approval|universal execution authorization/i,
+  'composition must never replace the narrower user endpoint');
 
 const checkpoint = read('skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
