@@ -89,3 +89,10 @@ try {
 }
 
 console.log(`ok - evaluator self-test passed; local score ${localScore}, single-file baseline ${singleFileScore}`);
+
+const destinationModel = scoreWorkbench(localFiles).breakdown.find(x => x.id === 'project_model');
+assert.equal(destinationModel.missing.length, 0, 'current destination model must be evaluated at its actual owners');
+for (const heading of ['Product Destination', 'Promised Outcomes', 'Integrated System Design', 'Cross-Cutting Qualities And Constraints']) {
+  const changed = {...localFiles, 'BLUEPRINT.md':localFiles['BLUEPRINT.md'].replace('## '+heading,'## Removed')};
+  assert.ok(scoreWorkbench(changed).breakdown.find(x=>x.id==='project_model').missing.length > 0, heading+' must remain required');
+}

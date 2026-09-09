@@ -4,6 +4,7 @@
 > below.
 
 **Last reviewed:** [YYYY-MM-DD]
+**Blueprint reviewed:** [YYYY-MM-DD]
 **Runtime owner:** [user / agent / service owner]
 **Environment:** [local / LAN / staging / production]
 
