@@ -50,6 +50,18 @@ S-00D and explicit owner activation are required.
 |---|---|---|---|---|
 | TK-00F | Exercise the clean-copy path through useful project continuation | ready | S-00D | Isolated clone/room receipt, useful task, independent verification, reviewed result |
 
+### TK-00F Delivery Contract
+
+Start from a clean remote Workbench Template checkout pinned to its commit.
+Exercise the delivered public preparation and derivation path for a small,
+useful disposable project; record the demonstration decisions as demonstration
+inputs, never as personal product answers supplied by Kayden. Verify independent
+identity, project-local tests and saved-note recovery in a fresh agent context.
+Report the actual Codex host/model used and distinguish this observation from
+repeated reliability trials, other providers, and deployment to a real project.
+The manager owns the durable evidence; the receiving agent owns only the
+bounded demonstration project's implementation and continuation.
+
 ## Acceptance Criteria
 
 - [ ] A clean copy produces an independent valid project Workbench.

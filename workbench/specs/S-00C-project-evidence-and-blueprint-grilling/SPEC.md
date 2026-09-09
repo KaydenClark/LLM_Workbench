@@ -51,6 +51,16 @@ because this planned capability is not v3.2 delivery.
 |---|---|---|---|---|
 | TK-00D | Collect bounded evidence and prepare a Blueprint grilling record | in-progress | none | Red provenance/privacy cases; green prepared-record seam and targeted verification |
 
+### TK-00D Delivery Contract
+
+The public installed CLI accepts one explicitly bounded intake request and writes
+one provisional grilling JSON notepad through the existing notepad runtime.
+It validates named source paths and bytes, preserves caller assertions as
+assertions, and leaves every question open. It never writes a Blueprint, ADR,
+or spec. The runtime inventory, grilling skill, Runbook, and CLI tests ship
+with that one complete path. The demonstration is a disposable named project,
+not intake of an unnamed personal project.
+
 ## Acceptance Criteria
 
 - [ ] A named project yields a bounded, source-linked evidence intake.

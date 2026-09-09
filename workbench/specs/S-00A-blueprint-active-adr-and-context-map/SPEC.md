@@ -29,6 +29,9 @@ routing depend on reconstruction and obscures which claims are current.
 
 ## Current Verified State
 
+This section records the pre-implementation state at the declared `pre` anchor.
+The Completion Result and later evidence rows record the delivered state.
+
 The prior promotion claim was overstated: no successor ADR-000A exists in the
 live ADR collection. The locked decisions are durably recorded in this spec and
 the named Contract owners below; the active-ADR implementation remains this
@@ -221,6 +224,7 @@ release owner. The claim-disposition inventory is the durable migration record.
 | 2026-09-09 | TK-00A | Ticket closed | b490657 ADR14 and full43PASS; c1600d1 independent S00A semantic/evaluator PASS and targeted checks | Active/history ADR projections and owning root/template controls reconciled; historical bodies and claim source bytes preserved | TK-00B closure and final candidate integration remain |
 | 2026-09-09 | TK-00B | Ticket closed | c1600d1 independent semantic/evaluator PASS;166root+59template source segments byte-exact; destination/owner tests GREEN; full43b490PASS | Eight-section Blueprint, exact claim dispositions, active ADR Canon and independent main-readiness checklist reconciled in both root and generic controls | Final full repeat and exact integration review remain; no main publication approval |
 | 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-09 | spec | v3.2.1 manager recovery independently revalidated completed A without reopening its implementation | Luna read-only review: c1600d1, b490657 and 6e024ec contained by integration c0ac60a; ADR14, Blueprint, citation and composition checks pass; 225 unique disposition claims retain owners | Clarified pre-implementation state as historical; original evidence preserved | v3.2.1 C-E delivery remains separate; prior main-publication statements describe the original run |
 
 ## Completion Result
 

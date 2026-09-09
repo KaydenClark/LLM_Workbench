@@ -112,6 +112,7 @@ spec. Do not alter unrelated downstream rooms.
 | 2026-09-08 | spec | Created the stable Workbench Template owner from the locked decision | Target room not touched in this planning pass | Scope distinguishes Template update from future personalization | S-00A, target inspection, implementation, verification, review, and integration remain pending |
 | 2026-09-09 | TK-00C | Ticket closed | Template independent PASSd14553c;PR5 integrationdf63359 exact containment/zero tree difference;fresh remote clone19tests/syntax/layout/doctor PASS;15runtime hashes match6e024ec | Template controls,tour,lossless Blueprint and complete fidelity disposition,local S00A and source S050 receipt | none for Template update;future personalization S00C-E and native external environments remain unproved |
 | 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-09-09 | spec | v3.2.1 recovery independently confirmed completed Template acceptance without replaying its update | Live Template integration4010003 contains PR5 df633592 and reviewed d14553c; reviewed/merge trees equal; fresh remote clone19/19 tests, layout and doctor pass,15 runtime receipt hashes verified | Historical main-untouched statement describes original delivery, not a current remote assertion | Current Template doctor has six nonblocking informational findings; C-E fresh-project proof remains separate; zero coordination hand-backs |
 
 ## Completion Result
 
