@@ -68,6 +68,23 @@ test('create writes a valid note into the declared live collection and refuses a
   }
 });
 
+test('basename-derived identity is privacy-scanned before write', () => {
+  const dir = project();
+  try {
+    const secretToken = 'ghp_A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0';
+    const leaked = createNote(dir, {
+      note: `notepad-${secretToken}-runtime`,
+      objective: 'notepad-runtime',
+      title: 'Leaked identity'
+    });
+    assert.equal(leaked.status, 'blocked');
+    assert.equal(leaked.error.code, 'secret-like-content');
+    assert.deepEqual(fs.existsSync(path.join(dir, 'workbench/sessions/notepads/work', `notepad-${secretToken}-runtime.json`)), false);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('append records a sourced finding and its correction under a revision check', () => {
   const dir = project();
   try {
@@ -426,6 +443,30 @@ test('a generated entry id survives a trim', () => {
       'a number above the mark is still the caller\'s to choose');
     // A prefix with no mark yet may legitimately start at zero.
     assert.equal(appendEntry(dir, { note: created.note, revision: 9, kind: 'finding', topic: 'x', 'entry-id': 'source-0', content: 'First use of a new prefix.' }).status, 'appended');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('an oversized numeric entry-id suffix is rejected before sequence poisoning', () => {
+  const dir = project();
+  try {
+    const created = seed(dir);
+    const oversized = `finding-${'1'.repeat(2500)}`;
+    const refused = appendEntry(dir, {
+      note: created.note,
+      revision: 1,
+      kind: 'finding',
+      topic: 'x',
+      'entry-id': oversized,
+      content: 'Cannot be reused because this suffix is not safely representable.'
+    });
+    assert.equal(refused.status, 'blocked');
+    assert.equal(refused.error.code, 'invalid-note');
+
+    const next = appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'x', content: 'Safe continuation.' });
+    assert.equal(next.status, 'appended');
+    assert.equal(next.entry, 'finding-001');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

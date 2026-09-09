@@ -236,7 +236,12 @@ const ID_PARTS = /^([a-z_]+)-(\d+)$/;
 // zero, because an explicit `x-0` is a legitimate first use of `x`.
 function markOf(sequence, prefix) {
   const stored = Number(sequence?.[prefix]);
-  return Number.isInteger(stored) && stored >= 0 ? stored : null;
+  return Number.isSafeInteger(stored) && stored >= 0 ? stored : null;
+}
+
+function sequenceSuffix(value) {
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : null;
 }
 
 function sequenceFrom(entries, existing = {}) {
@@ -244,7 +249,9 @@ function sequenceFrom(entries, existing = {}) {
   for (const entry of entries) {
     const parts = ID_PARTS.exec(entry?.id ?? '');
     if (!parts) continue;
-    marks[parts[1]] = Math.max(markOf(marks, parts[1]) ?? 0, Number(parts[2]));
+    const suffix = sequenceSuffix(parts[2]);
+    if (suffix === null) continue;
+    marks[parts[1]] = Math.max(markOf(marks, parts[1]) ?? 0, suffix);
   }
   return marks;
 }
@@ -328,7 +335,8 @@ export function createNote(root, options) {
   if (fs.existsSync(resolved.absolute)) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }
-  const id = options.id === undefined ? path.basename(resolved.absolute, '.json') : requireValue(options.id, '--id must not be empty');
+  const basename = path.basename(resolved.absolute, '.json');
+  const id = options.id === undefined ? basename : requireValue(options.id, '--id must not be empty');
   if (visibleIdKey(id)) {
     const inventory = listNotes(root);
     if (inventory.unreadable.length) return blocked('invalid-note', 'Creation cannot establish identifier uniqueness while live records are unreadable.', { unreadable: inventory.unreadable });
@@ -339,7 +347,7 @@ export function createNote(root, options) {
   try { for (const value of asArray(options.retains)) { const source = retainedSource(root, value); retained.push(source.note + (source.entry ? `#${source.entry}` : '')); } }
   catch (error) { return blocked('invalid-note', error.message); }
   const view = parseViewFields(options['view-field']);
-  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options.retains), ...asArray(options['view-field']), ...viewStrings(view)]);
+  const leak = scanNew([title, options.focus, options.state, options['next-action'], basename, id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options.retains), ...asArray(options['view-field']), ...viewStrings(view)]);
   if (leak) return leak;
   const stamp = nowStamp();
   const note = {
@@ -403,8 +411,11 @@ export function appendEntry(root, options) {
   // is remembered, so an id is never reused for something else.
   const sequence = note.extensions?.entry_sequence ?? {};
   const highest = note.entries.reduce((top, entry) => {
-    const suffix = new RegExp(`^${kind}-(\\d+)$`).exec(entry.id);
-    return suffix ? Math.max(top, Number(suffix[1])) : top;
+    const suffix = ID_PARTS.exec(entry.id);
+    if (!suffix) return top;
+    const parsed = sequenceSuffix(suffix[2]);
+    if (parsed === null) return top;
+    return Math.max(top, parsed);
   }, markOf(sequence, kind) ?? 0);
   const id = options['entry-id'] ?? `${kind}-${String(highest + 1).padStart(3, '0')}`;
   if (!ENTRY_ID.test(id)) return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} is not an identifier`);
@@ -416,8 +427,18 @@ export function appendEntry(root, options) {
   // the guarantee without qualifying it to generated ids.
   const parts = ID_PARTS.exec(id);
   const mark = parts ? markOf(sequence, parts[1]) : null;
-  if (options['entry-id'] && parts && mark !== null && Number(parts[2]) <= mark) {
-    return blocked('duplicate-identity', `${resolved.relative} has already used ${id}; ${parts[1]} has reached ${mark} and an id is never reused, so choose a higher number or let the runtime generate one`, { entry: id, mark });
+  if (options['entry-id']) {
+    if (!parts) return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} has an invalid suffix format`);
+    const parsed = sequenceSuffix(parts[2]);
+    if (parsed === null) {
+      return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} has an unsafe numeric suffix and may not be used`);
+    }
+    if (mark !== null && parsed <= mark) {
+      return blocked('duplicate-identity', `${resolved.relative} has already used ${id}; ${parts[1]} has reached ${mark} and an id is never reused, so choose a higher number or let the runtime generate one`, { entry: id, mark });
+    }
+  }
+  if (!options['entry-id'] && !Number.isSafeInteger(highest + 1)) {
+    return blocked('invalid-note', `${resolved.relative} has reached ${highest} ${kind} entries and needs a fresh sequence reset`);
   }
   const corrects = options.corrects ?? null;
   const dependsOn = asArray(options['depends-on']);
@@ -440,14 +461,15 @@ export function appendEntry(root, options) {
   // Bump from the id's own prefix, not from `--kind`: `--entry-id
   // decision-005` under `--kind finding` must advance the `decision` mark, or
   // the fifth later `decision` append reuses it.
-  const suffix = /^([a-z_]+)-(\d+)$/.exec(id);
+  const suffix = ID_PARTS.exec(id);
+  const parsedSuffix = suffix ? sequenceSuffix(suffix[2]) : null;
   const updated = {
     ...note,
     revision: note.revision + 1,
     updated_at: nowStamp(),
     entries: [...note.entries, entry],
-    extensions: suffix
-      ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(Number(sequence[suffix[1]] ?? 0), Number(suffix[2])) } }
+    extensions: suffix && parsedSuffix !== null
+      ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(Number(sequence[suffix[1]] ?? 0), parsedSuffix) } }
       : note.extensions
   };
   const failure = publish(root, resolved, updated);
