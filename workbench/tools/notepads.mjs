@@ -154,7 +154,7 @@ export function checkStructure(note) {
   if (!note.current || typeof note.current !== 'object' || typeof note.current.state !== 'string') missing.push('current.state');
   if (!Array.isArray(note.entries)) missing.push('entries');
   if (!note.extensions || typeof note.extensions !== 'object' || Array.isArray(note.extensions)) missing.push('extensions');
-  if (version === NOTEPAD_SCHEMA_VERSION && (!Number.isInteger(note.revision) || note.revision < 1)) missing.push('revision');
+  if (version === NOTEPAD_SCHEMA_VERSION && (!Number.isSafeInteger(note.revision) || note.revision < 1)) missing.push('revision');
   if (typeof note.status === 'string' && note.status && !NOTE_STATUSES.includes(note.status)) invalid.push(`status must be one of ${NOTE_STATUSES.join(', ')}`);
   if (Array.isArray(note.entries)) {
     const seen = new Set();
@@ -163,6 +163,8 @@ export function checkStructure(note) {
       if (typeof entry.id !== 'string' || !ENTRY_ID.test(entry.id)) invalid.push(`entry id ${JSON.stringify(entry.id)} is not an identifier`);
       else if (seen.has(entry.id)) invalid.push(`entry id ${entry.id} is used twice`);
       else seen.add(entry.id);
+      const suffix = ID_PARTS.exec(entry.id ?? '');
+      if (suffix && sequenceSuffix(suffix[2]) === null) invalid.push(`entry ${entry.id} has an unsafe numeric suffix`);
       if (!ENTRY_KINDS.includes(entry.kind)) invalid.push(`entry ${entry.id} has kind ${JSON.stringify(entry.kind)}; supported kinds are ${ENTRY_KINDS.join(', ')}`);
       if (typeof entry.content !== 'string') invalid.push(`entry ${entry.id} has no content string`);
     }
@@ -171,6 +173,14 @@ export function checkStructure(note) {
       for (const link of [...(entry.corrects ? [entry.corrects] : []), ...asArray(entry.depends_on)]) {
         if (!seen.has(link)) invalid.push(`entry ${entry.id} references ${link}, which the note does not contain`);
       }
+    }
+  }
+  if (note.current?.active_handoffs !== undefined && (!Array.isArray(note.current.active_handoffs) || note.current.active_handoffs.some(value => typeof value !== 'string' || !value.trim()))) invalid.push('active_handoffs must be an array of nonempty Markdown handoff references');
+  const sequence = note.extensions?.entry_sequence;
+  if (sequence !== undefined) {
+    if (!sequence || typeof sequence !== 'object' || Array.isArray(sequence)) invalid.push('entry_sequence must be an object');
+    else for (const [prefix, value] of Object.entries(sequence)) {
+      if (!/^[a-z_]+$/.test(prefix) || !Number.isSafeInteger(value) || value < 0) invalid.push('entry_sequence must contain safe nonnegative integer marks');
     }
   }
   return { missing, invalid };
@@ -236,7 +246,12 @@ const ID_PARTS = /^([a-z_]+)-(\d+)$/;
 // zero, because an explicit `x-0` is a legitimate first use of `x`.
 function markOf(sequence, prefix) {
   const stored = Number(sequence?.[prefix]);
-  return Number.isInteger(stored) && stored >= 0 ? stored : null;
+  return Number.isSafeInteger(stored) && stored >= 0 ? stored : null;
+}
+
+function sequenceSuffix(value) {
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : null;
 }
 
 function sequenceFrom(entries, existing = {}) {
@@ -244,7 +259,9 @@ function sequenceFrom(entries, existing = {}) {
   for (const entry of entries) {
     const parts = ID_PARTS.exec(entry?.id ?? '');
     if (!parts) continue;
-    marks[parts[1]] = Math.max(markOf(marks, parts[1]) ?? 0, Number(parts[2]));
+    const suffix = sequenceSuffix(parts[2]);
+    if (suffix === null) continue;
+    marks[parts[1]] = Math.max(markOf(marks, parts[1]) ?? 0, suffix);
   }
   return marks;
 }
@@ -285,6 +302,9 @@ function retainedSource(root, value) {
 // Retention is explicit. Prose pointers and whether a claim is sufficiently
 // reconciled remain agent judgment, never a guarantee manufactured by a flag.
 function retentionBlocker(root, resolved, removed = null) {
+  const source = readRaw(root, resolved.relative);
+  if (source.error) return source.error;
+  if (asArray(source.note.current?.active_handoffs).length) return blocked('retained-dependency', 'An active Markdown handoff needs this source; reconcile the transfer before clearing active_handoffs and retrying cleanup.', { handoffs: source.note.current.active_handoffs });
   const discovery = listNotes(root);
   if (discovery.unreadable.length) return blocked('retained-dependency', 'Cleanup cannot establish retention while live records are unreadable; inspect and reconcile the named records first.', { unreadable: discovery.unreadable });
   const retainedBy = [];
@@ -311,6 +331,9 @@ function retentionBlocker(root, resolved, removed = null) {
 
 export function createNote(root, options) {
   const collection = options.collection ?? defaultCollection(root);
+  if (collection === 'handoffs') {
+    return blocked('invalid-note', 'Handoffs are authored as human-readable .md files in the handoffs collection, not JSON notepads. Use templates/HANDOFF.md.');
+  }
   const name = requireValue(options.note, '--note is required');
   const objective = requireValue(options.objective, '--objective is required');
   if (!SLUG.test(objective)) throw new Error('--objective must be a lowercase slug');
@@ -318,14 +341,17 @@ export function createNote(root, options) {
   // `??` accepts an empty string, so an explicitly blank --id or --type would
   // otherwise pass straight through into a record that fails its own schema.
   const type = options.type === undefined ? (collection === 'notepads' ? 'work' : collection) : requireValue(options.type, '--type must not be empty');
+  if (['handoff', 'handoffs'].includes(type)) return blocked('invalid-note', 'New handoffs must be authored Markdown, not JSON notepads.');
   const status = options.status ?? 'PROVISIONAL';
   if (!NOTE_STATUSES.includes(status)) throw new Error(`--status must be one of ${NOTE_STATUSES.join(', ')}`);
   let resolved;
   try { resolved = resolveNote(root, name, collection); } catch (error) { return blocked('invalid-note', error.message); }
+  if (path.relative(collectionPath(root, 'handoffs'), resolved.absolute).split(path.sep)[0] !== '..') return blocked('invalid-note', 'New handoffs must be authored Markdown, not JSON notepads.');
   if (fs.existsSync(resolved.absolute)) {
     return blocked('duplicate-identity', `${resolved.relative} already exists; append to it or choose another name`);
   }
-  const id = options.id === undefined ? path.basename(resolved.absolute, '.json') : requireValue(options.id, '--id must not be empty');
+  const basename = path.basename(resolved.absolute, '.json');
+  const id = options.id === undefined ? basename : requireValue(options.id, '--id must not be empty');
   if (visibleIdKey(id)) {
     const inventory = listNotes(root);
     if (inventory.unreadable.length) return blocked('invalid-note', 'Creation cannot establish identifier uniqueness while live records are unreadable.', { unreadable: inventory.unreadable });
@@ -336,7 +362,7 @@ export function createNote(root, options) {
   try { for (const value of asArray(options.retains)) { const source = retainedSource(root, value); retained.push(source.note + (source.entry ? `#${source.entry}` : '')); } }
   catch (error) { return blocked('invalid-note', error.message); }
   const view = parseViewFields(options['view-field']);
-  const leak = scanNew([title, options.focus, options.state, options['next-action'], options.id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options.retains), ...asArray(options['view-field']), ...viewStrings(view)]);
+  const leak = scanNew([title, options.focus, options.state, options['next-action'], basename, id, options.type, options.index, ...asArray(options.unresolved), ...asArray(options.related), ...asArray(options.retains), ...asArray(options['view-field']), ...viewStrings(view)]);
   if (leak) return leak;
   const stamp = nowStamp();
   const note = {
@@ -360,6 +386,9 @@ export function createNote(root, options) {
 }
 
 export function allocateNote(root, options) {
+  if (options.collection === 'handoffs') {
+    return blocked('invalid-note', 'Handoffs are authored as human-readable .md files in the handoffs collection, not allocated JSON notepads. Use templates/HANDOFF.md.');
+  }
   const inventory = listNotes(root);
   if (inventory.unreadable.length) return blocked('invalid-note', 'Allocation cannot establish uniqueness while live records are unreadable.', { unreadable: inventory.unreadable });
   let id;
@@ -397,8 +426,11 @@ export function appendEntry(root, options) {
   // is remembered, so an id is never reused for something else.
   const sequence = note.extensions?.entry_sequence ?? {};
   const highest = note.entries.reduce((top, entry) => {
-    const suffix = new RegExp(`^${kind}-(\\d+)$`).exec(entry.id);
-    return suffix ? Math.max(top, Number(suffix[1])) : top;
+    const suffix = ID_PARTS.exec(entry.id);
+    if (!suffix || suffix[1] !== kind) return top;
+    const parsed = sequenceSuffix(suffix[2]);
+    if (parsed === null) return top;
+    return Math.max(top, parsed);
   }, markOf(sequence, kind) ?? 0);
   const id = options['entry-id'] ?? `${kind}-${String(highest + 1).padStart(3, '0')}`;
   if (!ENTRY_ID.test(id)) return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} is not an identifier`);
@@ -410,8 +442,17 @@ export function appendEntry(root, options) {
   // the guarantee without qualifying it to generated ids.
   const parts = ID_PARTS.exec(id);
   const mark = parts ? markOf(sequence, parts[1]) : null;
-  if (options['entry-id'] && parts && mark !== null && Number(parts[2]) <= mark) {
-    return blocked('duplicate-identity', `${resolved.relative} has already used ${id}; ${parts[1]} has reached ${mark} and an id is never reused, so choose a higher number or let the runtime generate one`, { entry: id, mark });
+  if (options['entry-id'] && parts) {
+    const parsed = sequenceSuffix(parts[2]);
+    if (parsed === null) {
+      return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} has an unsafe numeric suffix and may not be used`);
+    }
+    if (mark !== null && parsed <= mark) {
+      return blocked('duplicate-identity', `${resolved.relative} has already used ${id}; ${parts[1]} has reached ${mark} and an id is never reused, so choose a higher number or let the runtime generate one`, { entry: id, mark });
+    }
+  }
+  if (!options['entry-id'] && !Number.isSafeInteger(highest + 1)) {
+    return blocked('invalid-note', `${resolved.relative} has reached ${highest} ${kind} entries and needs a different prefix or a new objective note`);
   }
   const corrects = options.corrects ?? null;
   const dependsOn = asArray(options['depends-on']);
@@ -434,14 +475,15 @@ export function appendEntry(root, options) {
   // Bump from the id's own prefix, not from `--kind`: `--entry-id
   // decision-005` under `--kind finding` must advance the `decision` mark, or
   // the fifth later `decision` append reuses it.
-  const suffix = /^([a-z_]+)-(\d+)$/.exec(id);
+  const suffix = ID_PARTS.exec(id);
+  const parsedSuffix = suffix ? sequenceSuffix(suffix[2]) : null;
   const updated = {
     ...note,
     revision: note.revision + 1,
     updated_at: nowStamp(),
     entries: [...note.entries, entry],
-    extensions: suffix
-      ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(Number(sequence[suffix[1]] ?? 0), Number(suffix[2])) } }
+    extensions: suffix && parsedSuffix !== null
+      ? { ...note.extensions, entry_sequence: { ...sequence, [suffix[1]]: Math.max(Number(sequence[suffix[1]] ?? 0), parsedSuffix) } }
       : note.extensions
   };
   const failure = publish(root, resolved, updated);

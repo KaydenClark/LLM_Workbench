@@ -21,8 +21,8 @@ const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifes
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
 // The upstream finding (fix list UP-008): a room dropped this qualifier from
 // the ADR ownership row shipped by templates/AGENTS.md.
-const adrRow = '| decision rationale, alternatives, supersession | `workbench/docs/adr/` (rule binds only where `canonicalized_in` points) |';
-const adrRowWithoutQualifier = '| decision rationale, alternatives, supersession | `workbench/docs/adr/` |';
+const adrRow = '| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |';
+const adrRowWithoutQualifier = '| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` |';
 
 function fixture(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix));

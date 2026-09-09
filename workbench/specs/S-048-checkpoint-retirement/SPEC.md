@@ -1,15 +1,15 @@
 # S-048 - Checkpoint Retirement
 
 **Spec ID:** S-048
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** codex
 **Stance:** Reconciler
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately.
 **Blockers:** none
-**Latest event:** All implementation slices verified; release integration remains open.
-**Next gate:** Reconcile S-051 core catalog and pass the S-050 independent integration gate.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -202,7 +202,7 @@ cases. No integration or release claim follows.
 - [x] Every checkpoint and active dependency has an explicit, preservation-safe disposition.
 - [x] Remaining work and historical references survive retirement.
 - [x] Obsolete collection/tool/skill/test dependencies are removed or explicitly retained for a documented compatibility reason.
-- [ ] Actual replacement behavior, full suite, docs, and independent integration review are verified.
+- [x] Actual replacement behavior, full suite, docs, and independent integration review are verified.
 
 ## Testing Seams
 
@@ -231,11 +231,21 @@ Historical evidence rows remain append-only.
 | 2026-09-08 | TK-002 | Ticket closed | dbacc662363b36d34ebb08ca13a4c9b2d3161a34: 26 direct-promotion cases red/green; full37 union PASS; independent bounded review PASS including BOM/CRLF exact bytes and alias/symlink citation refusal; actual local owner read-back receipt independently verified | S048 implementation account and linked receipt; root/template Runbook direct promotion; guardrail78 unchanged with four repeated-outcome recommendations | TK003 operational recovery migration and checkpoint retirement; S051 core composition; no integration or rollout readiness claim |
 | 2026-09-08 | TK-003 | Ticket closed | 25a27bd33b38dcb5945b8cde0797185239a41800: frozen clean-clone full37 PASS; independent bounded review PASS including five opaque backup-link cases; all six checkpoint inventory hashes unchanged; actual project and managed-skill restoration receipt at19c2de0 independently reproduced | Root/template controls and current skill consumers reconciled; separate ignored operational recovery and retained compatibility explained; guardrail78 unchanged, four repeated-outcome recommendations remain | Whole-release independent integration gate and S051 core catalog reconciliation remain; no cross-host or rollout claim |
 
+| 2026-09-09 | spec | Repaired v3.2.0 integration gate reconciled | Fresh independent PASS 7f9fe2101e5b693f5085c3ed5acee65e73eda445; PR84 remote integration b937f7deac3669307041e86e4b5fc84cd167f818 contains exact candidate with zero tree difference; full6e43PASS and63540/43 plus3corrected clean7f9rerunsPASS; fresh remote clone core/catalog/Blueprint/doctor PASS | Current root/template and core owners agree; S050 repair receipt retains actual native failures and unavailable environments; historical evidence unchanged | No main readiness or real Windows/private cross-device claim; S052TK004 remains external |
+| 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+
 ## Completion Result
 
-All three implementation slices are verified. Checkpoint creation is retired;
-existing history and recovery references remain intact. Final capability
-completion awaits S-051 catalog reconciliation and the S-050 integration gate.
+All three implementation slices are verified. Checkpoint creation is retired; existing history and recovery references remain intact. S-051 catalog reconciliation and the scoped S-050 integration gate now pass.
+
+The repaired v3.2.0 candidate7f9fe21 passed fresh independent integration review
+and is remotely contained by PR84 integrationb937f7d with no tree difference.
+Full6e43checks passed; later635 had three catalog-projection failures, all
+corrected and rerun successfully on7f9. Original guardrail comparison78 to66.9
+is retained; the reviewed owner-aware rubric restores78 with the same four
+outcome-evidence recommendations. S051 owns the actual21-core installation and
+bounded native save/correction/handoff/resume proof. Real Windows/private
+continuity and authenticated Claude behavior remain explicitly unverified.
 
 ## Remaining Limitations Or Follow-Up Specs
 

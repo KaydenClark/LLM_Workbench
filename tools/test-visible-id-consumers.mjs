@@ -87,7 +87,7 @@ test('ADR allocation, register and duplicate checks consume mixed labels without
     assert.equal(created.number, '000A');
     writeRegister(dir);
     assert.ok(listAdrs(dir).some(adr => adr.number === '000A'));
-    assert.match(fs.readFileSync(path.join(folder, 'REGISTER.md'), 'utf8'), /000A-mixed-visible-identity/);
+    assert.match(fs.readFileSync(path.join(folder, 'HISTORY.md'), 'utf8'), /000A-mixed-visible-identity/);
     assert.deepEqual(fs.readFileSync(path.join(folder, '0010-legacy.md')), old);
     fs.writeFileSync(path.join(folder, '000a-collision.md'), content);
     assert.ok(validateAdrs(dir).some(issue => issue.code === 'invalid-adr' && /used by|collision/.test(issue.message)));

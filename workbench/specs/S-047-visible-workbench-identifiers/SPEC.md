@@ -1,15 +1,15 @@
 # S-047 - Visible Workbench Identifiers
 
 **Spec ID:** S-047
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Introduce visible base-62 identifiers without parallel IDs or loss of existing references.
 **Blockers:** none
-**Latest event:** TK-002 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -193,7 +193,7 @@ seconds). Integration delivery remains the whole-release S-050 gate.
 - [x] Legacy references and stable paths are preserved with named compatibility proof.
 - [x] Collision, case, width/growth, and alphabet behavior are explicit and tested.
 - [x] A consumer inventory and staged migration account for specs, tickets, ADRs, notes, and other supported artifacts.
-- [ ] Root/template docs, full suite, guardrail comparison, and independent review agree with implemented support.
+- [x] Root/template docs, full suite, guardrail comparison, and independent review agree with implemented support.
 
 ## Testing Seams
 
@@ -218,10 +218,21 @@ allocation behavior once implemented. Root and generic templates stay aligned.
 | 2026-09-08 | TK-001 | Ticket closed | ffa02b1e4680e012db5bfd13e3938f25e390376b:45 notepad and3 allocator cases green after public red regressions; full35-command union green; independent bounded repair review PASS; receipt-backed installed CLI allocation and explicit ID lookup pass; guardrail78/100 unchanged | Root/template Runbook, core notepad skill, managed packaging and S047 compatibility/adverse-review account updated; scanner criteria unchanged | TK002 spec ticket ADR consumers and whole-release integration remain; no eternal deleted-ID registry or distributed allocator claim |
 | 2026-09-08 | TK-002 | Ticket closed | c78e24661de6a28259c4f9520c6e06ee617d83a3:11 consumer,4 allocator,65 layout,10 ADR and45 notepad cases; full36-command union passes; independent repaired candidate PASS; guardrail78 unchanged with4 outcome recommendations | Root/template Lexicon and Runbook, planning skills, ADR0041, consumer inventory and adverse-review account updated; historical paths retained | Whole-release integration review and remote containment remain S050; legacy numeric ticket labels stay spec-qualified |
 
+| 2026-09-09 | spec | Repaired v3.2.0 integration gate reconciled | Fresh independent PASS 7f9fe2101e5b693f5085c3ed5acee65e73eda445; PR84 remote integration b937f7deac3669307041e86e4b5fc84cd167f818 contains exact candidate with zero tree difference; full6e43PASS and63540/43 plus3corrected clean7f9rerunsPASS; fresh remote clone core/catalog/Blueprint/doctor PASS | Current root/template and core owners agree; S050 repair receipt retains actual native failures and unavailable environments; historical evidence unchanged | No main readiness or real Windows/private cross-device claim; S052TK004 remains external |
+| 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+
 ## Completion Result
 
-Both implementation tickets are verified. Final whole-release integration and
-remote containment remain S-050; no release readiness is claimed here.
+Both implementation tickets and the final documentation/full-verification/review gate are verified; visible identifiers and legacy paths remain compatible.
+
+The repaired v3.2.0 candidate7f9fe21 passed fresh independent integration review
+and is remotely contained by PR84 integrationb937f7d with no tree difference.
+Full6e43checks passed; later635 had three catalog-projection failures, all
+corrected and rerun successfully on7f9. Original guardrail comparison78 to66.9
+is retained; the reviewed owner-aware rubric restores78 with the same four
+outcome-evidence recommendations. S051 owns the actual21-core installation and
+bounded native save/correction/handoff/resume proof. Real Windows/private
+continuity and authenticated Claude behavior remain explicitly unverified.
 
 ## Remaining Limitations Or Follow-Up Specs
 

@@ -44,18 +44,24 @@ node workbench/tools/notepads.mjs create --note NAME --objective OBJECTIVE_KEY \
 Live notes stay local and untracked, in a live collection `workbench/manifest.json`
 declares. Bare names use `notepads/work/` on the new layout, or the legacy
 grilling collection when that room has not migrated. Explicit relative paths
-select other local type folders; `--collection handoffs` selects handoffs.
-Schema and examples under `notepads/templates/` are tracked and cannot be live
+select other local JSON-notepad type folders. Handoffs are not JSON records:
+write them as Markdown in `sessions/handoffs/`. Schema and examples under
+`notepads/templates/` are tracked and cannot be live
 notes. Never
 commit one, and never cite one as durable evidence.
 
 For a new visible identity, use `notepads.mjs allocate --prefix N` with the
-same objective/title fields (H can name a handoff type). The returned ID is the
+same objective/title fields. The returned ID is the
 visible label and filename; no second identity is added. Read an allocated or
 legacy visible ID through `--id ID`, even when its existing filename differs.
 Use `--note` for the original filename/path lookup. Use one writer, preserve existing paths, and reconcile unreadable or ambiguous
 inventory before allocating. The Runbook owns alphabet, width and collision
 rules; neither an ID nor allocation grants authority.
+
+Before dependent work, name the active note and returned revision in local
+execution state, verify relevant Actuality, and correct any stale current view.
+An unavailable runtime blocks the dependent capture operation; report it and
+continue only independent work whose context can safely be preserved.
 
 ## 2. Save it when you learn it, not at closeout
 
@@ -101,6 +107,13 @@ node workbench/tools/notepads.mjs current --note NOTE --revision N \
   --unresolved "WHAT IS STILL OPEN"
 ```
 
+After each material directive, finding, decision, correction, verification or
+blocker, confirm append/current returned success and the new revision before
+continuing dependent work. A failed write has saved nothing. Before voluntary
+pause, validate and read back the note: state, unresolved items and next action
+must match actual results. These are workflow obligations using the runtime's
+revision/privacy/dependency checks, not a claim of host-native interception.
+
 ## 3. Retrieve the slice you need, not the whole history
 
 Read one topic. The response carries the matched entries plus the corrections
@@ -137,11 +150,21 @@ already knew was wrong, with nothing marking it superseded. Trim both halves
 together once the correction has landed in its durable owner, or keep both.
 That refusal is the mechanism doing its job; do not work around it.
 
-Author a requested handoff separately with `--collection handoffs --type handoff`.
-For a pointer-based handoff, repeat `--retains NOTE` or `--retains NOTE#ENTRY_ID`
-when creating it. Confirm destination access and preserve the declared source
-until that destination is reconciled. The tool checks these explicit pointers;
-prose references and semantic sufficiency still need your judgment.
+Author a requested handoff separately as a Markdown file in
+`workbench/sessions/handoffs/`, using the `handoff` skill and its bundled `assets/HANDOFF.md`. It must be plain
+English another agent can follow or the owner can paste into a new chat: name
+the job, verified facts, one resume point, boundaries, and exact source paths.
+Confirm destination access and retain source context until the needed material
+is durable or otherwise safely available. Existing JSON handoffs are legacy
+sources; do not create another one.
+
+Declare active Markdown transfer dependencies through `current --view-field
+'active_handoffs=["workbench/sessions/handoffs/NAME.md"]'` with the current
+revision. Trim and delete refuse while this list is nonempty, even if the file
+is missing; a missing destination cannot prove safe release. After verifying
+that the transfer no longer depends on this note, explicitly clear the list
+with `--view-field 'active_handoffs=[]'`. Undeclared prose dependencies remain
+agent judgment; the tool does not infer them from Markdown.
 
 Delete the whole record only when everything important is reconciled and no
 unfinished work or active handoff still depends on it. After verified partial

@@ -1,7 +1,6 @@
 ---
 name: update-harness
 description: Update a project to the current canonical LLM Workbench harness without losing project-specific controls, work state, or proof.
-disable-model-invocation: true
 ---
 
 # Update Harness

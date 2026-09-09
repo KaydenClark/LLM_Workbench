@@ -5,17 +5,19 @@
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
-**Catalog description:** Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project.
+**Updated:** 2026-09-09
+**Catalog description:** Deliver the reconciled v3.2.0 capability set and prove the Workbench Template update and reviewed integration.
 **Blockers:** live-device-and-private-repository-access (final rollout readiness only)
-**Latest event:** TK-004 closed with proof.
-**Next gate:** Complete TK-005.
+**Latest event:** Repaired source PR84 and Template PR5/PR6 delivered; exact receipts reconciled.
+**Next gate:** Establish actual S052TK004 private repository and Mac/Windows Claude/Codex access before final readiness.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
 ## Outcome
 
-Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project.
+Deliver the reconciled v3.2.0 capability set and prove the Workbench Template
+update through reviewed integration. The later fresh-copy personalization path
+has its own planned capability owners and is not v3.2 acceptance.
 
 ## Why It Matters
 
@@ -52,14 +54,24 @@ and retained, never silently staged with the release.
 5. Stamp v3.2.0 only after behavior and required proof are green, then validate
    the stamp. Review and integrate the immutable upstream candidate. Consume
    only clean, pinned source including manifest, templates, tools and skills.
-6. Deliver Example S-003 on exact branch `v3.2.0`, retain that branch through
-   owner acceptance, independently review then merge it to integration. Prove
-   a freshly generated independent room can become a working concrete project
-   and resume from an agent-authored note without personal catalog dependencies.
-7. Close only after live remote containment, installed identities, fresh-project
-   usefulness, and actual Mac/Windows Claude/Codex continuity proof exist.
+6. Complete S-00A's active-ADR, Context Map, and destination-only Blueprint
+   rebuild, then deliver the Workbench Template update on exact branch `v3.2.0`.
+   Retain that branch through owner acceptance, independently review it, merge
+   it to integration, and read the merged state back.
+7. Close only after live remote containment, installed identities, successful
+   Workbench Template update, and actual Mac/Windows Claude/Codex continuity
+   proof exist. S-00C through S-00E own later project-evidence, Genesis, and
+   fresh-copy usefulness claims.
 
 ## Decisions And Contracts
+
+**Scoped version waiver (owner, 2026-09-09).** Keep v3.2.0 for this repair despite
+the previously stamped twenty-skill bundle. This explicit exception permits the
+repaired twenty-one-skill core including handoff; it does not repeal the general
+stamped-label rule. Preserve the exact earlier twenty-skill manifest policy as
+readable legacy input. Source commit and content hashes distinguish generations.
+The separate proposed S-054 review-boundary work remains deferred.
+
 
 Current owner authorization selects the reconciled release direction. Historical
 source statuses remain preserved; a source recommendation is not itself proof
@@ -71,12 +83,13 @@ main publication and rollout to other active rooms remain owner-only/outside sco
 
 | Unit | Owner | Endpoint |
 |---|---|---|
-| V32-01 and V32-06 | This spec TK-001/002/004/006 | Full scope, canonical decisions, release checks and receipts |
+| V32-01 and V32-06 | This spec TK-001/002/004/006 plus S-00A | Full scope, active-ADR/Blueprint rebuild, release checks and receipts |
 | V32-02 | S-046 and S-047 | Shared JSON lifecycle and compatible visible identity |
 | V32-03 | S-048 | Direct promotion and frozen checkpoint history with usable rollback |
 | V32-04 | S-051 | Core ownership, composition, installation and tested compatibility |
 | V32-05 | S-052 and S-053 | Optional private continuity and agreed configured-host floor |
-| V32-07/08/09 | Example S-003 | Upgrade, usable fresh project and reviewed Example integration |
+| V32-07/09 | S-00B and target-room owner | Workbench Template update and reviewed integration |
+| Future template-to-project stages | S-00C, S-00D, S-00E | Evidence intake, Genesis derivation, and fresh-copy proof; excluded from v3.2 acceptance |
 
 The recovered five-check host minimum in S-053 is the current implementation
 baseline under the renewed owner request. A real second device and
@@ -88,7 +101,7 @@ The three suggested Design Concept articles remain proposals, excluded here.
 
 New coordination services, Foundry revival, Python runtime rewrite, paid services,
 credential changes, raw transcript publication, mass checkpoint deletion, or
-personal skills repository mutation. Proposed Design Concept articles remain
+unrelated personal skills repository mutation. Proposed Design Concept articles remain
 uncreated and outside this implementation absent explicit owner direction.
 
 ## Dependencies And Blockers
@@ -104,8 +117,8 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-002 | Reconcile ADRs and all included documentation contracts | done | TK-001 | Full 33-command suite passes at fixed 87244cc; independent bounded documentation PASS; guardrail78 unchanged |
 | TK-003 | Converge capability implementations and useful continuity proof | done | none | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved |
 | TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | done | TK-003 | 16c8278 full42 PASS; configured-host10 and source-identity18 PASS; independent corrective review PASS; PR81 merged as integration5ceef14 with exact candidate containment and zero tree delta |
-| TK-005 | Deliver Example v3.2.0 and fresh project acceptance | ready | TK-004 | pending |
-| TK-006 | Reconcile release receipts and readiness verdict | ready | TK-005 | pending |
+| TK-005 | Deliver Workbench Template v3.2.0 and reviewed integration | done | TK-004, S-00A | S00A complete;S00B Template PR5 integrationdf63359 contains reviewed d14553c;fresh remote clone19tests/syntax/layout/doctor passes;v3.2.0 retained |
+| TK-006 | Reconcile release receipts and readiness verdict | blocked | live-device-and-private-repository-access | Repair receipts reconciled; actual S052TK004 final readiness evidence unavailable |
 
 ### TK-001 - Promote and push the complete reconciled scope
 
@@ -131,28 +144,48 @@ Carry S-046/047/048/051/052/053 individually; investigate existing S-046 impleme
 
 Verify complete clean consumed lanes, all new tests and full suite. Stamp only after behavior green, rerun affected/full checks, independently review exact final candidate, PR to integration and prove live remote containment. Preserve failed or unavailable acceptance; no main merge.
 
-### TK-005 - Deliver Example v3.2.0 and fresh project acceptance
+### TK-005 - Deliver Workbench Template v3.2.0 and reviewed integration
 
 **Stance:** Builder
 
-Carry Example S-003 through explicit upgrade, room/tour tests, isolated fresh clone and Genesis demonstration, separate-context review, v3.2.0 PR merge to integration and fresh read-back. Record exact upstream and Example commits, PR and resulting tree.
+Carry S-00B and the target room owner through explicit update, room/tour tests,
+control-fidelity disposition, separate-context review, v3.2.0 PR merge to
+integration, and fresh read-back. Record exact upstream and target commits, PR,
+and resulting tree. Do not substitute an isolated fresh clone and Genesis
+demonstration, which belong to S-00E.
 
 ### TK-006 - Reconcile release receipts and readiness verdict
 
 **Stance:** Builder
 
-Check all requirements and all 181 dispositions; append upstream/Example immutable receipts, installed manifest/tool/skill and control-fidelity results, fresh project useful-task and saved-note continuation, host/model/machine evidence. Report ready only if every acceptance passes; readiness authorizes no further rollout.
+Check all requirements and all 181 dispositions; append upstream/Template
+immutable receipts, installed manifest/tool/skill and control-fidelity results,
+and host/model/machine evidence. State S-00C through S-00E as planned follow-on
+work rather than fresh-project proof. Report ready only if every v3.2 acceptance
+passes; readiness authorizes no further rollout.
+
+## Renewed Coherence Acceptance
+
+The current owner request adds S-051 TK-004 through TK-006 and S-046 TK-007 as
+v3.2 completion requirements. Preserve completed tickets and append-only proof;
+those bounded results do not establish repaired installed behavior. S-00A owns
+the already-locked Blueprint and independent main-readiness criteria; no new
+architecture interview or v3.2.1 activation follows. Review the repaired immutable
+candidate independently before upstream integration, then carry S-00B through
+Workbench Template integration. Main approval/merge and unrelated rooms remain
+excluded. Record unavailable native or cross-device environments explicitly.
 
 ## Acceptance Criteria
 
-- [ ] All 181 original research records, 19 candidates and 59 ADR mappings are preserved with final disposition and proof routes.
-- [ ] All included ADRs, amendments and documentation changes are reconciled in current root and generic owners.
+- [x] All 181 original research records, 19 candidates and 59 ADR mappings are preserved with final disposition and proof routes.
+- [x] All included ADRs, amendments and documentation changes are reconciled in current root and generic owners.
 - [ ] S-046, S-047, S-048, S-051, S-052 and S-053 satisfy their accepted scope and verification.
-- [ ] Clean immutable v3.2.0 upstream source passes required suites, separate-context review and live integration containment.
-- [ ] Example branch v3.2.0 passes installed conformance and independent review, is merged to integration and remains owner-visible.
-- [ ] Fresh generation/customization produces a useful independent project with new identity, working tools/tests and real saved-note continuation.
+- [x] Clean immutable v3.2.0 upstream source passes required suites, separate-context review and live integration containment.
+- [x] Workbench Template branch v3.2.0 passes installed conformance and independent review, is merged to integration and remains owner-visible.
+- [x] S-00A's destination-only Blueprint, active ADR lifecycle/routing, Context Map, and lossless claim disposition are accepted before the Template update.
+- [x] Future fresh generation/customization, useful-project, and saved-note continuation claims remain explicitly owned by S-00C through S-00E and are not presented as v3.2 proof.
 - [ ] Real Mac/Windows Claude/Codex transport proof, offline/conflict behavior and configured-host evidence are recorded without fixture substitution.
-- [ ] Final release receipt distinguishes readiness, publication and actual active-room deployment.
+- [x] Final release receipt distinguishes readiness, publication and actual active-room deployment.
 
 ## Testing Seams
 
@@ -195,12 +228,24 @@ claims/status/lineage, not private transcripts.
 | 2026-09-08 | TK-003 | Ticket closed | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved | S053 exact five-check baseline and local result; actual cross-device readiness remains S052TK004 and S050TK006 | Stamp and review upstream; Example integration; actual cross-device final readiness |
 | 2026-09-08 | TK-004 | Separate-context review rejected the exact 563a6e69657a6fe2594e86bda523cb60567342b7 candidate after PR80 had already merged it | Full42, append-only, held-out path safety, evaluator106.6 and doctor passed, but an ordinary non-Git root containing expected filenames executed a substituted managed child and reported PASS; review verdict FAIL. Regression reproduced RED, then producer Git root, expected commit/origin and clean consumed-input checks made ten configured-host tests GREEN | RUNBOOK and generic counterpart now require explicit sourceCommit/sourceRepository and name the producer preflight | Commit and push repair, full suite, fresh independent review and corrective integration remain pending; PR80 did not satisfy the review gate |
 | 2026-09-08 | TK-004 | Ticket closed | 16c8278 full42 PASS; configured-host10 and source-identity18 PASS; independent corrective review PASS; PR81 merged as integration5ceef14 with exact candidate containment and zero tree delta | RUNBOOK and template producer preflight updated; S050 and S053 evidence record PR80 gate failure and repaired result | Example reviewed integration and actual Mac/Windows Claude/Codex private-transport readiness evidence |
+| 2026-09-09 | TK-005 | Ticket closed | S00A complete;S00B Template PR5 integrationdf63359 contains reviewed d14553c;fresh remote clone19tests/syntax/layout/doctor passes;v3.2.0 retained | S00B and targetS00A own Template closeout;repair-integration-acceptance.json preserves exact source,installed and native limits | Repaired source final independent integration review and actual S052 Mac/Windows Claude/Codex private transport remain |
+
+| 2026-09-09 | TK-006 | Repaired source and Template delivered; final readiness remains externally blocked | Independent source PASS 7f9fe2101e5b693f5085c3ed5acee65e73eda445; PR84 integration b937f7deac3669307041e86e4b5fc84cd167f818 exact containment and zero tree delta; TemplatePR5/PR6 at4010003; fresh remote checks pass; all181records/19candidates/59mappings unchanged | repair-integration-acceptance.json links full and adverse results, installed identities, native limits and original version waiver; bounded capability owners reconciled | Actual S052TK004 Mac/Windows Claude/Codex private transport, authenticated Claude and final readiness unavailable; no main approval/merge |
 
 ## Completion Result
 
-Implementation resumed under the renewed owner request. Upstream v3.2.0 and
-Example integration are authorized; final rollout readiness retains the actual
-cross-device evidence boundary. No publication or readiness claim yet.
+The repaired v3.2.0 source is delivered through PR84 to integrationb937f7d;
+the Workbench Template and its reviewed closeout are delivered through target
+PR5/PR6 at integration4010003. Exact reviewed containment and fresh remote checks
+are recorded in [the repair acceptance receipt](repair-integration-acceptance.json).
+The original181 records,19 candidates and59 ADR mappings remain unchanged.
+
+This is integration delivery, not overall release readiness. TK-006 remains
+blocked on S-052/TK-004 actual Mac/Windows Claude/Codex private transport evidence;
+Claude authentication is unavailable on the current host. Spark's ordinary
+skill-discovery failure and Astra's client-version failure remain failed/unavailable
+results. Main was neither approved nor merged, no unrelated Workbench was
+updated, and no portfolio automation or future personalization was claimed.
 
 ## Remaining Limitations Or Follow-Up Specs
 

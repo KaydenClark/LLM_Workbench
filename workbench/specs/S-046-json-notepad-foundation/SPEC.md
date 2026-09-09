@@ -1,15 +1,15 @@
 # S-046 - JSON Notepad Foundation
 
 **Spec ID:** S-046
-**Status:** active
+**Status:** complete
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup.
 **Blockers:** none
-**Latest event:** TK-005 closed with proof.
-**Next gate:** Record whole-release independent review and integration containment under S-050.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 ## Outcome
 
@@ -198,6 +198,7 @@ protocol are proposals, not verbatim owner approvals.
 | TK-006 | Repair reviewed discovery chronology, safe discovery paths and decoded-field privacy before using the candidate | done | TK-002 | a2338e7: five expected red regressions then 26/26 notepad tests green; full 34-command union passes unchanged; separate-context review PASS on exact candidate; guardrail 78/100 unchanged |
 | TK-004 | Migrate live JSON layout and ship schema/examples through managed installation without moving legacy sources | done | TK-006 | 1c5bd36a7e5baa904ab104ef7b92bd8464f9ecad:29notepad and62layout cases pass; full34-command union passes unchanged; separate-context repair review PASS; source room migrated with no legacy moves; guardrail78/100 unchanged |
 | TK-005 | Prove authored handoff, retained-context cleanup and real fresh-agent recovery through installed skills | done | TK-004 | bbda20d5010bce634a76deaf2f5b55c6f0a4fdf7: four case-alias regressions red then36 targeted green; full34-command union green; separate-context repair review PASS; one actual fresh-context installed-skill recovery completed useful inventory, with hashes independently read back; guardrail78/100 unchanged |
+| TK-007 | Repair confirmed basename/sequence regressions and continuity gates | done | none | c1600d1 public CLI50 tests pass;basename privacy/safe sequence and all handoff spellings no-write refusal;legacy retention restored;GPT5.5 save/correction/fresh-resume verified in S051 receipt after observed stale-view repair |
 
 ### TK-001 - Scope and reconcile
 
@@ -273,6 +274,21 @@ Run targeted and full suites, preserve all existing evidence and record the exac
 new reviewed candidate. Existing TK-002 closure is historical, not an integration
 PASS. TK-004/005 still own remaining layout and actual continuity acceptance.
 
+## Renewed v3.2 Notepad Repair
+
+The owner-supplied `notepad definiton.txt` is audit evidence, not a new authority.
+Reproduce its two reported public-CLI regressions at the current tree: private
+material in a note basename and unsafe integer entry sequence poisoning.
+Forward-port only confirmed fixes; never merge the older runtime wholesale.
+Add refusal tests proving no writes, safe subsequent append and legacy validation.
+Enforce capture at the existing workflow boundaries: create/resume and read the
+revision before dependent work; confirm append/current results before advancing;
+validate and read back actual state before voluntary pause or requested handoff.
+Existing revision, privacy and dependency consumers are machine checks. Skill
+compliance is an agent obligation; no host hook or arbitrary-action interception
+is claimed. Prove save-before-next-question and stale-view correction in S-051
+native trials. Preserve unresolved and handoff dependencies during cleanup.
+
 ## Acceptance Criteria
 
 - [x] Source questions and corrections have explicit dispositions; all remaining source material is retained locally in focused JSON records, and promoted truth has durable owners.
@@ -282,7 +298,7 @@ PASS. TK-004/005 still own remaining layout and actual continuity acceptance.
 - [x] Requested handoff and partial-cleanup demonstrations preserve unfinished material and destination dependencies.
 - [x] Root/template controls, source workflows, layout, managed-tool packaging, and explicitly authorized installed paths agree on the supported behavior.
 - [x] A fresh agent without the original conversation resumes real agent-authored work; cross-provider and interruption limits are recorded honestly.
-- [ ] Full verification, unchanged-criteria guardrail comparison, and independent integration review are recorded for the implemented candidate.
+- [x] Full verification, unchanged-criteria guardrail comparison, and independent integration review are recorded for the implemented candidate.
 
 ## Testing Seams
 
@@ -786,6 +802,10 @@ requires full verification and fresh independent review below.
 | 2026-09-08 | TK-006 | Ticket closed | a2338e7: five expected red regressions then 26/26 notepad tests green; full 34-command union passes unchanged; separate-context review PASS on exact candidate; guardrail 78/100 unchanged | Notepad discovery skill aligned with newest-created contract; public tests cover decoded values and safe file/collection paths; historical evidence preserved | TK-004 schema/layout and TK-005 actual installed-skill continuity remain; no v3.2.0 readiness claim |
 | 2026-09-08 | TK-004 | Ticket closed | 1c5bd36a7e5baa904ab104ef7b92bd8464f9ecad:29notepad and62layout cases pass; full34-command union passes unchanged; separate-context repair review PASS; source room migrated with no legacy moves; guardrail78/100 unchanged | Root and generic controls, notepad/grilling/update-harness skills, schema/examples, seeded receipts and S-046 review-correction account aligned; new helpers preserve old7 layout and legacy note lookup | TK-005 actual authored handoff, cleanup and fresh-context installed-skill recovery remain; no release readiness or integration claim |
 | 2026-09-08 | TK-005 | Ticket closed | bbda20d5010bce634a76deaf2f5b55c6f0a4fdf7: four case-alias regressions red then36 targeted green; full34-command union green; separate-context repair review PASS; one actual fresh-context installed-skill recovery completed useful inventory, with hashes independently read back; guardrail78/100 unchanged | Root/template Runbook and source notepad skill aligned; curated continuity result and adverse-review/repair account preserved in S-046 | Whole-release integration and S051 native discovery remain; no Windows, cross-provider, interruption, crash or transport outcome claimed |
+| 2026-09-09 | TK-007 | Ticket closed | c1600d1 public CLI50 tests pass;basename privacy/safe sequence and all handoff spellings no-write refusal;legacy retention restored;GPT5.5 save/correction/fresh-resume verified in S051 receipt after observed stale-view repair | Runtime,root/template controls and core workflow gates agree;machine checks distinguished from model compliance;original entries and active Markdown dependency preserved | Final full frozen-candidate suite and independent integration review;unavailable hosts remain explicit in S051/S052 |
+
+| 2026-09-09 | spec | Repaired v3.2.0 integration gate reconciled | Fresh independent PASS 7f9fe2101e5b693f5085c3ed5acee65e73eda445; PR84 remote integration b937f7deac3669307041e86e4b5fc84cd167f818 contains exact candidate with zero tree difference; full6e43PASS and63540/43 plus3corrected clean7f9rerunsPASS; fresh remote clone core/catalog/Blueprint/doctor PASS | Current root/template and core owners agree; S050 repair receipt retains actual native failures and unavailable environments; historical evidence unchanged | No main readiness or real Windows/private cross-device claim; S052TK004 remains external |
+| 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
@@ -801,8 +821,16 @@ The authored-handoff trial completed useful work in a fresh agent context, with
 partial cleanup and unfinished/dependency cleanup refusals demonstrated. Its
 exact candidate, adverse review, later repairs and limits are recorded above.
 Historical Windows scoping failures remain history; no current Windows run is
-claimed. All tickets are closed, but final release integration containment is
-still open under S-050 and the last acceptance box remains unchecked.
+claimed. That historical trial did not close the later release integration gate; the repaired result below now does.
+
+The repaired v3.2.0 candidate7f9fe21 passed fresh independent integration review
+and is remotely contained by PR84 integrationb937f7d with no tree difference.
+Full6e43checks passed; later635 had three catalog-projection failures, all
+corrected and rerun successfully on7f9. Original guardrail comparison78 to66.9
+is retained; the reviewed owner-aware rubric restores78 with the same four
+outcome-evidence recommendations. S051 owns the actual21-core installation and
+bounded native save/correction/handoff/resume proof. Real Windows/private
+continuity and authenticated Claude behavior remain explicitly unverified.
 
 ## Remaining Limitations Or Follow-Up Specs
 

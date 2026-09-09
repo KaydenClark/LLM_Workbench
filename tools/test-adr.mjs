@@ -35,7 +35,7 @@ test('a valid corpus validates, registers deterministically, and reports a stale
     const collection = path.join(dir, 'workbench', 'docs', 'adr');
     fs.writeFileSync(path.join(collection, '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
     const stale = validateAdrs(dir);
-    assert.deepEqual(stale.map((item) => [item.code, item.severity, item.blocks]), [['stale-register', 'attention', 'none']]);
+    assert.deepEqual(stale.map((item) => [item.code, item.severity, item.blocks]), [['stale-register', 'attention', 'none'], ['stale-register', 'attention', 'none']]);
     const written = writeRegister(dir);
     assert.equal(written.count, 1);
     assert.equal(fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8'), renderRegister(listAdrs(dir)));
@@ -202,4 +202,78 @@ test('durable references distinguish tracked notepad templates from ignored live
     fs.appendFileSync(file, '[Live](../../sessions/notepads/work/live.json)\n');
     assert.equal(validateAdrs(dir).filter(item => item.code === 'untracked-provenance').length, 1);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-00A: lifecycle is semantic; the default projection must not revive history.
+test('active register excludes historical decisions while explicit history preserves all records', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    const inputs = {
+      '0001-active.md': adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'),
+      '0002-old.md': adr('superseded', 'superseded_by: 0001-active.md\n'),
+      '0003-retired.md': adr('deprecated', 'deprecation_reason: The requirement is withdrawn.\n'),
+      '0004-draft.md': adr('proposed'),
+      '0005-rejected.md': adr('rejected')
+    };
+    for (const [name, content] of Object.entries(inputs)) fs.writeFileSync(path.join(collection, name), content);
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir), []);
+    const active = fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8');
+    assert.match(active, /0001-active/);
+    assert.doesNotMatch(active, /0002-old|0003-retired|0004-draft|0005-rejected/);
+    assert.match(active, /HISTORY\.md/);
+    const history = fs.readFileSync(path.join(collection, 'HISTORY.md'), 'utf8');
+    for (const [name, content] of Object.entries(inputs)) {
+      assert.ok(history.includes(name));
+      assert.equal(fs.readFileSync(path.join(collection, name), 'utf8'), content);
+    }
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('lifecycle rejects missing, cyclic, partial and nonaccepted successor targets', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    const file = path.join(collection, '0001-old.md');
+    for (const target of ['missing.md', '0001-old.md', '0002-next.md#partial', '../0002-next.md', '0003-proposed.md']) {
+      fs.writeFileSync(file, adr('superseded', `superseded_by: ${target}\n`));
+      fs.writeFileSync(path.join(collection, '0002-next.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+      fs.writeFileSync(path.join(collection, '0003-proposed.md'), adr('proposed'));
+      writeRegister(dir);
+      assert.ok(validateAdrs(dir).some(x => x.code === 'invalid-adr' && x.adr === '0001-old.md'), target);
+    }
+    fs.writeFileSync(file, adr('superseded', 'superseded_by: 0002-next.md\n'));
+    fs.writeFileSync(path.join(collection, '0002-next.md'), adr('superseded', 'superseded_by: 0001-old.md\n'));
+    writeRegister(dir);
+    assert.ok(validateAdrs(dir).some(x => /cycle/.test(x.message)));
+    fs.writeFileSync(file, adr('deprecated'));
+    writeRegister(dir);
+    assert.ok(validateAdrs(dir).some(x => /deprecation_reason/.test(x.message)));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('history output safety is preflighted before either projection changes', () => {
+  const dir = fixture(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'adr-history-'));
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    const target = path.join(outside, 'target'); fs.writeFileSync(target, 'retain');
+    fs.writeFileSync(path.join(collection, REGISTER_NAME), 'old register');
+    fs.symlinkSync(target, path.join(collection, 'HISTORY.md'));
+    assert.throws(() => writeRegister(dir));
+    assert.equal(fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8'), 'old register');
+    assert.equal(fs.readFileSync(target, 'utf8'), 'retain');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
+});
+
+test('missing and stale history are reported without rewriting history',()=>{
+ const dir=fixture();try{
+  const file=path.join(dir,'workbench/docs/adr/0001-decision.md');fs.writeFileSync(file,adr('accepted','canonicalized_in:\n  - AGENTS.md\n'));writeRegister(dir);
+  const history=path.join(dir,'workbench/docs/adr/HISTORY.md');
+  for(const state of ['missing','stale']){
+   if(state==='missing')fs.rmSync(history);else fs.writeFileSync(history,'stale history');
+   assert.ok(validateAdrs(dir).some(x=>x.code==='stale-register'&&x.message.includes('HISTORY.md')));
+   if(state==='stale')assert.equal(fs.readFileSync(history,'utf8'),'stale history');
+  }
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
