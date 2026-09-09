@@ -1,15 +1,15 @@
 # S-00D - Genesis From Blueprint And Active ADRs
 
 **Spec ID:** S-00D
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-v321-manager
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality.
-**Blockers:** explicit activation; S-00C
-**Latest event:** Planned as stage three of the locked Workbench Template destination.
-**Next gate:** Owner explicitly activates after project-evidence and grilling preparation are proven.
+**Blockers:** S-00C
+**Latest event:** Owner activated S-00A through S-00E for v3.2.1 delivery to integration.
+**Next gate:** Execute the assigned vertical slice, verify acceptance, and review the immutable v3.2.1 candidate before integration.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -38,13 +38,17 @@ mistaking generated prose for an owner decision.
 
 ## Dependencies And Blockers
 
+The 2026-09-09 owner request explicitly activates this capability for v3.2.1,
+including implementation, proof, separate-context review, and integration.
+The earlier activation gate below is satisfied; capability dependencies remain.
+
 S-00C and explicit owner activation are required.
 
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00E | Derive a valid scoped room from locked project inputs | deferred | explicit activation; S-00C | Red source/authority cases; green disposable-room derivation and validation |
+| TK-00E | Derive a valid scoped room from locked project inputs | ready | S-00C | Red source/authority cases; green disposable-room derivation and validation |
 
 ## Acceptance Criteria
 
@@ -68,6 +72,7 @@ Future Genesis, template, and project-spec documentation owners.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Created planned stage three from the locked destination | Decision source reconciled; no implementation run | Formula and boundaries recorded | Explicit activation, S-00C, implementation, and proof remain pending |
+| 2026-09-09 | spec | Owner activated the named S-00A through S-00E run for v3.2.1; manager is the single durable spec writer | Recovered c0ac60a integration and completed A/B records; guardrail baseline 78/100 | Existing ticket preserved as a complete CLI/input-to-output/test slice; no new coordination store | Implementation and exact-candidate review remain; zero coordination hand-backs |
 
 ## Completion Result
 

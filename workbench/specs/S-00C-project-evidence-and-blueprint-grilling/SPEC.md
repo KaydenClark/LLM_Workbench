@@ -1,15 +1,15 @@
 # S-00C - Project Evidence And Blueprint Grilling
 
 **Spec ID:** S-00C
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-v321-manager
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Prepare a project-informed Blueprint grilling record from verified project evidence.
-**Blockers:** explicit activation after S-00B
-**Latest event:** Planned as the second stage of the locked Workbench Template destination.
-**Next gate:** Owner explicitly activates the capability after the Template foundation is delivered.
+**Blockers:** none
+**Latest event:** TK-00D claimed by codex-v321-manager.
+**Next gate:** Close TK-00D with verification and documentation proof.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -38,6 +38,10 @@ owner-validated.
 
 ## Dependencies And Blockers
 
+The 2026-09-09 owner request explicitly activates this capability for v3.2.1,
+including implementation, proof, separate-context review, and integration.
+The earlier activation gate below is satisfied; capability dependencies remain.
+
 S-00B must establish the template role. Explicit owner activation is required
 because this planned capability is not v3.2 delivery.
 
@@ -45,7 +49,7 @@ because this planned capability is not v3.2 delivery.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00D | Collect bounded evidence and prepare a Blueprint grilling record | deferred | explicit activation; S-00B | Red provenance/privacy cases; green prepared-record seam and targeted verification |
+| TK-00D | Collect bounded evidence and prepare a Blueprint grilling record | in-progress | none | Red provenance/privacy cases; green prepared-record seam and targeted verification |
 
 ## Acceptance Criteria
 
@@ -69,6 +73,7 @@ and the derived project owner's own durable records.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Created planned stage two from the locked destination | Decision source reconciled; no implementation run | Destination and non-goal recorded without claiming delivery | Explicit activation and all implementation/proof remain pending |
+| 2026-09-09 | spec | Owner activated the named S-00A through S-00E run for v3.2.1; manager is the single durable spec writer | Recovered c0ac60a integration and completed A/B records; guardrail baseline 78/100 | Existing ticket preserved as a complete CLI/input-to-output/test slice; no new coordination store | Implementation and exact-candidate review remain; zero coordination hand-backs |
 
 ## Completion Result
 

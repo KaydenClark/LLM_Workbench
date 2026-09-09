@@ -1,15 +1,15 @@
 # S-00E - Fresh Workbench Template To Project Proof
 
 **Spec ID:** S-00E
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-v321-manager
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Prove the complete fresh-copy path from Workbench Template through a useful independent project.
-**Blockers:** explicit activation; S-00D
-**Latest event:** Planned as the final stage of the locked Workbench Template destination.
-**Next gate:** Owner explicitly activates after Genesis derivation is delivered.
+**Blockers:** S-00D
+**Latest event:** Owner activated S-00A through S-00E for v3.2.1 delivery to integration.
+**Next gate:** Execute the assigned vertical slice, verify acceptance, and review the immutable v3.2.1 candidate before integration.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -38,13 +38,17 @@ continuation without relying on the developer checkout or personal catalog.
 
 ## Dependencies And Blockers
 
+The 2026-09-09 owner request explicitly activates this capability for v3.2.1,
+including implementation, proof, separate-context review, and integration.
+The earlier activation gate below is satisfied; capability dependencies remain.
+
 S-00D and explicit owner activation are required.
 
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00F | Exercise the clean-copy path through useful project continuation | deferred | explicit activation; S-00D | Isolated clone/room receipt, useful task, independent verification, reviewed result |
+| TK-00F | Exercise the clean-copy path through useful project continuation | ready | S-00D | Isolated clone/room receipt, useful task, independent verification, reviewed result |
 
 ## Acceptance Criteria
 
@@ -70,6 +74,7 @@ Future template, Genesis, continuation, and release-evidence owners.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Created planned final stage from the locked destination | Decision source reconciled; no implementation run | Fresh-proof boundary recorded | Explicit activation, upstream stages, implementation, and proof remain pending |
+| 2026-09-09 | spec | Owner activated the named S-00A through S-00E run for v3.2.1; manager is the single durable spec writer | Recovered c0ac60a integration and completed A/B records; guardrail baseline 78/100 | Existing ticket preserved as a complete CLI/input-to-output/test slice; no new coordination store | Implementation and exact-candidate review remain; zero coordination hand-backs |
 
 ## Completion Result
 
