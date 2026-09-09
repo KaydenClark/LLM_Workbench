@@ -154,7 +154,7 @@ export function checkStructure(note) {
   if (!note.current || typeof note.current !== 'object' || typeof note.current.state !== 'string') missing.push('current.state');
   if (!Array.isArray(note.entries)) missing.push('entries');
   if (!note.extensions || typeof note.extensions !== 'object' || Array.isArray(note.extensions)) missing.push('extensions');
-  if (version === NOTEPAD_SCHEMA_VERSION && (!Number.isInteger(note.revision) || note.revision < 1)) missing.push('revision');
+  if (version === NOTEPAD_SCHEMA_VERSION && (!Number.isSafeInteger(note.revision) || note.revision < 1)) missing.push('revision');
   if (typeof note.status === 'string' && note.status && !NOTE_STATUSES.includes(note.status)) invalid.push(`status must be one of ${NOTE_STATUSES.join(', ')}`);
   if (Array.isArray(note.entries)) {
     const seen = new Set();
@@ -163,6 +163,8 @@ export function checkStructure(note) {
       if (typeof entry.id !== 'string' || !ENTRY_ID.test(entry.id)) invalid.push(`entry id ${JSON.stringify(entry.id)} is not an identifier`);
       else if (seen.has(entry.id)) invalid.push(`entry id ${entry.id} is used twice`);
       else seen.add(entry.id);
+      const suffix = ID_PARTS.exec(entry.id ?? '');
+      if (suffix && sequenceSuffix(suffix[2]) === null) invalid.push(`entry ${entry.id} has an unsafe numeric suffix`);
       if (!ENTRY_KINDS.includes(entry.kind)) invalid.push(`entry ${entry.id} has kind ${JSON.stringify(entry.kind)}; supported kinds are ${ENTRY_KINDS.join(', ')}`);
       if (typeof entry.content !== 'string') invalid.push(`entry ${entry.id} has no content string`);
     }
@@ -171,6 +173,13 @@ export function checkStructure(note) {
       for (const link of [...(entry.corrects ? [entry.corrects] : []), ...asArray(entry.depends_on)]) {
         if (!seen.has(link)) invalid.push(`entry ${entry.id} references ${link}, which the note does not contain`);
       }
+    }
+  }
+  const sequence = note.extensions?.entry_sequence;
+  if (sequence !== undefined) {
+    if (!sequence || typeof sequence !== 'object' || Array.isArray(sequence)) invalid.push('entry_sequence must be an object');
+    else for (const [prefix, value] of Object.entries(sequence)) {
+      if (!/^[a-z_]+$/.test(prefix) || !Number.isSafeInteger(value) || value < 0) invalid.push('entry_sequence must contain safe nonnegative integer marks');
     }
   }
   return { missing, invalid };
@@ -412,7 +421,7 @@ export function appendEntry(root, options) {
   const sequence = note.extensions?.entry_sequence ?? {};
   const highest = note.entries.reduce((top, entry) => {
     const suffix = ID_PARTS.exec(entry.id);
-    if (!suffix) return top;
+    if (!suffix || suffix[1] !== kind) return top;
     const parsed = sequenceSuffix(suffix[2]);
     if (parsed === null) return top;
     return Math.max(top, parsed);
@@ -427,8 +436,7 @@ export function appendEntry(root, options) {
   // the guarantee without qualifying it to generated ids.
   const parts = ID_PARTS.exec(id);
   const mark = parts ? markOf(sequence, parts[1]) : null;
-  if (options['entry-id']) {
-    if (!parts) return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} has an invalid suffix format`);
+  if (options['entry-id'] && parts) {
     const parsed = sequenceSuffix(parts[2]);
     if (parsed === null) {
       return blocked('invalid-note', `--entry-id ${JSON.stringify(id)} has an unsafe numeric suffix and may not be used`);
@@ -438,7 +446,7 @@ export function appendEntry(root, options) {
     }
   }
   if (!options['entry-id'] && !Number.isSafeInteger(highest + 1)) {
-    return blocked('invalid-note', `${resolved.relative} has reached ${highest} ${kind} entries and needs a fresh sequence reset`);
+    return blocked('invalid-note', `${resolved.relative} has reached ${highest} ${kind} entries and needs a different prefix or a new objective note`);
   }
   const corrects = options.corrects ?? null;
   const dependsOn = asArray(options['depends-on']);

@@ -1052,3 +1052,20 @@ test('allocation reserves visible destination aliases independently of filesyste
     assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('safe sequences stay per prefix and arbitrary legacy entry IDs remain supported', () => {
+  const dir = project();
+  try {
+    const n = seed(dir);
+    assert.equal(appendEntry(dir, {note:n.note,revision:1,kind:'finding',topic:'x',content:'First', 'entry-id':'source-900'}).status, 'appended');
+    assert.equal(appendEntry(dir, {note:n.note,revision:2,kind:'finding',topic:'x',content:'Other prefix'}).entry, 'finding-001');
+    assert.equal(appendEntry(dir, {note:n.note,revision:3,kind:'finding',topic:'x',content:'Named entry','entry-id':'source-alpha'}).status, 'appended');
+    const bytes = fs.readFileSync(path.join(dir,n.note));
+    const record = JSON.parse(bytes);
+    record.extensions.entry_sequence.finding = Number.MAX_SAFE_INTEGER + 1;
+    assert.ok(checkStructure(record).invalid.some(x => /sequence/.test(x)));
+    record.extensions.entry_sequence.finding = 1;
+    record.entries[0].id = 'source-99999999999999999999999999';
+    assert.ok(checkStructure(record).invalid.some(x => /suffix/.test(x)));
+  } finally { fs.rmSync(dir, {recursive:true,force:true}); }
+});
