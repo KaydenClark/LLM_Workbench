@@ -230,7 +230,13 @@
     "finding": "Live S051 summary incorrectly said zero coordination hand-backs; changed to one without editing append-only row. Final corrected evidence candidate requires review.",
     "independentChecks": "50 notepad,14ADR,composition,Blueprint,doctor;21actual corefiles/markers and8native rawhashes;ordinary launch calls and refusal/success pairs verified"
   },
-  "sourceIntegration": "Pending corrected immutable review",
+  "sourceIntegration": {
+    "pr": "https://github.com/KaydenClark/LLM_Workbench/pull/84",
+    "commit": "b937f7deac3669307041e86e4b5fc84cd167f818",
+    "reviewedCandidateContained": true,
+    "treeDifference": false,
+    "freshRemoteClone": "core composition,catalog,Blueprint,doctor PASS;clean tree"
+  },
   "template": {
     "candidate": "d14553c29c7812cb192c5c104dd4f719a8d181a0",
     "review": "fresh-context independent PASS after two documentary corrections",
@@ -242,7 +248,16 @@
     "runtime": "15hashes match6e;receipt truthfully64397ad",
     "branch": "v3.2.0 retained",
     "owner": "S00B and target S00A",
-    "personalizationClaim": false
+    "personalizationClaim": false,
+    "closeout": {
+      "candidate": "e26a7e684a6e919c436051db6c1195d33ed1f2c7",
+      "review": "fresh independent PASS",
+      "pr": "https://github.com/KaydenClark/Example_Workbench/pull/6",
+      "integration": "40100037562f1327f17afcba4cd6ff784321e35e",
+      "reviewedCandidateContained": true,
+      "treeDifference": false,
+      "finalFreshClone": "19tests,syntax,doctor pass;clean"
+    }
   },
   "installedNativeEvidence": "../S-051-core-skill-ownership-and-compatibility/installed-native-acceptance.json",
   "guardrails": {
@@ -260,5 +275,26 @@
   ],
   "mainApprovedOrMerged": false,
   "unrelatedRoomsUpdated": false,
-  "portfolioAutomationAdded": false
+  "portfolioAutomationAdded": false,
+  "sourceReviewFinal": {
+    "candidate": "7f9fe2101e5b693f5085c3ed5acee65e73eda445",
+    "verdict": "PASS",
+    "base": "eee0f7b3cedb0f3ac518703d44551694c0c8cda3",
+    "context": "fresh independent review_source_final",
+    "laterVerification": {
+      "candidate": "635dab89b9400f3c02f2e4d530944d79e3dec869",
+      "fullPassed": 40,
+      "fullTotal": 43,
+      "appendOnlyExit": 0,
+      "appendOnlySeconds": 396.51,
+      "failures": [
+        "configured-host",
+        "dogfood",
+        "doctor"
+      ],
+      "cause": "Generated catalog included untracked deferred S054; corrected single line at7f9 and all3clean reruns PASS",
+      "coreRuntimeUnchangedFromFullGreen6e": true
+    }
+  },
+  "readiness": "Repaired source and named Template delivered to integration; overall v3.2 readiness remains blocked by actual S052TK004 external evidence. Main neither approved nor merged."
 }

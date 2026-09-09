@@ -1,15 +1,15 @@
 # S-053 - Configured Host Capabilities
 
 **Spec ID:** S-053
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate.
 **Blockers:** none
-**Latest event:** TK-003 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -137,12 +137,23 @@ Configured-host guidance in RUNBOOK and generic counterpart, CAND-P and ADR-0005
 | 2026-09-08 | TK-003 | Ticket closed | Actual local report four runner checks pass; native discovery and unavailable hosts explicitly unverified; full42 before review repair and focused6 after repair | S053 local-host-result.json and Runbook distinguish actual local runner from native/provider/enforcement claims | Final stamped full suite and upstream integration review; Windows/native Claude and native discovery are unverified |
 | 2026-09-08 | TK-003 | Upstream integration review found the host probe could execute substituted managed bytes from an unverified root | Synthetic ordinary non-Git root reproduced child execution and false PASS at 563a6e6; regression RED, then non-Git, wrong-commit and dirty-producer cases plus the existing seven cases GREEN after exact root/commit/origin/clean-input preflight | RUNBOOK and template procedure now name the required sourceCommit/sourceRepository and verified producer inputs | Fresh full suite, independent review and corrective upstream integration remain with S050 TK-004; native provider and Windows evidence stay unverified |
 
+| 2026-09-09 | spec | Repaired v3.2.0 integration gate reconciled | Fresh independent PASS 7f9fe2101e5b693f5085c3ed5acee65e73eda445; PR84 remote integration b937f7deac3669307041e86e4b5fc84cd167f818 contains exact candidate with zero tree difference; full6e43PASS and63540/43 plus3corrected clean7f9rerunsPASS; fresh remote clone core/catalog/Blueprint/doctor PASS | Current root/template and core owners agree; S050 repair receipt retains actual native failures and unavailable environments; historical evidence unchanged | No main readiness or real Windows/private cross-device claim; S052TK004 remains external |
+| 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+
 ## Completion Result
 
 Local conformance command implemented. The [actual local result](local-host-result.json)
 records four runner checks passing and native discovery/invocation unverified.
-Windows and native Claude are not claimed supported by this result. Upstream
-integration review remains with S-050; no rollout readiness claim.
+Windows and native Claude are not claimed supported by this result. The final upstream integration gate now passes under S-050; no rollout readiness claim.
+
+The repaired v3.2.0 candidate7f9fe21 passed fresh independent integration review
+and is remotely contained by PR84 integrationb937f7d with no tree difference.
+Full6e43checks passed; later635 had three catalog-projection failures, all
+corrected and rerun successfully on7f9. Original guardrail comparison78 to66.9
+is retained; the reviewed owner-aware rubric restores78 with the same four
+outcome-evidence recommendations. S051 owns the actual21-core installation and
+bounded native save/correction/handoff/resume proof. Real Windows/private
+continuity and authenticated Claude behavior remain explicitly unverified.
 
 ## Remaining Limitations Or Follow-Up Specs
 
