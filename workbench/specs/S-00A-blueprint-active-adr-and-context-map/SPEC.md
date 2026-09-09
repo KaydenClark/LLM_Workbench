@@ -8,7 +8,7 @@
 **Updated:** 2026-09-08
 **Catalog description:** Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls.
 **Blockers:** none
-**Latest event:** Locked Blueprint and ADR decisions promoted; lifecycle mechanics and complete claim disposition remain to implement.
+**Latest event:** Locked Blueprint and ADR decisions are durably reconciled below; active-ADR lifecycle mechanics and complete claim disposition remain to implement.
 **Next gate:** Claim TK-00A and add the failing ADR lifecycle/register cases before changing tooling.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
@@ -29,8 +29,10 @@ routing depend on reconstruction and obscures which claims are current.
 
 ## Current Verified State
 
-The locked owner decisions are promoted into successor ADR-000A and the root
-controls. `adr.mjs` still recognizes only proposed, accepted, superseded, and
+The prior promotion claim was overstated: no successor ADR-000A exists in the
+live ADR collection. The locked decisions are durably recorded in this spec and
+the named Contract owners below; the active-ADR implementation remains this
+spec's work. `adr.mjs` still recognizes only proposed, accepted, superseded, and
 rejected records and renders every record in one default register. The required
 deprecated state, whole-record successor validation, active-only default
 projection, historical view, and claim-disposition evidence are implementation
@@ -65,6 +67,25 @@ gaps.
   generated catalog, decision inventory, or proof archive.
 - The exact mechanics and schema for active/history ADR views are selected by
   the red/green implementation only if they preserve the stated boundary.
+
+## Grilling Record Reconciliation
+
+Source: the local JSON grilling notepad
+`workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json`.
+The source is retained locally for recovery, not cited as durable evidence. This
+table is the durable disposition of every locked question; `planned` means the
+decision is an accepted requirement of the named spec, not implemented Actuality.
+
+| Questions | Settled decision | Durable owner and state |
+|---|---|---|
+| 1, 3, 6, 6A | Active non-superseded ADR decisions are Canon; whole-record supersession preserves history and ordinary routing exposes active decisions. | This spec, Desired Behavior 1–3 and TK-00A; planned implementation. |
+| 2, 4 | Universal entry is AGENTS -> RUNBOOK -> LEXICON; the Lexicon owns the sole Context Map. | `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`; current Contract. |
+| 5, 5A, 8A–8C | Blueprint is an adaptable destination narrative; Specs own scoped delivery; ADRs own cross-cutting choices and rationale; current-state material stays out. | This spec, Desired Behavior 4 and Decisions And Contracts; planned root/template rebuild. |
+| 8D, 8E | Rewrite only after a lossless claim disposition; independent main-readiness review judges semantic ownership and ADR relevance. | TK-00B; planned implementation. |
+| 7, 7A, 7B, 7B1 | v3.2 repairs upstream controls and proves them by updating Workbench Template, without claiming later personalization. | `S-050`, this spec, and `S-00B`; active/planned as named. |
+| 7B2 | Project evidence/grilling, Genesis derivation, and fresh-copy proof are staged capabilities. | `S-00C`, `S-00D`, and `S-00E`; planned and explicitly not v3.2 delivery. |
+| 7C | A real project is updated only when Kayden names the target and requests it; no portfolio rollout or automation suite. | `S-00B` through `S-00E` Non-Goals and dependencies; planned constraint. |
+| 8F, 8F1 | Integration review is task-level; main readiness reviews whole-Workbench drift. A readiness request authorizes review only; Kayden owns main approval and merge. | `AGENTS.md` Git Rules and Branch Completion; TK-00B adds the whole-Workbench checklist. |
 
 ## Non-Goals
 
@@ -143,6 +164,7 @@ release owner. The claim-disposition inventory is the durable migration record.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Created from the locked Blueprint and ADR grilling record under explicit make-it-so | Read current controls, ADR-0002/0025, ADR tooling/tests, the release owner, and the locked decision record; doctor has no blocker | Successor ADR and root/template ownership wording promoted; durable implementation scope recorded | Lifecycle tooling, complete claim disposition, review contract, full verification, and independent review remain pending |
+| 2026-09-09 | spec | Corrected overstated promotion status and recorded complete question-to-owner reconciliation | Live ADR directory contains no claimed ADR-000A; JSON source current view lists 22 locked questions; every question is mapped above to a Contract owner or stable spec | This spec now carries the durable disposition; source remains local for recovery | Implement the named planned capabilities; no source cleanup requested |
 
 ## Completion Result
 

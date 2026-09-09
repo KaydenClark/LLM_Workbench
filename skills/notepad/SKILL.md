@@ -44,13 +44,14 @@ node workbench/tools/notepads.mjs create --note NAME --objective OBJECTIVE_KEY \
 Live notes stay local and untracked, in a live collection `workbench/manifest.json`
 declares. Bare names use `notepads/work/` on the new layout, or the legacy
 grilling collection when that room has not migrated. Explicit relative paths
-select other local type folders; `--collection handoffs` selects handoffs.
-Schema and examples under `notepads/templates/` are tracked and cannot be live
+select other local JSON-notepad type folders. Handoffs are not JSON records:
+write them as Markdown in `sessions/handoffs/`. Schema and examples under
+`notepads/templates/` are tracked and cannot be live
 notes. Never
 commit one, and never cite one as durable evidence.
 
 For a new visible identity, use `notepads.mjs allocate --prefix N` with the
-same objective/title fields (H can name a handoff type). The returned ID is the
+same objective/title fields. The returned ID is the
 visible label and filename; no second identity is added. Read an allocated or
 legacy visible ID through `--id ID`, even when its existing filename differs.
 Use `--note` for the original filename/path lookup. Use one writer, preserve existing paths, and reconcile unreadable or ambiguous
@@ -137,11 +138,13 @@ already knew was wrong, with nothing marking it superseded. Trim both halves
 together once the correction has landed in its durable owner, or keep both.
 That refusal is the mechanism doing its job; do not work around it.
 
-Author a requested handoff separately with `--collection handoffs --type handoff`.
-For a pointer-based handoff, repeat `--retains NOTE` or `--retains NOTE#ENTRY_ID`
-when creating it. Confirm destination access and preserve the declared source
-until that destination is reconciled. The tool checks these explicit pointers;
-prose references and semantic sufficiency still need your judgment.
+Author a requested handoff separately as a Markdown file in
+`workbench/sessions/handoffs/`, using `templates/HANDOFF.md`. It must be plain
+English another agent can follow or the owner can paste into a new chat: name
+the job, verified facts, one resume point, boundaries, and exact source paths.
+Confirm destination access and retain source context until the needed material
+is durable or otherwise safely available. Existing JSON handoffs are legacy
+sources; do not create another one.
 
 Delete the whole record only when everything important is reconciled and no
 unfinished work or active handoff still depends on it. After verified partial

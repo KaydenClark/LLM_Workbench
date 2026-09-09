@@ -765,8 +765,9 @@ node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY 
 node workbench/tools/notepads.mjs read --id N-001 --view current
 ```
 
-Choose the artifact type prefix explicitly (for example N for objective notes,
-H for handoffs); it is the prefix in the visible ID, not another identity field.
+Choose the artifact type prefix explicitly (for example N for objective notes);
+it is the prefix in the visible ID, not another identity field. Markdown
+handoffs do not use the JSON-notepad ID allocator.
 Allocation uses alphabet `0-9 A-Z a-z`, starts at one with minimum width three,
 and grows without truncation. It chooses the first unoccupied label; identifiers
 do not encode chronology. Legacy numeric labels reserve their existing text and
@@ -789,9 +790,11 @@ cleanup. Durable spec/ticket/ADR behavior is described above.
 New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
 and updates. A new layout declares `sessions/notepads/`: bare names create
 `notepads/work/NAME.json`; explicit project-relative paths select another local
-type folder. Handoffs use the declared `handoffs` collection. The tracked
-`notepad-templates` subcollection carries `notepad.schema.json` and work,
-grilling and handoff examples; live-note commands refuse that subcollection.
+type folder. Handoffs are authored as Markdown (`.md`) in the declared
+`handoffs` collection; they are readable continuation instructions, not JSON
+notepads and not `notepads.mjs` records. The tracked `notepad-templates`
+subcollection carries `notepad.schema.json` plus work and grilling JSON examples;
+the generic Markdown handoff template lives at `templates/HANDOFF.md`.
 The schema describes new `notepad-1` interchange, while the runtime additionally
 checks unique entry IDs, links and revision safety. Legacy `scope-1` reading and
 migration remain supported without moving or regenerating source history.
@@ -842,9 +845,11 @@ a reader; it never grants authority or verifies a claim.
 3. After interruption, load relevant context and verify current controls and
    actual project state. File availability alone proves neither freshness nor
    successful recovery. Preserve significant work while it is underway.
-4. For an owner-requested handoff, author a destination-specific compaction from
-   the selected material. Include needed corrections and dependencies. Carry
-   the selected content when the destination cannot read the local note.
+4. For an owner-requested handoff, author a destination-specific Markdown
+   compaction from the selected material in `sessions/handoffs/`. State the job,
+   verified facts, exact resume action, boundaries, and source paths in plain
+   language. Include needed corrections and dependencies. Carry the selected
+   content when the destination cannot read the local note.
 5. Before cleanup, verify that promoted material is present in its durable
    owner and that retained work can still be understood and resumed. Trim only
    reconciled material from a retained note; preserve unresolved context,
@@ -895,15 +900,14 @@ recorded text and timestamps, before it can be written to.
 JSON note through that copier and call its `.md` output a notepad operation.
 Skill prose and human-readable projections may remain Markdown.
 
-An owner-requested handoff is separately authored for its destination. Create it
-with `--collection handoffs --type handoff` and add the concise context it needs.
-When it points to retained source instead of carrying all selected content,
-repeat `--retains NOTE` or `--retains NOTE#ENTRY_ID` during creation. These
-canonical pointers live in `relationships.retained_sources`. An active pointer
-blocks whole deletion; a whole-note pointer blocks any trim, while an entry
-pointer blocks removal of that entry. Related-note navigation alone does not
-claim retention. The agent must still inspect prose pointers and destination
-access; the tool checks declared dependencies, not semantic sufficiency.
+An owner-requested handoff is separately authored as a Markdown file in
+`sessions/handoffs/`, using `templates/HANDOFF.md` as the copy-ready shape.
+It names the retained source, when any, in prose and must carry enough context
+for a receiver without local access. Before trimming or deleting source context,
+the author verifies that the receiver's needed material is durable or otherwise
+retained; Markdown handoffs are intentionally readable rather than tool-managed
+JSON records. Existing JSON handoffs remain legacy local sources and are not
+newly created.
 
 Reconcile the destination before releasing retention: set its status to
 `RECONCILED`, clear unresolved items with `--unresolved ""`, and clear its next

@@ -67,7 +67,7 @@ export const SEED_SCHEMA_VERSION = 1;
 export const SEED_SOURCE = 'LLM Workbench seeded documents';
 export const seededLaneDocuments = [
   { lane: 'feedback', name: 'REPORT_FORMAT.md', template: 'feedback/REPORT_FORMAT.md' },
-  ...['notepad.schema.json', 'work.example.json', 'grilling.example.json', 'handoff.example.json'].map(name => ({
+  ...['notepad.schema.json', 'work.example.json', 'grilling.example.json'].map(name => ({
     lane: 'sessions', name: `notepads/templates/${name}`, template: `sessions/notepads/templates/${name}`
   }))
 ];

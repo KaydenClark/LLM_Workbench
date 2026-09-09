@@ -58,8 +58,8 @@ owners; it does not add a second Wiki index or copy their contents.
 
 | Term | Definition | Distinction |
 |---|---|---|
-| **Notepad** | A local, objective-scoped JSON working record with a compact editable current view and an append-oriented work record. It typically contains claims preserving active Intent and evolving understanding. | It is not Canon or permanent history; preserve important material until reconciled. One objective may use several linked notes. |
-| **Scoped handoff** | A separate local compaction authored from the relevant notepad material with destination-specific continuation instructions. | Requested or initiated by the owner; a pointer requires accessible, retained source data. Preservation does not grant authority. |
+| **Notepad** | A local, objective-scoped JSON working record with a compact editable current view and an append-oriented work record. Grilling records are notepads and therefore JSON. | It is not Canon or permanent history; preserve important material until reconciled. One objective may use several linked notes. |
+| **Scoped handoff** | A separate local Markdown (`.md`) compaction authored from the relevant notepad material with plain-language, destination-specific continuation instructions. | A receiving agent can read the file or the owner can paste it into a new chat. It is requested or initiated by the owner; a pointer requires accessible, retained source data. Preservation does not grant authority. |
 | **WBID** | The visible identifier comprising an artifact's type prefix and a base-62 value replacing the numeric portion. | Unique within the type and Workbench, not globally; no parallel secondary ID. Existing numeric labels and stable paths remain readable; historical numeric tickets remain spec-qualified, while new letter-bearing tickets reserve the whole Workbench inventory. |
 
 ## Stance Terms

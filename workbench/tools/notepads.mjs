@@ -311,6 +311,9 @@ function retentionBlocker(root, resolved, removed = null) {
 
 export function createNote(root, options) {
   const collection = options.collection ?? defaultCollection(root);
+  if (collection === 'handoffs') {
+    return blocked('invalid-note', 'Handoffs are authored as human-readable .md files in the handoffs collection, not JSON notepads. Use templates/HANDOFF.md.');
+  }
   const name = requireValue(options.note, '--note is required');
   const objective = requireValue(options.objective, '--objective is required');
   if (!SLUG.test(objective)) throw new Error('--objective must be a lowercase slug');
@@ -360,6 +363,9 @@ export function createNote(root, options) {
 }
 
 export function allocateNote(root, options) {
+  if (options.collection === 'handoffs') {
+    return blocked('invalid-note', 'Handoffs are authored as human-readable .md files in the handoffs collection, not allocated JSON notepads. Use templates/HANDOFF.md.');
+  }
   const inventory = listNotes(root);
   if (inventory.unreadable.length) return blocked('invalid-note', 'Allocation cannot establish uniqueness while live records are unreadable.', { unreadable: inventory.unreadable });
   let id;

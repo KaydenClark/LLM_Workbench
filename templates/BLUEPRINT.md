@@ -49,10 +49,13 @@ the project glossary.
 
 ## Objective Continuity
 
-Meaningful objective work preserves working context in local JSON notepads.
-The current view and ordered work record support continuation and scoped
-handoffs; shared schema/tooling must preserve sources and corrections without
-making notes authoritative. Save important context while work proceeds so it
+Meaningful objective work preserves working context in local JSON notepads,
+including JSON grilling records. A scoped handoff is instead a human-readable
+Markdown file with plain-language continuation instructions that an agent can
+pick up or the owner can paste into a new chat. The current view and ordered
+work record support continuation and handoffs; shared schema/tooling must
+preserve sources and corrections without making notes authoritative. Save
+important context while work proceeds so it
 can support continuation after token exhaustion or Stop; computer-crash,
 device-loss, and cross-machine recovery are outside this guarantee. Reconcile
 important material into durable owners before trimming it from a retained note

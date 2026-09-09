@@ -56,8 +56,11 @@ records the ownership correction and alternatives.
 ## Accepted Notepad Foundation Direction
 
 Meaningful objective work needs usable continuity across interruptions without
-owner reconstruction. New live notepads use JSON, combining a compact current
-view and an ordered work record; shared schema and tooling will support safe
+owner reconstruction. New live notepads, including grilling records, use JSON,
+combining a compact current view and an ordered work record. A handoff is a
+separate human-readable Markdown file with plain-language continuation
+instructions that an agent can pick up or the owner can paste into a new chat;
+shared schema and tooling will support safe
 updates and bounded retrieval. Live notes remain excluded from project Git; explicitly configured private
 transport is accepted separately below. Important claims are reconciled into
 existing durable owners. They do not become Canon

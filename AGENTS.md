@@ -311,12 +311,15 @@ closeout or rely on a final write after Stop. This obligation covers saved local
 context for conversation continuation, not computer crashes or device loss;
 an interruption can still preempt an unsaved write.
 
-New notepads use JSON, including when older workflow examples say Markdown.
+Notepads, including grilling records, use JSON, including when older workflow
+examples say Markdown. Handoffs are separate human-readable Markdown (`.md`)
+files: they give a receiving agent or a new chat plain-language instructions
+for continuing one objective. Do not serialize a handoff as a JSON notepad.
 The shared runtime is `workbench/tools/notepads.mjs`; its interchange schema
 and reusable examples live in the manifest-declared `notepad-templates`
 collection. The `notepad` skill owns judgment. New live records use typed
-folders in the `notepads` collection; handoffs use `handoffs`. Preserve legacy
-Markdown and JSON paths. Live
+folders in the `notepads` collection; Markdown handoffs use `handoffs`.
+Preserve legacy Markdown and JSON paths, but create no new JSON handoffs. Live
 notes and handoffs stay untracked in project Git; explicitly configured private
 synchronization may transport selected live collections under the accepted
 continuity contract. Local operation remains independent of transport. Do not record secrets,

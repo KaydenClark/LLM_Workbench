@@ -823,7 +823,7 @@ test('shipped examples satisfy the shared runtime and legacy bare-name lookup st
     const templates = path.join(dir, 'workbench/sessions/notepads/templates');
     const schema = JSON.parse(fs.readFileSync(path.join(templates, 'notepad.schema.json'), 'utf8'));
     assert.equal(schema.properties.schema_version.const, NOTEPAD_SCHEMA_VERSION);
-    for (const type of ['work', 'grilling', 'handoff']) {
+    for (const type of ['work', 'grilling']) {
       const example = JSON.parse(fs.readFileSync(path.join(templates, `${type}.example.json`), 'utf8'));
       assert.deepEqual(checkStructure(example), { missing: [], invalid: [] });
       assert.ok(schema.required.every(key => Object.hasOwn(example, key)));
@@ -874,67 +874,19 @@ test('whole cleanup refuses unfinished context and deletes only an empty reconci
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('an authored handoff retains its source slice until the destination is reconciled', () => {
+test('the runtime refuses JSON handoff creation and leaves the Markdown collection empty', () => {
   const dir = project();
   try {
     const created = seed(dir);
-    appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'x', 'entry-id': 'x-1', content: 'X must remain accessible to the receiving context.' });
-    appendEntry(dir, { note: created.note, revision: 2, kind: 'finding', topic: 'y', 'entry-id': 'y-1', content: 'Y is already reconciled.' });
     const handoff = cli(dir, ['create', '--collection', 'handoffs', '--note', 'destination', '--type', 'handoff', '--objective', 'notepad-runtime', '--title', 'Destination-specific handoff', '--retains', `${created.note}#x-1`]);
-    assert.equal(handoff.status, 0, handoff.stdout);
-    const source = path.join(dir, created.note);
-    const before = fs.readFileSync(source);
-    const denied = trimEntries(dir, { note: created.note, revision: 3, entry: ['x-1'] });
-    assert.equal(denied.error.code, 'retained-dependency');
-    assert.deepEqual(fs.readFileSync(source), before);
-    assert.equal(trimEntries(dir, { note: created.note, revision: 3, entry: ['y-1'] }).status, 'trimmed');
-    setCurrent(dir, { note: handoff.json.note, revision: 1, status: 'RECONCILED' });
-    assert.equal(trimEntries(dir, { note: created.note, revision: 4, entry: ['x-1'] }).status, 'trimmed');
-    setCurrent(dir, { note: created.note, revision: 5, status: 'RECONCILED' });
-    assert.equal(cli(dir, ['delete', '--note', created.note, '--revision', '6']).json.status, 'deleted');
+    assert.equal(handoff.status, 1, handoff.stdout);
+    assert.equal(handoff.json.error.code, 'invalid-note');
+    assert.equal(fs.existsSync(path.join(dir, 'workbench/sessions/handoffs/destination.json')), false);
+    const allocated = cli(dir, ['allocate', '--prefix', 'H', '--collection', 'handoffs', '--type', 'handoff', '--objective', 'notepad-runtime', '--title', 'Destination-specific handoff']);
+    assert.equal(allocated.status, 1, allocated.stdout);
+    assert.equal(allocated.json.error.code, 'invalid-note');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
-
-test('whole cleanup refuses a retained whole-note pointer and unreadable dependency records', () => {
-  const dir = project();
-  try {
-    const created = seed(dir, { status: 'RECONCILED' });
-    const handoff = cli(dir, ['create', '--collection', 'handoffs', '--note', 'pointer', '--objective', 'notepad-runtime', '--title', 'Retain source', '--retains', created.note]);
-    assert.equal(handoff.status, 0, handoff.stdout);
-    assert.equal(cli(dir, ['delete', '--note', created.note, '--revision', '1']).json.error.code, 'retained-dependency');
-    setCurrent(dir, { note: handoff.json.note, revision: 1, status: 'RECONCILED' });
-    fs.writeFileSync(path.join(dir, 'workbench/sessions/handoffs/broken.json'), '{');
-    const unknown = cli(dir, ['delete', '--note', created.note, '--revision', '1']);
-    assert.equal(unknown.json.error.code, 'retained-dependency');
-    assert.ok(unknown.json.error.unreadable.includes('workbench/sessions/handoffs/broken.json'));
-    assert.equal(fs.existsSync(path.join(dir, created.note)), true);
-  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
-});
-
-for (const operation of ['delete-pointer-alias', 'trim-source-alias']) {
-  test(`retention preserves actual file identity for ${operation}`, (t) => {
-    const dir = project();
-    try {
-      const created = seed(dir, { note: 'case-source', status: 'RECONCILED' });
-      const alias = created.note.replace('case-source.json', 'CASE-SOURCE.json');
-      if (!fs.existsSync(path.join(dir, alias))) return t.skip('requires a case-insensitive filesystem');
-      let revision = 1;
-      if (operation === 'trim-source-alias') {
-        appendEntry(dir, { note: created.note, revision: 1, kind: 'finding', topic: 'retention', 'entry-id': 'finding-1', content: 'Retain this evidence.' });
-        revision = 2;
-      }
-      const pointer = operation === 'delete-pointer-alias' ? alias : `${created.note}#finding-1`;
-      const handoff = createNote(dir, { note: 'case-handoff', collection: 'handoffs', type: 'handoff', objective: 'notepad-runtime', title: 'Pending destination', status: 'ACTIVE', retains: [pointer] });
-      assert.equal(handoff.status, 'created');
-      const before = fs.readFileSync(path.join(dir, created.note));
-      const run = operation === 'delete-pointer-alias'
-        ? cli(dir, ['delete', '--note', created.note, '--revision', String(revision)])
-        : cli(dir, ['trim', '--note', alias, '--revision', String(revision), '--entry', 'finding-1']);
-      assert.equal(run.json.error?.code, 'retained-dependency', JSON.stringify(run.json));
-      assert.deepEqual(fs.readFileSync(path.join(dir, created.note)), before);
-    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
-  });
-}
 
 for (const operation of ['read', 'create']) {
   test(`tracked template boundaries use existing filesystem spelling for ${operation}`, (t) => {
@@ -956,7 +908,7 @@ for (const operation of ['read', 'create']) {
   });
 }
 
-test('visible ID allocation and lookup preserve existing note paths and independent prefixes', () => {
+test('visible ID allocation and lookup preserve existing note paths', () => {
   const dir = project();
   try {
     seed(dir, { note: 'legacy-numeric', id: 'N-010' });
@@ -969,8 +921,6 @@ test('visible ID allocation and lookup preserve existing note paths and independ
     assert.equal(cli(dir, ['read', '--id', 'N-00A', '--view', 'current']).json.id, 'N-00A');
     assert.equal(cli(dir, ['read', '--id', 'N-010', '--view', 'current']).json.note, 'workbench/sessions/notepads/work/legacy-numeric.json');
     assert.deepEqual(fs.readFileSync(path.join(dir, 'workbench/sessions/notepads/work/legacy-numeric.json')), before);
-    const other = cli(dir, ['allocate', '--prefix', 'H', '--collection', 'handoffs', '--type', 'handoff', '--objective', 'notepad-runtime', '--title', 'Independent type']);
-    assert.equal(other.json.id, 'H-001');
     assert.ok(listNotes(dir).notes.some(note => note.id === 'N-00A'));
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
