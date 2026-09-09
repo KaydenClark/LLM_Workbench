@@ -19,13 +19,13 @@ function run(cwd, file, args, expected = 0) {
 }
 
 test('fresh core composes local save and selected promotion using only installed project runtime', () => {
-  for (const skill of ['save', 'promote', 'notepad', 'to-docs']) assert.ok(coreSkills.includes(skill), `${skill} must be in the self-sufficient core`);
+  for (const skill of ['save', 'promote', 'notepad', 'to-docs', 'handoff']) assert.ok(coreSkills.includes(skill), `${skill} must be in the self-sufficient core`);
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-core-composition-'));
   const home = path.join(base, 'home'), project = path.join(base, 'room');
   try {
     fs.mkdirSync(home);fs.mkdirSync(project);
     run(root, 'tools/core-skill-installer.mjs', ['install', '--home', home]);
-    for (const skill of ['save', 'promote', 'notepad', 'to-docs']) {
+    for (const skill of ['save', 'promote', 'notepad', 'to-docs', 'handoff']) {
       const canonical = path.join(home, '.agents/skills', skill);
       assert.equal(fs.realpathSync(path.join(home, '.claude/skills', skill)), fs.realpathSync(canonical));
       assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'skills', skill, 'SKILL.md'), 'utf8'));

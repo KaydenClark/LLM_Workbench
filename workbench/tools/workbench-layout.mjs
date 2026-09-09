@@ -24,7 +24,7 @@ const stanceSkills = ['builder', 'auditor', 'reviewer', 'reconciler'];
 // stances, so the frozen rows below and every `slice(-4)` stance read stay
 // exact.
 const notepadCoreSkills = [...legacyCoreSkills, 'carry', 'notepad', ...stanceSkills];
-export const coreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...stanceSkills];
+export const coreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

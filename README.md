@@ -15,7 +15,7 @@ The blank, copyable templates live in `templates/`:
 - `templates/AGENTS.md` - agent behavior, authority order, read/edit scope,
   task-selection loop, documentation ownership, and proof rules.
 - `templates/BLUEPRINT.md` - compact product map, cross-cutting architecture and
-  invariants, non-goals, and generated spec catalog.
+  desired integrated design and non-goals. The manifest specs lane holds the generated complete catalog.
 - `templates/LEXICON.md` - on-demand shared vocabulary: accepted project terms,
   concise definitions, and distinctions that prevent agents and humans from
   silently using the same word differently.
@@ -66,7 +66,7 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `skills/` - the closed 20-skill public source bundle. Missing-only setup installs canonical
+- `skills/` - the closed 21-skill public source bundle. Missing-only setup installs canonical
   source under `.agents/skills` and Claude adapters to that source; this
   repository does not use it as a project-local discovery tree.
 - `skills-pending/` - preserved selected baselines that remain non-invocable

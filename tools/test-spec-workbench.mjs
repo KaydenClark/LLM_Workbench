@@ -74,6 +74,15 @@ try {
     'completed specs must disappear from the hot board');
   assert.equal(nextWork(root), null, 'completed work must not be returned as eligible');
   assert.deepEqual(doctor(root), [], 'a rendered valid repository should pass doctor');
+  // S-00A: destination prose is never a generated catalog target.
+  const savedBlueprint = read('BLUEPRINT.md');
+  write('BLUEPRINT.md', '# Destination\n\nDesired finished product.\n');
+  render(root);
+  assert.equal(read('BLUEPRINT.md'), '# Destination\n\nDesired finished product.\n');
+  assert.match(read('specs/CATALOG.md'), /S-001-fixture/);
+  assert.deepEqual(doctor(root), []);
+  write('BLUEPRINT.md', savedBlueprint);
+
 
   fs.writeFileSync(
     path.join(root, 'BLUEPRINT.md'),

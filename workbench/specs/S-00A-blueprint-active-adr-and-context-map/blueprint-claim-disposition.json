@@ -1,0 +1,706 @@
+{
+  "schemaVersion": 1,
+  "scope": "Lossless disposition of replaced Blueprint source; historical text is evidence, not a second current control.",
+  "sources": [
+    {
+      "path": "BLUEPRINT.md",
+      "commit": "3a10e2cae01a195fccdbd3fd13bd2251fa40374b",
+      "claims": [
+        {
+          "id": "root-001",
+          "section": "metadata",
+          "text": "# LLM Workbench - Blueprint\n\n",
+          "disposition": "move-or-existing-owner",
+          "owner": "README.md",
+          "reason": "Repository orientation belongs to README; historical stamp remains pinned in this source and release evidence."
+        },
+        {
+          "id": "root-002",
+          "section": "metadata",
+          "text": "**Last reviewed:** 2026-09-05\n**Status:** active\n**Harness version:** v3.2.0 (integration candidate; publication to `main` remains owner-controlled)\n**Source root:** this repository\n**Remote:** `github.com/KaydenClark/LLM_Workbench`\n\n",
+          "disposition": "move-or-existing-owner",
+          "owner": "README.md",
+          "reason": "Repository orientation belongs to README; historical stamp remains pinned in this source and release evidence."
+        },
+        {
+          "id": "root-003",
+          "section": "Product Map",
+          "text": "## Product Map\n\n",
+          "disposition": "retain-destination",
+          "owner": "BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "root-004",
+          "section": "Product Map",
+          "text": "LLM Workbench is a vendor-neutral, local-first control harness for AI-assisted\nsoftware projects. `AGENTS.md` is the always-loaded operating system; the other\nsurfaces reveal product and execution detail only when it is relevant.\n\n",
+          "disposition": "retain-destination",
+          "owner": "BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "root-005",
+          "section": "Product Map",
+          "text": "Core promise:\n\n",
+          "disposition": "retain-destination",
+          "owner": "BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "root-006",
+          "section": "Product Map",
+          "text": "> Give an agent enough authority, scope, product truth, executable work, and\n> proof requirements to make safe progress without loading project history.\n\n",
+          "disposition": "retain-destination",
+          "owner": "BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "root-007",
+          "section": "Goals And Pillars",
+          "text": "## Goals And Pillars\n\n",
+          "disposition": "retain-destination",
+          "owner": "BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "root-008",
+          "section": "Goals And Pillars",
+          "text": "- **Safe autonomy:** explicit authority, edit scope, safety, Git, and escalation\n  rules live in `AGENTS.md`.\n- **Progressive disclosure:** the hot board selects one spec/ticket; detailed\n  capability truth loads from its stable `SPEC.md` only on demand.\n- **Traverse, don't search:** a Context Map connects project knowledge through\n  existing owners, so agents follow known routes instead of rediscovering the\n  project. [Lexicon Task Routing](LEXICON.md#task-routing) is its entry surface.\n- **Single ownership:** product direction belongs here, shared definitions in\n  `LEXICON.md`, execution state on the hot board, capability truth and evidence\n  in specs, procedures in `RUNBOOK.md`, and behavior in source/tests.\n- **Evidence over taste:** deterministic checks are the release gate; repeated\n  controlled trials are required for agent-outcome claims.\n- **Portable by default:** plain Markdown and zero-dependency local commands\n  work with Codex, Claude Code, Gemini CLI, and ordinary command-line workflows.\n\n",
+          "disposition": "retain-destination",
+          "owner": "BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "root-009",
+          "section": "Core Navigation Contract",
+          "text": "## Core Navigation Contract\n\n",
+          "disposition": "existing-route",
+          "owner": "LEXICON.md",
+          "reason": "Lexicon Task Routing owns the Context Map; AGENTS owns required traversal."
+        },
+        {
+          "id": "root-010",
+          "section": "Core Navigation Contract",
+          "text": "Every Workbench supplies a traversable context structure as a core feature.\nThe Lexicon connects shared meanings and routes to the controls, assigned\nspecs, Wiki router, and ADR register; those owners link onward to relevant\nsource, tests, evidence, and enduring context. New durable context must be\nreachable from its relevant entry route and retain links to its sources.\nRoutes preserve scope and single ownership. The agent behavior and bounded\nsearch fallback live in [AGENTS.md](AGENTS.md#traverse-dont-search).\n\n",
+          "disposition": "existing-route",
+          "owner": "LEXICON.md",
+          "reason": "Lexicon Task Routing owns the Context Map; AGENTS owns required traversal."
+        },
+        {
+          "id": "root-011",
+          "section": "Core Navigation Contract",
+          "text": "The Context Map is expressed through ordinary portable links. A visual graph,\nretrieval index, or resume view may project those relationships but cannot\nbecome a second source of truth. This contract does not depend on Foundry,\nObsidian, a recall service, or an exhaustive index of generated files. The\naccepted principle is distinct from proof of complete graph coverage or\nautomatic traversal; those capabilities are not claimed by this documentation\nchange. [ADR-0042](workbench/docs/adr/0042-traverse-dont-search-is-core-workbench-navigation.md)\nrecords the ownership correction and alternatives.\n\n",
+          "disposition": "existing-route",
+          "owner": "LEXICON.md",
+          "reason": "Lexicon Task Routing owns the Context Map; AGENTS owns required traversal."
+        },
+        {
+          "id": "root-012",
+          "section": "Accepted Notepad Foundation Direction",
+          "text": "## Accepted Notepad Foundation Direction\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-046-json-notepad-foundation/SPEC.md",
+          "reason": "Continuity mechanics, proof limits and accepted preservation requirements remain with S-046; destination narrative keeps the continuity outcome."
+        },
+        {
+          "id": "root-013",
+          "section": "Accepted Notepad Foundation Direction",
+          "text": "Meaningful objective work needs usable continuity across interruptions without\nowner reconstruction. New live notepads, including grilling records, use JSON,\ncombining a compact current view and an ordered work record. A handoff is a\nseparate human-readable Markdown file with plain-language continuation\ninstructions that an agent can pick up or the owner can paste into a new chat;\nshared schema and tooling will support safe\nupdates and bounded retrieval. Live notes remain excluded from project Git; explicitly configured private\ntransport is accepted separately below. Important claims are reconciled into\nexisting durable owners. They do not become Canon\nby being recorded. Ordinary operation needs no new coordination framework.\nThe preservation target is conversation interruption through token exhaustion\nor Stop: save important context while work proceeds. Computer-crash, device-loss,\nand cross-machine recovery are outside this guarantee. After reconciliation,\nresolved material may be trimmed from a retained note or the fully reconciled\nrecord deleted; retaining unfinished context remains mandatory.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-046-json-notepad-foundation/SPEC.md",
+          "reason": "Continuity mechanics, proof limits and accepted preservation requirements remain with S-046; destination narrative keeps the continuity outcome."
+        },
+        {
+          "id": "root-014",
+          "section": "Accepted Notepad Foundation Direction",
+          "text": "[S-046](workbench/specs/S-046-json-notepad-foundation/SPEC.md) owns the bounded\nfoundation and thin workflow integrations. Its shared schema, managed runtime\n`workbench/tools/notepads.mjs`, and `notepad` skill are implemented in v3.1.4;\nthe additive `sessions/notepads/` layout now keeps local type folders beside\ntracked schema/examples and preserves legacy paths. Broader\nbackup/transport guarantees and workflow redesign remain outside this scope.\n[S-047](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) owns visible,\ntype-and-Workbench scoped base-62 identifiers with compatible migration;\n[S-048](workbench/specs/S-048-checkpoint-retirement/SPEC.md) owns checkpoint\nrationale, preservation, and retirement. Neither widens the first foundation\nslice into a full historical migration. Current numeric IDs and legacy\ncheckpoints remain until their compatible replacements are verified.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-046-json-notepad-foundation/SPEC.md",
+          "reason": "Continuity mechanics, proof limits and accepted preservation requirements remain with S-046; destination narrative keeps the continuity outcome."
+        },
+        {
+          "id": "root-015",
+          "section": "Accepted V3 Direction",
+          "text": "## Accepted V3 Direction\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-016",
+          "section": "Accepted V3 Direction",
+          "text": "[S-021](workbench/specs/S-021-portable-workbench-v3/SPEC.md) owns the portable\ncontract. Its shipped capabilities remain the baseline for v3.1.1 and the v3.1.2 patch. Workbench development\nstands on its own; it has no dependency on completing Foundry.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-017",
+          "section": "Accepted V3 Direction",
+          "text": "- The seven root controls remain universally discoverable. Durable support\n  records move behind one lowercase `workbench/manifest.json` authority with\n  declared specs, Wiki, grilling, handoff, and feedback lanes.\n- LLM Workbench carries sixteen setup/planning/delivery workflow skills plus\n  four portable stance skills, under S-027 and S-049. On a brand-new installation it supplies a required skill only when\n  that skill is missing from user-scoped discovery.\n- Existing installed skills are accepted by presence and remain untouched.\n  Exact synchronization occurs only after an explicit skill-update request and\n  creates a recoverable backup first.\n- Genesis creates v3 directly; Adoption and `update-harness` migrate legacy\n  layouts once and then retire dual support paths and project-local skill\n  shadows.\n- Procedures remain guidebook-first and task-sized. Code is reserved for\n  deterministic parsing, rendering, validation, and safe bounded file\n  operations rather than one monolithic lifecycle program.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-018",
+          "section": "Accepted V3 Direction",
+          "text": "v3.0.0 and v3.1.0 are preserved unreleased candidates. S-027 continued the\nv3.1 baseline as v3.1.1, and S-035 stamps the v3.1.2 patch, which reached\n`main`. S-049 opens v3.1.3 for the seventeen-skill core bundle, because a\nbundle change is a release-surface change and v3.1.2 is frozen at its own\nsixteen-skill policy. S-046 opens v3.1.4 on the same rule: the shared JSON\nnotepad runtime adds a managed tool and grows the bundle to eighteen, and\nv3.1.3 is frozen at seventeen. A label freezes when it is stamped, not when it\nis published - v3.1.0 was never released and was still frozen rather than\nredefined. A version label is not publication; the owner alone\npromotes integration to main, after the applicable candidate review.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-019",
+          "section": "Accepted V3.1 Direction",
+          "text": "## Accepted V3.1 Direction\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-020",
+          "section": "Accepted V3.1 Direction",
+          "text": "[S-022](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md) records the\noriginal v3.1 release umbrella, now paused behind S-027. `KaydenClark/LLM_Workbench` is the sole Workbench\nsource and release repository. GPT_OS orchestrates authorized portfolio\ndeployment, Audit_Workbench audits downstream Harness Feedback Reviews, and\nprojects remain read-only evidence while a candidate is built\n([ADR-0026](workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md)).\nFour linked capabilities carry the behavior:\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-021",
+          "section": "Accepted V3.1 Direction",
+          "text": "- [S-023](workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md):\n  manifest schema 2 with six lowercase lanes (`docs`, `specs`, `wiki`,\n  `sessions`, `feedback`, `tools`) and nine declared collections; a lossless\n  schema 1 migration; Workbench-managed runtime tools in `workbench/tools/`\n  with receipts while an application's root `tools/` stays application-owned;\n  untracked-by-default session records with tracked checkpoints\n  ([ADR-0017](workbench/docs/adr/0017-workbench-support-directory-has-six-lanes.md),\n  [ADR-0028](workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md),\n  [ADR-0031](workbench/docs/adr/0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md),\n  [ADR-0032](workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md)).\n- [S-024](workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md):\n  the Governance Core (claim-level planes, instruction authority separate from\n  state resolution, the no-governance-tax rule), registered diagnostics whose\n  blocking effect only `doctor`, `next`, and `claim` enforce, and a\n  first-class ADR collection with a derived register\n  ([ADR-0025](workbench/docs/adr/0025-planes-classify-claims-not-whole-artifacts.md),\n  [ADR-0027](workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md),\n  [ADR-0029](workbench/docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md)).\n- [S-025](workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md):\n  the portable wiki contract (explicit profile, `knowledge_role` separate from\n  `provenance`, handling-only `sensitivity`, repository-relative sources,\n  optional Obsidian, no copied task state) and the mandatory owner-directed\n  `wiki/design-concepts/` collection\n  ([ADR-0018](workbench/docs/adr/0018-the-wiki-is-the-knowledge-base.md),\n  [ADR-0030](workbench/docs/adr/0030-every-workbench-declares-a-design-concepts-collection.md)).\n- [S-026](workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md):\n  the twelve skills and feedback discovery routed through the manifest,\n  privacy-checked checkpoint promotion, and a mechanical planning-to-resume\n  round trip with Foundry absent.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-022",
+          "section": "Accepted V3.1 Direction",
+          "text": "Invariants the release must preserve: exactly seven root controls, with the\nWorkbench Contract defined as the claims those controls and the assigned spec\nown ([ADR-0013](workbench/docs/adr/0013-seven-file-workbench-contract.md),\n[ADR-0033](workbench/docs/adr/0033-workbench-contract-is-a-claim-set.md));\nbinding rules live in current controls while ADRs own rationale\n([ADR-0002](workbench/docs/adr/0002-binding-rules-stay-in-current-controls.md));\na check blocks only the change it evaluates\n([ADR-0020](workbench/docs/adr/0020-a-check-blocks-only-the-change-it-evaluates.md));\ntools check structure and agents carry judgment\n([ADR-0023](workbench/docs/adr/0023-mechanical-guarantees-and-agent-obligations.md)).\nDecision records live in `workbench/docs/adr/`; an ADR whose rule a later\nticket canonicalizes stays `proposed` until that ticket lands.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-023",
+          "section": "Accepted V3.1.1 Direction",
+          "text": "## Accepted V3.1.1 Direction\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-024",
+          "section": "Accepted V3.1.1 Direction",
+          "text": "[S-027](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) owns the\nlocked Q1-Q16 continuation. The seven-control Contract remains; ordinary entry\nis AGENTS -> RUNBOOK -> LEXICON, then assigned work and task-relevant owners.\nStances are behavior skills, assigned by SPEC/TASK, without authority transfer,\nagent spawning or handoff ceremony. Autonomy stays within assigned work.\nEvery required step must have immediate delivery value (ADR-0034).\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-025",
+          "section": "Accepted V3.1.1 Direction",
+          "text": "Delivery order: route and four stances -> fresh, chat-only Round One setup check\n-> feedback-report workflow and evidence-backed report in the manifest feedback\nlane -> fresh continuation. Reporting does not repair its target. Separate-context\nreview is required at integration, where the candidate and consequential claims\nare challenged. It is not a separate independent gate per ticket.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-026",
+          "section": "Accepted V3.1.1 Direction",
+          "text": "Use real contrasting owner-selected Workbenches for later evidence: useful\ndelivery, named verification, and truthful fresh-session continuation. Example\nprojects are not assignments. The then-proposed Master Workbench, now named\nAudit_Workbench, was outside that first implementation pending concrete\nregistry, observation-audit, or visualization evidence. Foundry development,\norchestration, CIC redesign, connectors,\nand a dedicated feedback Workbench are outside this first implementation.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-027",
+          "section": "Accepted V3.1.2 Direction",
+          "text": "## Accepted V3.1.2 Direction\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-028",
+          "section": "Accepted V3.1.2 Direction",
+          "text": "v3.1.2 is the patch that answers the v3.1.1 upstream fix list compiled by\nAudit_Workbench from the Cashflow Calculator, Command Information Center, and\nOpenBrain reviews, together with this repository's own v3.1.1 acceptance\nreport. S-028 landed the first accepted subset (strict feedback rows, truthful\nmigration output, manifest-aware guardrails, feedback harvest as a completion\ncondition). Six linked capabilities carry the rest, and one umbrella stamps the\nversion last:\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-029",
+          "section": "Accepted V3.1.2 Direction",
+          "text": "| Participant | Owns | Does not own |\n|---|---|---|\n| LLM_Workbench | Canonical templates, portable tools and skills, upgrade procedure, verified version candidates | Portfolio target selection or downstream deployment |\n| GPT_OS | Authorized target selection, deployment, rollout tracking, and recovery | Canonical harness source or a project's product decisions |\n| Audit_Workbench | HFR audit, cross-project evidence, and upstream summary reports | Implementing harness repairs or deploying them |\n| Each project | Its product, filled controls, local work/evidence, and truthful HFR | Upstream template policy or portfolio orchestration |\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-030",
+          "section": "Accepted V3.1.2 Direction",
+          "text": "- [S-029](workbench/specs/S-029-declared-integration-branch/SPEC.md): the\n  integration branch as a manifest-declared fact that doctor and the Genesis\n  gate check; Genesis, Adoption, and upgrade finish as a commit on a prefixed\n  branch; a checkout is told when its selected spec is already complete on\n  integration.\n- [S-030](workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md), as\n  corrected by S-036: the template permission file grants `Edit` on the\n  Workbench authorship lanes, keeps the tools lane prompted, and doctor reports\n  a lane that is withheld or cannot be cleared through the bounded matcher.\n- [S-031](workbench/specs/S-031-installed-skill-generation/SPEC.md): managed\n  skill markers record release and commit; doctor names stale or unknown\n  installed skills; a review claim about a skill names the copy it read.\n- [S-032](workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md):\n  one working upgrade route for already-adopted v2-root rooms that records\n  lifecycle `upgrade` without skill replacement; the layout tool never writes\n  `unrecorded` as a source commit.\n- [S-033](workbench/specs/S-033-silent-gap-diagnostics/SPEC.md): doctor covers\n  an unrouted room brain and stale wiki stamps; checkpoint promotion reads only\n  inside the repository.\n- [S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md): a report of\n  which template-derived control lines a room changed, dropped, or added.\n- [S-035](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md), corrected\n  by [S-036](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md): the\n  v3.1.2 stamp after every capability above is complete, the guardrail\n  re-measurement, the disposition of all twelve upstream items, truthful\n  permission/fidelity/source evidence, an already-v3 preservation rehearsal,\n  and the reviewed candidate on `integration`.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-029-declared-integration-branch/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-031",
+          "section": "Accepted V3.1.2 Direction",
+          "text": "Invariants these must preserve: findings that only inform stay `attention` or\n`none`-effect (ADR-0020); presence-only setup and explicit-only skill\nreplacement are unchanged; this repository prepares the exact upgrade handoff\nbut does not edit a downstream room; GPT_OS owns authorized deployment; a\nversion label is not publication.\n\n",
+          "disposition": "preserve-existing-history",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Release/capability details remain historical evidence in the named stable owner; current destination is distilled in Blueprint."
+        },
+        {
+          "id": "root-032",
+          "section": "Architecture And Invariants",
+          "text": "## Architecture And Invariants\n\n",
+          "disposition": "existing-contract",
+          "owner": "AGENTS.md",
+          "reason": "Operational authority/ownership is in the Contract; future integrated design remains in Blueprint."
+        },
+        {
+          "id": "root-033",
+          "section": "Architecture And Invariants",
+          "text": "| Layer | Owner | Invariant |\n|---|---|---|\n| Agent operating system | `AGENTS.md` | Always loaded; owns how agents work. |\n| Product map | `BLUEPRINT.md` | Compact direction, architecture, invariants, and spec catalog; no live task narration. |\n| Shared language | `LEXICON.md` | On demand; owns accepted project-wide definitions without requirements or live state. |\n| Execution projection | `TASKBOARD.md` | Active specs only: current slice, owner, blocker, event, next gate. |\n| Capability record | Manifest-declared `workbench/specs/S-###-slug/SPEC.md` | Stable path; owns requirements, decisions, acceptance, verification, evidence, and completion. |\n| Procedures | `RUNBOOK.md` | Commands, troubleshooting, recovery, and operational detail. |\n| Decision records | `workbench/docs/adr/` | Rationale, alternatives, consequences, supersession; binding only where `canonicalized_in` points. |\n| Durable knowledge | `workbench/wiki/` | Router, schema, guidebooks, design-concept articles, archive; never copied task state. |\n| Implementation truth | source and tests | State resolution in `AGENTS.md`: newer Canon is an implementation gap, newer verified Actuality is documentation drift. |\n\n",
+          "disposition": "existing-contract",
+          "owner": "LEXICON.md",
+          "reason": "Operational authority/ownership is in the Contract; future integrated design remains in Blueprint."
+        },
+        {
+          "id": "root-034",
+          "section": "Architecture And Invariants",
+          "text": "Generated catalog and dashboard regions are deterministic projections of spec\nmetadata. Human-authored prose stays outside those regions. Completed specs\nremain at their stable path, disappear from the hot board immediately, and may\nbe changed only through a later spec linked by supersession.\n\n",
+          "disposition": "existing-contract",
+          "owner": "AGENTS.md",
+          "reason": "Operational authority/ownership is in the Contract; future integrated design remains in Blueprint."
+        },
+        {
+          "id": "root-035",
+          "section": "Non-Goals",
+          "text": "## Non-Goals\n\n",
+          "disposition": "retain-destination",
+          "owner": "BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "root-036",
+          "section": "Non-Goals",
+          "text": "- A hosted tracker, database, paid service, broad MCP server, or general project\n  management app.\n- Personal task management or replacement of Command Information Center.\n- A permanent Done lane or proof archive in startup context.\n- Retrofitting every historical task into a manufactured spec.\n- Claiming better agent outcomes from smaller context alone.\n- Importing Foundry FUIDs, Job Orders, flights, Claims, runtime orchestration,\n  CIC release controls, or other workspace-only machinery into the portable\n  Workbench.\n\n",
+          "disposition": "retain-destination",
+          "owner": "BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "root-037",
+          "section": "Spec Catalog",
+          "text": "## Spec Catalog\n\n",
+          "disposition": "move-projection",
+          "owner": "workbench/specs/CATALOG.md",
+          "reason": "Complete capability inventory moves to the manifest specs collection; historical rows remain pinned here."
+        },
+        {
+          "id": "root-038",
+          "section": "Spec Catalog",
+          "text": "<!-- spec-catalog:start -->\n| Spec | Description | Status |\n|---|---|---|\n| [S-001 - Spec-Centered Progressive Disclosure](workbench/specs/S-001-progressive-disclosure/SPEC.md) | Make AGENTS the operating system while specs hold durable capability truth and the hot board projects active work only. | complete |\n| [S-002 - Held-Out Second-Domain Evaluation](workbench/specs/S-002-heldout-evaluation/SPEC.md) | Add a condition-blind held-out task before spending on repeated c0/c1/c2/c3 outcome trials. | complete |\n| [S-003 - Prospective Dungeon Friends Pilot](workbench/specs/S-003-dungeon-friends-pilot/SPEC.md) | Evaluate v2.3 progressive disclosure in Dungeon Friends only after separate owner authorization. | planned |\n| [S-004 - Safe Direct Claim](workbench/specs/S-004-safe-direct-claim/SPEC.md) | Prevent direct claim calls from bypassing a ticket's declared blockers. | complete |\n| [S-005 - Bootstrap Documentation Alignment](workbench/specs/S-005-bootstrap-doc-alignment/SPEC.md) | Remove stale four-control-doc and Taskboard-proof wording from bootstrap and adoption guidance. | complete |\n| [S-006 - Automated Harness Feedback Gate](workbench/specs/S-006-feedback-automation/SPEC.md) | Build and operate a one-candidate Terra/Sol feedback loop with independent evidence gates. | complete |\n| [S-007 - Safe Feedback Helper Import](workbench/specs/S-007-feedback-helper-import/SPEC.md) | Allow the feedback helper to be imported when Node has no script path. | complete |\n| [S-008 - Windows Verification Portability](workbench/specs/S-008-windows-verification-portability/SPEC.md) | Keep context output, spec-doctor, and eval-runner verification stable across Windows and POSIX hosts. | complete |\n| [S-009 - Git-Write Constrained Adoption](workbench/specs/S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |\n| [S-00A - Blueprint, Active ADR, And Context Map Rebuild](workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md) | Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls. | active |\n| [S-00B - Workbench Template Reformation](workbench/specs/S-00B-workbench-template-reformation/SPEC.md) | Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there. | active |\n| [S-00C - Project Evidence And Blueprint Grilling](workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md) | Prepare a project-informed Blueprint grilling record from verified project evidence. | planned |\n| [S-00D - Genesis From Blueprint And Active ADRs](workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md) | Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality. | planned |\n| [S-00E - Fresh Workbench Template To Project Proof](workbench/specs/S-00E-fresh-template-project-proof/SPEC.md) | Prove the complete fresh-copy path from Workbench Template through a useful independent project. | planned |\n| [S-010 - Canonical Evaluator Entry Detection](workbench/specs/S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |\n| [S-011 - Agent Skills Adoption](workbench/specs/S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |\n| [S-012 - Reproducible Adoption Provenance](workbench/specs/S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |\n| [S-013 - Standardized Automation Run Outcomes](workbench/specs/S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |\n| [S-014 - Workbench Release Candidate](workbench/specs/S-014-workbench-release-candidate/SPEC.md) | Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC. | blocked |\n| [S-015 - Portable v3 Release Audit Recovery](workbench/specs/S-015-portable-v3-release-audit-recovery/SPEC.md) | Make generated v3 controls and Genesis validation enforce one operable manifest-declared spec lane before release. | complete |\n| [S-020 - Spec-Native Team Coordination](workbench/specs/S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |\n| [S-021 - Portable Workbench v3](workbench/specs/S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | complete |\n| [S-022 - LLM Workbench v3.1 Release](workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md) | Release v3.1.0 as the first public v3 Workbench from one independently audited exact candidate proven by a cross-provider cold resume with Foundry absent. | blocked |\n| [S-023 - Manifest Schema 2 And Managed Support Runtime](workbench/specs/S-023-manifest-schema-2-and-managed-runtime/SPEC.md) | Ship manifest schema 2 with six lanes, declared collections, a lossless schema 1 migration, Workbench-managed runtime tools, and untracked-by-default session records. | complete |\n| [S-024 - Governance Core, ADRs, And Scoped Diagnostics](workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md) | Give every Workbench claim-level Governance Planes, separated instruction authority and state resolution, a registered diagnostic model enforced by doctor/next/claim, and a first-class ADR collection. | complete |\n| [S-025 - Portable Wiki And Design Concepts](workbench/specs/S-025-portable-wiki-and-design-concepts/SPEC.md) | Ship the portable wiki contract with an explicit profile, knowledge-role and provenance metadata, handling-only sensitivity, relative source paths, optional Obsidian, and a mandatory owner-directed design-concepts collection. | complete |\n| [S-026 - Workflow Composition, Feedback Lane, And Cold Resume](workbench/specs/S-026-workflow-composition-and-cold-resume/SPEC.md) | Route the twelve core skills and feedback discovery through the schema 2 manifest, promote session records through privacy-checked checkpoints, and prove the composed planning-to-resume workflow mechanically. | complete |\n| [S-027 - Workbench v3.1.1 Boundaries](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) | Deliver the reduced entry route, four portable stances, chat-only Round One setup proof, and the subsequent feedback-report workflow for v3.1.1. | complete |\n| [S-028 - Harness Feedback Integrity](workbench/specs/S-028-harness-feedback-integrity/SPEC.md) | Make manifest-sensitive guardrails, feedback ingestion, and one-time migration report the paths and residue they actually handle. | complete |\n| [S-029 - Declared Integration Branch And Recoverable Completion](workbench/specs/S-029-declared-integration-branch/SPEC.md) | Make the integration branch a manifest-declared fact that Genesis, Adoption, and doctor can check, and require generation and adoption to end as a committed branch with a reachable review gate. | complete |\n| [S-030 - Permission Scope Matches Declared Lanes](workbench/specs/S-030-permission-scope-matches-lanes/SPEC.md) | Ship a template permission file that grants Edit and Write on the Workbench authorship lanes the prose already declares writable, and make doctor report when a room's permission file withholds a declared lane. | complete |\n| [S-031 - Installed Skill Generation Visibility](workbench/specs/S-031-installed-skill-generation/SPEC.md) | Record the release and commit in every Workbench-managed skill marker, have doctor report an installed skill whose generation is stale or unknown, and require review claims about a skill to name the copy they read. | complete |\n| [S-032 - Working Upgrade Route And Source Provenance](workbench/specs/S-032-upgrade-route-and-source-provenance/SPEC.md) | Give an already-adopted v2-root room one documented upgrade route that works without skill replacement and records lifecycle `upgrade`, and stop the layout tool from writing `unrecorded` as a source commit on the Genesis path. | complete |\n| [S-033 - Room Brain Routing, Wiki Stamps, And Checkpoint Source Bounds](workbench/specs/S-033-silent-gap-diagnostics/SPEC.md) | Close the three v3.1.1 gaps that passed every gate green: an unrouted room brain, wiki files stamped with an older version than the manifest, and checkpoint promotion reading a source outside the repository. | complete |\n| [S-034 - Control Fidelity Report](workbench/specs/S-034-control-fidelity-report/SPEC.md) | Report which template-derived lines a room's hand-reconciled controls changed, dropped, or added, so a deliberate divergence can be recorded and an accidental one is caught. | complete |\n| [S-035 - Workbench v3.1.2 Candidate](workbench/specs/S-035-workbench-v3-1-2-candidate/SPEC.md) | Stamp v3.1.2 only after the six v3.1.2 capability specs are complete and green, record the disposition of every v3.1.1 upstream fix-list item, and land the reviewed candidate on integration. | complete |\n| [S-036 - Workbench v3.1.2 Evidence Corrections](workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md) | Correct the unpublished v3.1.2 candidate where permission, control-fidelity, and source-identity checks overstate what they prove, then rehearse the already-v3 upgrade path and return an exact reviewed candidate for GPT_OS deployment. | complete |\n| [S-037 - Line-Ending-Agnostic Record Parsing](workbench/specs/S-037-line-ending-agnostic-records/SPEC.md) | Parse ADR and Wiki frontmatter by its structure rather than by a bare line feed, so a Workbench room checked out on a CRLF host reports its real record state instead of declaring every record broken. | complete |\n| [S-038 - Workbench v3.1.2 Upstream Fix List](workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md) | Accept, decline, or correct each of the eleven v3.1.1 upstream items UP-013 through UP-023, route the accepted ones to capability specs, and record the final disposition so Master Workbench can compare v3.1.2 against v3.1.1. | complete |\n| [S-039 - Installed Managed-Runtime Integrity](workbench/specs/S-039-installed-runtime-integrity/SPEC.md) | Give an installed room a command that verifies the runtime it is executing, and make a drift report say whether the runtime matches the source or only disagrees with a stale receipt. | complete |\n| [S-040 - Skill Gate Route Selection And Link Resolution](workbench/specs/S-040-skill-gate-route-selection/SPEC.md) | Make the shared-skill refusals name the route that clears them and stop the installer's link check from being stricter than the install it guards, so a workstation with a linked skill directory is a route choice rather than a portfolio-wide stop. | complete |\n| [S-041 - Recorded Baseline Availability](workbench/specs/S-041-recorded-baseline-availability/SPEC.md) | Decide and record what a harness-only migration does when the target has no runnable green baseline, so eight rooms (the report's count) blocked by an unrelated product or host condition get one answer instead of eight improvised ones. | complete |\n| [S-042 - Repairing Installed State The Harness Wrote](workbench/specs/S-042-installed-state-repair/SPEC.md) | Report and repair the installed state the harness itself produced - seeded lane documents behind the manifest, records without required frontmatter, and provenance placeholders - so a fix upstream reaches a room that already exists. | complete |\n| [S-043 - Diagnostic Output Legibility](workbench/specs/S-043-diagnostic-output-legibility/SPEC.md) | Stop a healthy room from reading as failed by separating what a doctor finding blocks from how loudly it is printed, without changing any blocking semantics. | complete |\n| [S-044 - Legacy Room Classification And Control Reconcile Order](workbench/specs/S-044-legacy-room-classification/SPEC.md) | Let an agent arriving at a legacy room classify it from its own contents and learn every missing control at once with the reconcile-before-migrate order, instead of deriving both alone. | complete |\n| [S-045 - v3.1.2 Follow-Ups Left Without An Owner](workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md) | Own the seven follow-ups the v3.1.2 slices and their retrospective reviews left open, so owed work has a spec that carries it instead of surviving only as prose inside completed specs. | complete |\n| [S-046 - JSON Notepad Foundation](workbench/specs/S-046-json-notepad-foundation/SPEC.md) | Preserve objective continuity in local JSON notepads with safe updates, selective retrieval, and reconciliation before cleanup. | active |\n| [S-047 - Visible Workbench Identifiers](workbench/specs/S-047-visible-workbench-identifiers/SPEC.md) | Introduce visible base-62 identifiers without parallel IDs or loss of existing references. | active |\n| [S-048 - Checkpoint Retirement](workbench/specs/S-048-checkpoint-retirement/SPEC.md) | Explain the checkpoint rationale, preserve still-needed material, and retire the obsolete collection and dependencies deliberately. | active |\n| [S-049 - Assignment Ownership And The Coordination Record](workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md) | Give an assigned spec or ticket an invocation that carries it to its already-authorized endpoint and records, per occurrence, every point where the owner still had to supply routine coordination. | complete |\n| [S-050 - Workbench v3.2.0 Release](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) | Deliver the reconciled v3.2.0 capability set and prove the Workbench Template update and reviewed integration. | active |\n| [S-051 - Core Skill Ownership And Compatibility](workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md) | Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership. | active |\n| [S-052 - Private Session Transport](workbench/specs/S-052-private-session-transport/SPEC.md) | Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling. | active |\n| [S-053 - Configured Host Capabilities](workbench/specs/S-053-configured-host-capabilities/SPEC.md) | Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate. | active |\n| [S-054 - Workbench v3.2.1 Review-Boundary Integrity](workbench/specs/S-054-v3-2-1-review-boundary-integrity/SPEC.md) | Make an integration review bind to the exact resulting candidate and refuse target movement before merge. | planned |\n<!-- spec-catalog:end -->\n\n",
+          "disposition": "move-projection",
+          "owner": "workbench/specs/CATALOG.md",
+          "reason": "Complete capability inventory moves to the manifest specs collection; historical rows remain pinned here."
+        },
+        {
+          "id": "root-039",
+          "section": "Cross-Cutting Health",
+          "text": "## Cross-Cutting Health\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Verification procedures and thresholds remain in Runbook; achieved results remain in their specs."
+        },
+        {
+          "id": "root-040",
+          "section": "Cross-Cutting Health",
+          "text": "- all Workbench self-tests and the template evaluator pass;\n- `node workbench/tools/spec-workbench.mjs doctor` reports no lifecycle, link, or render\n  drift;\n- root docs contain no template placeholders and generic templates contain no\n  Workbench-specific state;\n- harness changes record baseline, after-state, limitations, and documentation\n  impact without weakening audit criteria;\n- published version changes occur only after behavior is proven.\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Verification procedures and thresholds remain in Runbook; achieved results remain in their specs."
+        },
+        {
+          "id": "root-041",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "## Accepted Continuity And Distribution Direction\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-042",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "The Workbench's continuity promise spans maintained controls, specs, Wiki,\nsource, verified achieved state and objective notes. A fresh capable agent must\nrecover authorized work from those owners; notes preserve unfinished reasoning.\nA real useful continuation demonstrates that workflow. Only repeated controlled,\nheld-out, condition-blind trials with uncertainty support improved agent-outcome\nclaims; static checks and a single demonstration do not. Preserve criteria and\nfailed results. Interface acceptance applies to the product's actual interface.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-043",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "The portable runtime stays Node/JavaScript; Python retains evaluation and existing\nappend-only checks. Both languages deserialize JSON; no intrinsic Python JSON\npenalty is asserted. Skills compose reusable independent behavior within inherited\nscope. Mention, routing, invocation and authorization are distinct; a helper\ncannot enlarge its caller's authority. Read-only names the target, while permitted\nlocal working capture remains within the assignment.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-044",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Core skills are exclusively upstream-owned and sufficient without a personal\ncatalog, including reconciled save/promote/notepad. Optional personal/shared\nskills and room-local source remain distinct ownership scopes. One selected\nglobal core release carries a tested room compatibility range. The global\n.agents/skills root holds managed ignored/excluded core installation alongside\noptional personal source; Claude discovery adapts the same source. One source\nper skill and one discovery entry per application; no third .codex/skills catalog.\nNormal setup preserves existing names; explicit replacement backs up differences.\nRoom-local promotion into a personal catalog remains owner-directed.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-045",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Optional private workbench_sessions Git transport is the accepted cross-device\ndirection. Stable Workbench identity survives clone/worktree/rename; independent\ninstantiation receives a new identity, separate from artifact IDs. Selected live\nnotes/grilling/handoffs map under workbenches/<WBID>/sessions/; schemas/templates\nand promoted knowledge stay in project Git. Live records remain ignored there,\nnon-authoritative, and privacy bounded. Fetch before resume; meaningful saves\nand device switching require explicit push/remote acknowledgment, with offline\npending status and last confirmed revision. Serialize sync, preserve conflicts,\nand never silently overwrite or force push. Git history retention is accepted;\ntransport does not move unpushed code or running processes. Local use is independent.\nActual Mac/Windows Claude/Codex round-trip proof is required for that claim.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-052-private-session-transport/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-046",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Promotion writes selected, privacy/validity-checked material directly to its named\ndurable owner, verifies read-back and faithful reconciliation, then permits scoped\nsource cleanup. Preserve unfinished/correction/transfer dependencies. Existing\ncheckpoints remain frozen history; new copy creation is retired. Operational\nrecovery uses the ignored `sessions/recovery/` collection; legacy rollback remains usable. No new permanent\nhandoff store substitutes for checkpoints. Capability checks cannot replace\nsemantic judgment or authorization.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-048-checkpoint-retirement/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-047",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Genesis, adoption and explicit upgrade have different allowed effects and\npreservation contracts. Verify all consumed source lanes before mutation.\nSeparate release, historical adoption, installed manifest, tool/skill bytes,\nexecuting runtime and downstream acceptance identities. Verify the actual remote\nref and object; inaccessible remote state remains unknown. Control divergence is\nvisible and deliberate against a matched template generation; fidelity stays a\nreport. A recorded unavailable baseline is distinct from measured red and never\nwaives release acceptance; use the existing closed baseline policy.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-048",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Supported-host claims require a small agreed operational floor checked in the\nactual configured environment. Agree requirements before choosing schema,\ndiagnostics or tests. Missing capabilities affect dependent work only; unavailable\nchecks stay unverified. Capability, actual enforcement and model reliability need\nseparate evidence. New native enforcement hooks are outside core; discovery and\nevaluation adapters are distinct. Enforcement needs a running mechanism with\nsupporting evidence, whether host-owned or Workbench-owned.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-053-configured-host-capabilities/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-049",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "root-050",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Implementation and rollout proof for this accepted direction are owned by [S-050](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) and its linked capability specs; v3.2.0 is not yet delivered.\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        }
+      ]
+    },
+    {
+      "path": "templates/BLUEPRINT.md",
+      "commit": "3a10e2cae01a195fccdbd3fd13bd2251fa40374b",
+      "claims": [
+        {
+          "id": "template-001",
+          "section": "metadata",
+          "text": "# [PROJECT_NAME] - Blueprint\n\n",
+          "disposition": "move-or-existing-owner",
+          "owner": "README.md",
+          "reason": "Repository orientation belongs to README; historical stamp remains pinned in this source and release evidence."
+        },
+        {
+          "id": "template-002",
+          "section": "metadata",
+          "text": "> Generated from LLM Workbench v[HARNESS_VERSION].\n\n",
+          "disposition": "move-or-existing-owner",
+          "owner": "README.md",
+          "reason": "Repository orientation belongs to README; historical stamp remains pinned in this source and release evidence."
+        },
+        {
+          "id": "template-003",
+          "section": "metadata",
+          "text": "**Last reviewed:** [YYYY-MM-DD]\n**Status:** [active / partial / stale]\n**Source root:** `[ABSOLUTE_PROJECT_PATH]`\n\n",
+          "disposition": "move-or-existing-owner",
+          "owner": "README.md",
+          "reason": "Repository orientation belongs to README; historical stamp remains pinned in this source and release evidence."
+        },
+        {
+          "id": "template-004",
+          "section": "Product Map",
+          "text": "## Product Map\n\n",
+          "disposition": "retain-destination",
+          "owner": "templates/BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "template-005",
+          "section": "Product Map",
+          "text": "[One paragraph: what this product is, who it serves, and the problem it solves.]\n\n",
+          "disposition": "retain-destination",
+          "owner": "templates/BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "template-006",
+          "section": "Product Map",
+          "text": "Core promise:\n\n",
+          "disposition": "retain-destination",
+          "owner": "templates/BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "template-007",
+          "section": "Product Map",
+          "text": "> [Concrete user-facing promise.]\n\n",
+          "disposition": "retain-destination",
+          "owner": "templates/BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "template-008",
+          "section": "Goals And Pillars",
+          "text": "## Goals And Pillars\n\n",
+          "disposition": "retain-destination",
+          "owner": "templates/BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "template-009",
+          "section": "Goals And Pillars",
+          "text": "- **[Pillar]:** [stable product direction]\n- **[Pillar]:** [stable product direction]\n- **[Pillar]:** [stable product direction]\n\n",
+          "disposition": "retain-destination",
+          "owner": "templates/BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "template-010",
+          "section": "Cross-Cutting Architecture And Invariants",
+          "text": "## Cross-Cutting Architecture And Invariants\n\n",
+          "disposition": "existing-contract",
+          "owner": "AGENTS.md",
+          "reason": "Operational authority/ownership is in the Contract; future integrated design remains in Blueprint."
+        },
+        {
+          "id": "template-011",
+          "section": "Cross-Cutting Architecture And Invariants",
+          "text": "| Layer / concern | Choice | Invariant / source |\n|---|---|---|\n| Runtime | [RUNTIME] | [constraint/source] |\n| Product surface | [FRONTEND_API_CLI_OR_OTHER] | [constraint/source] |\n| Data/storage | [STORAGE_OR_NONE] | [constraint/source] |\n| Testing | [TEST_STACK] | [constraint/source] |\n| Deployment/runtime | [DEPLOYMENT_OR_NONE] | [constraint/source] |\n\n",
+          "disposition": "existing-contract",
+          "owner": "AGENTS.md",
+          "reason": "Operational authority/ownership is in the Contract; future integrated design remains in Blueprint."
+        },
+        {
+          "id": "template-012",
+          "section": "Cross-Cutting Architecture And Invariants",
+          "text": "Rules that span multiple capabilities:\n\n",
+          "disposition": "existing-contract",
+          "owner": "AGENTS.md",
+          "reason": "Operational authority/ownership is in the Contract; future integrated design remains in Blueprint."
+        },
+        {
+          "id": "template-013",
+          "section": "Cross-Cutting Architecture And Invariants",
+          "text": "- [Invariant]\n- [Privacy/safety boundary]\n- [Architecture decision future specs must preserve]\n\n",
+          "disposition": "existing-contract",
+          "owner": "AGENTS.md",
+          "reason": "Operational authority/ownership is in the Contract; future integrated design remains in Blueprint."
+        },
+        {
+          "id": "template-014",
+          "section": "Cross-Cutting Architecture And Invariants",
+          "text": "Source and tests say what is implemented; this file and the assigned spec say\nwhat is accepted (`AGENTS.md` -> State Resolution). Put capability-specific\nrequirements and decisions in its stable spec, not here. Consequential\narchitectural decisions with real alternatives get a record in\n`workbench/docs/adr/`; the rule they establish still lives in the owning\ncontrol, because the Workbench Contract is the set of claims those controls\nand the assigned spec carry, not a file.\nPut accepted project-wide definitions in `LEXICON.md`; the Blueprint helps\nparticipants recover the design concept but is not itself the design concept or\nthe project glossary.\n\n",
+          "disposition": "existing-contract",
+          "owner": "LEXICON.md",
+          "reason": "Operational authority/ownership is in the Contract; future integrated design remains in Blueprint."
+        },
+        {
+          "id": "template-015",
+          "section": "Objective Continuity",
+          "text": "## Objective Continuity\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-046-json-notepad-foundation/SPEC.md",
+          "reason": "Continuity mechanics, proof limits and accepted preservation requirements remain with S-046; destination narrative keeps the continuity outcome."
+        },
+        {
+          "id": "template-016",
+          "section": "Objective Continuity",
+          "text": "Meaningful objective work preserves working context in local JSON notepads,\nincluding JSON grilling records. A scoped handoff is instead a human-readable\nMarkdown file with plain-language continuation instructions that an agent can\npick up or the owner can paste into a new chat. The current view and ordered\nwork record support continuation and handoffs; shared schema/tooling must\npreserve sources and corrections without making notes authoritative. Save\nimportant context while work proceeds so it\ncan support continuation after token exhaustion or Stop; computer-crash,\ndevice-loss, and cross-machine recovery are outside this guarantee. Reconcile\nimportant material into durable owners before trimming it from a retained note\nor deleting a fully reconciled record; preserve unfinished context.\nRecord implemented support and remaining gaps in the assigned capability spec;\naccepting this direction does not prove automatic capture or recovery.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-046-json-notepad-foundation/SPEC.md",
+          "reason": "Continuity mechanics, proof limits and accepted preservation requirements remain with S-046; destination narrative keeps the continuity outcome."
+        },
+        {
+          "id": "template-017",
+          "section": "Non-Goals",
+          "text": "## Non-Goals\n\n",
+          "disposition": "retain-destination",
+          "owner": "templates/BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "template-018",
+          "section": "Non-Goals",
+          "text": "- [Non-goal]\n- [Non-goal]\n\n",
+          "disposition": "retain-destination",
+          "owner": "templates/BLUEPRINT.md",
+          "reason": "Destination meaning is retained in the rebuilt product narrative."
+        },
+        {
+          "id": "template-019",
+          "section": "Spec Catalog",
+          "text": "## Spec Catalog\n\n",
+          "disposition": "move-projection",
+          "owner": "workbench/specs/CATALOG.md",
+          "reason": "Complete capability inventory moves to the manifest specs collection; historical rows remain pinned here."
+        },
+        {
+          "id": "template-020",
+          "section": "Spec Catalog",
+          "text": "The generated catalog links every durable capability record, including completed\nhistory. Human-authored product prose stays outside the markers.\n\n",
+          "disposition": "move-projection",
+          "owner": "workbench/specs/CATALOG.md",
+          "reason": "Complete capability inventory moves to the manifest specs collection; historical rows remain pinned here."
+        },
+        {
+          "id": "template-021",
+          "section": "Spec Catalog",
+          "text": "<!-- spec-catalog:start -->\n| Spec | Description | Status |\n|---|---|---|\n| [S-001 - Capability](workbench/specs/S-001-capability/SPEC.md) | [Short catalog description] | planned |\n<!-- spec-catalog:end -->\n\n",
+          "disposition": "move-projection",
+          "owner": "workbench/specs/CATALOG.md",
+          "reason": "Complete capability inventory moves to the manifest specs collection; historical rows remain pinned here."
+        },
+        {
+          "id": "template-022",
+          "section": "Cross-Cutting Health",
+          "text": "## Cross-Cutting Health\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Verification procedures and thresholds remain in Runbook; achieved results remain in their specs."
+        },
+        {
+          "id": "template-023",
+          "section": "Cross-Cutting Health",
+          "text": "- `[BASELINE_TEST_COMMAND]` passes;\n- `[BUILD_LINT_OR_AUDIT_COMMAND]` passes when relevant;\n- the primary workflow succeeds end to end;\n- secrets and private data stay out of committed output;\n- spec doctor/render checks report no lifecycle, link, or projection drift.\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Verification procedures and thresholds remain in Runbook; achieved results remain in their specs."
+        },
+        {
+          "id": "template-024",
+          "section": "Workbench Entry And Delivery Boundaries",
+          "text": "## Workbench Entry And Delivery Boundaries\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Ordinary entry and delivery procedure belongs in Runbook, with required behavior in AGENTS."
+        },
+        {
+          "id": "template-025",
+          "section": "Workbench Entry And Delivery Boundaries",
+          "text": "### Core Navigation Contract\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Ordinary entry and delivery procedure belongs in Runbook, with required behavior in AGENTS."
+        },
+        {
+          "id": "template-026",
+          "section": "Workbench Entry And Delivery Boundaries",
+          "text": "**Traverse, don't search** is a core Workbench feature. The Context Map connects\nshared meanings, controls, assigned specs, Wiki context, and referenced\nsource/evidence through existing owners. Enter through\n[Lexicon Task Routing](LEXICON.md#task-routing); new durable context must be\nreachable from its relevant entry route and link back to its sources.\n[AGENTS.md](AGENTS.md#traverse-dont-search) owns the behavior and bounded search\nfallback. Ordinary portable links provide this structure; a visual graph or\nretrieval index is a source-derived view, not a second truth store. Foundry,\nObsidian, and a recall service are not prerequisites. Link coverage and any\nautomated traversal capability require their own verification.\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Ordinary entry and delivery procedure belongs in Runbook, with required behavior in AGENTS."
+        },
+        {
+          "id": "template-027",
+          "section": "Workbench Entry And Delivery Boundaries",
+          "text": "### Entry And Delivery\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Ordinary entry and delivery procedure belongs in Runbook, with required behavior in AGENTS."
+        },
+        {
+          "id": "template-028",
+          "section": "Workbench Entry And Delivery Boundaries",
+          "text": "The seven-control Contract enters through AGENTS -> RUNBOOK -> LEXICON, then\nassigned work and task-relevant owners. This Blueprint loads for architecture\nand cross-cutting direction. SPEC and TASK assign portable stances; stances\nchange method without transferring authority or spawning agents. Independent\nreview is required before branches combine at integration. Required steps need\nimmediate delivery value; uncertain practices remain optional and reviewable.\nA setup-only Round One proof reports in chat before feedback-report testing.\n\n",
+          "disposition": "existing-procedure",
+          "owner": "RUNBOOK.md",
+          "reason": "Ordinary entry and delivery procedure belongs in Runbook, with required behavior in AGENTS."
+        },
+        {
+          "id": "template-029",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "## Accepted Continuity And Distribution Direction\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "template-030",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "The Workbench's continuity promise spans maintained controls, specs, Wiki,\nsource, verified achieved state and objective notes. A fresh capable agent must\nrecover authorized work from those owners; notes preserve unfinished reasoning.\nA real useful continuation demonstrates that workflow. Only repeated controlled,\nheld-out, condition-blind trials with uncertainty support improved agent-outcome\nclaims; static checks and a single demonstration do not. Preserve criteria and\nfailed results. Interface acceptance applies to the product's actual interface.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "template-031",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "The portable runtime stays Node/JavaScript; Python retains evaluation and existing\nappend-only checks. Both languages deserialize JSON; no intrinsic Python JSON\npenalty is asserted. Skills compose reusable independent behavior within inherited\nscope. Mention, routing, invocation and authorization are distinct; a helper\ncannot enlarge its caller's authority. Read-only names the target, while permitted\nlocal working capture remains within the assignment.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "template-032",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Core skills are exclusively upstream-owned and sufficient without a personal\ncatalog, including reconciled save/promote/notepad. Optional personal/shared\nskills and room-local source remain distinct ownership scopes. One selected\nglobal core release carries a tested room compatibility range. The global\n.agents/skills root holds managed ignored/excluded core installation alongside\noptional personal source; Claude discovery adapts the same source. One source\nper skill and one discovery entry per application; no third .codex/skills catalog.\nNormal setup preserves existing names; explicit replacement backs up differences.\nRoom-local promotion into a personal catalog remains owner-directed.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "template-033",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Optional private workbench_sessions Git transport is the accepted cross-device\ndirection. Stable Workbench identity survives clone/worktree/rename; independent\ninstantiation receives a new identity, separate from artifact IDs. Selected live\nnotes/grilling/handoffs map under workbenches/<WBID>/sessions/; schemas/templates\nand promoted knowledge stay in project Git. Live records remain ignored there,\nnon-authoritative, and privacy bounded. Fetch before resume; meaningful saves\nand device switching require explicit push/remote acknowledgment, with offline\npending status and last confirmed revision. Serialize sync, preserve conflicts,\nand never silently overwrite or force push. Git history retention is accepted;\ntransport does not move unpushed code or running processes. Local use is independent.\nActual Mac/Windows Claude/Codex round-trip proof is required for that claim.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-052-private-session-transport/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "template-034",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Promotion writes selected, privacy/validity-checked material directly to its named\ndurable owner, verifies read-back and faithful reconciliation, then permits scoped\nsource cleanup. Preserve unfinished/correction/transfer dependencies. Existing\ncheckpoints remain frozen history; new copy creation is retired. Operational\nrecovery uses the ignored `sessions/recovery/` collection; legacy rollback remains usable. No new permanent\nhandoff store substitutes for checkpoints. Capability checks cannot replace\nsemantic judgment or authorization.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-048-checkpoint-retirement/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "template-035",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Genesis, adoption and explicit upgrade have different allowed effects and\npreservation contracts. Verify all consumed source lanes before mutation.\nSeparate release, historical adoption, installed manifest, tool/skill bytes,\nexecuting runtime and downstream acceptance identities. Verify the actual remote\nref and object; inaccessible remote state remains unknown. Control divergence is\nvisible and deliberate against a matched template generation; fidelity stays a\nreport. A recorded unavailable baseline is distinct from measured red and never\nwaives release acceptance; use the existing closed baseline policy.\n\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        },
+        {
+          "id": "template-036",
+          "section": "Accepted Continuity And Distribution Direction",
+          "text": "Supported-host claims require a small agreed operational floor checked in the\nactual configured environment. Agree requirements before choosing schema,\ndiagnostics or tests. Missing capabilities affect dependent work only; unavailable\nchecks stay unverified. Capability, actual enforcement and model reliability need\nseparate evidence. New native enforcement hooks are outside core; discovery and\nevaluation adapters are distinct. Enforcement needs a running mechanism with\nsupporting evidence, whether host-owned or Workbench-owned.\n",
+          "disposition": "existing-capability",
+          "owner": "workbench/specs/S-053-configured-host-capabilities/SPEC.md",
+          "reason": "Preserve detailed accepted requirements and evidence limits in the existing owner; Blueprint states the intended joined experience."
+        }
+      ]
+    }
+  ]
+}

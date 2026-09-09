@@ -1,15 +1,15 @@
 ---
 name: grilling
-description: Grill the user relentlessly about a plan, decision, or idea, one question at a time, keeping a running notepad of every decision. A reusable primitive; end with /make-it-so to promote or /notepad to preserve local context. Use when the user wants to stress-test thinking or uses any 'grill' trigger phrase.
+description: Grill the user relentlessly about a plan, decision, or idea, one question at a time, keeping a running notepad of every decision. A reusable primitive with separate preserve, promote, specification, handoff and execution exits. Use when the user wants to stress-test thinking or uses any 'grill' trigger phrase.
 ---
 
 This is the core interview primitive. It runs the questioning and keeps a running
-notepad of the result. It never writes canonical files itself — the `/make-it-so`
-skill promotes the notepad, so `grilling` can also run on its own.
+notepad of the result. It never writes canonical files during the interview. Core `promote` owns
+reconciliation after the user selects that endpoint; execution is separate.
 
 Read `workbench/manifest.json` first. The live notepad lives in the
-manifest-declared `grilling` collection (`workbench/sessions/grilling/`), which
-stays untracked. Use JSON for new notes under the current Contract and preserve
+manifest-declared `notepads` collection, in its `grilling` type folder;
+legacy paths stay readable and untracked. Use JSON for new notes under the current Contract and preserve
 legacy sources. Promote supported claims into their durable owners under
 existing authorization; recording them locally does not make them Canon.
 
@@ -33,7 +33,8 @@ is not a computer-crash or device-loss guarantee. It is not Canon.
 
 1. Explore enough to build the real decision tree.
 2. Create or resume a JSON notepad in the manifest-declared live collection,
-   using the current date for a new note. Keep its status `PROVISIONAL` until
+   using `notepad` before asking the first question and confirming the returned
+   revision; use the current date for a new note. Keep its status `PROVISIONAL` until
    settled claims are reconciled; the record remains local and untracked.
 3. Write the FULL planned question list up front, so I see the terrain before
    answering. It is a best-effort map; it will flex.
@@ -81,7 +82,8 @@ Keep stable question IDs; never renumber them. Dependencies may use `2A`,
 `2B`; new branches append new IDs. Statuses are `open` (undecided),
 `tentative` (revisit), and `locked` (decided). Preserve source wording,
 uncertainty, and corrections in ordered entries, with a compact current view.
-Record each answer as an entry as it is given, and rewrite the question list
+Record each answer as an entry as it is given, confirm the returned revision,
+and rewrite the question list
 with `notepads.mjs current --view-field questions=...` when a status changes.
 
 ## During the interview
@@ -103,14 +105,19 @@ alone does not prove successful recovery.
 
 ## Exits
 
-Keep grilling until I explicitly run one of these skills — do not stop on a
-lookalike phrase said in passing:
+An explicit user direction to pause, preserve, promote, specify, hand off or
+execute ends or changes the interview; no magic slash command is required.
+A passing mention does not. Never continue questioning after Stop.
 
-- `/make-it-so` — I am done; confirm the approvals, promote the notepad's
-  locked decisions to canon, implement them, and push the results to the
-  remote.
-- `/notepad` — preserve current state and unresolved context locally under the
-  current Contract. Legacy `/checkpoint` copying is retired.
+- Preserve or pause: compose `notepad`; keep open questions and next action.
+- Promote settled decisions only: compose `promote`; do not implement.
+- Create specifications only: compose `to-spec` within that endpoint.
+- Prepare another agent's continuation: compose `handoff` as Markdown, with
+  the exact requested job and retained correction context.
+- Build the agreed scope: compose `make-it-so` or `carry` only within the
+  execution actually authorized by the user.
 
-Only those invoked skills end the interview. Continue only within the standing
-project authority and safety boundaries.
+Before a voluntary exit, validate and read back the current note, checking
+that locked answers, corrections, unresolved work and next action are faithful.
+Never depend on another write after an immediate interruption. Successful
+capture is a confirmed runtime result; a planned write is not saved context.

@@ -1,6 +1,7 @@
 ---
-status: accepted
+status: superseded
 date: 2026-09-04
+superseded_by: 000A-active-adr-decisions-and-destination-blueprints.md
 ported_from: GPT_OS ADR-0001 and ADR-0008 lineage; ADR-0008's categorical classification was not ported
 supersedes: the categorical rule that accepted ADRs and specs "serve as Grounding"
 canonicalized_in:

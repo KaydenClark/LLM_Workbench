@@ -58,6 +58,11 @@ Use `--note` for the original filename/path lookup. Use one writer, preserve exi
 inventory before allocating. The Runbook owns alphabet, width and collision
 rules; neither an ID nor allocation grants authority.
 
+Before dependent work, name the active note and returned revision in local
+execution state, verify relevant Actuality, and correct any stale current view.
+An unavailable runtime blocks the dependent capture operation; report it and
+continue only independent work whose context can safely be preserved.
+
 ## 2. Save it when you learn it, not at closeout
 
 Write during the work. Token exhaustion or the owner pressing Stop can end the
@@ -101,6 +106,13 @@ node workbench/tools/notepads.mjs current --note NOTE --revision N \
   --state "WHERE THIS STANDS" --next-action "THE NEXT EXECUTABLE STEP" \
   --unresolved "WHAT IS STILL OPEN"
 ```
+
+After each material directive, finding, decision, correction, verification or
+blocker, confirm append/current returned success and the new revision before
+continuing dependent work. A failed write has saved nothing. Before voluntary
+pause, validate and read back the note: state, unresolved items and next action
+must match actual results. These are workflow obligations using the runtime's
+revision/privacy/dependency checks, not a claim of host-native interception.
 
 ## 3. Retrieve the slice you need, not the whole history
 

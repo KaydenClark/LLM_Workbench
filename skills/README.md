@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 20-skill bundle (sixteen workflow skills and four stances),
+is a closed 21-skill bundle (seventeen workflow skills and four stances),
 counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
@@ -24,6 +24,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `carry` | Own an assigned spec or ticket to its already-authorized endpoint and record what the owner still had to supply. |
 | `save` | Persist authorized work and verify its actual local or remote recovery boundary. |
 | `promote` | Reconcile selected supported claims directly into their existing durable owners. |
+| `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |
 | `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `builder` | Deliver the assigned result with useful verification and truthful documentation. |
 | `auditor` | Determine whether named claims hold on the assigned target and evidence. |

@@ -67,7 +67,6 @@ for (const [relative, expected] of [
   ['skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`]],
   ['README.md', [`closed ${bundleSize}-skill public source bundle`]],
   ['RUNBOOK.md', [`limited to the ${bundleSize} skills`]],
-  ['BLUEPRINT.md', [`carries ${workflowWord} setup/planning/delivery workflow skills`]],
   ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
   ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
 ]) {

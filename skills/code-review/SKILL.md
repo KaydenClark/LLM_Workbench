@@ -39,6 +39,15 @@ and requirement used by the review has a named source.
 For v3 review, resolve the assigned spec through `workbench/manifest.json` and
 treat its declared support lanes as the only durable path authority.
 
+### Separate the review question
+
+Task/integration review checks the immutable candidate against its controls,
+assigned scope and named evidence. Behavioral acceptance checks what actual
+installed agents did. Whole-Workbench main-readiness review checks system-wide
+coherence, ownership, drift and open acceptance against the Blueprint checklist
+in the Runbook. None substitutes for another. A readiness request is review-only;
+only the owner approves and merges main. Use a fresh context for integration.
+
 ## 3. Inspect both axes
 
 Trace each changed behavior through callers, tests, error boundaries, and owning
@@ -49,6 +58,15 @@ documentation. Check the fixed diff for:
 - tests that cannot fail for the defect they claim to cover;
 - documentation or proof that contradicts the implementation;
 - downstream compatibility, recovery, and operational risks.
+
+For consequential incident and delivery claims, trace the original tool-call
+and result pairs, including failed, rejected and interrupted calls. Distinguish
+not attempted, approval rejected before execution, command failed, local success
+and independently read-back remote acceptance. Record evidence coverage and
+missing/truncated portions; absence in a summary cannot prove non-occurrence.
+Check source/installed/runtime/host identities independently. Never turn a
+fixture, explicit skill path, self-review or a proposed action into discovery,
+behavioral reliability or delivery proof.
 
 Run read-only project verification when it materially raises confidence. Recheck
 `HEAD_SHA` before reporting; if it changed, the fixed review is stale and must be

@@ -119,6 +119,17 @@ missing.
 When you do ask, bring the recovered state, the options, a recommendation, and
 its cost - not a request for the owner to reconstruct the situation.
 
+### Evidence before a blocked verdict
+
+Inspect the actual attempted operation and its result, including failed calls
+and automatic approval review rejections. Distinguish not attempted, requested
+but rejected before execution, command executed and failed, local success, and
+remote acceptance. Do not claim an attempt was absent from a summary alone.
+For a rejection, retain the stated reason and action; seek only a permitted
+safer route, never bypass the restriction. Continue unaffected authorized work.
+Record unavailable environments as unverified, not passed. Before a voluntary
+pause validate/read back the JSON note and its next executable action.
+
 ## 5. Record each hand-back
 
 A **coordination hand-back** is any point where the owner had to supply

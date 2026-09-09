@@ -10,7 +10,11 @@ context but does not grant authority.
 
 [ONE-SENTENCE OBJECTIVE]
 
-## Verified — do not re-derive
+## Authorized endpoint
+
+[EXACT STOP POINT; preserve specification-only or promotion-only scope through every helper.]
+
+## Verified state
 
 - [FACT WITH SOURCE PATH OR COMMIT]
 
@@ -28,4 +32,8 @@ context but does not grant authority.
 
 ## Sources to load
 
-- [LOCAL JSON NOTEPAD OR DURABLE OWNER PATH]
+- [ACCESSIBLE SOURCE PATH AND PINNED REVISION; include safe necessary content when destination access is absent or unknown.]
+
+## Recipient check
+
+[Can the recipient state the job, limits, relevant decisions, corrections, evidence limits and one next action? Record any unavailable read-back.]

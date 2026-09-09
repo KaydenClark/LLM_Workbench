@@ -24,6 +24,30 @@ follows the meaningful-work rule and is reconciled at closeout; it does not
 turn a chat-only setup check into a reporting assignment. Round One precedes
 feedback testing.
 
+### Behavior Selection
+
+After resolving the requested scope, compose the smallest behavior already
+authorized by ordinary language; do not wait for a second skill invocation.
+
+| User intent | Behavior and endpoint |
+|---|---|
+| Decide or stress-test an idea | `grilling` with `notepad`; save answers/corrections before continuing |
+| Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
+| Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
+| Write specifications only | `to-spec` and needed `to-tickets`; stop at the specified endpoint |
+| Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
+| Prepare another agent's continuation | core `handoff`; readable Markdown with inherited scope |
+| Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
+
+Every helper inherits the caller's narrower endpoint. Mention is not invocation
+and invocation is not new authority. Optional routers and historical extension
+skills are not prerequisites. For meaningful work, create/resume a JSON note,
+read its revision, verify Actuality and correct stale state before dependent
+work. Confirm successful append/current results after material changes and
+validate/read back before voluntary pause or handoff. Runtime revision, privacy
+and dependency checks enforce those operations; host-native interception of
+arbitrary agent actions is not claimed.
+
 ## Prerequisites
 
 Required tools:
@@ -78,6 +102,7 @@ node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-core-composition.mjs
+node tools/test-blueprint-contract.mjs
 node tools/test-session-transport.mjs
 node tools/test-configured-host.mjs
 node tools/test-core-skill-installer.mjs
@@ -127,7 +152,7 @@ Expected result:
 
 ### Core-skill setup check
 
-The public source bundle is intentionally limited to the 20 skills in
+The public source bundle is intentionally limited to the 21 skills in
 `skills/README.md`. Test the missing-only installer against a disposable user
 home without touching a real account:
 
@@ -617,15 +642,19 @@ node workbench/tools/spec-workbench.mjs doctor
 
 `next` returns one eligible ready ticket. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
-`render` updates only the marked Blueprint catalog and hot Taskboard regions.
+`render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
 recorded, and evidence present; render then removes the spec from the hot board.
 
 ### Architecture Decision Records
 
 Decision records live in the manifest-declared `docs/adr` collection
-(`workbench/docs/adr/`). An ADR owns rationale; its rule binds only where the
-`canonicalized_in` frontmatter points, and every named owner must exist.
+(`workbench/docs/adr/`). An active accepted ADR decision is architectural Canon; rationale and history
+remain distinct. `canonicalized_in` names operational owners, which must exist.
+Whole-record supersession names one valid successor filename; deprecated records
+require a durable `deprecation_reason`. Default `REGISTER.md` shows active accepted
+decisions, and `HISTORY.md` preserves all lifecycle states. Register regenerates
+both projections without rewriting decision bodies.
 
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"
@@ -1699,3 +1728,29 @@ operation; zero may include unverified checks and is not blanket compatibility.
 Native discovery/invocation always needs a separate provider trace. Record the
 provider, model if reported, configuration, OS, exact source and operations;
 explicit skill-path invocation alone does not prove automatic discovery.
+
+## Independent Review Boundaries
+
+Task/integration review uses a fresh context and immutable candidate, comparison
+base, expected integration tip and named verification. Inspect scope, behavior,
+recovery, documentation, installed identities and consequential report claims.
+If the target changes, compare and review the resulting candidate as required
+before combining branches; a prior PASS is not approval of changed content.
+
+Whole-Workbench main-readiness review is separately requested, review-only work.
+It checks the combined product for drift, open gates, coherent skill composition,
+installed acceptance and semantic ownership. For the Blueprint, require all
+applicable destination sections, no status/version/evidence/catalog material,
+only materially relevant active ADR links, lossless removed-claim disposition,
+and root/template agreement. Record an explicit semantic pass/fail verdict;
+structure and link checks alone are insufficient. Only Kayden approves/merges main.
+
+For incident claims inspect original call/result pairs, including failed,
+rejected and interrupted calls. Record coverage and missing/truncated evidence.
+Distinguish not attempted, rejected before execution, executed and failed,
+local success and remote acceptance with read-back. A summary's omission is
+not proof of non-occurrence. Behavioral acceptance separately records actual
+provider/version/model, prompt, source/installed hashes and observed skill use;
+explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable
+checks remain unverified. Repeated controlled trials are needed for reliability.
+

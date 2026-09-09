@@ -46,6 +46,12 @@ manufacturing authority. Diagnostics block only by their registered effect:
 work, `claim` refuses a slice blocker, and `attention` findings stay visible
 without blocking.
 
+Accepted active ADR decision claims are architectural Canon, without enlarging
+instruction authority. Rationale and historical alternatives remain evidence.
+Follow active decisions through the Lexicon; superseded/deprecated records stay
+reachable as history. The Blueprint describes the desired finished product;
+it carries no current status, release chronology or generated capability catalog.
+
 ## Traverse, Don't Search
 
 Start from the ordinary entry route and follow the smallest relevant links to
@@ -155,7 +161,7 @@ Documentation is part of done; the implementing agent is documentation owner.
 | requirements, acceptance, decisions, evidence, completion | assigned `SPEC.md` |
 | commands and troubleshooting | `RUNBOOK.md` |
 | public usage | `README.md` |
-| decision rationale, alternatives, supersession | `workbench/docs/adr/` (rule binds only where `canonicalized_in` points) |
+| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
 | durable room memory, design-concept articles, and routing to them | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules) |
 
 Use `Docs checked; no update needed` with a reason when appropriate. The final response proof states what changed, why, risks, and verification. Append spec

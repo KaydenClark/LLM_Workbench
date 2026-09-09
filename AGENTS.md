@@ -46,6 +46,12 @@ registered effect: `doctor` fails on `all` and `selection` findings, `next`
 excludes blocked work, `claim` refuses a slice blocker, and `attention`
 findings stay visible without blocking.
 
+Accepted active ADR decision claims are architectural Canon, without enlarging
+instruction authority. Rationale and historical alternatives remain evidence.
+Follow active decisions through the Lexicon; superseded/deprecated records stay
+reachable as history. The Blueprint describes the desired finished product;
+it carries no current status, release chronology or generated capability catalog.
+
 ## Traverse, Don't Search
 
 Start from the ordinary entry route and follow the smallest relevant links to
@@ -160,6 +166,7 @@ node tools/test-spec-workbench.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-core-composition.mjs
+node tools/test-blueprint-contract.mjs
 node tools/test-session-transport.mjs
 node tools/test-configured-host.mjs
 node tools/test-core-skill-installer.mjs
@@ -216,7 +223,7 @@ owner. Route each truth once:
 | requirements, decisions, acceptance, evidence, completion | assigned `SPEC.md` |
 | commands and troubleshooting | `RUNBOOK.md` |
 | public setup and usage | `README.md` |
-| decision rationale, alternatives, supersession | `workbench/docs/adr/` (rule binds only where `canonicalized_in` points) |
+| active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
 | durable knowledge and owner-directed design-concept articles | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; never copied task state) |
 
 A citation into a file that changes must say which tree it reads at. Every merge

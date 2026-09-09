@@ -20,7 +20,7 @@ Commands live in `RUNBOOK.md`.
 
 Completed specs disappear from this projection immediately. Their requirements,
 decisions, acceptance, proof, completion, and supersession remain in the stable
-spec linked from `BLUEPRINT.md`.
+spec linked from the manifest specs lane `CATALOG.md`.
 
 ## Owner Decisions
 
