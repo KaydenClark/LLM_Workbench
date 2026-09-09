@@ -24,6 +24,7 @@ const stanceSkills = ['builder', 'auditor', 'reviewer', 'reconciler'];
 // stances, so the frozen rows below and every `slice(-4)` stance read stay
 // exact.
 const notepadCoreSkills = [...legacyCoreSkills, 'carry', 'notepad', ...stanceSkills];
+const initialV32CoreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...stanceSkills];
 export const coreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
@@ -309,7 +310,7 @@ export function validateManifest(project) {
   const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
   const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, ...stanceSkills] };
   const carryPolicy = { ...skillPolicy, required: [...legacyCoreSkills, 'carry', ...stanceSkills] };
-  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy, 'v3.1.2': stancePolicy, 'v3.1.3': carryPolicy, 'v3.1.4': { ...skillPolicy, required: notepadCoreSkills } };
+  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy, 'v3.1.2': stancePolicy, 'v3.1.3': carryPolicy, 'v3.1.4': { ...skillPolicy, required: notepadCoreSkills }, 'v3.2.0': { ...skillPolicy, required: initialV32CoreSkills } };
   const accepted = [skillPolicy, supportedLegacy[manifest.workbenchVersion]].filter(Boolean).map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');

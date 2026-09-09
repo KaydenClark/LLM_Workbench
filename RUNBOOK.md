@@ -1052,7 +1052,10 @@ The core machine catalog is `coreSkills` in the layout runtime; documentation
 and tests derive its size from that catalog. The current candidate includes
 save/promote while preserving checkpoint as a no-write compatibility notice.
 The v3.1.4 eighteen-skill manifest policy remains readable as a frozen legacy
-row; adding candidate source does not publish or stamp v3.2.0.
+row. The owner explicitly waived the stamped-label rule for the current v3.2.0
+repair only (S-050/S-051): its original twenty-skill policy remains readable,
+while the repaired twenty-one-skill core is identified by source commit and
+content hashes. This exception does not authorize publication.
 
 For an authorized room-specific extension, keep its sole source at the project
 path `.agents/skills/NAME/SKILL.md`. Choose a name absent from required core and

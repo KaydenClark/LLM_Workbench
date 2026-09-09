@@ -58,6 +58,14 @@ copies are the current distribution behavior, not the selected target.
 
 ## Decisions And Contracts
 
+**Scoped version waiver (owner, 2026-09-09).** Keep v3.2.0 for this repair despite
+the previously stamped twenty-skill bundle. This explicit exception permits the
+repaired twenty-one-skill core including handoff; it does not repeal the general
+stamped-label rule. Preserve the exact earlier twenty-skill manifest policy as
+readable legacy input. Source commit and content hashes distinguish generations.
+The separate proposed S-054 review-boundary work remains deferred.
+
+
 Current owner authorization selects the reconciled release direction. Historical
 source statuses remain preserved; a source recommendation is not itself proof
 or authority. Existing stable specs and append-only evidence remain in place.
