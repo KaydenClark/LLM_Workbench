@@ -151,7 +151,7 @@ together once the correction has landed in its durable owner, or keep both.
 That refusal is the mechanism doing its job; do not work around it.
 
 Author a requested handoff separately as a Markdown file in
-`workbench/sessions/handoffs/`, using `templates/HANDOFF.md`. It must be plain
+`workbench/sessions/handoffs/`, using the `handoff` skill and its bundled `assets/HANDOFF.md`. It must be plain
 English another agent can follow or the owner can paste into a new chat: name
 the job, verified facts, one resume point, boundaries, and exact source paths.
 Confirm destination access and retain source context until the needed material

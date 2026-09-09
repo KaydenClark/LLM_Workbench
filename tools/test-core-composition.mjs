@@ -30,6 +30,7 @@ test('fresh core composes local save and selected promotion using only installed
       assert.equal(fs.realpathSync(path.join(home, '.claude/skills', skill)), fs.realpathSync(canonical));
       assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'skills', skill, 'SKILL.md'), 'utf8'));
     }
+    assert.equal(fs.readFileSync(path.join(home, '.agents/skills/handoff/assets/HANDOFF.md'), 'utf8'), fs.readFileSync(path.join(root, 'templates/HANDOFF.md'), 'utf8'), 'installed handoff carries its portable shape without a producer checkout');
     assert.equal(fs.existsSync(path.join(home, '.codex')), false);
     run(root, 'workbench/tools/workbench-layout.mjs', ['init', '--project', project, '--provenance', 'genesis', '--version', version]);
     run(root, 'tools/workbench-tools.mjs', ['install', '--project', project]);

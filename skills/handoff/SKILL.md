@@ -17,7 +17,7 @@ sources; never generate a new JSON handoff or use a Foundry temporary store.
    enough definitions and instructions to make the job executable without the
    owner reconstructing it. Preserve stable IDs, tentative/open status, source
    uncertainty and the difference between intended behavior and verified results.
-3. Author using the shape in `templates/HANDOFF.md` when available. Name one
+3. Author using the bundled shape in `assets/HANDOFF.md` beside this skill. Name one
    resume point, the relevant source paths/commits, actual achieved state,
    remaining verification, blockers and inherited authorization. A referenced
    source must be accessible to the recipient. When access is absent or unknown,

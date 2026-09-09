@@ -288,7 +288,7 @@ type folder. Handoffs are authored as Markdown (`.md`) in the declared
 `handoffs` collection; they are readable continuation instructions, not JSON
 notepads and not `notepads.mjs` records. The tracked `notepad-templates`
 subcollection carries `notepad.schema.json` plus work and grilling JSON examples;
-the generic Markdown handoff template lives at `templates/HANDOFF.md`.
+the portable Markdown handoff shape is bundled as `assets/HANDOFF.md` in the installed `handoff` skill; producer source also exposes `templates/HANDOFF.md`.
 The schema describes new `notepad-1` interchange, while the runtime additionally
 checks unique entry IDs, links and revision safety. Legacy `scope-1` reading and
 migration remain supported without moving or regenerating source history.
@@ -574,7 +574,7 @@ Use this section to prove whether the workbench or project process is improving.
 The goal is evidence, not taste.
 
 An owner-requested handoff is separately authored as a Markdown file in
-`sessions/handoffs/`, using `templates/HANDOFF.md` as the copy-ready shape.
+`sessions/handoffs/`, using the installed `handoff` skill and its bundled `assets/HANDOFF.md` as the copy-ready shape.
 It names the retained source, when any, in prose and must carry enough context
 for a receiver without local access. Before trimming or deleting source context,
 the author verifies that the receiver's needed material is durable or otherwise
