@@ -8,8 +8,8 @@
 **Updated:** 2026-09-09
 **Catalog description:** Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership.
 **Blockers:** none
-**Latest event:** TK-004 claimed by codex.
-**Next gate:** Close TK-004 with verification and documentation proof.
+**Latest event:** TK-005 closed with proof.
+**Next gate:** Complete TK-006.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
@@ -92,8 +92,8 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-001 | Define and install one authoritative core source with adapters | done | none | d2ecc5cf049509160c9ae1460b970eee48175772: installer 27/27, upgrade 8/8, full 37/37, independent repair review PASS; all seven reproduced ownership and alias findings resolved |
 | TK-002 | Diagnose tested compatibility and discovery failures | done | TK-001 | bc1347812d8c7402bade8991a7a41e5023f04e8e: inspection 5/5, installer 27/27, diagnostics 19/19, full 39/39 and independent bounded repair review PASS; range overstatement regression repaired |
 | TK-003 | Compose portable save and promote into a self-sufficient bundle | done | TK-002 | 6f6be660b51fb249f0f66ad76af2f25b9065154d: full 40/40, independent final composition review PASS; installed composition 1/1, installer 27/27, layout 67/67; native Codex local invocation receipt independently read back at bf0bc31 with identical relevant skill bytes |
-| TK-004 | Repair scope-preserving core composition, handoff, routing and evidence review | in-progress | none | Red/green contracts and behavioral acceptance |
-| TK-005 | Migrate personal core ownership and install independently reviewed source | blocked | TK-004 | Recoverable originals, reviewed migration, installed read-back |
+| TK-004 | Repair scope-preserving core composition, handoff, routing and evidence review | done | none | d2111e6 core source independently reviewed; mechanical composition/50notepad regressions pass; actual native failures drove bundled handoff asset and to-spec continuation repair |
+| TK-005 | Migrate personal core ownership and install independently reviewed source | done | TK-004 | Reviewed original0e3cd8c to local catalog8832f07;20 original dirs and104 unrelated files verified;21 canonical installed skills now d2111e6;Claude alias same bytes;deprecatedCodex alias recoverable;recovery failure rehearsals PASS |
 | TK-006 | Verify actual Codex and Claude ordinary-prompt workflows | blocked | TK-005 | Fresh host traces and explicit unavailable gates |
 
 ### TK-001 - Define and install one authoritative core source with adapters
@@ -192,6 +192,16 @@ rejected, interrupted and unavailable results separately. Explicit-path fixtures
 remain useful but do not count as automatic discovery. Missing environments
 block only their dependent acceptance and never become a PASS.
 
+## Authorized Delivery Recovery
+
+The owner annotation on 2026-09-09 requests repairing the rejected public
+recovery push as part of this assignment. Carry must present the verified
+repository visibility, exact candidate/ref and scoped payload with the existing
+authorization, preserve every rejection-before-execution, and distinguish an
+accepted retry from an unresolved platform gate. This does not authorize main
+or unrelated data export, or changes that bypass platform approval controls.
+Actual tool results, not revised prose, determine whether the gate is resolved.
+
 ## Repair Acceptance (added; historical checked evidence retained)
 
 - [ ] An installed core alone supplies handoff and all composed dependencies;
@@ -262,6 +272,8 @@ Core catalog, source skills, installer/upgrade/diagnostic procedures, manifests 
 | 2026-09-08 | TK-003 | Ticket closed | 6f6be660b51fb249f0f66ad76af2f25b9065154d: full 40/40, independent final composition review PASS; installed composition 1/1, installer 27/27, layout 67/67; native Codex local invocation receipt independently read back at bf0bc31 with identical relevant skill bytes | Core catalog, native save/promote, composition routes, generic/root Runbook and room-local source ownership reconciled; native-composition-result.json records bounded proof and limitations | Final S-050 release integration and Example validation; native automatic discovery not independently established, CLI Git write refused, real Windows/Claude/private transport gates remain S-052/S-053 |
 
 | 2026-09-08 | TK-003 | All scoped composition checks passed at immutable 6f6be660b51fb249f0f66ad76af2f25b9065154d | Full 40 of 40, independent final review PASS, guardrail 78 unchanged with four outcome-evidence recommendations. Actual Codex CLI 0.144.3 isolated-home invocation on bf0bc31 used byte-identical relevant skills; selected correction promoted and independently read back, note revision 9 retained original/correction/blocker. CLI sandbox refused Git metadata write; doctor correctly reported incomplete fixture owners | Native receipt linked from the owning slice; global/project source routes and composition responsibilities documented | No automatic-discovery, Claude/Windows, private remote, full-room Genesis, Example delivery or repeated-outcome inference; final S-050 release review and containment remain open |
+| 2026-09-09 | TK-004 | Ticket closed | d2111e6 core source independently reviewed; mechanical composition/50notepad regressions pass; actual native failures drove bundled handoff asset and to-spec continuation repair | Core skill scopes, Markdown handoff dependencies, ordinary routing, evidence categories and reviewer criteria reconciled | Installed migration and native host acceptance tracked separately in TK005/TK006 |
+| 2026-09-09 | TK-005 | Ticket closed | Reviewed original0e3cd8c to local catalog8832f07;20 original dirs and104 unrelated files verified;21 canonical installed skills now d2111e6;Claude alias same bytes;deprecatedCodex alias recoverable;recovery failure rehearsals PASS | Private recovery receipts and safe installed-acceptance report; no personal catalog push or main merge | TK006 actual native acceptance and unavailable environments; full integration review pending |
 
 ## Completion Result
 

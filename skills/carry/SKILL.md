@@ -119,6 +119,27 @@ missing.
 When you do ask, bring the recovered state, the options, a recommendation, and
 its cost - not a request for the owner to reconstruct the situation.
 
+### Make an authorized delivery action concrete
+
+Before a Git push or integration request, verify the configured repository,
+visibility, destination ref and immutable candidate. State the outgoing payload
+scope and the current user authorization that covers that destination. A push
+to a public repository exports committed content even when it is described as
+recovery; main publication is a separate owner gate. Check that ignored working
+notes, private recovery data and unrelated work are absent from the payload.
+Use the existing assignment and evidence record; do not create a new approval
+framework or make these records a source of authority.
+
+If automatic approval review rejects the action, preserve that it was rejected
+before execution. Investigate the stated missing evidence and retry only with
+a permitted safer operation or material new evidence, including a relevant new
+user instruction. A tool refusal is not fixed by changing transports, weakening
+host controls or asserting that a skill overrides platform limits. If the same
+review still requires an owner decision, finish the reviewable payload, name the
+remaining exact action and stated reason, and request only that missing approval.
+Do not claim the permission issue is repaired until the actual tool result shows
+it; continue unrelated authorized work while the gate remains unresolved.
+
 ### Evidence before a blocked verdict
 
 Inspect the actual attempted operation and its result, including failed calls

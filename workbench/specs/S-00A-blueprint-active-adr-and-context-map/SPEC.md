@@ -1,15 +1,15 @@
 # S-00A - Blueprint, Active ADR, And Context Map Rebuild
 
 **Spec ID:** S-00A
-**Status:** active
+**Status:** complete
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
 **Updated:** 2026-09-09
 **Catalog description:** Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls.
 **Blockers:** none
-**Latest event:** TK-00B closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -179,15 +179,15 @@ review procedure to require an independent semantic ownership verdict.
 
 ## Acceptance Criteria
 
-- [ ] Lifecycle validation distinguishes proposed, accepted, superseded, and
+- [x] Lifecycle validation distinguishes proposed, accepted, superseded, and
       deprecated records and rejects broken whole-record successor links.
-- [ ] Default ADR routing/register exposes only active accepted decisions, with
+- [x] Default ADR routing/register exposes only active accepted decisions, with
       a tested history path that preserves every historical record.
-- [ ] Root and generic controls agree on the ownership model and Context Map.
-- [ ] Root and generic Blueprints satisfy the eight-section destination shape.
-- [ ] Every removed Blueprint claim has a lossless disposition and lineage.
-- [ ] A main-readiness reviewer has a concrete semantic ownership checklist.
-- [ ] Full required verification passes and a separate-context reviewer checks
+- [x] Root and generic controls agree on the ownership model and Context Map.
+- [x] Root and generic Blueprints satisfy the eight-section destination shape.
+- [x] Every removed Blueprint claim has a lossless disposition and lineage.
+- [x] A main-readiness reviewer has a concrete semantic ownership checklist.
+- [x] Full required verification passes and a separate-context reviewer checks
       the immutable candidate before integration.
 
 ## Testing Seams
@@ -220,10 +220,23 @@ release owner. The claim-disposition inventory is the durable migration record.
 | 2026-09-09 | spec | Made the Blueprint definition, rebuild sequence, and future review test explicit after handoff review | The prior handoff and spec named an eight-section shape but did not enumerate it or provide a receiver-facing rebuild/check procedure | Eight sections, claim-disposition sequence, and semantic review checklist now live in this spec and the refreshed Markdown handoff | TK-00A/TK-00B remain unimplemented; current root/template Blueprints are not yet rebuilt |
 | 2026-09-09 | TK-00A | Ticket closed | b490657 ADR14 and full43PASS; c1600d1 independent S00A semantic/evaluator PASS and targeted checks | Active/history ADR projections and owning root/template controls reconciled; historical bodies and claim source bytes preserved | TK-00B closure and final candidate integration remain |
 | 2026-09-09 | TK-00B | Ticket closed | c1600d1 independent semantic/evaluator PASS;166root+59template source segments byte-exact; destination/owner tests GREEN; full43b490PASS | Eight-section Blueprint, exact claim dispositions, active ADR Canon and independent main-readiness checklist reconciled in both root and generic controls | Final full repeat and exact integration review remain; no main publication approval |
+| 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Pending.
+Complete for this capability. The root and generic destination Blueprints,
+active/history ADR lifecycle, Context Map routes and independent semantic
+review criteria are implemented and reviewed at c1600d1. The 166 root and 59
+generic source segments remain byte-exact against their pinned originals.
+Full suites passed 43/43 at b490657 and 357791d; c1600d1 repeated all commands,
+with three projection-state failures caused by lead ticket updates during the
+run. Rendering the changed owners and rerunning configured-host, dogfood and
+doctor cleared all three; no criterion was weakened. Targeted destination,
+privacy/evidence, lifecycle and installed-composition checks pass.
+
+This completion enables the named Template update. It does not claim completed
+release integration, native Claude/Windows support or main publication. Those
+remain with their assigned release owners.
 
 ## Remaining Limitations Or Follow-Up Specs
 

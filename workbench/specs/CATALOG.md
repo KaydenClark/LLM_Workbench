@@ -14,7 +14,7 @@ Derived from stable specs; includes completed history.
 | [S-007 - Safe Feedback Helper Import](S-007-feedback-helper-import/SPEC.md) | Allow the feedback helper to be imported when Node has no script path. | complete |
 | [S-008 - Windows Verification Portability](S-008-windows-verification-portability/SPEC.md) | Keep context output, spec-doctor, and eval-runner verification stable across Windows and POSIX hosts. | complete |
 | [S-009 - Git-Write Constrained Adoption](S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
-| [S-00A - Blueprint, Active ADR, And Context Map Rebuild](S-00A-blueprint-active-adr-and-context-map/SPEC.md) | Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls. | active |
+| [S-00A - Blueprint, Active ADR, And Context Map Rebuild](S-00A-blueprint-active-adr-and-context-map/SPEC.md) | Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls. | complete |
 | [S-00B - Workbench Template Reformation](S-00B-workbench-template-reformation/SPEC.md) | Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there. | active |
 | [S-00C - Project Evidence And Blueprint Grilling](S-00C-project-evidence-and-blueprint-grilling/SPEC.md) | Prepare a project-informed Blueprint grilling record from verified project evidence. | planned |
 | [S-00D - Genesis From Blueprint And Active ADRs](S-00D-genesis-from-blueprint-and-adrs/SPEC.md) | Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality. | planned |

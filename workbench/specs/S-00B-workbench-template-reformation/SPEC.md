@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-08
+**Updated:** 2026-09-09
 **Catalog description:** Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there.
 **Blockers:** S-00A
-**Latest event:** Stable owner created from the locked Template decision; no external room bytes changed.
-**Next gate:** Complete S-00A, inspect current Workbench Template controls, then claim TK-00C.
+**Latest event:** TK-00C claimed by codex.
+**Next gate:** Close TK-00C with verification and documentation proof.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -63,7 +63,7 @@ mutation begins only after its own controls and current dirty state are read.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00C | Update and validate the Workbench Template against the settled ownership model | blocked | S-00A | Room-local tests, control-fidelity disposition, separate review, integration containment |
+| TK-00C | Update and validate the Workbench Template against the settled ownership model | in-progress | S-00A | Room-local tests, control-fidelity disposition, separate review, integration containment |
 
 ### TK-00C - Update and validate the Workbench Template against the settled ownership model
 
