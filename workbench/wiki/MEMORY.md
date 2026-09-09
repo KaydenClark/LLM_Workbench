@@ -56,7 +56,7 @@ copying task state here.
 | Go to | For |
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
-| [BLUEPRINT.md](../../BLUEPRINT.md) | Product map, v3.1 direction, and the spec catalog |
+| [BLUEPRINT.md](../../BLUEPRINT.md) | Product destination, integrated design, and constraints |
 | [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, and design-concept routing |
 | [TASKBOARD.md](../../TASKBOARD.md) | Current execution state |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |

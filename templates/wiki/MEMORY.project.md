@@ -37,7 +37,7 @@ nothing.
 | Go to | For |
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
-| [BLUEPRINT.md](../../BLUEPRINT.md) | Product map, architecture, and the spec catalog |
+| [BLUEPRINT.md](../../BLUEPRINT.md) | Product destination, integrated design, and constraints |
 | [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, and design-concept routing |
 | [TASKBOARD.md](../../TASKBOARD.md) | Current execution state |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |

@@ -159,6 +159,33 @@ Expected result:
 - spec doctor reports no duplicate IDs, invalid/contradictory states, stale
   claims, missing evidence, broken links, or generated-region drift.
 
+### Prepare project evidence and Blueprint questions
+
+From a named evidence room with a schema 2 manifest, run its installed tool:
+
+```bash
+node workbench/tools/project-evidence.mjs prepare --project-root . --input workbench/docs/intake-request.json --note blueprint-questions
+```
+
+The input is a bounded `project-evidence-request-1` JSON request with `project.name`,
+`objective.key/title/focus`, `evidence` and `questions`. Each evidence item names
+an `id`, project-relative `source`, caller-classified `kind` (`fact` or
+`uncertainty`) and `statement`; paired `line_start`/`line_end` are optional.
+Each question names an `id`, `question`, `recommendation`, and referenced
+`evidence` IDs. The input file must also be inside that room.
+
+The command validates source paths, observed bytes and privacy, then atomically
+creates one provisional JSON grilling note in the manifest's live notepad
+collection. Every question is open. Read the returned note/revision through
+`notepads.mjs` before continuing the interview. Caller classifications do not
+certify meaning, and preparation grants no authority to write a Blueprint, ADR
+or spec. Record actual decisions and corrections through the grilling workflow.
+
+A sub-minute isolated demonstration is `node tools/test-project-evidence.mjs`
+from this release checkout; it exercises the same public CLI including refusal
+cases. It proves deterministic preparation, not an owner interview or model
+reliability.
+
 ### Core-skill setup check
 
 The public source bundle is intentionally limited to the 21 skills in
