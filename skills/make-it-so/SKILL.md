@@ -11,7 +11,7 @@ choices or as permission supplied by a notepad. Without a narrower endpoint,
 explicit approval to build includes the agreed implementation and authorized
 recovery under the project Contract; main publication stays owner-controlled.
 
-Read the Contract and manifest. Compose `notepad` to resume the matching
+Read the Contract and `workbench/manifest.json`. Compose `notepad` to resume the matching
 objective, verify live state and retrieve decisions with their corrections.
 Preserve original wording, lineage and open/tentative status. A stale note or
 compacted chat is evidence to reconcile; neither outranks the current request.

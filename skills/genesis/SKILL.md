@@ -1,7 +1,6 @@
 ---
 name: genesis
 description: Create a new greenfield project from a founding prompt using the Workbench bootstrap protocol and a private remote recovery boundary.
-disable-model-invocation: true
 ---
 
 Use Genesis only for a new greenfield project. If the target already contains

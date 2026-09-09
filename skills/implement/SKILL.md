@@ -1,7 +1,6 @@
 ---
 name: implement
 description: Implement one eligible Workbench ticket through verified remote recovery.
-disable-model-invocation: true
 ---
 
 Implement one eligible ticket from the assigned stable `SPEC.md`. One invocation

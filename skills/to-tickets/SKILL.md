@@ -1,7 +1,6 @@
 ---
 name: to-tickets
 description: Break an assigned Workbench spec into dependency-aware tracer-bullet tickets.
-disable-model-invocation: true
 ---
 
 # To Tickets

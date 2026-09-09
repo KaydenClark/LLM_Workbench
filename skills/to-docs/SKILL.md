@@ -1,7 +1,6 @@
 ---
 name: to-docs
 description: Route settled conversation truth into existing Workbench documentation owners without restarting discovery or creating another store.
-disable-model-invocation: true
 ---
 
 # To Docs

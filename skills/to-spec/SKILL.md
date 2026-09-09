@@ -1,7 +1,6 @@
 ---
 name: to-spec
 description: Turn an already-settled conversation into one stable Workbench capability spec without restarting the interview.
-disable-model-invocation: true
 ---
 
 # To Spec
