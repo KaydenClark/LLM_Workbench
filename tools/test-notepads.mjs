@@ -1072,17 +1072,20 @@ test('safe sequences stay per prefix and arbitrary legacy entry IDs remain suppo
 
 test('all new handoff spellings refuse JSON without creating a file', () => {
   const dir = project();
+  const beforeEntries=fs.readdirSync(path.join(dir,'workbench/sessions/handoffs'));
   try {
     for (const args of [
       ['--note','workbench/sessions/handoffs/new.json'],
       ['--note','typed','--type','handoff'],
-      ['--note','typed-plural','--type','handoffs']
+      ['--note','typed-plural','--type','handoffs'],
+      ['--note','typed-spaced','--type',' handoff '],
+      ['--note','plural-spaced','--type',' handoffs ']
     ]) {
       const r = cli(dir,['create',...args,'--objective','handoff-refusal','--title','Safe handoff']);
       assert.equal(r.status,1,r.stdout);
       assert.equal(r.json.error.code,'invalid-note');
     }
-    assert.deepEqual(fs.readdirSync(path.join(dir,'workbench/sessions/handoffs')),[]);
+    assert.deepEqual(fs.readdirSync(path.join(dir,'workbench/sessions/handoffs')),beforeEntries);
   } finally { fs.rmSync(dir,{recursive:true,force:true}); }
 });
 

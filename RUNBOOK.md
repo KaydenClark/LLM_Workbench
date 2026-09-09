@@ -7,6 +7,13 @@
 This file explains how to operate, verify, and evaluate the workbench repo
 itself. It should be boring, exact, and executable.
 
+## Release Identity
+
+A version label freezes when stamped, even before publication. A changed core
+bundle requires a new version label; preserve the prior manifest policy as an
+exact readable legacy row. Never redefine a stamped label silently. Only the
+owner publishes integration to main after applicable review.
+
 ## Ordinary Entry
 
 Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the

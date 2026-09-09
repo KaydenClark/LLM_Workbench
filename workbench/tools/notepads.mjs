@@ -331,7 +331,7 @@ function retentionBlocker(root, resolved, removed = null) {
 
 export function createNote(root, options) {
   const collection = options.collection ?? defaultCollection(root);
-  if (collection === 'handoffs' || ['handoff', 'handoffs'].includes(options.type)) {
+  if (collection === 'handoffs') {
     return blocked('invalid-note', 'Handoffs are authored as human-readable .md files in the handoffs collection, not JSON notepads. Use templates/HANDOFF.md.');
   }
   const name = requireValue(options.note, '--note is required');
@@ -341,6 +341,7 @@ export function createNote(root, options) {
   // `??` accepts an empty string, so an explicitly blank --id or --type would
   // otherwise pass straight through into a record that fails its own schema.
   const type = options.type === undefined ? (collection === 'notepads' ? 'work' : collection) : requireValue(options.type, '--type must not be empty');
+  if (['handoff', 'handoffs'].includes(type)) return blocked('invalid-note', 'New handoffs must be authored Markdown, not JSON notepads.');
   const status = options.status ?? 'PROVISIONAL';
   if (!NOTE_STATUSES.includes(status)) throw new Error(`--status must be one of ${NOTE_STATUSES.join(', ')}`);
   let resolved;

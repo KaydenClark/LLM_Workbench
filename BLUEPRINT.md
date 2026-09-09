@@ -92,3 +92,10 @@ an agent always follows instructions. It does not require Foundry, a graph
 service, a private catalog or network access for ordinary local work. It cannot
 guarantee capture after an immediate interruption or move a running process by
 synchronizing files. Publication and unrelated project rollout are owner choices.
+
+It does not become a hosted tracker, database, paid service, broad MCP server or
+general project-management application. Personal task management and replacement
+of Command Information Center are outside its purpose. Startup context has no
+permanent Done lane or proof archive; historical tasks are not retrofitted into
+manufactured specifications. The portable Workbench does not import Foundry
+FUIDs, Job Orders, flights, Claims, orchestration or CIC release machinery.
