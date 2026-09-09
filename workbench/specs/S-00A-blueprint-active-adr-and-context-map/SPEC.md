@@ -68,6 +68,58 @@ gaps.
 - The exact mechanics and schema for active/history ADR views are selected by
   the red/green implementation only if they preserve the stated boundary.
 
+## Blueprint Definition And Rebuild Contract
+
+The Blueprint is the adaptable narrative of the desired finished product. It
+answers what the product is trying to become and how its parts form one useful
+whole; it is not a record of the current room, a delivery plan, or a decision
+ledger. Its first reusable shape has these eight sections, with headings adapted
+to the product and a genuinely inapplicable section omitted rather than filled
+with boilerplate:
+
+1. **Product destination** — what the finished product is.
+2. **People and problems served** — who benefits and what it changes for them.
+3. **Promised outcomes** — the durable results the product must achieve.
+4. **Desired experience and behavior** — what use should feel and act like.
+5. **Integrated system design** — how the major parts work together.
+6. **Cross-cutting qualities and constraints** — qualities that apply across
+   the product, including client-wide requirements.
+7. **Desired lifecycle** — how the product should be created, updated,
+   repaired, validated, and deployed.
+8. **Non-goals** — what the finished product intentionally is not.
+
+The rebuild is deliberate, not a prose cleanup:
+
+1. Make the active/history ADR lifecycle testable under TK-00A, without
+   deleting historical records.
+2. Inventory every current root and generic Blueprint claim before editing.
+3. Give each claim one destination: retain it in the destination narrative;
+   move cross-cutting choice/rationale to an ADR; move scoped delivery to a
+   spec; move procedures to RUNBOOK; move shared definitions/routes to LEXICON;
+   or retain evidence/history with its existing owner.
+4. Rewrite `BLUEPRINT.md` and `templates/BLUEPRINT.md` around the eight
+   sections. An active ADR is linked inline only when it materially explains or
+   constrains the destination; the ADR register remains the complete inventory.
+5. Record the claim disposition and source lineage, then render the generated
+   catalog/Taskboard from a tree that contains every referenced spec.
+
+## Blueprint Review Checklist
+
+A reviewer accepts the rebuilt Blueprint only when all of the following are
+true:
+
+- It tells a coherent future-product story using the applicable eight sections.
+- It contains no version/release chronology, current status or health,
+  implementation evidence, or generated spec catalog.
+- It does not become an ADR list: inline ADR links explain the destination, and
+  the active ADR register remains the complete decision inventory.
+- Every removed claim has one durable destination and preserved lineage; no
+  claim is merely dropped or copied into several owners.
+- Its links route to the actual owner, and root/template controls express the
+  same ownership boundary.
+- The independent main-readiness review records a semantic pass/fail verdict
+  against this checklist, in addition to mechanical checks.
+
 ## Grilling Record Reconciliation
 
 Source: the local JSON grilling notepad
@@ -165,6 +217,7 @@ release owner. The claim-disposition inventory is the durable migration record.
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Created from the locked Blueprint and ADR grilling record under explicit make-it-so | Read current controls, ADR-0002/0025, ADR tooling/tests, the release owner, and the locked decision record; doctor has no blocker | Successor ADR and root/template ownership wording promoted; durable implementation scope recorded | Lifecycle tooling, complete claim disposition, review contract, full verification, and independent review remain pending |
 | 2026-09-09 | spec | Corrected overstated promotion status and recorded complete question-to-owner reconciliation | Live ADR directory contains no claimed ADR-000A; JSON source current view lists 22 locked questions; every question is mapped above to a Contract owner or stable spec | This spec now carries the durable disposition; source remains local for recovery | Implement the named planned capabilities; no source cleanup requested |
+| 2026-09-09 | spec | Made the Blueprint definition, rebuild sequence, and future review test explicit after handoff review | The prior handoff and spec named an eight-section shape but did not enumerate it or provide a receiver-facing rebuild/check procedure | Eight sections, claim-disposition sequence, and semantic review checklist now live in this spec and the refreshed Markdown handoff | TK-00A/TK-00B remain unimplemented; current root/template Blueprints are not yet rebuilt |
 
 ## Completion Result
 
