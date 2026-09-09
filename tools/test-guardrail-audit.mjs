@@ -154,3 +154,18 @@ assert.equal(taskStatePasses({
   'workbench/manifest.json': JSON.stringify({ schemaVersion: 2, lanes: { specs: 'workbench/specs' } }),
   'workbench/specs/S-00A-contradictory/SPEC.md': contradictorySpec.replaceAll('S-101', 'S-00A').replaceAll('TK-001', 'TK-00A')
 }), false, 'alphanumeric spec/ticket IDs cannot hide contradictory task state');
+
+const modern = {
+  'BLUEPRINT.md':'# Blueprint\n\n## Product Destination\n\nA portable product.\n',
+  'RUNBOOK.md':'**Last reviewed:** 2026-07-12\n**Blueprint reviewed:** 2026-07-12\n',
+  'TASKBOARD.md':'**Last updated:** 2026-07-12\n',
+  'workbench/manifest.json':JSON.stringify({schemaVersion:2,workbenchVersion:'v3.2.0'}),
+  ...Object.fromEntries(['AGENTS','TASKBOARD','RUNBOOK','README'].map(n=>['templates/'+n+'.md','Generated from LLM Workbench v[HARNESS_VERSION]']))
+};
+const drift = files => auditGuardrails(files,{today}).categories.find(x=>x.id==='drift_resistance').checks;
+const checked = (files,id)=>drift(files).find(x=>x.id===id).passed;
+assert.equal(checked(modern,'fresh_control_docs'),true);
+assert.equal(checked(modern,'version_contract'),true);
+assert.equal(checked({...modern,'RUNBOOK.md':modern['RUNBOOK.md'].replace('**Blueprint reviewed:** 2026-07-12','**Blueprint reviewed:** 2025-01-01')},'fresh_control_docs'),false);
+assert.equal(checked({...modern,'workbench/manifest.json':'{}'},'version_contract'),false);
+assert.equal(checked({...modern,'templates/AGENTS.md':'unstamped'},'version_contract'),false);

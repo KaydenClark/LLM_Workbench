@@ -1,7 +1,6 @@
 ---
 name: tracer-bullet
 description: Cut a capability into vertical tracer-bullet slices that each pierce every layer of a project's stack, then order, scope, and assign them.
-disable-model-invocation: true
 ---
 
 # Tracer Bullet

@@ -119,7 +119,7 @@ function driftResistanceCategory(files, today) {
       'fresh root control documents',
       5,
       controlDocsAreFresh(files, today, 45),
-      'Last reviewed or updated dates in BLUEPRINT.md, TASKBOARD.md, and RUNBOOK.md are present and no more than 45 days old.',
+      'Control review dates remain within 45 days; destination Blueprint review is recorded in RUNBOOK, not embedded as product status.',
       'Review stale root control docs against live code and update their dates only after resolving any drift.'
     ),
     booleanCheck(
@@ -127,7 +127,7 @@ function driftResistanceCategory(files, today) {
       'consistent harness version contract',
       5,
       versionContractIsConsistent(files),
-      'Root blueprint declares a harness version and the five copyable control docs carry the generic version stamp.',
+      'The declared version owner and all version-bearing copyable controls agree with their contract; destination Blueprints intentionally carry no version stamp.',
       'Align the root harness version with version placeholders across all copyable control docs.'
     ),
     booleanCheck(
@@ -152,7 +152,7 @@ function driftResistanceCategory(files, today) {
       5,
       !Object.hasOwn(files, 'ROADMAP.md') && !Object.hasOwn(files, 'GAMEPLAN.md'),
       'ROADMAP.md and GAMEPLAN.md are absent from the root control layer.',
-      'Move unique live work into BLUEPRINT.md or TASKBOARD.md, then retire duplicate root planning files.'
+      'Move unique live work into its assigned spec and generated Taskboard, then reconcile duplicate root planning files.'
     )
   ];
   return scoredCategory('drift_resistance', 'Drift resistance', 25, checks);
@@ -293,7 +293,12 @@ function patternCheck(id, label, weight, haystack, pattern, evidence, action) {
 }
 
 function controlDocsAreFresh(files, today, maxAgeDays) {
-  const docs = ['BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md'];
+  const destination = /^## Product Destination$/m.test(files['BLUEPRINT.md'] ?? '');
+  const docs = destination ? ['TASKBOARD.md', 'RUNBOOK.md'] : ['BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md'];
+  if (destination) {
+    const date = parseDate((files['RUNBOOK.md'] ?? '').match(/\*\*Blueprint reviewed:\*\*\s*(\d{4}-\d{2}-\d{2})/i)?.[1]);
+    if (!date || daysBetween(date,today)<0 || daysBetween(date,today)>maxAgeDays) return false;
+  }
   return docs.every((name) => {
     const match = (files[name] ?? '').match(/\*\*(?:Last reviewed|Last updated):\*\*\s*(\d{4}-\d{2}-\d{2})/i);
     const date = parseDate(match?.[1]);
@@ -302,8 +307,11 @@ function controlDocsAreFresh(files, today, maxAgeDays) {
 }
 
 function versionContractIsConsistent(files) {
-  const hasRootVersion = /\*\*Harness version:\*\*\s*v\d+(?:\.\d+)*/i.test(files['BLUEPRINT.md'] ?? '');
-  const templateFiles = ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md', 'README.md'];
+  const destination = /^## Product Destination$/m.test(files['BLUEPRINT.md'] ?? '');
+  let manifest;
+  try { manifest = JSON.parse(files['workbench/manifest.json'] ?? '{}'); } catch { return false; }
+  const hasRootVersion = destination ? /^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '') : /\*\*Harness version:\*\*\s*v\d+(?:\.\d+)*/i.test(files['BLUEPRINT.md'] ?? '');
+  const templateFiles = destination ? ['AGENTS.md', 'TASKBOARD.md', 'RUNBOOK.md', 'README.md'] : ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'RUNBOOK.md', 'README.md'];
   const stamped = templateFiles.every((name) => /Generated from LLM Workbench v\[HARNESS_VERSION\]/i.test(files[`templates/${name}`] ?? ''));
   return hasRootVersion && stamped;
 }

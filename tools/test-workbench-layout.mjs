@@ -128,7 +128,7 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
       `${relative} contains root specs authority outside the one bounded Adoption migration source`);
   }
   assert.match(fs.readFileSync(adoptionPath, 'utf8'), /The migration moves[\s\S]{0,200}`specs\/`[\s\S]{0,200}manifest-declared lanes/);
-  for (const relative of ['AGENTS.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
+  for (const relative of ['AGENTS.md', 'LEXICON.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
     assert.match(fs.readFileSync(path.join(templateRoot, relative), 'utf8'), /workbench\/specs\//, `${relative} does not name the manifest-default spec lane`);
   }
   // Exactly seven root controls: the feedback return channel lives in its lane.
@@ -844,6 +844,9 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.1.3', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
+    // The owner-authorized v3.2.0 repair retains the earlier stamped twenty.
+    assert.equal(outcome('v3.2.0', current.filter(name => name !== 'handoff')), 'valid');
+    assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, current), 'valid');
     assert.equal(outcome(VERSION, sixteen), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, twelve), 'invalid-skill-policy');
@@ -1264,7 +1267,7 @@ test('seed-documents records a verifiable generation and never rewrites an adjus
     const document = path.join(project, relative);
     const recordPath = path.join(project, 'workbench', '.workbench-seed.json');
     const template = fs.readFileSync(path.join(root, 'templates', 'feedback', 'REPORT_FORMAT.md'));
-    assert.equal(Object.keys(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents).length, 4, 'init records the four notepad schema/example seeds');
+    assert.equal(Object.keys(JSON.parse(fs.readFileSync(recordPath, 'utf8')).documents).length, 3, 'init records the three JSON-notepad schema/example seeds');
 
     const seeded = run('seed-documents', '--project', project);
     assert.equal(seeded.status, 0, seeded.stdout);
@@ -2128,7 +2131,7 @@ test('new notepad layout separates ignored typed notes from tracked examples and
     let manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(manifest.collections.notepads, 'workbench/sessions/notepads');
     assert.equal(manifest.collections['notepad-templates'], 'workbench/sessions/notepads/templates');
-    for (const name of ['notepad.schema.json', 'work.example.json', 'grilling.example.json', 'handoff.example.json']) {
+    for (const name of ['notepad.schema.json', 'work.example.json', 'grilling.example.json']) {
       assert.ok(fs.existsSync(path.join(project, manifest.collections['notepad-templates'], name)), `shipped ${name}`);
       assert.notEqual(spawnSync('git', ['check-ignore', '-q', `${manifest.collections['notepad-templates']}/${name}`], { cwd: project }).status, 0);
     }

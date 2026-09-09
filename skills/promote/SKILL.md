@@ -21,8 +21,8 @@ passing mention. Read the Contract, manifest and assigned owner first.
 2. Use `to-docs` to choose the existing durable owner. Requirements and proof
    belong to the assigned spec, operating rules to their owning control,
    durable knowledge to the manifest Wiki. Decision rationale belongs in
-   `workbench/docs/adr/`, with the current rule in its `canonicalized_in`
-   control. Create a needed owner only through its authorized normal workflow.
+   `workbench/docs/adr/`, with active accepted decision claims as architectural Canon and
+   `canonicalized_in` naming operational owners. Create a needed owner only through its authorized normal workflow.
    File type and location do not assign a Governance Plane or grant scope.
 3. Author a separate, ignored Markdown draft inside the project containing
    the complete proposed owner bytes. Distill the supported result faithfully;

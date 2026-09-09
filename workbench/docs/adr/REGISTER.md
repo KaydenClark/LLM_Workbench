@@ -2,19 +2,20 @@
 
 > Derived by `adr.mjs register`; do not edit by hand. The directory listing is the source; this table is a projection.
 
+[Complete history](HISTORY.md). Only accepted active decisions follow.
+
 | ADR | Title | Status | Date | Canonicalized in |
 |---|---|---|---|---|
 | [0001](0001-planes-classify-operations-not-artifacts.md) | Governance Planes classify roles in an operation | accepted | 2026-09-04 | LEXICON.md, AGENTS.md |
-| [0002](0002-binding-rules-stay-in-current-controls.md) | Current controls carry every binding rule | accepted | 2026-09-04 | AGENTS.md, BLUEPRINT.md |
 | [0003](0003-full-crud-with-artifact-conditions.md) | All six planes support full CRUD with conditions | accepted | 2026-09-04 | AGENTS.md |
 | [0005](0005-machine-enforcement-requires-running-consumers.md) | Machine enforcement requires running policy consumers | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
+| [000A](000A-active-adr-decisions-and-destination-blueprints.md) | Active ADR decisions and destination Blueprints | accepted | 2026-09-09 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
 | [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0018](0018-the-wiki-is-the-knowledge-base.md) | The wiki is the knowledge base and holds collections | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
 | [0020](0020-a-check-blocks-only-the-change-it-evaluates.md) | A check may block only the change it evaluates | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [0023](0023-mechanical-guarantees-and-agent-obligations.md) | Tools check structure; agents carry judgment | accepted | 2026-09-04 | AGENTS.md |
-| [0025](0025-planes-classify-claims-not-whole-artifacts.md) | Governance Planes classify claims and their use, not whole artifacts | accepted | 2026-09-04 | LEXICON.md, AGENTS.md |
 | [0026](0026-workbench-is-the-sole-source-and-foundry-extends-it.md) | LLM Workbench is the sole Workbench source; Foundry is a downstream extension | accepted | 2026-09-04 | BLUEPRINT.md, AGENTS.md |
 | [0027](0027-instruction-authority-is-separate-from-state-resolution.md) | Instruction authority is separate from state resolution | accepted | 2026-09-04 | AGENTS.md |
 | [0028](0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md) | Live session records stay untracked; durable references target promoted checkpoints | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |

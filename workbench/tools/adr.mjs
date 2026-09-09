@@ -10,8 +10,9 @@ import { finding } from './diagnostics.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
 
-export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'rejected']);
+export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'deprecated', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
+export const HISTORY_NAME = 'HISTORY.md';
 const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
 
 // A record is authored once and checked out on many hosts. Git for Windows
@@ -136,8 +137,23 @@ export function validateAdrs(root, options = {}) {
         }
       }
     }
-    if (data.status === 'superseded' && !data.superseded_by) {
-      findings.push(finding('invalid-adr', `${adr.relativePath} is superseded but names no superseded_by`, { adr: adr.name }));
+    const lifecycleError = message => findings.push(finding('invalid-adr', `${adr.relativePath} ${message}`, { adr: adr.name }));
+    if (data.status === 'deprecated' && (typeof data.deprecation_reason !== 'string' || !data.deprecation_reason.trim())) lifecycleError('needs a durable deprecation_reason');
+    if (data.status !== 'superseded' && data.superseded_by) lifecycleError('names a successor without superseded status');
+    if (data.status === 'superseded') {
+      const seen = new Set([adr.name]);
+      let current = adr;
+      while (current?.data?.status === 'superseded') {
+        const successor = current.data.superseded_by;
+        if (typeof successor !== 'string' || !ID_PATTERN.test(successor) || successor.includes('/') || successor.includes('\\')) {
+          lifecycleError('needs one whole-record superseded_by filename without a fragment or path'); break;
+        }
+        if (seen.has(successor)) { lifecycleError('has a supersession cycle'); break; }
+        seen.add(successor);
+        current = adrs.find(record => record.name === successor);
+        if (!current) { lifecycleError(`has missing superseded_by target ${successor}`); break; }
+        if (!['accepted', 'superseded', 'deprecated'].includes(current.data?.status)) { lifecycleError('successor must be an accepted decision or its historical successor'); break; }
+      }
     }
     for (const link of localLinks(adr.body)) {
       const target = path.resolve(path.dirname(adr.filePath), link);
@@ -160,6 +176,11 @@ export function validateAdrs(root, options = {}) {
     if (actual === null || actual.replaceAll('\r\n', '\n') !== expected) {
       findings.push(finding('stale-register', `${collectionRelative(root, 'adr')}/${REGISTER_NAME} is stale; run adr register`));
     }
+  }
+  const historyPath = path.join(collectionPath(root, 'adr'), HISTORY_NAME);
+  if (adrs.length > 0) {
+    const history = fs.existsSync(historyPath) ? fs.readFileSync(historyPath, 'utf8') : null;
+    if (history === null || history.replaceAll('\r\n', '\n') !== renderRegister(adrs, { history: true })) findings.push(finding('stale-register', `${collectionRelative(root, 'adr')}/${HISTORY_NAME} is stale; run adr register`));
   }
   return findings;
 }
@@ -185,16 +206,18 @@ export function normalizeAdrs(root, options = {}) {
   return { changed };
 }
 
-export function renderRegister(adrs) {
+export function renderRegister(adrs, { history = false } = {}) {
   const lines = [
-    '# ADR Register',
+    history ? '# ADR History' : '# ADR Register',
     '',
     '> Derived by `adr.mjs register`; do not edit by hand. The directory listing is the source; this table is a projection.',
+    '',
+    history ? '[Active decisions](REGISTER.md). All retained lifecycle states follow.' : '[Complete history](HISTORY.md). Only accepted active decisions follow.',
     '',
     '| ADR | Title | Status | Date | Canonicalized in |',
     '|---|---|---|---|---|'
   ];
-  for (const adr of adrs) {
+  for (const adr of adrs.filter(record => history || record.data?.status === 'accepted')) {
     const owners = Array.isArray(adr.data?.canonicalized_in) ? adr.data.canonicalized_in : (adr.data?.canonicalized_in ? [adr.data.canonicalized_in] : []);
     lines.push(`| [${adr.number}](${adr.name}) | ${cell(adr.title ?? '')} | ${cell(adr.data?.status ?? '')} | ${cell(adr.data?.date ?? '')} | ${cell(owners.join(', ') || 'none')} |`);
   }
@@ -203,11 +226,14 @@ export function renderRegister(adrs) {
 
 export function writeRegister(root) {
   const registerPath = path.join(collectionPath(root, 'adr'), REGISTER_NAME);
+  const historyPath = path.join(collectionPath(root, 'adr'), HISTORY_NAME);
   assertSafeWritePath(root, registerPath);
+  assertSafeWritePath(root, historyPath);
   const adrs = listAdrs(root);
   const content = renderRegister(adrs);
   writeSafeFile(root, registerPath, content);
-  return { registerPath, count: adrs.length };
+  writeSafeFile(root, historyPath, renderRegister(adrs, { history: true }));
+  return { registerPath, historyPath, count: adrs.length };
 }
 
 export function newAdr(root, options) {

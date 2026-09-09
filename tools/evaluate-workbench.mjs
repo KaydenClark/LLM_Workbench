@@ -33,10 +33,10 @@ export const RUBRIC = [
     label: 'Project model and contracts',
     weight: 8,
     checks: [
-      { label: 'project promise', files: ['BLUEPRINT.md'], patterns: ['Product Map', 'Core promise'] },
-      { label: 'architecture table', files: ['BLUEPRINT.md'], patterns: ['Architecture And Invariants', 'Layer'] },
-      { label: 'contracts', files: ['BLUEPRINT.md'], patterns: ['Spec Catalog', 'Capability record|capability-specific'] },
-      { label: 'invariants', files: ['BLUEPRINT.md'], patterns: ['Invariants', 'Source and tests|Implementation truth'] },
+      { label: 'project promise', variants: [{files:['BLUEPRINT.md'], patterns:['Product Map','Core promise']}, {files:['BLUEPRINT.md'],patterns:['^## Product Destination$', '^## Promised Outcomes$']}] },
+      { label: 'integrated architecture', variants: [{files:['BLUEPRINT.md'],patterns:['Architecture And Invariants','Layer']}, {files:['BLUEPRINT.md'],patterns:['^## Integrated System Design$', 'manifest|major parts']}] },
+      { label: 'contracts', variants: [{files:['BLUEPRINT.md'],patterns:['Spec Catalog','Capability record|capability-specific']}, {files:['AGENTS.md'],patterns:['Documentation Ownership And Proof','assigned.*SPEC|assigned.*spec','architectural decisions']}] },
+      { label: 'invariants', variants: [{files:['BLUEPRINT.md'],patterns:['Invariants','Source and tests|Implementation truth']}, {files:['BLUEPRINT.md'],patterns:['^## Cross-Cutting Qualities And Constraints$', 'Privacy|privacy', 'verified|evidence']}] },
       { label: 'safety boundaries', files: ['BLUEPRINT.md'], patterns: ['Non-Goals', 'privacy|safety'] }
     ]
   },
@@ -277,6 +277,9 @@ export function renderMarkdown(results) {
 }
 
 function checkPassed(files, check) {
+  // Accept the historical contract and its explicitly reviewed owner relocation.
+  // Weights, substantive requirements and outcome evidence are unchanged.
+  if (check.variants) return check.variants.some(variant => checkPassed(files, variant));
   if (check.requireFiles) {
     return check.requireFiles.every((file) => Object.hasOwn(files, file));
   }

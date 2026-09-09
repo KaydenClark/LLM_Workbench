@@ -8,7 +8,7 @@ import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
-import { collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
+import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
@@ -175,7 +175,15 @@ export function render(rootDir) {
   const taskboardPath = path.join(root, 'TASKBOARD.md');
   const blueprint = fs.readFileSync(blueprintPath, 'utf8');
   const taskboard = fs.readFileSync(taskboardPath, 'utf8');
-  atomicWrite(blueprintPath, replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs)));
+  if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) {
+    // Legacy rooms keep their declared projection until an explicit rebuild.
+    atomicWrite(blueprintPath, replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs)));
+  } else {
+    const catalogPath = path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md');
+    assertSafeWritePath(root, catalogPath);
+    const relativeCatalog = renderCatalog(specs).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, '](');
+    writeSafeFile(root, catalogPath, `# Spec Catalog\n\nDerived from stable specs; includes completed history.\n\n${CATALOG_START}\n${relativeCatalog}\n${CATALOG_END}\n`);
+  }
   atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs)));
   return { specs: specs.length, active: specs.filter((spec) => isHot(spec)).length };
 }
@@ -190,7 +198,9 @@ export function doctor(rootDir, options = {}) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
   issues.push(...packetFindings(specs, options));
-  checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
+  const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
+  if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
+  else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root, options.home));

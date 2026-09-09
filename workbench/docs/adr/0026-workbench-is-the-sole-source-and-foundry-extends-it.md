@@ -20,3 +20,19 @@ Provenance: owner-reviewed v3.1 greenlight decision, promoted 2026-09-04; see th
 ## v3.2.0 reconciliation (2026-09-08)
 
 Public source excludes private instance state. Source development, downstream deployment and independent audit have distinct roles; deployment names are local examples, not mandatory base machinery. See [ADR-0047](0047-preservation-contracts-for-genesis-adoption-and-upgrade.md).
+
+## Preserved illustrative responsibility boundaries
+
+The former Blueprint used these named examples to explain separated ownership.
+They are retained here as design context; these names are not required machinery
+and this record assigns no portfolio work or permission to another repository.
+
+| Participant example | Responsibility | Boundary |
+|---|---|---|
+| LLM_Workbench | Canonical templates, portable tools and skills, upgrade procedure, verified version candidates | No portfolio target selection or downstream deployment |
+| GPT_OS | Authorized target selection, deployment, rollout tracking and recovery | No canonical harness source or project product decisions |
+| Audit_Workbench | HFR audit, cross-project evidence and upstream summary reports | No harness implementation or deployment |
+| Each project | Its product, filled controls, local work/evidence and truthful HFR | No upstream template policy or portfolio orchestration |
+
+Source: the source-pinned [Blueprint claim disposition](../../specs/S-00A-blueprint-active-adr-and-context-map/blueprint-claim-disposition.json),
+root-029. The v3.2 assignment excludes portfolio automation and unnamed room updates.

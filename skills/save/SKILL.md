@@ -19,7 +19,8 @@ operation, never its file type or storage location.
    When selected notepad material needs promotion, compose `promote` within
    the same authorization. Do not create an owner, decision or assignment
    merely to have something to save. An ADR in `workbench/docs/adr/` retains
-   rationale; its `canonicalized_in` control owns the binding rule.
+   rationale and active accepted architectural decisions;
+   `canonicalized_in` names their operational owners.
 3. Check the actual changes and run their owning verification. Append named
    proof and remaining limitations to the assigned spec without rewriting
    earlier evidence. If spec state changed, render its Taskboard. Do not

@@ -1,11 +1,19 @@
 # LLM Workbench - Runbook
 
 **Last reviewed:** 2026-09-04
+**Blueprint reviewed:** 2026-09-09
 **Runtime owner:** Kayden
 **Environment:** local (macOS); public repo `github.com/KaydenClark/LLM_Workbench`
 
 This file explains how to operate, verify, and evaluate the workbench repo
 itself. It should be boring, exact, and executable.
+
+## Release Identity
+
+A version label freezes when stamped, even before publication. A changed core
+bundle requires a new version label; preserve the prior manifest policy as an
+exact readable legacy row. Never redefine a stamped label silently. Only the
+owner publishes integration to main after applicable review.
 
 ## Ordinary Entry
 
@@ -23,6 +31,30 @@ self-created task, or other delivered prose artifact. Internal JSON capture
 follows the meaningful-work rule and is reconciled at closeout; it does not
 turn a chat-only setup check into a reporting assignment. Round One precedes
 feedback testing.
+
+### Behavior Selection
+
+After resolving the requested scope, compose the smallest behavior already
+authorized by ordinary language; do not wait for a second skill invocation.
+
+| User intent | Behavior and endpoint |
+|---|---|
+| Decide or stress-test an idea | `grilling` with `notepad`; save answers/corrections before continuing |
+| Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
+| Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
+| Write specifications only | `to-spec` and needed `to-tickets`; stop at the specified endpoint |
+| Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
+| Prepare another agent's continuation | core `handoff`; readable Markdown with inherited scope |
+| Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
+
+Every helper inherits the caller's narrower endpoint. Mention is not invocation
+and invocation is not new authority. Optional routers and historical extension
+skills are not prerequisites. For meaningful work, create/resume a JSON note,
+read its revision, verify Actuality and correct stale state before dependent
+work. Confirm successful append/current results after material changes and
+validate/read back before voluntary pause or handoff. Runtime revision, privacy
+and dependency checks enforce those operations; host-native interception of
+arbitrary agent actions is not claimed.
 
 ## Prerequisites
 
@@ -78,6 +110,7 @@ node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-core-composition.mjs
+node tools/test-blueprint-contract.mjs
 node tools/test-session-transport.mjs
 node tools/test-configured-host.mjs
 node tools/test-core-skill-installer.mjs
@@ -127,7 +160,7 @@ Expected result:
 
 ### Core-skill setup check
 
-The public source bundle is intentionally limited to the 20 skills in
+The public source bundle is intentionally limited to the 21 skills in
 `skills/README.md`. Test the missing-only installer against a disposable user
 home without touching a real account:
 
@@ -617,15 +650,19 @@ node workbench/tools/spec-workbench.mjs doctor
 
 `next` returns one eligible ready ticket. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
-`render` updates only the marked Blueprint catalog and hot Taskboard regions.
+`render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
 recorded, and evidence present; render then removes the spec from the hot board.
 
 ### Architecture Decision Records
 
 Decision records live in the manifest-declared `docs/adr` collection
-(`workbench/docs/adr/`). An ADR owns rationale; its rule binds only where the
-`canonicalized_in` frontmatter points, and every named owner must exist.
+(`workbench/docs/adr/`). An active accepted ADR decision is architectural Canon; rationale and history
+remain distinct. `canonicalized_in` names operational owners, which must exist.
+Whole-record supersession names one valid successor filename; deprecated records
+require a durable `deprecation_reason`. Default `REGISTER.md` shows active accepted
+decisions, and `HISTORY.md` preserves all lifecycle states. Register regenerates
+both projections without rewriting decision bodies.
 
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"
@@ -765,8 +802,9 @@ node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY 
 node workbench/tools/notepads.mjs read --id N-001 --view current
 ```
 
-Choose the artifact type prefix explicitly (for example N for objective notes,
-H for handoffs); it is the prefix in the visible ID, not another identity field.
+Choose the artifact type prefix explicitly (for example N for objective notes);
+it is the prefix in the visible ID, not another identity field. Markdown
+handoffs do not use the JSON-notepad ID allocator.
 Allocation uses alphabet `0-9 A-Z a-z`, starts at one with minimum width three,
 and grows without truncation. It chooses the first unoccupied label; identifiers
 do not encode chronology. Legacy numeric labels reserve their existing text and
@@ -789,9 +827,11 @@ cleanup. Durable spec/ticket/ADR behavior is described above.
 New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
 and updates. A new layout declares `sessions/notepads/`: bare names create
 `notepads/work/NAME.json`; explicit project-relative paths select another local
-type folder. Handoffs use the declared `handoffs` collection. The tracked
-`notepad-templates` subcollection carries `notepad.schema.json` and work,
-grilling and handoff examples; live-note commands refuse that subcollection.
+type folder. Handoffs are authored as Markdown (`.md`) in the declared
+`handoffs` collection; they are readable continuation instructions, not JSON
+notepads and not `notepads.mjs` records. The tracked `notepad-templates`
+subcollection carries `notepad.schema.json` plus work and grilling JSON examples;
+the portable Markdown handoff shape is bundled as `assets/HANDOFF.md` in the installed `handoff` skill; producer source also exposes `templates/HANDOFF.md`.
 The schema describes new `notepad-1` interchange, while the runtime additionally
 checks unique entry IDs, links and revision safety. Legacy `scope-1` reading and
 migration remain supported without moving or regenerating source history.
@@ -842,9 +882,11 @@ a reader; it never grants authority or verifies a claim.
 3. After interruption, load relevant context and verify current controls and
    actual project state. File availability alone proves neither freshness nor
    successful recovery. Preserve significant work while it is underway.
-4. For an owner-requested handoff, author a destination-specific compaction from
-   the selected material. Include needed corrections and dependencies. Carry
-   the selected content when the destination cannot read the local note.
+4. For an owner-requested handoff, author a destination-specific Markdown
+   compaction from the selected material in `sessions/handoffs/`. State the job,
+   verified facts, exact resume action, boundaries, and source paths in plain
+   language. Include needed corrections and dependencies. Carry the selected
+   content when the destination cannot read the local note.
 5. Before cleanup, verify that promoted material is present in its durable
    owner and that retained work can still be understood and resumed. Trim only
    reconciled material from a retained note; preserve unresolved context,
@@ -895,17 +937,16 @@ recorded text and timestamps, before it can be written to.
 JSON note through that copier and call its `.md` output a notepad operation.
 Skill prose and human-readable projections may remain Markdown.
 
-An owner-requested handoff is separately authored for its destination. Create it
-with `--collection handoffs --type handoff` and add the concise context it needs.
-When it points to retained source instead of carrying all selected content,
-repeat `--retains NOTE` or `--retains NOTE#ENTRY_ID` during creation. These
-canonical pointers live in `relationships.retained_sources`. An active pointer
-blocks whole deletion; a whole-note pointer blocks any trim, while an entry
-pointer blocks removal of that entry. Related-note navigation alone does not
-claim retention. The agent must still inspect prose pointers and destination
-access; the tool checks declared dependencies, not semantic sufficiency.
+An owner-requested handoff is separately authored as a Markdown file in
+`sessions/handoffs/`, using the installed `handoff` skill and its bundled `assets/HANDOFF.md` as the copy-ready shape.
+It names the retained source, when any, in prose and must carry enough context
+for a receiver without local access. Before trimming or deleting source context,
+the author verifies that the receiver's needed material is durable or otherwise
+retained; Markdown handoffs are intentionally readable rather than tool-managed
+JSON records. Existing JSON handoffs remain legacy local sources and are not
+newly created.
 
-Reconcile the destination before releasing retention: set its status to
+For a legacy JSON retaining destination, reconcile it before releasing retention: set its status to
 `RECONCILED`, clear unresolved items with `--unresolved ""`, and clear its next
 action with `--next-action ""`. Source cleanup remains a separate decision.
 Whole `delete` requires the source to be reconciled with no entries, unresolved
@@ -1012,7 +1053,10 @@ The core machine catalog is `coreSkills` in the layout runtime; documentation
 and tests derive its size from that catalog. The current candidate includes
 save/promote while preserving checkpoint as a no-write compatibility notice.
 The v3.1.4 eighteen-skill manifest policy remains readable as a frozen legacy
-row; adding candidate source does not publish or stamp v3.2.0.
+row. The owner explicitly waived the stamped-label rule for the current v3.2.0
+repair only (S-050/S-051): its original twenty-skill policy remains readable,
+while the repaired twenty-one-skill core is identified by source commit and
+content hashes. This exception does not authorize publication.
 
 For an authorized room-specific extension, keep its sole source at the project
 path `.agents/skills/NAME/SKILL.md`. Choose a name absent from required core and
@@ -1695,3 +1739,28 @@ operation; zero may include unverified checks and is not blanket compatibility.
 Native discovery/invocation always needs a separate provider trace. Record the
 provider, model if reported, configuration, OS, exact source and operations;
 explicit skill-path invocation alone does not prove automatic discovery.
+
+## Independent Review Boundaries
+
+Task/integration review uses a fresh context and immutable candidate, comparison
+base, expected integration tip and named verification. Inspect scope, behavior,
+recovery, documentation, installed identities and consequential report claims.
+If the target changes, compare and review the resulting candidate as required
+before combining branches; a prior PASS is not approval of changed content.
+
+Whole-Workbench main-readiness review is separately requested, review-only work.
+It checks the combined product for drift, open gates, coherent skill composition,
+installed acceptance and semantic ownership. For the Blueprint, require all
+applicable destination sections, no status/version/evidence/catalog material,
+only materially relevant active ADR links, lossless removed-claim disposition,
+and root/template agreement. Record an explicit semantic pass/fail verdict;
+structure and link checks alone are insufficient. Only Kayden approves/merges main.
+
+For incident claims inspect original call/result pairs, including failed,
+rejected and interrupted calls. Record coverage and missing/truncated evidence.
+Distinguish not attempted, rejected before execution, executed and failed,
+local success and remote acceptance with read-back. A summary's omission is
+not proof of non-occurrence. Behavioral acceptance separately records actual
+provider/version/model, prompt, source/installed hashes and observed skill use;
+explicit-path fixtures do not establish ordinary-prompt discovery. Unavailable
+checks remain unverified. Repeated controlled trials are needed for reliability.

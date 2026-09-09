@@ -15,8 +15,7 @@ before changing anything:
 
 - [`AGENTS.md`](AGENTS.md) - how agents behave here: authority order, read/edit
   scope, the task-selection loop, documentation ownership, and proof rules.
-- [`BLUEPRINT.md`](BLUEPRINT.md) - compact product map, cross-cutting
-  architecture/invariants, non-goals, and spec catalog.
+- [`BLUEPRINT.md`](BLUEPRINT.md) - desired product destination, integrated design, constraints and lifecycle.
 - [`LEXICON.md`](LEXICON.md) - accepted project-wide terms and definitions;
   consult it when shared language could be ambiguous.
 - [`TASKBOARD.md`](TASKBOARD.md) - active spec projection: current slice, owner,
@@ -73,7 +72,7 @@ accepted on product truth, not passing tests alone.
 ## Project Status
 
 See [`TASKBOARD.md`](TASKBOARD.md) for active execution state and
-[`BLUEPRINT.md`](BLUEPRINT.md) for the durable spec catalog.
+[`workbench/specs/CATALOG.md`](workbench/specs/CATALOG.md) for the complete durable spec catalog, routed through the Lexicon.
 
 ## License
 

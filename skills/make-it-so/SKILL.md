@@ -1,90 +1,39 @@
 ---
 name: make-it-so
-description: Kayden's universal "approved — build it and save it" command, with or without a grilling session. Confirms pending approvals, promotes the settled decisions (grilling notepad or current conversation) into canonical docs and specs, implements the promoted tickets, and pushes every result to the remote. Invoke it explicitly; it never fires from someone saying the phrase in passing. Runs to-docs, to-spec, to-tickets, then the implement loop until progress is remotely recoverable.
+description: Carry the specific settled work the user approves through its requested endpoint, composing promotion, specification and implementation only where authorized. Use an explicit invocation; a passing mention grants nothing.
 ---
 
-The universal execution authorization; local continuation uses the notepad workflow.
-Invoke it explicitly — it must never trigger just because someone said "make it
-so" in conversation.
+Resolve the particular settled work and the user's endpoint before composing
+helpers. The current request controls every step. A specification-only,
+promotion-only or handoff-only request remains exactly that scope, even when
+it names this skill. Never treat invocation as approval of unrelated pending
+choices or as permission supplied by a notepad. Without a narrower endpoint,
+explicit approval to build includes the agreed implementation and authorized
+recovery under the project Contract; main publication stays owner-controlled.
 
-`make it so` is one authorization that covers the whole runway: it confirms
-every pending approval, locks the agreed scope, promotes the settled decisions
-to canon, and authorizes implementing the resulting tickets in this session
-with the results pushed to the remote. Do not pause for redundant re-approval
-between the steps below. Stop only for a decision that was never settled:
-destructive actions outside standing policy, paid services, credential
-changes, or genuinely new scope.
+Read the Contract and `workbench/manifest.json`. Compose `notepad` to resume the matching
+objective, verify live state and retrieve decisions with their corrections.
+Preserve original wording, lineage and open/tentative status. A stale note or
+compacted chat is evidence to reconcile; neither outranks the current request.
+If only conversation context exists, save material context before it can be lost.
 
-Resolve every durable planning and delivery record through
-`workbench/manifest.json`; it is the sole support-path authority after setup.
-Live notepads live in its `grilling` collection (`workbench/sessions/grilling/`),
-frozen historical checkpoints in `workbench/sessions/checkpoints/`, decision records in
-`workbench/docs/adr/`, and the runtime tools in `workbench/tools/`.
+1. State the settled scope, excluded actions and endpoint.
+2. Compose `promote` and `to-docs` for supported claims into the existing
+   authorized owners. Promotion may complete the request without implementation.
+3. Compose `to-spec` for required capability specifications and `to-tickets`
+   only for their authorized delivery slices. Use the existing owner rather
+   than restarting settled decisions or manufacturing work.
+4. Verify and persist the achieved documents with `save` under the authorized
+   recovery boundary. A requested handoff composes `handoff` as Markdown and
+   carries the same scope. Stop here when this is the requested endpoint.
+5. Only where implementation is authorized, compose `carry` and `implement`
+   for the selected tickets. Keep one lead responsible for evidence and docs;
+   verify, obtain independent integration review and prove remote containment
+   before claiming delivery. Continue independent authorized slices if another
+   has a genuine blocker. Never select unrelated work.
+6. Verify durable read-back before cleanup. Keep unresolved decisions,
+   corrections and active handoff dependencies in the local JSON note.
 
-## Resolve the input first
-
-The input is the settled decisions being approved. Resolve it in this order:
-
-1. **Matching grilling notepad.** If a `PROVISIONAL` notepad in
-   `workbench/sessions/grilling/` covers the topic under discussion, it is the
-   source of truth — the notepad wins over a compacted chat.
-2. **Stale notepad guard.** Never promote a `PROVISIONAL` notepad whose topic
-   does not match the current discussion. Name the mismatched notepad
-   visibly, leave it untouched, and continue with the conversation fallback.
-3. **Conversation fallback.** With no matching notepad, the settled decisions
-   of the current conversation are the input. Write them into a new notepad at
-   `workbench/sessions/grilling/<topic-slug>-<YYYY-MM-DD>.json` first, using the
-   current Contract: decisions `locked`, unsettled items `open`, with source
-   context and corrections preserved in ordered entries. This gives promotion
-   the same durable record a grilling would leave. If the conversation has no
-   settled decisions to write, say so and stop; there is nothing to authorize.
-
-Then, in order:
-
-1. Summarize and lock the agreed scope from the notepad. Keep important working
-   context saved as work proceeds; token exhaustion or Stop may prevent another
-   write. Route supported claims directly to their durable owners in the steps
-   below; a copied live record is not required. Preserve existing checkpoints
-   under their current retention rules; the live notepad is not durable evidence.
-2. Compose core `promote` for selected supported notepad material through the
-   public direct-promotion seam; use `save` for its actual persistence boundary.
-   `to-docs` — route every `[locked]` decision that belongs in existing control
-   files to its owner. Record an ADR only when warranted: a consequential
-   decision with meaningful alternatives or reversal cost gets
-   `node workbench/tools/adr.mjs new --title "..."` in the manifest `adr`
-   collection (`workbench/docs/adr/`), with `canonicalized_in` naming the
-   control that now carries its rule; an ordinary decision gets none.
-3. `to-spec` — create or update the stable `SPEC.md` for a new or changed
-   capability (skip when the outcome is documentation only).
-4. `to-tickets` — add dependency-aware slices to that spec. `make it so`
-   authorizes the decomposition, so do not pause for redundant approval.
-5. Carry every `[tentative]` and `[open]` item forward as an explicit blocker;
-   never silently promote or drop one.
-6. Render and verify the generated `TASKBOARD.md` when specs or tickets changed.
-7. Commit and push the promoted docs, specs, and tickets before implementation
-   begins, following the project `RUNBOOK.md` version-control rules. The plan
-   itself must be remotely recoverable before any code changes.
-8. Implement the promoted tickets here, one at a time, using the `/implement`
-   contract: claim the slice, drive it red/green, update owning docs, make a
-   truthful checkpoint commit, push it, review, and close. Before voluntarily yielding
-   at a done or blocked boundary, push the authorized durable changes. Unexpected
-   token exhaustion or Stop may prevent a final push; preserve important context
-   locally during work so continuation does not depend on that final action.
-9. If a ticket cannot proceed (blocked dependency, failing gate, missing
-   environment), record the blocker in the spec, push the truthful checkpoint,
-   and continue with the next eligible ticket; report every skipped slice
-   visibly at the end.
-10. After promotion, verify the material in its durable owners before cleanup.
-    Trim only reconciled material from a retained note. Preserve unresolved
-    context, corrections needed by remaining work, and active handoff dependencies.
-    Flush or delete the whole record only when all important material has been
-    reconciled and nothing still depends on it. No routine archive or redundant
-    approval is required. Report the durable doc/spec/ticket paths and the pushed
-    branches and commits that hold the work.
-
-`make it so` authorizes durable planning, implementation, and remote
-checkpoints from the settled decisions. It does not broaden standing project
-authority or safety boundaries: implementation runs under the same scope,
-verification, and git rules as any other slice. Scheduling to a later session
-is the fallback only when this environment truly cannot implement safely — and
-even then the promoted plan must already be pushed before yielding.
+Report the achieved endpoint, actual persistence results and any remaining gate.
+A rejected request, failed command or missing environment is not success and
+must not be converted into new authority by a helper.
