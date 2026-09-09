@@ -30,7 +30,7 @@ export const templatePlaceholders = [
   "[Decision or invariant]",
   "[Describe how the product should be created, updated, repaired, validated and deployed.]",
   "[Describe how the product should feel and behave in its main situations, including failures and recovery.]",
-  "[Describe qualities, client-wide requirements and constraints that apply across the product.]",
+  "[Describe qualities, client-wide requirements and constraints that apply across the product, including privacy/safety boundaries and the evidence required to claim verified behavior.]",
   "[Describe the desired finished product and how its parts form one useful whole.]",
   "[Describe the durable results users should achieve, with concrete boundaries.]",
   "[Docs to update, or why no update is needed]",

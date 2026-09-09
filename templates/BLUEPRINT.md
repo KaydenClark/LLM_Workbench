@@ -22,7 +22,7 @@
 
 ## Cross-Cutting Qualities And Constraints
 
-[Describe qualities, client-wide requirements and constraints that apply across the product.]
+[Describe qualities, client-wide requirements and constraints that apply across the product, including privacy/safety boundaries and the evidence required to claim verified behavior.]
 
 ## Desired Lifecycle
 
