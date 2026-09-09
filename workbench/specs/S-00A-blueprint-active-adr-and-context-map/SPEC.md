@@ -11,7 +11,7 @@
 **Latest event:** Spec completed and removed from the hot board.
 **Next gate:** none
 
-> **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
+> **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
 ## Outcome
 
@@ -225,6 +225,7 @@ release owner. The claim-disposition inventory is the durable migration record.
 | 2026-09-09 | TK-00B | Ticket closed | c1600d1 independent semantic/evaluator PASS;166root+59template source segments byte-exact; destination/owner tests GREEN; full43b490PASS | Eight-section Blueprint, exact claim dispositions, active ADR Canon and independent main-readiness checklist reconciled in both root and generic controls | Final full repeat and exact integration review remain; no main publication approval |
 | 2026-09-09 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 | 2026-09-09 | spec | v3.2.1 manager recovery independently revalidated completed A without reopening its implementation | Luna read-only review: c1600d1, b490657 and 6e024ec contained by integration c0ac60a; ADR14, Blueprint, citation and composition checks pass; 225 unique disposition claims retain owners | Clarified pre-implementation state as historical; original evidence preserved | v3.2.1 C-E delivery remains separate; prior main-publication statements describe the original run |
+| 2026-09-09 | spec | Anchored live post-implementation sections to recovered integration c0ac60a | Citation-anchor tests3/3PASS; pre-implementation anchor and append-only rows preserved | Current revalidation reads the delivered control tree | none for the completed capability |
 
 ## Completion Result
 

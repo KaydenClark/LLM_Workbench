@@ -57,6 +57,23 @@ The blank, copyable templates live in `templates/`:
 `BLUEPRINT.md`, capability truth in specs, and only active execution state in
 `TASKBOARD.md`.
 
+## From Project Evidence To A Fresh Workbench
+
+Prepare a named project's source evidence and unanswered Blueprint questions
+with the installed `project-evidence.mjs` tool. Once the relevant decisions are
+recorded, the release-side `genesis-from-decisions.mjs` command can assemble a
+new independent room from reviewed control drafts, selected active ADRs and
+scoped capability inputs. It preserves source lineage and validates the room;
+it does not invent owner answers or prove a product works.
+
+Follow [the Runbook](RUNBOOK.md#prepare-project-evidence-and-blueprint-questions)
+for the commands and input boundary, then [Genesis](templates/GENESIS.md) for
+implementation, project checks and remote recovery. An existing project follows
+[Adoption](templates/ADOPTION.md). The source capabilities are
+[S-00C](workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md),
+[S-00D](workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md) and the
+[S-00E fresh-project proof](workbench/specs/S-00E-fresh-template-project-proof/SPEC.md).
+
 ## This Repo Dogfoods Its Own Harness
 
 The root-level `AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, and `RUNBOOK.md`

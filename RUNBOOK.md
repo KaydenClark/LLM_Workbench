@@ -111,6 +111,7 @@ node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-core-composition.mjs
 node tools/test-project-evidence.mjs
+node tools/test-genesis-from-decisions.mjs
 node tools/test-blueprint-contract.mjs
 node tools/test-session-transport.mjs
 node tools/test-configured-host.mjs
@@ -185,6 +186,41 @@ A sub-minute isolated demonstration is `node tools/test-project-evidence.mjs`
 from this release checkout; it exercises the same public CLI including refusal
 cases. It proves deterministic preparation, not an owner interview or model
 reliability.
+
+### Derive a fresh room from recorded decisions
+
+From a clean release checkout, with a clean named Template checkout and an
+explicitly prepared source room, run:
+
+```bash
+node tools/genesis-from-decisions.mjs derive --template TEMPLATE_ROOT --source-project EVIDENCE_ROOM --intake workbench/sessions/notepads/grilling/blueprint-questions.json --plan workbench/docs/genesis-plan.json --destination NEW_PROJECT
+```
+
+The destination must not exist. Intake and plan paths, and every draft file
+named by the plan, are relative to the evidence room. A `genesis-plan-1` request
+names `project.name/founding_prompt`, the seven `controls` and `memory` drafts
+(each with `file` and `sha256`), `selected_questions`, `active_adr_ids`, and
+`capabilities`. A capability names its `id`, `title`, `derived_from` question IDs,
+`outcome`, `acceptance` strings, and one `ticket` with `id` and `slice`.
+
+Selected questions must be locked and have matching current decision entries.
+Corrected or missing answers and changed evidence refuse derivation. The command
+preserves decision wording and attribution, selected evidence bytes and hashes,
+and active ADR lineage in the new room's durable owners. It does not decide
+whether a caller-authored plan faithfully interprets owner intent; review must
+judge that relationship. A note or plan does not grant implementation authority.
+
+The staged room receives a new identity and current release runtime through
+layout initialization and managed installation. Existing Template task state,
+private live notes and old runtime receipts do not become new-project state.
+Room-local rendering, doctor and Genesis validation run before publication of
+the local destination. Remote recovery and project implementation remain separate
+steps under the caller's scope. Existing projects use Adoption.
+
+`node tools/test-genesis-from-decisions.mjs` exercises the public seam with
+self-contained synthetic fixtures. The owning S-00E evidence separately records
+the actual fresh project and native continuation; fixture success alone is not
+that proof.
 
 ### Core-skill setup check
 

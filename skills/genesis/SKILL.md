@@ -23,7 +23,10 @@ inheriting the Template's room state.
    from those inputs and any bounded choice the owner stated plainly in the
    founding prompt. Do not turn an assumption, inherited Template content, or a
    prepared question into an owner decision.
-4. Create the seven filled root controls, run
+4. For an explicitly selected fresh Template copy, use the validated
+   `tools/genesis-from-decisions.mjs derive` path documented in the protocol.
+   It forms the room from reviewed drafts and recorded decisions; implementation
+   and remote recovery still follow. Otherwise create the seven filled root controls, run
    the release checkout's `node workbench/tools/workbench-layout.mjs init` for
    the schema 2 support root (it seeds the wiki contract and declares
    `git.defaultBranch` and `git.integrationBranch` from `--default-branch` and

@@ -104,6 +104,33 @@ The Blueprint remains a destination narrative throughout. It may link an active
 ADR where that decision materially explains the destination, but it is not a
 decision ledger, status report, evidence archive, or generated Spec catalog.
 
+## Validated Fresh-Template Formation
+
+When the named starting point is a clean Workbench Template checkout, prepare
+filled control drafts and a source-linked scoped plan in the evidence room.
+The release-side formation command validates them and creates an absent target:
+
+```bash
+node tools/genesis-from-decisions.mjs derive \
+  --template [TEMPLATE_ROOT] --source-project [EVIDENCE_ROOM_PATH] \
+  --intake [SOURCE_RELATIVE_NOTE] --plan [SOURCE_RELATIVE_PLAN] \
+  --destination [ABSOLUTE_PROJECT_PATH]
+```
+
+Run this from the clean release checkout. The `genesis-plan-1` input names the
+project and founding prompt, seven filled `controls` and a `memory` draft by
+source-relative file and SHA-256, selected locked questions, active ADRs, and
+scoped capabilities with decision references and acceptance. Keep decisions and
+their attribution faithful; a demonstration decision is not an invented owner
+answer. The runtime validates source bytes and lineage, not semantic agreement.
+
+This command composes support-root initialization, managed runtime installation,
+new-room identity, durable source preservation, local Git branches, rendering,
+doctor and Genesis readiness. It does not copy the Template's old tasks or live
+records. A valid formed room is the starting point for its scoped implementation
+slice; it is not proof of a working product or remote delivery. Continue with
+the smallest running path, project checks and recovery obligations below.
+
 ## Phases
 
 Run these in order. Each phase produces a durable artifact and should be
