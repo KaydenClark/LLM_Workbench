@@ -175,7 +175,9 @@ export function render(rootDir) {
   const taskboardPath = path.join(root, 'TASKBOARD.md');
   const blueprint = fs.readFileSync(blueprintPath, 'utf8');
   const taskboard = fs.readFileSync(taskboardPath, 'utf8');
-  atomicWrite(blueprintPath, replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs)));
+  if (hasRegion(blueprint, CATALOG_START, CATALOG_END)) {
+    atomicWrite(blueprintPath, replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs)));
+  }
   atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs)));
   return { specs: specs.length, active: specs.filter((spec) => isHot(spec)).length };
 }
@@ -190,7 +192,7 @@ export function doctor(rootDir, options = {}) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
   issues.push(...packetFindings(specs, options));
-  checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
+  checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues, { optional: true });
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root, options.home));
@@ -490,13 +492,20 @@ function replaceRegion(content, startMarker, endMarker, body) {
   return `${content.slice(0, start)}${startMarker}\n${body}\n${endMarker}${content.slice(end + endMarker.length)}`;
 }
 
-function checkRender(root, relative, startMarker, endMarker, expected, issues) {
+function hasRegion(content, startMarker, endMarker) {
+  const start = content.indexOf(startMarker);
+  const end = content.indexOf(endMarker);
+  return start >= 0 && end >= start;
+}
+
+function checkRender(root, relative, startMarker, endMarker, expected, issues, { optional = false } = {}) {
   const filePath = path.join(root, relative);
   if (!fs.existsSync(filePath)) {
     issues.push(finding('broken-render-target', `${relative} is missing`));
     return;
   }
   const content = fs.readFileSync(filePath, 'utf8');
+  if (optional && !hasRegion(content, startMarker, endMarker)) return;
   try {
     const actual = normalizeLineEndings(regionBody(content, startMarker, endMarker));
     if (actual !== normalizeLineEndings(expected)) {

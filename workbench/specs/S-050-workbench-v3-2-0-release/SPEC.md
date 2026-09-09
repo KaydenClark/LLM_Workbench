@@ -6,16 +6,18 @@
 **Owner:** codex
 **Stance:** Builder
 **Updated:** 2026-09-08
-**Catalog description:** Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project.
+**Catalog description:** Deliver the reconciled v3.2.0 capability set and prove the Workbench Template update and reviewed integration.
 **Blockers:** live-device-and-private-repository-access (final rollout readiness only)
 **Latest event:** TK-004 closed with proof.
-**Next gate:** Complete TK-005.
+**Next gate:** Complete S-00A, then carry the Workbench Template update through TK-005.
 
 > **Citation anchors.** pre=`212762774b5cb7c065ab573bb487752fe98eff4c` post=`212762774b5cb7c065ab573bb487752fe98eff4c`.
 
 ## Outcome
 
-Deliver the reconciled v3.2.0 capability set and prove Example integration plus a useful freshly generated project.
+Deliver the reconciled v3.2.0 capability set and prove the Workbench Template
+update through reviewed integration. The later fresh-copy personalization path
+has its own planned capability owners and is not v3.2 acceptance.
 
 ## Why It Matters
 
@@ -52,12 +54,14 @@ and retained, never silently staged with the release.
 5. Stamp v3.2.0 only after behavior and required proof are green, then validate
    the stamp. Review and integrate the immutable upstream candidate. Consume
    only clean, pinned source including manifest, templates, tools and skills.
-6. Deliver Example S-003 on exact branch `v3.2.0`, retain that branch through
-   owner acceptance, independently review then merge it to integration. Prove
-   a freshly generated independent room can become a working concrete project
-   and resume from an agent-authored note without personal catalog dependencies.
-7. Close only after live remote containment, installed identities, fresh-project
-   usefulness, and actual Mac/Windows Claude/Codex continuity proof exist.
+6. Complete S-00A's active-ADR, Context Map, and destination-only Blueprint
+   rebuild, then deliver the Workbench Template update on exact branch `v3.2.0`.
+   Retain that branch through owner acceptance, independently review it, merge
+   it to integration, and read the merged state back.
+7. Close only after live remote containment, installed identities, successful
+   Workbench Template update, and actual Mac/Windows Claude/Codex continuity
+   proof exist. S-00C through S-00E own later project-evidence, Genesis, and
+   fresh-copy usefulness claims.
 
 ## Decisions And Contracts
 
@@ -71,12 +75,13 @@ main publication and rollout to other active rooms remain owner-only/outside sco
 
 | Unit | Owner | Endpoint |
 |---|---|---|
-| V32-01 and V32-06 | This spec TK-001/002/004/006 | Full scope, canonical decisions, release checks and receipts |
+| V32-01 and V32-06 | This spec TK-001/002/004/006 plus S-00A | Full scope, active-ADR/Blueprint rebuild, release checks and receipts |
 | V32-02 | S-046 and S-047 | Shared JSON lifecycle and compatible visible identity |
 | V32-03 | S-048 | Direct promotion and frozen checkpoint history with usable rollback |
 | V32-04 | S-051 | Core ownership, composition, installation and tested compatibility |
 | V32-05 | S-052 and S-053 | Optional private continuity and agreed configured-host floor |
-| V32-07/08/09 | Example S-003 | Upgrade, usable fresh project and reviewed Example integration |
+| V32-07/09 | S-00B and target-room owner | Workbench Template update and reviewed integration |
+| Future template-to-project stages | S-00C, S-00D, S-00E | Evidence intake, Genesis derivation, and fresh-copy proof; excluded from v3.2 acceptance |
 
 The recovered five-check host minimum in S-053 is the current implementation
 baseline under the renewed owner request. A real second device and
@@ -104,7 +109,7 @@ gate is pending. A fixture cannot satisfy a named live-host or cross-device gate
 | TK-002 | Reconcile ADRs and all included documentation contracts | done | TK-001 | Full 33-command suite passes at fixed 87244cc; independent bounded documentation PASS; guardrail78 unchanged |
 | TK-003 | Converge capability implementations and useful continuity proof | done | none | Local capability implementation converged; full42 and focused host review corrections6 pass; useful Genesis/native continuation receipt preserved |
 | TK-004 | Verify and integrate the immutable upstream v3.2.0 candidate | done | TK-003 | 16c8278 full42 PASS; configured-host10 and source-identity18 PASS; independent corrective review PASS; PR81 merged as integration5ceef14 with exact candidate containment and zero tree delta |
-| TK-005 | Deliver Example v3.2.0 and fresh project acceptance | ready | TK-004 | pending |
+| TK-005 | Deliver Workbench Template v3.2.0 and reviewed integration | blocked | TK-004; S-00A | pending |
 | TK-006 | Reconcile release receipts and readiness verdict | ready | TK-005 | pending |
 
 ### TK-001 - Promote and push the complete reconciled scope
@@ -131,17 +136,25 @@ Carry S-046/047/048/051/052/053 individually; investigate existing S-046 impleme
 
 Verify complete clean consumed lanes, all new tests and full suite. Stamp only after behavior green, rerun affected/full checks, independently review exact final candidate, PR to integration and prove live remote containment. Preserve failed or unavailable acceptance; no main merge.
 
-### TK-005 - Deliver Example v3.2.0 and fresh project acceptance
+### TK-005 - Deliver Workbench Template v3.2.0 and reviewed integration
 
 **Stance:** Builder
 
-Carry Example S-003 through explicit upgrade, room/tour tests, isolated fresh clone and Genesis demonstration, separate-context review, v3.2.0 PR merge to integration and fresh read-back. Record exact upstream and Example commits, PR and resulting tree.
+Carry S-00B and the target room owner through explicit update, room/tour tests,
+control-fidelity disposition, separate-context review, v3.2.0 PR merge to
+integration, and fresh read-back. Record exact upstream and target commits, PR,
+and resulting tree. Do not substitute an isolated fresh clone and Genesis
+demonstration, which belong to S-00E.
 
 ### TK-006 - Reconcile release receipts and readiness verdict
 
 **Stance:** Builder
 
-Check all requirements and all 181 dispositions; append upstream/Example immutable receipts, installed manifest/tool/skill and control-fidelity results, fresh project useful-task and saved-note continuation, host/model/machine evidence. Report ready only if every acceptance passes; readiness authorizes no further rollout.
+Check all requirements and all 181 dispositions; append upstream/Template
+immutable receipts, installed manifest/tool/skill and control-fidelity results,
+and host/model/machine evidence. State S-00C through S-00E as planned follow-on
+work rather than fresh-project proof. Report ready only if every v3.2 acceptance
+passes; readiness authorizes no further rollout.
 
 ## Acceptance Criteria
 
@@ -149,8 +162,9 @@ Check all requirements and all 181 dispositions; append upstream/Example immutab
 - [ ] All included ADRs, amendments and documentation changes are reconciled in current root and generic owners.
 - [ ] S-046, S-047, S-048, S-051, S-052 and S-053 satisfy their accepted scope and verification.
 - [ ] Clean immutable v3.2.0 upstream source passes required suites, separate-context review and live integration containment.
-- [ ] Example branch v3.2.0 passes installed conformance and independent review, is merged to integration and remains owner-visible.
-- [ ] Fresh generation/customization produces a useful independent project with new identity, working tools/tests and real saved-note continuation.
+- [ ] Workbench Template branch v3.2.0 passes installed conformance and independent review, is merged to integration and remains owner-visible.
+- [ ] S-00A's destination-only Blueprint, active ADR lifecycle/routing, Context Map, and lossless claim disposition are accepted before the Template update.
+- [ ] Future fresh generation/customization, useful-project, and saved-note continuation claims remain explicitly owned by S-00C through S-00E and are not presented as v3.2 proof.
 - [ ] Real Mac/Windows Claude/Codex transport proof, offline/conflict behavior and configured-host evidence are recorded without fixture substitution.
 - [ ] Final release receipt distinguishes readiness, publication and actual active-room deployment.
 

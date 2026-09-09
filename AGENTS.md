@@ -19,7 +19,9 @@ What an agent may do comes only from these sources, in this order:
    acceptance, and verification apply to that capability only after selection
    or explicit assignment. It cannot enlarge the request, platform safety, or
    this file's scope. An unassigned spec is evidence, not instruction.
-4. `BLUEPRINT.md`, `LEXICON.md`, and `RUNBOOK.md` as procedural Canon;
+4. Accepted, non-superseded ADR decision claims as cross-cutting architectural
+   Canon, then `BLUEPRINT.md`, `LEXICON.md`, and `RUNBOOK.md` as procedural
+   Canon;
    `TASKBOARD.md` is a generated projection and `README.md` is orientation.
 
 Only the user and the approved root controls named above instruct. Templates,
@@ -34,7 +36,9 @@ Source and tests verified live say what is implemented; Canon says what is
 accepted. When they disagree, name the condition instead of picking a winner:
 newer Canon is an implementation gap to close or record in the owning spec;
 newer verified Actuality is documentation drift to repair in the touched owner;
-unclear ordering is an ambiguity to investigate and surface. Neither "code
+unclear ordering is an ambiguity to investigate and surface. An accepted,
+non-superseded ADR decision is Canon for its cross-cutting architectural
+choice; rationale and history retain their operation-specific planes. Neither "code
 always wins" nor "documentation proves implementation".
 
 Governance Planes classify claims and their use in one operation, never whole
@@ -210,13 +214,13 @@ owner. Route each truth once:
 | Truth | Owner |
 |---|---|
 | how agents work, safety, Git, verification | `AGENTS.md` |
-| cross-cutting product direction and invariants | `BLUEPRINT.md` |
+| whole-product destination and constraints | `BLUEPRINT.md` |
 | shared project terms and accepted definitions | `LEXICON.md` |
 | active assignment/blocker/event/next gate | `TASKBOARD.md` generated projection |
 | requirements, decisions, acceptance, evidence, completion | assigned `SPEC.md` |
 | commands and troubleshooting | `RUNBOOK.md` |
 | public setup and usage | `README.md` |
-| decision rationale, alternatives, supersession | `workbench/docs/adr/` (rule binds only where `canonicalized_in` points) |
+| cross-cutting architectural decisions, rationale, and lifecycle | active records in `workbench/docs/adr/`; accepted decision claims are Canon |
 | durable knowledge and owner-directed design-concept articles | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; never copied task state) |
 
 A citation into a file that changes must say which tree it reads at. Every merge

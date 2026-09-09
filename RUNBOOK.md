@@ -624,8 +624,12 @@ recorded, and evidence present; render then removes the spec from the hot board.
 ### Architecture Decision Records
 
 Decision records live in the manifest-declared `docs/adr` collection
-(`workbench/docs/adr/`). An ADR owns rationale; its rule binds only where the
-`canonicalized_in` frontmatter points, and every named owner must exist.
+(`workbench/docs/adr/`). An accepted, non-superseded ADR decision is
+cross-cutting architectural Canon; its rationale, alternatives, and provenance
+retain their operation-specific planes. `canonicalized_in` names the current
+operational owners, and every named owner must exist. Ordinary routing uses
+active accepted records; historical records remain at stable paths through
+explicit lifecycle links.
 
 ```bash
 node workbench/tools/adr.mjs new --title "Decision title"

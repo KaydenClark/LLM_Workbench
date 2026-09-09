@@ -168,8 +168,10 @@ names a branch that resolves locally or on a remote; the Genesis readiness
 gate fails closed on the same two conditions. When that branch resolves and
 the spec `next` would select is already complete there, `doctor` reports
 `complete-on-integration` (attention) without hiding the work. Decision records live in
-`workbench/docs/adr/`; an accepted record names the control that carries its
-rule in `canonicalized_in`, and `register` derives `REGISTER.md`.
+`workbench/docs/adr/`; an accepted, non-superseded decision is cross-cutting
+architectural Canon, while its rationale and provenance retain their
+operation-specific planes. `canonicalized_in` names current operational owners,
+and `register` derives the active `REGISTER.md` view.
 
 `permission-scope-drift` is reported when `.claude/settings.json` exists and
 withholds a manifest-declared authorship lane (no covering `Edit` `allow` rule,

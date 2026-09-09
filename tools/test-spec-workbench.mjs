@@ -75,6 +75,15 @@ try {
   assert.equal(nextWork(root), null, 'completed work must not be returned as eligible');
   assert.deepEqual(doctor(root), [], 'a rendered valid repository should pass doctor');
 
+  write('BLUEPRINT.md', '# Destination-only Blueprint\n\nA product destination, not a generated spec catalog.\n');
+  render(root);
+  assert.equal(
+    read('BLUEPRINT.md'),
+    '# Destination-only Blueprint\n\nA product destination, not a generated spec catalog.\n',
+    'render must preserve a destination-only Blueprint that deliberately omits the catalog region'
+  );
+  assert.deepEqual(doctor(root), [], 'a destination-only Blueprint must not create render drift');
+
   fs.writeFileSync(
     path.join(root, 'BLUEPRINT.md'),
     read('BLUEPRINT.md').replaceAll('\n', '\r\n')

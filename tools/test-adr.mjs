@@ -69,6 +69,28 @@ test('records checked out with CRLF line endings parse, validate, and register',
   }
 });
 
+test('register routes only active decisions by default and validates whole-record lifecycle links', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    fs.writeFileSync(path.join(collection, '0001-old.md'), adr('superseded', 'superseded_by: 0002-current.md\n'));
+    fs.writeFileSync(path.join(collection, '0002-current.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, '0003-retired.md'), adr('deprecated', 'deprecated_reason: no longer an architectural decision\n'));
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir), [], 'a complete lifecycle corpus validates');
+    const register = fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8');
+    assert.match(register, /## Active Decisions/);
+    assert.match(register, /\[0002\]\(0002-current\.md\)/, 'accepted record is in the active route');
+    assert.doesNotMatch(register.split('## Historical Records')[0], /0001-old|0003-retired/, 'historical records stay out of the default route');
+    assert.match(register, /## Historical Records[\s\S]*0001-old[\s\S]*0003-retired/, 'history remains reachable in the same projection');
+    fs.writeFileSync(path.join(collection, '0001-old.md'), adr('superseded', 'superseded_by: missing.md\n'));
+    writeRegister(dir);
+    assert.ok(validateAdrs(dir).some((item) => item.code === 'invalid-adr' && item.adr === '0001-old.md'), 'a superseded record requires an existing accepted whole-record successor');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('validation rejects unknown canonicalization targets, untracked provenance, missing frontmatter, and duplicate numbers', () => {
   const dir = fixture();
   try {
