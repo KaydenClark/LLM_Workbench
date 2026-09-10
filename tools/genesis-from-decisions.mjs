@@ -137,10 +137,17 @@ function git(root, args) {
 
 function safeRepository(value, label) {
   const repository = oneLine(value, label, 'invalid-source');
-  privacy(repository, label);
   const https = /^https:\/\/[^\s/@]+\/[^\s]+$/i.test(repository) && !repository.includes('@');
-  const ssh = /^(?:ssh:\/\/git@[^\s/]+\/[^\s]+|git@[^\s:]+:[^\s]+)$/.test(repository);
+  const sshUrl = /^ssh:\/\/git@[^\s/@:]+(?::\d+)?\/[^\s]+$/.test(repository);
+  const sshScp = /^git@[^\s/:@]+:[^\s]+$/.test(repository);
+  const ssh = sshUrl || sshScp;
   if (!https && !ssh) fail('invalid-source', `${label} must be a credential-free HTTPS or Git SSH repository URL`);
+  const privacyInput = sshUrl
+    ? repository.replace(/^ssh:\/\/git@/, 'ssh://git-transport-at-')
+    : sshScp
+      ? repository.replace(/^git@/, 'git-transport-at-')
+      : repository;
+  privacy(privacyInput, label);
   return repository;
 }
 

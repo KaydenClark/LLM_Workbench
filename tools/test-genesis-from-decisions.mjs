@@ -74,9 +74,9 @@ function templateControlText(name, version) {
   return `# Workbench Template - ${name.replace('.md', '')}\n\n> Generated from LLM Workbench ${version}.\n\n## Purpose\n\nThis is the filled Template source control.${region}`;
 }
 
-function makeTemplate(release, base) {
+function makeTemplate(release, base, origin = 'https://example.invalid/workbench-template.git') {
   const root = path.join(base, 'template');
-  initializeRoom(release, root, 'https://example.invalid/workbench-template.git');
+  initializeRoom(release, root, origin);
   for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
     write(path.join(root, name), templateControlText(name, release.version));
   }
@@ -136,9 +136,9 @@ function makeSource(release, base) {
   return { root, commit: commitId, evidence, controls, memoryFile, adr, plan, planFile, note: prepared.note };
 }
 
-function fixture(release) {
+function fixture(release, options = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'genesis-decisions-case-'));
-  return { root, template: makeTemplate(release, root), source: makeSource(release, root) };
+  return { root, template: makeTemplate(release, root, options.templateOrigin), source: makeSource(release, root) };
 }
 
 function run(release, f, destination, expect = 0, extras = []) {
@@ -200,6 +200,15 @@ const release = makeRelease(suiteRoot);
   assertNoStage(destination);
 }
 
+for (const origin of ['git@github.com:KaydenClark/Example_Workbench.git', 'ssh://git@github.com/KaydenClark/Example_Workbench.git']) {
+  const f = fixture(release, { templateOrigin: origin });
+  const destination = path.join(f.root, 'generated-from-ssh-origin');
+  const report = run(release, f, destination);
+  assert.equal(report.status, 'derived');
+  const manifest = JSON.parse(fs.readFileSync(path.join(destination, 'workbench', 'manifest.json')));
+  assert.equal(manifest.provenance.template.repository, origin);
+}
+
 for (const [label, mutate, code] of [
   ['open-question', f => { const file = path.join(f.source.root, f.source.note); const note = JSON.parse(fs.readFileSync(file)); note.current.questions[0].status = 'open'; json(file, note); }, 'question-not-locked'],
   ['missing-decision', f => { const file = path.join(f.source.root, f.source.note); const note = JSON.parse(fs.readFileSync(file)); note.entries[0].question_id = 'Q2'; json(file, note); }, 'decision-missing'],
@@ -208,6 +217,8 @@ for (const [label, mutate, code] of [
   ['symlinked-plan', f => { const target = `${f.source.planFile}.target`; fs.renameSync(f.source.planFile, target); fs.symlinkSync(path.basename(target), f.source.planFile); }, 'unsafe-path'],
   ['hardlinked-evidence', f => { fs.linkSync(f.source.evidence, path.join(path.dirname(f.source.evidence), 'pond-hardlink.md')); }, 'unsafe-path'],
   ['destination-invalid-adr', f => { write(f.source.adr, '---\nstatus: accepted\ndate: 2026-09-09\ncanonicalized_in:\n  - inputs/pond.md\n---\n\n# Pond architecture\n\nUse a bounded static interaction first.\n'); }, 'adr-invalid'],
+  ['ssh-wrong-user', f => { git(f.template.root, 'remote', 'set-url', 'origin', 'alice@github.com:KaydenClark/Example_Workbench.git'); }, 'invalid-source'],
+  ['ssh-private-token', f => { git(f.template.root, 'remote', 'set-url', 'origin', 'ssh://git@github.com/token=abcdefghijklmnop/Example_Workbench.git'); }, 'privacy-boundary'],
   ['privacy-plan', f => { f.source.plan.capabilities[0].outcome = 'token=abcdefghijklmnop'; json(f.source.planFile, f.source.plan); }, 'privacy-boundary'],
   ['unselected-derivation', f => { f.source.plan.capabilities[0].derived_from = ['Q2']; json(f.source.planFile, f.source.plan); }, 'invalid-plan']
 ]) {
