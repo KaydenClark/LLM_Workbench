@@ -84,10 +84,19 @@ records that distinction; cloning an existing room does not create a new one.
 
 ## Delivery state
 
-The useful project and saved-note continuation are verified locally. Recovery
-publication is scoped to a new Puffer-Pond task branch, preserving its original
-main. Final Workbench version verification and independent integration review
-remain release gates. No deployment or repeated-reliability claim is made.
+The useful project and saved-note continuation are verified and published on
+[Puffer-Pond codex/v3.2.1-fresh-proof](https://github.com/KaydenClark/Puffer-Pond/tree/codex/v3.2.1-fresh-proof).
+Remote readback confirms `75a242dd2d8e5a03295e37f3858e32b37868ede5`; original
+main remains `93c3d2cf9bb4fba5f3e501f7ebc0670b9435ed11`. A fresh-context
+5.5 High reviewer approved that immutable project for recovery publication.
+A clean same-room clone independently passed seven tests, build and doctor.
+
+Workbench candidate `4e5755585f3869d1b2e5f6a6322b555b614d4a0e` passed all
+45 Runbook commands and fresh-context 5.5 High review. The subsequent Git SSH
+origin correction at `1dda511c541662ab96d61c5bdf5dac33b2bcb83e` requires
+a new full run and fresh review before integration; the earlier PASS does not
+authorize the changed candidate. Final delivery results belong to the release
+PR. No deployment or repeated-reliability claim is made.
 
 ## Release-stamp check
 

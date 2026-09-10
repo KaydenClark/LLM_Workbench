@@ -90,6 +90,8 @@ and `skills/genesis/SKILL.md`; generated-project requirements stay in its Spec.
 | 2026-09-10 | TK-00E | Ticket closed | 45/45 Runbook commands on immutable6a80757; targeted final D suite green0174675; real Template4010003 derives valid independent room | RUNBOOK README Genesis skill/template and S-00D updated with byte-lineage and semantic limits | Combined release independent review and S-00E native proof remain |
 | 2026-09-10 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
+| 2026-09-10 | TK-00E | Final release correction at 1dda511c541662ab96d61c5bdf5dac33b2bcb83e accepts credential-free Git SSH source origins | Reproduced valid git@host:path rejection by the email privacy scan; red/green derivation suite passes for SCP and ssh://git@host forms, while wrong SSH users and embedded tokens remain refused | Input validation retains privacy scanning after recognizing the fixed Git transport prefix | New immutable release candidate requires full verification and fresh integration review |
+
 ## Completion Result
 
 Implemented and verified. Full 45-command Runbook suite passed on immutable
