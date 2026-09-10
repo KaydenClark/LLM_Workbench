@@ -830,7 +830,7 @@ function validateGenesisControl(project, control, expectedVersion) {
 
 function validateFirstSpec(project, expectedVersion) {
   const specsRoot = path.join(project, lanes.specs);
-  const entries = fs.readdirSync(specsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith('.'));
+  const entries = fs.readdirSync(specsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith('.') && !(entry.name === 'CATALOG.md' && entry.isFile()));
   const names = entries.map((entry) => entry.name).sort();
   if (entries.length === 0) return fail('missing-first-spec', 'Genesis must create a first spec in workbench/specs.');
   if (entries.length !== 1 || !entries[0].isDirectory() || !/^S-[0-9A-Za-z]{3,}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entries[0].name)) {
