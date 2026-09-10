@@ -171,6 +171,10 @@ const release = makeRelease(suiteRoot);
   assert.equal(manifest.provenance.derivedFrom.questions[0].decisionEntry, 'decision-001');
   const receipt = JSON.parse(fs.readFileSync(path.join(destination, 'workbench', 'docs', 'intake', 'DERIVATION.json')));
   assert.equal(receipt.source_project.observation, 'local checkout identity only; remote availability was not established');
+  assert.equal(receipt.plan.source_file, path.relative(f.source.root, f.source.planFile).split(path.sep).join('/'));
+  assert.equal(receipt.plan.sha256, sha256(f.source.planFile));
+  assert.equal(receipt.intake.source_file, f.source.note);
+  assert.equal(receipt.intake.sha256, sha256(path.join(f.source.root, f.source.note)));
   assert.equal(receipt.controls['AGENTS.md'].template.sha256, sha256(path.join(f.template.root, 'AGENTS.md')));
   assert.equal(receipt.controls['AGENTS.md'].draft.sha256, f.source.controls['AGENTS.md'].sha256);
   assert.equal(sha256(path.join(destination, receipt.controls['AGENTS.md'].template.preserved_file)), receipt.controls['AGENTS.md'].template.sha256);
@@ -203,6 +207,7 @@ for (const [label, mutate, code] of [
   ['changed-control', f => { const file = path.join(f.source.root, f.source.controls['AGENTS.md'].file); fs.appendFileSync(file, 'changed\n'); }, 'source-changed'],
   ['symlinked-plan', f => { const target = `${f.source.planFile}.target`; fs.renameSync(f.source.planFile, target); fs.symlinkSync(path.basename(target), f.source.planFile); }, 'unsafe-path'],
   ['hardlinked-evidence', f => { fs.linkSync(f.source.evidence, path.join(path.dirname(f.source.evidence), 'pond-hardlink.md')); }, 'unsafe-path'],
+  ['destination-invalid-adr', f => { write(f.source.adr, '---\nstatus: accepted\ndate: 2026-09-09\ncanonicalized_in:\n  - inputs/pond.md\n---\n\n# Pond architecture\n\nUse a bounded static interaction first.\n'); }, 'adr-invalid'],
   ['privacy-plan', f => { f.source.plan.capabilities[0].outcome = 'token=abcdefghijklmnop'; json(f.source.planFile, f.source.plan); }, 'privacy-boundary'],
   ['unselected-derivation', f => { f.source.plan.capabilities[0].derived_from = ['Q2']; json(f.source.planFile, f.source.plan); }, 'invalid-plan']
 ]) {

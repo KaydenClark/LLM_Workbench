@@ -289,7 +289,7 @@ function validateIntake(source, value, snapshot) {
     if (!Array.isArray(question.evidence) || !question.evidence.length || question.evidence.some((evidenceId) => !items.has(evidenceId)) || new Set(question.evidence).size !== question.evidence.length) fail('invalid-note', `question ${id} has invalid evidence references`);
     questions.set(id, { id, status: question.status, question: text(question.question, `question ${id} text`, 'invalid-note'), recommendation: text(question.recommendation, `question ${id} recommendation`, 'invalid-note'), evidence: [...question.evidence], ...(question.decision_entry ? { decision_entry: oneLine(question.decision_entry, `question ${id} decision_entry`, 'invalid-note') } : {}) });
   }
-  return { note, noteId: note.id, revision: note.revision, projectName, items, questions };
+  return { note, noteId: note.id, revision: note.revision, sourceFile: read.relative, sha256: read.sha256, projectName, items, questions };
 }
 
 function selectedDecisions(intake, selectedIds) {
@@ -350,7 +350,7 @@ function specText(data, receiptPath) {
   const adrRows = adrs.length ? adrs.map((adr) => `- [${adr.id}](../../docs/adr/${adr.name}) — ${adr.title}; source SHA-256 ${adr.sha256}`).join('\n') : '- none selected';
   const open = [...data.intake.questions.values()].filter((question) => question.status !== 'locked' || !plan.selectedQuestions.includes(question.id));
   const openRows = open.length ? open.map((question) => `| ${cell(question.id)} | ${cell(question.status)} | ${cell(question.question)} | Excluded from derivation |`).join('\n') : '| none | none | none | No excluded question material |';
-  return `# ${cap.id} - ${cap.title}\n\n> Generated from LLM Workbench ${version}.\n\n**Spec ID:** ${cap.id}\n**Status:** active\n**Priority:** 2\n**Owner:** unassigned\n**Stance:** Builder\n**Updated:** ${date}\n**Catalog description:** ${cap.outcome}\n**Blockers:** none\n**Latest event:** Genesis derived this scoped capability from locked owner decisions.\n**Next gate:** Claim ${cap.ticket.id}.\n\n## Outcome\n\n${cap.outcome}\n\n## Founding Prompt\n\nPreserved verbatim from the caller-authored plan:\n\n${quote(plan.project.founding_prompt)}\n\n## Derived From Locked Decisions\n\nThe owner wording and recorded interpretation are preserved below. The generator validated their source links and status; semantic derivation remains an owner and reviewer judgment.\n\n${decisionText}\n\n## Source Evidence\n\nThe complete derivation receipt is [${receiptPath}](../../docs/intake/DERIVATION.json). The source repository and commit are a local checkout observation; remote availability was not established.\n\n| Evidence | Kind | Preserved source | SHA-256 |\n|---|---|---|---|\n${evidenceRows}\n\n## Active ADRs\n\n${adrRows}\n\n## Open Or Unselected Material\n\n| Question | Status | Prompt | Disposition |\n|---|---|---|---|\n${openRows}\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| ${cap.ticket.id} | ${cell(cap.ticket.slice)} | ready | none | pending |\n\n## Acceptance Criteria\n\n${cap.acceptance.map((item) => `- [ ] ${item}`).join('\n')}\n\n## Testing Seams\n\n- The capability's public behavior and named acceptance checks.\n\n## Verification Procedure\n\nRun the ticket's named checks, then render and doctor the room.\n\n## Documentation Impact\n\nUpdate the named capability owners when the ticket lands.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Ticket | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| ${date} | genesis | Derived from ${plan.selectedQuestions.join(', ')} and source-linked evidence | Generated-room layout, render and doctor passed before publication | Spec and derivation receipt created | Remote recovery omitted: this derivation creates local main and integration branches only; semantic review and implementation remain |\n\n## Completion Result\n\nPending.\n\n## Supersession\n\n- Supersedes: none.\n- Superseded by: none.\n`;
+  return `# ${cap.id} - ${cap.title}\n\n> Generated from LLM Workbench ${version}.\n\n**Spec ID:** ${cap.id}\n**Status:** active\n**Priority:** 2\n**Owner:** unassigned\n**Stance:** Builder\n**Updated:** ${date}\n**Catalog description:** ${cap.outcome}\n**Blockers:** none\n**Latest event:** Genesis derived this scoped capability from locked recorded decisions.\n**Next gate:** Claim ${cap.ticket.id}.\n\n## Outcome\n\n${cap.outcome}\n\n## Founding Prompt\n\nPreserved verbatim from the caller-authored plan:\n\n${quote(plan.project.founding_prompt)}\n\n## Derived From Locked Decisions\n\nThe recorded decision wording and interpretation are preserved below. The generator validated their source links and status; semantic derivation remains a reviewer judgment.\n\n${decisionText}\n\n## Source Evidence\n\nThe complete derivation receipt is [${receiptPath}](../../docs/intake/DERIVATION.json). The source repository and commit are a local checkout observation; remote availability was not established.\n\n| Evidence | Kind | Preserved source | SHA-256 |\n|---|---|---|---|\n${evidenceRows}\n\n## Active ADRs\n\n${adrRows}\n\n## Open Or Unselected Material\n\n| Question | Status | Prompt | Disposition |\n|---|---|---|---|\n${openRows}\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| ${cap.ticket.id} | ${cell(cap.ticket.slice)} | ready | none | pending |\n\n## Acceptance Criteria\n\n${cap.acceptance.map((item) => `- [ ] ${item}`).join('\n')}\n\n## Testing Seams\n\n- The capability's public behavior and named acceptance checks.\n\n## Verification Procedure\n\nRun the ticket's named checks, then render and doctor the room.\n\n## Documentation Impact\n\nUpdate the named capability owners when the ticket lands.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Ticket | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| ${date} | genesis | Derived from ${plan.selectedQuestions.join(', ')} and source-linked evidence | Generated-room layout, render and doctor passed before publication | Spec and derivation receipt created | Remote recovery omitted: this derivation creates local main and integration branches only; semantic review and implementation remain |\n\n## Completion Result\n\nPending.\n\n## Supersession\n\n- Supersedes: none.\n- Superseded by: none.\n`;
 }
 
 function runJson(script, args, cwd, label) {
@@ -408,6 +408,8 @@ function materialize(stage, data) {
     return { id: item.id, kind: item.kind, statement: item.statement, source: item.source, preserved_name, preserved_file: `workbench/docs/intake/evidence/${preserved_name}` };
   });
   for (const adr of adrs) fs.writeFileSync(path.join(adrDir, adr.name), adr.bytes, { mode: 0o644 });
+  const stagedAdrErrors = validateAdrs(stage).filter((finding) => finding.severity === 'error');
+  if (stagedAdrErrors.length) fail('adr-invalid', 'selected ADRs are not valid in the generated room');
 
   const questions = [...intake.questions.values()].map((question) => {
     const selected = decisions.find((item) => item.id === question.id);
@@ -418,7 +420,8 @@ function materialize(stage, data) {
     semantic_boundary: 'This receipt proves copied bytes and declared lineage; it does not certify semantic derivation or create owner authority.',
     template: { repository: template.repository, release: template.release, commit: template.commit, workbench_id: template.workbenchId },
     source_project: { repository: source.repository, commit: source.commit, observation: 'local checkout identity only; remote availability was not established' },
-    intake: { id: intake.noteId, revision: intake.revision, evidence_schema: 'project-evidence-1' },
+    plan: { source_file: plan.source.file, sha256: plan.source.sha256 },
+    intake: { id: intake.noteId, revision: intake.revision, source_file: intake.sourceFile, sha256: intake.sha256, evidence_schema: 'project-evidence-1' },
     controls: Object.fromEntries(controls.map((name) => [name, {
       template: {
         source_file: templateControls[name].file,
@@ -509,6 +512,7 @@ export function deriveFromDecisions(options = {}) {
     const templateControls = readTemplateControls(template, snapshot);
     const planRead = consumeFile(snapshot, source.root, options.plan, 'Genesis plan', { json: true, maxBytes: MAX_JSON_BYTES });
     const plan = validatePlan(planRead.value, source, release, snapshot);
+    plan.source = { file: planRead.relative, sha256: planRead.sha256 };
     const intake = validateIntake(source, options.intake, snapshot);
     if (plan.project.name !== intake.projectName) fail('project-mismatch', 'plan project name differs from the evidence intake project');
     const decisions = selectedDecisions(intake, plan.selectedQuestions);
