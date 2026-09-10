@@ -110,6 +110,8 @@ node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-core-composition.mjs
+node tools/test-project-evidence.mjs
+node tools/test-genesis-from-decisions.mjs
 node tools/test-blueprint-contract.mjs
 node tools/test-session-transport.mjs
 node tools/test-configured-host.mjs
@@ -157,6 +159,68 @@ Expected result:
   candidates.
 - spec doctor reports no duplicate IDs, invalid/contradictory states, stale
   claims, missing evidence, broken links, or generated-region drift.
+
+### Prepare project evidence and Blueprint questions
+
+From a named evidence room with a schema 2 manifest, run its installed tool:
+
+```bash
+node workbench/tools/project-evidence.mjs prepare --project-root . --input workbench/docs/intake-request.json --note blueprint-questions
+```
+
+The input is a bounded `project-evidence-request-1` JSON request with `project.name`,
+`objective.key/title/focus`, `evidence` and `questions`. Each evidence item names
+an `id`, project-relative `source`, caller-classified `kind` (`fact` or
+`uncertainty`) and `statement`; paired `line_start`/`line_end` are optional.
+Each question names an `id`, `question`, `recommendation`, and referenced
+`evidence` IDs. The input file must also be inside that room.
+
+The command validates source paths, observed bytes and privacy, then atomically
+creates one provisional JSON grilling note in the manifest's live notepad
+collection. Every question is open. Read the returned note/revision through
+`notepads.mjs` before continuing the interview. Caller classifications do not
+certify meaning, and preparation grants no authority to write a Blueprint, ADR
+or spec. Record actual decisions and corrections through the grilling workflow.
+
+A sub-minute isolated demonstration is `node tools/test-project-evidence.mjs`
+from this release checkout; it exercises the same public CLI including refusal
+cases. It proves deterministic preparation, not an owner interview or model
+reliability.
+
+### Derive a fresh room from recorded decisions
+
+From a clean release checkout, with a clean named Template checkout and an
+explicitly prepared source room, run:
+
+```bash
+node tools/genesis-from-decisions.mjs derive --template TEMPLATE_ROOT --source-project EVIDENCE_ROOM --intake workbench/sessions/notepads/grilling/blueprint-questions.json --plan workbench/docs/genesis-plan.json --destination NEW_PROJECT
+```
+
+The destination must not exist. Intake and plan paths, and every draft file
+named by the plan, are relative to the evidence room. A `genesis-plan-1` request
+names `project.name/founding_prompt`, the seven `controls` and `memory` drafts
+(each with `file` and `sha256`), `selected_questions`, `active_adr_ids`, and
+`capabilities`. A capability names its `id`, `title`, `derived_from` question IDs,
+`outcome`, `acceptance` strings, and one `ticket` with `id` and `slice`.
+
+Selected questions must be locked and have matching current decision entries.
+Corrected or missing answers and changed evidence refuse derivation. The command
+preserves decision wording and attribution, selected evidence bytes and hashes,
+and active ADR lineage in the new room's durable owners. It does not decide
+whether a caller-authored plan faithfully interprets owner intent; review must
+judge that relationship. A note or plan does not grant implementation authority.
+
+The staged room receives a new identity and current release runtime through
+layout initialization and managed installation. Existing Template task state,
+private live notes and old runtime receipts do not become new-project state.
+Room-local rendering, doctor and Genesis validation run before publication of
+the local destination. Remote recovery and project implementation remain separate
+steps under the caller's scope. Existing projects use Adoption.
+
+`node tools/test-genesis-from-decisions.mjs` exercises the public seam with
+self-contained synthetic fixtures. The owning S-00E evidence separately records
+the actual fresh project and native continuation; fixture success alone is not
+that proof.
 
 ### Core-skill setup check
 
@@ -249,7 +313,7 @@ checkpoint history and reusable templates remain tracked; operational recovery s
 Exercise it from a disposable project directory:
 
 ```bash
-node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.2.0 --integration-branch integration
+node workbench/tools/workbench-layout.mjs init --project /tmp/workbench-project --provenance genesis --version v3.2.1 --integration-branch integration
 node workbench/tools/workbench-layout.mjs validate --project /tmp/workbench-project
 node tools/test-workbench-layout.mjs
 ```
@@ -524,7 +588,7 @@ control-reconciliation phases:
 node tools/workbench-adoption.mjs migrate \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.2.0
+  --version v3.2.1
 node workbench/tools/workbench-layout.mjs validate --project /absolute/project
 node workbench/tools/spec-workbench.mjs next --json
 node workbench/tools/spec-workbench.mjs doctor
@@ -608,7 +672,7 @@ when the discovery root is inside a foreign Git repository:
 node tools/workbench-upgrade.mjs upgrade \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.2.0 \
+  --version v3.2.1 \
   --layout-only
 ```
 
@@ -625,7 +689,7 @@ and reports partial completion:
 node tools/workbench-upgrade.mjs upgrade \
   --project /absolute/project \
   --home /disposable-or-user-home \
-  --version v3.2.0 \
+  --version v3.2.1 \
   --explicit-update
 node tools/test-workbench-upgrade.mjs
 ```

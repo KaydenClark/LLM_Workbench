@@ -744,7 +744,8 @@ test("the grilling skill's documented command produces the record it shows", () 
     // command and the example are held to each other here so the next drift
     // fails rather than ships.
     const skill = fs.readFileSync(path.join(root, 'skills', 'grilling', 'SKILL.md'), 'utf8');
-    const documented = skill.match(/```bash\r?\n([\s\S]*?)```/);
+    const documented = [...skill.matchAll(/```bash\r?\n([\s\S]*?)```/g)]
+      .find((block) => /notepads\.mjs create/.test(block[1]));
     const example = skill.match(/```json\r?\n([\s\S]*?)```/);
     assert.ok(documented && example, 'the skill must show a create command and the record it writes');
     assert.match(documented[1], /notepads\.mjs create/, 'the documented command is a notepad create');

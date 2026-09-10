@@ -1,0 +1,10 @@
+{
+  "identities": {
+    "template": "WB-1RX8E0KgeMDxKV6Z3l9AEC",
+    "fresh_project": "WB-0eSjLULGezLPlWk6RzkPpe",
+    "same_room_clone": "WB-0eSjLULGezLPlWk6RzkPpe"
+  },
+  "project_commit": "75a242dd2d8e5a03295e37f3858e32b37868ede5",
+  "clone_commit": "75a242dd2d8e5a03295e37f3858e32b37868ede5",
+  "meaning": "Genesis copied the Template into a new room; Git clone recovered the same existing room identity."
+}

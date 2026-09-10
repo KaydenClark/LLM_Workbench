@@ -166,6 +166,8 @@ node tools/test-spec-workbench.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
 node tools/test-core-composition.mjs
+node tools/test-project-evidence.mjs
+node tools/test-genesis-from-decisions.mjs
 node tools/test-blueprint-contract.mjs
 node tools/test-session-transport.mjs
 node tools/test-configured-host.mjs

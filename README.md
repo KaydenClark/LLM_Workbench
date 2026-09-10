@@ -57,6 +57,23 @@ The blank, copyable templates live in `templates/`:
 `BLUEPRINT.md`, capability truth in specs, and only active execution state in
 `TASKBOARD.md`.
 
+## From Project Evidence To A Fresh Workbench
+
+Prepare a named project's source evidence and unanswered Blueprint questions
+with the installed `project-evidence.mjs` tool. Once the relevant decisions are
+recorded, the release-side `genesis-from-decisions.mjs` command can assemble a
+new independent room from reviewed control drafts, selected active ADRs and
+scoped capability inputs. It preserves source lineage and validates the room;
+it does not invent owner answers or prove a product works.
+
+Follow [the Runbook](RUNBOOK.md#prepare-project-evidence-and-blueprint-questions)
+for the commands and input boundary, then [Genesis](templates/GENESIS.md) for
+implementation, project checks and remote recovery. An existing project follows
+[Adoption](templates/ADOPTION.md). The source capabilities are
+[S-00C](workbench/specs/S-00C-project-evidence-and-blueprint-grilling/SPEC.md),
+[S-00D](workbench/specs/S-00D-genesis-from-blueprint-and-adrs/SPEC.md) and the
+[S-00E fresh-project proof](workbench/specs/S-00E-fresh-template-project-proof/SPEC.md).
+
 ## This Repo Dogfoods Its Own Harness
 
 The root-level `AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, and `RUNBOOK.md`
@@ -164,7 +181,7 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v3.2.0** (recorded in `BLUEPRINT.md` and
+current harness version is **v3.2.1** (recorded in
 `workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
 [`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continued
 that baseline as v3.1.1 and
@@ -315,3 +332,7 @@ its relevant owners. Builder, Auditor, Reviewer and Reconciler are assigned
 stances within existing authority. Work autonomously inside the assigned task;
 independent review is required before integration. The setup-only Round One
 proof returns in chat; feedback reporting follows it in the declared lane.
+
+Version 3.2.1 adds project-evidence preparation and source-linked Genesis.
+The [fresh Puffer Pond proof](workbench/specs/S-00E-fresh-template-project-proof/PROOF.md)
+records the native continuation and its one-host limitations.

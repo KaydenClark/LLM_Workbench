@@ -51,9 +51,8 @@ export function readManagedSkillMarker(skillDirectory) {
 }
 const legacyLanes = { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' };
 const skillPolicy = { required: coreSkills, discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' };
-// The two projection controls must keep the regions spec-workbench renders.
+// Taskboard owns the generated projection; Blueprint is destination-only.
 const generatedRegions = {
-  'BLUEPRINT.md': ['<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'],
   'TASKBOARD.md': ['<!-- hot-specs:start -->', '<!-- hot-specs:end -->']
 };
 const templateVocabulary = new Set(templatePlaceholders);
@@ -825,13 +824,13 @@ function validateGenesisControl(project, control, expectedVersion) {
   for (const marker of generatedRegions[control] ?? []) {
     if (!content.includes(marker)) return fail('unfilled-control', `${control} must keep the generated region marker ${marker} so render and doctor can project the first spec.`, { control, reason: `missing generated region marker ${marker}` });
   }
-  if (versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control });
+  if (control !== 'BLUEPRINT.md' && versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control });
   return null;
 }
 
 function validateFirstSpec(project, expectedVersion) {
   const specsRoot = path.join(project, lanes.specs);
-  const entries = fs.readdirSync(specsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith('.'));
+  const entries = fs.readdirSync(specsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith('.') && !(entry.name === 'CATALOG.md' && entry.isFile()));
   const names = entries.map((entry) => entry.name).sort();
   if (entries.length === 0) return fail('missing-first-spec', 'Genesis must create a first spec in workbench/specs.');
   if (entries.length !== 1 || !entries[0].isDirectory() || !/^S-[0-9A-Za-z]{3,}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entries[0].name)) {
@@ -886,6 +885,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'markdown-table.mjs',
   'notepads.mjs',
   'privacy.mjs',
+  'project-evidence.mjs',
   'sessions.mjs',
   'session-transport.mjs',
   'spec-packet.mjs',
@@ -919,7 +919,7 @@ function validateGenesisRuntime(project, expectedVersion) {
     if (!entry?.isFile() || entry.isSymbolicLink()) return fail('unfilled-control', `${control} must exist as an ordinary file; copy the wiki router and contract from the release templates.`, { control });
     const content = fs.readFileSync(path.join(project, lanes.wiki, relative), 'utf8');
     if (containsPlaceholder(content)) return fail('unfilled-control', `${control} must contain no template placeholders.`, { control });
-    if (versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control, reason: 'wiki stamp differs from the manifest' });
+    if (control !== 'BLUEPRINT.md' && versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control, reason: 'wiki stamp differs from the manifest' });
   }
   return null;
 }
@@ -1259,7 +1259,7 @@ if (isMainModule(import.meta.url)) {
     else if (command === 'validate') {
       const requireGenesis = args.includes('--genesis');
       result = validate(parseOptions(args.filter((arg) => arg !== '--genesis'), ['--project']), requireGenesis);
-    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.2.0 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.2.0] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | identify --project PATH | record-source --project PATH [--version v3.2.0] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.2.0] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
+    } else throw new Error('Usage: workbench-layout.mjs init --project PATH --provenance genesis --version v3.2.1 [--source-commit SHA] [--source-repository URL] [--wiki-profile project|deployment] [--name NAME] [--default-branch NAME] [--integration-branch NAME] | migrate --project PATH [--version v3.2.1] [--source-commit SHA] [--source-repository URL] [--default-branch NAME] [--integration-branch NAME] | identify --project PATH | record-source --project PATH [--version v3.2.1] [--source-commit SHA] [--source-repository URL] | seed-documents --project PATH [--version v3.2.1] | validate --project PATH [--genesis] (source flags assert the clean release checkout\'s resolved HEAD and origin; a relocated partial copy cannot establish provenance)');
     process.stdout.write(`${JSON.stringify(result)}\n`);
     if (!['initialized', 'valid', 'migrated', 'current', 'recorded', 'seeded', 'identified'].includes(result.status)) process.exitCode = 1;
   } catch (error) {

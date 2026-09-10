@@ -12,10 +12,13 @@ Read this once, run it once. Genesis is a starting gun, not a standing rule. Whe
 bootstrap is finished, AGENTS plus the progressive spec flow govern; this file can be deleted or
 kept as a record of how the project began.
 
-**Green-field only.** If the target already exists - real code, history, or a
-prior set of `AGENTS`/`ROADMAP`/policy docs - use `ADOPTION.md` instead. Genesis
-scaffolds from a prompt; Adoption migrates an existing repo into the same
-control surfaces.
+**Green-field only.** If the target already exists with real code, history, or
+a prior set of `AGENTS`/`ROADMAP`/policy docs, use `ADOPTION.md` instead.
+Genesis scaffolds a new project from a prompt; Adoption reconciles an existing
+repo into the same control surfaces. An explicitly authorized copy of the
+Workbench Template into a fresh target is a Genesis route, but it begins an
+independent project identity and does not inherit the Template's room state,
+specs, decisions, or evidence.
 
 ## What Genesis Is For
 
@@ -34,14 +37,20 @@ Before starting, capture what the owner actually gave you:
 
 - **Founding prompt:** the owner's request, quoted verbatim. Preserve it; do not
   paraphrase it away.
-- **Target location:** `[ABSOLUTE_PROJECT_PATH]` (new empty dir, or an existing
-  repo to retrofit).
+- **Target location:** `[ABSOLUTE_PROJECT_PATH]` (a new empty directory).
+- **Starting point:** either a founding prompt or an explicitly authorized
+  fresh copy of the Workbench Template. A Template copy is source material for
+  a new project, not an existing project to adopt.
+- **Evidence/preparation room:** `[EVIDENCE_ROOM_PATH]`, a named Template copy
+  or initialized disposable room with a valid manifest and live collections.
+  It holds the prepared evidence record; the fresh destination stays empty
+  until Genesis initializes it.
 - **Hard constraints named by the owner:** language, platform, budget, privacy,
   deadline, "must not use X." If none were given, record "none stated."
 
-If the target is an existing codebase, read it first and let observed reality
-outrank assumptions. Genesis then documents what exists rather than inventing a
-greenfield.
+If the target contains existing project code, history, or controls, stop this
+protocol and use `ADOPTION.md`. Do not relabel an existing project as a
+Template copy to bypass its evidence and migration obligations.
 
 ## Decide Alone vs. Ask
 
@@ -67,35 +76,112 @@ reverse:
 
 Phrase questions as product tradeoffs with a recommendation, not code-level
 uncertainty. Batch them: ask the few that block architecture together, once,
-before scaffolding. If the owner is unavailable, record the assumption in
-`BLUEPRINT.md` -> Design Decisions and proceed on the reversible default.
+before scaffolding. If the owner is unavailable, record a reversible working
+assumption in the prepared record and leave the affected decision open. It is
+not an owner answer or an active ADR. A bounded choice the owner already stated
+plainly in the founding prompt remains usable as a cited instruction; do not
+re-ask simply to relabel it as locked.
+
+## Derivation Boundary
+
+Genesis moves through a deliberate sequence:
+
+1. Prepare owner questions from the founding prompt, stated constraints, and
+   verified evidence. Preparation makes uncertainty visible; it does not answer
+   a question.
+2. Record the owner's explicitly locked decisions. Capture cross-cutting
+   architectural choices in active ADRs, with rationale and alternatives where
+   they matter. Keep unresolved questions open, and retain a bounded choice
+   plainly stated in the founding prompt as a cited instruction rather than
+   inventing a new locked answer.
+3. Verify Actuality: the target state, the smallest working scaffold, and the
+   commands whose results are used as evidence.
+4. Derive scoped Specs from locked owner decisions, active ADRs, verified
+   Actuality, and bounded choices explicitly supplied in the founding prompt.
+   Preserve source links and uncertainty in the resulting Specs.
+
+The Blueprint remains a destination narrative throughout. It may link an active
+ADR where that decision materially explains the destination, but it is not a
+decision ledger, status report, evidence archive, or generated Spec catalog.
+
+## Validated Fresh-Template Formation
+
+When the named starting point is a clean Workbench Template checkout, prepare
+filled control drafts and a source-linked scoped plan in the evidence room.
+The release-side formation command validates them and creates an absent target:
+
+```bash
+node tools/genesis-from-decisions.mjs derive \
+  --template [TEMPLATE_ROOT] --source-project [EVIDENCE_ROOM_PATH] \
+  --intake [SOURCE_RELATIVE_NOTE] --plan [SOURCE_RELATIVE_PLAN] \
+  --destination [ABSOLUTE_PROJECT_PATH]
+```
+
+Run this from the clean release checkout. The `genesis-plan-1` input names the
+project and founding prompt, seven filled `controls` and a `memory` draft by
+source-relative file and SHA-256, selected locked questions, active ADRs, and
+scoped capabilities with decision references and acceptance. Keep decisions and
+their attribution faithful; a demonstration decision is not an invented owner
+answer. The runtime validates source bytes and lineage, not semantic agreement.
+
+This command composes support-root initialization, managed runtime installation,
+new-room identity, durable source preservation, local Git branches, rendering,
+doctor and Genesis readiness. It does not copy the Template's old tasks or live
+records. A valid formed room is the starting point for its scoped implementation
+slice; it is not proof of a working product or remote delivery. Continue with
+the smallest running path, project checks and recovery obligations below.
 
 ## Phases
 
 Run these in order. Each phase produces a durable artifact and should be
 verifiable before the next begins.
 
-### Phase 0 - Frame
+### Phase 0 - Frame and prepare owner questions
 
 1. Quote the founding prompt and target path.
 2. List hard constraints and open questions.
-3. Ask the blocking architecture questions now (see above), or record assumptions.
+3. Prepare the blocking architecture questions now (see above), grounded in the
+   prompt and any verified starting evidence. Keep the questions and reversible
+   assumptions distinct from owner answers.
 
-Output: a short frame you will fold into `BLUEPRINT.md`. Nothing is scaffolded
-yet.
+When the founding prompt or other approved source is available as an input file,
+use the release's evidence-preparation interface in the named evidence room to
+retain source hashes and a prepared record. The fresh destination remains empty:
 
-### Phase 1 - BLUEPRINT (identity before code)
+```bash
+node workbench/tools/project-evidence.mjs prepare \
+  --project-root [EVIDENCE_ROOM_PATH] --input [APPROVED_INPUT_PATH] --note [SAFE_NOTE_NAME]
+```
 
-Fill `BLUEPRINT.md` from the template. It anchors everything after it.
+Output: a short, source-linked preparation record. Nothing is scaffolded and no
+decision is locked yet.
 
-- **What This Project Is** and **Core promise**: one honest paragraph, one
-  concrete user-facing promise.
-- **Primary users** and **Non-Goals**: say what this is *not*, to stop scope creep.
-- Preserve the founding prompt verbatim in a decision or intent note so later
-  drift-checks compare against the owner's real words.
+### Phase 1 - Lock destination and cross-cutting decisions
+
+Get explicit owner answers for the prepared questions that affect architecture,
+privacy, money, credentials, destructive risk, or the public contract. Record
+only those answers as locked decisions. Where a cross-cutting architectural
+choice needs rationale or alternatives, write an active ADR; do not fabricate
+an owner answer from an assumption, a Template, or the founding prompt.
+
+Fill `BLUEPRINT.md` from the template's applicable destination sections. It
+anchors everything after it:
+
+- **Product Destination**, **People And Problems Served**, and **Promised
+  Outcomes**: one honest product narrative, concrete user-facing promises, and
+  clear boundaries.
+- **Desired Experience And Behavior**, **Integrated System Design**,
+  **Cross-Cutting Qualities And Constraints**, **Desired Lifecycle**, and
+  **Non-Goals**: describe the intended finished product; omit a genuinely
+  inapplicable section rather than adding boilerplate.
+- Preserve the founding prompt verbatim in the preparation record or a linked
+  durable intent owner so later drift checks compare against the owner's real
+  words. Link active ADRs inline only when they materially explain or constrain
+  the destination.
 
 Output: a `BLUEPRINT.md` a stranger could read to learn what the project is for.
-Architecture is still `[TBD]` at this point.
+It contains no decision inventory, current status, proof archive, or generated
+catalog.
 
 Seed `LEXICON.md` with terms whose meanings the founding prompt or owner has
 already established. Do not invent definitions merely to fill the table. The
@@ -105,17 +191,20 @@ accepted meanings of the words they use to discuss it.
 Output: a `LEXICON.md` with the Workbench terms intact and any genuinely shared
 project terms defined.
 
-### Phase 2 - Architecture
+### Phase 2 - Plan architecture without inventing decisions
 
-Decide the stack and record it in `BLUEPRINT.md` -> Architecture and Design
-Decisions. Choose the smallest stack that satisfies the promise and constraints;
-prefer boring, well-supported defaults over novelty.
+Choose the smallest stack that satisfies the locked destination and constraints;
+prefer boring, well-supported defaults over novelty. A choice that materially
+affects architecture must already be locked by the owner and recorded in an
+active ADR. A reversible implementation detail may remain an explicitly labeled
+working assumption until Actuality verifies it.
 
-For each row (runtime, language, storage, frontend, backend, testing,
-deployment) record the choice and a one-line reason. Log any decision made on an
-assumption rather than an owner answer.
+Keep stack detail with its active ADR or the scoped Spec that owns it; use the
+Blueprint only to explain how the integrated system is intended to work. Do not
+create a decision ledger inside the Blueprint.
 
-Output: a filled Architecture table and Design Decisions with rationale.
+Output: active ADRs for locked cross-cutting choices and open assumptions that
+are plainly marked as open.
 
 ### Phase 3 - Scaffold (smallest thing that runs)
 
@@ -161,7 +250,7 @@ must be one you executed and saw succeed, not an aspiration.
 
 Output: a `RUNBOOK.md` a new agent can follow to reproduce a green run.
 
-### Phase 6 - Initialize the support root, first spec, hot projection, and room brain
+### Phase 6 - Initialize the support root, derive the first scoped spec, hot projection, and room brain
 
 Initialize the v3 support root before writing support records:
 
@@ -195,9 +284,13 @@ release, commit, and per-file hashes. From then on the project runs its own
 copies (`node workbench/tools/spec-workbench.mjs ...`); an application's root
 `tools/` directory, if any, is the application's own and is never touched.
 
-Create one stable `workbench/specs/S-001-<slug>/SPEC.md` for the nearest
-coherent capability. Put 1-3 one-context tracer-bullet tickets in its
-implementation table and record the Genesis result in its evidence log. The
+After the Scaffold's running path is verified, create one stable
+`workbench/specs/S-001-<slug>/SPEC.md` for the nearest coherent capability.
+Derive it from locked owner decisions, active ADRs, verified Actuality from the
+target, and bounded choices explicitly supplied in the founding prompt; link
+those sources and keep unresolved questions open. Put 1-3 one-context
+tracer-bullet tickets in its implementation table and record the Genesis result
+in its evidence log. The
 manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
 `feedback`, `tools`) and their collections; live grilling and handoff records
 under `workbench/sessions/` stay untracked. Reusable schema/examples in
@@ -219,8 +312,8 @@ packet, so shape it exactly like this before running the gate:
 - the exact `Generated from LLM Workbench v[HARNESS_VERSION]` stamp matching
   the manifest, and no remaining template placeholder.
 
-Then render the projections and run doctor so the generated regions in
-`BLUEPRINT.md` and `TASKBOARD.md` (kept from the templates) reflect the packet:
+Then render the Taskboard projection and run doctor. `BLUEPRINT.md` remains a
+destination narrative and has no generated catalog or projection region:
 
 ```bash
 node workbench/tools/spec-workbench.mjs render

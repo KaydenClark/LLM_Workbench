@@ -16,9 +16,9 @@ Derived from stable specs; includes completed history.
 | [S-009 - Git-Write Constrained Adoption](S-009-git-write-constrained-adoption/SPEC.md) | Keep adoption safe and usable when a host cannot write Git metadata. | complete |
 | [S-00A - Blueprint, Active ADR, And Context Map Rebuild](S-00A-blueprint-active-adr-and-context-map/SPEC.md) | Make destination ownership, active ADR Canon, and Context Map routing coherent across the Workbench and generic controls. | complete |
 | [S-00B - Workbench Template Reformation](S-00B-workbench-template-reformation/SPEC.md) | Recast the named reference room as a copyable Workbench Template and prove the v3.2 ownership update there. | complete |
-| [S-00C - Project Evidence And Blueprint Grilling](S-00C-project-evidence-and-blueprint-grilling/SPEC.md) | Prepare a project-informed Blueprint grilling record from verified project evidence. | planned |
-| [S-00D - Genesis From Blueprint And Active ADRs](S-00D-genesis-from-blueprint-and-adrs/SPEC.md) | Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality. | planned |
-| [S-00E - Fresh Workbench Template To Project Proof](S-00E-fresh-template-project-proof/SPEC.md) | Prove the complete fresh-copy path from Workbench Template through a useful independent project. | planned |
+| [S-00C - Project Evidence And Blueprint Grilling](S-00C-project-evidence-and-blueprint-grilling/SPEC.md) | Prepare a project-informed Blueprint grilling record from verified project evidence. | complete |
+| [S-00D - Genesis From Blueprint And Active ADRs](S-00D-genesis-from-blueprint-and-adrs/SPEC.md) | Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality. | complete |
+| [S-00E - Fresh Workbench Template To Project Proof](S-00E-fresh-template-project-proof/SPEC.md) | Prove the complete fresh-copy path from Workbench Template through a useful independent project. | complete |
 | [S-010 - Canonical Evaluator Entry Detection](S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
 | [S-011 - Agent Skills Adoption](S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |
 | [S-012 - Reproducible Adoption Provenance](S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |

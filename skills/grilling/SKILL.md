@@ -24,6 +24,28 @@ If a fact can be found by exploring the environment (filesystem, tools, etc.),
 look it up rather than asking me. The decisions, though, are mine — put each one
 to me and wait for my answer.
 
+For a project-informed Blueprint grilling, prepare the note through the
+project's installed evidence seam instead of copying source text into chat or
+hand-authoring provenance:
+
+```bash
+node workbench/tools/project-evidence.mjs prepare \
+  --project-root PROJECT --input REQUEST.json --note TOPIC-YYYY-MM-DD
+```
+
+The disposable `project-evidence-request-1` JSON request names the project and
+objective, then carries explicit `evidence` items with stable IDs, project-relative
+source paths, optional line ranges, `fact` or `uncertainty` classifications and
+the caller's statement. Its `questions` carry stable IDs, question text, a
+recommendation and the evidence IDs that prompted them. Do not supply answers
+or statuses: the tool refuses them and creates every question `open`. It checks
+ordinary in-project source files, hashes the observed bytes, privacy-scans all
+new material and atomically creates one `PROVISIONAL` grilling note. The stored
+fact/uncertainty labels remain caller assertions; the source path and hash prove
+which bytes were observed, not that a statement's meaning is true. Read the
+returned note and revision before questioning. This prepared note fulfills the
+creation and full-question-list steps below; continue through the same runtime.
+
 ## The notepad (start here, before asking anything)
 
 Keep important working context in the notepad as it becomes available,
@@ -83,16 +105,20 @@ Keep stable question IDs; never renumber them. Dependencies may use `2A`,
 `tentative` (revisit), and `locked` (decided). Preserve source wording,
 uncertainty, and corrections in ordered entries, with a compact current view.
 Record each answer as an entry as it is given, confirm the returned revision,
-and rewrite the question list
+using `--kind decision --question-id ID` for the answer to a question that will
+be locked. Preserve a later change as a `correction` linked to the prior entry;
+never rewrite the prior answer. Rewrite the question list
 with `notepads.mjs current --view-field questions=...` when a status changes.
 
 ## During the interview
 
 - Ask the next `[open]` question with your recommendation.
 - After I confirm an answer, immediately update its status to `locked` (or
-  `tentative`) and save the answer and meaningful correction context in the
-  notepad before asking the next question. Capture other important findings
-  during investigation as well; do not wait for the interview to end.
+  `tentative`) and save the answer verbatim with its stable `question_id` and
+  meaningful correction context in the notepad before asking the next question.
+  A locked question must have one current decision entry that names
+  it; status alone never proves an owner answer. Capture other important
+  findings during investigation as well; do not wait for the interview to end.
 - Do not act on it until I confirm we have reached a shared understanding, and do
   not touch canonical files during the interview.
 
