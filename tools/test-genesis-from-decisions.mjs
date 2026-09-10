@@ -67,6 +67,7 @@ function controlText(name, version) {
 
 function templateControlText(name, version) {
   if (name === 'CLAUDE.md') return '@AGENTS.md\n';
+  if (name === 'LEXICON.md') return `# Workbench Template - Lexicon\n\n> Generated from LLM Workbench ${version}.\n\n## Status\n\n[active / partial / stale]\n`;
   const region = name === 'TASKBOARD.md'
     ? '\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
     : '';

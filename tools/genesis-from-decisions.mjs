@@ -329,7 +329,6 @@ function selectedAdrs(source, wanted, snapshot) {
 function readTemplateControls(template, snapshot) {
   return Object.fromEntries(controls.map((name) => {
     const read = consumeFile(snapshot, template.root, name, `Template control ${name}`);
-    validateDraft(read.bytes.toString('utf8'), name, template.release);
     return [name, { file: read.relative, sha256: read.sha256, bytes: read.bytes }];
   }));
 }
