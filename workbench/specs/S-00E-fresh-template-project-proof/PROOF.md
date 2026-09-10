@@ -52,10 +52,39 @@ a later entry contained the actual full SHA. These are observed execution gaps,
 not accepted correctness claims. The continuation must reconcile the note,
 claim the existing ticket and prove the missing acceptance before completion.
 
-A separate session configured as `gpt-5.5`, High, is continuing from that saved
-note and the project controls. Its result remains pending.
+A separate session configured as `gpt-5.5`, High, read note revision 4 and
+recovered the committed-source/pending-browser state. It reproduced the species
+count failure (`3 !== 5`), corrected five puffers plus two snails, and added a
+favicon after a real browser 404. Seven Node tests, build, doctor and the two
+browser viewports passed at `ce6a43c54c9f7bef0a54efb55b24eab6dbd735fd`.
+See [continuation checks](proof/continuation-checks.json) and the
+[native browser result](proof/native-browser.json). The saved note reached
+revision 10 before the manager resumed.
+
+Manager production verification then reproduced a separate credit-link 404
+against the built `dist` tree. The page linked to a Workbench document absent
+from that output. The smallest correction links the bundled MIT license.
+[Production check](proof/production-check.cjs), committed at Workbench939c551,
+failed before the correction and passed afterward at project
+`75a242dd2d8e5a03295e37f3858e32b37868ede5`: license200, five puffers/two snails,
+loaded images, no overflow/browser errors, underwater bounds and reduced-motion
+pause at both sizes. Node7/7, build and doctor also passed. Remaining draft
+wording was filled and `dist` excluded from Git. The manager linked the spurious
+note entry to an explicit correction; the current note is revision12.
+
+The [production result](proof/production-result.json),
+[desktop screenshot](proof/production-desktop.png) and
+[phone screenshot](proof/production-phone.png) are the final visual proof.
+Reproduction uses the project build served on localhost4174 and the check above,
+with `PLAYWRIGHT_MODULE` and `CHROME_EXECUTABLE` identifying the host browser tools.
+
+A clean Git clone of project75a242d retained its identity, while the Genesis
+copy's identity differs from the Template. [Identity check](proof/identity-check.json)
+records that distinction; cloning an existing room does not create a new one.
 
 ## Delivery state
 
-Native completion, browser evidence, same-room clone identity check, final
-release verification and independent integration review remain pending.
+The useful project and saved-note continuation are verified locally. Recovery
+publication is scoped to a new Puffer-Pond task branch, preserving its original
+main. Final Workbench version verification and independent integration review
+remain release gates. No deployment or repeated-reliability claim is made.

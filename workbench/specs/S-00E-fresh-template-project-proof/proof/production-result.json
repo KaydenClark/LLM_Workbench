@@ -1,0 +1,34 @@
+{
+  "url": "http://127.0.0.1:4174/",
+  "checks": [
+    {
+      "name": "desktop",
+      "width": 1536,
+      "height": 1024,
+      "puffers": 5,
+      "snails": 2,
+      "noOverflow": true,
+      "underwater": true,
+      "visible": true,
+      "credit": "public/assets/LICENSE",
+      "creditStatus": 200,
+      "browserErrors": [],
+      "reducedMotionPaused": true
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "puffers": 5,
+      "snails": 2,
+      "noOverflow": true,
+      "underwater": true,
+      "visible": true,
+      "credit": "public/assets/LICENSE",
+      "creditStatus": 200,
+      "browserErrors": [],
+      "reducedMotionPaused": true
+    }
+  ],
+  "passed": true
+}

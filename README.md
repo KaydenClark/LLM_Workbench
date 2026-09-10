@@ -181,7 +181,7 @@ so a cold reviewer can reproduce the proof without the original checkout or chat
 
 Each copied control doc carries a `Generated from LLM Workbench v[HARNESS_VERSION]`
 stamp so a downstream project can tell which harness version it is running. The
-current harness version is **v3.2.0** (recorded in
+current harness version is **v3.2.1** (recorded in
 `workbench/manifest.json`). v3.0.0 and v3.1.0 were unreleased.
 [`S-027`](workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md) continued
 that baseline as v3.1.1 and
@@ -332,3 +332,7 @@ its relevant owners. Builder, Auditor, Reviewer and Reconciler are assigned
 stances within existing authority. Work autonomously inside the assigned task;
 independent review is required before integration. The setup-only Round One
 proof returns in chat; feedback reporting follows it in the declared lane.
+
+Version3.2.1 adds project-evidence preparation and source-linked Genesis.
+The [fresh Puffer Pond proof](workbench/specs/S-00E-fresh-template-project-proof/PROOF.md)
+records the native continuation and its one-host limitations.
