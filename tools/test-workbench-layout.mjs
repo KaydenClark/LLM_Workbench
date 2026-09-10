@@ -44,7 +44,6 @@ function markdownFiles(directory) {
 }
 
 const generatedRegions = {
-  'BLUEPRINT.md': '## Spec Catalog\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n',
   'TASKBOARD.md': '## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
 };
 
@@ -77,7 +76,9 @@ function completeGenesis(project, options = {}) {
   for (const control of controls) {
     const content = control === 'CLAUDE.md'
       ? '@AGENTS.md\n'
-      : `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nThis is a filled ${control} fixture.\nDurable memory lives in workbench/wiki/MEMORY.md.\n${generatedRegions[control] ?? ''}`;
+      : control === 'BLUEPRINT.md'
+        ? '# Fixture - Blueprint\n\n## Product Destination\n\nA useful finished project.\n'
+        : `# ${control}\n\n> Generated from LLM Workbench ${VERSION}.\n\n## Purpose\n\nThis is a filled ${control} fixture.\nDurable memory lives in workbench/wiki/MEMORY.md.\n${generatedRegions[control] ?? ''}`;
     fs.writeFileSync(path.join(project, control), content);
   }
   const firstSpec = path.join(project, 'workbench', 'specs', 'S-001-first');
@@ -373,14 +374,6 @@ test('Genesis validation rejects symlinked and unfilled root controls', () => {
       mutate(project) {
         const file = path.join(project, 'RUNBOOK.md');
         fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(VERSION, 'v2.3.0'));
-      }
-    },
-    {
-      expected: 'unfilled-control',
-      reason: /spec-catalog/,
-      mutate(project) {
-        const file = path.join(project, 'BLUEPRINT.md');
-        fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(generatedRegions['BLUEPRINT.md'], ''));
       }
     },
     {

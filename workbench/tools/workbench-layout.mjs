@@ -51,9 +51,8 @@ export function readManagedSkillMarker(skillDirectory) {
 }
 const legacyLanes = { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' };
 const skillPolicy = { required: coreSkills, discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' };
-// The two projection controls must keep the regions spec-workbench renders.
+// Taskboard owns the generated projection; Blueprint is destination-only.
 const generatedRegions = {
-  'BLUEPRINT.md': ['<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'],
   'TASKBOARD.md': ['<!-- hot-specs:start -->', '<!-- hot-specs:end -->']
 };
 const templateVocabulary = new Set(templatePlaceholders);
@@ -825,7 +824,7 @@ function validateGenesisControl(project, control, expectedVersion) {
   for (const marker of generatedRegions[control] ?? []) {
     if (!content.includes(marker)) return fail('unfilled-control', `${control} must keep the generated region marker ${marker} so render and doctor can project the first spec.`, { control, reason: `missing generated region marker ${marker}` });
   }
-  if (versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control });
+  if (control !== 'BLUEPRINT.md' && versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control });
   return null;
 }
 
@@ -920,7 +919,7 @@ function validateGenesisRuntime(project, expectedVersion) {
     if (!entry?.isFile() || entry.isSymbolicLink()) return fail('unfilled-control', `${control} must exist as an ordinary file; copy the wiki router and contract from the release templates.`, { control });
     const content = fs.readFileSync(path.join(project, lanes.wiki, relative), 'utf8');
     if (containsPlaceholder(content)) return fail('unfilled-control', `${control} must contain no template placeholders.`, { control });
-    if (versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control, reason: 'wiki stamp differs from the manifest' });
+    if (control !== 'BLUEPRINT.md' && versionStamp(content) !== expectedVersion) return fail('version-mismatch', `${control} must match manifest Workbench version ${expectedVersion}.`, { control, reason: 'wiki stamp differs from the manifest' });
   }
   return null;
 }
