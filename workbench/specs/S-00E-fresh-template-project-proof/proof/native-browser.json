@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-09-10T00:23:37.313Z",
   "url": "http://127.0.0.1:4173/",
-  "playwrightPackage": "/Users/kayden/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright",
+  "playwrightPackage": "host-provided Playwright package",
   "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "viewports": [
     {
@@ -484,5 +484,10 @@
     "reducedMotionPassed": true
   },
   "finalCommit": "ce6a43c54c9f7bef0a54efb55b24eab6dbd735fd",
-  "finalCommitRecordedAt": "2026-09-10T00:26:51.680Z"
+  "finalCommitRecordedAt": "2026-09-10T00:26:51.680Z",
+  "publication_redaction": {
+    "scope": "Absolute project and tool installation paths replaced with portable labels; command outcomes, failures, timestamps and geometry unchanged.",
+    "source_candidate": "dab5e606b4418b65f0e339928b2b90fae068d073",
+    "source_sha256": "3e4c45216c3358593b67355e87b6228e10dc18ad77d83e5f8e95430395090389"
+  }
 }

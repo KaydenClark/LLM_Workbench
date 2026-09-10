@@ -23,7 +23,7 @@ import { isSafeRelative } from '../workbench/tools/workbench-paths.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
-const ACTIVE_SURFACES = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md', 'templates', 'skills', 'workbench/manifest.json', 'workbench/tools', 'workbench/docs', 'workbench/wiki', 'workbench/sessions/checkpoints'];
+const ACTIVE_SURFACES = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md', 'templates', 'skills', 'workbench/manifest.json', 'workbench/tools', 'workbench/docs', 'workbench/wiki', 'workbench/sessions/checkpoints', 'workbench/specs/S-00E-fresh-template-project-proof/proof', 'workbench/specs/S-00E-fresh-template-project-proof/PROOF.md'];
 const RETIRED = [
   { label: 'hidden notepad directory', pattern: /\.agents\/grilling diary/ },
   // The two v3.0 lane names may appear only where the one-time migration is

@@ -98,6 +98,18 @@ a new full run and fresh review before integration; the earlier PASS does not
 authorize the changed candidate. Final delivery results belong to the release
 PR. No deployment or repeated-reliability claim is made.
 
+The new candidate dab5e60 passed45/45, but its fresh reviewer blocked the
+unnecessary absolute host paths in three proof excerpts and the Puffer browser
+observation. The excerpts now use portable labels with explicit redaction
+metadata and original-content hashes; failures, outcomes and geometry are
+unchanged. Puffer documentation correction
+`118eecd6da5cd5a78936c1f86ef071f7b05c47f0` retains application code75a242d.
+The existing portability/privacy test now covers this public proof bundle:
+it reproduced the path findings before redaction and passes after correction;
+the Puffer spec independently passes the shared privacy scan. The new immutable
+candidates require fresh review before integration and recovery-branch update.
+Previously published commits remain history; no history rewrite is claimed.
+
 ## Release-stamp check
 
 After native acceptance passed, the Workbench manifest was marked v3.2.1.

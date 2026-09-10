@@ -93,6 +93,8 @@ root README and Runbook.
 | 2026-09-10 | TK-00F | Ticket closed | PROOF.md: native Spark-to-5.5 continuation, project7/7 tests/build/doctor, desktop/phone/reduced-motion and productionlicense200 at75a242d; independent identity and same-room clone checked | S-00E PROOF and project S-001 preserve actual failures/corrections/results and single-host limits | Combined release independent review and integration delivery remain |
 | 2026-09-10 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
+| 2026-09-10 | TK-00F | Fresh review of dab5e60 passed functionality and confirmed45/45 but blocked absolute host paths in proof excerpts; corrected the public proof and Puffer browser observation118eecd | Expanded existing portability/privacy coverage fails before redaction and passes afterward; Puffer spec shared privacy scan clean; command outcomes preserved with explicit redaction metadata | PROOF.md records both review outcomes and the correction, preserving earlier evidence rows | New immutable candidate full suite and fresh review remain integration gates; zero coordination hand-backs |
+
 ## Completion Result
 
 The clean remote Template produced an independent Puffer Pond room through the
