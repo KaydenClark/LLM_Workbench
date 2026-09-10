@@ -15,6 +15,46 @@ bundle requires a new version label; preserve the prior manifest policy as an
 exact readable legacy row. Never redefine a stamped label silently. Only the
 owner publishes integration to main after applicable review.
 
+## Template Upgrade Release Gate
+
+Before claiming a new version release-ready, apply the AGENTS Template Upgrade
+Release Gate to [Workbench_Template](https://github.com/KaydenClark/Workbench_Template),
+the example reference installation. Resolve the live repository identity even
+when a local checkout or old remote is named Example_Workbench.
+
+1. Pin the clean source version/commit and the Template's current integration
+   commit. Preserve unrelated work in separate checkouts. Read the target
+   controls, create the dedicated upgrade spec, inventory all tracked files,
+   and run its full baseline suite.
+2. Follow `skills/update-harness/SKILL.md` for that installed layout. For an
+   already-v3 room, run the source's additive layout migration, reconcile the
+   manifest version and changed control sections, and run the source's
+   `tools/workbench-tools.mjs update --project TEMPLATE_ROOT --home BACKUP_HOME
+   --explicit-update`. Refresh eligible seeded documents. Keep original
+   adoption/genesis provenance and room identity. Record backup/rollback limits;
+   runtime backup alone must not be described as whole-room recovery. Updating
+   personal skills is a separate operation with its own authorization.
+3. Verify the target manifest, applicable control stamps and runtime receipt
+   name the new version. From the pinned source run
+   `node tools/workbench-tools.mjs verify --project TEMPLATE_ROOT` and compare
+   every installed managed hash. Run the Template's full documented suite,
+   layout validation and doctor plus a smoke check of changed installed behavior.
+   Compare the complete before/after inventory and account for every change.
+4. Obtain separate-context review of the immutable Template candidate, merge
+   into its declared integration branch, and prove the reviewed commit is
+   contained remotely. Clone that remote result afresh and repeat the full
+   Template suite and installed-runtime checks.
+5. Record source version/SHA, prior and reviewed Template SHAs, commands/results,
+   preservation and recovery evidence, review verdict, merged integration SHA
+   and fresh-clone result in the current release owner. If any is missing or
+   the Template remains on an older version, the gate stays open. Recheck affected
+   proof when the release's consumed source changes. This does not approve main.
+
+The initial v3.2.1 correction is owned by
+[S-00F](workbench/specs/S-00F-template-upgrade-release-gate/SPEC.md).
+This is a procedural release gate checked by the reviewer, not an automated
+remote check or a claim about agent reliability.
+
 ## Ordinary Entry
 
 Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the

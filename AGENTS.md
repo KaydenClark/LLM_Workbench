@@ -211,6 +211,24 @@ after-score, remaining recommendations, and outcome limitation after. Never
 weaken criteria to raise the score or translate static/context improvement into
 an agent-outcome claim without repeated controlled trials.
 
+### Template Upgrade Release Gate
+
+Every new LLM Workbench version must update the existing reference repository
+[Workbench_Template](https://github.com/KaydenClark/Workbench_Template)
+(formerly Example_Workbench) to that version before release readiness is
+approved. This is the required real-room test of `update-harness`. Pin the source
+commit and prior Template commit, exercise the public upgrade route, preserve
+room-owned state, and verify matching manifest/control/runtime versions, exact
+managed bytes, the Template's full suite and recovery evidence. Independently
+review and merge the Template candidate into its declared integration branch,
+prove remote containment, and rerun its checks from a fresh remote clone.
+Record this proof in the current release spec; a stale or unverified Template
+keeps that release gate open. Source-template tests and fresh-project generation
+do not substitute for the installed upgrade. RUNBOOK's Template Upgrade Release
+Gate owns the procedure. This producer release requirement does not add an
+external repository prerequisite to ordinary project work or authorize other
+room updates. Main promotion remains owner-only in both repositories.
+
 ## Documentation Ownership And Proof
 
 Documentation is part of done; the implementing agent is its documentation
