@@ -106,7 +106,7 @@ Settle the target's starting point first:
   node tools/workbench-upgrade.mjs upgrade \
     --project [ABSOLUTE_PROJECT_PATH] \
     --home [USER_HOME] \
-    --version v3.2.0 \
+    --version v3.2.1 \
     --layout-only
   ```
 
