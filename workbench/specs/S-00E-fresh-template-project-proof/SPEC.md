@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** codex-v321-manager
 **Stance:** Builder
-**Updated:** 2026-09-09
+**Updated:** 2026-09-10
 **Catalog description:** Prove the complete fresh-copy path from Workbench Template through a useful independent project.
 **Blockers:** S-00D
-**Latest event:** Owner activated S-00A through S-00E for v3.2.1 delivery to integration.
-**Next gate:** Execute the assigned vertical slice, verify acceptance, and review the immutable v3.2.1 candidate before integration.
+**Latest event:** TK-00F claimed by codex-v321-manager.
+**Next gate:** Close TK-00F with verification and documentation proof.
 
 > **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
 
@@ -48,7 +48,7 @@ S-00D and explicit owner activation are required.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00F | Exercise the clean-copy path through useful project continuation | ready | S-00D | Isolated clone/room receipt, useful task, independent verification, reviewed result |
+| TK-00F | Exercise the clean-copy path through useful project continuation | in-progress | S-00D | Isolated clone/room receipt, useful task, independent verification, reviewed result |
 
 ### TK-00F Delivery Contract
 
