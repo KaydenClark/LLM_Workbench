@@ -88,3 +88,18 @@ The useful project and saved-note continuation are verified locally. Recovery
 publication is scoped to a new Puffer-Pond task branch, preserving its original
 main. Final Workbench version verification and independent integration review
 remain release gates. No deployment or repeated-reliability claim is made.
+
+## Release-stamp check
+
+After native acceptance passed, the Workbench manifest was marked v3.2.1.
+The public generator at22f8705 then consumed the same clean Template4010003
+and explicitly restamped draft inputs23231c9. It produced a second, empty
+first-capability room with identity `WB-3dYnaJXFRmzhUzho6iBsmA`, v3.2.1
+runtime provenance and valid Genesis readiness. This is a structural release
+check, separate from the native useful-project observation above.
+
+Doctor also reports the host's installed v3.2.0 core skills as incompatible
+with v3.2.1 (42 attention findings across two discovery paths), plus the draft
+README's room-brain link attention. These do not block room creation. No
+personal installation was updated or represented as a v3.2.1 deployment.
+The isolated installer tests remain the proof for new-install behavior.

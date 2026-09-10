@@ -333,6 +333,6 @@ stances within existing authority. Work autonomously inside the assigned task;
 independent review is required before integration. The setup-only Round One
 proof returns in chat; feedback reporting follows it in the declared lane.
 
-Version3.2.1 adds project-evidence preparation and source-linked Genesis.
+Version 3.2.1 adds project-evidence preparation and source-linked Genesis.
 The [fresh Puffer Pond proof](workbench/specs/S-00E-fresh-template-project-proof/PROOF.md)
 records the native continuation and its one-host limitations.
