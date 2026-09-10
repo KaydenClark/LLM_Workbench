@@ -13,6 +13,16 @@
 **Latest event:** S-027 delivered the reviewed v3.1.1 candidate through PR #48 at integration 09f0875; historical release proof remains preserved.
 **Next gate:** Reconcile this historical release procedure and version intent with owner direction before any publication; do not reopen S-027 or require CIC for ordinary testing.
 
+## Current Release Procedure Addendum
+
+The owner now requires every new release to pass AGENTS' Template Upgrade
+Release Gate and the [Runbook procedure](../../../RUNBOOK.md#template-upgrade-release-gate).
+The named Workbench_Template must be updated to the candidate version and its
+installed upgrade verified; upstream tests alone cannot establish readiness.
+[S-00F](../S-00F-template-upgrade-release-gate/SPEC.md) owns the v3.2.1 correction.
+This adds the missing release acceptance condition while preserving the
+historical CIC-specific evidence below; it does not reactivate CIC or approve main.
+
 ## Outcome
 
 The Workbench exposes exactly one non-draft `integration` to `main` pull request

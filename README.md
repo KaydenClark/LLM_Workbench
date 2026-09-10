@@ -206,6 +206,14 @@ distinguish the repaired bundle.
 Actual cross-device acceptance and rollout readiness remain explicitly separate.
 This repo is the source, so its own docs are not stamped.
 
+Every new version must also upgrade and verify the existing
+[Workbench_Template](https://github.com/KaydenClark/Workbench_Template)
+reference repository before release readiness is approved. Its installed update,
+independent integration review and fresh-clone checks are the
+[Template upgrade release gate](RUNBOOK.md#template-upgrade-release-gate).
+Passing source tests or creating a new project does not satisfy this gate.
+
+
 LLM_Workbench produces the canonical harness and scoped update instructions.
 Named project owners authorize installation, recovery and local verification.
 Historical GPT_OS/Audit_Workbench examples in ADR-0026 explain earlier roles;
