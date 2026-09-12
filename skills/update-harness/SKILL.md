@@ -192,6 +192,26 @@ owner gate. Do not manipulate status merely to make `next` return work.
 Completion criterion: render is deterministic, doctor is green, links resolve,
 spec paths are stable, and selection matches the project's real gate.
 
+### Workbench self-drift boundary
+
+The target project's drift check is not the canonical Workbench's self-drift
+check. Whenever the source Workbench itself is being changed or updated, run a
+read-only self-drift review before and after the source change. Inspect the
+source controls, Specs and projections, manifest, ADR/Wiki routes, update and
+review procedures, templates, managed tools/skills and receipts, seeded
+artifacts, and readable continuity metadata. Reconcile current-facing statuses,
+blockers, versions, paths, owners and latest events against their owners.
+
+A passing target-project check, render, doctor or test suite does not establish
+semantic freshness. If a current-facing artifact still presents completed work
+as pending, carries a resolved blocker, points at a retired route, or has stale
+version/provenance information that could misroute a cold-start agent, the
+Workbench update is not complete. Until the planned
+[`S-00K`](../../workbench/specs/S-00K-workbench-self-drift-check/SPEC.md) capability
+exists, record the bounded manual self-check and its unresolved findings; do
+not silently call the update clean. Preserve explicit historical and
+append-only evidence.
+
 ## 5. Re-verify and prove the migration
 
 Run the same full project suite as the baseline, plus harness-specific checks:

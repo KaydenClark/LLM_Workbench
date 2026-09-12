@@ -56,9 +56,9 @@ copying task state here.
 | Go to | For |
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
-| [BLUEPRINT.md](../../BLUEPRINT.md) | Product destination, integrated design, and constraints |
-| [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, and design-concept routing |
-| [TASKBOARD.md](../../TASKBOARD.md) | Current execution state |
+| [BLUEPRINT.md](../../BLUEPRINT.md) | Product destination, integrated design, cross-cutting qualities, and constraints |
+| [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, the Artifact Ownership Schema, and design-concept routing |
+| [TASKBOARD.md](../../TASKBOARD.md) | Generated work-state view; follow each row to its owning Spec |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |

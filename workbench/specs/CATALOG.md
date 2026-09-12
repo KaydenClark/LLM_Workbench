@@ -20,6 +20,11 @@ Derived from stable specs; includes completed history.
 | [S-00D - Genesis From Blueprint And Active ADRs](S-00D-genesis-from-blueprint-and-adrs/SPEC.md) | Derive scoped project Specs and a valid room from locked Blueprint/ADR decisions plus verified Actuality. | complete |
 | [S-00E - Fresh Workbench Template To Project Proof](S-00E-fresh-template-project-proof/SPEC.md) | Prove the complete fresh-copy path from Workbench Template through a useful independent project. | complete |
 | [S-00F - Template Upgrade Release Gate](S-00F-template-upgrade-release-gate/SPEC.md) | Require each new LLM Workbench version to upgrade the named Workbench_Template repository and pass its installed update checks before release readiness can be claimed | complete |
+| [S-00G - Ownership Map Root Control](S-00G-ownership-map-root-control/SPEC.md) | Deliver `OWNERSHIP.json` as the eighth root control with a structured query surface, and teach every live root-surface consumer about it. | planned |
+| [S-00H - Task Artifact And Terminology Migration](S-00H-task-artifact-and-terminology-migration/SPEC.md) | Make a Task a standalone `TASK.md` artifact and replace Ticket with Task across prose, tools and newly allocated identifiers. | planned |
+| [S-00I - Folder Lifecycle For Records](S-00I-folder-lifecycle-for-records/SPEC.md) | Express ADR, Spec and Task lifecycle by folder location, with permanent `archive` and transient `retired`, without clearing anything. | planned |
+| [S-00J - Spec QA Gate At Integration](S-00J-spec-qa-gate-at-integration/SPEC.md) | Make the merge request into `integration` trigger a gate that verifies every Task in the Spec is complete and the branch is up to Spec. | planned |
+| [S-00K - Workbench Self-Drift Check On Update](S-00K-workbench-self-drift-check/SPEC.md) | Check the canonical Workbench's own artifacts for semantic drift before an update is called complete. | planned |
 | [S-010 - Canonical Evaluator Entry Detection](S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
 | [S-011 - Agent Skills Adoption](S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |
 | [S-012 - Reproducible Adoption Provenance](S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
@@ -60,4 +65,5 @@ Derived from stable specs; includes completed history.
 | [S-051 - Core Skill Ownership And Compatibility](S-051-core-skill-ownership-and-compatibility/SPEC.md) | Install one identifiable compatible global core release while preserving optional shared and room-local skill ownership. | complete |
 | [S-052 - Private Session Transport](S-052-private-session-transport/SPEC.md) | Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling. | active |
 | [S-053 - Configured Host Capabilities](S-053-configured-host-capabilities/SPEC.md) | Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate. | complete |
+| [S-054 - Workbench v3.2.1 Review-Boundary Integrity](S-054-v3-2-1-review-boundary-integrity/SPEC.md) | Make an integration review bind to the exact resulting candidate and refuse target movement before merge. | planned |
 <!-- spec-catalog:end -->

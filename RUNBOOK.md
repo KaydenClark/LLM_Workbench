@@ -72,6 +72,29 @@ follows the meaningful-work rule and is reconciled at closeout; it does not
 turn a chat-only setup check into a reporting assignment. Round One precedes
 feedback testing.
 
+### Finding The Owner Of A Question
+
+1. Use [LEXICON -> Artifact Ownership Schema](LEXICON.md#artifact-ownership-schema)
+   to identify the job: permission, meaning, destination, work state, proof,
+   procedure, recovery or another listed responsibility.
+2. Follow the named owner and resolve installed paths through the manifest.
+   Consult only the relevant section and its linked sources. For a work-state
+   question, follow the Taskboard row to the owning Spec before editing.
+3. Separate the answer's status: accepted requirement, verified observation,
+   proposal, unresolved question or historical claim. Apply AGENTS State
+   Resolution if sources disagree; file location alone does not settle it.
+4. When authorized work changes the answer, update its owner and refresh any
+   derived view. If the route is missing, use bounded search and repair that
+   route in scope. An unresolved decision stays in the existing work owner or
+   objective note; a missing answer does not authorize a new task.
+
+For example, a failed test has several owners: the Spec defines the expected
+behavior, the source implements it, the result records the failure, and the
+Spec records any resulting blocker. A Wiki explanation may clarify the cause;
+it does not redefine acceptance. After interruption, the Runbook supplies the
+recovery procedure while the Spec, source and saved context supply what to
+recover. Execution and recovery therefore remain separate jobs.
+
 ### Behavior Selection
 
 After resolving the requested scope, compose the smallest behavior already
@@ -736,6 +759,41 @@ node tools/test-workbench-upgrade.mjs
 
 Passing neither mode blocks with `explicit-update-required`; passing both is an
 `invalid-invocation`. Uncommitted state has no concrete rollback point.
+
+### Workbench self-drift check
+
+Project drift and Workbench self-drift are separate checks. A project update
+checks the target room's filled controls, product truth, active work and local
+proof. When the canonical LLM Workbench itself is updated, check the source
+WorkBench's own cold-start surface before and after the change as well.
+
+Until the public S-00K capability exists, perform and record this bounded
+manual check; do not report a clean Workbench update while it has known
+current-facing drift:
+
+1. Pin the Workbench source revision, manifest version and declared integration
+   branch. Preserve unrelated dirty state and inspect from a clean task
+   worktree when mutation is involved.
+2. Inventory root controls and projections, the manifest, current and planned
+   Specs plus `CATALOG.md`, active ADRs and their register, the Wiki router,
+   update/review procedures, templates, managed tools and skill receipts,
+   seeded contract documents, and readable continuity metadata.
+3. Reconcile each current-facing status, blocker, latest event, next gate,
+   version, path and owner against its durable source. Classify bounded history
+   and append-only evidence explicitly instead of treating every old claim as
+   a defect.
+4. Record stale completed work, resolved blockers, contradictory versions or
+   routes, generated projection drift, stale provenance/seeds and unreadable
+   required artifacts with the smallest owning correction. Preserve the source
+   bytes and corrections; this check is read-only.
+5. Repeat the inventory after the Workbench update and run a clean cold-start
+   read-back using repository state only. A project drift result, `render`,
+   `doctor` or passing tests may be attached as evidence, but none replaces the
+   self-drift result.
+
+The planned implementation and public machine-readable receipt are owned by
+[`S-00K`](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md). No command
+name is implied before that spec is implemented.
 
 ### Spec Lifecycle And Retrieval
 
