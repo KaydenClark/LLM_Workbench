@@ -9,7 +9,9 @@
 **Catalog description:** Deliver `OWNERSHIP.json` as the eighth root control with a structured query surface, and teach every live root-surface consumer about it.
 **Blockers:** ADR-000B, ADR-000C and ADR-000D are `proposed`; FND-Q21, FND-Q23 and FND-Q24 are open owner questions.
 **Latest event:** Spec authored from the approved foundation answers; no implementation started and no ADR accepted.
-**Next gate:** Owner accepts ADR-000B, ADR-000C and ADR-000D, and answers FND-Q21, FND-Q23 and FND-Q24, before any slice is claimed.
+**Next gate:** Owner accepts ADR-000B, ADR-000C and ADR-000D before TK-001-TK-003
+are claimable; TK-004 additionally needs FND-Q21, FND-Q23 and FND-Q24 answered
+(see Dependencies And Blockers and each ticket's own Blockers column).
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 

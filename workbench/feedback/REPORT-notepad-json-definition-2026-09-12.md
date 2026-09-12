@@ -1,9 +1,20 @@
 # Definitive notepad.json report
 
-The design is coherent, but its delivery is split across three conflicting surfaces:
+**Resolved since this report was written.** This report is pinned to `integration`
+at `eee0f7b3cedb0f3ac518703d44551694c0c8cda3` (see Snapshot, section 1). Both
+regressions in item 2 below and in "Current integration dropped two late
+safety fixes" were fixed in commit `2d5124eb9cde94a87d59b8ff0b238baea8368f71`
+("Checkpoint ADR lifecycle and notepad regression repairs"), which is an
+ancestor of every `integration` commit since, including the one this report is
+filed against. `workbench/tools/notepads.mjs` privacy-scans the basename and
+rejects unsafe numeric entry suffixes at this candidate. Do not schedule a
+forward-port for those two fixes; the findings below are kept as the historical
+record of what was true at the pinned snapshot, not a current defect list.
+
+The design is coherent, but its delivery was split across three conflicting surfaces:
 
 1. The linked branch, [`claude/s046-tk002-notepad-runtime`](https://github.com/KaydenClark/LLM_Workbench/tree/claude/s046-tk002-notepad-runtime), contains the original TK-002 runtime and two important late safety fixes.
-2. The newer `integration` branch contains the broader v3.2 lifecycle—allocation, handoffs, promotion, cleanup, optional transport, and skill installation—but omitted those two late fixes.
+2. The `integration` branch at the pinned snapshot contained the broader v3.2 lifecycle—allocation, handoffs, promotion, cleanup, optional transport, and skill installation—but had not yet picked up those two late fixes (since resolved; see the notice above).
 3. Your installed global notepad skills are old v3.1.4 copies, duplicated across three directories, and do not fully describe the newer behavior.
 
 That split is a major reason agents keep getting it wrong.
@@ -672,7 +683,11 @@ The feature branch must not be merged wholesale over v3.2. Its missing fixes sho
 
 ### 2. Current integration dropped two late safety fixes
 
-I reproduced both defects through the public CLI in a clean disposable clone of current `integration`.
+> **Resolved.** Fixed in `2d5124eb9cde94a87d59b8ff0b238baea8368f71`, an ancestor
+> of every `integration` commit since the pinned snapshot below. See the notice
+> at the top of this report.
+
+I reproduced both defects through the public CLI in a clean disposable clone of `integration` at the pinned snapshot.
 
 #### Filename privacy bypass
 

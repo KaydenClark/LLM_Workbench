@@ -14,7 +14,7 @@ Question IDs are stable. Every question is **open**; recommendations are proposa
 
 ### 1.1 The product-design path has become secondary to the execution path
 
-The [workflow reference](../../Workbench_Original_Workflow_Reference.md), sections 1, 4, 6 and 9, starts with exploration and code prototypes to establish shared understanding, then the destination and human alignment, then tickets, implementation and human QA. It explicitly does not make every stage mandatory for every change.
+The [workflow reference](../wiki/archive/workbench-original-workflow-reference.md), sections 1, 4, 6 and 9, starts with exploration and code prototypes to establish shared understanding, then the destination and human alignment, then tickets, implementation and human QA. It explicitly does not make every stage mandatory for every change.
 
 The current [Runbook behavior table](../../RUNBOOK.md#behavior-selection) offers deciding, preserving, promoting, specifying, delivering, handing off and reviewing. The [Blueprint](../../BLUEPRINT.md) emphasizes continuity, authority, distribution, compatibility, verification and release. Research and prototyping have no explicit place in that main route; product acceptance by the human is much less concrete than integration review. [Genesis](../../templates/GENESIS.md) starts from a founding prompt and produces a scaffold. A scaffold that runs is useful, but it is not necessarily a prototype used to discover whether the intended product is right.
 

@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-12
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, with permanent `archive` and transient `retired`, without clearing anything.
-**Blockers:** ADR-000I is `proposed`; S-00H TK-001 must land first; FND-Q07 and FND-Q08 are HELD.
+**Blockers:** ADR-000I is `proposed`; S-00H must reach `complete` first; FND-Q07 and FND-Q08 are HELD.
 **Latest event:** Spec authored from decisions 039-041; no implementation started and no ADR accepted.
-**Next gate:** Owner accepts ADR-000I and S-00H TK-001 is complete, before any slice is claimed.
+**Next gate:** Owner accepts ADR-000I and S-00H reaches `complete`, before any slice is claimed.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -36,9 +36,9 @@ At the pre anchor, `workbench/docs/adr/` is flat: 44 record files plus
 frontmatter `status`; `workbench/tools/adr.mjs` lists the directory flat, filters
 `accepted` to build `REGISTER.md`, and writes `HISTORY.md` unfiltered.
 `adr.mjs` requires `superseded_by` to be one whole-record filename with no path,
-so successor resolution is not folder-aware. 22 ADR files carry relative
-intra-ADR links that break when a target moves, and 16 accepted ADRs name live
-`workbench/specs/S-*` paths. `workbench/specs/` holds 56 spec directories, so
+so successor resolution is not folder-aware. 20 ADR files carry relative
+intra-ADR links that break when a target moves, and 15 accepted ADRs name live
+`workbench/specs/S-*` paths. `workbench/specs/` holds 54 spec directories, so
 the moving unit for a Spec is a directory, not a file. `AGENTS.md` still
 requires a declared Spec path never to move between active, done and archive
 folders — the direct inverse of this model.
@@ -72,18 +72,21 @@ remains proposed.
 
 ## Dependencies And Blockers
 
-Blocked on owner acceptance of ADR-000I, and on S-00H TK-001 delivering the
-standalone Task record. The clearing half stays blocked on the held FND-Q07 and
+Blocked on owner acceptance of ADR-000I, and on S-00H reaching `complete`
+(TK-004 needs the standalone Task record its TK-001 delivers; `claim`'s blocker
+model only resolves whole completed Spec IDs and this Spec's own done ticket
+IDs, not another Spec's individual ticket, so the dependency is expressed at
+Spec granularity). The clearing half stays blocked on the held FND-Q07 and
 FND-Q08 deletion gate and is not scheduled here.
 
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Make ADR successor and link resolution folder-aware | blocked | ADR-000I proposed | Red test for a successor in another folder; green path-aware resolution; 22 intra-ADR links proven |
+| TK-001 | Make ADR successor and link resolution folder-aware | blocked | ADR-000I proposed | Red test for a successor in another folder; green path-aware resolution; 20 intra-ADR links proven |
 | TK-002 | Move ADR lifecycle from frontmatter status to folder location | blocked | TK-001 | Red test asserting location drives REGISTER/HISTORY; green migration of 44 records; register byte-stable |
-| TK-003 | Apply folder lifecycle to Spec directories and repair every live reference | blocked | TK-002 | Red link scan; green move path; 16 ADR-to-spec references resolve |
-| TK-004 | Apply folder lifecycle to Task records and retire the stable-path rule | blocked | TK-003, S-00H TK-001 | Red test for a moved Task; green move; `AGENTS.md` rule retired with stated reason |
+| TK-003 | Apply folder lifecycle to Spec directories and repair every live reference | blocked | TK-002 | Red link scan; green move path; 15 ADR-to-spec references resolve |
+| TK-004 | Apply folder lifecycle to Task records and retire the stable-path rule | blocked | TK-003, S-00H | Red test for a moved Task; green move; `AGENTS.md` rule retired with stated reason |
 
 ### TK-001 - Make ADR successor and link resolution folder-aware
 
@@ -92,7 +95,7 @@ FND-Q08 deletion gate and is not scheduled here.
 `adr.mjs` rejects a `superseded_by` containing a path separator today. Add the
 failing test first: a superseded record whose successor lives in another folder.
 Then implement resolution that finds a record by identity rather than by
-assumed location, and prove all 22 relative intra-ADR links still resolve.
+assumed location, and prove all 20 relative intra-ADR links still resolve.
 
 ### TK-002 - Move ADR lifecycle from frontmatter status to folder location
 
@@ -107,7 +110,7 @@ records go to permanent `archive` with bodies untouched.
 
 **Stance:** Builder
 
-The moving unit is a directory across 56 specs. 16 accepted ADRs name live spec
+The moving unit is a directory across 54 specs. 15 accepted ADRs name live spec
 paths and must still resolve afterward. Run a complete reference and link scan
 as the green proof, not as a spot check.
 
@@ -127,8 +130,8 @@ premise that rule served. Do not reinterpret it as a rule about absolute paths.
 - [ ] Completed Specs and Tasks stage in `retired`, and nothing clears it.
 - [ ] Lifecycle `status` frontmatter is removed from records whose lifecycle
       folders now carry it.
-- [ ] Successor resolution and all 22 intra-ADR links work across folders.
-- [ ] All 16 ADR-to-spec path references resolve after Spec directories move.
+- [ ] Successor resolution and all 20 intra-ADR links work across folders.
+- [ ] All 15 ADR-to-spec path references resolve after Spec directories move.
 - [ ] The `AGENTS.md` stable-path rule is retired with a stated reason.
 - [ ] The full verification suite passes and `doctor` is clean.
 
@@ -156,7 +159,7 @@ acceptance, which is separate from this Spec.
 
 | Date | Commit | Claim | Method | Result |
 |---|---|---|---|---|
-| 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only structural survey | ADR dir flat with 44 records; `superseded_by` rejects paths; 22 intra-ADR links and 16 ADR-to-spec references confirmed; 56 spec directories |
+| 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only structural survey | ADR dir flat with 44 records; `superseded_by` rejects paths; 20 intra-ADR links and 15 ADR-to-spec references confirmed; 54 spec directories |
 
 ## Completion Result
 

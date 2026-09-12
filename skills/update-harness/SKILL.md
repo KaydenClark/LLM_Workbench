@@ -206,11 +206,11 @@ A passing target-project check, render, doctor or test suite does not establish
 semantic freshness. If a current-facing artifact still presents completed work
 as pending, carries a resolved blocker, points at a retired route, or has stale
 version/provenance information that could misroute a cold-start agent, the
-Workbench update is not complete. Until the planned
-[`S-00K`](../../workbench/specs/S-00K-workbench-self-drift-check/SPEC.md) capability
-exists, record the bounded manual self-check and its unresolved findings; do
-not silently call the update clean. Preserve explicit historical and
-append-only evidence.
+Workbench update is not complete. Until the planned self-drift capability
+(`workbench/specs/S-00K-workbench-self-drift-check/SPEC.md` in the source
+checkout located in step 1) exists, record the bounded manual self-check and
+its unresolved findings; do not silently call the update clean. Preserve
+explicit historical and append-only evidence.
 
 ## 5. Re-verify and prove the migration
 

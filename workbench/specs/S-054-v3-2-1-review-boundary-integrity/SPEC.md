@@ -11,7 +11,7 @@
 **Latest event:** v3.2.1 docket created from the v3.2.0 review-boundary handoff; no implementation started.
 **Next gate:** Owner explicitly activates the v3.2.1 docket after the separate v3.2.0 release work is ready to start it.
 
-> **Citation anchors.** pre=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2` post=`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`.
+> **Citation anchors.** pre=`340e80a1b4f1af92afbbe3a974e7de3d4cb679b7` post=`340e80a1b4f1af92afbbe3a974e7de3d4cb679b7`. The evidence log below names this commit only by its 7-character abbreviation (`340e80a`); the full 40-character hash previously recorded here (`340e80a4b9cf6e07ca30f3a5f406b93998d48ed2`) shared that prefix but is not an object reachable from this repository. This is the actual commit ("Record v3.2.0 upstream integration") matching the abbreviation and the S-050 TK-004 context the evidence log describes.
 
 ## Outcome
 
