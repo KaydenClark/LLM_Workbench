@@ -1,0 +1,588 @@
+[
+  {
+    "candidate": "CAND-A",
+    "architectural_question": "What test decides whether the Workbench works: that its files exist, or that a fresh agent resumes useful work from them?",
+    "existing_adr_relationship": "Complements ADR-0035/0040/0042; whole-Workbench continuity is broader than JSON notes.",
+    "second_pass_relationship": "New ADR",
+    "target": "Workbench continuity through maintained owners",
+    "recommendation": "Fresh-agent continuity applies to the whole Workbench. ADR-0040 covers unfinished local context; it must not become the sole owner of the product promise.",
+    "why_adr_worthy": "Fresh-agent continuity applies to the whole Workbench. ADR-0040 covers unfinished local context; it must not become the sole owner of the product promise.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": true,
+    "original_source_items": [
+      "R001",
+      "R044",
+      "R050",
+      "R113",
+      "R135"
+    ],
+    "source_items": [
+      "R001",
+      "R044",
+      "R050",
+      "R113",
+      "R135"
+    ],
+    "first_pass_existing_adr_relationship": "Extends ADR-0035 (reduced entry) and ADR-0040 (JSON notepads); neither states the outcome those mechanisms serve.",
+    "revised_targeted_items": [
+      "R001",
+      "R044",
+      "R135"
+    ]
+  },
+  {
+    "candidate": "CAND-B",
+    "architectural_question": "When may one of a passing check, a favourable review, and an owner instruction stand in for another?",
+    "existing_adr_relationship": "ADR-0027 and ADR-0037 already separate authority, state and review effects.",
+    "second_pass_relationship": "Amend existing",
+    "target": "ADR-0027; ADR-0037",
+    "recommendation": "Authority, verified state and review authority are already separated explicitly. Clarify their relationship and child scope in the existing owners rather than add a fourth general authority record.",
+    "why_adr_worthy": "No additional ADR recommended: Authority, verified state and review authority are already separated explicitly. Clarify their relationship and child scope in the existing owners rather than add a fourth general authority record.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": false,
+    "original_source_items": [
+      "R018",
+      "R019",
+      "R081"
+    ],
+    "source_items": [
+      "R018",
+      "R019",
+      "R081"
+    ],
+    "first_pass_existing_adr_relationship": "Generalises ADR-0023 (tools vs agents), ADR-0037 (independent review) and ADR-0027 (authority order) into the rule none of them states.",
+    "revised_targeted_items": []
+  },
+  {
+    "candidate": "CAND-C",
+    "architectural_question": "What evidence is allowed to support a claim that the Workbench improves an agent's work?",
+    "existing_adr_relationship": "AGENTS, evals/README and outcomes/README govern outcome claims; ADR-0038 addresses setup evidence.",
+    "second_pass_relationship": "New ADR",
+    "target": "Evidence for claims of improved agent outcomes",
+    "recommendation": "Preserve held-out comparisons, honest incompleteness and baseline integrity. This is a durable alternative to optimizing a structural self-score.",
+    "why_adr_worthy": "Preserve held-out comparisons, honest incompleteness and baseline integrity. This is a durable alternative to optimizing a structural self-score.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": true,
+    "original_source_items": [
+      "R085",
+      "R086",
+      "R087",
+      "R100",
+      "R103",
+      "R149",
+      "R180"
+    ],
+    "source_items": [
+      "R085",
+      "R086",
+      "R087",
+      "R100",
+      "R103",
+      "R149",
+      "R180"
+    ],
+    "first_pass_existing_adr_relationship": "No existing ADR. AGENTS.md forbids weakening criteria; ADR-0038 rejects artificial pilots. evals/ and outcomes/ run with no decision record.",
+    "revised_targeted_items": [
+      "R085",
+      "R086",
+      "R087",
+      "R100",
+      "R103",
+      "R149",
+      "R180"
+    ]
+  },
+  {
+    "candidate": "CAND-D",
+    "architectural_question": "What must a harness feedback record state before its findings can be compared across releases, rooms and models?",
+    "existing_adr_relationship": "REPORT_FORMAT already owns report identifiers and evidence limits; C carries general outcome-evidence rationale.",
+    "second_pass_relationship": "Operational documentation",
+    "target": "REPORT_FORMAT.md; CAND-C",
+    "recommendation": "Put evaluated/reviewer model fields and evidence states in the report contract. Retain the evidence rationale under C; do not import the Audit application or a mandatory central findings service.",
+    "why_adr_worthy": "No additional ADR recommended: Put evaluated/reviewer model fields and evidence states in the report contract. Retain the evidence rationale under C; do not import the Audit application or a mandatory central findings service.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": false,
+    "original_source_items": [
+      "R088",
+      "R099"
+    ],
+    "source_items": [
+      "R088",
+      "R099"
+    ],
+    "first_pass_existing_adr_relationship": "Amends workbench/feedback/REPORT_FORMAT.md, which already scopes finding IDs and skill-copy provenance. Ports AU-0001/0002/0003/0004 reasoning upstream.",
+    "revised_targeted_items": []
+  },
+  {
+    "candidate": "CAND-E",
+    "architectural_question": "How may skills call each other, and what does a composed call inherit?",
+    "existing_adr_relationship": "ADR-0036 covers stances, ADR-0027 covers authority. Composition merits a separate bounded rationale.",
+    "second_pass_relationship": "New ADR",
+    "target": "Skill composition within inherited scope",
+    "recommendation": "Composition and source ownership can change independently. Preserve reusable primitives and distinguish invocation from authorization; do not adopt a metadata schema merely because one was suggested.",
+    "why_adr_worthy": "Composition and source ownership can change independently. Preserve reusable primitives and distinguish invocation from authorization; do not adopt a metadata schema merely because one was suggested.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": true,
+    "original_source_items": [
+      "R017",
+      "R056",
+      "R057",
+      "R058",
+      "R059",
+      "R060"
+    ],
+    "source_items": [
+      "R017",
+      "R056",
+      "R057",
+      "R058",
+      "R059",
+      "R060",
+      "R061",
+      "R067",
+      "R162"
+    ],
+    "first_pass_existing_adr_relationship": "Extends ADR-0036 (stances change method not authority) to the whole skill surface. CAND-F settled the tier boundary it composes across.",
+    "revised_targeted_items": [
+      "R017",
+      "R056",
+      "R057",
+      "R058",
+      "R059",
+      "R060",
+      "R061",
+      "R067",
+      "R162"
+    ]
+  },
+  {
+    "candidate": "CAND-F",
+    "architectural_question": "Does the Workbench ship promote/save/handoff and the lifecycle skills, or do they stay in KaydenClark/skills outside every room?",
+    "existing_adr_relationship": "ADR-0031 covers runtime ownership; F settles skill source, installation, compatibility and local development.",
+    "second_pass_relationship": "New ADR",
+    "target": "Core, personal/shared and room-local skill ownership",
+    "recommendation": "Use the final owner answer: one selected global core release with an explicit tested compatibility range; core source belongs exclusively upstream. Existing duplicate tracked copies are migration state.",
+    "why_adr_worthy": "Use the final owner answer: one selected global core release with an explicit tested compatibility range; core source belongs exclusively upstream. Existing duplicate tracked copies are migration state.",
+    "status": "OWNER DECIDED; NOT YET PROMOTED/IMPLEMENTED",
+    "new_adr": true,
+    "original_source_items": [
+      "R038",
+      "R068",
+      "R162"
+    ],
+    "source_items": [
+      "R038",
+      "R053",
+      "R068",
+      "R162",
+      "R171"
+    ],
+    "first_pass_existing_adr_relationship": "Contradicts nothing formally, but S-048 calls save 'unimplemented' while a working save and promote exist in ~/.claude/skills.",
+    "revised_targeted_items": [
+      "R053",
+      "R068",
+      "R162",
+      "R171"
+    ]
+  },
+  {
+    "candidate": "CAND-G",
+    "architectural_question": "What does each setup operation promise to preserve, and what must it check before it mutates anything?",
+    "existing_adr_relationship": "Extends ADR-0031/0032 with lifecycle preservation contracts already implemented across setup tools.",
+    "second_pass_relationship": "New ADR",
+    "target": "Preservation contracts for genesis, adoption and upgrade",
+    "recommendation": "Different preconditions and allowed effects are a durable architectural choice. Link runtime ownership to ADR-0031; source validation is required for every consumed lane.",
+    "why_adr_worthy": "Different preconditions and allowed effects are a durable architectural choice. Link runtime ownership to ADR-0031; source validation is required for every consumed lane.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": true,
+    "original_source_items": [
+      "R070",
+      "R071",
+      "R073",
+      "R174",
+      "R175",
+      "R178"
+    ],
+    "source_items": [
+      "R070",
+      "R071",
+      "R073",
+      "R174",
+      "R175",
+      "R178"
+    ],
+    "first_pass_existing_adr_relationship": "Extends ADR-0031 and ADR-0032. S-032, S-042, S-044 and S-045 TK-001 implement or contest parts of it with no ADR.",
+    "revised_targeted_items": [
+      "R070",
+      "R071",
+      "R073",
+      "R174",
+      "R175",
+      "R178"
+    ]
+  },
+  {
+    "candidate": "CAND-H",
+    "architectural_question": "When someone says 'the room is on v3.1.3', which of five different facts is being claimed?",
+    "existing_adr_relationship": "Extends ADR-0031 receipt identity; S-031/039 and current diagnostics evidence distinct layers.",
+    "second_pass_relationship": "New ADR",
+    "target": "Identity across release, adoption, installed bytes and runtime",
+    "recommendation": "Each evidence claim names the state it proves. Historical adoption provenance cannot stand in for current tools, skills, runtime or downstream acceptance.",
+    "why_adr_worthy": "Each evidence claim names the state it proves. Historical adoption provenance cannot stand in for current tools, skills, runtime or downstream acceptance.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": true,
+    "original_source_items": [
+      "R055",
+      "R074",
+      "R166",
+      "R171",
+      "R172",
+      "R173"
+    ],
+    "source_items": [
+      "R055",
+      "R074",
+      "R078",
+      "R079",
+      "R083",
+      "R114",
+      "R166",
+      "R171",
+      "R172",
+      "R173"
+    ],
+    "first_pass_existing_adr_relationship": "Extends ADR-0031's receipt model; ports AU-0004 upstream. S-031, S-039 and S-042 implement layers of it.",
+    "revised_targeted_items": [
+      "R055",
+      "R074",
+      "R078",
+      "R079",
+      "R083",
+      "R114",
+      "R166",
+      "R171",
+      "R172",
+      "R173"
+    ]
+  },
+  {
+    "candidate": "CAND-I",
+    "architectural_question": "What proves that work is recoverable, integrated and complete?",
+    "existing_adr_relationship": "ADR-0037/0039 and AGENTS Branch Completion already govern reviewed destination and containment.",
+    "second_pass_relationship": "Amend existing",
+    "target": "ADR-0037; CAND-H; RUNBOOK.md",
+    "recommendation": "Exact candidate, actual destination containment and safe cleanup already have behavioral owners. Add rationale there and preserve remote uncertainty; do not create another generic completion gate.",
+    "why_adr_worthy": "No additional ADR recommended: Exact candidate, actual destination containment and safe cleanup already have behavioral owners. Add rationale there and preserve remote uncertainty; do not create another generic completion gate.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": false,
+    "original_source_items": [
+      "R078",
+      "R079",
+      "R083",
+      "R114"
+    ],
+    "source_items": [
+      "R078",
+      "R079",
+      "R083",
+      "R114"
+    ],
+    "first_pass_existing_adr_relationship": "Extends ADR-0037 (exact-candidate review) and ADR-0039. AGENTS.md already states the containment rule without its rationale.",
+    "revised_targeted_items": []
+  },
+  {
+    "candidate": "CAND-J",
+    "architectural_question": "What does a harness-only change do when the target has no runnable green baseline for reasons the change cannot fix?",
+    "existing_adr_relationship": "S-041 records the accepted alternative; ADR-0020 scopes what a check may block.",
+    "second_pass_relationship": "New ADR",
+    "target": "Unavailable baseline for a bounded harness-only change",
+    "recommendation": "Record-and-proceed is an explicit alternative selected in S-041. Retain the closed reason vocabulary and independent review; red is not reclassified as unavailable.",
+    "why_adr_worthy": "Record-and-proceed is an explicit alternative selected in S-041. Retain the closed reason vocabulary and independent review; red is not reclassified as unavailable.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": true,
+    "original_source_items": [
+      "R169"
+    ],
+    "source_items": [
+      "R169"
+    ],
+    "first_pass_existing_adr_relationship": "Links ADR-0020 (a check blocks only what it evaluates). S-041 is complete and records the owner's explicit choice.",
+    "revised_targeted_items": [
+      "R169"
+    ]
+  },
+  {
+    "candidate": "CAND-K",
+    "architectural_question": "How much may a room's controls diverge from the template they derive from before that divergence must be decided rather than discovered?",
+    "existing_adr_relationship": "S-034/036, LEXICON Control fidelity and current report tests already state and exercise the boundary.",
+    "second_pass_relationship": "New ADR",
+    "target": "Visible, deliberate control divergence",
+    "recommendation": "Preserve fixed wording when filling placeholders and expose changed/dropped rules. Divergence remains legitimate when deliberately decided; fidelity stays a report, not a universal blocker.",
+    "why_adr_worthy": "Preserve fixed wording when filling placeholders and expose changed/dropped rules. Divergence remains legitimate when deliberately decided; fidelity stays a report, not a universal blocker.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": true,
+    "original_source_items": [
+      "R105",
+      "R165",
+      "R170"
+    ],
+    "source_items": [
+      "R105",
+      "R165",
+      "R170"
+    ],
+    "first_pass_existing_adr_relationship": "No existing ADR. S-034 (fidelity report) and S-036 (permission model correction) are both complete; Example_Workbench is the live reference.",
+    "revised_targeted_items": [
+      "R105",
+      "R165",
+      "R170"
+    ]
+  },
+  {
+    "candidate": "CAND-L",
+    "architectural_question": "Does a record's meaning depend on the host that checked it out?",
+    "existing_adr_relationship": "S-037 and parser tests own line-ending semantics; a new decision record is not required.",
+    "second_pass_relationship": "Operational documentation",
+    "target": "RUNBOOK.md; parser contract; S-037",
+    "recommendation": "Line terminators and read-only parsing are a portable syntax contract adequately owned by docs and tests. No separate architectural alternative needs a new ADR.",
+    "why_adr_worthy": "No additional ADR recommended: Line terminators and read-only parsing are a portable syntax contract adequately owned by docs and tests. No separate architectural alternative needs a new ADR.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": false,
+    "original_source_items": [
+      "R176"
+    ],
+    "source_items": [
+      "R176"
+    ],
+    "first_pass_existing_adr_relationship": "No existing ADR. S-037 is complete with tests covering LF, CRLF and CR frontmatter.",
+    "revised_targeted_items": []
+  },
+  {
+    "candidate": "CAND-M",
+    "architectural_question": "What makes parallel agent work safe, and what does 'different task' fail to guarantee?",
+    "existing_adr_relationship": "AGENTS and S-020 already cover repository/spec/shared-file write ownership.",
+    "second_pass_relationship": "Existing contract",
+    "target": "AGENTS.md; team templates; S-020",
+    "recommendation": "S-020 already records one writer across repository/spec/shared-file lanes. Clarify current scope and serialization examples without inventing a global lock service or mandatory agent teams.",
+    "why_adr_worthy": "No additional ADR recommended: S-020 already records one writer across repository/spec/shared-file lanes. Clarify current scope and serialization examples without inventing a global lock service or mandatory agent teams.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": false,
+    "original_source_items": [
+      "R106",
+      "R110"
+    ],
+    "source_items": [
+      "R106",
+      "R110"
+    ],
+    "first_pass_existing_adr_relationship": "AGENTS.md carries a one-line rule for spec/Taskboard state; no ADR gives it scope or rationale.",
+    "revised_targeted_items": []
+  },
+  {
+    "candidate": "CAND-N",
+    "architectural_question": "Notes are local-only and gitignored, but the owner works on two machines. What carries objective continuity across them?",
+    "existing_adr_relationship": "Explicitly narrows ADR-0040 local-only and implements the connection identity deferred in ADR-0041.",
+    "second_pass_relationship": "New ADR",
+    "target": "Optional private Git transport for session continuity",
+    "recommendation": "The owner selected workbench_sessions, a stable Workbench identity, selected live collections, conflict preservation and explicit remote confirmation. Transport changes recoverability, not authority or promotion.",
+    "why_adr_worthy": "The owner selected workbench_sessions, a stable Workbench identity, selected live collections, conflict preservation and explicit remote confirmation. Transport changes recoverability, not authority or promotion.",
+    "status": "OWNER DECIDED; NOT YET PROMOTED/IMPLEMENTED",
+    "new_adr": true,
+    "original_source_items": [
+      "R054",
+      "R136"
+    ],
+    "source_items": [
+      "R042",
+      "R048",
+      "R054",
+      "R136"
+    ],
+    "first_pass_existing_adr_relationship": "ADR-0040 selects JSON and local-only and deliberately leaves transport unselected; ADR-0028 makes tracked checkpoints the only current crossing.",
+    "revised_targeted_items": [
+      "R042",
+      "R048",
+      "R054",
+      "R136"
+    ]
+  },
+  {
+    "candidate": "CAND-O",
+    "architectural_question": "Node stays, or the runtime migrates to Python.",
+    "existing_adr_relationship": "RUNBOOK and source use Node; latest owner answer selects it explicitly. Recorded factual rationale needs correction.",
+    "second_pass_relationship": "New ADR",
+    "target": "Node/JavaScript remains the portable runtime",
+    "recommendation": "Keep the explicit Node decision and the historical rationale, while correcting the factual claim that Node has no deserialization step or Python is intrinsically unsuitable for JSON.",
+    "why_adr_worthy": "Keep the explicit Node decision and the historical rationale, while correcting the factual claim that Node has no deserialization step or Python is intrinsically unsuitable for JSON.",
+    "status": "OWNER DECIDED; NOT YET PROMOTED/IMPLEMENTED",
+    "new_adr": true,
+    "original_source_items": [
+      "R150"
+    ],
+    "source_items": [
+      "R150"
+    ],
+    "first_pass_existing_adr_relationship": "No ADR. All portable runtime tooling is Node .mjs; only the evals lane is Python.",
+    "revised_targeted_items": [
+      "R150"
+    ]
+  },
+  {
+    "candidate": "CAND-P",
+    "architectural_question": "What must a host provide before the Workbench claims to work on it, and does the harness ship provider-native enforcement or stay prose plus tools?",
+    "existing_adr_relationship": "Extends ADR-0005/0023/0029; native enforcement adapters differ from existing discovery and eval-provider adapters.",
+    "second_pass_relationship": "New ADR",
+    "target": "Minimum configured-host capability and evidence boundaries",
+    "recommendation": "The owner chose a small capability contract; actual requirements remain to be specified and agreed. Keep host enforcement and agent reliability separately evidenced. Native enforcement adapters are outside the core commitment for now.",
+    "why_adr_worthy": "The owner chose a small capability contract; actual requirements remain to be specified and agreed. Keep host enforcement and agent reliability separately evidenced. Native enforcement adapters are outside the core commitment for now.",
+    "status": "OWNER DECIDED; NOT YET PROMOTED/IMPLEMENTED",
+    "new_adr": true,
+    "original_source_items": [
+      "R151"
+    ],
+    "source_items": [
+      "R060",
+      "R151"
+    ],
+    "first_pass_existing_adr_relationship": "ADR-0005 requires a running consumer but names none for provider behavior; skillPolicy.discovery is the only provider-aware declaration.",
+    "revised_targeted_items": [
+      "R060",
+      "R151"
+    ]
+  },
+  {
+    "candidate": "CAND-Q",
+    "architectural_question": "If checkpoints retire, what becomes the privacy-checked crossing from local working record to durable evidence?",
+    "existing_adr_relationship": "Partially supersedes ADR-0028; ADR-0040 already permits direct owner promotion; S-048 owns retirement.",
+    "second_pass_relationship": "New ADR",
+    "target": "Direct promotion into durable owners",
+    "recommendation": "Partially supersede ADR-0028: freeze historical checkpoint references, remove future checkpoint promotion after consumer migration, and preserve rollback storage separately.",
+    "why_adr_worthy": "Partially supersede ADR-0028: freeze historical checkpoint references, remove future checkpoint promotion after consumer migration, and preserve rollback storage separately.",
+    "status": "OWNER DECIDED; NOT YET PROMOTED/IMPLEMENTED",
+    "new_adr": true,
+    "original_source_items": [
+      "R051"
+    ],
+    "source_items": [
+      "R038",
+      "R048",
+      "R051",
+      "R162"
+    ],
+    "first_pass_existing_adr_relationship": "ADR-0028 makes checkpoints that crossing; S-048 (planned) proposes retiring them; ADR-0040 points at reconciliation into owners instead.",
+    "revised_targeted_items": [
+      "R038",
+      "R048",
+      "R051",
+      "R162"
+    ]
+  },
+  {
+    "candidate": "CAND-R",
+    "architectural_question": "What happens to the Foundry, Flight, CAS, Lighthouse and CIC designs now that the Workbench is standalone?",
+    "existing_adr_relationship": "ADR-0015/0026 already exclude required extension machinery. Retain historical detail outside base ADRs.",
+    "second_pass_relationship": "No upstream ADR",
+    "target": "Historical source packet; original extension owners",
+    "recommendation": "ADR-0015/0026 already establish the base boundary. Preserve all historical records and corrections here; do not create an upstream archive Design Concept merely to park abandoned mechanisms.",
+    "why_adr_worthy": "No additional ADR recommended: ADR-0015/0026 already establish the base boundary. Preserve all historical records and corrections here; do not create an upstream archive Design Concept merely to park abandoned mechanisms.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": false,
+    "original_source_items": [
+      "R067",
+      "R107",
+      "R108",
+      "R109",
+      "R112",
+      "R115",
+      "R116",
+      "R117",
+      "R118",
+      "R119",
+      "R122",
+      "R123",
+      "R124",
+      "R125",
+      "R126",
+      "R127",
+      "R128",
+      "R129",
+      "R130",
+      "R131",
+      "R132",
+      "R133",
+      "R134",
+      "R137",
+      "R138",
+      "R139",
+      "R140",
+      "R141",
+      "R142",
+      "R143",
+      "R144",
+      "R145",
+      "R147",
+      "R148",
+      "R167"
+    ],
+    "source_items": [
+      "R067",
+      "R107",
+      "R108",
+      "R109",
+      "R112",
+      "R115",
+      "R116",
+      "R117",
+      "R118",
+      "R119",
+      "R122",
+      "R123",
+      "R124",
+      "R125",
+      "R126",
+      "R127",
+      "R128",
+      "R129",
+      "R130",
+      "R131",
+      "R132",
+      "R133",
+      "R134",
+      "R137",
+      "R138",
+      "R139",
+      "R140",
+      "R141",
+      "R142",
+      "R143",
+      "R144",
+      "R145",
+      "R147",
+      "R148",
+      "R167"
+    ],
+    "first_pass_existing_adr_relationship": "Executes ADR-0015 and ADR-0026. Collapses 35 recovered items plus the superseded producer topology into one decision and one archive article.",
+    "revised_targeted_items": []
+  },
+  {
+    "candidate": "CAND-S",
+    "architectural_question": "Where does an acknowledged-but-unfinished finding live so the entry route still reaches it?",
+    "existing_adr_relationship": "ADR-0042 owns reachability; AGENTS owns current spec state and completed evidence preservation.",
+    "second_pass_relationship": "Amend existing",
+    "target": "ADR-0042; AGENTS.md; existing assigned spec",
+    "recommendation": "Reachability of an acknowledged obligation extends the existing navigation and ownership contract. Completed evidence stays intact; this does not authorize creating work from every finding.",
+    "why_adr_worthy": "No additional ADR recommended: Reachability of an acknowledged obligation extends the existing navigation and ownership contract. Completed evidence stays intact; this does not authorize creating work from every finding.",
+    "status": "RECOMMENDATION; NOT OWNER ACCEPTANCE",
+    "new_adr": false,
+    "original_source_items": [
+      "R024",
+      "R179"
+    ],
+    "source_items": [
+      "R024",
+      "R179"
+    ],
+    "first_pass_existing_adr_relationship": "Extends ADR-0035 (entry) and ADR-0042 (traversal). S-045 exists because seven follow-ups survived only as prose inside completed specs.",
+    "revised_targeted_items": []
+  }
+]

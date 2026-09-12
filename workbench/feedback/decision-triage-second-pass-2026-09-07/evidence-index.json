@@ -1,0 +1,61 @@
+{
+  "read_at": "212762774b5cb7c065ab573bb487752fe98eff4c",
+  "source_hashes": {
+    "AGENTS.md": "6c09ef4d56f3db761f8a34d17b575859b80eb9b1bcf3da8aaacfa1d4c6be58db",
+    "BLUEPRINT.md": "1c27431882d033bc69adbb1c993b833f9cbea7f855db929513b403ad9f6b5124",
+    "LEXICON.md": "f70e1ec157392a267c6c0a3842208b22a7968afc0bceab96df77c8200d254b74",
+    "RUNBOOK.md": "7e7780f2355111685cde78aacb74f4fbe899376f00f39398861c0e2fa0b3ccc9",
+    "evals/README.md": "96093cdfcb0ebc87f55e7ff0c76479e59e9d262e6b88c734c9cc9aeaf9e90ad8",
+    "outcomes/README.md": "cf36388ecee28c94afdab214c8a15e04f20c52dc176f205664f6032d53fbfead",
+    "skills/README.md": "0d33b3ada233660a2620cb389b161278c5650f7ba0209eb432df0fed6b1e54af",
+    "team templates/MANAGER.md": "986958d3153b32e801a7f08d51d905e193e67812070615f283cc6286520174ee",
+    "tools/control-fidelity.mjs": "d1d1794b911e46a7fd8d93245cc91346fd17249ae5ac51e623bd3340bfaad26c",
+    "tools/core-skill-installer.mjs": "0393a0a3ffaff36c36ab64c2be7787527e86658a9334ed046baf55845a129113",
+    "tools/skill-presence.mjs": "c0ad57f5fa97187353803edff90e45d7fd46ea4ff3cde5597f8d1c65cfa45ade",
+    "tools/test-core-skill-installer.mjs": "809c91bf260d968b7353d7b8c27f52f5495780922c5dd4eeb2a51eab8d08edaa",
+    "tools/test-cross-provider-fixture.mjs": "23ee0a3f02433dc05ff6a483ebbcd4dfb0af6f7a27d8e3833cf8a85b89845d41",
+    "tools/test-portability-matrix.mjs": "5bc89b5259b07d9e8e40ab533568c792c6edf1eaa2db08e302a2783a608b05fc",
+    "tools/workbench-adoption.mjs": "9f67f61f43da548c5ee441fa844e8c630496768780dfb2e674c3f922758490e6",
+    "tools/workbench-upgrade.mjs": "8acb009ee52bff3b863c78eab92670dabd76aec6da9869fc0c6d1e655aba270c",
+    "workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md": "06169836231241a51ccc2f099c5fffa13b3b81e6ac4fd522661858d4d8cece65",
+    "workbench/docs/adr/0023-mechanical-guarantees-and-agent-obligations.md": "166d23b1ad359cd6d868eb0a006f61937565a7034a34ffd7a929688f3c89abb0",
+    "workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md": "62e044ee9e534276575af1b501bc686b7e47bdc73054ec80e637a7be666e1b1f",
+    "workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md": "f6ffacaefe1ecb07442dce6f39eb98a761a2a7df0b604fb3e830263591d20d69",
+    "workbench/docs/adr/0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md": "11867d8113e78962043ec737270e50c1172b820191d05c63ad7387c51162daf2",
+    "workbench/docs/adr/0037-independent-review-at-integration.md": "a7fc1c325c2cc916a04b7ab13b6a7ab2065f7140adaeaf91bd72a39a060d0501",
+    "workbench/docs/adr/0039-the-integration-branch-is-a-manifest-declared-fact.md": "ce678402d05ef4de86792641d1b57f53dfc700b08463b0785fa400695c4c5641",
+    "workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md": "059084b77527b5220bb24999514d07513cd2d94a9bce39d6254b24b93efac55b",
+    "workbench/docs/adr/0041-visible-base62-workbench-identifiers.md": "8d88895ac89b848f81a9abfa7d7f168c091b758a5244fbd3e365f9b7ad84e19c",
+    "workbench/docs/adr/0042-traverse-dont-search-is-core-workbench-navigation.md": "f9f14a069fc1008c3214098ceb06bf12abcf103307551b6b4125e34a55ac4f7c",
+    "workbench/feedback/REPORT_FORMAT.md": "31680ad3a127299de1efc6a3795037bf20f36ca2f7153dd070c077fc956c2d39",
+    "workbench/manifest.json": "4d83b2d093b5060c9930e2cffe5607557c4176e0371c8639e743a35a013a92f5",
+    "workbench/sessions/.gitignore": "05ee0a6833b448ce3ebd7656ac7ccb3098175943f98093c1a1ec4b5aacbfacfc",
+    "workbench/specs/S-020-spec-native-team-coordination/SPEC.md": "17b4c5c34cbeeb58d00db0972eb3f8fff0b78acdee78c33008cb30e4d024cf99",
+    "workbench/specs/S-036-v3-1-2-evidence-corrections/SPEC.md": "c9c1e3f952870c1de392cec442d9ee2084fe019b3135a802d9d8f92950c74330",
+    "workbench/specs/S-041-recorded-baseline-availability/SPEC.md": "b46eab348d2348ee46da94cf0221603ff3aca52edd8c00a752f8163921ff0be9",
+    "workbench/specs/S-046-json-notepad-foundation/SPEC.md": "9d3a79c62ccf2fe144bcf4816a0b3b6adb4e2f56663fc292f920d47e06caa253",
+    "workbench/specs/S-048-checkpoint-retirement/SPEC.md": "ddacf97651835417b4b834eb16e57a6d3e91d4f99dd71adddb86d5ef79c6a78d",
+    "workbench/tools/diagnostics.mjs": "bf9e0f47f4b0242fa496d37e4a0535ec674fd045dee19356814a8ed97426e0a2",
+    "workbench/tools/spec-workbench.mjs": "ecf2d43f34ba2eeb42cff7cc88cc10eff454c1c07b2c6bdc8f45c41646df6c46",
+    "workbench/wiki/SCHEMA.md": "0f54621bf96d6cf674feb385f6bc9bc3d012c0ec2005d80a5533ca6b782c25fc"
+  },
+  "historical_inventory_sha256": "0108a8f342bd1b44417a212fb73a6b06aa66c856a1abcb071d7c6ddef001174b",
+  "first_pass_sha256": "79f7895d553d735aa13817c8b56d24bf05d2be21e2510b471e88d2a4aa8fd6b4",
+  "historical_packet": "/Users/kayden/Documents/Codex/2026-09-06/rev/outputs",
+  "direct_owner_answer_lines": {
+    "323": "CAND-O",
+    "388": "CAND-F",
+    "486": "CAND-Q",
+    "560": "CAND-F",
+    "608": "CAND-N",
+    "648": "CAND-P"
+  },
+  "remote": {
+    "integration": "212762774b5cb7c065ab573bb487752fe98eff4c",
+    "main": "9378eada35b30199a53f6b921215950d0fa7ff38"
+  },
+  "supporting_checkouts": {
+    "Example_Workbench": "4f1dd4cb2589335447ed595ab819f53f53d1dcea",
+    "skills": "0e3cd8c982cddc5c9db7ad8d4610ca8483aa0d80"
+  }
+}

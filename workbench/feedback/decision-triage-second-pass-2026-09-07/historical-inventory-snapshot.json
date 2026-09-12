@@ -1,0 +1,4014 @@
+{
+  "scope": "2026-06-01 through 2026-09-06 America/Denver",
+  "purpose": "Research inventory; not canonical ADRs",
+  "records": [
+    {
+      "group": "Purpose and authority",
+      "title": "The Workbench is a perpetual handoff",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0035 WB-0040",
+      "sources": "G-6a9b3084 G-6a9cff88",
+      "decision": "A fresh capable agent should reconstruct the current objective, settled decisions, relevant knowledge, achieved work and next action from maintained project owners, without the owner rebuilding the conversation for it.",
+      "why": "Continuity is the product promise; a collection of control files is only its implementation.",
+      "disposition": "Give the perpetual-handoff promise its own rationale and an observable acceptance boundary; connect the existing entry and notepad ADRs.",
+      "id": "R001",
+      "source_ids": [
+        "G-6a9b3084",
+        "G-6a9cff88"
+      ],
+      "adr_ids": [
+        "WB-0035",
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/g-6a9b3084.md",
+        "evidence/g-6a9cff88.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Complete the assigned outcome autonomously",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0035",
+      "sources": "WB-0035 B-BOUNDARIES",
+      "decision": "Investigate facts and make supported implementation decisions within assigned work. Do not invent the next task or enlarge the assignment.",
+      "why": "Autonomy was requested inside a real task, with an explicit limit on self-generated work.",
+      "disposition": "Retain the existing decision and its distinction between execution autonomy and portfolio autonomy.",
+      "id": "R002",
+      "source_ids": [
+        "WB-0035",
+        "B-BOUNDARIES"
+      ],
+      "adr_ids": [
+        "WB-0035"
+      ],
+      "source_files": [
+        "evidence/wb-0035.md",
+        "evidence/b-boundaries.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Every imposed step must help delivery",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0034",
+      "sources": "WB-0034 B-BOUNDARIES",
+      "decision": "A mandatory step must provide immediate delivery value, a checkable decision or artifact, or actual risk reduction. Uncertain-value practices remain optional for review.",
+      "why": "The Foundry repeatedly made procedural completion its own deliverable.",
+      "disposition": "Retain; apply to future ADR consequences and tooling as well as agent instructions.",
+      "id": "R003",
+      "source_ids": [
+        "WB-0034",
+        "B-BOUNDARIES"
+      ],
+      "adr_ids": [
+        "WB-0034"
+      ],
+      "source_files": [
+        "evidence/wb-0034.md",
+        "evidence/b-boundaries.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Standalone Workbench before coordination",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0015 WB-0026",
+      "sources": "WB-0026 G-6a9ae606 G-6a9b3084",
+      "decision": "A project Workbench must work by itself. Foundry, schedulers, dashboards, sockets and cross-project coordination are extensions justified by functioning Workbenches.",
+      "why": "The unfinished factory became a prerequisite for the base needed to build it.",
+      "disposition": "Retain the base/extension boundary; preserve extension decisions without importing their machinery into every project.",
+      "id": "R004",
+      "source_ids": [
+        "WB-0026",
+        "G-6a9ae606",
+        "G-6a9b3084"
+      ],
+      "adr_ids": [
+        "WB-0015",
+        "WB-0026"
+      ],
+      "source_files": [
+        "evidence/wb-0026.md",
+        "evidence/g-6a9ae606.md",
+        "evidence/g-6a9b3084.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "One canonical Workbench source and release home",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0026",
+      "sources": "WB-0026",
+      "decision": "LLM_Workbench authors and releases the harness. GPT_OS and other deployments adopt it; an embedded private producer is no longer upstream.",
+      "why": "Multiple authoring copies caused drift and confused ownership.",
+      "disposition": "Retain; preserve the earlier producer topology only as superseded history.",
+      "id": "R005",
+      "source_ids": [
+        "WB-0026"
+      ],
+      "adr_ids": [
+        "WB-0026"
+      ],
+      "source_files": [
+        "evidence/wb-0026.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Instruction authority and implemented state are different questions",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0027",
+      "sources": "WB-0027 H-FR",
+      "decision": "Compare accepted intent with live implementation and name an implementation gap, documentation drift, or unresolved ambiguity. Neither source code nor an ADR automatically wins every disagreement.",
+      "why": "Code-first precedence erased accepted future behavior; prose-first precedence claimed behavior never built.",
+      "disposition": "Retain, including the original reason for splitting the two precedence lists.",
+      "id": "R006",
+      "source_ids": [
+        "WB-0027",
+        "H-FR"
+      ],
+      "adr_ids": [
+        "WB-0027"
+      ],
+      "source_files": [
+        "evidence/wb-0027.md",
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Governance planes classify a claim in an operation",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0001 WB-0025",
+      "sources": "WB-0025 D-GP",
+      "decision": "Classify the claim's use, not the entire file or directory. A spec can contain requirements, status, evidence and history, and can itself be the target of an edit.",
+      "why": "Permanent file classifications created contradictions when repairing controls or appending evidence.",
+      "disposition": "Retain; explicitly preserve the supersession of blanket ADR/SPEC-as-Grounding and older plane stamps.",
+      "id": "R007",
+      "source_ids": [
+        "WB-0025",
+        "D-GP"
+      ],
+      "adr_ids": [
+        "WB-0001",
+        "WB-0025"
+      ],
+      "source_files": [
+        "evidence/wb-0025.md",
+        "evidence/d-gp.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Binding requirements live in their current owners",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0002",
+      "sources": "WB-0002 D-GP",
+      "decision": "Promote each binding requirement into the appropriate current control or assigned spec. ADRs preserve why, alternatives and supersession; agents must not reconstruct binding rules from historical conversations.",
+      "why": "A decision written only in history remained invisible to ordinary execution.",
+      "disposition": "Retain; the recovery inventory is evidence for promotion, not a new competing instruction source.",
+      "id": "R008",
+      "source_ids": [
+        "WB-0002",
+        "D-GP"
+      ],
+      "adr_ids": [
+        "WB-0002"
+      ],
+      "source_files": [
+        "evidence/wb-0002.md",
+        "evidence/d-gp.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "The Contract is a logical claim set",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0013 WB-0033",
+      "sources": "WB-0033",
+      "decision": "Seven root controls plus the explicitly assigned spec carry the Workbench Contract. Do not add a coequal CONTRACT.md that restates them.",
+      "why": "A new summary file would create a second owner for the same rules.",
+      "disposition": "Retain; distinguish root discovery files from which claims actually instruct.",
+      "id": "R009",
+      "source_ids": [
+        "WB-0033"
+      ],
+      "adr_ids": [
+        "WB-0013",
+        "WB-0033"
+      ],
+      "source_files": [
+        "evidence/wb-0033.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "All planes permit CRUD subject to the operation",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0003",
+      "sources": "WB-0003 D-GP",
+      "decision": "Create, read, update and delete are available across all planes. Append-only evidence and ADR supersession are artifact conventions, not universal plane prohibitions.",
+      "why": "Absolute plane bans prevented legitimate owner-authorized repair and obscured the actual risk.",
+      "disposition": "Retain with the narrower evidence-history conventions.",
+      "id": "R010",
+      "source_ids": [
+        "WB-0003",
+        "D-GP"
+      ],
+      "adr_ids": [
+        "WB-0003"
+      ],
+      "source_files": [
+        "evidence/wb-0003.md",
+        "evidence/d-gp.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "A policy file is not enforcement",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0005 WB-0023",
+      "sources": "WB-0005 C-ab1b55db-L37",
+      "decision": "Machine enforcement requires a running consumer controlling the attempted operation. JSON, a manifest declaration, self-attestation or skill prose cannot establish it alone.",
+      "why": "The factory had rules describing walls without an executing boundary that enforced them.",
+      "disposition": "Retain; prove enforcement at the real operation boundary.",
+      "id": "R011",
+      "source_ids": [
+        "WB-0005",
+        "C-ab1b55db-L37"
+      ],
+      "adr_ids": [
+        "WB-0005",
+        "WB-0023"
+      ],
+      "source_files": [
+        "evidence/wb-0005.md",
+        "evidence/c-ab1b55db-l37.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Tools handle deterministic structure; agents handle judgment",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0023",
+      "sources": "WB-0023 C-ab1b55db-L37",
+      "decision": "Use deterministic tools for mechanical checks, paths, rendering and validation; use agents for intent, ambiguity, craft and honest evidence interpretation.",
+      "why": "Repeated model calls for mechanical checks cost tokens without improving the check.",
+      "disposition": "Retain; do not turn the distinction into a ban on useful agent judgment or an unbuilt-tool prerequisite.",
+      "id": "R012",
+      "source_ids": [
+        "WB-0023",
+        "C-ab1b55db-L37"
+      ],
+      "adr_ids": [
+        "WB-0023"
+      ],
+      "source_files": [
+        "evidence/wb-0023.md",
+        "evidence/c-ab1b55db-l37.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "A check can block only what it evaluates",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0020 WB-0029",
+      "sources": "WB-0020 D-V3",
+      "decision": "A check may stop a relevant unsafe change; it cannot demand global completeness or the repaired future state as permission to perform the repair.",
+      "why": "Individually plausible checks composed into bootstrap deadlocks.",
+      "disposition": "Retain and test the relevant scope instead of merely weakening an exit code.",
+      "id": "R013",
+      "source_ids": [
+        "WB-0020",
+        "D-V3"
+      ],
+      "adr_ids": [
+        "WB-0020",
+        "WB-0029"
+      ],
+      "source_files": [
+        "evidence/wb-0020.md",
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Diagnostic effects belong to trusted consumers",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0029",
+      "sources": "WB-0029",
+      "decision": "Register diagnostic code, severity, scope and blocking effect in tool code. Preserve nonblocking attention; no artifact chooses whether its own finding blocks.",
+      "why": "A flat red/green report conflated unsafe manifests with unrelated stale links.",
+      "disposition": "Retain the all, selection, selected-slice and none distinction.",
+      "id": "R014",
+      "source_ids": [
+        "WB-0029"
+      ],
+      "adr_ids": [
+        "WB-0029"
+      ],
+      "source_files": [
+        "evidence/wb-0029.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Ordinary work does not need a Job Order",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "GO-0021 WB-0015 WB-0026",
+      "sources": "GO-0021 D-V3",
+      "decision": "Human-led work and multi-chat continuation can proceed under their actual authorization without creating a Job Order or completing Flight infrastructure first.",
+      "why": "A coordination record became a gate on the work needed to make coordination usable.",
+      "disposition": "Retain upstream through the base boundary; preserve the explicit correction to earlier universal Job Order rules.",
+      "id": "R015",
+      "source_ids": [
+        "GO-0021",
+        "D-V3"
+      ],
+      "adr_ids": [
+        "GO-0021",
+        "WB-0015",
+        "WB-0026"
+      ],
+      "source_files": [
+        "evidence/go-0021.md",
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "A report never authorizes its own repair",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0037 WB-0038 AU-0007",
+      "sources": "WB-0038 AU-0007 C-019f7dc3-L228",
+      "decision": "Review findings are evidence. The reviewer does not acquire permission to modify the audited target, dispatch repairs or publish by producing a report.",
+      "why": "Review and repair were repeatedly conflated.",
+      "disposition": "Retain; make the target boundary precise enough that a review application can still maintain itself.",
+      "id": "R016",
+      "source_ids": [
+        "WB-0038",
+        "AU-0007",
+        "C-019f7dc3-L228"
+      ],
+      "adr_ids": [
+        "WB-0037",
+        "WB-0038",
+        "AU-0007"
+      ],
+      "source_files": [
+        "evidence/wb-0038.md",
+        "evidence/au-0007.md",
+        "evidence/c-019f7dc3-l228.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Read-only applies to the named target, not every composed activity",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "AU-0007 WB-0036",
+      "sources": "AU-0007 C-a9e38fdd-L87",
+      "decision": "A read-only review or navigation skill constrains its target and effects; it must not accidentally prohibit another authorized skill's notepad edits or the audit application's own development.",
+      "why": "Category-wide read-only wording became self-contradictory when the audit room reviewed itself or skills composed.",
+      "disposition": "Capture a generic effect/scope composition rule upstream, with AU-0007 as the concrete example.",
+      "id": "R017",
+      "source_ids": [
+        "AU-0007",
+        "C-a9e38fdd-L87"
+      ],
+      "adr_ids": [
+        "AU-0007",
+        "WB-0036"
+      ],
+      "source_files": [
+        "evidence/au-0007.md",
+        "evidence/c-a9e38fdd-l87.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Owner authorization is scoped and cannot be fabricated",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "GO-0009 WB-0027",
+      "sources": "H-FR GO-0009 C-019f6974-L93",
+      "decision": "An owner command authorizes a concrete scope and destination. An agent cannot manufacture owner authorization, and a child operation cannot widen the parent grant.",
+      "why": "A callable skill name and a document's existence are not a permission system.",
+      "disposition": "Preserve the principle upstream; keep machine leases and particular Foundry clearance classes as separate unresolved implementations.",
+      "id": "R018",
+      "source_ids": [
+        "H-FR",
+        "GO-0009",
+        "C-019f6974-L93"
+      ],
+      "adr_ids": [
+        "GO-0009",
+        "WB-0027"
+      ],
+      "source_files": [
+        "evidence/h-fr.md",
+        "evidence/go-0009.md",
+        "evidence/c-019f6974-l93.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Separate Proof, Audit and Owner Command",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "H-FR",
+      "decision": "Mechanical proof, independent judgment and explicit owner authorization answer different questions and cannot substitute for one another.",
+      "why": "A passing check was sometimes treated as approval, while approval was treated as proof of delivery.",
+      "disposition": "Record a compact rationale usable by the Workbench without imposing three ceremonies on every task.",
+      "id": "R019",
+      "source_ids": [
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Nearest-root boot with explicit outer safety inheritance",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "GO-0022 WB-0026",
+      "sources": "WB-0026 GO-0022",
+      "decision": "Fresh, nested and standalone Workbenches enter through their nearest AGENTS.md. Nested rooms inherit declared outer safety boundaries, then apply the local contract.",
+      "why": "Ambient host and parent-project context broke portability and confused scope.",
+      "disposition": "Retain; test the three boot shapes.",
+      "id": "R020",
+      "source_ids": [
+        "WB-0026",
+        "GO-0022"
+      ],
+      "adr_ids": [
+        "GO-0022",
+        "WB-0026"
+      ],
+      "source_files": [
+        "evidence/wb-0026.md",
+        "evidence/go-0022.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "No machine-global import of one project's interior",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0026",
+      "sources": "D-V3",
+      "decision": "Keep a project's memory routing in its own entry bridge. A machine-global instruction file should not force every unrelated project to load a private deployment's internal path.",
+      "why": "A layout move broke a global import and unrelated sessions inherited GPT_OS context.",
+      "disposition": "Capture as a portability consequence of nearest-root boot.",
+      "id": "R021",
+      "source_ids": [
+        "D-V3"
+      ],
+      "adr_ids": [
+        "WB-0026"
+      ],
+      "source_files": [
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Stable specs own capability detail; boards project active work",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0033 WB-0035",
+      "sources": "C-019f5915-L75 GO-0016",
+      "decision": "Blueprint holds broad direction and the spec catalog; stable specs hold requirements, acceptance, evidence and history; the hot Taskboard displays active work rather than becoming a giant second specification.",
+      "why": "Large boards consumed context and duplicated state that should have one owner.",
+      "disposition": "Add a focused ownership rationale if the existing controls alone do not preserve this boundary.",
+      "id": "R022",
+      "source_ids": [
+        "C-019f5915-L75",
+        "GO-0016"
+      ],
+      "adr_ids": [
+        "WB-0033",
+        "WB-0035"
+      ],
+      "source_files": [
+        "evidence/c-019f5915-l75.md",
+        "evidence/go-0016.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Size execution slices for a fresh context",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-019f68fd-L115 C-01a054e7-L190 D-CAS",
+      "decision": "Break work into bounded executable outcomes, with larger unknowns resolved before dependent implementation. Artifact size and delegation should follow actual complexity.",
+      "why": "Long chats and oversized work packets degraded judgment and made continuation expensive.",
+      "disposition": "Record the principle; do not canonize conversational token estimates or one project's byte ceiling as a universal threshold.",
+      "id": "R023",
+      "source_ids": [
+        "C-019f68fd-L115",
+        "C-01a054e7-L190",
+        "D-CAS"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019f68fd-l115.md",
+        "evidence/c-01a054e7-l190.md",
+        "evidence/d-cas.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Keep completed evidence and link successors",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0003 WB-0035",
+      "sources": "B-BOUNDARIES D-V3",
+      "decision": "Preserve truthful completed spec evidence and supersession links. Future capability changes belong in an active owner or linked successor, rather than rewriting completed history to look current.",
+      "why": "History is needed to understand acceptance, rejection and later changes.",
+      "disposition": "Connect artifact-specific retention to current-control maintenance.",
+      "id": "R024",
+      "source_ids": [
+        "B-BOUNDARIES",
+        "D-V3"
+      ],
+      "adr_ids": [
+        "WB-0003",
+        "WB-0035"
+      ],
+      "source_files": [
+        "evidence/b-boundaries.md",
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Six lowercase support lanes ship as structural slots",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0017",
+      "sources": "WB-0017 D-V3",
+      "decision": "Ship docs, specs, wiki, sessions, feedback and tools under lowercase workbench, even where a slot is empty.",
+      "why": "Undeclared folders and case differences broke clean-clone and cross-platform behavior.",
+      "disposition": "Retain; an empty declared collection is different from an empty promised document section.",
+      "id": "R025",
+      "source_ids": [
+        "WB-0017",
+        "D-V3"
+      ],
+      "adr_ids": [
+        "WB-0017"
+      ],
+      "source_files": [
+        "evidence/wb-0017.md",
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "The manifest declares machine-used paths",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0032",
+      "sources": "WB-0032 D-V3",
+      "decision": "Resolve lanes and collections through one validated manifest reader instead of guessing paths or hardcoding old layouts.",
+      "why": "A moved spec directory silently looked like an empty work queue; renderers could erase valid projections.",
+      "disposition": "Retain the fail-visible missing-root behavior and lossless schema migration.",
+      "id": "R026",
+      "source_ids": [
+        "WB-0032",
+        "D-V3"
+      ],
+      "adr_ids": [
+        "WB-0032"
+      ],
+      "source_files": [
+        "evidence/wb-0032.md",
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Every project has a local Wiki",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0018",
+      "sources": "C-7f7acc51-L110 WB-0018",
+      "decision": "A reusable Workbench includes its own knowledge base; project memory cannot depend on a central Foundry or a particular recall service.",
+      "why": "Projects without a local brain repeatedly lost context when agents changed.",
+      "disposition": "Retain; personal and machine collections are profiles, not required content for every project.",
+      "id": "R027",
+      "source_ids": [
+        "C-7f7acc51-L110",
+        "WB-0018"
+      ],
+      "adr_ids": [
+        "WB-0018"
+      ],
+      "source_files": [
+        "evidence/c-7f7acc51-l110.md",
+        "evidence/wb-0018.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Wiki and recall index have different ownership",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-7f7acc51-L92 C-019f6684-L222",
+      "decision": "The maintained file Wiki owns project knowledge. Recall databases and search indexes are derived access mechanisms with provenance, not parallel authoritative memory.",
+      "why": "Provider-neutral durable knowledge should survive a database, model or retrieval service change.",
+      "disposition": "Record the file-owner/derived-retrieval boundary as an optional integration contract.",
+      "id": "R028",
+      "source_ids": [
+        "C-7f7acc51-L92",
+        "C-019f6684-L222"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-7f7acc51-l92.md",
+        "evidence/c-019f6684-l222.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Traverse from a context map before broad searching",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0042",
+      "sources": "WB-0042 C-7f7acc51-L130 C-019f9aa5-L49",
+      "decision": "Make ordinary project context reachable through maintained routes, with bounded search available for missing or insufficient routes, debugging and explicit audits.",
+      "why": "Useful files existed but an agent following the official entry route could not reach them.",
+      "disposition": "Retain the newly accepted project-wide rule; it is broader than the earlier Wiki-only convention.",
+      "id": "R029",
+      "source_ids": [
+        "WB-0042",
+        "C-7f7acc51-L130",
+        "C-019f9aa5-L49"
+      ],
+      "adr_ids": [
+        "WB-0042"
+      ],
+      "source_files": [
+        "evidence/wb-0042.md",
+        "evidence/c-7f7acc51-l130.md",
+        "evidence/c-019f9aa5-l49.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Lexicon is a bounded glossary and route map",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0042",
+      "sources": "C-019f6335-L263 H-FR C-a9e38fdd-L111",
+      "decision": "Keep shared vocabulary concise and linked to its owner; local bounded contexts may add local terms without redefining shared ones. Do not rename LEXICON to CONTEXT or turn it into implementation prose.",
+      "why": "Term collisions and sprawling explanations made the common language harder to use.",
+      "disposition": "Preserve the glossary boundary alongside ADR-0042's routing role.",
+      "id": "R030",
+      "source_ids": [
+        "C-019f6335-L263",
+        "H-FR",
+        "C-a9e38fdd-L111"
+      ],
+      "adr_ids": [
+        "WB-0042"
+      ],
+      "source_files": [
+        "evidence/c-019f6335-l263.md",
+        "evidence/h-fr.md",
+        "evidence/c-a9e38fdd-l111.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Cross-context relationships are derived from existing owners",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "GO-0016 WB-0042",
+      "sources": "GO-0016 H-FR",
+      "decision": "The project index and context map route to owners; they do not become another decision store, taskboard or registry of duplicated facts.",
+      "why": "A second master index becomes stale and creates another source-precedence question.",
+      "disposition": "Retain the generated-routing principle; distinguish an investigation crosswalk from a permanent runtime registry.",
+      "id": "R031",
+      "source_ids": [
+        "GO-0016",
+        "H-FR"
+      ],
+      "adr_ids": [
+        "GO-0016",
+        "WB-0042"
+      ],
+      "source_files": [
+        "evidence/go-0016.md",
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Use shallow, human-readable knowledge organization",
+      "state": "Strong preference",
+      "coverage": "Partial",
+      "adrs": "WB-0018",
+      "sources": "C-019f6684-L9 C-019f6684-L222 C-7f7acc51-L130",
+      "decision": "Prefer a small router and linked notes usable in Obsidian, avoiding gratuitous numbered folders and index-on-index navigation.",
+      "why": "The owner and agents need to read and traverse the same knowledge without elaborate tooling.",
+      "disposition": "Preserve as a Wiki design rationale; the exact personal folder layout is not a universal harness rule.",
+      "id": "R032",
+      "source_ids": [
+        "C-019f6684-L9",
+        "C-019f6684-L222",
+        "C-7f7acc51-L130"
+      ],
+      "adr_ids": [
+        "WB-0018"
+      ],
+      "source_files": [
+        "evidence/c-019f6684-l9.md",
+        "evidence/c-019f6684-l222.md",
+        "evidence/c-7f7acc51-l130.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Guidebooks are Wiki collections, not a new lane",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0018",
+      "sources": "WB-0018 D-V3",
+      "decision": "Reusable procedures can live inside the knowledge base. Their writing style or common governance use does not justify a separate root lane.",
+      "why": "Folder taxonomy was being mistaken for authority or plane classification.",
+      "disposition": "Retain.",
+      "id": "R033",
+      "source_ids": [
+        "WB-0018",
+        "D-V3"
+      ],
+      "adr_ids": [
+        "WB-0018"
+      ],
+      "source_files": [
+        "evidence/wb-0018.md",
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Design Concepts explain the model and link evidence",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0030",
+      "sources": "WB-0030 D-CONCEPTS",
+      "decision": "A Design Concept is a full source-backed explanation of one reusable cross-cutting model, with Evidence and Sources and History; it does not replace the Blueprint, ADR, spec or task state.",
+      "why": "The owner needed the shared mental model, not another short requirements summary.",
+      "disposition": "Retain; preserve the original article completeness requirement.",
+      "id": "R034",
+      "source_ids": [
+        "WB-0030",
+        "D-CONCEPTS"
+      ],
+      "adr_ids": [
+        "WB-0030"
+      ],
+      "source_files": [
+        "evidence/wb-0030.md",
+        "evidence/d-concepts.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Design Concept creation is owner-directed",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0030",
+      "sources": "WB-0030 D-CONCEPTS",
+      "decision": "Agents may suggest a new article; owner authorization creates it. Existing articles may be repaired from direct authoritative proof, otherwise visibly marked stale.",
+      "why": "Automatic article creation risks an unnecessary shadow Wiki; silent inference can corrupt the explanation.",
+      "disposition": "Retain; do not turn ADR discovery into automatic creation of a new article for every decision.",
+      "id": "R035",
+      "source_ids": [
+        "WB-0030",
+        "D-CONCEPTS"
+      ],
+      "adr_ids": [
+        "WB-0030"
+      ],
+      "source_files": [
+        "evidence/wb-0030.md",
+        "evidence/d-concepts.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Parent knowledge is shared; child knowledge stays local",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0030",
+      "sources": "WB-0030 D-CONCEPTS",
+      "decision": "A parent owns concepts its children share; a child owns unique concepts and routes upward for common ones.",
+      "why": "Copying shared explanations into every room creates divergence.",
+      "disposition": "Retain and apply only where a meaningful parent relationship exists.",
+      "id": "R036",
+      "source_ids": [
+        "WB-0030",
+        "D-CONCEPTS"
+      ],
+      "adr_ids": [
+        "WB-0030"
+      ],
+      "source_files": [
+        "evidence/wb-0030.md",
+        "evidence/d-concepts.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Update touched owners during the same work",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0002 WB-0035",
+      "sources": "C-019f0262-L6 B-BOUNDARIES G-6a50191e",
+      "decision": "As material state changes, reconcile the owning documentation, requirements, evidence and relevant routes. Do not leave an important accepted fact trapped in a final chat summary.",
+      "why": "Repeated reminders to save and update docs became the owner's coordination work.",
+      "disposition": "Make same-work reconciliation and its observable completion boundary explicit; avoid a universal all-files checklist.",
+      "id": "R037",
+      "source_ids": [
+        "C-019f0262-L6",
+        "B-BOUNDARIES",
+        "G-6a50191e"
+      ],
+      "adr_ids": [
+        "WB-0002",
+        "WB-0035"
+      ],
+      "source_files": [
+        "evidence/c-019f0262-l6.md",
+        "evidence/b-boundaries.md",
+        "evidence/g-6a50191e.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Promotion is per decision, with preserved provenance",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0002 WB-0040",
+      "sources": "D-GP WB-0040",
+      "decision": "Identify which individual claims are settled, which remain open, what owner receives each promoted claim and what remains in the working record.",
+      "why": "Whole-notepad promotion silently imported proposals or lost unpromoted branches.",
+      "disposition": "Retain per-claim promotion receipts without demanding a new record when the owner already carries the evidence.",
+      "id": "R038",
+      "source_ids": [
+        "D-GP",
+        "WB-0040"
+      ],
+      "adr_ids": [
+        "WB-0002",
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/d-gp.md",
+        "evidence/wb-0040.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Small independent ADRs preserve the reasons",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-GP D-V3 H-FR",
+      "decision": "Use separate concise ADRs for decisions that can change independently. Keep context, decision and why; use history for routine changes and avoid an omnibus governance ADR.",
+      "why": "The first large governance record obscured many independent choices and made later correction hard.",
+      "disposition": "Capture the ADR granularity and threshold rationale; this inventory's records are not a demand for one ADR each.",
+      "id": "R039",
+      "source_ids": [
+        "D-GP",
+        "D-V3",
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-gp.md",
+        "evidence/d-v3.md",
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "ADR publication must update binding controls and links",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0002 WB-0030",
+      "sources": "D-GP D-CONCEPTS",
+      "decision": "An accepted ADR's operative rule must reach its named control, with relevant source and navigation links repaired in that promotion.",
+      "why": "ADRs, controls, skills and templates frequently described different decisions after a partial promotion.",
+      "disposition": "Retain; add a targeted conformance check for the exact owners a decision claims to update.",
+      "id": "R040",
+      "source_ids": [
+        "D-GP",
+        "D-CONCEPTS"
+      ],
+      "adr_ids": [
+        "WB-0002",
+        "WB-0030"
+      ],
+      "source_files": [
+        "evidence/d-gp.md",
+        "evidence/d-concepts.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "No extra ADR index was originally selected",
+      "state": "Accepted historical decision",
+      "coverage": "Changed in current record",
+      "adrs": "",
+      "sources": "D-V3",
+      "decision": "The September 3 ruling chose self-describing filenames, scan-and-increment numbering and in-file supersession instead of a second hand-maintained ADR index.",
+      "why": "An index could become another driftable gate on whether an ADR exists.",
+      "disposition": "Preserve the ruling; current registers exist, so record whether their generated/non-authoritative form intentionally narrows it before treating either convention as timeless.",
+      "id": "R041",
+      "source_ids": [
+        "D-V3"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Names and identities are independent",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0041",
+      "sources": "C-7f7acc51-L209 WB-0041",
+      "decision": "Human names may change while durable references remain resolvable. Identity migration must preserve references instead of confusing a rename with a new entity.",
+      "why": "Repeated Foundry vocabulary and path changes broke recognition across stores.",
+      "disposition": "Retain the invariant; avoid carrying old global Foundry identity requirements into the new local WBID scope.",
+      "id": "R042",
+      "source_ids": [
+        "C-7f7acc51-L209",
+        "WB-0041"
+      ],
+      "adr_ids": [
+        "WB-0041"
+      ],
+      "source_files": [
+        "evidence/c-7f7acc51-l209.md",
+        "evidence/wb-0041.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Visible base-62 identifiers are local to type and Workbench",
+      "state": "Accepted; implementation pending",
+      "coverage": "Recorded",
+      "adrs": "WB-0041",
+      "sources": "WB-0041",
+      "decision": "Replace the numeric portion of existing visible IDs with base-62; uniqueness is per type and Workbench, with no second global identity. Alphabet and width are not settled.",
+      "why": "A secondary global ID contradicted the owner's correction and overbuilt standalone identity.",
+      "disposition": "Retain S-047's pending status; accepting the ADR does not migrate current IDs.",
+      "id": "R043",
+      "source_ids": [
+        "WB-0041"
+      ],
+      "adr_ids": [
+        "WB-0041"
+      ],
+      "source_files": [
+        "evidence/wb-0041.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Objective continuity crosses providers and sessions",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0040 WB-0035",
+      "sources": "G-6a9ddf7c G-6a9cff88 WB-0040",
+      "decision": "A replacement agent should recover the objective and relevant working understanding after compaction, context loss, model change or restart, then verify live state and continue.",
+      "why": "A summary that drops intent forces the owner to rebuild the task and repeat decisions.",
+      "disposition": "Make recovery outcomes explicit across entry, notes, skills and acceptance tests.",
+      "id": "R044",
+      "source_ids": [
+        "G-6a9ddf7c",
+        "G-6a9cff88",
+        "WB-0040"
+      ],
+      "adr_ids": [
+        "WB-0040",
+        "WB-0035"
+      ],
+      "source_files": [
+        "evidence/g-6a9ddf7c.md",
+        "evidence/g-6a9cff88.md",
+        "evidence/wb-0040.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "New live notepads use versioned JSON",
+      "state": "Accepted; implementation pending",
+      "coverage": "Recorded",
+      "adrs": "WB-0040",
+      "sources": "WB-0040 G-6a9e2919",
+      "decision": "Use a shared JSON schema and deterministic update/retrieval tooling, while a shared skill guides what is worth preserving.",
+      "why": "Selective structural retrieval and safe updates need more than unstructured Markdown conventions.",
+      "disposition": "Retain S-046 as implementation work; do not call the full runtime delivered.",
+      "id": "R045",
+      "source_ids": [
+        "WB-0040",
+        "G-6a9e2919"
+      ],
+      "adr_ids": [
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/wb-0040.md",
+        "evidence/g-6a9e2919.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Editable resume state plus append-oriented work history",
+      "state": "Accepted; implementation pending",
+      "coverage": "Recorded",
+      "adrs": "WB-0040",
+      "sources": "WB-0040",
+      "decision": "Keep a current resumption view and meaningful work history, including sources, corrections and uncertainty. Retrieve a bounded topic with enough context.",
+      "why": "An ever-growing transcript is expensive; a mutable summary alone loses why state changed.",
+      "disposition": "Retain; concrete field names, CLI syntax and concurrency scheme remain engineering choices.",
+      "id": "R046",
+      "source_ids": [
+        "WB-0040"
+      ],
+      "adr_ids": [
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/wb-0040.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Capture by survival value, not exhaustive event logging",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0040",
+      "sources": "WB-0040 G-6a9e03ef",
+      "decision": "Preserve what a future agent needs to continue the objective, without requiring a detailed record of every action or a notepad for every trivial task.",
+      "why": "Logging ceremony can consume the same context and effort the notepad is meant to save.",
+      "disposition": "Retain; do not reinterpret JSON as permission for unlimited storage.",
+      "id": "R047",
+      "source_ids": [
+        "WB-0040",
+        "G-6a9e03ef"
+      ],
+      "adr_ids": [
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/wb-0040.md",
+        "evidence/g-6a9e03ef.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Raw live notes remain local and non-authoritative",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0028 WB-0040",
+      "sources": "WB-0040",
+      "decision": "A live note records working understanding and Intent; it does not authorize work, prove its own assertions or become a raw Git artifact.",
+      "why": "Committing provisional private material caused leaks, stale resurrection and confusion with accepted truth.",
+      "disposition": "Retain; deliberate durable promotion carries selected material to its proper owner.",
+      "id": "R048",
+      "source_ids": [
+        "WB-0040"
+      ],
+      "adr_ids": [
+        "WB-0028",
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/wb-0040.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Dispose only after reconciliation; preserve unresolved material",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0040",
+      "sources": "WB-0040 C-019fa661-L37",
+      "decision": "Delete resolved working notes only after important material reaches durable owners; partial promotion never justifies losing remaining branches or unfinished work.",
+      "why": "Disposable was interpreted as safe to discard before the information had survived elsewhere.",
+      "disposition": "Retain, including legacy-note preservation during migration.",
+      "id": "R049",
+      "source_ids": [
+        "WB-0040",
+        "C-019fa661-L37"
+      ],
+      "adr_ids": [
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/wb-0040.md",
+        "evidence/c-019fa661-l37.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "A handoff is authored for a particular receiver and purpose",
+      "state": "Historical skill contract; supporting owner direction",
+      "coverage": "Partial",
+      "adrs": "WB-0035 WB-0040",
+      "sources": "H-HANDOFF G-6a9ddf7c",
+      "decision": "Select the relevant working slice, verified facts, exact next action, open decisions and exclusions. Reference existing owners instead of copying the whole transcript.",
+      "why": "Authored transfer reduces rediscovery and preserves meaning that automatic summaries omit.",
+      "disposition": "Capture the generic handoff contract and compose it with notes; do not mandate a handoff where no transfer occurs. The detailed receiver-oriented wording is evidenced by a historical skill, rather than a separately recovered owner acceptance of every clause.",
+      "id": "R050",
+      "source_ids": [
+        "H-HANDOFF",
+        "G-6a9ddf7c"
+      ],
+      "adr_ids": [
+        "WB-0035",
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/h-handoff.md",
+        "evidence/g-6a9ddf7c.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Checkpointing and handoff are not session termination",
+      "state": "Historical skill contract; owner acceptance not established",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "H-HANDOFF",
+      "decision": "A checkpoint preserves resumability; a handoff can be prepared early, refreshed or used for a spin-off while the original session continues.",
+      "why": "Treating either as a mandatory final action makes them arrive after context has degraded and stops useful work unnecessarily.",
+      "disposition": "Retain as an ADR candidate with its skill provenance. Confirm this exact lifecycle distinction against current owner intent and newer continuity decisions before calling it accepted.",
+      "id": "R051",
+      "source_ids": [
+        "H-HANDOFF"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-handoff.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Preserve the entire question inventory and stable IDs",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-GP H-SC C-019f77b1-L9",
+      "decision": "Keep original question identities, branches, locked answers and open decisions when merging or resuming grilling. A short current-status list does not replace the complete source.",
+      "why": "Earlier recovery attempts replaced dozens of decisions with a small subset and repeatedly re-asked settled questions.",
+      "disposition": "Add a focused continuity invariant; the source appendices in this packet retain the original inventories.",
+      "id": "R052",
+      "source_ids": [
+        "D-GP",
+        "H-SC",
+        "C-019f77b1-L9"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-gp.md",
+        "evidence/h-sc.md",
+        "evidence/c-019f77b1-l9.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "One live session record; duplicates must declare supersession",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0040",
+      "sources": "H-SC H-DG",
+      "decision": "Merge related interviews when requested and make the active resume source unambiguous. Retain truthful superseded evidence without letting stale copies silently become the next entrypoint.",
+      "why": "The skill's old diary path repeatedly led agents to an obsolete notepad.",
+      "disposition": "Preserve as a notepad lifecycle requirement; do not require a single global note for unrelated objectives.",
+      "id": "R053",
+      "source_ids": [
+        "H-SC",
+        "H-DG"
+      ],
+      "adr_ids": [
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/h-sc.md",
+        "evidence/h-dg.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Cross-host transport is explicit, not incidental Git sync",
+      "state": "Open choice",
+      "coverage": "Partial",
+      "adrs": "WB-0040",
+      "sources": "H-HANDOFF WB-0040 C-019f3b12-L6",
+      "decision": "The owner wants continuity across machines. Historical live-note transfer used explicit handoff, while the new JSON ADR leaves transport unselected.",
+      "why": "Local persistence and cross-host recoverability are different guarantees.",
+      "disposition": "Keep the desired cross-host outcome visible; choose a transport separately instead of claiming JSON or local files already provide it.",
+      "id": "R054",
+      "source_ids": [
+        "H-HANDOFF",
+        "WB-0040",
+        "C-019f3b12-L6"
+      ],
+      "adr_ids": [
+        "WB-0040"
+      ],
+      "source_files": [
+        "evidence/h-handoff.md",
+        "evidence/wb-0040.md",
+        "evidence/c-019f3b12-l6.md"
+      ]
+    },
+    {
+      "group": "Continuity and notepads",
+      "title": "Durable evidence must survive its stated recovery boundary",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0028 WB-0031",
+      "sources": "WB-0028 D-FLIGHT",
+      "decision": "A local ignored file is not evidence recoverable from a clean clone. A pushed commit is not an installed/runtime result. State exactly what each reference preserves.",
+      "why": "Claims of durability often exceeded the actual file, branch or deployment boundary.",
+      "disposition": "Retain and apply to note links, handoffs, releases and installed skills.",
+      "id": "R055",
+      "source_ids": [
+        "WB-0028",
+        "D-FLIGHT"
+      ],
+      "adr_ids": [
+        "WB-0028",
+        "WB-0031"
+      ],
+      "source_files": [
+        "evidence/wb-0028.md",
+        "evidence/d-flight.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Small reusable primitives and thin entrypoints",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a646af5 G-6a9d38cd",
+      "decision": "Build skills as reusable behavioral primitives composed by thin entrypoints and compound flows, rather than restating each child's procedure inside every orchestrator.",
+      "why": "The owner repeatedly sought reusable skills to replace repeated prompting; unreachable children caused silent composition collapse.",
+      "disposition": "Record the composition rationale, distinguishing the user's desired pattern from unaccepted detailed metadata proposals.",
+      "id": "R056",
+      "source_ids": [
+        "G-6a646af5",
+        "G-6a9d38cd"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a646af5.md",
+        "evidence/g-6a9d38cd.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Invocation, composition and authorization are separate axes",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a646af5 C-019f6974-L93",
+      "decision": "Owner-facing invocation, a parent skill's ability to reach a child, and authority for the child's effects must be handled separately.",
+      "why": "Gating all primitives broke composition; exposing an owner command let the model appear to authorize itself.",
+      "disposition": "Resolve one portable invocation contract, with host-specific behavior verified rather than inferred from a frontmatter flag.",
+      "id": "R057",
+      "source_ids": [
+        "G-6a646af5",
+        "C-019f6974-L93"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a646af5.md",
+        "evidence/c-019f6974-l93.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "A primitive is agnostic to its first caller",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a646af5 H-HANDOFF",
+      "decision": "Reusable checkpoint, save, navigation and handoff primitives should accept the smallest meaningful scope rather than hardcoding one caller's paths or data shape.",
+      "why": "A checkpoint implementation tied to grilling could not support other work.",
+      "disposition": "Capture as a skill design rule; avoid imposing a speculative schema on every skill.",
+      "id": "R058",
+      "source_ids": [
+        "G-6a646af5",
+        "H-HANDOFF"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a646af5.md",
+        "evidence/h-handoff.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Compose within existing authorization without repeating approval",
+      "state": "Strong preference",
+      "coverage": "Partial",
+      "adrs": "WB-0027",
+      "sources": "G-6a646af5 B-BOUNDARIES",
+      "decision": "A child may use the parent's already authorized scope; a genuinely new effect, destination or consequential decision needs its own resolution.",
+      "why": "Repeated approval at every primitive prevents useful composition, while unlimited inherited authority is unsafe.",
+      "disposition": "Record the scope-inheritance principle and practical stop condition.",
+      "id": "R059",
+      "source_ids": [
+        "G-6a646af5",
+        "B-BOUNDARIES"
+      ],
+      "adr_ids": [
+        "WB-0027"
+      ],
+      "source_files": [
+        "evidence/g-6a646af5.md",
+        "evidence/b-boundaries.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Skill callability needs verification at the host boundary",
+      "state": "Strong preference",
+      "coverage": "Partial",
+      "adrs": "WB-0005",
+      "sources": "G-6a646af5 D-CIC",
+      "decision": "Check that invoked children are actually discoverable and callable on supported providers, and demonstrate composition rather than trusting descriptive prose.",
+      "why": "A skill could exist in source but not in discovery, or an orchestrator could paraphrase it instead of invoking it.",
+      "disposition": "Create a focused verification contract; explicit dependency metadata and traces are candidate implementations, not previously settled APIs.",
+      "id": "R060",
+      "source_ids": [
+        "G-6a646af5",
+        "D-CIC"
+      ],
+      "adr_ids": [
+        "WB-0005"
+      ],
+      "source_files": [
+        "evidence/g-6a646af5.md",
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Skill metadata must distinguish invocation from mere mention",
+      "state": "Open choice",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a646af5",
+      "decision": "A prose mention may recommend, describe or warn about a skill without calling it; a checker must not treat every name as a required invocation edge.",
+      "why": "The proposed grep-based dependency test would reject legitimate routers and documentation.",
+      "disposition": "Preserve the identified design problem; explicit invokes/routes/reads metadata was an assistant proposal, not an accepted schema.",
+      "id": "R061",
+      "source_ids": [
+        "G-6a646af5"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a646af5.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Skill names should avoid accidental everyday triggers",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a646af5",
+      "decision": "Choose discoverable names that compress useful behavior without firing merely because the owner uses an ordinary verb in conversation.",
+      "why": "The historical implement name was reported as overtriggering; later installations still use implement, so retirement was not a permanent settled outcome.",
+      "disposition": "Record the naming tradeoff; verify present invocation behavior before renaming anything.",
+      "id": "R062",
+      "source_ids": [
+        "G-6a646af5"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a646af5.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Delete empty document stubs instead of implying completeness",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a646af5 H-HANDOFF",
+      "decision": "A generated document should omit inapplicable sections rather than leave empty headings that appear complete to a later agent.",
+      "why": "An empty stub can stop retrieval more effectively than an obviously missing section.",
+      "disposition": "Retain as a compact writing/skill convention, distinct from required empty layout slots.",
+      "id": "R063",
+      "source_ids": [
+        "G-6a646af5",
+        "H-HANDOFF"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a646af5.md",
+        "evidence/h-handoff.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Stances change method without changing authority",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0036",
+      "sources": "WB-0036 C-a9e38fdd-L87",
+      "decision": "Builder, Auditor, Reviewer and Reconciler are portable approaches assigned by the SPEC/TASK. Loading a stance does not spawn a worker or transfer permission.",
+      "why": "Permanent role departments and mandatory role-change handoffs added bureaucracy to one agent's task.",
+      "disposition": "Retain the four shared stance contracts and their method/authority separation.",
+      "id": "R064",
+      "source_ids": [
+        "WB-0036",
+        "C-a9e38fdd-L87"
+      ],
+      "adr_ids": [
+        "WB-0036"
+      ],
+      "source_files": [
+        "evidence/wb-0036.md",
+        "evidence/c-a9e38fdd-l87.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Grilling establishes shared understanding before promotion",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0035",
+      "sources": "C-019f68ef-L9 D-GP",
+      "decision": "Research facts before asking; expose the decision tree; ask one consequential question at a time with a recommendation; preserve the answer before continuing.",
+      "why": "The owner wanted to decide architecture without repeatedly supplying discoverable facts or recovering lost answers.",
+      "disposition": "Record the interview boundary and continuity invariant without requiring grilling for routine implementation decisions.",
+      "id": "R065",
+      "source_ids": [
+        "C-019f68ef-L9",
+        "D-GP"
+      ],
+      "adr_ids": [
+        "WB-0035"
+      ],
+      "source_files": [
+        "evidence/c-019f68ef-l9.md",
+        "evidence/d-gp.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Plan unknown work through decision tasks before implementation",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-8ee94cac-L42 C-8ee94cac-L51",
+      "decision": "When architecture is unresolved, make the next bounded outcome an answered decision or experiment, not a fabricated implementation ticket with guessed requirements.",
+      "why": "Large speculative plans made downstream execution look ready before prerequisites were understood.",
+      "disposition": "Keep as an optional planning pattern; do not manufacture a queue for every question.",
+      "id": "R066",
+      "source_ids": [
+        "C-8ee94cac-L42",
+        "C-8ee94cac-L51"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-8ee94cac-l42.md",
+        "evidence/c-8ee94cac-l51.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Lifecycle stages remain independently usable skills",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-FLIGHT C-01a04a19-L9 C-01a04a99-L9",
+      "decision": "A guidebook composes separately invokable skills; each skill should work in its declared context without requiring the reader to adopt the entire guidebook as authority.",
+      "why": "The seven-stage workflow could not be exercised when stages existed only as prose or rigid orchestration.",
+      "disposition": "Preserve the generic composition lesson upstream; retain Flight-specific stage contracts with the extension.",
+      "id": "R067",
+      "source_ids": [
+        "D-FLIGHT",
+        "C-01a04a19-L9",
+        "C-01a04a99-L9"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-flight.md",
+        "evidence/c-01a04a19-l9.md",
+        "evidence/c-01a04a99-l9.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "One stable shared discovery home across providers",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-fba9567e-L3 C-a9e38fdd-L152",
+      "decision": "Installed personal skills should remain discoverable outside GPT_OS through a stable shared home, with provider discovery routes pointing to it.",
+      "why": "The skill catalog disappeared or became project-scoped when a Foundry deployment or publisher changed.",
+      "disposition": "Record source, package and installed-discovery ownership separately; a stable install home does not imply the old publisher remains upstream.",
+      "id": "R068",
+      "source_ids": [
+        "C-fba9567e-L3",
+        "C-a9e38fdd-L152"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-fba9567e-l3.md",
+        "evidence/c-a9e38fdd-l152.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Bundle the portable core; install missing skills without overwriting custom ones",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0036",
+      "sources": "C-01a05af1-L394 C-01a05af1-L569 B-LAYOUT G-6a9de4cc",
+      "decision": "The Workbench ships its own core skill source. Installation fills missing core skills while preserving existing user-owned skills; an external shared-skills repository is not a required product dependency.",
+      "why": "The earlier external dependency made fresh setup incomplete and the publisher risked destroying customized skills.",
+      "disposition": "Record the reversal explicitly; review how conflicting existing versions are reported and deliberately updated.",
+      "id": "R069",
+      "source_ids": [
+        "C-01a05af1-L394",
+        "C-01a05af1-L569",
+        "B-LAYOUT",
+        "G-6a9de4cc"
+      ],
+      "adr_ids": [
+        "WB-0036"
+      ],
+      "source_files": [
+        "evidence/c-01a05af1-l394.md",
+        "evidence/c-01a05af1-l569.md",
+        "evidence/b-layout.md",
+        "evidence/g-6a9de4cc.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Genesis, adoption and upgrade are different operations",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-019f6974-L145 C-019f6974-L165 C-019f5b18-L9",
+      "decision": "Creating a new room, adding the harness to an existing project and updating an installed harness have different input and preservation contracts.",
+      "why": "Treating an existing project like an empty template risks loss or repeated setup.",
+      "disposition": "Capture separate operation contracts while sharing safe primitives.",
+      "id": "R070",
+      "source_ids": [
+        "C-019f6974-L145",
+        "C-019f6974-L165",
+        "C-019f5b18-L9"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019f6974-l145.md",
+        "evidence/c-019f6974-l165.md",
+        "evidence/c-019f5b18-l9.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Adopt real projects without erasing their history",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0031 WB-0032",
+      "sources": "C-01a05a93-L114 WB-0032",
+      "decision": "Reconcile an existing project's controls and arbitrary prior content into the Workbench structure with a lossless migration and explicit provenance.",
+      "why": "The harness should augment working projects, not require a blank repository or replace their domain knowledge.",
+      "disposition": "Retain the lossless principle; verify project-specific content preservation as part of adoption.",
+      "id": "R071",
+      "source_ids": [
+        "C-01a05a93-L114",
+        "WB-0032"
+      ],
+      "adr_ids": [
+        "WB-0031",
+        "WB-0032"
+      ],
+      "source_files": [
+        "evidence/c-01a05a93-l114.md",
+        "evidence/wb-0032.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Managed runtime files have one owner and explicit update receipts",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0031",
+      "sources": "WB-0031",
+      "decision": "Install portable runtime tools in the manifest tools lane with release, commit and per-file hashes. Preserve application tools; updates back up managed files and record rollback.",
+      "why": "Shared ownership and symlinked product dependencies made upgrades unsafe and consumers nonportable.",
+      "disposition": "Retain, including the source/runtime tool split and file-permission boundary.",
+      "id": "R072",
+      "source_ids": [
+        "WB-0031"
+      ],
+      "adr_ids": [
+        "WB-0031"
+      ],
+      "source_files": [
+        "evidence/wb-0031.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Preflight every consumed source lane before mutation",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0031",
+      "sources": "S-036",
+      "decision": "Check the actual source identity and cleanliness of the manifest, templates, runtime tools and skills consumed by an upgrade before changing a consumer.",
+      "why": "Checking only one lane allowed a valid-looking receipt to accompany files from dirty or mismatched sources.",
+      "disposition": "Record a dedicated upgrade-transaction rationale; confirm source coverage rather than equating one clean HEAD with clean inputs.",
+      "id": "R073",
+      "source_ids": [
+        "S-036"
+      ],
+      "adr_ids": [
+        "WB-0031"
+      ],
+      "source_files": [
+        "evidence/s-036.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Release, adopted files and running behavior are separate states",
+      "state": "Accepted",
+      "coverage": "Recorded outside upstream",
+      "adrs": "AU-0004 WB-0031",
+      "sources": "AU-0004 D-CIC",
+      "decision": "Keep released version, actually installed version, reviewed version and running source distinct. Candidate tests are not installed-state reviews.",
+      "why": "Publishing or passing source tests did not establish downstream adoption or deployment.",
+      "disposition": "Carry AU-0004's reusable distinction upstream and preserve application-specific campaign behavior outside the base.",
+      "id": "R074",
+      "source_ids": [
+        "AU-0004",
+        "D-CIC"
+      ],
+      "adr_ids": [
+        "AU-0004",
+        "WB-0031"
+      ],
+      "source_files": [
+        "evidence/au-0004.md",
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Use the manifest's exact integration branch",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0039",
+      "sources": "WB-0039",
+      "decision": "Resolve the integration destination by exact case from the room's manifest, separately from its default branch; declaration does not itself create that branch.",
+      "why": "Some rooms used Integration, some integration, and some had no usable review destination.",
+      "disposition": "Retain the precise readiness-versus-selection blocking semantics.",
+      "id": "R075",
+      "source_ids": [
+        "WB-0039"
+      ],
+      "adr_ids": [
+        "WB-0039"
+      ],
+      "source_files": [
+        "evidence/wb-0039.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Review the immutable integration candidate independently",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0037",
+      "sources": "WB-0037 D-FLIGHT",
+      "decision": "Separate-context review occurs when branches combine at integration. A changed candidate invalidates the verdict; earlier checks need not become independent reviews per ticket.",
+      "why": "Reviewing a nearby SHA or every intermediate change respectively weakens assurance or creates repeated stops.",
+      "disposition": "Retain; apply the same challenge to consequential report claims.",
+      "id": "R076",
+      "source_ids": [
+        "WB-0037",
+        "D-FLIGHT"
+      ],
+      "adr_ids": [
+        "WB-0037"
+      ],
+      "source_files": [
+        "evidence/wb-0037.md",
+        "evidence/d-flight.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Target movement requires review of the resulting candidate",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0037",
+      "sources": "D-FLIGHT D-LIFEV2",
+      "decision": "If integration changes the candidate's content, test and review the exact result before advancing the destination. Do not reuse a verdict merely because the original feature head was reviewed.",
+      "why": "A clean review of one object does not cover another merge result.",
+      "disposition": "Capture as a concrete consequence of exact-candidate review.",
+      "id": "R077",
+      "source_ids": [
+        "D-FLIGHT",
+        "D-LIFEV2"
+      ],
+      "adr_ids": [
+        "WB-0037"
+      ],
+      "source_files": [
+        "evidence/d-flight.md",
+        "evidence/d-lifev2.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Remote recovery is proven by the actual ref and object",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-V3 C-fba9567e-L3 D-INTEGRATION",
+      "decision": "Verify the intended remote reference contains the exact candidate. Missing tracking metadata or a stale fetch refspec is not proof that work is unpushed.",
+      "why": "The record contains repeated false unsaved-work alarms despite matching remote SHAs.",
+      "disposition": "Record the evidence identity rule and use explicit remote readback at the claimed boundary.",
+      "id": "R078",
+      "source_ids": [
+        "D-V3",
+        "C-fba9567e-L3",
+        "D-INTEGRATION"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-v3.md",
+        "evidence/c-fba9567e-l3.md",
+        "evidence/d-integration.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Preserve dirty work and recover before cleanup",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-CLEANUP D-CANON",
+      "decision": "Classify and preserve meaningful uncommitted work before removing obsolete worktrees or old paths. Use recoverable checkpoints and non-force integration without overwriting unrelated owner changes.",
+      "why": "Cleanup and relocation can erase the only remaining copy of unfinished work.",
+      "disposition": "Capture as a recovery contract; do not turn every routine task into a worktree-cleanup campaign.",
+      "id": "R079",
+      "source_ids": [
+        "D-CLEANUP",
+        "D-CANON"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-cleanup.md",
+        "evidence/d-canon.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Public products exclude private instance state",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0031",
+      "sources": "D-LIFEV2 H-FR D-PRODUCER",
+      "decision": "Package public-safe source separately from private Wiki content, identities, runtime ledgers, credentials, topology and private derived digests.",
+      "why": "A cleaned product is not a copy of the private deployment's operational data.",
+      "disposition": "Retain the portable public/private boundary; verify publisher output instead of relying only on ignore rules.",
+      "id": "R080",
+      "source_ids": [
+        "D-LIFEV2",
+        "H-FR",
+        "D-PRODUCER"
+      ],
+      "adr_ids": [
+        "WB-0031"
+      ],
+      "source_files": [
+        "evidence/d-lifev2.md",
+        "evidence/h-fr.md",
+        "evidence/d-producer.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Package mechanically; review publication judgment independently",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "H-SC H-FR",
+      "decision": "Mechanical archive/clean/package/publish work belongs in deterministic tooling; the judgment that the candidate is fit and public-safe belongs in independent review under actual publication authority.",
+      "why": "A publishing script and an auditor do different jobs; inventing a new role was unnecessary.",
+      "disposition": "Record the reusable responsibility split without restoring the retired Forge producer topology.",
+      "id": "R081",
+      "source_ids": [
+        "H-SC",
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-sc.md",
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Integration delivery does not grant main promotion",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0039",
+      "sources": "D-FLIGHT D-CIC C-019f6974-L1120",
+      "decision": "An authorized landing targets the exact integration destination; main promotion remains the owner's separate boundary unless explicitly authorized for that work.",
+      "why": "Agents repeatedly treated completing a branch as permission to advance a more protected destination.",
+      "disposition": "Retain in the owning Git contract; do not hardcode integration spelling in portable skills.",
+      "id": "R082",
+      "source_ids": [
+        "D-FLIGHT",
+        "D-CIC",
+        "C-019f6974-L1120"
+      ],
+      "adr_ids": [
+        "WB-0039"
+      ],
+      "source_files": [
+        "evidence/d-flight.md",
+        "evidence/d-cic.md",
+        "evidence/c-019f6974-l1120.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Completion must reconcile the owning downstream boundary",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "GO-0024 WB-0037",
+      "sources": "D-FLIGHT D-POSTFLIGHT D-CIC GO-0024",
+      "decision": "Report separately what was authored, reviewed, remotely delivered, installed, running, accepted and closed. Closure uses the real available owner and evidence rather than an unimplemented ceremonial receipt.",
+      "why": "Components passed tests while the requested usable result remained undelivered or delivered-but-unclosed.",
+      "disposition": "Capture the generic completion model; preserve Foundry lifecycle state names only where relevant.",
+      "id": "R083",
+      "source_ids": [
+        "D-FLIGHT",
+        "D-POSTFLIGHT",
+        "D-CIC",
+        "GO-0024"
+      ],
+      "adr_ids": [
+        "GO-0024",
+        "WB-0037"
+      ],
+      "source_files": [
+        "evidence/d-flight.md",
+        "evidence/d-postflight.md",
+        "evidence/d-cic.md",
+        "evidence/go-0024.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Human-readable staged setup rather than an opaque giant wizard",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-01a05af1-L519 B-LAYOUT",
+      "decision": "Keep setup understandable and inspectable through the guide and small tooling stages so the owner can see what the harness is doing.",
+      "why": "A large generated setup mechanism can conceal assumptions and make repair harder.",
+      "disposition": "Preserve the preference; assess existing automation by usability and correctness rather than banning installers.",
+      "id": "R084",
+      "source_ids": [
+        "C-01a05af1-L519",
+        "B-LAYOUT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-01a05af1-l519.md",
+        "evidence/b-layout.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Prove the harness improves work, not just its own score",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-019ef330-L6 C-019ef347-L6 G-6a9cff88",
+      "decision": "Evaluate actual agent outcomes against meaningful baselines; static template quality, document counts and a green self-test do not demonstrate improved behavior.",
+      "why": "The owner asked for scientific proof of benefit from the beginning, before the later governance expansion.",
+      "disposition": "Add a central evidence/acceptance ADR connected to the existing evaluation tooling.",
+      "id": "R085",
+      "source_ids": [
+        "C-019ef330-L6",
+        "C-019ef347-L6",
+        "G-6a9cff88"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019ef330-l6.md",
+        "evidence/c-019ef347-l6.md",
+        "evidence/g-6a9cff88.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Use held-out, condition-blind comparisons",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-019ef347-L6 C-019f5a56-L215",
+      "decision": "Hold task inputs and grading stable, compare with a no-template baseline, isolate trials and use held-out tasks so the harness does not tune itself to its own grading criteria.",
+      "why": "Self-serving evaluators and easy development fixtures can create illusory improvement.",
+      "disposition": "Record the experimental contract; detailed trial budgets and model choices remain configuration.",
+      "id": "R086",
+      "source_ids": [
+        "C-019ef347-L6",
+        "C-019f5a56-L215"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019ef347-l6.md",
+        "evidence/c-019f5a56-l215.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Judge resulting state and honest incompleteness",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-019f5a56-L215 AU-0001",
+      "decision": "Grade what the agent actually changed and verified, including scope and truthful incomplete reporting, rather than rewarding a confident final response.",
+      "why": "A system that reports success dishonestly can outperform honest behavior on a naive rubric.",
+      "disposition": "Capture this as an outcome-grading invariant.",
+      "id": "R087",
+      "source_ids": [
+        "C-019f5a56-L215",
+        "AU-0001"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019f5a56-l215.md",
+        "evidence/au-0001.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Inspection, observed use and behavioral tests stay separate",
+      "state": "Accepted",
+      "coverage": "Recorded outside upstream",
+      "adrs": "AU-0001",
+      "sources": "AU-0001",
+      "decision": "Label the three evidence types and never pool them into one health score or average.",
+      "why": "A coherence check and a measured task outcome answer different questions and can conceal each other's regressions.",
+      "disposition": "Port the reusable evidence distinction; leave the audit application's chart and campaign contracts in its own room.",
+      "id": "R088",
+      "source_ids": [
+        "AU-0001"
+      ],
+      "adr_ids": [
+        "AU-0001"
+      ],
+      "source_files": [
+        "evidence/au-0001.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Evaluated model and reviewer model are independent fields",
+      "state": "Accepted",
+      "coverage": "Recorded outside upstream",
+      "adrs": "AU-0002",
+      "sources": "AU-0002",
+      "decision": "Record whose behavior is evaluated separately from who reviewed the evidence. A static inspection may have no evaluated model.",
+      "why": "A report written by Claude does not prove Claude operates well under the harness.",
+      "disposition": "Port this distinction into portable feedback provenance.",
+      "id": "R089",
+      "source_ids": [
+        "AU-0002"
+      ],
+      "adr_ids": [
+        "AU-0002"
+      ],
+      "source_files": [
+        "evidence/au-0002.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "One finding can have many observations and occurrences",
+      "state": "Accepted",
+      "coverage": "Recorded outside upstream",
+      "adrs": "AU-0003",
+      "sources": "AU-0003",
+      "decision": "Keep one durable problem identity across reports, with repeated observations and separate affected-project occurrences. Absence from a later report means not retested, not resolved.",
+      "why": "Counting reports inflated problem totals and lost recurrence.",
+      "disposition": "Preserve in the shared feedback interchange contract; central storage need not become a base requirement.",
+      "id": "R090",
+      "source_ids": [
+        "AU-0003"
+      ],
+      "adr_ids": [
+        "AU-0003"
+      ],
+      "source_files": [
+        "evidence/au-0003.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Execution failures are not automatically harness defects",
+      "state": "Accepted",
+      "coverage": "Recorded outside upstream",
+      "adrs": "AU-0004",
+      "sources": "AU-0004 AU-0001",
+      "decision": "Keep unavailable runners, missing evidence, interrupted attempts and incomplete coverage visible as execution/evidence states.",
+      "why": "A failed measurement is not evidence of a failed harness behavior.",
+      "disposition": "Carry this classification into portable reporting and acceptance claims.",
+      "id": "R091",
+      "source_ids": [
+        "AU-0004",
+        "AU-0001"
+      ],
+      "adr_ids": [
+        "AU-0004"
+      ],
+      "source_files": [
+        "evidence/au-0004.md",
+        "evidence/au-0001.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Investigate a finding before repairing it",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0037 WB-0038",
+      "sources": "G-6a9c9513 A-BLUEPRINT",
+      "decision": "Re-read the claimed mechanism at an identified source revision; distinguish confirmed, unsupported, environmental and deferred findings before proposing or applying a fix.",
+      "why": "Upstream repairs based on unsupported reports can introduce new defects and erase useful dissent.",
+      "disposition": "Record the triage threshold and retain rejected findings as evidence of the review process.",
+      "id": "R092",
+      "source_ids": [
+        "G-6a9c9513",
+        "A-BLUEPRINT"
+      ],
+      "adr_ids": [
+        "WB-0037",
+        "WB-0038"
+      ],
+      "source_files": [
+        "evidence/g-6a9c9513.md",
+        "evidence/a-blueprint.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Audit Workbench owns independent review history and visualization",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "AU-0006",
+      "sources": "G-6a9b96e1 G-6a9c9513 AU-0006",
+      "decision": "Use a separate review application to retain results across projects, harness versions and models, with a visual interface and drill-down evidence.",
+      "why": "The owner did not want to read long Markdown report stacks or have every project manage its own improvement program.",
+      "disposition": "Preserve as an optional companion application's contract, not a requirement for a standalone Workbench.",
+      "id": "R093",
+      "source_ids": [
+        "G-6a9b96e1",
+        "G-6a9c9513",
+        "AU-0006"
+      ],
+      "adr_ids": [
+        "AU-0006"
+      ],
+      "source_files": [
+        "evidence/g-6a9b96e1.md",
+        "evidence/g-6a9c9513.md",
+        "evidence/au-0006.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Central review storage with a standalone fallback",
+      "state": "Accepted",
+      "coverage": "Recorded outside upstream",
+      "adrs": "AU-0006",
+      "sources": "AU-0006",
+      "decision": "An enrolled project receives an explicit central evidence destination; a standalone Workbench retains local reporting. Central private storage still needs an explicit recovery policy.",
+      "why": "Scattered reports made comparisons difficult, but requiring the central app would break portability.",
+      "disposition": "Port the destination/interface boundary, not the audit application's default data directory.",
+      "id": "R094",
+      "source_ids": [
+        "AU-0006"
+      ],
+      "adr_ids": [
+        "AU-0006"
+      ],
+      "source_files": [
+        "evidence/au-0006.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "The reviewer must itself be reviewed independently",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "A-BLUEPRINT",
+      "decision": "Audit Workbench is part of the portfolio, with independent review of its consequential outputs and self-review exclusions.",
+      "why": "Its own missing integration destination escaped an audit sweep that excluded the reviewer.",
+      "disposition": "Capture as an evaluation-governance decision; the exact model exclusion policy belongs to the audit application.",
+      "id": "R095",
+      "source_ids": [
+        "A-BLUEPRINT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/a-blueprint.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Separate source development, deployment and audit roles across rooms",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a9c9513 A-BLUEPRINT",
+      "decision": "LLM_Workbench develops the template; GPT_OS coordinates deployment in the described workflow; Audit_Workbench consolidates and challenges feedback. Reports flow back upstream without the audit room silently repairing targets.",
+      "why": "The owner explicitly corrected a workflow that treated LLM_Workbench as the deployer and conflated review with mutation.",
+      "disposition": "Record the inter-Workbench interface while keeping each room's local operation independent.",
+      "id": "R096",
+      "source_ids": [
+        "G-6a9c9513",
+        "A-BLUEPRINT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a9c9513.md",
+        "evidence/a-blueprint.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Review each adopted release and preserve longitudinal comparisons",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "AU-0004",
+      "sources": "G-6a9b96e1 AU-0004",
+      "decision": "Track reviews by actual installed release, project and model, retaining previous observations and making progress or recurrence visible.",
+      "why": "One-time reviews cannot tell whether a release helped or merely changed the report.",
+      "disposition": "Keep campaign scheduling outside the base; make portable feedback carry enough identity for comparison.",
+      "id": "R097",
+      "source_ids": [
+        "G-6a9b96e1",
+        "AU-0004"
+      ],
+      "adr_ids": [
+        "AU-0004"
+      ],
+      "source_files": [
+        "evidence/g-6a9b96e1.md",
+        "evidence/au-0004.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Measure owner coordination work as harness friction",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a9cff88 A-BLUEPRINT",
+      "decision": "Treat repeated owner reminders to save, route, reconcile, resume or finish as observable workflow friction, while separating them from legitimate architectural decisions.",
+      "why": "The harness is supposed to carry the conversation and process so the owner does not become its manual scheduler.",
+      "disposition": "Define a testable outcome measure; do not retroactively claim a particular intervention-rate target was approved.",
+      "id": "R098",
+      "source_ids": [
+        "G-6a9cff88",
+        "A-BLUEPRINT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a9cff88.md",
+        "evidence/a-blueprint.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Preserve visibility and epistemic states rather than filling gaps",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-019f7df4-L9 A-BLUEPRINT",
+      "decision": "Distinguish fresh, stale, unavailable, malformed, inaccessible and user-reported evidence; distinguish a capability being available, eligible, shown, consulted and acted through.",
+      "why": "Declared availability and actual use were repeatedly mistaken for one another.",
+      "disposition": "Record a minimal shared evidence vocabulary; avoid inventing measurements from narrative.",
+      "id": "R099",
+      "source_ids": [
+        "C-019f7df4-L9",
+        "A-BLUEPRINT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019f7df4-l9.md",
+        "evidence/a-blueprint.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Do not weaken criteria to make self-improvement look successful",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "H-SC C-019f4b37-L9 C-019ef347-L6",
+      "decision": "Retain the baseline and grading standard when judging a change. Improvements require evidence; an easier rubric or a current 100 score does not establish the harness is finished.",
+      "why": "The owner wanted a system capable of detecting regressions and still raising its standards.",
+      "disposition": "Record alongside the experimental contract.",
+      "id": "R100",
+      "source_ids": [
+        "H-SC",
+        "C-019f4b37-L9",
+        "C-019ef347-L6"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-sc.md",
+        "evidence/c-019f4b37-l9.md",
+        "evidence/c-019ef347-l6.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Feedback repair loops are bounded and independently reviewed",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-019f5a56-L9 C-019f5a56-L215",
+      "decision": "A scheduled builder proposes a bounded candidate, an independent reviewer challenges it, and iteration has explicit budget, identity and stop conditions.",
+      "why": "Unbounded self-improvement loops spend tokens, repeat findings and merge unverified changes.",
+      "disposition": "Preserve as an optional automation pattern; the standalone Workbench must not automatically start it.",
+      "id": "R101",
+      "source_ids": [
+        "C-019f5a56-L9",
+        "C-019f5a56-L215"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019f5a56-l9.md",
+        "evidence/c-019f5a56-l215.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Setup proof precedes the feedback workflow",
+      "state": "Accepted",
+      "coverage": "Recorded",
+      "adrs": "WB-0038",
+      "sources": "WB-0038 B-BOUNDARIES",
+      "decision": "The initial fresh-agent setup check returns in chat; prove entry first, then reporting and continuation. Do not require an artificial report or handoff to establish that setup works.",
+      "why": "The first experiment's outcome was repeatedly replaced by ceremony it was not testing.",
+      "disposition": "Retain the corrected Round One sequence and historical proof boundaries.",
+      "id": "R102",
+      "source_ids": [
+        "WB-0038",
+        "B-BOUNDARIES"
+      ],
+      "adr_ids": [
+        "WB-0038"
+      ],
+      "source_files": [
+        "evidence/wb-0038.md",
+        "evidence/b-boundaries.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Prefer real useful acceptance work over artificial workflow evidence",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0038",
+      "sources": "D-CIC WB-0038",
+      "decision": "Exercise the system on genuine small tasks. Do not redo completed work or create fake Job Orders solely to inflate a validation count.",
+      "why": "Synthetic paperwork can prove the workflow's forms without proving useful delivery.",
+      "disposition": "Retain; controlled tests still cover failure cases and deterministic regression behavior.",
+      "id": "R103",
+      "source_ids": [
+        "D-CIC",
+        "WB-0038"
+      ],
+      "adr_ids": [
+        "WB-0038"
+      ],
+      "source_files": [
+        "evidence/d-cic.md",
+        "evidence/wb-0038.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Reuse the existing behavioral evaluation runner before building another",
+      "state": "Proposed",
+      "coverage": "Recorded outside upstream",
+      "adrs": "AU-0005",
+      "sources": "AU-0005",
+      "decision": "Assess the existing harness eval runner for isolated trials and JSONL results before introducing a second runner.",
+      "why": "Duplicated runners would duplicate grading logic and split evidence contracts.",
+      "disposition": "Keep proposed until its specified verification resolves the choice; do not report it as an accepted completed integration.",
+      "id": "R104",
+      "source_ids": [
+        "AU-0005"
+      ],
+      "adr_ids": [
+        "AU-0005"
+      ],
+      "source_files": [
+        "evidence/au-0005.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Report permission fidelity across prose and provider controls",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "AU-0007 WB-0005",
+      "sources": "AU-0007 S-036",
+      "decision": "A declared writable lane must agree with effective provider permissions and supported relative, home and absolute path forms. S-036 corrected the earlier paired Edit/Write model; the invariant is capability fidelity, not that old permission syntax.",
+      "why": "The contract instructed agents to create records while the installed permission file withheld the operation.",
+      "disposition": "Capture upstream as control fidelity and verify generated templates against real supported path forms.",
+      "id": "R105",
+      "source_ids": [
+        "AU-0007",
+        "S-036"
+      ],
+      "adr_ids": [
+        "AU-0007",
+        "WB-0005"
+      ],
+      "source_files": [
+        "evidence/au-0007.md",
+        "evidence/s-036.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "One durable writer per shared surface",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-CANON D-FLIGHT D-CAS",
+      "decision": "Independent read-only work may proceed in parallel; writes to a repository, spec, registry, installed product or shared file need non-overlapping ownership or serialization.",
+      "why": "Parallel agents can collide even when their chat tasks have different names.",
+      "disposition": "Capture a generic concurrency rule without requiring a multi-agent runtime for single-agent work.",
+      "id": "R106",
+      "source_ids": [
+        "D-CANON",
+        "D-FLIGHT",
+        "D-CAS"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-canon.md",
+        "evidence/d-flight.md",
+        "evidence/d-cas.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "A durable task is distinct from a worker or attempt",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-FR D-CIC",
+      "decision": "One Job Order represents a durable task/lane. Different agents and roles can take successive exclusive runs; a failed attempt is not automatically a new task.",
+      "why": "Per-person records lost continuity while shared simultaneous orders blurred write ownership.",
+      "disposition": "Preserve the task/attempt distinction as reusable; Foundry Claim/Run schemas stay extension-owned.",
+      "id": "R107",
+      "source_ids": [
+        "H-FR",
+        "D-CIC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-fr.md",
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Rejection and in-scope repair stay on the same task",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-CIC D-CAS",
+      "decision": "Preserve rejection history and retry the existing task when its scope and acceptance still hold. New scope creates a new bounded task.",
+      "why": "Creating a fresh order on every rejection hid history and inflated work.",
+      "disposition": "Preserve for any future coordinator and portable retry semantics.",
+      "id": "R108",
+      "source_ids": [
+        "D-CIC",
+        "D-CAS"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-cic.md",
+        "evidence/d-cas.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Captain directs; Steward manages bounded execution",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-CAS C-01a055b0-L162",
+      "decision": "Keep an owner-facing coordinator's context focused on direction and exceptions. Dispatch fresh bounded execution contexts rather than making the coordinator carry every implementation step.",
+      "why": "The long-running manager chat became overloaded and stopped serving the owner.",
+      "disposition": "Keep the generic context-separation lesson; do not make Captain or Steward roles mandatory in LLM_Workbench.",
+      "id": "R109",
+      "source_ids": [
+        "D-CAS",
+        "C-01a055b0-L162"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-cas.md",
+        "evidence/c-01a055b0-l162.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Parallel execution requires satisfied dependencies and disjoint ownership",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-CAS D-FLIGHT",
+      "decision": "Default to serialized dependent packages; parallelize only when predecessor gates and actual write surfaces permit it.",
+      "why": "Nominally separate tasks still collided through registries, specs, runtime bindings and installed products.",
+      "disposition": "Preserve as a coordinator policy with explicit evidence of independence.",
+      "id": "R110",
+      "source_ids": [
+        "D-CAS",
+        "D-FLIGHT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-cas.md",
+        "evidence/d-flight.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Keep implementation, review and mutation authority distinct",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0037",
+      "sources": "D-FLIGHT D-POSTFLIGHT D-CLOSE",
+      "decision": "An implementation worker does not accept its own review or land itself by inference; a read-only verifier reports evidence while the authorized owner performs the state-changing transition.",
+      "why": "Role labels alone did not establish independent acceptance or a legitimate close mutation.",
+      "disposition": "Retain generic separation and exact review; keep specific lifecycle mutators extension-owned.",
+      "id": "R111",
+      "source_ids": [
+        "D-FLIGHT",
+        "D-POSTFLIGHT",
+        "D-CLOSE"
+      ],
+      "adr_ids": [
+        "WB-0037"
+      ],
+      "source_files": [
+        "evidence/d-flight.md",
+        "evidence/d-postflight.md",
+        "evidence/d-close.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "The seven Flight stages must form a real installed chain",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-FLIGHT D-POSTFLIGHT D-CIC D-AC",
+      "decision": "Intended contract: Sitrep, Preflight, Launch-flight, In-flight, Landing-check, Land and PostFlight-check are separately invokable stages with compatible handoffs and actual installed consumers. Pin exact SHAs at Preflight, Launch, Landing-check, Land and PostFlight-check, where a specific state is verified or acted on; ordinary Sitrep prose and In-flight internal work do not need an extra boundary-SHA field (AC-2).",
+      "why": "Skill filenames, source tests and a guidebook did not establish an executable end-to-end workflow.",
+      "disposition": "Preserve the complete lifecycle contract for the retired extension; do not revive it as a prerequisite for base work.",
+      "id": "R112",
+      "source_ids": [
+        "D-FLIGHT",
+        "D-POSTFLIGHT",
+        "D-CIC",
+        "D-AC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-flight.md",
+        "evidence/d-postflight.md",
+        "evidence/d-cic.md",
+        "evidence/d-ac.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Handoffs preserve context and exact evidence, not authority",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0040 GO-0012",
+      "sources": "D-FLIGHT GO-0012",
+      "decision": "Transfers identify the candidate, scope, state and evidence, reference their real owners and preserve ordered retry history without copying or enlarging authorization.",
+      "why": "A handoff was sometimes treated as a substitute for the contract or a fresh grant.",
+      "disposition": "Retain the generic rule and preserve Flight's append-only sequence where applicable.",
+      "id": "R113",
+      "source_ids": [
+        "D-FLIGHT",
+        "GO-0012"
+      ],
+      "adr_ids": [
+        "WB-0040",
+        "GO-0012"
+      ],
+      "source_files": [
+        "evidence/d-flight.md",
+        "evidence/go-0012.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Preflight checks facts immediately before sensitive execution",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-LIFEV2 D-CIC H-SC",
+      "decision": "Bind preflight to the relevant facts and reread race-sensitive state at launch. Receipt timestamps alone do not establish that its assumptions still hold.",
+      "why": "A formerly green receipt can outlive a moved branch, changed scope or competing claim.",
+      "disposition": "Preserve fact-bound freshness; do not require Flight receipts for ordinary Workbench entry.",
+      "id": "R114",
+      "source_ids": [
+        "D-LIFEV2",
+        "D-CIC",
+        "H-SC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-lifev2.md",
+        "evidence/d-cic.md",
+        "evidence/h-sc.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "One lifecycle transaction includes one Journal event",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-LIFEV2 D-CLOSE",
+      "decision": "A private authoritative lifecycle tree records state and exactly one appended Journal event per accepted transition, with the lifecycle engine as the sole mutator.",
+      "why": "Separate state and ledger writes could disagree about whether a transition happened.",
+      "disposition": "Retain as an extension ADR candidate; no upstream database or Git-ref requirement follows.",
+      "id": "R115",
+      "source_ids": [
+        "D-LIFEV2",
+        "D-CLOSE"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-lifev2.md",
+        "evidence/d-close.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Cooperative compare-and-swap is not hostile-writer enforcement",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-LIFEV2 D-CIC",
+      "decision": "Claim only the serialization and protection actually demonstrated. Cooperative exact-tip CAS does not prove remote deletion, force-update or writer restrictions.",
+      "why": "Security and atomicity claims exceeded observed remote policy.",
+      "disposition": "Preserve both the useful cooperative v1 and its explicit limitations.",
+      "id": "R116",
+      "source_ids": [
+        "D-LIFEV2",
+        "D-CIC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-lifev2.md",
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Multi-repository parents aggregate immutable child results",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-LIFEV2",
+      "decision": "A parent coordinates dependencies and idempotently ingests child terminal identities; it does not claim atomicity across repository refs.",
+      "why": "A portfolio outcome cannot be made transactional merely by putting it under one parent order.",
+      "disposition": "Retain for future cross-Workbench coordination.",
+      "id": "R117",
+      "source_ids": [
+        "D-LIFEV2"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-lifev2.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Bound automatic repair and distinguish ambiguous results",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-LIFEV2 D-POSTFLIGHT",
+      "decision": "Give a durable repair identity one declared automatic attempt and budget; ambiguous outcomes or protected scope require escalation, with retries distinguishing accepted, conflict and pre-transition failure.",
+      "why": "Blind retries can duplicate effects or consume unbounded effort.",
+      "disposition": "Preserve as a coordinator implementation choice; do not impose its exact one-attempt policy on all Workbench tasks.",
+      "id": "R118",
+      "source_ids": [
+        "D-LIFEV2",
+        "D-POSTFLIGHT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-lifev2.md",
+        "evidence/d-postflight.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Versioned lifecycle migration has one live writer",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-LIFEV2",
+      "decision": "Preserve old lifecycle evidence as readable history while moving to one new authoritative writer; do not keep two live mutation systems.",
+      "why": "A compatibility path can become a second conflicting authority.",
+      "disposition": "Retain for extension migrations and as a general source-ownership lesson.",
+      "id": "R119",
+      "source_ids": [
+        "D-LIFEV2"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-lifev2.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Date-only freshness uses the declared local day",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-FRESHNESS",
+      "decision": "Interpret date-only records in the workspace's declared timezone; deduplicate equivalent local and remote refs by repository/object identity.",
+      "why": "UTC midnight made same-local-day work look newer and coherent refs look contradictory.",
+      "disposition": "Capture the semantic choice if portable tooling uses date-only freshness; do not hardcode America/Denver globally.",
+      "id": "R120",
+      "source_ids": [
+        "D-FRESHNESS"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-freshness.md"
+      ]
+    },
+    {
+      "group": "Delegation and workflow",
+      "title": "Evidence partition must preserve exact prior bytes and proof boundaries",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-CUMULATIVE D-V3",
+      "decision": "When evidence grows, partition it with exact accounting and provenance while preserving historical bytes; do not merge distinct archive introductions or weaken validators to fit a size cap.",
+      "why": "A spec ceiling and pinned evidence sections made a record unable to accept its own next receipt.",
+      "disposition": "Record the append-only/size-limit tradeoff and provide a usable rollover mechanism rather than a universal hot-spec byte constant.",
+      "id": "R121",
+      "source_ids": [
+        "D-CUMULATIVE",
+        "D-V3"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-cumulative.md",
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Foundry connects Workbench rooms through optional capabilities",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "WB-0015",
+      "sources": "C-7f7acc51-L182 C-7f7acc51-L166 WB-0015",
+      "decision": "A Workbench is a project's operating surface; Foundry connects, monitors and maintains rooms using capability contracts and replaceable modules.",
+      "why": "The owner repeatedly distinguished the useful project harness from the connected factory.",
+      "disposition": "Preserve the extension architecture and terminology without importing it into every project.",
+      "id": "R122",
+      "source_ids": [
+        "C-7f7acc51-L182",
+        "C-7f7acc51-L166",
+        "WB-0015"
+      ],
+      "adr_ids": [
+        "WB-0015"
+      ],
+      "source_files": [
+        "evidence/c-7f7acc51-l182.md",
+        "evidence/c-7f7acc51-l166.md",
+        "evidence/wb-0015.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Sockets are capability contracts; modules use declared interfaces",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-7f7acc51-L196 H-SC",
+      "decision": "A socket is a named capability contract, not a department or implementation. Modules must use its declared entrypoint rather than reach around it.",
+      "why": "Renaming departments as sockets obscured the boundary and self-attestation did not enforce access.",
+      "disposition": "Retain the interface decision and the still-open enforcement mechanism separately.",
+      "id": "R123",
+      "source_ids": [
+        "C-7f7acc51-L196",
+        "H-SC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-7f7acc51-l196.md",
+        "evidence/h-sc.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Socket-to-module cardinality is asymmetric many-to-many",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-SC",
+      "decision": "A module may use several sockets; one socket may have several candidate implementations while allowing only the declared active binding pattern.",
+      "why": "The one-row/one-module registry could not express the CIC's intended connections.",
+      "disposition": "Preserve as an extension data-model decision; do not assume all sockets permit simultaneous multiple active providers.",
+      "id": "R124",
+      "source_ids": [
+        "H-SC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-sc.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Blessed means a suitable implementation, not owner authorship",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-SC-LATE",
+      "decision": "A blessed module fits the socket and product expectations; being built by Kayden is neither necessary nor sufficient.",
+      "why": "Authorship had been mistaken for technical compatibility and suitability.",
+      "disposition": "Retain the corrected definition with the historical negative example in the recovered source.",
+      "id": "R125",
+      "source_ids": [
+        "H-SC-LATE"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-sc-late.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Halls are vertical functional boundaries",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-SC-LATE C-41fca99d-L24",
+      "decision": "A Hall owns its skills, deterministic workers and lifecycle for one function; cross-Hall work is routed explicitly so agents do not load every department's internals.",
+      "why": "The factory accumulated context and unclear ownership when each component knew the others' procedures.",
+      "disposition": "Preserve the modularity rationale; keep the number and names of Halls historical rather than fixed core constants.",
+      "id": "R126",
+      "source_ids": [
+        "H-SC-LATE",
+        "C-41fca99d-L24"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-sc-late.md",
+        "evidence/c-41fca99d-l24.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Separate domain core, execution engine and orchestration",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-SC-LATE",
+      "decision": "The deterministic domain core stays independent of the sandbox/worktree engine; orchestration composes both and translates scoped policy into execution.",
+      "why": "Putting all domain behavior inside an external sandbox library would make unrelated project logic depend on its lifecycle.",
+      "disposition": "Record this recovered architectural decision; package names and the specific external library were not permanently settled.",
+      "id": "R127",
+      "source_ids": [
+        "H-SC-LATE"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-sc-late.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Replace scaffolding only after preserving its rules in the successor",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-SC",
+      "decision": "Retire temporary standalone guard machinery once the replacement can carry its protections; the rules survive even if the old files do not.",
+      "why": "Keeping two competing guard systems creates drift, while deleting rules because a framework exists removes protection.",
+      "disposition": "Preserve the replacement principle; the historic Sandcastle integration is not current Workbench dependency authority.",
+      "id": "R128",
+      "source_ids": [
+        "H-SC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-sc.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Each Hall builds the deterministic workers it needs",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-SC-LATE",
+      "decision": "A shared boundary provider supplies containment infrastructure; it does not own every department's domain-specific automation.",
+      "why": "The early Orchestration Engine proposal centralized too much and blurred functional ownership.",
+      "disposition": "Retain the correction to the earlier all-Pawns-in-one-department model.",
+      "id": "R129",
+      "source_ids": [
+        "H-SC-LATE"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-sc-late.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Gatehouse enforces passage but does not grant authority",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "GO-0006",
+      "sources": "C-019ff419-L320 GO-0006 D-CLOSE",
+      "decision": "Gatehouse builds and evaluates enforcement boundaries and passage receipts; actual authorization and lifecycle mutation retain their named owners.",
+      "why": "The same metaphor was incorrectly used for policy, authorization, auditing and execution.",
+      "disposition": "Preserve the later separation; do not port the older all-owning Gatehouse snapshot unchanged.",
+      "id": "R130",
+      "source_ids": [
+        "C-019ff419-L320",
+        "GO-0006",
+        "D-CLOSE"
+      ],
+      "adr_ids": [
+        "GO-0006"
+      ],
+      "source_files": [
+        "evidence/c-019ff419-l320.md",
+        "evidence/go-0006.md",
+        "evidence/d-close.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Scheduling, orchestration, validation and audit have separate responsibilities",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-019ff419-L9 C-019ff419-L320",
+      "decision": "Timing infrastructure, dispatch/dependency flow, task authority validation and independent quality judgment are separate concerns; monitoring reports on them rather than becoming their owner.",
+      "why": "The thirteen-Hall redesign repeatedly corrected one component absorbing another's responsibility.",
+      "disposition": "Retain as a responsibility map for a future coordinator; it does not require thirteen deployable services.",
+      "id": "R131",
+      "source_ids": [
+        "C-019ff419-L9",
+        "C-019ff419-L320"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019ff419-l9.md",
+        "evidence/c-019ff419-l320.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Public source, installed module and running service have distinct owners",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-REACTIVATE D-CIC",
+      "decision": "A module has a producer checkout and a shipped/installed product with an exact receipt; updating the producer is not updating the running module.",
+      "why": "Duplicate paths and stale installed copies obscured what the owner was actually using.",
+      "disposition": "Preserve the model while treating old GPT_OS directory names as historical locations.",
+      "id": "R132",
+      "source_ids": [
+        "D-REACTIVATE",
+        "D-CIC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-reactivate.md",
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Operating identity is independent of the model engine",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-FR",
+      "decision": "Durable continuity belongs to the host/factory's stores and identity; the current model is replaceable and an agent/run is disposable.",
+      "why": "The old fixed host-plus-model roster rejected cloud instances and made a model change look like a different being.",
+      "disposition": "Preserve the generic provider-neutral identity lesson; cloud teardown identity remains an open choice.",
+      "id": "R133",
+      "source_ids": [
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "CAS separates owner-facing direction, factory execution and outside-world assistance",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-01a021fc-L203 C-01a021fc-L303 D-CAS",
+      "decision": "Captain, Steward and Attendant describe different scopes of assistance; the owner wanted a personable interface without one context doing all implementation.",
+      "why": "The owner wanted a conversational assistant backed by a factory, not merely an autonomous coding queue.",
+      "disposition": "Retain as extension intent; the CAS naming collision with compare-and-swap and later role naming remain explicit.",
+      "id": "R134",
+      "source_ids": [
+        "C-01a021fc-L203",
+        "C-01a021fc-L303",
+        "D-CAS"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-01a021fc-l203.md",
+        "evidence/c-01a021fc-l303.md",
+        "evidence/d-cas.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "A connected system must still cold-start from its own records",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-01a012d6-L297 D-REACTIVATE",
+      "decision": "A fresh agent must find controls, Wiki, skills, current work and verified capability from the deployed system without inheriting the builder's chat memory.",
+      "why": "A system known only to its author is not operational for a new agent.",
+      "disposition": "Preserve the acceptance requirement across both the base and any future extension.",
+      "id": "R135",
+      "source_ids": [
+        "C-01a012d6-L297",
+        "D-REACTIVATE"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-01a012d6-l297.md",
+        "evidence/d-reactivate.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "Cross-machine sync targets selected structure and knowledge",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-019f3b12-L6 G-6a553b7b",
+      "decision": "Synchronize the intended harness structure and Wiki across hosts while respecting project-specific repositories and private/runtime boundaries.",
+      "why": "The owner wanted reliable PC/Mac continuity, not indiscriminate mirroring of every local project.",
+      "disposition": "Preserve the desired scope; a transport or storage product was not selected by asking about Drive.",
+      "id": "R136",
+      "source_ids": [
+        "C-019f3b12-L6",
+        "G-6a553b7b"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019f3b12-l6.md",
+        "evidence/g-6a553b7b.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Schematic explains intended design; CIC mirrors live state",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-FR C-019fcf89-L386 C-01a021fc-L898",
+      "decision": "Keep the explanatory system model and deterministic non-executing simulation separate from the private operational dashboard.",
+      "why": "A future-design rendering was repeatedly mistaken for proof that the real factory was deployed.",
+      "disposition": "Preserve explicit design/fixture/live labels and source freshness.",
+      "id": "R137",
+      "source_ids": [
+        "H-FR",
+        "C-019fcf89-L386",
+        "C-01a021fc-L898"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-fr.md",
+        "evidence/c-019fcf89-l386.md",
+        "evidence/c-01a021fc-l898.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Show workflow, governance and structure as distinct views",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-019fef23-L9 C-019fc4e9-L1090",
+      "decision": "Use coordinated views to explain the same system from different questions, including a traceable workflow and governance passage, with inspectable elements.",
+      "why": "One overloaded diagram could not convey both the architecture and how a request moves through it.",
+      "disposition": "Preserve the user-facing information architecture; exact historical view count is not a Workbench core requirement.",
+      "id": "R138",
+      "source_ids": [
+        "C-019fef23-L9",
+        "C-019fc4e9-L1090"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019fef23-l9.md",
+        "evidence/c-019fc4e9-l1090.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "The simulator is deterministic and can expose failure paths",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-019fc4e9-L1090",
+      "decision": "Provide run, pause, step, replay and controlled failure injection in the design simulator, without executing real production operations.",
+      "why": "A static happy-path diagram could not demonstrate the intended recovery and gating model.",
+      "disposition": "Retain as Schematic product architecture, not a core runtime guarantee.",
+      "id": "R139",
+      "source_ids": [
+        "C-019fc4e9-L1090"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019fc4e9-l1090.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Draft, explicit send and authorized work are separate states",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-FR",
+      "decision": "Typed or externally dictated input remains a draft until explicit Send creates durable Intent; an Entrance or dashboard action does not itself authorize arbitrary downstream mutation.",
+      "why": "Voice and convenience controls must not silently send, approve or execute an unfinished request.",
+      "disposition": "Preserve the interaction boundary; native transcription was explicitly out of the historical slice.",
+      "id": "R140",
+      "source_ids": [
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Show the selected route and preserve the task's home",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-FR",
+      "decision": "Expose provider/engine and effort selection, including Auto's resolved route. Changing model preserves the task's Factory home unless the owner explicitly redirects it.",
+      "why": "Model selection and task placement were being coupled invisibly.",
+      "disposition": "Retain for any future multi-provider Entrance.",
+      "id": "R141",
+      "source_ids": [
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "A dashboard state change can express intent without completing work",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-ddedabe2-L113 H-FR",
+      "decision": "Moving a card or selecting an operation requests a transition; actual execution and verification determine the resulting status.",
+      "why": "A UI gesture can make a board say Done while the underlying task remains unfinished.",
+      "disposition": "Preserve the intent-versus-observed-state rule for future Workbench interfaces.",
+      "id": "R142",
+      "source_ids": [
+        "C-ddedabe2-L113",
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-ddedabe2-l113.md",
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Liveness, load, reasoning effort and work status are separate signals",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-LIGHT D-CIC H-FR",
+      "decision": "Distinguish alive/asleep/down, active worker load, average/peak reasoning effort and queued/blocked/failed/verified status. Do not infer one from another.",
+      "why": "Brightness, model tier and activity were repeatedly conflated; an asleep but healthy system must not appear down.",
+      "disposition": "Retain the latest separation; the older model-tier L3 and L0.5 scheme is historical, not the current heartbeat contract.",
+      "id": "R143",
+      "source_ids": [
+        "D-LIGHT",
+        "D-CIC",
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-light.md",
+        "evidence/d-cic.md",
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Heartbeat is an authoritative snapshot plus observer acknowledgement",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-CIC",
+      "decision": "Foundry emits sequence, time, cadence, load, workers and effort; CIC acknowledges observer health. The recorded cadence is 60/15/5/1 seconds for L0/L1/L2/L3, with one missed expected beat marking liveness failure.",
+      "why": "The monitor needs an explicit exchange and failure rule rather than inferring health from an animation.",
+      "disposition": "Preserve as the specific extension protocol; do not generalize these timings to every harness.",
+      "id": "R144",
+      "source_ids": [
+        "D-CIC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "No silent activation",
+      "state": "Accepted historical decision; later delivery deferred",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-FR D-CIC",
+      "decision": "Announce activation before or as it happens; an observed unannounced activation is anomalous. Later Lighthouse delivery explicitly excluded Announced Activation implementation.",
+      "why": "The owner wanted to see cost-bearing work begin and detect unexpected activity.",
+      "disposition": "Keep the accepted intent and deferred implementation separate; do not claim the heartbeat slice delivered it.",
+      "id": "R145",
+      "source_ids": [
+        "H-FR",
+        "D-CIC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-fr.md",
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Projection is a shared cached entry surface, with visible staleness",
+      "state": "Accepted historical decision",
+      "coverage": "Partial",
+      "adrs": "WB-0042",
+      "sources": "H-DG",
+      "decision": "Deterministic boundary captures can help both humans and fresh agents orient. Every reader sees source and capture age; a projection can route but cannot authorize work.",
+      "why": "Repeated cold-start discovery was expensive, and uncaptured lanes disappeared from dashboards.",
+      "disposition": "Preserve as an optional projection contract with live verification at consequential boundaries.",
+      "id": "R146",
+      "source_ids": [
+        "H-DG"
+      ],
+      "adr_ids": [
+        "WB-0042"
+      ],
+      "source_files": [
+        "evidence/h-dg.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Flight Rack aggregates counts and preserves individual history",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-LIGHT D-CIC",
+      "decision": "Show active counts at the seven positions and let an individual run retain unreached, current, passed, blocked, failed and repaired history rather than blending all runs into one ambiguous gradient.",
+      "why": "Aggregate activity and a single flight's outcome tell different stories.",
+      "disposition": "Preserve the settled visual data model; older gradient suggestions remain historical alternatives.",
+      "id": "R147",
+      "source_ids": [
+        "D-LIGHT",
+        "D-CIC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-light.md",
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Accessibility is part of operational telemetry",
+      "state": "Accepted historical decision",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "H-FR D-LIGHT",
+      "decision": "Use labels, timestamps and static brightness alongside color and motion so state remains interpretable under reduced motion and in a still image.",
+      "why": "A moving or colored light alone cannot reliably communicate liveness or risk.",
+      "disposition": "Retain for any generated monitoring or explanatory interface.",
+      "id": "R148",
+      "source_ids": [
+        "H-FR",
+        "D-LIGHT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/h-fr.md",
+        "evidence/d-light.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Owner-visible acceptance goes beyond server health",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-CIC",
+      "decision": "Verify exact installed/runtime provenance and then exercise the authenticated desktop/mobile interface. A listening service or successful health response is not proof the owner's workflow works.",
+      "why": "The record showed HTTP success while the owner reported the application unusable.",
+      "disposition": "Capture as an outcome acceptance principle for applications built with the harness.",
+      "id": "R149",
+      "source_ids": [
+        "D-CIC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Python is the owner's stated preferred runtime language",
+      "state": "Strong preference; unresolved migration",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a9b8e27",
+      "decision": "The owner said they wanted Python and had not corrected the JavaScript/Node implementation. The conversation asked whether migration was worthwhile; it did not authorize a rewrite.",
+      "why": "An agent-chosen implementation language had become architecture without the owner's intended preference being resolved.",
+      "disposition": "Record a real language decision with the ownership tradeoff; preserve current behavior until an explicit migration choice exists.",
+      "id": "R150",
+      "source_ids": [
+        "G-6a9b8e27"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a9b8e27.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Native provider adapters and hard hooks need an explicit choice",
+      "state": "Strong direction; mechanism open",
+      "coverage": "Partial",
+      "adrs": "WB-0005",
+      "sources": "G-6a9b6f4f G-6a646af5",
+      "decision": "The owner wants reliable behavior across provider products and liked a middle ground between prose-only rules and rebuilding everything. Particular hook, metadata and adapter schemas were proposals.",
+      "why": "Identical instructions do not imply identical host capabilities or enforcement.",
+      "disposition": "Decide the minimum required provider guarantees from real failures; do not copy an assistant's full architecture as accepted intent.",
+      "id": "R151",
+      "source_ids": [
+        "G-6a9b6f4f",
+        "G-6a646af5"
+      ],
+      "adr_ids": [
+        "WB-0005"
+      ],
+      "source_files": [
+        "evidence/g-6a9b6f4f.md",
+        "evidence/g-6a646af5.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Parallel specialist ensembles were explored, not made universal",
+      "state": "Strong suggestion",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a3cc6be",
+      "decision": "The owner proposed a user-facing executive with constructive, critical and engineering specialists and cheaper reviewers to improve quality and cost.",
+      "why": "Different perspectives may catch weaknesses while protecting expensive context.",
+      "disposition": "Preserve as an experimental evaluation option; later four-stance decisions do not require an agent ensemble for every task.",
+      "id": "R152",
+      "source_ids": [
+        "G-6a3cc6be"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a3cc6be.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Track total delegated token/cost burden",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "C-019f71ab-L169 G-6a3d8dd4",
+      "decision": "Evaluate the cost of the whole worker tree, not just the parent context or a single agent's token count.",
+      "why": "Fan-out hides orchestration overhead and can make apparent context savings expensive.",
+      "disposition": "Define accounting only where measured usage exists; no fixed global agent cap or budget was settled.",
+      "id": "R153",
+      "source_ids": [
+        "C-019f71ab-L169",
+        "G-6a3d8dd4"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019f71ab-l169.md",
+        "evidence/g-6a3d8dd4.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Review stale projects before archiving",
+      "state": "Strong suggestion",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-019f68fd-L65",
+      "decision": "After prolonged inactivity, inspect save state, remotes and worktrees and present readiness for archive to the owner rather than silently archiving.",
+      "why": "The owner wanted portfolio hygiene without losing unfinished work.",
+      "disposition": "Keep as an optional coordinator behavior; the conversational two-week threshold is a preference, not a universal Workbench policy.",
+      "id": "R154",
+      "source_ids": [
+        "C-019f68fd-L65"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-019f68fd-l65.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Governance policy as data with a derived matrix",
+      "state": "Accepted historical direction; details open",
+      "coverage": "Recorded outside upstream",
+      "adrs": "GO-0004 GO-0006",
+      "sources": "GO-0004 GO-0006 D-GP",
+      "decision": "Keep one policy owner and derive explanatory views; extend the existing clearance policy where relevant. The full matrix, missing-entry behavior and global catalog semantics were not all settled.",
+      "why": "Duplicate tables and prose-only enforcement would create contradictory policy sources.",
+      "disposition": "Preserve the accepted architecture and unresolved matrix choices with the extension.",
+      "id": "R155",
+      "source_ids": [
+        "GO-0004",
+        "GO-0006",
+        "D-GP"
+      ],
+      "adr_ids": [
+        "GO-0004",
+        "GO-0006"
+      ],
+      "source_files": [
+        "evidence/go-0004.md",
+        "evidence/go-0006.md",
+        "evidence/d-gp.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Governance verbs name operations; the complete verb catalog remained open",
+      "state": "Accepted in part",
+      "coverage": "Recorded outside upstream",
+      "adrs": "GO-0007",
+      "sources": "GO-0007 D-GP D-V3",
+      "decision": "Operation names should identify what is done and its context, without pretending every verb is an automatic plane transition. Several proposed verbs and CRUD policy details remained open.",
+      "why": "Naming a verb risked silently granting behavior or inventing transition machinery.",
+      "disposition": "Preserve the accepted semantic boundary; do not fill the unfinished catalog with inferred decisions.",
+      "id": "R156",
+      "source_ids": [
+        "GO-0007",
+        "D-GP",
+        "D-V3"
+      ],
+      "adr_ids": [
+        "GO-0007"
+      ],
+      "source_files": [
+        "evidence/go-0007.md",
+        "evidence/d-gp.md",
+        "evidence/d-v3.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Job Orders link their sources and bound authority by intersection",
+      "state": "Accepted historical decision",
+      "coverage": "Recorded outside upstream",
+      "adrs": "GO-0009 GO-0010 GO-0011 GO-0012",
+      "sources": "GO-0009 GO-0011 GO-0012 D-GP",
+      "decision": "An in-force order links authority/evidence owners and lists its operations; its authority is bounded by its actual sources. The global-versus-per-order operation catalog was left open.",
+      "why": "Copied rules drift and a task packet cannot authorize a future mechanism merely by naming it.",
+      "disposition": "Retain for coordination; GO-0021 later removed the requirement that ordinary work have an order at all.",
+      "id": "R157",
+      "source_ids": [
+        "GO-0009",
+        "GO-0011",
+        "GO-0012",
+        "D-GP"
+      ],
+      "adr_ids": [
+        "GO-0009",
+        "GO-0010",
+        "GO-0011",
+        "GO-0012"
+      ],
+      "source_files": [
+        "evidence/go-0009.md",
+        "evidence/go-0011.md",
+        "evidence/go-0012.md",
+        "evidence/d-gp.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Do not import unresolved Flightbook, Issues or sandbox choices",
+      "state": "Open / deferred",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "D-AC H-SC H-FR",
+      "decision": "Flightbook assembly details, GitHub Issues adapters, some sandbox integration choices and automatic repair routing retained open or deferred status in their own records.",
+      "why": "Assistant recommendations and temporary bootstrap proposals were repeatedly mistaken for locked architecture.",
+      "disposition": "Keep the source questions visible as unresolved; the complete question appendices preserve their wording and status.",
+      "id": "R158",
+      "source_ids": [
+        "D-AC",
+        "H-SC",
+        "H-FR"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-ac.md",
+        "evidence/h-sc.md",
+        "evidence/h-fr.md"
+      ]
+    },
+    {
+      "group": "Open choices and reversals",
+      "title": "Retired producer topology and permanent role cages are history",
+      "state": "Superseded",
+      "coverage": "Superseded",
+      "adrs": "WB-0026 WB-0036",
+      "sources": "D-PRODUCER H-FR WB-0026 WB-0036",
+      "decision": "Earlier GPT_OS/Forge-as-sole-producer, fixed host/model seats, mandatory department roles and universal lifecycle requirements were later narrowed or replaced.",
+      "why": "Blindly collecting old decisions as simultaneous current requirements would recreate the contradictions the owner corrected.",
+      "disposition": "Retain dated lineage and reasons, but do not revive them as binding upstream rules.",
+      "id": "R159",
+      "source_ids": [
+        "D-PRODUCER",
+        "H-FR",
+        "WB-0026",
+        "WB-0036"
+      ],
+      "adr_ids": [
+        "WB-0026",
+        "WB-0036"
+      ],
+      "source_files": [
+        "evidence/d-producer.md",
+        "evidence/h-fr.md",
+        "evidence/wb-0026.md",
+        "evidence/wb-0036.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Plane passage is selective, not a universal six-stop workflow",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0001 WB-0025",
+      "sources": "D-GP",
+      "decision": "Work may visit only the governance roles relevant to the operation, branch into related records, or change the role a claim plays. It need not traverse every plane before it can proceed.",
+      "why": "The owner explicitly rejected converting a model for reasoning about work into a mandatory linear workflow.",
+      "disposition": "Preserve GP-15A and its correction of the older all-six-plane round trip.",
+      "id": "R160",
+      "source_ids": [
+        "D-GP"
+      ],
+      "adr_ids": [
+        "WB-0001",
+        "WB-0025"
+      ],
+      "source_files": [
+        "evidence/d-gp.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Resolve contradictions openly before rewriting the owning claim",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0027",
+      "sources": "D-GP D-CANON",
+      "decision": "A correction must adjudicate conflicting accepted statements using the owner's ruling and verified context; relocating or summarizing the text does not settle a disagreement.",
+      "why": "A document move or tidy synthesis can erase the decision that actually needed resolution.",
+      "disposition": "Retain as the rationale for visible ambiguity and source-backed correction.",
+      "id": "R161",
+      "source_ids": [
+        "D-GP",
+        "D-CANON"
+      ],
+      "adr_ids": [
+        "WB-0027"
+      ],
+      "source_files": [
+        "evidence/d-gp.md",
+        "evidence/d-canon.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Promote is a decision-only operation; save is agnostic",
+      "state": "Accepted direction; skill alignment deferred",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-GP",
+      "decision": "The owner selected a separate owner-fired promote entrypoint that promotes only locked decisions, records where they landed and calls save. Save does not know about grilling or end it; the chosen promote exit behavior and related skill changes were deferred.",
+      "why": "Make-it-so, grilling, checkpoint and save were mutually coupled, so saving could unexpectedly end the interview or begin a build.",
+      "disposition": "Recover GP-22/23/62 explicitly and reconcile with later notepad/checkpoint ADRs before changing any skill. Do not claim the deferred exit model is already implemented.",
+      "id": "R162",
+      "source_ids": [
+        "D-GP"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-gp.md"
+      ]
+    },
+    {
+      "group": "Skill composition",
+      "title": "Use repeatable process, not identical generated wording",
+      "state": "Strong preference",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "G-6a646af5 D-CIC",
+      "decision": "Skill and workflow reliability means equivalent inputs follow a predictable process and produce the same result class, while preserving task-specific outputs and identities.",
+      "why": "Demanding identical prose misses the useful form of determinism in agent work.",
+      "disposition": "Capture as a skill-evaluation distinction; deterministic tools still require their own exact contracts.",
+      "id": "R163",
+      "source_ids": [
+        "G-6a646af5",
+        "D-CIC"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a646af5.md",
+        "evidence/d-cic.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Operational knowledge is part of docs maintenance",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0018 WB-0035",
+      "sources": "C-7f7acc51-L110 C-01a021fc-L321",
+      "decision": "When the owner asks to update the docs, relevant durable project understanding belongs in the Wiki as well as the touched controls/specs, without copying task state everywhere.",
+      "why": "Agents treated documentation as control-file edits and left the project's accumulated understanding behind.",
+      "disposition": "Retain the scope-sensitive Wiki obligation; do not require every edit to update every knowledge surface.",
+      "id": "R164",
+      "source_ids": [
+        "C-7f7acc51-L110",
+        "C-01a021fc-L321"
+      ],
+      "adr_ids": [
+        "WB-0018",
+        "WB-0035"
+      ],
+      "source_files": [
+        "evidence/c-7f7acc51-l110.md",
+        "evidence/c-01a021fc-l321.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "An Example Workbench is a conformance reference, not unexplained imitation",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "A-BLUEPRINT",
+      "decision": "Use a pinned example and matching template revision when reviewing adopted rooms; preserve evidence-backed project differences and report unexplained deviations.",
+      "why": "Comparisons without a known reference confused template defects with deliberate project adaptations.",
+      "disposition": "Capture upstream reference provenance and deviation semantics; avoid making the example a second independently authored template.",
+      "id": "R165",
+      "source_ids": [
+        "A-BLUEPRINT"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/a-blueprint.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Declared support needs a real consumer and fresh-clone proof",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0031 WB-0038",
+      "sources": "D-CIC B-BOUNDARIES",
+      "decision": "A feature must be discoverable and usable by a fresh agent from its supported installation; source files and fixture tests alone do not establish installed capability.",
+      "why": "Skills and lifecycle functions repeatedly had no working non-test caller or installed discovery route.",
+      "disposition": "Add explicit consumer proof to the relevant capability acceptance, not an unconditional new ceremony.",
+      "id": "R166",
+      "source_ids": [
+        "D-CIC",
+        "B-BOUNDARIES"
+      ],
+      "adr_ids": [
+        "WB-0031",
+        "WB-0038"
+      ],
+      "source_files": [
+        "evidence/d-cic.md",
+        "evidence/b-boundaries.md"
+      ]
+    },
+    {
+      "group": "Foundry architecture",
+      "title": "A connected Foundry can span multiple factories and one shared service layer",
+      "state": "Accepted historical direction",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "C-01a021fc-L232",
+      "decision": "The owner confirmed one Foundry with multiple host factories and shared CIC, recall and messaging backends, rather than a fixed host/model seat roster.",
+      "why": "Multi-machine continuity and monitoring should not duplicate the whole service identity on every model switch.",
+      "disposition": "Preserve the later connected-system ruling alongside the earlier host-scoped Factory definition.",
+      "id": "R167",
+      "source_ids": [
+        "C-01a021fc-L232"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/c-01a021fc-l232.md"
+      ]
+    },
+    {
+      "group": "Visibility and interfaces",
+      "title": "Owner interfaces should show the next actionable issue and its evidence",
+      "state": "Accepted",
+      "coverage": "Extension decision",
+      "adrs": "",
+      "sources": "G-6a9b96e1 A-BLUEPRINT D-REACTIVATE",
+      "decision": "Show progress, regressions, blockers, freshness and source drill-down so the owner can decide what needs attention without reading a report archive.",
+      "why": "The owner wanted an operational understanding of the system rather than long Markdown summaries as the default UI.",
+      "disposition": "Retain for Audit Workbench and future monitoring; the base remains usable without a website.",
+      "id": "R168",
+      "source_ids": [
+        "G-6a9b96e1",
+        "A-BLUEPRINT",
+        "D-REACTIVATE"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/g-6a9b96e1.md",
+        "evidence/a-blueprint.md",
+        "evidence/d-reactivate.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Unavailable baseline is a third state with evidence",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-041",
+      "decision": "The owner selected record-and-proceed for a harness-only migration whose unrelated baseline is unavailable, using the declared reasons and evidence. A failing baseline remains failing; unavailable cannot relabel red as green.",
+      "why": "Host restrictions or pre-existing product conditions otherwise made rooms permanently unmigratable for problems the harness change could not fix.",
+      "disposition": "Capture this explicit owner choice in an ADR linked to ADR-0020; retain its narrow eligibility and honest completion wording.",
+      "id": "R169",
+      "source_ids": [
+        "S-041"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-041.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Template customization must preserve fixed control wording",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-034 S-036",
+      "decision": "A placeholder fill preserves the surrounding rule. Changed or dropped authority, privacy and verification wording must be exposed and restored or explicitly recorded as a decision.",
+      "why": "A Forbidden-to-Allowed reversal was misreported as an expected placeholder fill.",
+      "disposition": "Record semantic control fidelity and the review boundary; a similarity report does not authorize the divergence.",
+      "id": "R170",
+      "source_ids": [
+        "S-034",
+        "S-036"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-034.md",
+        "evidence/s-036.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Installed skills carry their own generation and content identity",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-031 S-036",
+      "decision": "Identify an installed skill by its source release, commit and content hash; an unmarked copy has unknown provenance, not implicit identity with the current source.",
+      "why": "Feedback blamed a new release for stale installed skill text from an older generation.",
+      "disposition": "Capture the source/installed distinction and keep unknown or stale generation visible.",
+      "id": "R171",
+      "source_ids": [
+        "S-031",
+        "S-036"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-031.md",
+        "evidence/s-036.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Historical adoption provenance is distinct from current component provenance",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-032 S-036",
+      "decision": "Keep the room's original adoption source historical while receipts and markers identify the current installed tools and skills. Reject unknown or contradictory source identity before mutation.",
+      "why": "Rewriting history to the latest release made it impossible to tell what was adopted and what was subsequently updated.",
+      "disposition": "Record the provenance model once across adoption, tools and skills.",
+      "id": "R172",
+      "source_ids": [
+        "S-032",
+        "S-036"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-032.md",
+        "evidence/s-036.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Verify runtime integrity from inside the installed room",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-039",
+      "decision": "An installed room can compare its managed runtime with its receipt using local installed capabilities, distinguishing authentic runtime with stale receipt, modified runtime and unavailable source comparison.",
+      "why": "Verification depended on a neighboring source checkout and different defects were collapsed into one drift message.",
+      "disposition": "Capture the standalone integrity guarantee and truthful remedies.",
+      "id": "R173",
+      "source_ids": [
+        "S-039"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-039.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Presence-only migration must not acquire replacement effects",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-040 S-032",
+      "decision": "A layout-only route may recognize an existing linked skill and skip it, but cannot install, mark, back up or replace it; explicit update alone may replace supported managed content.",
+      "why": "A harmless presence check inherited destructive-update restrictions and blocked legitimate migration.",
+      "disposition": "Record the effect-specific distinction without granting write-through-symlink authority.",
+      "id": "R174",
+      "source_ids": [
+        "S-040",
+        "S-032"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-040.md",
+        "evidence/s-032.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Repair installed state explicitly without reinstalling or rewriting content",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-042",
+      "decision": "Track seeded document generations, provide explicit repair/normalization for owned metadata and preserve bodies; validation itself remains read-only.",
+      "why": "Upstream fixes did not reach existing rooms, and read-only checks risked hiding mutations.",
+      "disposition": "Capture the detection/repair separation and owned-field boundary.",
+      "id": "R175",
+      "source_ids": [
+        "S-042"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-042.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Line endings are portable record syntax, not semantic state",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-037",
+      "decision": "LF, CRLF and CR frontmatter parse equivalently; reading/validation does not rewrite the file, and an editing operation preserves the room's terminator where specified.",
+      "why": "A Windows checkout made valid ADR and Wiki records fail on syntax that macOS fixtures never exercised.",
+      "disposition": "Record the cross-platform preservation contract at the format boundary.",
+      "id": "R176",
+      "source_ids": [
+        "S-037"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-037.md"
+      ]
+    },
+    {
+      "group": "Purpose and authority",
+      "title": "Diagnostics must communicate consequence, not just severity",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0029",
+      "sources": "S-043",
+      "decision": "Make blocking findings visibly distinct from informational findings and retain the registered effects unchanged.",
+      "why": "A valid room looked failed when nonblocking information had the same prominence as a true stop.",
+      "disposition": "Add the operator-facing rationale to diagnostic semantics without changing which work is blocked.",
+      "id": "R177",
+      "source_ids": [
+        "S-043"
+      ],
+      "adr_ids": [
+        "WB-0029"
+      ],
+      "source_files": [
+        "evidence/s-043.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Classify legacy rooms read-only and expose all setup gaps together",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "S-044",
+      "decision": "Identify genesis, adoption, upgrade or unclassifiable from evidence without mutation; report all missing/unfilled controls and the reconcile-before-migrate order.",
+      "why": "First-error-only refusal produced repeated stops and encouraged copying templates over project-owned rules.",
+      "disposition": "Record the operation-selection and non-destructive classification contract.",
+      "id": "R178",
+      "source_ids": [
+        "S-044"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/s-044.md"
+      ]
+    },
+    {
+      "group": "Records and navigation",
+      "title": "Open follow-ups must remain reachable outside completed specs",
+      "state": "Accepted",
+      "coverage": "Partial",
+      "adrs": "WB-0035 WB-0042",
+      "sources": "S-045",
+      "decision": "Unfinished findings need a reachable current owner with truthful blocked/ready state; a completed spec that ordinary entry skips cannot be their only home.",
+      "why": "Several acknowledged problems disappeared from the route arriving agents were instructed to follow.",
+      "disposition": "Capture the ownership/routing invariant; it does not authorize inventing work or dispatching owner-blocked tasks.",
+      "id": "R179",
+      "source_ids": [
+        "S-045"
+      ],
+      "adr_ids": [
+        "WB-0035",
+        "WB-0042"
+      ],
+      "source_files": [
+        "evidence/s-045.md"
+      ]
+    },
+    {
+      "group": "Evidence and improvement",
+      "title": "Tests should pin the intended invariant, not incidental global state",
+      "state": "Accepted",
+      "coverage": "No dedicated upstream ADR",
+      "adrs": "",
+      "sources": "D-CANON-TEST S-036",
+      "decision": "Verify relevant identities, relationships and actual behavior rather than freezing a global allocator counter or making the test repeat the implementation's mistaken assumptions.",
+      "why": "An unrelated identity allocation broke a focused Canon test, and a permission test reinforced the same false model as the implementation.",
+      "disposition": "Preserve the semantic test boundary and red-first reproduction; passing self-tests alone cannot validate their own assumptions.",
+      "id": "R180",
+      "source_ids": [
+        "D-CANON-TEST",
+        "S-036"
+      ],
+      "adr_ids": [],
+      "source_files": [
+        "evidence/d-canon-test.md",
+        "evidence/s-036.md"
+      ]
+    },
+    {
+      "group": "Adoption and delivery",
+      "title": "Finish file-changing work with verified, recoverable, reviewable state",
+      "state": "Accepted historical direction; later scope narrowed",
+      "coverage": "Partial",
+      "adrs": "WB-0034 WB-0037",
+      "sources": "G-6a413ed4 G-6a50191e",
+      "decision": "The owner wanted agents to handle branch safety, verification, relevant documentation, commit, push and review preparation as part of finishing file-changing work, leaving the owner to approve the meaningful result.",
+      "why": "Repeated manual requests to save and prepare review meant the harness was not completing its own workflow.",
+      "disposition": "Preserve the original end-to-end expectation; later no-ceremony and integration-review decisions narrow the early every-message/new-branch formulation.",
+      "id": "R181",
+      "source_ids": [
+        "G-6a413ed4",
+        "G-6a50191e"
+      ],
+      "adr_ids": [
+        "WB-0034",
+        "WB-0037"
+      ],
+      "source_files": [
+        "evidence/g-6a413ed4.md",
+        "evidence/g-6a50191e.md"
+      ]
+    }
+  ]
+}

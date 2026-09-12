@@ -119,6 +119,25 @@ Dogfood boundary:
 - A spec path is stable once declared in `workbench/manifest.json`. Never move
   it between active/done/archive folders.
 
+### Workbench update drift boundary
+
+An update has two separate drift checks. A target-project update checks the
+target project's controls, product truth and local work. Any update to the
+canonical LLM Workbench itself also checks the Workbench's own steering and
+operational artifacts before and after the change. A passing render, doctor,
+test suite or target-project drift report does not substitute for the
+Workbench self-drift check.
+
+The Workbench update is not complete when a current-facing control, spec,
+projection, manifest, procedure or managed artifact still presents completed
+work as pending, carries a resolved blocker, points at a retired route, or
+contains stale version/provenance information that can misroute a cold-start
+agent. Historical and append-only claims remain preserved when their scope and
+time are explicit. The planned self-drift capability and proof are owned by
+[`S-00K`](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md); until it
+exists, record a bounded manual self-check and do not claim a clean Workbench
+update while known current-facing drift remains.
+
 ## Work Selection And Lifecycle
 
 Unless the user names work directly:
@@ -234,17 +253,35 @@ room updates. Main promotion remains owner-only in both repositories.
 Documentation is part of done; the implementing agent is its documentation
 owner. Route each truth once:
 
+This authoring summary assigns documentation maintenance. The
+[Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the
+jobs and provides the question-to-owner routes and artifact boundaries. Keep
+those routes consistent with these assignments when ownership changes.
+
 | Truth | Owner |
 |---|---|
 | how agents work, safety, Git, verification | `AGENTS.md` |
 | cross-cutting product direction and invariants | `BLUEPRINT.md` |
 | shared project terms and accepted definitions | `LEXICON.md` |
-| active assignment/blocker/event/next gate | `TASKBOARD.md` generated projection |
+| active assignment/blocker/event/next gate | assigned `SPEC.md`; `TASKBOARD.md` is its generated projection |
 | requirements, decisions, acceptance, evidence, completion | assigned `SPEC.md` |
 | commands and troubleshooting | `RUNBOOK.md` |
 | public setup and usage | `README.md` |
 | active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
 | durable knowledge and owner-directed design-concept articles | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules; never copied task state) |
+
+The agent changing a truth maintains its existing owner within the authorized
+scope: update definitions when meaning changes, procedures when operations
+change, and Spec state/evidence at meaningful work transitions. A document's
+information ownership is distinct from the person responsible for maintaining
+it and from authority to approve a change. Project-wide approval stays with the
+user under this file's rules; Spec/TASK assignments identify delivery ownership.
+
+Work state is authored in the owning Spec and projected into TASKBOARD. Route
+accepted requirements to the Spec, architectural decisions to the ADR owner,
+and durable explanations to the Wiki. A mixed finding may need linked updates
+to several owners; preserve each claim once rather than copying the whole
+finding into every document.
 
 A citation into a file that changes must say which tree it reads at. Every merge
 into the integration branch moves line numbers, so a bare `path:line` written

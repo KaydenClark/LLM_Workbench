@@ -206,13 +206,18 @@ distinguish the repaired bundle.
 Actual cross-device acceptance and rollout readiness remain explicitly separate.
 This repo is the source, so its own docs are not stamped.
 
+Updating a downstream project requires checking that project's own drift. Any
+update to this canonical Workbench also requires a separate Workbench self-drift
+check over the controls, Specs, projections, procedures, manifest, templates
+and managed artifacts that a cold-start agent would read. A passing render,
+doctor or test suite does not prove that current-facing guidance is fresh.
+
 Every new version must also upgrade and verify the existing
 [Workbench_Template](https://github.com/KaydenClark/Workbench_Template)
 reference repository before release readiness is approved. Its installed update,
 independent integration review and fresh-clone checks are the
 [Template upgrade release gate](RUNBOOK.md#template-upgrade-release-gate).
 Passing source tests or creating a new project does not satisfy this gate.
-
 
 LLM_Workbench produces the canonical harness and scoped update instructions.
 Named project owners authorize installation, recovery and local verification.

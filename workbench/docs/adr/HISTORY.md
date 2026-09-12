@@ -11,6 +11,16 @@
 | [0003](0003-full-crud-with-artifact-conditions.md) | All six planes support full CRUD with conditions | accepted | 2026-09-04 | AGENTS.md |
 | [0005](0005-machine-enforcement-requires-running-consumers.md) | Machine enforcement requires running policy consumers | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [000A](000A-active-adr-decisions-and-destination-blueprints.md) | Active ADR decisions and destination Blueprints | accepted | 2026-09-09 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
+| [000B](000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md) | The Workbench root surface is eight files and Contract membership is separate from root placement | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, BLUEPRINT.md |
+| [000C](000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md) | The Workbench Contract is the obligation claim set carried by three root controls and the assigned spec | proposed | 2026-09-12 | AGENTS.md, LEXICON.md |
+| [000D](000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md) | The ownership map is an exhaustive type-level framework answered by structured query | proposed | 2026-09-12 | LEXICON.md, AGENTS.md |
+| [000E](000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md) | The Frontier is the active landscape and TASKBOARD renders it | proposed | 2026-09-12 | LEXICON.md, BLUEPRINT.md |
+| [000F](000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md) | Work passes two QA gates: spec branch to integration and integration to main | proposed | 2026-09-12 | AGENTS.md, RUNBOOK.md |
+| [000G](000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md) | Blueprint, Spec and Task are three altitudes of one delivery chain | proposed | 2026-09-12 | BLUEPRINT.md, AGENTS.md, LEXICON.md |
+| [000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) | A Task is a standalone artifact and Task replaces Ticket as the execution-slice term | proposed | 2026-09-12 | LEXICON.md, AGENTS.md, RUNBOOK.md |
+| [000I](000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md) | Record lifecycle is expressed by folder location with permanent archive and transient retired | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, RUNBOOK.md |
+| [000J](000J-completion-claims-are-checked-against-repository-state.md) | Completion claims are checked against repository state | proposed | 2026-09-12 | AGENTS.md, RUNBOOK.md |
+| [000K](000K-every-feedback-finding-carries-one-of-four-dispositions.md) | Every feedback finding carries one of five dispositions | proposed | 2026-09-12 | LEXICON.md, RUNBOOK.md |
 | [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
@@ -47,3 +57,4 @@
 | [0052](0052-node-javascript-remains-the-portable-runtime.md) | Node/JavaScript remains the portable runtime | accepted | 2026-09-08 | BLUEPRINT.md, workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md |
 | [0053](0053-minimum-configured-host-capability-and-evidence-boundaries.md) | Minimum configured-host capability and evidence boundaries | accepted | 2026-09-08 | BLUEPRINT.md, workbench/specs/S-053-configured-host-capabilities/SPEC.md |
 | [0054](0054-direct-promotion-into-durable-owners.md) | Direct promotion into durable owners | accepted | 2026-09-08 | BLUEPRINT.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-048-checkpoint-retirement/SPEC.md |
+| [0055](0055-workbench-update-requires-self-drift-check.md) | Workbench updates require a Workbench self-drift check | accepted | 2026-09-10 | AGENTS.md, BLUEPRINT.md, LEXICON.md, RUNBOOK.md, workbench/specs/S-00K-workbench-self-drift-check/SPEC.md |

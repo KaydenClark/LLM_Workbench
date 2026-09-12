@@ -45,3 +45,4 @@
 | [0052](0052-node-javascript-remains-the-portable-runtime.md) | Node/JavaScript remains the portable runtime | accepted | 2026-09-08 | BLUEPRINT.md, workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md |
 | [0053](0053-minimum-configured-host-capability-and-evidence-boundaries.md) | Minimum configured-host capability and evidence boundaries | accepted | 2026-09-08 | BLUEPRINT.md, workbench/specs/S-053-configured-host-capabilities/SPEC.md |
 | [0054](0054-direct-promotion-into-durable-owners.md) | Direct promotion into durable owners | accepted | 2026-09-08 | BLUEPRINT.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-048-checkpoint-retirement/SPEC.md |
+| [0055](0055-workbench-update-requires-self-drift-check.md) | Workbench updates require a Workbench self-drift check | accepted | 2026-09-10 | AGENTS.md, BLUEPRINT.md, LEXICON.md, RUNBOOK.md, workbench/specs/S-00K-workbench-self-drift-check/SPEC.md |

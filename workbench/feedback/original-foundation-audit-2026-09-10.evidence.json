@@ -1,0 +1,223 @@
+{
+  "audit_date": "2026-09-10",
+  "baseline_commit": "c0ac60a179235ef22fa6ea81aec74735087e06e5",
+  "tree": "existing working tree, including pre-existing dirty controls; no remote refresh",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "60cd45b753c370943a3b969708fe6621fc1523bbea4b9dd02e7a29ffdf8f8efe",
+      "tracked": true
+    },
+    {
+      "path": "BLUEPRINT.md",
+      "sha256": "98053ea48a338d687d07e8defb582712005b49c986c079cc9ffc08c972ffdf7e",
+      "tracked": true
+    },
+    {
+      "path": "LEXICON.md",
+      "sha256": "a13576d0f94c7cfe31109a9d115d1539b695964064efd72eda2e581e14b4abc2",
+      "tracked": true
+    },
+    {
+      "path": "RUNBOOK.md",
+      "sha256": "3a6fb9f9951477a28e5a5c5412f967b850b69c3aac255d216189812923100730",
+      "tracked": true
+    },
+    {
+      "path": "TASKBOARD.md",
+      "sha256": "eeb4ad12e31829d5bebce11df106668339072bf850b83bf66eb8d205a11e9c97",
+      "tracked": true
+    },
+    {
+      "path": "Workbench_Original_Operating_Principles_Reference.md",
+      "sha256": "8e3359eef80c1c082b4cb3f09e1ea19263a6b87af618effd13878f2bb7bdf1a9",
+      "tracked": false
+    },
+    {
+      "path": "Workbench_Original_Workflow_Reference.md",
+      "sha256": "941e800e08212a790932f9bb3b0da76924556f60fb51b6443a5c5985f279cdb9",
+      "tracked": false
+    },
+    {
+      "path": "benchmarks/TASKBOARD_PROGRESSIVE_DISCLOSURE_PROPOSAL.md",
+      "sha256": "cc300dbe32af28187125cb74db3853e051ec5b09eb07a9e3736a72063eaf710a",
+      "tracked": true
+    },
+    {
+      "path": "skills/README.md",
+      "sha256": "8593afcf84b71bf187ad4125622f626658e4027893fb952c2f07d1b46ce85747",
+      "tracked": true
+    },
+    {
+      "path": "skills/carry/SKILL.md",
+      "sha256": "3e03be478014950ff7359f494a8ab2fe9ea4589edf75b03fcdc2d3278acd4442",
+      "tracked": true
+    },
+    {
+      "path": "skills/grilling/SKILL.md",
+      "sha256": "1d4de296a26ae9c22aa8ae3a10332dc90d5e0b0b226694c5b370c8bcc72f032a",
+      "tracked": true
+    },
+    {
+      "path": "skills/implement/SKILL.md",
+      "sha256": "b4f2db29a623f4d636d197d13635a489f1763dc0f3fe0471eb49f690f3f36f4e",
+      "tracked": true
+    },
+    {
+      "path": "skills/to-tickets/SKILL.md",
+      "sha256": "a76015ba57019f258397cbe01c7c318d5d96abf0bc9d3783b284f45953c3aed1",
+      "tracked": true
+    },
+    {
+      "path": "skills-pending/loop-me/SKILL.md",
+      "sha256": "2b2c725f8b6e8b8f3f6e6bc2c18f0cf3ab029a270b5ac23132fbebdeb6b443aa",
+      "tracked": true
+    },
+    {
+      "path": "team templates/README.md",
+      "sha256": "e9c31fc16676d1087d52e6d910f7e92a45bc13c27ac8972595cc926bfd5863bd",
+      "tracked": true
+    },
+    {
+      "path": "templates/ADOPTION.md",
+      "sha256": "8998cefcc4d667fae7af08d352f3d03ba943b38b14482ba5a3a00805457dbaa2",
+      "tracked": true
+    },
+    {
+      "path": "templates/BLUEPRINT.md",
+      "sha256": "4a841f80337ee46b285dd1ff9c4929d21aa2c9c36728ad331313f44cc81d4dde",
+      "tracked": true
+    },
+    {
+      "path": "templates/GENESIS.md",
+      "sha256": "a2dad292d4b6861743453afda57c12fdbe17939db635b93585788df8912d1319",
+      "tracked": true
+    },
+    {
+      "path": "tools/test-adr.mjs",
+      "sha256": "aa6e9593992ce529ace1f0e1333cc1c1a8f9918d4c96ef927569cf4813661c24",
+      "tracked": true
+    },
+    {
+      "path": "tools/test-blueprint-contract.mjs",
+      "sha256": "15a67ab38bf5b0ad0d849504c783d26e88d2df2fdce2c45d5d9fc500476e887f",
+      "tracked": true
+    },
+    {
+      "path": "tools/test-core-composition.mjs",
+      "sha256": "1022b6d5f17ccd87e11422e7d0404599ce062db9a8aeea511240707d621d621c",
+      "tracked": true
+    },
+    {
+      "path": "tools/test-notepads.mjs",
+      "sha256": "0448668040bd58932be07e79b9355fe39cc3fd2c79b0a69391f0653c00d701a2",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md",
+      "sha256": "06169836231241a51ccc2f099c5fffa13b3b81e6ac4fd522661858d4d8cece65",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md",
+      "sha256": "ccf7ac3c67cbf749403aa6e97242b6035ca9a39d564d0fb8752be17b7cdd8159",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md",
+      "sha256": "8e2c2348f73d4e7cb4354b0a16ad30239f8b3ddb712a0a25a448a0396654e38f",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0035-reduced-entry-and-assigned-autonomy.md",
+      "sha256": "071536cd863aac0b7e1d5c9410ace61dca04e556d1fcd383903cc4c7a5c39604",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0036-stances-change-method-not-authority.md",
+      "sha256": "fa666056fbf8906180e47824362de7fd1eaa10ed42a59faf0c2cbd57c750d4da",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md",
+      "sha256": "8387c4aec37a8fbefda00e85c68c0c415cfc10b572e4edfaaf502faff01916bf",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0042-traverse-dont-search-is-core-workbench-navigation.md",
+      "sha256": "518e4f43996452a0bd5ea2332178dafd536127fbacdd611a9f2bac33b634749e",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0044-evidence-for-claims-of-improved-agent-outcomes.md",
+      "sha256": "77cc88039314b8d785f88756ee7895f00319598056c3798a63987a526c45e16d",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md",
+      "sha256": "33c260e67f226555cc6fbbcabdae098a509eb63bd677989d9c9b1da77863dfb5",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
+      "sha256": "eee766405675ca5c4b2d15557875b2eae948d05a011bc933a9a1a699d9d710f8",
+      "tracked": true
+    },
+    {
+      "path": "workbench/docs/adr/REGISTER.md",
+      "sha256": "57e1be4bae2ce9ead061967ae5d030301fd0f25825186bde5549793396239e84",
+      "tracked": true
+    },
+    {
+      "path": "workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md",
+      "sha256": "c5b6ef2f31954b36ab278ebac47a2dd3e7c6dccae39fa14cacea4f723bc015aa",
+      "sha256_anchor_commit": "c37e847",
+      "tracked": false,
+      "note": "sha256 is the report as audited and as first committed at c37e847 (git show c37e847:<path> reproduces it). A later commit in the same PR that added this file (2a9e79b) fixed a broken link the file's own relocation caused; the current tree's bytes hash to ea38054d74df15d454f23ff4c385a7e878a81c3cc974ec550319358ed4cd0a70. The digest above is not stale evidence of the audit; it is the audited bytes, preserved."
+    },
+    {
+      "path": "workbench/manifest.json",
+      "sha256": "3878f2d136a4bb2c95b1d8ad682814f9fccd2d3e0f418a18e934ffcf5388680a",
+      "tracked": true
+    },
+    {
+      "path": "workbench/specs/S-001-progressive-disclosure/SPEC.md",
+      "sha256": "d63fe494d859e6d2fa5f940acbc60f1f34a9f16691fbc6660cc12d48bae97f7b",
+      "tracked": true
+    },
+    {
+      "path": "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
+      "sha256": "32d128e4554b79ce3eab0faf26bbd2c51cd8700acc16854fec3cf1866d431b73",
+      "tracked": true
+    },
+    {
+      "path": "workbench/tools/spec-workbench.mjs",
+      "sha256": "ad91569d8f09a663e2a638bb72aede437b6a5febfed8beb2d866af68f40dcf41",
+      "tracked": true
+    },
+    {
+      "path": "workbench/wiki/MEMORY.md",
+      "sha256": "7732fbc4f8e2f1ede07e20e5a5bc1fa147193019e4adccfe784dfabedefb56d2",
+      "tracked": true
+    }
+  ],
+  "verification": {
+    "doctor": "exit 0; five stale-seed and one unverified-provenance attention findings",
+    "next": "exit 0; null",
+    "blueprint_contract": "exit 0",
+    "spec_workbench": "exit 0",
+    "adr": "exit 1; product corpus passed, 13 fixtures refused dirty source initialization",
+    "core_composition": "exit 1; fixture installation refused dirty skills source",
+    "notepads": "exit 1; fixture initialization refused dirty template source",
+    "legacy_note_read": "invalid-note for decision-triage-second-pass-2026-09-07.json; not interpreted as lost content",
+    "note_inventory_unreadable_count": 5,
+    "full_suite": "not run",
+    "independent_semantic_review": "not performed"
+  },
+  "counts": {
+    "AGENTS_words": 2905,
+    "LEXICON_words": 2709,
+    "RUNBOOK_words": 13905
+  },
+  "authority": "Findings and recommendations only. No decisions accepted, no implementation, no external publication."
+}

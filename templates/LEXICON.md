@@ -22,12 +22,15 @@ These are the Context Map's entry routes. Follow the smallest applicable route:
 
 | Need | Route to the owner |
 |---|---|
-| Accepted terminology and product direction | This Lexicon -> [Blueprint](BLUEPRINT.md) |
+| Artifact jobs, information ownership, and where to ask a question | [Artifact Ownership Schema](#artifact-ownership-schema) |
+| Accepted terminology | This Lexicon -> the relevant definition |
+| Product destination | [Blueprint](BLUEPRINT.md) |
 | Assigned work, evidence, and implementation | [Manifest](workbench/manifest.json) -> assigned stable spec -> its referenced source/tests |
 | Complete capability inventory | [Spec catalog](workbench/specs/CATALOG.md) -> stable spec; includes completed history |
 | Durable knowledge and design concepts | [Wiki router](workbench/wiki/MEMORY.md) -> relevant note -> its governing sources |
 | Decision rationale | [ADR register](workbench/docs/adr/REGISTER.md) -> active decision -> its operational owners; [history](workbench/docs/adr/HISTORY.md) remains explicit |
-| Commands and recovery | [Runbook](RUNBOOK.md) -> relevant procedure -> named tool |
+| Operations and procedures | [Runbook](RUNBOOK.md) -> relevant procedure -> named tool |
+| Recovery after interruption or failure | [Runbook](RUNBOOK.md) -> recovery procedure -> existing Spec, source and local working context |
 
 The Wiki retains its single `MEMORY.md` router. This table connects existing
 owners; it does not add a second Wiki index or copy their contents.
@@ -42,6 +45,75 @@ owners; it does not add a second Wiki index or copy their contents.
 - Surface conflicts before changing an established definition.
 - Link to detailed sources instead of copying them here.
 
+## Artifact Ownership Schema
+
+An **artifact** is an identifiable document, structured record, source file or
+output used by the Workbench. A **responsibility** is the job that needs doing.
+An **artifact owner** is the maintained location of a particular kind of truth;
+a **maintainer** is the person or assigned agent responsible for keeping it
+current. Owning information does not grant permission to change it.
+
+The Workbench Contract spans its existing controls and the assigned Spec; it is
+not another document. The following jobs are distinct even when one document
+serves several. This is an ownership map, not a requirement to create one file,
+agent or workflow stage per row. Paths below use the standard layout; the
+manifest resolves an installed project's actual lanes and collections.
+
+### Responsibilities And Lookup
+
+| Job | Definition and owned content | Agent question | Maintained owner / route |
+|---|---|---|---|
+| **Authority** | Establish who may authorize an action and which instructions apply. | Who can authorize this? | Current user request -> [AGENTS](AGENTS.md#authority-order); the assigned Spec delegates only its bounded capability. |
+| **Boundaries** | Limit the authorized action: scope, protected resources, prohibitions, approvals, privacy and external effects. | May I change or expose this? | [AGENTS](AGENTS.md); the current request and assigned Spec may narrow the task. |
+| **Destination** | Describe the desired finished product, its people, purpose, experience, outcomes, qualities and non-goals. | What are we trying to build, and why? | [Blueprint](BLUEPRINT.md). |
+| **Requirements** | Define the behavior, interfaces, constraints and exclusions of one capability. | What must this capability do? | Assigned stable `SPEC.md` -> Desired Behavior, Decisions And Contracts, Non-Goals. Cross-cutting qualities stay in the Blueprint. |
+| **Decisions** | Preserve an accepted choice, its rationale, alternatives, consequences and supersession. | What was decided, and why this choice? | [ADR register](workbench/docs/adr/REGISTER.md) -> active architectural decision; capability-local choices stay in the owning Spec. |
+| **Language** | Define shared terms, aliases and distinctions precisely. | What does this word mean here? | This Lexicon; capability-only terms remain in their Spec until shared. |
+| **Knowledge** | Explain durable concepts and source-backed context that help a reader understand the project. | What do I need to understand about this? | [Wiki MEMORY](workbench/wiki/MEMORY.md) -> relevant note or Design Concept article -> governing sources. |
+| **Navigation** | Connect a question to its smallest relevant information owner. | Where should I look? | This Lexicon's Context Map; Wiki MEMORY routes inside the Wiki; manifest resolves locations. |
+| **Work state** | Record assignment, priority, progress, dependencies, blockers, latest event and next gate. | What is happening, who owns it, and what is next? | Owning `SPEC.md` and its tickets; [Taskboard](TASKBOARD.md) displays their generated current view. |
+| **Acceptance** | Specify the observable conditions and required proof for declaring an outcome complete. | What would count as done? | Assigned Spec -> Acceptance Criteria and Verification Procedure; AGENTS owns project-wide verification and review obligations. |
+| **Evidence** | Record the candidate, method, observer or producer, result, limits and source needed to assess a claim. | What was actually checked, and what does it prove? | Spec evidence log -> named test, review, report or result artifact. Evaluation records own their observations; the Spec links the proof relevant to its acceptance. |
+| **Operations** | Govern how authorized work moves through selection, execution, verification, maintenance and delivery. | What operation applies, and what are its entry and exit conditions? | [AGENTS](AGENTS.md) owns lifecycle obligations; [Runbook](RUNBOOK.md) owns the available operations and their prerequisites and expected results. |
+| **Procedures** | Describe the repeatable steps, inputs, commands, failure handling and checks for a particular operation. | How do I perform this operation here? | [Runbook](RUNBOOK.md) -> named procedure and tool. A linked Wiki guidebook may hold an extended procedure without copying its governing rules. |
+| **Reusable behavior** | Define a method for a recurring kind of work and the posture of a stance. | Which method or stance should I apply? | Runbook -> Behavior Selection -> resolved skill `SKILL.md`; Spec/TASK assigns the normal stance. A skill inherits scope. |
+| **Execution** | Carry out the authorized operation in a concrete environment and produce an observable result. | What runs, where does it run, and what happened? | Named source/tool plus actual host configuration own the mechanism; Runbook explains invocation; Spec records the resulting work state and evidence. A procedure is not a run. |
+| **Configuration** | Declare paths, identity, dependencies, installed components and host settings. | What is configured here? | [Manifest](workbench/manifest.json), relevant component configuration and ownership receipts; Runbook routes setup and inspection. |
+| **Capability** | Establish which operations the configured environment can actually perform and under what limitations. | Can this environment do the requested operation? | Runbook -> named capability check -> actual host/tool and its result. A manifest declaration or installed file alone is insufficient. |
+| **Working context** | Preserve unfinished reasoning, corrections, source references and unresolved questions for one objective. | What would otherwise be lost with this conversation? | Local JSON notepad in the manifest-declared collection; `notepad` skill and runtime maintain it. Settled truth moves to its durable owner. |
+| **Recovery** | Restore a verified, usable state after interruption or failure and establish a safe continuation point. | What survived, and how can I resume or roll back? | Runbook -> recovery procedure -> existing controls, Spec, source, relevant notepad, and any recovery receipt or backup. Recheck live state before acting. |
+| **Handoff** | Transfer the context needed for a specified recipient to continue one objective within inherited scope. | What does this receiving agent need? | Requested local Markdown handoff, authored from accessible owners and relevant notes; it does not replace them or create an assignment. |
+| **Feedback** | Preserve observed failures, friction, impact, uncertainties and proposed corrections. | What went wrong, and what should be investigated? | Manifest feedback lane -> occurrence/report -> source evidence. An authorized repair and its disposition belong in the owning Spec. |
+| **Evaluation** | Define comparisons and assess whether a change improves outcomes, including costs and uncertainty. | Does this harness help agents complete better work? | Runbook -> Evaluation And Benchmarking -> named evaluation definitions and result ledger; the relevant Spec owns acceptance. Structural checks do not establish agent outcomes. |
+| **Provenance and history** | Preserve origins, revisions, producers, corrections and superseded claims without presenting them as current. | Where did this claim or component come from? | The owning artifact's provenance/evidence, Git history, ADR history or component receipt. Retired checkpoints remain history. |
+| **Delivery and release** | Establish the verified candidate, integration containment, published version and installed consumer state separately. | Is this change delivered here, or only prepared? | AGENTS owns approval/review boundaries; Runbook owns closeout procedures; the delivery Spec owns proof linked to actual Git, release and installation records. |
+| **Human orientation** | Explain what the project is, who it is for, and how a person starts using it. | How do I get started? | [README](README.md), linking operational detail to the Runbook. |
+
+### Artifact Boundaries
+
+The table above identifies where a question is answered. These distinctions
+prevent a supporting artifact from silently taking over another job:
+
+| Artifact | Defined job and ownership limit |
+|---|---|
+| **Root controls** | AGENTS governs agents; Blueprint describes destination; Lexicon defines and routes; Runbook gives operations and procedures; README orients people. TASKBOARD projects Spec state; CLAUDE adapts entry for its host. They are discoverable together, but do not carry equal instruction authority. |
+| **SPEC and TASK** | The Spec is the durable capability owner. Its tickets divide delivery into temporary slices. Neither a dashboard nor a local task list replaces their accepted state. |
+| **ADR** | An active accepted decision owns architectural Canon; rationale and rejected or superseded alternatives remain distinguishable. Operational owners are named by `canonicalized_in`. |
+| **Wiki article and guidebook** | An article owns an explanation; a guidebook owns a linked detailed procedure. Both cite governing sources and cannot authorize work or become a second work tracker. Wiki `SCHEMA.md` owns their structure and maintenance rules. |
+| **Manifest, schema, configuration and receipt** | A manifest locates and declares; a schema defines valid record shape; configuration supplies operating values; a receipt records an operation's source and result. Valid shape or recorded installation alone proves neither correct behavior nor current runtime availability. |
+| **Skill and host adapter** | A skill owns reusable behavior. An adapter, including `CLAUDE.md`, makes the shared entry or capability usable in a host. Host settings implement only their actual supported controls; they do not redefine project authority. |
+| **Source, tool and test** | Source implements behavior, a tool performs an operation, and a test exercises a claim at a defined seam. Tests derive expected behavior from accepted requirements. Observed results establish only the behavior and environment exercised. |
+| **Evidence record and feedback report** | Evidence records observations with provenance and limits. A feedback report assembles observations, diagnosis and proposed action while keeping them distinct. Neither accepts its own recommendation. |
+| **Notepad, handoff and recovery backup** | A notepad preserves working context; a handoff communicates continuation; a backup/receipt supports restoration. They have separate formats and lifecycles. None owns durable project truth or the whole continuity promise. |
+| **Projection and index** | Taskboard, Spec catalog and ADR register/history views point to their source records. Correct the source and regenerate a derived view; an index owns navigation, not the indexed claim. |
+| **Template** | A template owns a reusable starting shape. The filled project artifact owns local truth. Template examples and placeholders never become project decisions by being copied. |
+
+Continuity is the result of all these owners remaining coherent and recoverable,
+not a responsibility delegated entirely to the notepad or the recovery folder.
+Likewise, the Contract is the set of applicable claims, not a synonym for the
+Blueprint. Ownership classifies information; authority and Governance Planes
+still apply to individual claims in the current operation.
+
 ## Workbench Terms
 
 | Term | Definition | Distinction |
@@ -49,6 +121,7 @@ owners; it does not add a second Wiki index or copy their contents.
 | **Design concept** | The shared understanding between the parties working on a project about what that project is. | It exists between participants. `BLUEPRINT.md` helps them reconstruct it but is not itself the design concept. |
 | **Traverse, don't search** | The core Workbench navigation principle: reach task-relevant context by following links from known entry points to its owners. | Bounded search repairs missing routes or investigates the selected source area; broad rediscovery is not ordinary entry. `AGENTS.md` owns the behavior. |
 | **Context Map** | The navigable relationships among Workbench concepts, controls, specs, Wiki context, and referenced source/evidence, entered through this Lexicon's Task Routing. | Existing owners hold the information; any rendered map is a source-derived Projection, not another truth store or authority. No graph service or Obsidian dependency is required. |
+| **Workbench self-drift check** | A read-only check of the canonical Workbench's own current-facing artifacts before and after a Workbench update. | It is separate from a target project's drift check; structural render, doctor, or tests alone do not establish semantic freshness. |
 | **Blueprint** | The adaptable narrative of the desired finished product: destination, people, outcomes, experience, integrated design, cross-cutting qualities, lifecycle and non-goals. | It supports the design concept; it is not current status, an ADR inventory, a work queue, a glossary, or a proof archive. |
 | **Lexicon** | The canonical lookup table for definitions shared across the project. | It owns meanings, not requirements, implementation decisions, or work status. |
 | **Spec** | A stable capability record containing scoped intent, requirements, decisions, implementation slices, acceptance, verification, evidence, and completion. | It combines the useful product and engineering roles often split between a PRD and technical spec. |
