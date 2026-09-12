@@ -171,7 +171,9 @@
     {
       "path": "workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md",
       "sha256": "c5b6ef2f31954b36ab278ebac47a2dd3e7c6dccae39fa14cacea4f723bc015aa",
-      "tracked": false
+      "sha256_anchor_commit": "c37e847",
+      "tracked": false,
+      "note": "sha256 is the report as audited and as first committed at c37e847 (git show c37e847:<path> reproduces it). A later commit in the same PR that added this file (2a9e79b) fixed a broken link the file's own relocation caused; the current tree's bytes hash to ea38054d74df15d454f23ff4c385a7e878a81c3cc974ec550319358ed4cd0a70. The digest above is not stale evidence of the audit; it is the audited bytes, preserved."
     },
     {
       "path": "workbench/manifest.json",

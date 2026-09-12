@@ -56,7 +56,9 @@ never had, moving it from pure file parsing to reading Git. The recorded-reason
 escape hatch that keeps the gate from being a wall is also the hole a future
 agent can route around, which is why the reason is preserved in the Receipt
 rather than consumed by the check. None of this migration is performed by this
-decision; it is owned by its scoped spec.
+decision. No Spec owns it yet — a repo-wide search at review found none
+referencing this ADR — so implementation has no delivery owner until one is
+authored and this record's `canonicalized_in` is updated to name it.
 
 Provenance: owner-approved answer RB-Q4, settled 2026-09-12, recorded in the
 live grilling note `workbench-foundation-rework-2026-09-11` — untracked working

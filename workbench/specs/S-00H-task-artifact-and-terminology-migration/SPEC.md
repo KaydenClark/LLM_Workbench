@@ -83,6 +83,9 @@ because folder lifecycle cannot reach a table row.
 | TK-002 | Migrate selection, claim, close and render onto Task records | blocked | TK-001 | Red tests at the `spec-workbench.mjs` seam; green commands; `doctor` clean |
 | TK-003 | Replace Ticket with Task across tool vocabulary and board columns | blocked | TK-002 | Red tests per touched tool; green rename; historical `TK-###` rows byte-identical |
 | TK-004 | Update `to-tickets` and the skills and controls that instruct the old model | blocked | TK-003 | Skill catalog and inspection tests pass; composition test green |
+| TK-005 | Assemble the Packet a Task loads at entry | blocked | TK-001 | Red test for a Packet missing a required member; green assembly of TASK.md, satisfied Spec acceptance lines, cited source/test paths and the Contract; Scoped handoff and local notepad included only when present and never treated as instruction or proof |
+| TK-006 | Write the append-only per-run Receipt | blocked | TK-001 | Red test asserting a resumed Task appends rather than overwrites; green one-row-per-run Receipt recording branch, HEAD SHA, upstream distance, dirty file count, tests run with result, docs touched and remaining gap |
+| TK-007 | Project the Taskboard's derived Receipt signal | blocked | TK-006, TK-003 | Red test for a multi-run and a dirty Task; green per-Task run count plus latest run's branch, short SHA and dirty-file count; full run table proven absent from `TASKBOARD.md` |
 
 ### TK-001 - Introduce `TASK.md` as a record with its own state and blockers
 
@@ -119,6 +122,37 @@ the Task record instead. Rename the skill if the skill-catalog contract allows
 it in the same slice; otherwise record the rename as a follow-up rather than
 leaving two names live.
 
+### TK-005 - Assemble the Packet a Task loads at entry
+
+**Stance:** Builder
+
+ADR-000H's required Packet members are the `TASK.md`, the Spec acceptance
+lines that Task satisfies, the cited source and test paths, and the Workbench
+Contract; nothing else loads at entry. A Scoped handoff and the objective's
+local JSON notepad are optional members, included only when one exists, and
+neither may be read as instruction or as proof. Prove a Task remains
+executable from its required members alone, since a fresh clone or another
+machine will not have the optional, untracked ones.
+
+### TK-006 - Write the append-only per-run Receipt
+
+**Stance:** Builder
+
+One row per run, appended, never overwritten: branch, HEAD SHA, upstream
+distance, dirty file count, tests run with result, docs touched, and
+remaining gap. An interrupted run still leaves its row. A resumed Task is the
+same Task with another appended row, not a new identifier.
+
+### TK-007 - Project the Taskboard's derived Receipt signal
+
+**Stance:** Builder
+
+Per active Task, render the run count and the latest run's branch, short SHA
+and dirty-file count. The full run table is never rendered on the board; it
+stays in the Task. Prove the board shows the symptom (a multi-run or dirty
+Task is distinguishable at a glance) while the story stays in the Task's own
+Receipt rows.
+
 ## Acceptance Criteria
 
 - [ ] A Task exists as its own `TASK.md` record carrying status and blockers.
@@ -128,13 +162,24 @@ leaving two names live.
 - [ ] Newly allocated execution-slice identifiers take the Task form.
 - [ ] Every historical `TK-###` identifier inside a completed Spec is
       byte-identical before and after the migration, proven by test.
+- [ ] A Task assembles its Packet from exactly its required members, includes
+      a Scoped handoff or local notepad only when present, and remains
+      executable from the required members alone.
+- [ ] A Task's Receipt is append-only with one row per run, carrying branch,
+      HEAD SHA, upstream distance, dirty file count, tests run with result,
+      docs touched and remaining gap; a resumed Task appends rather than
+      overwrites.
+- [ ] `TASKBOARD.md` projects each active Task's run count and latest run's
+      branch, short SHA and dirty-file count, and never renders the full run
+      table.
 - [ ] The full verification suite passes and `doctor` is clean.
 
 ## Testing Seams
 
 `workbench/tools/spec-workbench.mjs` selection and lifecycle commands, the
-render path into `TASKBOARD.md`, the visible-identifier allocator, and the skill
-catalog contract.
+Packet-assembly seam, the Receipt append path, the render path into
+`TASKBOARD.md`, the visible-identifier allocator, and the skill catalog
+contract.
 
 ## Verification Procedure
 
@@ -153,6 +198,7 @@ These land at ADR acceptance, which is separate from this Spec.
 | Date | Commit | Claim | Method | Result |
 |---|---|---|---|---|
 | 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only vocabulary scan | `ticket` found in at least ten tool files; five frozen `TK-###` rows confirmed in S-050 |
+| 2026-09-12 | 1aeccfa | Review found TK-001-TK-004 and Acceptance Criteria covered the standalone-record migration but named none of ADR-000H's Packet, Receipt or Taskboard-signal requirements, which would then land with no owner if this Spec were completed as written | Re-read ADR-000H's "What a Task carries in and out" and "What the board shows" sections against this Spec's slices and criteria | Added TK-005 (Packet assembly), TK-006 (append-only per-run Receipt) and TK-007 (Taskboard derived signal), and the matching Acceptance Criteria and Testing Seams; no implementation performed |
 
 ## Completion Result
 

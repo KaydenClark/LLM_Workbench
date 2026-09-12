@@ -73,16 +73,20 @@ The current v3.2 candidate is described by:
 - S-048 owns checkpoint retirement and direct promotion.
 - S-051 owns portable skill installation and discovery.
 
-The original design reconstruction remains in local records such as:
+The original design reconstruction remains in local records such as the
+following. These are `workbench/sessions/grilling/` notepads: gitignored,
+local-only, and not present in this or any other checkout — presented here as
+provenance that existed, not as reachable links:
 
-- [Review index](E:/LLM_Workbench/workbench/sessions/grilling/notepad-review-index.json)
-- [Foundation engineering](E:/LLM_Workbench/workbench/sessions/grilling/notepad-foundation-engineering.json)
-- [Preservation guarantees](E:/LLM_Workbench/workbench/sessions/grilling/notepad-preservation-guarantees.json)
-- [Workflow boundaries](E:/LLM_Workbench/workbench/sessions/grilling/notepad-workflow-boundaries.json)
-- [Rollout and evidence](E:/LLM_Workbench/workbench/sessions/grilling/notepad-rollout-and-evidence.json)
-- [Checkpoint history](E:/LLM_Workbench/workbench/sessions/grilling/notepad-checkpoint-history.json)
+- Review index: `notepad-review-index.json`
+- Foundation engineering: `notepad-foundation-engineering.json`
+- Preservation guarantees: `notepad-preservation-guarantees.json`
+- Workflow boundaries: `notepad-workflow-boundaries.json`
+- Rollout and evidence: `notepad-rollout-and-evidence.json`
+- Checkpoint history: `notepad-checkpoint-history.json`
 
-Those records are evidence and reconstruction sources, not authority.
+Those records are evidence and reconstruction sources, not authority, and are
+explicitly unavailable to any reader of this report.
 
 ## Storage layout
 

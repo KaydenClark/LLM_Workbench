@@ -1,5 +1,14 @@
 # Foundation question review
 
+**Spec ID mapping.** Every "S-00F" below is this report's working name for the
+planned self-drift-check spec, at the snapshot this report was written against.
+That name collided with an unrelated spec (Template Upgrade Release Gate)
+already delivered on `integration`, discovered when this report's batch was
+recovered and committed; the self-drift-check spec was renamed to `S-00K`
+before it entered Git history. Read every "S-00F" recommendation below as
+"S-00K" — the historical wording is preserved as written, not edited row by
+row, since the report's dated findings are otherwise unchanged.
+
 **Date:** 2026-09-11. **Source record:** `workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json` at revision 28, 80 questions, 84 entries. **Endpoint:** rewritten suggested answers for every unsettled question, with at least one option each and two where a real fork exists. This report changes no Canon, restatuses no question, and authorizes no work; the owner picks in the grilling session.
 
 **Evidence base.** The merged grilling note and its 45 decisions and 13 corrections; the eight proposed ADRs 000B to 000I and planned Specs S-00F to S-00J; the four handoffs of 2026-09-10 and 2026-09-11; the original-foundation audit report and the two handwritten-note reconstructions; the live diffs on AGENTS, LEXICON, RUNBOOK, BLUEPRINT and README; the live ADR register; the core skill catalog and skills-pending inventory; tools/test-blueprint-contract.mjs, workbench/tools/visible-ids.mjs, and the notepads runtime usage. Live state was read at detached `c0ac60a` with the pre-existing dirty tree preserved. Nothing here is verified agent-outcome evidence; it is source inspection.
@@ -229,9 +238,9 @@ Depends on: FND-Q08, FND-Q21
 
 **Question.** After three Specs alter one capability, what single route gives a new agent its current contract?
 
-**What changed.** With Specs retired, the only present-tense owners left are the ones decision-039 lists. The Lexicon route for the Spec catalog still says it includes completed history, which cannot survive clearing. Tests already cite the requirement they prove (tools/test-spec-citation-anchors.mjs), so source and tests can stand in for a retired Spec's requirements. FND-Q07's earlier answer said a Wiki summary is possible but not required.
+**What changed.** With Specs retired, the only present-tense owners left are the ones decision-039 lists. The Lexicon route for the Spec catalog still says it includes completed history, which cannot survive clearing. `tools/test-spec-citation-anchors.mjs` verifies only that a Spec's declared `path:line` citations resolve at their anchored commit; it does not associate any requirement with the test that proves it, so it cannot yet stand in for a retired Spec's requirements on its own. FND-Q07's earlier answer said a Wiki summary is possible but not required.
 
-- **A. Four durable owners, routed by OWNERSHIP.json; no capability record** *(recommended)* The current contract of a capability is read from the Blueprint (what it promises), active ADRs (what was decided), source and tests (what holds), and Runbook plus README (how it is used). OWNERSHIP.json routes the question. The Spec catalog stops being a capability inventory and becomes the Frontier list; its includes-completed-history route retires. The precondition is that tests name the requirement they prove, which the citation-anchor test already enforces from S-036 onward.
+- **A. Four durable owners, routed by OWNERSHIP.json; no capability record** *(recommended, precondition unmet)* The current contract of a capability is read from the Blueprint (what it promises), active ADRs (what was decided), source and tests (what holds), and Runbook plus README (how it is used). OWNERSHIP.json routes the question. The Spec catalog stops being a capability inventory and becomes the Frontier list; its includes-completed-history route retires. The precondition is that tests name the requirement they prove — a real requirement-to-test traceability check does not exist yet (the citation-anchor test enforces citation resolvability only, not this). Do not clear a completed capability Spec on the strength of this option until that check exists; verified 2026-09-12.
 - **B. One Wiki capability article per retired Spec** At retirement, the reconciliation step writes one design-concept article naming the capability's current owners. Gives a single landing page at the cost of a second summary that can drift; ADR-0030 already declares the collection.
 
 Depends on: FND-Q07

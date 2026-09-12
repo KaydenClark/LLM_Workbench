@@ -55,8 +55,10 @@ Spec unable to state what became of a finding it is answerable for.
 Consequences: `workbench/feedback/REPORT_FORMAT.md` and
 `templates/feedback/REPORT_FORMAT.md` both change, and the `AGENTS.md` dogfood
 boundary requires the template copy to stay generic and `[BRACKETED]` while the
-root copy stays filled. None of that migration is performed by this decision; it
-is owned by its scoped spec.
+root copy stays filled. None of that migration is performed by this decision.
+No Spec owns it yet — a repo-wide search at review found none referencing this
+ADR — so implementation has no delivery owner until one is authored and this
+record's `canonicalized_in` is updated to name it.
 
 Provenance: owner-approved answer RB-Q5, settled 2026-09-12, with the
 `accepted-open` class added during that exchange. Recorded in the live grilling
