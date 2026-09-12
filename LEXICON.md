@@ -1,6 +1,6 @@
 # LLM Workbench - Lexicon
 
-**Last reviewed:** 2026-09-04
+**Last reviewed:** 2026-09-12
 **Status:** active
 
 This is the canonical lookup table for shared Workbench language. It helps the
@@ -192,8 +192,8 @@ architecture in `BLUEPRINT.md`, and rationale in the ADR collection.
 
 | Term | Definition | Distinction |
 |---|---|---|
-| **v3.0.0** | The completed portable-layout candidate (S-021, S-015) that was never promoted to `main`. | An unreleased internal candidate; v3.1.0 is also preserved and unreleased. S-027 continued that baseline as the v3.1.1 candidate; S-035 stamped v3.1.2, which reached `main`; S-049 opened v3.1.3 and S-046 stamps v3.1.4 as the current candidate. |
-| **Foundry** | The owner's downstream coordination extension that adopts released Workbench versions and adds sockets, modules, scheduling, and monitoring. | Read-only evidence during v3.1; never a source, runtime, or prerequisite for the Workbench ([ADR-0026](workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md)). |
+| **v3.0.0** | The completed portable-layout candidate (S-021, S-015) that was never promoted to `main`. | An unreleased internal candidate; v3.1.0 is also preserved and unreleased. Later stamps, each in its owning spec: S-027 continued that baseline as v3.1.1; S-035 stamped v3.1.2; S-049 opened v3.1.3; S-046 stamped v3.1.4; S-050 stamped v3.2.0, the version `main` carries; S-00E marked v3.2.1, the current `integration` candidate that `workbench/manifest.json` declares. |
+| **Foundry** | The owner's downstream coordination extension that adopts released Workbench versions and adds sockets, modules, scheduling, and monitoring. | Read-only evidence for the Workbench; never its source, copy target, tool runtime, or prerequisite ([ADR-0026](workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md)). |
 
 ## Continuity And Evidence Boundaries
 
