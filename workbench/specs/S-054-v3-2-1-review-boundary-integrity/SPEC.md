@@ -7,7 +7,8 @@
 **Stance:** Builder
 **Updated:** 2026-09-08
 **Catalog description:** Make an integration review bind to the exact resulting candidate and refuse target movement before merge.
-**Blockers:** none
+**Blockers:** explicit v3.2.1 docket activation by the owner; specification is
+complete, implementation is not authorized by this record alone
 **Latest event:** v3.2.1 docket created from the v3.2.0 review-boundary handoff; no implementation started.
 **Next gate:** Owner explicitly activates the v3.2.1 docket after the separate v3.2.0 release work is ready to start it.
 
@@ -162,6 +163,7 @@ row remains append-only historical evidence.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-08 | spec | Added the review-boundary repair to the planned v3.2.1 docket from the v3.2.0 handoff | Read ADR-0037, S-050 TK-004 evidence, the live closeout recipe, its disposable test, and review/delivery skills at `340e80a`; `doctor` has no blocking finding | This new stable owner records scope, proof and non-goals; no implementation or release state changed | Explicit v3.2.1 activation, red/green repair, full verification, exact-candidate independent review and any separately authorized integration remain pending; no coordination hand-backs occurred |
+| 2026-09-12 | f2d2e87 | Review found the header `Blockers: none` contradicted both Next gate and TK-001's own `deferred`/`explicit v3.2.1 activation` blocker | Re-read this Spec's own Next gate and TK-001 fields against the header | Corrected `Blockers` to name the activation gate, matching S-00K's pattern; no implementation performed |
 
 ## Completion Result
 

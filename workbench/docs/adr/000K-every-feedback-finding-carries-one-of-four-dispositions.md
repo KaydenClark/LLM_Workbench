@@ -6,13 +6,16 @@ canonicalized_in:
   - RUNBOOK.md
 ---
 
-# Every feedback finding carries one of four dispositions
+# Every feedback finding carries one of five dispositions
 
 A feedback finding resolves to exactly one disposition, recorded in the owning
 Spec. The vocabulary is closed:
 
 - **diagnostic** — a registered `doctor` code, with mandatory remediation text.
 - **test** — a check added at a stable seam.
+- **repaired** — a code, configuration, or documentation change implemented
+  the fix directly, named by its commit; it neither became a registered
+  diagnostic nor needed a stable-seam test to guard recurrence.
 - **declined** — with a reason.
 - **accepted-open** — real and accepted, not yet scheduled, naming the owning
   Spec that holds it.
@@ -23,12 +26,18 @@ registered diagnostic lacks remediation text; that test does not exist yet
 specific codes, not the full registry) and is part of this decision's
 implementation, not already in place.
 
-The fourth class exists because the first three cannot describe the most common
+`accepted-open` exists because the first three cannot describe the most common
 real state. Most findings currently in `workbench/feedback/` are accepted and
 unscheduled; forcing those into `declined` would make the record assert
 something false, and leaving them undispositioned would recreate exactly the gap
-this rule closes. A vocabulary that cannot name the ordinary case gets bypassed
-in the ordinary case.
+this rule closes. `repaired` exists for the same reason at the opposite end:
+a finding fixed directly by a code, configuration, or documentation change has
+no true home in the other four — it is not `declined`, it is not merely
+`accepted-open`, and it did not need a registered `doctor` code or a
+stable-seam test to count as fixed. Without it, an implemented repair would
+have to misclassify itself as one of those or stay undispositioned, which is
+the exact gap this rule closes. A vocabulary that cannot name the ordinary
+case gets bypassed in the ordinary case.
 
 Placement is not new. `LEXICON.md`'s Feedback row already states that "an
 authorized repair and its disposition belong in the owning Spec". What is new is

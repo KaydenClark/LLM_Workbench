@@ -20,7 +20,7 @@
 | [000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) | A Task is a standalone artifact and Task replaces Ticket as the execution-slice term | proposed | 2026-09-12 | LEXICON.md, AGENTS.md, RUNBOOK.md |
 | [000I](000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md) | Record lifecycle is expressed by folder location with permanent archive and transient retired | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, RUNBOOK.md |
 | [000J](000J-completion-claims-are-checked-against-repository-state.md) | Completion claims are checked against repository state | proposed | 2026-09-12 | AGENTS.md, RUNBOOK.md |
-| [000K](000K-every-feedback-finding-carries-one-of-four-dispositions.md) | Every feedback finding carries one of four dispositions | proposed | 2026-09-12 | LEXICON.md, RUNBOOK.md |
+| [000K](000K-every-feedback-finding-carries-one-of-four-dispositions.md) | Every feedback finding carries one of five dispositions | proposed | 2026-09-12 | LEXICON.md, RUNBOOK.md |
 | [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |

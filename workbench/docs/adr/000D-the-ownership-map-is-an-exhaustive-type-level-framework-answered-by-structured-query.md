@@ -36,7 +36,10 @@ and it would need updating on every record transition.
 
 Consequences: `LEXICON.md` keeps shared language and the Context Map, and routes
 ownership questions to `OWNERSHIP.json` rather than answering them; the Artifact
-Ownership Schema currently at `LEXICON.md` leaves that file at acceptance. The
+Ownership Schema currently at `LEXICON.md` leaves that file once the map is
+populated and queryable, not at acceptance alone — acceptance authorizes the
+migration, but its scoped Spec gates the container (TK-001-TK-003) ahead of
+the schema's removal, so the existing route stays usable throughout. The
 map's own placement is decided by
 [ADR-000B](000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md);
 its query surface, entry lifecycle and portability boundary are not decided

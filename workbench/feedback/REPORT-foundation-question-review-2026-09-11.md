@@ -227,9 +227,9 @@ Retiring Specs, the current-contract route, legacy notes, old ADRs.
 
 **Question.** Was disposability intended for the working synthesis only, or for the feature specification itself?
 
-**What changed.** Direction is settled (decision-039, ADR-000I): Specs and Tasks are temporary, move to `retired`, and are cleared after main verification behind a five-part gate. New evidence sharpens the gate: exactly 16 accepted ADRs name a Spec path in `canonicalized_in`, and adr.mjs requires an accepted record to name an owner. Clearing those Specs would leave 16 accepted ADRs with a missing operational owner. S-00I builds the staging area and never clears it.
+**What changed.** Direction is settled (decision-039, ADR-000I): Specs and Tasks are temporary, move to `retired`, and are cleared after main verification behind a five-part gate. New evidence sharpens the gate: exactly 15 accepted ADRs name a Spec path in `canonicalized_in`, and adr.mjs requires an accepted record to name an owner. Clearing those Specs would leave 15 accepted ADRs with a missing operational owner. S-00I builds the staging area and never clears it.
 
-- **A. Keep HELD; release through one clearing Spec with a sixth precondition** *(recommended)* The hold stays. Release comes through a dedicated retired-clearing Spec, sequenced after S-00H, S-00I and the map contents (FND-Q21). Add the sixth precondition the 16-ADR scan exposes: every accepted ADR whose `canonicalized_in` names a Spec is re-anchored to a durable owner, or carries the requirement itself, before that Spec is cleared. Historical provenance keeps commit plus historical path, as decision-039 already requires.
+- **A. Keep HELD; release through one clearing Spec with a sixth precondition** *(recommended)* The hold stays. Release comes through a dedicated retired-clearing Spec, sequenced after S-00H, S-00I and the map contents (FND-Q21). Add the sixth precondition the 15-ADR scan exposes: every accepted ADR whose `canonicalized_in` names a Spec is re-anchored to a durable owner, or carries the requirement itself, before that Spec is cleared. Historical provenance keeps commit plus historical path, as decision-039 already requires.
 - **B. Release early for a narrow class** Clear only Specs that no accepted ADR names and whose ADRs already name root-control owners. The scan has not been run; today it may be an empty set, so the value is small.
 
 Depends on: FND-Q08, FND-Q21
@@ -476,7 +476,7 @@ Each was settled by a locked or approved answer or an accepted ADR, and none of 
 1. FND-Q03 first: it decides TT-Q3, TT-Q4, TT-Q7 and FND-Q17e in one stroke.
 2. FND-Q20, then FND-Q21, FND-Q23, FND-Q24: they unblock S-00G TK-004 and are the only content the map is waiting on.
 3. WF-8 and WF-9: they unblock S-00J's failure path.
-4. FND-Q07 and FND-Q08 together, with the 16-ADR precondition on the table.
+4. FND-Q07 and FND-Q08 together, with the 15-ADR precondition on the table.
 5. FND-Q12 with WF-3: one decision about the core bundle.
 6. FND-Q04, Q05, Q06: the Blueprint set, all edited at ADR-000E and 000G acceptance anyway.
 7. FND-Q15 and Q16 last, now that their deferral condition is met.

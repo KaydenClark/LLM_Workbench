@@ -156,9 +156,12 @@ named in `AGENTS.md`, then
 
 ## Documentation Impact
 
-`AGENTS.md` describes both gates and corrects the reviewed unit; `RUNBOOK.md`
-gains the gate's command and failure output. These land at ADR acceptance,
-which is separate from this Spec.
+`AGENTS.md` describes both gates and corrects the reviewed unit at ADR
+acceptance, which is separate from this Spec — that description is conceptual
+and does not name a command. `RUNBOOK.md`'s gate command and failure output
+wait for TK-002, since documenting a required command before TK-001/TK-002
+implement and bind it would send an agent through Branch Completion looking
+for a command that does not yet exist.
 
 ## Append-Only Evidence And Execution Log
 
@@ -166,6 +169,7 @@ which is separate from this Spec.
 |---|---|---|---|---|
 | 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only review of AGENTS, ADR-0037 and the manifest | Independent review exists at integration; no Spec-completeness check exists at the merge boundary |
 | 2026-09-12 | b4edb20 | Review found the Spec's "merge request... triggers" framing was not achievable by its own listed seams: no `.github/` directory exists in this repository, `integration` carries no branch protection (`gh api .../branches/integration/protection` returns 404), and `.github/` is outside this Spec's Edit Scope | Checked for `.github/` on disk and queried branch protection via the GitHub API | Reframed Outcome, Why It Matters, Desired Behavior, TK-002, and Acceptance Criteria around a local/harness-workflow gate rather than a GitHub-enforced one; added an explicit GitHub-level-enforcement Non-Goal; no implementation performed |
+| 2026-09-12 | f2d2e87 | Review found Documentation Impact landed the RUNBOOK.md gate command "at ADR acceptance", before TK-001/TK-002 implement and bind it | Re-read this Spec's own ticket sequencing against its Documentation Impact claim | Split Documentation Impact: AGENTS.md's conceptual description still lands at acceptance, but RUNBOOK.md's command documentation waits for TK-002; no implementation performed |
 
 ## Completion Result
 

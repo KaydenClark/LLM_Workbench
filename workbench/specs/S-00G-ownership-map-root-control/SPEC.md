@@ -179,9 +179,13 @@ named in `AGENTS.md`, then
 
 ## Documentation Impact
 
-`LEXICON.md` loses the schema and gains a route. `AGENTS.md` and `BLUEPRINT.md`
-carry the ADR-000B and ADR-000C claims at ADR acceptance, which is a separate
-step from this Spec. `RUNBOOK.md` gains the query procedure.
+`AGENTS.md` and `BLUEPRINT.md` carry the ADR-000B and ADR-000C claims at ADR
+acceptance, which is a separate step from this Spec. `LEXICON.md` loses the
+schema and gains a route only once TK-004 populates and makes the map
+queryable, per ADR-000D — not at acceptance alone, since TK-001-TK-003 leave
+the map an empty, unqueryable container and a question routed there before
+TK-004 would have nowhere to land. `RUNBOOK.md` gains the query procedure at
+the same point.
 
 ## Append-Only Evidence And Execution Log
 
@@ -189,6 +193,7 @@ step from this Spec. `RUNBOOK.md` gains the query procedure.
 |---|---|---|---|---|
 | 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only consumer scan and ADR authoring | Six enumerating consumers confirmed; no root JSON control exists |
 | 2026-09-12 | b4edb20 | Review found the six-consumer inventory was incomplete | Repo-wide grep for literal root-control-name arrays and "seven" root-surface mentions | Four more code consumers and two more template consumers found and named; TK-002/TK-003 changed from a fixed list to a sweep-and-fix pattern since the true count is not established as complete even now |
+| 2026-09-12 | f2d2e87 | Review found ADR-000D and this Spec's Documentation Impact removed LEXICON.md's Artifact Ownership Schema "at acceptance", before TK-004 populates the map — leaving no route for an ownership question during TK-001-TK-003 | Re-read ADR-000D's Consequences against this Spec's own ticket sequencing | Corrected ADR-000D and Documentation Impact to defer schema removal until TK-004 lands; no implementation performed |
 
 ## Completion Result
 

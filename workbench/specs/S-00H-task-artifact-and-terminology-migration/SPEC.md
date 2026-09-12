@@ -7,9 +7,10 @@
 **Stance:** Builder
 **Updated:** 2026-09-12
 **Catalog description:** Make a Task a standalone `TASK.md` artifact and replace Ticket with Task across prose, tools and newly allocated identifiers.
-**Blockers:** ADR-000H is `proposed`.
+**Blockers:** ADR-000H is `proposed`; TT-Q10 (identifier form) is open and additionally blocks TK-003 onward.
 **Latest event:** Spec authored from approved answers TT-Q2 and WF-5; no implementation started and no ADR accepted.
-**Next gate:** Owner accepts ADR-000H before any slice is claimed.
+**Next gate:** Owner accepts ADR-000H before TK-001, TK-002, TK-005-TK-008 are
+claimable; TK-003 and TK-004 additionally need TT-Q10 answered.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -81,8 +82,8 @@ because folder lifecycle cannot reach a table row.
 |---|---|---|---|---|
 | TK-001 | Introduce `TASK.md` as a record with its own state and blockers | blocked | ADR-000H proposed | Red test for reading/claiming a standalone Task; green minimal record; full suite |
 | TK-002 | Migrate selection, claim, close and render onto Task records | blocked | TK-001 | Red tests at the `spec-workbench.mjs` seam; green commands; `doctor` clean |
-| TK-003 | Replace Ticket with Task across tool vocabulary and board columns | blocked | TK-002 | Red tests per touched tool; green rename; historical `TK-###` rows byte-identical |
-| TK-004 | Update `to-tickets` and the skills and controls that instruct the old model | blocked | TK-003 | Skill catalog and inspection tests pass; composition test green |
+| TK-003 | Replace Ticket with Task across tool vocabulary and board columns | blocked | TK-002, TT-Q10 | Red tests per touched tool; green rename using the owner's chosen identifier form; historical `TK-###` rows byte-identical |
+| TK-004 | Update `to-tickets`, the skills/controls that instruct the old model, and every generic template mirror | blocked | TK-003 | Skill catalog and inspection tests pass; composition test green; red repository-wide sweep for live `ticket`/`Ticket` prose (verified at review: `templates/LEXICON.md`, `templates/GENESIS.md`, `templates/RUNBOOK.md`, `templates/README.md`, `templates/AGENTS.md`, `templates/SPEC.md`, at minimum) finds nothing after the change |
 | TK-005 | Assemble the Packet a Task loads at entry | blocked | TK-001 | Red test for a Packet missing a required member; green assembly of TASK.md, satisfied Spec acceptance lines, cited source/test paths and the Contract; Scoped handoff and local notepad included only when present and never treated as instruction or proof |
 | TK-006 | Write the append-only per-run Receipt | blocked | TK-001 | Red test for a simulated abrupt interruption (not only a clean close) and for a resumed Task appending rather than overwriting; green one-row-per-run Receipt, appended proactively per ADR-000H, recording branch, HEAD SHA, upstream distance, dirty file count, tests run with result, docs touched and remaining gap |
 | TK-007 | Project the Taskboard's derived Receipt signal | blocked | TK-006, TK-003 | Red test for a multi-run and a dirty Task; green per-Task run count plus latest run's branch, short SHA and dirty-file count; full run table proven absent from `TASKBOARD.md` |
@@ -109,12 +110,15 @@ completed Spec's historical table survives the migration unchanged.
 
 **Stance:** Builder
 
-Roughly ten tool files plus tests. Each gets a red test before the change. The
-acceptance test that matters: newly allocated identifiers take the Task form
-while every historical `TK-###` string in a completed Spec is byte-identical
-before and after.
+Do not start until TT-Q10 settles the identifier form (`T-###` or
+`TASK-###`); ADR-000H accepts the Task rename but leaves that choice open, so
+this ticket has no defined target format without it. Roughly ten tool files
+plus tests. Each gets a red test before the change. The acceptance test that
+matters: newly allocated identifiers take the owner's chosen Task form while
+every historical `TK-###` string in a completed Spec is byte-identical before
+and after.
 
-### TK-004 - Update `to-tickets` and the skills and controls that instruct the old model
+### TK-004 - Update `to-tickets`, the skills/controls that instruct the old model, and every generic template mirror
 
 **Stance:** Builder
 
@@ -122,6 +126,15 @@ before and after.
 the Task record instead. Rename the skill if the skill-catalog contract allows
 it in the same slice; otherwise record the rename as a follow-up rather than
 leaving two names live.
+
+Per the dogfood boundary, a harness design change updates both the filled root
+and the generic `templates/` mirror — this rename is no exception. A newly
+bootstrapped room must not be instructed into the retired model. Do not trust
+the six template files found at review as complete; the red test is a
+repository-wide sweep for live `ticket`/`Ticket` prose (excluding historical
+`TK-###` mentions and this Spec's own append-only evidence), and the green
+proof is that sweep finding nothing left. A fresh-room generation/adoption
+regression proves a newly generated project speaks Task, not Ticket.
 
 ### TK-005 - Assemble the Packet a Task loads at entry
 
@@ -174,8 +187,9 @@ this ticket has no dependency on the others and can land independently.
 
 - [ ] A Task exists as its own `TASK.md` record carrying status and blockers.
 - [ ] `next`, `claim`, `close` and `render` operate on Task records.
-- [ ] No live tool, skill, control or board column uses `Ticket` for the
-      execution slice.
+- [ ] No live tool, skill, control, board column, or generic `templates/`
+      mirror uses `Ticket` for the execution slice, proven by a
+      repository-wide sweep that failed before the change.
 - [ ] Newly allocated execution-slice identifiers take the Task form.
 - [ ] Every historical `TK-###` identifier inside a completed Spec is
       byte-identical before and after the migration, proven by test.
@@ -198,7 +212,9 @@ this ticket has no dependency on the others and can land independently.
 `workbench/tools/spec-workbench.mjs` selection and lifecycle commands, the
 Packet-assembly seam, the Receipt append path, the render path into
 `TASKBOARD.md`, the visible-identifier allocator, the skill catalog contract,
-and the `workbench/manifest.json` context-unit field.
+the `workbench/manifest.json` context-unit field, a repository-wide
+`ticket`/`Ticket` prose sweep across root and `templates/`, and a fresh-room
+generation/adoption regression.
 
 ## Verification Procedure
 
@@ -226,6 +242,8 @@ an agent through commands that do not yet exist.
 | 2026-09-12 | 2a9e79b | Review found the added TK-005-TK-007 still did not cover ADR-000H's manifest context-unit requirement (lines 101-109) | Re-read ADR-000H's "One Task, one context" section against this Spec's slices and criteria | Added TK-008 (manifest context-unit field) and the matching Acceptance Criteria and Testing Seams; no implementation performed |
 | 2026-09-12 | b4edb20 | Review found TK-006 could not guarantee a Receipt row for an interrupted run: writing only at close loses it, and ADR-000H's own rejection of "written once at close" implied an unwritten alternative mechanism | Re-read ADR-000H's Receipt definition and AGENTS.md's notepad before-interruption discipline | Added the proactive-append mechanism (same discipline as notepads, same crash caveat) to ADR-000H itself and to TK-006's description and red-test requirement; no implementation performed |
 | 2026-09-12 | b4edb20 | Review found Documentation Impact switched AGENTS.md/RUNBOOK.md operational prose to the Task model "at ADR acceptance", before TK-002 makes selection/claim/close/render able to operate on Task records | Re-read this Spec's own ticket sequencing against its Documentation Impact claim | Corrected Documentation Impact to keep operational prose describing the embedded-table model until TK-002 lands; `LEXICON.md`'s vocabulary definition remains landable at ADR acceptance; no implementation performed |
+| 2026-09-12 | f2d2e87 | Review found TK-003 required "the Task form" for new identifiers with no defined form: TT-Q10 (T-### vs TASK-###) is open and this Spec was blocked only on ADR-000H | Cross-checked TK-003's requirement against the foundation-question-review report's TT-Q10 entry | Added TT-Q10 as an explicit blocker on TK-003 (and TK-004, which depends on it) in the header, the ticket table and TK-003's own description; TK-001/TK-002/TK-005-TK-008 remain gated on ADR-000H alone; no implementation performed |
+| 2026-09-12 | f2d2e87 | Review found TK-004 covered `to-tickets` and live skills/controls but not the generic `templates/` mirror, so a newly bootstrapped room could still be instructed into the retired embedded-Ticket model after this Spec completed | Repo-wide grep for `ticket`/`Ticket` under `templates/` | Found six template files (LEXICON.md, GENESIS.md, RUNBOOK.md, README.md, AGENTS.md, SPEC.md); expanded TK-004 to a repository-wide sweep covering root and templates together, per the dogfood boundary, plus a fresh-room generation regression; no implementation performed |
 
 ## Completion Result
 

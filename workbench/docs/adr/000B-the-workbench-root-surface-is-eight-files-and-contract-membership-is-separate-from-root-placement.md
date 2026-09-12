@@ -35,13 +35,21 @@ count, and a successor that depends on reading a count as something other than
 a count is not durable.
 
 Consequences: supersedes [ADR-0013](0013-seven-file-workbench-contract.md) on
-acceptance. Six live consumers enumerate the root surface literally and none
-knows an eighth file — `workbench/tools/workbench-layout.mjs`,
+acceptance. More than six live consumers enumerate the root surface literally
+and none knows an eighth file — verified at review 2026-09-12 beyond the
+original six (`workbench/tools/workbench-layout.mjs`,
 `tools/control-fidelity.mjs`, `tools/test-workbench-layout.mjs`,
-`tools/test-control-fidelity.mjs`, `RUNBOOK.md` and `templates/ADOPTION.md`.
-`templates/` ships no root JSON control today, so a template `OWNERSHIP.json` is
-new shipped content rather than an edit to existing content. None of that
-migration is performed by this decision; it is owned by its scoped spec.
+`tools/test-control-fidelity.mjs`, `RUNBOOK.md`, `templates/ADOPTION.md`):
+four more code consumers with their own hardcoded seven-item lists
+(`tools/test-workbench-upgrade.mjs`, `tools/test-genesis-from-decisions.mjs`,
+`tools/test-workbench-adoption.mjs`, `tools/test-portability-matrix.mjs`) and
+two more template consumers stating the count in prose (`templates/GENESIS.md`,
+`templates/README.md`). This is not a claim of completeness; the migration's
+scoped spec finds the rest by a repository-wide sweep rather than a fixed
+list. `templates/` ships no root JSON control today, so a template
+`OWNERSHIP.json` is new shipped content rather than an edit to existing
+content. None of that migration is performed by this decision; it is owned by
+its scoped spec.
 
 Provenance: owner-approved foundation answers FND-Q22 and FND-Q23A, 2026-09-11,
 recorded as approved answers in the live grilling note
