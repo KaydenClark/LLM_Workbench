@@ -8,10 +8,10 @@
 **Updated:** 2026-09-12
 **Catalog description:** Repair the root Lexicon's stale current-facing claims so a cold-start agent reads the actual release lineage, boundary and review date.
 **Blockers:** none
-**Latest event:** TK-001 claimed by claude.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
-> **Citation anchors.** pre=`1695b70c4e1b13ba84e13a58e3b39981962bcf0e` post=`1695b70c4e1b13ba84e13a58e3b39981962bcf0e`.
+> **Citation anchors.** pre=`1695b70c4e1b13ba84e13a58e3b39981962bcf0e` post=`3d024c32302ad52520d0fb9a42c8e5b3024e6325`.
 
 ## Outcome
 
@@ -96,7 +96,7 @@ Tickets are temporary tracer bullets within this stable capability record.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Refresh the three stale Lexicon claims and record the bounded manual self-check | in-progress | none | pending |
+| TK-001 | Refresh the three stale Lexicon claims and record the bounded manual self-check | done | none | Scripted read-back at the worktree on 3d024c32302ad52520d0fb9a42c8e5b3024e6325: current-candidate claim v3.2.1 equals manifest workbenchVersion; main claim v3.2.0 equals origin/main manifest; b1c7160 (v3.1.3), fab7840 (v3.1.4), ee09c36 (v3.2.0) contained in origin/main; 22f8705 (v3.2.1) contained in origin/integration; Foundry row carries no version window; stamp 2026-09-12; 25 Markdown link targets (35 links) resolve; manifest counts 17 workflow + 4 stance skills, 6 lanes, 10 collections match the Lexicon. node tools/test-governance-core.mjs, test-control-fidelity.mjs, test-spec-citation-anchors.mjs, test-spec-workbench.mjs exit 0; render and doctor green: doctor reports only attention findings that block none, namely the five stale-seed and one unverified-provenance findings that predate this branch on origin/integration plus 42 incompatible-core findings about this host's installed skill copies (core v3.2.0 against room v3.2.1), which are host state outside the candidate; git diff --check clean. A first candidate (d1407bb, PR #90) failed separate-context review because integration moved under it and its spec anchored claims to the wrong tree; this branch rebuilds it on 1695b70c4e1b13ba84e13a58e3b39981962bcf0e |
 
 ### TK-001 - Refresh the three stale Lexicon claims and record the bounded manual self-check
 
@@ -159,6 +159,7 @@ claimed inside this spec in advance.
 
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-09-12 | TK-001 | Ticket closed | Scripted read-back at the worktree on 3d024c32302ad52520d0fb9a42c8e5b3024e6325: current-candidate claim v3.2.1 equals manifest workbenchVersion; main claim v3.2.0 equals origin/main manifest; b1c7160 (v3.1.3), fab7840 (v3.1.4), ee09c36 (v3.2.0) contained in origin/main; 22f8705 (v3.2.1) contained in origin/integration; Foundry row carries no version window; stamp 2026-09-12; 25 Markdown link targets (35 links) resolve; manifest counts 17 workflow + 4 stance skills, 6 lanes, 10 collections match the Lexicon. node tools/test-governance-core.mjs, test-control-fidelity.mjs, test-spec-citation-anchors.mjs, test-spec-workbench.mjs exit 0; render and doctor green: doctor reports only attention findings that block none, namely the five stale-seed and one unverified-provenance findings that predate this branch on origin/integration plus 42 incompatible-core findings about this host's installed skill copies (core v3.2.0 against room v3.2.1), which are host state outside the candidate; git diff --check clean. A first candidate (d1407bb, PR #90) failed separate-context review because integration moved under it and its spec anchored claims to the wrong tree; this branch rebuilds it on 1695b70c4e1b13ba84e13a58e3b39981962bcf0e | LEXICON.md review stamp, v3.0.0 distinction and Foundry distinction updated; CATALOG.md and TASKBOARD.md regenerated; templates/LEXICON.md unchanged because none of the three rows exist there; bounded manual Workbench self-check recorded in this row per the AGENTS.md drift boundary | Full AGENTS.md suite on the committed candidate, separate-context review, and integration containment still pending; README/TASKBOARD S-014 and S-022 stale release wording stays with S-00K |
 
 ## Completion Result
 
