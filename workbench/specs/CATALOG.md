@@ -25,6 +25,7 @@ Derived from stable specs; includes completed history.
 | [S-00I - Folder Lifecycle For Records](S-00I-folder-lifecycle-for-records/SPEC.md) | Express ADR, Spec and Task lifecycle by folder location, with permanent `archive` and transient `retired`, without clearing anything. | planned |
 | [S-00J - Spec QA Gate At Integration](S-00J-spec-qa-gate-at-integration/SPEC.md) | Make the harness's own merge-preparation workflow for `integration` run a gate that verifies every Task in the Spec is complete and the branch is up to Spec. | planned |
 | [S-00K - Workbench Self-Drift Check On Update](S-00K-workbench-self-drift-check/SPEC.md) | Check the canonical Workbench's own artifacts for semantic drift before an update is called complete. | planned |
+| [S-00L - Lexicon Freshness Repair](S-00L-lexicon-freshness-repair/SPEC.md) | Repair the root Lexicon's stale current-facing claims so a cold-start agent reads the actual release lineage, boundary and review date. | complete |
 | [S-010 - Canonical Evaluator Entry Detection](S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
 | [S-011 - Agent Skills Adoption](S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |
 | [S-012 - Reproducible Adoption Provenance](S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
