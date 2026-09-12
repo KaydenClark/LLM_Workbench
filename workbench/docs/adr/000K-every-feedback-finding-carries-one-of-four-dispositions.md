@@ -17,8 +17,11 @@ Spec. The vocabulary is closed:
 - **accepted-open** — real and accepted, not yet scheduled, naming the owning
   Spec that holds it.
 
-`REPORT_FORMAT.md` requires the field. A suite test fails when any registered
-diagnostic lacks remediation text.
+`REPORT_FORMAT.md` requires the field. A suite test must fail when any
+registered diagnostic lacks remediation text; that test does not exist yet
+(`tools/test-diagnostics.mjs` currently asserts a non-empty summary for two
+specific codes, not the full registry) and is part of this decision's
+implementation, not already in place.
 
 The fourth class exists because the first three cannot describe the most common
 real state. Most findings currently in `workbench/feedback/` are accepted and
@@ -40,11 +43,11 @@ repair awaits authorization — but nothing requires a finding to resolve into a
 named class of outcome, so a finding can be recorded, acknowledged and left with
 no disposition indefinitely.
 
-The accompanying suite test passes on the day it is written: all 66 currently
-registered diagnostics already carry remediation text. It is a ratchet against
-future additions, not a repair of anything currently broken, and is recorded
-that way so nobody later mistakes a green result for evidence that it fixed
-something.
+Verified 2026-09-12: all 66 currently registered diagnostics already carry a
+non-empty summary, so the accompanying suite test — not yet written — will
+pass the day it lands. It is a ratchet against future additions, not a repair
+of anything currently broken, and is recorded that way so nobody later
+mistakes a green result for evidence that it fixed something.
 
 Considered and rejected: three classes without `accepted-open`. See above.
 

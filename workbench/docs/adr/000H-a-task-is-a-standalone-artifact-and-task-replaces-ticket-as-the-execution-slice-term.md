@@ -76,6 +76,16 @@ docs touched, and remaining gap. `Receipt` is used here in the sense
 record of an operation's source and result — so this is one term with one
 meaning rather than a second sense of an existing word.
 
+The row is appended proactively as the run proceeds, on the same
+before-interruption discipline `AGENTS.md` already requires for notepads —
+not deferred until a successful `close`. A run approaching token exhaustion or
+an anticipated Stop appends its row with the fields known at that point, an
+open remaining gap included; `close` is the row's normal trigger, not its
+only one. As with notepads, this is an obligation to append promptly, not a
+guarantee the harness can enforce: an unanticipated kill or crash can still
+preempt an unwritten row, and a run lost that way is a named, accepted
+limitation rather than a hidden one.
+
 Considered and rejected: `Ticket` as the name for the Packet. Frozen `TK-###`
 identifiers in append-only evidence mean Ticket-as-execution-slice permanently,
 so reusing the word for the entry bundle would put two live meanings on one

@@ -84,8 +84,9 @@ because folder lifecycle cannot reach a table row.
 | TK-003 | Replace Ticket with Task across tool vocabulary and board columns | blocked | TK-002 | Red tests per touched tool; green rename; historical `TK-###` rows byte-identical |
 | TK-004 | Update `to-tickets` and the skills and controls that instruct the old model | blocked | TK-003 | Skill catalog and inspection tests pass; composition test green |
 | TK-005 | Assemble the Packet a Task loads at entry | blocked | TK-001 | Red test for a Packet missing a required member; green assembly of TASK.md, satisfied Spec acceptance lines, cited source/test paths and the Contract; Scoped handoff and local notepad included only when present and never treated as instruction or proof |
-| TK-006 | Write the append-only per-run Receipt | blocked | TK-001 | Red test asserting a resumed Task appends rather than overwrites; green one-row-per-run Receipt recording branch, HEAD SHA, upstream distance, dirty file count, tests run with result, docs touched and remaining gap |
+| TK-006 | Write the append-only per-run Receipt | blocked | TK-001 | Red test for a simulated abrupt interruption (not only a clean close) and for a resumed Task appending rather than overwriting; green one-row-per-run Receipt, appended proactively per ADR-000H, recording branch, HEAD SHA, upstream distance, dirty file count, tests run with result, docs touched and remaining gap |
 | TK-007 | Project the Taskboard's derived Receipt signal | blocked | TK-006, TK-003 | Red test for a multi-run and a dirty Task; green per-Task run count plus latest run's branch, short SHA and dirty-file count; full run table proven absent from `TASKBOARD.md` |
+| TK-008 | Record the declared context unit in the manifest | blocked | none | Red test for sizing guidance reading an undeclared value; green `workbench/manifest.json` field with provenance recording the owner's 200k-token decision and the rejected 150k/250k alternatives |
 
 ### TK-001 - Introduce `TASK.md` as a record with its own state and blockers
 
@@ -140,8 +141,13 @@ machine will not have the optional, untracked ones.
 
 One row per run, appended, never overwritten: branch, HEAD SHA, upstream
 distance, dirty file count, tests run with result, docs touched, and
-remaining gap. An interrupted run still leaves its row. A resumed Task is the
-same Task with another appended row, not a new identifier.
+remaining gap. Per ADR-000H, the row is appended proactively as the run
+proceeds — on the same before-interruption discipline as notepads — not
+deferred until a successful close; an anticipated Stop or approaching token
+exhaustion still appends a row, with an open remaining gap if that is the
+true state. A resumed Task is the same Task with another appended row, not a
+new identifier. An unanticipated kill or crash can still lose a row; that is
+a named, accepted limitation, not a guarantee this ticket makes.
 
 ### TK-007 - Project the Taskboard's derived Receipt signal
 
@@ -152,6 +158,17 @@ and dirty-file count. The full run table is never rendered on the board; it
 stays in the Task. Prove the board shows the symptom (a multi-run or dirty
 Task is distinguishable at a glance) while the story stays in the Task's own
 Receipt rows.
+
+### TK-008 - Record the declared context unit in the manifest
+
+**Stance:** Builder
+
+ADR-000H sets the context unit at 200k tokens, considered against and rejected
+150k and 250k, and requires it recorded as "a declared host fact recorded in
+`workbench/manifest.json` with provenance, not a number written into portable
+control prose". Add the field with that provenance. Sizing guidance reads the
+declared value; it is a Plan goalpost, never a gate, diagnostic or blocker, so
+this ticket has no dependency on the others and can land independently.
 
 ## Acceptance Criteria
 
@@ -172,14 +189,16 @@ Receipt rows.
 - [ ] `TASKBOARD.md` projects each active Task's run count and latest run's
       branch, short SHA and dirty-file count, and never renders the full run
       table.
+- [ ] `workbench/manifest.json` declares the context unit (200k tokens) with
+      provenance, and sizing guidance reads it rather than restating a number.
 - [ ] The full verification suite passes and `doctor` is clean.
 
 ## Testing Seams
 
 `workbench/tools/spec-workbench.mjs` selection and lifecycle commands, the
 Packet-assembly seam, the Receipt append path, the render path into
-`TASKBOARD.md`, the visible-identifier allocator, and the skill catalog
-contract.
+`TASKBOARD.md`, the visible-identifier allocator, the skill catalog contract,
+and the `workbench/manifest.json` context-unit field.
 
 ## Verification Procedure
 
@@ -191,7 +210,12 @@ named in `AGENTS.md`, then
 
 `LEXICON.md` replaces the Ticket term with Task, `AGENTS.md` updates its work
 selection and lifecycle steps, and `RUNBOOK.md` updates every named command.
-These land at ADR acceptance, which is separate from this Spec.
+`LEXICON.md`'s term definition may land at ADR acceptance, since it describes
+vocabulary rather than authorize an action. `AGENTS.md`'s work-selection steps
+and `RUNBOOK.md`'s named commands stay describing the embedded-table model
+until TK-002 (selection, claim, close and render migrated onto Task records)
+lands — switching that operational prose at ADR acceptance alone would send
+an agent through commands that do not yet exist.
 
 ## Append-Only Evidence And Execution Log
 
@@ -199,6 +223,9 @@ These land at ADR acceptance, which is separate from this Spec.
 |---|---|---|---|---|
 | 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only vocabulary scan | `ticket` found in at least ten tool files; five frozen `TK-###` rows confirmed in S-050 |
 | 2026-09-12 | 1aeccfa | Review found TK-001-TK-004 and Acceptance Criteria covered the standalone-record migration but named none of ADR-000H's Packet, Receipt or Taskboard-signal requirements, which would then land with no owner if this Spec were completed as written | Re-read ADR-000H's "What a Task carries in and out" and "What the board shows" sections against this Spec's slices and criteria | Added TK-005 (Packet assembly), TK-006 (append-only per-run Receipt) and TK-007 (Taskboard derived signal), and the matching Acceptance Criteria and Testing Seams; no implementation performed |
+| 2026-09-12 | 2a9e79b | Review found the added TK-005-TK-007 still did not cover ADR-000H's manifest context-unit requirement (lines 101-109) | Re-read ADR-000H's "One Task, one context" section against this Spec's slices and criteria | Added TK-008 (manifest context-unit field) and the matching Acceptance Criteria and Testing Seams; no implementation performed |
+| 2026-09-12 | b4edb20 | Review found TK-006 could not guarantee a Receipt row for an interrupted run: writing only at close loses it, and ADR-000H's own rejection of "written once at close" implied an unwritten alternative mechanism | Re-read ADR-000H's Receipt definition and AGENTS.md's notepad before-interruption discipline | Added the proactive-append mechanism (same discipline as notepads, same crash caveat) to ADR-000H itself and to TK-006's description and red-test requirement; no implementation performed |
+| 2026-09-12 | b4edb20 | Review found Documentation Impact switched AGENTS.md/RUNBOOK.md operational prose to the Task model "at ADR acceptance", before TK-002 makes selection/claim/close/render able to operate on Task records | Re-read this Spec's own ticket sequencing against its Documentation Impact claim | Corrected Documentation Impact to keep operational prose describing the embedded-table model until TK-002 lands; `LEXICON.md`'s vocabulary definition remains landable at ADR acceptance; no implementation performed |
 
 ## Completion Result
 

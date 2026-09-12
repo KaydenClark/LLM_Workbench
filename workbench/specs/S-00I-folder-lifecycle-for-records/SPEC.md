@@ -152,14 +152,21 @@ link scan across the repository.
 
 `AGENTS.md` retires the stable-path rule and describes folder lifecycle.
 `LEXICON.md` defines `archive`, `retired` and `proposed` with their opposite
-retentions. `RUNBOOK.md` gains the move procedures. These land at ADR
-acceptance, which is separate from this Spec.
+retentions. `RUNBOOK.md` gains the move procedures. ADR acceptance authorizes
+these changes but does not by itself make them safe: the stable-path rule
+stays in force in `AGENTS.md` until TK-001 (folder-aware successor
+resolution) and TK-003 (Spec-directory reference repair) both land, since
+retiring it earlier would let an agent move a record before links can
+survive the move. `LEXICON.md`'s term definitions may land at ADR acceptance
+independently, since they describe vocabulary rather than authorize an
+action.
 
 ## Append-Only Evidence And Execution Log
 
 | Date | Commit | Claim | Method | Result |
 |---|---|---|---|---|
 | 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only structural survey | ADR dir flat with 44 records; `superseded_by` rejects paths; 20 intra-ADR links and 15 ADR-to-spec references confirmed; 54 spec directories |
+| 2026-09-12 | b4edb20 | Review found Documentation Impact retired the stable-path rule "at ADR acceptance", before TK-001/TK-003 make moves link-safe | Re-read this Spec's own ticket sequencing against its Documentation Impact claim | Corrected Documentation Impact to keep the stable-path rule in force until TK-001 and TK-003 land; `LEXICON.md`'s vocabulary definitions remain landable at ADR acceptance; no implementation performed |
 
 ## Completion Result
 

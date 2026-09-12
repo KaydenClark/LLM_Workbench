@@ -10,11 +10,13 @@ canonicalized_in:
 
 QA is two gates at two branch boundaries, not one event at the end of a release.
 
-The **Spec QA gate** runs from the working branch into `integration`. The merge
-request itself triggers it. It verifies that every Task in the Spec was
-completed and that the whole branch is up to Spec. Passing merges the branch;
-failing denies the merge. The reviewed unit is therefore the **Spec branch**,
-not a single Task.
+The **Spec QA gate** runs from the working branch into `integration`, as a
+required step in the harness's own merge-preparation workflow — not as
+GitHub-enforced branch protection, which this decision does not create or
+require. It verifies that every Task in the Spec was completed and that the
+whole branch is up to Spec. Passing proceeds to the merge request; failing
+refuses to proceed. The reviewed unit is therefore the **Spec branch**, not a
+single Task.
 
 The **Human QA gate** runs from `integration` into `main`. `integration` *is*
 the Human QA branch — the place the owner inspects real assembled behavior.

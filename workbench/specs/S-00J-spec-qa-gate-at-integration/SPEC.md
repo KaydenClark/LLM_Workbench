@@ -6,7 +6,7 @@
 **Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-09-12
-**Catalog description:** Make the merge request into `integration` trigger a gate that verifies every Task in the Spec is complete and the branch is up to Spec.
+**Catalog description:** Make the harness's own merge-preparation workflow for `integration` run a gate that verifies every Task in the Spec is complete and the branch is up to Spec.
 **Blockers:** ADR-000F is `proposed`; WF-8 is an open owner question.
 **Latest event:** Spec authored from approved answer FND-Q14; no implementation started and no ADR accepted.
 **Next gate:** Owner accepts ADR-000F before any slice is claimed.
@@ -15,10 +15,16 @@
 
 ## Outcome
 
-A merge request from a working branch into `integration` triggers the Spec QA
-gate. The gate verifies that every Task in the Spec was completed and that the
-whole branch is up to Spec. Passing permits the merge; failing denies it. The
-reviewed unit is the Spec branch, not a single Task.
+Preparing to merge a working branch into `integration` runs the Spec QA gate as
+a local command, invoked by the harness's own merge-preparation skills before
+a merge request is opened. The gate verifies that every Task in the Spec was
+completed and that the whole branch is up to Spec, and refuses to proceed when
+it is not. The reviewed unit is the Spec branch, not a single Task. This is a
+tool-level and process-level gate, not a GitHub-enforced one: nothing in this
+Spec's scope makes GitHub itself refuse a merge, since this repository has no
+`.github/` workflow or branch-protection configuration, `.github/` is outside
+this Spec's Edit Scope, and creating either is a CI/CD and repository-settings
+change needing its own explicit owner authorization. See Non-Goals.
 
 ## Why It Matters
 
@@ -26,7 +32,8 @@ Today the integration review is the only gate at that boundary, and `AGENTS.md`
 describes the reviewed candidate in task-level terms. A task-level check can pass
 repeatedly while the capability the Spec promised remains unmet, because a Task
 is deliberately too small to demonstrate a Spec's acceptance. Nothing currently
-refuses a merge on the grounds that the Spec is not finished.
+refuses to proceed toward a merge on the grounds that the Spec is not finished —
+this Spec closes that gap for the harness's own workflow, not for GitHub's.
 
 ## Current Verified State
 
@@ -40,10 +47,16 @@ at the merge boundary.
 
 ## Desired Behavior
 
-An agent opening a merge request into `integration` learns immediately whether
-every Task in the Spec is complete and whether the branch satisfies the Spec's
-acceptance. An incomplete Spec cannot merge. The existing independent review
-continues to apply; this gate does not replace human judgment with a checklist.
+An agent preparing to open a merge request into `integration` runs the gate —
+directly, or because the merge-preparation skill it is following runs it as a
+required step — and learns immediately whether every Task in the Spec is
+complete and whether the branch satisfies the Spec's acceptance. The command
+exits refusing when the Spec is incomplete, the same way `close` already
+refuses malformed proof. An agent that opens a merge request by some other
+path, bypassing the harness's own skills entirely, is not stopped by GitHub
+itself — that would need repository-level enforcement, which is out of scope
+here. The existing independent review continues to apply; this gate does not
+replace human judgment with a checklist.
 
 `integration` remains the Human QA branch, where the owner inspects assembled
 behavior before it reaches `main`. That second gate is a matter of branch
@@ -66,6 +79,13 @@ remains proposed.
   not design what happens next.
 - Replacing the independent separate-context review.
 - Any change to who merges `integration` into `main`; that stays owner-only.
+- **GitHub-level enforcement.** Adding a `.github/` workflow, required status
+  check, or branch-protection rule so GitHub itself refuses an incomplete
+  Spec's merge is explicitly out of scope: `.github/` is outside this Spec's
+  Edit Scope, and configuring repository settings or CI is a change needing
+  its own explicit owner authorization, separate from this Spec's local
+  command. A later linked Spec may take that on if the owner wants GitHub
+  itself to enforce this rather than relying on the harness's own workflow.
 
 ## Dependencies And Blockers
 
@@ -78,7 +98,7 @@ standalone Task record both expose completion.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Add a Spec-completeness check at a stable seam | blocked | ADR-000F proposed | Red test for an incomplete Spec; green check; full suite |
-| TK-002 | Bind the check to the merge request into the declared integration branch | blocked | TK-001 | Red test proving an incomplete Spec cannot merge; green refusal; declared branch resolved from manifest |
+| TK-002 | Bind the check into the harness's own merge-preparation workflow | blocked | TK-001 | Red test proving an incomplete Spec's branch-completion workflow refuses to proceed; green refusal; declared branch resolved from manifest |
 | TK-003 | Correct task-level reviewed-unit language to the Spec branch | blocked | TK-002 | Control and skill text updated; branch-closeout tests pass |
 
 ### TK-001 - Add a Spec-completeness check at a stable seam
@@ -89,13 +109,18 @@ Define the check against the Spec's Task state. Add a failing test with a Spec
 holding one incomplete Task, confirm the failure, then implement the smallest
 check that turns it green. The check reports; it does not yet block.
 
-### TK-002 - Bind the check to the merge request into the declared integration branch
+### TK-002 - Bind the check into the harness's own merge-preparation workflow
 
 **Stance:** Builder
 
 Resolve the integration branch from `git.integrationBranch` rather than
-hardcoding it. Prove refusal: an incomplete Spec must be unable to merge, and a
-complete one must pass unchanged.
+hardcoding it. Invoke the check as a required step before the Git push or
+integration request that `skills/carry/SKILL.md` and `AGENTS.md`'s Branch
+Completion section already describe, so following that workflow refuses to
+proceed for an incomplete Spec and passes unchanged for a complete one. This
+binds the harness's own process; it does not and cannot make GitHub itself
+refuse a merge request opened by some other path, which is out of scope (see
+Non-Goals).
 
 ### TK-003 - Correct task-level reviewed-unit language to the Spec branch
 
@@ -107,10 +132,12 @@ without weakening the immutable-candidate requirement from ADR-0037.
 
 ## Acceptance Criteria
 
-- [ ] A merge request into the declared integration branch triggers the check.
-- [ ] A Spec with any incomplete Task cannot merge, proven by a test that
-      failed before the change.
-- [ ] A complete Spec merges with no new friction.
+- [ ] Preparing to merge into the declared integration branch through the
+      harness's own workflow runs the check.
+- [ ] A Spec with any incomplete Task cannot proceed through that workflow,
+      proven by a test that failed before the change. This does not claim
+      GitHub itself refuses the merge; see Non-Goals.
+- [ ] A complete Spec proceeds with no new friction.
 - [ ] The integration branch is resolved from the manifest declaration.
 - [ ] Reviewed-unit language names the Spec branch wherever it said Task.
 - [ ] The existing independent review requirement is unchanged.
@@ -138,6 +165,7 @@ which is separate from this Spec.
 | Date | Commit | Claim | Method | Result |
 |---|---|---|---|---|
 | 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only review of AGENTS, ADR-0037 and the manifest | Independent review exists at integration; no Spec-completeness check exists at the merge boundary |
+| 2026-09-12 | b4edb20 | Review found the Spec's "merge request... triggers" framing was not achievable by its own listed seams: no `.github/` directory exists in this repository, `integration` carries no branch protection (`gh api .../branches/integration/protection` returns 404), and `.github/` is outside this Spec's Edit Scope | Checked for `.github/` on disk and queried branch protection via the GitHub API | Reframed Outcome, Why It Matters, Desired Behavior, TK-002, and Acceptance Criteria around a local/harness-workflow gate rather than a GitHub-enforced one; added an explicit GitHub-level-enforcement Non-Goal; no implementation performed |
 
 ## Completion Result
 

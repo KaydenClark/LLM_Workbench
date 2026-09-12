@@ -45,10 +45,10 @@ gate and stays blocked behind it. Live obstacles a scoped migration must handle,
 verified read-only at `c0ac60a`: `workbench/docs/adr/` is flat with 44 records
 and lifecycle read from frontmatter; `workbench/tools/adr.mjs` requires
 `superseded_by` to be one whole-record filename with no path, so successor
-resolution is not folder-aware; 22 ADR files carry relative intra-ADR links that
-break when a target moves; 16 accepted ADRs name live `workbench/specs/S-*`
+resolution is not folder-aware; 20 ADR files carry relative intra-ADR links that
+break when a target moves; 15 accepted ADRs name live `workbench/specs/S-*`
 paths; and the moving unit differs by type, a file for an ADR and a directory
-for each of 56 Specs. Applying the pattern to Tasks depends on
+for each of 54 Specs. Applying the pattern to Tasks depends on
 [ADR-000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md),
 because a table row cannot occupy a folder.
 

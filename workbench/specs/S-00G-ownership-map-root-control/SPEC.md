@@ -37,11 +37,19 @@ loaded control cannot provide it.
 
 At the pre anchor, no root `.json` control exists in this repository; the root
 surface is seven Markdown files. `LEXICON.md` carries the Artifact Ownership
-Schema. Six live consumers enumerate the root surface literally and none of them
-knows an eighth file: `workbench/tools/workbench-layout.mjs`,
-`tools/control-fidelity.mjs`, `tools/test-workbench-layout.mjs`,
-`tools/test-control-fidelity.mjs`, `RUNBOOK.md` (two places) and
-`templates/ADOPTION.md` (three places). `templates/` ships no root JSON control,
+Schema. More than six live consumers enumerate the root surface literally and
+none of them knows an eighth file. Verified at review 2026-09-12, beyond the
+original six (`workbench/tools/workbench-layout.mjs`, `tools/control-fidelity.mjs`,
+`tools/test-workbench-layout.mjs`, `tools/test-control-fidelity.mjs`,
+`RUNBOOK.md` two places, `templates/ADOPTION.md` three places): four more code
+consumers each declare their own hardcoded seven-item control list
+(`tools/test-workbench-upgrade.mjs`, `tools/test-genesis-from-decisions.mjs`,
+`tools/test-workbench-adoption.mjs`, `tools/test-portability-matrix.mjs`), and
+two more template consumers state the count in prose
+(`templates/GENESIS.md` three places, `templates/README.md` one place). This
+list is what a targeted search found, not a claim of completeness — the
+pattern recurs by hardcoding, not by a shared source, so TK-002's red test
+must be a repository-wide sweep for the pattern, not a fixed file list. `templates/` ships no root JSON control,
 so a template `OWNERSHIP.json` is new shipped content rather than an edit.
 `ADR-0013` still fixes the root surface at seven files and is still `accepted`.
 
@@ -91,8 +99,8 @@ the three open answers and cannot start without them.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader | blocked | ADR-000B, ADR-000C, ADR-000D proposed | Red test for a missing/malformed map; green minimal reader; full suite |
-| TK-002 | Teach the six live root-surface consumers about the eighth file | blocked | TK-001 | Red layout/fidelity tests asserting eight; green consumers; `doctor` clean |
-| TK-003 | Ship a copy-ready `templates/OWNERSHIP.json` and update `templates/ADOPTION.md` | blocked | TK-002 | Template render and adoption tests pass; `evaluate-workbench --path templates` unchanged or improved |
+| TK-002 | Sweep and teach every live root-surface consumer about the eighth file | blocked | TK-001 | Red repo-wide sweep proving every hardcoded root-surface count/list is found; green update of every one found; `doctor` clean |
+| TK-003 | Ship a copy-ready `templates/OWNERSHIP.json` and update every template consumer | blocked | TK-002 | Template render and adoption tests pass; `evaluate-workbench --path templates` unchanged or improved |
 | TK-004 | Implement the structured query surface and move the schema out of `LEXICON.md` | blocked | TK-003, FND-Q21, FND-Q23, FND-Q24 | Red test proving a query returns routes and never claim text; green query; Lexicon routes onward |
 
 ### TK-001 - Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader
@@ -105,22 +113,32 @@ failure, then implement the smallest reader that turns it green. The file starts
 as a valid but deliberately unpopulated container; populating it is TK-004 and
 is gated on open owner questions.
 
-### TK-002 - Teach the six live root-surface consumers about the eighth file
+### TK-002 - Sweep and teach every live root-surface consumer about the eighth file
 
 **Stance:** Builder
 
-Update `workbench/tools/workbench-layout.mjs` and `tools/control-fidelity.mjs`
-with their tests, plus the two `RUNBOOK.md` statements that a genesis validation
-requires seven filled controls. Each consumer gets a red test asserting eight
-before the change. `CLAUDE.md` and `README.md` are unaffected.
+The pattern recurs by hardcoding a literal count or file list, not from one
+shared source, so start with a red test that scans the repository (excluding
+`.git`, `node_modules` and untracked scratch paths) for the pattern and fails
+listing every hit — do not trust the ten-plus consumers already found at review
+(`workbench/tools/workbench-layout.mjs`, `tools/control-fidelity.mjs`,
+`tools/test-workbench-layout.mjs`, `tools/test-control-fidelity.mjs`,
+`tools/test-workbench-upgrade.mjs`, `tools/test-genesis-from-decisions.mjs`,
+`tools/test-workbench-adoption.mjs`, `tools/test-portability-matrix.mjs`,
+`RUNBOOK.md`) as the complete list. Update every consumer the sweep finds and
+turn the sweep itself green. `CLAUDE.md` and root `README.md` were checked at
+review and carry no such count; template consumers are TK-003.
 
-### TK-003 - Ship a copy-ready `templates/OWNERSHIP.json` and update `templates/ADOPTION.md`
+### TK-003 - Ship a copy-ready `templates/OWNERSHIP.json` and update every template consumer
 
 **Stance:** Builder
 
 The template copy stays generic and `[BRACKETED]` per the dogfood boundary; the
-root copy stays filled and current. `templates/ADOPTION.md` names the root
-surface in three places and must learn the eighth file in all three.
+root copy stays filled and current. `templates/ADOPTION.md` (three places),
+`templates/GENESIS.md` (three places, verified at review) and
+`templates/README.md` (one place, verified at review) all name the root
+surface and must learn the eighth file everywhere TK-002's sweep finds it under
+`templates/`.
 
 ### TK-004 - Implement the structured query surface and move the schema out of `LEXICON.md`
 
@@ -136,10 +154,12 @@ and never the claim text of the artifact it routes to.
       declared schema.
 - [ ] A structured query returns the owning artifact and its route for every
       Core artifact type, and returns no claim text.
-- [ ] All six enumerating consumers assert an eight-file root surface, each
-      proven by a test that failed before the change.
-- [ ] `templates/` ships a generic `OWNERSHIP.json` and `ADOPTION.md` describes
-      it in all three places.
+- [ ] A repository-wide sweep for a hardcoded root-surface count or file list
+      finds nothing still asserting seven, proven by a test that failed before
+      the change and passes after every found consumer is updated.
+- [ ] `templates/` ships a generic `OWNERSHIP.json`, and `ADOPTION.md`,
+      `GENESIS.md` and `README.md` all describe the eighth file everywhere
+      they name the root surface.
 - [ ] `LEXICON.md` no longer carries the Artifact Ownership Schema and routes
       ownership questions to the map.
 - [ ] A fresh agent with no prior context can traverse the map and reach the
@@ -147,8 +167,9 @@ and never the claim text of the artifact it routes to.
 
 ## Testing Seams
 
-The map reader and its query function, the root-surface enumerations in
-`workbench-layout.mjs` and `control-fidelity.mjs`, and the template render path.
+The map reader and its query function, a repository-wide root-surface-count
+sweep, the enumerations in `workbench-layout.mjs` and `control-fidelity.mjs`
+plus the other consumers TK-002 finds, and the template render path.
 
 ## Verification Procedure
 
@@ -167,6 +188,7 @@ step from this Spec. `RUNBOOK.md` gains the query procedure.
 | Date | Commit | Claim | Method | Result |
 |---|---|---|---|---|
 | 2026-09-12 | c0ac60a | Spec authored; no implementation performed | Read-only consumer scan and ADR authoring | Six enumerating consumers confirmed; no root JSON control exists |
+| 2026-09-12 | b4edb20 | Review found the six-consumer inventory was incomplete | Repo-wide grep for literal root-control-name arrays and "seven" root-surface mentions | Four more code consumers and two more template consumers found and named; TK-002/TK-003 changed from a fixed list to a sweep-and-fix pattern since the true count is not established as complete even now |
 
 ## Completion Result
 
