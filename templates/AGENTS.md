@@ -113,6 +113,16 @@ Stop and surface committed secrets, credentials, or tokens.
 Keep `templates/` generic when this project ships templates. Spec paths are
 stable; never move them between status folders.
 
+Any update to the canonical Workbench itself has a separate self-drift
+boundary from a target-project drift check. Inspect the Workbench's own
+current-facing controls, Specs, projections, manifest, procedures, templates
+and managed artifacts before and after the update. A passing render, doctor or
+test suite does not prove that a fresh agent will receive current guidance.
+Do not call the Workbench update complete while an artifact still presents
+completed work as pending, carries a resolved blocker, or has stale
+version/provenance information that can misroute a cold start. Preserve
+explicitly bounded historical evidence.
+
 ## Work Selection And Lifecycle
 
 1. Verify root, branch, remote, upstream, and dirty state.
@@ -152,17 +162,35 @@ afterward. Static coverage or token reduction is not agent-outcome evidence.
 
 Documentation is part of done; the implementing agent is documentation owner.
 
+This authoring summary assigns documentation maintenance. The
+[Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the
+jobs and provides the question-to-owner routes and artifact boundaries. Keep
+those routes consistent with these assignments when ownership changes.
+
 | Truth | Owner |
 |---|---|
 | agent rules, safety, Git, verification | `AGENTS.md` |
 | product direction and invariants | `BLUEPRINT.md` |
 | shared project terms and accepted definitions | `LEXICON.md` |
-| active assignment/blocker/event/gate | `TASKBOARD.md` projection |
+| active assignment/blocker/event/gate | assigned `SPEC.md`; `TASKBOARD.md` is its generated projection |
 | requirements, acceptance, decisions, evidence, completion | assigned `SPEC.md` |
 | commands and troubleshooting | `RUNBOOK.md` |
 | public usage | `README.md` |
 | active architectural decisions, rationale, alternatives, supersession | `workbench/docs/adr/` (`canonicalized_in` names operational owners) |
 | durable room memory, design-concept articles, and routing to them | `workbench/wiki/` (`MEMORY.md` router, `SCHEMA.md` rules) |
+
+The agent changing a truth maintains its existing owner within the authorized
+scope: update definitions when meaning changes, procedures when operations
+change, and Spec state/evidence at meaningful work transitions. A document's
+information ownership is distinct from the person responsible for maintaining
+it and from authority to approve a change. Project-wide approval stays with the
+user under this file's rules; Spec/TASK assignments identify delivery ownership.
+
+Work state is authored in the owning Spec and projected into TASKBOARD. Route
+accepted requirements to the Spec, architectural decisions to the ADR owner,
+and durable explanations to the Wiki. A mixed finding may need linked updates
+to several owners; preserve each claim once rather than copying the whole
+finding into every document.
 
 Use `Docs checked; no update needed` with a reason when appropriate. The final response proof states what changed, why, risks, and verification. Append spec
 evidence; never duplicate completed proof in the Taskboard.

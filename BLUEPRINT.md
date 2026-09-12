@@ -56,6 +56,14 @@ Supported settled claims move into their durable owners before cleanup. Optional
 private transport can carry selected live context across devices with explicit
 acknowledgment and conflict preservation; ordinary local work remains independent.
 
+Updating a target project and updating the canonical Workbench have different
+drift boundaries. A Workbench update must inspect the Workbench's own controls,
+Specs, projections, procedures, manifest, templates and managed artifacts for
+stale or contradictory current guidance before and after the update. A
+structurally valid render or test run is not semantic freshness proof. The
+Workbench is not updated successfully if a memoryless agent could still be
+misdirected by an artifact that presents completed work as pending.
+
 ## Cross-Cutting Qualities And Constraints
 
 Portability, safe autonomy, source fidelity and recoverability apply throughout.

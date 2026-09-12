@@ -28,6 +28,29 @@ follows the meaningful-work rule and is reconciled at closeout; it does not
 turn a chat-only setup check into a reporting assignment. Round One precedes
 feedback testing.
 
+### Finding The Owner Of A Question
+
+1. Use [LEXICON -> Artifact Ownership Schema](LEXICON.md#artifact-ownership-schema)
+   to identify the job: permission, meaning, destination, work state, proof,
+   procedure, recovery or another listed responsibility.
+2. Follow the named owner and resolve installed paths through the manifest.
+   Consult only the relevant section and its linked sources. For a work-state
+   question, follow the Taskboard row to the owning Spec before editing.
+3. Separate the answer's status: accepted requirement, verified observation,
+   proposal, unresolved question or historical claim. Apply AGENTS State
+   Resolution if sources disagree; file location alone does not settle it.
+4. When authorized work changes the answer, update its owner and refresh any
+   derived view. If the route is missing, use bounded search and repair that
+   route in scope. An unresolved decision stays in the existing work owner or
+   objective note; a missing answer does not authorize a new task.
+
+For example, a failed test has several owners: the Spec defines the expected
+behavior, the source implements it, the result records the failure, and the
+Spec records any resulting blocker. A Wiki explanation may clarify the cause;
+it does not redefine acceptance. After interruption, the Runbook supplies the
+recovery procedure while the Spec, source and saved context supply what to
+recover. Execution and recovery therefore remain separate jobs.
+
 ### Behavior Selection
 
 After resolving the requested scope, compose the smallest behavior already
@@ -790,6 +813,16 @@ To upgrade:
    manifest's historical adoption source to impersonate the newly installed
    component generation.
 5. Re-run the full verification suite and record the upgrade in its owning spec.
+
+An update of the canonical Workbench itself also requires a separate
+Workbench self-drift check before and after the change. Inspect the source
+controls, Specs and projections, manifest, ADR/Wiki routes, procedures,
+templates, managed artifacts and readable continuity metadata for stale
+current-facing statuses, blockers, versions, paths and owners. A target-project
+drift report, render, doctor or passing tests do not replace this check. Until
+the source Workbench provides its public self-drift seam, record the bounded
+manual check and do not call the source update clean while known current-facing
+drift remains. Preserve explicitly bounded historical evidence.
 
 The runtime tools in `workbench/tools/` are Workbench-managed: their receipt
 (`.workbench-tools.json`) records the exact source release, commit, and file
