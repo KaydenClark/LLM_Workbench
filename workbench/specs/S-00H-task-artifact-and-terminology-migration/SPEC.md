@@ -1,16 +1,16 @@
 # S-00H - Task Artifact And Terminology Migration
 
 **Spec ID:** S-00H
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-12
+**Updated:** 2026-09-15
 **Catalog description:** Make a Task a standalone `TASK.md` artifact and replace Ticket with Task across prose, tools and newly allocated identifiers.
-**Blockers:** ADR-000H is `proposed`; TT-Q10 (identifier form) is open and additionally blocks TK-003 onward.
-**Latest event:** Spec authored from approved answers TT-Q2 and WF-5; no implementation started and no ADR accepted.
-**Next gate:** Owner accepts ADR-000H before TK-001, TK-002, TK-005-TK-008 are
-claimable; TK-003 and TK-004 additionally need TT-Q10 answered.
+**Blockers:** TT-Q10 (identifier form) is open and blocks TK-003 and TK-004.
+**Latest event:** ADR-000H accepted 2026-09-15; the Lexicon rows it owed landed with acceptance and TK-001 and TK-008 became claimable.
+**Next gate:** Claim TK-001 or TK-008; TK-003 and TK-004 still need TT-Q10
+answered.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -60,9 +60,12 @@ understands it, because those identifiers remain readable exactly as written.
 - The altitude a Task occupies: [ADR-000G](../../docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md).
 - What the board does with Tasks: [ADR-000E](../../docs/adr/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md).
 
-ADR-000H is `proposed` at authoring time. No slice may be claimed while it
-remains proposed. Note that this Spec itself uses the live `Ticket` table format
-below, because the rename is not Canon until the owner accepts the decision.
+ADR-000H was accepted on 2026-09-15. Its `LEXICON.md` rows — `Task`, `Packet`,
+`Task receipt` and the `Ticket` retirement pointer — landed with acceptance;
+everything else it names is this Spec's to deliver. This Spec still uses the
+live `Ticket` table format below because the tool seam it is read by has not
+been migrated yet: TK-002 and TK-003 do that, and rewriting the table ahead of
+them would break `next`, `claim` and `close`.
 
 ## Non-Goals
 
@@ -73,21 +76,23 @@ below, because the rename is not Canon until the owner accepts the decision.
 
 ## Dependencies And Blockers
 
-Blocked on owner acceptance of ADR-000H. S-00I depends on this Spec's TK-001,
-because folder lifecycle cannot reach a table row.
+ADR-000H is accepted, so no slice is gated on it. TK-003 and TK-004 remain
+blocked on TT-Q10, which settles whether a new identifier reads `T-###` or
+`TASK-###`. S-00I depends on this Spec's TK-001, because folder lifecycle
+cannot reach a table row.
 
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Introduce `TASK.md` as a record with its own state and blockers | blocked | ADR-000H proposed | Red test for reading/claiming a standalone Task; green minimal record; full suite |
+| TK-001 | Introduce `TASK.md` as a record with its own state and blockers | ready | none | Red test for reading/claiming a standalone Task; green minimal record; full suite |
 | TK-002 | Migrate selection, claim, close and render onto Task records | blocked | TK-001 | Red tests at the `spec-workbench.mjs` seam; green commands; `doctor` clean |
 | TK-003 | Replace Ticket with Task across tool vocabulary and board columns | blocked | TK-002, TT-Q10 | Red tests per touched tool; green rename using the owner's chosen identifier form; historical `TK-###` rows byte-identical |
 | TK-004 | Update `to-tickets`, the skills/controls that instruct the old model, and every generic template mirror | blocked | TK-003 | Skill catalog and inspection tests pass; composition test green; red repository-wide sweep for live `ticket`/`Ticket` prose (verified at review: `templates/LEXICON.md`, `templates/GENESIS.md`, `templates/RUNBOOK.md`, `templates/README.md`, `templates/AGENTS.md`, `templates/SPEC.md`, at minimum) finds nothing after the change |
 | TK-005 | Assemble the Packet a Task loads at entry | blocked | TK-001 | Red test for a Packet missing a required member; green assembly of TASK.md, satisfied Spec acceptance lines, cited source/test paths and the Contract; Scoped handoff and local notepad included only when present and never treated as instruction or proof |
 | TK-006 | Write the append-only per-run Receipt | blocked | TK-001 | Red test for a simulated abrupt interruption (not only a clean close) and for a resumed Task appending rather than overwriting; green one-row-per-run Receipt, appended proactively per ADR-000H, recording branch, HEAD SHA, upstream distance, dirty file count, tests run with result, docs touched and remaining gap |
 | TK-007 | Project the Taskboard's derived Receipt signal | blocked | TK-006, TK-003 | Red test for a multi-run and a dirty Task; green per-Task run count plus latest run's branch, short SHA and dirty-file count; full run table proven absent from `TASKBOARD.md` |
-| TK-008 | Record the declared context unit in the manifest | blocked | none | Red test for sizing guidance reading an undeclared value; green `workbench/manifest.json` field with provenance recording the owner's 200k-token decision and the rejected 150k/250k alternatives |
+| TK-008 | Record the declared context unit in the manifest | ready | none | Red test for sizing guidance reading an undeclared value; green `workbench/manifest.json` field with provenance recording the owner's 200k-token decision and the rejected 150k/250k alternatives |
 
 ### TK-001 - Introduce `TASK.md` as a record with its own state and blockers
 
@@ -244,6 +249,7 @@ an agent through commands that do not yet exist.
 | 2026-09-12 | b4edb20 | Review found Documentation Impact switched AGENTS.md/RUNBOOK.md operational prose to the Task model "at ADR acceptance", before TK-002 makes selection/claim/close/render able to operate on Task records | Re-read this Spec's own ticket sequencing against its Documentation Impact claim | Corrected Documentation Impact to keep operational prose describing the embedded-table model until TK-002 lands; `LEXICON.md`'s vocabulary definition remains landable at ADR acceptance; no implementation performed |
 | 2026-09-12 | f2d2e87 | Review found TK-003 required "the Task form" for new identifiers with no defined form: TT-Q10 (T-### vs TASK-###) is open and this Spec was blocked only on ADR-000H | Cross-checked TK-003's requirement against the foundation-question-review report's TT-Q10 entry | Added TT-Q10 as an explicit blocker on TK-003 (and TK-004, which depends on it) in the header, the ticket table and TK-003's own description; TK-001/TK-002/TK-005-TK-008 remain gated on ADR-000H alone; no implementation performed |
 | 2026-09-12 | f2d2e87 | Review found TK-004 covered `to-tickets` and live skills/controls but not the generic `templates/` mirror, so a newly bootstrapped room could still be instructed into the retired embedded-Ticket model after this Spec completed | Repo-wide grep for `ticket`/`Ticket` under `templates/` | Found six template files (LEXICON.md, GENESIS.md, RUNBOOK.md, README.md, AGENTS.md, SPEC.md); expanded TK-004 to a repository-wide sweep covering root and templates together, per the dogfood boundary, plus a fresh-room generation regression; no implementation performed |
+| 2026-09-15 | 87c1d45 | Owner accepted ADR-000H; the Lexicon rows the record owed at acceptance landed, the manifest context unit did not | Flipped ADR-000H to `accepted`, added `Task`, `Packet`, `Task receipt` and a `Ticket` retirement pointer to `LEXICON.md` Core Terms, corrected the Stance Terms `TASK` row (which asserted "No additional task file or queue is introduced") and the three remaining live `ticket` usages in that file | Lexicon no longer contradicts accepted Canon. The manifest context unit stays with TK-008, which owns a red test at the consuming seam and which the manifest contradicts by nothing today; TK-001 and TK-008 moved to `ready`. `AGENTS.md`, `RUNBOOK.md`, the tools and the skills still say `Ticket` — the recorded gap TK-002-TK-004 close |
 
 ## Completion Result
 

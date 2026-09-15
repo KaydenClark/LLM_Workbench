@@ -10,6 +10,9 @@
 | [0003](0003-full-crud-with-artifact-conditions.md) | All six planes support full CRUD with conditions | accepted | 2026-09-04 | AGENTS.md |
 | [0005](0005-machine-enforcement-requires-running-consumers.md) | Machine enforcement requires running policy consumers | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [000A](000A-active-adr-decisions-and-destination-blueprints.md) | Active ADR decisions and destination Blueprints | accepted | 2026-09-09 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
+| [000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) | A Task is a standalone artifact and Task replaces Ticket as the execution-slice term | accepted | 2026-09-12 | LEXICON.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-00H-task-artifact-and-terminology-migration/SPEC.md |
+| [000J](000J-completion-claims-are-checked-against-repository-state.md) | Completion claims are checked against repository state | accepted | 2026-09-12 | AGENTS.md, RUNBOOK.md, workbench/specs/S-00M-completion-claims-against-repository-state/SPEC.md |
+| [000K](000K-every-feedback-finding-carries-one-of-four-dispositions.md) | Every feedback finding carries one of five dispositions | accepted | 2026-09-12 | LEXICON.md, RUNBOOK.md, workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md |
 | [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
