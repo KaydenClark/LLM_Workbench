@@ -29,9 +29,9 @@ check, and the loss is silent: `loadForWrite` validates the revision before
 building the update, while `writeSafeFile` publishes with an unconditional
 `renameSync`, so the last rename wins and every earlier writer is told it
 succeeded. Reproduced on 2026-09-15 against this branch: twelve
-barrier-synchronized appends at revision 1 returned nine `appended`
-responses at revision 2, and the resulting note held one entry. Eight accepted writes were
-lost with a success reported to each caller. Selecting simultaneous shared
+barrier-synchronized appends at revision 1 returned nine `appended` responses
+at revision 2, and the resulting note held one entry. Eight accepted writes
+were lost with a success reported to each caller. Selecting simultaneous shared
 writers therefore requires a real compare-and-swap or lock that does not exist
 today; this record does not select it, and the defect above is an open gap
 recorded here for the owner, not work this record authorizes.
