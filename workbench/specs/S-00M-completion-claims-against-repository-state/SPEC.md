@@ -9,7 +9,8 @@
 **Catalog description:** Make a completion claim unable to hide uncommitted or unpushed work, by surfacing Git state in `doctor` and refusing `close` unless the Receipt records the state and a reason.
 **Blockers:** none
 **Latest event:** Spec authored at owner acceptance of ADR-000J, which had no delivery owner.
-**Next gate:** Claim TK-001.
+**Next gate:** Activate this Spec, then claim TK-001; `claim` refuses a Spec
+that is still `planned`.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf`.
 
@@ -88,9 +89,11 @@ blocking there would disable the tool in the situation that most needs it.
 
 ## Dependencies And Blockers
 
-None blocking. TK-003 writes `upstream distance` into whatever record carries
-the Receipt: S-00H TK-006 if that has landed, the existing evidence row
-otherwise. Either target satisfies it, so this Spec does not wait on S-00H.
+None blocking. ADR-000J routes `upstream distance` into the Receipt, but the
+criterion that checks it belongs to
+[S-00H](../S-00H-task-artifact-and-terminology-migration/SPEC.md) TK-006, which
+owns the Receipt's fields — this Spec's TK-001 makes the value readable and
+claims nothing further about it. Neither Spec waits on the other.
 
 ## Vertical Implementation Slices
 
@@ -193,6 +196,7 @@ names this Spec as of its acceptance.
 |---|---|---|---|---|
 | 2026-09-15 | 87c1d45 | Spec authored at owner acceptance of ADR-000J, which recorded that no Spec owned its implementation | Read ADR-000J against `workbench/tools/diagnostics.mjs` and `workbench/tools/spec-workbench.mjs` at the pre anchor | Confirmed no registered finding observes HEAD, the working tree, untracked files or upstream distance, and that `closeTicket` reads no repository state; no implementation performed |
 | 2026-09-15 | 87c1d45 | ADR-000J's own verification sentence claimed the `git` scope had "no finding currently using it" | Ran `grep -n "'git'" workbench/tools/diagnostics.mjs` at the pre anchor and against `git show c0ac60a:workbench/tools/diagnostics.mjs`, the ADR's own anchor | The claim was false at the anchor it cited: `integration-branch-undeclared` and `integration-branch-missing` both used the scope then and now. The ADR's substantive claim — no finding observes Git working state — holds. Corrected the sentence in ADR-000J at acceptance rather than accepting a false evidence line into Canon |
+| 2026-09-15 | 8a32f41 | Separate-context review of the acceptance candidate | Reviewer ran `adr validate`, `doctor`, `next --json`, the append-only check, projection regeneration and seven suite tests against commit `8a32f41`, and challenged the Spec's verified-state claims, slice statuses and next gate | PASS with four should-fix findings. Two applied here: `Next gate` named a `claim` the tooling refuses for a `planned` Spec, and Dependencies stated an `upstream distance` obligation this Spec has no criterion for. Reviewer confirmed the Current Verified State claims about the `git` scope, the 66 registered codes and `closeTicket` are accurate |
 
 ## Completion Result
 

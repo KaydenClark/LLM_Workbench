@@ -38,8 +38,8 @@ codes and contains no finding that observes HEAD, the working tree, untracked
 files or upstream distance — its two `git`-scope findings,
 `integration-branch-undeclared` and `integration-branch-missing`, both check
 the declared integration branch — and `workbench/tools/spec-workbench.mjs`
-`closeTicket` requires only `--proof` and `--docs`, writes "closed with proof",
-and reads no repository state at all. A Task can therefore be closed as done,
+`closeTicket` requires `--proof`, `--docs` and `--remaining-gap`, writes
+"closed with proof", and reads no repository state at all. A Task can therefore be closed as done,
 with proof, on a dirty unpushed tree, with nothing observing it. The session in
 which this was decided was itself detached at `c0ac60a` with 39 porcelain
 entries, thirteen of them untracked ADRs and Specs, and no control named it.
@@ -88,3 +88,8 @@ anchor it cited, and at acceptance, `integration-branch-undeclared` and
 `integration-branch-missing` both used it. The substantive claim — that no
 finding observes HEAD, the working tree, untracked files or upstream distance —
 was verified and holds.
+
+A second sentence was corrected the same way at separate-context review: it had
+said `closeTicket` "requires only `--proof` and `--docs`", but `--remaining-gap`
+was already required at `c0ac60a` too. Neither correction touches a decision
+claim; both repair evidence sentences that were false at the anchor they cited.

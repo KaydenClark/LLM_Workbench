@@ -9,7 +9,8 @@
 **Catalog description:** Require every feedback finding to resolve into one of five named dispositions recorded in its owning Spec, and ratchet the registry so no future diagnostic lands without remediation text.
 **Blockers:** none
 **Latest event:** Spec authored at owner acceptance of ADR-000K, which had no delivery owner.
-**Next gate:** Claim TK-001.
+**Next gate:** Activate this Spec, then claim TK-001 or TK-002; `claim`
+refuses a Spec that is still `planned`.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf`.
 
@@ -98,7 +99,7 @@ dogfood boundary.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Define the closed disposition vocabulary in `LEXICON.md` | ready | none | Lexicon carries the five classes and what each asserts; `tools/test-control-fidelity.mjs` and the full suite pass |
-| TK-002 | Ratchet the registry so every diagnostic carries remediation text | blocked | none | Red test proving a registry entry with empty remediation fails, run against a temporarily emptied entry; green assertion across the whole registry; the real registry passes unchanged |
+| TK-002 | Ratchet the registry so every diagnostic carries remediation text | ready | none | Red test proving a registry entry with empty remediation fails, run against a temporarily emptied entry; green assertion across the whole registry; the real registry passes unchanged |
 | TK-003 | Require the disposition field in both `REPORT_FORMAT.md` copies | blocked | TK-001 | Root copy filled and template copy generic and `[BRACKETED]`; `tools/test-guardrail-audit.mjs` and `node tools/evaluate-workbench.mjs --path templates --include-controls` pass |
 | TK-004 | Disposition the findings already in the feedback lane | blocked | TK-003 | Every existing report's findings carry a disposition from the closed set, with `accepted-open` naming the owning Spec; no finding scheduled by this slice |
 
@@ -181,6 +182,7 @@ ADR-000K's `canonicalized_in` already names this Spec as of its acceptance.
 | Date | Commit | Claim | Method | Result |
 |---|---|---|---|---|
 | 2026-09-15 | 87c1d45 | Spec authored at owner acceptance of ADR-000K, which recorded that no Spec owned its implementation | Read ADR-000K against both `REPORT_FORMAT.md` copies, `LEXICON.md`'s Feedback row and `tools/test-diagnostics.mjs` at the pre anchor | Confirmed neither report format mentions a disposition, that the Lexicon already places one in the owning Spec, and that the diagnostics test checks a summary for two `git`-scope codes rather than the registry; no implementation performed |
+| 2026-09-15 | 8a32f41 | Separate-context review of the acceptance candidate | Reviewer read this Spec against `tools/test-diagnostics.mjs`, `diagnostics.mjs` `PINNED_EFFECTS`, both `REPORT_FORMAT.md` copies and `blockersSatisfied` in `spec-workbench.mjs` | PASS with four should-fix findings. Two applied here: TK-002 was `blocked` with blockers `none`, which no tool catches and which would have withheld it from selection indefinitely, and `Next gate` named a `claim` the tooling refuses for a `planned` Spec. Reviewer confirmed the Current Verified State claims about the two-code summary check and the absent disposition field are accurate |
 
 ## Completion Result
 
