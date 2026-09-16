@@ -1,9 +1,10 @@
 ---
-status: proposed
+status: accepted
 date: 2026-09-12
 canonicalized_in:
   - LEXICON.md
   - RUNBOOK.md
+  - workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md
 ---
 
 # Every feedback finding carries one of five dispositions
@@ -67,18 +68,32 @@ Spec unable to state what became of a finding it is answerable for.
 Consequences: `workbench/feedback/REPORT_FORMAT.md` and
 `templates/feedback/REPORT_FORMAT.md` both change, and the `AGENTS.md` dogfood
 boundary requires the template copy to stay generic and `[BRACKETED]` while the
-root copy stays filled. None of that migration is performed by this decision.
-No Spec owns it yet — a repo-wide search at review found none referencing this
-ADR — so implementation has no delivery owner until one is authored and this
-record's `canonicalized_in` is updated to name it.
+root copy stays filled. None of that migration is performed by this decision;
+it is delivered by
+[S-00N](../../specs/S-00N-feedback-finding-dispositions/SPEC.md), authored at
+this record's acceptance to close the delivery-owner gap the proposed record
+named.
 
 Provenance: owner-approved answer RB-Q5, settled 2026-09-12, with the
 `accepted-open` class added during that exchange. Recorded in the live grilling
 note `workbench-foundation-rework-2026-09-11` — untracked working material named
 as origin rather than durable evidence.
 
-## Promotion status
+## Acceptance
 
-This record is `proposed`. `LEXICON.md` and both `REPORT_FORMAT.md` copies
-remain live as written, and no disposition field is required, until the owner
-accepts it.
+Accepted by the owner on 2026-09-15, together with
+[ADR-000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md)
+and [ADR-000J](000J-completion-claims-are-checked-against-repository-state.md).
+
+`LEXICON.md` asserted nothing contrary to this decision — its Feedback row
+already places a repair and its disposition in the owning Spec — so acceptance
+landed no control edit. The closed vocabulary, both `REPORT_FORMAT.md` copies,
+the `RUNBOOK.md` reporting procedure and the registry remediation ratchet all
+belong to [S-00N](../../specs/S-00N-feedback-finding-dispositions/SPEC.md).
+Until its slices land, no disposition field is required: a recorded
+implementation gap with a named owner, not undetected drift.
+
+This record's filename says `four-dispositions` because it was allocated when
+the set had four; `repaired` was added during the same exchange. ADR paths are
+stable once declared, so the filename stands and the title, body, register and
+history all say five.

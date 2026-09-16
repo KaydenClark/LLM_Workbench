@@ -1,10 +1,11 @@
 ---
-status: proposed
+status: accepted
 date: 2026-09-12
 canonicalized_in:
   - LEXICON.md
   - AGENTS.md
   - RUNBOOK.md
+  - workbench/specs/S-00H-task-artifact-and-terminology-migration/SPEC.md
 ---
 
 # A Task is a standalone artifact and Task replaces Ticket as the execution-slice term
@@ -140,10 +141,32 @@ in the live grilling note
 `workbench-foundation-rework-2026-09-11`, untracked working material named as
 origin rather than durable evidence.
 
-## Promotion status
+## Acceptance
 
-This record is `proposed`. `LEXICON.md`, `AGENTS.md` and `RUNBOOK.md` remain
-live Canon as written, and `Ticket` remains the live term, until the owner
-accepts it. `Packet`, `Task receipt` and the `Ticket` retirement pointer are
-Lexicon rows this record owes on acceptance; the declared context unit is a
-manifest field it owes. Neither is written by this record.
+Accepted by the owner on 2026-09-15. `Task` is now the execution-slice term in
+Canon and `Ticket` is retired as a live term.
+
+Two obligations this record named at acceptance are settled differently,
+because only one of them left a control asserting the opposite of an accepted
+decision:
+
+- **Landed at acceptance.** The `LEXICON.md` rows: a `Task` definition, the
+  `Packet` and `Task receipt` rows, and the `Ticket` retirement pointer. The
+  Lexicon's Stance Terms row for `TASK` read "the assigned ticket within a
+  stable SPEC" and "No additional task file or queue is introduced", which this
+  decision reverses; leaving it would have left the Language owner contradicting
+  accepted Canon for every cold-start agent. Definitions are Canon, carry no
+  test seam, and land with the decision.
+- **Left to the owning Spec.** The declared context unit in
+  `workbench/manifest.json`, which
+  [S-00H](../../specs/S-00H-task-artifact-and-terminology-migration/SPEC.md)
+  TK-008 owns with a red test at the consuming seam, and the `Ticket`-to-`Task`
+  rename across `AGENTS.md`, `RUNBOOK.md`, the tools, the skills and the generic
+  templates, which S-00H TK-003 and TK-004 own. The manifest asserts nothing
+  contradictory by omission, so declaring the value ahead of its test would buy
+  no coherence and would spend TK-008's red phase.
+
+Until those slices land, `AGENTS.md`, `RUNBOOK.md`, the tools and the skills
+still say `Ticket`. That is the recorded implementation gap S-00H closes, in
+the sense `AGENTS.md` State Resolution gives it — newer Canon with a named
+owner — not undetected drift.
