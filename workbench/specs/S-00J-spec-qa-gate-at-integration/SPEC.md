@@ -63,8 +63,8 @@ immutable candidate SHA and receives the assembled state: every Task done with
 proof, every acceptance line, the evidence rows, and the gaps. The reviewer
 records a verdict bound to that SHA. A failed verdict creates one or more
 corrective Task records under the still-open Spec with the diagnosed defects,
-and `render` shows them; the previous Tasks are already reconciled and retired
-and are not reopened. A passed verdict is what the harness's merge-preparation
+and `render` shows them; the previous Tasks are already done and are not
+reopened, whether they still sit as done records or S-00I has retired them. A passed verdict is what the harness's merge-preparation
 workflow requires before it presents a Spec candidate for `integration`, with
 the branch resolved from the manifest declaration.
 
@@ -142,7 +142,7 @@ locked.
 |---|---|---|---|---|
 | TK-001 | Report the assembled Spec state for a reviewer at a stable seam | ready | S-00H | Red: for a fixture Spec with one unfinished Task the report must say incomplete and list the gap, and no seam exists to call; green: report of Tasks with proof, acceptance lines, evidence and gaps bound to a candidate SHA, full suite |
 | TK-002 | Record a separate-context review verdict against the immutable candidate | blocked | TK-001 | Red: recording a verdict for a SHA that is not the current candidate is refused, and a verdict appended to a Spec is preserved append-only; green: pass or fail verdict with findings, reviewer context and SHA in the Spec's evidence |
-| TK-003 | Turn a failed verdict into corrective Tasks under the still-open Spec | blocked | TK-002 | Red: a failed verdict that leaves the Spec with no corrective Task is refused; green: one Task record per diagnosed defect created through the Task seam, Spec stays open, `render` shows them, retired Tasks untouched |
+| TK-003 | Turn a failed verdict into corrective Tasks under the still-open Spec | blocked | TK-002 | Red: a failed verdict that leaves the Spec with no corrective Task is refused; green: one Task record per diagnosed defect created through the Task seam, Spec stays open, `render` shows them, done Tasks not reopened, with the retired-folder case proven once S-00I TK-005 exists |
 | TK-004 | Bind the gate into `complete` and the merge-preparation workflow | blocked | TK-003 | Red: `complete` succeeds with no passed verdict on the current candidate, and the branch-closeout path proceeds for an incomplete Spec candidate; green: both refuse, a branch presented for a Task ID with its Spec open is reported not refused while S-00O exemption 2 is active, integration branch resolved from the manifest |
 | TK-005 | Require recorded owner Human QA approval before closure | blocked | TK-004 | Red: `complete` succeeds with a passed review but no owner approval; green: `complete` requires an approval record naming the `integration` SHA inspected, and a recorded finding routes to corrective Tasks or Align |
 | TK-006 | Correct reviewed-unit language in the review and delivery skills | blocked | TK-004 | Red: `skills/code-review`, `skills/reviewer`, `skills/carry` and the branch-completion skills still describe the reviewed candidate as task-level; green: they name the assembled Spec, skill catalog and inspection tests pass |
@@ -174,7 +174,10 @@ candidate is refused, so a review cannot be reused after the candidate moves.
 From a failed verdict, create one Task record per diagnosed defect through
 the Task seam S-00H delivered, allocated with `next-id`, blocking nothing
 already retired. The Spec stays open. Run `render` and prove the board shows
-the corrective Tasks. Prove retired Tasks are not reopened. The next review
+the corrective Tasks. Prove done Tasks are not reopened; this Spec runs in
+parallel with S-00I, so prove that against the Task record's own done state
+from S-00H, and against the `retired` folder only once S-00I TK-005 exists.
+The next review
 is of a fresh immutable candidate, through TK-002 again.
 
 ### TK-004 - Bind the gate into `complete` and the merge-preparation workflow

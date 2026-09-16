@@ -215,6 +215,8 @@ the 48 pre-anchor attention findings' state without treating them as scope.
 S-00P closes through the gate S-00J installs, so its completion needs a
 recorded assembled-Spec verdict and an owner Human QA approval naming the
 `integration` SHA; confirm both exist rather than only the `complete` status.
+The same holds for S-00J itself and for any build Spec that closes after
+S-00J TK-005 lands.
 
 ### TK-002 - Stamp v4.0.0 and validate the stamp
 
@@ -275,7 +277,7 @@ verdict on the receipt candidate and an owner Human QA approval naming the
 ## Acceptance Criteria
 
 - [ ] Both bootstrap exemptions are recorded here with directive-018 as source, scoped to this rollout, and each names the condition that ends it.
-- [ ] S-00P, S-00H, S-00I and S-00J are `complete` at the declared integration branch, and S-00P's closure carries the review verdict and owner approval S-00J requires.
+- [ ] S-00P, S-00H, S-00I and S-00J are `complete` at the declared integration branch, and every build Spec that closed after S-00J TK-005 landed, S-00P and S-00J included, carries the review verdict and owner approval S-00J requires.
 - [ ] This Spec's own closure carries a recorded assembled-Spec verdict and an owner Human QA approval naming the `integration` SHA.
 - [ ] The bounded Workbench self-drift check is recorded with no current-facing drift.
 - [ ] Every version stamp names `v4.0.0` and the full suite passes on the committed candidate.

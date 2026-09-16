@@ -193,7 +193,7 @@ TK-002; TK-005 waits on both.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Rewrite `BLUEPRINT.md` against every rung and the full recursive loop | ready | none | Red: a new assertion in `tools/test-blueprint-contract.mjs` that the root Blueprint names each rung and each loop stage fails at the pre anchor; green: the rewritten Blueprint passes it, keeps the eight headings, contains no current status, and `render` plus `doctor` are clean |
-| TK-002 | Rewrite `AGENTS.md` to the Task-record workflow using only commands that exist | blocked | TK-001, S-00H, S-00I, S-00J | Red: a control-fidelity assertion that `AGENTS.md` Work Selection And Lifecycle names the Task-record commands S-00H shipped and no longer instructs editing the `Vertical Implementation Slices` table, which stays false until this rewrite even after S-00H TK-004 has removed the word `Ticket`; green: the rewritten contract passes it, every backticked `spec-workbench.mjs` command it names exists in the CLI usage string, and the guardrail audit does not fall |
+| TK-002 | Rewrite `AGENTS.md` to the Task-record workflow using only commands that exist | blocked | TK-001, S-00H, S-00I, S-00J | Red: a control-fidelity assertion that `AGENTS.md` Work Selection And Lifecycle names `TASK.md` as the record `claim` takes and describes the assembled-Spec review and the corrective-Task return path; `TASK.md`, `assembled Spec` and `corrective Task` occur zero times in `AGENTS.md` at the pre anchor and S-00H TK-004 changes vocabulary only, so the assertion stays false until this rewrite; green: the rewritten contract passes it, every backticked `spec-workbench.mjs` command it names exists in the CLI usage string, and the guardrail audit does not fall |
 | TK-003 | Rewrite `RUNBOOK.md` procedures for Task lifecycle, assembled-Spec review, corrective Tasks, Human QA closure, reconciliation and retirement, and reconcile `README.md` orientation | blocked | TK-002 | Red: the same command-existence sweep over `RUNBOOK.md` fails on a retired route; green: every named command runs as documented and the sweep passes |
 | TK-004 | Rewrite `LEXICON.md` and reconcile ADR-000F, ADR-000G and ADR-000I | blocked | TK-002 | Red: `tools/test-adr.mjs` extended to assert none of the three records is `proposed` fails at the pre anchor; green: register regenerated, no active record contradicts a locked answer, Lexicon routes resolve |
 | TK-005 | Mirror the reworked controls into `templates/` | blocked | TK-003, TK-004 | Red: `tools/evaluate-workbench.mjs --path templates --include-controls` or the fidelity sweep finds a template naming a retired route or a filled specific; green: templates generic and `[BRACKETED]`, fresh-room generation regression speaks the new workflow |
@@ -232,10 +232,12 @@ topology as the Blueprint's destination while S-00O exemption 2 holds.
 Preserve the stable-path retirement S-00I TK-004 made. Every command named
 must exist. S-00H TK-004 will already have removed the word `Ticket` from
 the controls, so the red test is not a vocabulary sweep: it is an assertion
-at the control-fidelity seam that Work Selection And Lifecycle names the
-Task-record commands S-00H shipped and no longer instructs editing the
-`Vertical Implementation Slices` table, which stays false until this
-rewrite. Green also requires every backticked `spec-workbench.mjs` command
+at the control-fidelity seam that Work Selection And Lifecycle names
+`TASK.md` as the record `claim` takes and describes the assembled-Spec
+review and the corrective-Task return path. `TASK.md`, `assembled Spec` and
+`corrective Task` occur zero times in `AGENTS.md` at the pre anchor, and
+S-00H TK-004 changes vocabulary only, so the assertion stays false until
+this rewrite. Green also requires every backticked `spec-workbench.mjs` command
 in the file to exist in the CLI usage string, and the after-score of the
 guardrail audit and the remaining recommendations to be recorded, with no
 criterion weakened.
@@ -250,8 +252,9 @@ closure, reconciliation, retirement and discard procedures using the exact
 commands S-00H, S-00I and S-00J shipped, and reconcile the Template Upgrade
 Release Gate and self-drift sections. Reconcile `README.md` where it names
 the workflow or a retired route. Run each documented command as the green
-proof; the red is the same Work-Selection assertion applied to the RUNBOOK's
-Spec lifecycle procedure.
+proof; the red is the same assertion applied to the RUNBOOK's Spec lifecycle
+procedure, whose text names none of `TASK.md`, the assembled-Spec review or
+corrective Tasks at the pre anchor.
 
 ### TK-004 - Rewrite `LEXICON.md` and reconcile ADR-000F, ADR-000G and ADR-000I
 
