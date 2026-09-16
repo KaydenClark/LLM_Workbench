@@ -9,8 +9,9 @@
 **Catalog description:** Make a completion claim unable to hide uncommitted or unpushed work, by surfacing Git state in `doctor` and refusing `close` unless the Receipt records the state and a reason.
 **Blockers:** none
 **Latest event:** Spec authored at owner acceptance of ADR-000J, which had no delivery owner.
-**Next gate:** Activate this Spec, then claim TK-001; `claim` refuses a Spec
-that is still `planned`.
+**Next gate:** Activate this Spec, then `claim S-00M`, which takes TK-001;
+`claim` takes a Spec ID, selects the first eligible ready slice itself, and
+refuses a Spec that is still `planned`.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf`.
 
@@ -197,6 +198,7 @@ names this Spec as of its acceptance.
 | 2026-09-15 | 87c1d45 | Spec authored at owner acceptance of ADR-000J, which recorded that no Spec owned its implementation | Read ADR-000J against `workbench/tools/diagnostics.mjs` and `workbench/tools/spec-workbench.mjs` at the pre anchor | Confirmed no registered finding observes HEAD, the working tree, untracked files or upstream distance, and that `closeTicket` reads no repository state; no implementation performed |
 | 2026-09-15 | 87c1d45 | ADR-000J's own verification sentence claimed the `git` scope had "no finding currently using it" | Ran `grep -n "'git'" workbench/tools/diagnostics.mjs` at the pre anchor and against `git show c0ac60a:workbench/tools/diagnostics.mjs`, the ADR's own anchor | The claim was false at the anchor it cited: `integration-branch-undeclared` and `integration-branch-missing` both used the scope then and now. The ADR's substantive claim — no finding observes Git working state — holds. Corrected the sentence in ADR-000J at acceptance rather than accepting a false evidence line into Canon |
 | 2026-09-15 | 8a32f41 | Separate-context review of the acceptance candidate | Reviewer ran `adr validate`, `doctor`, `next --json`, the append-only check, projection regeneration and seven suite tests against commit `8a32f41`, and challenged the Spec's verified-state claims, slice statuses and next gate | PASS with four should-fix findings. Two applied here: `Next gate` named a `claim` the tooling refuses for a `planned` Spec, and Dependencies stated an `upstream distance` obligation this Spec has no criterion for. Reviewer confirmed the Current Verified State claims about the `git` scope, the 66 registered codes and `closeTicket` are accurate |
+| 2026-09-15 | e7beea3 | Fresh review of the corrected candidate returned PASS with no blocking or should-fix finding; it also caught two characterization slips in the row above | Reviewer re-read that row against its own prior report | The `upstream distance` item was recorded there as one of "four should-fix findings"; it was note 7. "Seven suite tests" undercounts: the reviewer ran ten node suites plus the template evaluator and the append-only checker. Both slips err toward over-severity and under-credit, so neither overclaims. The row above is append-only and stands as written; this row is the correction |
 
 ## Completion Result
 

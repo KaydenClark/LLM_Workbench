@@ -9,8 +9,8 @@
 **Catalog description:** Make a Task a standalone `TASK.md` artifact and replace Ticket with Task across prose, tools and newly allocated identifiers.
 **Blockers:** TT-Q10 (identifier form) is open and blocks TK-003 and TK-004.
 **Latest event:** ADR-000H accepted 2026-09-15; the Lexicon rows it owed landed with acceptance and TK-001 and TK-008 became claimable.
-**Next gate:** Claim TK-001 or TK-008; TK-003 and TK-004 still need TT-Q10
-answered.
+**Next gate:** `claim S-00H` takes TK-001, the first of its two unblocked
+slices; TK-008 follows. TK-003 and TK-004 still need TT-Q10 answered.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
