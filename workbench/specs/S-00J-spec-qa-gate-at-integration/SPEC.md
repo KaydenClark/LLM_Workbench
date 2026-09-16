@@ -64,8 +64,8 @@ proof, every acceptance line, the evidence rows, and the gaps. The reviewer
 records a verdict bound to that SHA. A failed verdict creates one or more
 corrective Task records under the still-open Spec with the diagnosed defects,
 and `render` shows them; the previous Tasks are already done and are not
-reopened, whether they still sit as done records or S-00I has retired them. A passed verdict is what the harness's merge-preparation
-workflow requires before it presents a Spec candidate for `integration`, with
+reopened, whether they still sit as done records or S-00I has retired them.
+A passed verdict is what the harness's merge-preparation workflow requires before it presents a Spec candidate for `integration`, with
 the branch resolved from the manifest declaration.
 
 `integration` remains the Human QA branch. The owner inspects assembled
@@ -173,7 +173,7 @@ candidate is refused, so a review cannot be reused after the candidate moves.
 
 From a failed verdict, create one Task record per diagnosed defect through
 the Task seam S-00H delivered, allocated with `next-id`, blocking nothing
-already retired. The Spec stays open. Run `render` and prove the board shows
+already done. The Spec stays open. Run `render` and prove the board shows
 the corrective Tasks. Prove done Tasks are not reopened; this Spec runs in
 parallel with S-00I, so prove that against the Task record's own done state
 from S-00H, and against the `retired` folder only once S-00I TK-005 exists.
@@ -226,7 +226,8 @@ answer, without weakening the immutable-candidate requirement from ADR-0037.
 - [ ] A review verdict is recorded append-only against the exact candidate
       and refused for any other SHA.
 - [ ] A failed verdict produces corrective Task records under the still-open
-      Spec, visible on the board, without reopening retired Tasks.
+      Spec, visible on the board, without reopening done Tasks (the
+      retired-folder case once S-00I TK-005 exists).
 - [ ] `complete` refuses without a passed verdict on the current candidate
       and a recorded owner approval naming the `integration` SHA.
 - [ ] The harness's merge-preparation workflow refuses an incomplete or
