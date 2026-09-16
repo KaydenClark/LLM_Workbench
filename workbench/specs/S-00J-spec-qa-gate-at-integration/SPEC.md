@@ -75,10 +75,13 @@ naming the `integration` SHA inspected. A failed Human QA finding against an
 existing destination becomes corrective Task work; a changed destination
 returns to Align.
 
-While S-00O exemption 2 holds, every Task lands as its own PR into
-`integration` under the `AGENTS.md` integration gate. That is a Task PR, not a
-Spec candidate: the gate reports on it and does not refuse it for the Spec
-being incomplete. An agent that opens a PR by some other path, bypassing the
+The gate is invoked for a named Spec and a named candidate SHA. A Spec
+candidate is a branch its invoker presents as that Spec's assembled result;
+a Task PR is a branch presented for one Task ID while its Spec stays open.
+While S-00O exemption 2 holds, every Task lands as its own Task PR into
+`integration` under the `AGENTS.md` integration gate: the gate reports the
+Spec's assembled state on it and does not refuse it for the Spec being
+incomplete. An agent that opens a PR by some other path, bypassing the
 harness's skills, is not stopped by GitHub itself; that would need
 repository-level enforcement, which is out of scope.
 
@@ -104,8 +107,11 @@ repository-level enforcement, which is out of scope.
 - Closure precedes reconciliation and retirement, which are
   [S-00I](../S-00I-folder-lifecycle-for-records/SPEC.md); this Spec ends at a
   closed Spec.
-- Exemption 2 in S-00O: during the rollout the gate distinguishes a Task PR
-  into `integration` from a Spec candidate and refuses only the latter.
+- Exemption 2 in S-00O: while it is active the gate distinguishes a Task PR
+  (presented for a Task ID with its Spec still open) from a Spec candidate
+  (presented as the Spec's assembled result) and refuses only the latter.
+  The Spec-candidate refusal is exercised by test until Spec-branch tooling
+  ends the exemption and real Spec candidates exist.
 
 ## Non-Goals
 
@@ -137,7 +143,7 @@ locked.
 | TK-001 | Report the assembled Spec state for a reviewer at a stable seam | ready | S-00H | Red: for a fixture Spec with one unfinished Task the report must say incomplete and list the gap, and no seam exists to call; green: report of Tasks with proof, acceptance lines, evidence and gaps bound to a candidate SHA, full suite |
 | TK-002 | Record a separate-context review verdict against the immutable candidate | blocked | TK-001 | Red: recording a verdict for a SHA that is not the current candidate is refused, and a verdict appended to a Spec is preserved append-only; green: pass or fail verdict with findings, reviewer context and SHA in the Spec's evidence |
 | TK-003 | Turn a failed verdict into corrective Tasks under the still-open Spec | blocked | TK-002 | Red: a failed verdict that leaves the Spec with no corrective Task is refused; green: one Task record per diagnosed defect created through the Task seam, Spec stays open, `render` shows them, retired Tasks untouched |
-| TK-004 | Bind the gate into `complete` and the merge-preparation workflow | blocked | TK-003 | Red: `complete` succeeds with no passed verdict on the current candidate, and the branch-closeout path proceeds for an incomplete Spec candidate; green: both refuse, a Task PR under S-00O exemption 2 is reported not refused, integration branch resolved from the manifest |
+| TK-004 | Bind the gate into `complete` and the merge-preparation workflow | blocked | TK-003 | Red: `complete` succeeds with no passed verdict on the current candidate, and the branch-closeout path proceeds for an incomplete Spec candidate; green: both refuse, a branch presented for a Task ID with its Spec open is reported not refused while S-00O exemption 2 is active, integration branch resolved from the manifest |
 | TK-005 | Require recorded owner Human QA approval before closure | blocked | TK-004 | Red: `complete` succeeds with a passed review but no owner approval; green: `complete` requires an approval record naming the `integration` SHA inspected, and a recorded finding routes to corrective Tasks or Align |
 | TK-006 | Correct reviewed-unit language in the review and delivery skills | blocked | TK-004 | Red: `skills/code-review`, `skills/reviewer`, `skills/carry` and the branch-completion skills still describe the reviewed candidate as task-level; green: they name the assembled Spec, skill catalog and inspection tests pass |
 
@@ -180,8 +186,13 @@ the integration branch from `git.integrationBranch` rather than hardcoding
 it. Invoke the gate as a required step in the branch-completion path the
 delivery skills and `AGENTS.md` Branch Completion describe, so a Spec
 candidate with an incomplete Spec or a failed or stale verdict refuses to
-proceed and a complete, passed one proceeds unchanged. Distinguish a Task PR
-under S-00O exemption 2: report, do not refuse. This binds the harness's own
+proceed and a complete, passed one proceeds unchanged. The discriminator is
+what the invoker presents: a Spec ID with a candidate SHA is a Spec
+candidate; a Task ID with its Spec still open is a Task PR, which is what
+every PR in this rollout is while S-00O exemption 2 is active, and the gate
+reports on it without refusing. Until Spec-branch tooling ends the
+exemption, the refusal path is proven by test rather than by a live Spec
+candidate. This binds the harness's own
 process; it does not and cannot make GitHub refuse a merge opened by some
 other path.
 
@@ -217,8 +228,9 @@ answer, without weakening the immutable-candidate requirement from ADR-0037.
       and a recorded owner approval naming the `integration` SHA.
 - [ ] The harness's merge-preparation workflow refuses an incomplete or
       unreviewed Spec candidate, passes a complete reviewed one unchanged,
-      and reports rather than refuses a Task PR under S-00O exemption 2.
-      This does not claim GitHub itself refuses anything.
+      and, while S-00O exemption 2 is active, reports rather than refuses a
+      branch presented for a Task ID with its Spec still open. This does not
+      claim GitHub itself refuses anything.
 - [ ] The integration branch is resolved from the manifest declaration.
 - [ ] Review and delivery skills name the assembled Spec as the reviewed
       unit; the independent review requirement is unchanged.

@@ -92,7 +92,8 @@ understands it, because those identifiers remain readable exactly as written.
 - The bootstrap route this Spec is built under:
   [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md). Each Task lands as its
   own branch and PR into `integration` after separate-context review of the
-  immutable candidate (exemption 2). Never more than two build lanes at once.
+  immutable candidate (exemption 2). Never more than two build lanes at once;
+  the tool does not enforce that limit, the dispatcher does.
 
 ADR-000H's `LEXICON.md` rows landed with acceptance; everything else it names
 is this Spec's to deliver. This Spec still uses the live `Ticket` table format

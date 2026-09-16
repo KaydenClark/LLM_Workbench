@@ -41,15 +41,17 @@ permanent ADR history.
 
 ## Current Verified State
 
-At the pre anchor, `workbench/docs/adr/` is flat: 44 record files plus
+At the pre anchor, `workbench/docs/adr/` is flat: 52 record files plus
 `REGISTER.md` and `HISTORY.md`, no subdirectories. Lifecycle is read from
 frontmatter `status`; `workbench/tools/adr.mjs` lists the directory flat,
 filters `accepted` to build `REGISTER.md`, and writes `HISTORY.md` unfiltered.
 `adr.mjs` requires `superseded_by` to be one whole-record filename with no
-path, so successor resolution is not folder-aware. 20 ADR files carry relative
-intra-ADR links that break when a target moves, and 15 accepted ADRs name live
-`workbench/specs/S-*` paths. `workbench/specs/` holds 56 spec directories, so
-the moving unit for a Spec is a directory, not a file; `spec-workbench.mjs`
+path, so successor resolution is not folder-aware. 30 record files carry a
+relative link to another ADR record, which breaks when a target moves, and 19
+accepted records name a live `workbench/specs/S-*` path. `workbench/specs/`
+holds 64 `S-*` directories, so the moving unit for a Spec is a directory, not
+a file. Every count here was taken at the pre anchor and is a floor for the
+build, which re-counts before it migrates; `spec-workbench.mjs`
 loads only top-level directories, and `CATALOG.md` says it "includes completed
 history". `AGENTS.md` still requires a declared Spec path never to move between
 active, done and archive folders, the direct inverse of this model. No command
@@ -130,16 +132,16 @@ at Spec granularity and the owner's two-lane limit is respected. The earlier
 FND-Q07 and FND-Q08 HELD blockers are dropped: decision-079 (WF-8E) and
 decision-080 (WF-8F) answered them, settling that Specs and Tasks are transient
 and the Wiki owns current capability knowledge. The FND note's own register
-still reads `held` and is reconciled by whoever next touches that note; it
-does not block this Spec.
+still reads `held`; that stale register is untracked working material, not a
+blocker, and nothing in this Spec depends on it.
 
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Make ADR successor and link resolution folder-aware | ready | S-00H | Red: `tools/test-adr.mjs` case for a superseded record whose successor lives in another folder fails because `adr.mjs` rejects a path in `superseded_by`; green: resolution by identity, all 20 intra-ADR links proven |
-| TK-002 | Move ADR lifecycle from frontmatter status to folder location | blocked | TK-001 | Red: a test asserting `REGISTER.md` and `HISTORY.md` are driven by location fails; green: 44 records migrated, register byte-stable for unchanged lifecycles, `archive` holds superseded and deprecated bodies untouched |
-| TK-003 | Apply folder lifecycle to Spec directories and repair every live reference | blocked | TK-002 | Red: a complete reference and link scan fails after a fixture Spec directory moves; green: move path, 15 ADR-to-spec references resolve, `CATALOG.md` names retired Specs by their historical route or stops claiming to include them |
+| TK-001 | Make ADR successor and link resolution folder-aware | ready | S-00H | Red: `tools/test-adr.mjs` case for a superseded record whose successor lives in another folder fails because `adr.mjs` rejects a path in `superseded_by`; green: resolution by identity, every intra-ADR link proven (30 files at the anchor) |
+| TK-002 | Move ADR lifecycle from frontmatter status to folder location | blocked | TK-001 | Red: a test asserting `REGISTER.md` and `HISTORY.md` are driven by location fails; green: every record migrated (52 at the anchor), register byte-stable for unchanged lifecycles, `archive` holds superseded and deprecated bodies untouched |
+| TK-003 | Apply folder lifecycle to Spec directories and repair every live reference | blocked | TK-002 | Red: a complete reference and link scan fails after a fixture Spec directory moves; green: move path, every ADR-to-spec reference resolves (19 records at the anchor), `CATALOG.md` names retired Specs by their historical route or stops claiming to include them |
 | TK-004 | Apply folder lifecycle to Task records and retire the stable-path rule | blocked | TK-003 | Red: a test moving a `TASK.md` record between folders fails; green: move path and `AGENTS.md` stable-path rule retired with stated reason in the same change |
 | TK-005 | Reconcile a closed Spec and its Tasks into durable owners and retire them | blocked | TK-004 | Red: retiring a Spec whose surviving claims name no durable owner is refused, and a reconciliation that copies the Spec fails `wiki.mjs` copied-task-state validation; green: transformed Wiki capability record, Spec and Tasks in `retired`, contained branches cleaned up, `next` and `render` no longer see them, explicit historical route works |
 | TK-006 | Gate discard of retired records on verified `main`, a clean reference scan and recoverable Git identity | blocked | TK-005 | Red: discard is refused before verified `main` containment, before a clean complete scan, without a recoverable commit and path, and always for `archive`; green: discard after every gate, a later corrective Task loads the reconciled Wiki claim without restoring `SPEC.md` |
@@ -151,13 +153,14 @@ does not block this Spec.
 `adr.mjs` rejects a `superseded_by` containing a path separator today. Add the
 failing test first: a superseded record whose successor lives in another folder.
 Then implement resolution that finds a record by identity rather than by
-assumed location, and prove all 20 relative intra-ADR links still resolve.
+assumed location, and prove every relative intra-ADR link still resolves; 30
+record files carry one at the anchor, and the build re-counts first.
 
 ### TK-002 - Move ADR lifecycle from frontmatter status to folder location
 
 **Stance:** Builder
 
-Migrate 44 records. `REGISTER.md` must be byte-stable across the migration for
+Migrate every record (52 at the anchor; re-count first). `REGISTER.md` must be byte-stable across the migration for
 every record whose lifecycle does not change; that is the proof the projection
 reads location correctly rather than coincidentally. Superseded and deprecated
 records go to permanent `archive` with bodies untouched. Records still
@@ -167,8 +170,9 @@ records go to permanent `archive` with bodies untouched. Records still
 
 **Stance:** Builder
 
-The moving unit is a directory across 56 specs. 15 accepted ADRs name live spec
-paths and must still resolve afterward. Run a complete reference and link scan
+The moving unit is a directory across every spec (64 at the anchor). Every
+accepted ADR that names a live spec path (19 at the anchor) must still resolve
+afterward. Run a complete reference and link scan
 as the green proof, not as a spot check. `spec-workbench.mjs` loads only
 top-level directories, so decide and prove what `CATALOG.md` says about a
 retired Spec: name it by its historical route, or stop claiming to include
@@ -220,8 +224,9 @@ the reconciled owners preserve the evidence.
       and complete history still reachable; nothing ever clears `archive`.
 - [ ] Lifecycle `status` frontmatter is removed from records whose lifecycle
       folders now carry it.
-- [ ] Successor resolution and all 20 intra-ADR links work across folders.
-- [ ] All 15 ADR-to-spec path references resolve after Spec directories move,
+- [ ] Successor resolution and every intra-ADR link work across folders,
+      counted at build time.
+- [ ] Every ADR-to-spec path reference resolves after Spec directories move,
       and `CATALOG.md` is truthful about retired Specs.
 - [ ] Task records move between lifecycle folders and the `AGENTS.md`
       stable-path rule is retired with a stated reason.
@@ -266,6 +271,7 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 | 2026-09-12 | b4edb20 | Review found Documentation Impact retired the stable-path rule "at ADR acceptance", before TK-001/TK-003 make moves link-safe | Re-read this Spec's own ticket sequencing against its Documentation Impact claim | Corrected Documentation Impact to keep the stable-path rule in force until TK-001 and TK-003 land; `LEXICON.md`'s vocabulary definitions remain landable at ADR acceptance; no implementation performed |
 | 2026-09-12 | f2d2e87 | The 2026-09-12 `c0ac60a` row above overstates its own survey: it reports 22 intra-ADR links, 16 ADR-to-spec references and 56 spec directories | Re-counted at `c0ac60a`; `git ls-tree -d --name-only c0ac60a workbench/specs/` returns 54 `S-*` directories | Verified counts at `c0ac60a` are 20 intra-ADR links, 15 ADR-to-spec references and 54 spec directories. The body of this Spec and ADR-000I already carry the corrected figures. The row above is left at its first-published text because evidence rows are append-only; this row is the correction of record |
 | 2026-09-16 | e3c5c8f | Rewritten against the WF grilling note at revision 57 under directive-018: retirement follows Wiki reconciliation (WF-8D, WF-8E, WF-8F), corrective Tasks work against the Wiki record (WF-8A), discard is gated on verified `main` (WF-8F) and never touches `archive`; ADR-000I acceptance and the FND-Q07/FND-Q08 hold removed as blockers; TK-005 and TK-006 added; no implementation performed | Read decisions 070, 073, 079, 080, 081 and correction-023 against every section; `git ls-tree -d --name-only e3c5c8f workbench/specs/` returns 56 `S-*` directories; ADR-000I confirmed `proposed` at the anchor | Status `blocked` on S-00H only; anchors moved to the integration tip the rewrite read at; TK-001 to TK-004 kept with the stable-path retirement now owned by TK-004 alone |
+| 2026-09-16 | e3c5c8f | The row above and the rewrite it describes re-asserted the `c0ac60a` survey counts (44 records, 20 links, 15 references, 56 directories) at the new anchor without re-counting, and stated that `git ls-tree -d --name-only e3c5c8f workbench/specs/` returns 56 `S-*` directories, which it does not | Separate-context review of PR #94 re-counted at `e3c5c8f`: that command returns 64 `S-*` directories; the ADR directory holds 52 record files; 30 record files carry a relative link to another record; 19 accepted records name a `workbench/specs/S-*` path | Current Verified State, TK-001 to TK-003 and the acceptance criteria now carry the anchor counts with their method and require a re-count at build time; the row above is left as first published because evidence rows are append-only, and this row is the correction of record |
 
 ## Completion Result
 

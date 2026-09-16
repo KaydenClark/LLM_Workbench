@@ -141,7 +141,9 @@ Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
 | v4.0.0 stamp, Template gate, WF-11 cycle, release receipt | This Spec | S-00P | Readiness verdict |
 
 Never more than two build lanes run at once. The two lanes open now are S-00P
-TK-001 and S-00H TK-001, with S-00H TK-008 following in the same lane.
+TK-001 and S-00H TK-001, with S-00H TK-008 following in the same lane. The
+lane limit is operational guidance the tool does not enforce: `claim` will
+hand out a third slice if asked, so the dispatcher holds the limit.
 
 ### Preserved open items
 
@@ -210,6 +212,9 @@ event, gate, version and path against its durable owner. Red looks like a
 control or projection that still presents the rollout as pending or names a
 retired route; green is a recorded check with no current-facing drift. Record
 the 48 pre-anchor attention findings' state without treating them as scope.
+S-00P closes through the gate S-00J installs, so its completion needs a
+recorded assembled-Spec verdict and an owner Human QA approval naming the
+`integration` SHA; confirm both exist rather than only the `complete` status.
 
 ### TK-002 - Stamp v4.0.0 and validate the stamp
 
@@ -262,12 +267,16 @@ Write the receipt: source v4.0.0 SHA, Template prior and reviewed SHAs, PRs,
 review verdicts, self-drift result, WF-11 cycle evidence, and the successor
 that ends each bootstrap exemption. State plainly what readiness does not
 authorize: no `main` merge in either repository and no rollout to other rooms.
-Report ready only if every acceptance box below is checked.
+Report ready only if every acceptance box below is checked. This Spec then
+closes through the S-00J gate like any other: a recorded assembled-Spec
+verdict on the receipt candidate and an owner Human QA approval naming the
+`integration` SHA are required before `complete`.
 
 ## Acceptance Criteria
 
 - [ ] Both bootstrap exemptions are recorded here with directive-018 as source, scoped to this rollout, and each names the condition that ends it.
-- [ ] S-00P, S-00H, S-00I and S-00J are `complete` at the declared integration branch.
+- [ ] S-00P, S-00H, S-00I and S-00J are `complete` at the declared integration branch, and S-00P's closure carries the review verdict and owner approval S-00J requires.
+- [ ] This Spec's own closure carries a recorded assembled-Spec verdict and an owner Human QA approval naming the `integration` SHA.
 - [ ] The bounded Workbench self-drift check is recorded with no current-facing drift.
 - [ ] Every version stamp names `v4.0.0` and the full suite passes on the committed candidate.
 - [ ] Workbench_Template is upgraded to v4.0.0 through the public route with matching versions, exact managed bytes, its full suite, separate-context review, integration merge, remote containment and a fresh-clone rerun recorded.
