@@ -9,9 +9,7 @@
 **Catalog description:** Make a completion claim unable to hide uncommitted or unpushed work, by surfacing Git state in `doctor` and refusing `close` unless the Receipt records the state and a reason.
 **Blockers:** none
 **Latest event:** Spec authored at owner acceptance of ADR-000J, which had no delivery owner.
-**Next gate:** Activate this Spec, then `claim S-00M`, which takes TK-001;
-`claim` takes a Spec ID, selects the first eligible ready slice itself, and
-refuses a Spec that is still `planned`.
+**Next gate:** Activate this Spec, then `claim S-00M`, which takes TK-001; `claim` takes a Spec ID, selects the first eligible ready slice itself, and refuses a Spec that is still `planned`.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf`.
 
