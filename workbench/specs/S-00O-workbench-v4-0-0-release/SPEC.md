@@ -315,6 +315,7 @@ workflow is owned by S-00P, not here.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-16 | spec | Spec authored from directive-018 at revision 57 of the WF grilling note; no implementation performed | Read-only: manifest v3.2.1, Template integration fc0fc18c at v3.2.1, ADR-000H accepted and 000F/000G/000I proposed, `next --json` returning S-00H TK-001, doctor 48 attention findings and no blocker | This Spec owns the exemptions and release proof; S-00P, S-00H, S-00I and S-00J own the capabilities | All five Specs pending; TT-Q10 and correction-019 preserved open |
+| 2026-09-17 | spec | S-00H TK-001 landed (PR #98, integration 39214bc): the managed runtime set `RUNTIME_TOOLS` in `workbench/tools/workbench-layout.mjs` grew from sixteen to seventeen with `task-record.mjs`, a release-surface change the v4.0.0 stamp must carry | Separate-context review of 3dac999 PASS; full suite 42/42 | Recorded here for the version bump; no control changed | The v4.0.0 stamp (TK-002) records the managed-set growth; S-00P TK-001 also landed (PR #96) |
 
 ## Completion Result
 
