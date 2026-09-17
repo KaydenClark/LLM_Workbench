@@ -6,6 +6,7 @@ import path from 'node:path';
 import {
   TASK_STATUSES as SLICE_STATUSES,
   claimWork,
+  convertSpecSlices,
   closeTicket,
   completeSpec,
   doctor,
@@ -591,16 +592,78 @@ try {
   render(root);
 
   // A table-only Spec behaves exactly as it did before any of this.
-  write('specs/S-303-table-only/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-303'));
+  write('specs/S-306-table-only/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-306'));
   render(root);
   const tableOnly = nextWork(root);
   assert.equal(tableOnly.ticketId, 'TK-001');
   assert.equal(tableOnly.status, 'ready');
-  const tableOnlyBefore = read('specs/S-303-table-only/SPEC.md');
+  const tableOnlyBefore = read('specs/S-306-table-only/SPEC.md');
 
-  assert.equal(read('specs/S-303-table-only/SPEC.md'), tableOnlyBefore,
+  // The converter: one TASK.md per non-done row of an active Spec, done rows
+  // and completed Specs untouched, and it refuses to run twice.
+  assert.throws(
+    () => convertSpecSlices(root, 'S-001'),
+    /S-001 is complete/,
+    "a completed Spec's historical table is never converted"
+  );
+  assert.equal(read('specs/S-001-fixture/SPEC.md'), completedBefore,
+    'a refused conversion leaves the completed Spec byte-identical');
+
+  write('specs/S-304-convert/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-304').replace(
+    '| TK-001 | First slice | ready | none | pending |',
+    [
+      '| TK-001 | First slice | done | none | node test \\| tee first.log |',
+      '| TK-002 | Second slice | ready | TK-001 | pending |',
+      '| TK-003 | Third slice | blocked | TK-002 | pending |'
+    ].join('\n')
+  ));
+  const converted = convertSpecSlices(root, 'S-304', {
+    destinations: { 'TK-002': 'spec-acceptance: S-304 Acceptance Criteria item 1' }
+  });
+  assert.deepEqual(converted.converted, [
+    'specs/S-304-convert/tasks/TK-002/TASK.md',
+    'specs/S-304-convert/tasks/TK-003/TASK.md'
+  ]);
+  assert.deepEqual(converted.retained, ['TK-001'], 'a done row stays in the table as completed history');
+  assert.match(sliceTable(read('specs/S-304-convert/SPEC.md')), /\| TK-001 \| First slice \| done \| none \| node test \\\| tee first\.log \|/);
+  assert.doesNotMatch(sliceTable(read('specs/S-304-convert/SPEC.md')), /\| TK-002 \|/,
+    'a converted row leaves the table, so no identifier is held in two places');
+  assert.equal(readTaskRecord(path.join(root, 'specs/S-304-convert/tasks/TK-002/TASK.md'), root).destination.reference,
+    'S-304 Acceptance Criteria item 1', 'a supplied destination is carried onto the record');
+  assert.equal(readTaskRecord(path.join(root, 'specs/S-304-convert/tasks/TK-003/TASK.md'), root).destination.reference,
+    'S-304 Acceptance Criteria', 'an unsupplied destination names the whole acceptance section rather than guessing a line');
+  assert.equal(readTaskRecord(path.join(root, 'specs/S-304-convert/tasks/TK-003/TASK.md'), root).status, 'blocked');
+  render(root);
+  assert.deepEqual(doctor(root), [], 'a converted Spec renders and passes doctor');
+  assert.equal(nextWork(root).ticketId, 'TK-002', 'the converted room selects the first eligible record');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-304'),
+    /already has specs\/S-304-convert\/tasks; conversion runs once/,
+    'the converter refuses to run twice'
+  );
+
+  // A blocker a Task record cannot represent stops the conversion by name
+  // rather than dropping the dependency on the way into the record.
+  write('specs/S-305-unconvertible/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-305').replace(
+    '| TK-001 | First slice | ready | none | pending |',
+    '| TK-001 | First slice | blocked | TT-Q10 | pending |'
+  ));
+  const unconvertibleBefore = read('specs/S-305-unconvertible/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-305'),
+    /S-305\/TK-001 cannot be converted: TK-001 has an invalid blocker id: TT-Q10/,
+    'a blocker outside the record vocabulary fails the conversion closed instead of being dropped'
+  );
+  assert.equal(read('specs/S-305-unconvertible/SPEC.md'), unconvertibleBefore,
+    'a refused conversion writes nothing at all');
+  assert.equal(fs.existsSync(path.join(root, 'specs/S-305-unconvertible/tasks')), false,
+    'a refused conversion leaves no half-written tasks directory');
+  fs.rmSync(path.join(root, 'specs/S-305-unconvertible'), { recursive: true });
+  fs.rmSync(path.join(root, 'specs/S-304-convert'), { recursive: true });
+
+  assert.equal(read('specs/S-306-table-only/SPEC.md'), tableOnlyBefore,
     'a table-only Spec beside record-backed Specs is never rewritten by them');
-  fs.rmSync(path.join(root, 'specs/S-303-table-only'), { recursive: true });
+  fs.rmSync(path.join(root, 'specs/S-306-table-only'), { recursive: true });
   render(root);
   assert.equal(read('specs/S-001-fixture/SPEC.md'), completedBefore,
     "a completed Spec's historical table is byte-identical after every command");

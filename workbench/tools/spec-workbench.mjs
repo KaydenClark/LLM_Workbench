@@ -174,6 +174,77 @@ export function closeTicket(rootDir, id, options) {
   return showSpec(rootDir, id);
 }
 
+// The one-time migration from an embedded slice table to standalone Task
+// records, for one active Spec. It writes a `TASK.md` per unfinished row and
+// removes that row, so no identifier is ever held in two places, and leaves
+// every `done` row where it is: those rows are the Spec's completed history,
+// carrying proof that the append-only evidence log already cites.
+//
+// A completed Spec is refused outright rather than converted quietly, and a
+// second run is refused by the existing `tasks/` directory, so this cannot
+// half-convert a Spec someone already migrated.
+//
+// `destinations` maps a slice id to the destination its record declares.
+// Which acceptance line a slice advances is a judgment no parser can make;
+// carrying the whole acceptance list onto every record would assert the same
+// false destination for all of them, so an unsupplied id names the Spec's
+// Acceptance Criteria section, which is true of every slice, and the caller
+// supplies the specific line where it knows it.
+export function convertSpecSlices(rootDir, id, options = {}) {
+  const root = path.resolve(rootDir);
+  const spec = findSpec(root, id);
+  if (spec.status !== 'active') {
+    throw new Error(`${id} is ${spec.status}, not active; only an active Spec is converted and a completed Spec's historical table is never rewritten`);
+  }
+  const specDir = path.dirname(spec.filePath);
+  const tasksDir = path.join(specDir, 'tasks');
+  if (fs.existsSync(tasksDir)) {
+    throw new Error(`${id} already has ${path.relative(root, tasksDir).split(path.sep).join('/')}; conversion runs once and refuses to run again`);
+  }
+  const pending = spec.tickets.filter((ticket) => ticket.status !== 'done');
+  if (pending.length === 0) throw new Error(`${id} has no unfinished slice-table row to convert`);
+  const destinations = options.destinations ?? {};
+  // Every record is rendered and parsed back before anything is written, so a
+  // row the record vocabulary cannot carry - a blocker outside the `S-`/`TK-`
+  // form, for instance - stops the conversion by name instead of silently
+  // dropping the dependency on the way into the record.
+  const staged = pending.map((ticket) => {
+    const filePath = path.join(tasksDir, ticket.id, 'TASK.md');
+    const content = formatTaskRecord({
+      id: ticket.id,
+      specId: id,
+      slice: ticket.slice,
+      status: ticket.status,
+      blockers: ticket.blockers,
+      destination: destinations[ticket.id] ?? `spec-acceptance: ${id} Acceptance Criteria`,
+      proof: /^pending\.?$/i.test(ticket.proof ?? '') ? null : ticket.proof
+    });
+    try {
+      parseTaskRecord(content, filePath, root);
+    } catch (error) {
+      throw new Error(`${id}/${ticket.id} cannot be converted: ${error.message}`);
+    }
+    return { ticket, filePath, content };
+  });
+  const converted = [];
+  for (const { filePath, content } of staged) {
+    assertSafeWritePath(root, filePath);
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    atomicWrite(filePath, content);
+    converted.push(path.relative(root, filePath).split(path.sep).join('/'));
+  }
+  const convertedIds = new Set(staged.map((item) => item.ticket.id));
+  atomicWrite(spec.filePath, spec.content.split('\n').filter((line) => {
+    const cells = /^\|\s*(TK-[0-9A-Za-z]+)\s*\|/.exec(line);
+    return !cells || !convertedIds.has(cells[1]);
+  }).join('\n'));
+  return {
+    specId: id,
+    converted,
+    retained: spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)
+  };
+}
+
 export function completeSpec(rootDir, id, options = {}) {
   const date = validDate(options.date ?? today());
   const spec = findSpec(rootDir, id);
@@ -760,12 +831,13 @@ async function main() {
   else if (command === 'claim') result = claimWork(root, id, options);
   else if (command === 'close') result = closeTicket(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
+  else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|complete|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|complete|convert-tasks|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
