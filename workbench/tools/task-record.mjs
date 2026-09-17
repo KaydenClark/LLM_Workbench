@@ -6,10 +6,15 @@
 // touching the Spec's stable declared path. This module only reads that
 // record; it changes nothing about how `next`, `claim`, `close`, `render` or
 // `doctor` behave against the embedded `Ticket | Slice | Status | Blockers |
-// Proof` table in `workbench/tools/spec-workbench.mjs` — migrating those
-// commands onto Task records is TK-002. A room may carry both an embedded
+// Proof` table in `workbench/tools/spec-workbench.mjs`; TK-002 migrated those
+// commands, reading this module rather than changing it. A room may carry both an embedded
 // table row and a standalone Task record for the same identifier; nothing
-// here counts or cross-checks the two, so no reader doubles a total.
+// here counts or cross-checks the two, so no reader doubles a total. TK-002
+// since gave a Spec one source of slice truth at the command seam: a Spec
+// with a `tasks/` directory is record-backed and its retained table is
+// completed history, so the commands refuse that coexistence rather than
+// read past it. This reader is still the plain record reader and enforces
+// none of that.
 //
 // `listTaskRecords` scans exactly one directory level beneath `tasks/`:
 // `<specDir>/tasks/<id>/TASK.md`. It does not recurse into a nested
@@ -25,10 +30,10 @@ import path from 'node:path';
 import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
-// TK-002 note: this closed set duplicates the unexported TICKET_STATUSES in
-// spec-workbench.mjs. Left as two vocabularies for this slice, since
-// consolidating them means changing that module's exports, which is TK-002's
-// migration, not this reader's. Flagged here so TK-002 can fold them.
+// The one closed status vocabulary for an execution slice, whether it is held
+// in a Task record or in a Spec's retained slice table. TK-002 folded
+// spec-workbench.mjs's own unexported TICKET_STATUSES into this set, which
+// that module re-exports, so a status added here is valid to both readers.
 
 // The destination a Task advances is either a Spec's acceptance lines, or,
 // for a corrective Task after a Spec is retired and reconciled (S-00I), a

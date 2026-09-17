@@ -615,6 +615,20 @@ try {
   fs.rmSync(path.join(root, 'specs/S-307-ready-unmet'), { recursive: true });
   render(root);
 
+  // A table-only Spec whose rows all say `blocked` still hears that it has
+  // nothing eligible, not that a row names an unmet blocker: the refusal a
+  // table row gets is unchanged by the record path added beside it.
+  write('specs/S-308-blocked-rows/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-308')
+    .replace('| TK-001 | First slice | ready | none | pending |', '| TK-001 | First slice | blocked | none | pending |'));
+  render(root);
+  assert.throws(
+    () => claimWork(root, 'S-308', { agent: 'codex', date: '2026-07-12' }),
+    /S-308 has no eligible ready ticket to claim/,
+    'a table row that says blocked is refused exactly as it was before Task records existed'
+  );
+  fs.rmSync(path.join(root, 'specs/S-308-blocked-rows'), { recursive: true });
+  render(root);
+
   // A table-only Spec behaves exactly as it did before any of this.
   write('specs/S-306-table-only/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-306'));
   render(root);

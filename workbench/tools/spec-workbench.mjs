@@ -115,8 +115,15 @@ export function claimWork(rootDir, id, options) {
   const slices = slicesOf(spec);
   const ticket = slices.find((item) => item.id === candidate?.ticketId);
   if (!ticket) {
+    // A table row is refused by name exactly as before: only a row whose cell
+    // says `ready` names its unmet blockers, and a room whose rows all say
+    // `blocked` still hears that it has nothing eligible. A record has no
+    // status cell anyone maintains by hand, so its refusal reads its live
+    // blockers instead.
     const satisfied = satisfiedIds(spec, new Set(specs.filter((item) => ['complete', 'superseded'].includes(item.status)).map((item) => item.id)));
-    const blocked = slices.find((item) => item.declared === 'ready' || effectiveStatus(item, satisfied) === 'blocked');
+    const blocked = slices.find((item) => (item.source === 'record'
+      ? effectiveStatus(item, satisfied) === 'blocked'
+      : item.declared === 'ready'));
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
     throw new Error(`${id} has no eligible ready ticket to claim`);
   }
@@ -249,7 +256,10 @@ export function completeSpec(rootDir, id, options = {}) {
   const date = validDate(options.date ?? today());
   const spec = findSpec(rootDir, id);
   if (!['active', 'needs-review'].includes(spec.status)) throw new Error(`${id} is ${spec.status}, not completable`);
-  if ([...slicesOf(spec), ...spec.tickets].some((slice) => (slice.declared ?? slice.status) !== 'done')) throw new Error(`${id} has an unfinished slice`);
+  // Both sources are checked, not only the one selection reads: a Spec cannot
+  // complete while a retained table row or a Task record is unfinished.
+  const unfinished = [...slicesOf(spec).map((slice) => slice.declared), ...spec.tickets.map((ticket) => ticket.status)];
+  if (unfinished.some((status) => status !== 'done')) throw new Error(`${id} has an unfinished slice`);
   if (/^- \[ \]/m.test(section(spec.content, 'Acceptance Criteria'))) throw new Error(`${id} has unchecked acceptance criteria`);
   const completion = section(spec.content, 'Completion Result').trim();
   if (!completion || /^pending\.?$/i.test(completion)) throw new Error(`${id} has no completion result`);
