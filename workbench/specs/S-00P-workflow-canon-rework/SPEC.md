@@ -3,13 +3,13 @@
 **Spec ID:** S-00P
 **Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-16
+**Updated:** 2026-09-17
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
 **Blockers:** TK-002 onward wait on S-00H, S-00I and S-00J reaching `complete`; TK-001 is unblocked.
-**Latest event:** Spec authored 2026-09-16 from directive-018 and the locked WF answers at revision 57; no implementation started.
-**Next gate:** `claim S-00P` takes TK-001, the Blueprint rewrite. TK-002 waits on S-00H, S-00I and S-00J.
+**Latest event:** TK-001 claimed by DISPATCHER.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -192,7 +192,7 @@ TK-002; TK-005 waits on both.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Rewrite `BLUEPRINT.md` against every rung and the full recursive loop | ready | none | Red: a new assertion in `tools/test-blueprint-contract.mjs` that the root Blueprint names each rung and each loop stage fails at the pre anchor; green: the rewritten Blueprint passes it, keeps the eight headings, contains no current status, and `render` plus `doctor` are clean |
+| TK-001 | Rewrite `BLUEPRINT.md` against every rung and the full recursive loop | in-progress | none | Red: a new assertion in `tools/test-blueprint-contract.mjs` that the root Blueprint names each rung and each loop stage fails at the pre anchor; green: the rewritten Blueprint passes it, keeps the eight headings, contains no current status, and `render` plus `doctor` are clean |
 | TK-002 | Rewrite `AGENTS.md` to the Task-record workflow using only commands that exist | blocked | TK-001, S-00H, S-00I, S-00J | Red: a control-fidelity assertion that `AGENTS.md` Work Selection And Lifecycle names `TASK.md` as the record `claim` takes and describes the assembled-Spec review and the corrective-Task return path; `TASK.md`, `assembled Spec` and `corrective Task` occur zero times in `AGENTS.md` at the pre anchor and S-00H TK-004 changes vocabulary only, so the assertion stays false until this rewrite; green: the rewritten contract passes it, every backticked `spec-workbench.mjs` command it names exists in the CLI usage string, and the guardrail audit does not fall |
 | TK-003 | Rewrite `RUNBOOK.md` procedures for Task lifecycle, assembled-Spec review, corrective Tasks, Human QA closure, reconciliation and retirement, and reconcile `README.md` orientation | blocked | TK-002 | Red: the TK-002 assertion applied to the RUNBOOK's Spec lifecycle procedure, which names none of `TASK.md`, the assembled-Spec review or corrective Tasks at the pre anchor; green: every named command runs as documented and every backticked `spec-workbench.mjs` command exists in the CLI usage string |
 | TK-004 | Rewrite `LEXICON.md` and reconcile ADR-000F, ADR-000G and ADR-000I | blocked | TK-002 | Red: `tools/test-adr.mjs` extended to assert none of the three records is `proposed` fails at the pre anchor; green: register regenerated, no active record contradicts a locked answer, Lexicon routes resolve |
