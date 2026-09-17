@@ -591,6 +591,30 @@ try {
   fs.rmSync(path.join(root, 'specs/S-302-collision'), { recursive: true });
   render(root);
 
+  // A record authored `ready` whose live blockers are unmet is the same
+  // contradiction a ready row is: reported by name, excluded from selection,
+  // and refused by claim. A record authored `blocked` is ordinary sequencing
+  // and raises nothing, exactly as a blocked row does.
+  write('specs/S-307-ready-unmet/SPEC.md', recordBackedSpec('S-307'));
+  write('specs/S-307-ready-unmet/tasks/TK-002/TASK.md', taskRecordFixture({
+    id: 'TK-002', specId: 'S-307', slice: 'Waiting slice', status: 'ready', blockers: 'TK-900',
+    destination: 'spec-acceptance: S-307 Acceptance Criteria'
+  }));
+  render(root);
+  assert.equal(
+    doctor(root).find((issue) => issue.code === 'blocked-slice')?.message,
+    'S-307/TK-002 waits on TK-900',
+    'a record declared ready with an unmet blocker is reported by name'
+  );
+  assert.equal(nextWork(root), null, 'a record whose declared blockers are unmet is excluded from selection');
+  assert.throws(
+    () => claimWork(root, 'S-307', { agent: 'codex', date: '2026-07-12' }),
+    /S-307\/TK-002 is blocked by TK-900 \(blocked-slice\)/,
+    'claim refuses a record whose declared dependency is unmet, naming it'
+  );
+  fs.rmSync(path.join(root, 'specs/S-307-ready-unmet'), { recursive: true });
+  render(root);
+
   // A table-only Spec behaves exactly as it did before any of this.
   write('specs/S-306-table-only/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-306'));
   render(root);

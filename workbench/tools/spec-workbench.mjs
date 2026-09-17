@@ -325,14 +325,15 @@ function packetFindings(specs, options = {}) {
       if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, ticketId: slice.id }));
     }
     // The selected slice is the first resumable or ready slice; a later slice
-    // waiting on its predecessor is ordinary sequencing, not a finding. A
-    // record's effective status already resolves its live blockers, so a
-    // record-backed Spec raises this only when nothing at all is selectable.
-    const head = slices.find((slice) => ['in-progress', 'ready'].includes(effectiveStatus(slice, satisfied)));
-    const stalled = head ? null : slices.find((slice) => effectiveStatus(slice, satisfied) === 'blocked');
-    const waiting = head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied) ? head : stalled;
-    if (spec.status === 'active' && waiting) {
-      issues.push(finding('blocked-slice', `${spec.id}/${waiting.id} waits on ${waiting.blockers}`, { specId: spec.id, ticketId: waiting.id }));
+    // waiting on its predecessor is ordinary sequencing, not a finding. The
+    // rule reads declared status on both sources, so a table-only Spec raises
+    // exactly what it raised before. A record declared `blocked` is the same
+    // ordinary sequencing, and a record declared `ready` whose live blockers
+    // are unmet is the same contradiction a ready row is - so this never
+    // fires falsely on a record-backed Spec whose blockers are satisfied.
+    const head = slices.find((slice) => ['in-progress', 'ready'].includes(slice.declared));
+    if (spec.status === 'active' && head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
+      issues.push(finding('blocked-slice', `${spec.id}/${head.id} waits on ${head.blockers}`, { specId: spec.id, ticketId: head.id }));
     }
     if (['complete', 'superseded'].includes(spec.status) && slices.some((slice) => slice.declared !== 'done')) {
       issues.push(finding('contradictory-state', `${spec.id} is ${spec.status} with unfinished tickets`, { specId: spec.id }));
