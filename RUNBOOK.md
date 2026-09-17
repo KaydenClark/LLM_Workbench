@@ -806,11 +806,16 @@ node workbench/tools/spec-workbench.mjs close S-001 \
   --docs "[DOCS UPDATED OR Docs checked; no update needed + reason]" \
   --remaining-gap "[GAP OR none]"
 node workbench/tools/spec-workbench.mjs complete S-001
+node workbench/tools/spec-workbench.mjs convert-tasks S-001
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
 
-`next` returns one eligible ready ticket. `show` loads one stable work packet.
+`convert-tasks` is one-shot: it writes one `tasks/<id>/TASK.md` record per
+unfinished slice row of an active spec (carrying the row's plan as `Planned
+verification`, never as proof), leaves done rows and completed specs untouched,
+and refuses a second run; a spec whose `tasks/` directory exists is read from
+its records and its retained table is history. `next` returns one eligible ready ticket. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
