@@ -17,6 +17,7 @@ import {
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { TASK_STATUSES, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
+import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 
 // One closed status vocabulary, not two: `spec-workbench.mjs` held its own
 // unexported TICKET_STATUSES set beside the record reader's TASK_STATUSES, so
@@ -884,4 +885,179 @@ function write(relative, content) {
 
 function read(relative) {
   return fs.readFileSync(path.join(root, relative), 'utf8');
+}
+
+// ============================================================================
+// S-00H TK-005: Task Packet assembly. Delimited block, appended last, so a
+// concurrent lane's own tests (TK-006, task-receipt.mjs) land above this
+// without conflict. Uses its own fixture root; touches nothing above.
+// ============================================================================
+{
+  const packetRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-packet-'));
+  try {
+    // 1. A Packet missing a required member is refused with a named error.
+    // The record and its destination Spec are otherwise complete; only the
+    // Contract (AGENTS.md) is absent from this fixture room.
+    writeAt(packetRoot, 'workbench/specs/S-401-packet/SPEC.md', packetFixtureSpec('S-401'));
+    writeAt(packetRoot, 'workbench/specs/S-401-packet/tasks/TK-401/TASK.md', taskRecordFixture({
+      id: 'TK-401',
+      specId: 'S-401',
+      slice: 'Assemble the Packet',
+      status: 'in-progress',
+      blockers: 'none',
+      destination: 'spec-acceptance: S-401 Acceptance Criteria'
+    }));
+    assert.throws(
+      () => assembleTaskPacket(packetRoot, 'workbench/specs/S-401-packet/tasks/TK-401/TASK.md'),
+      /TK-401 Packet is missing its required Contract member: no AGENTS\.md/,
+      'a Packet missing its required Contract member is refused with a named error'
+    );
+
+    // 2. With the Contract present and no optional-member option supplied, a
+    // Task is executable from exactly its four required members.
+    writeAt(packetRoot, 'AGENTS.md', '# Fixture Contract\n\nThe Workbench Contract fixture.\n');
+    const packet = assembleTaskPacket(packetRoot, 'workbench/specs/S-401-packet/tasks/TK-401/TASK.md');
+    assert.equal(packet.record.id, 'TK-401');
+    assert.equal(packet.destination.type, 'spec-acceptance');
+    assert.equal(packet.destination.specId, 'S-401');
+    assert.match(packet.destination.text, /Expected behavior is verified/);
+    assert.deepEqual(
+      [...packet.citedPaths].sort(),
+      ['TASKBOARD.md', 'workbench/tools/spec-workbench.mjs'].sort(),
+      'cited paths are the file-shaped backtick spans in the Spec\'s Testing Seams section'
+    );
+    assert.equal(packet.contract.path, 'AGENTS.md');
+    assert.match(packet.contract.text, /Fixture Contract/);
+    assert.equal(packet.handoff, undefined, 'no handoff option supplied => no handoff member at all');
+    assert.equal(packet.notepad, undefined, 'no notepad option supplied => no notepad member at all');
+    assert.deepEqual(
+      Object.keys(packet).sort(),
+      ['citedPaths', 'contract', 'destination', 'record'],
+      'a Task executable from required members alone carries exactly the four required keys'
+    );
+
+    // 3. Optional members are included only when present, and are always
+    // marked as working context, never as instruction or as proof.
+    writeAt(packetRoot, 'workbench/sessions/handoffs/tk-401-handoff.md', '# Handoff\n\nplain-language continuation notes.\n');
+    writeAt(packetRoot, 'workbench/sessions/notepads/work/tk-401.json', JSON.stringify({
+      schema: 'notepad-1',
+      objective: 'tk-401',
+      current: { state: 'in progress' }
+    }));
+    const withOptional = assembleTaskPacket(packetRoot, 'workbench/specs/S-401-packet/tasks/TK-401/TASK.md', {
+      handoffPath: 'workbench/sessions/handoffs/tk-401-handoff.md',
+      notepadPath: 'workbench/sessions/notepads/work/tk-401.json'
+    });
+    assert.deepEqual(withOptional.handoff, {
+      path: 'workbench/sessions/handoffs/tk-401-handoff.md',
+      content: '# Handoff\n\nplain-language continuation notes.\n',
+      workingContext: true,
+      instruction: false,
+      proof: false
+    }, 'a present Scoped handoff is labeled working context, never instruction or proof');
+    assert.equal(withOptional.notepad.workingContext, true);
+    assert.equal(withOptional.notepad.instruction, false);
+    assert.equal(withOptional.notepad.proof, false);
+    assert.equal(withOptional.notepad.content.objective, 'tk-401');
+
+    // An optional path that does not exist on this clone (the fresh-clone /
+    // another-machine case ADR-000H names, since handoffs and notepads are
+    // local and untracked) is silently absent, never an error.
+    const withMissingOptional = assembleTaskPacket(packetRoot, 'workbench/specs/S-401-packet/tasks/TK-401/TASK.md', {
+      handoffPath: 'workbench/sessions/handoffs/does-not-exist.md',
+      notepadPath: 'workbench/sessions/notepads/work/does-not-exist.json'
+    });
+    assert.equal(withMissingOptional.handoff, undefined, 'a missing handoff file is absent, not an error');
+    assert.equal(withMissingOptional.notepad, undefined, 'a missing notepad file is absent, not an error');
+
+    // 4. Corrective case: a Task whose Destination is a wiki-claim assembles
+    // with no SPEC.md present anywhere, since S-00I retirement removes it.
+    writeAt(packetRoot, 'workbench/wiki/example-capability.md', wikiClaimFixture());
+    writeAt(packetRoot, 'workbench/specs/S-402-retired/tasks/TK-402/TASK.md', taskRecordFixture({
+      id: 'TK-402',
+      specId: 'S-402',
+      slice: 'Repair a reconciled claim',
+      status: 'ready',
+      blockers: 'none',
+      destination: 'wiki-claim: workbench/wiki/example-capability.md#Claim'
+    }));
+    assert.equal(
+      fs.existsSync(path.join(packetRoot, 'workbench/specs/S-402-retired/SPEC.md')),
+      false,
+      'the corrective fixture has no SPEC.md anywhere for S-402'
+    );
+    const corrective = assembleTaskPacket(packetRoot, 'workbench/specs/S-402-retired/tasks/TK-402/TASK.md');
+    assert.equal(corrective.destination.type, 'wiki-claim');
+    assert.equal(corrective.destination.notePath, 'workbench/wiki/example-capability.md');
+    assert.match(corrective.destination.text, /Reconciled claim text lives here/);
+    assert.deepEqual(
+      corrective.citedPaths,
+      ['workbench/tools/example-capability.mjs'],
+      'a corrective Task cites the resolved Wiki note\'s own source_paths, never a SPEC.md'
+    );
+    assert.equal(corrective.contract.path, 'AGENTS.md');
+
+    console.log('ok - task packet assembly, required members, optional labeling, and corrective wiki-claim case passed');
+  } finally {
+    fs.rmSync(packetRoot, { recursive: true, force: true });
+  }
+}
+
+function writeAt(base, relativePath, content) {
+  const target = path.join(base, relativePath);
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.writeFileSync(target, content);
+}
+
+function packetFixtureSpec(id) {
+  return [
+    `# ${id} - Packet Fixture Capability`,
+    '',
+    `**Spec ID:** ${id}`,
+    '**Status:** active',
+    '**Priority:** 0',
+    '**Owner:** agent',
+    '**Updated:** 2026-09-16',
+    '**Catalog description:** Proves the Packet fixture.',
+    '**Blockers:** none',
+    '**Latest event:** Spec activated.',
+    '**Next gate:** Complete TK-401.',
+    '',
+    '## Acceptance Criteria',
+    '',
+    '- [ ] Expected behavior is verified.',
+    '',
+    '## Testing Seams',
+    '',
+    'The `workbench/tools/spec-workbench.mjs` selection seam and the render',
+    'path into `TASKBOARD.md`; nothing else is cited by this fixture.',
+    ''
+  ].join('\n');
+}
+
+function wikiClaimFixture() {
+  return [
+    '---',
+    'type: meta',
+    'status: active',
+    'sensitivity: normal',
+    'knowledge_role: canonical',
+    'provenance:',
+    '  - S-00H TK-005 Packet fixture',
+    'source_paths:',
+    '  - workbench/tools/example-capability.mjs',
+    'last_verified: 2026-09-16',
+    '---',
+    '',
+    '# Example Capability',
+    '',
+    '## Claim',
+    '',
+    'Reconciled claim text lives here, repaired by TK-402.',
+    '',
+    '## Evidence and Sources',
+    '',
+    '- fixture only',
+    ''
+  ].join('\n');
 }
