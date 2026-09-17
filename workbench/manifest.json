@@ -44,6 +44,14 @@
   "wiki": {
     "profile": "project"
   },
+  "contextUnit": {
+    "value": 200000,
+    "unit": "tokens",
+    "decisionDate": "2026-09-12",
+    "source": "owner",
+    "consideredAlternatives": [150000, 250000],
+    "reason": "250k is where a context is compacted or gone while roughly 200k is where answer quality begins to degrade, and planning to the ceiling plans work into the degraded tail."
+  },
   "skillPolicy": {
     "required": [
       "adoption",

@@ -319,6 +319,38 @@ export function validateManifest(project) {
   return report('valid', { manifest, ignoreVerification: ignored.verification });
 }
 
+// ADR-000H "One Task, one context": the context unit is a declared host fact
+// recorded in workbench/manifest.json with provenance, never a number
+// restated in portable control prose. This reader is the one seam sizing
+// guidance points at; it is a Plan goalpost only, so nothing in doctor, next,
+// claim, close or validateManifest above may consult it, and an undeclared
+// value fails explicitly rather than defaulting silently.
+export class ContextUnitUndeclaredError extends Error {
+  constructor(message) { super(message); this.name = 'ContextUnitUndeclaredError'; }
+}
+
+export function readContextUnit(project) {
+  const { manifest, failure } = readManifestFile(project);
+  if (failure) throw new ContextUnitUndeclaredError(failure.error.message);
+  const manifestPath = path.join(project, 'workbench', 'manifest.json');
+  const unit = manifest.contextUnit;
+  if (!unit || typeof unit !== 'object' || Array.isArray(unit)) {
+    throw new ContextUnitUndeclaredError(`${manifestPath} does not declare a contextUnit; sizing guidance has no declared value to read.`);
+  }
+  // ADR-000H requires the unit recorded "with provenance", so every provenance
+  // field is required and type-checked, named individually so a malformed
+  // field fails as loudly as an absent one.
+  if (typeof unit.value !== 'number') throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.value must be a number.`);
+  if (typeof unit.unit !== 'string' || !unit.unit) throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.unit must be a non-empty string.`);
+  if (typeof unit.decisionDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(unit.decisionDate)) throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.decisionDate must be a YYYY-MM-DD string.`);
+  if (typeof unit.source !== 'string' || !unit.source) throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.source must be a non-empty string.`);
+  if (!Array.isArray(unit.consideredAlternatives) || unit.consideredAlternatives.length === 0 || !unit.consideredAlternatives.every((value) => typeof value === 'number')) {
+    throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.consideredAlternatives must be an array of numbers.`);
+  }
+  if (typeof unit.reason !== 'string' || !unit.reason.trim()) throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.reason must be a non-empty string.`);
+  return unit;
+}
+
 function templateRoot() {
   // The product checkout keeps copy-ready templates near the tools; a
   // downstream project carries none, so seeding is reported truthfully.

@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
-import { coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { coreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
 
@@ -2223,6 +2223,89 @@ for (const failure of ['ignored-template', 'trackable-live']) {
     } finally { fs.rmSync(project, { recursive: true, force: true }); }
   });
 }
+
+// ADR-000H "One Task, one context": the context unit is a declared host fact
+// in workbench/manifest.json with provenance, never a number restated in
+// portable control prose. The reader is a goalpost only - nothing in doctor,
+// next, claim or close may consult it - so this test exercises the reader
+// directly rather than through validate/doctor.
+test('readContextUnit returns the declared value with its provenance and fails explicitly when the manifest declares none', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    assert.throws(() => readContextUnit(project), ContextUnitUndeclaredError,
+      'a manifest with no contextUnit field must fail explicitly, never default silently');
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    fs.writeFileSync(manifestPath, JSON.stringify({
+      ...manifest,
+      contextUnit: {
+        value: 200000,
+        unit: 'tokens',
+        decisionDate: '2026-09-12',
+        source: 'owner',
+        consideredAlternatives: [150000, 250000],
+        reason: '250k is where a context is compacted or gone while roughly 200k is where answer quality begins to degrade, and planning to the ceiling plans work into the degraded tail.'
+      }
+    }));
+    const unit = readContextUnit(project);
+    assert.equal(unit.value, 200000);
+    assert.equal(unit.unit, 'tokens');
+    assert.equal(unit.decisionDate, '2026-09-12');
+    assert.equal(unit.source, 'owner');
+    assert.deepEqual(unit.consideredAlternatives, [150000, 250000]);
+    assert.match(unit.reason, /degraded tail/);
+
+    // ADR-000H requires the unit recorded "with provenance": a contextUnit
+    // missing or malformed in any one provenance field must fail the same
+    // way an absent one does, never pass through with a bad value.
+    const validManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const validUnit = validManifest.contextUnit;
+    const malformedByField = {
+      value: { ...validUnit, value: '200000' },
+      unit: { ...validUnit, unit: 5 },
+      decisionDate: { ...validUnit, decisionDate: 'not-a-date' },
+      source: { ...validUnit, source: '' },
+      consideredAlternatives: { ...validUnit, consideredAlternatives: 'nope' },
+      reason: { ...validUnit, reason: '   ' }
+    };
+    for (const [field, contextUnit] of Object.entries(malformedByField)) {
+      fs.writeFileSync(manifestPath, JSON.stringify({ ...validManifest, contextUnit }));
+      assert.throws(() => readContextUnit(project), ContextUnitUndeclaredError,
+        `a contextUnit.${field} of the wrong shape must fail explicitly, not pass through as declared`);
+    }
+    fs.writeFileSync(manifestPath, JSON.stringify(validManifest));
+    assert.deepEqual(readContextUnit(project), validUnit, 'the manifest is restored to the valid shape after the malformed probes');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// The fixture-based test above proves the reader's own contract; it says
+// nothing about whether the shipped root manifest.json actually carries a
+// well-formed declaration. Read the real root manifest directly, and prove
+// the assertion is not vacuous by removing the block and watching the reader
+// go red before restoring the file byte-identical.
+test('readContextUnit(root) reads the shipped manifest.json declaration, proven non-vacuous by a red/green probe', () => {
+  const manifestPath = path.join(root, 'workbench', 'manifest.json');
+  const original = fs.readFileSync(manifestPath, 'utf8');
+  try {
+    const unit = readContextUnit(root);
+    assert.equal(unit.value, 200000);
+    assert.equal(unit.unit, 'tokens');
+    assert.equal(unit.decisionDate, '2026-09-12');
+    assert.equal(unit.source, 'owner');
+    assert.deepEqual(unit.consideredAlternatives, [150000, 250000]);
+    assert.ok(typeof unit.reason === 'string' && unit.reason.trim().length > 0);
+
+    const withoutContextUnit = JSON.parse(original);
+    delete withoutContextUnit.contextUnit;
+    fs.writeFileSync(manifestPath, JSON.stringify(withoutContextUnit, null, 2));
+    assert.throws(() => readContextUnit(root), ContextUnitUndeclaredError,
+      'removing the shipped contextUnit block must make the reader fail, proving the passing assertions above are not vacuous');
+  } finally {
+    fs.writeFileSync(manifestPath, original);
+    assert.equal(fs.readFileSync(manifestPath, 'utf8'), original, 'the shipped manifest.json must be restored byte-identical');
+  }
+});
 
 for (const suffix of ['00A', '100A', '1000']) {
 test(`Genesis accepts first spec and ticket suffix ${suffix} without truncation or path changes`, () => {
