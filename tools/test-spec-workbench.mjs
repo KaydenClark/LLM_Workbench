@@ -13,6 +13,7 @@ import {
   render
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
+import { listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 
 assert.deepEqual(
   parseCliArgs(['next', '--json']),
@@ -213,6 +214,210 @@ try {
   assert.ok(doctor(root).some((issue) => issue.code === 'duplicate-id'));
   fs.rmSync(path.join(root, 'specs/S-999-duplicate'), { recursive: true });
 
+  // S-00H TK-001: a standalone Task record reads its own state and blocking
+  // relationships through an exported function, one directory per Task
+  // beneath its owning Spec's directory. `next`/`claim`/`close`/`render`/
+  // `doctor` still read only the embedded ticket table (TK-002 migrates
+  // them), so a room carrying both must behave exactly as a table-only room
+  // and must not double-count the coexisting record.
+  write('specs/S-201-task-record/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-201'));
+  render(root);
+  const beforeTaskDir = nextWork(root);
+  assert.equal(beforeTaskDir.specId, 'S-201', 'a room with only the embedded table selects as before');
+  assert.deepEqual(doctor(root), [], 'doctor is clean before any standalone Task record exists');
+
+  write('specs/S-201-task-record/tasks/TK-001/TASK.md', taskRecordFixture({
+    id: 'TK-001',
+    specId: 'S-201',
+    slice: 'First slice',
+    status: 'ready',
+    blockers: 'none',
+    destination: 'spec-acceptance: S-201 Acceptance Criteria item 1'
+  }));
+  assert.deepEqual(nextWork(root), beforeTaskDir,
+    'a coexisting standalone Task record must not change or double-count embedded-table selection');
+  assert.deepEqual(doctor(root), [], 'doctor stays clean; TK-002 wires the tasks directory into it');
+
+  const taskPath = path.join(root, 'specs/S-201-task-record/tasks/TK-001/TASK.md');
+  const record = readTaskRecord(taskPath, root);
+  assert.equal(record.id, 'TK-001');
+  assert.equal(record.specId, 'S-201');
+  assert.equal(record.slice, 'First slice');
+  assert.equal(taskStatus(record), 'ready', 'status is read through the one function S-00I can later repoint');
+  assert.deepEqual(record.blockers, []);
+  assert.deepEqual(record.destination, { type: 'spec-acceptance', reference: 'S-201 Acceptance Criteria item 1' });
+
+  const listed = listTaskRecords(path.join(root, 'specs/S-201-task-record'), root);
+  assert.equal(listed.length, 1, 'listing finds exactly the one standalone record, not a second copy from the table');
+  assert.equal(listed[0].id, 'TK-001');
+
+  // A Task record whose declared Task ID contradicts its own directory name
+  // must be refused, not silently returned under the folder's name.
+  write('specs/S-202-task-listing/tasks/TK-001/TASK.md', taskRecordFixture({
+    id: 'TK-001', specId: 'S-202', slice: 'Real one', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  write('specs/S-202-task-listing/tasks/TK-009/TASK.md', taskRecordFixture({
+    id: 'TK-001', specId: 'S-202', slice: 'Impostor', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => listTaskRecords(path.join(root, 'specs/S-202-task-listing'), root),
+    /directory is named "TK-009"/,
+    'a Task ID that contradicts its own directory name is refused, not returned twice under two names'
+  );
+  fs.rmSync(path.join(root, 'specs/S-202-task-listing/tasks/TK-009'), { recursive: true });
+
+  // Two self-consistent records (folder name matches declared id) whose ids
+  // still resolve to the same visible identifier (leading-zero variants)
+  // must be refused as a duplicate rather than both returned.
+  write('specs/S-202-task-listing/tasks/TK-1/TASK.md', taskRecordFixture({
+    id: 'TK-1', specId: 'S-202', slice: 'Same identity, different spelling', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => listTaskRecords(path.join(root, 'specs/S-202-task-listing'), root),
+    /Duplicate Task ID/,
+    'two records resolving to the same visible identifier are refused rather than both returned'
+  );
+  fs.rmSync(path.join(root, 'specs/S-202-task-listing/tasks/TK-1'), { recursive: true });
+
+  // A Task-shaped directory with no TASK.md is refused rather than silently
+  // skipped, since a listing that quietly drops it would look identical to
+  // one where the Task never existed.
+  write('specs/S-202-task-listing/tasks/TK-011/NOTES.md', '# scratch notes, no TASK.md here\n');
+  assert.throws(
+    () => listTaskRecords(path.join(root, 'specs/S-202-task-listing'), root),
+    /has no TASK\.md/,
+    'a Task directory with no TASK.md fails closed instead of being silently skipped'
+  );
+  fs.rmSync(path.join(root, 'specs/S-202-task-listing'), { recursive: true });
+
+  // Blocking relationships, read through an exported function.
+  write('specs/S-201-task-record/tasks/TK-001/TASK.md', taskRecordFixture({
+    id: 'TK-001',
+    specId: 'S-201',
+    slice: 'First slice',
+    status: 'blocked',
+    blockers: 'TK-000',
+    destination: 'spec-acceptance: S-201 Acceptance Criteria item 1'
+  }));
+  const blockedRecord = readTaskRecord(taskPath, root);
+  assert.deepEqual(unmetBlockers(blockedRecord, []), ['TK-000'], 'an unmet blocker is reported until its id is satisfied');
+  assert.deepEqual(unmetBlockers(blockedRecord, ['TK-000']), [], 'a satisfied blocker id clears the record');
+
+  // A corrective Task's destination may name a reconciled Wiki claim instead
+  // of Spec acceptance lines; this slice only needs the field to hold it.
+  write('specs/S-201-task-record/tasks/TK-002/TASK.md', taskRecordFixture({
+    id: 'TK-002',
+    specId: 'S-201',
+    slice: 'Corrective repair',
+    status: 'ready',
+    blockers: 'none',
+    destination: 'wiki-claim: workbench/wiki/design-concepts/example.md#claim-1'
+  }));
+  const corrective = readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-002/TASK.md'), root);
+  assert.deepEqual(corrective.destination, { type: 'wiki-claim', reference: 'workbench/wiki/design-concepts/example.md#claim-1' });
+
+  // Explicit errors on a malformed record; no silent fallback to the table.
+  // One assertion per validated shape, so mutation testing cannot delete a
+  // branch (the Task-ID check, the required-field loop, the Spec-ID check,
+  // the blocker-id check, or the Destination pattern) without a test going
+  // red. See this slice's return for the manual comment-out checks run
+  // against the Task-ID check and the required-field loop.
+  write('specs/S-201-task-record/tasks/TK-003/TASK.md', taskRecordFixture({
+    id: 'TK-003',
+    specId: 'S-201',
+    slice: 'Malformed',
+    status: 'unstoppable',
+    blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-003/TASK.md'), root),
+    /invalid status/i,
+    'a malformed Task record fails closed rather than silently falling back to the embedded table'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-004/TASK.md', [
+    '# TK-004 - Missing field',
+    '',
+    '**Task ID:** TK-004',
+    '**Spec ID:** S-201',
+    '**Slice:** Missing field',
+    '**Status:** ready',
+    '**Destination:** spec-acceptance: placeholder',
+    ''
+  ].join('\n'));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-004/TASK.md'), root),
+    /is missing Blockers/,
+    'a Task record missing a required field fails closed'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-005/TASK.md', taskRecordFixture({
+    id: 'TASK-005', specId: 'S-201', slice: 'Invalid task id', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-005/TASK.md'), root),
+    /invalid or missing Task ID/,
+    'an invalid Task ID fails closed'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-006/TASK.md', taskRecordFixture({
+    id: 'TK-006', specId: 'S-1', slice: 'Invalid spec id', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-006/TASK.md'), root),
+    /invalid Spec ID/,
+    'an invalid Spec ID fails closed'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-007/TASK.md', taskRecordFixture({
+    id: 'TK-007', specId: 'S-201', slice: 'Invalid blocker', status: 'ready', blockers: 'ABC-1',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-007/TASK.md'), root),
+    /invalid blocker id/,
+    'an invalid blocker id fails closed'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-008/TASK.md', taskRecordFixture({
+    id: 'TK-008', specId: 'S-201', slice: 'Malformed destination', status: 'ready', blockers: 'none',
+    destination: 'nowhere: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-008/TASK.md'), root),
+    /unreadable Destination/,
+    'a malformed Destination fails closed'
+  );
+
+  // A duplicated field matters once TK-006 appends Receipt rows into the
+  // body: a second `**Status:**` line must not silently last-win.
+  write('specs/S-201-task-record/tasks/TK-010/TASK.md', [
+    '# TK-010 - Duplicated field',
+    '',
+    '**Task ID:** TK-010',
+    '**Spec ID:** S-201',
+    '**Slice:** Duplicated field',
+    '**Status:** ready',
+    '**Status:** done',
+    '**Blockers:** none',
+    '**Destination:** spec-acceptance: placeholder',
+    ''
+  ].join('\n'));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-010/TASK.md'), root),
+    /duplicated field "Status"/,
+    'a duplicated field fails closed rather than letting the later occurrence silently win'
+  );
+
+  fs.rmSync(path.join(root, 'specs/S-201-task-record'), { recursive: true });
+  render(root);
+
   fs.appendFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), '\n[missing](../../missing.md)\n');
   assert.ok(doctor(root).some((issue) => issue.code === 'broken-link'));
 } finally {
@@ -258,6 +463,20 @@ function fixtureSpec() {
     '',
     '- Supersedes: none',
     '- Superseded by: none',
+    ''
+  ].join('\n');
+}
+
+function taskRecordFixture({ id, specId, slice, status, blockers, destination }) {
+  return [
+    `# ${id} - ${slice}`,
+    '',
+    `**Task ID:** ${id}`,
+    `**Spec ID:** ${specId}`,
+    `**Slice:** ${slice}`,
+    `**Status:** ${status}`,
+    `**Blockers:** ${blockers}`,
+    `**Destination:** ${destination}`,
     ''
   ].join('\n');
 }
