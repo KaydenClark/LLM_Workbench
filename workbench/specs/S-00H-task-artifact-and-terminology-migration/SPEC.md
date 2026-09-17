@@ -3,13 +3,13 @@
 **Spec ID:** S-00H
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-16
+**Updated:** 2026-09-17
 **Catalog description:** Make a Task a standalone `TASK.md` artifact that owns active work state, and replace Ticket with Task across prose, tools and newly allocated identifiers.
 **Blockers:** TT-Q10 (identifier form) is open and blocks TK-003 and TK-004.
-**Latest event:** Rewritten 2026-09-16 against the WF grilling note at revision 57 under the v4.0.0 rollout (S-00O); TK-001 and TK-008 remain claimable.
-**Next gate:** `claim S-00H` takes TK-001; TK-008 is also unblocked and follows. TK-003 and TK-004 still need TT-Q10 answered.
+**Latest event:** TK-001 claimed by DISPATCHER.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -122,7 +122,7 @@ gate reads Task records.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Introduce `TASK.md` as a record with its own state and blockers | ready | none | Red test for reading/claiming a standalone Task; green minimal record; full suite |
+| TK-001 | Introduce `TASK.md` as a record with its own state and blockers | in-progress | none | Red test for reading/claiming a standalone Task; green minimal record; full suite |
 | TK-002 | Migrate selection, claim, close and render onto Task records | blocked | TK-001 | Red tests at the `spec-workbench.mjs` seam; green commands; `doctor` clean |
 | TK-003 | Replace Ticket with Task across tool vocabulary and board columns | blocked | TK-002, TT-Q10 | Red tests per touched tool; green rename using the owner's chosen identifier form; historical `TK-###` rows byte-identical |
 | TK-004 | Update `to-tickets`, the skills/controls that instruct the old model, and every generic template mirror | blocked | TK-003 | Skill catalog and inspection tests pass; composition test green; red repository-wide sweep for live `ticket`/`Ticket` prose (verified at review: `templates/LEXICON.md`, `templates/GENESIS.md`, `templates/RUNBOOK.md`, `templates/README.md`, `templates/AGENTS.md`, `templates/SPEC.md`, at minimum) finds nothing after the change |
