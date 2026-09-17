@@ -896,7 +896,8 @@ function read(relative) {
     appendReceiptRowToContent,
     appendReceiptRow,
     readReceipt,
-    readReceiptFromFile
+    readReceiptFromFile,
+    readGitFacts
   } = await import('../workbench/tools/task-receipt.mjs');
   const { readTaskRecord } = await import('../workbench/tools/task-record.mjs');
 
@@ -960,6 +961,44 @@ function read(relative) {
       'a structurally malformed Receipt row fails closed'
     );
 
+    // A supplied value with surrounding whitespace, or a trailing carriage
+    // return the newline guard alone would miss, is normalized before it is
+    // checksummed and written - not checksummed raw and then read back
+    // trimmed, which would wedge the very row just appended as "altered".
+    const wsRecord = taskRecordFixture({
+      id: 'TK-103', specId: 'S-300', slice: 'Whitespace normalization fixture', status: 'in-progress',
+      blockers: 'none', destination: 'spec-acceptance: placeholder'
+    });
+    const afterWsRow = appendReceiptRowToContent(wsRecord, {
+      branch: 'claude/fixture', headSha: 'c'.repeat(40), upstream: 'none', dirty: 0,
+      testsRun: '  tools/test-fixture.mjs: pass  ', docsTouched: 'AGENTS.md: none\r', remainingGap: 'none'
+    });
+    const wsRows = readReceipt(afterWsRow); // must not throw "altered"
+    assert.equal(wsRows.length, 1);
+    assert.equal(wsRows[0].testsRun, 'tools/test-fixture.mjs: pass',
+      'a value with surrounding whitespace is normalized before checksumming and round-trips cleanly');
+    assert.equal(wsRows[0].docsTouched, 'AGENTS.md: none',
+      'a value with a trailing carriage return is normalized before checksumming and round-trips cleanly');
+
+    // Appending before a following `## ` heading keeps that heading's
+    // blank-line separation from the table rather than consuming it.
+    const trailingSectionRecord = taskRecordFixture({
+      id: 'TK-104', specId: 'S-300', slice: 'Trailing section fixture', status: 'in-progress',
+      blockers: 'none', destination: 'spec-acceptance: placeholder'
+    });
+    const trailingWithRow1 = appendReceiptRowToContent(trailingSectionRecord, {
+      branch: 'claude/fixture', headSha: 'd'.repeat(40), upstream: 'none', dirty: 0,
+      testsRun: 'pass', docsTouched: 'none', remainingGap: 'none'
+    });
+    const trailingWithSection = `${trailingWithRow1}\n## Other\n\nSomething else.\n`;
+    const trailingWithRow2 = appendReceiptRowToContent(trailingWithSection, {
+      branch: 'claude/fixture', headSha: 'e'.repeat(40), upstream: 'none', dirty: 0,
+      testsRun: 'pass2', docsTouched: 'none', remainingGap: 'none'
+    });
+    assert.match(trailingWithRow2, /\| 2 \|[^\n]*\|\n\n## Other/,
+      'appending before a following heading keeps its blank-line separation');
+    assert.equal(readReceipt(trailingWithRow2).length, 2, 'the appended row is still readable once a following section is preserved');
+
     // Git facts (branch, HEAD SHA, upstream distance, dirty count) come from
     // Git for the working tree given, not from the caller.
     const bareOrigin = path.join(receiptRoot, 'origin.git');
@@ -1018,6 +1057,22 @@ function read(relative) {
     assert.equal(finalRows.length, 2, 'a resumed Task appends another row to the same record');
     assert.equal(finalRows[0].remainingGap, 'open: mid-run snapshot', 'the earlier row is untouched by the resumed append');
     assert.equal(finalRows[1].run, 2);
+
+    // A detached HEAD must never read as a branch literally named "HEAD".
+    const detachedDir = path.join(receiptRoot, 'detached');
+    fs.mkdirSync(detachedDir);
+    execFileSync('git', ['init', '--quiet', detachedDir]);
+    execFileSync('git', ['-C', detachedDir, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', detachedDir, 'config', 'user.name', 'Fixture']);
+    fs.writeFileSync(path.join(detachedDir, 'file.txt'), 'one\n');
+    execFileSync('git', ['-C', detachedDir, 'add', '.']);
+    execFileSync('git', ['-C', detachedDir, 'commit', '--quiet', '-m', 'init']);
+    const detachedSha = execFileSync('git', ['-C', detachedDir, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+    execFileSync('git', ['-C', detachedDir, 'checkout', '--quiet', '--detach', detachedSha]);
+    const detachedShort = execFileSync('git', ['-C', detachedDir, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).trim();
+    const detachedFacts = readGitFacts(detachedDir);
+    assert.equal(detachedFacts.branch, `detached at ${detachedShort}`,
+      'a detached HEAD reports "detached at <short sha>", never the literal string "HEAD"');
 
     console.log('ok - task receipt append-only per-run record passed');
   } finally {

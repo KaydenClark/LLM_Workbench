@@ -21,7 +21,14 @@
 // rather than being silently accepted or repaired. This guards against
 // accidental edits, the same posture `notepads.mjs` takes with its revision
 // guard against a stale concurrent write; it is not a defense against an
-// attacker who also rewrites the checksum.
+// attacker who also rewrites the checksum. The chain also does not detect
+// every possible tamper: deleting one or more trailing rows, or deleting the
+// whole `## Receipt` section, both parse as if that later run had never
+// happened, because there is nothing left to recompute against. The
+// append-only guarantee this module gives is narrower than "every deletion is
+// caught": no exported function here ever rewrites or deletes a row: a
+// missing trailing row or section is a gap for a reader to notice, not
+// something this module's read path can detect on its own.
 
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -88,14 +95,16 @@ export function readReceipt(content, label = '<Task record>') {
 // checksum chain) before appending, so appending after an altered earlier
 // row also fails closed rather than silently building on top of it.
 export function appendReceiptRowToContent(content, fields, label = '<Task record>') {
+  // Every supplied string field is normalized (surrounding whitespace and any
+  // `\r` stripped) before it is checksummed or written, because `splitTableRow`
+  // trims every cell it reads back (JS `.trim()` also removes `\r`). Without
+  // this, a value with a leading/trailing space or a trailing `\r` would be
+  // checksummed raw at write time but read back trimmed, so the very next
+  // read would see a checksum mismatch and refuse the row it had just
+  // written as "altered" - permanently wedging the record on clean input.
+  const normalized = {};
   for (const name of SUPPLIED_FIELDS) {
-    const value = fields[name];
-    if (value === undefined || value === null || value === '') {
-      throw new Error(`A Receipt row requires ${name}`);
-    }
-    if (String(value).includes('\n')) {
-      throw new Error(`Receipt field "${name}" cannot contain a newline`);
-    }
+    normalized[name] = normalizeReceiptField(name, fields[name]);
   }
   if (!Number.isInteger(fields.dirty) || fields.dirty < 0) {
     throw new Error('A Receipt row requires a non-negative integer dirty file count');
@@ -104,7 +113,8 @@ export function appendReceiptRowToContent(content, fields, label = '<Task record
   const existingRows = readReceipt(content, label); // validates the chain before we build on it
   const previousChecksum = existingRows.length ? existingRows[existingRows.length - 1].checksum : RECEIPT_GENESIS;
   const run = existingRows.length + 1;
-  const { branch, headSha, upstream, dirty, testsRun, docsTouched, remainingGap } = fields;
+  const { branch, headSha, upstream, testsRun, docsTouched, remainingGap } = normalized;
+  const dirty = fields.dirty;
   const checksum = rowChecksum(previousChecksum, [run, branch, headSha, upstream, dirty, testsRun, docsTouched, remainingGap]);
   const rowLine = `| ${[run, branch, headSha, upstream, dirty, testsRun, docsTouched, remainingGap, checksum].map(escapeCell).join(' | ')} |`;
 
@@ -116,7 +126,10 @@ export function appendReceiptRowToContent(content, fields, label = '<Task record
   const sectionEnd = nextSectionStart(content, headingIndex);
   const before = content.slice(0, sectionEnd).replace(/\n*$/, '\n');
   const after = content.slice(sectionEnd);
-  return `${before}${rowLine}\n${after}`;
+  // A following `## ` heading keeps its blank-line separation from the
+  // table; when the Receipt section runs to the end of the record, the row
+  // is simply the new last line.
+  return after.length > 0 ? `${before}${rowLine}\n\n${after}` : `${before}${rowLine}\n${after}`;
 }
 
 // ---- file and Git seam ----
@@ -148,14 +161,18 @@ export function appendReceiptRow(taskFilePath, { repoRoot, testsRun, docsTouched
     remainingGap
   }, taskFilePath);
   atomicWrite(taskFilePath, updated);
-  return readReceipt(updated, taskFilePath).at(-1);
+  // Validate by reading back what actually landed on disk, not the in-memory
+  // string computed above: the write is atomic, but the row this call reports
+  // as appended is only trustworthy once it has been read back and passed
+  // the same checksum-chain validation every other reader applies.
+  return readReceiptFromFile(taskFilePath).at(-1);
 }
 
 // Reads branch, HEAD SHA, upstream distance (ahead/behind the tracking
 // upstream, or "none" when there is no upstream) and dirty file count from
 // Git for `repoRoot`. These four facts are never supplied by a caller.
 export function readGitFacts(repoRoot) {
-  const branch = gitRead(repoRoot, ['rev-parse', '--abbrev-ref', 'HEAD']);
+  const branch = currentBranch(repoRoot);
   const headSha = gitRead(repoRoot, ['rev-parse', 'HEAD']);
   const upstreamRef = gitReadOptional(repoRoot, ['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}']);
   let upstream = 'none';
@@ -170,6 +187,25 @@ export function readGitFacts(repoRoot) {
 }
 
 // ---- internals ----
+
+// Strips `\r` and trims surrounding whitespace so the value checksummed and
+// written is byte-identical to what `splitTableRow` hands back on read.
+// Rejects a missing value, and a value that is empty or all whitespace once
+// normalized, rather than silently writing a blank cell.
+function normalizeReceiptField(name, rawValue) {
+  if (rawValue === undefined || rawValue === null || rawValue === '') {
+    throw new Error(`A Receipt row requires ${name}`);
+  }
+  const withoutCarriageReturns = String(rawValue).replace(/\r/g, '');
+  if (withoutCarriageReturns.includes('\n')) {
+    throw new Error(`Receipt field "${name}" cannot contain a newline`);
+  }
+  const value = withoutCarriageReturns.trim();
+  if (value === '') {
+    throw new Error(`A Receipt row requires ${name}`);
+  }
+  return value;
+}
 
 function rowChecksum(previousChecksum, orderedFields) {
   const hash = crypto.createHash('sha256');
@@ -217,6 +253,17 @@ function nextSectionStart(content, fromIndex) {
   const searchFrom = content.indexOf('\n', fromIndex) + 1;
   const match = /^## /m.exec(content.slice(searchFrom));
   return match ? searchFrom + match.index : content.length;
+}
+
+// `git rev-parse --abbrev-ref HEAD` prints the literal string "HEAD" on a
+// detached checkout, indistinguishable from a branch actually named `HEAD`.
+// `symbolic-ref` only succeeds when HEAD points at a branch, so its absence
+// is the detached case, reported as `detached at <short sha>` instead.
+function currentBranch(repoRoot) {
+  const symbolic = gitReadOptional(repoRoot, ['symbolic-ref', '-q', '--short', 'HEAD']);
+  if (symbolic) return symbolic;
+  const shortSha = gitRead(repoRoot, ['rev-parse', '--short', 'HEAD']);
+  return `detached at ${shortSha}`;
 }
 
 function gitRead(repoRoot, args) {
