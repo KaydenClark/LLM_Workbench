@@ -7,11 +7,11 @@
 **Stance:** Builder
 **Updated:** 2026-09-17
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
-**Blockers:** TK-002 onward wait on S-00H, S-00I and S-00J reaching `complete`; TK-001 is unblocked.
-**Latest event:** TK-001 claimed by DISPATCHER.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Blockers:** TK-001 is done and landed; TK-002 onward wait on S-00H, S-00I and S-00J reaching `complete`.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** TK-002 waits on S-00H, S-00I and S-00J reaching `complete`; then `claim S-00P` takes TK-002, the `AGENTS.md` rewrite.
 
-> **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
+> **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
 ## Outcome
 
@@ -192,7 +192,7 @@ TK-002; TK-005 waits on both.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Rewrite `BLUEPRINT.md` against every rung and the full recursive loop | in-progress | none | Red: a new assertion in `tools/test-blueprint-contract.mjs` that the root Blueprint names each rung and each loop stage fails at the pre anchor; green: the rewritten Blueprint passes it, keeps the eight headings, contains no current status, and `render` plus `doctor` are clean |
+| TK-001 | Rewrite `BLUEPRINT.md` against every rung and the full recursive loop | done | none | Red: 31-claim rung-and-stage assertion in tools/test-blueprint-contract.mjs fails at pre anchor e3c5c8f with every claim unstated; green at 0c154b2; full suite 42/42 on the committed candidate; doctor no blocking finding; render no-op; evaluate-workbench --include-controls 113/113. Separate-context review (Claude Fable 5.1) PASS and SEMANTIC PASS on 2029876, two low findings (WF-8G discard gate, WF-8D branch cleanup) corrected in 0c154b2 and re-reviewed PASS and SEMANTIC PASS. Built by Claude Opus 5 from the lane handoff. Landed by PR #96; integration f84b469 contains 0c154b2 |
 | TK-002 | Rewrite `AGENTS.md` to the Task-record workflow using only commands that exist | blocked | TK-001, S-00H, S-00I, S-00J | Red: a control-fidelity assertion that `AGENTS.md` Work Selection And Lifecycle names `TASK.md` as the record `claim` takes and describes the assembled-Spec review and the corrective-Task return path; `TASK.md`, `assembled Spec` and `corrective Task` occur zero times in `AGENTS.md` at the pre anchor and S-00H TK-004 changes vocabulary only, so the assertion stays false until this rewrite; green: the rewritten contract passes it, every backticked `spec-workbench.mjs` command it names exists in the CLI usage string, and the guardrail audit does not fall |
 | TK-003 | Rewrite `RUNBOOK.md` procedures for Task lifecycle, assembled-Spec review, corrective Tasks, Human QA closure, reconciliation and retirement, and reconcile `README.md` orientation | blocked | TK-002 | Red: the TK-002 assertion applied to the RUNBOOK's Spec lifecycle procedure, which names none of `TASK.md`, the assembled-Spec review or corrective Tasks at the pre anchor; green: every named command runs as documented and every backticked `spec-workbench.mjs` command exists in the CLI usage string |
 | TK-004 | Rewrite `LEXICON.md` and reconcile ADR-000F, ADR-000G and ADR-000I | blocked | TK-002 | Red: `tools/test-adr.mjs` extended to assert none of the three records is `proposed` fails at the pre anchor; green: register regenerated, no active record contradicts a locked answer, Lexicon routes resolve |
@@ -282,7 +282,7 @@ template with its reason.
 
 ## Acceptance Criteria
 
-- [ ] `BLUEPRINT.md` names every rung, the three altitudes, the full recursive loop, the intended topology, reconciliation and retirement, and the coordinator as future scope, with no current status, and passes the Blueprint contract test including its new rung assertion.
+- [x] `BLUEPRINT.md` names every rung, the three altitudes, the full recursive loop, the intended topology, reconciliation and retirement, and the coordinator as future scope, with no current status, and passes the Blueprint contract test including its new rung assertion.
 - [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, the assembled-Spec review, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
 - [ ] S-00H's repository-wide `Ticket` sweep still passes after phase two, and no control or template instructs the embedded-row route; this verifies S-00H's result rather than owning it a second time.
 - [ ] ADR-000F, ADR-000G and ADR-000I are each accepted, amended or superseded, the register is regenerated, and no active record contradicts a locked WF answer.
@@ -320,6 +320,7 @@ workflow. No other owner changes.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-16 | spec | Spec authored from directive-018, decision-082 and the locked WF answers at revision 57; no implementation performed | Read-only: Blueprint eight headings enforced for root and template by the contract test; ADR-000F, 000G and 000I proposed with the contradictions named above; promotion draft adds a ninth heading the test rejects | This Spec owns the Canon rewrite in two phases; S-00O owns the exemptions | TK-001 ready; phase two waits on S-00H, S-00I and S-00J |
+| 2026-09-17 | TK-001 | Ticket closed | Red: 31-claim rung-and-stage assertion in tools/test-blueprint-contract.mjs fails at pre anchor e3c5c8f with every claim unstated; green at 0c154b2; full suite 42/42 on the committed candidate; doctor no blocking finding; render no-op; evaluate-workbench --include-controls 113/113. Separate-context review (Claude Fable 5.1) PASS and SEMANTIC PASS on 2029876, two low findings (WF-8G discard gate, WF-8D branch cleanup) corrected in 0c154b2 and re-reviewed PASS and SEMANTIC PASS. Built by Claude Opus 5 from the lane handoff. Landed by PR #96; integration f84b469 contains 0c154b2 | BLUEPRINT.md rewritten (the deliverable); templates/BLUEPRINT.md untouched by design under the shared eight-heading contract; no other owner changed | The contract assertion is phrasing-coupled, not semantic proof; semantic fidelity rests on the separate-context review. A second candidate for this Task, origin/claude/S-00P-TK-001-blueprint-workflow-rework at a7e83c0 from a session the dispatcher did not start, satisfied the same acceptance and is left unmerged for the owner to delete. TK-002 onward stay blocked on S-00H, S-00I and S-00J |
 
 ## Completion Result
 
