@@ -244,9 +244,21 @@ try {
     blockers: 'none',
     destination: 'spec-acceptance: S-201 Acceptance Criteria item 1'
   }));
-  assert.deepEqual(nextWork(root), beforeTaskDir,
-    'a coexisting standalone Task record must not change or double-count embedded-table selection');
-  assert.deepEqual(doctor(root), [], 'doctor stays clean; TK-002 wires the tasks directory into it');
+  // TK-001 asserted here that a coexisting record left embedded-table
+  // selection untouched, because nothing yet read the record. TK-002 gives a
+  // Spec one source of slice truth, so this exact shape - a live table row
+  // and a record for TK-001 - is now refused by name. The property TK-001
+  // protected is preserved and strengthened: the record is still never a
+  // second candidate, and now nobody can read past the contradiction either.
+  assert.throws(
+    () => nextWork(root),
+    /S-201 carries both a slice-table row and a Task record for TK-001/,
+    'a coexisting row and record is refused, never counted as a second candidate'
+  );
+  assert.ok(
+    doctor(root).some((issue) => issue.code === 'malformed-spec' && /TK-001/.test(issue.message)),
+    'doctor reports the contradiction instead of selecting past it'
+  );
 
   const taskPath = path.join(root, 'specs/S-201-task-record/tasks/TK-001/TASK.md');
   const record = readTaskRecord(taskPath, root);
@@ -472,6 +484,127 @@ try {
   fs.rmSync(path.join(root, 'specs/S-201-task-record'), { recursive: true });
   render(root);
 
+  // S-00H TK-002: `next`, `claim`, `close` and `render` read standalone Task
+  // records wherever a Spec has a `tasks/` directory, and the embedded slice
+  // table wherever it does not. One source of slice truth per Spec: a
+  // record-backed Spec's retained table holds completed history only, and a
+  // row and a record for one identifier is refused rather than counted twice.
+  const completedBefore = read('specs/S-001-fixture/SPEC.md');
+
+  write('specs/S-301-records/SPEC.md', recordBackedSpec('S-301'));
+  write('specs/S-301-records/tasks/TK-002/TASK.md', taskRecordFixture({
+    id: 'TK-002', specId: 'S-301', slice: 'Second slice', status: 'blocked', blockers: 'S-001',
+    destination: 'spec-acceptance: S-301 Acceptance Criteria item 1'
+  }));
+  write('specs/S-301-records/tasks/TK-003/TASK.md', taskRecordFixture({
+    id: 'TK-003', specId: 'S-301', slice: 'Third slice', status: 'blocked', blockers: 'TK-002',
+    destination: 'spec-acceptance: S-301 Acceptance Criteria item 1'
+  }));
+  const recordTableBefore = sliceTable(read('specs/S-301-records/SPEC.md'));
+  render(root);
+
+  const selectedRecord = nextWork(root);
+  assert.equal(selectedRecord.specId, 'S-301');
+  assert.equal(selectedRecord.ticketId, 'TK-002',
+    'a record whose only blocker is a complete Spec is selected live, without anyone editing a status cell');
+  assert.equal(selectedRecord.slice, 'Second slice', 'the selected slice text comes from the Task record');
+  assert.deepEqual(doctor(root), [], 'doctor stays clean on a record-backed Spec and raises no false slice finding');
+
+  claimWork(root, 'S-301', { agent: 'codex', date: '2026-07-12' });
+  assert.match(read('specs/S-301-records/tasks/TK-002/TASK.md'), /\*\*Status:\*\* in-progress/,
+    'claim flips the Task record itself to in-progress');
+  assert.match(read('specs/S-301-records/SPEC.md'), /\*\*Owner:\*\* codex/);
+  assert.match(read('specs/S-301-records/SPEC.md'), /\*\*Latest event:\*\* TK-002 claimed by codex\./);
+  assert.equal(sliceTable(read('specs/S-301-records/SPEC.md')), recordTableBefore,
+    'claiming a Task record leaves the Spec slice table untouched');
+  assert.equal(nextWork(root).status, 'in-progress', 'a claimed record resumes before new work is selected');
+
+  const closedRecord = closeTicket(root, 'S-301', {
+    proof: 'node test | tee record.log',
+    docs: 'Docs checked; no update needed',
+    remainingGap: 'none',
+    date: '2026-07-12'
+  });
+  assert.equal(closedRecord.tickets.find((item) => item.id === 'TK-002').status, 'done');
+  assert.match(read('specs/S-301-records/tasks/TK-002/TASK.md'), /\*\*Status:\*\* done/,
+    'close flips the Task record to done');
+  assert.match(read('specs/S-301-records/tasks/TK-002/TASK.md'), /\*\*Proof:\*\* node test \| tee record\.log/,
+    'proof text for a record goes on the record, not into a table cell');
+  assert.match(
+    read('specs/S-301-records/SPEC.md'),
+    /\| 2026-07-12 \| TK-002 \| Ticket closed \| node test \\\| tee record\.log \|/,
+    "close still appends the Spec's append-only evidence row for a record-backed Spec"
+  );
+  assert.equal(sliceTable(read('specs/S-301-records/SPEC.md')), recordTableBefore,
+    'closing a Task record leaves the Spec slice table untouched');
+  assert.match(read('specs/S-301-records/SPEC.md'), /\*\*Next gate:\*\* Complete TK-003\./);
+  assert.equal(nextWork(root).ticketId, 'TK-003',
+    'a record whose declared blocker is now a done record becomes eligible with no status cell edited');
+
+  render(root);
+  assert.match(
+    read('TASKBOARD.md'),
+    /\| \[S-301\]\(specs\/S-301-records\/SPEC\.md\) \| TK-003: Third slice \(ready\) \| codex \|/,
+    'the hot board row for a record-backed Spec is derived from its Task records'
+  );
+  assert.deepEqual(doctor(root), [], 'a rendered record-backed room passes doctor');
+
+  // A Spec objective with no active Task records shows the owner gate rather
+  // than a slice; its active state is derived from the records, and no second
+  // Spec status is written anywhere.
+  claimWork(root, 'S-301', { agent: 'codex', date: '2026-07-12' });
+  closeTicket(root, 'S-301', {
+    proof: 'node test', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12'
+  });
+  render(root);
+  assert.match(read('TASKBOARD.md'), /\| \[S-301\]\(specs\/S-301-records\/SPEC\.md\) \| Acceptance \/ owner gate \|/,
+    'a record-backed Spec whose Task records are all done derives an inactive slice cell');
+  assert.equal(nextWork(root), null, 'no record remains eligible once every Task record is done');
+  assert.match(read('specs/S-301-records/SPEC.md'), /\*\*Status:\*\* active/,
+    'the Spec header Status is the Spec lifecycle truth and no command rewrites it from records');
+
+  // A record-backed Spec's retained table is completed history only; a live
+  // row beside the records is refused rather than silently ignored.
+  const liveRow = read('specs/S-301-records/SPEC.md')
+    .replace('| TK-001 | First slice | done | none | landed |', '| TK-001 | First slice | ready | none | pending |');
+  fs.writeFileSync(path.join(root, 'specs/S-301-records/SPEC.md'), liveRow);
+  assert.throws(() => nextWork(root), /S-301 is record-backed but its slice table still holds the unfinished row TK-001/,
+    'a record-backed Spec keeps one source of slice truth; an unfinished retained row fails closed');
+  fs.rmSync(path.join(root, 'specs/S-301-records'), { recursive: true });
+
+  // A row and a record for one identifier: refused explicitly, never counted twice.
+  write('specs/S-302-collision/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-302'));
+  write('specs/S-302-collision/tasks/TK-001/TASK.md', taskRecordFixture({
+    id: 'TK-001', specId: 'S-302', slice: 'First slice', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: S-302 Acceptance Criteria item 1'
+  }));
+  assert.throws(
+    () => nextWork(root),
+    /S-302 carries both a slice-table row and a Task record for TK-001/,
+    'one identifier held by both a row and a record is an explicit error, never a doubled candidate'
+  );
+  assert.ok(
+    doctor(root).some((issue) => issue.code === 'malformed-spec' && /TK-001/.test(issue.message)),
+    'doctor reports the collision rather than selecting past it'
+  );
+  fs.rmSync(path.join(root, 'specs/S-302-collision'), { recursive: true });
+  render(root);
+
+  // A table-only Spec behaves exactly as it did before any of this.
+  write('specs/S-303-table-only/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-303'));
+  render(root);
+  const tableOnly = nextWork(root);
+  assert.equal(tableOnly.ticketId, 'TK-001');
+  assert.equal(tableOnly.status, 'ready');
+  const tableOnlyBefore = read('specs/S-303-table-only/SPEC.md');
+
+  assert.equal(read('specs/S-303-table-only/SPEC.md'), tableOnlyBefore,
+    'a table-only Spec beside record-backed Specs is never rewritten by them');
+  fs.rmSync(path.join(root, 'specs/S-303-table-only'), { recursive: true });
+  render(root);
+  assert.equal(read('specs/S-001-fixture/SPEC.md'), completedBefore,
+    "a completed Spec's historical table is byte-identical after every command");
+
   fs.appendFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), '\n[missing](../../missing.md)\n');
   assert.ok(doctor(root).some((issue) => issue.code === 'broken-link'));
 } finally {
@@ -519,6 +652,18 @@ function fixtureSpec() {
     '- Superseded by: none',
     ''
   ].join('\n');
+}
+
+function recordBackedSpec(id) {
+  return fixtureSpec()
+    .replaceAll('S-001', id)
+    .replace('| TK-001 | First slice | ready | none | pending |', '| TK-001 | First slice | done | none | landed |');
+}
+
+function sliceTable(content) {
+  const start = content.indexOf('## Vertical Implementation Slices');
+  const end = content.indexOf('\n## ', start + 1);
+  return content.slice(start, end < 0 ? content.length : end);
 }
 
 function taskRecordFixture({ id, specId, slice, status, blockers, destination }) {

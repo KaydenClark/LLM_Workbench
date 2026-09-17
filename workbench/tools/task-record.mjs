@@ -72,7 +72,11 @@ export function parseTaskRecord(content, filePath, root) {
     slice: fields.Slice,
     status: fields.Status,
     blockers: parseBlockers(fields.Blockers, id),
-    destination: parseDestination(fields.Destination, id)
+    destination: parseDestination(fields.Destination, id),
+    // Proof is optional and absent until the Task closes. It lives on the
+    // record rather than in a table cell, so a record-backed Spec has one
+    // place a reader looks for what a Task proved.
+    proof: fields.Proof ?? null
   };
 }
 
@@ -137,6 +141,45 @@ export function taskStatus(task) {
 export function unmetBlockers(task, satisfiedIds) {
   const satisfied = satisfiedIds instanceof Set ? satisfiedIds : new Set(satisfiedIds);
   return task.blockers.filter((blockerId) => !satisfied.has(blockerId));
+}
+
+// Rewrites the frontmatter fields a lifecycle command owns. An existing field
+// is replaced in place; a field the record does not carry yet (`Proof`, until
+// the Task closes) is inserted after `Destination`, so a record keeps one
+// readable block instead of growing fields in call order. Pure: the caller
+// writes the bytes, which keeps the atomic-write policy in one place.
+export function updateTaskFields(content, values) {
+  let result = content;
+  for (const [name, value] of Object.entries(values)) {
+    const field = new RegExp(`^\\*\\*${escapeRegExp(name)}:\\*\\*\\s*.+$`, 'm');
+    if (field.test(result)) {
+      result = result.replace(field, `**${name}:** ${value}`);
+      continue;
+    }
+    const anchor = /^\*\*Destination:\*\*\s*.+$/m;
+    if (!anchor.test(result)) throw new Error(`A Task record with no Destination field cannot take a ${name} field`);
+    result = result.replace(anchor, (line) => `${line}\n**${name}:** ${value}`);
+  }
+  return result;
+}
+
+// The bytes one Task record is written as. Kept beside the parser so the two
+// cannot drift; every caller validates the result by parsing it back before
+// writing it, so a record this produces is never one the reader refuses.
+export function formatTaskRecord({ id, specId, slice, status, blockers, destination, proof }) {
+  const lines = [
+    `# ${id} - ${slice}`,
+    '',
+    `**Task ID:** ${id}`,
+    `**Spec ID:** ${specId}`,
+    `**Slice:** ${slice}`,
+    `**Status:** ${status}`,
+    `**Blockers:** ${blockers}`,
+    `**Destination:** ${destination}`
+  ];
+  if (proof) lines.push(`**Proof:** ${proof}`);
+  lines.push('');
+  return lines.join('\n');
 }
 
 function parseBlockers(value, id) {
