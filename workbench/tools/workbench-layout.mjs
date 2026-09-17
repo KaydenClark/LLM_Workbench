@@ -319,6 +319,26 @@ export function validateManifest(project) {
   return report('valid', { manifest, ignoreVerification: ignored.verification });
 }
 
+// ADR-000H "One Task, one context": the context unit is a declared host fact
+// recorded in workbench/manifest.json with provenance, never a number
+// restated in portable control prose. This reader is the one seam sizing
+// guidance points at; it is a Plan goalpost only, so nothing in doctor, next,
+// claim, close or validateManifest above may consult it, and an undeclared
+// value fails explicitly rather than defaulting silently.
+export class ContextUnitUndeclaredError extends Error {
+  constructor(message) { super(message); this.name = 'ContextUnitUndeclaredError'; }
+}
+
+export function readContextUnit(project) {
+  const { manifest, failure } = readManifestFile(project);
+  if (failure) throw new ContextUnitUndeclaredError(failure.error.message);
+  const unit = manifest.contextUnit;
+  if (!unit || typeof unit !== 'object' || typeof unit.value !== 'number' || !unit.unit) {
+    throw new ContextUnitUndeclaredError(`${path.join(project, 'workbench', 'manifest.json')} does not declare a contextUnit; sizing guidance has no declared value to read.`);
+  }
+  return unit;
+}
+
 function templateRoot() {
   // The product checkout keeps copy-ready templates near the tools; a
   // downstream project carries none, so seeding is reported truthfully.

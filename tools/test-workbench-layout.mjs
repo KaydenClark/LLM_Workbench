@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
-import { coreSkills, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { coreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
 
@@ -2223,6 +2223,40 @@ for (const failure of ['ignored-template', 'trackable-live']) {
     } finally { fs.rmSync(project, { recursive: true, force: true }); }
   });
 }
+
+// ADR-000H "One Task, one context": the context unit is a declared host fact
+// in workbench/manifest.json with provenance, never a number restated in
+// portable control prose. The reader is a goalpost only - nothing in doctor,
+// next, claim or close may consult it - so this test exercises the reader
+// directly rather than through validate/doctor.
+test('readContextUnit returns the declared value with its provenance and fails explicitly when the manifest declares none', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    assert.throws(() => readContextUnit(project), ContextUnitUndeclaredError,
+      'a manifest with no contextUnit field must fail explicitly, never default silently');
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    fs.writeFileSync(manifestPath, JSON.stringify({
+      ...manifest,
+      contextUnit: {
+        value: 200000,
+        unit: 'tokens',
+        decisionDate: '2026-09-12',
+        source: 'owner',
+        consideredAlternatives: [150000, 250000],
+        reason: '250k is where a context is compacted or gone while roughly 200k is where answer quality begins to degrade, and planning to the ceiling plans work into the degraded tail.'
+      }
+    }));
+    const unit = readContextUnit(project);
+    assert.equal(unit.value, 200000);
+    assert.equal(unit.unit, 'tokens');
+    assert.equal(unit.decisionDate, '2026-09-12');
+    assert.equal(unit.source, 'owner');
+    assert.deepEqual(unit.consideredAlternatives, [150000, 250000]);
+    assert.match(unit.reason, /degraded tail/);
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
 
 for (const suffix of ['00A', '100A', '1000']) {
 test(`Genesis accepts first spec and ticket suffix ${suffix} without truncation or path changes`, () => {
