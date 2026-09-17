@@ -119,8 +119,8 @@ creates its Tasks; the Taskboard projects their state so the next hot Task is
 visible without reading the whole board. An agent picks up that hot Task,
 implements it with red/green TDD, verifies the behavior that actually resulted,
 and lands the proven Task branch. The finished Task is reconciled into its Spec
-and then retired out of ordinary discovery, and the next hot Task follows, until
-the Spec is assembled.
+and then retired out of ordinary discovery, its branch cleaned up once the Spec
+branch contains it, and the next hot Task follows, until the Spec is assembled.
 
 An assembled Spec is checked in a separate context against its own destination
 and the combined results of its Tasks; that is where independent review belongs,
@@ -131,9 +131,10 @@ the integration branch, which is the surface where the owner sees whether the
 scoped destination is genuinely there. No Git merge closes a Spec; the owner's
 confirmation does. A closed Spec is reconciled into its durable owners, the Wiki
 holding the current capability knowledge a later reader needs, and is then
-retired, with Git keeping the history recoverable. A later gap against that same
-destination is a corrective Task that updates the reconciled record instead of
-reviving a closed Spec.
+retired. Once the exact change is verified on the default branch, the transient
+Spec and Task records may be discarded, with Git preserving recoverable history.
+A later gap against that same destination is a corrective Task that updates the
+reconciled record instead of reviving a closed Spec.
 
 Branch topology follows the same altitudes. A Spec branch is cut from the
 integration branch, each Task branch is cut from its Spec branch and worked in
