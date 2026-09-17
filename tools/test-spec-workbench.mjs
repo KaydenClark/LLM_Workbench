@@ -13,6 +13,7 @@ import {
   render
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
+import { parseTaskRecord } from '../workbench/tools/task-record.mjs';
 
 assert.deepEqual(
   parseCliArgs(['next', '--json']),
@@ -219,6 +220,94 @@ try {
   fs.rmSync(root, { recursive: true, force: true });
 }
 
+// S-00H TK-001: a standalone Task record reads its own state and blocking
+// relationships through `parseTaskRecord`, independently of the embedded
+// ticket table it sits beside. Converting `next`/`claim`/`close`/`render`/
+// `doctor` onto Task records is TK-002; this proves only that the record
+// reads, and that its presence changes nothing about the table those
+// commands still read.
+{
+  const taskRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-record-'));
+  try {
+    const taskPath = path.join(taskRoot, 'TASK.md');
+    fs.writeFileSync(taskPath, fixtureTask());
+    const task = parseTaskRecord(fs.readFileSync(taskPath, 'utf8'), taskPath);
+    assert.equal(task.id, 'TK-001');
+    assert.equal(task.specId, 'S-001');
+    assert.equal(task.slice, 'Fixture Task Slice');
+    assert.equal(task.status, 'in-progress');
+    assert.deepEqual(task.blockers, ['TK-000'], 'a comma-separated Blockers field reads as a list of ids');
+    assert.deepEqual(task.destination, { type: 'spec-acceptance', value: 'Expected behavior is verified.' });
+
+    assert.deepEqual(
+      parseTaskRecord(fixtureTask().replace('**Blockers:** TK-000', '**Blockers:** none'), taskPath).blockers,
+      [],
+      '"none" reads as no blockers rather than a literal one-item list'
+    );
+
+    assert.deepEqual(
+      parseTaskRecord(fixtureTask().replace('**Blockers:** TK-000', '**Blockers:** TK-000, S-002'), taskPath).blockers,
+      ['TK-000', 'S-002'],
+      'a Task or a Spec id may each block a Task'
+    );
+
+    const correctiveContent = fixtureTask().replace(
+      '- Spec acceptance: Expected behavior is verified.',
+      '- Wiki claim: workbench/wiki/design-concepts/task-record.md#a-task-is-a-standalone-artifact'
+    );
+    assert.deepEqual(
+      parseTaskRecord(correctiveContent, taskPath).destination,
+      { type: 'wiki-claim', value: 'workbench/wiki/design-concepts/task-record.md#a-task-is-a-standalone-artifact' },
+      'a corrective Task after Spec retirement can name a reconciled Wiki claim instead of Spec acceptance lines'
+    );
+
+    assert.throws(
+      () => parseTaskRecord(fixtureTask().replace('**Status:** in-progress', '**Status:** not-a-status'), taskPath),
+      /status/i,
+      'an unrecognised status is refused rather than silently accepted'
+    );
+    assert.throws(
+      () => parseTaskRecord(fixtureTask().replace('**Task ID:** TK-001', ''), taskPath),
+      /Task ID/,
+      'a missing Task ID is refused rather than defaulting to one'
+    );
+    assert.throws(
+      () => parseTaskRecord(fixtureTask().replace(/## Destination\n\n- Spec acceptance:.*\n/, ''), taskPath),
+      /Destination/,
+      'a Task with no Destination is refused rather than falling back silently'
+    );
+
+    // Coexistence: a Task record occupying its own file changes nothing about
+    // how the embedded ticket table drives `next`, `render` and `doctor`.
+    fs.writeFileSync(path.join(taskRoot, 'BLUEPRINT.md'), [
+      '# Fixture Blueprint',
+      '',
+      '<!-- spec-catalog:start -->',
+      '<!-- spec-catalog:end -->'
+    ].join('\n'));
+    fs.writeFileSync(path.join(taskRoot, 'TASKBOARD.md'), [
+      '# Fixture Taskboard',
+      '',
+      '<!-- hot-specs:start -->',
+      '<!-- hot-specs:end -->'
+    ].join('\n'));
+    const specDir = path.join(taskRoot, 'specs', 'S-001-fixture');
+    fs.mkdirSync(specDir, { recursive: true });
+    fs.writeFileSync(path.join(specDir, 'SPEC.md'), fixtureSpec());
+    const recordPath = path.join(specDir, 'tasks', 'TK-001', 'TASK.md');
+    fs.mkdirSync(path.dirname(recordPath), { recursive: true });
+    fs.writeFileSync(recordPath, fixtureTask());
+
+    const next = nextWork(taskRoot);
+    assert.equal(next.specId, 'S-001', 'the embedded table still drives next with a Task record file beside it');
+    assert.equal(next.ticketId, 'TK-001');
+    render(taskRoot);
+    assert.deepEqual(doctor(taskRoot), [], 'an unrelated Task record file does not affect doctor on the untouched ticket table');
+  } finally {
+    fs.rmSync(taskRoot, { recursive: true, force: true });
+  }
+}
+
 console.log('ok - spec workbench lifecycle, rendering, and doctor self-test passed');
 
 function fixtureSpec() {
@@ -258,6 +347,22 @@ function fixtureSpec() {
     '',
     '- Supersedes: none',
     '- Superseded by: none',
+    ''
+  ].join('\n');
+}
+
+function fixtureTask() {
+  return [
+    '# TK-001 - Fixture Task Slice',
+    '',
+    '**Task ID:** TK-001',
+    '**Spec:** S-001',
+    '**Status:** in-progress',
+    '**Blockers:** TK-000',
+    '',
+    '## Destination',
+    '',
+    '- Spec acceptance: Expected behavior is verified.',
     ''
   ].join('\n');
 }
