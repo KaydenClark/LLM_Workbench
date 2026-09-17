@@ -13,6 +13,7 @@ import {
   render
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
+import { listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 
 assert.deepEqual(
   parseCliArgs(['next', '--json']),
@@ -213,6 +214,87 @@ try {
   assert.ok(doctor(root).some((issue) => issue.code === 'duplicate-id'));
   fs.rmSync(path.join(root, 'specs/S-999-duplicate'), { recursive: true });
 
+  // S-00H TK-001: a standalone Task record reads its own state and blocking
+  // relationships through an exported function, one directory per Task
+  // beneath its owning Spec's directory. `next`/`claim`/`close`/`render`/
+  // `doctor` still read only the embedded ticket table (TK-002 migrates
+  // them), so a room carrying both must behave exactly as a table-only room
+  // and must not double-count the coexisting record.
+  write('specs/S-201-task-record/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-201'));
+  render(root);
+  const beforeTaskDir = nextWork(root);
+  assert.equal(beforeTaskDir.specId, 'S-201', 'a room with only the embedded table selects as before');
+  assert.deepEqual(doctor(root), [], 'doctor is clean before any standalone Task record exists');
+
+  write('specs/S-201-task-record/tasks/TK-001/TASK.md', taskRecordFixture({
+    id: 'TK-001',
+    specId: 'S-201',
+    slice: 'First slice',
+    status: 'ready',
+    blockers: 'none',
+    destination: 'spec-acceptance: S-201 Acceptance Criteria item 1'
+  }));
+  assert.deepEqual(nextWork(root), beforeTaskDir,
+    'a coexisting standalone Task record must not change or double-count embedded-table selection');
+  assert.deepEqual(doctor(root), [], 'doctor stays clean; TK-002 wires the tasks directory into it');
+
+  const taskPath = path.join(root, 'specs/S-201-task-record/tasks/TK-001/TASK.md');
+  const record = readTaskRecord(taskPath, root);
+  assert.equal(record.id, 'TK-001');
+  assert.equal(record.specId, 'S-201');
+  assert.equal(record.slice, 'First slice');
+  assert.equal(taskStatus(record), 'ready', 'status is read through the one function S-00I can later repoint');
+  assert.deepEqual(record.blockers, []);
+  assert.deepEqual(record.destination, { type: 'spec-acceptance', reference: 'S-201 Acceptance Criteria item 1' });
+
+  const listed = listTaskRecords(path.join(root, 'specs/S-201-task-record'), root);
+  assert.equal(listed.length, 1, 'listing finds exactly the one standalone record, not a second copy from the table');
+  assert.equal(listed[0].id, 'TK-001');
+
+  // Blocking relationships, read through an exported function.
+  write('specs/S-201-task-record/tasks/TK-001/TASK.md', taskRecordFixture({
+    id: 'TK-001',
+    specId: 'S-201',
+    slice: 'First slice',
+    status: 'blocked',
+    blockers: 'TK-000',
+    destination: 'spec-acceptance: S-201 Acceptance Criteria item 1'
+  }));
+  const blockedRecord = readTaskRecord(taskPath, root);
+  assert.deepEqual(unmetBlockers(blockedRecord, []), ['TK-000'], 'an unmet blocker is reported until its id is satisfied');
+  assert.deepEqual(unmetBlockers(blockedRecord, ['TK-000']), [], 'a satisfied blocker id clears the record');
+
+  // A corrective Task's destination may name a reconciled Wiki claim instead
+  // of Spec acceptance lines; this slice only needs the field to hold it.
+  write('specs/S-201-task-record/tasks/TK-002/TASK.md', taskRecordFixture({
+    id: 'TK-002',
+    specId: 'S-201',
+    slice: 'Corrective repair',
+    status: 'ready',
+    blockers: 'none',
+    destination: 'wiki-claim: workbench/wiki/design-concepts/example.md#claim-1'
+  }));
+  const corrective = readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-002/TASK.md'), root);
+  assert.deepEqual(corrective.destination, { type: 'wiki-claim', reference: 'workbench/wiki/design-concepts/example.md#claim-1' });
+
+  // Explicit errors on a malformed record; no silent fallback to the table.
+  write('specs/S-201-task-record/tasks/TK-003/TASK.md', taskRecordFixture({
+    id: 'TK-003',
+    specId: 'S-201',
+    slice: 'Malformed',
+    status: 'unstoppable',
+    blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-003/TASK.md'), root),
+    /invalid status/i,
+    'a malformed Task record fails closed rather than silently falling back to the embedded table'
+  );
+
+  fs.rmSync(path.join(root, 'specs/S-201-task-record'), { recursive: true });
+  render(root);
+
   fs.appendFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), '\n[missing](../../missing.md)\n');
   assert.ok(doctor(root).some((issue) => issue.code === 'broken-link'));
 } finally {
@@ -258,6 +340,20 @@ function fixtureSpec() {
     '',
     '- Supersedes: none',
     '- Superseded by: none',
+    ''
+  ].join('\n');
+}
+
+function taskRecordFixture({ id, specId, slice, status, blockers, destination }) {
+  return [
+    `# ${id} - ${slice}`,
+    '',
+    `**Task ID:** ${id}`,
+    `**Spec ID:** ${specId}`,
+    `**Slice:** ${slice}`,
+    `**Status:** ${status}`,
+    `**Blockers:** ${blockers}`,
+    `**Destination:** ${destination}`,
     ''
   ].join('\n');
 }
