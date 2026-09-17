@@ -25,6 +25,17 @@ The owner can inspect both the product direction and the evidence behind progres
 
 ## Desired Experience And Behavior
 
+An idea reaches delivery along one ladder the owner and the agent can both name:
+**Idea -> Align through grilling -> confirmed design concept -> Blueprint ->
+recursive Spec/Task delivery.** Align begins from an owner idea and runs through
+grilling, drawing on whatever research, brainstorming or wayfinding a named
+uncertainty actually requires, and it ends only when owner and agent explicitly
+confirm the design concept they now share. That confirmed concept is what gets
+blueprinted. A prototype is an option rather than a rung: it sits after the
+Blueprint and before a Spec when nothing already in hand settles plausibility,
+and its code carries forward only once it meets the same implementation and
+verification requirements as any other work.
+
 Ordinary language is sufficient to start deciding, specifying, building or
 handing off. An agent follows the [Context Map](LEXICON.md#task-routing), loads
 only relevant owners, and resolves routine details without asking the owner to
@@ -41,9 +52,36 @@ remain visible and recoverable instead of becoming unsupported completion claims
 
 The root controls form the entry surface. This Blueprint describes the desired
 product, active ADR decisions explain cross-cutting architectural choices, the
-Lexicon connects meanings and owners, and stable Specs hold scoped delivery and
-proof. The Wiki supplies enduring context. [Claim-level ownership](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
+Lexicon connects meanings and owners, and Specs and their Tasks carry scoped
+delivery and its proof. [Claim-level ownership](workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
 keeps these surfaces coherent without making a whole file one kind of authority.
+
+Work is described at three altitudes. This Blueprint holds the product-level
+destination and the journey toward it, the equivalent of counting to 100. A Spec
+is one scoped objective with its own destination, shaped like a product
+requirements document: the next number to reach, derived from the Blueprint.
+Tasks do the counting, as the bounded executable work that reaches or repairs a
+Spec's destination. Stacked Specs realize the journey. Scope chooses the
+altitude, not volume: a gap against an existing destination stays corrective
+Task work however many Tasks it takes, while a genuinely distinct scoped
+objective becomes a new Spec.
+
+Each altitude has one intended home, and none of them is product documentation.
+`SPEC.md` and `TASK.md` are transient working artifacts: the Spec states its
+objective, acceptance and evidence, the Task owns active execution state, and
+the Taskboard projects the hot Tasks rather than owning them. Durable truth
+lives elsewhere. This Blueprint owns product direction; the Wiki owns readable
+current capability knowledge; ADRs own consequential architectural decisions;
+source, tests and assets own implemented actuality and its proof; Git preserves
+history. A completed Spec is reconciled into those owners precisely so that
+retiring its working artifacts loses nothing.
+
+Branching follows the same altitudes. A Spec branch is cut from the integration
+branch, each Task branch is cut from its own Spec branch and worked in a
+separate worktree, and proven Task results accumulate in the Spec branch until
+that Spec is assembled. A coordinator is the intended model for running
+independent Tasks in parallel over that topology; consistent single-Task
+execution is what it is built on top of.
 
 A manifest resolves the support collections and managed local runtime. Core skills
 compose reusable behavior within the caller's scope. One upstream-owned global
@@ -81,10 +119,31 @@ require repeated controlled observations with uncertainty and failures preserved
 
 New projects receive a coherent starter; existing projects adopt or explicitly
 update it while preserving their product truth and deliberate local differences.
-Development proceeds through bounded specifications, useful tests, implementation,
-owned documentation and independent review of the integration candidate. The
-Workbench Template exercises the same update contract as a real installed room.
-Whole-product readiness examines the combined system before owner-controlled
+
+Delivery then repeats one recursive loop. A need in the Blueprint creates a
+Spec; the Spec creates its Tasks; the Taskboard projects them; an agent picks up
+a hot Task, implements it under red/green TDD, verifies it against real
+behavior, and lands that Task branch. The finished Task is reconciled into its
+Spec and then retired, and the next hot Task begins. When the Spec is assembled,
+a separate context reviews that assembled Spec and the combined Task results.
+A review that fails diagnoses the gap and creates corrective Tasks under the
+still-open Spec, and a fresh candidate is reviewed; there is no per-Task review
+ceremony standing between a Task and its own verification. The integration
+branch is the owner's Human QA surface, and passing Human QA is what establishes
+that the scoped destination is actually there: no Git merge makes that judgment.
+Only then does the Spec close, reconcile into its durable owners with the Wiki
+holding the resulting capability knowledge, and retire. Once the exact change is
+verified on the default branch, the transient Spec and Task records may be
+discarded, Git preserving recoverable history; a later gap against that same
+destination is a corrective Task that updates the durable record rather than
+resurrecting a retired Spec.
+
+The loop nests at whatever scope the work needs. Failed Human QA returns to
+Align and back down the same ladder at the scope that actually missed, without
+inferring from one defect that the shared design concept was wrong.
+
+The Workbench Template exercises the same update contract as a real installed
+room. Whole-product readiness examines the combined system before owner-controlled
 publication. Installation and remote delivery are verified where they occur.
 
 Failures lead to investigation, the smallest supported repair and corrected

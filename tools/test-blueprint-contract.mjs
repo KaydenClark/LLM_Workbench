@@ -10,6 +10,10 @@ for (const file of ['BLUEPRINT.md', 'templates/BLUEPRINT.md']) {
   assert.deepEqual([...body.matchAll(/^## (.+)$/gm)].map(x => x[1]), headings, file);
   assert.doesNotMatch(body, /spec-catalog|Harness version|Last reviewed|Cross-Cutting Health|## Accepted V/);
 }
+const flatRoot = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8').replace(/\s+/g, ' ');
+assert.match(flatRoot, /Idea -> Align through grilling -> confirmed design concept -> Blueprint -> recursive Spec\/Task delivery/, 'root Blueprint must name every rung of the governing workflow in ladder order');
+for (const stage of ['prototype', 'Taskboard', 'hot Task', 'red/green', 'reconcile', 'retire', 'assembled Spec', 'separate context', 'corrective Task', 'Human QA', 'Wiki', 'coordinator'])
+  assert.ok(flatRoot.includes(stage), `root Blueprint must name the ${stage} stage of the recursive Spec/Task loop`);
 const inventory = JSON.parse(fs.readFileSync(path.join(root, 'workbench/specs/S-00A-blueprint-active-adr-and-context-map/blueprint-claim-disposition.json')));
 for (const source of inventory.sources) {
   const original = execFileSync('git', ['show', `${source.commit}:${source.path}`], {cwd:root,encoding:'utf8'});
