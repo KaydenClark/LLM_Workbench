@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-17
 **Catalog description:** Make a Task a standalone `TASK.md` artifact that owns active work state, and replace Ticket with Task across prose, tools and newly allocated identifiers.
-**Blockers:** TT-Q10 (identifier form) is open and blocks TK-003 and TK-004.
-**Latest event:** TK-008 claimed by DISPATCHER.
-**Next gate:** Close TK-008 with verification and documentation proof.
+**Blockers:** TT-Q10 (identifier form) is open and blocks TK-003 and TK-004; TK-001 is done and landed, so TK-002, TK-005 and TK-006 are ready.
+**Latest event:** TK-002 claimed by DISPATCHER.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -123,11 +123,11 @@ gate reads Task records.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Introduce `TASK.md` as a record with its own state and blockers | done | none | Red: ERR_MODULE_NOT_FOUND for workbench/tools/task-record.mjs at the pre anchor; green: tools/test-spec-workbench.mjs passes with the standalone-record, blocking-relationship, coexistence-both-ways and nine fail-closed assertions; mutation checks on the Task-ID regex, required-field loop, duplicate-field guard, folder/id mismatch, duplicate-id and missing-TASK.md checks each turn the test red. Full suite 42/42 on the committed candidate 3dac999; doctor no blocking finding; render no-op; zero deletions; spec-workbench.mjs, spec-packet.mjs and diagnostics.mjs byte-identical; historical TK-### rows byte-identical. Separate-context review (Claude Opus 5): 5d18c3c FAIL on four correctable findings, corrected in 3dac999 and re-reviewed PASS with the suite independently reproduced. Built by Claude Sonnet 5 from the lane handoff. Landed by PR #98; integration 39214bc contains 3dac999 |
-| TK-002 | Migrate selection, claim, close and render onto Task records | blocked | TK-001 | Red tests at the `spec-workbench.mjs` seam; green commands; `doctor` clean |
+| TK-002 | Migrate selection, claim, close and render onto Task records | in-progress | TK-001 | Red tests at the `spec-workbench.mjs` seam; green commands; `doctor` clean |
 | TK-003 | Replace Ticket with Task across tool vocabulary and board columns | blocked | TK-002, TT-Q10 | Red tests per touched tool; green rename using the owner's chosen identifier form; historical `TK-###` rows byte-identical |
 | TK-004 | Update `to-tickets`, the skills/controls that instruct the old model, and every generic template mirror | blocked | TK-003 | Skill catalog and inspection tests pass; composition test green; red repository-wide sweep for live `ticket`/`Ticket` prose (verified at review: `templates/LEXICON.md`, `templates/GENESIS.md`, `templates/RUNBOOK.md`, `templates/README.md`, `templates/AGENTS.md`, `templates/SPEC.md`, at minimum) finds nothing after the change |
-| TK-005 | Assemble the Packet a Task loads at entry | blocked | TK-001 | Red tests for a Packet missing a required member and for a corrective Task whose destination is a reconciled Wiki claim; green assembly of TASK.md, the Spec acceptance lines or reconciled Wiki claim, cited source/test paths and the Contract; Scoped handoff and local notepad included only when present and never treated as instruction or proof |
-| TK-006 | Write the append-only per-run Receipt | blocked | TK-001 | Red test for a simulated abrupt interruption (not only a clean close) and for a resumed Task appending rather than overwriting; green one-row-per-run Receipt, appended proactively per ADR-000H, recording branch, HEAD SHA, upstream distance, dirty file count, tests run with result, docs touched and remaining gap |
+| TK-005 | Assemble the Packet a Task loads at entry | ready | TK-001 | Red tests for a Packet missing a required member and for a corrective Task whose destination is a reconciled Wiki claim; green assembly of TASK.md, the Spec acceptance lines or reconciled Wiki claim, cited source/test paths and the Contract; Scoped handoff and local notepad included only when present and never treated as instruction or proof |
+| TK-006 | Write the append-only per-run Receipt | ready | TK-001 | Red test for a simulated abrupt interruption (not only a clean close) and for a resumed Task appending rather than overwriting; green one-row-per-run Receipt, appended proactively per ADR-000H, recording branch, HEAD SHA, upstream distance, dirty file count, tests run with result, docs touched and remaining gap |
 | TK-007 | Project Task state and the derived Receipt signal | blocked | TK-006, TK-003 | Red tests prove the board derives a Spec objective's active state from its Task records and distinguishes a multi-run or dirty Task; green per-Task state, run count, latest branch, short SHA and dirty-file count; full run table proven absent from `TASKBOARD.md` |
 | TK-008 | Record the declared context unit in the manifest | in-progress | none | Red test for sizing guidance reading an undeclared value; green `workbench/manifest.json` field with provenance recording the owner's 200k-token decision and the rejected 150k/250k alternatives |
 
