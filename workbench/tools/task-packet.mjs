@@ -141,7 +141,7 @@ function citedPathsFromTestingSeams(root, destination, taskId) {
   if (!seams) {
     throw new Error(`${taskId} Packet is missing its required cited-paths member: ${destination.specPath} has no "Testing Seams" section`);
   }
-  const paths = extractPathSpans(seams);
+  const paths = extractPathSpans(root, seams);
   if (paths.length === 0) {
     throw new Error(`${taskId} Packet is missing its required cited-paths member: ${destination.specPath}'s Testing Seams section names no citable path`);
   }
@@ -195,18 +195,43 @@ function resolveOptionalMember(root, memberPath, { json = false } = {}) {
   };
 }
 
-function extractPathSpans(text) {
+// A backtick span is a citable path only when it resolves to something that
+// actually exists under root. A review probe found the earlier heuristic
+// (require a `.` or `/` in the span) accepting `git.integrationBranch` and
+// `3.1.2` - a manifest field name and a version string, neither a path -
+// because both happen to contain a dot. Existence is the real test: a real
+// citation names something on disk, and nothing else does.
+function extractPathSpans(root, text) {
   const spans = [...text.matchAll(/`([^`]+)`/g)].map((match) => match[1]);
-  return [...new Set(spans.filter((span) => !/\s/.test(span) && /[./]/.test(span)))];
+  const unique = [...new Set(spans.filter((span) => !/\s/.test(span)))];
+  return unique.filter((span) => resolvesToExistingPath(root, span));
 }
 
+function resolvesToExistingPath(root, span) {
+  const resolved = path.resolve(root, span);
+  const withinRoot = path.relative(root, resolved);
+  if (withinRoot.startsWith('..') || path.isAbsolute(withinRoot)) return false;
+  return fs.existsSync(resolved);
+}
+
+// The marker must match a whole line, never a loose substring: a review
+// probe found the old `content.indexOf('## ' + heading)` matching a strict
+// prefix of the real heading (leaking the remainder into the resolved text),
+// a `###` subsection whose text happens to start two characters into a `###`
+// line, and a prose sentence that merely mentions the heading text mid-line.
+// Anchoring to `^...[ \t]*$` with the multiline flag accepts only a line that
+// is exactly that heading, which is what a Markdown heading actually is.
 function section(content, heading) {
-  const marker = `## ${heading}`;
-  const start = content.indexOf(marker);
-  if (start < 0) return '';
-  const bodyStart = start + marker.length;
+  const marker = new RegExp(`^## ${escapeRegExp(heading)}[ \t]*$`, 'm');
+  const match = marker.exec(content);
+  if (!match) return '';
+  const bodyStart = match.index + match[0].length;
   const end = content.indexOf('\n## ', bodyStart);
   return content.slice(bodyStart, end < 0 ? content.length : end).trim();
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function relative(root, target) {
