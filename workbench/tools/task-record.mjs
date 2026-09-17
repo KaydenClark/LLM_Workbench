@@ -6,10 +6,15 @@
 // touching the Spec's stable declared path. This module only reads that
 // record; it changes nothing about how `next`, `claim`, `close`, `render` or
 // `doctor` behave against the embedded `Ticket | Slice | Status | Blockers |
-// Proof` table in `workbench/tools/spec-workbench.mjs` — migrating those
-// commands onto Task records is TK-002. A room may carry both an embedded
+// Proof` table in `workbench/tools/spec-workbench.mjs`; TK-002 migrated those
+// commands, reading this module rather than changing it. A room may carry both an embedded
 // table row and a standalone Task record for the same identifier; nothing
-// here counts or cross-checks the two, so no reader doubles a total.
+// here counts or cross-checks the two, so no reader doubles a total. TK-002
+// since gave a Spec one source of slice truth at the command seam: a Spec
+// with a `tasks/` directory is record-backed and its retained table is
+// completed history, so the commands refuse that coexistence rather than
+// read past it. This reader is still the plain record reader and enforces
+// none of that.
 //
 // `listTaskRecords` scans exactly one directory level beneath `tasks/`:
 // `<specDir>/tasks/<id>/TASK.md`. It does not recurse into a nested
@@ -22,13 +27,13 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { visibleIdKey } from './visible-ids.mjs';
+import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
-// TK-002 note: this closed set duplicates the unexported TICKET_STATUSES in
-// spec-workbench.mjs. Left as two vocabularies for this slice, since
-// consolidating them means changing that module's exports, which is TK-002's
-// migration, not this reader's. Flagged here so TK-002 can fold them.
+// The one closed status vocabulary for an execution slice, whether it is held
+// in a Task record or in a Spec's retained slice table. TK-002 folded
+// spec-workbench.mjs's own unexported TICKET_STATUSES into this set, which
+// that module re-exports, so a status added here is valid to both readers.
 
 // The destination a Task advances is either a Spec's acceptance lines, or,
 // for a corrective Task after a Spec is retired and reconciled (S-00I), a
@@ -72,7 +77,16 @@ export function parseTaskRecord(content, filePath, root) {
     slice: fields.Slice,
     status: fields.Status,
     blockers: parseBlockers(fields.Blockers, id),
-    destination: parseDestination(fields.Destination, id)
+    destination: parseDestination(fields.Destination, id),
+    // Proof is optional and absent until the Task closes. It lives on the
+    // record rather than in a table cell, so a record-backed Spec has one
+    // place a reader looks for what a Task proved.
+    proof: fields.Proof ?? null,
+    // What the Task intends to verify, carried from an unfinished slice-table
+    // row at conversion. It is a plan, not evidence, and is kept in its own
+    // field so no reader - the Packet TK-005 assembles above all - can present
+    // it as proof of anything.
+    plannedVerification: fields['Planned verification'] ?? null
   };
 }
 
@@ -117,7 +131,10 @@ export function listTaskRecords(specDir, root) {
     seenKeys.set(key, record.id);
     records.push(record);
   }
-  return records.sort((a, b) => a.id.localeCompare(b.id));
+  // Ordered by visible identifier, not by string comparison: `localeCompare`
+  // puts TK-10 ahead of TK-2, so an unpadded room would list its Tasks in an
+  // order no reader expects and selection would follow that order.
+  return records.sort((a, b) => compareVisibleIds(a.id, b.id));
 }
 
 // Every consumer of a Task's status calls this rather than reading `.status`
@@ -134,6 +151,53 @@ export function taskStatus(task) {
 export function unmetBlockers(task, satisfiedIds) {
   const satisfied = satisfiedIds instanceof Set ? satisfiedIds : new Set(satisfiedIds);
   return task.blockers.filter((blockerId) => !satisfied.has(blockerId));
+}
+
+// Rewrites the frontmatter fields a lifecycle command owns. An existing field
+// is replaced in place; a field the record does not carry yet (`Proof`, until
+// the Task closes) is appended after the last field, so a record keeps one
+// readable block instead of growing fields in call order. Pure: the caller
+// writes the bytes, which keeps the atomic-write policy in one place.
+//
+// Both writes use a replacement function. A string replacement expands `$&`,
+// `` $` ``, `$'` and `$$`, so a proof naming a shell variable or a regex
+// group would rewrite itself against the line it replaced - closing a Task
+// with `--proof "see $& output"` wrote `see **Proof:** old output`.
+export function updateTaskFields(content, values) {
+  let result = content;
+  for (const [name, value] of Object.entries(values)) {
+    const field = new RegExp(`^\\*\\*${escapeRegExp(name)}:\\*\\*\\s*.+$`, 'm');
+    if (field.test(result)) {
+      result = result.replace(field, () => `**${name}:** ${value}`);
+      continue;
+    }
+    const existing = [...result.matchAll(/^\*\*[^*]+:\*\*\s*.+$/gm)];
+    if (existing.length === 0) throw new Error(`A Task record with no fields at all cannot take a ${name} field`);
+    const last = existing[existing.length - 1];
+    const at = last.index + last[0].length;
+    result = `${result.slice(0, at)}\n**${name}:** ${value}${result.slice(at)}`;
+  }
+  return result;
+}
+
+// The bytes one Task record is written as. Kept beside the parser so the two
+// cannot drift; every caller validates the result by parsing it back before
+// writing it, so a record this produces is never one the reader refuses.
+export function formatTaskRecord({ id, specId, slice, status, blockers, destination, plannedVerification, proof }) {
+  const lines = [
+    `# ${id} - ${slice}`,
+    '',
+    `**Task ID:** ${id}`,
+    `**Spec ID:** ${specId}`,
+    `**Slice:** ${slice}`,
+    `**Status:** ${status}`,
+    `**Blockers:** ${blockers}`,
+    `**Destination:** ${destination}`
+  ];
+  if (plannedVerification) lines.push(`**Planned verification:** ${plannedVerification}`);
+  if (proof) lines.push(`**Proof:** ${proof}`);
+  lines.push('');
+  return lines.join('\n');
 }
 
 function parseBlockers(value, id) {

@@ -12,9 +12,15 @@ import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePa
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+
+// One closed status vocabulary for an execution slice, owned by the record
+// reader and re-exported here so the lifecycle commands and the record share
+// one set rather than two that can drift apart. TK-001 flagged the duplicate;
+// this is the fold it asked for.
+export { TASK_STATUSES };
 
 const SPEC_STATUSES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
-const TICKET_STATUSES = new Set(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
 const CATALOG_START = '<!-- spec-catalog:start -->';
 const CATALOG_END = '<!-- spec-catalog:end -->';
 const HOT_START = '<!-- hot-specs:start -->';
@@ -48,17 +54,18 @@ function selectCandidate(specs, { specId, readyOnly = false } = {}) {
   const candidates = [];
   for (const spec of specs) {
     if (spec.status !== 'active' || (specId && spec.id !== specId)) continue;
-    const satisfied = new Set([...completed, ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)]);
-    for (const ticket of spec.tickets) {
-      const resumable = !readyOnly && ticket.status === 'in-progress';
-      const eligible = ticket.status === 'ready' && blockersSatisfied(ticket.blockers, satisfied);
+    const satisfied = satisfiedIds(spec, completed);
+    for (const slice of slicesOf(spec)) {
+      const status = effectiveStatus(slice, satisfied);
+      const resumable = !readyOnly && status === 'in-progress';
+      const eligible = status === 'ready' && blockersSatisfied(slice.blockers, satisfied);
       if (!resumable && !eligible) continue;
       candidates.push({
         specId: spec.id,
         title: spec.title,
-        ticketId: ticket.id,
-        slice: ticket.slice,
-        status: ticket.status,
+        ticketId: slice.id,
+        slice: slice.slice,
+        status,
         rank: resumable ? -1 : 0,
         priority: spec.priority,
         owner: spec.owner,
@@ -85,7 +92,9 @@ export function nextIdentity(rootDir, specId, options = {}) {
   if (!['S', 'TK'].includes(prefix)) throw new Error('--prefix must be S or TK');
   if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Ticket identity proposals require an existing assigned spec ID');
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
-  const occupied = prefix === 'S' ? specs.map(spec => spec.id) : specs.flatMap(spec => spec.tickets.map(ticket => ticket.id));
+  const occupied = prefix === 'S'
+    ? specs.map(spec => spec.id)
+    : specs.flatMap(spec => [...spec.tickets, ...spec.tasks].map(ticket => ticket.id));
   // Letter-bearing new durable labels do not reuse removed historical decimal
   // IDs. Numeric tickets also retain their old spec-qualified interpretation.
   const reservations = [...new Map(occupied.map(id => [visibleIdKey(id), id])).values()];
@@ -103,16 +112,31 @@ export function claimWork(rootDir, id, options) {
   const spec = matches[0];
   if (spec.status !== 'active') throw new Error(`${id} is ${spec.status}, not active`);
   const candidate = selectCandidate(specs, { specId: id, readyOnly: true });
-  const ticket = spec.tickets.find((item) => item.id === candidate?.ticketId);
+  const slices = slicesOf(spec);
+  const ticket = slices.find((item) => item.id === candidate?.ticketId);
   if (!ticket) {
-    const blocked = spec.tickets.find((item) => item.status === 'ready');
+    // `blocked-slice` names the one shape doctor also reports: a slice that
+    // declares itself ready while its blockers are unmet. A slice that
+    // declares itself blocked is ordinary sequencing on both sources, so it
+    // gets the generic refusal rather than the name of a finding nobody
+    // raised. A table row's refusal is unchanged, since a ready row reaching
+    // here always has an unmet blocker.
+    const satisfied = satisfiedIds(spec, new Set(specs.filter((item) => ['complete', 'superseded'].includes(item.status)).map((item) => item.id)));
+    const blocked = slices.find((item) => item.declared === 'ready' && !blockersSatisfied(item.blockers, satisfied));
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
     throw new Error(`${id} has no eligible ready ticket to claim`);
   }
-  const content = updateTicket(spec.content, ticket.id, (cells) => {
-    cells[2] = 'in-progress';
-    return cells;
-  });
+  // A record-backed Spec's state lives on the record; only the Spec header's
+  // owner and event fields move. The record is written first so a failure
+  // while updating the header cannot leave the Spec announcing a claim that
+  // the record never took.
+  if (ticket.source === 'record') writeTaskStatus(ticket.record, { Status: 'in-progress' });
+  const content = ticket.source === 'record'
+    ? spec.content
+    : updateTicket(spec.content, ticket.id, (cells) => {
+      cells[2] = 'in-progress';
+      return cells;
+    });
   const updated = updateFields(content, {
     Owner: options.agent,
     Updated: date,
@@ -129,15 +153,23 @@ export function closeTicket(rootDir, id, options) {
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
   const spec = findSpec(rootDir, id);
-  const ticket = spec.tickets.find((item) => item.status === 'in-progress')
-    ?? spec.tickets.find((item) => item.status === 'ready');
+  const slices = slicesOf(spec);
+  const ticket = slices.find((item) => item.declared === 'in-progress')
+    ?? slices.find((item) => item.declared === 'ready');
   if (!ticket) throw new Error(`${id} has no open ticket to close`);
-  let content = updateTicket(spec.content, ticket.id, (cells) => {
-    cells[2] = 'done';
-    cells[4] = proof;
-    return cells;
-  });
-  const remaining = parseSpecPacket(content, spec.filePath, spec.root).tickets.find((item) => item.status !== 'done');
+  // Proof text for a record goes on the record; the Spec's append-only
+  // evidence row below is appended either way, because the Spec still owns
+  // the evidence log whichever source its slices come from.
+  let content = spec.content;
+  if (ticket.source === 'record') writeTaskStatus(ticket.record, { Status: 'done', Proof: proof });
+  else {
+    content = updateTicket(spec.content, ticket.id, (cells) => {
+      cells[2] = 'done';
+      cells[4] = proof;
+      return cells;
+    });
+  }
+  const remaining = slices.find((item) => item.id !== ticket.id && item.declared !== 'done');
   content = updateFields(content, {
     Updated: date,
     'Latest event': `${ticket.id} closed with proof.`,
@@ -148,11 +180,88 @@ export function closeTicket(rootDir, id, options) {
   return showSpec(rootDir, id);
 }
 
+// The one-time migration from an embedded slice table to standalone Task
+// records, for one active Spec. It writes a `TASK.md` per unfinished row and
+// removes that row, so no identifier is ever held in two places, and leaves
+// every `done` row where it is: those rows are the Spec's completed history,
+// carrying proof that the append-only evidence log already cites.
+//
+// A completed Spec is refused outright rather than converted quietly, and a
+// second run is refused by the existing `tasks/` directory, so this cannot
+// half-convert a Spec someone already migrated.
+//
+// `destinations` maps a slice id to the destination its record declares.
+// Which acceptance line a slice advances is a judgment no parser can make;
+// carrying the whole acceptance list onto every record would assert the same
+// false destination for all of them, so an unsupplied id names the Spec's
+// Acceptance Criteria section, which is true of every slice, and the caller
+// supplies the specific line where it knows it.
+export function convertSpecSlices(rootDir, id, options = {}) {
+  const root = path.resolve(rootDir);
+  const spec = findSpec(root, id);
+  if (spec.status !== 'active') {
+    throw new Error(`${id} is ${spec.status}, not active; only an active Spec is converted and a completed Spec's historical table is never rewritten`);
+  }
+  const specDir = path.dirname(spec.filePath);
+  const tasksDir = path.join(specDir, 'tasks');
+  if (fs.existsSync(tasksDir)) {
+    throw new Error(`${id} already has ${path.relative(root, tasksDir).split(path.sep).join('/')}; conversion runs once and refuses to run again`);
+  }
+  const pending = spec.tickets.filter((ticket) => ticket.status !== 'done');
+  if (pending.length === 0) throw new Error(`${id} has no unfinished slice-table row to convert`);
+  const destinations = options.destinations ?? {};
+  // Every record is rendered and parsed back before anything is written, so a
+  // row the record vocabulary cannot carry - a blocker outside the `S-`/`TK-`
+  // form, for instance - stops the conversion by name instead of silently
+  // dropping the dependency on the way into the record.
+  const staged = pending.map((ticket) => {
+    const filePath = path.join(tasksDir, ticket.id, 'TASK.md');
+    const content = formatTaskRecord({
+      id: ticket.id,
+      specId: id,
+      slice: ticket.slice,
+      status: ticket.status,
+      blockers: ticket.blockers,
+      destination: destinations[ticket.id] ?? `spec-acceptance: ${id} Acceptance Criteria`,
+      // An unfinished row's Proof cell holds the verification the slice plans
+      // to run, not proof it ran: every row converted here is by definition
+      // not done. It lands in `Planned verification`, and `Proof` stays
+      // absent until `close` writes it, so nothing downstream - the Packet
+      // TK-005 assembles, `show --json`, a reader - can read the plan as
+      // evidence.
+      plannedVerification: /^pending\.?$/i.test(ticket.proof ?? '') ? null : ticket.proof
+    });
+    try {
+      parseTaskRecord(content, filePath, root);
+    } catch (error) {
+      throw new Error(`${id}/${ticket.id} cannot be converted: ${error.message}`);
+    }
+    return { ticket, filePath, content };
+  });
+  const converted = [];
+  for (const { filePath, content } of staged) {
+    assertSafeWritePath(root, filePath);
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    atomicWrite(filePath, content);
+    converted.push(path.relative(root, filePath).split(path.sep).join('/'));
+  }
+  const convertedIds = new Set(staged.map((item) => item.ticket.id));
+  atomicWrite(spec.filePath, removeSliceRows(spec.content, convertedIds));
+  return {
+    specId: id,
+    converted,
+    retained: spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)
+  };
+}
+
 export function completeSpec(rootDir, id, options = {}) {
   const date = validDate(options.date ?? today());
   const spec = findSpec(rootDir, id);
   if (!['active', 'needs-review'].includes(spec.status)) throw new Error(`${id} is ${spec.status}, not completable`);
-  if (spec.tickets.some((ticket) => ticket.status !== 'done')) throw new Error(`${id} has an unfinished slice`);
+  // Both sources are checked, not only the one selection reads: a Spec cannot
+  // complete while a retained table row or a Task record is unfinished.
+  const unfinished = [...slicesOf(spec).map((slice) => slice.declared), ...spec.tickets.map((ticket) => ticket.status)];
+  if (unfinished.some((status) => status !== 'done')) throw new Error(`${id} has an unfinished slice`);
   if (/^- \[ \]/m.test(section(spec.content, 'Acceptance Criteria'))) throw new Error(`${id} has unchecked acceptance criteria`);
   const completion = section(spec.content, 'Completion Result').trim();
   if (!completion || /^pending\.?$/i.test(completion)) throw new Error(`${id} has no completion result`);
@@ -221,23 +330,29 @@ function packetFindings(specs, options = {}) {
   for (const spec of specs) {
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
-    const satisfied = new Set([...completed, ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)]);
-    for (const ticket of spec.tickets) {
-      if (!TICKET_STATUSES.has(ticket.status)) issues.push(finding('invalid-state', `${spec.id}/${ticket.id} has invalid status ${ticket.status}`, { specId: spec.id, ticketId: ticket.id }));
-      if (ticket.status === 'done' && (!ticket.proof || /^pending$/i.test(ticket.proof))) issues.push(finding('missing-evidence', `${spec.id}/${ticket.id} is done without proof`, { specId: spec.id, ticketId: ticket.id }));
+    const satisfied = satisfiedIds(spec, completed);
+    const slices = slicesOf(spec);
+    for (const slice of slices) {
+      if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { specId: spec.id, ticketId: slice.id }));
+      if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, ticketId: slice.id }));
     }
-    // The selected slice is the first resumable or ready ticket; a later ticket
-    // waiting on its predecessor is ordinary sequencing, not a finding.
-    const head = spec.tickets.find((ticket) => ticket.status === 'in-progress' || ticket.status === 'ready');
-    if (spec.status === 'active' && head?.status === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
+    // The selected slice is the first resumable or ready slice; a later slice
+    // waiting on its predecessor is ordinary sequencing, not a finding. The
+    // rule reads declared status on both sources, so a table-only Spec raises
+    // exactly what it raised before. A record declared `blocked` is the same
+    // ordinary sequencing, and a record declared `ready` whose live blockers
+    // are unmet is the same contradiction a ready row is - so this never
+    // fires falsely on a record-backed Spec whose blockers are satisfied.
+    const head = slices.find((slice) => ['in-progress', 'ready'].includes(slice.declared));
+    if (spec.status === 'active' && head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
       issues.push(finding('blocked-slice', `${spec.id}/${head.id} waits on ${head.blockers}`, { specId: spec.id, ticketId: head.id }));
     }
-    if (['complete', 'superseded'].includes(spec.status) && spec.tickets.some((ticket) => ticket.status !== 'done')) {
+    if (['complete', 'superseded'].includes(spec.status) && slices.some((slice) => slice.declared !== 'done')) {
       issues.push(finding('contradictory-state', `${spec.id} is ${spec.status} with unfinished tickets`, { specId: spec.id }));
     }
     const updated = Date.parse(`${spec.updated}T00:00:00Z`);
     const now = Date.parse(`${options.today ?? today()}T00:00:00Z`);
-    if (spec.tickets.some((ticket) => ticket.status === 'in-progress') && Number.isFinite(updated) && now - updated > 86_400_000) {
+    if (slices.some((slice) => slice.declared === 'in-progress') && Number.isFinite(updated) && now - updated > 86_400_000) {
       issues.push(finding('stale-claim', `${spec.id} has an in-progress ticket last updated ${spec.updated}`, { specId: spec.id }));
     }
     for (const link of localLinks(spec.content)) {
@@ -332,15 +447,130 @@ function loadSpecs(rootDir, options = {}) {
     const filePath = path.join(specsRoot, entry.name, 'SPEC.md');
     if (fs.existsSync(filePath)) paths.push(filePath);
   }
-  const specs = paths.sort().map((filePath) => ({
-    ...parseSpecPacket(options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8'), filePath, root),
-    specsPrefix
-  }));
+  const specs = paths.sort().map((filePath) => {
+    const specDir = path.dirname(filePath);
+    const tasks = listTaskRecords(specDir, root);
+    const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
+    const content = options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8');
+    const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, tasks, recordBacked };
+    assertOneSliceTruth(spec);
+    return spec;
+  });
   if (!options.allowDuplicates) {
     const collision = identityFindings(specs)[0];
     if (collision) throw new Error(collision.message);
   }
   return specs;
+}
+
+// One source of slice truth per Spec. A Spec is record-backed when its own
+// `tasks/` directory exists; its embedded table then holds completed history
+// only, which `close` and the Spec's evidence log still own. Both failures
+// below are refusals rather than findings a reader could walk past, because
+// each one would otherwise let a single slice be counted twice - once as a
+// live row and once as a live record - and selection would follow whichever
+// the code happened to read first.
+function assertOneSliceTruth(spec) {
+  if (!spec.recordBacked) return;
+  const recorded = new Map(spec.tasks.map((task) => [visibleIdKey(task.id), task.id]));
+  for (const ticket of spec.tickets) {
+    const collision = recorded.get(visibleIdKey(ticket.id));
+    if (collision) {
+      throw new Error(`${spec.id} carries both a slice-table row and a Task record for ${collision}; one Spec has one source of slice truth`);
+    }
+    if (ticket.status !== 'done') {
+      throw new Error(`${spec.id} is record-backed but its slice table still holds the unfinished row ${ticket.id}; a retained table is completed history only`);
+    }
+  }
+}
+
+// The slices selection, claim, close, render and doctor read: the Task
+// records for a record-backed Spec, the embedded table rows otherwise. A
+// table slice keeps its cells verbatim, so a table-only room behaves exactly
+// as it did before this migration.
+function slicesOf(spec) {
+  if (!spec.recordBacked) {
+    return spec.tickets.map((ticket) => ({
+      id: ticket.id,
+      slice: ticket.slice,
+      declared: ticket.status,
+      blockerIds: splitBlockers(ticket.blockers),
+      blockers: ticket.blockers,
+      proof: ticket.proof,
+      source: 'table'
+    }));
+  }
+  return spec.tasks.map((task) => ({
+    id: task.id,
+    slice: task.slice,
+    declared: taskStatus(task),
+    blockerIds: task.blockers,
+    blockers: task.blockers.length > 0 ? task.blockers.join(', ') : 'none',
+    proof: task.proof,
+    source: 'record',
+    record: task
+  }));
+}
+
+// The ids a slice may declare as satisfied: completed Specs, plus every done
+// slice of this Spec. A record-backed Spec's retained done rows count here,
+// which is how a record can name a predecessor that closed before the Spec
+// was converted.
+function satisfiedIds(spec, completed) {
+  const done = [
+    ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id),
+    ...spec.tasks.filter((task) => taskStatus(task) === 'done').map((task) => task.id)
+  ];
+  return new Set([...completed, ...done]);
+}
+
+// A table row's status cell is its status, unchanged. A record's `ready` and
+// `blocked` are resolved against its live blockers instead: a record whose
+// declared blockers are all satisfied is ready without anyone editing a
+// status cell, and one whose blockers are unmet is blocked even if its cell
+// says ready. This is a derivation of the record's own two authored fields,
+// not a second status written anywhere.
+function effectiveStatus(slice, satisfied) {
+  if (slice.source !== 'record') return slice.declared;
+  if (slice.declared !== 'ready' && slice.declared !== 'blocked') return slice.declared;
+  return unmetBlockers(slice.record, satisfied).length === 0 ? 'ready' : 'blocked';
+}
+
+function splitBlockers(value) {
+  if (!value || value === 'none') return [];
+  return value.split(',').map((item) => item.trim()).filter(Boolean);
+}
+
+// Writes back the frontmatter fields a lifecycle command owns, then parses
+// the result before it lands: a record this refuses to produce is never
+// written, so the reader never meets bytes it would fail closed on.
+function writeTaskStatus(record, values) {
+  const content = updateTaskFields(record.content, values);
+  parseTaskRecord(content, record.filePath, record.root);
+  atomicWrite(record.filePath, content);
+  return content;
+}
+
+// Removes converted rows from the slice table and from nowhere else. A
+// `| TK-### |` row also appears in the append-only evidence log, where it is
+// frozen history, and may appear in a Spec's prose; a whole-file filter would
+// quietly delete those too.
+function removeSliceRows(content, ids) {
+  const heading = '## Vertical Implementation Slices';
+  const start = content.indexOf(heading);
+  if (start < 0) throw new Error(`Missing ${heading}`);
+  const bodyStart = start + heading.length;
+  const nextHeading = content.indexOf('\n## ', bodyStart);
+  const end = nextHeading < 0 ? content.length : nextHeading;
+  const body = content.slice(bodyStart, end).split('\n').filter((line) => {
+    const row = /^\|\s*(TK-[0-9A-Za-z]+)\s*\|/.exec(line);
+    return !row || !ids.has(row[1]);
+  }).join('\n');
+  return `${content.slice(0, bodyStart)}${body}${content.slice(end)}`;
+}
+
+function publicSlice(slice) {
+  return { id: slice.id, slice: slice.slice, status: slice.declared, blockers: slice.blockers, proof: slice.proof ?? null };
 }
 
 function identityFindings(specs) {
@@ -352,7 +582,7 @@ function identityFindings(specs) {
     if (specIds.has(specKey)) findings.push(finding('duplicate-id', `Duplicate spec ID: ${spec.id} conflicts with ${specIds.get(specKey)}`, { specId: spec.id }));
     else specIds.set(specKey, spec.id);
     const localTickets = new Map();
-    for (const ticket of spec.tickets) {
+    for (const ticket of [...spec.tickets, ...(spec.tasks ?? [])]) {
       const key = visibleIdKey(ticket.id);
       if (localTickets.has(key)) findings.push(finding('duplicate-id', `Duplicate ticket ID: ${spec.id}/${ticket.id}`, { specId: spec.id, ticketId: ticket.id }));
       localTickets.set(key, ticket.id);
@@ -401,10 +631,17 @@ function renderHotBoard(specs) {
     lines.push('| none | No active slice | unassigned | none | All completed specs are cold. | Activate a planned spec explicitly. |');
     return lines.join('\n');
   }
+  // The current-slice cell is derived from the Spec's own slices - its Task
+  // records where it has them - so a Spec objective with no active Task shows
+  // the owner gate rather than a slice. That derivation is what makes the
+  // board show whether an objective is active; the Spec header Status stays
+  // the Spec's lifecycle truth and no command writes a second one.
+  const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of hot) {
-    const ticket = spec.tickets.find((item) => item.status === 'in-progress')
-      ?? spec.tickets.find((item) => item.status === 'ready')
-      ?? spec.tickets.find((item) => item.status === 'blocked');
+    const slices = slicesOf(spec).map((item) => ({ ...item, status: effectiveStatus(item, satisfiedIds(spec, completed)) }));
+    const ticket = slices.find((item) => item.status === 'in-progress')
+      ?? slices.find((item) => item.status === 'ready')
+      ?? slices.find((item) => item.status === 'blocked');
     const slice = ticket ? `${ticket.id}: ${ticket.slice} (${ticket.status})` : 'Acceptance / owner gate';
     const blocker = ticket?.blockers && ticket.blockers !== 'none' ? ticket.blockers : spec.blockers;
     lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(spec.latestEvent)} | ${escapeCell(spec.nextGate)} |`);
@@ -440,7 +677,7 @@ function publicSpec(spec) {
     latestEvent: spec.latestEvent,
     nextGate: spec.nextGate,
     path: spec.relativePath,
-    tickets: spec.tickets
+    tickets: slicesOf(spec).map(publicSlice)
   };
 }
 
@@ -625,12 +862,13 @@ async function main() {
   else if (command === 'claim') result = claimWork(root, id, options);
   else if (command === 'close') result = closeTicket(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
+  else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|complete|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|complete|convert-tasks|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
