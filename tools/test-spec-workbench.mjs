@@ -251,6 +251,48 @@ try {
   assert.equal(listed.length, 1, 'listing finds exactly the one standalone record, not a second copy from the table');
   assert.equal(listed[0].id, 'TK-001');
 
+  // A Task record whose declared Task ID contradicts its own directory name
+  // must be refused, not silently returned under the folder's name.
+  write('specs/S-202-task-listing/tasks/TK-001/TASK.md', taskRecordFixture({
+    id: 'TK-001', specId: 'S-202', slice: 'Real one', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  write('specs/S-202-task-listing/tasks/TK-009/TASK.md', taskRecordFixture({
+    id: 'TK-001', specId: 'S-202', slice: 'Impostor', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => listTaskRecords(path.join(root, 'specs/S-202-task-listing'), root),
+    /directory is named "TK-009"/,
+    'a Task ID that contradicts its own directory name is refused, not returned twice under two names'
+  );
+  fs.rmSync(path.join(root, 'specs/S-202-task-listing/tasks/TK-009'), { recursive: true });
+
+  // Two self-consistent records (folder name matches declared id) whose ids
+  // still resolve to the same visible identifier (leading-zero variants)
+  // must be refused as a duplicate rather than both returned.
+  write('specs/S-202-task-listing/tasks/TK-1/TASK.md', taskRecordFixture({
+    id: 'TK-1', specId: 'S-202', slice: 'Same identity, different spelling', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => listTaskRecords(path.join(root, 'specs/S-202-task-listing'), root),
+    /Duplicate Task ID/,
+    'two records resolving to the same visible identifier are refused rather than both returned'
+  );
+  fs.rmSync(path.join(root, 'specs/S-202-task-listing/tasks/TK-1'), { recursive: true });
+
+  // A Task-shaped directory with no TASK.md is refused rather than silently
+  // skipped, since a listing that quietly drops it would look identical to
+  // one where the Task never existed.
+  write('specs/S-202-task-listing/tasks/TK-011/NOTES.md', '# scratch notes, no TASK.md here\n');
+  assert.throws(
+    () => listTaskRecords(path.join(root, 'specs/S-202-task-listing'), root),
+    /has no TASK\.md/,
+    'a Task directory with no TASK.md fails closed instead of being silently skipped'
+  );
+  fs.rmSync(path.join(root, 'specs/S-202-task-listing'), { recursive: true });
+
   // Blocking relationships, read through an exported function.
   write('specs/S-201-task-record/tasks/TK-001/TASK.md', taskRecordFixture({
     id: 'TK-001',
@@ -278,6 +320,11 @@ try {
   assert.deepEqual(corrective.destination, { type: 'wiki-claim', reference: 'workbench/wiki/design-concepts/example.md#claim-1' });
 
   // Explicit errors on a malformed record; no silent fallback to the table.
+  // One assertion per validated shape, so mutation testing cannot delete a
+  // branch (the Task-ID check, the required-field loop, the Spec-ID check,
+  // the blocker-id check, or the Destination pattern) without a test going
+  // red. See this slice's return for the manual comment-out checks run
+  // against the Task-ID check and the required-field loop.
   write('specs/S-201-task-record/tasks/TK-003/TASK.md', taskRecordFixture({
     id: 'TK-003',
     specId: 'S-201',
@@ -290,6 +337,82 @@ try {
     () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-003/TASK.md'), root),
     /invalid status/i,
     'a malformed Task record fails closed rather than silently falling back to the embedded table'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-004/TASK.md', [
+    '# TK-004 - Missing field',
+    '',
+    '**Task ID:** TK-004',
+    '**Spec ID:** S-201',
+    '**Slice:** Missing field',
+    '**Status:** ready',
+    '**Destination:** spec-acceptance: placeholder',
+    ''
+  ].join('\n'));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-004/TASK.md'), root),
+    /is missing Blockers/,
+    'a Task record missing a required field fails closed'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-005/TASK.md', taskRecordFixture({
+    id: 'TASK-005', specId: 'S-201', slice: 'Invalid task id', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-005/TASK.md'), root),
+    /invalid or missing Task ID/,
+    'an invalid Task ID fails closed'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-006/TASK.md', taskRecordFixture({
+    id: 'TK-006', specId: 'S-1', slice: 'Invalid spec id', status: 'ready', blockers: 'none',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-006/TASK.md'), root),
+    /invalid Spec ID/,
+    'an invalid Spec ID fails closed'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-007/TASK.md', taskRecordFixture({
+    id: 'TK-007', specId: 'S-201', slice: 'Invalid blocker', status: 'ready', blockers: 'ABC-1',
+    destination: 'spec-acceptance: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-007/TASK.md'), root),
+    /invalid blocker id/,
+    'an invalid blocker id fails closed'
+  );
+
+  write('specs/S-201-task-record/tasks/TK-008/TASK.md', taskRecordFixture({
+    id: 'TK-008', specId: 'S-201', slice: 'Malformed destination', status: 'ready', blockers: 'none',
+    destination: 'nowhere: placeholder'
+  }));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-008/TASK.md'), root),
+    /unreadable Destination/,
+    'a malformed Destination fails closed'
+  );
+
+  // A duplicated field matters once TK-006 appends Receipt rows into the
+  // body: a second `**Status:**` line must not silently last-win.
+  write('specs/S-201-task-record/tasks/TK-010/TASK.md', [
+    '# TK-010 - Duplicated field',
+    '',
+    '**Task ID:** TK-010',
+    '**Spec ID:** S-201',
+    '**Slice:** Duplicated field',
+    '**Status:** ready',
+    '**Status:** done',
+    '**Blockers:** none',
+    '**Destination:** spec-acceptance: placeholder',
+    ''
+  ].join('\n'));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-201-task-record/tasks/TK-010/TASK.md'), root),
+    /duplicated field "Status"/,
+    'a duplicated field fails closed rather than letting the later occurrence silently win'
   );
 
   fs.rmSync(path.join(root, 'specs/S-201-task-record'), { recursive: true });
