@@ -923,6 +923,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'spec-packet.mjs',
   'spec-workbench.mjs',
   'task-packet.mjs',
+  'task-receipt.mjs',
   'task-record.mjs',
   'template-placeholders.mjs',
   'visible-ids.mjs',
