@@ -332,10 +332,22 @@ export class ContextUnitUndeclaredError extends Error {
 export function readContextUnit(project) {
   const { manifest, failure } = readManifestFile(project);
   if (failure) throw new ContextUnitUndeclaredError(failure.error.message);
+  const manifestPath = path.join(project, 'workbench', 'manifest.json');
   const unit = manifest.contextUnit;
-  if (!unit || typeof unit !== 'object' || typeof unit.value !== 'number' || !unit.unit) {
-    throw new ContextUnitUndeclaredError(`${path.join(project, 'workbench', 'manifest.json')} does not declare a contextUnit; sizing guidance has no declared value to read.`);
+  if (!unit || typeof unit !== 'object' || Array.isArray(unit)) {
+    throw new ContextUnitUndeclaredError(`${manifestPath} does not declare a contextUnit; sizing guidance has no declared value to read.`);
   }
+  // ADR-000H requires the unit recorded "with provenance", so every provenance
+  // field is required and type-checked, named individually so a malformed
+  // field fails as loudly as an absent one.
+  if (typeof unit.value !== 'number') throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.value must be a number.`);
+  if (typeof unit.unit !== 'string' || !unit.unit) throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.unit must be a non-empty string.`);
+  if (typeof unit.decisionDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(unit.decisionDate)) throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.decisionDate must be a YYYY-MM-DD string.`);
+  if (typeof unit.source !== 'string' || !unit.source) throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.source must be a non-empty string.`);
+  if (!Array.isArray(unit.consideredAlternatives) || unit.consideredAlternatives.length === 0 || !unit.consideredAlternatives.every((value) => typeof value === 'number')) {
+    throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.consideredAlternatives must be an array of numbers.`);
+  }
+  if (typeof unit.reason !== 'string' || !unit.reason.trim()) throw new ContextUnitUndeclaredError(`${manifestPath} contextUnit.reason must be a non-empty string.`);
   return unit;
 }
 

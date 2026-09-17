@@ -2255,7 +2255,56 @@ test('readContextUnit returns the declared value with its provenance and fails e
     assert.equal(unit.source, 'owner');
     assert.deepEqual(unit.consideredAlternatives, [150000, 250000]);
     assert.match(unit.reason, /degraded tail/);
+
+    // ADR-000H requires the unit recorded "with provenance": a contextUnit
+    // missing or malformed in any one provenance field must fail the same
+    // way an absent one does, never pass through with a bad value.
+    const validManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const validUnit = validManifest.contextUnit;
+    const malformedByField = {
+      value: { ...validUnit, value: '200000' },
+      unit: { ...validUnit, unit: 5 },
+      decisionDate: { ...validUnit, decisionDate: 'not-a-date' },
+      source: { ...validUnit, source: '' },
+      consideredAlternatives: { ...validUnit, consideredAlternatives: 'nope' },
+      reason: { ...validUnit, reason: '   ' }
+    };
+    for (const [field, contextUnit] of Object.entries(malformedByField)) {
+      fs.writeFileSync(manifestPath, JSON.stringify({ ...validManifest, contextUnit }));
+      assert.throws(() => readContextUnit(project), ContextUnitUndeclaredError,
+        `a contextUnit.${field} of the wrong shape must fail explicitly, not pass through as declared`);
+    }
+    fs.writeFileSync(manifestPath, JSON.stringify(validManifest));
+    assert.deepEqual(readContextUnit(project), validUnit, 'the manifest is restored to the valid shape after the malformed probes');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// The fixture-based test above proves the reader's own contract; it says
+// nothing about whether the shipped root manifest.json actually carries a
+// well-formed declaration. Read the real root manifest directly, and prove
+// the assertion is not vacuous by removing the block and watching the reader
+// go red before restoring the file byte-identical.
+test('readContextUnit(root) reads the shipped manifest.json declaration, proven non-vacuous by a red/green probe', () => {
+  const manifestPath = path.join(root, 'workbench', 'manifest.json');
+  const original = fs.readFileSync(manifestPath, 'utf8');
+  try {
+    const unit = readContextUnit(root);
+    assert.equal(unit.value, 200000);
+    assert.equal(unit.unit, 'tokens');
+    assert.equal(unit.decisionDate, '2026-09-12');
+    assert.equal(unit.source, 'owner');
+    assert.deepEqual(unit.consideredAlternatives, [150000, 250000]);
+    assert.ok(typeof unit.reason === 'string' && unit.reason.trim().length > 0);
+
+    const withoutContextUnit = JSON.parse(original);
+    delete withoutContextUnit.contextUnit;
+    fs.writeFileSync(manifestPath, JSON.stringify(withoutContextUnit, null, 2));
+    assert.throws(() => readContextUnit(root), ContextUnitUndeclaredError,
+      'removing the shipped contextUnit block must make the reader fail, proving the passing assertions above are not vacuous');
+  } finally {
+    fs.writeFileSync(manifestPath, original);
+    assert.equal(fs.readFileSync(manifestPath, 'utf8'), original, 'the shipped manifest.json must be restored byte-identical');
+  }
 });
 
 for (const suffix of ['00A', '100A', '1000']) {
