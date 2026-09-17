@@ -885,3 +885,143 @@ function write(relative, content) {
 function read(relative) {
   return fs.readFileSync(path.join(root, relative), 'utf8');
 }
+
+// ---- S-00H TK-006: Task receipt tests (begin) ----
+// This block is this lane's own delimited section, kept separate from a
+// concurrent lane's Packet tests (TK-005, `task-packet.mjs`) that append to
+// the same end-of-file position. Do not interleave the two blocks.
+{
+  const { execFileSync } = await import('node:child_process');
+  const {
+    appendReceiptRowToContent,
+    appendReceiptRow,
+    readReceipt,
+    readReceiptFromFile
+  } = await import('../workbench/tools/task-receipt.mjs');
+  const { readTaskRecord } = await import('../workbench/tools/task-record.mjs');
+
+  const receiptRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-receipt-'));
+  try {
+    // Pure content-level seam first: no Git process needed to prove the
+    // append/read contract, one row per call, never overwriting a prior row.
+    const bareRecord = taskRecordFixture({
+      id: 'TK-100', specId: 'S-300', slice: 'Fixture receipt', status: 'in-progress',
+      blockers: 'none', destination: 'spec-acceptance: placeholder'
+    });
+
+    assert.deepEqual(readReceipt(bareRecord), [], 'a Task record with no Receipt section yet reads as zero runs');
+
+    const afterRow1 = appendReceiptRowToContent(bareRecord, {
+      branch: 'claude/fixture', headSha: 'a'.repeat(40), upstream: 'none', dirty: 0,
+      testsRun: 'tools/test-fixture.mjs: pass', docsTouched: 'AGENTS.md: none', remainingGap: 'none'
+    });
+    const rows1 = readReceipt(afterRow1);
+    assert.equal(rows1.length, 1);
+    assert.deepEqual(
+      { run: rows1[0].run, branch: rows1[0].branch, headSha: rows1[0].headSha, upstream: rows1[0].upstream, dirty: rows1[0].dirty, testsRun: rows1[0].testsRun, docsTouched: rows1[0].docsTouched, remainingGap: rows1[0].remainingGap },
+      { run: 1, branch: 'claude/fixture', headSha: 'a'.repeat(40), upstream: 'none', dirty: 0, testsRun: 'tools/test-fixture.mjs: pass', docsTouched: 'AGENTS.md: none', remainingGap: 'none' },
+      'every named Receipt field round-trips'
+    );
+
+    // The augmented record must still parse cleanly through the existing
+    // record reader: the Receipt table must never read as a duplicated
+    // `**Field:**` header line.
+    const augmentedPath = path.join(receiptRoot, 'augmented-TASK.md');
+    fs.writeFileSync(augmentedPath, afterRow1);
+    const parsed = readTaskRecord(augmentedPath, receiptRoot);
+    assert.equal(parsed.id, 'TK-100', 'task-record.mjs still reads the Task fields once a Receipt section is appended');
+
+    // A resumed Task appends a second row; the first is untouched.
+    const afterRow2 = appendReceiptRowToContent(afterRow1, {
+      branch: 'claude/fixture', headSha: 'b'.repeat(40), upstream: 'ahead 1 behind 0', dirty: 2,
+      testsRun: 'tools/test-fixture.mjs: pass (resumed)', docsTouched: 'none', remainingGap: 'open: still implementing'
+    });
+    const rows2 = readReceipt(afterRow2);
+    assert.equal(rows2.length, 2, 'a resumed run appends a second row rather than overwriting the first');
+    assert.equal(rows2[0].testsRun, 'tools/test-fixture.mjs: pass', 'the first row is unchanged after a second append');
+    assert.equal(rows2[1].run, 2);
+    assert.equal(rows2[1].remainingGap, 'open: still implementing', 'append is callable mid-run with an open remaining gap');
+
+    // A malformed or edited earlier row is refused, never silently repaired.
+    const tampered = afterRow2.replace('tools/test-fixture.mjs: pass', 'tools/test-fixture.mjs: TAMPERED');
+    assert.throws(
+      () => readReceipt(tampered),
+      /altered|checksum/i,
+      'an edited earlier Receipt row fails closed rather than being read as valid'
+    );
+
+    const structurallyBroken = afterRow1.replace(
+      /\| 1 \|[^\n]*\|\n/,
+      '| 1 | claude/fixture | not-enough-columns |\n'
+    );
+    assert.throws(
+      () => readReceipt(structurallyBroken),
+      /malformed/i,
+      'a structurally malformed Receipt row fails closed'
+    );
+
+    // Git facts (branch, HEAD SHA, upstream distance, dirty count) come from
+    // Git for the working tree given, not from the caller.
+    const bareOrigin = path.join(receiptRoot, 'origin.git');
+    execFileSync('git', ['init', '--quiet', '--bare', bareOrigin]);
+    const workDir = path.join(receiptRoot, 'work');
+    fs.mkdirSync(workDir);
+    execFileSync('git', ['init', '--quiet', workDir]);
+    execFileSync('git', ['-C', workDir, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', workDir, 'config', 'user.name', 'Fixture']);
+    fs.writeFileSync(path.join(workDir, 'file.txt'), 'one\n');
+    execFileSync('git', ['-C', workDir, 'add', '.']);
+    execFileSync('git', ['-C', workDir, 'commit', '--quiet', '-m', 'init']);
+    execFileSync('git', ['-C', workDir, 'remote', 'add', 'origin', bareOrigin]);
+    const branchName = execFileSync('git', ['-C', workDir, 'rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf8' }).trim();
+    execFileSync('git', ['-C', workDir, 'push', '--quiet', '-u', 'origin', `HEAD:refs/heads/${branchName}`]);
+    fs.writeFileSync(path.join(workDir, 'file.txt'), 'two\n');
+    execFileSync('git', ['-C', workDir, 'commit', '--quiet', '-am', 'second']);
+    fs.writeFileSync(path.join(workDir, 'untracked.txt'), 'new\n');
+    const expectedSha = execFileSync('git', ['-C', workDir, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+
+    const taskPath = path.join(receiptRoot, 'specs/S-300-fixture/tasks/TK-101/TASK.md');
+    fs.mkdirSync(path.dirname(taskPath), { recursive: true });
+    fs.writeFileSync(taskPath, taskRecordFixture({
+      id: 'TK-101', specId: 'S-300', slice: 'Fixture receipt (Git)', status: 'in-progress',
+      blockers: 'none', destination: 'spec-acceptance: placeholder'
+    }));
+
+    appendReceiptRow(taskPath, {
+      repoRoot: workDir,
+      testsRun: 'tools/test-fixture.mjs: pass',
+      docsTouched: 'none',
+      remainingGap: 'open: mid-run snapshot'
+    });
+    const gitRows = readReceiptFromFile(taskPath);
+    assert.equal(gitRows.length, 1);
+    assert.equal(gitRows[0].branch, branchName, 'branch is read from Git for the given working tree');
+    assert.equal(gitRows[0].headSha, expectedSha, 'HEAD SHA is read from Git for the given working tree');
+    assert.equal(gitRows[0].upstream, 'ahead 1 behind 0', 'upstream distance is read from Git, not supplied by the caller');
+    assert.equal(gitRows[0].dirty, 1, 'dirty file count is read from Git, not supplied by the caller');
+
+    // A simulated abrupt interruption: the append call above already left an
+    // open remaining gap and nothing else runs afterward. A fresh read call
+    // (as a resumed process would perform) still finds that row intact.
+    const resumedRead = readReceiptFromFile(taskPath);
+    assert.equal(resumedRead.length, 1);
+    assert.equal(resumedRead[0].remainingGap, 'open: mid-run snapshot', 'a row appended mid-run stays readable after the process stops');
+
+    // Resume appends another row rather than replacing it.
+    appendReceiptRow(taskPath, {
+      repoRoot: workDir,
+      testsRun: 'tools/test-fixture.mjs: pass (resumed run)',
+      docsTouched: 'none',
+      remainingGap: 'none'
+    });
+    const finalRows = readReceiptFromFile(taskPath);
+    assert.equal(finalRows.length, 2, 'a resumed Task appends another row to the same record');
+    assert.equal(finalRows[0].remainingGap, 'open: mid-run snapshot', 'the earlier row is untouched by the resumed append');
+    assert.equal(finalRows[1].run, 2);
+
+    console.log('ok - task receipt append-only per-run record passed');
+  } finally {
+    fs.rmSync(receiptRoot, { recursive: true, force: true });
+  }
+}
+// ---- S-00H TK-006: Task receipt tests (end) ----
