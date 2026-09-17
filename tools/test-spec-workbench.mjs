@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {
+  TASK_STATUSES as SLICE_STATUSES,
   claimWork,
   closeTicket,
   completeSpec,
@@ -13,7 +14,16 @@ import {
   render
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
-import { listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
+import { TASK_STATUSES, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
+
+// One closed status vocabulary, not two: `spec-workbench.mjs` held its own
+// unexported TICKET_STATUSES set beside the record reader's TASK_STATUSES, so
+// a status added to one silently stayed invalid to the other.
+assert.ok(
+  Object.is(SLICE_STATUSES, TASK_STATUSES),
+  'the lifecycle commands and the Task record reader share one exported closed status set'
+);
+assert.deepEqual([...TASK_STATUSES], ['ready', 'in-progress', 'blocked', 'done', 'deferred']);
 
 assert.deepEqual(
   parseCliArgs(['next', '--json']),
@@ -414,6 +424,50 @@ try {
     /duplicated field "Status"/,
     'a duplicated field fails closed rather than letting the later occurrence silently win'
   );
+
+  // S-00H TK-002: the four coverage notes the TK-001 review left. Three assert
+  // a branch TK-001 wrote but never exercised; the fourth is an ordering
+  // defect `localeCompare` hid, since it sorts TK-10 ahead of TK-2.
+  assert.equal(
+    readTaskRecord(taskPath).relativePath,
+    null,
+    'a record read with no declared root reports no relative path rather than guessing one from its own directory'
+  );
+
+  for (const id of ['TK-2', 'TK-10']) {
+    write(`specs/S-203-coverage/tasks/${id}/TASK.md`, taskRecordFixture({
+      id, specId: 'S-203', slice: `Slice ${id}`, status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: placeholder'
+    }));
+  }
+  const coverageListing = listTaskRecords(path.join(root, 'specs/S-203-coverage'), root);
+  assert.deepEqual(
+    coverageListing.map((item) => item.id),
+    ['TK-2', 'TK-10'],
+    'a two-record listing returns both records ordered by visible identifier, not by string comparison'
+  );
+  assert.equal(
+    coverageListing[1].relativePath,
+    'specs/S-203-coverage/tasks/TK-10/TASK.md',
+    'a listed record carries its root-relative path in posix form'
+  );
+
+  write('specs/S-203-coverage/tasks/TK-012/TASK.md', [
+    '# TK-012 - Missing slice',
+    '',
+    '**Task ID:** TK-012',
+    '**Spec ID:** S-203',
+    '**Status:** ready',
+    '**Blockers:** none',
+    '**Destination:** spec-acceptance: placeholder',
+    ''
+  ].join('\n'));
+  assert.throws(
+    () => readTaskRecord(path.join(root, 'specs/S-203-coverage/tasks/TK-012/TASK.md'), root),
+    /is missing Slice/,
+    'a Task record with no Slice fails closed rather than describing itself as an unnamed slice'
+  );
+  fs.rmSync(path.join(root, 'specs/S-203-coverage'), { recursive: true });
 
   fs.rmSync(path.join(root, 'specs/S-201-task-record'), { recursive: true });
   render(root);

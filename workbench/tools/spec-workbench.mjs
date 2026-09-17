@@ -12,9 +12,15 @@ import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePa
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { TASK_STATUSES, listTaskRecords } from './task-record.mjs';
+
+// One closed status vocabulary for an execution slice, owned by the record
+// reader and re-exported here so the lifecycle commands and the record share
+// one set rather than two that can drift apart. TK-001 flagged the duplicate;
+// this is the fold it asked for.
+export { TASK_STATUSES };
 
 const SPEC_STATUSES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
-const TICKET_STATUSES = new Set(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
 const CATALOG_START = '<!-- spec-catalog:start -->';
 const CATALOG_END = '<!-- spec-catalog:end -->';
 const HOT_START = '<!-- hot-specs:start -->';
@@ -223,7 +229,7 @@ function packetFindings(specs, options = {}) {
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
     const satisfied = new Set([...completed, ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)]);
     for (const ticket of spec.tickets) {
-      if (!TICKET_STATUSES.has(ticket.status)) issues.push(finding('invalid-state', `${spec.id}/${ticket.id} has invalid status ${ticket.status}`, { specId: spec.id, ticketId: ticket.id }));
+      if (!TASK_STATUSES.includes(ticket.status)) issues.push(finding('invalid-state', `${spec.id}/${ticket.id} has invalid status ${ticket.status}`, { specId: spec.id, ticketId: ticket.id }));
       if (ticket.status === 'done' && (!ticket.proof || /^pending$/i.test(ticket.proof))) issues.push(finding('missing-evidence', `${spec.id}/${ticket.id} is done without proof`, { specId: spec.id, ticketId: ticket.id }));
     }
     // The selected slice is the first resumable or ready ticket; a later ticket

@@ -22,7 +22,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { visibleIdKey } from './visible-ids.mjs';
+import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
 // TK-002 note: this closed set duplicates the unexported TICKET_STATUSES in
@@ -117,7 +117,10 @@ export function listTaskRecords(specDir, root) {
     seenKeys.set(key, record.id);
     records.push(record);
   }
-  return records.sort((a, b) => a.id.localeCompare(b.id));
+  // Ordered by visible identifier, not by string comparison: `localeCompare`
+  // puts TK-10 ahead of TK-2, so an unpadded room would list its Tasks in an
+  // order no reader expects and selection would follow that order.
+  return records.sort((a, b) => compareVisibleIds(a.id, b.id));
 }
 
 // Every consumer of a Task's status calls this rather than reading `.status`
