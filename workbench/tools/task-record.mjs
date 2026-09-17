@@ -81,7 +81,12 @@ export function parseTaskRecord(content, filePath, root) {
     // Proof is optional and absent until the Task closes. It lives on the
     // record rather than in a table cell, so a record-backed Spec has one
     // place a reader looks for what a Task proved.
-    proof: fields.Proof ?? null
+    proof: fields.Proof ?? null,
+    // What the Task intends to verify, carried from an unfinished slice-table
+    // row at conversion. It is a plan, not evidence, and is kept in its own
+    // field so no reader - the Packet TK-005 assembles above all - can present
+    // it as proof of anything.
+    plannedVerification: fields['Planned verification'] ?? null
   };
 }
 
@@ -150,20 +155,27 @@ export function unmetBlockers(task, satisfiedIds) {
 
 // Rewrites the frontmatter fields a lifecycle command owns. An existing field
 // is replaced in place; a field the record does not carry yet (`Proof`, until
-// the Task closes) is inserted after `Destination`, so a record keeps one
+// the Task closes) is appended after the last field, so a record keeps one
 // readable block instead of growing fields in call order. Pure: the caller
 // writes the bytes, which keeps the atomic-write policy in one place.
+//
+// Both writes use a replacement function. A string replacement expands `$&`,
+// `` $` ``, `$'` and `$$`, so a proof naming a shell variable or a regex
+// group would rewrite itself against the line it replaced - closing a Task
+// with `--proof "see $& output"` wrote `see **Proof:** old output`.
 export function updateTaskFields(content, values) {
   let result = content;
   for (const [name, value] of Object.entries(values)) {
     const field = new RegExp(`^\\*\\*${escapeRegExp(name)}:\\*\\*\\s*.+$`, 'm');
     if (field.test(result)) {
-      result = result.replace(field, `**${name}:** ${value}`);
+      result = result.replace(field, () => `**${name}:** ${value}`);
       continue;
     }
-    const anchor = /^\*\*Destination:\*\*\s*.+$/m;
-    if (!anchor.test(result)) throw new Error(`A Task record with no Destination field cannot take a ${name} field`);
-    result = result.replace(anchor, (line) => `${line}\n**${name}:** ${value}`);
+    const existing = [...result.matchAll(/^\*\*[^*]+:\*\*\s*.+$/gm)];
+    if (existing.length === 0) throw new Error(`A Task record with no fields at all cannot take a ${name} field`);
+    const last = existing[existing.length - 1];
+    const at = last.index + last[0].length;
+    result = `${result.slice(0, at)}\n**${name}:** ${value}${result.slice(at)}`;
   }
   return result;
 }
@@ -171,7 +183,7 @@ export function updateTaskFields(content, values) {
 // The bytes one Task record is written as. Kept beside the parser so the two
 // cannot drift; every caller validates the result by parsing it back before
 // writing it, so a record this produces is never one the reader refuses.
-export function formatTaskRecord({ id, specId, slice, status, blockers, destination, proof }) {
+export function formatTaskRecord({ id, specId, slice, status, blockers, destination, plannedVerification, proof }) {
   const lines = [
     `# ${id} - ${slice}`,
     '',
@@ -182,6 +194,7 @@ export function formatTaskRecord({ id, specId, slice, status, blockers, destinat
     `**Blockers:** ${blockers}`,
     `**Destination:** ${destination}`
   ];
+  if (plannedVerification) lines.push(`**Planned verification:** ${plannedVerification}`);
   if (proof) lines.push(`**Proof:** ${proof}`);
   lines.push('');
   return lines.join('\n');

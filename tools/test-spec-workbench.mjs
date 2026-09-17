@@ -7,6 +7,7 @@ import {
   TASK_STATUSES as SLICE_STATUSES,
   claimWork,
   convertSpecSlices,
+  showSpec,
   closeTicket,
   completeSpec,
   doctor,
@@ -539,6 +540,11 @@ try {
   assert.equal(sliceTable(read('specs/S-301-records/SPEC.md')), recordTableBefore,
     'closing a Task record leaves the Spec slice table untouched');
   assert.match(read('specs/S-301-records/SPEC.md'), /\*\*Next gate:\*\* Complete TK-003\./);
+  assert.throws(
+    () => completeSpec(root, 'S-301', { date: '2026-07-12' }),
+    /S-301 has an unfinished slice/,
+    'a record-backed Spec cannot complete while one of its Task records is unfinished'
+  );
   assert.equal(nextWork(root).ticketId, 'TK-003',
     'a record whose declared blocker is now a done record becomes eligible with no status cell edited');
 
@@ -555,8 +561,18 @@ try {
   // Spec status is written anywhere.
   claimWork(root, 'S-301', { agent: 'codex', date: '2026-07-12' });
   closeTicket(root, 'S-301', {
-    proof: 'node test', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12'
+    proof: 'see $& and $` output', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12'
   });
+  assert.match(
+    read('specs/S-301-records/tasks/TK-003/TASK.md'),
+    /^\*\*Proof:\*\* see \$& and \$` output$/m,
+    'a proof naming a replacement pattern is written literally, not expanded against the line it replaced'
+  );
+  assert.throws(
+    () => completeSpec(root, 'S-301', { date: '2026-07-12' }),
+    /S-301 has unchecked acceptance criteria/,
+    'once every Task record is done the slice gate is satisfied and completion reaches the next gate'
+  );
   render(root);
   assert.match(read('TASKBOARD.md'), /\| \[S-301\]\(specs\/S-301-records\/SPEC\.md\) \| Acceptance \/ owner gate \|/,
     'a record-backed Spec whose Task records are all done derives an inactive slice cell');
@@ -572,6 +588,35 @@ try {
   assert.throws(() => nextWork(root), /S-301 is record-backed but its slice table still holds the unfinished row TK-001/,
     'a record-backed Spec keeps one source of slice truth; an unfinished retained row fails closed');
   fs.rmSync(path.join(root, 'specs/S-301-records'), { recursive: true });
+
+  // Closing a Task whose record already carries a Proof replaces that field
+  // in place. The replace branch is the one a string replacement would
+  // corrupt, expanding `$&` against the very line it is replacing, so it gets
+  // its own case rather than riding on the insert branch above.
+  write('specs/S-310-reproof/SPEC.md', recordBackedSpec('S-310'));
+  write('specs/S-310-reproof/tasks/TK-002/TASK.md', `${taskRecordFixture({
+    id: 'TK-002', specId: 'S-310', slice: 'Reopened slice', status: 'in-progress', blockers: 'none',
+    destination: 'spec-acceptance: S-310 Acceptance Criteria'
+  })}**Proof:** superseded by the rerun\n`);
+  render(root);
+  closeTicket(root, 'S-310', {
+    proof: 'see $& and $` output',
+    docs: 'Docs checked; no update needed',
+    remainingGap: 'none',
+    date: '2026-07-12'
+  });
+  assert.match(
+    read('specs/S-310-reproof/tasks/TK-002/TASK.md'),
+    /^\*\*Proof:\*\* see \$& and \$` output$/m,
+    'replacing an existing Proof writes the value literally, never expanding it against the replaced line'
+  );
+  assert.doesNotMatch(
+    read('specs/S-310-reproof/tasks/TK-002/TASK.md'),
+    /superseded by the rerun/,
+    'the superseded proof is replaced, not folded into the new one'
+  );
+  fs.rmSync(path.join(root, 'specs/S-310-reproof'), { recursive: true });
+  render(root);
 
   // A row and a record for one identifier: refused explicitly, never counted twice.
   write('specs/S-302-collision/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-302'));
@@ -615,6 +660,32 @@ try {
   fs.rmSync(path.join(root, 'specs/S-307-ready-unmet'), { recursive: true });
   render(root);
 
+  // A record declared `blocked` behind an in-progress record is ordinary
+  // sequencing: doctor raises nothing for it, so claim must not name
+  // `blocked-slice` at it either.
+  write('specs/S-309-sequencing/SPEC.md', recordBackedSpec('S-309'));
+  write('specs/S-309-sequencing/tasks/TK-002/TASK.md', taskRecordFixture({
+    id: 'TK-002', specId: 'S-309', slice: 'Running slice', status: 'in-progress', blockers: 'none',
+    destination: 'spec-acceptance: S-309 Acceptance Criteria'
+  }));
+  write('specs/S-309-sequencing/tasks/TK-003/TASK.md', taskRecordFixture({
+    id: 'TK-003', specId: 'S-309', slice: 'Waiting slice', status: 'blocked', blockers: 'TK-002',
+    destination: 'spec-acceptance: S-309 Acceptance Criteria'
+  }));
+  render(root);
+  assert.equal(
+    doctor(root).filter((issue) => issue.code === 'blocked-slice').length,
+    0,
+    'ordinary sequencing behind an in-progress record raises no slice finding'
+  );
+  assert.throws(
+    () => claimWork(root, 'S-309', { agent: 'codex', date: '2026-07-12' }),
+    /S-309 has no eligible ready ticket to claim/,
+    'claim gives the generic refusal for ordinary sequencing rather than naming a finding nobody raised'
+  );
+  fs.rmSync(path.join(root, 'specs/S-309-sequencing'), { recursive: true });
+  render(root);
+
   // A table-only Spec whose rows all say `blocked` still hears that it has
   // nothing eligible, not that a row names an unmet blocker: the refusal a
   // table row gets is unchanged by the record path added beside it.
@@ -651,10 +722,16 @@ try {
     '| TK-001 | First slice | ready | none | pending |',
     [
       '| TK-001 | First slice | done | none | node test \\| tee first.log |',
-      '| TK-002 | Second slice | ready | TK-001 | pending |',
+      '| TK-002 | Second slice | ready | TK-001 | Red then green at the command seam |',
       '| TK-003 | Third slice | blocked | TK-002 | pending |'
     ].join('\n')
-  ));
+  ).replace('## Acceptance Criteria', [
+    '## Notes',
+    '',
+    '| TK-002 | Named in a table outside the slice section |',
+    '',
+    '## Acceptance Criteria'
+  ].join('\n')));
   const converted = convertSpecSlices(root, 'S-304', {
     destinations: { 'TK-002': 'spec-acceptance: S-304 Acceptance Criteria item 1' }
   });
@@ -671,6 +748,24 @@ try {
   assert.equal(readTaskRecord(path.join(root, 'specs/S-304-convert/tasks/TK-003/TASK.md'), root).destination.reference,
     'S-304 Acceptance Criteria', 'an unsupplied destination names the whole acceptance section rather than guessing a line');
   assert.equal(readTaskRecord(path.join(root, 'specs/S-304-convert/tasks/TK-003/TASK.md'), root).status, 'blocked');
+  // An unfinished row's Proof cell is the verification the slice plans to
+  // run. It is carried as a plan and never as proof, so nothing downstream
+  // can present it as evidence for work that has not happened.
+  const plannedRecord = readTaskRecord(path.join(root, 'specs/S-304-convert/tasks/TK-002/TASK.md'), root);
+  assert.equal(plannedRecord.plannedVerification, 'Red then green at the command seam');
+  assert.equal(plannedRecord.proof, null, 'a converted record carries no proof; close writes that');
+  assert.doesNotMatch(read('specs/S-304-convert/tasks/TK-002/TASK.md'), /\*\*Proof:\*\*/,
+    'a converted record has no Proof field at all until the Task closes');
+  assert.equal(
+    showSpec(root, 'S-304').tickets.find((item) => item.id === 'TK-002').proof,
+    null,
+    'show reports no proof for a Task that has not closed'
+  );
+  assert.match(
+    read('specs/S-304-convert/SPEC.md'),
+    /\| TK-002 \| Named in a table outside the slice section \|/,
+    'conversion removes rows from the slice table and from nowhere else'
+  );
   render(root);
   assert.deepEqual(doctor(root), [], 'a converted Spec renders and passes doctor');
   assert.equal(nextWork(root).ticketId, 'TK-002', 'the converted room selects the first eligible record');

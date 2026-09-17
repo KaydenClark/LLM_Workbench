@@ -115,15 +115,14 @@ export function claimWork(rootDir, id, options) {
   const slices = slicesOf(spec);
   const ticket = slices.find((item) => item.id === candidate?.ticketId);
   if (!ticket) {
-    // A table row is refused by name exactly as before: only a row whose cell
-    // says `ready` names its unmet blockers, and a room whose rows all say
-    // `blocked` still hears that it has nothing eligible. A record has no
-    // status cell anyone maintains by hand, so its refusal reads its live
-    // blockers instead.
+    // `blocked-slice` names the one shape doctor also reports: a slice that
+    // declares itself ready while its blockers are unmet. A slice that
+    // declares itself blocked is ordinary sequencing on both sources, so it
+    // gets the generic refusal rather than the name of a finding nobody
+    // raised. A table row's refusal is unchanged, since a ready row reaching
+    // here always has an unmet blocker.
     const satisfied = satisfiedIds(spec, new Set(specs.filter((item) => ['complete', 'superseded'].includes(item.status)).map((item) => item.id)));
-    const blocked = slices.find((item) => (item.source === 'record'
-      ? effectiveStatus(item, satisfied) === 'blocked'
-      : item.declared === 'ready'));
+    const blocked = slices.find((item) => item.declared === 'ready' && !blockersSatisfied(item.blockers, satisfied));
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
     throw new Error(`${id} has no eligible ready ticket to claim`);
   }
@@ -224,7 +223,13 @@ export function convertSpecSlices(rootDir, id, options = {}) {
       status: ticket.status,
       blockers: ticket.blockers,
       destination: destinations[ticket.id] ?? `spec-acceptance: ${id} Acceptance Criteria`,
-      proof: /^pending\.?$/i.test(ticket.proof ?? '') ? null : ticket.proof
+      // An unfinished row's Proof cell holds the verification the slice plans
+      // to run, not proof it ran: every row converted here is by definition
+      // not done. It lands in `Planned verification`, and `Proof` stays
+      // absent until `close` writes it, so nothing downstream - the Packet
+      // TK-005 assembles, `show --json`, a reader - can read the plan as
+      // evidence.
+      plannedVerification: /^pending\.?$/i.test(ticket.proof ?? '') ? null : ticket.proof
     });
     try {
       parseTaskRecord(content, filePath, root);
@@ -241,10 +246,7 @@ export function convertSpecSlices(rootDir, id, options = {}) {
     converted.push(path.relative(root, filePath).split(path.sep).join('/'));
   }
   const convertedIds = new Set(staged.map((item) => item.ticket.id));
-  atomicWrite(spec.filePath, spec.content.split('\n').filter((line) => {
-    const cells = /^\|\s*(TK-[0-9A-Za-z]+)\s*\|/.exec(line);
-    return !cells || !convertedIds.has(cells[1]);
-  }).join('\n'));
+  atomicWrite(spec.filePath, removeSliceRows(spec.content, convertedIds));
   return {
     specId: id,
     converted,
@@ -547,6 +549,24 @@ function writeTaskStatus(record, values) {
   parseTaskRecord(content, record.filePath, record.root);
   atomicWrite(record.filePath, content);
   return content;
+}
+
+// Removes converted rows from the slice table and from nowhere else. A
+// `| TK-### |` row also appears in the append-only evidence log, where it is
+// frozen history, and may appear in a Spec's prose; a whole-file filter would
+// quietly delete those too.
+function removeSliceRows(content, ids) {
+  const heading = '## Vertical Implementation Slices';
+  const start = content.indexOf(heading);
+  if (start < 0) throw new Error(`Missing ${heading}`);
+  const bodyStart = start + heading.length;
+  const nextHeading = content.indexOf('\n## ', bodyStart);
+  const end = nextHeading < 0 ? content.length : nextHeading;
+  const body = content.slice(bodyStart, end).split('\n').filter((line) => {
+    const row = /^\|\s*(TK-[0-9A-Za-z]+)\s*\|/.exec(line);
+    return !row || !ids.has(row[1]);
+  }).join('\n');
+  return `${content.slice(0, bodyStart)}${body}${content.slice(end)}`;
 }
 
 function publicSlice(slice) {
