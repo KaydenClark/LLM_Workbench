@@ -12,7 +12,8 @@ import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePa
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -148,21 +149,39 @@ export function claimWork(rootDir, id, options) {
 }
 
 export function closeTask(rootDir, id, options) {
+  const root = path.resolve(rootDir);
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
-  const spec = findSpec(rootDir, id);
+  const spec = findSpec(root, id);
   const slices = slicesOf(spec);
   const task = slices.find((item) => item.declared === 'in-progress')
     ?? slices.find((item) => item.declared === 'ready');
   if (!task) throw new Error(`${id} has no open task to close`);
   // Proof text for a record goes on the record; the Spec's append-only
   // evidence row below is appended either way, because the Spec still owns
-  // the evidence log whichever source its slices come from.
+  // the evidence log whichever source its slices come from. `close` is the
+  // Receipt's first writer (ADR-000H): a record-backed Task's run gets its
+  // one Receipt row here, with live Git facts, before the Spec's own
+  // evidence row is appended; a table-backed Spec has no record to carry a
+  // Receipt on, so it gets none.
+  //
+  // The Receipt append runs BEFORE the record is flipped to done. It fails
+  // closed on a non-Git room or an altered earlier row (task-receipt.mjs's
+  // own checksum chain), and it must fail before anything is written: doing
+  // this the other way round left a record marked done, with Proof, but no
+  // Receipt row and no Spec evidence row, on the exact failure this guards
+  // against - and a rerun would then close a different Task entirely. The
+  // record is re-read after the append so `writeTaskStatus` writes onto the
+  // Receipt-bearing content just landed on disk, not a stale in-memory copy
+  // from before the append.
   let content = spec.content;
-  if (task.source === 'record') writeTaskStatus(task.record, { Status: 'done', Proof: proof });
-  else {
+  if (task.source === 'record') {
+    appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun: proof, docsTouched: docs, remainingGap });
+    const receipted = readTaskRecord(task.record.filePath, task.record.root);
+    writeTaskStatus(receipted, { Status: 'done', Proof: proof });
+  } else {
     content = updateTaskRow(spec.content, task.id, (cells) => {
       cells[2] = 'done';
       cells[4] = proof;
@@ -178,6 +197,32 @@ export function closeTask(rootDir, id, options) {
   content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(task.id)} | Task closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(remainingGap)} |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
+}
+
+// The Receipt's second, proactive writer (ADR-000H): appends one row to a
+// named in-progress Task record as a run proceeds, on the same
+// before-interruption discipline `AGENTS.md` requires for notepads - not
+// deferred until a successful `close`. It touches only the named Task's
+// Receipt: never that Task's own Status field, and never the owning Spec.
+// Refuses a Task that carries no standalone record (a table row has none to
+// append to) and a Task that is not in-progress, naming its actual status
+// rather than silently appending to a Task no run is open on.
+export function receiptTask(rootDir, id, options) {
+  const root = path.resolve(rootDir);
+  const taskId = requireValue(options?.task, '--task is required');
+  const testsRun = requireValue(options?.tests, '--tests is required');
+  const docsTouched = requireValue(options?.docs, '--docs is required');
+  const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
+  const spec = findSpec(root, id);
+  const task = slicesOf(spec).find((item) => item.id === taskId);
+  if (!task || task.source !== 'record') {
+    throw new Error(`${id}/${taskId} has no Task record; the receipt verb appends only to a standalone record`);
+  }
+  if (task.declared !== 'in-progress') {
+    throw new Error(`${id}/${taskId} is ${task.declared}, not in-progress; the receipt verb appends only to an in-progress Task`);
+  }
+  const row = appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun, docsTouched, remainingGap });
+  return { specId: id, taskId, row };
 }
 
 // The one-time migration from an embedded slice table to standalone Task
@@ -344,6 +389,17 @@ function packetFindings(specs, options = {}) {
     for (const slice of slices) {
       if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { specId: spec.id, taskId: slice.id }));
       if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, taskId: slice.id }));
+      // A malformed Receipt or an altered earlier row fails closed on read
+      // (task-receipt.mjs's own checksum chain); reported here by name so
+      // doctor keeps reporting every other spec, slice and scope instead of
+      // the raw exception this used to throw straight through the board.
+      if (slice.source === 'record') {
+        try {
+          readReceiptFromFile(slice.record.filePath);
+        } catch (error) {
+          issues.push(finding('receipt-corrupt', `${spec.id}/${slice.id} Receipt: ${error.message}`, { specId: spec.id, taskId: slice.id }));
+        }
+      }
     }
     // The selected slice is the first resumable or ready slice; a later slice
     // waiting on its predecessor is ordinary sequencing, not a finding. The
@@ -695,14 +751,55 @@ function renderHotBoard(specs) {
       continue;
     }
     const slices = slicesOf(spec).map((item) => ({ ...item, status: effectiveStatus(item, satisfiedIds(spec, completed)) }));
-    const task = slices.find((item) => item.status === 'in-progress')
+    // The acceptance line names each *active* Task's own signal, not one
+    // slice per Spec: a Spec with more than one in-progress Task lists every
+    // one of them (visible-id order), each with its own status and signal,
+    // and never mixes in a ready or blocked Task once there is more than
+    // one in-progress. A Spec with zero or one in-progress Task keeps the
+    // exact single-cell shape this board always rendered.
+    const inProgress = slices.filter((item) => item.status === 'in-progress').sort((a, b) => compareVisibleIds(a.id, b.id));
+    const task = inProgress[0]
       ?? slices.find((item) => item.status === 'ready')
       ?? slices.find((item) => item.status === 'blocked');
-    const slice = task ? `${task.id}: ${task.slice} (${task.status})` : 'Acceptance / owner gate';
+    let slice;
+    if (inProgress.length > 1) {
+      slice = inProgress.map((item) => {
+        const itemSignal = receiptSignal(item);
+        return `${item.id}: ${item.slice} (${item.status}${itemSignal ? `; ${itemSignal}` : ''})`;
+      }).join('; ');
+    } else {
+      const signal = task ? receiptSignal(task) : null;
+      slice = task ? `${task.id}: ${task.slice} (${task.status}${signal ? `; ${signal}` : ''})` : 'Acceptance / owner gate';
+    }
     const blocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
     lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(spec.latestEvent)} | ${escapeCell(spec.nextGate)} |`);
   }
   return lines.join('\n');
+}
+
+// The board's derived Receipt signal for one selected Task: the run count
+// and the latest run's branch, short SHA (seven characters) and dirty-file
+// count - the symptom ADR-000H's "What the board shows" names, never the full
+// run table or any Receipt row itself. A table-backed slice carries no
+// Receipt at all, and a record with no Receipt rows yet (no run has appended
+// one) returns `null` so the board renders exactly as it did before this
+// signal existed.
+// A malformed Receipt or an altered earlier row (task-receipt.mjs's own
+// checksum chain, by design) must never crash the board: `doctor` already
+// reports the same condition as `receipt-corrupt` (packetFindings, below),
+// so the render path falls back to a `receipt unreadable` marker in place of
+// the signal rather than throwing the raw error through `render`/`doctor`.
+function receiptSignal(task) {
+  if (task.source !== 'record') return null;
+  let rows;
+  try {
+    rows = readReceiptFromFile(task.record.filePath);
+  } catch {
+    return 'receipt unreadable';
+  }
+  if (rows.length === 0) return null;
+  const latest = rows[rows.length - 1];
+  return `runs ${rows.length}, ${latest.branch} @ ${latest.headSha.slice(0, 7)}, dirty ${latest.dirty}`;
 }
 
 function isHot(spec) {
@@ -924,6 +1021,7 @@ async function main() {
   else if (command === 'show') result = showSpec(root, id);
   else if (command === 'claim') result = claimWork(root, id, options);
   else if (command === 'close') result = closeTask(root, id, options);
+  else if (command === 'receipt') result = receiptTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
   else if (command === 'render') result = render(root);
@@ -931,7 +1029,7 @@ async function main() {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|complete|convert-tasks|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
