@@ -161,7 +161,7 @@ closed for tracked core source, a Git-owned provider home, or an unmanaged
 same-named skill; ignored managed core inside a personal catalog is supported. Normal setup remains presence-only; never use `--explicit-update`
 merely because a same-named skill exists.
 
-Map capabilities, not every historical ticket. Create completed specs only for
+Map capabilities, not every historical task. Create completed specs only for
 durable current capabilities whose acceptance and proof are already real. Move
 the actual active dependency chain into active/planned specs. Preserve the old
 queue and proof ledger in a dated cold archive; never rewrite historical proof

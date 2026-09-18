@@ -20,14 +20,14 @@ If only conversation context exists, save material context before it can be lost
 1. State the settled scope, excluded actions and endpoint.
 2. Compose `promote` and `to-docs` for supported claims into the existing
    authorized owners. Promotion may complete the request without implementation.
-3. Compose `to-spec` for required capability specifications and `to-tickets`
+3. Compose `to-spec` for required capability specifications and `to-tasks`
    only for their authorized delivery slices. Use the existing owner rather
    than restarting settled decisions or manufacturing work.
 4. Verify and persist the achieved documents with `save` under the authorized
    recovery boundary. A requested handoff composes `handoff` as Markdown and
    carries the same scope. Stop here when this is the requested endpoint.
 5. Only where implementation is authorized, compose `carry` and `implement`
-   for the selected tickets. Keep one lead responsible for evidence and docs;
+   for the selected tasks. Keep one lead responsible for evidence and docs;
    verify, obtain independent integration review and prove remote containment
    before claiming delivery. Continue independent authorized slices if another
    has a genuine blocker. Never select unrelated work.

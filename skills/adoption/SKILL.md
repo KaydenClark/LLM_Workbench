@@ -47,7 +47,7 @@ v3 support root through `/update-harness`, which runs
    authenticated namespace permit it, create a private remote if the canonical
    project has none. Never infer public visibility, rewrite remote history,
    change credentials, or replace an existing remote.
-5. Always commit and push each coherent migration ticket and every incomplete
+5. Always commit and push each coherent migration task and every incomplete
    checkpoint on a prefixed task branch; untracked migration output is not a
    finished Adoption. Promote verified work only to the declared integration
    branch (`git.integrationBranch` in `workbench/manifest.json`; the migration
@@ -58,7 +58,7 @@ v3 support root through `/update-harness`, which runs
 6. Record the source remote, ref, resolved commit, executed self-tests, and any
    vendored-helper checksum in the owning spec. Put fresh-clone reproduction
    commands in `RUNBOOK.md`, validate `workbench/manifest.json`, resolve the
-   next ticket from its declared `workbench/specs/` lane, and report the pushed
+   next task from its declared `workbench/specs/` lane, and report the pushed
    recovery ref and remaining owner gates. Append observed harness friction to
    the manifest-declared feedback lane; if none was observed, record
    `none observed` with the reason in the owning spec.

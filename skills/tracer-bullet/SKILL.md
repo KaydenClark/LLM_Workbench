@@ -56,9 +56,10 @@ is unused.
 
 ## 4. Scope and assign
 
-Hand these ordered slices to `/to-tickets` to write into the assigned spec's
-`Vertical Implementation Slices` table, or to `/to-spec` when the spec itself is
-still being written. Assign one slice to one durable Engineer writer at the
+Hand these ordered slices to `/to-tasks` to write as Task records (or into the
+assigned spec's `Vertical Implementation Slices` table when it is not yet
+record-backed), or to `/to-spec` when the spec itself is still being written.
+Assign one slice to one durable Engineer writer at the
 lowest capable tier, each with explicit blockers. When a proposed slice names a
 single layer, re-cut it into a complete path before it is assigned. The
 assignment is sound when the Engineer receives a complete-path, demoable,

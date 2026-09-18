@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
-import { coreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
+import { coreSkills, legacyCoreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { COLLECTIONS, LANES } from '../workbench/tools/workbench-paths.mjs';
 
@@ -233,7 +233,7 @@ function schemaOneFixture(project) {
     workbenchVersion: VERSION,
     provenance: { lifecycle: 'genesis' },
     lanes: { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' },
-    skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
+    skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
   }, null, 2)}\n`);
 }
 
@@ -785,7 +785,10 @@ test('legacy twelve-skill manifests remain readable but v3.1.1 requires all four
     assert.deepEqual(manifest.skillPolicy.required.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler']);
     manifest.workbenchVersion = 'v3.1.0';
     manifest.provenance.source.release = 'v3.1.0';
-    manifest.skillPolicy.required = manifest.skillPolicy.required.slice(0, 12);
+    // The frozen v3.0.0/v3.1.0 row is `legacyCoreSkills` itself, not the live
+    // policy's first twelve names: S-00H TK-004 renamed one live skill in the
+    // current bundle without touching this frozen historical row.
+    manifest.skillPolicy.required = [...legacyCoreSkills];
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     assert.equal(run('validate', '--project', project).report.status, 'valid');
     manifest.workbenchVersion = 'v3.1.1';
@@ -805,7 +808,10 @@ test('each listed legacy version validates only at the policy its release declar
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     const current = manifest.skillPolicy.required;
-    const twelve = current.slice(0, 12);
+    // The frozen legacy rows below are built from `legacyCoreSkills` itself,
+    // not by slicing the live `current` policy: S-00H TK-004 renamed one live
+    // skill in the current bundle without touching this frozen historical row.
+    const twelve = [...legacyCoreSkills];
     // v3.1.1's frozen row is the twelve workflow skills plus the four stances.
     // The current bundle also carries `carry` and `notepad`, so neither frozen
     // row is the same list as the live policy.
@@ -837,8 +843,11 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.1.3', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
-    // The owner-authorized v3.2.0 repair retains the earlier stamped twenty.
-    assert.equal(outcome('v3.2.0', current.filter(name => name !== 'handoff')), 'valid');
+    // The owner-authorized v3.2.0 repair retains the earlier stamped twenty,
+    // built from `legacyCoreSkills` rather than by filtering `current`: S-00H
+    // TK-004 renamed one live skill in the current bundle that this frozen
+    // row must keep exactly as it was released.
+    assert.equal(outcome('v3.2.0', [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...current.slice(-4)]), 'valid');
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, current), 'valid');
     assert.equal(outcome(VERSION, sixteen), 'invalid-skill-policy');
@@ -856,7 +865,10 @@ test('each listed legacy version validates only at the policy its release declar
 test('the v3.1.1 legacy row is the frozen sixteen-skill bundle, not the live current policy', () => {
   const project = fixture();
   const current = [...coreSkills];
-  const sixteen = [...current.slice(0, 12), ...current.slice(-4)];
+  // The frozen v3.1.1 row is `legacyCoreSkills` itself, not the live policy's
+  // first twelve names: S-00H TK-004 renamed one live skill in the current
+  // bundle without touching this frozen historical row.
+  const sixteen = [...legacyCoreSkills, ...current.slice(-4)];
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');

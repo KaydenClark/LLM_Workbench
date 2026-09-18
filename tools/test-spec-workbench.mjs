@@ -1584,19 +1584,9 @@ function wikiClaimFixture() {
   // same list with fuller reasoning.
   const TICKET_SWEEP_ALLOWLIST = [
     { file: 'workbench/tools/workbench-layout.mjs', match: 'to-tickets',
-      reason: 'the still-live core skill directory name skills/to-tickets/; TK-004 renames the skill itself, not this task' },
-    { file: 'tools/test-workbench-layout.mjs', match: 'to-tickets',
-      reason: "a skillPolicy fixture naming the still-live core skill 'to-tickets'; TK-004 renames it" },
-    { file: 'tools/test-skill-catalog.mjs', match: 'to-tickets',
-      reason: 'assertions against the literal current skills/to-tickets/SKILL.md name and content; TK-004 renames the skill' },
+      reason: "S-00H TK-004: legacyCoreSkills (and the frozen v3.0.0-v3.2.0 policy rows built from it) preserves the bundle exactly as each of those historical releases actually declared it in a real manifest.json, so validateManifest still recognizes that shape; only the live coreSkills export renames the current bundle to to-tasks, and only that export feeds this room's own manifest.json" },
     { file: 'tools/test-skill-catalog.mjs', match: 'local-ticket-template',
-      reason: 'a negative assertion guarding against one specific retained foreign-import artifact name inside skills/to-tickets/SKILL.md; not live Workbench vocabulary' },
-    { file: 'tools/test-skill-catalog.mjs', match: 'one eligible ticket',
-      reason: "asserts against the literal current skills/implement/SKILL.md prose ('one eligible ticket'); that skill's rename is TK-004's" },
-    { file: 'tools/team-coordination-contract.mjs', match: 'ticket and proof store',
-      reason: "matches the literal current prose of 'team templates/README.md' (a template outside this task's tool-vocabulary scope; the dogfood boundary names the rename TK-004's); loosening the pattern without renaming the template would desync the contract from the file it checks" },
-    { file: 'tools/test-team-coordination.mjs', match: 'ticket and proof store',
-      reason: "asserts the same literal message tools/team-coordination-contract.mjs emits while checking the unrenamed template; see that file's allow-list entry" }
+      reason: 'a negative assertion guarding against one specific retained foreign-import artifact name inside skills/to-tasks/SKILL.md; not live Workbench vocabulary' }
   ];
 
   function sweepIsAllowed(relFile, line) {
@@ -1622,12 +1612,29 @@ function wikiClaimFixture() {
   // second copy of the same list with no independent check behind it. Every
   // *other* touched file is still scanned in full, including this file's own
   // non-test sibling `spec-workbench.mjs`.
+  //
+  // S-00H TK-004 added a sibling sweep, tools/test-controls-vocabulary-sweep.mjs,
+  // covering root controls/skills/templates rather than workbench/tools and
+  // tools, plus a matching regression sweep block appended inside
+  // tools/test-genesis-from-decisions.mjs, tools/test-workbench-round-trip.mjs
+  // and tools/test-workbench-adoption.mjs (a generated or adopted room must
+  // not carry the retired vocabulary either). All four are excluded here for
+  // the identical reason this file excludes itself: each necessarily carries
+  // the literal `ticket` pattern and messages that make it checkable, and
+  // each is its own independent check rather than a second copy of this list
+  // with nothing behind it.
   const selfPath = path.relative(sweepRoot, fileURLToPath(import.meta.url)).split(path.sep).join('/');
+  const siblingSweepPaths = new Set([
+    'tools/test-controls-vocabulary-sweep.mjs',
+    'tools/test-genesis-from-decisions.mjs',
+    'tools/test-workbench-round-trip.mjs',
+    'tools/test-workbench-adoption.mjs'
+  ]);
   const sweepViolations = [];
   for (const dir of ['workbench/tools', 'tools'].map((d) => path.join(sweepRoot, d))) {
     for (const file of sweepWalk(dir)) {
       const relFile = path.relative(sweepRoot, file).split(path.sep).join('/');
-      if (relFile === selfPath) continue;
+      if (relFile === selfPath || siblingSweepPaths.has(relFile)) continue;
       fs.readFileSync(file, 'utf8').split('\n').forEach((line, index) => {
         if (/ticket/i.test(line) && !sweepIsAllowed(relFile, line)) {
           sweepViolations.push(`${relFile}:${index + 1}: ${line.trim()}`);

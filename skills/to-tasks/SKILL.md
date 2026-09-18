@@ -1,0 +1,59 @@
+---
+name: to-tasks
+description: Break an assigned Workbench spec into dependency-aware tracer-bullet Tasks.
+---
+
+# To Tasks
+
+The assigned `SPEC.md` names the destination. Each approved slice becomes its
+own Task, either a `tasks/<TK-###>/TASK.md` record or, on a Spec that has not
+converted yet, a row in the Spec's own table; the assigned `SPEC.md` is the
+only store either way. `TASKBOARD.md` is a generated projection, not a second
+tracker.
+
+Confirm the assigned spec resolves through `workbench/manifest.json` before
+changing it. Never recreate a root `specs/` queue or a project-local
+skill-discovery tree.
+
+## Process
+
+1. Read the assigned `SPEC.md` and the relevant source and tests. Do not select
+   an unassigned spec.
+2. Propose vertical slices that each deliver a checkable behavior in one context.
+   Apply the `/tracer-bullet` discipline so each slice pierces every layer of the
+   project's stack rather than one layer. Give each a short outcome-oriented
+   title, real blockers, done criteria, and closing proof. Prefer an independent
+   first tracer bullet; use expand-contract when a wide refactor cannot stay
+   green by vertical slice.
+3. Present the proposed set and ask for approval before changing durable
+   work state. Confirm that slice size and blocking edges are right.
+4. After approval, use `spec-workbench.mjs next-id S-### --prefix TK --json` for
+   each new label. It proposes a letter-bearing ID from the whole Workbench
+   inventory without reserving it; save each planned Task before requesting the
+   next. Preserve existing spec-qualified numeric Task references.
+   - If the assigned Spec already has a `tasks/` directory, it is record-backed:
+     write one `tasks/<TK-###>/TASK.md` per approved slice, carrying `Task ID`,
+     `Spec ID`, `Slice`, `Status` (`ready` unless a real blocker applies),
+     `Blockers` (`none`, or a comma-separated list of `S-###`/`TK-###` ids), and
+     `Destination` (`spec-acceptance: <the Acceptance Criteria line this Task
+     advances>`, or `wiki-claim: <the reconciled claim>` for a corrective Task
+     after retirement). Add `Planned verification` naming the check the Task
+     expects to run. Add no table rows; a record-backed Spec's retained
+     `Vertical Implementation Slices` table is completed history only.
+   - If the assigned Spec still holds only the legacy slice table with no
+     `tasks/` directory, run `node workbench/tools/spec-workbench.mjs
+     convert-tasks S-###` once to move its unfinished rows into `TASK.md`
+     records before adding further slices; it preserves done rows and
+     append-only evidence untouched and refuses a second run.
+   Keep unresolved owner decisions visible as blockers. Create no parallel
+   Task or proof store.
+5. Run `node workbench/tools/spec-workbench.mjs render` to refresh the generated
+   `TASKBOARD.md`, then run `node workbench/tools/spec-workbench.mjs doctor`. Execution
+   later uses the claim and close commands in `RUNBOOK.md` one eligible task
+   at a time.
+
+Set the normal stance explicitly in each assigned TASK and its SPEC during
+authorized decomposition; TASK names the Task record or row described above,
+not a second queue. An executing agent investigates within its assignment and
+never creates its own next task; these planning tools require owner-directed
+planning authority.

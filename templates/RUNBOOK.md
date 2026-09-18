@@ -16,7 +16,7 @@ should be boring, exact, and executable.
 Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
 root, branch, upstream and dirty state; run the project-local spec doctor and
 load the explicitly assigned spec. For owner-directed pickup, use `next --json`
-and `show` to resolve that assignment. The spec and ticket set the normal
+and `show` to resolve that assignment. The spec and task set the normal
 stance. Investigate within the task; do not invent a next task when blocked.
 Load remaining Runbook sections only for the operation being performed.
 
@@ -61,7 +61,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 | Decide or stress-test an idea | `grilling` with `notepad`; save answers/corrections before continuing |
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
-| Write specifications only | `to-spec` and needed `to-tickets`; stop at the specified endpoint |
+| Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
 | Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
 | Prepare another agent's continuation | core `handoff`; readable Markdown with inherited scope |
 | Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
@@ -253,18 +253,18 @@ node workbench/tools/adr.mjs new --title "Decision title"
 ```
 
 `next-id` is a read-only proposal, not a reservation or permission to create work.
-Ticket proposals require the assigned spec and reserve labels from all specs in
+Task proposals require the assigned spec and reserve labels from all specs in
 the Workbench. Write the returned label only during authorized planning, then
 render and run doctor before requesting another. ADR `new` writes a proposed
 record through the existing exclusive-publication path. Existing paths stay fixed.
 
 New durable labels contain at least one letter, so they cannot reuse historical
-decimal IDs that are no longer present. Spec/ticket minimum width is three;
+decimal IDs that are no longer present. Spec/task minimum width is three;
 ADR allocation keeps width four. Width grows without truncation using alphabet
 `0-9 A-Z a-z`. Sorting uses suffix length then that alphabet, independent of
 locale; it is label ordering, not creation chronology. Case-folded and leading-zero
-collisions are refused. Letter-bearing ticket labels are unique across the room;
-legacy numeric ticket references retain their existing spec-qualified scope and
+collisions are refused. Letter-bearing task labels are unique across the room;
+legacy numeric task references retain their existing spec-qualified scope and
 are not claimed globally unique. Their bytes and lookup routes are preserved.
 
 Spec parsing, selection, blockers, claim/close, rendering, Genesis readiness,
@@ -302,7 +302,7 @@ inventory is reconciled; they are preserved. Ordinary `create --note NAME`
 remains available for legacy named context. Allocation assumes one writer and
 checks current records; it supplies neither a distributed lock nor an eternal
 registry of deleted local notes. Active handoff retention still prevents source
-cleanup. Durable spec/ticket/ADR behavior is described above.
+cleanup. Durable spec/task/ADR behavior is described above.
 
 New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
 and updates. A new layout declares `sessions/notepads/`: bare names create
@@ -929,7 +929,7 @@ For routine read-only runs, a final response note is enough.
 
 ## Evidence And Continuation Practices
 
-Size a ticket so a fresh context can recover its inputs, exercise one useful
+Size a task so a fresh context can recover its inputs, exercise one useful
 behavior at its public seam and finish named verification. There is no accepted
 universal byte or token threshold. Unknown consequential product choices belong
 in a decision slice of the already assigned spec before dependent implementation;

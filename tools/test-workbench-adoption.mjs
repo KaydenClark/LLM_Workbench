@@ -362,6 +362,49 @@ function fixtureSpec() {
 
 console.log('ok - mixed v2 adoption preserves durable truth and blocks collisions');
 
+// S-00H TK-004 follow-up: adoption preserves the project's own pre-existing
+// root controls rather than overwriting them from templates/ (that is the
+// distinction from Genesis), so there is no template-derived control body to
+// sweep in an adopted room. What an onboarded agent actually gets from this
+// candidate is the skills a fresh install puts in the discovery root; sweep
+// those for the retired vocabulary the same way
+// tools/test-genesis-from-decisions.mjs and tools/test-workbench-round-trip.mjs
+// do after their own room-building steps.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    const installedSkills = spawnSync(process.execPath, [path.join(root, 'tools', 'core-skill-installer.mjs'), 'install', '--home', home], { encoding: 'utf8' });
+    assert.equal(installedSkills.status, 0, installedSkills.stdout + installedSkills.stderr);
+    assert.equal(JSON.parse(installedSkills.stdout).status, 'complete', installedSkills.stdout);
+    const result = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-05');
+    assert.equal(result.status, 0, result.stdout);
+
+    const skillHits = [];
+    for (const engineRoot of [path.join(home, '.agents', 'skills'), path.join(home, '.claude', 'skills')]) {
+      (function walk(dir) {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) { walk(full); continue; }
+          if (entry.name !== 'SKILL.md') continue;
+          const relative = path.relative(home, full).split(path.sep).join('/');
+          fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
+            if (/ticket/i.test(line)) skillHits.push(`${relative}:${index + 1}: ${line.trim()}`);
+          });
+        }
+      })(engineRoot);
+    }
+    assert.deepEqual(skillHits, [],
+      `the skills an adopted room's owner installs from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+console.log('ok - an adopted room installs skills that do not say Ticket');
+
 {
   const project = fixture(); const home = fixture();
   try {

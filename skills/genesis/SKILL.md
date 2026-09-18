@@ -49,7 +49,7 @@ inheriting the Template's room state.
    and push it (`git branch NAME DEFAULT` then `git push -u origin NAME`);
    otherwise record the omission reason in the first spec. The merge from the
    declared branch into the default branch stays with the owner.
-7. Always commit and push after every completed ticket and before yielding incomplete
+7. Always commit and push after every completed task and before yielding incomplete
    work. A local-only scaffold, or a working tree that was never committed, is
    not a completed Genesis handoff; the `templates/GENESIS.md` completion boxes
    require the commit on a prefixed branch and the resolving integration branch

@@ -15,7 +15,11 @@ import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
 import { COLLECTIONS, LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
-const legacyCoreSkills = [
+// Exported (not just used locally) so a test can build the exact historical
+// v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
+// slicing the live `coreSkills` and assuming its first twelve names never
+// diverge from this one - an assumption S-00H TK-004's rename broke once.
+export const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
@@ -25,7 +29,13 @@ const stanceSkills = ['builder', 'auditor', 'reviewer', 'reconciler'];
 // exact.
 const notepadCoreSkills = [...legacyCoreSkills, 'carry', 'notepad', ...stanceSkills];
 const initialV32CoreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...stanceSkills];
-export const coreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
+// S-00H TK-004: `to-tickets` renames to `to-tasks` in the live bundle only.
+// `legacyCoreSkills` (and the frozen rows derived from it above) stays byte-
+// identical, because it is what a real v3.0.0-v3.2.0 manifest's declared
+// `skillPolicy.required` actually held; `validateManifest` below still needs
+// to recognize that historical shape exactly as released.
+const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' ? 'to-tasks' : name));
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
