@@ -23,7 +23,7 @@ import {
   render,
   scanReferences
 } from '../workbench/tools/spec-workbench.mjs';
-import { assembleSpecReport, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
+import { assembleSpecReport, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
@@ -117,6 +117,19 @@ try {
   recordReviewVerdict(root, 'S-001', {
     candidate: headSha(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
   });
+  // S-00J TK-005: complete now also refuses without a recorded owner Human
+  // QA approval bound to the same current content. This fixture room
+  // declares no `git.integrationBranch` at all (no workbench/manifest.json
+  // exists here), so `recordOwnerApproval` has nothing to check the
+  // candidate against and records the approval outright - exactly the same
+  // "informs, never blocks an absent declaration" rule `gate`'s own
+  // `integrationBranch: null` case already follows.
+  assert.throws(
+    () => completeSpec(root, 'S-001', { date: '2026-07-12' }),
+    /no owner Human QA approval is recorded/i,
+    'complete still refuses a passed-verdict Spec with no recorded owner approval'
+  );
+  recordOwnerApproval(root, 'S-001', { candidate: headSha(root), owner: 'Kayden Clark', result: 'approve' });
   completeSpec(root, 'S-001', { date: '2026-07-12' });
   render(root);
 
@@ -2310,16 +2323,77 @@ function wikiClaimFixture() {
       'complete refuses when the latest verdict bound to the current content digest is a fail'
     );
 
-    // A passed current verdict lets complete proceed unchanged: the same
-    // single "Spec completed" evidence row this room's other completeSpec
-    // proof (S-001, above) already appends, nothing else different.
+    // S-00J TK-005: a passed review verdict is not enough on its own -
+    // complete also requires a recorded owner Human QA approval bound to the
+    // current content, checked after (and composing with) the review-verdict
+    // gate above. No verdict at all for the owner-qa row.
+    writeAt(gateRoot, 'specs/S-804-fixture/SPEC.md', completableSpec('S-804'));
+    recordReviewVerdict(gateRoot, 'S-804', {
+      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    assert.throws(
+      () => completeSpec(gateRoot, 'S-804', { date: '2026-09-18' }),
+      /no owner Human QA approval is recorded/i,
+      'complete refuses an otherwise-complete, reviewed Spec with no recorded owner Human QA approval at all'
+    );
+
+    // Every recorded owner-qa entry is for earlier content: a stale digest.
+    // Record a passed verdict and an owner approval, then edit the Spec's
+    // content (moving the digest) and record a FRESH passed verdict for the
+    // new content - so the review gate passes - without a fresh owner
+    // approval, isolating the approval-gap check from the review-gap check.
+    writeAt(gateRoot, 'specs/S-805-fixture/SPEC.md', completableSpec('S-805'));
+    recordReviewVerdict(gateRoot, 'S-805', {
+      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    recordOwnerApproval(gateRoot, 'S-805', { candidate: headSha(gateRoot), owner: 'Kayden Clark', result: 'approve' });
+    const s805Path = path.join(gateRoot, 'specs/S-805-fixture/SPEC.md');
+    fs.writeFileSync(s805Path, fs.readFileSync(s805Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after owner approval).'));
+    recordReviewVerdict(gateRoot, 'S-805', {
+      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Sonnet 5 (separate context)'
+    });
+    assert.throws(
+      () => completeSpec(gateRoot, 'S-805', { date: '2026-09-18' }),
+      /recorded owner Human QA entries are all for earlier content/i,
+      'complete refuses when every recorded owner-qa entry is for content that no longer matches (a stale digest), even with a passed current review verdict'
+    );
+
+    // The latest owner-qa entry for the current content is a finding, not an
+    // approval: hand-craft the row naming the Spec's own current digest
+    // (read back from the report, never recomputed by hand), alongside a
+    // passed verdict for the same digest, so only the approval-gap reason is
+    // isolated.
+    writeAt(gateRoot, 'specs/S-806-fixture/SPEC.md', completableSpec('S-806'));
+    const s806Candidate = headSha(gateRoot);
+    recordReviewVerdict(gateRoot, 'S-806', {
+      candidate: s806Candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    const s806Report = assembleSpecReport(gateRoot, 'S-806', { candidate: s806Candidate });
+    const s806Path = path.join(gateRoot, 'specs/S-806-fixture/SPEC.md');
+    const findingRow = `| 2026-09-18 | owner-qa | Owner QA: finding at ${s806Candidate} [${s806Report.specDigest.slice(0, 12)}] | Some finding | Kayden Clark | 1 |`;
+    fs.writeFileSync(s806Path, fs.readFileSync(s806Path, 'utf8').replace(
+      '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+      `| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |\n${findingRow}`
+    ));
+    assert.throws(
+      () => completeSpec(gateRoot, 'S-806', { date: '2026-09-18' }),
+      /latest owner Human QA for the current content is a finding/i,
+      'complete refuses when the latest owner-qa entry bound to the current content digest is a finding'
+    );
+
+    // A passed current verdict AND a recorded owner approval let complete
+    // proceed unchanged: the same single "Spec completed" evidence row this
+    // room's other completeSpec proof (S-001, above) already appends,
+    // nothing else different.
     writeAt(gateRoot, 'specs/S-803-fixture/SPEC.md', completableSpec('S-803'));
     recordReviewVerdict(gateRoot, 'S-803', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
+    recordOwnerApproval(gateRoot, 'S-803', { candidate: headSha(gateRoot), owner: 'Kayden Clark', result: 'approve' });
     const s803Before = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
     const s803SliceTableBefore = s803Before.slice(s803Before.indexOf('## Vertical Implementation Slices'), s803Before.indexOf('## Acceptance Criteria'));
     const s803VerdictRowBefore = s803Before.split('\n').find((line) => line.includes('Review verdict: pass'));
+    const s803ApprovalRowBefore = s803Before.split('\n').find((line) => line.includes('Owner QA: approve'));
     completeSpec(gateRoot, 'S-803', { date: '2026-09-18' });
     const s803After = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
     // Exactly the same shape completeSpec has always produced (proven above
@@ -2336,13 +2410,14 @@ function wikiClaimFixture() {
       'the slice table is untouched by complete, exactly as before this Spec'
     );
     assert.ok(s803After.includes(s803VerdictRowBefore), 'the pass verdict row recorded before complete is preserved verbatim, append-only');
+    assert.ok(s803After.includes(s803ApprovalRowBefore), 'the owner approval row recorded before complete is preserved verbatim, append-only');
     assert.equal(
       s803After.split('\n').filter((line) => /^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)).length,
       s803Before.split('\n').filter((line) => /^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)).length + 1,
-      'complete appends exactly one evidence row - the close row - on top of what was already recorded'
+      'complete appends exactly one evidence row - the close row - on top of what was already recorded (the verdict and approval rows were already there before this snapshot)'
     );
 
-    console.log('ok - complete refuses without a passed review verdict bound to the current content digest, naming no verdict, a stale digest, or a failed latest verdict as the reason, and a passed current verdict lets it proceed unchanged');
+    console.log('ok - complete refuses without a passed review verdict bound to the current content digest, naming no verdict, a stale digest, or a failed latest verdict as the reason; and, once reviewed, still refuses without a recorded owner Human QA approval bound to the same content, naming no approval, a stale approval digest, or a finding as the latest owner-qa entry - a passed current verdict AND a recorded current owner approval together let it proceed unchanged');
   } finally {
     fs.rmSync(gateRoot, { recursive: true, force: true });
   }
