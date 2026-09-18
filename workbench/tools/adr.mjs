@@ -13,7 +13,15 @@ import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath,
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'deprecated', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
 export const HISTORY_NAME = 'HISTORY.md';
-const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
+export const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
+// S-00I: the closed set of lifecycle subfolders `listAdrs` also enumerates,
+// alongside the top-level directory. Folder is lifecycle only, never
+// identity - a bare filename in `superseded_by` or a link resolves against
+// this whole set, not against the folder the referring record happens to sit
+// in. `retired` is deliberately excluded here: ADR-000I reserves it for
+// Specs and Tasks and keeps ADR history in permanent `archive` instead. TK-002
+// reuses this exact constant when it migrates lifecycle out of frontmatter.
+export const ADR_LIFECYCLE_FOLDERS = Object.freeze(['proposed', 'archive']);
 
 // A record is authored once and checked out on many hosts. Git for Windows
 // rewrites Markdown to CRLF by default, so anchoring on a bare LF would report
@@ -82,30 +90,49 @@ export function insertFrontmatterKeys(content, fields, label) {
   return { content: `${content.slice(0, fence.index)}${fence.eol}${lines.join(fence.eol)}${content.slice(fence.index)}`, inserted: missing.map(([name]) => name) };
 }
 
+// Enumerates the top-level directory and, when present, each lifecycle
+// subfolder in `ADR_LIFECYCLE_FOLDERS`. A flat collection with no subfolders
+// produces exactly the same list, in the same order, as before this change -
+// the top-level listing semantics `REGISTER.md`, `HISTORY.md` and `doctor`
+// depend on stay byte-stable. Every record carries the folder it was actually
+// read from, so a successor or a link can be resolved by identity across the
+// whole set instead of by the location a caller assumed.
 export function listAdrs(root, options = {}) {
   const directory = collectionPath(root, 'adr');
   assertSafeReadPath(root, directory);
   if (!fs.existsSync(directory)) return [];
-  return fs.readdirSync(directory, { withFileTypes: true })
-    .filter((entry) => ID_PATTERN.test(entry.name))
-    .map((entry) => {
-      const stat = fs.lstatSync(path.join(directory, entry.name));
-      if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink > 1) {
-        throw new Error(`${entry.name} must be an ordinary, singly linked ADR file; allocation cannot ignore an occupied identity`);
-      }
-      return entry;
-    })
-    .map((entry) => entry.name)
-    .map((name) => readAdr(root, path.join(directory, name), options.contentOverrides?.get(path.join(directory, name))))
+  const locations = [{ folder: null, directory }];
+  for (const folder of ADR_LIFECYCLE_FOLDERS) {
+    const subdirectory = path.join(directory, folder);
+    if (!fs.existsSync(subdirectory)) continue;
+    assertSafeReadPath(root, subdirectory);
+    locations.push({ folder, directory: subdirectory });
+  }
+  return locations
+    .flatMap(({ folder, directory: location }) => fs.readdirSync(location, { withFileTypes: true })
+      .filter((entry) => ID_PATTERN.test(entry.name))
+      .map((entry) => {
+        const stat = fs.lstatSync(path.join(location, entry.name));
+        if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink > 1) {
+          throw new Error(`${entry.name} must be an ordinary, singly linked ADR file; allocation cannot ignore an occupied identity`);
+        }
+        return entry;
+      })
+      .map((entry) => entry.name)
+      .map((name) => readAdr(root, path.join(location, name), options.contentOverrides?.get(path.join(location, name)), folder)))
     .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
-function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8')) {
+function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), folder = null) {
   const { data, body } = parseFrontmatter(content);
   const name = path.basename(filePath);
   const [, number, slug] = name.match(ID_PATTERN);
   const title = body.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? null;
-  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body };
+  // `href` is the path a register/history row must link through, relative to
+  // the collection root where those projections live. It equals `name` for a
+  // top-level record, so a flat collection's rendered link text is unchanged.
+  const href = folder ? `${folder}/${name}` : name;
+  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body, folder, href };
 }
 
 export function validateAdrs(root, options = {}) {
@@ -113,6 +140,7 @@ export function validateAdrs(root, options = {}) {
   let adrs;
   try { adrs = listAdrs(root, options); }
   catch (error) { return [finding('invalid-adr', error.message)]; }
+  const adrCollectionRelative = collectionRelative(root, 'adr');
   const numbers = new Map();
   for (const adr of adrs) {
     const key = visibleIdKey(`ADR-${adr.number}`);
@@ -163,6 +191,17 @@ export function validateAdrs(root, options = {}) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
           findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
         }
+      }
+      // A body link is for a reader, so it is checked literally: identity
+      // resolves `superseded_by` (a bare filename with no path component),
+      // never a Markdown link. A record in `archive/` may correctly link
+      // `../000A-...md` back to the top level, so this walks the literal
+      // relative path from the record's own directory - folder-aware because
+      // that directory is wherever `listAdrs` actually found the record -
+      // and only within the ADR collection itself, where a moved target's
+      // stale incoming link is exactly what would otherwise go unnoticed.
+      if ((relative === adrCollectionRelative || relative.startsWith(`${adrCollectionRelative}/`)) && !fs.existsSync(target)) {
+        findings.push(finding('invalid-adr', `${adr.relativePath} links to missing ${relative}`, { adr: adr.name, target: relative }));
       }
     }
   }
@@ -219,7 +258,7 @@ export function renderRegister(adrs, { history = false } = {}) {
   ];
   for (const adr of adrs.filter(record => history || record.data?.status === 'accepted')) {
     const owners = Array.isArray(adr.data?.canonicalized_in) ? adr.data.canonicalized_in : (adr.data?.canonicalized_in ? [adr.data.canonicalized_in] : []);
-    lines.push(`| [${adr.number}](${adr.name}) | ${cell(adr.title ?? '')} | ${cell(adr.data?.status ?? '')} | ${cell(adr.data?.date ?? '')} | ${cell(owners.join(', ') || 'none')} |`);
+    lines.push(`| [${adr.number}](${adr.href ?? adr.name}) | ${cell(adr.title ?? '')} | ${cell(adr.data?.status ?? '')} | ${cell(adr.data?.date ?? '')} | ${cell(owners.join(', ') || 'none')} |`);
   }
   return `${lines.join('\n')}\n`;
 }
@@ -270,7 +309,7 @@ export function newAdr(root, options) {
   return { filePath, number: next };
 }
 
-function localLinks(content) {
+export function localLinks(content) {
   const links = [];
   for (const match of content.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
     const value = match[1].split('#')[0];
