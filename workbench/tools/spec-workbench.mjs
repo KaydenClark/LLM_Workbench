@@ -97,9 +97,21 @@ function selectCandidate(specs, { specId, readyOnly = false } = {}) {
   return result;
 }
 
+// S-00I TK-005: `findSpec` reaches a retired Spec only once the active
+// roster has no claim on its id, but a reader who lands on it that way
+// still needs to see, at a glance, that this is the historical route rather
+// than ordinary current work - `spec.lifecycleFolder` is set only by
+// `loadRetiredSpecs`, never by `loadSpecs`, so it is exactly the fact this
+// checks. The banner is prepended to `body` (never written back to the
+// file, never affecting `publicSpec`'s own `path` field, which already
+// names the same route structurally) so `console.log(result.body)` - the
+// CLI's own `show` output - carries it as the first line printed.
 export function showSpec(rootDir, id) {
   const spec = findSpec(rootDir, id);
-  return { ...publicSpec(spec), body: spec.content };
+  const body = spec.lifecycleFolder
+    ? `Retired: ${spec.relativePath} (historical route; out of ordinary discovery, reachable only by this explicit lookup)\n\n${spec.content}`
+    : spec.content;
+  return { ...publicSpec(spec), body };
 }
 
 export function nextIdentity(rootDir, specId, options = {}) {

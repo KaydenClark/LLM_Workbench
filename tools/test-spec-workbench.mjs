@@ -2769,6 +2769,15 @@ function completeFixtureSpec(id) {
     const shown = showSpec(lifecycleRoot, 'S-500');
     assert.equal(shown.status, 'complete');
     assert.equal(shown.path, 'workbench/specs/retired/S-500-retiring-fixture/SPEC.md');
+    // S-00I TK-005: show's printed body names the historical route on its
+    // own first line for a retired Spec, so a reader lands knowing this is
+    // out of ordinary discovery without needing --json's separate path
+    // field; the original content still follows, byte-identical.
+    assert.equal(shown.body.split('\n')[0], `Retired: ${shown.path} (historical route; out of ordinary discovery, reachable only by this explicit lookup)`);
+    assert.ok(shown.body.endsWith(fs.readFileSync(path.join(lifecycleRoot, shown.path), 'utf8')),
+      'the banner is prepended only; the Spec\'s own content is never altered');
+    assert.equal(showSpec(lifecycleRoot, 'S-700').body, fs.readFileSync(untouchedSpecPath, 'utf8'),
+      'an active-roster Spec\'s shown body carries no historical-route banner');
 
     const afterMoveFindings = doctor(lifecycleRoot).filter((item) => item.specId === 'S-500');
     // S-00I TK-005: this fixture retires S-500 through the bare
