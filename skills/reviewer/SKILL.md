@@ -26,10 +26,9 @@ Resolve the assigned packet and support lanes through `workbench/manifest.json`.
 
 ## Obligations
 
-Compose `/code-review` for code changes. At integration use a separate context
-and exact BASE_SHA/HEAD_SHA. Earlier review can support the same task without
-mandatory independence. Evaluate reports and recommendations as critically as
-code. Remain review-only; do not quietly repair the reviewed target.
+Compose `/code-review` for a Task PR's fixed diff, reviewed as an immutable candidate against exact `BASE_SHA` and `HEAD_SHA` while S-00O exemption 2 holds, reported by `gate --task`.
+At integration, review the assembled Spec obtained with `report S-### --candidate <sha>` against its content digest, controls and named evidence, and record the result with `verdict`.
+Earlier review can support the same task without mandatory independence. Evaluate reports and recommendations as critically as code. Remain review-only; do not quietly repair the reviewed target.
 
 ## Completion / Exit Condition
 
