@@ -43,7 +43,7 @@ finding observes HEAD, the working tree, untracked files or upstream distance,
 so the state this Spec surfaces is unobserved even though the scope is not
 empty.
 
-`workbench/tools/spec-workbench.mjs` `closeTicket` requires `--proof`,
+`workbench/tools/spec-workbench.mjs` `closeTicket` (renamed `closeTask` by S-00H TK-003 after this anchor) requires `--proof`,
 `--docs` and `--remaining-gap`, sets the latest event to "closed with proof",
 and appends an evidence row. It parses files; it never shells out to Git and
 never reads repository state.
@@ -137,7 +137,7 @@ finding stays visible without blocking by its own registered definition, so
 visibility alone cannot stop a false completion report. The false claim is
 made at `close`.
 
-`closeTicket` gains a dependency on repository state it has never had, moving
+`closeTask` gains a dependency on repository state it has never had, moving
 from pure file parsing to reading Git. Keep the reading inside TK-001's seam
 so the parsing path stays testable without a repository.
 
@@ -175,7 +175,7 @@ command or a code before the slice that implements it has landed.
 ## Testing Seams
 
 The repository-state reader from TK-001; the `diagnostics.mjs` registry;
-`spec-workbench.mjs` `closeTicket`; the existing coverage in
+`spec-workbench.mjs` `closeTask`; the existing coverage in
 `tools/test-diagnostics.mjs` and `tools/test-spec-workbench.mjs`.
 
 ## Verification Procedure
