@@ -1391,6 +1391,20 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
     rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
   }
 
+  // Corrective review finding 2 (S-00I TK-004 review): mirror
+  // `moveSpecDirectory`'s own regeneration above - a Task's canonicalized_in
+  // frontmatter target can be rewritten by the pass above too (an ADR can
+  // name a Task path), which leaves REGISTER.md's derived projection stale
+  // by construction exactly as a Spec move does. A room with no ADR
+  // collection at all is left alone.
+  // Corrective review finding 2 (S-00I TK-004 review): mirror
+  // `moveSpecDirectory`'s own regeneration above - a Task's canonicalized_in
+  // frontmatter target can be rewritten by the pass above too (an ADR can
+  // name a Task path), which leaves REGISTER.md's derived projection stale
+  // by construction exactly as a Spec move does. A room with no ADR
+  // collection at all is left alone.
+  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+
   // Corrective review finding 3 from TK-003, reused unchanged here: `git mv`
   // already stages the rename; stage the content rewrites above too, so the
   // candidate shows one reviewable move rather than a mix of staged and

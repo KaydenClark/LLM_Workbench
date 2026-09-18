@@ -3389,3 +3389,75 @@ function completeEmptyTableRecordBackedSpec(id) {
     fs.rmSync(carryRoot, { recursive: true, force: true });
   }
 }
+
+// ============================================================================
+// Corrective review finding 2 (S-00I TK-004 review): `moveTaskRecord`
+// rewrites an accepted ADR's `canonicalized_in` frontmatter target through
+// the shared rewriter (`rewriteReferenceFile` -> `rewriteCanonicalizedIn`),
+// exactly as `moveSpecDirectory` does, but never called `writeRegister`
+// afterward - so REGISTER.md/HISTORY.md, which echo canonicalized_in as
+// bare generated table text, went stale by construction on every Task move.
+// Mirror `moveSpecDirectory`'s own `if (fs.existsSync(collectionPath(root,
+// 'adr'))) writeRegister(root)` call.
+// ============================================================================
+{
+  const registerRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-register-'));
+  try {
+    initLifecycleFixture(registerRoot);
+    writeAt(registerRoot, 'workbench/specs/S-527-register-fixture/SPEC.md', emptyTableRecordBackedSpec('S-527'));
+    writeAt(registerRoot, 'workbench/specs/S-527-register-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({
+        id: 'TK-001', specId: 'S-527', slice: 'Register fixture slice',
+        destination: 'spec-acceptance: S-527 Acceptance Criteria', proof: 'landed'
+      })));
+
+    // An accepted ADR naming the moving Task's live path as a
+    // `canonicalized_in` frontmatter target - a root-relative fact, not a
+    // body link.
+    fs.writeFileSync(path.join(registerRoot, 'workbench/docs/adr/0001-fixture.md'), [
+      '---',
+      'date: 2026-09-18',
+      'canonicalized_in:',
+      '  - workbench/specs/S-527-register-fixture/tasks/TK-001/TASK.md',
+      '---',
+      '',
+      '# A fixture decision',
+      '',
+      'Provenance: owner decision.',
+      ''
+    ].join('\n'));
+    // Seed a correct, up-to-date REGISTER.md/HISTORY.md before the move, so
+    // any staleness found afterward is attributable to the move itself.
+    writeRegister(registerRoot);
+
+    execFileSync('git', ['init', '--quiet', registerRoot]);
+    execFileSync('git', ['-C', registerRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', registerRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', registerRoot, 'add', '-A']);
+    execFileSync('git', ['-C', registerRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    const registerPath = path.join(registerRoot, 'workbench/docs/adr/REGISTER.md');
+    const historyPath = path.join(registerRoot, 'workbench/docs/adr/HISTORY.md');
+
+    moveTaskRecord(registerRoot, 'S-527', 'TK-001', 'retired');
+
+    const adrContent = fs.readFileSync(path.join(registerRoot, 'workbench/docs/adr/0001-fixture.md'), 'utf8');
+    assert.match(adrContent, /canonicalized_in:\n {2}- workbench\/specs\/S-527-register-fixture\/tasks\/retired\/TK-001\/TASK\.md/,
+      'an accepted ADR\'s canonicalized_in target is rewritten to the moved Task\'s real path');
+    assert.deepEqual(validateAdrs(registerRoot).filter((item) => item.code === 'invalid-adr'), [],
+      'adr validate stays clean after the move: canonicalized_in still names an existing owner');
+
+    const registerAfter = fs.readFileSync(registerPath, 'utf8');
+    const historyAfter = fs.readFileSync(historyPath, 'utf8');
+    for (const [name, content] of [['REGISTER.md', registerAfter], ['HISTORY.md', historyAfter]]) {
+      assert.match(content, /workbench\/specs\/S-527-register-fixture\/tasks\/retired\/TK-001\/TASK\.md/, `${name} names the moved Task's new path`);
+      assert.doesNotMatch(content, /workbench\/specs\/S-527-register-fixture\/tasks\/TK-001\/TASK\.md/, `${name} no longer names the pre-move path`);
+    }
+    assert.deepEqual(validateAdrs(registerRoot).filter((item) => item.code === 'stale-register'), [],
+      'adr validate reports no stale-register once the Task move itself refreshes the projections');
+
+    console.log('ok - moveTaskRecord regenerates REGISTER.md/HISTORY.md after rewriting an accepted ADR\'s canonicalized_in target to the moved Task\'s real path');
+  } finally {
+    fs.rmSync(registerRoot, { recursive: true, force: true });
+  }
+}
