@@ -17,9 +17,12 @@
 // none of that.
 //
 // `listTaskRecords` scans exactly one directory level beneath `tasks/`:
-// `<specDir>/tasks/<id>/TASK.md`. It does not recurse into a nested
-// lifecycle folder such as a future `tasks/retired/<id>/TASK.md`; adding
-// that is a separate decision (ADR-000I), not a silent scan expansion here.
+// `<specDir>/tasks/<id>/TASK.md`. S-00I TK-004 gave the lifecycle folder that
+// comment once deferred a real reader: `listRetiredTaskRecords` scans
+// `<specDir>/tasks/retired/<id>/TASK.md` (ADR-000I's `TASK_LIFECYCLE_FOLDERS`)
+// as the explicit historical route, while `listTaskRecords` itself still
+// scans only the top level and now skips a lifecycle-folder entry there
+// instead of reading it as a Task directory.
 //
 // TT-Q10 (the new-identifier form, `T-###` vs `TASK-###`) is open. Fixtures
 // and this reader use the existing `TK-###` form; no new prefix is
@@ -30,6 +33,19 @@ import path from 'node:path';
 import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
+
+// S-00I TK-004: the closed set of lifecycle subfolders a Task directory may
+// move into, beneath its owning Spec's `tasks/` directory (the active
+// roster `listTaskRecords` still reads unchanged at the top level).
+// ADR-000I reserves permanent `archive` for ADRs alone; a Task, like its
+// owning Spec (`SPEC_LIFECYCLE_FOLDERS` in spec-workbench.mjs), is a
+// transient working artifact, so its one terminal folder here is the same
+// transient `retired` staging area. `listTaskRecords` below skips a
+// directory named for one of these folders when scanning the top level -
+// it is a lifecycle folder, never a Task directory itself - so a retired
+// Task never collides with the "one TASK.md per directory" rule that
+// applies to every other entry.
+export const TASK_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 // The one closed status vocabulary for an execution slice, whether it is held
 // in a Task record or in a Spec's retained slice table. TK-002 folded
 // spec-workbench.mjs's own separately-named closed status set into this one,
@@ -112,11 +128,55 @@ export function readTaskRecord(filePath, root) {
 export function listTaskRecords(specDir, root) {
   const tasksDir = path.join(specDir, 'tasks');
   if (!fs.existsSync(tasksDir)) return [];
+  // S-00I TK-004: a lifecycle folder (`retired`) sitting directly beneath
+  // `tasks/` is skipped here rather than read as a Task directory - it is
+  // where a retired Task's directory now lives, never a Task itself, so the
+  // active roster silently stops naming it instead of throwing on the
+  // "exactly one TASK.md per directory" rule below.
+  return readRecordsFrom(tasksDir, root, { skip: TASK_LIFECYCLE_FOLDERS });
+}
+
+// S-00I TK-004: the explicit historical route, mirroring `loadRetiredSpecs`
+// in spec-workbench.mjs. `listTaskRecords` above deliberately keeps reading
+// only the top level of `tasks/` - the active roster `next`, `claim`,
+// `close`, `receipt` and the hot board select from - so a retired Task
+// never re-enters selection through a shared reading path. Returns `[]` for
+// a Spec that has never retired a Task, exactly as `listRetiredSpecs` does
+// for a room that has never retired a Spec, rather than treating an absent
+// `tasks/retired/` directory as an error.
+export function listRetiredTaskRecords(specDir, root) {
+  const records = [];
+  for (const folder of TASK_LIFECYCLE_FOLDERS) {
+    const folderDir = path.join(specDir, 'tasks', folder);
+    for (const record of readRecordsFrom(folderDir, root)) {
+      records.push({ ...record, lifecycleFolder: folder });
+    }
+  }
+  return records.sort((a, b) => compareVisibleIds(a.id, b.id));
+}
+
+// Shared by `listTaskRecords` and `listRetiredTaskRecords`: every Task
+// directory one level beneath `directory` holds exactly one `TASK.md` whose
+// declared Task ID matches the directory name; both a mismatch and a
+// directory with no record fail closed rather than being silently skipped,
+// and two records that resolve to the same visible identifier are refused
+// as a duplicate rather than both returned. `skip` names entries that are
+// lifecycle folders, not Task directories, at this level - never checked
+// for a TASK.md at all. Returns `[]` for a directory that does not exist,
+// so a caller never has to check existence first.
+//
+// Ordered by visible identifier, not by string comparison: `localeCompare`
+// puts TK-10 ahead of TK-2, so an unpadded room would list its Tasks in an
+// order no reader expects and selection would follow that order.
+function readRecordsFrom(directory, root, { skip = [] } = {}) {
+  if (!fs.existsSync(directory)) return [];
+  const skipNames = new Set(skip);
   const records = [];
   const seenKeys = new Map();
-  for (const entry of fs.readdirSync(tasksDir, { withFileTypes: true })) {
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
-    const taskDir = path.join(tasksDir, entry.name);
+    if (skipNames.has(entry.name)) continue;
+    const taskDir = path.join(directory, entry.name);
     const filePath = path.join(taskDir, 'TASK.md');
     if (!fs.existsSync(filePath)) {
       throw new Error(`${taskDir} has no TASK.md; a Task directory one level beneath tasks/ must hold exactly one record`);
@@ -127,14 +187,11 @@ export function listTaskRecords(specDir, root) {
     }
     const key = visibleIdKey(record.id);
     if (seenKeys.has(key)) {
-      throw new Error(`Duplicate Task ID ${record.id} beneath ${tasksDir} conflicts with ${seenKeys.get(key)}`);
+      throw new Error(`Duplicate Task ID ${record.id} beneath ${directory} conflicts with ${seenKeys.get(key)}`);
     }
     seenKeys.set(key, record.id);
     records.push(record);
   }
-  // Ordered by visible identifier, not by string comparison: `localeCompare`
-  // puts TK-10 ahead of TK-2, so an unpadded room would list its Tasks in an
-  // order no reader expects and selection would follow that order.
   return records.sort((a, b) => compareVisibleIds(a.id, b.id));
 }
 

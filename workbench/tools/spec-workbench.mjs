@@ -13,7 +13,7 @@ import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePa
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
 import { assembleSpecReport, formatSpecReport, recordReviewVerdict } from './spec-report.mjs';
 
@@ -22,6 +22,11 @@ import { assembleSpecReport, formatSpecReport, recordReviewVerdict } from './spe
 // one set rather than two that can drift apart. TK-001 flagged the duplicate;
 // this is the fold it asked for.
 export { TASK_STATUSES };
+// S-00I TK-004: the Task lifecycle folder set, owned by the record reader
+// (task-record.mjs) exactly as `TASK_STATUSES` above is, and re-exported
+// here so `move-task`'s CLI and this module's own callers use the one
+// closed set rather than a second copy.
+export { TASK_LIFECYCLE_FOLDERS };
 
 const SPEC_STATUSES = new Set(['planned', 'active', 'blocked', 'needs-review', 'complete', 'superseded']);
 const CATALOG_START = '<!-- spec-catalog:start -->';
@@ -402,6 +407,18 @@ function packetFindings(specs, options = {}, retiredSpecs = []) {
       issues.push(finding('retired-not-complete', `${spec.id} is retired in ${spec.lifecycleFolder}/ but its Status is ${spec.status}, not complete`, { specId: spec.id }));
     }
   }
+  // S-00I TK-004: the Task analogue of the retired-Spec check above, run over
+  // every Spec (active roster and retired alike, since a Spec can retire its
+  // own Tasks individually before or independently of its own retirement).
+  // `retiredRecords` is never read by `slicesOf`, so this is the one place a
+  // retired Task's own disagreeing Status becomes visible.
+  for (const spec of [...specs, ...retiredSpecs]) {
+    for (const task of spec.retiredRecords ?? []) {
+      if (taskStatus(task) !== 'done') {
+        issues.push(finding('retired-task-not-done', `${spec.id}/${task.id} is retired in tasks/${task.lifecycleFolder}/ but its Status is ${taskStatus(task)}, not done`, { specId: spec.id, taskId: task.id }));
+      }
+    }
+  }
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of specs) {
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
@@ -560,9 +577,15 @@ export function loadSpecs(rootDir, options = {}) {
   const specs = paths.sort().map((filePath) => {
     const specDir = path.dirname(filePath);
     const records = listTaskRecords(specDir, root);
+    // S-00I TK-004: a Task's own historical route, read alongside the active
+    // roster exactly as `loadRetiredSpecs` reads a Spec's - never merged into
+    // `records`, so `slicesOf` (selection, claim, close, render, the hot
+    // board) never sees a retired Task, while identity checks and `show`
+    // still can.
+    const retiredRecords = listRetiredTaskRecords(specDir, root);
     const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
     const content = options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8');
-    const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, recordBacked };
+    const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked };
     assertOneSliceTruth(spec);
     return spec;
   });
@@ -598,9 +621,10 @@ export function loadRetiredSpecs(rootDir) {
     for (const filePath of paths.sort()) {
       const specDir = path.dirname(filePath);
       const records = listTaskRecords(specDir, root);
+      const retiredRecords = listRetiredTaskRecords(specDir, root);
       const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
       const content = fs.readFileSync(filePath, 'utf8');
-      const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, recordBacked, lifecycleFolder: folder };
+      const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked, lifecycleFolder: folder };
       assertOneSliceTruth(spec);
       specs.push(spec);
     }
@@ -622,8 +646,13 @@ export function loadRetiredSpecs(rootDir) {
 function assertOneSliceTruth(spec) {
   if (!spec.recordBacked) return;
   const recorded = new Map(spec.records.map((task) => [visibleIdKey(task.id), task.id]));
+  // S-00I TK-004: a retired Task record still holds its id against a retained
+  // row claiming the same identifier - the row/record collision this
+  // function already refuses, extended to the historical route so an id
+  // cannot be reused once its Task has retired.
+  const retired = new Map((spec.retiredRecords ?? []).map((task) => [visibleIdKey(task.id), task.id]));
   for (const row of spec.rows) {
-    const collision = recorded.get(visibleIdKey(row.id));
+    const collision = recorded.get(visibleIdKey(row.id)) ?? retired.get(visibleIdKey(row.id));
     if (collision) {
       spec.sliceConflict = { id: collision };
       return;
@@ -728,6 +757,21 @@ function publicSlice(slice) {
   return { id: slice.id, slice: slice.slice, status: slice.declared, blockers: slice.blockers, proof: slice.proof ?? null };
 }
 
+// S-00I TK-004: a retired Task record, shaped like `publicSlice` above but
+// read straight off the record (there is no "slice" resolution for it - a
+// retired Task is out of `slicesOf` entirely). Kept under its own key on
+// `show`'s output, never folded into `tasks`, so a retired Task cannot be
+// mistaken for one still on the active roster.
+function publicRetiredTask(task) {
+  return {
+    id: task.id,
+    slice: task.slice,
+    status: taskStatus(task),
+    blockers: task.blockers.length > 0 ? task.blockers.join(', ') : 'none',
+    proof: task.proof ?? null
+  };
+}
+
 // S-00I TK-003: `retiredSpecs` (default `[]`) joins the same identity checks
 // as the active roster, so a retired Spec still holds its id against reuse
 // and a retired Task still holds its id against a new Spec claiming it -
@@ -741,15 +785,16 @@ function identityFindings(specs, retiredSpecs = []) {
     const specKey = visibleIdKey(spec.id);
     if (specIds.has(specKey)) findings.push(finding('duplicate-id', `Duplicate spec ID: ${spec.id} conflicts with ${specIds.get(specKey)}`, { specId: spec.id }));
     else specIds.set(specKey, spec.id);
-    // Local duplicates are checked per source: two rows sharing an id, or two
-    // records sharing an id (already refused earlier by `listTaskRecords`, so
-    // this never actually fires for records), are a genuine data error. A row
-    // and a record sharing one id is the different, friendlier-named
-    // row/record collision `assertOneSliceTruth` already reports as
-    // `sliceConflict`; merging the two sources here would report the same
-    // coexistence twice, under the wrong name, before that dedicated check
-    // ever gets a chance to run.
-    for (const source of [spec.rows, spec.records ?? []]) {
+    // Local duplicates are checked per source: two rows sharing an id, two
+    // records sharing an id, or two retired records sharing an id (each
+    // already refused earlier by `listTaskRecords`/`listRetiredTaskRecords`,
+    // so this never actually fires within one of those three), are a
+    // genuine data error. A row and a record sharing one id is the
+    // different, friendlier-named row/record collision `assertOneSliceTruth`
+    // already reports as `sliceConflict`; merging the sources here would
+    // report the same coexistence twice, under the wrong name, before that
+    // dedicated check ever gets a chance to run.
+    for (const source of [spec.rows, spec.records ?? [], spec.retiredRecords ?? []]) {
       const localTasks = new Map();
       for (const item of source) {
         const key = visibleIdKey(item.id);
@@ -757,13 +802,23 @@ function identityFindings(specs, retiredSpecs = []) {
         localTasks.set(key, item.id);
       }
     }
+    // S-00I TK-004: an id held by an active record AND its own Spec's
+    // `retiredRecords` is a genuine reuse - a retired Task's id must never
+    // reappear on the active roster, so this is reported by the same name
+    // as any other duplicate rather than a bespoke "reused" finding.
+    const activeIds = new Set((spec.records ?? []).map((item) => visibleIdKey(item.id)));
+    for (const task of spec.retiredRecords ?? []) {
+      const key = visibleIdKey(task.id);
+      if (activeIds.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${task.id} is both active and retired`, { specId: spec.id, taskId: task.id }));
+    }
     // The global (cross-spec) reservation is deduplicated within this spec
     // first: a letter-bearing id held by both a row and a record here is the
     // row/record collision above, already reported once by name, not a
     // second spec reusing the label. Comparing the raw combined list instead
     // would meet this spec's own id twice and report it as conflicting with
-    // itself.
-    const idsInSpec = new Map([...spec.rows, ...(spec.records ?? [])].map((item) => [visibleIdKey(item.id), item.id]));
+    // itself. Retired records join the same reservation, so a different Spec
+    // (or this one, later) cannot claim an id this Spec already retired.
+    const idsInSpec = new Map([...spec.rows, ...(spec.records ?? []), ...(spec.retiredRecords ?? [])].map((item) => [visibleIdKey(item.id), item.id]));
     for (const [key, id] of idsInSpec) {
       if (/^TK-\d+$/.test(id)) continue;
       if (globalTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${id} conflicts with ${globalTasks.get(key)}`, { specId: spec.id, taskId: id }));
@@ -1021,6 +1076,19 @@ function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals)
 // otherwise reversible by hand; a Spec move also rewrites content, which is
 // not. Moves no other Spec, and never touches `archive`, which ADR-000I
 // reserves for ADRs alone.
+//
+// S-00I TK-004 decision: a Spec whose own Task records are not yet
+// individually retired is NOT refused here. `git mv` already carries the
+// whole directory - `tasks/`, any Task still on its own active roster, and
+// any Task already under its own `tasks/retired/` - to the Spec's new
+// location in one move, and the reference rewrite below repairs every live
+// link either kind of Task record carries, exactly as it already did for
+// TK-003's own record-backed fixture. Retiring a Spec's Tasks individually
+// first (`moveTaskRecord`) is ordinary practice under WF-8E, never a
+// precondition this seam enforces: the alternative (refusing the Spec move
+// while any Task is unretired) would make `move-task` before `move-spec` a
+// second implicit rule this file must remember to check, for no reachability
+// this move does not already provide on its own.
 export function moveSpecDirectory(rootDir, specId, folder) {
   const root = path.resolve(rootDir);
   if (!SPEC_LIFECYCLE_FOLDERS.includes(folder)) {
@@ -1112,6 +1180,113 @@ export function moveSpecDirectory(rootDir, specId, folder) {
     folder,
     from: path.relative(root, oldSpecDir).split(path.sep).join('/'),
     to: path.relative(root, newSpecDir).split(path.sep).join('/'),
+    usesGit: true,
+    referencesRewritten: totals.referencesRewritten,
+    historicalReferencesLeft: totals.historicalReferencesLeft
+  };
+}
+
+// S-00I TK-004: moves one done Task's own directory (`<specDir>/tasks/<id>`)
+// into a `TASK_LIFECYCLE_FOLDERS` folder beneath the same `tasks/`, with
+// `git mv` semantics, reusing exactly the reference-repair machinery
+// `moveSpecDirectory` above uses (`collectSpecReferenceFiles`,
+// `rewriteReferenceFile`, the same old-path -> new-path `locations` map
+// discipline, including every unmoved target mapped to itself so the moved
+// record's own outgoing links are recomputed for its new depth). It never
+// moves the owning Spec, and it never carries a second Task with it - the
+// unit that moves is the one Task directory. Refuses:
+//   - a folder outside the closed set (`archive` is ADR-only, ADR-000I);
+//   - an unknown Spec or Task id, and a Task already retired;
+//   - a Task that is not `done` (only reconciled work retires, exactly as
+//     `moveSpecDirectory` refuses an incomplete Spec);
+//   - a dirty working tree (the moved candidate must be reviewable as the
+//     rename it produces) or a room with no Git working tree at all (an
+//     unrecoverable move, exactly as `moveSpecDirectory` refuses one);
+//   - a Task whose Receipt carries no run and whose Proof field is empty -
+//     "nothing to carry" into its own historical record, the Task analogue
+//     of refusing an incomplete Spec.
+export function moveTaskRecord(rootDir, specId, taskId, folder) {
+  const root = path.resolve(rootDir);
+  if (!TASK_LIFECYCLE_FOLDERS.includes(folder)) {
+    throw new Error(`move-task refuses folder "${folder}"; the closed set is ${TASK_LIFECYCLE_FOLDERS.join(', ')}`);
+  }
+  const spec = findSpec(root, specId);
+  const activeTask = (spec.records ?? []).find((task) => task.id === taskId);
+  if (!activeTask) {
+    const alreadyRetired = (spec.retiredRecords ?? []).some((task) => task.id === taskId);
+    throw new Error(alreadyRetired ? `${specId}/${taskId} is already retired` : `Unknown Task ID: ${specId}/${taskId}`);
+  }
+  if (taskStatus(activeTask) !== 'done') {
+    throw new Error(`${specId}/${taskId} is ${taskStatus(activeTask)}, not done; only a done Task may move to ${folder}`);
+  }
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) {
+    throw new Error('move-task requires a Git working tree so the move is recoverable; none was found');
+  }
+  if (gitStatus.stdout.trim() !== '') {
+    throw new Error('move-task refuses a dirty working tree; commit or stash first so the candidate shows only this move');
+  }
+  // "Nothing to carry": a Receipt with no run and an empty Proof field mean
+  // this Task's own record holds no evidence a later reader could rely on -
+  // the retirement move exists to relocate reconciled work, not to hide an
+  // unproven one behind a historical-looking path.
+  let receiptRows;
+  try {
+    receiptRows = readReceiptFromFile(activeTask.filePath);
+  } catch (error) {
+    throw new Error(`${specId}/${taskId} Receipt could not be read: ${error.message}`);
+  }
+  if (!activeTask.proof || receiptRows.length === 0) {
+    throw new Error(`${specId}/${taskId} has no Receipt run and no Proof to carry; move-task refuses a Task with nothing to carry`);
+  }
+  const specDir = path.dirname(spec.filePath);
+  const tasksDir = path.join(specDir, 'tasks');
+  const oldTaskDir = path.dirname(activeTask.filePath);
+  if (path.dirname(oldTaskDir) !== tasksDir) {
+    throw new Error(`${specId}/${taskId} is not at the top level of tasks/; move-task only moves an active-roster Task`);
+  }
+  const destinationRoot = path.join(tasksDir, folder);
+  const newTaskDir = path.join(destinationRoot, path.basename(oldTaskDir));
+  if (fs.existsSync(newTaskDir)) throw new Error(`move-task destination already exists: ${path.relative(root, newTaskDir)}`);
+
+  // Snapshot every file the move carries before touching the filesystem;
+  // `oldTaskDir` will not exist once the directory itself has moved.
+  const movingFiles = collectDirectoryFiles(oldTaskDir);
+
+  fs.mkdirSync(destinationRoot, { recursive: true });
+  const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldTaskDir), path.relative(root, newTaskDir)], { encoding: 'utf8' });
+  if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}/${taskId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
+
+  const locations = new Map();
+  for (const file of collectSpecReferenceFiles(root, newTaskDir)) {
+    locations.set(file, file);
+  }
+  for (const file of movingFiles) {
+    locations.set(file, path.join(newTaskDir, path.relative(oldTaskDir, file)));
+  }
+
+  const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
+  for (const oldFile of movingFiles) {
+    const newFile = locations.get(oldFile);
+    if (!newFile.endsWith('.md')) continue;
+    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+  }
+  for (const file of collectSpecReferenceFiles(root, newTaskDir)) {
+    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
+  }
+
+  // Corrective review finding 3 from TK-003, reused unchanged here: `git mv`
+  // already stages the rename; stage the content rewrites above too, so the
+  // candidate shows one reviewable move rather than a mix of staged and
+  // unstaged changes.
+  spawnSync('git', ['-C', root, 'add', '-A']);
+
+  return {
+    specId,
+    taskId,
+    folder,
+    from: path.relative(root, oldTaskDir).split(path.sep).join('/'),
+    to: path.relative(root, newTaskDir).split(path.sep).join('/'),
     usesGit: true,
     referencesRewritten: totals.referencesRewritten,
     historicalReferencesLeft: totals.historicalReferencesLeft
@@ -1210,7 +1385,11 @@ function publicSpec(spec) {
     latestEvent: spec.latestEvent,
     nextGate: spec.nextGate,
     path: spec.relativePath,
-    tasks: slicesOf(spec).map(publicSlice)
+    tasks: slicesOf(spec).map(publicSlice),
+    // S-00I TK-004: retired Tasks under a separate key, never in `tasks` -
+    // `[]` for a Spec that has never retired one, exactly as `loadSpecs`
+    // never returns a retired Spec into the active roster's array shape.
+    retiredTasks: (spec.retiredRecords ?? []).map(publicRetiredTask)
   };
 }
 
@@ -1414,12 +1593,13 @@ async function main() {
   else if (command === 'report') result = assembleSpecReport(root, id, { candidate: options.candidate });
   else if (command === 'verdict') result = recordReviewVerdict(root, id, { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer });
   else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
+  else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to);
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|move-spec|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|move-spec|move-task|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);

@@ -67,6 +67,13 @@ const registry = Object.freeze({
   // so this can only ever be raised by doctor's explicit historical-route
   // read, never by `next` or `claim`.
   'retired-not-complete': entry('attention', 'specs', 'none', "a retired Spec's Status is not complete"),
+  // S-00I TK-004: the Task analogue of `retired-not-complete` above. A Task
+  // record inside `tasks/retired/` is out of the active roster
+  // (`listTaskRecords` never returns it, mirroring `loadSpecs`), but its own
+  // Status frontmatter can still disagree that it is `done` - visible and
+  // never blocking, exactly like the Spec case, and raised only by doctor's
+  // explicit historical-route read, never by `next` or `claim`.
+  'retired-task-not-done': entry('attention', 'specs', 'none', "a retired Task's Status is not done"),
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   // S-00I TK-002: lifecycle now comes from folder location (top level, or
   // ADR_LIFECYCLE_FOLDERS `proposed`/`archive`), not frontmatter `status`. A
