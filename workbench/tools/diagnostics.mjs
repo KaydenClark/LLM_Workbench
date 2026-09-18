@@ -35,7 +35,13 @@ const registry = Object.freeze({
   'duplicate-id': entry('error', 'specs', 'selection', 'two packets claim one spec ID'),
   'invalid-state': entry('error', 'specs', 'selection', 'a spec or task status is outside the lifecycle vocabulary'),
   'contradictory-state': entry('error', 'specs', 'selection', 'a completed spec still has unfinished tasks'),
-  'unstable-path': entry('error', 'specs', 'selection', 'a spec is not at its stable declared path'),
+  // S-00I TK-004 corrective: the stable-path rule this description named is
+  // retired (AGENTS.md Edit Scope; ADR-000I, WF-8F) - lifecycle is folder
+  // location now, and a Spec or Task moves through `move-spec`/`move-task`,
+  // which keep links correct instead of never moving. This finding still
+  // covers a narrower, unchanged fact: only the top level is the active
+  // roster, so an active Spec directory must start `<lane>/<id>-` there.
+  'unstable-path': entry('error', 'specs', 'selection', 'an active Spec directory is not at `<lane>/<id>-...` on the top level'),
   'missing-evidence': entry('error', 'specs', 'selection', 'a done task has no proof'),
   'render-drift': entry('error', 'specs', 'selection', 'a generated projection region is stale; run render'),
   'broken-render-target': entry('error', 'specs', 'selection', 'a projection control or its generated region is missing'),
@@ -67,6 +73,13 @@ const registry = Object.freeze({
   // so this can only ever be raised by doctor's explicit historical-route
   // read, never by `next` or `claim`.
   'retired-not-complete': entry('attention', 'specs', 'none', "a retired Spec's Status is not complete"),
+  // S-00I TK-004: the Task analogue of `retired-not-complete` above. A Task
+  // record inside `tasks/retired/` is out of the active roster
+  // (`listTaskRecords` never returns it, mirroring `loadSpecs`), but its own
+  // Status frontmatter can still disagree that it is `done` - visible and
+  // never blocking, exactly like the Spec case, and raised only by doctor's
+  // explicit historical-route read, never by `next` or `claim`.
+  'retired-task-not-done': entry('attention', 'specs', 'none', "a retired Task's Status is not done"),
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   // S-00I TK-002: lifecycle now comes from folder location (top level, or
   // ADR_LIFECYCLE_FOLDERS `proposed`/`archive`), not frontmatter `status`. A

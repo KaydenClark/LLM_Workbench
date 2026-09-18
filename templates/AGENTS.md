@@ -110,8 +110,12 @@ Stop and surface committed secrets, credentials, or tokens.
 - Forbidden: `[FORBIDDEN_PATHS]`
 - Review required: `[REQUIRES_REVIEW_FOR]`
 
-Keep `templates/` generic when this project ships templates. Spec paths are
-stable; never move them between status folders.
+Keep `templates/` generic when this project ships templates.
+
+Lifecycle is folder location: a record moves between lifecycle folders only
+through a move operation that rewrites every live reference and counts
+historical ones; reachability comes from those maintained links, not from a
+path that never moves.
 
 Any update to the canonical Workbench itself has a separate self-drift
 boundary from a target-project drift check. Inspect the Workbench's own

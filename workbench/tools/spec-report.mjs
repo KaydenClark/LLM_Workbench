@@ -34,7 +34,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { appendEvidence, atomicWrite, findSpec, loadSpecs, slicesOf } from './spec-workbench.mjs';
-import { formatTaskRecord, listTaskRecords, parseTaskRecord } from './task-record.mjs';
+import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
 import { assertSafeWritePath } from './workbench-paths.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
@@ -603,7 +603,38 @@ function mergedTasks(spec) {
   const historyRows = spec.rows
     .filter((row) => !liveIds.has(visibleIdKey(row.id)))
     .map((row) => historyTaskEntry(row));
-  return [...liveTasks, ...historyRows].sort((a, b) => compareVisibleIds(a.id, b.id));
+  // S-00I TK-004: a retired Task record is out of `slicesOf` entirely (its
+  // roster reads only the top level of `tasks/`), but a reviewer of an
+  // assembled Spec still needs to see every Task's proof, retired or not -
+  // this is the one seam that shows it, as history alongside a retained
+  // table row's.
+  const retiredTasks = (spec.retiredRecords ?? [])
+    .filter((task) => !liveIds.has(visibleIdKey(task.id)))
+    .map((task) => retiredTaskEntry(task));
+  return [...liveTasks, ...historyRows, ...retiredTasks].sort((a, b) => compareVisibleIds(a.id, b.id));
+}
+
+// A retired Task record, shown as history exactly like `historyTaskEntry`
+// below but sourced from the record itself (a retired Task carries no
+// table-row cells to read instead), enriched with its own Receipt when it
+// has one - the same enrichment `taskEntry` gives a live record-backed Task,
+// so a reviewer sees a retired Task's run history too, not only its Proof.
+function retiredTaskEntry(task) {
+  const entry = {
+    id: task.id,
+    slice: task.slice,
+    status: taskStatus(task),
+    blockers: task.blockers.length > 0 ? task.blockers.join(', ') : 'none',
+    proof: task.proof ?? null,
+    source: 'retired-record',
+    history: true,
+    plannedVerification: task.plannedVerification ?? null
+  };
+  if (task.filePath && fs.existsSync(task.filePath)) {
+    const rows = readReceiptFromFile(task.filePath);
+    entry.receipt = { runCount: rows.length, latestRow: rows.length > 0 ? rows[rows.length - 1] : null };
+  }
+  return entry;
 }
 
 // One Task entry, enriched from whichever source `slicesOf` resolved for it.
