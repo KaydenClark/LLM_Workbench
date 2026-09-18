@@ -1423,6 +1423,218 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   };
 }
 
+// S-00I TK-005: reconciles a completed Spec's surviving current claims into
+// their named durable owner (a Wiki capability record - `wiki.mjs`'s own
+// `copied-task-state` and property validation is the enforcement, never
+// re-implemented here) and then retires the whole Spec directory (its Tasks
+// travel with it, per the TK-004 decision `moveSpecDirectory` already
+// implements) with `moveSpecDirectory`, cleans up the contained branches its
+// Tasks' Receipt rows name, and appends one evidence row naming the move.
+//
+// Every precondition below is refused by name before any write:
+//   - the Spec must exist on the active roster (never already retired, never
+//     unknown, never a duplicate id - the same three-way check
+//     `moveSpecDirectory` makes, run here first so a Wiki-note problem is
+//     never reported before a more basic identity problem);
+//   - `spec.status` must be `complete`;
+//   - `assembleSpecReport`'s own `gaps` (S-00J TK-001) must be empty - this
+//     is the one seam that already names an unfinished Task record (active,
+//     retained-row or already-retired alike), an unchecked acceptance line,
+//     and a missing or placeholder Completion Result, so this function does
+//     not re-derive any of those three itself and cannot drift from what
+//     `report`/`gate` already call complete;
+//   - the named Wiki note must exist under the Wiki lane, declare `type`
+//     design-concept or guidebook and `knowledge_role` canonical or curated,
+//     name this Spec's own post-retirement historical route in its
+//     `source_paths`, and pass `validateWiki` with no `copied-task-state` or
+//     `invalid-note` finding against it - "transform, never copy" is
+//     `wiki.mjs`'s own enforcement, checked here rather than duplicated.
+//
+// Owner approval: at this room's pre anchor, `spec-report.mjs` exports no
+// `recordOwnerApproval` (grep confirms it; the sibling S-00J TK-005 lane
+// owns adding it). Per the lane handoff's named fallback for exactly this
+// case, retirement here gates on `complete` only, and the receipt records
+// which case applied rather than silently assuming the gate exists.
+//
+// Order of operations, and why it is not the reverse of the evidence row's
+// own wording ("before the move so the row travels with it"): the branch
+// names a Task's Receipt carries are read from the Spec's *pre-move* records
+// (their files stop existing at the old path once the directory moves), so
+// they must be gathered first regardless. The evidence row's own two derived
+// cells - the real count of references the move rewrote, and which branches
+// actually proved contained - can only be known once `moveSpecDirectory` and
+// the branch cleanup have actually run. Nothing is committed by this
+// function (matching `moveSpecDirectory`'s own contract): the move, the
+// evidence-row write and `render`'s own output are all staged together by
+// the final `git add -A`, so from the git history the row still "travels
+// with" the move - both land in the one commit the caller makes from this
+// function's staged result, exactly as a supported move already left for its
+// caller to commit.
+export function retireSpec(rootDir, specId, options = {}) {
+  const root = path.resolve(rootDir);
+  const wikiNoteGiven = requireValue(options.wikiNote, 'retire-spec requires --wiki <note path>');
+
+  const activeMatches = loadSpecs(root).filter((item) => item.id === specId);
+  if (activeMatches.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
+  if (activeMatches.length === 0) {
+    const alreadyRetired = loadRetiredSpecs(root).some((item) => item.id === specId);
+    throw new Error(alreadyRetired ? `${specId} is already retired` : `Unknown spec ID: ${specId}`);
+  }
+  const spec = activeMatches[0];
+  if (spec.status !== 'complete') {
+    throw new Error(`${specId} is ${spec.status}, not complete; only a completed Spec may be retired`);
+  }
+  const report = assembleSpecReport(root, specId);
+  if (report.gaps.length > 0) {
+    throw new Error(`${specId} is not ready to retire: ${report.gaps.join('; ')}`);
+  }
+
+  const folder = SPEC_LIFECYCLE_FOLDERS[0];
+  const { specsPrefix } = resolveSpecsRoot(root);
+  const specBasename = path.basename(path.dirname(spec.filePath));
+  const historicalRoute = `${specsPrefix}/${folder}/${specBasename}/SPEC.md`;
+
+  const wikiRoot = lanePath(root, 'wiki');
+  const wikiNoteAbsolute = path.resolve(root, wikiNoteGiven);
+  if (!wikiNoteAbsolute.startsWith(wikiRoot + path.sep)) {
+    throw new Error(`--wiki ${wikiNoteGiven} must name a note under the Wiki lane; a Spec cannot retire without a durable owner there`);
+  }
+  const wikiNoteRelative = path.relative(root, wikiNoteAbsolute).split(path.sep).join('/');
+  if (!fs.existsSync(wikiNoteAbsolute) || !fs.statSync(wikiNoteAbsolute).isFile()) {
+    throw new Error(`retire-spec found no Wiki note at ${wikiNoteRelative}; ${specId}'s surviving claims name no durable owner`);
+  }
+  const wikiNoteContent = fs.readFileSync(wikiNoteAbsolute, 'utf8');
+  const wikiFrontmatter = parseFrontmatter(wikiNoteContent).data;
+  if (!wikiFrontmatter) {
+    throw new Error(`${wikiNoteRelative} has no frontmatter; it cannot be ${specId}'s durable owner`);
+  }
+  if (!['design-concept', 'guidebook'].includes(wikiFrontmatter.type)) {
+    throw new Error(`${wikiNoteRelative} must declare type design-concept or guidebook to retire ${specId}, found ${wikiFrontmatter.type ?? 'none'}`);
+  }
+  if (!['canonical', 'curated'].includes(wikiFrontmatter.knowledge_role)) {
+    throw new Error(`${wikiNoteRelative} must declare knowledge_role canonical or curated to retire ${specId}, found ${wikiFrontmatter.knowledge_role ?? 'none'}`);
+  }
+  const sourcePaths = Array.isArray(wikiFrontmatter.source_paths) ? wikiFrontmatter.source_paths : [];
+  if (!sourcePaths.includes(historicalRoute)) {
+    throw new Error(`${wikiNoteRelative} source_paths must name ${specId}'s historical route ${historicalRoute}; found ${sourcePaths.join(', ') || 'none'}`);
+  }
+  const wikiFindings = validateWiki(root, { contentOverrides: new Map([[wikiNoteAbsolute, wikiNoteContent]]) })
+    .filter((item) => item.note === wikiNoteRelative && ['copied-task-state', 'invalid-note', 'secret-like-content'].includes(item.code));
+  if (wikiFindings.length > 0) {
+    throw new Error(`${wikiNoteRelative} fails Wiki validation, so it cannot be ${specId}'s durable owner: ${wikiFindings.map((item) => `${item.code}: ${item.message}`).join('; ')}`);
+  }
+
+  // S-00J TK-005 has not landed at this room's pre anchor (no
+  // `recordOwnerApproval` export exists in spec-report.mjs); the handoff's
+  // named fallback for that case is to gate on `complete` only and record
+  // which case applied, rather than silently inventing an approval check.
+  const ownerApproval = {
+    required: false,
+    note: 'spec-report.mjs exports no recordOwnerApproval at this pre anchor (S-00J TK-005 has not landed here); retirement gates on complete only'
+  };
+
+  // Branch names must be read from the Spec's still-active records: their
+  // files stop existing at this path the moment the directory moves.
+  const branchNames = [...new Set((spec.records ?? []).flatMap((task) => {
+    let rows;
+    try { rows = readReceiptFromFile(task.filePath); } catch { rows = []; }
+    return rows.map((row) => row.branch).filter((branch) => branch && branch !== 'none');
+  }))];
+
+  const moveResult = moveSpecDirectory(root, specId, folder);
+
+  const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
+  const branches = cleanupContainedBranches(root, branchNames, integrationBranch);
+
+  const movedSpec = findSpec(root, specId);
+  const referencesRewrittenCount = Object.values(moveResult.referencesRewritten).reduce((a, b) => a + b, 0);
+  const branchesCleanedCell = branches.cleaned.length > 0 ? branches.cleaned.join(', ') : 'none';
+  const date = today();
+  const row = `| ${escapeCell(date)} | spec | Spec retired to ${escapeCell(`${moveResult.to}/SPEC.md`)} | ${escapeCell(wikiNoteRelative)} | ${escapeCell(branchesCleanedCell)} | ${escapeCell(String(referencesRewrittenCount))} |`;
+  const updatedContent = appendEvidence(movedSpec.content, row);
+  atomicWrite(movedSpec.filePath, updatedContent);
+
+  render(root);
+  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+  spawnSync('git', ['-C', root, 'add', '-A']);
+
+  return {
+    specId,
+    route: `${moveResult.to}/SPEC.md`,
+    wikiNote: wikiNoteRelative,
+    referencesRewritten: moveResult.referencesRewritten,
+    referencesRewrittenCount,
+    historicalReferencesLeft: moveResult.historicalReferencesLeft,
+    branches,
+    ownerApproval,
+    evidenceRow: row
+  };
+}
+
+// Best-effort branch cleanup for the Tasks a retiring Spec is carrying:
+// proves containment in the declared integration branch before deleting a
+// local branch (`git branch -d`, never `-D`), removes a registered worktree
+// for that branch first (a branch cannot be deleted while a worktree still
+// holds it checked out), and only ever lists a remote branch for the
+// closeout recipe rather than deleting it. A branch with neither a local nor
+// a remote ref left is reported as already cleaned up (the ordinary case
+// once `AGENTS.md` Branch Completion has already run for it) rather than
+// treated as a problem. Never throws: a branch this cannot safely delete is
+// named in `skipped` with its reason, and the retirement itself is not
+// blocked by branch cleanup, since Git branch hygiene is not what
+// "surviving current claims are transformed into durable owners" gates on.
+function cleanupContainedBranches(root, branches, integrationBranch) {
+  const cleaned = [];
+  const remote = [];
+  const worktreesRemoved = [];
+  const skipped = [];
+  for (const branch of branches) {
+    const hasLocal = spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/heads/${branch}`]).status === 0;
+    const hasRemote = spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/remotes/origin/${branch}`]).status === 0;
+    if (!hasLocal && !hasRemote) {
+      skipped.push({ branch, reason: 'no local or remote ref found; already cleaned up' });
+      continue;
+    }
+    if (hasLocal) {
+      const contained = integrationBranch !== null
+        && spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', branch, integrationBranch]).status === 0;
+      if (!contained) {
+        skipped.push({ branch, reason: integrationBranch ? `not proven contained in ${integrationBranch}` : 'no declared integration branch to prove containment against' });
+      } else {
+        const worktreeListing = spawnSync('git', ['-C', root, 'worktree', 'list', '--porcelain'], { encoding: 'utf8' });
+        const entry = parseWorktreeEntries(worktreeListing.stdout ?? '').find((item) => item.branch === `refs/heads/${branch}`);
+        if (entry) {
+          const removal = spawnSync('git', ['-C', root, 'worktree', 'remove', entry.worktree]);
+          if (removal.status === 0) worktreesRemoved.push(entry.worktree);
+          else skipped.push({ branch, reason: `worktree ${entry.worktree} could not be removed: ${(removal.stderr || removal.stdout || '').trim()}` });
+        }
+        const deletion = spawnSync('git', ['-C', root, 'branch', '-d', branch], { encoding: 'utf8' });
+        if (deletion.status === 0) cleaned.push(branch);
+        else skipped.push({ branch, reason: (deletion.stderr || deletion.stdout || 'git branch -d failed').trim() });
+      }
+    }
+    if (hasRemote) remote.push(branch);
+  }
+  return { cleaned, remote, worktreesRemoved, skipped };
+}
+
+// `git worktree list --porcelain` as an array of `{ worktree, branch }`
+// entries (`branch` absent for a detached worktree), parsed rather than
+// shelled through `grep`/`awk` so a path containing a space is not split.
+function parseWorktreeEntries(porcelain) {
+  const entries = [];
+  let current = null;
+  for (const line of porcelain.split('\n')) {
+    if (line.startsWith('worktree ')) {
+      current = { worktree: line.slice('worktree '.length) };
+      entries.push(current);
+    } else if (line.startsWith('branch ') && current) {
+      current.branch = line.slice('branch '.length);
+    }
+  }
+  return entries;
+}
+
 // The `canonicalized_in` targets a frontmatter block declares, normalized to
 // an array exactly as `validateAdrs` normalizes them (a bare scalar becomes a
 // one-element array; an absent key becomes `[]`), so this scanner and that
@@ -1728,12 +1940,13 @@ async function main() {
   }
   else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
   else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to);
+  else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|move-spec|move-task|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|move-spec|move-task|retire-spec|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
