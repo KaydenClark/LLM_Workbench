@@ -279,6 +279,32 @@ assertIncludesAll(codeReview, [
   'nearest `AGENTS.md`', 'assigned stable `SPEC.md`', 'Findings first', 'review-only', 'separately authorized'
 ], 'code-review');
 
+// S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
+// to a content digest - obtained with `report S-### --candidate <sha>` and
+// recorded with `verdict` - while a Task PR under S-00O exemption 2 remains
+// an immutable-candidate diff reviewed against its Spec and reported by
+// `gate --task`, without weakening ADR-0037's immutable-candidate
+// requirement or the exact BASE_SHA/HEAD_SHA comparison.
+for (const [name, relativePath] of [
+  ['code-review', 'skills/code-review/SKILL.md'],
+  ['reviewer', 'skills/reviewer/SKILL.md'],
+  ['carry', 'skills/carry/SKILL.md'],
+  ['implement', 'skills/implement/SKILL.md']
+]) {
+  const content = read(relativePath);
+  assertIncludesAll(content, [
+    'assembled Spec',
+    'content digest',
+    '`report S-### --candidate <sha>`',
+    '`verdict`',
+    'exemption 2',
+    'immutable candidate',
+    '`gate --task`',
+    '`BASE_SHA`',
+    '`HEAD_SHA`'
+  ], `${name} reviewed-unit language`);
+}
+
 const updateHarness = read('skills/update-harness/SKILL.md');
 assert.match(updateHarness, /checked-out LLM Workbench repository/,
   'update-harness must identify the product-local source');
