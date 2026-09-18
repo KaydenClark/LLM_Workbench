@@ -344,6 +344,39 @@ test('the Markdown headline counts reconcile with the itemized list and name tri
   assert.equal(Number(/, unchanged (\d+)/.exec(headline)[1]) + Number(/: filled (\d+)/.exec(headline)[1]) + listed('dropped') + trivialDropped + listed('changed'), read(templates, 'AGENTS.md').replace(/\n$/, '').split('\n').length, 'the headline still accounts for every template line');
 });
 
+// S-00I TK-004: the stable-path rule ("A spec path is stable once declared
+// in `workbench/manifest.json`. Never move it between active/done/archive
+// folders.") is retired in the same change that gives Task records the
+// folder lifecycle Spec directories already have (TK-003) - ADR-000I and the
+// locked WF-8F answer reversed the premise it served: reachability used to
+// come from a declared path never moving, and now comes from `move-spec` and
+// `move-task` keeping every live reference correct instead. Red first: the
+// old sentence is still present and the new one absent at the pre anchor.
+test('the retired AGENTS.md stable-path sentence is replaced by the folder-lifecycle sentence, mirrored generically in templates/AGENTS.md', () => {
+  const oldSentence = 'A spec path is stable once declared in `workbench/manifest.json`. Never move\n  it between active/done/archive folders.';
+  const agents = fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8');
+  assert.doesNotMatch(agents, /A spec path is stable once declared in `workbench\/manifest\.json`\. Never move/,
+    'AGENTS.md no longer carries the retired stable-path sentence');
+  assert.doesNotMatch(agents, /it between active\/done\/archive folders\./, oldSentence);
+  assert.match(agents, /Lifecycle is folder location/, 'AGENTS.md states the folder-lifecycle replacement');
+  assert.match(agents, /ADR-000I/, 'AGENTS.md cites the decision record');
+  assert.match(agents, /WF-8F/, 'AGENTS.md cites the locked answer that reversed the old premise');
+  assert.match(agents, /`move-spec`/, 'AGENTS.md names move-spec as the only way a Spec moves between lifecycle folders');
+  assert.match(agents, /`move-task`/, 'AGENTS.md names move-task as the only way a Task moves between lifecycle folders');
+  assert.match(agents, /reachability/, 'AGENTS.md states why the old rule is retired: reachability now comes from maintained links');
+
+  const templatesAgents = fs.readFileSync(path.join(productTemplates, 'AGENTS.md'), 'utf8');
+  assert.doesNotMatch(templatesAgents, /Spec paths are\s*\n?\s*stable; never move them between status folders\./,
+    'templates/AGENTS.md no longer carries the retired generic stable-path sentence');
+  assert.match(templatesAgents, /Lifecycle is folder location/, 'templates/AGENTS.md carries the same folder-lifecycle rule generically');
+  assert.match(templatesAgents, /reachability/, 'templates/AGENTS.md states the same reachability reason generically');
+  // The generic mirror is a rule about the project's own record lifecycle,
+  // not about this Workbench's specific verb names or ADR-000I citation -
+  // `templates/` ships to every project, most of which never adopt this
+  // Workbench's own spec-workbench.mjs verbs by those names.
+  assert.doesNotMatch(templatesAgents, /ADR-000I/, 'templates/AGENTS.md stays generic: no citation to this room\'s own ADR');
+});
+
 test('an option whose value is another flag is an invocation error, and a closed stdout pipe prints no stack trace', () => {
   const templates = fixtureTemplates();
   const project = fixtureRoom(templates);

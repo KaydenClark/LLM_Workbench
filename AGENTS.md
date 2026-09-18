@@ -116,8 +116,11 @@ Dogfood boundary:
 - `templates/` stays generic, copy-ready, and `[BRACKETED]`.
 - Root controls stay filled, current, and free of template placeholders.
 - Harness design changes normally update both; explain any exemption.
-- A spec path is stable once declared in `workbench/manifest.json`. Never move
-  it between active/done/archive folders.
+- Lifecycle is folder location, per ADR-000I and the locked WF-8F answer. A
+  Spec or Task record moves only through `move-spec` or `move-task`, which
+  rewrite every live reference and count historical ones. The retired
+  stable-path rule kept a record reachable by never moving its declared path;
+  reachability now comes from those moves keeping links correct instead.
 
 ### Workbench update drift boundary
 

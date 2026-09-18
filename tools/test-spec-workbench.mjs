@@ -8,6 +8,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import {
   TASK_STATUSES as SLICE_STATUSES,
   SPEC_LIFECYCLE_FOLDERS,
+  TASK_LIFECYCLE_FOLDERS,
   claimWork,
   convertSpecSlices,
   showSpec,
@@ -17,16 +18,18 @@ import {
   loadRetiredSpecs,
   loadSpecs,
   moveSpecDirectory,
+  moveTaskRecord,
   nextWork,
   parseCliArgs,
   receiptTask,
   render,
-  scanReferences
+  scanReferences,
+  slicesOf
 } from '../workbench/tools/spec-workbench.mjs';
 import { assembleSpecReport, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
-import { TASK_STATUSES, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
+import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
 
@@ -2990,5 +2993,546 @@ function completeFixtureSpec(id) {
     console.log('ok - scanReferences finds a dead path in REGISTER.md\'s Canonicalized-in column, not only in Markdown links');
   } finally {
     fs.rmSync(staleRegisterRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00I TK-004: Task records get the same folder lifecycle a Spec directory
+// already has (TK-003) - a done Task's own directory moves between
+// `TASK_LIFECYCLE_FOLDERS`, the move repairs every live reference the same
+// way TK-003's `moveSpecDirectory` does, and the active roster
+// (`listTaskRecords`, `slicesOf`, `next`, `claim`, `close`, `render`, the hot
+// board) never sees a retired Task again, while `show` and the historical
+// route still can.
+// ============================================================================
+function doneTaskRecordFixture({ id, specId, slice, destination, proof }) {
+  const lines = [
+    `# ${id} - ${slice}`,
+    '',
+    `**Task ID:** ${id}`,
+    `**Spec ID:** ${specId}`,
+    `**Slice:** ${slice}`,
+    '**Status:** done',
+    '**Blockers:** none',
+    `**Destination:** ${destination}`
+  ];
+  if (proof !== undefined) lines.push(`**Proof:** ${proof}`);
+  lines.push('');
+  return lines.join('\n');
+}
+
+function withReceiptRun(content, overrides = {}) {
+  return appendReceiptRowToContent(content, {
+    branch: 'claude/fixture', headSha: 'ab'.repeat(20), upstream: 'none', dirty: 0,
+    testsRun: 'fixture run', docsTouched: 'none', remainingGap: 'none',
+    ...overrides
+  });
+}
+
+// A record-backed Spec with an empty slice table: `spec-packet.mjs` allows
+// zero rows once `tasks/` exists, so no placeholder row is needed and no
+// row/record id can ever collide with a Task record fixture below.
+function emptyTableRecordBackedSpec(id) {
+  return [
+    `# ${id} - Task Lifecycle Fixture`,
+    '',
+    `**Spec ID:** ${id}`,
+    '**Status:** active',
+    '**Priority:** 0',
+    '**Owner:** agent',
+    '**Updated:** 2026-09-18',
+    '**Catalog description:** Proves the Task folder lifecycle.',
+    '**Blockers:** none',
+    '**Latest event:** Spec activated.',
+    '**Next gate:** Complete the open Task.',
+    '',
+    '## Vertical Implementation Slices',
+    '',
+    '| Task | Slice | Status | Blockers | Proof |',
+    '|---|---|---|---|---|',
+    '',
+    '## Acceptance Criteria',
+    '',
+    '- [ ] Expected behavior is verified.',
+    '',
+    '## Append-Only Evidence And Execution Log',
+    '',
+    '| Date | Task | Event | Verification | Docs | Remaining gap |',
+    '|---|---|---|---|---|---|',
+    '',
+    '## Completion Result',
+    '',
+    'Pending.',
+    '',
+    '## Supersession',
+    '',
+    '- Supersedes: none',
+    '- Superseded by: none',
+    ''
+  ].join('\n');
+}
+
+function completeEmptyTableRecordBackedSpec(id) {
+  return emptyTableRecordBackedSpec(id)
+    .replace('**Status:** active', '**Status:** complete')
+    .replace('- [ ] Expected behavior is verified.', '- [x] Expected behavior is verified.')
+    .replace('Pending.', 'Landed.');
+}
+
+// ----------------------------------------------------------------------
+// The pre-anchor gap: before this Task, `listTaskRecords` had no notion of
+// a lifecycle folder at all, so a Task directory hand-moved into
+// `tasks/retired/<id>/` was read as an ordinary Task directory one level
+// beneath `tasks/` - `retired` itself, with no `TASK.md` directly inside it
+// - and `listTaskRecords` threw rather than silently dropping it, breaking
+// `loadSpecs`, `slicesOf`, `show` and the render/doctor path for the whole
+// Spec. Confirmed failing (thrown, not merely assertion-failed) in a
+// throwaway detached worktree at the pre anchor
+// dc667aef9b6150dc05e3af3348a0620049712764.
+// ----------------------------------------------------------------------
+{
+  const handMovedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-hand-move-'));
+  try {
+    initLifecycleFixture(handMovedRoot);
+    fs.writeFileSync(path.join(handMovedRoot, 'AGENTS.md'),
+      '# Agents\n\nSee [TK-001](workbench/specs/S-520-hand-move-fixture/tasks/TK-001/TASK.md) for the fixture rule.\n');
+    writeAt(handMovedRoot, 'workbench/specs/S-520-hand-move-fixture/SPEC.md', emptyTableRecordBackedSpec('S-520'));
+    writeAt(handMovedRoot, 'workbench/specs/S-520-hand-move-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({
+        id: 'TK-001', specId: 'S-520', slice: 'First slice',
+        destination: 'spec-acceptance: S-520 Acceptance Criteria', proof: 'landed'
+      })));
+    writeAt(handMovedRoot, 'workbench/specs/S-520-hand-move-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-520', slice: 'Second slice', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-520 Acceptance Criteria'
+    }));
+
+    const specDir = path.join(handMovedRoot, 'workbench/specs/S-520-hand-move-fixture');
+    assert.deepEqual(listTaskRecords(specDir, handMovedRoot).map((t) => t.id), ['TK-001', 'TK-002'],
+      'both Tasks start on the active roster');
+
+    // The naive move a room without this seam would perform: a plain
+    // directory rename, no reference repair, no supported destination.
+    fs.mkdirSync(path.join(specDir, 'tasks', 'retired'), { recursive: true });
+    fs.renameSync(path.join(specDir, 'tasks', 'TK-001'), path.join(specDir, 'tasks', 'retired', 'TK-001'));
+
+    assert.deepEqual(listTaskRecords(specDir, handMovedRoot).map((t) => t.id), ['TK-002'],
+      'the hand-moved Task disappears from listTaskRecords, the active roster, with no thrown error');
+    assert.deepEqual(listRetiredTaskRecords(specDir, handMovedRoot).map((t) => t.id), ['TK-001'],
+      'the hand-moved Task is readable by the historical route, listRetiredTaskRecords, exactly as a seam-moved one would be');
+
+    const spec = loadSpecs(handMovedRoot).find((item) => item.id === 'S-520');
+    assert.deepEqual(slicesOf(spec).map((slice) => slice.id), ['TK-002'],
+      'slicesOf never resolves the retired Task; selection, claim, close and render never see it again');
+
+    const shown = showSpec(handMovedRoot, 'S-520');
+    assert.deepEqual(shown.tasks.map((task) => task.id), ['TK-002'], 'show never lists a retired Task under tasks');
+    assert.deepEqual(shown.retiredTasks.map((task) => task.id), ['TK-001'], 'show lists the retired Task under its own key');
+
+    assert.deepEqual(doctor(handMovedRoot).filter((item) => item.taskId === 'TK-001'), [],
+      'a hand-moved, done Task raises no finding at all');
+
+    render(handMovedRoot);
+    const board = fs.readFileSync(path.join(handMovedRoot, 'TASKBOARD.md'), 'utf8');
+    assert.doesNotMatch(board, /TK-001/, 'the hot board never names a retired Task');
+    assert.match(board, /TK-002/, 'the hot board still names the Spec\'s live Task');
+
+    // A hand move repairs nothing: only the supported seam (moveTaskRecord)
+    // rewrites a live reference. The AGENTS.md reference planted above still
+    // names TK-001's stale, pre-move path.
+    assert.match(fs.readFileSync(path.join(handMovedRoot, 'AGENTS.md'), 'utf8'),
+      /workbench\/specs\/S-520-hand-move-fixture\/tasks\/TK-001\/TASK\.md/,
+      'a reference to the hand-moved Task\'s old path is not repaired; only the supported move seam repairs references');
+
+    console.log('ok - a hand-moved Task directory disappears from listTaskRecords, slicesOf, show and the board with no finding, is reachable by listRetiredTaskRecords, and leaves an unrepaired live reference to its old path');
+  } finally {
+    fs.rmSync(handMovedRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// The real seam: `moveTaskRecord` moves one done Task's own directory into
+// `tasks/retired/`, rewrites every live Markdown reference (a root control,
+// the moved record's own outgoing links would be rewritten the same way if
+// it carried any), leaves a sibling's historical evidence-row reference
+// untouched, and refuses a folder outside the closed set, an unknown Spec or
+// Task, a Task that is not done, a Task with nothing to carry (no Receipt
+// run and no Proof), a dirty working tree, and a second move of an
+// already-retired Task.
+// ============================================================================
+{
+  const taskMoveRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-move-'));
+  try {
+    initLifecycleFixture(taskMoveRoot);
+    fs.writeFileSync(path.join(taskMoveRoot, 'AGENTS.md'),
+      '# Agents\n\nSee [TK-001](workbench/specs/S-521-task-move-fixture/tasks/TK-001/TASK.md) for the fixture rule.\n');
+    writeAt(taskMoveRoot, 'workbench/specs/S-521-task-move-fixture/SPEC.md', emptyTableRecordBackedSpec('S-521'));
+    writeAt(taskMoveRoot, 'workbench/specs/S-521-task-move-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({
+        id: 'TK-001', specId: 'S-521', slice: 'Retiring slice',
+        destination: 'spec-acceptance: S-521 Acceptance Criteria', proof: 'landed'
+      })));
+    // TK-002: not done - the refusal fixture.
+    writeAt(taskMoveRoot, 'workbench/specs/S-521-task-move-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-521', slice: 'Still open slice', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-521 Acceptance Criteria'
+    }));
+    // TK-003: done, but no Proof and no Receipt run - "nothing to carry".
+    writeAt(taskMoveRoot, 'workbench/specs/S-521-task-move-fixture/tasks/TK-003/TASK.md', taskRecordFixture({
+      id: 'TK-003', specId: 'S-521', slice: 'Nothing to carry slice', status: 'done', blockers: 'none',
+      destination: 'spec-acceptance: S-521 Acceptance Criteria'
+    }));
+
+    execFileSync('git', ['init', '--quiet', taskMoveRoot]);
+    execFileSync('git', ['-C', taskMoveRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', taskMoveRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', taskMoveRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskMoveRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    assert.deepEqual(TASK_LIFECYCLE_FOLDERS, ['retired'], "archive is ADR-only per ADR-000I; a Task's one lifecycle folder is retired");
+
+    // ---- Refusals, each checked on the still-clean committed tree --------
+    assert.throws(() => moveTaskRecord(taskMoveRoot, 'S-521', 'TK-001', 'archive'), /closed set/,
+      'refuses a folder outside TASK_LIFECYCLE_FOLDERS; archive is ADR-only');
+    assert.throws(() => moveTaskRecord(taskMoveRoot, 'S-999', 'TK-001', 'retired'), /Unknown spec ID: S-999/,
+      'refuses an unknown Spec ID');
+    assert.throws(() => moveTaskRecord(taskMoveRoot, 'S-521', 'TK-999', 'retired'), /Unknown Task ID: S-521\/TK-999/,
+      'refuses an unknown Task ID');
+    assert.throws(() => moveTaskRecord(taskMoveRoot, 'S-521', 'TK-002', 'retired'), /TK-002 is ready, not done/,
+      'refuses a Task that is not done');
+    assert.throws(() => moveTaskRecord(taskMoveRoot, 'S-521', 'TK-003', 'retired'), /nothing to carry/,
+      'refuses a done Task with no Receipt run and no Proof to carry');
+
+    fs.writeFileSync(path.join(taskMoveRoot, 'stray-untracked-file.txt'), 'dirty\n');
+    assert.throws(() => moveTaskRecord(taskMoveRoot, 'S-521', 'TK-001', 'retired'), /dirty working tree/,
+      'refuses a dirty working tree so the candidate shows only this move');
+    fs.rmSync(path.join(taskMoveRoot, 'stray-untracked-file.txt'));
+    assert.equal(execFileSync('git', ['-C', taskMoveRoot, 'status', '--porcelain'], { encoding: 'utf8' }).trim(), '',
+      'the tree is clean again before the real move runs');
+
+    // ---- The real move ------------------------------------------------
+    const result = moveTaskRecord(taskMoveRoot, 'S-521', 'TK-001', 'retired');
+    assert.equal(result.specId, 'S-521');
+    assert.equal(result.taskId, 'TK-001');
+    assert.equal(result.folder, 'retired');
+    assert.equal(result.from, 'workbench/specs/S-521-task-move-fixture/tasks/TK-001');
+    assert.equal(result.to, 'workbench/specs/S-521-task-move-fixture/tasks/retired/TK-001');
+    assert.equal(result.usesGit, true);
+
+    const newTaskPath = path.join(taskMoveRoot, 'workbench/specs/S-521-task-move-fixture/tasks/retired/TK-001/TASK.md');
+    assert.ok(fs.existsSync(newTaskPath), 'the Task directory moved to tasks/retired/');
+    assert.ok(!fs.existsSync(path.join(taskMoveRoot, 'workbench/specs/S-521-task-move-fixture/tasks/TK-001')), 'the old top-level Task directory is gone');
+
+    assert.match(fs.readFileSync(path.join(taskMoveRoot, 'AGENTS.md'), 'utf8'),
+      /\[TK-001\]\(workbench\/specs\/S-521-task-move-fixture\/tasks\/retired\/TK-001\/TASK\.md\)/,
+      'a root control reference is rewritten to the moved Task\'s real path');
+
+    assert.ok(Object.values(result.referencesRewritten).reduce((a, b) => a + b, 0) >= 1,
+      'the move reports the live references it rewrote, counted');
+
+    // `git mv` stages the rename; the content rewrite above must be staged
+    // too, not left as a mix - every porcelain line's worktree column blank.
+    const porcelain = execFileSync('git', ['-C', taskMoveRoot, 'status', '--porcelain'], { encoding: 'utf8' });
+    assert.ok(porcelain.trim().length > 0, 'the move actually changed something');
+    for (const line of porcelain.split('\n').filter(Boolean)) {
+      assert.equal(line[1], ' ', `line "${line}" must be fully staged, not a mix of staged and unstaged`);
+    }
+
+    const specDir = path.join(taskMoveRoot, 'workbench/specs/S-521-task-move-fixture');
+    assert.deepEqual(listTaskRecords(specDir, taskMoveRoot).map((t) => t.id), ['TK-002', 'TK-003'],
+      'the active roster no longer carries TK-001');
+    const retired = listRetiredTaskRecords(specDir, taskMoveRoot);
+    assert.deepEqual(retired.map((t) => t.id), ['TK-001']);
+    assert.equal(taskStatus(retired[0]), 'done');
+
+    const shown = showSpec(taskMoveRoot, 'S-521');
+    assert.deepEqual(shown.tasks.map((t) => t.id), ['TK-002', 'TK-003'], 'the active tasks key never lists a retired Task');
+    assert.deepEqual(shown.retiredTasks.map((t) => t.id), ['TK-001'], 'the retired Task is reachable under its own key');
+
+    assert.deepEqual(doctor(taskMoveRoot).filter((item) => item.taskId === 'TK-001'), [],
+      'a correctly retired, done Task raises no identity or retired-status finding');
+    assert.deepEqual(scanReferences(taskMoveRoot), [],
+      'the reference scan finds nothing unresolved anywhere in the room after the move');
+
+    render(taskMoveRoot);
+    const catalog = fs.readFileSync(path.join(taskMoveRoot, 'workbench/specs/CATALOG.md'), 'utf8');
+    assert.doesNotMatch(catalog, /### Retired/, 'a room that retires only a Task, never a Spec, gains no Retired heading');
+    const board = fs.readFileSync(path.join(taskMoveRoot, 'TASKBOARD.md'), 'utf8');
+    assert.doesNotMatch(board, /TK-001/, 'the hot board never names a retired Task');
+
+    // A second move of the same, now-retired Task is refused rather than
+    // treated as a fresh unknown-id or re-attempted move.
+    assert.throws(() => moveTaskRecord(taskMoveRoot, 'S-521', 'TK-001', 'retired'), /is already retired/,
+      'refuses a second move of an already-retired Task');
+
+    console.log('ok - moveTaskRecord moves a done Task directory into tasks/retired/, rewrites every live reference, keeps the active roster and hot board silent about it, refuses a folder outside the closed set, an unknown Spec/Task, a not-done Task, a Task with nothing to carry, a dirty tree and a second move, and stays reachable by show and listRetiredTaskRecords');
+  } finally {
+    fs.rmSync(taskMoveRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Corrective coverage: a room with no Git working tree at all cannot recover
+// a Task move, exactly as `moveSpecDirectory` refuses one.
+// ============================================================================
+{
+  const taskNoGitRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-no-git-'));
+  try {
+    initLifecycleFixture(taskNoGitRoot);
+    writeAt(taskNoGitRoot, 'workbench/specs/S-522-no-git-fixture/SPEC.md', emptyTableRecordBackedSpec('S-522'));
+    writeAt(taskNoGitRoot, 'workbench/specs/S-522-no-git-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({
+        id: 'TK-001', specId: 'S-522', slice: 'First slice',
+        destination: 'spec-acceptance: S-522 Acceptance Criteria', proof: 'landed'
+      })));
+
+    assert.throws(() => moveTaskRecord(taskNoGitRoot, 'S-522', 'TK-001', 'retired'),
+      /requires a Git working tree/,
+      'a room with no Git working tree at all refuses the move outright, rather than performing an unrecoverable bare rename');
+    assert.ok(fs.existsSync(path.join(taskNoGitRoot, 'workbench/specs/S-522-no-git-fixture/tasks/TK-001/TASK.md')),
+      'a refused move leaves the Task exactly where it was');
+
+    console.log('ok - moveTaskRecord refuses a room with no Git working tree at all, since such a move could never be recovered');
+  } finally {
+    fs.rmSync(taskNoGitRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Doctor's identity checks and the new retired-task-not-done finding cover
+// retired Task records exactly as they cover retired Specs: an id already
+// retired cannot be reused (by a new active record, in the same Spec), and a
+// retired Task whose own Status disagrees that it is done is reported,
+// visible and never blocking.
+// ============================================================================
+{
+  const taskIdentityRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-identity-'));
+  try {
+    initLifecycleFixture(taskIdentityRoot);
+    writeAt(taskIdentityRoot, 'workbench/specs/S-523-identity-fixture/SPEC.md', emptyTableRecordBackedSpec('S-523'));
+    // A retired Task record whose own Status still says blocked, not done.
+    writeAt(taskIdentityRoot, 'workbench/specs/S-523-identity-fixture/tasks/retired/TK-001/TASK.md', taskRecordFixture({
+      id: 'TK-001', specId: 'S-523', slice: 'Retired but not done', status: 'blocked', blockers: 'none',
+      destination: 'spec-acceptance: S-523 Acceptance Criteria'
+    }));
+    // An id already retired reused by a new active record in the same Spec.
+    writeAt(taskIdentityRoot, 'workbench/specs/S-523-identity-fixture/tasks/TK-001/TASK.md', taskRecordFixture({
+      id: 'TK-001', specId: 'S-523', slice: 'Reused id', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-523 Acceptance Criteria'
+    }));
+
+    const findings = doctor(taskIdentityRoot);
+    assert.ok(findings.some((item) => item.code === 'retired-task-not-done' && item.specId === 'S-523' && item.taskId === 'TK-001'),
+      'a retired Task whose Status is not done is reported');
+    assert.ok(findings.some((item) => item.code === 'duplicate-id' && item.specId === 'S-523' && item.taskId === 'TK-001'),
+      'an id already retired cannot be reused by a new active Task record in the same Spec');
+
+    console.log('ok - doctor\'s duplicate-id check and the new retired-task-not-done finding cover retired Task records');
+  } finally {
+    fs.rmSync(taskIdentityRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// The Spec-with-unretired-Tasks decision (S-00I TK-004): `moveSpecDirectory`
+// is not refused by an active Spec whose own Task record was never
+// individually retired first - `git mv` already carries the whole `tasks/`
+// directory, so the moved Spec's still-active Task record lands on the
+// active roster of its own now-retired Spec, reachable through
+// `loadRetiredSpecs`'s own call to `listTaskRecords`, exactly as it would be
+// read for any other Spec.
+// ============================================================================
+{
+  const carriedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-carried-'));
+  try {
+    initLifecycleFixture(carriedRoot);
+    writeAt(carriedRoot, 'workbench/specs/S-524-carried-fixture/SPEC.md', completeEmptyTableRecordBackedSpec('S-524'));
+    writeAt(carriedRoot, 'workbench/specs/S-524-carried-fixture/tasks/TK-002/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({
+        id: 'TK-002', specId: 'S-524', slice: 'Never individually retired',
+        destination: 'spec-acceptance: S-524 Acceptance Criteria', proof: 'landed'
+      })));
+
+    execFileSync('git', ['init', '--quiet', carriedRoot]);
+    execFileSync('git', ['-C', carriedRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', carriedRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', carriedRoot, 'add', '-A']);
+    execFileSync('git', ['-C', carriedRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    moveSpecDirectory(carriedRoot, 'S-524', 'retired');
+
+    const retiredSpecs = loadRetiredSpecs(carriedRoot);
+    const moved = retiredSpecs.find((item) => item.id === 'S-524');
+    assert.ok(moved, 'the Spec itself moved to retired/');
+    assert.deepEqual(moved.records.map((task) => task.id), ['TK-002'],
+      'a Task that was never individually retired moves with its Spec and lands on that Spec\'s own active roster, not its retiredRecords');
+    assert.deepEqual(moved.retiredRecords, [], 'the carried Task is not itself retired; only its owning Spec is');
+    assert.ok(fs.existsSync(path.join(carriedRoot, 'workbench/specs/retired/S-524-carried-fixture/tasks/TK-002/TASK.md')),
+      'the unretired Task\'s directory physically moved along with its Spec');
+
+    console.log('ok - moveSpecDirectory carries a Spec\'s still-active, never individually retired Task record along with it, reachable afterward as the retired Spec\'s own active roster');
+  } finally {
+    fs.rmSync(carriedRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// The reviewer of an assembled Spec report still sees every Task's proof,
+// retired or not: `assembleSpecReport`'s merged task list shows a retired
+// Task as history, enriched with its own Receipt, exactly as a retained
+// slice-table row is shown.
+// ============================================================================
+{
+  const reportRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-report-'));
+  try {
+    initGitRoot(reportRoot);
+    writeAt(reportRoot, 'specs/S-525-report-fixture/SPEC.md', emptyTableRecordBackedSpec('S-525'));
+    writeAt(reportRoot, 'specs/S-525-report-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-525', slice: 'Still open slice', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-525 Acceptance Criteria'
+    }));
+    writeAt(reportRoot, 'specs/S-525-report-fixture/tasks/retired/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({
+        id: 'TK-001', specId: 'S-525', slice: 'Already retired slice',
+        destination: 'spec-acceptance: S-525 Acceptance Criteria', proof: 'landed'
+      })));
+
+    const headSha = execFileSync('git', ['-C', reportRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+    const report = assembleSpecReport(reportRoot, 'S-525', { candidate: headSha });
+    const retiredEntry = report.tasks.find((task) => task.id === 'TK-001');
+    assert.ok(retiredEntry, 'the assembled report still lists the retired Task');
+    assert.equal(retiredEntry.status, 'done');
+    assert.equal(retiredEntry.proof, 'landed');
+    assert.equal(retiredEntry.history, true, 'a retired Task is shown as history, exactly as a retained table row is');
+    assert.equal(retiredEntry.source, 'retired-record');
+    assert.equal(retiredEntry.receipt.runCount, 1, 'a retired Task\'s own Receipt still enriches its report entry');
+
+    console.log('ok - assembleSpecReport shows a retired Task as history, with its own Receipt, so a reviewer still sees its proof');
+  } finally {
+    fs.rmSync(reportRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Corrective review finding 1 (S-00I TK-004 review, "nothing to carry"): the
+// contract comment above moveTaskRecord, its inline comment, and its thrown
+// message all describe refusing a done Task only when it has *both* no
+// Receipt run *and* no Proof to carry (AND) - but the guard itself read
+// `!activeTask.proof || receiptRows.length === 0` (OR), so either half
+// missing alone was enough to refuse. On the real room this refused
+// S-00H/TK-003 - done, with a long Proof, but zero Receipt rows because
+// Receipts postdate it - with a message that falsely claimed both were
+// missing. Proof alone, or a Receipt run alone, must be enough to carry.
+// ============================================================================
+{
+  const carryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-carry-'));
+  try {
+    initLifecycleFixture(carryRoot);
+    writeAt(carryRoot, 'workbench/specs/S-526-carry-fixture/SPEC.md', emptyTableRecordBackedSpec('S-526'));
+    // Proof set, no Receipt run at all - exactly the real room's S-00H/TK-003
+    // shape (Receipts postdate it). Must move: Proof alone is enough.
+    writeAt(carryRoot, 'workbench/specs/S-526-carry-fixture/tasks/TK-001/TASK.md', doneTaskRecordFixture({
+      id: 'TK-001', specId: 'S-526', slice: 'Proof only slice',
+      destination: 'spec-acceptance: S-526 Acceptance Criteria', proof: 'landed a long fix; no Receipt run exists'
+    }));
+    // Neither a Proof field nor a Receipt run - genuinely nothing to carry.
+    writeAt(carryRoot, 'workbench/specs/S-526-carry-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-526', slice: 'Neither slice', status: 'done', blockers: 'none',
+      destination: 'spec-acceptance: S-526 Acceptance Criteria'
+    }));
+
+    execFileSync('git', ['init', '--quiet', carryRoot]);
+    execFileSync('git', ['-C', carryRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', carryRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', carryRoot, 'add', '-A']);
+    execFileSync('git', ['-C', carryRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    // Checked first, on the still-clean committed tree: a second move right
+    // after the first would find a dirty tree (the first move's own staged
+    // rename) and throw that refusal instead, masking this one.
+    assert.throws(() => moveTaskRecord(carryRoot, 'S-526', 'TK-002', 'retired'),
+      /no Receipt run and no Proof/,
+      'refuses a done Task with neither a Receipt run nor a Proof, naming both missing halves');
+
+    const result = moveTaskRecord(carryRoot, 'S-526', 'TK-001', 'retired');
+    assert.equal(result.taskId, 'TK-001');
+    assert.ok(fs.existsSync(path.join(carryRoot, 'workbench/specs/S-526-carry-fixture/tasks/retired/TK-001/TASK.md')),
+      'a done Task with Proof and zero Receipt rows moves; Proof alone is enough to carry');
+
+    console.log('ok - moveTaskRecord\'s nothing-to-carry guard refuses only when both a Receipt run and a Proof are absent, not either alone');
+  } finally {
+    fs.rmSync(carryRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Corrective review finding 2 (S-00I TK-004 review): `moveTaskRecord`
+// rewrites an accepted ADR's `canonicalized_in` frontmatter target through
+// the shared rewriter (`rewriteReferenceFile` -> `rewriteCanonicalizedIn`),
+// exactly as `moveSpecDirectory` does, but never called `writeRegister`
+// afterward - so REGISTER.md/HISTORY.md, which echo canonicalized_in as
+// bare generated table text, went stale by construction on every Task move.
+// Mirror `moveSpecDirectory`'s own `if (fs.existsSync(collectionPath(root,
+// 'adr'))) writeRegister(root)` call.
+// ============================================================================
+{
+  const registerRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-register-'));
+  try {
+    initLifecycleFixture(registerRoot);
+    writeAt(registerRoot, 'workbench/specs/S-527-register-fixture/SPEC.md', emptyTableRecordBackedSpec('S-527'));
+    writeAt(registerRoot, 'workbench/specs/S-527-register-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({
+        id: 'TK-001', specId: 'S-527', slice: 'Register fixture slice',
+        destination: 'spec-acceptance: S-527 Acceptance Criteria', proof: 'landed'
+      })));
+
+    // An accepted ADR naming the moving Task's live path as a
+    // `canonicalized_in` frontmatter target - a root-relative fact, not a
+    // body link.
+    fs.writeFileSync(path.join(registerRoot, 'workbench/docs/adr/0001-fixture.md'), [
+      '---',
+      'date: 2026-09-18',
+      'canonicalized_in:',
+      '  - workbench/specs/S-527-register-fixture/tasks/TK-001/TASK.md',
+      '---',
+      '',
+      '# A fixture decision',
+      '',
+      'Provenance: owner decision.',
+      ''
+    ].join('\n'));
+    // Seed a correct, up-to-date REGISTER.md/HISTORY.md before the move, so
+    // any staleness found afterward is attributable to the move itself.
+    writeRegister(registerRoot);
+
+    execFileSync('git', ['init', '--quiet', registerRoot]);
+    execFileSync('git', ['-C', registerRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', registerRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', registerRoot, 'add', '-A']);
+    execFileSync('git', ['-C', registerRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    const registerPath = path.join(registerRoot, 'workbench/docs/adr/REGISTER.md');
+    const historyPath = path.join(registerRoot, 'workbench/docs/adr/HISTORY.md');
+
+    moveTaskRecord(registerRoot, 'S-527', 'TK-001', 'retired');
+
+    const adrContent = fs.readFileSync(path.join(registerRoot, 'workbench/docs/adr/0001-fixture.md'), 'utf8');
+    assert.match(adrContent, /canonicalized_in:\n {2}- workbench\/specs\/S-527-register-fixture\/tasks\/retired\/TK-001\/TASK\.md/,
+      'an accepted ADR\'s canonicalized_in target is rewritten to the moved Task\'s real path');
+    assert.deepEqual(validateAdrs(registerRoot).filter((item) => item.code === 'invalid-adr'), [],
+      'adr validate stays clean after the move: canonicalized_in still names an existing owner');
+
+    const registerAfter = fs.readFileSync(registerPath, 'utf8');
+    const historyAfter = fs.readFileSync(historyPath, 'utf8');
+    for (const [name, content] of [['REGISTER.md', registerAfter], ['HISTORY.md', historyAfter]]) {
+      assert.match(content, /workbench\/specs\/S-527-register-fixture\/tasks\/retired\/TK-001\/TASK\.md/, `${name} names the moved Task's new path`);
+      assert.doesNotMatch(content, /workbench\/specs\/S-527-register-fixture\/tasks\/TK-001\/TASK\.md/, `${name} no longer names the pre-move path`);
+    }
+    assert.deepEqual(validateAdrs(registerRoot).filter((item) => item.code === 'stale-register'), [],
+      'adr validate reports no stale-register once the Task move itself refreshes the projections');
+
+    console.log('ok - moveTaskRecord regenerates REGISTER.md/HISTORY.md after rewriting an accepted ADR\'s canonicalized_in target to the moved Task\'s real path');
+  } finally {
+    fs.rmSync(registerRoot, { recursive: true, force: true });
   }
 }
