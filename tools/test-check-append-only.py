@@ -22,6 +22,14 @@ import subprocess, sys, tempfile, shutil, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 REL = "tools/check-append-only.py"
 TARGET = "workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md"   # outside the old hardcoded seven
+# S-00I TK-006: the checker enumerated only `workbench/specs/<id>/SPEC.md`
+# (`os.listdir(SPEC_ROOT)` filtered to a direct SPEC.md), so a Spec retired one
+# level deeper by S-00I TK-005 - `workbench/specs/retired/<id>/SPEC.md` - was
+# never discovered at all, and append-only enforcement silently stopped
+# covering it. S-00H is the room's one real retired Spec and the fixture for
+# this case, exactly as its own retirement evidence row is the fixture the
+# discard gate reads.
+RETIRED_TARGET = "workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md"
 failures = []
 
 def rows(text):
@@ -42,10 +50,13 @@ def piped_orphan(text):
     L.insert(i + 1, "| TK-001 | rewritten variant of a published row | v | d | g |")
     return "\n".join(L)
 
+# (name, mutate, expect, target_rel) - target_rel lets one case mutate a file
+# other than TARGET, which the retired-folder case above needs.
 CASES = [
-    ("in-place rewrite in a spec the old hardcoded list omitted", rewrite_last_row, "S-045"),
-    ("orphan appended after a blank line inside the table", orphan_after_blank, TARGET),
-    ("rewritten row that keeps its leading pipe", piped_orphan, TARGET),
+    ("in-place rewrite in a spec the old hardcoded list omitted", rewrite_last_row, "S-045", TARGET),
+    ("orphan appended after a blank line inside the table", orphan_after_blank, TARGET, TARGET),
+    ("rewritten row that keeps its leading pipe", piped_orphan, TARGET, TARGET),
+    ("in-place rewrite inside a retired Spec's evidence log, invisible to a top-level-only enumeration", rewrite_last_row, "S-00H", RETIRED_TARGET),
 ]
 
 work = tempfile.mkdtemp(prefix="append-only-")
@@ -65,9 +76,9 @@ try:
     else:
         print("  ok    a clean tree reports CLEAN")
 
-    target = pathlib.Path(work) / TARGET
-    pristine = target.read_text()
-    for name, mutate, expect in CASES:
+    for name, mutate, expect, target_rel in CASES:
+        target = pathlib.Path(work) / target_rel
+        pristine = target.read_text()
         target.write_text(mutate(pristine))
         code, out = run()
         target.write_text(pristine)
