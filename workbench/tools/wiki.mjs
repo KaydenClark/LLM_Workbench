@@ -16,7 +16,17 @@ export const SENSITIVITIES = Object.freeze(['normal', 'private', 'restricted']);
 export const KNOWLEDGE_ROLES = Object.freeze(['canonical', 'curated', 'derived', 'historical']);
 export const REQUIRED_PROPERTIES = Object.freeze(['type', 'status', 'sensitivity', 'knowledge_role', 'provenance', 'source_paths', 'last_verified']);
 const REQUIRED_COLLECTIONS = Object.freeze(['design-concepts', 'guidebooks', 'archive']);
-const LIVE_STATE_MARKERS = [/<!--\s*hot-specs:start\s*-->/, /<!--\s*spec-catalog:start\s*-->/, /^\|\s*TK-[0-9A-Za-z]+\s*\|.*\|\s*(?:ready|in-progress|blocked|done|deferred)\s*\|/m];
+// S-00I TK-005: a slice-table row (first cell a bare Task id) is not the
+// only shape "copied live task state" takes. SCHEMA.md's Update section
+// already forbids copying "live task rows, spec evidence, or generated
+// Taskboard state" into a note; a Spec's own Append-Only Evidence And
+// Execution Log row - first cell a date, second cell a Task id or the
+// literal `spec`/`review` (closeTask/completeSpec/recordReviewVerdict's own
+// vocabulary in spec-workbench.mjs/spec-report.mjs) - is copied spec
+// evidence, the exact class SCHEMA.md already names, so a reconciliation
+// that pastes it must fail the same check a copied slice table already
+// does rather than passing silently.
+const LIVE_STATE_MARKERS = [/<!--\s*hot-specs:start\s*-->/, /<!--\s*spec-catalog:start\s*-->/, /^\|\s*TK-[0-9A-Za-z]+\s*\|.*\|\s*(?:ready|in-progress|blocked|done|deferred)\s*\|/m, /^\|\s*\d{4}-\d{2}-\d{2}\s*\|\s*(?:TK-[0-9A-Za-z]+|spec|review)\s*\|/m];
 
 function walkMarkdown(directory, files = []) {
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
