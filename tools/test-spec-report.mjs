@@ -476,12 +476,17 @@ function headingShadowSpec(id) {
 }
 
 // ============================================================================
-// S-00J TK-002: recording a verdict for a SHA that is not the current
-// candidate is refused, naming both the SHA the caller gave and the room's
-// actual HEAD, and writes nothing to the Spec. "Current candidate" is exact:
-// no prefix matching, no closest-commit guessing - a candidate that was once
-// HEAD but is no longer is refused exactly the same as one that never
-// existed.
+// S-00J TK-004 redefines "current candidate": a verdict now binds to the
+// Spec's assembled CONTENT (a digest), never to this checkout's exact HEAD.
+// TK-002's original exact-HEAD equality refused a candidate the instant HEAD
+// moved past it, even when nothing about the Spec itself had changed - which
+// is exactly what a dispatcher's own checkout (HEAD on `integration`) or a
+// merge commit (a new SHA, same tree) would trip on live. Advancing HEAD
+// with an empty commit, as here, changes no file at all, so recording
+// against the now-stale SHA succeeds: the content the verdict binds to is
+// unchanged. A real content change is what TK-004's own digest-staleness
+// refusal below (spec-workbench.mjs's `completeSpec`/`gate` tests) is for,
+// not a moved HEAD.
 // ============================================================================
 {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-verdict-moved-'));
@@ -494,32 +499,37 @@ function headingShadowSpec(id) {
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
     const staleCandidate = headSha(root);
-    // Advance HEAD: the candidate a reviewer would have named a moment ago is
-    // no longer the current one.
+    // Advance HEAD with an empty commit: no file changes, so the Spec's
+    // content digest is unaffected even though HEAD itself has moved.
     execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'advance past the reviewed candidate']);
     const currentHead = headSha(root);
     assert.notEqual(staleCandidate, currentHead, 'the fixture must actually move HEAD for this case to mean anything');
-    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
 
+    const verdict = recordReviewVerdict(root, 'S-710', {
+      candidate: staleCandidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    assert.equal(verdict.candidate, staleCandidate, 'the candidate SHA is recorded exactly as given - an audit trail, no longer a binding');
+    assert.ok(fs.readFileSync(path.join(root, specPath), 'utf8').includes(verdict.row), 'a candidate that is no longer HEAD is accepted: content binds, location does not');
+
+    // The report, read from this same checkout (now on `currentHead`, a
+    // different SHA from the one recorded), still recognizes the verdict -
+    // it matches by digest, never by candidate SHA equality.
+    const report = assembleSpecReport(root, 'S-710', { candidate: currentHead });
+    assert.equal(report.latestVerdict?.result, 'pass', 'a verdict recorded against a candidate that is no longer HEAD is still recognized once the digest matches - the whole point of the redefinition');
+
+    // An abbreviated SHA is refused for a different reason now: it is not a
+    // full SHA-1/SHA-256 the room's own `git cat-file -e <sha>^{commit}`
+    // check treats as ambiguous-safe here, so this only proves existence is
+    // still checked; content-binding no longer cares whether it was ever
+    // HEAD at all.
+    const bogusButShapedCandidate = '1234567890abcdef1234567890abcdef12345678';
     assert.throws(
-      () => recordReviewVerdict(root, 'S-710', { candidate: staleCandidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' }),
-      (error) => error instanceof Error && error.message.includes(staleCandidate) && error.message.includes(currentHead),
-      'a verdict for a SHA that is not the current HEAD is refused, and the error names both the given SHA and the current HEAD'
+      () => recordReviewVerdict(root, 'S-710', { candidate: bogusButShapedCandidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' }),
+      (error) => error instanceof Error && /does not exist/i.test(error.message) && error.message.includes(bogusButShapedCandidate),
+      'a well-formed but nonexistent candidate is still refused - existence is unconditional, only the HEAD-equality half of the old rule was dropped'
     );
 
-    const after = fs.readFileSync(path.join(root, specPath), 'utf8');
-    assert.equal(after, before, 'a refused verdict writes nothing to the Spec file');
-
-    // A short prefix of the true HEAD is refused too - "no prefix matching".
-    const abbreviatedHead = currentHead.slice(0, 7);
-    assert.throws(
-      () => recordReviewVerdict(root, 'S-710', { candidate: abbreviatedHead, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' }),
-      (error) => error instanceof Error && error.message.includes(abbreviatedHead) && error.message.includes(currentHead),
-      'an abbreviated SHA that resolves to HEAD is still refused: the match must be exact, never a prefix'
-    );
-    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'the abbreviated-prefix refusal also writes nothing');
-
-    console.log('ok - recording a verdict for a SHA that is not the exact current HEAD (including an abbreviated prefix of it) is refused, naming both SHAs, and writes nothing');
+    console.log('ok - TK-004 redefinition: a verdict for a candidate SHA that is no longer HEAD is accepted and later recognized by content digest, as long as the Spec\'s files are unchanged; a nonexistent candidate is still refused');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -645,15 +655,21 @@ function headingShadowSpec(id) {
     assert.equal(passResult.result, 'pass');
     assert.equal(passResult.candidate, firstCandidate);
     assert.equal(passResult.remainingGap, 'none', 'a pass with "none" findings reports "none" as its remaining gap, not a count');
-    assert.match(passResult.row, /^\| \d{4}-\d{2}-\d{2} \| review \| Review verdict: pass at [0-9a-f]+ \| none \| Claude Opus 5 \(separate context\) \| none \|$/);
+    assert.match(passResult.row, /^\| \d{4}-\d{2}-\d{2} \| review \| Review verdict: pass at [0-9a-f]+ \[[0-9a-f]{12}\] \| none \| Claude Opus 5 \(separate context\) \| none \|$/);
 
     const afterFirst = fs.readFileSync(path.join(root, specPath), 'utf8');
     assert.ok(afterFirst.includes(passResult.row), 'the exact pass row lands in the Spec file');
 
-    // A second, later review of a fresh candidate: a fail verdict with two
-    // findings, appended without touching the first row - append-only means
-    // adding a row, never editing or removing the one already there. There is
-    // no update/rewrite entry point offered at all: only recordReviewVerdict,
+    // The report right after the pass verdict recognizes it: the Spec's
+    // content is unchanged since it was recorded.
+    const reportAfterPass = assembleSpecReport(root, 'S-711', { candidate: firstCandidate });
+    assert.equal(reportAfterPass.latestVerdict?.result, 'pass');
+    assert.equal(reportAfterPass.specDigest.slice(0, 12), passResult.digest12);
+
+    // A second, later review with real findings: a fail verdict, appended
+    // without touching the first row - append-only means adding a row,
+    // never editing or removing the one already there. There is no
+    // update/rewrite entry point offered at all: only recordReviewVerdict,
     // which only ever appends.
     execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'a fresh candidate for the second review']);
     const secondCandidate = headSha(root);
@@ -664,39 +680,35 @@ function headingShadowSpec(id) {
     });
     assert.equal(failResult.result, 'fail');
     assert.equal(failResult.remainingGap, '2', 'the remaining gap is the findings count when findings are not "none"');
+    assert.equal(failResult.digest, passResult.digest, 'the fail verdict was recorded against exactly the same content as the pass verdict - the empty commit between them changed no file');
 
     const afterSecond = fs.readFileSync(path.join(root, specPath), 'utf8');
     assert.ok(afterSecond.includes(passResult.row), 'the first verdict row is preserved verbatim after a second verdict is recorded (append-only, never rewritten)');
     assert.ok(afterSecond.includes(failResult.row), 'the second verdict lands as its own row');
     assert.equal(afterSecond.indexOf(passResult.row) < afterSecond.indexOf(failResult.row), true, 'the pass row still precedes the later fail row');
 
-    // Recording again against the now-stale first candidate is refused,
-    // exactly like the moved-candidate case above: a review cannot be reused
-    // once the candidate it was bound to is no longer HEAD.
-    assert.throws(
-      () => recordReviewVerdict(root, 'S-711', { candidate: firstCandidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' }),
-      (error) => error instanceof Error && error.message.includes(firstCandidate) && error.message.includes(secondCandidate)
-    );
-
-    // The report shows both verdicts, newest last, and the latest verdict
-    // for the candidate it is asked about - the second (fail) one, since the
-    // report is asked about the current candidate.
+    // The fail verdict folded in corrective-Task creation (S-00J TK-003),
+    // which wrote a new tasks/<id>/TASK.md file - the Spec's own content
+    // digest has now moved past BOTH recorded verdicts, so neither is
+    // recognized as current, no matter which candidate SHA a report names:
+    // latest verdict is resolved purely by content digest.
     const report = assembleSpecReport(root, 'S-711', { candidate: secondCandidate });
-    assert.equal(report.verdicts.length, 2, 'the report lists every verdict row parsed from the evidence log');
+    assert.equal(report.verdicts.length, 2, 'the report still lists every verdict row parsed from the evidence log');
     assert.equal(report.verdicts[0].result, 'pass');
     assert.equal(report.verdicts[0].candidate, firstCandidate);
     assert.equal(report.verdicts[1].result, 'fail');
     assert.equal(report.verdicts[1].candidate, secondCandidate);
     assert.equal(report.verdicts[1].findings, 'Missing input validation; stale doc reference');
     assert.equal(report.verdicts[1].reviewer, 'Claude Sonnet 5 (separate context)');
-    assert.ok(report.latestVerdict, 'the report names a latest verdict for the candidate it was asked about');
-    assert.equal(report.latestVerdict.result, 'fail');
-    assert.equal(report.latestVerdict.candidate, secondCandidate);
+    assert.notEqual(report.specDigest.slice(0, 12), passResult.digest12, "the corrective Task the fail verdict created moved the Spec's own content digest past both recorded verdicts");
+    assert.equal(report.latestVerdict, null, "neither the pass nor the fail verdict matches the Spec's current content once the corrective Task exists");
 
-    // Asked about a candidate no verdict names, the report says none - never
-    // the wrong candidate's verdict borrowed by omission.
+    // Asked about a different candidate SHA, the result is identical: the
+    // `candidate` argument plays no part in matching a verdict any more,
+    // only the Spec's own current content digest does.
     const reportForFirst = assembleSpecReport(root, 'S-711', { candidate: firstCandidate });
-    assert.equal(reportForFirst.latestVerdict.result, 'pass', 'a report asked about the first candidate finds that candidate\'s own verdict, not the later one');
+    assert.equal(reportForFirst.latestVerdict, null, 'a report asked about a different candidate SHA sees the identical latestVerdict result - content binds, not the candidate a caller names');
+
     const neverReviewedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-verdict-none-'));
     try {
       initGitRoot(neverReviewedRoot);
@@ -708,12 +720,12 @@ function headingShadowSpec(id) {
       const unreviewedCandidate = headSha(neverReviewedRoot);
       const unreviewedReport = assembleSpecReport(neverReviewedRoot, 'S-712', { candidate: unreviewedCandidate });
       assert.deepEqual(unreviewedReport.verdicts, [], 'a Spec with no recorded verdict reports an empty verdicts list');
-      assert.equal(unreviewedReport.latestVerdict, null, 'a Spec with no recorded verdict for its candidate reports latestVerdict as null');
+      assert.equal(unreviewedReport.latestVerdict, null, 'a Spec with no recorded verdict at all reports latestVerdict as null');
     } finally {
       fs.rmSync(neverReviewedRoot, { recursive: true, force: true });
     }
 
-    console.log('ok - a pass and a fail verdict each land as their own append-only evidence row, a stale candidate cannot be reused, and the report lists every verdict plus the latest one for the candidate it was asked about (or null)');
+    console.log("ok - a pass and a fail verdict each land as their own append-only evidence row bound to the content digest at record time; once the fail verdict's own corrective Task changes that digest, neither recorded verdict matches the Spec's current content regardless of which candidate SHA a report names");
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -758,9 +770,12 @@ function headingShadowSpec(id) {
 
 // ============================================================================
 // The CLI verb: `verdict S-### --candidate <sha> --result pass|fail
-// --findings "..." --reviewer "..." [--json]` records the same row the
-// exported function would, and refuses (non-zero exit, no file write) for a
-// moved candidate.
+// --findings "..." --reviewer "..." [--digest <sha256>] [--json]` records the
+// same row the exported function would. S-00J TK-004: a moved candidate SHA
+// (HEAD advancing with no file change) no longer refuses it - the digest is
+// what a reader matches, and it is unchanged; naming a stale --digest
+// explicitly does refuse it (non-zero exit, no file write), because that is
+// a reviewer working from a report whose content has since moved on.
 // ============================================================================
 {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-verdict-cli-'));
@@ -775,29 +790,50 @@ function headingShadowSpec(id) {
     const candidate = headSha(root);
     const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
 
+    const reportResult = spawnSync('node', [cliPath, 'report', 'S-714', '--candidate', candidate, '--json', '--path', root], { encoding: 'utf8' });
+    assert.equal(reportResult.status, 0);
+    const { specDigest } = JSON.parse(reportResult.stdout);
+
     const verdictResult = spawnSync('node', [
       cliPath, 'verdict', 'S-714',
-      '--candidate', candidate, '--result', 'pass', '--findings', 'none',
+      '--candidate', candidate, '--result', 'pass', '--findings', 'none', '--digest', specDigest,
       '--reviewer', 'Claude Opus 5 (separate context)', '--json', '--path', root
     ], { encoding: 'utf8' });
-    assert.equal(verdictResult.status, 0, `the verdict verb exits 0 on a valid current-candidate verdict: ${verdictResult.stderr}`);
+    assert.equal(verdictResult.status, 0, `the verdict verb exits 0 when the named --digest matches the report the reviewer read: ${verdictResult.stderr}`);
     const parsed = JSON.parse(verdictResult.stdout);
     assert.equal(parsed.result, 'pass');
     assert.equal(parsed.candidate, candidate);
+    assert.equal(parsed.digest, specDigest);
     assert.ok(fs.readFileSync(path.join(root, specPath), 'utf8').includes(parsed.row), 'the CLI verdict lands the same row text the JSON result names');
 
+    // HEAD moves with no file change: a further verdict recorded against
+    // this now-stale candidate SHA, without naming a --digest, still
+    // succeeds - the content is unchanged, and omitting --digest recomputes
+    // it fresh rather than comparing against anything.
     execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'move past the reviewed candidate']);
     const movedHead = headSha(root);
-    const refused = spawnSync('node', [
+    const stillRecorded = spawnSync('node', [
       cliPath, 'verdict', 'S-714',
       '--candidate', candidate, '--result', 'pass', '--findings', 'none',
       '--reviewer', 'Claude Opus 5 (separate context)', '--path', root
     ], { encoding: 'utf8' });
-    assert.notEqual(refused.status, 0, 'the verdict verb refuses (non-zero exit) for a candidate that is no longer HEAD');
-    assert.match(refused.stderr, new RegExp(candidate));
-    assert.match(refused.stderr, new RegExp(movedHead));
+    assert.equal(stillRecorded.status, 0, `a candidate that is no longer HEAD is accepted once its content is unchanged: ${stillRecorded.stderr}`);
 
-    console.log('ok - the verdict CLI verb records the same row the exported function returns, and refuses with a non-zero exit for a moved candidate, naming both SHAs');
+    // Naming the ORIGINAL --digest explicitly against content that has since
+    // actually changed (the two verdicts just recorded added evidence rows,
+    // which the digest excludes, so change the Spec's own real content this
+    // time) is refused.
+    const staleSpecPath = path.join(root, specPath);
+    fs.writeFileSync(staleSpecPath, fs.readFileSync(staleSpecPath, 'utf8').replace('First slice', 'First slice (renamed)'));
+    const refused = spawnSync('node', [
+      cliPath, 'verdict', 'S-714',
+      '--candidate', movedHead, '--result', 'pass', '--findings', 'none', '--digest', specDigest,
+      '--reviewer', 'Claude Opus 5 (separate context)', '--path', root
+    ], { encoding: 'utf8' });
+    assert.notEqual(refused.status, 0, 'the verdict verb refuses (non-zero exit) when the named --digest no longer matches the working tree\'s current content');
+    assert.match(refused.stderr, /does not match this working tree's current content digest/);
+
+    console.log('ok - the verdict CLI verb records the same row the exported function returns; a moved-but-unchanged candidate is accepted, and an explicitly stale --digest is refused, naming why');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -916,7 +952,7 @@ function headingShadowSpec(id) {
       id: 'S-721', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: [
         '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
-        `| 2026-09-18 | review | Review verdict: fail at ${candidate} | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
+        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
       ].join('\n')
     }));
     const specBefore = fs.readFileSync(path.join(root, specPath), 'utf8');
@@ -1116,7 +1152,7 @@ function headingShadowSpec(id) {
       id: 'S-724', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: [
         '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
-        `| 2026-09-18 | review | Review verdict: fail at ${candidate} | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
+        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
       ].join('\n')
     }));
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
@@ -1321,7 +1357,7 @@ function headingShadowSpec(id) {
     const specGate = gate(root, { spec: 'S-740', candidate });
     assert.equal(specGate.mode, 'spec-candidate');
     assert.equal(specGate.refused, true, 'a Spec candidate for an incomplete, unreviewed Spec is refused');
-    assert.match(specGate.reason, /no review verdict is recorded/i);
+    assert.match(specGate.reason, /is not complete/i);
     assert.equal(specGate.specComplete, false);
 
     const taskGate = gate(root, { task: 'TK-001', spec: 'S-740' });
