@@ -351,13 +351,21 @@ export function newAdr(root, options) {
   const next = allocateVisibleId('ADR', occupied, { width: 4, requireLetter: true }).slice(4);
   // S-00I TK-002: a new record is always `proposed`, so it is created inside
   // the `proposed/` lifecycle folder its own status implies - folder is
-  // lifecycle, so an unreviewed decision never starts out looking active.
+  // lifecycle, so an unreviewed decision never starts out looking active. It
+  // carries no `status` key at all: the folder already carries that fact, and
+  // writing the key back in would let one record at a time drift the corpus
+  // back toward the mixed frontmatter/folder state the one-shot
+  // `migrate-folders` command does not repeatedly correct. `superseded_by`
+  // and `deprecation_reason` are untouched by this - they stay frontmatter
+  // facts for whichever record later needs them. (Reviewer's observation,
+  // not solved here: `rejected` has no dedicated lifecycle folder yet, so a
+  // record that reaches that lifecycle still needs its `status` key kept at
+  // the top level - `newAdr` never creates one directly, only `proposed`.)
   const filePath = path.join(directory, 'proposed', `${next}-${slug}.md`);
   if (fs.existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const date = options.date ?? new Date().toISOString().slice(0, 10);
   const content = [
     '---',
-    'status: proposed',
     `date: ${date}`,
     'canonicalized_in:',
     '  - AGENTS.md',

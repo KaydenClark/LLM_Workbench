@@ -121,19 +121,31 @@ test('validation rejects unknown canonicalization targets, untracked provenance,
   }
 });
 
-test('new allocates an unused letter-bearing label as a proposed record with a canonicalization slot', () => {
+// S-00I TK-002 corrective: folder is lifecycle, so a newly created record
+// must land in the folder its status implies (`proposed/`) and must not
+// carry a `status` key at all - a fresh `adr new` re-introducing that key
+// is exactly the one-record-at-a-time drift back toward mixed state that
+// `migrate-folders` (a one-shot command) does not repeatedly correct.
+test('new allocates an unused letter-bearing label, lands in the folder its status implies, and carries no status key', () => {
   const dir = fixture();
   try {
     fs.writeFileSync(path.join(dir, 'workbench', 'docs', 'adr', '0007-gap.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
     const created = newAdr(dir, { title: 'Checkpoints are the durable session record', date: '2026-09-04' });
     assert.equal(created.number, '000A');
     assert.equal(path.basename(created.filePath), '000A-checkpoints-are-the-durable-session-record.md');
+    assert.equal(path.dirname(created.filePath), path.join(dir, 'workbench', 'docs', 'adr', 'proposed'), 'a new record must be created inside the proposed/ folder its own default status implies');
     const content = fs.readFileSync(created.filePath, 'utf8');
-    assert.match(content, /^---\nstatus: proposed\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS\.md\n---/);
+    assert.match(content, /^---\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS\.md\n---/);
+    assert.doesNotMatch(content, /^status:/m, 'the folder already carries the lifecycle a status key would only duplicate');
     assert.match(content, /^# Checkpoints are the durable session record$/m);
+    const record = listAdrs(dir).find((item) => item.name === '000A-checkpoints-are-the-durable-session-record.md');
+    assert.equal(record.status, 'proposed', 'the folder alone must still resolve the correct effective lifecycle');
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.adr === record.name), [], 'a freshly created record must validate clean with no status key');
     const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Another decision'], { cwd: dir, encoding: 'utf8' });
     assert.equal(cli.status, 0, cli.stderr);
-    assert.equal(JSON.parse(cli.stdout).number, '000B');
+    const cliCreated = JSON.parse(cli.stdout);
+    assert.equal(cliCreated.number, '000B');
+    assert.equal(path.dirname(cliCreated.filePath), path.join(dir, 'workbench', 'docs', 'adr', 'proposed'));
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
