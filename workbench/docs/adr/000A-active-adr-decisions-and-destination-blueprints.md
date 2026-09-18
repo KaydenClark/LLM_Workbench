@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-09
 supersedes:
   - 0002-binding-rules-stay-in-current-controls.md
@@ -40,5 +39,5 @@ checks semantic ownership and drift and never authorizes a main merge.
 
 Provenance: the locked owner decisions and full question disposition in
 [S-00A](../../specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md).
-This record wholly supersedes [ADR-0002](0002-binding-rules-stay-in-current-controls.md)
-and [ADR-0025](0025-planes-classify-claims-not-whole-artifacts.md).
+This record wholly supersedes [ADR-0002](archive/0002-binding-rules-stay-in-current-controls.md)
+and [ADR-0025](archive/0025-planes-classify-claims-not-whole-artifacts.md).

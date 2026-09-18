@@ -63,7 +63,7 @@ the vocabulary, the blocking rules, and the rationale explicit and mechanical.
 
 ## Decisions And Contracts
 
-- Rationale: [ADR-0025](../../docs/adr/0025-planes-classify-claims-not-whole-artifacts.md),
+- Rationale: [ADR-0025](../../docs/adr/archive/0025-planes-classify-claims-not-whole-artifacts.md),
   [ADR-0027](../../docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md),
   [ADR-0029](../../docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md),
   [ADR-0033](../../docs/adr/0033-workbench-contract-is-a-claim-set.md).

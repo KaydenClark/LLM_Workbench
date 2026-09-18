@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-12
 canonicalized_in:
   - LEXICON.md
@@ -41,7 +40,7 @@ Consequences: `LEXICON.md` gains Destination, Journey, Path and Frontier as
 ordinary term additions at acceptance, and keeps the Context Map and navlink hub
 role. The board's render must continue to derive from Spec and Task state.
 Naming the unit the board displays depends on
-[ADR-000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md).
+[ADR-000H](../000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md).
 
 Provenance: owner-approved foundation answers FND-Q02, FND-Q02A and FND-Q17b,
 2026-09-11, recorded as approved answers in the live grilling note

@@ -326,7 +326,10 @@ function selectedAdrs(source, wanted, snapshot) {
   return wanted.map((wantedId) => {
     const record = records.find((item) => item.name === wantedId || item.number === wantedId || `ADR-${item.number}` === wantedId);
     if (!record) fail('adr-missing', `selected ADR ${wantedId} is absent`);
-    if (record.data?.status !== 'accepted') fail('adr-not-active', `selected ADR ${wantedId} is not accepted and active`);
+    // S-00I TK-002: lifecycle is the record's folder, not a required
+    // frontmatter key, so `status` (the derived effective lifecycle) is the
+    // check here, not the now-optional `data.status`.
+    if (record.status !== 'accepted') fail('adr-not-active', `selected ADR ${wantedId} is not accepted and active`);
     const relative = record.relativePath;
     const read = consumeFile(snapshot, source.root, relative, `active ADR ${wantedId}`);
     return { id: `ADR-${record.number}`, name: record.name, title: record.title ?? record.name, source_file: relative, sha256: read.sha256, bytes: read.bytes };

@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-12
 canonicalized_in:
   - AGENTS.md
@@ -21,7 +20,7 @@ deliberately opposite retentions:
 
 - **`archive`** is permanent storage. Superseded and deprecated ADRs go there
   and are never cleared, because
-  [ADR-000A](000A-active-adr-decisions-and-destination-blueprints.md) requires
+  [ADR-000A](../000A-active-adr-decisions-and-destination-blueprints.md) requires
   complete history to stay reachable with original record bodies preserved.
 - **`retired`** is a transient staging area. Completed Specs and Tasks go there
   and are cleared only after the exact change is verified on `main`.
@@ -49,7 +48,7 @@ resolution is not folder-aware; 20 ADR files carry relative intra-ADR links that
 break when a target moves; 15 accepted ADRs name live `workbench/specs/S-*`
 paths; and the moving unit differs by type, a file for an ADR and a directory
 for each of 54 Specs. Applying the pattern to Tasks depends on
-[ADR-000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md),
+[ADR-000H](../000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md),
 because a table row cannot occupy a folder.
 
 The stable-path rule in `AGENTS.md` — a declared Spec path never moves between

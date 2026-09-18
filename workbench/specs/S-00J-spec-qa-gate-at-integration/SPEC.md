@@ -93,7 +93,7 @@ repository-level enforcement, which is out of scope.
   controls by [S-00P](../S-00P-workflow-canon-rework/SPEC.md). The note is
   untracked working material named as origin, not durable evidence.
 - The two gates, their triggers and the reviewed unit are described by
-  [ADR-000F](../../docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
+  [ADR-000F](../../docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
   which is `proposed` and is evidence, not instruction. Its open "failure
   return path" is now WF-8C, and S-00P TK-004 accepts, amends or supersedes
   the record to match. ADR acceptance is not a blocker of this Spec.

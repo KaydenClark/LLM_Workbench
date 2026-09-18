@@ -61,6 +61,12 @@ const registry = Object.freeze({
   'complete-on-integration': entry('attention', 'specs', 'none', 'the spec next would select is already complete or superseded at the declared integration ref; the checkout is behind it'),
   'broken-link': entry('attention', 'specs', 'none', 'a spec links to a missing local target'),
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
+  // S-00I TK-002: lifecycle now comes from folder location (top level, or
+  // ADR_LIFECYCLE_FOLDERS `proposed`/`archive`), not frontmatter `status`. A
+  // record inside `proposed/` or `archive/` that still carries an explicit
+  // `status` disagreeing with what its folder implies is a half-migrated
+  // record - visible, never silently reinterpreted, and never blocking.
+  'disagreeing-status': entry('attention', 'adr', 'none', "an ADR's leftover status frontmatter disagrees with its lifecycle folder"),
   'invalid-adr': entry('error', 'adr', 'none', 'an ADR is missing required frontmatter or names an unknown canonicalization target'),
   'untracked-provenance': entry('error', 'adr', 'none', 'a durable reference targets an untracked session path'),
   // notepads: refusals the runtime returns to its caller. None of them blocks,

@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-12
 canonicalized_in:
   - BLUEPRINT.md
@@ -41,7 +40,7 @@ Consequences: the terminal verification of this workflow is the two gates in
 not a single stop at the end. The Frontier vocabulary this uses is owned by
 [ADR-000E](000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md),
 and the Task's artifact form by
-[ADR-000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md).
+[ADR-000H](../000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md).
 The per-phase entry and exit conditions of Explore, Prototype and Implement
 remain open WF questions and are not decided here; this record fixes altitude
 and sequence only.

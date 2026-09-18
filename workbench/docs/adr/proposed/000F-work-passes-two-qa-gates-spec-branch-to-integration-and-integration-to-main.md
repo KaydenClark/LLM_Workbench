@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-12
 canonicalized_in:
   - AGENTS.md
@@ -32,7 +31,7 @@ deliberately too small to demonstrate the Spec's acceptance, so a task-level gat
 can pass repeatedly while the capability remains unmet.
 
 Consequences: extends
-[ADR-0037](0037-independent-review-at-integration.md), whose independent-review
+[ADR-0037](../0037-independent-review-at-integration.md), whose independent-review
 requirement at integration continues to apply, and fixes the reviewed unit as
 the Spec branch wherever earlier records described it as task-level. The
 terminal QA stop referenced by the end-to-end workflow in
