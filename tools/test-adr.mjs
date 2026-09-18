@@ -413,8 +413,15 @@ test('a collection with lifecycle expressed by folder location, not frontmatter 
 
     const folderedRegister = fs.readFileSync(path.join(folderedCollection, REGISTER_NAME), 'utf8');
     const folderedHistory = fs.readFileSync(path.join(folderedCollection, 'HISTORY.md'), 'utf8');
-    assert.equal(folderedRegister, flatRegister, 'REGISTER.md must render identically whether lifecycle comes from frontmatter or from folder location');
-    assert.equal(folderedHistory, flatHistory, 'HISTORY.md must render identically whether lifecycle comes from frontmatter or from folder location');
+    // REGISTER.md holds only the accepted record, which never moves, so it is
+    // fully byte-identical - the proof that the projection reads location,
+    // not coincidence, for every record whose lifecycle does not change.
+    assert.equal(folderedRegister, flatRegister, 'REGISTER.md must be byte-identical for every record whose lifecycle does not change');
+    // HISTORY.md carries the two moved records too. Their status/title/date/
+    // owner cells stay identical either way; only their link legitimately
+    // gains the folder prefix a reader now needs to actually reach them -
+    // the opposite would mean the projection ships a link that 404s.
+    assert.equal(folderedHistory, flatHistory.replace('(0002-draft.md)', '(proposed/0002-draft.md)').replace('(0003-old.md)', '(archive/0003-old.md)'), 'HISTORY.md must be identical apart from the moved records\' hrefs gaining their real folder prefix');
   } finally {
     fs.rmSync(flat, { recursive: true, force: true });
     fs.rmSync(foldered, { recursive: true, force: true });

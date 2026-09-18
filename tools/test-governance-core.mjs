@@ -56,9 +56,13 @@ test('the ADR corpus is reconciled: ADR-0008 is not ported and ADR-0025 records 
   assert.equal(adrs.some((adr) => adr.number === '0008'), false, 'ADR-0008 must not be ported with its categorical rule');
   const claimLevel = adrs.find((adr) => adr.number === '0025');
   assert.ok(claimLevel, 'ADR-0025 exists');
-  assert.equal(claimLevel.data.status, 'superseded');
+  // S-00I TK-002: lifecycle is now the folder, so a migrated record's
+  // frontmatter `status` key is gone; `status` is the derived effective
+  // lifecycle (folder for 000A's top level, the `superseded_by` fact for
+  // 0025's archive/), which is what a reader now relies on.
+  assert.equal(claimLevel.status, 'superseded');
   assert.equal(claimLevel.data.superseded_by, '000A-active-adr-decisions-and-destination-blueprints.md');
-  assert.equal(adrs.find(adr => adr.number === '000A').data.status, 'accepted');
+  assert.equal(adrs.find(adr => adr.number === '000A').status, 'accepted');
   assert.match(String(claimLevel.data.ported_from), /ADR-0008/);
   assert.match(String(claimLevel.data.supersedes), /Grounding/);
   for (const adr of adrs) {
