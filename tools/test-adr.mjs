@@ -202,19 +202,26 @@ test('normalize inserts only the missing required frontmatter keys and leaves ev
 
     const result = normalizeAdrs(dir, { date: '2026-09-06' });
     assert.deepEqual(result.changed.map((entry) => `${path.basename(entry.record)}:${entry.inserted.join(',')}`).sort(), [
-      '0001-bare.md:status,date',
+      '0001-bare.md:date',
       '0002-partial.md:date',
       '0003-crlf.md:date'
-    ], 'normalize reports every file it changed and the keys it inserted');
+    ], 'S-00I TK-003: normalize inserts only date now - status is folder-derived (ADR-000I) and a status key normalize invented would silently drift a migrated corpus');
 
-    assert.equal(fs.readFileSync(path.join(collection, '0001-bare.md'), 'utf8'), `---\nstatus: proposed\ndate: 2026-09-06\n---\n\n${bare}`);
+    assert.equal(fs.readFileSync(path.join(collection, '0001-bare.md'), 'utf8'), `---\ndate: 2026-09-06\n---\n\n${bare}`);
     assert.equal(fs.readFileSync(path.join(collection, '0002-partial.md'), 'utf8'), '---\nstatus: accepted\ncanonicalized_in:\n  - AGENTS.md\ndate: 2026-09-06\n---\n\n# A partial decision\n\nThe decision.\n');
     const normalizedCrlf = fs.readFileSync(path.join(collection, '0003-crlf.md'), 'utf8');
     assert.equal(normalizedCrlf, '---\r\nstatus: proposed\r\ndate: 2026-09-06\r\n---\r\n\r\n# A CRLF decision\r\n\r\nThe decision.\r\n');
     assert.doesNotMatch(normalizedCrlf, /(?<!\r)\n/, 'a CRLF record must not gain an LF-terminated key');
 
     writeRegister(dir);
-    assert.deepEqual(validateAdrs(dir), [], 'every normalized record validates');
+    // 0001-bare never declared a status and lives at the top level, so it is
+    // now an ordinary implicitly-`accepted` record (folder-derived, ADR-000I)
+    // with no canonicalized_in owner - a decision only its author can make,
+    // which normalize must never invent. 0002 and 0003 already declared their
+    // own status and validate cleanly.
+    const remaining = validateAdrs(dir);
+    assert.deepEqual(remaining.map((item) => item.code), ['invalid-adr']);
+    assert.match(remaining[0].message, /0001-bare\.md is accepted but names no canonicalized_in owner/);
     assert.deepEqual(normalizeAdrs(dir, { date: '2026-09-06' }).changed, [], 'normalize is idempotent');
 
     const cli = spawnSync(process.execPath, [adrTool, 'normalize', '--path', dir, '--date', '2026-09-06', '--json'], { cwd: dir, encoding: 'utf8' });
@@ -223,6 +230,58 @@ test('normalize inserts only the missing required frontmatter keys and leaves ev
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+// S-00I TK-003, in passing: red before the fix above - a record already
+// migrated to folder lifecycle (S-00I TK-002) declares no `status` key at
+// all, by design (the folder, or the top-level default, carries it). The old
+// `normalizeAdrs` treated that absence as "missing" and would have inserted
+// `status: proposed` into it, silently asserting a lifecycle the folder
+// already contradicts. The fixed version inserts only `date`, so running
+// normalize on an already-migrated corpus changes nothing.
+test('normalize on an already folder-migrated corpus inserts no status key and changes nothing once dated', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    // Top-level, implicitly accepted (ADR-000I default), already dated, no
+    // status key - exactly the shape TK-002's migration leaves behind.
+    fs.writeFileSync(path.join(collection, '0001-migrated.md'), '---\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A migrated decision\n\nThe decision.\n\nProvenance: owner decision.\n');
+    fs.mkdirSync(path.join(collection, 'proposed'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '0002-migrated-proposed.md'), '---\ndate: 2026-09-04\n---\n\n# A migrated proposal\n\nThe decision.\n\nProvenance: owner decision.\n');
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir), [], 'a folder-migrated corpus with dates already present validates with nothing to repair');
+
+    assert.deepEqual(normalizeAdrs(dir, { date: '2026-09-06' }).changed, [], 'normalize must change nothing: both records already carry a date and neither is missing a status key any more, because folder is lifecycle now');
+    assert.doesNotMatch(fs.readFileSync(path.join(collection, '0001-migrated.md'), 'utf8'), /^status:/m, 'normalize must never reintroduce a status key into a folder-migrated record');
+    assert.doesNotMatch(fs.readFileSync(path.join(collection, 'proposed', '0002-migrated-proposed.md'), 'utf8'), /^status:/m);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-00I TK-003: every accepted ADR naming a live Spec path (the Decisions
+// And Contracts direction of ADR-to-spec reference) must still resolve once
+// Spec directories can move between lifecycle folders. The Spec's own text
+// names 19 accepted records at an earlier anchor; re-counted here at the
+// candidate under test so a silently broken reference is caught rather than
+// trusted to stale prose - the same discipline the intra-ADR link corpus
+// test above already applies.
+test('every accepted-ADR-to-spec reference in the real corpus resolves literally, and the re-counted totals are asserted', () => {
+  const records = listAdrs(root).filter((record) => record.status === 'accepted');
+  let totalLinks = 0;
+  let filesWithLink = 0;
+  for (const record of records) {
+    let countForRecord = 0;
+    for (const link of localLinks(record.body)) {
+      const literal = path.resolve(path.dirname(record.filePath), link.split('#')[0]);
+      const relative = path.relative(root, literal).split(path.sep).join('/');
+      if (!relative.startsWith('workbench/specs/')) continue;
+      countForRecord += 1;
+      assert.ok(fs.existsSync(literal), `${record.relativePath} links to unresolved Spec path ${link}`);
+    }
+    totalLinks += countForRecord;
+    if (countForRecord > 0) filesWithLink += 1;
+  }
+  assert.equal(filesWithLink, 20, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  assert.equal(totalLinks, 23, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
