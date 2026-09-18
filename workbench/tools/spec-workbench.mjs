@@ -14,7 +14,7 @@ import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
-import { assembleSpecReport } from './spec-report.mjs';
+import { assembleSpecReport, formatSpecReport } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -1040,6 +1040,7 @@ async function main() {
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
   else if (command === 'doctor') console.log(formatDoctorReport(result));
+  else if (command === 'report') console.log(formatSpecReport(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
 }
 

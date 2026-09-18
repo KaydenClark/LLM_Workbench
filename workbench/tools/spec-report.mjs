@@ -21,17 +21,20 @@
 // column names.
 //
 // Binding to the candidate: this reads the Spec and its records from the
-// working tree, then names the candidate it was asked about, whether
-// `git cat-file -e` finds it in the room's own repository, and whether the
-// working tree's own HEAD equals it - so a reviewer can see when the two
-// differ. It never checks out or reads a blob from the named SHA; a review
-// of a moved candidate is TK-002's refusal, not this slice's.
+// working tree, then names the candidate it was asked about, its full commit
+// SHA once `git rev-parse <sha>^{commit}` resolves it in the room's own
+// repository, and whether the working tree's own HEAD is that same commit -
+// so a reviewer can see when the two differ, and so an abbreviated candidate
+// still compares correctly against a full HEAD SHA. It never checks out or
+// reads a blob from the named SHA; a review of a moved candidate is TK-002's
+// refusal, not this slice's.
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { parseMarkdownTableRow } from './markdown-table.mjs';
 import { findSpec, slicesOf } from './spec-workbench.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
+import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
 
@@ -41,7 +44,7 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   const root = path.resolve(rootDir);
   const spec = findSpec(root, specId);
 
-  const tasks = slicesOf(spec).map((slice) => taskEntry(slice));
+  const tasks = mergedTasks(spec);
   const acceptance = parseAcceptance(spec.content);
   const evidence = parseEvidence(spec.content);
   const completionResult = section(spec.content, 'Completion Result').trim();
@@ -70,6 +73,27 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   };
 }
 
+// The one merged Task list `slicesOf` gives (a Task record where the Spec
+// has one, a table row otherwise) union'd with any retained slice-table row
+// that has no matching record. `completeSpec` in spec-workbench.mjs already
+// unions both sources when it checks for an unfinished slice
+// (`[...slicesOf(spec).map(...), ...spec.rows.map(...)]`); a record-backed
+// Spec's retained table row is completed history rather than a live slice
+// (`assertOneSliceTruth`), but it still carries the landed proof a reviewer
+// needs, so it is reported too - marked `source: 'row'` and `history: true`
+// rather than silently dropped. For a table-only Spec every row already came
+// through `slicesOf`, so this union adds nothing there. The merged list is
+// kept in visible-id order, matching how `listTaskRecords` already orders
+// standalone records.
+function mergedTasks(spec) {
+  const liveTasks = slicesOf(spec).map((slice) => taskEntry(slice));
+  const liveIds = new Set(liveTasks.map((task) => visibleIdKey(task.id)));
+  const historyRows = spec.rows
+    .filter((row) => !liveIds.has(visibleIdKey(row.id)))
+    .map((row) => historyTaskEntry(row));
+  return [...liveTasks, ...historyRows].sort((a, b) => compareVisibleIds(a.id, b.id));
+}
+
 // One Task entry, enriched from whichever source `slicesOf` resolved for it.
 // A table-row Task carries no Task record, so it carries no Receipt or
 // planned-verification field at all - both are `undefined`, not `null`,
@@ -91,6 +115,22 @@ function taskEntry(slice) {
     }
   }
   return task;
+}
+
+// A retained slice-table row with no matching Task record: completed
+// history, carried verbatim from the row's own cells, never enriched with a
+// Receipt or planned verification because it names no record file to read
+// either from.
+function historyTaskEntry(row) {
+  return {
+    id: row.id,
+    slice: row.slice,
+    status: row.status,
+    blockers: row.blockers,
+    proof: row.proof ?? null,
+    source: 'row',
+    history: true
+  };
 }
 
 // Every `- [ ]` / `- [x]` line in the Acceptance Criteria section, in
@@ -140,41 +180,73 @@ function collectGaps({ tasks, acceptance, completionResult, evidence }) {
   return gaps;
 }
 
-// Named exactly as asked, plus whether the room's own repository has that
-// object at all and whether the working tree's own HEAD is it - never a
-// checkout, never a blob read at that SHA.
+// Named exactly as asked (`sha`, whatever length the caller gave, verbatim),
+// plus the full commit SHA it resolves to in the room's own repository
+// (`resolvedSha`, `null` when it does not resolve) and whether the working
+// tree's own HEAD is that same commit - never a checkout, never a blob read
+// at that SHA. Both `resolvedSha` and `headSha` are resolved through
+// `git rev-parse <ref>^{commit}`, so an abbreviated candidate SHA (or any
+// other ref `git` accepts) compares correctly against a HEAD that is the
+// same commit; comparing the raw strings instead would report `matchesHead:
+// false` for a short candidate even when it is exactly HEAD.
 function candidateBinding(root, sha) {
-  const headSha = gitHeadSha(root);
+  const headSha = resolveCommitSha(root, 'HEAD');
+  const resolvedSha = resolveCommitSha(root, sha);
   return {
     sha,
-    existsInRepository: gitObjectExists(root, sha),
+    resolvedSha,
+    existsInRepository: resolvedSha !== null,
     headSha,
-    matchesHead: headSha === sha
+    matchesHead: resolvedSha !== null && resolvedSha === headSha
   };
 }
 
-function gitObjectExists(root, sha) {
-  const result = spawnSync('git', ['-C', root, 'cat-file', '-e', sha], { encoding: 'utf8' });
-  return result.status === 0;
+// Resolves any ref `git` accepts (a full or abbreviated SHA, or `HEAD`) to
+// its full commit SHA, or `null` when it does not resolve to a commit in
+// this repository - never a throw, matching "inform, never refuse".
+function resolveCommitSha(root, ref) {
+  const result = spawnSync('git', ['-C', root, 'rev-parse', `${ref}^{commit}`], { encoding: 'utf8' });
+  return result.status === 0 ? result.stdout.trim() : null;
 }
 
-function gitHeadSha(root) {
-  const result = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' });
-  if (result.status !== 0) {
-    const detail = (result.stderr || '').trim() || result.error?.message || 'unknown error';
-    throw new Error(`git rev-parse HEAD failed in ${root}: ${detail}`);
-  }
-  return result.stdout.trim();
-}
-
-// Section extraction matching spec-workbench.mjs's own `section` helper: a
-// heading is a `## Name` line, exact wording, and the section body runs to
-// the next `## ` heading or the end of the file.
+// Section extraction anchored to a whole line, matching the resolver
+// `assembleTaskPacket` uses in task-packet.mjs for the same reason: a
+// heading is a `## Name` line and only that line - a strict-prefix
+// reference, a `###` subsection sharing the title, or a prose sentence that
+// merely mentions the heading text mid-line must never be mistaken for it.
+// The naive `content.indexOf('## ' + heading)` this replaced matched
+// whichever of those came first in the file, not the real heading.
 function section(content, heading) {
-  const marker = `## ${heading}`;
-  const start = content.indexOf(marker);
-  if (start < 0) return '';
-  const bodyStart = start + marker.length;
+  const marker = new RegExp(`^## ${escapeRegExp(heading)}[ \t]*$`, 'm');
+  const match = marker.exec(content);
+  if (!match) return '';
+  const bodyStart = match.index + match[0].length;
   const end = content.indexOf('\n## ', bodyStart);
   return content.slice(bodyStart, end < 0 ? content.length : end).trim();
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// The short human-readable form the `report` CLI verb prints without
+// `--json`: a Spec line, the candidate line with its resolution and HEAD
+// match, one line per Task with its status, source and Receipt run count
+// when it has one, and the gap count followed by each gap. `--json` keeps
+// printing the full object this module returns; this is a rendering of the
+// same data, never a second source of it.
+export function formatSpecReport(report) {
+  const lines = [];
+  lines.push(`${report.id} - ${report.title} [${report.status}]`);
+  const c = report.candidate;
+  lines.push(`Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} (head ${c.headSha ?? 'none'})`);
+  lines.push('Tasks:');
+  for (const task of report.tasks) {
+    const runs = task.receipt ? `, runs ${task.receipt.runCount}` : '';
+    const history = task.history ? ' [history]' : '';
+    lines.push(`  ${task.id} ${task.status} (source: ${task.source}${runs})${history}`);
+  }
+  lines.push(`Gaps (${report.gaps.length}):`);
+  for (const gap of report.gaps) lines.push(`  - ${gap}`);
+  return lines.join('\n');
 }
