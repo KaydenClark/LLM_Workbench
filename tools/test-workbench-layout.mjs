@@ -786,8 +786,8 @@ test('legacy twelve-skill manifests remain readable but v3.1.1 requires all four
     manifest.workbenchVersion = 'v3.1.0';
     manifest.provenance.source.release = 'v3.1.0';
     // The frozen v3.0.0/v3.1.0 row is `legacyCoreSkills` itself, not the live
-    // policy's first twelve names: S-00H TK-004 renamed one live name
-    // (to-tickets -> to-tasks) without touching that frozen historical row.
+    // policy's first twelve names: S-00H TK-004 renamed one live skill in the
+    // current bundle without touching this frozen historical row.
     manifest.skillPolicy.required = [...legacyCoreSkills];
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     assert.equal(run('validate', '--project', project).report.status, 'valid');
@@ -810,7 +810,7 @@ test('each listed legacy version validates only at the policy its release declar
     const current = manifest.skillPolicy.required;
     // The frozen legacy rows below are built from `legacyCoreSkills` itself,
     // not by slicing the live `current` policy: S-00H TK-004 renamed one live
-    // name (to-tickets -> to-tasks) without touching this frozen historical row.
+    // skill in the current bundle without touching this frozen historical row.
     const twelve = [...legacyCoreSkills];
     // v3.1.1's frozen row is the twelve workflow skills plus the four stances.
     // The current bundle also carries `carry` and `notepad`, so neither frozen
@@ -845,8 +845,8 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.0.0', twelve), 'valid');
     // The owner-authorized v3.2.0 repair retains the earlier stamped twenty,
     // built from `legacyCoreSkills` rather than by filtering `current`: S-00H
-    // TK-004 renamed one live name (to-tickets -> to-tasks) that this frozen
-    // row must keep saying to-tickets.
+    // TK-004 renamed one live skill in the current bundle that this frozen
+    // row must keep exactly as it was released.
     assert.equal(outcome('v3.2.0', [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...current.slice(-4)]), 'valid');
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, current), 'valid');
@@ -866,7 +866,8 @@ test('the v3.1.1 legacy row is the frozen sixteen-skill bundle, not the live cur
   const project = fixture();
   const current = [...coreSkills];
   // The frozen v3.1.1 row is `legacyCoreSkills` itself, not the live policy's
-  // first twelve names (S-00H TK-004 renamed to-tickets -> to-tasks there).
+  // first twelve names: S-00H TK-004 renamed one live skill in the current
+  // bundle without touching this frozen historical row.
   const sixteen = [...legacyCoreSkills, ...current.slice(-4)];
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
