@@ -28,6 +28,7 @@
 // still compares correctly against a full HEAD SHA. It never checks out or
 // reads a blob from the named SHA; a review of a moved candidate is TK-002's
 // refusal, not this slice's.
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -41,8 +42,14 @@ import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-id
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
 
 export function assembleSpecReport(rootDir, specId, options = {}) {
-  const candidateSha = options.candidate;
-  if (!candidateSha) throw new Error('assembleSpecReport requires a --candidate SHA');
+  // S-00J TK-004: candidate is now optional. A human reviewer still names
+  // one (the `report` verb keeps asking for it) so the report can show
+  // whether it exists and matches this checkout's HEAD, but `completeSpec`
+  // and `gate` only need the Spec's content digest to find the latest
+  // verdict, and never had a candidate SHA of their own to name - "content
+  // binds, location does not" applies to reading a report exactly as it
+  // does to recording a verdict.
+  const candidateSha = options.candidate ?? null;
   const root = path.resolve(rootDir);
   const spec = findSpec(root, specId);
 
@@ -50,9 +57,10 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   const acceptance = parseAcceptance(spec.content);
   const evidence = parseEvidence(spec.content);
   const completionResult = section(spec.content, 'Completion Result').trim();
-  const candidate = candidateBinding(root, candidateSha);
+  const candidate = candidateSha ? candidateBinding(root, candidateSha) : null;
+  const specDigest = computeSpecDigest(root, spec);
   const verdicts = parseVerdicts(evidence);
-  const latestVerdict = latestVerdictFor(verdicts, candidate);
+  const latestVerdict = latestVerdictFor(verdicts, specDigest);
 
   const gaps = collectGaps({ tasks, acceptance, completionResult, evidence });
 
@@ -69,6 +77,7 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
     nextGate: spec.nextGate,
     path: spec.relativePath,
     candidate,
+    specDigest,
     tasks,
     acceptance,
     evidence,
@@ -80,28 +89,156 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   };
 }
 
-// S-00J TK-002: a reviewer records a pass or fail verdict against the exact
-// current candidate, appended to the Spec's append-only evidence log through
-// the same `appendEvidence` seam `closeTask` and `completeSpec` already use
-// (never a second append implementation). "Current candidate" is exact and
-// only exact: the given SHA must both exist in this repository
-// (`git cat-file -e`) and equal the room's own `HEAD` at recording time,
-// character for character - no prefix matching, no "close enough", unlike
-// the report's own `candidateBinding` above, which deliberately resolves an
-// abbreviated SHA so a reviewer can still see whether it matches HEAD. A
-// verdict is a stricter binding than a report: reusing a review after its
-// candidate moves is exactly what this refuses, so an abbreviated SHA that
-// happens to resolve to HEAD is refused the same as any other non-exact
-// value - resolving it first would silently accept the "close enough" this
-// seam exists to rule out.
+// S-00J TK-004: "current candidate" redefined. A verdict binds to the
+// assembled Spec's CONTENT, never to any checkout's HEAD, so a reviewer's
+// detached worktree, a dispatcher whose own HEAD is `integration`, and a
+// merge commit that never equals the reviewed tip all recognize the same
+// review as long as the Spec's own files are unchanged. The digest is a
+// SHA-256 over SPEC.md and every `tasks/<id>/TASK.md` file (sorted by
+// directory name for a fixed, deterministic order), each with its own
+// volatile, non-reviewed parts excluded first:
+//   - SPEC.md: every Append-Only Evidence And Execution Log DATA ROW
+//     (`stripEvidenceRows`), so recording a verdict, a later `complete`
+//     close row, or a second verdict never changes the digest their own
+//     recording depends on; and the `Updated`, `Latest event` and `Next
+//     gate` header fields (`stripVolatileSpecFields`), which `claimWork` and
+//     `closeTask` rewrite on every ordinary lifecycle step, never a change
+//     to the reviewed capability itself.
+//   - each TASK.md: its `## Receipt` section (`stripReceiptSection`,
+//     corrective for TK-004's own review: the Receipt lives inside TASK.md,
+//     task-receipt.mjs, so hashing the whole file voided a passed verdict on
+//     every `receipt` append, contrary to this comment's original claim
+//     that a Receipt was already excluded as "outside the Spec directory").
+// Everything else - the Task's own Status/Blockers/Proof/Planned
+// verification, a table-backed Spec's slice table, Acceptance Criteria, the
+// Completion Result, Decisions prose - is left untouched, so a real change
+// there still moves the digest.
+function computeSpecDigest(root, spec) {
+  const specDir = path.dirname(spec.filePath);
+  // Each entry is hashed as its name, then its byte length, then its own
+  // content, each on its own line: the length prefix is what keeps one
+  // entry's content from blending into the next entry's name in the digest
+  // input, since neither a file name nor a byte count can itself contain a
+  // newline. This tool has no adversarial user (it hashes this room's own
+  // Spec directory), so the framing only needs to be unambiguous, never
+  // tamper-proof.
+  const hash = crypto.createHash('sha256');
+  function addEntry(name, content) {
+    hash.update(name);
+    hash.update('\n');
+    hash.update(String(Buffer.byteLength(content, 'utf8')));
+    hash.update('\n');
+    hash.update(content);
+    hash.update('\n');
+  }
+  addEntry('SPEC.md', stripVolatileSpecFields(stripEvidenceRows(spec.content)));
+  const tasksDir = path.join(specDir, 'tasks');
+  if (fs.existsSync(tasksDir)) {
+    const ids = fs.readdirSync(tasksDir, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+    for (const id of ids) {
+      const taskPath = path.join(tasksDir, id, 'TASK.md');
+      if (!fs.existsSync(taskPath)) continue;
+      addEntry(`tasks/${id}/TASK.md`, stripReceiptSection(fs.readFileSync(taskPath, 'utf8')));
+    }
+  }
+  return hash.digest('hex');
+}
+
+// Blanks the Spec header's `Updated`, `Latest event` and `Next gate` field
+// values (never the field name, never any other header field) - the three
+// lines `claimWork` and `closeTask` rewrite on every ordinary claim or
+// close. Each is a `**Field:** value` line appearing exactly once in a
+// well-formed Spec, so a non-global, line-anchored replace touches only that
+// literal field's own line, never a prose mention or an evidence-row cell
+// that happens to contain the same words.
+function stripVolatileSpecFields(content) {
+  return content
+    .replace(/^\*\*Updated:\*\*.*$/m, '**Updated:**')
+    .replace(/^\*\*Latest event:\*\*.*$/m, '**Latest event:**')
+    .replace(/^\*\*Next gate:\*\*.*$/m, '**Next gate:**');
+}
+
+// Strips a Task record's entire `## Receipt` section - heading and body -
+// the same way `stripEvidenceRows` finds the Evidence section's boundary,
+// but removing the heading too rather than only its data rows: a Receipt is
+// task-receipt.mjs's own append-only per-run log, live inside TASK.md,
+// never the reviewed capability itself, so a `receipt` call - which appends
+// a row there on every run, not only at close - must never move the digest
+// a recorded verdict depends on. A record with no Receipt section yet is
+// returned unchanged.
+function stripReceiptSection(content) {
+  const marker = /^## Receipt[ \t]*$/m;
+  const match = marker.exec(content);
+  let result = content;
+  if (match) {
+    const nextHeading = content.indexOf('\n## ', match.index + match[0].length);
+    const sectionEnd = nextHeading < 0 ? content.length : nextHeading;
+    result = content.slice(0, match.index) + content.slice(sectionEnd);
+  }
+  // Removing the section (or appendReceiptRowToContent's own trailing-
+  // whitespace trim before it first wrote one) can leave a different amount
+  // of trailing whitespace than a record that never had a Receipt section
+  // at all - normalized to exactly one trailing newline either way, so
+  // whether a Receipt section ever existed never shows up in the digest as
+  // a spurious whitespace difference.
+  return result.replace(/\s+$/, '\n');
+}
+
+// Strips every DATA row - never the header, never surrounding prose - from
+// the Spec's own Append-Only Evidence And Execution Log section, identified
+// the same way `parseEvidence` identifies one: a line beginning with
+// `| YYYY-MM-DD |`. A review verdict row, a fail verdict's own row, a later
+// `complete` close row, and a corrective cycle's second verdict are
+// themselves evidence rows, so excluding all of them - not only rows that
+// look like a verdict - is what makes the digest stable across the very acts
+// of recording review history: a verdict row's own digest would otherwise
+// depend on whether it had already been appended when the digest was
+// computed. Everything else in SPEC.md - the header fields, Outcome,
+// Decisions, the Vertical Implementation Slices table (a table-backed Spec's
+// actual reviewed content, never an event log), Acceptance Criteria - is
+// left untouched, so a real change there still moves the digest.
+function stripEvidenceRows(content) {
+  const heading = 'Append-Only Evidence And Execution Log';
+  const marker = new RegExp(`^## ${escapeRegExp(heading)}[ \t]*$`, 'm');
+  const match = marker.exec(content);
+  if (!match) return content;
+  const bodyStart = match.index + match[0].length;
+  const nextHeading = content.indexOf('\n## ', bodyStart);
+  const bodyEnd = nextHeading < 0 ? content.length : nextHeading;
+  const body = content.slice(bodyStart, bodyEnd);
+  const strippedBody = body
+    .split('\n')
+    .filter((line) => !/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line.trim()))
+    .join('\n');
+  return content.slice(0, bodyStart) + strippedBody + content.slice(bodyEnd);
+}
+
+// S-00J TK-002 (redefined by TK-004): a reviewer records a pass or fail
+// verdict against the current candidate, appended to the Spec's append-only
+// evidence log through the same `appendEvidence` seam `closeTask` and
+// `completeSpec` already use (never a second append implementation).
+// "Current candidate" no longer means this checkout's exact `HEAD` (TK-002's
+// original binding, which the live review workflow cannot satisfy: a
+// reviewer's detached worktree, a dispatcher whose own HEAD is
+// `integration`, and a merge commit that never equals the reviewed tip).
+// TK-004 redefines it to bind to the Spec's assembled CONTENT instead
+// (`computeSpecDigest` above): the given candidate SHA must still exist in
+// this repository (`git cat-file -e`) as an audit trail of what the
+// reviewer actually looked at, but the digest - not the SHA - is what a
+// later reader matches against. Reusing a review after the Spec's content
+// moves on is still refused (a stale --digest), exactly as reusing one after
+// the candidate SHA moved on used to be.
 //
 // This only ever appends: there is no update or rewrite entry point here, so
 // a second verdict is a second row, never a replacement of the first, and
 // `tools/check-append-only.py`'s identity rule (Date, second cell, Event -
-// here `review` and `Review verdict: <result> at <sha>`) is satisfied by
-// construction: two verdicts for different candidates or results generate
-// different identities, and this module never rewrites a row it already
-// wrote.
+// here `review` and `Review verdict: <result> at <sha> [<digest12>]`) is
+// satisfied by construction: two verdicts for different candidates, digests
+// or results generate different identities, and this module never rewrites
+// a row it already wrote.
 export function recordReviewVerdict(rootDir, specId, options = {}) {
   const root = path.resolve(rootDir);
   const candidate = requiredString(options.candidate, 'recordReviewVerdict requires a --candidate SHA');
@@ -126,25 +263,56 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
     throw new Error(`A fail verdict for candidate ${candidate} on ${specId} names no corrective finding ("${findings}"); a failed verdict that leaves the Spec with no corrective Task is refused.`);
   }
 
-  // Validated before the Spec is even loaded, so an invalid candidate never
-  // gets far enough to touch a file. Two distinguishable refusals, not one
-  // merged message: a candidate absent from this repository entirely is a
-  // different problem from one that exists but is no longer HEAD, and
-  // TK-004 is expected to relax the HEAD-equality half of this rule later
-  // without touching the existence half, which only makes sense if the two
-  // are reported (and testable) separately now.
-  const headSha = resolveCommitSha(root, 'HEAD');
+  // S-00J TK-004: "current candidate" no longer means this checkout's exact
+  // HEAD - a reviewer's detached worktree, a dispatcher whose own HEAD is
+  // `integration`, and a merge commit that never equals the reviewed tip
+  // must all be able to record and recognize the same review. The candidate
+  // SHA is still required and still must exist in this repository (a real
+  // commit, never an invented or mistyped SHA - the audit trail of what the
+  // reviewer actually looked at), but it no longer has to be HEAD.
   if (!commitExists(root, candidate)) {
     throw new Error(`Candidate ${candidate} does not exist in this repository (checked via git cat-file -e); a review must bind to a real commit, never an invented or mistyped SHA.`);
   }
-  if (candidate !== headSha) {
-    throw new Error(`Candidate ${candidate} is not the current candidate; HEAD is ${headSha ?? 'unresolved'}. A review binds only to the exact current HEAD - no prefix match and no stale candidate - so this verdict is refused rather than recorded against a candidate that has moved.`);
-  }
 
   const spec = findSpec(root, specId);
+  // Content binds, location does not: the verdict binds to the Spec's
+  // current content digest (spec-report.mjs's `computeSpecDigest`), not to
+  // this checkout's HEAD. A reviewer names the digest their own `report`
+  // call showed them (`--digest`), refused when the working tree's own
+  // current digest has since moved on; omitting `--digest` recomputes it
+  // fresh from the working tree instead, with nothing to compare against.
+  const currentDigest = computeSpecDigest(root, spec);
+  const givenDigest = options.digest ? String(options.digest).trim() : null;
+  if (givenDigest && givenDigest !== currentDigest) {
+    throw new Error(`The digest ${givenDigest.slice(0, 12)} named for candidate ${candidate} on ${specId} does not match this working tree's current content digest ${currentDigest.slice(0, 12)}; the Spec's content has changed since that digest was computed. Read a fresh --digest from a new report before recording this verdict, or omit --digest to record against the current content.`);
+  }
+  const digest = givenDigest ?? currentDigest;
+  const digest12 = digest.slice(0, 12);
+
+  // Review corrective (Medium): with exact-HEAD gone, a second same-day
+  // verdict on unchanged content is ordinarily recordable (a second
+  // reviewer confirming, say), but two such rows sharing a candidate,
+  // digest and result differed only in their findings/reviewer cells - not
+  // part of the Event text - so tools/check-append-only.py's identity rule
+  // (Date, second cell, Event) could not tell them apart. Every verdict row
+  // now carries its own position among this Spec's verdict rows in the
+  // Event cell (`#<n>`), which is unique by construction (it always
+  // increments), so no two verdict rows for a Spec can ever share an
+  // identity - meanwhile an exact repeat of an already-recorded verdict
+  // (same candidate, result, digest, findings and reviewer) is refused
+  // outright rather than recorded as a pointless new row.
+  const existingVerdicts = parseVerdicts(parseEvidence(spec.content));
+  const duplicate = existingVerdicts.find((verdict) =>
+    verdict.candidate === candidate && verdict.result === result && verdict.digest === digest12
+    && verdict.findings === findings && verdict.reviewer === reviewer);
+  if (duplicate) {
+    throw new Error(`An identical verdict (${result} at ${candidate} [${digest12}], findings "${findings}", reviewer "${reviewer}") is already recorded for ${specId} as row #${duplicate.ordinal}; recording the exact same review twice is refused rather than duplicated.`);
+  }
+  const ordinal = existingVerdicts.length + 1;
+
   const date = new Date().toISOString().slice(0, 10);
   const remainingGap = findingsGap(findings);
-  const cells = [date, 'review', `Review verdict: ${result} at ${candidate}`, findings, reviewer, remainingGap];
+  const cells = [date, 'review', `Review verdict: ${result} at ${candidate} [${digest12}] #${ordinal}`, findings, reviewer, remainingGap];
   const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
   const updated = appendEvidence(spec.content, row);
   atomicWrite(spec.filePath, updated);
@@ -173,7 +341,7 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
     correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings }).created;
   }
 
-  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
+  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
 }
 
 // S-00J TK-003: one Task record per diagnosed defect in an already-recorded
@@ -366,11 +534,19 @@ function splitFindings(findings) {
 // newest last, since the log is append-only). A verdict row is identified by
 // its literal second cell `review` (recordReviewVerdict's own literal,
 // distinguishing it from a Task-id row) and a third cell matching
-// `Review verdict: pass|fail at <sha>`; any row that fails either test is
-// not a verdict row and is silently skipped, matching the same
-// never-assume-column-identity discipline `parseEvidence` above already
-// uses for the rest of the table.
-const VERDICT_PATTERN = /^Review verdict: (pass|fail) at (\S+)$/;
+// `Review verdict: pass|fail at <sha> [<digest12>] #<n>`; any row that fails
+// either test is not a verdict row and is silently skipped, matching the
+// same never-assume-column-identity discipline `parseEvidence` above already
+// uses for the rest of the table. S-00J TK-004 adds the trailing
+// `[<digest12>]` group (the 12-hex-character prefix of the content digest
+// the verdict was recorded against, which is what a later reader actually
+// matches on - never the candidate SHA, kept only as the audit trail of what
+// commit the reviewer looked at) and the review corrective `#<n>` ordinal
+// (this row's own position among the Spec's verdict rows, 1-based - unique
+// by construction, since it always increments, so no two verdict rows for a
+// Spec can ever share a check-append-only.py identity even when their
+// candidate, digest and result are all identical).
+const VERDICT_PATTERN = /^Review verdict: (pass|fail) at (\S+) \[([0-9a-f]{12})\] #(\d+)$/;
 
 function parseVerdicts(evidence) {
   const verdicts = [];
@@ -383,6 +559,8 @@ function parseVerdicts(evidence) {
       date: cells[0],
       result: match[1],
       candidate: match[2],
+      digest: match[3],
+      ordinal: Number(match[4]),
       findings: cells[3],
       reviewer: cells[4],
       remainingGap: cells[5]
@@ -391,16 +569,18 @@ function parseVerdicts(evidence) {
   return verdicts;
 }
 
-// The latest verdict bound to the candidate a report is asked about, or
-// `null` when none names it - read fresh from the evidence log every time,
-// never cached. Matched against the candidate's own resolved (full) SHA
-// rather than the raw string the caller passed the report, so an abbreviated
-// report candidate still finds the verdict a reviewer recorded against the
-// full current HEAD it resolves to.
-function latestVerdictFor(verdicts, candidate) {
-  if (!candidate.resolvedSha) return null;
+// The latest verdict bound to the Spec's CURRENT content digest, or `null`
+// when none matches it - read fresh from the evidence log every time, never
+// cached. S-00J TK-004: matched against the digest, never against a
+// candidate SHA or which checkout is asking - "content binds, location does
+// not". A verdict recorded in a detached worktree, read back from the
+// dispatcher's own checkout, or read after a merge commit that never equals
+// the reviewed tip, is recognized exactly the same as long as the Spec's own
+// files are unchanged.
+function latestVerdictFor(verdicts, specDigest) {
+  const digest12 = specDigest.slice(0, 12);
   for (let index = verdicts.length - 1; index >= 0; index -= 1) {
-    if (verdicts[index].candidate === candidate.resolvedSha) return verdicts[index];
+    if (verdicts[index].digest === digest12) return verdicts[index];
   }
   return null;
 }
@@ -570,10 +750,13 @@ function escapeRegExp(value) {
 export function formatSpecReport(report) {
   const lines = [];
   lines.push(`${report.id} - ${report.title} [${report.status}]`);
+  lines.push(`Spec digest: ${report.specDigest.slice(0, 12)}`);
   const c = report.candidate;
-  lines.push(`Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} (head ${c.headSha ?? 'none'})`);
+  lines.push(c
+    ? `Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} (head ${c.headSha ?? 'none'})`
+    : 'Candidate: none named');
   const v = report.latestVerdict;
-  lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date})` : 'Verdict: none for this candidate');
+  lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date}) [digest ${v.digest}]` : 'Verdict: none for this candidate');
   lines.push('Tasks:');
   for (const task of report.tasks) {
     const runs = task.receipt ? `, runs ${task.receipt.runCount}` : '';
