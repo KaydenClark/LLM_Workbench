@@ -1704,6 +1704,7 @@ function wikiClaimFixture() {
   // row, and asserts it survives every lifecycle command byte-identical
   // beside a sibling active Spec that exercises them.
   const historicalRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'historical-byte-identity-'));
+  initGitRoot(historicalRoot);
   try {
     fs.mkdirSync(path.join(historicalRoot, 'specs/S-601-historical'), { recursive: true });
     const historicalSpec = [
@@ -1791,7 +1792,25 @@ function wikiClaimFixture() {
     assert.deepEqual(doctor(historicalRoot), [], 'doctor stays clean after convert-tasks');
     assert.equal(readHistorical(), beforeAnyCommand, 'a doctor run after convert-tasks never rewrites the historical Spec');
 
-    console.log('ok - a historical Ticket-header completed Spec is byte-identical after render, doctor, next, claim, close, render again, doctor and convert-tasks');
+    // (h) S-00H TK-007: the newly-converted TK-002 record is claimed and
+    // given a Receipt row by the `receipt` verb; the historical Spec stays
+    // byte-identical through both, exactly as it did through every other
+    // command above.
+    claimWork(historicalRoot, 'S-602', { agent: 'codex', date: '2026-09-17' });
+    assert.equal(readHistorical(), beforeAnyCommand, 'claiming the converted TK-002 record never rewrites the historical Spec');
+
+    const receipted = receiptTask(historicalRoot, 'S-602', {
+      task: 'TK-002', tests: 'tools/test-fixture.mjs: pass', docs: 'none', remainingGap: 'none'
+    });
+    assert.equal(receipted.row.run, 1, 'the receipt verb reaches the converted record and appends its first row');
+    assert.equal(readHistorical(), beforeAnyCommand, 'the receipt verb on the sibling never rewrites the historical Spec');
+
+    render(historicalRoot);
+    assert.equal(readHistorical(), beforeAnyCommand, 'rendering the new Receipt-derived board signal never rewrites the historical Spec');
+    assert.deepEqual(doctor(historicalRoot), [], 'doctor stays clean once the board reflects the receipt verb');
+    assert.equal(readHistorical(), beforeAnyCommand, 'a doctor run after the receipt verb never rewrites the historical Spec');
+
+    console.log('ok - a historical Ticket-header completed Spec is byte-identical after render, doctor, next, claim, close, render again, doctor, convert-tasks, claim and receipt');
   } finally {
     fs.rmSync(historicalRoot, { recursive: true, force: true });
   }
