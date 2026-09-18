@@ -147,9 +147,10 @@ hand out a third slice if asked, so the dispatcher holds the limit.
 
 ### Preserved open items
 
-- **TT-Q10**, whether a new Task identifier reads `T-###` or `TASK-###`, is
-  open and blocks S-00H TK-003 and TK-004. No Spec in this release answers
-  it; the owner does.
+- **TT-Q10**, the form of a new Task identifier, was answered by the owner on
+  2026-09-17: no change, newly allocated identifiers keep `TK-###` with `TK`
+  read as the Task prefix (S-00H evidence row of that date). S-00H TK-003 and
+  TK-004 are no longer gated on it.
 - **correction-019**: the owner objected to the shorthand that had been used
   for the WF-1 answer. The allocation itself is locked (the Blueprint owns the
   product-level destination; each Spec is the PRD-shaped smaller destination

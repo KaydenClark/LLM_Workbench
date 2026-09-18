@@ -107,15 +107,15 @@ and TK-003 do that, and rewriting the table ahead of them would break `next`,
   append-only evidence and are preserved as written.
 - Moving, retiring, reconciling or discarding any Spec or Task; that is S-00I.
 - The assembled-Spec review and Human QA closure; that is S-00J.
-- Answering TT-Q10.
+- Answering TT-Q10; the owner did, on 2026-09-17.
 
 ## Dependencies And Blockers
 
 ADR-000H is accepted, so no slice is gated on it. TT-Q10 was answered by the
 owner on 2026-09-17: newly allocated identifiers keep the `TK-###` form and
 `TK` is read as the Task prefix, so no allocator or folder form changes and
-TK-003 and TK-004 are gated only on their Task blockers. S-00I and S-00J are blocked on this Spec reaching
-`complete`, because folder lifecycle cannot reach a table row and the Spec QA
+TK-003 and TK-004 are gated only on their Task blockers. S-00I and S-00J are
+blocked on this Spec reaching `complete`, because folder lifecycle cannot reach a table row and the Spec QA
 gate reads Task records.
 
 ## Vertical Implementation Slices
@@ -158,10 +158,9 @@ TT-Q10 is settled (owner, 2026-09-17): newly allocated identifiers keep the
 vocabulary only: `Ticket` becomes `Task` in tool prose, function and field
 names, CLI messages, findings, the evidence `Event` text and the slice-table
 column header for newly written Specs, while the parser keeps accepting the
-historical `Ticket` column header. Roughly ten tool files
-plus tests. Each gets a red test before the change. The acceptance test that
-matters: newly allocated identifiers take the owner's chosen Task form while
-every historical `TK-###` string in a completed Spec is byte-identical before
+historical `Ticket` column header. Roughly ten tool files plus tests. Each
+gets a red test before the change. The acceptance test that matters: newly
+allocated identifiers keep the `TK-###` form while every historical `TK-###` string in a completed Spec is byte-identical before
 and after.
 
 ### TK-004 - Update `to-tickets`, the skills/controls that instruct the old model, and every generic template mirror
@@ -244,7 +243,8 @@ this ticket has no dependency on the others and can land independently.
       mirror uses `Ticket` for the execution slice, proven by a
       repository-wide sweep that failed before the change.
 - [ ] Newly allocated execution-slice identifiers take the owner's chosen Task
-      form.
+      form, `TK-###` with `TK` as the Task prefix (TT-Q10, 2026-09-17), proven
+      by the allocator test.
 - [ ] Every historical `TK-###` identifier inside a completed Spec is
       byte-identical before and after the migration, proven by test.
 - [x] A Task assembles its Packet from exactly its required members, includes
@@ -321,8 +321,8 @@ Not started.
 
 S-00I and S-00J depend on this Spec reaching `complete`; S-00P phase two
 depends on all three. If the skill-catalog contract forbids renaming
-`to-tickets` in place, a linked follow-up Spec owns that rename. TT-Q10 is the
-owner's to answer.
+`to-tickets` in place, a linked follow-up Spec owns that rename. TT-Q10 was
+the owner's to answer and was answered on 2026-09-17 (`TK-###` stays).
 
 ## Supersession
 
