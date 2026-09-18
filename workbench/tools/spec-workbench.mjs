@@ -10,7 +10,7 @@ import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
-import { rewriteAdrLinks, splitEvidenceSection, validateAdrs } from './adr.mjs';
+import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
@@ -972,22 +972,33 @@ function collectDirectoryFiles(dir) {
 }
 
 // Rewrites one file in place against `locations` (old absolute path -> new
-// absolute path), protecting its Append-Only Evidence And Execution Log (a
-// Spec's own frozen history) exactly as TK-002 protects the same heading:
-// the section is carried through untouched, its own link matches are counted
-// as `historical` rather than rewritten, and the file is only written back
-// when a live match outside that section actually changed. Reused for both
-// halves of a Spec move - the moved files' own outgoing links, and every
-// external file's incoming ones - so the two passes cannot drift apart.
+// absolute path, and - critically - every entry that did NOT move mapped to
+// itself, exactly as TK-002's own `locations` map does), protecting its
+// Append-Only Evidence And Execution Log (a Spec's own frozen history)
+// exactly as TK-002 protects the same heading: the section is carried
+// through untouched, its own link matches are counted as `historical` rather
+// than rewritten, and the file is only written back when a live match
+// outside that section actually changed. Also rewrites a
+// `canonicalized_in` frontmatter target (an ADR-only fact, harmless to check
+// on any other file since it is a no-op without frontmatter). Reused for
+// both halves of a Spec move - the moved files' own outgoing links, and
+// every external file's incoming ones - so the two passes cannot drift
+// apart. Mapping only the moving files, and leaving every unmoved target out
+// of `locations`, was corrective review finding 1: a moved file's own
+// outgoing link to an unmoved sibling still needs its relative depth
+// recomputed (the moved file sits one folder deeper now), and
+// `rewriteAdrLinks` can only do that when the unmoved target is in the map,
+// mapped to itself.
 function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals) {
   const original = fs.readFileSync(filePath, 'utf8');
   const { prefix, evidence, suffix } = splitEvidenceSection(original);
-  const rewrittenPrefix = rewriteAdrLinks(prefix, oldDir, newDir, locations);
+  const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
+  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations);
   const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations);
   const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations).count;
   const relative = path.relative(root, filePath).split(path.sep).join('/');
   if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
-  const rewritten = rewrittenPrefix.count + rewrittenSuffix.count;
+  const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
   if (rewritten > 0) {
     const finalContent = rewrittenPrefix.content + evidence + rewrittenSuffix.content;
     assertSafeWritePath(root, filePath);
@@ -1000,11 +1011,16 @@ function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals)
 // all) from the top level into a `SPEC_LIFECYCLE_FOLDERS` folder, with `git
 // mv` semantics, and repairs every live Markdown reference the move would
 // otherwise dangle - reusing TK-002's own rewriter (`rewriteAdrLinks`,
-// `splitEvidenceSection`) rather than a second implementation. Refuses a
-// dirty working tree (the moved candidate must be reviewable as the rename it
-// produces), a Spec that is not `complete` (only reconciled work retires),
-// or a folder outside the closed set. Moves no other Spec, and never touches
-// `archive`, which ADR-000I reserves for ADRs alone.
+// `splitEvidenceSection`, and now `rewriteCanonicalizedIn`) rather than a
+// second implementation. Refuses a dirty working tree (the moved candidate
+// must be reviewable as the rename it produces), a Spec that is not
+// `complete` (only reconciled work retires), a folder outside the closed
+// set, or a room with no Git working tree at all - corrective review finding
+// 3: a move outside Git cannot be recovered, unlike the ADR migration this
+// reuses, which supports a non-Git room because a whole-file rename there is
+// otherwise reversible by hand; a Spec move also rewrites content, which is
+// not. Moves no other Spec, and never touches `archive`, which ADR-000I
+// reserves for ADRs alone.
 export function moveSpecDirectory(rootDir, specId, folder) {
   const root = path.resolve(rootDir);
   if (!SPEC_LIFECYCLE_FOLDERS.includes(folder)) {
@@ -1022,8 +1038,10 @@ export function moveSpecDirectory(rootDir, specId, folder) {
     throw new Error(`${specId} is ${spec.status}, not complete; only a completed Spec may move to ${folder}`);
   }
   const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
-  const usesGit = gitStatus.status === 0;
-  if (usesGit && gitStatus.stdout.trim() !== '') {
+  if (gitStatus.status !== 0) {
+    throw new Error('move-spec requires a Git working tree so the move is recoverable; none was found');
+  }
+  if (gitStatus.stdout.trim() !== '') {
     throw new Error('move-spec refuses a dirty working tree; commit or stash first so the candidate shows only this move');
   }
   const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
@@ -1040,14 +1058,20 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   const movingFiles = collectDirectoryFiles(oldSpecDir);
 
   fs.mkdirSync(destinationRoot, { recursive: true });
-  if (usesGit) {
-    const result = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldSpecDir), path.relative(root, newSpecDir)], { encoding: 'utf8' });
-    if (result.status !== 0) throw new Error(`git mv failed for ${specId}: ${(result.stderr || result.stdout || '').trim()}`);
-  } else {
-    fs.renameSync(oldSpecDir, newSpecDir);
-  }
+  const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldSpecDir), path.relative(root, newSpecDir)], { encoding: 'utf8' });
+  if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
 
+  // Corrective review finding 1: `locations` must carry every reference
+  // target this move can touch, not only the ones that are moving - a moved
+  // file's own outgoing link to an unmoved sibling Spec or ADR still needs
+  // its relative path recomputed, because the moved file itself now sits one
+  // folder deeper. `collectSpecReferenceFiles` is called once, after the
+  // move, excluding the Spec's own new directory (its files are mapped
+  // old-path -> new-path immediately below, not to themselves).
   const locations = new Map();
+  for (const file of collectSpecReferenceFiles(root, newSpecDir)) {
+    locations.set(file, file);
+  }
   for (const file of movingFiles) {
     locations.set(file, path.join(newSpecDir, path.relative(oldSpecDir, file)));
   }
@@ -1062,26 +1086,48 @@ export function moveSpecDirectory(rootDir, specId, folder) {
     rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
   }
 
+  // Corrective review finding 3: `git mv` already stages the rename; leaving
+  // the content rewrites above unstaged would show the candidate as a mix
+  // (staged rename, unstaged edits) rather than one reviewable change. Stage
+  // everything instead of leaving everything unstaged, because the dirty-tree
+  // refusal above already guarantees that anything unstaged at this point is
+  // exactly what this move just produced - nothing pre-existing can be swept
+  // in by a wide `add`.
+  spawnSync('git', ['-C', root, 'add', '-A']);
+
   return {
     specId,
     folder,
     from: path.relative(root, oldSpecDir).split(path.sep).join('/'),
     to: path.relative(root, newSpecDir).split(path.sep).join('/'),
-    usesGit,
+    usesGit: true,
     referencesRewritten: totals.referencesRewritten,
     historicalReferencesLeft: totals.historicalReferencesLeft
   };
+}
+
+// The `canonicalized_in` targets a frontmatter block declares, normalized to
+// an array exactly as `validateAdrs` normalizes them (a bare scalar becomes a
+// one-element array; an absent key becomes `[]`), so this scanner and that
+// validator agree on what counts as a canonicalization target.
+function canonicalizedInTargets(content) {
+  const data = parseFrontmatter(content).data;
+  if (!data) return [];
+  const value = data.canonicalized_in;
+  return Array.isArray(value) ? value : (value ? [value] : []);
 }
 
 // S-00I TK-003: the complete reference and link scan, exported so TK-005
 // (Spec/Task retirement) and TK-006 (the discard gate) reuse it rather than
 // each writing their own. Read-only: it walks every live Markdown surface a
 // Spec or ADR move can touch (the same set `collectSpecReferenceFiles`
-// collects) and reports a local link that does not resolve on disk, skipping
+// collects) and reports a local link, or a `canonicalized_in` frontmatter
+// target (corrective review finding 2 - a root-relative fact, not a body
+// link, so it needs its own check), that does not resolve on disk, skipping
 // each file's own Append-Only Evidence And Execution Log - a Spec's frozen
 // history is expected to keep naming a pre-move path, and that is not a
 // stale reference for this scan to report. A finding names the file and the
-// unresolved link text; nothing here writes anything.
+// unresolved target text; nothing here writes anything.
 export function scanReferences(rootDir) {
   const root = path.resolve(rootDir);
   const findings = [];
@@ -1095,6 +1141,12 @@ export function scanReferences(rootDir) {
         if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) {
           findings.push({ file: relative, target: link });
         }
+      }
+    }
+    for (const owner of canonicalizedInTargets(prefix)) {
+      const target = path.resolve(root, owner);
+      if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) {
+        findings.push({ file: relative, target: owner });
       }
     }
   }

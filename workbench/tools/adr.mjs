@@ -112,6 +112,56 @@ export function stripFrontmatterKey(content, key) {
   return { content: lines.join(eol), removed: true };
 }
 
+// S-00I TK-003 corrective: `canonicalized_in` names a repository-relative
+// path directly from the project root - unlike a body Markdown link, it is
+// never relative to the record's own directory, so it needs no `oldDir`/
+// `newDir` recomputation, only a literal lookup in `locations` (old absolute
+// path -> current absolute path) and a rewrite to the new root-relative
+// value when that differs. Handles both the ordinary list form
+// (`canonicalized_in:\n  - path`) and a same-line scalar
+// (`canonicalized_in: path`), line-based and terminator-preserving like the
+// rest of this file. A record whose `canonicalized_in` names nothing this
+// caller's `locations` map covers is returned unchanged.
+export function rewriteCanonicalizedIn(content, root, locations) {
+  const eol = nativeEol(content);
+  const lines = content.split(eol);
+  if (lines[0] !== '---') return { content, count: 0 };
+  let closeIndex = -1;
+  for (let index = 1; index < lines.length; index += 1) { if (lines[index] === '---') { closeIndex = index; break; } }
+  if (closeIndex === -1) return { content, count: 0 };
+  let count = 0;
+  let inBlock = false;
+  const rewriteTarget = (raw) => {
+    const oldAbsolute = path.resolve(root, raw);
+    if (!locations.has(oldAbsolute)) return null;
+    const newAbsolute = locations.get(oldAbsolute);
+    const relative = path.relative(root, newAbsolute).split(path.sep).join('/');
+    return relative === raw ? null : relative;
+  };
+  for (let index = 1; index < closeIndex; index += 1) {
+    const line = lines[index];
+    const keyMatch = line.match(/^canonicalized_in:\s*(.*)$/);
+    if (keyMatch) {
+      const scalar = keyMatch[1].trim();
+      if (scalar) {
+        const rewritten = rewriteTarget(scalar);
+        if (rewritten) { lines[index] = `canonicalized_in: ${rewritten}`; count += 1; }
+        inBlock = false;
+      } else {
+        inBlock = true;
+      }
+      continue;
+    }
+    if (inBlock) {
+      const item = line.match(/^(\s*-\s*)(.+)$/);
+      if (!item) { inBlock = false; continue; }
+      const rewritten = rewriteTarget(item[2].trim());
+      if (rewritten) { lines[index] = `${item[1]}${rewritten}`; count += 1; }
+    }
+  }
+  return { content: count > 0 ? lines.join(eol) : content, count };
+}
+
 // Enumerates the top-level directory and, when present, each lifecycle
 // subfolder in `ADR_LIFECYCLE_FOLDERS`. A flat collection with no subfolders
 // produces exactly the same list, in the same order, as before this change -

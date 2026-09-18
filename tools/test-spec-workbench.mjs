@@ -24,6 +24,7 @@ import {
   scanReferences
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
+import { validateAdrs } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
@@ -2289,8 +2290,54 @@ function completeFixtureSpec(id) {
       '# Agents\n\nSee [S-500](workbench/specs/S-500-retiring-fixture/SPEC.md) for the fixture rule.\n\nRoutes to workbench/wiki.\n');
 
     // The retiring Spec: complete, table-and-record backed so the move must
-    // carry a standalone Task record along with SPEC.md.
-    writeAt(lifecycleRoot, 'workbench/specs/S-500-retiring-fixture/SPEC.md', completeFixtureSpec('S-500'));
+    // carry a standalone Task record along with SPEC.md, and - corrective
+    // review finding 1 - carrying its OWN outgoing relative links to an
+    // unmoved sibling Spec and an unmoved ADR. Those links must be rewritten
+    // by the move even though neither target moves, because S-500 itself now
+    // sits one folder deeper.
+    writeAt(lifecycleRoot, 'workbench/specs/S-500-retiring-fixture/SPEC.md', [
+      '# S-500 - Fixture Capability',
+      '',
+      '**Spec ID:** S-500',
+      '**Status:** complete',
+      '**Priority:** 0',
+      '**Owner:** agent',
+      '**Updated:** 2026-09-18',
+      '**Catalog description:** Proves the fixture lifecycle.',
+      '**Blockers:** none',
+      '**Latest event:** Spec activated.',
+      '**Next gate:** Complete TK-001.',
+      '',
+      '## Decisions And Contracts',
+      '',
+      '- See [S-600](../S-600-sibling-fixture/SPEC.md).',
+      '- Delivered by [ADR-0001](../../docs/adr/0001-fixture.md).',
+      '',
+      '## Vertical Implementation Slices',
+      '',
+      '| Task | Slice | Status | Blockers | Proof |',
+      '|---|---|---|---|---|',
+      '| TK-001 | First slice | done | none | landed |',
+      '',
+      '## Acceptance Criteria',
+      '',
+      '- [x] Expected behavior is verified.',
+      '',
+      '## Append-Only Evidence And Execution Log',
+      '',
+      '| Date | Task | Event | Verification | Docs | Remaining gap |',
+      '|---|---|---|---|---|---|',
+      '',
+      '## Completion Result',
+      '',
+      'Landed.',
+      '',
+      '## Supersession',
+      '',
+      '- Supersedes: none',
+      '- Superseded by: none',
+      ''
+    ].join('\n'));
     writeAt(lifecycleRoot, 'workbench/specs/S-500-retiring-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
       id: 'TK-002', specId: 'S-500', slice: 'Second slice', status: 'done', blockers: 'none',
       destination: 'spec-acceptance: S-500 Acceptance Criteria'
@@ -2345,12 +2392,16 @@ function completeFixtureSpec(id) {
     // An active, not-yet-complete Spec: the refusal fixture below.
     writeAt(lifecycleRoot, 'workbench/specs/S-800-active-fixture/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-800'));
 
-    // An accepted ADR naming the retiring Spec's live path.
+    // An accepted ADR naming the retiring Spec's live path both as a body
+    // link AND - corrective review finding 2 - as a `canonicalized_in`
+    // frontmatter target, a root-relative fact rather than a body link, and
+    // a distinct reference class the move must also repair.
     fs.writeFileSync(path.join(lifecycleRoot, 'workbench/docs/adr/0001-fixture.md'), [
       '---',
       'date: 2026-09-18',
       'canonicalized_in:',
       '  - AGENTS.md',
+      '  - workbench/specs/S-500-retiring-fixture/SPEC.md',
       '---',
       '',
       '# A fixture decision',
@@ -2433,10 +2484,37 @@ function completeFixtureSpec(id) {
     assert.match(siblingContent, /mentions \[S-500\]\(\.\.\/S-500-retiring-fixture\/SPEC\.md\)/,
       'a sibling Spec\'s Append-Only Evidence row keeps its historical, now-stale path untouched');
 
-    assert.ok(Object.values(result.referencesRewritten).reduce((a, b) => a + b, 0) >= 4,
+    // Corrective review finding 1: the moved Spec's OWN outgoing links to an
+    // unmoved sibling and an unmoved ADR must be recomputed for its new,
+    // one-folder-deeper location - not just left alone because neither
+    // target itself moved.
+    const movedSpecContent = fs.readFileSync(newSpecPath, 'utf8');
+    assert.match(movedSpecContent, /- See \[S-600\]\(\.\.\/\.\.\/S-600-sibling-fixture\/SPEC\.md\)\./,
+      'the moved Spec\'s own outgoing link to an unmoved sibling Spec is recomputed for its new depth');
+    assert.match(movedSpecContent, /- Delivered by \[ADR-0001\]\(\.\.\/\.\.\/\.\.\/docs\/adr\/0001-fixture\.md\)\./,
+      'the moved Spec\'s own outgoing link to an unmoved ADR is recomputed for its new depth');
+
+    // Corrective review finding 2: `canonicalized_in` is a root-relative
+    // frontmatter fact, not a body link, and needs its own rewrite.
+    const adrContent = fs.readFileSync(path.join(lifecycleRoot, 'workbench/docs/adr/0001-fixture.md'), 'utf8');
+    assert.match(adrContent, /canonicalized_in:\n {2}- AGENTS\.md\n {2}- workbench\/specs\/retired\/S-500-retiring-fixture\/SPEC\.md/,
+      'an accepted ADR\'s canonicalized_in target is rewritten to the moved Spec\'s real path');
+    assert.deepEqual(validateAdrs(lifecycleRoot).filter((item) => item.code === 'invalid-adr'), [],
+      'adr validate stays clean after the move: canonicalized_in still names an existing owner');
+
+    assert.ok(Object.values(result.referencesRewritten).reduce((a, b) => a + b, 0) >= 6,
       'the move reports the live references it rewrote, counted');
     assert.ok(Object.values(result.historicalReferencesLeft).reduce((a, b) => a + b, 0) >= 1,
       'the move reports the historical references it deliberately left, counted');
+
+    // Corrective review finding 3: `git mv` stages the rename; the content
+    // rewrites above must be staged too, not left as a mix. Every porcelain
+    // line's second (worktree) column must be blank - nothing unstaged.
+    const porcelain = execFileSync('git', ['-C', lifecycleRoot, 'status', '--porcelain'], { encoding: 'utf8' });
+    assert.ok(porcelain.trim().length > 0, 'the move actually changed something');
+    for (const line of porcelain.split('\n').filter(Boolean)) {
+      assert.equal(line[1], ' ', `line "${line}" must be fully staged, not a mix of staged and unstaged`);
+    }
 
     assert.equal(loadSpecs(lifecycleRoot).some((spec) => spec.id === 'S-500'), false,
       'the active roster no longer carries S-500');
@@ -2451,8 +2529,11 @@ function completeFixtureSpec(id) {
     const afterMoveFindings = doctor(lifecycleRoot).filter((item) => item.specId === 'S-500');
     assert.deepEqual(afterMoveFindings, [], 'a correctly retired, complete Spec raises no identity or retired-status finding');
 
-    const afterMoveScan = scanReferences(lifecycleRoot).filter((item) => item.target.includes('S-500-retiring-fixture') && !item.target.includes('retired/'));
-    assert.deepEqual(afterMoveScan, [], 'the reference scan finds no remaining live reference to the pre-move path');
+    // The Spec forbids a spot check filtered to this fixture's own name: the
+    // whole-room scan must report nothing unresolved anywhere, not merely
+    // nothing naming S-500's old path.
+    assert.deepEqual(scanReferences(lifecycleRoot), [],
+      'the reference scan finds nothing unresolved anywhere in the room after the move');
 
     // ---- CATALOG.md and the hot board: retired is reachable, never hot ---
     render(lifecycleRoot);
@@ -2507,5 +2588,64 @@ function completeFixtureSpec(id) {
     console.log('ok - doctor\'s identity checks (duplicate-id, unstable-path) and the new retired-not-complete finding cover retired Specs, which stay invisible to loadSpecs');
   } finally {
     fs.rmSync(identityRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Corrective review finding 3: a move without a Git working tree at all
+// cannot be recovered (there is no commit to fall back to), so it must be
+// refused outright rather than falling through to a bare `fs.renameSync`.
+// ============================================================================
+{
+  const noGitRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-lifecycle-no-git-'));
+  try {
+    initLifecycleFixture(noGitRoot);
+    fs.writeFileSync(path.join(noGitRoot, 'AGENTS.md'), '# Agents\n');
+    writeAt(noGitRoot, 'workbench/specs/S-900-no-git-fixture/SPEC.md', completeFixtureSpec('S-900'));
+
+    assert.throws(() => moveSpecDirectory(noGitRoot, 'S-900', 'retired'),
+      /requires a Git working tree/,
+      'a room with no Git working tree at all refuses the move outright, rather than performing an unrecoverable bare rename');
+    assert.ok(fs.existsSync(path.join(noGitRoot, 'workbench/specs/S-900-no-git-fixture/SPEC.md')),
+      'a refused move leaves the Spec exactly where it was');
+
+    console.log('ok - moveSpecDirectory refuses a room with no Git working tree at all, since such a move could never be recovered');
+  } finally {
+    fs.rmSync(noGitRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Corrective review finding 2, continued: the reference scan must find a
+// planted stale `canonicalized_in` target exactly as it finds a stale body
+// link - this is the read-only half of the fix, independent of any move.
+// ============================================================================
+{
+  const staleCanonRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-lifecycle-stale-canon-'));
+  try {
+    initLifecycleFixture(staleCanonRoot);
+    fs.writeFileSync(path.join(staleCanonRoot, 'workbench/docs/adr/0001-stale.md'), [
+      '---',
+      'date: 2026-09-18',
+      'canonicalized_in:',
+      '  - AGENTS.md',
+      '  - workbench/specs/S-999-never-existed/SPEC.md',
+      '---',
+      '',
+      '# A stale decision',
+      '',
+      'No body reference at all - only the frontmatter target is stale.',
+      '',
+      'Provenance: owner decision.',
+      ''
+    ].join('\n'));
+
+    const stale = scanReferences(staleCanonRoot);
+    assert.ok(stale.some((item) => item.file === 'workbench/docs/adr/0001-stale.md' && item.target === 'workbench/specs/S-999-never-existed/SPEC.md'),
+      'scanReferences finds a planted stale canonicalized_in target, the same as a stale body link');
+
+    console.log('ok - scanReferences finds a planted stale canonicalized_in frontmatter target');
+  } finally {
+    fs.rmSync(staleCanonRoot, { recursive: true, force: true });
   }
 }
