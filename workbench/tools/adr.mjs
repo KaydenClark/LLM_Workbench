@@ -460,7 +460,7 @@ function collectExternalMarkdownFiles(root) {
 }
 
 // A `SPEC.md`'s Append-Only Evidence And Execution Log is frozen history:
-// `tools/check-append-only.py` pins its rows by Date/Ticket/Event, and this
+// `tools/check-append-only.py` pins each row's first-published text, and this
 // migration must never rewrite a link inside one, even a stale one pointing
 // at a record's pre-migration path. Split the file into the part before that
 // section, the section itself (untouched), and the part after, so rewriting
