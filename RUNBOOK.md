@@ -808,6 +808,8 @@ node workbench/tools/spec-workbench.mjs close S-001 \
   --remaining-gap "[GAP OR none]"
 node workbench/tools/spec-workbench.mjs complete S-001
 node workbench/tools/spec-workbench.mjs convert-tasks S-001
+node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-002 \
+  --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
@@ -816,7 +818,12 @@ node workbench/tools/spec-workbench.mjs doctor
 unfinished slice row of an active spec (carrying the row's plan as `Planned
 verification`, never as proof), leaves done rows and completed specs untouched,
 and refuses a second run; a spec whose `tasks/` directory exists is read from
-its records and its retained table is history. `next` returns one eligible ready task. `show` loads one stable work packet.
+its records and its retained table is history. `receipt` appends one
+append-only run row (branch, HEAD SHA, upstream distance, dirty file count,
+tests, docs, remaining gap, checksum) to a named in-progress Task record;
+`close` appends the run's final row on a record-backed Task before flipping
+it, and the hot board shows each in-progress Task's run count, latest branch,
+short SHA and dirty count without ever rendering the run table. `next` returns one eligible ready task. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
@@ -1409,7 +1416,7 @@ spec, manifest, or projection can choose whether its own finding blocks.
 | Effect | Consumer behavior | Codes |
 |---|---|---|
 | `all` | `doctor` exits 1; `next` and `claim` refuse to read the layout | `invalid-manifest`, `upgrade-required`, `invalid-lane`, `unsafe-lane`, `invalid-collection`, `missing-collection`, `invalid-skill-policy`, `invalid-wiki-profile`, `sessions-not-ignored`, `tools-receipt-missing`, `tools-receipt-drift`, and the Genesis readiness codes |
-| `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target`, `row-record-collision` |
+| `selection` | `doctor` exits 1 until repaired; selection is unsafe | `malformed-spec`, `duplicate-id`, `invalid-state`, `contradictory-state`, `unstable-path`, `missing-evidence`, `render-drift`, `broken-render-target`, `row-record-collision`, `receipt-corrupt` |
 | `selected-slice` | `doctor` reports it and exits 0; `next` excludes the slice; `claim` refuses it by name | `blocked-slice` |
 | `none` (attention) | reported, exit 0, never hides work | `stale-claim`, `broken-link`, `complete-on-integration`, `stale-register`, `stale-note`, `stale-skill`, `skill-generation-unknown`, `room-brain-unrouted`, `stale-stamp`, `stale-seed`, `unverified-provenance`, and the ADR and wiki findings until their tools ship |
 | `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |

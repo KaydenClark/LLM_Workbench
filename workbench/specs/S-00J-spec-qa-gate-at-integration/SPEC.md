@@ -1,15 +1,15 @@
 # S-00J - Spec QA Gate And Corrective-Task Return Path
 
 **Spec ID:** S-00J
-**Status:** blocked
+**Status:** active
 **Priority:** 3
-**Owner:** unassigned
+**Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-16
+**Updated:** 2026-09-18
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
-**Blockers:** S-00H must reach `complete` before TK-001 is claimable.
-**Latest event:** Rewritten 2026-09-16 against the WF grilling note at revision 57 under the v4.0.0 rollout (S-00O); the stale "WF-8 is an open owner question" and ADR-acceptance blockers removed.
-**Next gate:** When S-00H is `complete`, set Status to `active`; `claim S-00J` then takes TK-001.
+**Blockers:** none; S-00H is `complete` (integration `49c671e`).
+**Latest event:** TK-001 claimed by DISPATCHER.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -140,7 +140,7 @@ locked.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Report the assembled Spec state for a reviewer at a stable seam | ready | S-00H | Red: for a fixture Spec with one unfinished Task the report must say incomplete and list the gap, and no seam exists to call; green: report of Tasks with proof, acceptance lines, evidence and gaps bound to a candidate SHA, full suite |
+| TK-001 | Report the assembled Spec state for a reviewer at a stable seam | in-progress | S-00H | Red: for a fixture Spec with one unfinished Task the report must say incomplete and list the gap, and no seam exists to call; green: report of Tasks with proof, acceptance lines, evidence and gaps bound to a candidate SHA, full suite |
 | TK-002 | Record a separate-context review verdict against the immutable candidate | blocked | TK-001 | Red: recording a verdict for a SHA that is not the current candidate is refused, and a verdict appended to a Spec is preserved append-only; green: pass or fail verdict with findings, reviewer context and SHA in the Spec's evidence |
 | TK-003 | Turn a failed verdict into corrective Tasks under the still-open Spec | blocked | TK-002 | Red: a failed verdict that leaves the Spec with no corrective Task is refused; green: one Task record per diagnosed defect created through the Task seam, Spec stays open, `render` shows them, done Tasks not reopened, with the retired-folder case proven once S-00I TK-005 exists |
 | TK-004 | Bind the gate into `complete` and the merge-preparation workflow | blocked | TK-003 | Red: `complete` succeeds with no passed verdict on the current candidate, and the branch-closeout path proceeds for an incomplete Spec candidate; green: both refuse, a branch presented for a Task ID with its Spec open is reported not refused while S-00O exemption 2 is active, integration branch resolved from the manifest |
