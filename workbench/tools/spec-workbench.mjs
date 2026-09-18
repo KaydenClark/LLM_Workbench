@@ -396,17 +396,16 @@ function gitFindings(root, specs) {
   // dispatch is already finished there. It still dispatches: a checkout may be
   // pinned deliberately, so the finding informs and never blocks.
   //
-  // A room with an unresolved row/record collision already carries that
-  // finding from `packetFindings`; `selectCandidate` refuses to resolve a
-  // candidate through it (via `slicesOf`), and this informational check
-  // simply has nothing to report rather than taking the whole doctor run down
-  // with it.
-  let selected;
-  try {
-    selected = selectCandidate(specs);
-  } catch {
-    selected = null;
-  }
+  // A room with an unresolved row/record collision on an active Spec already
+  // carries that finding from `packetFindings`; `selectCandidate` refuses to
+  // resolve a candidate through it (via `slicesOf`, which throws only for
+  // that one reason), and this informational check simply has nothing to
+  // report rather than taking the whole doctor run down with it. The guard
+  // names that exact condition instead of catching every exception
+  // `selectCandidate` could ever raise, so an unrelated bug here still
+  // surfaces instead of being read as "no candidate".
+  const hasActiveSliceConflict = specs.some((item) => item.status === 'active' && item.sliceConflict);
+  const selected = hasActiveSliceConflict ? null : selectCandidate(specs);
   const spec = selected && specs.find((item) => item.id === selected.specId);
   for (const { ref, name } of spec ? refs : []) {
     const status = readAtRef(root, ref, spec.relativePath)?.match(/^\*\*Status:\*\*\s*(\S+)/m)?.[1];
@@ -627,11 +626,17 @@ function identityFindings(specs) {
         localTasks.set(key, item.id);
       }
     }
-    for (const item of [...spec.rows, ...(spec.records ?? [])]) {
-      const key = visibleIdKey(item.id);
-      if (/^TK-\d+$/.test(item.id)) continue;
-      if (globalTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${item.id} conflicts with ${globalTasks.get(key)}`, { specId: spec.id, taskId: item.id }));
-      else globalTasks.set(key, `${spec.id}/${item.id}`);
+    // The global (cross-spec) reservation is deduplicated within this spec
+    // first: a letter-bearing id held by both a row and a record here is the
+    // row/record collision above, already reported once by name, not a
+    // second spec reusing the label. Comparing the raw combined list instead
+    // would meet this spec's own id twice and report it as conflicting with
+    // itself.
+    const idsInSpec = new Map([...spec.rows, ...(spec.records ?? [])].map((item) => [visibleIdKey(item.id), item.id]));
+    for (const [key, id] of idsInSpec) {
+      if (/^TK-\d+$/.test(id)) continue;
+      if (globalTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${id} conflicts with ${globalTasks.get(key)}`, { specId: spec.id, taskId: id }));
+      else globalTasks.set(key, `${spec.id}/${id}`);
     }
   }
   return findings;

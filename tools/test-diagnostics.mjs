@@ -205,6 +205,49 @@ test('a row/record collision is a named row-record-collision finding, not malfor
   }
 });
 
+// Review of S-00H TK-003 (9bd14e1, PASS with three Low findings) found that
+// identityFindings' cross-spec letter-bearing check walks a Spec's rows and
+// records as one combined list per spec before comparing against every other
+// spec's ids. A numeric TK-001-shaped id skips that check entirely, so the
+// test above never exercised it; a letter-bearing id like TK-00A does not
+// skip it, and reading a row TK-00A immediately followed by a record TK-00A
+// from the SAME spec means the second occurrence finds the first already
+// reserved and reports "Duplicate task ID: S-001/TK-00A conflicts with
+// S-001/TK-00A" - the spec colliding with itself - beside the
+// row-record-collision finding the adjacent comment says is the one and only
+// report for this shape.
+test('a letter-bearing row/record collision is reported once, never doubled as a duplicate-id against itself', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', {
+      tasks: '| TK-00A | First slice | done | none | node test |'
+    }));
+    write(dir, 'workbench/specs/S-001-first/tasks/TK-00A/TASK.md', [
+      '# TK-00A - First slice',
+      '',
+      '**Task ID:** TK-00A',
+      '**Spec ID:** S-001',
+      '**Slice:** First slice',
+      '**Status:** ready',
+      '**Blockers:** none',
+      '**Destination:** spec-acceptance: S-001 Acceptance Criteria',
+      ''
+    ].join('\n'));
+    render(dir);
+    const findings = doctor(dir, { home: quietHome });
+    const collisions = findings.filter((item) => item.code === 'row-record-collision');
+    assert.equal(collisions.length, 1, 'the collision is reported exactly once');
+    assert.match(collisions[0].message, /S-001 carries both a slice-table row and a Task record for TK-00A/);
+    assert.ok(
+      !findings.some((item) => item.code === 'duplicate-id' && item.specId === 'S-001' && item.taskId === 'TK-00A'),
+      'the same row/record pair must never also surface as a duplicate-id conflicting with itself'
+    );
+    assert.equal(cliDoctor(dir).status, 1, 'row-record-collision is a selection-effect finding, so it fails doctor like any other');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 function snapshot(directory) {
   const entries = [];
   (function walk(current) {
@@ -525,6 +568,91 @@ test('the declared integration branch is checked by doctor as a git-scope error 
     assert.equal(claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }).tasks[0].status, 'in-progress', 'claim proceeds without the declaration');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// Review of S-00H TK-003 (9bd14e1, PASS with three Low findings) found the
+// bare `catch {}` this replaced would have swallowed any exception thrown
+// while resolving `gitFindings`'s own candidate, not only the row/record
+// collision the surrounding comment names. The fix names the exact condition
+// instead: an audit of every `throw` in spec-workbench.mjs (none reachable
+// from `selectCandidate` besides the `sliceConflict` one in `slicesOf`) found
+// no other exception the guard could currently be hiding, so this proves the
+// guard's precision instead - it must key on `status === 'active'`, the same
+// filter `selectCandidate` itself applies, not "any spec anywhere has a
+// conflict" - and pins the swallow's removal so a future refactor cannot
+// silently reintroduce a blanket catch around this call.
+test('gitFindings only skips its candidate lookup for an active row/record collision, and no blanket catch remains around it', () => {
+  const source = fs.readFileSync(specTool, 'utf8');
+  assert.doesNotMatch(
+    source,
+    /selectCandidate\(specs\);\s*\n\s*\} catch/,
+    'no bare catch may wrap the gitFindings candidate lookup again; a narrow, named guard replaced it'
+  );
+  assert.match(
+    source,
+    /hasActiveSliceConflict[\s\S]{0,80}status === 'active'[\s\S]{0,20}sliceConflict/,
+    'the guard must name the active-status condition explicitly rather than catching every exception'
+  );
+
+  const dir = project();
+  try {
+    // Two Specs: S-001 is active with an unresolved row/record collision
+    // (skips the lookup by name); S-002 is a second active Spec with no
+    // collision, whose ready slice `gitFindings` must still be able to
+    // resolve through `selectCandidate` normally, proving the guard did not
+    // swallow its way past a real candidate.
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    write(dir, 'workbench/specs/S-001-first/tasks/TK-001/TASK.md', [
+      '# TK-001 - First slice',
+      '',
+      '**Task ID:** TK-001',
+      '**Spec ID:** S-001',
+      '**Slice:** First slice',
+      '**Status:** ready',
+      '**Blockers:** none',
+      '**Destination:** spec-acceptance: S-001 Acceptance Criteria',
+      ''
+    ].join('\n'));
+    render(dir);
+    const withCollision = doctor(dir, { home: quietHome });
+    assert.ok(withCollision.some((item) => item.code === 'row-record-collision'), 'the collision is still reported');
+    assert.equal(cliDoctor(dir).status, 1, 'row-record-collision is a selection-effect finding, so it fails doctor even though the room keeps reporting');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+
+  // A non-active (blocked) Spec carrying the same shape of collision is
+  // exactly the case `selectCandidate` already skips by its own status
+  // filter, so it must not be what the guard keys on either. A separate,
+  // genuinely active and uncontested Spec proves the guard did not swallow
+  // its way past a real candidate: if the guard keyed on "a collision exists
+  // anywhere in the room" rather than "on an active Spec", this candidate
+  // would go unresolved even though nothing about it is wrong.
+  const isolationDir = project();
+  try {
+    write(isolationDir, 'workbench/specs/S-002-clean/SPEC.md', spec('S-002'));
+    write(isolationDir, 'workbench/specs/S-003-blocked/SPEC.md', spec('S-003', { status: 'blocked' }));
+    write(isolationDir, 'workbench/specs/S-003-blocked/tasks/TK-001/TASK.md', [
+      '# TK-001 - Blocked slice',
+      '',
+      '**Task ID:** TK-001',
+      '**Spec ID:** S-003',
+      '**Slice:** Blocked slice',
+      '**Status:** ready',
+      '**Blockers:** none',
+      '**Destination:** spec-acceptance: S-003 Acceptance Criteria',
+      ''
+    ].join('\n'));
+    render(isolationDir);
+    const findings = doctor(isolationDir, { home: quietHome });
+    assert.ok(findings.some((item) => item.code === 'row-record-collision' && item.specId === 'S-003'),
+      'the blocked spec\'s collision is still reported');
+    assert.equal(cliDoctor(isolationDir).status, 1, 'row-record-collision still fails doctor even on a non-active spec');
+    assert.equal(nextWork(isolationDir).specId, 'S-002',
+      'a collision on a non-active spec must not suppress selection of an unrelated active candidate');
+  } finally {
+    fs.rmSync(isolationDir, { recursive: true, force: true });
   }
 });
 

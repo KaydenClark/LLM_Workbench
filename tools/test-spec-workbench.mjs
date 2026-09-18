@@ -1562,13 +1562,13 @@ function wikiClaimFixture() {
 {
   const sweepRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-  // Every entry names one specific line pattern this ticket deliberately
+  // Every entry names one specific line pattern this task deliberately
   // leaves saying "ticket", with the reason a reviewer can check against the
-  // file itself. Nothing else may say it. See this ticket's return for the
+  // file itself. Nothing else may say it. See this task's return for the
   // same list with fuller reasoning.
   const TICKET_SWEEP_ALLOWLIST = [
     { file: 'workbench/tools/workbench-layout.mjs', match: 'to-tickets',
-      reason: 'the still-live core skill directory name skills/to-tickets/; TK-004 renames the skill itself, not this ticket' },
+      reason: 'the still-live core skill directory name skills/to-tickets/; TK-004 renames the skill itself, not this task' },
     { file: 'tools/test-workbench-layout.mjs', match: 'to-tickets',
       reason: "a skillPolicy fixture naming the still-live core skill 'to-tickets'; TK-004 renames it" },
     { file: 'tools/test-skill-catalog.mjs', match: 'to-tickets',
@@ -1578,7 +1578,7 @@ function wikiClaimFixture() {
     { file: 'tools/test-skill-catalog.mjs', match: 'one eligible ticket',
       reason: "asserts against the literal current skills/implement/SKILL.md prose ('one eligible ticket'); that skill's rename is TK-004's" },
     { file: 'tools/team-coordination-contract.mjs', match: 'ticket and proof store',
-      reason: "matches the literal current prose of 'team templates/README.md' (a template outside this ticket's tool-vocabulary scope; the dogfood boundary names the rename TK-004's); loosening the pattern without renaming the template would desync the contract from the file it checks" },
+      reason: "matches the literal current prose of 'team templates/README.md' (a template outside this task's tool-vocabulary scope; the dogfood boundary names the rename TK-004's); loosening the pattern without renaming the template would desync the contract from the file it checks" },
     { file: 'tools/test-team-coordination.mjs', match: 'ticket and proof store',
       reason: "asserts the same literal message tools/team-coordination-contract.mjs emits while checking the unrenamed template; see that file's allow-list entry" }
   ];
