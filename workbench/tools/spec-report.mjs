@@ -31,8 +31,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { parseMarkdownTableRow } from './markdown-table.mjs';
-import { findSpec, slicesOf } from './spec-workbench.mjs';
+import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
+import { appendEvidence, atomicWrite, findSpec, slicesOf } from './spec-workbench.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
 import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
@@ -48,6 +48,9 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   const acceptance = parseAcceptance(spec.content);
   const evidence = parseEvidence(spec.content);
   const completionResult = section(spec.content, 'Completion Result').trim();
+  const candidate = candidateBinding(root, candidateSha);
+  const verdicts = parseVerdicts(evidence);
+  const latestVerdict = latestVerdictFor(verdicts, candidate);
 
   const gaps = collectGaps({ tasks, acceptance, completionResult, evidence });
 
@@ -63,14 +66,142 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
     latestEvent: spec.latestEvent,
     nextGate: spec.nextGate,
     path: spec.relativePath,
-    candidate: candidateBinding(root, candidateSha),
+    candidate,
     tasks,
     acceptance,
     evidence,
+    verdicts,
+    latestVerdict,
     completionResult,
     gaps,
     complete: gaps.length === 0
   };
+}
+
+// S-00J TK-002: a reviewer records a pass or fail verdict against the exact
+// current candidate, appended to the Spec's append-only evidence log through
+// the same `appendEvidence` seam `closeTask` and `completeSpec` already use
+// (never a second append implementation). "Current candidate" is exact and
+// only exact: the given SHA must both exist in this repository
+// (`git cat-file -e`) and equal the room's own `HEAD` at recording time,
+// character for character - no prefix matching, no "close enough", unlike
+// the report's own `candidateBinding` above, which deliberately resolves an
+// abbreviated SHA so a reviewer can still see whether it matches HEAD. A
+// verdict is a stricter binding than a report: reusing a review after its
+// candidate moves is exactly what this refuses, so an abbreviated SHA that
+// happens to resolve to HEAD is refused the same as any other non-exact
+// value - resolving it first would silently accept the "close enough" this
+// seam exists to rule out.
+//
+// This only ever appends: there is no update or rewrite entry point here, so
+// a second verdict is a second row, never a replacement of the first, and
+// `tools/check-append-only.py`'s identity rule (Date, second cell, Event -
+// here `review` and `Review verdict: <result> at <sha>`) is satisfied by
+// construction: two verdicts for different candidates or results generate
+// different identities, and this module never rewrites a row it already
+// wrote.
+export function recordReviewVerdict(rootDir, specId, options = {}) {
+  const root = path.resolve(rootDir);
+  const candidate = requiredString(options.candidate, 'recordReviewVerdict requires a --candidate SHA');
+  const result = options.result;
+  if (result !== 'pass' && result !== 'fail') {
+    throw new Error(`recordReviewVerdict requires --result of pass or fail, got: ${result === undefined ? 'nothing' : result}`);
+  }
+  const findings = requiredString(options.findings, 'recordReviewVerdict requires --findings ("none" is accepted on a pass)');
+  const reviewer = requiredString(options.reviewer, 'recordReviewVerdict requires --reviewer naming the separate context (model and mode)');
+
+  // Validated before the Spec is even loaded, so an invalid candidate never
+  // gets far enough to touch a file. Two distinguishable refusals, not one
+  // merged message: a candidate absent from this repository entirely is a
+  // different problem from one that exists but is no longer HEAD, and
+  // TK-004 is expected to relax the HEAD-equality half of this rule later
+  // without touching the existence half, which only makes sense if the two
+  // are reported (and testable) separately now.
+  const headSha = resolveCommitSha(root, 'HEAD');
+  if (!commitExists(root, candidate)) {
+    throw new Error(`Candidate ${candidate} does not exist in this repository (checked via git cat-file -e); a review must bind to a real commit, never an invented or mistyped SHA.`);
+  }
+  if (candidate !== headSha) {
+    throw new Error(`Candidate ${candidate} is not the current candidate; HEAD is ${headSha ?? 'unresolved'}. A review binds only to the exact current HEAD - no prefix match and no stale candidate - so this verdict is refused rather than recorded against a candidate that has moved.`);
+  }
+
+  const spec = findSpec(root, specId);
+  const date = new Date().toISOString().slice(0, 10);
+  const remainingGap = findingsGap(findings);
+  const cells = [date, 'review', `Review verdict: ${result} at ${candidate}`, findings, reviewer, remainingGap];
+  const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
+  const updated = appendEvidence(spec.content, row);
+  atomicWrite(spec.filePath, updated);
+
+  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, row };
+}
+
+function requiredString(value, message) {
+  if (!value || !String(value).trim()) throw new Error(message);
+  return String(value).trim();
+}
+
+// `git cat-file -e <sha>^{commit}` exits 0 exactly when the SHA names a
+// commit object in this repository, never a checkout or a blob read -
+// matching the "exists" half of "current candidate" the handoff names.
+function commitExists(root, sha) {
+  const result = spawnSync('git', ['-C', root, 'cat-file', '-e', `${sha}^{commit}`], { encoding: 'utf8' });
+  return result.status === 0;
+}
+
+// The remaining-gap cell: the literal count of findings when there are any
+// (findings given as a semicolon-separated list), or "none" when the
+// reviewer named none - never re-deriving pass/fail from it, only counting
+// what was actually reported.
+function findingsGap(findings) {
+  const trimmed = findings.trim();
+  if (trimmed.toLowerCase() === 'none') return 'none';
+  const items = trimmed.split(';').map((item) => item.trim()).filter(Boolean);
+  return String(items.length || 1);
+}
+
+// Every verdict row in the evidence log, parsed from its cells alone - never
+// a second source of truth - in the document's own order (oldest first,
+// newest last, since the log is append-only). A verdict row is identified by
+// its literal second cell `review` (recordReviewVerdict's own literal,
+// distinguishing it from a Task-id row) and a third cell matching
+// `Review verdict: pass|fail at <sha>`; any row that fails either test is
+// not a verdict row and is silently skipped, matching the same
+// never-assume-column-identity discipline `parseEvidence` above already
+// uses for the rest of the table.
+const VERDICT_PATTERN = /^Review verdict: (pass|fail) at (\S+)$/;
+
+function parseVerdicts(evidence) {
+  const verdicts = [];
+  for (const row of evidence.rows) {
+    const cells = row.cells;
+    if (cells.length < 6 || cells[1] !== 'review') continue;
+    const match = VERDICT_PATTERN.exec(cells[2]);
+    if (!match) continue;
+    verdicts.push({
+      date: cells[0],
+      result: match[1],
+      candidate: match[2],
+      findings: cells[3],
+      reviewer: cells[4],
+      remainingGap: cells[5]
+    });
+  }
+  return verdicts;
+}
+
+// The latest verdict bound to the candidate a report is asked about, or
+// `null` when none names it - read fresh from the evidence log every time,
+// never cached. Matched against the candidate's own resolved (full) SHA
+// rather than the raw string the caller passed the report, so an abbreviated
+// report candidate still finds the verdict a reviewer recorded against the
+// full current HEAD it resolves to.
+function latestVerdictFor(verdicts, candidate) {
+  if (!candidate.resolvedSha) return null;
+  for (let index = verdicts.length - 1; index >= 0; index -= 1) {
+    if (verdicts[index].candidate === candidate.resolvedSha) return verdicts[index];
+  }
+  return null;
 }
 
 // The one merged Task list `slicesOf` gives (a Task record where the Spec
@@ -240,6 +371,8 @@ export function formatSpecReport(report) {
   lines.push(`${report.id} - ${report.title} [${report.status}]`);
   const c = report.candidate;
   lines.push(`Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} (head ${c.headSha ?? 'none'})`);
+  const v = report.latestVerdict;
+  lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date})` : 'Verdict: none for this candidate');
   lines.push('Tasks:');
   for (const task of report.tasks) {
     const runs = task.receipt ? `, runs ${task.receipt.runCount}` : '';
