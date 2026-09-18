@@ -305,9 +305,12 @@ test('flat collections list identically to before: every record is untagged and 
 // The Spec's own count (30 files at an earlier anchor) is a floor, not a
 // pin: the build re-counts the real corpus at the candidate under test so a
 // silently dropped link is visible instead of trusting a stale prose number.
-test('every intra-ADR link in the real corpus resolves, and the re-counted totals are asserted', () => {
+// A Markdown link is for a reader, so it is checked literally: identity-based
+// fallback belongs to `superseded_by` only, never to a body link. Falling
+// back to identity here would let a genuinely wrong relative path pass as
+// long as some record with that basename exists anywhere in the collection.
+test('every intra-ADR link in the real corpus resolves literally, and the re-counted totals are asserted', () => {
   const records = listAdrs(root);
-  const names = new Set(records.map((record) => record.name));
   let totalLinks = 0;
   let filesWithLink = 0;
   for (const record of records) {
@@ -317,8 +320,7 @@ test('every intra-ADR link in the real corpus resolves, and the re-counted total
       if (!ID_PATTERN.test(base)) continue;
       countForRecord += 1;
       const literal = path.resolve(path.dirname(record.filePath), link);
-      const resolved = fs.existsSync(literal) || names.has(base);
-      assert.ok(resolved, `${record.relativePath} links to unresolved ${link}`);
+      assert.ok(fs.existsSync(literal), `${record.relativePath} links to unresolved ${link}`);
     }
     totalLinks += countForRecord;
     if (countForRecord > 0) filesWithLink += 1;
@@ -327,7 +329,11 @@ test('every intra-ADR link in the real corpus resolves, and the re-counted total
   assert.equal(totalLinks, 58, 're-count of total intra-ADR link edges at this candidate');
 });
 
-test('an intra-ADR link resolves by the target record identity even when the literal relative path no longer matches where it lives', () => {
+// S-00I TK-001 review correction: a link is validated literally, never
+// resolved by identity. A record moving into a lifecycle subfolder without
+// its incoming links being rewritten is exactly the case `validateAdrs` must
+// now catch as `invalid-adr`, not silently accept.
+test('an intra-ADR link whose literal relative path does not match where the target lives is reported unresolved, not accepted by identity', () => {
   const dir = fixture();
   try {
     const collection = path.join(dir, 'workbench/docs/adr');
@@ -339,10 +345,23 @@ test('an intra-ADR link resolves by the target record identity even when the lit
     const [link] = localLinks(record.body);
     const literal = path.resolve(path.dirname(record.filePath), link);
     assert.ok(!fs.existsSync(literal), 'the literal relative path must not exist once the target lives in a subfolder');
-    const byIdentity = records.find((item) => item.name === path.basename(link));
-    assert.ok(byIdentity, 'the link must still resolve by looking the target identity up across every lifecycle folder');
-    assert.equal(byIdentity.folder, 'proposed');
-    assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'invalid-adr'), []);
+    const findings = validateAdrs(dir).filter((item) => item.code === 'invalid-adr');
+    assert.ok(findings.some((item) => item.adr === '0001-first.md' && /0002-second\.md/.test(item.message)), 'a link that does not literally resolve must be reported, never silently accepted because a same-named record exists elsewhere');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// Red at the pre anchor 956c6a4: this exact fixture (a record whose link
+// points at a wrong relative path) produced no invalid-adr finding there,
+// proven separately in a throwaway detached worktree. At this candidate it
+// must, and it must not be confused with a link into an ignored collection.
+test('a link across lifecycle folders (archive linking up to the top level) still resolves literally when it is correct', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'archive'), { recursive: true });
+    fs.writeFileSync(path.join(collection, '0001-top.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, 'archive', '0002-archived.md'), adr('deprecated', 'deprecation_reason: superseded content.\n', 'See [0001-top.md](../0001-top.md).\n\n'));
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'invalid-adr'), [], 'a correct cross-folder relative link must not be reported');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 

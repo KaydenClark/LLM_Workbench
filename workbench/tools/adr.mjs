@@ -140,6 +140,7 @@ export function validateAdrs(root, options = {}) {
   let adrs;
   try { adrs = listAdrs(root, options); }
   catch (error) { return [finding('invalid-adr', error.message)]; }
+  const adrCollectionRelative = collectionRelative(root, 'adr');
   const numbers = new Map();
   for (const adr of adrs) {
     const key = visibleIdKey(`ADR-${adr.number}`);
@@ -190,6 +191,17 @@ export function validateAdrs(root, options = {}) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
           findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
         }
+      }
+      // A body link is for a reader, so it is checked literally: identity
+      // resolves `superseded_by` (a bare filename with no path component),
+      // never a Markdown link. A record in `archive/` may correctly link
+      // `../000A-...md` back to the top level, so this walks the literal
+      // relative path from the record's own directory - folder-aware because
+      // that directory is wherever `listAdrs` actually found the record -
+      // and only within the ADR collection itself, where a moved target's
+      // stale incoming link is exactly what would otherwise go unnoticed.
+      if ((relative === adrCollectionRelative || relative.startsWith(`${adrCollectionRelative}/`)) && !fs.existsSync(target)) {
+        findings.push(finding('invalid-adr', `${adr.relativePath} links to missing ${relative}`, { adr: adr.name, target: relative }));
       }
     }
   }
