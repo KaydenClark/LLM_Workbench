@@ -130,7 +130,7 @@ function makeSource(release, base) {
     memory: { file: path.relative(root, memoryFile).split(path.sep).join('/'), sha256: sha256(memoryFile) },
     selected_questions: ['Q1'],
     active_adr_ids: ['ADR-0001'],
-    capabilities: [{ id: 'S-001', title: 'Ambient pond', derived_from: ['Q1'], outcome: 'Visitors can observe an ambient pond.', acceptance: ['The pond renders and responds to a visitor.'], ticket: { id: 'TK-001', slice: 'Render the ambient pond.' } }]
+    capabilities: [{ id: 'S-001', title: 'Ambient pond', derived_from: ['Q1'], outcome: 'Visitors can observe an ambient pond.', acceptance: ['The pond renders and responds to a visitor.'], task: { id: 'TK-001', slice: 'Render the ambient pond.' } }]
   };
   json(planFile, plan);
   return { root, commit: commitId, evidence, controls, memoryFile, adr, plan, planFile, note: prepared.note };
