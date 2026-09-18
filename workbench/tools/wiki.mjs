@@ -90,7 +90,7 @@ export function validateWiki(root, options = {}) {
   // reported a feedback-lane fact and a manifest fact to anyone checking the
   // wiki. S-042 recorded the placement as interim: doctor wired exactly two
   // support-root validators, and `spec-workbench.mjs` was held by a sibling
-  // branch, so the non-overlapping file lanes rule kept that ticket out of it.
+  // branch, so the non-overlapping file lanes rule kept that task out of it.
   // They are now emitted from `collectionFindings` in `spec-workbench.mjs`,
   // next to the managed-runtime check, whose scope is the room's installed
   // state. The checks themselves still live in `workbench-layout.mjs`, which

@@ -885,7 +885,7 @@ function validateFirstSpec(project, expectedVersion) {
     [`the packet must live at ${lanes.specs}/${entries[0].name}/SPEC.md`, () => packet.relativePath === `${lanes.specs}/${entries[0].name}/SPEC.md`],
     ['Status must be active so the work loop can select it', () => packet.status === 'active'],
     ['Priority must be a single digit 0-9', () => Number.isInteger(packet.priority) && packet.priority >= 0 && packet.priority <= 9],
-    ['at least one ticket must be ready with blockers none', () => packet.tickets.some((ticket) => ticket.status === 'ready' && ticket.blockers === 'none')],
+    ['at least one task must be ready with blockers none', () => packet.rows.some((row) => row.status === 'ready' && row.blockers === 'none')],
     [`the sections ${requiredSections.join(', ')} must all exist`, () => requiredSections.every((section) => new RegExp(`^## ${section}$`, 'm').test(content))],
     ['at least one acceptance criterion must remain unchecked', () => /^- \[ \] \S/m.test(content)]
   ];
@@ -897,7 +897,7 @@ function validateFirstSpec(project, expectedVersion) {
 
 export const TOOLS_RECEIPT = '.workbench-tools.json';
 
-// The closed set of Workbench-managed runtime tools. Later capability tickets
+// The closed set of Workbench-managed runtime tools. Later capability tasks
 // append to this list; the product lane must contain exactly these files.
 //
 // It lives here, in a tool every room installs, rather than in the release-side
