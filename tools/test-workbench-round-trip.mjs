@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 
 const sourceProduct = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(sourceProduct, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
@@ -42,6 +43,21 @@ function write(root, relative, content) {
   fs.writeFileSync(target, content);
 }
 
+// S-00H TK-004 follow-up: fills every known bracket placeholder with a plain
+// non-placeholder token, mirroring tools/test-genesis-from-decisions.mjs, so
+// a real template body can be embedded beneath the Round Trip project's own
+// filled section without genesis readiness reading it as an unfilled control.
+function fillPlaceholders(content) {
+  let filled = content;
+  for (const placeholder of templatePlaceholders) filled = filled.split(placeholder).join('FILLED');
+  return filled;
+}
+
+function withTemplateBody(name, templatesRoot, header) {
+  const templateBody = fillPlaceholders(fs.readFileSync(path.join(templatesRoot, name), 'utf8'));
+  return `${header}\n\n## Template source (swept for retired vocabulary)\n\n${templateBody}`;
+}
+
 const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-round-trip-'));
 const product = path.join(workspace, 'candidate');
 const remote = path.join(workspace, 'origin.git');
@@ -51,33 +67,15 @@ try {
   // Snapshot current source bytes, including uncommitted changes. A local clone
   // would leak its source path through Git's origin and installer receipts.
   // Keep raw stdout/stderr untouched: unexpected private paths must still fail.
-  for (const relative of ['templates', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs']) {
+  // S-00H TK-004 follow-up: `skills/` and the core-skill installer chain ride
+  // along too, so the post-Genesis sweep below can install this candidate's
+  // real skills into a temp home rather than checking a copied-but-unused
+  // directory.
+  for (const relative of ['templates', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs', 'skills',
+    'tools/core-skill-installer.mjs', 'tools/skill-marker.mjs', 'tools/skill-presence.mjs']) {
     const target = path.join(product, relative);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.cpSync(path.join(sourceProduct, relative), target, { recursive: true });
-  }
-  // S-00H TK-004: this is the exact `templates/` byte copy the rest of this
-  // round trip's Genesis step is built from. Sweep it for the retired
-  // `ticket` vocabulary the same way tools/test-controls-vocabulary-sweep.mjs
-  // sweeps the source, proving an adopted/generated candidate is not
-  // instructed into the retired Ticket model. The one exception is the
-  // identical allow-listed row that sweep carries: `templates/LEXICON.md`'s
-  // retired-term row necessarily names the term it retires.
-  {
-    const templateHits = [];
-    (function walk(dir) {
-      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) { walk(full); continue; }
-        const relative = path.relative(product, full).split(path.sep).join('/');
-        fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
-          if (relative === 'templates/LEXICON.md' && line.includes('**Ticket** | Retired as a live term.')) return;
-          if (/ticket/i.test(line)) templateHits.push(`${relative}:${index + 1}: ${line.trim()}`);
-        });
-      }
-    })(path.join(product, 'templates'));
-    assert.deepEqual(templateHits, [],
-      `the candidate's templates/ copy fed into this round trip must not say Ticket outside the documented retired-term row:\n${templateHits.join('\n')}`);
   }
   git(product, 'init', '-q', '-b', 'main');
   git(product, 'remote', 'add', 'origin', 'https://github.com/KaydenClark/LLM_Workbench.git');
@@ -97,12 +95,13 @@ try {
   node(product, path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', first, '--provenance', 'genesis', '--version', VERSION, '--name', 'Round Trip', '--date', DATE);
   node(product, path.join(product, 'tools', 'workbench-tools.mjs'), 'install', '--project', first);
   const stamp = `> Generated from LLM Workbench ${VERSION}.`;
-  write(first, 'AGENTS.md', `# Round Trip - Agent Operating System\n\n${stamp}\n\n## Authority Order\n\n1. The current user request.\n2. This file.\n3. The assigned spec.\n\n## Work Selection And Lifecycle\n\nRun \`node workbench/tools/spec-workbench.mjs doctor\`, then \`next --json\`, then \`show\`, claim, implement red/green, close, render, doctor, push.\n`);
+  const productTemplates = path.join(product, 'templates');
+  write(first, 'AGENTS.md', withTemplateBody('AGENTS.md', productTemplates, `# Round Trip - Agent Operating System\n\n${stamp}\n\n## Authority Order\n\n1. The current user request.\n2. This file.\n3. The assigned spec.\n\n## Work Selection And Lifecycle\n\nRun \`node workbench/tools/spec-workbench.mjs doctor\`, then \`next --json\`, then \`show\`, claim, implement red/green, close, render, doctor, push.`));
   write(first, 'BLUEPRINT.md', `# Round Trip - Blueprint\n\n${stamp}\n\n## Product Map\n\nA tiny CLI that greets.\n\n## Spec Catalog\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n`);
-  write(first, 'LEXICON.md', `# Round Trip - Lexicon\n\n${stamp}\n\n## Terms\n\nNone yet.\n`);
-  write(first, 'RUNBOOK.md', `# Round Trip - Runbook\n\n${stamp}\n\n## Test And Build\n\n\`\`\`bash\nnode --test tests/hello.test.mjs\nnode workbench/tools/spec-workbench.mjs doctor\n\`\`\`\n`);
+  write(first, 'LEXICON.md', withTemplateBody('LEXICON.md', productTemplates, `# Round Trip - Lexicon\n\n${stamp}\n\n## Terms\n\nNone yet.`));
+  write(first, 'RUNBOOK.md', withTemplateBody('RUNBOOK.md', productTemplates, `# Round Trip - Runbook\n\n${stamp}\n\n## Test And Build\n\n\`\`\`bash\nnode --test tests/hello.test.mjs\nnode workbench/tools/spec-workbench.mjs doctor\n\`\`\``));
   write(first, 'TASKBOARD.md', `# Round Trip - Hot Taskboard\n\n${stamp}\n\n## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n`);
-  write(first, 'README.md', `# Round Trip\n\n${stamp}\n\n## Usage\n\nRun \`node src/hello.mjs\`.\n`);
+  write(first, 'README.md', withTemplateBody('README.md', productTemplates, `# Round Trip\n\n${stamp}\n\n## Usage\n\nRun \`node src/hello.mjs\`.`));
   write(first, 'CLAUDE.md', '@AGENTS.md\n');
   const router = fs.readFileSync(path.join(product, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
     .replaceAll('[PROJECT_NAME]', 'Round Trip').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', DATE)
@@ -115,6 +114,43 @@ try {
   const readiness = JSON.parse(node(first, path.join(first, 'workbench', 'tools', 'workbench-layout.mjs'), 'validate', '--project', first, '--genesis'));
   assert.equal(readiness.status, 'valid', JSON.stringify(readiness));
   node(first, tool(first), 'doctor');
+
+  // ---- S-00H TK-004 follow-up: the finished room speaks Task, not Ticket --
+  // Sweep the generated room's own controls (embedded with this candidate's
+  // real templates/ body above) and the skills a fresh agent installs from
+  // this candidate, the same two checks tools/test-genesis-from-decisions.mjs
+  // runs after its own derive().
+  {
+    const controlHits = [];
+    for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md']) {
+      fs.readFileSync(path.join(first, name), 'utf8').split('\n').forEach((line, index) => {
+        if (name === 'LEXICON.md' && line.includes('**Ticket** | Retired as a live term.')) return;
+        if (/ticket/i.test(line)) controlHits.push(`${name}:${index + 1}: ${line.trim()}`);
+      });
+    }
+    assert.deepEqual(controlHits, [],
+      `the generated room's own controls must not say Ticket outside the documented retired-term row:\n${controlHits.join('\n')}`);
+
+    const skillHome = fs.mkdtempSync(path.join(workspace, 'skill-home-'));
+    const installedSkills = run(product, process.execPath, [path.join(product, 'tools', 'core-skill-installer.mjs'), 'install', '--home', skillHome]);
+    assert.equal(JSON.parse(installedSkills).status, 'complete', installedSkills);
+    const skillHits = [];
+    for (const engineRoot of [path.join(skillHome, '.agents', 'skills'), path.join(skillHome, '.claude', 'skills')]) {
+      (function walk(dir) {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name);
+          if (entry.isDirectory()) { walk(full); continue; }
+          if (entry.name !== 'SKILL.md') continue;
+          const relative = path.relative(skillHome, full).split(path.sep).join('/');
+          fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
+            if (/ticket/i.test(line)) skillHits.push(`${relative}:${index + 1}: ${line.trim()}`);
+          });
+        }
+      })(engineRoot);
+    }
+    assert.deepEqual(skillHits, [],
+      `the skills a fresh agent installs from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
+  }
 
   // ---- Selected claim reconciliation, claim, push -------------------------
   const notes = path.join(first, 'workbench/tools/notepads.mjs');

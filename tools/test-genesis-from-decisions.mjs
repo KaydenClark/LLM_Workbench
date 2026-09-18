@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -41,7 +42,11 @@ function makeRelease(base) {
   fs.copyFileSync(path.join(repoRoot, 'workbench', 'manifest.json'), path.join(release, 'workbench', 'manifest.json'));
   fs.cpSync(path.join(repoRoot, 'workbench', 'tools'), path.join(release, 'workbench', 'tools'), { recursive: true });
   fs.cpSync(path.join(repoRoot, 'templates'), path.join(release, 'templates'), { recursive: true });
-  for (const name of ['workbench-tools.mjs', 'genesis-from-decisions.mjs']) {
+  // S-00H TK-004 follow-up: the fresh-room regression sweeps this candidate's
+  // real installed skills after Genesis, so `skills/` and the installer chain
+  // it depends on ride along in the release fixture too.
+  fs.cpSync(path.join(repoRoot, 'skills'), path.join(release, 'skills'), { recursive: true });
+  for (const name of ['workbench-tools.mjs', 'genesis-from-decisions.mjs', 'core-skill-installer.mjs', 'skill-marker.mjs', 'skill-presence.mjs']) {
     fs.copyFileSync(path.join(repoRoot, 'tools', name), path.join(release, 'tools', name));
   }
   initializeGit(release, 'https://example.invalid/llm-workbench.git');
@@ -57,12 +62,31 @@ function initializeRoom(release, root, origin) {
   command(process.execPath, [installer, 'install', '--project', root]);
 }
 
-function controlText(name, version) {
+// S-00H TK-004 follow-up: fills every known bracket placeholder with a plain
+// non-placeholder token so a real template body can be embedded in a drafted
+// control without tripping validateDraft's unfilled-control check below.
+function fillPlaceholders(content) {
+  let filled = content;
+  for (const placeholder of templatePlaceholders) filled = filled.split(placeholder).join('FILLED');
+  return filled;
+}
+
+// The four controls the repository-wide vocabulary sweep actually checks
+// (AGENTS/RUNBOOK/LEXICON/README) carry this candidate's real templatesRoot
+// body beneath the synthetic Puffer Pond header, so a live `Ticket` word
+// planted in templates/ - or left over at an unrenamed base - propagates into
+// the derived room and the post-Genesis sweep below can actually catch it.
+function controlText(name, version, templatesRoot) {
   if (name === 'CLAUDE.md') return '@AGENTS.md\n';
   const region = name === 'TASKBOARD.md'
     ? '\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
     : '';
-  return `# Puffer Pond - ${name.replace('.md', '')}\n\n> Generated from LLM Workbench ${version}.\n\n## Purpose\n\nThis filled control belongs to Puffer Pond.${region}`;
+  const header = `# Puffer Pond - ${name.replace('.md', '')}\n\n> Generated from LLM Workbench ${version}.\n\n## Purpose\n\nThis filled control belongs to Puffer Pond.${region}`;
+  if (templatesRoot && ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md'].includes(name)) {
+    const templateBody = fillPlaceholders(fs.readFileSync(path.join(templatesRoot, name), 'utf8'));
+    return `${header}\n\n## Template source (swept for retired vocabulary)\n\n${templateBody}`;
+  }
+  return header;
 }
 
 function templateControlText(name, version) {
@@ -95,7 +119,7 @@ function makeSource(release, base) {
   const controls = {};
   for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
     const file = path.join(drafts, name);
-    write(file, controlText(name, release.version));
+    write(file, controlText(name, release.version, path.join(release.root, 'templates')));
     controls[name] = { file: path.relative(root, file).split(path.sep).join('/'), sha256: sha256(file) };
   }
   fs.copyFileSync(path.join(drafts, 'BLUEPRINT.md'), path.join(root, 'BLUEPRINT.md'));
@@ -199,28 +223,42 @@ const release = makeRelease(suiteRoot);
   assert.equal(installed.source.commit, release.commit);
   assertNoStage(destination);
 
-  // S-00H TK-004: `workbench-tools.mjs install` copies this candidate's real
-  // `workbench/tools/*.mjs` into the derived room. Sweep that installed copy
-  // for the retired `ticket` vocabulary the same way the source-side sweep
-  // in tools/test-spec-workbench.mjs does, with the identical one exception
-  // (legacyCoreSkills's frozen historical bundle in workbench-layout.mjs):
-  // a freshly derived room's installed runtime must not say Ticket outside
-  // that documented, load-bearing exception.
-  const runtimeHits = [];
-  (function walk(dir) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) { walk(full); continue; }
-      if (!/\.mjs$/.test(entry.name)) continue;
-      const relative = path.relative(destination, full).split(path.sep).join('/');
-      fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
-        if (relative === 'workbench/tools/workbench-layout.mjs' && line.includes('to-tickets')) return;
-        if (/ticket/i.test(line)) runtimeHits.push(`${relative}:${index + 1}: ${line.trim()}`);
-      });
-    }
-  })(path.join(destination, 'workbench', 'tools'));
-  assert.deepEqual(runtimeHits, [],
-    `a freshly derived room's installed workbench/tools/ must not say Ticket outside the documented legacyCoreSkills exception:\n${runtimeHits.join('\n')}`);
+  // S-00H TK-004 follow-up: the fresh-room regression must sweep what a
+  // generated room actually reads for guidance - its own controls (drafted
+  // above from this candidate's real templates/ body) and the skills a fresh
+  // agent installs from this candidate - not the copied runtime tools, which
+  // the source-side sweep in tools/test-spec-workbench.mjs already covers.
+  const controlHits = [];
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md']) {
+    fs.readFileSync(path.join(destination, name), 'utf8').split('\n').forEach((line, index) => {
+      // Same allow-listed row as tools/test-controls-vocabulary-sweep.mjs:
+      // the Lexicon row that defines the retired term necessarily names it.
+      if (name === 'LEXICON.md' && line.includes('**Ticket** | Retired as a live term.')) return;
+      if (/ticket/i.test(line)) controlHits.push(`${name}:${index + 1}: ${line.trim()}`);
+    });
+  }
+  assert.deepEqual(controlHits, [],
+    `a freshly derived room's own controls must not say Ticket outside the documented retired-term row:\n${controlHits.join('\n')}`);
+
+  const skillHome = fs.mkdtempSync(path.join(f.root, 'skill-home-'));
+  const installedSkills = command(process.execPath, [path.join(release.root, 'tools', 'core-skill-installer.mjs'), 'install', '--home', skillHome]);
+  assert.equal(JSON.parse(installedSkills).status, 'complete', installedSkills);
+  const skillHits = [];
+  for (const engineRoot of [path.join(skillHome, '.agents', 'skills'), path.join(skillHome, '.claude', 'skills')]) {
+    (function walk(dir) {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) { walk(full); continue; }
+        if (entry.name !== 'SKILL.md') continue;
+        const relative = path.relative(skillHome, full).split(path.sep).join('/');
+        fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
+          if (/ticket/i.test(line)) skillHits.push(`${relative}:${index + 1}: ${line.trim()}`);
+        });
+      }
+    })(engineRoot);
+  }
+  assert.deepEqual(skillHits, [],
+    `the skills a fresh agent installs from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
 }
 
 for (const origin of ['git@github.com:KaydenClark/Example_Workbench.git', 'ssh://git@github.com/KaydenClark/Example_Workbench.git']) {

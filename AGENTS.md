@@ -78,7 +78,7 @@ project evidence. Resolve supported decisions within scope. If no confident
 next action can be established, record the blocker in the existing work owner
 and stop; do not create a next task for yourself or manufacture a queue item.
 
-Normal stance is set in the assigned SPEC and TASK (the task in that spec),
+Normal stance is set in the assigned SPEC and its TASK,
 not selected or recorded by the arriving agent. Builder, Auditor, Reviewer and
 Reconciler are portable behavior skills. A stance never grants, removes, or
 transfers authority; loading it never spawns an agent. Each defines Purpose,
@@ -219,6 +219,7 @@ node tools/test-feedback-automation.mjs
 node tools/test-symlink-invocation.mjs
 node tools/test-control-fidelity.mjs
 node tools/test-spec-citation-anchors.mjs
+node tools/test-controls-vocabulary-sweep.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls

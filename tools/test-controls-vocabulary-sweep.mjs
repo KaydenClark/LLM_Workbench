@@ -27,8 +27,33 @@ const ALLOWLIST = [
     reason: 'the accepted ADR-000H\'s own filename names the historical replacement it enacted; the file is immutable Canon history, cited nowhere else in this sweep\'s scope, and renaming it is out of this vocabulary-only lane' }
 ];
 
-function isAllowed(relFile, line) {
-  return ALLOWLIST.some((entry) => entry.file === relFile && line.includes(entry.match));
+// Each entry excuses only its own exact matched substring, not the whole
+// line: the ADR-000H entry sits inside one long Lexicon table-row line, and
+// excusing that entire line the way `line.includes(entry.match)` alone would
+// do could silently swallow unrelated new `ticket` prose added later
+// anywhere else on that same row. Stripping just the matched token and
+// re-testing the remainder keeps the exemption exactly as narrow as the
+// reason given for it.
+function stripAllowedTokens(relFile, line) {
+  let stripped = line;
+  for (const entry of ALLOWLIST) {
+    if (entry.file === relFile) stripped = stripped.split(entry.match).join('');
+  }
+  return stripped;
+}
+
+function lineHasLiveTicket(relFile, line) {
+  return /ticket/i.test(stripAllowedTokens(relFile, line));
+}
+
+// Mutation check, run before the real sweep: appending unrelated `ticket`
+// prose after the allow-listed ADR-000H filename on the same line must still
+// be caught. If a future edit widens the entry back to a whole-line match,
+// this assertion turns red.
+{
+  const mutated = 'reference the ADR filename (workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) and also a stray ticket queue';
+  assert.ok(lineHasLiveTicket('LEXICON.md', mutated),
+    'narrowing regression: the ADR-000H allow-list entry must not excuse unrelated ticket prose sharing its line');
 }
 
 function walk(dir) {
@@ -55,7 +80,7 @@ for (const file of targets) {
   if (!fs.statSync(file).isFile()) continue;
   const relFile = path.relative(root, file).split(path.sep).join('/');
   fs.readFileSync(file, 'utf8').split('\n').forEach((line, index) => {
-    if (/ticket/i.test(line) && !isAllowed(relFile, line)) {
+    if (lineHasLiveTicket(relFile, line)) {
       violations.push(`${relFile}:${index + 1}: ${line.trim()}`);
     }
   });

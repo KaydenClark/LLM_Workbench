@@ -23,7 +23,7 @@ not restart grilling or implement the capability.
 4. Capture the outcome, why it matters, verified current state, desired behavior,
    decisions/contracts, non-goals, dependencies, acceptance, test seams,
    documentation impact, and append-only evidence structure.
-5. Set the normal stance in the assigned SPEC and each TASK (task) during
+5. Set the normal stance in the assigned SPEC and each TASK during
    authorized planning, usually Builder for implementation; do not make arriving
    agents select or record their own stance.
 6. Seed `Vertical Implementation Slices` only with the smallest vertical tracer

@@ -1600,17 +1600,19 @@ function wikiClaimFixture() {
   // S-00H TK-004 added a sibling sweep, tools/test-controls-vocabulary-sweep.mjs,
   // covering root controls/skills/templates rather than workbench/tools and
   // tools, plus a matching regression sweep block appended inside
-  // tools/test-genesis-from-decisions.mjs and tools/test-workbench-round-trip.mjs
-  // (a generated/adopted room must not carry the retired vocabulary either).
-  // All three are excluded here for the identical reason this file excludes
-  // itself: each necessarily carries the literal `ticket` pattern and
-  // messages that make it checkable, and each is its own independent check
-  // rather than a second copy of this list with nothing behind it.
+  // tools/test-genesis-from-decisions.mjs, tools/test-workbench-round-trip.mjs
+  // and tools/test-workbench-adoption.mjs (a generated or adopted room must
+  // not carry the retired vocabulary either). All four are excluded here for
+  // the identical reason this file excludes itself: each necessarily carries
+  // the literal `ticket` pattern and messages that make it checkable, and
+  // each is its own independent check rather than a second copy of this list
+  // with nothing behind it.
   const selfPath = path.relative(sweepRoot, fileURLToPath(import.meta.url)).split(path.sep).join('/');
   const siblingSweepPaths = new Set([
     'tools/test-controls-vocabulary-sweep.mjs',
     'tools/test-genesis-from-decisions.mjs',
-    'tools/test-workbench-round-trip.mjs'
+    'tools/test-workbench-round-trip.mjs',
+    'tools/test-workbench-adoption.mjs'
   ]);
   const sweepViolations = [];
   for (const dir of ['workbench/tools', 'tools'].map((d) => path.join(sweepRoot, d))) {
