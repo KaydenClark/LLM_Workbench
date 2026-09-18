@@ -812,6 +812,7 @@ node workbench/tools/spec-workbench.mjs convert-tasks S-001
 node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-002 \
   --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
 node workbench/tools/spec-workbench.mjs report S-001 --candidate [SHA] [--json]
+node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
 node workbench/tools/spec-workbench.mjs verdict S-001 --candidate [SHA] --result pass|fail \
   --findings "[FINDINGS OR none]" --reviewer "[SEPARATE CONTEXT, MODEL AND MODE]"
 node workbench/tools/spec-workbench.mjs render
@@ -839,7 +840,13 @@ candidate; an incomplete Spec is reported, never refused (only a missing
 row (`review`, `Review verdict: pass|fail at <sha>`, findings, reviewer,
 remaining gap) and refuses a candidate that does not exist or is not the
 room's exact `HEAD`, a result other than pass or fail, or an empty reviewer,
-writing nothing on refusal. `next` returns one eligible ready task. `show` loads one stable work packet.
+writing nothing on refusal. `move-spec` moves a complete Spec's directory
+into the specs lane's `retired/` folder with `git mv` semantics, refusing a
+dirty tree, an incomplete Spec, any other folder or a room without Git; it
+rewrites every live Markdown reference and ADR `canonicalized_in` target to
+the old path, regenerates the ADR register, leaves append-only rows and
+counts them, and stages the result; the top level stays the active roster,
+`show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `next` returns one eligible ready task. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
@@ -887,9 +894,9 @@ selection, and the `adr validate` command itself exits 1 only on error
 findings.
 
 `normalize` is the explicit repair for a hand-authored record: it inserts only
-the required frontmatter keys a record is missing (`status: proposed` and the
-date), never runs as a side effect of `validate`, never edits a body, and lists
-every file it changed with the keys it inserted. It preserves the file's own
+the date a record is missing (lifecycle is the folder, so it never writes a
+`status` key), never runs as a side effect of `validate`, never edits a body,
+and lists every file it changed with the keys it inserted. It preserves the file's own
 line terminator, so a record on a CRLF clone does not gain LF-terminated keys.
 An accepted record still needs a `canonicalized_in` owner only its author can
 name; normalize leaves that record unchanged and `validate` keeps failing it.
