@@ -32,8 +32,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
-import { appendEvidence, atomicWrite, findSpec, slicesOf } from './spec-workbench.mjs';
+import { appendEvidence, atomicWrite, findSpec, nextIdentity, slicesOf } from './spec-workbench.mjs';
+import { formatTaskRecord, parseTaskRecord } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
+import { assertSafeWritePath } from './workbench-paths.mjs';
 import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
@@ -110,6 +112,20 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   const findings = requiredString(options.findings, 'recordReviewVerdict requires --findings ("none" is accepted on a pass)');
   const reviewer = requiredString(options.reviewer, 'recordReviewVerdict requires --reviewer naming the separate context (model and mode)');
 
+  // S-00J TK-003: a fail verdict names at least one actionable finding,
+  // checked before the Spec is even loaded (the same fail-fast discipline
+  // the candidate checks below already use). "none" (the literal a pass
+  // accepts) and a findings string that trims to no item at all once split
+  // on ";" (all separators, nothing between them) both count as naming
+  // nothing. This is deliberately stricter than the pre-existing empty/
+  // whitespace --findings refusal above: that one catches an empty string
+  // outright, this one catches a non-empty string that still names no real
+  // defect, for either result. A fail with nothing to fix would leave the
+  // Spec with no corrective Task, which is refused rather than recorded.
+  if (result === 'fail' && splitFindings(findings).length === 0) {
+    throw new Error(`A fail verdict for candidate ${candidate} on ${specId} names no corrective finding ("${findings}"); a failed verdict that leaves the Spec with no corrective Task is refused.`);
+  }
+
   // Validated before the Spec is even loaded, so an invalid candidate never
   // gets far enough to touch a file. Two distinguishable refusals, not one
   // merged message: a candidate absent from this repository entirely is a
@@ -133,7 +149,93 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   const updated = appendEvidence(spec.content, row);
   atomicWrite(spec.filePath, updated);
 
-  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, row };
+  // S-00J TK-003: folded into this verb rather than a separate `correct`
+  // command, so a caller cannot record a failed verdict and forget the
+  // corrective-Task step - the handoff's "same call" design. The verdict
+  // row is written first (immediately above), so createCorrectiveTasks
+  // re-reads it from disk as the exact row it names in each Task's Planned
+  // verification, rather than a caller-supplied guess at its own position.
+  let correctiveTasks;
+  if (result === 'fail') {
+    correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings }).created;
+  }
+
+  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
+}
+
+// S-00J TK-003: one Task record per diagnosed defect in an already-recorded
+// fail verdict, through the exact same Task-record seam S-00H delivered
+// (`formatTaskRecord` / `parseTaskRecord` - never a second template),
+// allocated with the room's own visible-id allocator (`nextIdentity`) so a
+// corrective Task never collides with a retained table row or an existing
+// record. The verdict this Task answers is never a caller-supplied date or
+// ordinal: it is read back from the Spec's own append-only evidence log, so
+// a Task can never name a verdict that was never actually recorded. The
+// anchor is the most recent `fail` row for this exact candidate; its
+// position in the evidence log (not the candidate/date/result alone, which
+// two same-day verdicts could share) is what makes the reference
+// unambiguous.
+//
+// Blocks nothing already done (`Blockers: none`) and lands with
+// `Status: ready` and `Destination: spec-acceptance: <spec> Acceptance
+// Criteria`, so `next`, `render` and `doctor` treat it exactly like any
+// other ready Task record; it never touches the Spec header or an existing
+// record, so a done Task is never reopened.
+export function createCorrectiveTasks(rootDir, specId, options = {}) {
+  const root = path.resolve(rootDir);
+  const candidate = requiredString(options.candidate, 'createCorrectiveTasks requires a --candidate SHA');
+  const findings = requiredString(options.findings, 'createCorrectiveTasks requires --findings naming at least one defect');
+  const items = splitFindings(findings);
+  if (items.length === 0) {
+    throw new Error(`A fail verdict for candidate ${candidate} on ${specId} names no corrective finding ("${findings}"); a failed verdict that leaves the Spec with no corrective Task is refused.`);
+  }
+
+  const spec = findSpec(root, specId);
+  const evidence = parseEvidence(spec.content);
+  let anchorIndex = -1;
+  for (let index = evidence.rows.length - 1; index >= 0; index -= 1) {
+    const cells = evidence.rows[index].cells;
+    if (cells.length < 6 || cells[1] !== 'review') continue;
+    const match = VERDICT_PATTERN.exec(cells[2]);
+    if (match && match[1] === 'fail' && match[2] === candidate) {
+      anchorIndex = index;
+      break;
+    }
+  }
+  if (anchorIndex < 0) {
+    throw new Error(`No recorded fail verdict for candidate ${candidate} exists on ${specId}; corrective Tasks are created only from a recorded fail verdict row.`);
+  }
+  // The row's own position in the append-only evidence log (1-based, oldest
+  // first): unambiguous by construction, unlike candidate+date+result alone,
+  // which two verdicts recorded the same day could share.
+  const rowOrdinal = anchorIndex + 1;
+  const verdictDate = evidence.rows[anchorIndex].cells[0];
+
+  const specDir = path.dirname(spec.filePath);
+  const created = [];
+  for (const findingText of items) {
+    const { id } = nextIdentity(root, specId, { prefix: 'TK' });
+    const filePath = path.join(specDir, 'tasks', id, 'TASK.md');
+    const plannedVerification = `Answers evidence row ${rowOrdinal} (fail verdict at ${candidate} on ${verdictDate}): ${findingText}`;
+    const content = formatTaskRecord({
+      id,
+      specId,
+      slice: findingText,
+      status: 'ready',
+      blockers: 'none',
+      destination: `spec-acceptance: ${specId} Acceptance Criteria`,
+      plannedVerification
+    });
+    // Parsed back before it lands, matching `convertSpecSlices`'s own
+    // safety discipline: a record this refuses to produce is never written.
+    parseTaskRecord(content, filePath, root);
+    assertSafeWritePath(root, filePath);
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    atomicWrite(filePath, content);
+    created.push({ id, filePath: path.relative(root, filePath).split(path.sep).join('/'), slice: findingText });
+  }
+
+  return { specId, candidate, verdictRow: { ordinal: rowOrdinal, date: verdictDate }, created };
 }
 
 function requiredString(value, message) {
@@ -154,10 +256,20 @@ function commitExists(root, sha) {
 // reviewer named none - never re-deriving pass/fail from it, only counting
 // what was actually reported.
 function findingsGap(findings) {
-  const trimmed = findings.trim();
-  if (trimmed.toLowerCase() === 'none') return 'none';
-  const items = trimmed.split(';').map((item) => item.trim()).filter(Boolean);
+  if (findings.trim().toLowerCase() === 'none') return 'none';
+  const items = splitFindings(findings);
   return String(items.length || 1);
+}
+
+// The findings string split into its individual items - "none" (the literal
+// a pass accepts) yields no items at all, everything else is split on ";"
+// and trimmed, blanks dropped. Shared by `findingsGap` above (the remaining-
+// gap evidence cell) and `createCorrectiveTasks` below (one Task per item),
+// so the two never drift into disagreeing about what counts as a finding.
+function splitFindings(findings) {
+  const trimmed = findings.trim();
+  if (trimmed.toLowerCase() === 'none') return [];
+  return trimmed.split(';').map((item) => item.trim()).filter(Boolean);
 }
 
 // Every verdict row in the evidence log, parsed from its cells alone - never

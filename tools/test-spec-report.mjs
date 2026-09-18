@@ -13,8 +13,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { assembleSpecReport, formatSpecReport, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
-import { doctor } from '../workbench/tools/spec-workbench.mjs';
+import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
+import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 
 function initGitRoot(dir) {
@@ -840,6 +840,205 @@ function headingShadowSpec(id) {
     assert.equal(plainResult.stdout, `${formatSpecReport(inProcessReport)}\n`, 'the CLI plain form is exactly formatSpecReport on the same report, including the [history] marker and the verdict line');
 
     console.log('ok - the plain CLI form prints the [history] marker for a retained done table row and a recorded verdict\'s own line');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-003: a fail verdict that names no corrective finding is refused
+// before anything is written - a failed verdict that would leave the Spec
+// with no corrective Task is refused, matching WF-8C's "failure is
+// diagnostic and generative" design: a fail with nothing to fix is not a
+// real failure return path. "none" (the literal accepted on a pass) and a
+// findings string that trims to no actual item (all-semicolon) are each
+// refused the same way, distinctly from the pre-existing empty/whitespace
+// --findings refusal above, which never reaches this check at all.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-fail-no-finding-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-720-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-720', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+
+    assert.throws(
+      () => recordReviewVerdict(root, 'S-720', { candidate, result: 'fail', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' }),
+      (error) => error instanceof Error && /corrective Task/i.test(error.message) && error.message.includes(candidate),
+      'a fail verdict with "none" findings is refused: it would leave the Spec with no corrective Task, and the refusal names the candidate'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'the refused fail verdict writes nothing to the Spec file');
+    assert.equal(fs.existsSync(path.join(root, 'specs/S-720-fixture/tasks')), false, 'no tasks/ directory is created by a refused verdict');
+
+    assert.throws(
+      () => recordReviewVerdict(root, 'S-720', { candidate, result: 'fail', findings: ' ; ; ', reviewer: 'Claude Opus 5 (separate context)' }),
+      (error) => error instanceof Error && /corrective Task/i.test(error.message),
+      'a findings string with no actual item once split on ";" (only separators) is refused the same way'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'the semicolons-only refusal also writes nothing');
+    assert.equal(fs.existsSync(path.join(root, 'specs/S-720-fixture/tasks')), false, 'no tasks/ directory is created by that refusal either');
+
+    console.log('ok - a fail verdict that names no corrective finding ("none", or a findings string with no actual item) is refused before any write, naming the candidate');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-003: the seam. createCorrectiveTasks(rootDir, specId, { candidate,
+// findings }) turns an already-recorded fail verdict into one Task record
+// per diagnosed defect, through the exact same formatTaskRecord /
+// parseTaskRecord seam S-00H delivered - never a second template -
+// allocated with the room's own visible-id allocator (`nextIdentity`, TK-
+// prefixed and letter-bearing), blocking nothing already done, landing with
+// `Status: ready`, `Blockers: none` and `Destination: spec-acceptance: <spec>
+// Acceptance Criteria`. Each Task's `Planned verification` names both the
+// finding and the exact verdict row it answers - the row's own position in
+// the Spec's append-only evidence log, which stays unambiguous even when a
+// later verdict shares the same candidate, date and result (candidate SHA
+// plus date plus result alone is not unique; the row's ordinal is).
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-corrective-seam-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const candidate = headSha(root);
+    const specPath = 'specs/S-721-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-721', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: [
+        '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+        `| 2026-09-18 | review | Review verdict: fail at ${candidate} | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
+      ].join('\n')
+    }));
+    const specBefore = fs.readFileSync(path.join(root, specPath), 'utf8');
+
+    const result = createCorrectiveTasks(root, 'S-721', { candidate, findings: 'Missing input validation; Stale doc reference' });
+
+    assert.equal(result.specId, 'S-721');
+    assert.equal(result.candidate, candidate);
+    assert.equal(result.verdictRow.ordinal, 2, 'the anchor is the verdict row\'s own position in the append-only evidence log (second row here)');
+    assert.equal(result.verdictRow.date, '2026-09-18');
+    assert.equal(result.created.length, 2, 'one corrective Task per finding');
+    const [firstTask, secondTask] = result.created;
+    assert.notEqual(firstTask.id, secondTask.id, 'each corrective Task gets its own allocated id');
+    assert.notEqual(firstTask.id, 'TK-001', 'a corrective Task id never collides with the retained done row');
+    assert.notEqual(secondTask.id, 'TK-001');
+    assert.match(firstTask.id, /^TK-[0-9A-Za-z]+$/);
+    assert.ok(/[A-Za-z]/.test(firstTask.id.slice(3)), 'the allocated id is letter-bearing, matching the room\'s allocator rule');
+
+    const firstContent = fs.readFileSync(path.join(root, firstTask.filePath), 'utf8');
+    assert.match(firstContent, new RegExp(`^# ${firstTask.id} - Missing input validation$`, 'm'));
+    assert.match(firstContent, /\*\*Spec ID:\*\* S-721$/m);
+    assert.match(firstContent, /\*\*Slice:\*\* Missing input validation$/m);
+    assert.match(firstContent, /\*\*Status:\*\* ready$/m);
+    assert.match(firstContent, /\*\*Blockers:\*\* none$/m);
+    assert.match(firstContent, /\*\*Destination:\*\* spec-acceptance: S-721 Acceptance Criteria$/m);
+    assert.match(
+      firstContent,
+      new RegExp(`\\*\\*Planned verification:\\*\\* Answers evidence row 2 \\(fail verdict at ${candidate} on 2026-09-18\\): Missing input validation$`, 'm'),
+      'the Planned verification names the finding and the exact verdict row it answers, unambiguously (row ordinal, candidate and date)'
+    );
+
+    const secondContent = fs.readFileSync(path.join(root, secondTask.filePath), 'utf8');
+    assert.match(secondContent, /\*\*Slice:\*\* Stale doc reference$/m);
+    assert.match(
+      secondContent,
+      new RegExp(`\\*\\*Planned verification:\\*\\* Answers evidence row 2 \\(fail verdict at ${candidate} on 2026-09-18\\): Stale doc reference$`, 'm')
+    );
+
+    const specAfter = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.match(specAfter, /\*\*Status:\*\* active$/m, 'the Spec header Status is unchanged; the Spec stays open');
+    const sliceTableBefore = specBefore.slice(specBefore.indexOf('## Vertical Implementation Slices'), specBefore.indexOf('## Acceptance Criteria'));
+    const sliceTableAfter = specAfter.slice(specAfter.indexOf('## Vertical Implementation Slices'), specAfter.indexOf('## Acceptance Criteria'));
+    assert.equal(sliceTableAfter, sliceTableBefore, 'the retained done TK-001 row is untouched - a done Task is never reopened, and no existing record changes');
+    const evidenceBefore = specBefore.slice(specBefore.indexOf('## Append-Only Evidence'), specBefore.indexOf('## Completion Result'));
+    const evidenceAfter = specAfter.slice(specAfter.indexOf('## Append-Only Evidence'), specAfter.indexOf('## Completion Result'));
+    assert.equal(evidenceAfter, evidenceBefore, 'creating corrective Tasks never rewrites the evidence log it read the verdict row from');
+
+    render(root);
+    const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+    assert.ok(board.includes(firstTask.id) && board.includes('Missing input validation'), 'render shows a corrective Task on the hot board');
+
+    const next = nextWork(root);
+    assert.equal(next.specId, 'S-721');
+    assert.equal(next.taskId, firstTask.id, 'next selects a corrective Task like any other ready record');
+
+    const doctorFindings = doctor(root);
+    assert.equal(doctorFindings.filter((item) => item.blocks === 'all' || item.blocks === 'selection').length, 0, 'doctor reports no blocking finding after corrective Tasks are created');
+
+    console.log('ok - createCorrectiveTasks writes one Task record per finding through the Task-record seam, naming the exact verdict row each answers, without reopening the retained done row or touching the Spec header Status, and the corrective Task is selectable by next and visible on the rendered board');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-003: folded into the verdict verb. `recordReviewVerdict` with
+// `result: 'fail'` creates the corrective Tasks in the same operation - the
+// handoff's chosen design over a separate `correct` verb, so a caller can
+// never record a failed verdict and forget the corrective-Task step it
+// requires. The created Tasks are returned alongside the verdict row.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-verdict-corrective-fold-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-722-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-722', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    const verdict = recordReviewVerdict(root, 'S-722', {
+      candidate, result: 'fail', findings: 'Missing input validation; Stale doc reference',
+      reviewer: 'Claude Sonnet 5 (separate context)'
+    });
+
+    assert.equal(verdict.result, 'fail');
+    assert.ok(Array.isArray(verdict.correctiveTasks), 'a fail verdict returns the corrective Tasks it created in the same operation');
+    assert.equal(verdict.correctiveTasks.length, 2, 'one corrective Task per finding');
+    const [firstTask, secondTask] = verdict.correctiveTasks;
+    assert.notEqual(firstTask.id, secondTask.id);
+    assert.notEqual(firstTask.id, 'TK-001', 'a corrective Task id never collides with the retained done row');
+
+    const specAfter = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.match(specAfter, /\*\*Status:\*\* active$/m, "the Spec header Status is unchanged by a fail verdict's corrective Tasks");
+    assert.ok(specAfter.includes(verdict.row), 'the verdict row itself is present, appended in the same operation that created the corrective Tasks');
+
+    const firstContent = fs.readFileSync(path.join(root, firstTask.filePath), 'utf8');
+    assert.match(firstContent, /\*\*Status:\*\* ready$/m);
+    assert.match(firstContent, /\*\*Blockers:\*\* none$/m);
+    assert.match(firstContent, /\*\*Destination:\*\* spec-acceptance: S-722 Acceptance Criteria$/m);
+    assert.match(
+      firstContent,
+      new RegExp(`\\*\\*Planned verification:\\*\\* Answers evidence row 2 \\(fail verdict at ${candidate} on ${verdict.date}\\): Missing input validation$`, 'm')
+    );
+
+    const sliceTableAfter = specAfter.slice(specAfter.indexOf('## Vertical Implementation Slices'), specAfter.indexOf('## Acceptance Criteria'));
+    assert.match(sliceTableAfter, /\| TK-001 \| First slice \| done \| none \| landed \|/, 'the retained done TK-001 row is untouched (never reopened) by the corrective Tasks');
+
+    const next = nextWork(root);
+    assert.equal(next.specId, 'S-722');
+    assert.equal(next.taskId, firstTask.id, 'next selects a corrective Task like any other ready record');
+
+    render(root);
+    const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+    assert.ok(board.includes(firstTask.id) && board.includes('Missing input validation'), 'render shows a corrective Task on the hot board');
+
+    const doctorFindings = doctor(root);
+    assert.equal(doctorFindings.filter((item) => item.blocks === 'all' || item.blocks === 'selection').length, 0, 'doctor reports no blocking finding once render has caught up');
+
+    console.log('ok - a fail verdict creates one corrective Task per finding in the same operation, naming the verdict row it answers, without touching the Spec header Status or the retained done row, and the corrective Task is selectable by next and visible on the rendered board');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
