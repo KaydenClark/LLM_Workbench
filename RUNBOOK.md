@@ -814,6 +814,7 @@ node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-002 \
 node workbench/tools/spec-workbench.mjs report S-001 --candidate [SHA] [--json]
 node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
 node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-002 --to retired
+node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/design-concepts/[NOTE].md
 node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate [SHA]
 node workbench/tools/spec-workbench.mjs gate --task TK-002 --spec S-001
 node workbench/tools/spec-workbench.mjs approve S-001 --candidate [INTEGRATION SHA] --owner "[WHO]" \
@@ -854,7 +855,15 @@ counts them, and stages the result; the top level stays the active roster,
 `show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `move-task` does the same for one done
 Task record into its Spec's `tasks/retired/`, refusing a Task that is not
 done or carries neither Proof nor a Receipt row; `show` lists retired Tasks
-separately and `report` shows them as history. `gate` reports a Task PR (a real Task
+separately and `report` shows them as history. `retire-spec` reconciles and
+retires a closed Spec: it refuses unless the Spec is complete with every Task
+done, every acceptance box checked and a real Completion Result, the owner's
+Human QA for the current content is an approval, and the named Wiki note is a
+valid design-concept or guidebook routed from `MEMORY.md` that names the
+retired route and copies no task state; it then appends the retirement row,
+moves the directory with its Tasks into `retired/`, cleans contained lane
+branches, lists unmerged ones, and regenerates the board and the ADR
+register. `gate` reports a Task PR (a real Task
 record under a still-open Spec, while S-00O exemption 2 holds) and refuses a
 Spec candidate that is incomplete, unreviewed for its current content or
 named by a SHA the repository does not hold; the closeout recipe below runs
