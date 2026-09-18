@@ -108,7 +108,7 @@ for (const failure of ['write', 'read-back']) {
   });
 }
 
-const specBody = '# S-001 - Promotion fixture\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 1\n**Owner:** test\n**Updated:** 2026-09-08\n**Catalog description:** Verify promotion.\n**Blockers:** none\n**Latest event:** Started.\n**Next gate:** Verify.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | Verify | ready | none | pending |\n\n## Append-Only Evidence And Execution Log\n\n| Date | Ticket | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-08 | plan | Original evidence | Checked | Current | Implementation |\n';
+const specBody = '# S-001 - Promotion fixture\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 1\n**Owner:** test\n**Updated:** 2026-09-08\n**Catalog description:** Verify promotion.\n**Blockers:** none\n**Latest event:** Started.\n**Next gate:** Verify.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | Verify | ready | none | pending |\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-08 | plan | Original evidence | Checked | Current | Implementation |\n';
 const ownerCases = [
   ['spec', 'workbench/specs/S-001-promotion/SPEC.md', specBody, value => value.replace('**Status:** active', '**Status:** invalid')],
   ['adr', 'workbench/docs/adr/000A-promotion.md', '---\nstatus: proposed\ndate: 2026-09-08\ncanonicalized_in:\n  - RUNBOOK.md\n---\n\n# Promotion rationale\n', value => value.replace('status: proposed', 'status: invalid')],

@@ -67,7 +67,7 @@ test('code-review fixed diff disables a hostile textconv driver', () => {
   }
 });
 
-test('independence applies at integration, not every ticket close', () => {
+test('independence applies at integration, not every task close', () => {
   const skill = read('skills/implement/SKILL.md');
   assert.match(skill, /separate-context review.*integration/s);
   assert.match(skill, /Earlier review.*not.*mandatory independent/s);

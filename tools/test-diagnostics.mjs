@@ -36,13 +36,13 @@ function write(project, relative, content) {
   fs.writeFileSync(target, content);
 }
 
-function spec(id, { status = 'active', tickets = '| TK-001 | First slice | ready | none | pending |', updated = '2026-09-04', extra = '' } = {}) {
+function spec(id, { status = 'active', tasks = '| TK-001 | First slice | ready | none | pending |', updated = '2026-09-04', extra = '' } = {}) {
   return [
     `# ${id} - Capability ${id}`, '', `**Spec ID:** ${id}`, `**Status:** ${status}`, '**Priority:** 0', '**Owner:** fixture',
     `**Updated:** ${updated}`, '**Catalog description:** Fixture.', '**Blockers:** none', '**Latest event:** Captured.', '**Next gate:** Claim TK-001.', '',
-    '## Vertical Implementation Slices', '', '| Ticket | Slice | Status | Blockers | Proof |', '|---|---|---|---|---|', tickets, '',
+    '## Vertical Implementation Slices', '', '| Task | Slice | Status | Blockers | Proof |', '|---|---|---|---|---|', tasks, '',
     '## Acceptance Criteria', '', '- [ ] Verified.', '', '## Append-Only Evidence And Execution Log', '',
-    '| Date | Ticket | Event | Verification | Docs | Remaining gap |', '|---|---|---|---|---|---|', '', '## Completion Result', '', 'Pending.', '', extra, ''
+    '| Date | Task | Event | Verification | Docs | Remaining gap |', '|---|---|---|---|---|---|', '', '## Completion Result', '', 'Pending.', '', extra, ''
   ].join('\n');
 }
 
@@ -103,14 +103,14 @@ test('the registry is closed, typed, and every emitted code is registered', () =
 test('attention findings stay visible and never change the doctor exit code or hide work', () => {
   const dir = project();
   try {
-    write(dir, 'workbench/specs/S-001-stale/SPEC.md', spec('S-001', { tickets: '| TK-001 | First slice | in-progress | none | pending |', updated: '2026-01-01', extra: '[missing](../../missing.md)' }));
+    write(dir, 'workbench/specs/S-001-stale/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | in-progress | none | pending |', updated: '2026-01-01', extra: '[missing](../../missing.md)' }));
     render(dir);
     const findings = doctor(dir, { today: '2026-09-04', home: quietHome });
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.blocks]).sort(), [['broken-link', 'attention', 'none'], ['stale-claim', 'attention', 'none']]);
     const cli = cliDoctor(dir);
     assert.equal(cli.status, 0, 'attention findings must not fail doctor');
     assert.equal(cli.findings.length, 2);
-    assert.equal(nextWork(dir).ticketId, 'TK-001', 'attention findings must not hide resumable work');
+    assert.equal(nextWork(dir).taskId, 'TK-001', 'attention findings must not hide resumable work');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -146,19 +146,103 @@ test('selection findings fail doctor and an unsafe manifest blocks everything', 
 test('a selected slice with an unmet dependency is reported, excluded by next, and refused by claim without failing doctor', () => {
   const dir = project();
   try {
-    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tickets: '| TK-001 | Blocked slice | ready | S-999 | pending |' }));
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tasks: '| TK-001 | Blocked slice | ready | S-999 | pending |' }));
     render(dir);
     const findings = doctor(dir, { home: quietHome });
-    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.blocks, item.specId, item.ticketId]), [['blocked-slice', 'error', 'selected-slice', 'S-001', 'TK-001']]);
+    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.blocks, item.specId, item.taskId]), [['blocked-slice', 'error', 'selected-slice', 'S-001', 'TK-001']]);
     assert.equal(cliDoctor(dir).status, 0, 'a slice blocker must not fail doctor for unrelated work');
     assert.equal(nextWork(dir), null, 'next must exclude the blocked slice');
     assert.throws(() => claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }), /blocked-slice.*S-999|S-999.*blocked-slice/);
     assert.match(fs.readFileSync(path.join(dir, 'workbench', 'specs', 'S-001-first', 'SPEC.md'), 'utf8'), /\| ready \| S-999 \|/, 'a refused claim must not mutate the spec');
 
-    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tickets: '| TK-001 | First slice | ready | none | pending |\n| TK-002 | Second slice | ready | TK-001 | pending |' }));
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | ready | none | pending |\n| TK-002 | Second slice | ready | TK-001 | pending |' }));
     render(dir);
-    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a later ticket waiting on its predecessor is ordinary sequencing, not a finding');
-    assert.equal(nextWork(dir).ticketId, 'TK-001');
+    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a later task waiting on its predecessor is ordinary sequencing, not a finding');
+    assert.equal(nextWork(dir).taskId, 'TK-001');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a row/record collision is a named row-record-collision finding, not malformed-spec, and does not hide an unrelated finding', () => {
+  const dir = project();
+  try {
+    // A row and a standalone Task record for the same id, in the same Spec:
+    // a Spec parses fine on both sources, so this is a distinct, recoverable
+    // condition from an unparseable packet - registering it separately from
+    // `malformed-spec` lets doctor keep reporting the rest of the room
+    // instead of aborting on the first collision it meets.
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | ready | none | pending |' }));
+    write(dir, 'workbench/specs/S-001-first/tasks/TK-001/TASK.md', [
+      '# TK-001 - First slice',
+      '',
+      '**Task ID:** TK-001',
+      '**Spec ID:** S-001',
+      '**Slice:** First slice',
+      '**Status:** ready',
+      '**Blockers:** none',
+      '**Destination:** spec-acceptance: S-001 Acceptance Criteria',
+      ''
+    ].join('\n'));
+    // An unrelated stale-claim finding on a second Spec proves the collision
+    // is one finding among many rather than a reason to abort the whole run.
+    write(dir, 'workbench/specs/S-002-stale/SPEC.md', spec('S-002', {
+      tasks: '| TK-001 | Stale slice | in-progress | none | pending |', updated: '2026-01-01'
+    }));
+    render(dir);
+    const findings = doctor(dir, { home: quietHome });
+    const collision = findings.find((item) => item.code === 'row-record-collision');
+    assert.ok(collision, 'the collision is reported by its own code');
+    assert.equal(collision.blocks, 'selection', 'row-record-collision has the selection effect');
+    assert.match(collision.message, /S-001 carries both a slice-table row and a Task record for TK-001/);
+    assert.ok(!findings.some((item) => item.code === 'malformed-spec'), 'the collision is never reported as malformed-spec');
+    assert.ok(findings.some((item) => item.code === 'stale-claim' && item.specId === 'S-002'),
+      'an unrelated finding on another spec still surfaces beside the collision');
+    assert.throws(() => nextWork(dir), /S-001 carries both a slice-table row and a Task record for TK-001/,
+      'selection still refuses to resolve slices through the collision');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// Review of S-00H TK-003 (9bd14e1, PASS with three Low findings) found that
+// identityFindings' cross-spec letter-bearing check walks a Spec's rows and
+// records as one combined list per spec before comparing against every other
+// spec's ids. A numeric TK-001-shaped id skips that check entirely, so the
+// test above never exercised it; a letter-bearing id like TK-00A does not
+// skip it, and reading a row TK-00A immediately followed by a record TK-00A
+// from the SAME spec means the second occurrence finds the first already
+// reserved and reports "Duplicate task ID: S-001/TK-00A conflicts with
+// S-001/TK-00A" - the spec colliding with itself - beside the
+// row-record-collision finding the adjacent comment says is the one and only
+// report for this shape.
+test('a letter-bearing row/record collision is reported once, never doubled as a duplicate-id against itself', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', {
+      tasks: '| TK-00A | First slice | done | none | node test |'
+    }));
+    write(dir, 'workbench/specs/S-001-first/tasks/TK-00A/TASK.md', [
+      '# TK-00A - First slice',
+      '',
+      '**Task ID:** TK-00A',
+      '**Spec ID:** S-001',
+      '**Slice:** First slice',
+      '**Status:** ready',
+      '**Blockers:** none',
+      '**Destination:** spec-acceptance: S-001 Acceptance Criteria',
+      ''
+    ].join('\n'));
+    render(dir);
+    const findings = doctor(dir, { home: quietHome });
+    const collisions = findings.filter((item) => item.code === 'row-record-collision');
+    assert.equal(collisions.length, 1, 'the collision is reported exactly once');
+    assert.match(collisions[0].message, /S-001 carries both a slice-table row and a Task record for TK-00A/);
+    assert.ok(
+      !findings.some((item) => item.code === 'duplicate-id' && item.specId === 'S-001' && item.taskId === 'TK-00A'),
+      'the same row/record pair must never also surface as a duplicate-id conflicting with itself'
+    );
+    assert.equal(cliDoctor(dir).status, 1, 'row-record-collision is a selection-effect finding, so it fails doctor like any other');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -209,7 +293,7 @@ test('doctor --home reports unknown generation or compatibility per required ski
     const cli = cliDoctor(dir, home);
     assert.equal(cli.status, 0, 'skill findings are attention and never block');
     assert.equal(cli.findings.length, 9, 'both discovery entries expose canonical marker changes and mixed global generation');
-    assert.equal(nextWork(dir).ticketId, 'TK-001');
+    assert.equal(nextWork(dir).taskId, 'TK-001');
     assert.ok(SCOPES.includes('skills'));
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a healthy declared compatible core has no skill findings');
     const empty = fixture();
@@ -329,7 +413,7 @@ test('permission-scope-drift names each withheld authorship lane without blockin
     const cli = cliDoctor(dir);
     assert.equal(cli.status, 0, 'permission drift is reported, never a doctor failure');
     assert.deepEqual(cli.findings.map((item) => item.code), ['permission-scope-drift']);
-    assert.equal(nextWork(dir).ticketId, 'TK-001', 'the finding must not hide work');
+    assert.equal(nextWork(dir).taskId, 'TK-001', 'the finding must not hide work');
 
     // The shipped template shape grants every lane.
     fs.copyFileSync(path.join(root, 'templates', '.claude', 'settings.json'), settings);
@@ -470,7 +554,7 @@ test('the declared integration branch is checked by doctor as a git-scope error 
     const missing = doctor(dir, { home: quietHome });
     assert.deepEqual(missing.map((item) => [item.code, item.severity, item.scope, item.blocks, item.branch]), [['integration-branch-missing', 'error', 'git', 'none', 'integration']]);
     assert.equal(cliDoctor(dir).status, 0, 'a missing integration branch must not fail doctor');
-    assert.equal(nextWork(dir).ticketId, 'TK-001', 'a missing integration branch must not hide work');
+    assert.equal(nextWork(dir).taskId, 'TK-001', 'a missing integration branch must not hide work');
 
     git(dir, 'remote', 'add', 'origin', dir);
     git(dir, 'update-ref', 'refs/remotes/origin/integration', 'HEAD');
@@ -481,9 +565,94 @@ test('the declared integration branch is checked by doctor as a git-scope error 
     const undeclared = doctor(dir, { home: quietHome });
     assert.deepEqual(undeclared.map((item) => [item.code, item.severity, item.scope, item.blocks]), [['integration-branch-undeclared', 'error', 'git', 'none']]);
     assert.equal(cliDoctor(dir).status, 0, 'an undeclared integration branch must not fail doctor');
-    assert.equal(claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }).tickets[0].status, 'in-progress', 'claim proceeds without the declaration');
+    assert.equal(claimWork(dir, 'S-001', { agent: 'fixture', date: '2026-09-04' }).tasks[0].status, 'in-progress', 'claim proceeds without the declaration');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// Review of S-00H TK-003 (9bd14e1, PASS with three Low findings) found the
+// bare `catch {}` this replaced would have swallowed any exception thrown
+// while resolving `gitFindings`'s own candidate, not only the row/record
+// collision the surrounding comment names. The fix names the exact condition
+// instead: an audit of every `throw` in spec-workbench.mjs (none reachable
+// from `selectCandidate` besides the `sliceConflict` one in `slicesOf`) found
+// no other exception the guard could currently be hiding, so this proves the
+// guard's precision instead - it must key on `status === 'active'`, the same
+// filter `selectCandidate` itself applies, not "any spec anywhere has a
+// conflict" - and pins the swallow's removal so a future refactor cannot
+// silently reintroduce a blanket catch around this call.
+test('gitFindings only skips its candidate lookup for an active row/record collision, and no blanket catch remains around it', () => {
+  const source = fs.readFileSync(specTool, 'utf8');
+  assert.doesNotMatch(
+    source,
+    /selectCandidate\(specs\);\s*\n\s*\} catch/,
+    'no bare catch may wrap the gitFindings candidate lookup again; a narrow, named guard replaced it'
+  );
+  assert.match(
+    source,
+    /hasActiveSliceConflict[\s\S]{0,80}status === 'active'[\s\S]{0,20}sliceConflict/,
+    'the guard must name the active-status condition explicitly rather than catching every exception'
+  );
+
+  const dir = project();
+  try {
+    // Two Specs: S-001 is active with an unresolved row/record collision
+    // (skips the lookup by name); S-002 is a second active Spec with no
+    // collision, whose ready slice `gitFindings` must still be able to
+    // resolve through `selectCandidate` normally, proving the guard did not
+    // swallow its way past a real candidate.
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    write(dir, 'workbench/specs/S-001-first/tasks/TK-001/TASK.md', [
+      '# TK-001 - First slice',
+      '',
+      '**Task ID:** TK-001',
+      '**Spec ID:** S-001',
+      '**Slice:** First slice',
+      '**Status:** ready',
+      '**Blockers:** none',
+      '**Destination:** spec-acceptance: S-001 Acceptance Criteria',
+      ''
+    ].join('\n'));
+    render(dir);
+    const withCollision = doctor(dir, { home: quietHome });
+    assert.ok(withCollision.some((item) => item.code === 'row-record-collision'), 'the collision is still reported');
+    assert.equal(cliDoctor(dir).status, 1, 'row-record-collision is a selection-effect finding, so it fails doctor even though the room keeps reporting');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+
+  // A non-active (blocked) Spec carrying the same shape of collision is
+  // exactly the case `selectCandidate` already skips by its own status
+  // filter, so it must not be what the guard keys on either. A separate,
+  // genuinely active and uncontested Spec proves the guard did not swallow
+  // its way past a real candidate: if the guard keyed on "a collision exists
+  // anywhere in the room" rather than "on an active Spec", this candidate
+  // would go unresolved even though nothing about it is wrong.
+  const isolationDir = project();
+  try {
+    write(isolationDir, 'workbench/specs/S-002-clean/SPEC.md', spec('S-002'));
+    write(isolationDir, 'workbench/specs/S-003-blocked/SPEC.md', spec('S-003', { status: 'blocked' }));
+    write(isolationDir, 'workbench/specs/S-003-blocked/tasks/TK-001/TASK.md', [
+      '# TK-001 - Blocked slice',
+      '',
+      '**Task ID:** TK-001',
+      '**Spec ID:** S-003',
+      '**Slice:** Blocked slice',
+      '**Status:** ready',
+      '**Blockers:** none',
+      '**Destination:** spec-acceptance: S-003 Acceptance Criteria',
+      ''
+    ].join('\n'));
+    render(isolationDir);
+    const findings = doctor(isolationDir, { home: quietHome });
+    assert.ok(findings.some((item) => item.code === 'row-record-collision' && item.specId === 'S-003'),
+      'the blocked spec\'s collision is still reported');
+    assert.equal(cliDoctor(isolationDir).status, 1, 'row-record-collision still fails doctor even on a non-active spec');
+    assert.equal(nextWork(isolationDir).specId, 'S-002',
+      'a collision on a non-active spec must not suppress selection of an unrelated active candidate');
+  } finally {
+    fs.rmSync(isolationDir, { recursive: true, force: true });
   }
 });
 
@@ -499,7 +668,7 @@ test('a selected spec already complete at the declared integration ref is report
 
     git(dir, 'switch', '-q', 'integration');
     git(dir, 'merge', '-q', '--ff-only', 'main');
-    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { status: 'complete', tickets: '| TK-001 | First slice | done | none | node test |' }));
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { status: 'complete', tasks: '| TK-001 | First slice | done | none | node test |' }));
     render(dir);
     git(dir, 'add', '-A');
     git(dir, 'commit', '-q', '-m', 'S-001 complete on integration');
@@ -510,7 +679,7 @@ test('a selected spec already complete at the declared integration ref is report
     assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.specId, item.ref]), [['complete-on-integration', 'attention', 'specs', 'none', 'S-001', 'integration']]);
     assert.match(findings[0].message, /S-001.*complete.*integration/);
     assert.equal(cliDoctor(dir).status, 0, 'the finding informs and never fails doctor');
-    assert.equal(nextWork(dir).ticketId, 'TK-001', 'next still returns the slice; a checkout may be pinned deliberately');
+    assert.equal(nextWork(dir).taskId, 'TK-001', 'next still returns the slice; a checkout may be pinned deliberately');
 
     const tip = git(dir, 'rev-parse', 'integration');
     git(dir, 'update-ref', '-d', 'refs/heads/integration');
@@ -519,7 +688,7 @@ test('a selected spec already complete at the declared integration ref is report
     const remote = doctor(dir, { home: quietHome });
     assert.deepEqual(remote.map((item) => [item.code, item.ref]), [['complete-on-integration', 'origin/integration']], 'a remote-only integration ref is read without fetching');
 
-    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { status: 'complete', tickets: '| TK-001 | First slice | done | none | node test |' }));
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { status: 'complete', tasks: '| TK-001 | First slice | done | none | node test |' }));
     render(dir);
     assert.deepEqual(doctor(dir, { home: quietHome }), [], 'once the checkout agrees there is nothing to select and nothing to report');
   } finally {
@@ -593,6 +762,7 @@ const PINNED_EFFECTS = {
   'missing-evidence': ['error', 'specs', 'selection'],
   'render-drift': ['error', 'specs', 'selection'],
   'broken-render-target': ['error', 'specs', 'selection'],
+  'row-record-collision': ['error', 'specs', 'selection'],
   'blocked-slice': ['error', 'specs', 'selected-slice'],
   'invalid-adr': ['error', 'adr', 'none'],
   'untracked-provenance': ['error', 'adr', 'none'],
@@ -697,7 +867,7 @@ test('doctor plain output groups findings by consequence, counts each group, and
 test('doctor renders the same findings as grouped text and byte-unchanged --json', () => {
   const dir = project();
   try {
-    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tickets: '| TK-001 | Blocked slice | ready | S-999 | pending |', extra: '[missing](../../missing.md)' }));
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tasks: '| TK-001 | Blocked slice | ready | S-999 | pending |', extra: '[missing](../../missing.md)' }));
     render(dir);
     write(dir, 'workbench/specs/S-009-duplicate/SPEC.md', spec('S-001'));
     const findings = doctor(dir, { home: quietHome });

@@ -86,7 +86,7 @@ try {
     .replace(/^\| \[QUESTION THIS ROOM'S MEMORY ANSWERS\].*\n/m, '').replace(/^\| \[ANOTHER DURABLE QUESTION\].*\n/m, '');
   write(first, 'workbench/wiki/MEMORY.md', router);
   write(first, 'workbench/feedback/WORKBENCH_FEEDBACK.md', fs.readFileSync(path.join(product, 'templates', 'WORKBENCH_FEEDBACK.md'), 'utf8').replaceAll('[PROJECT_NAME]', 'Round Trip').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)));
-  write(first, 'workbench/specs/S-001-greeting/SPEC.md', `# S-001 - Greeting\n\n${stamp}\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** unassigned\n**Updated:** ${DATE}\n**Catalog description:** Greet by name from the command line.\n**Blockers:** none\n**Latest event:** Spec captured by Genesis.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nA caller runs the CLI and receives a greeting.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | The CLI greets a named caller and a test proves it | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] \`node src/hello.mjs World\` prints a greeting.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Ticket | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| ${DATE} | genesis | Genesis ran with the v3.1 candidate | validate --genesis valid | Controls filled | TK-001 |\n\n## Completion Result\n\nPending.\n\n## Supersession\n\n- Supersedes: none\n- Superseded by: none\n`);
+  write(first, 'workbench/specs/S-001-greeting/SPEC.md', `# S-001 - Greeting\n\n${stamp}\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** unassigned\n**Updated:** ${DATE}\n**Catalog description:** Greet by name from the command line.\n**Blockers:** none\n**Latest event:** Spec captured by Genesis.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nA caller runs the CLI and receives a greeting.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | The CLI greets a named caller and a test proves it | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] \`node src/hello.mjs World\` prints a greeting.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| ${DATE} | genesis | Genesis ran with the v3.1 candidate | validate --genesis valid | Controls filled | TK-001 |\n\n## Completion Result\n\nPending.\n\n## Supersession\n\n- Supersedes: none\n- Superseded by: none\n`);
   const tool = (clone) => path.join(clone, 'workbench', 'tools', 'spec-workbench.mjs');
   node(first, tool(first), 'render');
   const readiness = JSON.parse(node(first, path.join(first, 'workbench', 'tools', 'workbench-layout.mjs'), 'validate', '--project', first, '--genesis'));
@@ -131,7 +131,7 @@ try {
   node(second, tool(second), 'doctor');
   const next = JSON.parse(node(second, tool(second), 'next', '--json'));
   assert.equal(next.specId, 'S-001');
-  assert.equal(next.ticketId, 'TK-001');
+  assert.equal(next.taskId, 'TK-001');
   assert.equal(next.status, 'in-progress', 'the claimed slice resumes without the original chat');
   assert.match(node(second, tool(second), 'show', 'S-001'), /Greet by name; default to World|Greet by name from the command line/);
 

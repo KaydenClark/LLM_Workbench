@@ -33,14 +33,21 @@ const registry = Object.freeze({
   // spec lifecycle: identity and state consistency selection depends on
   'malformed-spec': entry('error', 'specs', 'selection', 'a spec packet cannot be parsed'),
   'duplicate-id': entry('error', 'specs', 'selection', 'two packets claim one spec ID'),
-  'invalid-state': entry('error', 'specs', 'selection', 'a spec or ticket status is outside the lifecycle vocabulary'),
-  'contradictory-state': entry('error', 'specs', 'selection', 'a completed spec still has unfinished tickets'),
+  'invalid-state': entry('error', 'specs', 'selection', 'a spec or task status is outside the lifecycle vocabulary'),
+  'contradictory-state': entry('error', 'specs', 'selection', 'a completed spec still has unfinished tasks'),
   'unstable-path': entry('error', 'specs', 'selection', 'a spec is not at its stable declared path'),
-  'missing-evidence': entry('error', 'specs', 'selection', 'a done ticket has no proof'),
+  'missing-evidence': entry('error', 'specs', 'selection', 'a done task has no proof'),
   'render-drift': entry('error', 'specs', 'selection', 'a generated projection region is stale; run render'),
   'broken-render-target': entry('error', 'specs', 'selection', 'a projection control or its generated region is missing'),
+  // S-00H TK-003: a Spec may carry both a slice-table row and a standalone
+  // Task record for the same id (a room mid-conversion, or one authored
+  // both by mistake). That is a distinct condition from an unparseable
+  // packet: registering it separately, rather than folding it into
+  // `malformed-spec`, lets doctor keep reporting every other spec and every
+  // other scope instead of aborting the whole run on the first collision.
+  'row-record-collision': entry('error', 'specs', 'selection', 'a spec carries both a slice-table row and a Task record for the same id'),
   // selected slice only
-  'blocked-slice': entry('error', 'specs', 'selected-slice', 'the selected ticket names an unmet dependency'),
+  'blocked-slice': entry('error', 'specs', 'selected-slice', 'the selected task names an unmet dependency'),
   // attention: visible, never blocking
   'stale-claim': entry('attention', 'specs', 'none', 'an in-progress claim is older than one working day; verify activity before reclaiming'),
   'complete-on-integration': entry('attention', 'specs', 'none', 'the spec next would select is already complete or superseded at the declared integration ref; the checkout is behind it'),
@@ -132,8 +139,8 @@ export function blocksSelection(findings) {
   return findings.some((item) => item.blocks === 'all' || item.blocks === 'selection');
 }
 
-export function blocksSlice(findings, specId, ticketId) {
-  return findings.some((item) => item.blocks === 'selected-slice' && item.specId === specId && (!item.ticketId || item.ticketId === ticketId));
+export function blocksSlice(findings, specId, taskId) {
+  return findings.some((item) => item.blocks === 'selected-slice' && item.specId === specId && (!item.taskId || item.taskId === taskId));
 }
 
 export function attention(findings) {

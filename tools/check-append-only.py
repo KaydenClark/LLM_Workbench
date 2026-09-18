@@ -1,4 +1,6 @@
-# A row's identity is its Date+Ticket+Event columns. Append-only means: for each
+# A row's identity is its Date+Task+Event columns (the second cell is read by
+# position, not by the column's header word, so an older or newer header
+# spelling for that column reads the same way). Append-only means: for each
 # identity, the text FIRST published for it must still be present verbatim.
 #
 # "Published" means: appeared in any commit on this branch. It does NOT mean

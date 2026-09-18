@@ -100,17 +100,17 @@ function completeGenesis(project, options = {}) {
 
 ## Outcome
 
-One cold agent can select and claim the first ticket.
+One cold agent can select and claim the first task.
 
 ## Vertical Implementation Slices
 
-| Ticket | Slice | Status | Blockers | Proof |
+| Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Prove one cold selection | ready | none | pending |
 
 ## Acceptance Criteria
 
-- [ ] The first ticket is selectable.
+- [ ] The first task is selectable.
 
 ## Completion Result
 
@@ -164,7 +164,7 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     assert.deepEqual(nextWork(project), {
       specId: 'S-001',
       title: 'First Capability',
-      ticketId: 'TK-001',
+      taskId: 'TK-001',
       slice: 'Prove one cold selection',
       status: 'ready',
       priority: 0,
@@ -689,7 +689,7 @@ test('Genesis validation names the failing first-spec predicate and the stray la
     const priority = run('validate', '--project', project, '--genesis');
     assert.match(priority.report.error.reason, /Priority/);
 
-    fs.writeFileSync(specFile, original.replace('- [ ] The first ticket is selectable.', '- [x] The first ticket is selectable.'));
+    fs.writeFileSync(specFile, original.replace('- [ ] The first task is selectable.', '- [x] The first task is selectable.'));
     const checked = run('validate', '--project', project, '--genesis');
     assert.match(checked.report.error.reason, /acceptance/i);
     fs.writeFileSync(specFile, original);
@@ -2308,7 +2308,7 @@ test('readContextUnit(root) reads the shipped manifest.json declaration, proven 
 });
 
 for (const suffix of ['00A', '100A', '1000']) {
-test(`Genesis accepts first spec and ticket suffix ${suffix} without truncation or path changes`, () => {
+test(`Genesis accepts first spec and task suffix ${suffix} without truncation or path changes`, () => {
   const project = fixture();
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);

@@ -35,7 +35,7 @@ export function nextWork(rootDir) {
 // says `next` and `claim` refuse to read the layout. Every other `all` finding
 // is raised by `validateManifest`, which `loadSpecs` already runs, so this is
 // the one `all` condition selection would otherwise walk past - and walking
-// past it means dispatching a ticket to an agent whose runtime nobody
+// past it means dispatching a task to an agent whose runtime nobody
 // verified. `doctor` still reports the finding instead of throwing, because
 // reporting it is what `doctor` is for.
 function refuseBlockedRuntime(rootDir) {
@@ -63,7 +63,7 @@ function selectCandidate(specs, { specId, readyOnly = false } = {}) {
       candidates.push({
         specId: spec.id,
         title: spec.title,
-        ticketId: slice.id,
+        taskId: slice.id,
         slice: slice.slice,
         status,
         rank: resumable ? -1 : 0,
@@ -74,7 +74,7 @@ function selectCandidate(specs, { specId, readyOnly = false } = {}) {
       });
     }
   }
-  candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.ticketId, b.ticketId));
+  candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
   if (candidates.length === 0) return null;
   const { rank: _rank, ...result } = candidates[0];
   return result;
@@ -90,13 +90,13 @@ export function nextIdentity(rootDir, specId, options = {}) {
   const specs = loadSpecs(rootDir);
   const prefix = options.prefix;
   if (!['S', 'TK'].includes(prefix)) throw new Error('--prefix must be S or TK');
-  if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Ticket identity proposals require an existing assigned spec ID');
+  if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec ID');
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
   const occupied = prefix === 'S'
     ? specs.map(spec => spec.id)
-    : specs.flatMap(spec => [...spec.tickets, ...spec.tasks].map(ticket => ticket.id));
+    : specs.flatMap(spec => [...spec.rows, ...spec.records].map(item => item.id));
   // Letter-bearing new durable labels do not reuse removed historical decimal
-  // IDs. Numeric tickets also retain their old spec-qualified interpretation.
+  // IDs. Numeric tasks also retain their old spec-qualified interpretation.
   const reservations = [...new Map(occupied.map(id => [visibleIdKey(id), id])).values()];
   const id = allocateVisibleId(prefix, reservations, { requireLetter: true });
   return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}) };
@@ -113,8 +113,8 @@ export function claimWork(rootDir, id, options) {
   if (spec.status !== 'active') throw new Error(`${id} is ${spec.status}, not active`);
   const candidate = selectCandidate(specs, { specId: id, readyOnly: true });
   const slices = slicesOf(spec);
-  const ticket = slices.find((item) => item.id === candidate?.ticketId);
-  if (!ticket) {
+  const task = slices.find((item) => item.id === candidate?.taskId);
+  if (!task) {
     // `blocked-slice` names the one shape doctor also reports: a slice that
     // declares itself ready while its blockers are unmet. A slice that
     // declares itself blocked is ordinary sequencing on both sources, so it
@@ -124,58 +124,58 @@ export function claimWork(rootDir, id, options) {
     const satisfied = satisfiedIds(spec, new Set(specs.filter((item) => ['complete', 'superseded'].includes(item.status)).map((item) => item.id)));
     const blocked = slices.find((item) => item.declared === 'ready' && !blockersSatisfied(item.blockers, satisfied));
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
-    throw new Error(`${id} has no eligible ready ticket to claim`);
+    throw new Error(`${id} has no eligible ready task to claim`);
   }
   // A record-backed Spec's state lives on the record; only the Spec header's
   // owner and event fields move. The record is written first so a failure
   // while updating the header cannot leave the Spec announcing a claim that
   // the record never took.
-  if (ticket.source === 'record') writeTaskStatus(ticket.record, { Status: 'in-progress' });
-  const content = ticket.source === 'record'
+  if (task.source === 'record') writeTaskStatus(task.record, { Status: 'in-progress' });
+  const content = task.source === 'record'
     ? spec.content
-    : updateTicket(spec.content, ticket.id, (cells) => {
+    : updateTaskRow(spec.content, task.id, (cells) => {
       cells[2] = 'in-progress';
       return cells;
     });
   const updated = updateFields(content, {
     Owner: options.agent,
     Updated: date,
-    'Latest event': `${ticket.id} claimed by ${options.agent}.`,
-    'Next gate': `Close ${ticket.id} with verification and documentation proof.`
+    'Latest event': `${task.id} claimed by ${options.agent}.`,
+    'Next gate': `Close ${task.id} with verification and documentation proof.`
   });
   atomicWrite(spec.filePath, updated);
   return showSpec(rootDir, id);
 }
 
-export function closeTicket(rootDir, id, options) {
+export function closeTask(rootDir, id, options) {
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
   const spec = findSpec(rootDir, id);
   const slices = slicesOf(spec);
-  const ticket = slices.find((item) => item.declared === 'in-progress')
+  const task = slices.find((item) => item.declared === 'in-progress')
     ?? slices.find((item) => item.declared === 'ready');
-  if (!ticket) throw new Error(`${id} has no open ticket to close`);
+  if (!task) throw new Error(`${id} has no open task to close`);
   // Proof text for a record goes on the record; the Spec's append-only
   // evidence row below is appended either way, because the Spec still owns
   // the evidence log whichever source its slices come from.
   let content = spec.content;
-  if (ticket.source === 'record') writeTaskStatus(ticket.record, { Status: 'done', Proof: proof });
+  if (task.source === 'record') writeTaskStatus(task.record, { Status: 'done', Proof: proof });
   else {
-    content = updateTicket(spec.content, ticket.id, (cells) => {
+    content = updateTaskRow(spec.content, task.id, (cells) => {
       cells[2] = 'done';
       cells[4] = proof;
       return cells;
     });
   }
-  const remaining = slices.find((item) => item.id !== ticket.id && item.declared !== 'done');
+  const remaining = slices.find((item) => item.id !== task.id && item.declared !== 'done');
   content = updateFields(content, {
     Updated: date,
-    'Latest event': `${ticket.id} closed with proof.`,
+    'Latest event': `${task.id} closed with proof.`,
     'Next gate': remaining ? `Complete ${remaining.id}.` : 'Confirm acceptance criteria and completion result.'
   });
-  content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(ticket.id)} | Ticket closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(remainingGap)} |`);
+  content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(task.id)} | Task closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(remainingGap)} |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
 }
@@ -207,36 +207,36 @@ export function convertSpecSlices(rootDir, id, options = {}) {
   if (fs.existsSync(tasksDir)) {
     throw new Error(`${id} already has ${path.relative(root, tasksDir).split(path.sep).join('/')}; conversion runs once and refuses to run again`);
   }
-  const pending = spec.tickets.filter((ticket) => ticket.status !== 'done');
+  const pending = spec.rows.filter((row) => row.status !== 'done');
   if (pending.length === 0) throw new Error(`${id} has no unfinished slice-table row to convert`);
   const destinations = options.destinations ?? {};
   // Every record is rendered and parsed back before anything is written, so a
   // row the record vocabulary cannot carry - a blocker outside the `S-`/`TK-`
   // form, for instance - stops the conversion by name instead of silently
   // dropping the dependency on the way into the record.
-  const staged = pending.map((ticket) => {
-    const filePath = path.join(tasksDir, ticket.id, 'TASK.md');
+  const staged = pending.map((row) => {
+    const filePath = path.join(tasksDir, row.id, 'TASK.md');
     const content = formatTaskRecord({
-      id: ticket.id,
+      id: row.id,
       specId: id,
-      slice: ticket.slice,
-      status: ticket.status,
-      blockers: ticket.blockers,
-      destination: destinations[ticket.id] ?? `spec-acceptance: ${id} Acceptance Criteria`,
+      slice: row.slice,
+      status: row.status,
+      blockers: row.blockers,
+      destination: destinations[row.id] ?? `spec-acceptance: ${id} Acceptance Criteria`,
       // An unfinished row's Proof cell holds the verification the slice plans
       // to run, not proof it ran: every row converted here is by definition
       // not done. It lands in `Planned verification`, and `Proof` stays
       // absent until `close` writes it, so nothing downstream - the Packet
       // TK-005 assembles, `show --json`, a reader - can read the plan as
       // evidence.
-      plannedVerification: /^pending\.?$/i.test(ticket.proof ?? '') ? null : ticket.proof
+      plannedVerification: /^pending\.?$/i.test(row.proof ?? '') ? null : row.proof
     });
     try {
       parseTaskRecord(content, filePath, root);
     } catch (error) {
-      throw new Error(`${id}/${ticket.id} cannot be converted: ${error.message}`);
+      throw new Error(`${id}/${row.id} cannot be converted: ${error.message}`);
     }
-    return { ticket, filePath, content };
+    return { row, filePath, content };
   });
   const converted = [];
   for (const { filePath, content } of staged) {
@@ -245,12 +245,12 @@ export function convertSpecSlices(rootDir, id, options = {}) {
     atomicWrite(filePath, content);
     converted.push(path.relative(root, filePath).split(path.sep).join('/'));
   }
-  const convertedIds = new Set(staged.map((item) => item.ticket.id));
+  const convertedIds = new Set(staged.map((item) => item.row.id));
   atomicWrite(spec.filePath, removeSliceRows(spec.content, convertedIds));
   return {
     specId: id,
     converted,
-    retained: spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id)
+    retained: spec.rows.filter((row) => row.status === 'done').map((row) => row.id)
   };
 }
 
@@ -260,7 +260,7 @@ export function completeSpec(rootDir, id, options = {}) {
   if (!['active', 'needs-review'].includes(spec.status)) throw new Error(`${id} is ${spec.status}, not completable`);
   // Both sources are checked, not only the one selection reads: a Spec cannot
   // complete while a retained table row or a Task record is unfinished.
-  const unfinished = [...slicesOf(spec).map((slice) => slice.declared), ...spec.tickets.map((ticket) => ticket.status)];
+  const unfinished = [...slicesOf(spec).map((slice) => slice.declared), ...spec.rows.map((row) => row.status)];
   if (unfinished.some((status) => status !== 'done')) throw new Error(`${id} has an unfinished slice`);
   if (/^- \[ \]/m.test(section(spec.content, 'Acceptance Criteria'))) throw new Error(`${id} has unchecked acceptance criteria`);
   const completion = section(spec.content, 'Completion Result').trim();
@@ -330,11 +330,20 @@ function packetFindings(specs, options = {}) {
   for (const spec of specs) {
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
+    // A row/record collision is reported by name and this spec's remaining
+    // slice checks are skipped - `slicesOf` refuses to resolve one source of
+    // truth for it - but every other spec and every other doctor scope below
+    // still runs; the collision is one finding among many, not a reason to
+    // abort the room.
+    if (spec.sliceConflict) {
+      issues.push(finding('row-record-collision', `${spec.id} carries both a slice-table row and a Task record for ${spec.sliceConflict.id}`, { specId: spec.id, taskId: spec.sliceConflict.id }));
+      continue;
+    }
     const satisfied = satisfiedIds(spec, completed);
     const slices = slicesOf(spec);
     for (const slice of slices) {
-      if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { specId: spec.id, ticketId: slice.id }));
-      if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, ticketId: slice.id }));
+      if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { specId: spec.id, taskId: slice.id }));
+      if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, taskId: slice.id }));
     }
     // The selected slice is the first resumable or ready slice; a later slice
     // waiting on its predecessor is ordinary sequencing, not a finding. The
@@ -345,15 +354,15 @@ function packetFindings(specs, options = {}) {
     // fires falsely on a record-backed Spec whose blockers are satisfied.
     const head = slices.find((slice) => ['in-progress', 'ready'].includes(slice.declared));
     if (spec.status === 'active' && head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
-      issues.push(finding('blocked-slice', `${spec.id}/${head.id} waits on ${head.blockers}`, { specId: spec.id, ticketId: head.id }));
+      issues.push(finding('blocked-slice', `${spec.id}/${head.id} waits on ${head.blockers}`, { specId: spec.id, taskId: head.id }));
     }
     if (['complete', 'superseded'].includes(spec.status) && slices.some((slice) => slice.declared !== 'done')) {
-      issues.push(finding('contradictory-state', `${spec.id} is ${spec.status} with unfinished tickets`, { specId: spec.id }));
+      issues.push(finding('contradictory-state', `${spec.id} is ${spec.status} with unfinished tasks`, { specId: spec.id }));
     }
     const updated = Date.parse(`${spec.updated}T00:00:00Z`);
     const now = Date.parse(`${options.today ?? today()}T00:00:00Z`);
     if (slices.some((slice) => slice.declared === 'in-progress') && Number.isFinite(updated) && now - updated > 86_400_000) {
-      issues.push(finding('stale-claim', `${spec.id} has an in-progress ticket last updated ${spec.updated}`, { specId: spec.id }));
+      issues.push(finding('stale-claim', `${spec.id} has an in-progress task last updated ${spec.updated}`, { specId: spec.id }));
     }
     for (const link of localLinks(spec.content)) {
       const target = path.resolve(path.dirname(spec.filePath), link);
@@ -386,12 +395,22 @@ function gitFindings(root, specs) {
   // A checkout behind its integration branch is told that the work next would
   // dispatch is already finished there. It still dispatches: a checkout may be
   // pinned deliberately, so the finding informs and never blocks.
-  const selected = selectCandidate(specs);
+  //
+  // A room with an unresolved row/record collision on an active Spec already
+  // carries that finding from `packetFindings`; `selectCandidate` refuses to
+  // resolve a candidate through it (via `slicesOf`, which throws only for
+  // that one reason), and this informational check simply has nothing to
+  // report rather than taking the whole doctor run down with it. The guard
+  // names that exact condition instead of catching every exception
+  // `selectCandidate` could ever raise, so an unrelated bug here still
+  // surfaces instead of being read as "no candidate".
+  const hasActiveSliceConflict = specs.some((item) => item.status === 'active' && item.sliceConflict);
+  const selected = hasActiveSliceConflict ? null : selectCandidate(specs);
   const spec = selected && specs.find((item) => item.id === selected.specId);
   for (const { ref, name } of spec ? refs : []) {
     const status = readAtRef(root, ref, spec.relativePath)?.match(/^\*\*Status:\*\*\s*(\S+)/m)?.[1];
     if (['complete', 'superseded'].includes(status)) {
-      return [finding('complete-on-integration', `${spec.id} is ${status} at ${name}; this checkout still carries it ${spec.status}, so fetch or rebase before dispatching ${selected.ticketId}`, { specId: spec.id, ref: name })];
+      return [finding('complete-on-integration', `${spec.id} is ${status} at ${name}; this checkout still carries it ${spec.status}, so fetch or rebase before dispatching ${selected.taskId}`, { specId: spec.id, ref: name })];
     }
   }
   return [];
@@ -449,10 +468,10 @@ function loadSpecs(rootDir, options = {}) {
   }
   const specs = paths.sort().map((filePath) => {
     const specDir = path.dirname(filePath);
-    const tasks = listTaskRecords(specDir, root);
+    const records = listTaskRecords(specDir, root);
     const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
     const content = options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8');
-    const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, tasks, recordBacked };
+    const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, recordBacked };
     assertOneSliceTruth(spec);
     return spec;
   });
@@ -465,21 +484,26 @@ function loadSpecs(rootDir, options = {}) {
 
 // One source of slice truth per Spec. A Spec is record-backed when its own
 // `tasks/` directory exists; its embedded table then holds completed history
-// only, which `close` and the Spec's evidence log still own. Both failures
-// below are refusals rather than findings a reader could walk past, because
-// each one would otherwise let a single slice be counted twice - once as a
-// live row and once as a live record - and selection would follow whichever
-// the code happened to read first.
+// only, which `close` and the Spec's evidence log still own. An unfinished
+// retained row is a genuinely broken shape with no recoverable reading, so it
+// still fails closed here. A row/record collision on the same id is
+// different - the Spec parses fine, the contradiction is only which source to
+// believe - so it is recorded on the spec as `sliceConflict` instead of
+// thrown here: `slicesOf` refuses to resolve slices through it (which is what
+// makes a lifecycle command refuse the spec), while `loadSpecs` itself keeps
+// building every other spec so `doctor` can still report on the rest of the
+// room. See `packetFindings`'s `row-record-collision` finding.
 function assertOneSliceTruth(spec) {
   if (!spec.recordBacked) return;
-  const recorded = new Map(spec.tasks.map((task) => [visibleIdKey(task.id), task.id]));
-  for (const ticket of spec.tickets) {
-    const collision = recorded.get(visibleIdKey(ticket.id));
+  const recorded = new Map(spec.records.map((task) => [visibleIdKey(task.id), task.id]));
+  for (const row of spec.rows) {
+    const collision = recorded.get(visibleIdKey(row.id));
     if (collision) {
-      throw new Error(`${spec.id} carries both a slice-table row and a Task record for ${collision}; one Spec has one source of slice truth`);
+      spec.sliceConflict = { id: collision };
+      return;
     }
-    if (ticket.status !== 'done') {
-      throw new Error(`${spec.id} is record-backed but its slice table still holds the unfinished row ${ticket.id}; a retained table is completed history only`);
+    if (row.status !== 'done') {
+      throw new Error(`${spec.id} is record-backed but its slice table still holds the unfinished row ${row.id}; a retained table is completed history only`);
     }
   }
 }
@@ -487,20 +511,25 @@ function assertOneSliceTruth(spec) {
 // The slices selection, claim, close, render and doctor read: the Task
 // records for a record-backed Spec, the embedded table rows otherwise. A
 // table slice keeps its cells verbatim, so a table-only room behaves exactly
-// as it did before this migration.
+// as it did before this migration. A spec whose row and record collide on one
+// id (`assertOneSliceTruth`) has no single source to resolve, so this refuses
+// by name rather than picking a source silently.
 function slicesOf(spec) {
+  if (spec.sliceConflict) {
+    throw new Error(`${spec.id} carries both a slice-table row and a Task record for ${spec.sliceConflict.id}; one Spec has one source of slice truth`);
+  }
   if (!spec.recordBacked) {
-    return spec.tickets.map((ticket) => ({
-      id: ticket.id,
-      slice: ticket.slice,
-      declared: ticket.status,
-      blockerIds: splitBlockers(ticket.blockers),
-      blockers: ticket.blockers,
-      proof: ticket.proof,
+    return spec.rows.map((row) => ({
+      id: row.id,
+      slice: row.slice,
+      declared: row.status,
+      blockerIds: splitBlockers(row.blockers),
+      blockers: row.blockers,
+      proof: row.proof,
       source: 'table'
     }));
   }
-  return spec.tasks.map((task) => ({
+  return spec.records.map((task) => ({
     id: task.id,
     slice: task.slice,
     declared: taskStatus(task),
@@ -518,8 +547,8 @@ function slicesOf(spec) {
 // was converted.
 function satisfiedIds(spec, completed) {
   const done = [
-    ...spec.tickets.filter((ticket) => ticket.status === 'done').map((ticket) => ticket.id),
-    ...spec.tasks.filter((task) => taskStatus(task) === 'done').map((task) => task.id)
+    ...spec.rows.filter((row) => row.status === 'done').map((row) => row.id),
+    ...spec.records.filter((task) => taskStatus(task) === 'done').map((task) => task.id)
   ];
   return new Set([...completed, ...done]);
 }
@@ -576,19 +605,38 @@ function publicSlice(slice) {
 function identityFindings(specs) {
   const findings = [];
   const specIds = new Map();
-  const globalTickets = new Map();
+  const globalTasks = new Map();
   for (const spec of specs) {
     const specKey = visibleIdKey(spec.id);
     if (specIds.has(specKey)) findings.push(finding('duplicate-id', `Duplicate spec ID: ${spec.id} conflicts with ${specIds.get(specKey)}`, { specId: spec.id }));
     else specIds.set(specKey, spec.id);
-    const localTickets = new Map();
-    for (const ticket of [...spec.tickets, ...(spec.tasks ?? [])]) {
-      const key = visibleIdKey(ticket.id);
-      if (localTickets.has(key)) findings.push(finding('duplicate-id', `Duplicate ticket ID: ${spec.id}/${ticket.id}`, { specId: spec.id, ticketId: ticket.id }));
-      localTickets.set(key, ticket.id);
-      if (/^TK-\d+$/.test(ticket.id)) continue;
-      if (globalTickets.has(key)) findings.push(finding('duplicate-id', `Duplicate ticket ID: ${spec.id}/${ticket.id} conflicts with ${globalTickets.get(key)}`, { specId: spec.id, ticketId: ticket.id }));
-      else globalTickets.set(key, `${spec.id}/${ticket.id}`);
+    // Local duplicates are checked per source: two rows sharing an id, or two
+    // records sharing an id (already refused earlier by `listTaskRecords`, so
+    // this never actually fires for records), are a genuine data error. A row
+    // and a record sharing one id is the different, friendlier-named
+    // row/record collision `assertOneSliceTruth` already reports as
+    // `sliceConflict`; merging the two sources here would report the same
+    // coexistence twice, under the wrong name, before that dedicated check
+    // ever gets a chance to run.
+    for (const source of [spec.rows, spec.records ?? []]) {
+      const localTasks = new Map();
+      for (const item of source) {
+        const key = visibleIdKey(item.id);
+        if (localTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${item.id}`, { specId: spec.id, taskId: item.id }));
+        localTasks.set(key, item.id);
+      }
+    }
+    // The global (cross-spec) reservation is deduplicated within this spec
+    // first: a letter-bearing id held by both a row and a record here is the
+    // row/record collision above, already reported once by name, not a
+    // second spec reusing the label. Comparing the raw combined list instead
+    // would meet this spec's own id twice and report it as conflicting with
+    // itself.
+    const idsInSpec = new Map([...spec.rows, ...(spec.records ?? [])].map((item) => [visibleIdKey(item.id), item.id]));
+    for (const [key, id] of idsInSpec) {
+      if (/^TK-\d+$/.test(id)) continue;
+      if (globalTasks.has(key)) findings.push(finding('duplicate-id', `Duplicate task ID: ${spec.id}/${id} conflicts with ${globalTasks.get(key)}`, { specId: spec.id, taskId: id }));
+      else globalTasks.set(key, `${spec.id}/${id}`);
     }
   }
   return findings;
@@ -638,12 +686,20 @@ function renderHotBoard(specs) {
   // the Spec's lifecycle truth and no command writes a second one.
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of hot) {
+    // A row/record collision already carries its own `row-record-collision`
+    // finding from `packetFindings`; the board falls back to the owner-gate
+    // cell here rather than calling `slicesOf` a second time and throwing
+    // partway through rendering the rest of the board.
+    if (spec.sliceConflict) {
+      lines.push(`| [${spec.id}](${spec.relativePath}) | Acceptance / owner gate | ${escapeCell(spec.owner)} | ${escapeCell(spec.blockers)} | ${escapeCell(spec.latestEvent)} | ${escapeCell(spec.nextGate)} |`);
+      continue;
+    }
     const slices = slicesOf(spec).map((item) => ({ ...item, status: effectiveStatus(item, satisfiedIds(spec, completed)) }));
-    const ticket = slices.find((item) => item.status === 'in-progress')
+    const task = slices.find((item) => item.status === 'in-progress')
       ?? slices.find((item) => item.status === 'ready')
       ?? slices.find((item) => item.status === 'blocked');
-    const slice = ticket ? `${ticket.id}: ${ticket.slice} (${ticket.status})` : 'Acceptance / owner gate';
-    const blocker = ticket?.blockers && ticket.blockers !== 'none' ? ticket.blockers : spec.blockers;
+    const slice = task ? `${task.id}: ${task.slice} (${task.status})` : 'Acceptance / owner gate';
+    const blocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
     lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(spec.latestEvent)} | ${escapeCell(spec.nextGate)} |`);
   }
   return lines.join('\n');
@@ -677,28 +733,35 @@ function publicSpec(spec) {
     latestEvent: spec.latestEvent,
     nextGate: spec.nextGate,
     path: spec.relativePath,
-    tickets: slicesOf(spec).map(publicSlice)
+    tasks: slicesOf(spec).map(publicSlice)
   };
 }
 
+// A string replacement expands `$&`, `` $` ``, `$'` and `$$` against the line
+// it replaces, so a header value naming one of those literally - `close
+// --proof "see $& output"` reaching an evidence-adjacent header field, for
+// instance - would corrupt itself. `task-record.mjs`'s `updateTaskFields`
+// already uses a function replacer for the same reason (S-00H TK-001); this
+// is the matching fix for a Spec's own header fields (S-00H TK-002 remaining
+// gap).
 function updateFields(content, values) {
   let result = content;
   for (const [name, value] of Object.entries(values)) {
     const pattern = new RegExp(`^\\*\\*${escapeRegExp(name)}:\\*\\*\\s*.+$`, 'm');
     if (!pattern.test(result)) throw new Error(`Missing field: ${name}`);
-    result = result.replace(pattern, `**${name}:** ${value}`);
+    result = result.replace(pattern, () => `**${name}:** ${value}`);
   }
   return result;
 }
 
-function updateTicket(content, ticketId, transform) {
+function updateTaskRow(content, taskId, transform) {
   let found = false;
   const updated = content.split('\n').map((line) => {
-    if (!line.startsWith(`| ${ticketId} |`)) return line;
+    if (!line.startsWith(`| ${taskId} |`)) return line;
     found = true;
     return `| ${transform(splitRow(line)).map(escapeCell).join(' | ')} |`;
   }).join('\n');
-  if (!found) throw new Error(`Unknown ticket: ${ticketId}`);
+  if (!found) throw new Error(`Unknown task: ${taskId}`);
   return updated;
 }
 
@@ -860,7 +923,7 @@ async function main() {
   else if (command === 'next-id') result = nextIdentity(root, id, options);
   else if (command === 'show') result = showSpec(root, id);
   else if (command === 'claim') result = claimWork(root, id, options);
-  else if (command === 'close') result = closeTicket(root, id, options);
+  else if (command === 'close') result = closeTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
   else if (command === 'render') result = render(root);

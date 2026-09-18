@@ -96,7 +96,7 @@ test('Genesis readiness requires the filled router and wiki contract files', () 
     fs.writeFileSync(path.join(project, 'CLAUDE.md'), '@AGENTS.md\n');
     const specDir = path.join(project, 'workbench', 'specs', 'S-001-first');
     fs.mkdirSync(specDir);
-    fs.writeFileSync(path.join(specDir, 'SPEC.md'), `# S-001 - First\n\n> Generated from LLM Workbench ${VERSION}.\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Updated:** 2026-09-04\n**Catalog description:** First.\n**Blockers:** none\n**Latest event:** Captured.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nOne.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | First | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] Done.\n\n## Completion Result\n\nPending.\n`);
+    fs.writeFileSync(path.join(specDir, 'SPEC.md'), `# S-001 - First\n\n> Generated from LLM Workbench ${VERSION}.\n\n**Spec ID:** S-001\n**Status:** active\n**Priority:** 0\n**Owner:** fixture\n**Updated:** 2026-09-04\n**Catalog description:** First.\n**Blockers:** none\n**Latest event:** Captured.\n**Next gate:** Claim TK-001.\n\n## Outcome\n\nOne.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | First | ready | none | pending |\n\n## Acceptance Criteria\n\n- [ ] Done.\n\n## Completion Result\n\nPending.\n`);
     const missingRouter = run(layout, 'validate', '--project', project, '--genesis');
     assert.equal(missingRouter.report.error.code, 'unfilled-control');
     assert.match(missingRouter.report.error.message, /MEMORY\.md/);
@@ -173,7 +173,7 @@ test('the validator rejects retired metadata, absolute sources, bad enums, copie
     fs.writeFileSync(path.join(wiki, 'Absolute.md'), note({ source_paths: ['/Users/someone/project/BLUEPRINT.md'] }));
     fs.writeFileSync(path.join(wiki, 'Enum.md'), note({ knowledge_role: 'authoritative', sensitivity: 'secret' }));
     fs.writeFileSync(path.join(wiki, 'Missing.md'), '---\ntype: project\n---\n\n# Missing\n');
-    fs.writeFileSync(path.join(wiki, 'Copied.md'), note({}, '# Copied\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | Slice | ready | none | pending |\n'));
+    fs.writeFileSync(path.join(wiki, 'Copied.md'), note({}, '# Copied\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-001 | Slice | ready | none | pending |\n'));
     fs.writeFileSync(path.join(wiki, 'Leak.md'), note({}, '# Leak\n\nToken: ghp_' + 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0\n'));
     fs.writeFileSync(path.join(wiki, 'guidebooks', 'Copied.md'), note({ type: 'guidebook' }));
     const findings = validateWiki(project);
@@ -185,7 +185,7 @@ test('the validator rejects retired metadata, absolute sources, bad enums, copie
     assert.ok(has('Absolute.md', 'secret-like-content'), 'an absolute home path is also secret-like material');
     assert.ok(has('Enum.md', 'invalid-note'), 'enum outside the schema');
     assert.ok(has('Missing.md', 'invalid-note'), 'missing required properties');
-    assert.ok(has('Copied.md', 'copied-task-state'), 'copied ticket rows');
+    assert.ok(has('Copied.md', 'copied-task-state'), 'copied task rows');
     assert.ok(has('Leak.md', 'secret-like-content'), 'token-like content');
     assert.ok(findings.some((item) => item.code === 'invalid-note' && /basename Copied is not unique/.test(item.message)));
     assert.ok(findings.every((item) => item.blocks === 'none'), 'wiki findings never block selection');
@@ -333,11 +333,11 @@ test('normalize inserts only the missing required properties and leaves every no
   }
 });
 
-test('alphanumeric ticket tables remain forbidden copied live task state', () => {
+test('alphanumeric task tables remain forbidden copied live task state', () => {
   const project = seededWiki();
   try {
     const target = path.join(project, 'workbench/wiki/Copied ID.md');
-    fs.writeFileSync(target, note({}, '# Copied\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00A | Slice | ready | none | pending |\n'));
+    fs.writeFileSync(target, note({}, '# Copied\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00A | Slice | ready | none | pending |\n'));
     assert.ok(validateWiki(project).some(item => item.code === 'copied-task-state' && /task state|live state/i.test(item.message)));
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });

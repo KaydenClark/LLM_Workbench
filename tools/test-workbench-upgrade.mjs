@@ -36,10 +36,10 @@ function seedProject(project) {
     '# S-101 - Upgrade Fixture', '', '**Spec ID:** S-101', '**Status:** active', '**Priority:** 0',
     '**Owner:** owner', '**Updated:** 2026-09-01', '**Catalog description:** Verify upgrade recovery.',
     '**Blockers:** none', '**Latest event:** Ready.', '**Next gate:** Complete TK-001.', '',
-    '## Vertical Implementation Slices', '', '| Ticket | Slice | Status | Blockers | Proof |',
+    '## Vertical Implementation Slices', '', '| Task | Slice | Status | Blockers | Proof |',
     '|---|---|---|---|---|', '| TK-001 | Verify upgrade | ready | none | pending |', '',
     '## Acceptance Criteria', '', '- [ ] Upgrade works.', '', '## Append-Only Evidence And Execution Log', '',
-    '| Date | Ticket | Event | Verification | Docs | Remaining gap |', '|---|---|---|---|---|---|', '',
+    '| Date | Task | Event | Verification | Docs | Remaining gap |', '|---|---|---|---|---|---|', '',
     '## Completion Result', '', 'Pending.', '', '## Supersession', '', '- Supersedes: none', '- Superseded by: none', ''
   ].join('\n'));
   write(project, 'MEMORY.md', '# Project room memory\n');
@@ -293,7 +293,7 @@ test('the shared-skill refusals name the layout-only route that clears them', ()
 // S-045 TK-001: the presence-only gate and the installer must agree on a host
 // whose every populated discovery root reaches the skill through a link. The
 // installer accepts such a destination and reports its resolution; before this
-// ticket `missingUserSkills` judged with `lstat(...).isDirectory()`, which does
+// task `missingUserSkills` judged with `lstat(...).isDirectory()`, which does
 // not follow a link, so the same host was refused `missing-user-skills` and the
 // `--layout-only` route the S-040 refusals name did not complete there.
 test('layout-only upgrade completes where every populated discovery root reaches each skill through a link', () => {

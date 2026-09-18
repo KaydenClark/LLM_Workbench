@@ -5,8 +5,8 @@
 // retirement move (ADR-000I) relocates the Task's own folder without
 // touching the Spec's stable declared path. This module only reads that
 // record; it changes nothing about how `next`, `claim`, `close`, `render` or
-// `doctor` behave against the embedded `Ticket | Slice | Status | Blockers |
-// Proof` table in `workbench/tools/spec-workbench.mjs`; TK-002 migrated those
+// `doctor` behave against the embedded slice table in
+// `workbench/tools/spec-workbench.mjs`; TK-002 migrated those
 // commands, reading this module rather than changing it. A room may carry both an embedded
 // table row and a standalone Task record for the same identifier; nothing
 // here counts or cross-checks the two, so no reader doubles a total. TK-002
@@ -32,8 +32,9 @@ import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
 // The one closed status vocabulary for an execution slice, whether it is held
 // in a Task record or in a Spec's retained slice table. TK-002 folded
-// spec-workbench.mjs's own unexported TICKET_STATUSES into this set, which
-// that module re-exports, so a status added here is valid to both readers.
+// spec-workbench.mjs's own separately-named closed status set into this one,
+// which that module re-exports, so a status added here is valid to both
+// readers.
 
 // The destination a Task advances is either a Spec's acceptance lines, or,
 // for a corrective Task after a Spec is retired and reconciled (S-00I), a
