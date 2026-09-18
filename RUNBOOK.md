@@ -813,6 +813,8 @@ node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-002 \
   --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
 node workbench/tools/spec-workbench.mjs report S-001 --candidate [SHA] [--json]
 node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
+node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate [SHA]
+node workbench/tools/spec-workbench.mjs gate --task TK-002 --spec S-001
 node workbench/tools/spec-workbench.mjs verdict S-001 --candidate [SHA] --result pass|fail \
   --findings "[FINDINGS OR none]" --reviewer "[SEPARATE CONTEXT, MODEL AND MODE]"
 node workbench/tools/spec-workbench.mjs render
@@ -846,7 +848,12 @@ dirty tree, an incomplete Spec, any other folder or a room without Git; it
 rewrites every live Markdown reference and ADR `canonicalized_in` target to
 the old path, regenerates the ADR register, leaves append-only rows and
 counts them, and stages the result; the top level stays the active roster,
-`show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `next` returns one eligible ready task. `show` loads one stable work packet.
+`show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `gate` reports a Task PR (a real Task
+record under a still-open Spec, while S-00O exemption 2 holds) and refuses a
+Spec candidate that is incomplete, unreviewed for its current content or
+named by a SHA the repository does not hold; the closeout recipe below runs
+it before the merge. A verdict binds to the assembled Spec's content digest,
+so record it after the final `close` and before `complete`. `next` returns one eligible ready task. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
