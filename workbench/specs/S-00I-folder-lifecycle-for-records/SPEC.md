@@ -127,9 +127,10 @@ Wiki record; `SPEC.md` is never resurrected.
 
 S-00H is `complete` (integration `49c671e`), so nothing blocks this Spec
 externally; the sequencing below was written while it was pending. TK-004
-needs the standalone Task record S-00H TK-001 delivers, and `claim`'s blocker model resolves whole completed
-Spec IDs and this Spec's own done ticket IDs, so the dependency is expressed
-at Spec granularity and the owner's two-lane limit is respected. The earlier
+needs the standalone Task record S-00H TK-001 delivers, and `claim`'s blocker
+model resolves whole completed Spec IDs and this Spec's own done Task IDs, so
+the dependency is expressed at Spec granularity and the owner's two-lane limit
+is respected. The earlier
 FND-Q07 and FND-Q08 HELD blockers are dropped: decision-079 (WF-8E) and
 decision-080 (WF-8F) answered them, settling that Specs and Tasks are transient
 and the Wiki owns current capability knowledge. The FND note's own register
