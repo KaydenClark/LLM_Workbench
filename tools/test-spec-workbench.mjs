@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   TASK_STATUSES as SLICE_STATUSES,
   claimWork,
   convertSpecSlices,
   showSpec,
-  closeTicket,
+  closeTask,
   completeSpec,
   doctor,
   nextWork,
@@ -20,8 +21,9 @@ import { TASK_STATUSES, listTaskRecords, readTaskRecord, taskStatus, unmetBlocke
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 
 // One closed status vocabulary, not two: `spec-workbench.mjs` held its own
-// unexported TICKET_STATUSES set beside the record reader's TASK_STATUSES, so
-// a status added to one silently stayed invalid to the other.
+// separately-named closed status set beside the record reader's
+// TASK_STATUSES, so a status added to one silently stayed invalid to the
+// other.
 assert.ok(
   Object.is(SLICE_STATUSES, TASK_STATUSES),
   'the lifecycle commands and the Task record reader share one exported closed status set'
@@ -52,7 +54,7 @@ try {
 
   const next = nextWork(root);
   assert.equal(next.specId, 'S-001');
-  assert.equal(next.ticketId, 'TK-001');
+  assert.equal(next.taskId, 'TK-001');
 
   claimWork(root, 'S-001', { agent: 'codex', date: '2026-07-12' });
   assert.match(read('specs/S-001-fixture/SPEC.md'), /\| TK-001 \| First slice \| in-progress \|/);
@@ -61,20 +63,20 @@ try {
   assert.throws(
     () => completeSpec(root, 'S-001', { date: '2026-07-12' }),
     /unfinished slice|unchecked acceptance/i,
-    'a spec must not complete before its ticket and acceptance gates'
+    'a spec must not complete before its task and acceptance gates'
   );
 
-  const closed = closeTicket(root, 'S-001', {
+  const closed = closeTask(root, 'S-001', {
     proof: 'node test | tee proof.log',
     docs: 'Docs checked; no update needed',
     remainingGap: 'none',
     date: '2026-07-12'
   });
-  assert.equal(closed.tickets[0].proof, 'node test | tee proof.log', 'ticket proof should round-trip a literal pipe');
+  assert.equal(closed.tasks[0].proof, 'node test | tee proof.log', 'task proof should round-trip a literal pipe');
   assert.equal(
     read('specs/S-001-fixture/SPEC.md').split('node test \\| tee proof.log').length - 1,
     2,
-    'ticket proof and appended evidence should persist escaped Markdown pipes'
+    'task proof and appended evidence should persist escaped Markdown pipes'
   );
   let completedCandidate = read('specs/S-001-fixture/SPEC.md')
     .replace('- [ ] Expected behavior is verified.', '- [x] Expected behavior is verified.')
@@ -119,7 +121,7 @@ try {
   );
   assert.throws(
     () => claimWork(root, 'S-002', { agent: 'codex', date: '2026-07-12' }),
-    /blocked-slice|no eligible ready ticket/i,
+    /blocked-slice|no eligible ready task/i,
     'direct claim must not bypass declared blockers'
   );
   fs.rmSync(path.join(root, 'specs/S-002-blocked'), { recursive: true });
@@ -147,14 +149,14 @@ try {
   );
   fs.writeFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), malformed);
   assert.throws(
-    () => closeTicket(root, 'S-001', {
+    () => closeTask(root, 'S-001', {
       proof: 'must not persist',
       docs: 'Docs checked; no update needed',
       remainingGap: 'none',
       date: '2026-07-12'
     }),
-    /malformed ticket row/,
-    'malformed ticket rows should be reported explicitly'
+    /malformed task row/,
+    'malformed task rows should be reported explicitly'
   );
   assert.equal(
     read('specs/S-001-fixture/SPEC.md'),
@@ -230,7 +232,7 @@ try {
   // S-00H TK-001: a standalone Task record reads its own state and blocking
   // relationships through an exported function, one directory per Task
   // beneath its owning Spec's directory. `next`/`claim`/`close`/`render`/
-  // `doctor` still read only the embedded ticket table (TK-002 migrates
+  // `doctor` still read only the embedded slice table (TK-002 migrates
   // them), so a room carrying both must behave exactly as a table-only room
   // and must not double-count the coexisting record.
   write('specs/S-201-task-record/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-201'));
@@ -259,9 +261,21 @@ try {
     'a coexisting row and record is refused, never counted as a second candidate'
   );
   assert.ok(
-    doctor(root).some((issue) => issue.code === 'malformed-spec' && /TK-001/.test(issue.message)),
+    doctor(root).some((issue) => issue.code === 'row-record-collision' && /TK-001/.test(issue.message)),
     'doctor reports the contradiction instead of selecting past it'
   );
+
+  // The collision is one finding among many, not a reason doctor aborts the
+  // rest of the room: with an unrelated render-drift condition present at the
+  // same time, both findings surface together.
+  const cleanBoard = read('TASKBOARD.md');
+  fs.writeFileSync(path.join(root, 'TASKBOARD.md'), cleanBoard.replace('No active slice', 'Stale active state'));
+  const withCollisionAndDrift = doctor(root);
+  assert.ok(withCollisionAndDrift.some((issue) => issue.code === 'row-record-collision'),
+    'the collision finding survives alongside an unrelated finding');
+  assert.ok(withCollisionAndDrift.some((issue) => issue.code === 'render-drift'),
+    'a row/record collision on one spec does not hide an unrelated render-drift finding on the board');
+  fs.writeFileSync(path.join(root, 'TASKBOARD.md'), cleanBoard);
 
   const taskPath = path.join(root, 'specs/S-201-task-record/tasks/TK-001/TASK.md');
   const record = readTaskRecord(taskPath, root);
@@ -508,7 +522,7 @@ try {
 
   const selectedRecord = nextWork(root);
   assert.equal(selectedRecord.specId, 'S-301');
-  assert.equal(selectedRecord.ticketId, 'TK-002',
+  assert.equal(selectedRecord.taskId, 'TK-002',
     'a record whose only blocker is a complete Spec is selected live, without anyone editing a status cell');
   assert.equal(selectedRecord.slice, 'Second slice', 'the selected slice text comes from the Task record');
   assert.deepEqual(doctor(root), [], 'doctor stays clean on a record-backed Spec and raises no false slice finding');
@@ -522,20 +536,20 @@ try {
     'claiming a Task record leaves the Spec slice table untouched');
   assert.equal(nextWork(root).status, 'in-progress', 'a claimed record resumes before new work is selected');
 
-  const closedRecord = closeTicket(root, 'S-301', {
+  const closedRecord = closeTask(root, 'S-301', {
     proof: 'node test | tee record.log',
     docs: 'Docs checked; no update needed',
     remainingGap: 'none',
     date: '2026-07-12'
   });
-  assert.equal(closedRecord.tickets.find((item) => item.id === 'TK-002').status, 'done');
+  assert.equal(closedRecord.tasks.find((item) => item.id === 'TK-002').status, 'done');
   assert.match(read('specs/S-301-records/tasks/TK-002/TASK.md'), /\*\*Status:\*\* done/,
     'close flips the Task record to done');
   assert.match(read('specs/S-301-records/tasks/TK-002/TASK.md'), /\*\*Proof:\*\* node test \| tee record\.log/,
     'proof text for a record goes on the record, not into a table cell');
   assert.match(
     read('specs/S-301-records/SPEC.md'),
-    /\| 2026-07-12 \| TK-002 \| Ticket closed \| node test \\\| tee record\.log \|/,
+    /\| 2026-07-12 \| TK-002 \| Task closed \| node test \\\| tee record\.log \|/,
     "close still appends the Spec's append-only evidence row for a record-backed Spec"
   );
   assert.equal(sliceTable(read('specs/S-301-records/SPEC.md')), recordTableBefore,
@@ -546,7 +560,7 @@ try {
     /S-301 has an unfinished slice/,
     'a record-backed Spec cannot complete while one of its Task records is unfinished'
   );
-  assert.equal(nextWork(root).ticketId, 'TK-003',
+  assert.equal(nextWork(root).taskId, 'TK-003',
     'a record whose declared blocker is now a done record becomes eligible with no status cell edited');
 
   render(root);
@@ -561,7 +575,7 @@ try {
   // than a slice; its active state is derived from the records, and no second
   // Spec status is written anywhere.
   claimWork(root, 'S-301', { agent: 'codex', date: '2026-07-12' });
-  closeTicket(root, 'S-301', {
+  closeTask(root, 'S-301', {
     proof: 'see $& and $` output', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12'
   });
   assert.match(
@@ -600,7 +614,7 @@ try {
     destination: 'spec-acceptance: S-310 Acceptance Criteria'
   })}**Proof:** superseded by the rerun\n`);
   render(root);
-  closeTicket(root, 'S-310', {
+  closeTask(root, 'S-310', {
     proof: 'see $& and $` output',
     docs: 'Docs checked; no update needed',
     remainingGap: 'none',
@@ -631,7 +645,7 @@ try {
     'one identifier held by both a row and a record is an explicit error, never a doubled candidate'
   );
   assert.ok(
-    doctor(root).some((issue) => issue.code === 'malformed-spec' && /TK-001/.test(issue.message)),
+    doctor(root).some((issue) => issue.code === 'row-record-collision' && /TK-001/.test(issue.message)),
     'doctor reports the collision rather than selecting past it'
   );
   fs.rmSync(path.join(root, 'specs/S-302-collision'), { recursive: true });
@@ -681,7 +695,7 @@ try {
   );
   assert.throws(
     () => claimWork(root, 'S-309', { agent: 'codex', date: '2026-07-12' }),
-    /S-309 has no eligible ready ticket to claim/,
+    /S-309 has no eligible ready task to claim/,
     'claim gives the generic refusal for ordinary sequencing rather than naming a finding nobody raised'
   );
   fs.rmSync(path.join(root, 'specs/S-309-sequencing'), { recursive: true });
@@ -695,7 +709,7 @@ try {
   render(root);
   assert.throws(
     () => claimWork(root, 'S-308', { agent: 'codex', date: '2026-07-12' }),
-    /S-308 has no eligible ready ticket to claim/,
+    /S-308 has no eligible ready task to claim/,
     'a table row that says blocked is refused exactly as it was before Task records existed'
   );
   fs.rmSync(path.join(root, 'specs/S-308-blocked-rows'), { recursive: true });
@@ -705,7 +719,7 @@ try {
   write('specs/S-306-table-only/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-306'));
   render(root);
   const tableOnly = nextWork(root);
-  assert.equal(tableOnly.ticketId, 'TK-001');
+  assert.equal(tableOnly.taskId, 'TK-001');
   assert.equal(tableOnly.status, 'ready');
   const tableOnlyBefore = read('specs/S-306-table-only/SPEC.md');
 
@@ -758,7 +772,7 @@ try {
   assert.doesNotMatch(read('specs/S-304-convert/tasks/TK-002/TASK.md'), /\*\*Proof:\*\*/,
     'a converted record has no Proof field at all until the Task closes');
   assert.equal(
-    showSpec(root, 'S-304').tickets.find((item) => item.id === 'TK-002').proof,
+    showSpec(root, 'S-304').tasks.find((item) => item.id === 'TK-002').proof,
     null,
     'show reports no proof for a Task that has not closed'
   );
@@ -769,7 +783,7 @@ try {
   );
   render(root);
   assert.deepEqual(doctor(root), [], 'a converted Spec renders and passes doctor');
-  assert.equal(nextWork(root).ticketId, 'TK-002', 'the converted room selects the first eligible record');
+  assert.equal(nextWork(root).taskId, 'TK-002', 'the converted room selects the first eligible record');
   assert.throws(
     () => convertSpecSlices(root, 'S-304'),
     /already has specs\/S-304-convert\/tasks; conversion runs once/,
@@ -826,7 +840,7 @@ function fixtureSpec() {
     '',
     '## Vertical Implementation Slices',
     '',
-    '| Ticket | Slice | Status | Blockers | Proof |',
+    '| Task | Slice | Status | Blockers | Proof |',
     '|---|---|---|---|---|',
     '| TK-001 | First slice | ready | none | pending |',
     '',
@@ -836,7 +850,7 @@ function fixtureSpec() {
     '',
     '## Append-Only Evidence And Execution Log',
     '',
-    '| Date | Ticket | Event | Verification | Docs | Remaining gap |',
+    '| Date | Task | Event | Verification | Docs | Remaining gap |',
     '|---|---|---|---|---|---|',
     '',
     '## Completion Result',
@@ -1501,4 +1515,268 @@ function wikiClaimFixture() {
     '- fixture only',
     ''
   ].join('\n');
+}
+
+// ============================================================================
+// S-00H TK-002 remaining gap, closed by TK-003: `updateFields` in
+// spec-workbench.mjs wrote a Spec header field with a raw string replacement,
+// which expands `$&`, `` $` ``, `$'` and `$$` in the value against the very
+// header line it replaces - the same defect task-record.mjs's
+// `updateTaskFields` was already fixed for (S-00H TK-001). A table-backed
+// Spec's header fields (`Owner`, `Latest event`, `Next gate`) are the ones
+// `claimWork`/`closeTask` write through `updateFields`, so an agent name or a
+// proof string naming a replacement pattern is the live trigger.
+// ============================================================================
+{
+  const dollarRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'dollar-header-'));
+  try {
+    fs.mkdirSync(path.join(dollarRoot, 'specs/S-701-fixture'), { recursive: true });
+    fs.writeFileSync(path.join(dollarRoot, 'specs/S-701-fixture/SPEC.md'), fixtureSpec().replaceAll('S-001', 'S-701'));
+    claimWork(dollarRoot, 'S-701', { agent: 'agent $& sees $1 and $$', date: '2026-09-17' });
+    const afterClaim = fs.readFileSync(path.join(dollarRoot, 'specs/S-701-fixture/SPEC.md'), 'utf8');
+    assert.match(afterClaim, /^\*\*Owner:\*\* agent \$& sees \$1 and \$\$$/m,
+      'a claim agent naming a replacement pattern is written into the Owner header field literally, never expanded against the line it replaces');
+    assert.match(afterClaim, /^\*\*Latest event:\*\* TK-001 claimed by agent \$& sees \$1 and \$\$\.$/m,
+      'the same literal agent value is written into Latest event literally');
+
+    closeTask(dollarRoot, 'S-701', {
+      proof: 'see $& and $` output', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-09-17'
+    });
+    const afterClose = fs.readFileSync(path.join(dollarRoot, 'specs/S-701-fixture/SPEC.md'), 'utf8');
+    assert.match(afterClose, /^\*\*Next gate:\*\* Confirm acceptance criteria and completion result\.$/m,
+      'Next gate is written correctly once no slice remains');
+    assert.match(afterClose, /\| TK-001 \| First slice \| done \| none \| see \$& and \$` output \|/,
+      'a proof naming a replacement pattern lands in the table cell literally, not expanded against the row it replaces');
+    console.log('ok - updateFields writes a Spec header field literally, never expanding a $-pattern value against the line it replaces');
+  } finally {
+    fs.rmSync(dollarRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00H TK-003: repository-wide Ticket-vocabulary sweep, plus the parser
+// header-compatibility and historical byte-identity proofs the rename needs.
+// Delimited block, appended last, so a concurrent lane's own tests land above
+// this without conflict.
+// ============================================================================
+{
+  const sweepRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+  // Every entry names one specific line pattern this ticket deliberately
+  // leaves saying "ticket", with the reason a reviewer can check against the
+  // file itself. Nothing else may say it. See this ticket's return for the
+  // same list with fuller reasoning.
+  const TICKET_SWEEP_ALLOWLIST = [
+    { file: 'workbench/tools/workbench-layout.mjs', match: 'to-tickets',
+      reason: 'the still-live core skill directory name skills/to-tickets/; TK-004 renames the skill itself, not this ticket' },
+    { file: 'tools/test-workbench-layout.mjs', match: 'to-tickets',
+      reason: "a skillPolicy fixture naming the still-live core skill 'to-tickets'; TK-004 renames it" },
+    { file: 'tools/test-skill-catalog.mjs', match: 'to-tickets',
+      reason: 'assertions against the literal current skills/to-tickets/SKILL.md name and content; TK-004 renames the skill' },
+    { file: 'tools/test-skill-catalog.mjs', match: 'local-ticket-template',
+      reason: 'a negative assertion guarding against one specific retained foreign-import artifact name inside skills/to-tickets/SKILL.md; not live Workbench vocabulary' },
+    { file: 'tools/test-skill-catalog.mjs', match: 'one eligible ticket',
+      reason: "asserts against the literal current skills/implement/SKILL.md prose ('one eligible ticket'); that skill's rename is TK-004's" },
+    { file: 'tools/team-coordination-contract.mjs', match: 'ticket and proof store',
+      reason: "matches the literal current prose of 'team templates/README.md' (a template outside this ticket's tool-vocabulary scope; the dogfood boundary names the rename TK-004's); loosening the pattern without renaming the template would desync the contract from the file it checks" },
+    { file: 'tools/test-team-coordination.mjs', match: 'ticket and proof store',
+      reason: "asserts the same literal message tools/team-coordination-contract.mjs emits while checking the unrenamed template; see that file's allow-list entry" }
+  ];
+
+  function sweepIsAllowed(relFile, line) {
+    return TICKET_SWEEP_ALLOWLIST.some((entry) => entry.file === relFile && line.includes(entry.match));
+  }
+
+  function sweepWalk(dir) {
+    let out = [];
+    if (!fs.existsSync(dir)) return out;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) out = out.concat(sweepWalk(full));
+      else if (/\.(mjs|py)$/.test(entry.name)) out.push(full);
+    }
+    return out;
+  }
+
+  // This file is excluded from its own scan. It necessarily carries the
+  // allow-list text above (which must quote what it excuses to be checkable)
+  // and, further down, the deliberately historical `Ticket`-header and
+  // `TK-### | Ticket closed` fixtures the handoff's allow-list category one
+  // exists for; allow-listing every one of those lines here would add a
+  // second copy of the same list with no independent check behind it. Every
+  // *other* touched file is still scanned in full, including this file's own
+  // non-test sibling `spec-workbench.mjs`.
+  const selfPath = path.relative(sweepRoot, fileURLToPath(import.meta.url)).split(path.sep).join('/');
+  const sweepViolations = [];
+  for (const dir of ['workbench/tools', 'tools'].map((d) => path.join(sweepRoot, d))) {
+    for (const file of sweepWalk(dir)) {
+      const relFile = path.relative(sweepRoot, file).split(path.sep).join('/');
+      if (relFile === selfPath) continue;
+      fs.readFileSync(file, 'utf8').split('\n').forEach((line, index) => {
+        if (/ticket/i.test(line) && !sweepIsAllowed(relFile, line)) {
+          sweepViolations.push(`${relFile}:${index + 1}: ${line.trim()}`);
+        }
+      });
+    }
+  }
+  assert.deepEqual(
+    sweepViolations,
+    [],
+    `live "ticket" vocabulary must not appear in workbench/tools or tools outside the allow-list:\n${sweepViolations.join('\n')}`
+  );
+  // A stale allow-list entry (naming text that has since been removed or
+  // rewritten) would silently stop excusing anything and just as silently
+  // stop being checked; catch that rather than let the allow-list rot.
+  for (const entry of TICKET_SWEEP_ALLOWLIST) {
+    const content = fs.readFileSync(path.join(sweepRoot, entry.file), 'utf8');
+    assert.ok(content.includes(entry.match), `stale allow-list entry: ${entry.file} no longer contains ${JSON.stringify(entry.match)}`);
+  }
+  console.log('ok - repository-wide ticket-vocabulary sweep found no live vocabulary outside the allow-list');
+}
+
+{
+  // The slice-table header cell is decorative; `parseSpecPacket` only reads
+  // the `TK-###` row prefix (spec-packet.mjs), so a Spec written with either
+  // header spells the same rows. A newly written Spec uses `Task`; a Spec
+  // already on disk before this rename used `Ticket`, and both must parse.
+  const headerRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'header-compat-'));
+  try {
+    const bodyFor = (header) => [
+      '# S-501 - Header Compatibility Fixture',
+      '',
+      '**Spec ID:** S-501',
+      '**Status:** active',
+      '**Priority:** 0',
+      '**Owner:** agent',
+      '**Updated:** 2026-09-17',
+      '**Catalog description:** Proves either slice-table header parses.',
+      '**Blockers:** none',
+      '**Latest event:** Spec activated.',
+      '**Next gate:** Complete TK-001.',
+      '',
+      '## Vertical Implementation Slices',
+      '',
+      `| ${header} | Slice | Status | Blockers | Proof |`,
+      '|---|---|---|---|---|',
+      '| TK-001 | First slice | ready | none | pending |',
+      '',
+      '## Acceptance Criteria',
+      '',
+      '- [ ] Expected behavior is verified.',
+      ''
+    ].join('\n');
+    const taskHeaderPath = path.join(headerRoot, 'task-header.md');
+    const ticketHeaderPath = path.join(headerRoot, 'ticket-header.md');
+    fs.writeFileSync(taskHeaderPath, bodyFor('Task'));
+    fs.writeFileSync(ticketHeaderPath, bodyFor('Ticket'));
+    const fromTaskHeader = parseSpecPacket(fs.readFileSync(taskHeaderPath, 'utf8'), taskHeaderPath, headerRoot);
+    const fromTicketHeader = parseSpecPacket(fs.readFileSync(ticketHeaderPath, 'utf8'), ticketHeaderPath, headerRoot);
+    assert.deepEqual(fromTaskHeader.rows, fromTicketHeader.rows,
+      'a `Task` header and a historical `Ticket` header parse to the identical slice rows');
+    assert.equal(fromTaskHeader.rows[0].id, 'TK-001');
+    console.log('ok - parseSpecPacket accepts both the Task and the historical Ticket slice-table header');
+  } finally {
+    fs.rmSync(headerRoot, { recursive: true, force: true });
+  }
+}
+
+{
+  // Extends the existing "a completed Spec's historical table is
+  // byte-identical after every command" proof (above, using S-001-fixture,
+  // which now writes a `Task` header) with a second fixture that keeps the
+  // pre-rename `Ticket` header, a `TK-###` row and a `Ticket closed` evidence
+  // row, and asserts it survives every lifecycle command byte-identical
+  // beside a sibling active Spec that exercises them.
+  const historicalRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'historical-byte-identity-'));
+  try {
+    fs.mkdirSync(path.join(historicalRoot, 'specs/S-601-historical'), { recursive: true });
+    const historicalSpec = [
+      '# S-601 - Historical Ticket-Header Capability',
+      '',
+      '**Spec ID:** S-601',
+      '**Status:** complete',
+      '**Priority:** 0',
+      '**Owner:** agent',
+      '**Updated:** 2026-07-01',
+      '**Catalog description:** Proves a historical Ticket header and row survive untouched.',
+      '**Blockers:** none',
+      '**Latest event:** Spec completed and removed from the hot board.',
+      '**Next gate:** none',
+      '',
+      '## Vertical Implementation Slices',
+      '',
+      '| Ticket | Slice | Status | Blockers | Proof |',
+      '|---|---|---|---|---|',
+      '| TK-001 | First slice | done | none | node test |',
+      '',
+      '## Acceptance Criteria',
+      '',
+      '- [x] Expected behavior is verified.',
+      '',
+      '## Append-Only Evidence And Execution Log',
+      '',
+      '| Date | Ticket | Event | Verification | Docs | Remaining gap |',
+      '|---|---|---|---|---|---|',
+      '| 2026-07-01 | TK-001 | Ticket closed | node test | Docs checked; no update needed | none |',
+      '',
+      '## Completion Result',
+      '',
+      'Pass: historical fixture completed.',
+      '',
+      '## Supersession',
+      '',
+      '- Supersedes: none',
+      '- Superseded by: none',
+      ''
+    ].join('\n');
+    fs.writeFileSync(path.join(historicalRoot, 'specs/S-601-historical/SPEC.md'), historicalSpec);
+    fs.writeFileSync(path.join(historicalRoot, 'BLUEPRINT.md'), ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    fs.writeFileSync(path.join(historicalRoot, 'TASKBOARD.md'), ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    // The sibling carries two rows so `close` has one to finish and
+    // `convert-tasks` still has an unfinished one left to convert afterward.
+    fs.mkdirSync(path.join(historicalRoot, 'specs/S-602-sibling'), { recursive: true });
+    fs.writeFileSync(
+      path.join(historicalRoot, 'specs/S-602-sibling/SPEC.md'),
+      fixtureSpec().replaceAll('S-001', 'S-602').replace(
+        '| TK-001 | First slice | ready | none | pending |',
+        '| TK-001 | First slice | ready | none | pending |\n| TK-002 | Second slice | ready | TK-001 | pending |'
+      )
+    );
+
+    const readHistorical = () => fs.readFileSync(path.join(historicalRoot, 'specs/S-601-historical/SPEC.md'), 'utf8');
+    const beforeAnyCommand = readHistorical();
+
+    // The fixture's BLUEPRINT.md/TASKBOARD.md generated regions start empty,
+    // so the first command exercised is `render` itself, establishing them;
+    // it must not touch the historical Spec either.
+    render(historicalRoot);
+    assert.equal(readHistorical(), beforeAnyCommand, 'the first render never rewrites the historical Spec');
+    assert.deepEqual(doctor(historicalRoot), [], 'a historical Ticket-header completed Spec beside an active sibling passes doctor');
+    assert.equal(readHistorical(), beforeAnyCommand, 'doctor never rewrites the historical Spec');
+
+    assert.equal(nextWork(historicalRoot).specId, 'S-602', 'selection is unaffected by the historical completed Spec');
+    assert.equal(readHistorical(), beforeAnyCommand, 'next never rewrites the historical Spec');
+
+    claimWork(historicalRoot, 'S-602', { agent: 'codex', date: '2026-09-17' });
+    assert.equal(readHistorical(), beforeAnyCommand, 'claim on the sibling never rewrites the historical Spec');
+
+    closeTask(historicalRoot, 'S-602', {
+      proof: 'node test', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-09-17'
+    });
+    assert.equal(readHistorical(), beforeAnyCommand, 'close on the sibling never rewrites the historical Spec');
+
+    render(historicalRoot);
+    assert.equal(readHistorical(), beforeAnyCommand, 'render never rewrites the historical Spec');
+    assert.deepEqual(doctor(historicalRoot), [], 'doctor stays clean after render');
+    assert.equal(readHistorical(), beforeAnyCommand, 'a second doctor run never rewrites the historical Spec');
+
+    convertSpecSlices(historicalRoot, 'S-602');
+    assert.equal(readHistorical(), beforeAnyCommand, 'convert-tasks on the sibling never rewrites the historical Spec');
+    assert.deepEqual(doctor(historicalRoot), [], 'doctor stays clean after convert-tasks');
+    assert.equal(readHistorical(), beforeAnyCommand, 'a doctor run after convert-tasks never rewrites the historical Spec');
+
+    console.log('ok - a historical Ticket-header completed Spec is byte-identical after render, doctor, next, claim, close, render again, doctor and convert-tasks');
+  } finally {
+    fs.rmSync(historicalRoot, { recursive: true, force: true });
+  }
 }
