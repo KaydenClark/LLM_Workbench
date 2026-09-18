@@ -102,7 +102,7 @@ repository-level enforcement, which is out of scope.
   reviewed unit becomes the assembled Spec; the immutable-candidate
   requirement is unchanged.
 - The gate reads Task records, so it depends on
-  [S-00H](../S-00H-task-artifact-and-terminology-migration/SPEC.md).
+  [S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md).
   Corrective Tasks are Task records created through the same seam.
 - Closure precedes reconciliation and retirement, which are
   [S-00I](../S-00I-folder-lifecycle-for-records/SPEC.md); this Spec ends at a

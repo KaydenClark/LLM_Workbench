@@ -21,7 +21,6 @@ Derived from stable specs; includes completed history.
 | [S-00E - Fresh Workbench Template To Project Proof](S-00E-fresh-template-project-proof/SPEC.md) | Prove the complete fresh-copy path from Workbench Template through a useful independent project. | complete |
 | [S-00F - Template Upgrade Release Gate](S-00F-template-upgrade-release-gate/SPEC.md) | Require each new LLM Workbench version to upgrade the named Workbench_Template repository and pass its installed update checks before release readiness can be claimed | complete |
 | [S-00G - Ownership Map Root Control](S-00G-ownership-map-root-control/SPEC.md) | Deliver `OWNERSHIP.json` as the eighth root control with a structured query surface, and teach every live root-surface consumer about it. | planned |
-| [S-00H - Task Artifact And Terminology Migration](S-00H-task-artifact-and-terminology-migration/SPEC.md) | Make a Task a standalone `TASK.md` artifact that owns active work state, and replace Ticket with Task across prose, tools and newly allocated identifiers. | complete |
 | [S-00I - Retirement Lifecycle By Folder For Records](S-00I-folder-lifecycle-for-records/SPEC.md) | Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared. | active |
 | [S-00J - Spec QA Gate And Corrective-Task Return Path](S-00J-spec-qa-gate-at-integration/SPEC.md) | Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval. | active |
 | [S-00K - Workbench Self-Drift Check On Update](S-00K-workbench-self-drift-check/SPEC.md) | Check the canonical Workbench's own artifacts for semantic drift before an update is called complete. | planned |
@@ -71,4 +70,12 @@ Derived from stable specs; includes completed history.
 | [S-052 - Private Session Transport](S-052-private-session-transport/SPEC.md) | Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling. | active |
 | [S-053 - Configured Host Capabilities](S-053-configured-host-capabilities/SPEC.md) | Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate. | complete |
 | [S-054 - Workbench v3.2.1 Review-Boundary Integrity](S-054-v3-2-1-review-boundary-integrity/SPEC.md) | Make an integration review bind to the exact resulting candidate and refuse target movement before merge. | planned |
+
+### Retired
+
+Reconciled into durable owners and moved out of ordinary discovery; still reachable by their historical route.
+
+| Spec | Description | Historical route |
+|---|---|---|
+| S-00H - Task Artifact And Terminology Migration | Make a Task a standalone `TASK.md` artifact that owns active work state, and replace Ticket with Task across prose, tools and newly allocated identifiers. | [workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md](retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) |
 <!-- spec-catalog:end -->
