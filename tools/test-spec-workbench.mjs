@@ -14,7 +14,11 @@ import {
   showSpec,
   closeTask,
   completeSpec,
+  discardRetiredSpec,
+  discardRetiredTask,
   doctor,
+  findSpec,
+  loadCorrectiveTasks,
   loadRetiredSpecs,
   loadSpecs,
   moveSpecDirectory,
@@ -22,12 +26,13 @@ import {
   nextWork,
   parseCliArgs,
   receiptTask,
+  referencesToPath,
   render,
   retireSpec,
   scanReferences,
   slicesOf
 } from '../workbench/tools/spec-workbench.mjs';
-import { assembleSpecReport, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
+import { assembleSpecReport, createCorrectiveTasks, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
@@ -48,6 +53,14 @@ function initGitRoot(dir) {
 
 function headSha(dir) {
   return execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+}
+
+// S-00I TK-006: a historical path embedded literally into a `new RegExp(...)`
+// below carries a real `.` (`SPEC.md`), which regex reads as "any character"
+// unless escaped - imprecise rather than wrong for these fixture paths, but
+// escaped anyway so the assertion means exactly what it reads.
+function escapeForRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // One closed status vocabulary, not two: `spec-workbench.mjs` held its own
@@ -4006,4 +4019,446 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     { command: 'retire-spec', id: 'S-500', options: { wiki: 'workbench/wiki/guidebooks/x.md' } }
   );
   console.log('ok - retire-spec parses its --wiki option like every other lifecycle command');
+}
+
+// ============================================================================
+// S-00I TK-006: discard is `git rm` of a retired record, never `archive`.
+// Every gate below is refused by name before any write: the record must
+// actually live under `retired/`; the retiring commit (resolved from Git
+// history, never trusted from text - see the comment on `resolveMovingCommit`
+// in spec-workbench.mjs) must be verified contained in the declared default
+// branch's remote-tracking ref; a complete reference and link scan
+// (`referencesToPath`) must find nothing current naming the record; and, for
+// a Spec, its Wiki durable owner must still be `active`. Red at the pre
+// anchor bd74139b07642c1f17df86d670a6c92379e543b: `discardRetiredSpec`,
+// `discardRetiredTask` and `referencesToPath` are not exported from
+// spec-workbench.mjs at all, so the import above fails before a single
+// assertion in this file runs - confirmed in a throwaway detached worktree
+// at that commit, the same shape every earlier S-00I lane's own red proof
+// takes.
+// ============================================================================
+{
+  const discardRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-discard-'));
+  const remoteRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-discard-remote-'));
+  try {
+    initLifecycleFixture(discardRoot);
+    fs.writeFileSync(path.join(discardRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+
+    writeAt(discardRoot, 'workbench/specs/S-580-discard-fixture/SPEC.md', retirementReadySpec('S-580', ['TK-001']));
+    writeAt(discardRoot, 'workbench/specs/S-580-discard-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-580', slice: 'Discard fixture slice', destination: 'spec-acceptance: S-580 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/discard-fixture' }));
+
+    execFileSync('git', ['init', '--quiet', discardRoot]);
+    execFileSync('git', ['-C', discardRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', discardRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+    execFileSync('git', ['-C', discardRoot, 'branch', 'integration']);
+    const discardRootInitialSha = headSha(discardRoot);
+
+    const historicalRoute = 'workbench/specs/retired/S-580-discard-fixture/SPEC.md';
+    const historicalDir = path.dirname(historicalRoute);
+    writeAt(discardRoot, 'workbench/wiki/design-concepts/discard-fixture-capability.md', retirementGuidebookNote(historicalRoute, {
+      type: 'design-concept',
+      authorizedBy: 'owner',
+      parent: 'none',
+      body: [
+        '# Discard Fixture Capability',
+        '',
+        'Durable prose describing what S-580 delivered and why it is trusted.',
+        '',
+        '## Evidence and Sources',
+        '',
+        '- [S-580](../../specs/retired/S-580-discard-fixture/SPEC.md)',
+        '',
+        '## History',
+        '',
+        '- 2026-09-18: created on owner direction.',
+        ''
+      ].join('\n')
+    }));
+    writeAt(discardRoot, 'workbench/wiki/MEMORY.md',
+      '# Fixture Room Brain\n\nSee [the discard fixture capability](design-concepts/discard-fixture-capability.md).\n');
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'author the durable owner']);
+
+    recordOwnerApproval(discardRoot, 'S-580', { candidate: discardRootInitialSha, owner: 'Kayden Clark', result: 'approve' });
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'record owner Human QA approval']);
+
+    retireSpec(discardRoot, 'S-580', { wikiNote: 'workbench/wiki/design-concepts/discard-fixture-capability.md' });
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'retire S-580']);
+
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-999'), /Unknown spec ID: S-999/, 'refuses an unknown Spec ID');
+    // Never `archive`: `SPEC_LIFECYCLE_FOLDERS` is retired-only (ADR-000I
+    // reserves `archive` for ADRs alone), so nothing has ever been placed
+    // there for a Spec, and a made-up name discard has never seen resolves
+    // exactly like any other unknown id - proof that discard has no code
+    // path into archive at all.
+    assert.throws(() => discardRetiredSpec(discardRoot, 'archive'), /Unknown spec ID: archive/, 'never resolves anything named archive; there is no archive lifecycle folder a Spec can occupy');
+
+    writeAt(discardRoot, 'workbench/specs/S-581-active-fixture/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-581'));
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'add an active fixture']);
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-581'), /S-581 is on the active roster, not retired; discard only ever removes a retired record/, 'refuses a Spec that is still on the active roster');
+
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-580'), /no origin\/main remote-tracking ref exists/, 'refuses when there is no origin\\/<default branch> ref to verify containment against');
+
+    execFileSync('git', ['init', '--quiet', '--bare', remoteRoot]);
+    execFileSync('git', ['-C', discardRoot, 'remote', 'add', 'origin', remoteRoot]);
+    execFileSync('git', ['-C', discardRoot, 'push', '--quiet', 'origin', `${discardRootInitialSha}:refs/heads/main`]);
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-580'), /not verified contained in origin\/main/, 'refuses while the retiring commit is not yet on origin/main');
+
+    execFileSync('git', ['-C', discardRoot, 'push', '--quiet', '--force', 'origin', 'HEAD:refs/heads/main']);
+
+    fs.writeFileSync(path.join(discardRoot, 'AGENTS.md'), '# Agents\n\nSee [S-580](workbench/specs/retired/S-580-discard-fixture/SPEC.md).\n\nRoutes to workbench/wiki.\n');
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'add a stray reference']);
+    execFileSync('git', ['-C', discardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-580'), /a complete reference scan still finds/, 'refuses while a current reference still names the retired record');
+    // Called directly (no `excludeFiles`), `referencesToPath` also finds the
+    // durable-owner Wiki note's own sanctioned "Evidence and Sources"
+    // citation of S-580 - the fact `discardRetiredSpec` itself excludes by
+    // name before running this same scan (see the comment above the call in
+    // spec-workbench.mjs), never a second stray reference on top of AGENTS.md.
+    assert.deepEqual(
+      referencesToPath(discardRoot, historicalDir).map((item) => item.file).sort(),
+      ['AGENTS.md', 'workbench/wiki/design-concepts/discard-fixture-capability.md'],
+      'referencesToPath itself finds the stray AGENTS.md reference and the durable owner\'s own sanctioned self-citation, which discardRetiredSpec excludes explicitly'
+    );
+
+    fs.writeFileSync(path.join(discardRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'remove the stray reference']);
+    execFileSync('git', ['-C', discardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+
+    const notePath = path.join(discardRoot, 'workbench/wiki/design-concepts/discard-fixture-capability.md');
+    fs.writeFileSync(notePath, fs.readFileSync(notePath, 'utf8').replace('status: active', 'status: stale'));
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'mark the wiki owner stale']);
+    execFileSync('git', ['-C', discardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-580'), /its Wiki durable owner is status stale, not active/, 'refuses while its Wiki durable owner is not active');
+
+    fs.writeFileSync(notePath, fs.readFileSync(notePath, 'utf8').replace('status: stale', 'status: active'));
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'restore the wiki owner']);
+    execFileSync('git', ['-C', discardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+
+    fs.writeFileSync(path.join(discardRoot, 'scratch.txt'), 'dirty\n');
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-580'), /discard refuses a dirty working tree/, 'refuses a dirty working tree');
+    fs.rmSync(path.join(discardRoot, 'scratch.txt'));
+
+    assert.equal(execFileSync('git', ['-C', discardRoot, 'status', '--porcelain'], { encoding: 'utf8' }).trim(), '', 'every refusal above wrote nothing to the working tree');
+
+    console.log('ok - discardRetiredSpec refuses an unknown or still-active Spec, anything not literally under retired/ (proving discard never reaches archive), an unverifiable or unmet main-containment check, a live reference naming the record, a stale Wiki durable owner, and a dirty working tree - all before any write');
+
+    const receipt = discardRetiredSpec(discardRoot, 'S-580');
+    assert.equal(receipt.specId, 'S-580');
+    assert.equal(receipt.historicalRoute, historicalRoute);
+    assert.match(receipt.retiringCommit, /^[0-9a-f]{40}$/);
+    assert.match(receipt.discardParentCommit, /^[0-9a-f]{40}$/);
+    assert.equal(receipt.recoveryCommand, `git checkout ${receipt.retiringCommit} -- ${historicalRoute}`);
+    assert.equal(receipt.register, 'workbench/specs/DISCARDS.md');
+    assert.ok(!fs.existsSync(path.join(discardRoot, historicalDir)), 'the whole retired Spec directory, not only SPEC.md, is actually gone');
+
+    const discards = fs.readFileSync(path.join(discardRoot, 'workbench/specs/DISCARDS.md'), 'utf8');
+    assert.match(discards, /^# Discards$/m);
+    assert.match(
+      discards,
+      new RegExp(`\\| \\d{4}-\\d{2}-\\d{2} \\| spec \\| S-580 \\| ${escapeForRegExp(historicalRoute)} \\| ${receipt.retiringCommit} \\| ${receipt.discardParentCommit} \\| git checkout ${receipt.retiringCommit} -- ${escapeForRegExp(historicalRoute)} \\|`, 'm'),
+      'the discards register names the record, the retiring commit, the discard\'s parent commit, and a literal recovery command'
+    );
+
+    assert.equal(loadRetiredSpecs(discardRoot).some((spec) => spec.id === 'S-580'), false, 'S-580 is gone from the retired roster too');
+    assert.deepEqual(doctor(discardRoot).filter((item) => item.specId === 'S-580'), [], 'a correctly discarded Spec raises no identity or lifecycle finding');
+
+    // The durable-owner Wiki note's own "Evidence and Sources" citation of
+    // S-580 - the exact sanctioned self-citation the gate excluded above -
+    // is genuinely dangling now that discard actually removed the file it
+    // pointed at. This is not new drift the gate should have caught (the
+    // gate proves nothing *else* still refers to the record; a record's own
+    // durable owner citing its own now-Git-only history is expected, per
+    // "a later corrective Task loads the reconciled Wiki capability claim
+    // and updates it"), so the new `discarded-reference` finding is doctor's
+    // safety net noticing it, exactly the class of gap a corrective Task
+    // (proven above and below) is what closes.
+    const staleAfterDiscard = scanReferences(discardRoot);
+    assert.deepEqual(staleAfterDiscard, [{
+      file: 'workbench/wiki/design-concepts/discard-fixture-capability.md',
+      target: '../../specs/retired/S-580-discard-fixture/SPEC.md'
+    }], 'discard leaves exactly one expected dangling reference behind: the durable owner\'s own now-history-only citation of the record it retired');
+    assert.deepEqual(
+      doctor(discardRoot).filter((item) => item.code === 'discarded-reference').map((item) => item.target),
+      ['../../specs/retired/S-580-discard-fixture/SPEC.md'],
+      'doctor surfaces that exact gap through the new discarded-reference finding, sourced from the same scan'
+    );
+    const catalogAfter = fs.readFileSync(path.join(discardRoot, 'workbench/specs/CATALOG.md'), 'utf8');
+    assert.doesNotMatch(catalogAfter, /S-580-discard-fixture/, 'render already ran inside discardRetiredSpec; the catalog no longer names the discarded Spec even by its historical route');
+
+    const porcelainAfter = execFileSync('git', ['-C', discardRoot, 'status', '--porcelain'], { encoding: 'utf8' });
+    assert.ok(porcelainAfter.trim().length > 0, 'discard actually changed something');
+    for (const line of porcelainAfter.split('\n').filter(Boolean)) {
+      assert.equal(line[1], ' ', `line "${line}" must be fully staged, matching this room's own move/retire convention`);
+    }
+
+    // Git actually recovers it, exactly by the printed recovery command.
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'discard S-580']);
+    execFileSync('git', ['-C', discardRoot, 'checkout', '--quiet', receipt.retiringCommit, '--', historicalDir]);
+    assert.ok(fs.existsSync(path.join(discardRoot, historicalRoute)), 'the retiring commit still holds SPEC.md');
+    assert.ok(fs.existsSync(path.join(discardRoot, historicalDir, 'tasks/TK-001/TASK.md')), 'and the whole directory it carried, including its Task record');
+    execFileSync('git', ['-C', discardRoot, 'reset', '--quiet', 'HEAD', '--', historicalDir]);
+    fs.rmSync(path.join(discardRoot, historicalDir), { recursive: true, force: true });
+
+    console.log('ok - discardRetiredSpec succeeds once every gate is satisfied: it removes the whole retired directory, records a Git-recoverable identity in the DISCARDS.md register, runs render, leaves one fully staged candidate, and its own printed recovery command actually restores the record from history');
+  } finally {
+    fs.rmSync(discardRoot, { recursive: true, force: true });
+    fs.rmSync(remoteRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// discardRetiredTask: the same containment, dirty-tree and reference-scan
+// gates apply to a retired Task record. It has no evidence-log analogue and
+// `moveTaskRecord` requires no Wiki note at all, so there is no durable-
+// owner gate to repeat here. Fixture-only: no room in this repository has
+// ever retired a Task into `tasks/retired/`.
+// ============================================================================
+{
+  const taskDiscardRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-discard-'));
+  const taskDiscardRemote = fs.mkdtempSync(path.join(os.tmpdir(), 'task-discard-remote-'));
+  try {
+    initLifecycleFixture(taskDiscardRoot);
+    fs.writeFileSync(path.join(taskDiscardRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+
+    writeAt(taskDiscardRoot, 'workbench/specs/S-592-task-discard-fixture/SPEC.md', emptyTableRecordBackedSpec('S-592'));
+    writeAt(taskDiscardRoot, 'workbench/specs/S-592-task-discard-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-592', slice: 'Task discard fixture slice', destination: 'spec-acceptance: S-592 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/task-discard-fixture' }));
+    // TK-002 stays on the active roster throughout: `git rm -r` on TK-001's
+    // sole directory would otherwise leave `tasks/` itself empty (Git tracks
+    // no empty directory), flipping this Spec's own `recordBacked` read back
+    // to false against its deliberately empty embedded table - a real but
+    // orthogonal edge case this fixture sidesteps rather than exercises.
+    writeAt(taskDiscardRoot, 'workbench/specs/S-592-task-discard-fixture/tasks/TK-002/TASK.md',
+      doneTaskRecordFixture({ id: 'TK-002', specId: 'S-592', slice: 'Kept active so tasks/ never empties out', destination: 'spec-acceptance: S-592 Acceptance Criteria', proof: 'landed' }));
+
+    execFileSync('git', ['init', '--quiet', taskDiscardRoot]);
+    execFileSync('git', ['-C', taskDiscardRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    moveTaskRecord(taskDiscardRoot, 'S-592', 'TK-001', 'retired');
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'retire TK-001']);
+
+    const taskHistoricalRoute = 'workbench/specs/S-592-task-discard-fixture/tasks/retired/TK-001/TASK.md';
+
+    assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-999'), /Unknown Task ID: S-592\/TK-999/, 'refuses an unknown Task ID');
+
+    assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /no origin\/main remote-tracking ref exists/, 'refuses when there is no origin/<default branch> ref to verify containment against');
+
+    execFileSync('git', ['init', '--quiet', '--bare', taskDiscardRemote]);
+    execFileSync('git', ['-C', taskDiscardRoot, 'remote', 'add', 'origin', taskDiscardRemote]);
+    execFileSync('git', ['-C', taskDiscardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+
+    fs.writeFileSync(path.join(taskDiscardRoot, 'AGENTS.md'), '# Agents\n\nSee [S-592 TK-001](workbench/specs/S-592-task-discard-fixture/tasks/retired/TK-001/TASK.md).\n\nRoutes to workbench/wiki.\n');
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'add a stray reference to the retired Task']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /a complete reference scan still finds/, 'refuses while a current reference still names the retired Task');
+
+    fs.writeFileSync(path.join(taskDiscardRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'remove the stray reference']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+
+    fs.writeFileSync(path.join(taskDiscardRoot, 'scratch.txt'), 'dirty\n');
+    assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /discard refuses a dirty working tree/, 'refuses a dirty working tree');
+    fs.rmSync(path.join(taskDiscardRoot, 'scratch.txt'));
+
+    const receipt = discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001');
+    assert.equal(receipt.specId, 'S-592');
+    assert.equal(receipt.taskId, 'TK-001');
+    assert.equal(receipt.historicalRoute, taskHistoricalRoute);
+    assert.equal(receipt.recoveryCommand, `git checkout ${receipt.retiringCommit} -- ${taskHistoricalRoute}`);
+    assert.ok(!fs.existsSync(path.join(taskDiscardRoot, taskHistoricalRoute)), 'the retired Task directory is actually gone');
+
+    const discards = fs.readFileSync(path.join(taskDiscardRoot, 'workbench/specs/DISCARDS.md'), 'utf8');
+    assert.match(discards, /\| task \| S-592\/TK-001 \|/, 'the discards register names a Task discard distinctly from a Spec discard');
+
+    assert.deepEqual(scanReferences(taskDiscardRoot), [], 'no reference is left dangling after the Task discard');
+
+    console.log('ok - discardRetiredTask gates on an unknown Task, an unverifiable main-containment check, a live reference, and a dirty working tree, and succeeds once every gate is satisfied - archive is never reachable, since no Task can ever occupy it');
+  } finally {
+    fs.rmSync(taskDiscardRoot, { recursive: true, force: true });
+    fs.rmSync(taskDiscardRemote, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// The `discard` CLI verb parses a bare Spec ID or a Spec ID with --task, like
+// every other lifecycle command.
+// ============================================================================
+{
+  assert.deepEqual(parseCliArgs(['discard', 'S-500']), { command: 'discard', id: 'S-500', options: {} });
+  assert.deepEqual(parseCliArgs(['discard', 'S-500', '--task', 'TK-002']), { command: 'discard', id: 'S-500', options: { task: 'TK-002' } });
+  console.log('ok - discard parses a bare Spec ID or a Spec ID with --task like every other lifecycle command');
+}
+
+// ============================================================================
+// S-00J's deferred retired-folder case (its third acceptance line, named by
+// S-00I TK-005's own remaining-gap cell): a corrective Task created against a
+// retired (not discarded) Spec through `createCorrectiveTasks` writes
+// straight into that Spec's still-retired `tasks/` directory - never under
+// `tasks/retired/` (that folder holds a reconciled, *done* Task's own
+// history, not a fresh one), and never moves the Spec back out of `retired/`.
+// ============================================================================
+{
+  const correctiveRetiredRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-corrective-retired-'));
+  try {
+    initLifecycleFixture(correctiveRetiredRoot);
+    fs.writeFileSync(path.join(correctiveRetiredRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+
+    const verdictRow = '| 2026-09-18 | review | Review verdict: fail at deadbee3 [aaaaaaaaaaaa] #1 | Missing edge case coverage | Reviewer | 1 |';
+    const specContent = retirementReadySpec('S-591', ['TK-001']).replace(
+      '| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n',
+      `| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n${verdictRow}\n`
+    );
+    writeAt(correctiveRetiredRoot, 'workbench/specs/S-591-corrective-fixture/SPEC.md', specContent);
+    writeAt(correctiveRetiredRoot, 'workbench/specs/S-591-corrective-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-591', slice: 'Corrective route fixture slice', destination: 'spec-acceptance: S-591 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/corrective-route-fixture' }));
+
+    execFileSync('git', ['init', '--quiet', correctiveRetiredRoot]);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'branch', 'integration']);
+    const correctiveInitialSha = headSha(correctiveRetiredRoot);
+
+    const historicalRoute = 'workbench/specs/retired/S-591-corrective-fixture/SPEC.md';
+    writeAt(correctiveRetiredRoot, 'workbench/wiki/design-concepts/corrective-route-fixture-capability.md', retirementGuidebookNote(historicalRoute, {
+      type: 'design-concept',
+      authorizedBy: 'owner',
+      parent: 'none',
+      body: [
+        '# Corrective Route Fixture Capability', '', 'Durable prose.', '',
+        '## Evidence and Sources', '', '- [S-591](../../specs/retired/S-591-corrective-fixture/SPEC.md)', '',
+        '## History', '', '- 2026-09-18: created on owner direction.', ''
+      ].join('\n')
+    }));
+    writeAt(correctiveRetiredRoot, 'workbench/wiki/MEMORY.md',
+      '# Fixture Room Brain\n\nSee [the corrective route fixture capability](design-concepts/corrective-route-fixture-capability.md).\n');
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'author the durable owner']);
+
+    recordOwnerApproval(correctiveRetiredRoot, 'S-591', { candidate: correctiveInitialSha, owner: 'Kayden Clark', result: 'approve' });
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'record owner Human QA approval']);
+
+    retireSpec(correctiveRetiredRoot, 'S-591', { wikiNote: 'workbench/wiki/design-concepts/corrective-route-fixture-capability.md' });
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'retire S-591']);
+
+    assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, historicalRoute)), 'S-591 is genuinely retired before this proves the corrective route against it');
+
+    const receipt = createCorrectiveTasks(correctiveRetiredRoot, 'S-591', { candidate: 'deadbee3', findings: 'Missing edge case coverage' });
+    assert.equal(receipt.created.length, 1);
+    const created = receipt.created[0];
+    assert.equal(created.filePath, `workbench/specs/retired/S-591-corrective-fixture/tasks/${created.id}/TASK.md`);
+    assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, created.filePath)));
+    assert.ok(!created.filePath.includes('/tasks/retired/'), 'the new corrective Task never lands under tasks/retired/ - that folder holds a reconciled done Task, not a fresh one');
+    assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, historicalRoute)), 'the Spec is still retired');
+    assert.ok(!fs.existsSync(path.join(correctiveRetiredRoot, 'workbench/specs/S-591-corrective-fixture')), 'the Spec was never moved back out of retired/');
+
+    const stillRetired = findSpec(correctiveRetiredRoot, 'S-591');
+    assert.equal(stillRetired.lifecycleFolder, 'retired');
+    assert.ok(stillRetired.records.some((task) => task.id === created.id), 'the new corrective Task is a live record on the still-retired Spec');
+    assert.ok(!(stillRetired.retiredRecords ?? []).some((task) => task.id === created.id), 'and it is not itself a retired Task record');
+
+    console.log('ok - createCorrectiveTasks against a retired (not discarded) Spec writes the new Task straight into its still-retired tasks/ directory, never under tasks/retired/, and never moves the Spec back out of retired/ - S-00J\'s deferred retired-folder case');
+  } finally {
+    fs.rmSync(correctiveRetiredRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00I TK-006: `createCorrectiveTasks` can anchor to a discarded Spec's Wiki
+// claim instead of a fail-verdict/owner-QA row it can no longer read (discard
+// removed the evidence log along with the Spec). This fixture represents
+// that post-discard state directly - S-590 was never created at all, exactly
+// what `findSpec` sees once a real discard (proven above) has actually run -
+// rather than re-running the whole discard dance just to reach the same
+// "Unknown spec ID" starting point.
+// ============================================================================
+{
+  const orphanRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-corrective-orphan-'));
+  try {
+    initLifecycleFixture(orphanRoot);
+    writeAt(orphanRoot, 'workbench/wiki/design-concepts/orphan-fixture-capability.md', retirementGuidebookNote('workbench/specs/retired/S-590-orphan-fixture/SPEC.md', {
+      type: 'design-concept',
+      authorizedBy: 'owner',
+      parent: 'none',
+      body: [
+        '# Orphan Fixture Capability', '', 'Durable prose describing what S-590 delivered.', '',
+        '## Evidence and Sources', '', '- historical, S-590 has been discarded.', '',
+        '## History', '', '- 2026-09-18: created on owner direction.', ''
+      ].join('\n')
+    }));
+    execFileSync('git', ['init', '--quiet', orphanRoot]);
+    execFileSync('git', ['-C', orphanRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', orphanRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', orphanRoot, 'add', '-A']);
+    execFileSync('git', ['-C', orphanRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    assert.throws(() => findSpec(orphanRoot, 'S-590'), /Unknown spec ID: S-590/, 'S-590 was never created at all - representing the state after a real discard has already removed it entirely');
+    assert.throws(
+      () => createCorrectiveTasks(orphanRoot, 'S-590', { candidate: 'deadbee2', findings: 'The capability note omits an edge case' }),
+      /Unknown spec ID: S-590/,
+      'with no wikiClaim option, an unknown Spec ID still fails exactly as it always has - every existing caller is unaffected'
+    );
+
+    const receipt = createCorrectiveTasks(orphanRoot, 'S-590', {
+      candidate: 'deadbee2',
+      findings: 'The capability note omits an edge case',
+      wikiClaim: 'workbench/wiki/design-concepts/orphan-fixture-capability.md#Evidence and Sources'
+    });
+    assert.equal(receipt.specId, 'S-590');
+    assert.equal(receipt.created.length, 1);
+    const created = receipt.created[0];
+    assert.match(created.filePath, /^workbench\/specs\/corrective\/tasks\/TK-[0-9A-Za-z]+\/TASK\.md$/);
+    assert.ok(fs.existsSync(path.join(orphanRoot, created.filePath)));
+    const taskContent = fs.readFileSync(path.join(orphanRoot, created.filePath), 'utf8');
+    assert.match(taskContent, /\*\*Destination:\*\* wiki-claim: workbench\/wiki\/design-concepts\/orphan-fixture-capability\.md#Evidence and Sources/);
+    assert.match(taskContent, /\*\*Status:\*\* ready/);
+
+    console.log('ok - createCorrectiveTasks anchors to a discarded Spec\'s Wiki claim, writing into the corrective/ folder this lane defines, and every existing caller with no wikiClaim option is unaffected');
+
+    const next = nextWork(orphanRoot);
+    assert.equal(next.orphan, true, 'an orphan corrective Task is selectable by next');
+    assert.equal(next.taskId, created.id);
+    assert.equal(next.specId, 'S-590');
+
+    claimWork(orphanRoot, created.id, { agent: 'codex' });
+    assert.equal(loadCorrectiveTasks(orphanRoot).find((task) => task.id === created.id).status, 'in-progress');
+
+    const closeReceipt = closeTask(orphanRoot, created.id, { proof: 'fixed the edge case', docs: 'none', remainingGap: 'none' });
+    assert.equal(closeReceipt.status, 'done');
+    assert.equal(closeReceipt.wikiNote, 'workbench/wiki/design-concepts/orphan-fixture-capability.md');
+
+    const noteAfter = fs.readFileSync(path.join(orphanRoot, 'workbench/wiki/design-concepts/orphan-fixture-capability.md'), 'utf8');
+    assert.match(noteAfter, new RegExp(`  - ${created.id} corrective Task closed \\d{4}-\\d{2}-\\d{2}: fixed the edge case \\(docs: none; remaining gap: none\\)`));
+    assert.ok(!fs.existsSync(path.join(orphanRoot, 'workbench/specs/S-590-orphan-fixture')), 'closing never recreates SPEC.md');
+    assert.ok(!fs.existsSync(path.join(orphanRoot, 'workbench/specs/retired/S-590-orphan-fixture')), 'closing never recreates a retired SPEC.md either');
+
+    const closedTask = loadCorrectiveTasks(orphanRoot).find((task) => task.id === created.id);
+    assert.equal(closedTask.status, 'done');
+    assert.equal(closedTask.proof, 'fixed the edge case');
+    assert.equal(nextWork(orphanRoot), null, 'next offers nothing once the only corrective Task is done');
+
+    console.log('ok - an orphan corrective Task is selectable by next, claims and closes by its own Task ID, and closing appends its evidence to the Wiki note\'s provenance without ever touching SPEC.md');
+  } finally {
+    fs.rmSync(orphanRoot, { recursive: true, force: true });
+  }
 }

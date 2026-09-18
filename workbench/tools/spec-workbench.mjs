@@ -45,7 +45,46 @@ export const SPEC_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 
 export function nextWork(rootDir) {
   refuseBlockedRuntime(rootDir);
-  return selectCandidate(loadSpecs(rootDir));
+  const candidate = selectCandidate(loadSpecs(rootDir));
+  if (candidate) return candidate;
+  return selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir));
+}
+
+// S-00I TK-006: a corrective Task created after its owning Spec has been
+// discarded (`createCorrectiveTasks`'s wiki-claim branch in spec-report.mjs)
+// has no Spec directory left to live under - the whole point of discard is
+// that the directory is gone. It lives at the one folder this lane defines
+// and states for exactly that case: `<specs lane>/corrective/tasks/<id>/
+// TASK.md`, read with the same `listTaskRecords` reader every ordinary
+// Spec's own `tasks/` directory already uses, so this adds no second reader.
+// Returns `[]` for a room that has never created one, exactly like
+// `loadRetiredSpecs` for a room that has never retired a Spec.
+export function loadCorrectiveTasks(rootDir) {
+  const root = path.resolve(rootDir);
+  const { specsRoot } = resolveSpecsRoot(root);
+  return listTaskRecords(path.join(specsRoot, 'corrective'), root);
+}
+
+// Mirrors `selectCandidate`'s own ordering (resumable before ready, then
+// visible-id order) over the one status vocabulary an orphan corrective
+// Task's own record already carries, without a Spec to read priority or
+// blockers from - an orphan corrective Task declares `Blockers: none` by
+// construction (`createOrphanCorrectiveTasks`), so there is nothing to
+// resolve here that `unmetBlockers` would need to check.
+function selectOrphanCorrectiveCandidate(tasks) {
+  const eligible = tasks.filter((task) => ['ready', 'in-progress'].includes(taskStatus(task)));
+  if (eligible.length === 0) return null;
+  eligible.sort((a, b) => (taskStatus(a) === 'in-progress' ? -1 : 0) - (taskStatus(b) === 'in-progress' ? -1 : 0) || compareVisibleIds(a.id, b.id));
+  const task = eligible[0];
+  return {
+    specId: task.specId,
+    title: `Corrective Task for discarded ${task.specId}`,
+    taskId: task.id,
+    slice: task.slice,
+    status: taskStatus(task),
+    orphan: true,
+    path: task.relativePath
+  };
 }
 
 // An `all` effect is a refusal, not only a doctor exit code: the effect table
@@ -134,6 +173,12 @@ export function nextIdentity(rootDir, specId, options = {}) {
 export function claimWork(rootDir, id, options) {
   refuseBlockedRuntime(rootDir);
   requireValue(options?.agent, '--agent is required');
+  // S-00I TK-006: an orphan corrective Task (no owning Spec directory left to
+  // claim through) is addressed by its own Task ID directly, never a Spec
+  // ID - there is no Spec ID left to name. `TASK.md`'s own id regex closes
+  // the vocabulary to `TK-...`, which a Spec ID never matches, so this can
+  // never misroute a real Spec ID.
+  if (/^TK-/.test(id)) return claimOrphanCorrectiveTask(path.resolve(rootDir), id, options);
   const date = validDate(options?.date ?? today());
   const specs = loadSpecs(rootDir);
   const matches = specs.filter((item) => item.id === id);
@@ -178,6 +223,10 @@ export function claimWork(rootDir, id, options) {
 
 export function closeTask(rootDir, id, options) {
   const root = path.resolve(rootDir);
+  // S-00I TK-006: an orphan corrective Task closes by its own Task ID
+  // (mirrors `claimWork` above); its evidence lands on the Wiki note its
+  // `wiki-claim` destination names, never a `SPEC.md` that does not exist.
+  if (/^TK-/.test(id)) return closeOrphanCorrectiveTask(root, id, options);
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
@@ -225,6 +274,69 @@ export function closeTask(rootDir, id, options) {
   content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(task.id)} | Task closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(remainingGap)} |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
+}
+
+// S-00I TK-006: claims an orphan corrective Task by its own Task ID - see
+// `loadCorrectiveTasks` above for why this folder and this reader.
+function claimOrphanCorrectiveTask(root, taskId, options) {
+  const task = loadCorrectiveTasks(root).find((item) => item.id === taskId);
+  if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
+  if (task.status !== 'ready') throw new Error(`${taskId} is ${task.status}, not ready`);
+  atomicWrite(task.filePath, updateTaskFields(task.content, { Status: 'in-progress' }));
+  return { taskId, specId: task.specId, status: 'in-progress', orphan: true };
+}
+
+// S-00I TK-006: closes an orphan corrective Task - one created after its
+// owning Spec was discarded (`createCorrectiveTasks`'s wiki-claim branch).
+// There is no `SPEC.md` to append an evidence row to and this never creates
+// one; the Task's own `wiki-claim` destination already names the reconciled
+// Wiki capability record its finding is against, and that note's own
+// `provenance` list - the Wiki schema's own attribution field - is where
+// this append-only close is recorded instead.
+function closeOrphanCorrectiveTask(root, taskId, options) {
+  const proof = requireValue(options?.proof, '--proof is required');
+  const docs = requireValue(options?.docs, '--docs is required');
+  const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
+  const date = validDate(options?.date ?? today());
+  const task = loadCorrectiveTasks(root).find((item) => item.id === taskId);
+  if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
+  if (!['ready', 'in-progress'].includes(task.status)) throw new Error(`${taskId} has no open task to close`);
+  if (task.destination.type !== 'wiki-claim') {
+    throw new Error(`${taskId} destination is ${task.destination.type}, not wiki-claim; an orphan corrective Task always closes through its Wiki claim`);
+  }
+  const match = /^([^#]+\.md)#(.+)$/.exec(task.destination.reference.trim());
+  if (!match) throw new Error(`${taskId} has an unreadable wiki-claim destination "${task.destination.reference}"`);
+  const [, notePathRaw] = match;
+  const wikiRoot = lanePath(root, 'wiki');
+  const noteAbsolute = path.resolve(root, notePathRaw.trim());
+  const withinWiki = path.relative(wikiRoot, noteAbsolute);
+  if (withinWiki.startsWith('..') || path.isAbsolute(withinWiki)) {
+    throw new Error(`${taskId} wiki-claim note "${notePathRaw}" must stay inside the Wiki collection`);
+  }
+  if (!fs.existsSync(noteAbsolute)) throw new Error(`${taskId} names a Wiki claim note that no longer exists: ${notePathRaw}`);
+  const noteContent = fs.readFileSync(noteAbsolute, 'utf8');
+  const noteRelative = path.relative(root, noteAbsolute).split(path.sep).join('/');
+  const provenanceText = `${taskId} corrective Task closed ${date}: ${proof} (docs: ${docs}; remaining gap: ${remainingGap})`;
+  const updatedNote = appendProvenanceRow(noteContent, provenanceText);
+  if (updatedNote === noteContent) throw new Error(`${noteRelative} has no provenance: list for ${taskId} to append to`);
+  atomicWrite(noteAbsolute, updatedNote);
+  atomicWrite(task.filePath, updateTaskFields(task.content, { Status: 'done', Proof: proof }));
+  return { taskId, specId: task.specId, status: 'done', wikiNote: noteRelative, orphan: true };
+}
+
+// Appends one bullet to a note's frontmatter `provenance:` YAML list -
+// `parseFrontmatter` in adr.mjs reads any `  - value` line following a
+// `key:` line as a list item, so appending here means finding where that
+// run of list items ends and inserting one more line in the same shape,
+// never touching an existing line (append-only). Returns `content`
+// unchanged when the note has no `provenance:` list at all, so the caller
+// can refuse rather than silently writing nothing.
+function appendProvenanceRow(content, text) {
+  const pattern = /^provenance:\n((?:  - .*\n)*)/m;
+  const match = pattern.exec(content);
+  if (!match) return content;
+  const at = match.index + match[0].length;
+  return `${content.slice(0, at)}  - ${text}\n${content.slice(at)}`;
 }
 
 // The Receipt's second, proactive writer (ADR-000H): appends one row to a
@@ -547,6 +659,15 @@ export function validateSpecCandidate(root, filePath, content) {
 function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
   const issues = [];
   issues.push(...identityFindings(specs, retiredSpecs));
+  // S-00I TK-006: doctor's safety net for a discard that bypassed the gate
+  // (a raw `git rm`) or a reference added back afterward. `root` is only
+  // available from `doctor`, exactly like the wiki-owner check below, never
+  // from `validateSpecCandidate`'s bytes-only check.
+  if (root) {
+    for (const item of discardedReferences(root)) {
+      issues.push(finding('discarded-reference', `${item.file} references ${item.target}, a path this room's own DISCARDS.md register says was discarded`, { file: item.file, target: item.target }));
+    }
+  }
   // S-00I TK-003: a retired Spec is outside ordinary selection, so it gets
   // only the two checks that matter once a record is out of the active
   // roster - its id cannot be reused (folded into identityFindings above,
@@ -1000,7 +1121,12 @@ function identityFindings(specs, retiredSpecs = []) {
   return findings;
 }
 
-function resolveSpecsRoot(root) {
+// S-00I TK-006: exported so spec-report.mjs's `createCorrectiveTasks` can
+// place an orphan corrective Task (one whose owning Spec has been discarded,
+// so it has no Spec directory to live under at all) beneath the same specs
+// lane this resolves, without a second, possibly-drifting copy of this
+// manifest-aware lookup.
+export function resolveSpecsRoot(root) {
   const manifestPath = path.join(root, 'workbench', 'manifest.json');
   if (!fs.existsSync(manifestPath)) return { specsRoot: path.join(root, 'specs'), specsPrefix: 'specs' };
   const validation = validateManifest(root);
@@ -1486,22 +1612,34 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
 // Finds a retired Spec's own durable Wiki owner by the one fact that names
 // it - a note's `source_paths` entry naming the Spec's historical route,
 // exactly the fact `retireSpec` itself required before the move - and
-// returns that note's frontmatter `status`, or `null` when no note names the
-// route at all. Never assumes there is exactly one match: the first is
-// returned, since `wiki.mjs`'s own basename-uniqueness check is what keeps
-// two notes from ever legitimately claiming the same route. A room with no
-// Wiki lane at all (an older or minimal room) reports `null` rather than
-// throwing, matching how the rest of this file treats an absent Wiki.
-function retiredSpecWikiOwnerStatus(root, historicalRoute) {
+// returns its absolute path, or `null` when no note names the route at all.
+// Never assumes there is exactly one match: the first is returned, since
+// `wiki.mjs`'s own basename-uniqueness check is what keeps two notes from
+// ever legitimately claiming the same route. A room with no Wiki lane at all
+// (an older or minimal room) reports `null` rather than throwing, matching
+// how the rest of this file treats an absent Wiki. S-00I TK-006 pulled the
+// scan itself out of `retiredSpecWikiOwnerStatus` below so the discard gate
+// can also get the file's own path - it needs to exclude that one note's own
+// "Evidence and Sources" self-citation of the Spec it retired from the
+// reference-scan gate, a citation `retireSpec` itself required and is never
+// a stray reference to refuse discard over.
+function retiredSpecWikiOwnerFile(root, historicalRoute) {
   const wikiRoot = lanePath(root, 'wiki');
   if (!fs.existsSync(wikiRoot)) return null;
   for (const file of collectDirectoryFiles(wikiRoot)) {
     if (!file.endsWith('.md')) continue;
     const data = parseFrontmatter(fs.readFileSync(file, 'utf8')).data;
     const sources = Array.isArray(data?.source_paths) ? data.source_paths : [];
-    if (sources.includes(historicalRoute)) return data.status ?? null;
+    if (sources.includes(historicalRoute)) return file;
   }
   return null;
+}
+
+function retiredSpecWikiOwnerStatus(root, historicalRoute) {
+  const file = retiredSpecWikiOwnerFile(root, historicalRoute);
+  if (!file) return null;
+  const data = parseFrontmatter(fs.readFileSync(file, 'utf8')).data;
+  return data?.status ?? null;
 }
 
 // S-00I TK-005: reconciles a completed Spec's surviving current claims into
@@ -1788,6 +1926,278 @@ function parseWorktreeEntries(porcelain) {
   return entries;
 }
 
+// S-00I TK-006: discard is `git rm` of a retired record, gated on the exact
+// change that retired it being verified on the declared default branch
+// (`main`), a complete reference and link scan finding nothing current
+// naming it, and (for a Spec) its Wiki durable owner still being active.
+// Never `archive` - the ADR archive is permanent by ADR-000I and this module
+// never resolves a Spec or Task through it at all, so there is no path by
+// which either discard function below could ever reach one.
+//
+// "The commit that moved it": `retireSpec`'s own evidence row is written and
+// staged *before* the caller's commit exists, so it cannot literally embed
+// that commit's own SHA (the row would have to name a hash Git has not
+// computed yet). The row's real job is naming which historical route to
+// check; the commit itself is read back from Git, which already knows it
+// with certainty - the historical path is brand new (retirement never
+// reuses a path), so the one commit whose diff first adds it, found with
+// rename detection off so a `git mv` is never mistaken for a no-op, is
+// unambiguously the retiring commit. The same resolution covers a Task
+// (`moveTaskRecord` appends no evidence row to the moved record at all), so
+// one function serves both discard functions below.
+function resolveMovingCommit(root, relativePath) {
+  const result = spawnSync('git', ['-C', root, 'log', '--no-renames', '--diff-filter=A', '--format=%H', '--reverse', '--', relativePath], { encoding: 'utf8' });
+  if (result.status !== 0) return null;
+  const shas = result.stdout.split('\n').map((line) => line.trim()).filter(Boolean);
+  return shas.length > 0 ? shas[0] : null;
+}
+
+// The declared default branch's remote-tracking ref, or `null` when either
+// the manifest declares no `git.defaultBranch` or no `origin/<branch>` ref
+// exists to check against - both refused by the caller rather than treated
+// as "assume contained", since a local-only branch proves nothing about what
+// is actually verified on `main`.
+function resolveDefaultBranchRemoteRef(root) {
+  const defaultBranch = declaredGit(root)?.defaultBranch ?? null;
+  if (!defaultBranch) return { defaultBranch: null, remoteRef: null };
+  const remoteRef = `origin/${defaultBranch}`;
+  const hasRemoteRef = spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/remotes/${remoteRef}`]).status === 0;
+  return { defaultBranch, remoteRef: hasRemoteRef ? remoteRef : null };
+}
+
+// The tracked, append-only discards register this lane defines: a Spec or
+// Task's own record carries no room to hold operational Git recovery facts
+// (a Spec's evidence log is about to be deleted along with it; a Task record
+// never had one), and the Wiki durable owner a Spec retired into is about
+// capability knowledge, not Git bookkeeping - piling recovery facts into
+// either would blur what each already means. A dedicated register, read the
+// same way `REGISTER.md`/`HISTORY.md` already are, keeps "what got discarded
+// and how do I get it back" in one discoverable place. Reuses `appendEvidence`
+// unchanged: it only ever looks for the literal Append-Only Evidence heading,
+// so this register is exactly as append-only as a Spec's own evidence log
+// without a second append implementation.
+function ensureDiscardsRegister(root) {
+  const registerPath = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
+  if (fs.existsSync(registerPath)) return { registerPath, content: fs.readFileSync(registerPath, 'utf8') };
+  const content = [
+    '# Discards',
+    '',
+    'Append-only register of every retired record a discard gate approved for',
+    '`git rm`: the retiring commit verified contained on the declared default',
+    'branch, a complete reference and link scan finding nothing current naming',
+    'the record, and (for a Spec) its Wiki durable owner still active. Git',
+    "history recovers a discarded record with its own row's recovery command;",
+    'archive is never discarded, by ADR-000I, and this register never is either',
+    '- a row is appended, never edited.',
+    '',
+    '## Append-Only Evidence And Execution Log',
+    '',
+    '| Date | Kind | Record ID | Historical Path | Retiring Commit | Discard Parent Commit | Recovery Command |',
+    '|---|---|---|---|---|---|---|',
+    ''
+  ].join('\n');
+  return { registerPath, content };
+}
+
+function recordDiscard(root, { kind, id, historicalRoute, movingCommit, parentCommit, recoveryCommand }) {
+  const { registerPath, content } = ensureDiscardsRegister(root);
+  const row = `| ${escapeCell(today())} | ${escapeCell(kind)} | ${escapeCell(id)} | ${escapeCell(historicalRoute)} | ${escapeCell(movingCommit)} | ${escapeCell(parentCommit)} | ${escapeCell(recoveryCommand)} |`;
+  atomicWrite(registerPath, appendEvidence(content, row));
+  return path.relative(root, registerPath).split(path.sep).join('/');
+}
+
+// Every historical path this room's own DISCARDS.md register says was
+// actually discarded, as absolute paths - `[]` when the register does not
+// exist yet (a room that has never discarded anything).
+function loadDiscardedHistoricalPaths(root) {
+  const registerPath = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
+  if (!fs.existsSync(registerPath)) return [];
+  const paths = [];
+  for (const line of fs.readFileSync(registerPath, 'utf8').split('\n')) {
+    if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
+    const cells = parseMarkdownTableRow(line);
+    if (cells[3]) paths.push(path.resolve(root, cells[3]));
+  }
+  return paths;
+}
+
+// S-00I TK-006: doctor's safety net for a discard that bypassed the gate (a
+// raw `git rm`) or a reference added back afterward - deliberately narrower
+// than `scanReferences`, and scoped specifically to a target this room's own
+// `DISCARDS.md` register says was actually discarded. Reusing the general
+// "any dead local link" scan directly would duplicate the existing
+// `broken-link` finding for every ordinary broken link in the room (a typo,
+// a moved file unrelated to any discard) and - since that finding is
+// deliberately `attention`, never blocking - silently upgrade a room's
+// existing non-blocking issues to a blocking one this Task never intended to
+// touch. A room that has never discarded anything (`loadDiscardedHistoricalPaths`
+// returns `[]`) never runs this scan at all.
+function discardedReferences(root) {
+  const discardedPaths = loadDiscardedHistoricalPaths(root);
+  if (discardedPaths.length === 0) return [];
+  const isDiscarded = (candidate) => discardedPaths.some((entry) => candidate === entry || candidate.startsWith(entry + path.sep));
+  const adrCollection = collectionPath(root, 'adr');
+  const findings = [];
+  for (const file of collectSpecReferenceFiles(root)) {
+    const original = fs.readFileSync(file, 'utf8');
+    const { prefix, suffix } = splitEvidenceSection(original);
+    const relative = path.relative(root, file).split(path.sep).join('/');
+    for (const section of [prefix, suffix]) {
+      for (const link of localLinks(section)) {
+        const resolved = path.resolve(path.dirname(file), link);
+        if (isDiscarded(resolved)) findings.push({ file: relative, target: link });
+      }
+    }
+    for (const owner of canonicalizedInTargets(prefix)) {
+      const resolved = path.resolve(root, owner);
+      if (isDiscarded(resolved)) findings.push({ file: relative, target: owner });
+    }
+    if (path.dirname(file) === adrCollection && ['REGISTER.md', 'HISTORY.md'].includes(path.basename(file))) {
+      for (const owner of registerPathCells(original)) {
+        const resolved = path.resolve(root, owner);
+        if (isDiscarded(resolved)) findings.push({ file: relative, target: owner });
+      }
+    }
+  }
+  return findings;
+}
+
+// S-00I TK-006: discards a retired Spec - `git rm -r` of its whole directory,
+// never its Tasks one at a time (they travel with it, exactly as retirement
+// carries them together). Every gate below is refused by name before any
+// write.
+export function discardRetiredSpec(rootDir, specId) {
+  const root = path.resolve(rootDir);
+  const retired = loadRetiredSpecs(root).filter((item) => item.id === specId);
+  if (retired.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
+  if (retired.length === 0) {
+    const active = loadSpecs(root).some((item) => item.id === specId);
+    throw new Error(active ? `${specId} is on the active roster, not retired; discard only ever removes a retired record` : `Unknown spec ID: ${specId}`);
+  }
+  const spec = retired[0];
+  // Never `archive`: `SPEC_LIFECYCLE_FOLDERS` is `['retired']` alone
+  // (ADR-000I reserves `archive` for ADRs), so this can only ever be
+  // `retired` today - checked explicitly anyway so a future lifecycle folder
+  // added to that set is never silently discardable without its own review.
+  if (spec.lifecycleFolder !== 'retired') {
+    throw new Error(`${specId} is retired in ${spec.lifecycleFolder}/, not retired/; discard refuses every folder but retired, and never archive`);
+  }
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) throw new Error('discard requires a Git working tree so the removal is recoverable; none was found');
+  if (gitStatus.stdout.trim() !== '') throw new Error('discard refuses a dirty working tree; commit or stash first so the candidate shows only this removal');
+
+  const movingCommit = resolveMovingCommit(root, spec.relativePath);
+  if (!movingCommit) {
+    throw new Error(`${specId} cannot discard: no committed change adds ${spec.relativePath}; the retiring commit must exist in Git history before discard can verify it on main`);
+  }
+  const { defaultBranch, remoteRef } = resolveDefaultBranchRemoteRef(root);
+  if (!defaultBranch) throw new Error(`${specId} cannot discard: the manifest declares no git.defaultBranch to verify containment against`);
+  if (!remoteRef) throw new Error(`${specId} cannot discard: no origin/${defaultBranch} remote-tracking ref exists; discard refuses an unverifiable containment check rather than trusting a local branch alone`);
+  const contained = spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', movingCommit, remoteRef]).status === 0;
+  if (!contained) throw new Error(`${specId} cannot discard: the retiring commit ${movingCommit} is not verified contained in ${remoteRef}`);
+
+  const specDir = path.dirname(spec.filePath);
+  // Resolved before the reference scan, not after: the durable-owner Wiki
+  // note's own "Evidence and Sources" citation of this Spec's historical
+  // route is a citation `retireSpec` itself required before the move, never
+  // a stray reference discard should refuse over. Every *other* reference
+  // still blocks, including one from a different Wiki note entirely.
+  const wikiOwnerFile = retiredSpecWikiOwnerFile(root, spec.relativePath);
+  const references = referencesToPath(root, specDir, { excludeFiles: wikiOwnerFile ? [wikiOwnerFile] : [] });
+  if (references.length > 0) {
+    throw new Error(`${specId} cannot discard: a complete reference scan still finds ${references.length} current reference(s) naming it, starting with ${references[0].file} -> ${references[0].target}`);
+  }
+
+  if (!wikiOwnerFile) {
+    throw new Error(`${specId} cannot discard: no Wiki note names its historical route ${spec.relativePath} in source_paths`);
+  }
+  const wikiOwnerStatus = retiredSpecWikiOwnerStatus(root, spec.relativePath);
+  if (wikiOwnerStatus !== 'active') {
+    throw new Error(`${specId} cannot discard: its Wiki durable owner is status ${wikiOwnerStatus}, not active`);
+  }
+
+  const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
+  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
+  if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
+
+  const recoveryCommand = `git checkout ${movingCommit} -- ${spec.relativePath}`;
+  const register = recordDiscard(root, { kind: 'spec', id: specId, historicalRoute: spec.relativePath, movingCommit, parentCommit, recoveryCommand });
+
+  render(root);
+  spawnSync('git', ['-C', root, 'add', '-A']);
+
+  return {
+    specId,
+    historicalRoute: spec.relativePath,
+    retiringCommit: movingCommit,
+    discardParentCommit: parentCommit,
+    recoveryCommand,
+    register
+  };
+}
+
+// S-00I TK-006: discards one retired Task record. A Task carries no
+// evidence-log analogue and `moveTaskRecord` requires no Wiki note at all
+// (only its own Proof/Receipt evidence, already satisfied before it could
+// retire) - so there is no durable-owner gate to repeat here; the
+// containment, dirty-tree and reference-scan gates are the same three that
+// apply to a Spec. Fixture-only: no room in this repository has ever
+// retired a Task into `tasks/retired/`.
+export function discardRetiredTask(rootDir, specId, taskId) {
+  const root = path.resolve(rootDir);
+  const spec = findSpec(root, specId);
+  const retiredTask = (spec.retiredRecords ?? []).find((task) => task.id === taskId);
+  if (!retiredTask) {
+    const active = (spec.records ?? []).some((task) => task.id === taskId);
+    throw new Error(active ? `${specId}/${taskId} is on the active roster, not retired; discard only ever removes a retired record` : `Unknown Task ID: ${specId}/${taskId}`);
+  }
+  if (retiredTask.lifecycleFolder !== 'retired') {
+    throw new Error(`${specId}/${taskId} is retired in tasks/${retiredTask.lifecycleFolder}/, not tasks/retired/; discard refuses every folder but retired, and never archive`);
+  }
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) throw new Error('discard requires a Git working tree so the removal is recoverable; none was found');
+  if (gitStatus.stdout.trim() !== '') throw new Error('discard refuses a dirty working tree; commit or stash first so the candidate shows only this removal');
+
+  const taskDir = path.dirname(retiredTask.filePath);
+  const historicalRoute = path.relative(root, retiredTask.filePath).split(path.sep).join('/');
+  const movingCommit = resolveMovingCommit(root, historicalRoute);
+  if (!movingCommit) {
+    throw new Error(`${specId}/${taskId} cannot discard: no committed change adds ${historicalRoute}; the retiring commit must exist in Git history before discard can verify it on main`);
+  }
+  const { defaultBranch, remoteRef } = resolveDefaultBranchRemoteRef(root);
+  if (!defaultBranch) throw new Error(`${specId}/${taskId} cannot discard: the manifest declares no git.defaultBranch to verify containment against`);
+  if (!remoteRef) throw new Error(`${specId}/${taskId} cannot discard: no origin/${defaultBranch} remote-tracking ref exists; discard refuses an unverifiable containment check rather than trusting a local branch alone`);
+  const contained = spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', movingCommit, remoteRef]).status === 0;
+  if (!contained) throw new Error(`${specId}/${taskId} cannot discard: the retiring commit ${movingCommit} is not verified contained in ${remoteRef}`);
+
+  const references = referencesToPath(root, taskDir);
+  if (references.length > 0) {
+    throw new Error(`${specId}/${taskId} cannot discard: a complete reference scan still finds ${references.length} current reference(s) naming it, starting with ${references[0].file} -> ${references[0].target}`);
+  }
+
+  const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
+  const relativeDir = path.relative(root, taskDir).split(path.sep).join('/');
+  const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
+  if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}/${taskId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
+
+  const recoveryCommand = `git checkout ${movingCommit} -- ${historicalRoute}`;
+  const register = recordDiscard(root, { kind: 'task', id: `${specId}/${taskId}`, historicalRoute, movingCommit, parentCommit, recoveryCommand });
+
+  render(root);
+  spawnSync('git', ['-C', root, 'add', '-A']);
+
+  return {
+    specId,
+    taskId,
+    historicalRoute,
+    retiringCommit: movingCommit,
+    discardParentCommit: parentCommit,
+    recoveryCommand,
+    register
+  };
+}
+
 // The `canonicalized_in` targets a frontmatter block declares, normalized to
 // an array exactly as `validateAdrs` normalizes them (a bare scalar becomes a
 // one-element array; an absent key becomes `[]`), so this scanner and that
@@ -1861,6 +2271,58 @@ export function scanReferences(rootDir) {
         if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) {
           findings.push({ file: relative, target: owner });
         }
+      }
+    }
+  }
+  return findings;
+}
+
+// S-00I TK-006: the discard gate's own "a complete reference and link scan
+// finds nothing current pointing at the record" check. `scanReferences`
+// above answers a different question - "does a link resolve to something
+// that exists" - which cannot see a live reference to a record discard has
+// not removed yet (the target still exists, so nothing there is broken).
+// This walks the identical file set with the identical prefix/suffix split
+// (the Append-Only Evidence And Execution Log stays excluded exactly as it
+// is for `scanReferences`, so a Spec's own frozen history naming an old path
+// is never mistaken for a live reference - "append-only rows counted and
+// allowed, live references refused" per the discard design), but asks
+// whether a resolved target falls *under* `targetPath` rather than whether
+// it exists. `excludeDir` on `collectSpecReferenceFiles` drops the record's
+// own directory from the referencer set, so a retired record's own body
+// (its title, or its own retirement row before the evidence-section split
+// even applies) is never read as a reference to itself. `excludeFiles`
+// (absolute paths) drops additional known, sanctioned referencers - the
+// discard gate's own retired-Spec durable-owner Wiki note, whose "Evidence
+// and Sources" citation of the very record it retired is a citation
+// `retireSpec` itself required and is never a stray reference to refuse
+// discard over.
+export function referencesToPath(rootDir, targetPath, options = {}) {
+  const root = path.resolve(rootDir);
+  const target = path.resolve(root, targetPath);
+  const excludeFiles = new Set((options.excludeFiles ?? []).map((file) => path.resolve(root, file)));
+  const adrCollection = collectionPath(root, 'adr');
+  const findings = [];
+  const underTarget = (candidate) => candidate === target || candidate.startsWith(target + path.sep);
+  for (const file of collectSpecReferenceFiles(root, target)) {
+    if (excludeFiles.has(file)) continue;
+    const original = fs.readFileSync(file, 'utf8');
+    const { prefix, suffix } = splitEvidenceSection(original);
+    const relative = path.relative(root, file).split(path.sep).join('/');
+    for (const section of [prefix, suffix]) {
+      for (const link of localLinks(section)) {
+        const resolved = path.resolve(path.dirname(file), link);
+        if (underTarget(resolved)) findings.push({ file: relative, target: link });
+      }
+    }
+    for (const owner of canonicalizedInTargets(prefix)) {
+      const resolved = path.resolve(root, owner);
+      if (underTarget(resolved)) findings.push({ file: relative, target: owner });
+    }
+    if (path.dirname(file) === adrCollection && ['REGISTER.md', 'HISTORY.md'].includes(path.basename(file))) {
+      for (const owner of registerPathCells(original)) {
+        const resolved = path.resolve(root, owner);
+        if (underTarget(resolved)) findings.push({ file: relative, target: owner });
       }
     }
   }
@@ -2112,12 +2574,13 @@ async function main() {
   else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
   else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to);
   else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
+  else if (command === 'discard') result = options.task ? discardRetiredTask(root, id, options.task) : discardRetiredSpec(root, id);
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
