@@ -15,7 +15,11 @@ import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
 import { COLLECTIONS, LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
-const legacyCoreSkills = [
+// Exported (not just used locally) so a test can build the exact historical
+// v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
+// slicing the live `coreSkills` and assuming its first twelve names never
+// diverge from this one - an assumption S-00H TK-004's rename broke once.
+export const legacyCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'
 ];
