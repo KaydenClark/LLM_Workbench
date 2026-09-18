@@ -813,6 +813,7 @@ node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-002 \
   --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
 node workbench/tools/spec-workbench.mjs report S-001 --candidate [SHA] [--json]
 node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
+node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-002 --to retired
 node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate [SHA]
 node workbench/tools/spec-workbench.mjs gate --task TK-002 --spec S-001
 node workbench/tools/spec-workbench.mjs verdict S-001 --candidate [SHA] --result pass|fail \
@@ -848,7 +849,10 @@ dirty tree, an incomplete Spec, any other folder or a room without Git; it
 rewrites every live Markdown reference and ADR `canonicalized_in` target to
 the old path, regenerates the ADR register, leaves append-only rows and
 counts them, and stages the result; the top level stays the active roster,
-`show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `gate` reports a Task PR (a real Task
+`show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `move-task` does the same for one done
+Task record into its Spec's `tasks/retired/`, refusing a Task that is not
+done or carries neither Proof nor a Receipt row; `show` lists retired Tasks
+separately and `report` shows them as history. `gate` reports a Task PR (a real Task
 record under a still-open Spec, while S-00O exemption 2 holds) and refuses a
 Spec candidate that is incomplete, unreviewed for its current content or
 named by a SHA the repository does not hold; the closeout recipe below runs
