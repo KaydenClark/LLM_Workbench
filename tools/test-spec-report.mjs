@@ -448,6 +448,7 @@ function headingShadowSpec(id) {
     assert.match(plainResult.stdout, /^S-705 - Fixture Capability \[active\]/, 'the plain form opens with the Spec line');
     assert.match(plainResult.stdout, new RegExp(`Candidate ${candidate}.*exists=true.*matchesHead=true`), 'the plain form states the candidate line with exists and matchesHead');
     assert.match(plainResult.stdout, /TK-001\b.*done/, 'the plain form lists the Task with its status');
+    assert.match(plainResult.stdout, /^Verdict: none for this candidate$/m, 'a candidate with no recorded verdict prints a plain "none" verdict line');
     assert.match(plainResult.stdout, /Gaps \(0\)/, 'the plain form states the gap count');
     const inProcessReport = assembleSpecReport(root, 'S-705', { candidate });
     assert.equal(plainResult.stdout, `${formatSpecReport(inProcessReport)}\n`, 'the CLI plain form is exactly formatSpecReport on the same report, plus the trailing newline console.log adds');
@@ -518,6 +519,101 @@ function headingShadowSpec(id) {
     assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'the abbreviated-prefix refusal also writes nothing');
 
     console.log('ok - recording a verdict for a SHA that is not the exact current HEAD (including an abbreviated prefix of it) is refused, naming both SHAs, and writes nothing');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// A candidate that does not exist in this repository at all is refused with
+// a distinguishable message from a candidate that exists but is not HEAD -
+// "does not exist" is a different problem than "is not the current
+// candidate", and TK-004 is expected to relax the HEAD-equality half of this
+// rule later without touching the existence half, which only makes sense if
+// the two halves are reported separately now.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-verdict-nonexistent-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-717-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-717', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+    const bogusCandidate = '0000000000000000000000000000000000000f';
+
+    let existenceError;
+    try {
+      recordReviewVerdict(root, 'S-717', { candidate: bogusCandidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' });
+    } catch (error) {
+      existenceError = error;
+    }
+    assert.ok(existenceError, 'a candidate absent from the repository is refused');
+    assert.match(existenceError.message, /does not exist/i, 'a nonexistent candidate is refused with a distinguishable "does not exist" message');
+    assert.ok(existenceError.message.includes(bogusCandidate), 'the nonexistent-candidate error names the SHA that was given');
+    assert.doesNotMatch(existenceError.message, /is not the current candidate/, 'the nonexistent-candidate message is worded differently from the moved-candidate message, so the two failure modes are distinguishable');
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused nonexistent candidate writes nothing');
+
+    console.log('ok - a candidate absent from the repository is refused with a message distinguishable from a moved-but-real candidate, naming the given SHA, and writes nothing');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-002 corrective (independent review): `result` accepting only
+// pass|fail and `reviewer` being non-empty were implemented but untested - a
+// mutation accepting `result: 'maybe'` or an empty/whitespace-only reviewer
+// would have survived. Each is refused by name, writes nothing, and never
+// reaches VERDICT_PATTERN: recordReviewVerdict validates before it ever
+// constructs or appends a row, so a refused attempt leaves the evidence log,
+// and therefore the report's parsed verdicts, completely untouched.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-verdict-invalid-fields-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-718-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-718', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+
+    assert.throws(
+      () => recordReviewVerdict(root, 'S-718', { candidate, result: 'maybe', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' }),
+      (error) => error instanceof Error && /--result of pass or fail/.test(error.message) && error.message.includes('maybe'),
+      'an out-of-vocabulary result is refused by name'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused out-of-vocabulary result writes nothing');
+
+    assert.throws(
+      () => recordReviewVerdict(root, 'S-718', { candidate, result: 'pass', findings: 'none', reviewer: '' }),
+      (error) => error instanceof Error && /--reviewer/.test(error.message),
+      'an empty reviewer is refused by name'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused empty reviewer writes nothing');
+
+    assert.throws(
+      () => recordReviewVerdict(root, 'S-718', { candidate, result: 'pass', findings: 'none', reviewer: '   ' }),
+      (error) => error instanceof Error && /--reviewer/.test(error.message),
+      'a whitespace-only reviewer is refused the same as an empty one'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused whitespace-only reviewer writes nothing');
+
+    // Every attempt above was refused before a row was ever built, so the
+    // evidence log carries no verdict row at all - the invalid values never
+    // reached VERDICT_PATTERN because recordReviewVerdict never got that far.
+    const report = assembleSpecReport(root, 'S-718', { candidate });
+    assert.deepEqual(report.verdicts, [], 'no verdict row exists after every refusal above; the refused values never reached VERDICT_PATTERN');
+    assert.equal(report.latestVerdict, null);
+
+    console.log('ok - an out-of-vocabulary result and an empty or whitespace-only reviewer are each refused by name, write nothing, and never reach VERDICT_PATTERN');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -701,6 +797,49 @@ function headingShadowSpec(id) {
     assert.match(refused.stderr, new RegExp(movedHead));
 
     console.log('ok - the verdict CLI verb records the same row the exported function returns, and refuses with a non-zero exit for a moved candidate, naming both SHAs');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// TK-001 review corrective, closed here: the plain-text form's `[history]`
+// marker was previously unasserted (only that the CLI prints whatever
+// formatSpecReport returns, not the formatter's own content). A record-backed
+// Spec's retained done row must print its `[history]` marker in the CLI's
+// plain output, and a recorded verdict must print its own line.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-cli-history-verdict-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    writeAt(root, 'specs/S-719-fixture/SPEC.md', recordBackedSpec('S-719'));
+    writeAt(root, 'specs/S-719-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-719', slice: 'Second slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-719 Acceptance Criteria', plannedVerification: 'Red: X; green: Y'
+    }));
+    const candidate = headSha(root);
+    const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
+
+    const verdict = recordReviewVerdict(root, 'S-719', {
+      candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+
+    const plainResult = spawnSync('node', [cliPath, 'report', 'S-719', '--candidate', candidate, '--path', root], { encoding: 'utf8' });
+    assert.equal(plainResult.status, 0);
+    assert.match(plainResult.stdout, /TK-001 done \(source: row\) \[history\]/, 'the retained done table row prints its [history] marker in the plain CLI form');
+    assert.doesNotMatch(plainResult.stdout, /TK-002[^\n]*\[history\]/, 'the live, non-retained Task record is never marked [history]');
+    assert.equal(
+      plainResult.stdout.includes(`Verdict: pass at ${candidate} by Claude Opus 5 (separate context) (${verdict.date})`),
+      true,
+      'a recorded verdict prints its own "Verdict: <result> at <sha> by <reviewer> (<date>)" line'
+    );
+
+    const inProcessReport = assembleSpecReport(root, 'S-719', { candidate });
+    assert.equal(plainResult.stdout, `${formatSpecReport(inProcessReport)}\n`, 'the CLI plain form is exactly formatSpecReport on the same report, including the [history] marker and the verdict line');
+
+    console.log('ok - the plain CLI form prints the [history] marker for a retained done table row and a recorded verdict\'s own line');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

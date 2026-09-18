@@ -111,10 +111,17 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   const reviewer = requiredString(options.reviewer, 'recordReviewVerdict requires --reviewer naming the separate context (model and mode)');
 
   // Validated before the Spec is even loaded, so an invalid candidate never
-  // gets far enough to touch a file.
+  // gets far enough to touch a file. Two distinguishable refusals, not one
+  // merged message: a candidate absent from this repository entirely is a
+  // different problem from one that exists but is no longer HEAD, and
+  // TK-004 is expected to relax the HEAD-equality half of this rule later
+  // without touching the existence half, which only makes sense if the two
+  // are reported (and testable) separately now.
   const headSha = resolveCommitSha(root, 'HEAD');
-  const existsInRepository = commitExists(root, candidate);
-  if (!existsInRepository || candidate !== headSha) {
+  if (!commitExists(root, candidate)) {
+    throw new Error(`Candidate ${candidate} does not exist in this repository (checked via git cat-file -e); a review must bind to a real commit, never an invented or mistyped SHA.`);
+  }
+  if (candidate !== headSha) {
     throw new Error(`Candidate ${candidate} is not the current candidate; HEAD is ${headSha ?? 'unresolved'}. A review binds only to the exact current HEAD - no prefix match and no stale candidate - so this verdict is refused rather than recorded against a candidate that has moved.`);
   }
 
@@ -364,6 +371,8 @@ export function formatSpecReport(report) {
   lines.push(`${report.id} - ${report.title} [${report.status}]`);
   const c = report.candidate;
   lines.push(`Candidate ${c.sha} (resolved ${c.resolvedSha ?? 'none'}) exists=${c.existsInRepository} matchesHead=${c.matchesHead} (head ${c.headSha ?? 'none'})`);
+  const v = report.latestVerdict;
+  lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date})` : 'Verdict: none for this candidate');
   lines.push('Tasks:');
   for (const task of report.tasks) {
     const runs = task.receipt ? `, runs ${task.receipt.runCount}` : '';
