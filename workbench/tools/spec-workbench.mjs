@@ -14,7 +14,7 @@ import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
-import { assembleSpecReport, formatSpecReport } from './spec-report.mjs';
+import { assembleSpecReport, formatSpecReport, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -867,7 +867,11 @@ function updateTaskRow(content, taskId, transform) {
   return updated;
 }
 
-function appendEvidence(content, row) {
+// Exported so spec-report.mjs's `recordReviewVerdict` (S-00J TK-002) appends
+// a review-verdict row through this exact same seam `closeTask` and
+// `completeSpec` already use, rather than a second append implementation
+// that could drift from it.
+export function appendEvidence(content, row) {
   const heading = '## Append-Only Evidence And Execution Log';
   const start = content.indexOf(heading);
   if (start < 0) throw new Error('Missing evidence log');
@@ -940,7 +944,10 @@ function localLinks(content) {
   return links;
 }
 
-function atomicWrite(filePath, content) {
+// Exported for the same reason as `appendEvidence` above: `recordReviewVerdict`
+// in spec-report.mjs writes its Spec file through this one temp-file-plus-
+// rename discipline rather than a second write path.
+export function atomicWrite(filePath, content) {
   const temporary = `${filePath}.tmp-${process.pid}`;
   fs.writeFileSync(temporary, content.endsWith('\n') ? content : `${content}\n`);
   fs.renameSync(temporary, filePath);
@@ -1030,12 +1037,13 @@ async function main() {
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
   else if (command === 'report') result = assembleSpecReport(root, id, { candidate: options.candidate });
+  else if (command === 'verdict') result = recordReviewVerdict(root, id, { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer });
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
