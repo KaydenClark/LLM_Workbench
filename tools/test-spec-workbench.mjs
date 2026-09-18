@@ -3524,6 +3524,11 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     type = 'guidebook',
     knowledgeRole = 'canonical',
     sourcePaths = [historicalRoute],
+    // A design-concept article additionally needs `authorized_by` and
+    // `parent` inside the frontmatter block itself - never appended after
+    // its closing `---`, which would land the fields in the body instead.
+    authorizedBy,
+    parent,
     body = '# Fixture Capability\n\nDurable prose describing what shipped and why it is trusted.\n'
   } = overrides;
   return [
@@ -3537,6 +3542,8 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     'source_paths:',
     ...sourcePaths.map((entry) => `  - ${entry}`),
     'last_verified: 2026-09-18',
+    ...(authorizedBy !== undefined ? [`authorized_by: ${authorizedBy}`] : []),
+    ...(parent !== undefined ? [`parent: ${parent}`] : []),
     '---',
     '',
     body
@@ -3614,6 +3621,11 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.throws(() => retireSpec(retireRoot, 'S-560', { wikiNote: 'workbench/wiki/guidebooks/pasted-copy.md' }), /copied-task-state/,
       'refuses a Wiki note that pastes the Spec\'s own evidence log instead of transforming it into prose');
 
+    // Commit the wiki-note fixtures themselves (this test's own setup, not
+    // anything retireSpec wrote) before checking that every refusal above
+    // left the tree exactly as this fixture built it.
+    execFileSync('git', ['-C', retireRoot, 'add', '-A']);
+    execFileSync('git', ['-C', retireRoot, 'commit', '--quiet', '-m', 'fixture wiki notes']);
     assert.equal(execFileSync('git', ['-C', retireRoot, 'status', '--porcelain'], { encoding: 'utf8' }).trim(), '',
       'every refusal above wrote nothing to the working tree');
 
@@ -3698,13 +3710,11 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     // run for it, proven here rather than assumed.
 
     const historicalRoute = 'workbench/specs/retired/S-570-retiring-fixture/SPEC.md';
-    // The design-concept shape additionally needs `authorized_by`, `parent`
-    // and the two closing sections `validateWiki` requires for that
-    // collection; injected directly rather than widening the shared helper
-    // for a shape only this one fixture needs.
     const designConceptPath = path.join(successRoot, 'workbench/wiki/design-concepts/retirement-fixture-capability.md');
     fs.writeFileSync(designConceptPath, retirementGuidebookNote(historicalRoute, {
       type: 'design-concept',
+      authorizedBy: 'owner',
+      parent: 'none',
       body: [
         '# Retirement Fixture Capability',
         '',
@@ -3719,7 +3729,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
         '- 2026-09-18: created on owner direction.',
         ''
       ].join('\n')
-    }).replace('---\n\n#', '---\nauthorized_by: owner\nparent: none\n\n#'));
+    }));
 
     execFileSync('git', ['-C', successRoot, 'add', '-A']);
     execFileSync('git', ['-C', successRoot, 'commit', '--quiet', '-m', 'author the durable owner']);
@@ -3735,7 +3745,14 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
 
     assert.deepEqual(receipt.branches.cleaned.sort(), ['claude/contained-fixture', 'claude/contained-worktree-fixture']);
     assert.deepEqual(receipt.branches.remote, ['claude/remote-only-fixture']);
-    assert.deepEqual(receipt.branches.worktreesRemoved, [worktreePath]);
+    // `git worktree list` reports its own resolved (symlink-free) path,
+    // which on macOS differs textually from `os.tmpdir()`'s own
+    // `/var/...` -> `/private/var/...` symlink. The worktree is already
+    // gone from disk by this point, so resolve the still-real parent
+    // directory instead of the removed leaf, and compare against that.
+    const expectedWorktreePath = path.join(fs.realpathSync(path.dirname(worktreePath)), path.basename(worktreePath));
+    assert.deepEqual(receipt.branches.worktreesRemoved, [expectedWorktreePath],
+      'the registered worktree - the same one this fixture created, modulo a macOS /var -> /private/var symlink - is reported removed');
     assert.ok(receipt.branches.skipped.some((item) => item.branch === 'claude/unmerged-fixture' && /not proven contained/.test(item.reason)));
     assert.ok(receipt.branches.skipped.some((item) => item.branch === 'claude/already-gone-fixture' && /already cleaned up/.test(item.reason)));
 
