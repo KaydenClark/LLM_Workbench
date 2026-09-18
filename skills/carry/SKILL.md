@@ -57,7 +57,7 @@ Do not stop short of that endpoint and report progress as completion. Stopping
 before an already-authorized step is the failure this skill exists to remove.
 
 That endpoint still has one gate `carry` cannot supply for itself. `AGENTS.md` Git Rules requires a separate-context review before branches combine into the integration branch, and self-review alone never satisfies it.
-At integration that review is of the assembled Spec, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`; while S-00O exemption 2 holds, each Task still lands as its own PR reviewed as an immutable candidate against exact `BASE_SHA` and `HEAD_SHA`, reported by `gate --task`.
+At integration that review is of the assembled Spec, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`; while the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), each Task still lands as its own PR reviewed as an immutable candidate against exact `BASE_SHA` and `HEAD_SHA`, reported by `gate --task TK-### --spec S-###`.
 A green suite and your own reading are not a PASS. Where no separate context is available to review the candidate, that is an **Unavailable resource** under section 4 - a reason to stop and say so, never a reason to merge.
 
 ## 3. Run it

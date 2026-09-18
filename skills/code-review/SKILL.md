@@ -42,7 +42,7 @@ treat its declared support lanes as the only durable path authority.
 ### Separate the review question
 
 Integration review checks the assembled Spec against its controls, assigned scope and named evidence, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`.
-While S-00O exemption 2 holds, a Task still lands as its own PR reviewed here as an immutable candidate diff against its Spec, using exact `BASE_SHA` and `HEAD_SHA`, reported by `gate --task`.
+While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task still lands as its own PR reviewed here as an immutable candidate diff against its Spec, using exact `BASE_SHA` and `HEAD_SHA`, reported by `gate --task TK-### --spec S-###`.
 Behavioral acceptance checks what actual installed agents did. Whole-Workbench main-readiness review checks system-wide coherence, ownership, drift and open acceptance against the Blueprint checklist in the Runbook. None substitutes for another. A readiness request is review-only; only the owner approves and merges main. Use a fresh context for integration.
 
 ## 3. Inspect both axes

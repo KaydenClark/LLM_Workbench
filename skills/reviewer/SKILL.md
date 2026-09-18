@@ -26,7 +26,7 @@ Resolve the assigned packet and support lanes through `workbench/manifest.json`.
 
 ## Obligations
 
-Compose `/code-review` for a Task PR's fixed diff, reviewed as an immutable candidate against exact `BASE_SHA` and `HEAD_SHA` while S-00O exemption 2 holds, reported by `gate --task`.
+Compose `/code-review` for a Task PR's fixed diff, reviewed as an immutable candidate against exact `BASE_SHA` and `HEAD_SHA` while the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), reported by `gate --task TK-### --spec S-###`.
 At integration, review the assembled Spec obtained with `report S-### --candidate <sha>` against its content digest, controls and named evidence, and record the result with `verdict`.
 Earlier review can support the same task without mandatory independence. Evaluate reports and recommendations as critically as code. Remain review-only; do not quietly repair the reviewed target.
 

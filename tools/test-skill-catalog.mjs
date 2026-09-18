@@ -281,10 +281,17 @@ assertIncludesAll(codeReview, [
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and
-// recorded with `verdict` - while a Task PR under S-00O exemption 2 remains
-// an immutable-candidate diff reviewed against its Spec and reported by
-// `gate --task`, without weakening ADR-0037's immutable-candidate
-// requirement or the exact BASE_SHA/HEAD_SHA comparison.
+// recorded with `verdict` - while a Task PR under the room's Task-PR
+// exemption (exemption 2 of its release Spec) remains an immutable-candidate
+// diff reviewed against its Spec and reported by a runnable
+// `gate --task TK-### --spec S-###`, without weakening ADR-0037's
+// immutable-candidate requirement or the exact BASE_SHA/HEAD_SHA comparison.
+// `skills/` is the bundled core installed into every room, so no core skill
+// may name the room-specific S-00O id; the condition is stated generically.
+for (const skill of coreSkills) {
+  assert.doesNotMatch(read(`skills/${skill}/SKILL.md`), /S-00O/,
+    `${skill} must not name the room-specific S-00O id; state the Task-PR exemption generically`);
+}
 for (const [name, relativePath] of [
   ['code-review', 'skills/code-review/SKILL.md'],
   ['reviewer', 'skills/reviewer/SKILL.md'],
@@ -299,11 +306,17 @@ for (const [name, relativePath] of [
     '`verdict`',
     'exemption 2',
     'immutable candidate',
-    '`gate --task`',
+    '`gate --task TK-### --spec S-###`',
     '`BASE_SHA`',
     '`HEAD_SHA`'
   ], `${name} reviewed-unit language`);
 }
+assert.ok(
+  read('skills/implement/SKILL.md').includes(
+    'a separate-context review of the assembled Spec is required'
+  ),
+  'implement must state the integration-branch review of the assembled Spec as separate-context, matching carry and code-review'
+);
 
 const updateHarness = read('skills/update-harness/SKILL.md');
 assert.match(updateHarness, /checked-out LLM Workbench repository/,
