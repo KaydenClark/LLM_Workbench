@@ -341,3 +341,31 @@ test('alphanumeric task tables remain forbidden copied live task state', () => {
     assert.ok(validateWiki(project).some(item => item.code === 'copied-task-state' && /task state|live state/i.test(item.message)));
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
+
+// S-00I TK-005: SCHEMA.md's Update section already says "Never copy live
+// task rows, spec evidence, or generated Taskboard state into a note", but
+// the pre-anchor LIVE_STATE_MARKERS only ever matched a slice-table row
+// (starting with a bare `TK-...` cell) or the two literal region markers -
+// never a Spec's own Append-Only Evidence And Execution Log row, whose first
+// cell is a date and whose second cell is a Task id or the literal `spec` /
+// `review` (closeTask/completeSpec/recordReviewVerdict's own vocabulary in
+// spec-workbench.mjs and spec-report.mjs). A reconciliation that pastes a
+// Spec's evidence log into a Wiki note - "transform, never copy" - is
+// exactly the copied "spec evidence" SCHEMA.md already names, so it must
+// fail the same copied-task-state check a copied slice table already does.
+test('a Spec\'s own Append-Only Evidence And Execution Log row pasted into a wiki note is copied task state', () => {
+  const project = seededWiki();
+  try {
+    const pastedTaskRow = path.join(project, 'workbench/wiki/Pasted Task Evidence.md');
+    fs.writeFileSync(pastedTaskRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | TK-005 | Task closed | proof text | docs checked | none |\n'));
+    const pastedSpecRow = path.join(project, 'workbench/wiki/Pasted Spec Evidence.md');
+    fs.writeFileSync(pastedSpecRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |\n'));
+    const pastedReviewRow = path.join(project, 'workbench/wiki/Pasted Review Evidence.md');
+    fs.writeFileSync(pastedReviewRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | review | Review verdict: pass at abc1234 [deadbeefcafe] #1 | none | Claude Opus 5 | none |\n'));
+    const findings = validateWiki(project);
+    for (const [file, label] of [[pastedTaskRow, 'Pasted Task Evidence.md'], [pastedSpecRow, 'Pasted Spec Evidence.md'], [pastedReviewRow, 'Pasted Review Evidence.md']]) {
+      assert.ok(findings.some((item) => item.note === `workbench/wiki/${label}` && item.code === 'copied-task-state'),
+        `${label} must be reported as copied-task-state; SCHEMA.md forbids copying spec evidence into a note`);
+    }
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
