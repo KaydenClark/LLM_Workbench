@@ -378,6 +378,74 @@ test('history output safety is preflighted before either projection changes', ()
   } finally { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(outside, { recursive: true, force: true }); }
 });
 
+// S-00I TK-002: lifecycle moves from frontmatter `status` to folder location.
+// An accepted record stays at the top level, a proposed record lives in
+// `proposed/`, and a superseded/deprecated record lives in `archive/` - all
+// with their `status` key removed, since the folder now carries it. Register
+// and History are rendered purely from location (and, inside `archive/`,
+// from the `superseded_by`/`deprecation_reason` facts that distinguish
+// superseded from deprecated), so a migrated collection must render
+// identically to the flat, frontmatter-carrying collection it replaces, and
+// `validateAdrs`/`doctor` must report nothing for it.
+test('a collection with lifecycle expressed by folder location, not frontmatter status, renders the same register and history as the flat frontmatter collection, and validates clean', () => {
+  const flat = fixture();
+  const foldered = fixture();
+  try {
+    const flatCollection = path.join(flat, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(flatCollection, '0001-active.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(flatCollection, '0002-draft.md'), adr('proposed'));
+    fs.writeFileSync(path.join(flatCollection, '0003-old.md'), adr('superseded', 'superseded_by: 0001-active.md\n'));
+    writeRegister(flat);
+    assert.deepEqual(validateAdrs(flat), []);
+    const flatRegister = fs.readFileSync(path.join(flatCollection, REGISTER_NAME), 'utf8');
+    const flatHistory = fs.readFileSync(path.join(flatCollection, 'HISTORY.md'), 'utf8');
+
+    const folderedCollection = path.join(foldered, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(folderedCollection, 'proposed'), { recursive: true });
+    fs.mkdirSync(path.join(folderedCollection, 'archive'), { recursive: true });
+    // Same three records, same content minus the now folder-carried `status`
+    // key: an accepted record needs no frontmatter beyond date and title.
+    fs.writeFileSync(path.join(folderedCollection, '0001-active.md'), '---\ndate: 2026-09-04\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A decision\n\nThe decision.\n\nProvenance: owner decision.\n');
+    fs.writeFileSync(path.join(folderedCollection, 'proposed', '0002-draft.md'), '---\ndate: 2026-09-04\n---\n\n# A decision\n\nThe decision.\n\nProvenance: owner decision.\n');
+    fs.writeFileSync(path.join(folderedCollection, 'archive', '0003-old.md'), '---\ndate: 2026-09-04\nsuperseded_by: 0001-active.md\n---\n\n# A decision\n\nThe decision.\n\nProvenance: owner decision.\n');
+    writeRegister(foldered);
+    assert.deepEqual(validateAdrs(foldered), [], 'a fully folder-migrated collection must validate with no findings at all, not even attention');
+
+    const folderedRegister = fs.readFileSync(path.join(folderedCollection, REGISTER_NAME), 'utf8');
+    const folderedHistory = fs.readFileSync(path.join(folderedCollection, 'HISTORY.md'), 'utf8');
+    assert.equal(folderedRegister, flatRegister, 'REGISTER.md must render identically whether lifecycle comes from frontmatter or from folder location');
+    assert.equal(folderedHistory, flatHistory, 'HISTORY.md must render identically whether lifecycle comes from frontmatter or from folder location');
+  } finally {
+    fs.rmSync(flat, { recursive: true, force: true });
+    fs.rmSync(foldered, { recursive: true, force: true });
+  }
+});
+
+// A record inside a lifecycle folder that still carries a leftover `status`
+// key is a half-migrated room: visible as a new, non-blocking finding, never
+// silently reinterpreted in either direction.
+test('a leftover status frontmatter that disagrees with its lifecycle folder is a visible, non-blocking finding', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'proposed'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '0001-half-migrated.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    writeRegister(dir);
+    const findings = validateAdrs(dir);
+    assert.ok(findings.some((item) => item.code === 'disagreeing-status' && item.adr === '0001-half-migrated.md'), 'a record physically moved to proposed/ that still says accepted must be flagged');
+    assert.ok(findings.every((item) => item.code !== 'disagreeing-status' || item.severity === 'attention'), 'a disagreeing status never blocks');
+    assert.equal(doctor(dir).some((item) => item.blocks !== 'none'), false, 'doctor is not blocked by a disagreeing status');
+
+    // A record at the top level carries no folder-mandated status, so an
+    // explicit non-accepted status there is not itself a disagreement - a
+    // flat, unmigrated corpus (or one that keeps `rejected`, which has no
+    // dedicated folder) must not be flagged just for sitting at top level.
+    fs.writeFileSync(path.join(collection, '0002-flat.md'), adr('proposed'));
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'disagreeing-status' && item.adr === '0002-flat.md'), []);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('missing and stale history are reported without rewriting history',()=>{
  const dir=fixture();try{
   const file=path.join(dir,'workbench/docs/adr/0001-decision.md');fs.writeFileSync(file,adr('accepted','canonicalized_in:\n  - AGENTS.md\n'));writeRegister(dir);
