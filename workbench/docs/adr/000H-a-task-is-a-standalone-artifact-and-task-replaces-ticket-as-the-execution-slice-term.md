@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-12
 canonicalized_in:
   - LEXICON.md
@@ -40,7 +39,7 @@ change with it, including `workbench/tools/spec-workbench.mjs`,
 `workbench/tools/diagnostics.mjs`, `workbench/tools/spec-packet.mjs` and
 `workbench/tools/workbench-layout.mjs`, verified read-only at `c0ac60a`. A
 standalone per-record artifact is also the precondition that lets
-[ADR-000I](000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md)
+[ADR-000I](proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md)
 apply folder lifecycle to Tasks at all, since a table row cannot occupy a
 folder. None of that migration is performed by this decision; it is owned by its
 scoped spec.

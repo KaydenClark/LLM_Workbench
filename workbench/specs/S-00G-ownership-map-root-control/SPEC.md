@@ -67,9 +67,9 @@ malformed map without inventing authority the map does not carry.
 ## Decisions And Contracts
 
 - Placement, root-surface count, and the separation of root placement from Core
-  and Contract membership: [ADR-000B](../../docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md).
-- Contract membership and the three carriers: [ADR-000C](../../docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md).
-- Exhaustive-by-query and the routes-not-claims guardrail: [ADR-000D](../../docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md).
+  and Contract membership: [ADR-000B](../../docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md).
+- Contract membership and the three carriers: [ADR-000C](../../docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md).
+- Exhaustive-by-query and the routes-not-claims guardrail: [ADR-000D](../../docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md).
 
 All three are `proposed` at authoring time. No slice may be claimed while they
 remain proposed, because the Spec would be implementing a decision the owner has

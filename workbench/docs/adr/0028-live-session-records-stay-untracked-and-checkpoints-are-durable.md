@@ -1,5 +1,4 @@
 ---
-status: accepted
 date: 2026-09-04
 ported_from: GPT_OS ADR-0019 (shared sessions lane), with its force-add convention replaced
 canonicalized_in:

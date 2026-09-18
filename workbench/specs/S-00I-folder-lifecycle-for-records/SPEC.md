@@ -93,7 +93,7 @@ Wiki record; `SPEC.md` is never resurrected.
   untracked working material named as origin, not durable evidence.
 - Folder lifecycle, the two opposite retentions and the stable-path
   retirement are described by
-  [ADR-000I](../../docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md),
+  [ADR-000I](../../docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md),
   which is `proposed` and is evidence, not instruction. Where its text and
   the locked answers disagree (clearing tied to the FND-Q07/FND-Q08 hold;
   `retired` cleared by folder movement alone), the locked answers govern this

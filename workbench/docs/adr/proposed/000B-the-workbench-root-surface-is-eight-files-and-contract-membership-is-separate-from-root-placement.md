@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-12
 canonicalized_in:
   - AGENTS.md
@@ -28,13 +27,13 @@ admitting it as an eighth Contract control. The map routes a question to its
 owner; it imposes no obligation of its own, and treating a routing artifact as
 binding invites agents to read routes as permissions.
 
-Considered and rejected: leaving [ADR-0013](0013-seven-file-workbench-contract.md)
+Considered and rejected: leaving [ADR-0013](../0013-seven-file-workbench-contract.md)
 intact and reading "no eighth coequal root control" narrowly, on the grounds
 that `OWNERSHIP.json` is not coequal. The record's stated consequence is a
 count, and a successor that depends on reading a count as something other than
 a count is not durable.
 
-Consequences: supersedes [ADR-0013](0013-seven-file-workbench-contract.md) on
+Consequences: supersedes [ADR-0013](../0013-seven-file-workbench-contract.md) on
 acceptance. More than six live consumers enumerate the root surface literally
 and none knows an eighth file — verified at review 2026-09-12 beyond the
 original six (`workbench/tools/workbench-layout.mjs`,

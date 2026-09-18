@@ -7,18 +7,18 @@
 | ADR | Title | Status | Date | Canonicalized in |
 |---|---|---|---|---|
 | [0001](0001-planes-classify-operations-not-artifacts.md) | Governance Planes classify roles in an operation | accepted | 2026-09-04 | LEXICON.md, AGENTS.md |
-| [0002](0002-binding-rules-stay-in-current-controls.md) | Current controls carry every binding rule | superseded | 2026-09-04 | AGENTS.md, BLUEPRINT.md |
+| [0002](archive/0002-binding-rules-stay-in-current-controls.md) | Current controls carry every binding rule | superseded | 2026-09-04 | AGENTS.md, BLUEPRINT.md |
 | [0003](0003-full-crud-with-artifact-conditions.md) | All six planes support full CRUD with conditions | accepted | 2026-09-04 | AGENTS.md |
 | [0005](0005-machine-enforcement-requires-running-consumers.md) | Machine enforcement requires running policy consumers | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [000A](000A-active-adr-decisions-and-destination-blueprints.md) | Active ADR decisions and destination Blueprints | accepted | 2026-09-09 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
-| [000B](000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md) | The Workbench root surface is eight files and Contract membership is separate from root placement | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, BLUEPRINT.md |
-| [000C](000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md) | The Workbench Contract is the obligation claim set carried by three root controls and the assigned spec | proposed | 2026-09-12 | AGENTS.md, LEXICON.md |
-| [000D](000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md) | The ownership map is an exhaustive type-level framework answered by structured query | proposed | 2026-09-12 | LEXICON.md, AGENTS.md |
-| [000E](000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md) | The Frontier is the active landscape and TASKBOARD renders it | proposed | 2026-09-12 | LEXICON.md, BLUEPRINT.md |
-| [000F](000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md) | Work passes two QA gates: spec branch to integration and integration to main | proposed | 2026-09-12 | AGENTS.md, RUNBOOK.md |
-| [000G](000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md) | Blueprint, Spec and Task are three altitudes of one delivery chain | proposed | 2026-09-12 | BLUEPRINT.md, AGENTS.md, LEXICON.md |
+| [000B](proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md) | The Workbench root surface is eight files and Contract membership is separate from root placement | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, BLUEPRINT.md |
+| [000C](proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md) | The Workbench Contract is the obligation claim set carried by three root controls and the assigned spec | proposed | 2026-09-12 | AGENTS.md, LEXICON.md |
+| [000D](proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md) | The ownership map is an exhaustive type-level framework answered by structured query | proposed | 2026-09-12 | LEXICON.md, AGENTS.md |
+| [000E](proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md) | The Frontier is the active landscape and TASKBOARD renders it | proposed | 2026-09-12 | LEXICON.md, BLUEPRINT.md |
+| [000F](proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md) | Work passes two QA gates: spec branch to integration and integration to main | proposed | 2026-09-12 | AGENTS.md, RUNBOOK.md |
+| [000G](proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md) | Blueprint, Spec and Task are three altitudes of one delivery chain | proposed | 2026-09-12 | BLUEPRINT.md, AGENTS.md, LEXICON.md |
 | [000H](000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) | A Task is a standalone artifact and Task replaces Ticket as the execution-slice term | accepted | 2026-09-12 | LEXICON.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-00H-task-artifact-and-terminology-migration/SPEC.md |
-| [000I](000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md) | Record lifecycle is expressed by folder location with permanent archive and transient retired | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, RUNBOOK.md |
+| [000I](proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md) | Record lifecycle is expressed by folder location with permanent archive and transient retired | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, RUNBOOK.md |
 | [000J](000J-completion-claims-are-checked-against-repository-state.md) | Completion claims are checked against repository state | accepted | 2026-09-12 | AGENTS.md, RUNBOOK.md, workbench/specs/S-00M-completion-claims-against-repository-state/SPEC.md |
 | [000K](000K-every-feedback-finding-carries-one-of-four-dispositions.md) | Every feedback finding carries one of five dispositions | accepted | 2026-09-12 | LEXICON.md, RUNBOOK.md, workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md |
 | [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
@@ -27,7 +27,7 @@
 | [0018](0018-the-wiki-is-the-knowledge-base.md) | The wiki is the knowledge base and holds collections | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
 | [0020](0020-a-check-blocks-only-the-change-it-evaluates.md) | A check may block only the change it evaluates | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [0023](0023-mechanical-guarantees-and-agent-obligations.md) | Tools check structure; agents carry judgment | accepted | 2026-09-04 | AGENTS.md |
-| [0025](0025-planes-classify-claims-not-whole-artifacts.md) | Governance Planes classify claims and their use, not whole artifacts | superseded | 2026-09-04 | LEXICON.md, AGENTS.md |
+| [0025](archive/0025-planes-classify-claims-not-whole-artifacts.md) | Governance Planes classify claims and their use, not whole artifacts | superseded | 2026-09-04 | LEXICON.md, AGENTS.md |
 | [0026](0026-workbench-is-the-sole-source-and-foundry-extends-it.md) | LLM Workbench is the sole Workbench source; Foundry is a downstream extension | accepted | 2026-09-04 | BLUEPRINT.md, AGENTS.md |
 | [0027](0027-instruction-authority-is-separate-from-state-resolution.md) | Instruction authority is separate from state resolution | accepted | 2026-09-04 | AGENTS.md |
 | [0028](0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md) | Live session records stay untracked; durable references target promoted checkpoints | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |

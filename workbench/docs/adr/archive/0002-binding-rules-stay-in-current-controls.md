@@ -1,5 +1,4 @@
 ---
-status: superseded
 date: 2026-09-04
 superseded_by: 000A-active-adr-decisions-and-destination-blueprints.md
 ported_from: GPT_OS ADR-0002 (accepted 2026-09-03)

@@ -78,7 +78,7 @@ understands it, because those identifiers remain readable exactly as written.
   [S-00P](../S-00P-workflow-canon-rework/SPEC.md). Tasks do the counting
   toward a Spec's destination; scope and destination, not Task count, decide
   when a new Spec exists.
-  [ADR-000G](../../docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md)
+  [ADR-000G](../../docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md)
   is `proposed`, still gives the Blueprint the PRD function the locked WF-1
   answer places in each Spec, and is evidence until S-00P TK-004 reconciles
   it; it does not instruct this Spec.
@@ -88,7 +88,7 @@ understands it, because those identifiers remain readable exactly as written.
   proves the Packet can carry that case; the widening of ADR-000H's Packet
   member is recorded by S-00P TK-004.
 - What the board does with Tasks:
-  [ADR-000E](../../docs/adr/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md).
+  [ADR-000E](../../docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md).
 - The bootstrap route this Spec is built under:
   [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md). Each Task lands as its
   own branch and PR into `integration` after separate-context review of the
