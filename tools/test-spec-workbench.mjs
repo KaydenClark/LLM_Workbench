@@ -1917,3 +1917,75 @@ function wikiClaimFixture() {
     fs.rmSync(boardRoot, { recursive: true, force: true });
   }
 }
+
+// ============================================================================
+// S-00H TK-007: `close` is the Receipt's first writer. On a record-backed
+// Task it appends one Receipt row carrying the close's own tests, docs and
+// remaining-gap values with live Git facts, before the Spec's own
+// append-only evidence row is appended; on a table-backed Spec it writes no
+// Receipt anywhere, because a table row has no record to carry one on.
+// ============================================================================
+{
+  const closeRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-receipt-'));
+  initGitRoot(closeRoot);
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    fs.writeFileSync(path.join(closeRoot, 'BLUEPRINT.md'), ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    fs.writeFileSync(path.join(closeRoot, 'TASKBOARD.md'), ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    writeAt(closeRoot, 'specs/S-721-close-receipt/SPEC.md', recordBackedSpec('S-721').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    writeAt(closeRoot, 'specs/S-721-close-receipt/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-721', slice: 'Closing slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-721 Acceptance Criteria'
+    }));
+
+    // Every one of BLUEPRINT.md, TASKBOARD.md and the wholly-untracked
+    // specs/ directory (collapsed to one porcelain line by default, not one
+    // line per file inside it) is dirty before close runs anything: three,
+    // not four, per `git status --porcelain`.
+    const expectedBranch = execFileSync('git', ['-C', closeRoot, 'rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf8' }).trim();
+    const expectedSha = execFileSync('git', ['-C', closeRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+
+    // (e) close on a record-backed Task appends one Receipt row carrying the
+    // close's tests, docs and remaining-gap values with live Git facts, and
+    // the Spec's evidence row is still appended.
+    closeTask(closeRoot, 'S-721', {
+      proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr
+    });
+    const taskRecordPath = path.join(closeRoot, 'specs/S-721-close-receipt/tasks/TK-002/TASK.md');
+    const taskAfterClose = fs.readFileSync(taskRecordPath, 'utf8');
+    const rows = readReceiptFromFile(taskRecordPath);
+    assert.equal(rows.length, 1, '(e) close appends exactly one Receipt row to a record-backed Task');
+    assert.equal(rows[0].testsRun, 'tools/test-fixture.mjs: pass', "(e) the Receipt row's Tests column carries close's --proof value");
+    assert.equal(rows[0].docsTouched, 'Docs checked; no update needed', "(e) the Receipt row's Docs touched column carries close's --docs value");
+    assert.equal(rows[0].remainingGap, 'none', "(e) the Receipt row's Remaining gap column carries close's --remaining-gap value");
+    assert.equal(rows[0].branch, expectedBranch, '(e) the Receipt row reads its branch from live Git facts, not a caller-supplied value');
+    assert.equal(rows[0].headSha, expectedSha, '(e) the Receipt row reads its HEAD SHA from live Git facts, not a caller-supplied value');
+    assert.equal(rows[0].dirty, 3, '(e) the Receipt row reads its dirty file count from live Git facts, not a caller-supplied value');
+    assert.match(taskAfterClose, /\*\*Status:\*\* done/, '(e) close still flips the Task record itself to done');
+    assert.match(
+      fs.readFileSync(path.join(closeRoot, 'specs/S-721-close-receipt/SPEC.md'), 'utf8'),
+      /\| .+ \| TK-002 \| Task closed \| tools\/test-fixture\.mjs: pass \|/,
+      "(e) close still appends the Spec's own append-only evidence row for a record-backed Spec"
+    );
+
+    // (f) close on a table-backed Spec writes no Receipt anywhere: no
+    // `## Receipt` section in the Spec file, and no tasks/ directory (and
+    // therefore no Task record file) ever created for it.
+    writeAt(closeRoot, 'specs/S-722-table-only/SPEC.md',
+      fixtureSpec().replaceAll('S-001', 'S-722').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    closeTask(closeRoot, 'S-722', {
+      proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr
+    });
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(closeRoot, 'specs/S-722-table-only/SPEC.md'), 'utf8'),
+      /## Receipt/,
+      '(f) close on a table-backed Spec writes no Receipt section into the Spec file'
+    );
+    assert.equal(fs.existsSync(path.join(closeRoot, 'specs/S-722-table-only/tasks')), false,
+      '(f) close on a table-backed Spec never creates a tasks/ directory, so no Receipt file exists for it anywhere');
+
+    console.log('ok - close appends a Receipt row for a record-backed Task with live Git facts, and writes no Receipt for a table-backed Spec');
+  } finally {
+    fs.rmSync(closeRoot, { recursive: true, force: true });
+  }
+}

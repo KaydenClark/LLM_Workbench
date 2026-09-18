@@ -149,21 +149,28 @@ export function claimWork(rootDir, id, options) {
 }
 
 export function closeTask(rootDir, id, options) {
+  const root = path.resolve(rootDir);
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
-  const spec = findSpec(rootDir, id);
+  const spec = findSpec(root, id);
   const slices = slicesOf(spec);
   const task = slices.find((item) => item.declared === 'in-progress')
     ?? slices.find((item) => item.declared === 'ready');
   if (!task) throw new Error(`${id} has no open task to close`);
   // Proof text for a record goes on the record; the Spec's append-only
   // evidence row below is appended either way, because the Spec still owns
-  // the evidence log whichever source its slices come from.
+  // the evidence log whichever source its slices come from. `close` is the
+  // Receipt's first writer (ADR-000H): a record-backed Task's run gets its
+  // one Receipt row here, with live Git facts, before the Spec's own
+  // evidence row is appended; a table-backed Spec has no record to carry a
+  // Receipt on, so it gets none.
   let content = spec.content;
-  if (task.source === 'record') writeTaskStatus(task.record, { Status: 'done', Proof: proof });
-  else {
+  if (task.source === 'record') {
+    writeTaskStatus(task.record, { Status: 'done', Proof: proof });
+    appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun: proof, docsTouched: docs, remainingGap });
+  } else {
     content = updateTaskRow(spec.content, task.id, (cells) => {
       cells[2] = 'done';
       cells[4] = proof;
