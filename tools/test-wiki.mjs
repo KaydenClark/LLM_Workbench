@@ -235,7 +235,18 @@ test('the product wiki adopts the contract and both Lexicons route design questi
   assert.match(router, /design-concepts/, 'the product router routes to the collection');
   const findings = validateWiki(root);
   assert.deepEqual(findings.filter((item) => item.severity === 'error'), [], 'the product wiki validates without error findings');
-  assert.equal(fs.readdirSync(path.join(root, 'workbench', 'wiki', 'design-concepts')).filter((name) => !name.startsWith('.') && name !== 'README.md').length, 0, 'the product ships an empty design-concepts collection: agents do not author articles');
+  // S-00I TK-005: the collection is no longer empty - it carries S-00H's
+  // reconciled durable-owner article, authored on the owner's own explicit
+  // direction (the assigned Spec's lane handoff) as that retirement's
+  // required precondition, never authored un-directed by an agent. Every
+  // entry in the collection besides its README must still be a validated
+  // design-concept article, not an arbitrary file an agent slipped in.
+  const designConceptEntries = fs.readdirSync(path.join(root, 'workbench', 'wiki', 'design-concepts')).filter((name) => !name.startsWith('.') && name !== 'README.md');
+  for (const name of designConceptEntries) {
+    const content = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'design-concepts', name), 'utf8');
+    assert.match(content, /^---\ntype: design-concept\n/, `${name} must be a design-concept article, not an un-directed file`);
+    assert.match(content, /\nauthorized_by: /, `${name} must record who authorized it`);
+  }
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     assert.match(fs.readFileSync(path.join(root, relative), 'utf8'), /workbench\/wiki\/design-concepts\//, `${relative} routes design questions to the collection`);
   }

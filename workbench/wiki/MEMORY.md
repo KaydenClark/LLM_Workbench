@@ -51,6 +51,20 @@ for skill ownership/compatibility, optional private session transport and the
 configured-host capability floor. This route preserves their open gates without
 copying task state here.
 
+## Task Artifact And Lifecycle Routing
+
+What a Task carries in and out (the Packet it loads, the append-only Receipt
+it closes with), the derived per-Task board signal, and why `Ticket` is
+retired as a live term while historical `TK-###` identifiers are never
+rewritten, are explained in
+[design-concepts/task-artifact-and-lifecycle.md](design-concepts/task-artifact-and-lifecycle.md).
+That article is this capability's durable owner, reconciled from
+[S-00H](../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)
+(retired) and
+[ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md);
+this route preserves the retired Spec's historical reachability without
+copying its evidence log here.
+
 ## Leaving The Wiki
 
 | Go to | For |
@@ -63,7 +77,7 @@ copying task state here.
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
 | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) | The derived register of decision records |
 | [SCHEMA.md](SCHEMA.md) | Wiki CRUD, metadata, sensitivity, and freshness rules |
-| [design-concepts/](design-concepts/README.md) | Owner-directed articles explaining durable design models (empty until the owner directs one) |
+| [design-concepts/](design-concepts/README.md) | Owner-directed articles explaining durable design models |
 | [guidebooks/](guidebooks/) | Ordered procedures that outgrew the Runbook (empty) |
 
 ## Routing
@@ -74,8 +88,8 @@ copying task state here.
 | Why a layout, stance or entry-route decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
 
 This product repository keeps no personal, machine, or deployment notes; it is
-a `project` profile wiki. The collections ship empty until the owner directs
-an article or a guidebook.
+a `project` profile wiki. `guidebooks/` ships empty until the owner directs
+one; `design-concepts/` carries the owner-directed articles routed above.
 
 ## Up-Link
 
