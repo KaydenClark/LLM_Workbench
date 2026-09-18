@@ -123,6 +123,46 @@ export function listAdrs(root, options = {}) {
     .sort((a, b) => compareVisibleIds(`ADR-${a.number}`, `ADR-${b.number}`) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
+// S-00I TK-002: a record's lifecycle is its folder, not frontmatter `status`.
+// `proposed/` always implies `proposed`; `archive/` implies `superseded` or
+// `deprecated`, told apart by the fact each already carries (`superseded_by`
+// or `deprecation_reason`) - never by a bare "trust me" status label. Neither
+// folder has a determinable implied status when it lacks that fact, and
+// nothing outside those two folders (the ordinary top level, or any other
+// location) carries a folder-mandated status at all: a record there keeps
+// whatever it declares, or is `accepted` by default when it declares nothing.
+// This is why a pre-existing flat corpus with mixed explicit statuses at the
+// top level - the ordinary case before a room ever migrates - validates with
+// no disagreement finding: only `proposed/` and `archive/` assert a specific
+// lifecycle a leftover `status` key can disagree with.
+function folderImpliedStatus(folder, data) {
+  if (folder === 'proposed') return 'proposed';
+  if (folder === 'archive') {
+    if (typeof data?.superseded_by === 'string' && data.superseded_by.trim()) return 'superseded';
+    if (typeof data?.deprecation_reason === 'string' && data.deprecation_reason.trim()) return 'deprecated';
+    return null;
+  }
+  return null;
+}
+
+// The effective lifecycle a record carries once folder and frontmatter are
+// reconciled. An explicit `status` key, when present, is never silently
+// overridden by folder location - the frontmatter is what a half-migrated
+// room shows a reader, so it stays the effective value even while it is
+// flagged. Only its absence lets the folder speak: `proposed/` and `archive/`
+// (with a determinable fact) supply their lifecycle; anywhere else defaults
+// to `accepted`, the historical behavior for a record with no status key.
+function deriveStatus(folder, data) {
+  const implied = folderImpliedStatus(folder, data);
+  const explicit = typeof data?.status === 'string' && data.status.trim() ? data.status.trim() : undefined;
+  if (explicit !== undefined) {
+    const disagreement = (folder === 'proposed' || folder === 'archive') && implied !== null && implied !== explicit;
+    return { status: explicit, disagreement, implied };
+  }
+  if (folder === 'proposed' || folder === 'archive') return { status: implied, disagreement: false, implied };
+  return { status: 'accepted', disagreement: false, implied };
+}
+
 function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), folder = null) {
   const { data, body } = parseFrontmatter(content);
   const name = path.basename(filePath);
@@ -132,7 +172,8 @@ function readAdr(root, filePath, content = fs.readFileSync(filePath, 'utf8'), fo
   // the collection root where those projections live. It equals `name` for a
   // top-level record, so a flat collection's rendered link text is unchanged.
   const href = folder ? `${folder}/${name}` : name;
-  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body, folder, href };
+  const { status, disagreement, implied } = deriveStatus(folder, data);
+  return { root, filePath, relativePath: path.relative(root, filePath).split(path.sep).join('/'), name, number, slug, title, data, body, folder, href, status, statusDisagreement: disagreement, impliedStatus: implied };
 }
 
 export function validateAdrs(root, options = {}) {
@@ -152,10 +193,13 @@ export function validateAdrs(root, options = {}) {
       findings.push(finding('invalid-adr', `${adr.relativePath} has no frontmatter`, { adr: adr.name }));
       continue;
     }
-    if (!STATUSES.includes(data.status)) findings.push(finding('invalid-adr', `${adr.relativePath} status must be one of ${STATUSES.join(', ')}`, { adr: adr.name }));
+    if (adr.statusDisagreement) {
+      findings.push(finding('disagreeing-status', `${adr.relativePath} frontmatter status '${data.status}' disagrees with its ${adr.folder}/ folder, which implies '${adr.impliedStatus}'`, { adr: adr.name }));
+    }
+    if (!STATUSES.includes(adr.status)) findings.push(finding('invalid-adr', `${adr.relativePath} status must be one of ${STATUSES.join(', ')}`, { adr: adr.name }));
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(data.date ?? ''))) findings.push(finding('invalid-adr', `${adr.relativePath} needs a YYYY-MM-DD date`, { adr: adr.name }));
     if (!adr.title) findings.push(finding('invalid-adr', `${adr.relativePath} needs a title heading`, { adr: adr.name }));
-    if (data.status === 'accepted') {
+    if (adr.status === 'accepted') {
       const owners = Array.isArray(data.canonicalized_in) ? data.canonicalized_in : (data.canonicalized_in ? [data.canonicalized_in] : []);
       if (owners.length === 0) findings.push(finding('invalid-adr', `${adr.relativePath} is accepted but names no canonicalized_in owner`, { adr: adr.name }));
       for (const owner of owners) {
@@ -166,13 +210,13 @@ export function validateAdrs(root, options = {}) {
       }
     }
     const lifecycleError = message => findings.push(finding('invalid-adr', `${adr.relativePath} ${message}`, { adr: adr.name }));
-    if (data.status === 'deprecated' && (typeof data.deprecation_reason !== 'string' || !data.deprecation_reason.trim())) lifecycleError('needs a durable deprecation_reason');
-    if (data.status !== 'superseded' && data.superseded_by) lifecycleError('names a successor without superseded status');
-    if (data.status === 'superseded') {
+    if (adr.status === 'deprecated' && (typeof data.deprecation_reason !== 'string' || !data.deprecation_reason.trim())) lifecycleError('needs a durable deprecation_reason');
+    if (adr.status !== 'superseded' && data.superseded_by) lifecycleError('names a successor without superseded status');
+    if (adr.status === 'superseded') {
       const seen = new Set([adr.name]);
       let current = adr;
-      while (current?.data?.status === 'superseded') {
-        const successor = current.data.superseded_by;
+      while (current?.status === 'superseded') {
+        const successor = current.data?.superseded_by;
         if (typeof successor !== 'string' || !ID_PATTERN.test(successor) || successor.includes('/') || successor.includes('\\')) {
           lifecycleError('needs one whole-record superseded_by filename without a fragment or path'); break;
         }
@@ -180,7 +224,7 @@ export function validateAdrs(root, options = {}) {
         seen.add(successor);
         current = adrs.find(record => record.name === successor);
         if (!current) { lifecycleError(`has missing superseded_by target ${successor}`); break; }
-        if (!['accepted', 'superseded', 'deprecated'].includes(current.data?.status)) { lifecycleError('successor must be an accepted decision or its historical successor'); break; }
+        if (!['accepted', 'superseded', 'deprecated'].includes(current.status)) { lifecycleError('successor must be an accepted decision or its historical successor'); break; }
       }
     }
     for (const link of localLinks(adr.body)) {
@@ -256,9 +300,9 @@ export function renderRegister(adrs, { history = false } = {}) {
     '| ADR | Title | Status | Date | Canonicalized in |',
     '|---|---|---|---|---|'
   ];
-  for (const adr of adrs.filter(record => history || record.data?.status === 'accepted')) {
+  for (const adr of adrs.filter(record => history || record.status === 'accepted')) {
     const owners = Array.isArray(adr.data?.canonicalized_in) ? adr.data.canonicalized_in : (adr.data?.canonicalized_in ? [adr.data.canonicalized_in] : []);
-    lines.push(`| [${adr.number}](${adr.href ?? adr.name}) | ${cell(adr.title ?? '')} | ${cell(adr.data?.status ?? '')} | ${cell(adr.data?.date ?? '')} | ${cell(owners.join(', ') || 'none')} |`);
+    lines.push(`| [${adr.number}](${adr.href ?? adr.name}) | ${cell(adr.title ?? '')} | ${cell(adr.status ?? '')} | ${cell(adr.data?.date ?? '')} | ${cell(owners.join(', ') || 'none')} |`);
   }
   return `${lines.join('\n')}\n`;
 }
@@ -283,7 +327,10 @@ export function newAdr(root, options) {
   assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
   const occupied = listAdrs(root).map(adr => `ADR-${adr.number}`);
   const next = allocateVisibleId('ADR', occupied, { width: 4, requireLetter: true }).slice(4);
-  const filePath = path.join(directory, `${next}-${slug}.md`);
+  // S-00I TK-002: a new record is always `proposed`, so it is created inside
+  // the `proposed/` lifecycle folder its own status implies - folder is
+  // lifecycle, so an unreviewed decision never starts out looking active.
+  const filePath = path.join(directory, 'proposed', `${next}-${slug}.md`);
   if (fs.existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const date = options.date ?? new Date().toISOString().slice(0, 10);
   const content = [
