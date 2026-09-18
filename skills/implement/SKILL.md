@@ -65,13 +65,9 @@ Use review and verification practices to challenge the work before calling it
 done. Earlier review is support, not a mandatory independent ceremony per
 task. Self-review can find issues while Builder work continues.
 
-A proposed merge requires separate-context review before branches combine at
-the declared integration branch (`git.integrationBranch` in
-`workbench/manifest.json`). Run `/code-review` against immutable `BASE_SHA` and `HEAD_SHA`,
-including controls, the assigned spec, tests and consequential report claims.
-Repair only authorized findings, create a new truthful checkpoint, and re-review
-the changed candidate. The exact-head review must pass before integration.
-Do not call an intermediate checkpoint or green self-review an integration PASS.
+While the room's Task-PR exemption holds (exemption 2 of its release Spec, which lands each Task as its own PR), a Task PR still requires separate-context review of its fixed diff as an immutable candidate before it lands: run `/code-review` against exact `BASE_SHA` and `HEAD_SHA`, including controls, the assigned spec, tests and consequential report claims, reported by `gate --task TK-### --spec S-###`.
+Repair only authorized findings, create a new truthful checkpoint, and re-review the changed candidate. The exact-head review must pass before the Task PR lands.
+At the declared integration branch (`git.integrationBranch` in `workbench/manifest.json`), a separate-context review of the assembled Spec is required, obtained with `report S-### --candidate <sha>` and bound to its content digest, recorded with `verdict`. Do not call an intermediate checkpoint or green self-review an integration PASS.
 
 ## 5. Close and recover remotely
 
