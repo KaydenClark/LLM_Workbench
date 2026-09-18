@@ -404,7 +404,7 @@ test('a Git-owned parent of a missing discovery root installs into it just the s
   }
 });
 
-// S-045 TK-005: the layout that sent this ticket here. `~/.claude/skills` is a
+// S-045 TK-005: the layout that sent this task here. `~/.claude/skills` is a
 // link to `~/.agents/skills`, so the two discovery roots are one directory. The
 // route resolves the link and writes into the real directory; the link itself
 // is never written over, and the second engine finds the skill already present.

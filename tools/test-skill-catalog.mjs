@@ -130,7 +130,7 @@ for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
   );
 }
 
-const toTickets = read('skills/to-tickets/SKILL.md');
+const slicingSkill = read('skills/to-tickets/SKILL.md');
 for (const forbidden of [
   '.scratch/',
   'configured tracker',
@@ -138,17 +138,17 @@ for (const forbidden of [
   'GitHub, Linear',
   'local-ticket-template'
 ]) {
-  assert.ok(!toTickets.includes(forbidden),
+  assert.ok(!slicingSkill.includes(forbidden),
     `to-tickets must not retain the imported ${forbidden} workflow`);
 }
-assertIncludesAll(toTickets, [
+assertIncludesAll(slicingSkill, [
   'assigned `SPEC.md`',
   '`Vertical Implementation Slices`',
   '`RUNBOOK.md`',
   'node workbench/tools/spec-workbench.mjs render',
   'node workbench/tools/spec-workbench.mjs doctor'
 ], 'to-tickets');
-assert.match(toTickets, /`TASKBOARD\.md` is a generated\s+projection/,
+assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
   'to-tickets must treat TASKBOARD.md as a generated projection');
 
 const grilling = read('skills/grilling/SKILL.md');

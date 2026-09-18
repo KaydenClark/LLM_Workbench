@@ -20,10 +20,10 @@ function room() {
   fs.writeFileSync(path.join(dir, 'TASKBOARD.md'), '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   return dir;
 }
-function spec(dir, id, tickets = [['TK-001', 'ready', 'none']], status = 'active', slug = 'fixture') {
+function spec(dir, id, tasks = [['TK-001', 'ready', 'none']], status = 'active', slug = 'fixture') {
   const destination = path.join(dir, 'workbench/specs', `${id}-${slug}`, 'SPEC.md');
   fs.mkdirSync(path.dirname(destination), { recursive: true });
-  fs.writeFileSync(destination, `# ${id} - Identity fixture\n\n**Spec ID:** ${id}\n**Status:** ${status}\n**Priority:** 1\n**Owner:** test\n**Updated:** 2026-09-08\n**Catalog description:** Verify identity consumers.\n**Blockers:** none\n**Latest event:** Fixture created.\n**Next gate:** Verify the slice.\n\n## Vertical Implementation Slices\n\n| Ticket | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n${tickets.map(([ticket, state, blocker]) => `| ${ticket} | Verify ${ticket} | ${state} | ${blocker} | ${state === 'done' ? 'verified fixture' : 'pending'} |`).join('\n')}\n\n## Acceptance Criteria\n\n- [x] Fixture verified.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Ticket | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Completion Result\n\nVerified fixture.\n`);
+  fs.writeFileSync(destination, `# ${id} - Identity fixture\n\n**Spec ID:** ${id}\n**Status:** ${status}\n**Priority:** 1\n**Owner:** test\n**Updated:** 2026-09-08\n**Catalog description:** Verify identity consumers.\n**Blockers:** none\n**Latest event:** Fixture created.\n**Next gate:** Verify the slice.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n${tasks.map(([task, state, blocker]) => `| ${task} | Verify ${task} | ${state} | ${blocker} | ${state === 'done' ? 'verified fixture' : 'pending'} |`).join('\n')}\n\n## Acceptance Criteria\n\n- [x] Fixture verified.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Completion Result\n\nVerified fixture.\n`);
   return destination;
 }
 function cli(dir, args) {
@@ -31,7 +31,7 @@ function cli(dir, args) {
   return { ...result, json: result.stdout.trim() ? JSON.parse(result.stdout) : null };
 }
 
-test('mixed visible spec/ticket IDs select, claim, close and render without moving legacy paths', () => {
+test('mixed visible spec/task IDs select, claim, close and render without moving legacy paths', () => {
   const dir = room();
   try {
     const legacy = spec(dir, 'S-010', [['TK-001', 'done', 'none']], 'complete');
@@ -40,17 +40,17 @@ test('mixed visible spec/ticket IDs select, claim, close and render without movi
     const candidate = spec(dir, 'S-00A', [['TK-00A', 'ready', 'none'], ['TK-00B', 'ready', 'TK-00A']]);
     workbench.render(dir);
     assert.equal(workbench.nextWork(dir).specId, 'S-00A');
-    assert.equal(workbench.nextWork(dir).ticketId, 'TK-00A');
+    assert.equal(workbench.nextWork(dir).taskId, 'TK-00A');
     workbench.claimWork(dir, 'S-00A', { agent: 'test' });
-    workbench.closeTicket(dir, 'S-00A', { proof: 'Verified public seam', docs: 'Docs checked', remainingGap: 'Second slice' });
-    assert.equal(workbench.nextWork(dir).ticketId, 'TK-00B');
+    workbench.closeTask(dir, 'S-00A', { proof: 'Verified public seam', docs: 'Docs checked', remainingGap: 'Second slice' });
+    assert.equal(workbench.nextWork(dir).taskId, 'TK-00B');
     assert.equal(workbench.showSpec(dir, 'S-00A').path, path.relative(dir, candidate).split(path.sep).join('/'));
     assert.deepEqual(fs.readFileSync(legacy), before);
     assert.ok(!workbench.doctor(dir).some(issue => ['duplicate-id', 'malformed-spec', 'unstable-path'].includes(issue.code)));
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('new ticket allocation reserves repeated legacy labels across the whole Workbench', () => {
+test('new task allocation reserves repeated legacy labels across the whole Workbench', () => {
   const dir = room();
   try {
     spec(dir, 'S-001'); spec(dir, 'S-002');
@@ -58,18 +58,18 @@ test('new ticket allocation reserves repeated legacy labels across the whole Wor
     const result = cli(dir, ['next-id', 'S-001', '--prefix', 'TK']);
     assert.equal(result.status, 0, result.stdout || result.stderr);
     assert.equal(result.json.id, 'TK-00A');
-    assert.equal(result.json.reserved, false, 'read-only proposal does not reserve or create a ticket');
+    assert.equal(result.json.reserved, false, 'read-only proposal does not reserve or create a task');
     assert.deepEqual(fs.readFileSync(path.join(dir, 'workbench/specs/S-001-fixture/SPEC.md')), before);
     assert.equal(cli(dir, ['next-id', '--prefix', 'S']).json.id, 'S-00A');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-for (const collision of ['spec', 'ticket']) {
+for (const collision of ['spec', 'task']) {
   test(`${collision} identity aliases refuse selection without rewriting history`, () => {
     const dir = room();
     try {
       spec(dir, 'S-00A', [['TK-00A', 'ready', 'none']], 'active', 'first');
-      spec(dir, collision === 'spec' ? 'S-00a' : 'S-00B', [[collision === 'ticket' ? 'TK-00a' : 'TK-00B', 'ready', 'none']], 'active', 'second');
+      spec(dir, collision === 'spec' ? 'S-00a' : 'S-00B', [[collision === 'task' ? 'TK-00a' : 'TK-00B', 'ready', 'none']], 'active', 'second');
       assert.throws(() => workbench.nextWork(dir), /duplicate.*ID|identity collision/i);
       assert.ok(workbench.doctor(dir).some(issue => issue.code === 'duplicate-id'));
     } finally { fs.rmSync(dir, { recursive: true, force: true }); }
@@ -95,7 +95,7 @@ test('ADR allocation, register and duplicate checks consume mixed labels without
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('numeric ticket aliases in different legacy specs reserve one label without blocking a new proposal', () => {
+test('numeric task aliases in different legacy specs reserve one label without blocking a new proposal', () => {
   const dir = room();
   try {
     spec(dir, 'S-001', [['TK-001', 'ready', 'none']]);
@@ -128,12 +128,12 @@ for (const kind of ['symlink', 'dangling-symlink', 'directory', 'hardlink']) {
     } finally { fs.rmSync(dir, { recursive: true, force: true }); }
   });
 }
-test('next and claim agree for out-of-order mixed ready ticket labels', () => {
+test('next and claim agree for out-of-order mixed ready task labels', () => {
  const dir=room();
  try {
   spec(dir, 'S-00A', [['TK-010','ready','none'],['TK-00A','ready','none']]);
   const selected=workbench.nextWork(dir);
   const claimed=workbench.claimWork(dir, selected.specId, {agent:'test'});
-  assert.equal(claimed.tickets.find(ticket=>ticket.status==='in-progress').id, selected.ticketId);
+  assert.equal(claimed.tasks.find(task=>task.status==='in-progress').id, selected.taskId);
  } finally {fs.rmSync(dir,{recursive:true,force:true});}
 });
