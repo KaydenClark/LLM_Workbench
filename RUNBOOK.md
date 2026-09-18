@@ -850,9 +850,15 @@ recorded, and evidence present; render then removes the spec from the hot board.
 Decision records live in the manifest-declared `docs/adr` collection
 (`workbench/docs/adr/`). An active accepted ADR decision is architectural Canon; rationale and history
 remain distinct. `canonicalized_in` names operational owners, which must exist.
-Whole-record supersession names one valid successor filename; deprecated records
-require a durable `deprecation_reason`. Default `REGISTER.md` shows active accepted
-decisions, and `HISTORY.md` preserves all lifecycle states. Register regenerates
+Whole-record supersession names one valid successor filename, resolved by
+record name across the lifecycle folders; deprecated records require a durable
+`deprecation_reason`. Lifecycle is the record's folder: the top level is the
+active accepted roster, `proposed/` holds records not yet Canon, and the
+permanent `archive/` holds superseded and deprecated records with bodies
+untouched; a leftover `status` key is accepted only when it agrees with the
+folder and otherwise reported as `disagreeing-status`. Default `REGISTER.md`
+shows active accepted decisions, and `HISTORY.md` preserves all lifecycle
+states. Register regenerates
 both projections without rewriting decision bodies.
 
 ```bash
@@ -860,11 +866,16 @@ node workbench/tools/adr.mjs new --title "Decision title"
 node workbench/tools/adr.mjs validate
 node workbench/tools/adr.mjs normalize [--date YYYY-MM-DD]
 node workbench/tools/adr.mjs register
+node workbench/tools/adr.mjs migrate-folders
 node tools/test-adr.mjs
 ```
 
-`new` allocates the next number by scanning the collection and writes a
-`proposed` record with the standard sections. `validate` reports
+`new` allocates the next number by scanning the collection and its lifecycle
+folders and writes the record into `proposed/` with the standard sections and
+no `status` key. `migrate-folders` is one-shot: on a clean tree it moves every
+record whose frontmatter status implies a folder, strips the key, rewrites
+every live Markdown link to a moved record across the repository and reports
+the append-only references it left; it refuses a dirty tree and a second run. `validate` reports
 `invalid-adr` for a missing frontmatter, an unknown status, a missing date or
 title, an accepted record with no or a nonexistent `canonicalized_in`
 target, a superseded record without `superseded_by`, or a duplicated number;
