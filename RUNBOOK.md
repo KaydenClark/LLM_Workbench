@@ -1715,6 +1715,14 @@ Closeout, once the integration review has passed. Export `TASK_BRANCH`,
 `PR_NUMBER`, and the reviewed full commit SHA as `EXPECTED_HEAD` before running
 this block. Export `CLEANUP=no` when the owner defers cleanup; otherwise use
 `CLEANUP=yes`. Review must cover the live integration comparison before merging.
+Export `SPEC_ID` naming the Spec this candidate is presented for. Export
+`TASK_ID` when the candidate is a Task PR (a Task ID with its Spec still
+open - what every PR is while S-00O exemption 2 holds); leave it unset for a
+Spec candidate (the Spec's own assembled result). The gate
+(`workbench/tools/spec-workbench.mjs gate`, S-00J TK-004) reports a Task PR
+without refusing it, and refuses a Spec candidate whose Spec is incomplete or
+whose latest review verdict for its current content is not a pass - stopping
+this block before the merge.
 
 ```bash
 (
@@ -1723,11 +1731,17 @@ set -eu
 : "${PR_NUMBER:?Set the reviewed PR number}"
 : "${EXPECTED_HEAD:?Set the reviewed full commit SHA}"
 : "${CLEANUP:?Set yes or no according to the owner instruction}"
+: "${SPEC_ID:?Set the Spec ID this candidate is presented for}"
 case "$CLEANUP" in yes|no) ;; *) exit 1 ;; esac
 git check-ref-format --branch "$TASK_BRANCH" >/dev/null
 case "$TASK_BRANCH" in main|integration) exit 1 ;; esac
 test -z "$(git status --porcelain)"
 test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+if [ -n "${TASK_ID:-}" ]; then
+  node workbench/tools/spec-workbench.mjs gate --task "$TASK_ID" --spec "$SPEC_ID"
+else
+  node workbench/tools/spec-workbench.mjs gate --spec "$SPEC_ID" --candidate "$EXPECTED_HEAD"
+fi
 # Explicit refspecs also work in a single-branch clone.
 git fetch origin '+refs/heads/integration:refs/remotes/origin/integration'
 gh pr merge "$PR_NUMBER" --merge --match-head-commit "$EXPECTED_HEAD"

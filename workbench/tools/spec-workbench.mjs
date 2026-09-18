@@ -312,6 +312,12 @@ export function completeSpec(rootDir, id, options = {}) {
   const completion = section(spec.content, 'Completion Result').trim();
   if (!completion || /^pending\.?$/i.test(completion)) throw new Error(`${id} has no completion result`);
   if (evidenceRows(spec.content).length === 0) throw new Error(`${id} has no execution evidence`);
+  // S-00J TK-004: complete refuses without a passed review verdict bound to
+  // the Spec's current content digest (spec-report.mjs), naming exactly
+  // what is missing. Shared with `gate` through reviewGapReason so the two
+  // can never disagree about what "reviewed" means for the same Spec.
+  const gapReason = reviewGapReason(assembleSpecReport(rootDir, id));
+  if (gapReason) throw new Error(`${id} cannot complete: ${gapReason}`);
   let content = updateFields(spec.content, {
     Status: 'complete',
     Updated: date,
@@ -321,6 +327,91 @@ export function completeSpec(rootDir, id, options = {}) {
   content = appendEvidence(content, `| ${escapeCell(date)} | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
+}
+
+// S-00J TK-004: the one place "no passed verdict on the current content" is
+// diagnosed, shared by `completeSpec` and `gate` so the two can never name
+// the gap differently. `report.latestVerdict` is already resolved against
+// `report.specDigest` by spec-report.mjs, so this never re-derives digest
+// matching itself - only reads what the report already decided. Returns
+// `null` when nothing is missing (a passed verdict for the current content
+// exists), otherwise a string naming exactly one of: no verdict at all,
+// every recorded verdict is for earlier content (a stale digest - the Spec
+// has changed since it was reviewed), or the latest verdict for the current
+// content is a fail.
+function reviewGapReason(report) {
+  if (report.verdicts.length === 0) {
+    return `no review verdict is recorded for ${report.id}`;
+  }
+  if (!report.latestVerdict) {
+    return `${report.id}'s recorded verdicts are all for earlier content - the current digest ${report.specDigest.slice(0, 12)} matches none of them, so the Spec must be reviewed again`;
+  }
+  if (report.latestVerdict.result !== 'pass') {
+    return `${report.id}'s latest verdict for the current content is fail, recorded ${report.latestVerdict.date} by ${report.latestVerdict.reviewer}`;
+  }
+  return null;
+}
+
+// S-00J TK-004: the review gate the harness's own merge-preparation workflow
+// requires before branches combine into `integration` (AGENTS.md Branch
+// Completion). Binds the harness's own process; it does not and cannot make
+// GitHub itself refuse a merge opened by some other path.
+//
+// The discriminator is what the invoker presents, never which checkout runs
+// the command: a Spec ID with a candidate SHA (`--spec S-### --candidate
+// <sha>`) is a Spec candidate, refused when the assembled Spec is incomplete
+// or its latest verdict for the current content is not a pass. A Task ID
+// with its Spec still open (`--task TK-### --spec S-###`) is a Task PR -
+// what every PR in this rollout is while S-00O exemption 2 (WF-7 deferred)
+// holds, recorded in workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md
+// under "Bootstrap exemptions" (no manifest flag exists for it, so this
+// reads the exemption from that Spec's own recorded text, exactly as it is
+// currently active) - and is reported, never refused, regardless of the
+// Spec's own completeness.
+//
+// The integration branch is resolved through `declaredGit` (workbench-
+// paths.mjs), reading `git.integrationBranch` from the manifest, never a
+// hardcoded literal; it is carried in the result for the caller to see, and
+// is `null` when the manifest declares none.
+export function gate(rootDir, options = {}) {
+  const root = path.resolve(rootDir);
+  const specId = requireValue(options.spec, 'gate requires --spec S-###');
+  const taskId = options.task ?? null;
+  const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
+
+  if (taskId) {
+    const report = assembleSpecReport(root, specId, options.candidate ? { candidate: options.candidate } : {});
+    return {
+      mode: 'task-pr',
+      taskId,
+      specId,
+      integrationBranch,
+      exemption: 'S-00O exemption 2 (WF-7 deferred): every Task lands as its own Task PR into the integration branch while its Spec stays open, so the gate reports the Spec\'s assembled state rather than refusing it for being incomplete',
+      specComplete: report.complete,
+      specDigest: report.specDigest,
+      latestVerdict: report.latestVerdict,
+      refused: false,
+      reason: null
+    };
+  }
+
+  const candidate = requireValue(options.candidate, 'gate --spec requires --candidate <sha>');
+  const report = assembleSpecReport(root, specId, { candidate });
+  const gapReason = report.complete ? reviewGapReason(report) : null;
+  const reason = !report.complete
+    ? `${specId} is not complete: ${report.gaps.join('; ')}`
+    : gapReason;
+  return {
+    mode: 'spec-candidate',
+    specId,
+    candidate,
+    integrationBranch,
+    specComplete: report.complete,
+    specDigest: report.specDigest,
+    latestVerdict: report.latestVerdict,
+    refused: reason !== null,
+    reason
+  };
 }
 
 export function render(rootDir) {
@@ -1037,13 +1128,16 @@ async function main() {
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
   else if (command === 'report') result = assembleSpecReport(root, id, { candidate: options.candidate });
-  else if (command === 'verdict') result = recordReviewVerdict(root, id, { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer });
-  else if (command === 'render') result = render(root);
+  else if (command === 'verdict') result = recordReviewVerdict(root, id, { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest });
+  else if (command === 'gate') {
+    result = gate(root, { spec: options.spec, task: options.task, candidate: options.candidate });
+    if (result.refused) process.exitCode = 1;
+  } else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
