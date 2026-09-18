@@ -23,7 +23,8 @@ import {
   parseCliArgs,
   receiptTask,
   render,
-  scanReferences
+  scanReferences,
+  slicesOf
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
@@ -3159,12 +3160,12 @@ function completeEmptyTableRecordBackedSpec(id) {
   const reportRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-report-'));
   try {
     initGitRoot(reportRoot);
-    writeAt(reportRoot, 'workbench/specs/S-525-report-fixture/SPEC.md', emptyTableRecordBackedSpec('S-525'));
-    writeAt(reportRoot, 'workbench/specs/S-525-report-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
+    writeAt(reportRoot, 'specs/S-525-report-fixture/SPEC.md', emptyTableRecordBackedSpec('S-525'));
+    writeAt(reportRoot, 'specs/S-525-report-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
       id: 'TK-002', specId: 'S-525', slice: 'Still open slice', status: 'ready', blockers: 'none',
       destination: 'spec-acceptance: S-525 Acceptance Criteria'
     }));
-    writeAt(reportRoot, 'workbench/specs/S-525-report-fixture/tasks/retired/TK-001/TASK.md',
+    writeAt(reportRoot, 'specs/S-525-report-fixture/tasks/retired/TK-001/TASK.md',
       withReceiptRun(doneTaskRecordFixture({
         id: 'TK-001', specId: 'S-525', slice: 'Already retired slice',
         destination: 'spec-acceptance: S-525 Acceptance Criteria', proof: 'landed'
