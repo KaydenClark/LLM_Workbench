@@ -15,7 +15,7 @@ import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
-import { assembleSpecReport, formatSpecReport, recordReviewVerdict } from './spec-report.mjs';
+import { assembleSpecReport, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -343,7 +343,13 @@ export function completeSpec(rootDir, id, options = {}) {
   // the Spec's current content digest (spec-report.mjs), naming exactly
   // what is missing. Shared with `gate` through reviewGapReason so the two
   // can never disagree about what "reviewed" means for the same Spec.
-  const gapReason = reviewGapReason(assembleSpecReport(rootDir, id));
+  // S-00J TK-005: the owner Human QA gap is checked next, through the same
+  // report object, so a Spec with a passed verdict but no recorded owner
+  // approval still refuses - the review-verdict message always composes
+  // first (`??` short-circuits on the first non-null reason), matching the
+  // handoff's "checked after the review-verdict gate" ordering.
+  const report = assembleSpecReport(rootDir, id);
+  const gapReason = reviewGapReason(report) ?? approvalGapReason(report);
   if (gapReason) throw new Error(`${id} cannot complete: ${gapReason}`);
   let content = updateFields(spec.content, {
     Status: 'complete',
@@ -375,6 +381,27 @@ function reviewGapReason(report) {
   }
   if (report.latestVerdict.result !== 'pass') {
     return `${report.id}'s latest verdict for the current content is fail, recorded ${report.latestVerdict.date} by ${report.latestVerdict.reviewer}`;
+  }
+  return null;
+}
+
+// S-00J TK-005: the owner Human QA counterpart to `reviewGapReason` above,
+// checked after it so the two messages compose rather than race - a Spec
+// missing both a verdict and an approval always names the verdict gap first.
+// Mirrors the same three-way distinction: no owner-qa row at all, every
+// recorded owner-qa row is for earlier content (the Spec changed since the
+// owner looked at it), or the latest owner-qa entry for the current content
+// is a finding rather than an approval. `report.latestOwnerApproval` is
+// already resolved against `report.specDigest` by spec-report.mjs.
+function approvalGapReason(report) {
+  if (report.ownerApproval.length === 0) {
+    return `no owner Human QA approval is recorded for ${report.id}`;
+  }
+  if (!report.latestOwnerApproval) {
+    return `${report.id}'s recorded owner Human QA entries are all for earlier content - the current digest ${report.specDigest.slice(0, 12)} matches none of them, so the owner must approve again`;
+  }
+  if (report.latestOwnerApproval.result !== 'approve') {
+    return `${report.id}'s latest owner Human QA for the current content is a finding, recorded ${report.latestOwnerApproval.date} by ${report.latestOwnerApproval.owner}`;
   }
   return null;
 }
@@ -434,6 +461,7 @@ export function gate(rootDir, options = {}) {
       specComplete: report.complete,
       specDigest: report.specDigest,
       latestVerdict: report.latestVerdict,
+      latestOwnerApproval: report.latestOwnerApproval,
       refused: reason !== null,
       reason
     };
@@ -447,7 +475,11 @@ export function gate(rootDir, options = {}) {
   } else if (!report.complete) {
     reason = `${specId} is not complete: ${report.gaps.join('; ')}`;
   } else {
-    reason = reviewGapReason(report);
+    // S-00J TK-005: checked after the review-verdict gate, same ordering and
+    // the same shared reasoning functions `completeSpec` uses, so a Spec
+    // candidate whose current content lacks a recorded owner approval is
+    // refused exactly where `complete` would be.
+    reason = reviewGapReason(report) ?? approvalGapReason(report);
   }
   return {
     mode: 'spec-candidate',
@@ -457,6 +489,7 @@ export function gate(rootDir, options = {}) {
     specComplete: report.complete,
     specDigest: report.specDigest,
     latestVerdict: report.latestVerdict,
+    latestOwnerApproval: report.latestOwnerApproval,
     refused: reason !== null,
     reason
   };
@@ -1982,6 +2015,24 @@ async function main() {
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
   else if (command === 'report') result = assembleSpecReport(root, id, { candidate: options.candidate });
   else if (command === 'verdict') result = recordReviewVerdict(root, id, { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest });
+  else if (command === 'approve') {
+    // S-00J TK-005: the CLI verb only ever names `approve`; whether it
+    // records an approval or a finding is inferred from what the caller
+    // actually gave, exactly matching the handoff's own invocation shape
+    // (`approve S-### --candidate <sha> --owner "<who>" [--finding "..."]
+    // [--destination-change "..."]`, with no separate --result flag shown).
+    // An explicit --result still overrides the inference for a caller that
+    // wants to say so plainly - recordOwnerApproval itself always requires
+    // one of the two literal values.
+    const inferredResult = options.result ?? ((options.finding || options.destinationChange) ? 'finding' : 'approve');
+    result = recordOwnerApproval(root, id, {
+      candidate: options.candidate,
+      owner: options.owner,
+      result: inferredResult,
+      findings: options.finding,
+      destinationChange: options.destinationChange
+    });
+  }
   else if (command === 'gate') {
     result = gate(root, { spec: options.spec, task: options.task, candidate: options.candidate });
     if (result.refused) process.exitCode = 1;
@@ -1994,7 +2045,7 @@ async function main() {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|move-spec|move-task|retire-spec|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);

@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
+import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { completeSpec, doctor, gate, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
 import { readTaskRecord } from '../workbench/tools/task-record.mjs';
 import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
@@ -28,6 +28,26 @@ function initGitRoot(dir) {
 
 function headSha(dir) {
   return execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+}
+
+function currentBranch(dir) {
+  return execFileSync('git', ['-C', dir, 'branch', '--show-current'], { encoding: 'utf8' }).trim();
+}
+
+// S-00J TK-005: `recordOwnerApproval` checks the candidate against the
+// declared `git.integrationBranch` (`declaredGit` in workbench-paths.mjs)
+// only once one is actually declared - a room with none skips the ancestor
+// check rather than refusing (see the "containment unchecked" remaining-gap
+// test below). This writes the minimal manifest that satisfies exactly that
+// read - deliberately without `schemaVersion: 2` - so none of
+// `doctor`'s schema-2-gated checks (`gitFindings`, `collectionFindings`,
+// `skillFindings`/`inspectSkills`) start reading this fixture as a real
+// managed room; only `declaredGit`'s own `manifest.git` read (which never
+// checks schemaVersion) sees it. `branch` defaults to whatever `git init`
+// actually named the fixture's current branch, never a hardcoded "main" or
+// "master".
+function writeIntegrationManifest(root, branch = currentBranch(root)) {
+  writeAt(root, 'workbench/manifest.json', JSON.stringify({ git: { defaultBranch: branch, integrationBranch: branch } }, null, 2));
 }
 
 function writeAt(base, relativePath, content) {
@@ -1380,12 +1400,23 @@ function headingShadowSpec(id) {
     recordReviewVerdict(root, 'S-740', {
       candidate: headSha(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
+
+    // S-00J TK-005: a passed review verdict alone is not enough - gate still
+    // refuses a Spec candidate whose current content carries no recorded
+    // owner Human QA approval, checked after (and composing with) the
+    // review-verdict gate above.
+    const noApprovalGate = gate(root, { spec: 'S-740', candidate: headSha(root) });
+    assert.equal(noApprovalGate.refused, true, 'a complete, reviewed Spec candidate with no recorded owner approval is still refused');
+    assert.match(noApprovalGate.reason, /no owner Human QA approval is recorded/i);
+
+    recordOwnerApproval(root, 'S-740', { candidate: headSha(root), owner: 'Kayden Clark', result: 'approve' });
     const passedGate = gate(root, { spec: 'S-740', candidate: headSha(root) });
-    assert.equal(passedGate.refused, false, 'a complete Spec candidate with a passed current verdict proceeds unchanged');
+    assert.equal(passedGate.refused, false, 'a complete Spec candidate with a passed current verdict AND a recorded owner approval proceeds unchanged');
     assert.equal(passedGate.reason, null);
     assert.equal(passedGate.specComplete, true);
+    assert.equal(passedGate.latestOwnerApproval.result, 'approve', 'gate shows latestOwnerApproval beside the verdict');
 
-    console.log('ok - gate refuses an incomplete or unreviewed Spec candidate, reports (never refuses) a Task PR under S-00O exemption 2, and proceeds unchanged for a complete Spec candidate with a passed current verdict');
+    console.log('ok - gate refuses an incomplete or unreviewed Spec candidate, reports (never refuses) a Task PR under S-00O exemption 2, refuses a reviewed-but-unapproved Spec candidate, and proceeds unchanged once both a passed verdict and a recorded owner approval exist for the current content');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -1630,6 +1661,448 @@ function headingShadowSpec(id) {
     assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused exact repeat writes nothing');
 
     console.log('ok - two same-day verdicts on unchanged content with different reviewers get distinct Event cells via an incrementing ordinal, and an exact repeat is refused rather than duplicated');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-005 (red at the pre anchor b293ee9376413f10d8cd0780f400d5d853d84
+// 614 - `recordOwnerApproval` does not exist yet, so this whole block fails
+// at the import above before a single assertion runs): owner Human QA on
+// `integration`, recorded as an approval naming who, when and the
+// `integration` SHA inspected. A room that declares no
+// `git.integrationBranch` at all (this fixture, matching every other
+// no-manifest fixture in this file) has nothing to check the candidate
+// against - the same "informs, never blocks an absent declaration" rule
+// `gate`'s own `integrationBranch: null` already follows - so the row lands
+// exactly as the handoff's six-cell shape describes, bound to the Spec's
+// current content digest the same way a review verdict is.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-approval-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-760-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-760', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+    const reportBefore = assembleSpecReport(root, 'S-760', { candidate });
+    assert.equal(reportBefore.ownerApproval.length, 0, 'no owner-qa row exists yet');
+    assert.equal(reportBefore.latestOwnerApproval, null);
+
+    const approval = recordOwnerApproval(root, 'S-760', { candidate, owner: 'Kayden Clark', result: 'approve' });
+    assert.equal(approval.specId, 'S-760');
+    assert.equal(approval.candidate, candidate);
+    assert.equal(approval.owner, 'Kayden Clark');
+    assert.equal(approval.result, 'approve');
+    assert.equal(approval.findings, 'none', 'an approve with no --finding records "none" in the findings cell, exactly like a pass verdict');
+    assert.equal(approval.ordinal, 1, 'the first owner-qa row on this Spec is #1');
+    // This fixture declares no git.integrationBranch at all (matching every
+    // other no-manifest fixture in this file), so the ancestor check above
+    // was skipped rather than satisfied - review corrective (Low): the
+    // remaining-gap cell says so, rather than reading "none" exactly like a
+    // genuinely verified approval would.
+    assert.equal(approval.remainingGap, 'integration branch undeclared; containment unchecked');
+    assert.equal(approval.digest, reportBefore.specDigest, 'the approval binds to the content digest the same way a review verdict does');
+
+    const specAfter = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.ok(specAfter.includes(approval.row), 'the exact row text the function returns is what lands in the Spec file');
+    assert.match(
+      approval.row,
+      new RegExp(`^\\| 2026-\\d{2}-\\d{2} \\| owner-qa \\| Owner QA: approve at ${candidate} \\[[0-9a-f]{12}\\] #1 \\| none \\| Kayden Clark \\| integration branch undeclared; containment unchecked \\|$`),
+      'the row matches the handoff\'s six-cell shape (date, owner-qa, "Owner QA: approve at <sha> [<digest12>] #<n>", findings, owner, remaining gap), with the ordinal mirroring a review verdict\'s own'
+    );
+
+    const reportAfter = assembleSpecReport(root, 'S-760', { candidate });
+    assert.equal(reportAfter.ownerApproval.length, 1);
+    assert.equal(reportAfter.latestOwnerApproval.result, 'approve');
+    assert.equal(reportAfter.latestOwnerApproval.owner, 'Kayden Clark');
+    assert.equal(reportAfter.latestOwnerApproval.digest, reportBefore.specDigest.slice(0, 12));
+
+    console.log('ok - recordOwnerApproval appends the exact six-cell owner-qa row (with its own #<n> ordinal), bound to the Spec\'s content digest, names its remaining-gap cell "containment unchecked" when no integration branch is declared, and assembleSpecReport exposes it as ownerApproval / latestOwnerApproval beside the verdict');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-005: "a finding that names no corrective item and no destination
+// change is refused" - the third red test the handoff names. Refused before
+// any write, matching the same fail-fast discipline `recordReviewVerdict`
+// already applies to a fail verdict with nothing to fix.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-finding-empty-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-761-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-761', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-761', { candidate, owner: 'Kayden Clark', result: 'finding' }),
+      (error) => error instanceof Error && /names no corrective item and no destination change/i.test(error.message),
+      'a finding naming neither a corrective item nor a destination change is refused'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'the refused finding writes nothing to the Spec file');
+    assert.equal(fs.existsSync(path.join(root, 'specs/S-761-fixture/tasks')), false, 'no tasks/ directory is created by a refused finding');
+
+    // "none" (the literal a pass/approve accepts) and an all-semicolon string
+    // both count as naming no item, the same way a fail verdict's own check
+    // treats them.
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-761', { candidate, owner: 'Kayden Clark', result: 'finding', findings: ' ; ; ' }),
+      (error) => error instanceof Error && /names no corrective item and no destination change/i.test(error.message)
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before);
+
+    console.log('ok - an owner QA finding naming no corrective item and no destination change is refused before any write');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-005: a finding against the existing destination creates corrective
+// Tasks through the exact same `createCorrectiveTasks` seam TK-003 built,
+// its anchor lookup extended to accept this owner-qa row (never a second
+// implementation). One Task per finding, landing exactly like a fail
+// verdict's corrective Tasks, with the Planned verification naming this row
+// as an "owner QA finding" rather than a "fail verdict" - the anchor's own
+// kind, not a hardcoded phrase.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-finding-corrective-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-762-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-762', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    const finding = recordOwnerApproval(root, 'S-762', {
+      candidate, owner: 'Kayden Clark', result: 'finding', findings: 'Missing empty-state copy; Stale screenshot in the README'
+    });
+    assert.equal(finding.result, 'finding');
+    assert.ok(Array.isArray(finding.correctiveTasks), 'a finding against the existing destination returns the corrective Tasks it created in the same operation');
+    assert.equal(finding.correctiveTasks.length, 2, 'one corrective Task per finding');
+    const [firstTask, secondTask] = finding.correctiveTasks;
+    assert.notEqual(firstTask.id, secondTask.id);
+    assert.notEqual(firstTask.id, 'TK-001', 'a corrective Task id never collides with the retained done row');
+
+    const firstContent = fs.readFileSync(path.join(root, firstTask.filePath), 'utf8');
+    assert.match(firstContent, /\*\*Status:\*\* ready$/m);
+    assert.match(firstContent, /\*\*Blockers:\*\* none$/m);
+    assert.match(firstContent, /\*\*Destination:\*\* spec-acceptance: S-762 Acceptance Criteria$/m);
+    assert.match(
+      firstContent,
+      new RegExp(`\\*\\*Planned verification:\\*\\* Answers evidence row 2 \\(owner QA finding at ${candidate} on ${finding.date}\\): Missing empty-state copy$`, 'm'),
+      'the Planned verification names the finding and the exact owner-qa row it answers, using the anchor\'s own "owner QA finding" phrase'
+    );
+
+    const specAfter = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.match(specAfter, /\*\*Status:\*\* active$/m, 'a finding against the existing destination leaves the Spec open');
+    assert.ok(specAfter.includes(finding.row), 'the owner-qa row itself is present, appended in the same operation that created the corrective Tasks');
+
+    const next = nextWork(root);
+    assert.equal(next.specId, 'S-762');
+    assert.equal(next.taskId, firstTask.id, 'next selects an owner-qa corrective Task like any other ready record');
+
+    render(root);
+    const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+    assert.ok(board.includes(firstTask.id), 'render shows the owner-qa corrective Task on the hot board');
+
+    console.log('ok - an owner QA finding against the existing destination creates one corrective Task per item through the extended anchor lookup, naming the owner-qa row it answers');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-005: a finding that changes the destination is recorded as
+// "Return to Align: <text>" in the findings cell and creates nothing -
+// "a changed destination is a new Spec or a Blueprint change, not corrective
+// work". The Spec stays open (the same still-open rule a corrective finding
+// follows), and no `tasks/` directory is ever created for this row.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-finding-align-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-763-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-763', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    const finding = recordOwnerApproval(root, 'S-763', {
+      candidate, owner: 'Kayden Clark', result: 'finding', destinationChange: 'The destination itself changed; this belongs in a new Spec'
+    });
+    assert.equal(finding.result, 'finding');
+    assert.equal(finding.correctiveTasks, undefined, 'a destination change creates no corrective Tasks');
+    assert.equal(finding.findings, 'Return to Align: The destination itself changed; this belongs in a new Spec');
+    assert.equal(fs.existsSync(path.join(root, 'specs/S-763-fixture/tasks')), false, 'no tasks/ directory is created for a return to Align');
+
+    const specAfter = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.match(specAfter, /\*\*Status:\*\* active$/m, 'a return to Align leaves the Spec open - it is not itself a closure or a supersession');
+    assert.ok(specAfter.includes(finding.row), 'the owner-qa row is appended');
+    assert.match(finding.row, /\| Return to Align: The destination itself changed; this belongs in a new Spec \|/);
+
+    console.log('ok - an owner QA finding that changes the destination is recorded as "Return to Align: <text>" and creates no corrective Tasks, leaving the Spec open');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-005 (red at the pre anchor - the ancestor check does not exist):
+// "an approval naming a SHA that is not on the declared integration branch
+// is refused." A bare manifest declaring only `git.integrationBranch` is
+// enough to exercise this: the refusal happens before `findSpec` is ever
+// reached (a divergent candidate is rejected by the ancestor check alone),
+// so this fixture never needs a full schemaVersion-2 workbench manifest -
+// only `declaredGit`'s own lightweight `manifest.git` read sees this file.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-approval-ancestor-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const branch = currentBranch(root);
+    writeIntegrationManifest(root, branch);
+    const specPath = 'specs/S-764-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-764', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'add the fixture Spec and manifest']);
+    const integrationTip = headSha(root);
+
+    // A divergent lane branch, never merged into the declared integration
+    // branch - exactly "a lane tip", the one thing "integration only" rules
+    // out.
+    execFileSync('git', ['-C', root, 'checkout', '--quiet', '-b', 'codex/off-lane']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'lane work never merged to integration']);
+    const laneTip = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+    execFileSync('git', ['-C', root, 'checkout', '--quiet', branch]);
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+
+    assert.notEqual(laneTip, integrationTip, 'the fixture must actually diverge for this case to mean anything');
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-764', { candidate: laneTip, owner: 'Kayden Clark', result: 'approve' }),
+      (error) => error instanceof Error
+        && /is not contained in the declared integration branch/.test(error.message)
+        && error.message.includes(laneTip)
+        && error.message.includes(branch),
+      'a candidate that is not contained in the declared integration branch is refused, naming the SHA and the branch'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused ancestor check writes nothing to the Spec file');
+
+    // The declared branch's own tip is, trivially, contained in itself: the
+    // ancestor check alone passes for it (proven directly, the same way
+    // `commitExists`/`isAncestorOfBranch` are proven elsewhere in this file -
+    // this fixture's bare, schemaVersion-less manifest is only valid for
+    // `declaredGit`'s own lightweight read, not for the full
+    // `resolveSpecsRoot` a successful write would also need, so the write
+    // path itself is proven instead by the full-approval fixture above).
+    const branchTipIsAncestor = spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', integrationTip, branch]).status;
+    assert.equal(branchTipIsAncestor, 0, "the branch's own tip is trivially its own ancestor - isolating the refusal above to the divergent lane tip alone");
+
+    console.log('ok - recordOwnerApproval refuses a candidate that is not contained in the declared integration branch, naming the SHA and the branch');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// The `approve` CLI verb: `approve S-### --candidate <sha> --owner "<who>"
+// [--finding "..."] [--destination-change "..."]` - the handoff's exact
+// invocation shape, with no separate --result flag shown. The verb infers
+// approve vs finding from what the caller actually gave.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-approve-cli-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-765-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-765', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+    const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
+
+    const approveResult = spawnSync('node', [
+      cliPath, 'approve', 'S-765', '--candidate', candidate, '--owner', 'Kayden Clark', '--json', '--path', root
+    ], { encoding: 'utf8' });
+    assert.equal(approveResult.status, 0, `the approve verb exits 0 with no --finding given: ${approveResult.stderr}`);
+    const approveParsed = JSON.parse(approveResult.stdout);
+    assert.equal(approveParsed.result, 'approve', 'no --finding or --destination-change infers a plain approval');
+    assert.ok(fs.readFileSync(path.join(root, specPath), 'utf8').includes(approveParsed.row), 'the CLI approve lands the same row text the JSON result names');
+
+    // A second candidate (HEAD moved), this time carrying --finding: infers
+    // a finding against the existing destination.
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'move past the approved candidate']);
+    const movedCandidate = headSha(root);
+    const findingResult = spawnSync('node', [
+      cliPath, 'approve', 'S-765', '--candidate', movedCandidate, '--owner', 'Kayden Clark',
+      '--finding', 'The onboarding copy still references the old flow', '--json', '--path', root
+    ], { encoding: 'utf8' });
+    assert.equal(findingResult.status, 0, `the approve verb exits 0 with a --finding given: ${findingResult.stderr}`);
+    const findingParsed = JSON.parse(findingResult.stdout);
+    assert.equal(findingParsed.result, 'finding', 'a --finding with no --destination-change infers a finding against the existing destination');
+    assert.equal(findingParsed.correctiveTasks.length, 1);
+
+    // A third candidate, this time carrying --destination-change: infers a
+    // return to Align.
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'move past the finding candidate']);
+    const alignCandidate = headSha(root);
+    const alignResult = spawnSync('node', [
+      cliPath, 'approve', 'S-765', '--candidate', alignCandidate, '--owner', 'Kayden Clark',
+      '--destination-change', 'The owner wants a different destination entirely', '--json', '--path', root
+    ], { encoding: 'utf8' });
+    assert.equal(alignResult.status, 0, `the approve verb exits 0 with a --destination-change given: ${alignResult.stderr}`);
+    const alignParsed = JSON.parse(alignResult.stdout);
+    assert.equal(alignParsed.result, 'finding');
+    assert.equal(alignParsed.correctiveTasks, undefined, 'a destination change infers a finding but creates no corrective Tasks');
+    assert.match(alignParsed.findings, /^Return to Align:/);
+
+    console.log('ok - the approve CLI verb infers approve/finding from --finding and --destination-change exactly as the handoff\'s invocation shows, and records the same rows the exported function would');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Review corrective (Medium): `recordOwnerApproval`'s non-empty `--owner`
+// requirement and its closed `approve`/`finding` result vocabulary were
+// implemented (`requiredString` and a literal equality check) but untested -
+// replacing `requiredString` with a plain string, or the vocabulary check
+// with nothing, would have left every other test in this file green. Both
+// refusals write nothing, matching every other pre-write validation in this
+// module.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-approval-validation-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-766-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-766', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+
+    for (const owner of ['', '   ']) {
+      assert.throws(
+        () => recordOwnerApproval(root, 'S-766', { candidate, owner, result: 'approve' }),
+        (error) => error instanceof Error && /recordOwnerApproval requires --owner/.test(error.message),
+        `an ${owner === '' ? 'empty' : 'whitespace-only'} --owner is refused by name`
+      );
+    }
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused missing-owner call writes nothing to the Spec file');
+
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-766', { candidate, owner: 'Kayden Clark', result: 'reject' }),
+      (error) => error instanceof Error && /requires --result of approve or finding, got: reject/.test(error.message),
+      'an out-of-vocabulary result is refused by name'
+    );
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-766', { candidate, owner: 'Kayden Clark' }),
+      (error) => error instanceof Error && /requires --result of approve or finding, got: nothing/.test(error.message),
+      'a missing result is refused, distinguishably from a wrong one'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused out-of-vocabulary or missing result writes nothing');
+
+    console.log('ok - recordOwnerApproval refuses an empty or whitespace-only --owner and an out-of-vocabulary or missing --result, each writing nothing');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Review corrective (Medium): with no ordinal, two same-day owner-qa rows for
+// one candidate and content digest shared their append-only identity (Date,
+// owner-qa, Event), since neither findings nor owner is part of the Event
+// cell - two different owners approving the same candidate on the same day,
+// or two same-day Return-to-Align findings, would have collapsed under
+// `tools/check-append-only.py`'s identity rule. Every owner-qa row now
+// carries its own position among this Spec's owner-qa rows in the Event
+// cell (`#<n>`), mirroring `recordReviewVerdict`'s own; a byte-identical
+// repeat (same candidate, result, digest, findings and owner) is refused
+// outright rather than recorded as a pointless new row, naming the existing
+// row's ordinal.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-approval-ordinal-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-767-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-767', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    const first = recordOwnerApproval(root, 'S-767', { candidate, owner: 'Kayden Clark', result: 'approve' });
+    const second = recordOwnerApproval(root, 'S-767', { candidate, owner: 'A Second Reviewer', result: 'approve' });
+    assert.equal(first.ordinal, 1);
+    assert.equal(second.ordinal, 2, 'a second same-day owner-qa row on unchanged content, with a different owner, is recordable as its own row');
+    assert.notEqual(first.row, second.row, 'the two rows are byte-distinct despite an identical date, candidate, digest and result');
+    // The two Event cells (everything up to the findings cell) differ only
+    // in their ordinal, proving the ordinal - not luck - is what
+    // distinguishes them.
+    const firstEvent = first.row.split(' | ')[2];
+    const secondEvent = second.row.split(' | ')[2];
+    assert.equal(firstEvent.replace('#1', '#2'), secondEvent, 'the two Event cells are identical except for the ordinal suffix');
+    assert.match(firstEvent, /\[[0-9a-f]{12}\] #1$/);
+    assert.match(secondEvent, /\[[0-9a-f]{12}\] #2$/);
+
+    // A byte-identical repeat of the first entry (same candidate, result,
+    // digest, findings and owner) is refused, naming the existing row.
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-767', { candidate, owner: 'Kayden Clark', result: 'approve' }),
+      (error) => error instanceof Error && /already recorded/.test(error.message) && error.message.includes('#1'),
+      'an exact repeat of an already-recorded owner-qa entry is refused rather than duplicated, naming the existing row'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused exact repeat writes nothing');
+
+    // The corrective-Task anchor still resolves to the most recent
+    // qualifying finding row by its own evidence-log position - unaffected
+    // by the owner-qa row's own #<n> ordinal, a separate counter.
+    const finding = recordOwnerApproval(root, 'S-767', {
+      candidate, owner: 'Kayden Clark', result: 'finding', findings: 'A late-breaking defect'
+    });
+    assert.equal(finding.ordinal, 3, 'the ordinal keeps incrementing across approve and finding rows alike');
+    assert.equal(finding.correctiveTasks.length, 1);
+    const correctiveContent = fs.readFileSync(path.join(root, finding.correctiveTasks[0].filePath), 'utf8');
+    assert.match(
+      correctiveContent,
+      /\*\*Planned verification:\*\* Answers evidence row 4 \(owner QA finding at /,
+      "the corrective Task's anchor still names the row's own evidence-log position, not the owner-qa event's #<n>"
+    );
+
+    console.log('ok - two same-day owner-qa rows on unchanged content with different owners get distinct Event cells via an incrementing ordinal, an exact repeat is refused naming the existing row, and the corrective-Task anchor keeps using the row\'s own evidence-log position');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

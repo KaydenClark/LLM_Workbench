@@ -36,7 +36,7 @@ import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table
 import { appendEvidence, atomicWrite, findSpec, loadSpecs, slicesOf } from './spec-workbench.mjs';
 import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
-import { assertSafeWritePath } from './workbench-paths.mjs';
+import { assertSafeWritePath, declaredGit } from './workbench-paths.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
@@ -61,6 +61,14 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   const specDigest = computeSpecDigest(root, spec);
   const verdicts = parseVerdicts(evidence);
   const latestVerdict = latestVerdictFor(verdicts, specDigest);
+  // S-00J TK-005: owner Human QA on `integration`, read the same way a
+  // review verdict is - every recorded `owner-qa` row, and whichever of them
+  // (if any) binds to the Spec's CURRENT content digest. "content binds,
+  // location does not" applies here exactly as it does to the review verdict
+  // above: an approval recorded in one checkout is recognized from any other
+  // as long as the Spec's own files are unchanged.
+  const ownerApproval = parseOwnerApprovals(evidence);
+  const latestOwnerApproval = latestOwnerApprovalFor(ownerApproval, specDigest);
 
   const gaps = collectGaps({ tasks, acceptance, completionResult, evidence });
 
@@ -83,6 +91,8 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
     evidence,
     verdicts,
     latestVerdict,
+    ownerApproval,
+    latestOwnerApproval,
     completionResult,
     gaps,
     complete: gaps.length === 0
@@ -344,17 +354,136 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
 }
 
-// S-00J TK-003: one Task record per diagnosed defect in an already-recorded
-// fail verdict, through the exact same Task-record seam S-00H delivered
-// (`formatTaskRecord` / `parseTaskRecord` - never a second template),
-// allocated with the room's own visible-id allocator so a corrective Task
-// never collides with a retained table row or an existing record. The
-// verdict this Task answers is never a caller-supplied date or ordinal: it
-// is read back from the Spec's own append-only evidence log, so a Task can
-// never name a verdict that was never actually recorded. The anchor is the
-// most recent `fail` row for this exact candidate; its position in the
-// evidence log (not candidate+date+result alone, which two same-day
-// verdicts could share) is what makes the reference unambiguous.
+// S-00J TK-005: owner Human QA on `integration` - the owner's own review of
+// the assembled behavior, distinct from the separate-context reviewer's
+// verdict above. Recorded as an approval naming who, when and the
+// `integration` SHA inspected, or as a finding, through the exact same
+// `appendEvidence` seam every other evidence row uses (never a new file -
+// "the owner asked for accountability, not ceremony"). Unlike a review
+// verdict, the candidate must be contained in the declared integration
+// branch - never a lane tip, since `integration` is the one surface the
+// owner actually inspects - checked with `git merge-base --is-ancestor`
+// against `git.integrationBranch` (`workbench-paths.mjs`'s `declaredGit`,
+// the same seam `gate` already reads, never a hardcoded branch name).
+//
+// A `finding` against the existing destination (`findings`, no
+// `destinationChange`) creates corrective Tasks through the same
+// `createCorrectiveTasks` seam TK-003 built, extended below to anchor on
+// this row too. A `finding` that changes the destination (`destinationChange`
+// given) is recorded as "Return to Align" and creates nothing: a changed
+// destination is a new Spec or a Blueprint change, never corrective work
+// under the still-open Spec. A finding naming neither is refused before any
+// write - the same fail-fast discipline `recordReviewVerdict` already
+// applies to a fail verdict with nothing to fix.
+export function recordOwnerApproval(rootDir, specId, options = {}) {
+  const root = path.resolve(rootDir);
+  const candidate = requiredString(options.candidate, 'recordOwnerApproval requires a --candidate SHA');
+  const owner = requiredString(options.owner, 'recordOwnerApproval requires --owner naming who performed Human QA (the name as given, never inferred from Git config)');
+  const result = options.result;
+  if (result !== 'approve' && result !== 'finding') {
+    throw new Error(`recordOwnerApproval requires --result of approve or finding, got: ${result === undefined ? 'nothing' : result}`);
+  }
+  const findingsInput = options.findings != null ? String(options.findings).trim() : '';
+  const destinationChange = options.destinationChange != null ? String(options.destinationChange).trim() : '';
+  const returnToAlign = result === 'finding' && destinationChange.length > 0;
+
+  if (result === 'finding' && !returnToAlign && splitFindings(findingsInput).length === 0) {
+    throw new Error(`An owner QA finding for candidate ${candidate} on ${specId} names no corrective item and no destination change ("${findingsInput}"); a finding that leaves nothing to act on is refused.`);
+  }
+
+  if (!commitExists(root, candidate)) {
+    throw new Error(`Candidate ${candidate} does not exist in this repository (checked via git cat-file -e); an owner approval must bind to a real commit, never an invented or mistyped SHA.`);
+  }
+
+  // Integration only: the candidate must be contained in the declared
+  // integration branch, never a lane tip - the owner's Human QA surface is
+  // `integration`, not a reviewer's own branch or a Task PR. Resolved through
+  // `declaredGit` (workbench-paths.mjs), the same seam `gate` already reads,
+  // never a hardcoded branch name. A room that declares no
+  // `git.integrationBranch` at all has nothing to check the candidate
+  // against, exactly like `gate`'s own `integrationBranch: null` case above
+  // it (never a hardcoded literal, never a refusal over an absent
+  // declaration) - the check below only ever runs once a branch is actually
+  // named.
+  const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
+  const containmentUnchecked = integrationBranch === null;
+  if (integrationBranch && !isAncestorOfBranch(root, candidate, integrationBranch)) {
+    throw new Error(`Candidate ${candidate} is not contained in the declared integration branch '${integrationBranch}' (checked via git merge-base --is-ancestor); an owner approval binds to a SHA on integration, never a lane tip.`);
+  }
+
+  const spec = findSpec(root, specId);
+  const digest = computeSpecDigest(root, spec);
+  const digest12 = digest.slice(0, 12);
+
+  const findingsCell = returnToAlign ? `Return to Align: ${destinationChange}` : (findingsInput || 'none');
+  // Review corrective (Low): an approval recorded with no declared
+  // integration branch at all skipped the ancestor check above with nothing
+  // to show for it - its remaining-gap cell read "none" exactly like a
+  // genuinely verified approval, making the two indistinguishable on the
+  // page. A finding's remaining-gap cell already carries real content (a
+  // defect count or "destination change"), so only the otherwise-"none"
+  // approve case needs the substitution.
+  const remainingGap = result === 'approve'
+    ? (containmentUnchecked ? 'integration branch undeclared; containment unchecked' : 'none')
+    : (returnToAlign ? 'destination change' : findingsGap(findingsInput));
+
+  // Review corrective (Medium): with no ordinal, two same-day owner-qa rows
+  // for the same candidate and content digest - two owners confirming, or
+  // two same-day Return-to-Align findings - shared their append-only
+  // identity (Date, owner-qa, Event), since neither findings nor owner is
+  // part of the Event cell; `tools/check-append-only.py` could not tell them
+  // apart. Every owner-qa row now carries its own position among this
+  // Spec's owner-qa rows in the Event cell (`#<n>`), mirroring
+  // `recordReviewVerdict`'s own ordinal exactly - unique by construction,
+  // since it always increments - while an exact repeat of an
+  // already-recorded entry (same candidate, result, digest, findings and
+  // owner) is refused outright rather than recorded as a pointless new row.
+  const existingApprovals = parseOwnerApprovals(parseEvidence(spec.content));
+  const duplicate = existingApprovals.find((entry) =>
+    entry.candidate === candidate && entry.result === result && entry.digest === digest12
+    && entry.findings === findingsCell && entry.owner === owner);
+  if (duplicate) {
+    throw new Error(`An identical owner QA entry (${result} at ${candidate} [${digest12}], findings "${findingsCell}", owner "${owner}") is already recorded for ${specId} as row #${duplicate.ordinal}; recording the exact same entry twice is refused rather than duplicated.`);
+  }
+  const ordinal = existingApprovals.length + 1;
+
+  const date = new Date().toISOString().slice(0, 10);
+  const cells = [date, 'owner-qa', `Owner QA: ${result} at ${candidate} [${digest12}] #${ordinal}`, findingsCell, owner, remainingGap];
+  const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
+  const updated = appendEvidence(spec.content, row);
+  atomicWrite(spec.filePath, updated);
+
+  let correctiveTasks;
+  if (result === 'finding' && !returnToAlign) {
+    correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings: findingsInput }).created;
+  }
+
+  return { specId: spec.id, candidate, owner, result, findings: findingsCell, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
+}
+
+// `git merge-base --is-ancestor <sha> <branch>` exits 0 exactly when `sha` is
+// contained in `branch` (an ancestor of its tip, or the tip itself) - the
+// "integration only" check: an owner approval binds to a SHA `integration`
+// actually carries, never a reviewer's own lane. A branch that does not
+// resolve, or a candidate genuinely not contained in it, both read as `false`
+// here; either way the caller's own refusal names the branch and the SHA.
+function isAncestorOfBranch(root, sha, branch) {
+  const result = spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', sha, branch], { encoding: 'utf8' });
+  return result.status === 0;
+}
+
+// S-00J TK-003 (S-00J TK-005 extends the anchor): one Task record per
+// diagnosed defect in an already-recorded fail verdict OR owner QA finding,
+// through the exact same Task-record seam S-00H delivered (`formatTaskRecord`
+// / `parseTaskRecord` - never a second template), allocated with the room's
+// own visible-id allocator so a corrective Task never collides with a
+// retained table row or an existing record. The event this Task answers is
+// never a caller-supplied date or ordinal: it is read back from the Spec's
+// own append-only evidence log (`findCorrectiveAnchor` below), so a Task can
+// never name an event that was never actually recorded. The anchor is the
+// most recent qualifying row for this exact candidate; its position in the
+// evidence log (not candidate+date+result alone, which two same-day rows
+// could share) is what makes the reference unambiguous.
 //
 // Blocks nothing already done (`Blockers: none`) and lands with
 // `Status: ready` and `Destination: spec-acceptance: <spec> Acceptance
@@ -367,29 +496,20 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   const findings = requiredString(options.findings, 'createCorrectiveTasks requires --findings naming at least one defect');
   const givenItems = splitFindings(findings);
   if (givenItems.length === 0) {
-    throw new Error(`A fail verdict for candidate ${candidate} on ${specId} names no corrective finding ("${findings}"); a failed verdict that leaves the Spec with no corrective Task is refused.`);
+    throw new Error(`A fail verdict or owner QA finding for candidate ${candidate} on ${specId} names no corrective finding ("${findings}"); one that leaves the Spec with no corrective Task is refused.`);
   }
 
   const spec = findSpec(root, specId);
   const evidence = parseEvidence(spec.content);
-  let anchorIndex = -1;
-  for (let index = evidence.rows.length - 1; index >= 0; index -= 1) {
-    const cells = evidence.rows[index].cells;
-    if (cells.length < 6 || cells[1] !== 'review') continue;
-    const match = VERDICT_PATTERN.exec(cells[2]);
-    if (match && match[1] === 'fail' && match[2] === candidate) {
-      anchorIndex = index;
-      break;
-    }
-  }
-  if (anchorIndex < 0) {
-    throw new Error(`No recorded fail verdict for candidate ${candidate} exists on ${specId}; corrective Tasks are created only from a recorded fail verdict row.`);
+  const anchor = findCorrectiveAnchor(evidence, candidate);
+  if (!anchor) {
+    throw new Error(`No recorded fail verdict or owner QA finding for candidate ${candidate} exists on ${specId}; corrective Tasks are created only from one of those recorded rows.`);
   }
   // The row's own position in the append-only evidence log (1-based, oldest
   // first): unambiguous by construction, unlike candidate+date+result alone,
-  // which two verdicts recorded the same day could share.
-  const rowOrdinal = anchorIndex + 1;
-  const anchorRow = evidence.rows[anchorIndex];
+  // which two rows recorded the same day could share.
+  const rowOrdinal = anchor.index + 1;
+  const anchorRow = { cells: anchor.cells };
   const verdictDate = anchorRow.cells[0];
 
   // S-00J TK-003 review corrective (Medium): the anchored row - never the
@@ -404,7 +524,7 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // `recordReviewVerdict` above - that passed the original, unescaped text.
   const items = splitFindings(anchorRow.cells[3]);
   if (items.length === 0) {
-    throw new Error(`Evidence row ${rowOrdinal} on ${specId} (fail verdict at ${candidate}) names no corrective finding; corrective Tasks cannot be created from it.`);
+    throw new Error(`Evidence row ${rowOrdinal} on ${specId} (${anchor.kind} at ${candidate}) names no corrective finding; corrective Tasks cannot be created from it.`);
   }
   if (JSON.stringify(items) !== JSON.stringify(givenItems)) {
     throw new Error(`createCorrectiveTasks findings do not match evidence row ${rowOrdinal}'s own recorded findings for candidate ${candidate} on ${specId}; the recorded row is the source of truth for what a corrective Task answers, so a caller cannot attach different findings to it. Recorded: "${items.join('; ')}"; given: "${givenItems.join('; ')}".`);
@@ -417,7 +537,7 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // its own Planned verification (built from `answeredMarker` below), so
   // detecting "already created" is reading the existing records, never a
   // second ledger that could drift from them.
-  const answeredMarker = `Answers evidence row ${rowOrdinal} (fail verdict at ${candidate} on ${verdictDate})`;
+  const answeredMarker = `Answers evidence row ${rowOrdinal} (${anchor.kind} at ${candidate} on ${verdictDate})`;
   const specDir = path.dirname(spec.filePath);
   const existingRecords = listTaskRecords(specDir, root);
   if (existingRecords.some((task) => task.plannedVerification && task.plannedVerification.startsWith(answeredMarker))) {
@@ -581,6 +701,79 @@ function latestVerdictFor(verdicts, specDigest) {
   const digest12 = specDigest.slice(0, 12);
   for (let index = verdicts.length - 1; index >= 0; index -= 1) {
     if (verdicts[index].digest === digest12) return verdicts[index];
+  }
+  return null;
+}
+
+// S-00J TK-005 (review corrective, Medium): an owner-qa row, parsed from its
+// cells alone exactly as `parseVerdicts` above parses a review row -
+// identified by its literal second cell `owner-qa` and a third cell matching
+// `Owner QA: approve|finding at <sha> [<digest12>] #<n>`. The `#<n>` ordinal
+// (this row's own position among the Spec's owner-qa rows, 1-based) mirrors
+// `recordReviewVerdict`'s own: two same-day owner-qa rows for one candidate
+// and digest - two owners confirming, or two same-day Return-to-Align
+// findings - would otherwise share their append-only identity (Date,
+// owner-qa, Event), since neither findings nor owner is part of the Event
+// cell.
+const OWNER_QA_PATTERN = /^Owner QA: (approve|finding) at (\S+) \[([0-9a-f]{12})\] #(\d+)$/;
+
+function parseOwnerApprovals(evidence) {
+  const approvals = [];
+  for (const row of evidence.rows) {
+    const cells = row.cells;
+    if (cells.length < 6 || cells[1] !== 'owner-qa') continue;
+    const match = OWNER_QA_PATTERN.exec(cells[2]);
+    if (!match) continue;
+    approvals.push({
+      date: cells[0],
+      result: match[1],
+      candidate: match[2],
+      digest: match[3],
+      ordinal: Number(match[4]),
+      findings: cells[3],
+      owner: cells[4],
+      remainingGap: cells[5]
+    });
+  }
+  return approvals;
+}
+
+// The latest owner-qa entry bound to the Spec's CURRENT content digest, or
+// `null` when none matches it - mirrors `latestVerdictFor` exactly, same
+// "content binds, location does not" rule.
+function latestOwnerApprovalFor(approvals, specDigest) {
+  const digest12 = specDigest.slice(0, 12);
+  for (let index = approvals.length - 1; index >= 0; index -= 1) {
+    if (approvals[index].digest === digest12) return approvals[index];
+  }
+  return null;
+}
+
+// S-00J TK-005: the anchor `createCorrectiveTasks` answers, generalized
+// beyond TK-003's review-fail-only lookup to also accept an owner-qa finding
+// row - "extend its anchor lookup to accept an owner-qa finding row" per the
+// handoff. Scanned from the most recent row backward exactly as the original
+// fail-verdict-only lookup was, so the most recent qualifying event for this
+// candidate is always the one answered. Each kind keeps its own literal
+// phrase (`fail verdict` / `owner QA finding`), which lands verbatim in every
+// corrective Task's `Planned verification` - the existing fail-verdict-
+// anchored wording (and the tests asserting it) is unchanged by this
+// generalization.
+function findCorrectiveAnchor(evidence, candidate) {
+  for (let index = evidence.rows.length - 1; index >= 0; index -= 1) {
+    const cells = evidence.rows[index].cells;
+    if (cells.length < 6) continue;
+    if (cells[1] === 'review') {
+      const match = VERDICT_PATTERN.exec(cells[2]);
+      if (match && match[1] === 'fail' && match[2] === candidate) {
+        return { index, kind: 'fail verdict', cells };
+      }
+    } else if (cells[1] === 'owner-qa') {
+      const match = OWNER_QA_PATTERN.exec(cells[2]);
+      if (match && match[1] === 'finding' && match[2] === candidate) {
+        return { index, kind: 'owner QA finding', cells };
+      }
+    }
   }
   return null;
 }
@@ -788,6 +981,8 @@ export function formatSpecReport(report) {
     : 'Candidate: none named');
   const v = report.latestVerdict;
   lines.push(v ? `Verdict: ${v.result} at ${v.candidate} by ${v.reviewer} (${v.date}) [digest ${v.digest}]` : 'Verdict: none for this candidate');
+  const a = report.latestOwnerApproval;
+  lines.push(a ? `Owner QA: ${a.result} at ${a.candidate} by ${a.owner} (${a.date}) [digest ${a.digest}]` : 'Owner QA: none for this candidate');
   lines.push('Tasks:');
   for (const task of report.tasks) {
     const runs = task.receipt ? `, runs ${task.receipt.runCount}` : '';
