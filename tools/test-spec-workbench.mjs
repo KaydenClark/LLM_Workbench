@@ -2299,7 +2299,7 @@ function wikiClaimFixture() {
     const s802Candidate = headSha(gateRoot);
     const s802Report = assembleSpecReport(gateRoot, 'S-802', { candidate: s802Candidate });
     const s802Path = path.join(gateRoot, 'specs/S-802-fixture/SPEC.md');
-    const failRow = `| 2026-09-18 | review | Review verdict: fail at ${s802Candidate} [${s802Report.specDigest.slice(0, 12)}] | Some finding | Claude Opus 5 (separate context) | 1 |`;
+    const failRow = `| 2026-09-18 | review | Review verdict: fail at ${s802Candidate} [${s802Report.specDigest.slice(0, 12)}] #1 | Some finding | Claude Opus 5 (separate context) | 1 |`;
     fs.writeFileSync(s802Path, fs.readFileSync(s802Path, 'utf8').replace(
       '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
       `| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |\n${failRow}`

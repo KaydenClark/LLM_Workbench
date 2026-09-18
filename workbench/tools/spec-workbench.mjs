@@ -362,6 +362,17 @@ function reviewGapReason(report) {
   return null;
 }
 
+// The Task-PR exemption text is a named constant this room's code carries,
+// not a live read of S-00O's own Spec file: it mirrors the exemption 2 text
+// recorded in
+// workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md ("Bootstrap
+// exemptions" - WF-7 deferred, so every Task in this rollout lands as its
+// own Task PR straight into `integration` while its Spec stays open). No
+// manifest flag exists for exemption 2, so there is nothing to read at
+// runtime; this constant is retired (and the Task-PR path removed) once
+// Spec-branch tooling lands and ends the exemption.
+const TASK_PR_EXEMPTION = 'S-00O exemption 2 (WF-7 deferred): every Task lands as its own Task PR into the integration branch while its Spec stays open, so the gate reports the Spec\'s assembled state rather than refusing it for being incomplete';
+
 // S-00J TK-004: the review gate the harness's own merge-preparation workflow
 // requires before branches combine into `integration` (AGENTS.md Branch
 // Completion). Binds the harness's own process; it does not and cannot make
@@ -369,15 +380,15 @@ function reviewGapReason(report) {
 //
 // The discriminator is what the invoker presents, never which checkout runs
 // the command: a Spec ID with a candidate SHA (`--spec S-### --candidate
-// <sha>`) is a Spec candidate, refused when the assembled Spec is incomplete
-// or its latest verdict for the current content is not a pass. A Task ID
-// with its Spec still open (`--task TK-### --spec S-###`) is a Task PR -
-// what every PR in this rollout is while S-00O exemption 2 (WF-7 deferred)
-// holds, recorded in workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md
-// under "Bootstrap exemptions" (no manifest flag exists for it, so this
-// reads the exemption from that Spec's own recorded text, exactly as it is
-// currently active) - and is reported, never refused, regardless of the
-// Spec's own completeness.
+// <sha>`) is a Spec candidate, refused when the candidate does not exist, the
+// assembled Spec is incomplete, or its latest verdict for the current
+// content is not a pass. A Task ID with its Spec still open (`--task TK-###
+// --spec S-###`) is a Task PR (TASK_PR_EXEMPTION above) and is reported,
+// never refused for the Spec's own completeness - but review corrective: it
+// is still refused by name when the named Task ID names no record or
+// retained row under that Spec at all, or when the Spec is already
+// complete (a Task PR is only ever presented while its Spec is open), since
+// neither is "the Spec is incomplete", the one thing exemption 2 protects.
 //
 // The integration branch is resolved through `declaredGit` (workbench-
 // paths.mjs), reading `git.integrationBranch` from the manifest, never a
@@ -391,26 +402,36 @@ export function gate(rootDir, options = {}) {
 
   if (taskId) {
     const report = assembleSpecReport(root, specId, options.candidate ? { candidate: options.candidate } : {});
+    let reason = null;
+    if (!report.tasks.some((task) => task.id === taskId)) {
+      reason = `No Task record or retained row named ${taskId} exists under ${specId}; a Task PR must name a Task that actually belongs to the Spec it presents.`;
+    } else if (report.status === 'complete') {
+      reason = `${specId} is already complete; a Task PR is reported only while its Spec is still open (S-00O exemption 2 protects an incomplete Spec, not a closed one).`;
+    }
     return {
       mode: 'task-pr',
       taskId,
       specId,
       integrationBranch,
-      exemption: 'S-00O exemption 2 (WF-7 deferred): every Task lands as its own Task PR into the integration branch while its Spec stays open, so the gate reports the Spec\'s assembled state rather than refusing it for being incomplete',
+      exemption: TASK_PR_EXEMPTION,
       specComplete: report.complete,
       specDigest: report.specDigest,
       latestVerdict: report.latestVerdict,
-      refused: false,
-      reason: null
+      refused: reason !== null,
+      reason
     };
   }
 
   const candidate = requireValue(options.candidate, 'gate --spec requires --candidate <sha>');
   const report = assembleSpecReport(root, specId, { candidate });
-  const gapReason = report.complete ? reviewGapReason(report) : null;
-  const reason = !report.complete
-    ? `${specId} is not complete: ${report.gaps.join('; ')}`
-    : gapReason;
+  let reason;
+  if (!report.candidate.existsInRepository) {
+    reason = `Candidate ${candidate} does not exist in this repository; a Spec candidate must bind to a real commit, never an invented or mistyped SHA.`;
+  } else if (!report.complete) {
+    reason = `${specId} is not complete: ${report.gaps.join('; ')}`;
+  } else {
+    reason = reviewGapReason(report);
+  }
   return {
     mode: 'spec-candidate',
     specId,

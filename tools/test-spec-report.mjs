@@ -16,6 +16,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { completeSpec, doctor, gate, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
 import { readTaskRecord } from '../workbench/tools/task-record.mjs';
+import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 
 function initGitRoot(dir) {
@@ -655,7 +656,8 @@ function headingShadowSpec(id) {
     assert.equal(passResult.result, 'pass');
     assert.equal(passResult.candidate, firstCandidate);
     assert.equal(passResult.remainingGap, 'none', 'a pass with "none" findings reports "none" as its remaining gap, not a count');
-    assert.match(passResult.row, /^\| \d{4}-\d{2}-\d{2} \| review \| Review verdict: pass at [0-9a-f]+ \[[0-9a-f]{12}\] \| none \| Claude Opus 5 \(separate context\) \| none \|$/);
+    assert.match(passResult.row, /^\| \d{4}-\d{2}-\d{2} \| review \| Review verdict: pass at [0-9a-f]+ \[[0-9a-f]{12}\] #1 \| none \| Claude Opus 5 \(separate context\) \| none \|$/);
+    assert.equal(passResult.ordinal, 1, 'the first verdict recorded for a Spec is row #1');
 
     const afterFirst = fs.readFileSync(path.join(root, specPath), 'utf8');
     assert.ok(afterFirst.includes(passResult.row), 'the exact pass row lands in the Spec file');
@@ -681,6 +683,7 @@ function headingShadowSpec(id) {
     assert.equal(failResult.result, 'fail');
     assert.equal(failResult.remainingGap, '2', 'the remaining gap is the findings count when findings are not "none"');
     assert.equal(failResult.digest, passResult.digest, 'the fail verdict was recorded against exactly the same content as the pass verdict - the empty commit between them changed no file');
+    assert.equal(failResult.ordinal, 2, 'the second verdict recorded for a Spec is row #2, regardless of digest, candidate or result');
 
     const afterSecond = fs.readFileSync(path.join(root, specPath), 'utf8');
     assert.ok(afterSecond.includes(passResult.row), 'the first verdict row is preserved verbatim after a second verdict is recorded (append-only, never rewritten)');
@@ -807,14 +810,16 @@ function headingShadowSpec(id) {
     assert.ok(fs.readFileSync(path.join(root, specPath), 'utf8').includes(parsed.row), 'the CLI verdict lands the same row text the JSON result names');
 
     // HEAD moves with no file change: a further verdict recorded against
-    // this now-stale candidate SHA, without naming a --digest, still
-    // succeeds - the content is unchanged, and omitting --digest recomputes
-    // it fresh rather than comparing against anything.
+    // the NEW HEAD as candidate (a distinct SHA from the first review, so
+    // this is not an exact repeat of the first row), without naming a
+    // --digest, still succeeds - the content is unchanged, and omitting
+    // --digest recomputes it fresh rather than comparing against anything.
     execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'move past the reviewed candidate']);
     const movedHead = headSha(root);
+    assert.notEqual(movedHead, candidate, 'the fixture must actually move HEAD for this case to mean anything');
     const stillRecorded = spawnSync('node', [
       cliPath, 'verdict', 'S-714',
-      '--candidate', candidate, '--result', 'pass', '--findings', 'none',
+      '--candidate', movedHead, '--result', 'pass', '--findings', 'none',
       '--reviewer', 'Claude Opus 5 (separate context)', '--path', root
     ], { encoding: 'utf8' });
     assert.equal(stillRecorded.status, 0, `a candidate that is no longer HEAD is accepted once its content is unchanged: ${stillRecorded.stderr}`);
@@ -952,7 +957,7 @@ function headingShadowSpec(id) {
       id: 'S-721', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: [
         '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
-        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
+        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] #1 | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
       ].join('\n')
     }));
     const specBefore = fs.readFileSync(path.join(root, specPath), 'utf8');
@@ -1152,7 +1157,7 @@ function headingShadowSpec(id) {
       id: 'S-724', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: [
         '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
-        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
+        `| 2026-09-18 | review | Review verdict: fail at ${candidate} [aaaaaaaaaaaa] #1 | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
       ].join('\n')
     }));
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
@@ -1419,6 +1424,212 @@ function headingShadowSpec(id) {
     assert.equal(reportedParsed.refused, false);
 
     console.log('ok - the gate CLI verb exits 1 for a refused Spec candidate and 0 for a reported Task PR, and never hardcodes the integration branch (reads it through declaredGit, null when the manifest declares none)');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Review corrective (Medium): a Task's Receipt lives inside its own TASK.md
+// (task-receipt.mjs), so hashing the whole file - as computeSpecDigest did -
+// meant every `receipt` append voided a passed verdict, contrary to the
+// digest comment's own claim that a Receipt is run history and no part of
+// it. Likewise SPEC.md's `Updated`, `Latest event` and `Next gate` header
+// fields, which `claimWork` and `closeTask` rewrite on every ordinary
+// lifecycle step, moved the digest on every claim or close - neither is a
+// change to the reviewed capability itself. Both are now excluded; a real
+// content change (Task Status/Proof, a slice row, an acceptance box, the
+// Completion Result, a Decisions line) still moves the digest.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-digest-exclusions-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specId = 'S-750';
+    const specPath = `specs/${specId}-fixture/SPEC.md`;
+    // TK-001 is the fixture's own retained-done table row (recordBackedSpec);
+    // the live record under test is TK-002, matching the existing
+    // record-backed fixture pattern above, so the retained row and this
+    // record never collide over the same id.
+    const taskPath = `specs/${specId}-fixture/tasks/TK-002/TASK.md`;
+    writeAt(root, specPath, recordBackedSpec(specId));
+    writeAt(root, taskPath, taskRecordFixture({
+      id: 'TK-002', specId, slice: 'Second slice', status: 'done', blockers: 'none',
+      destination: `spec-acceptance: ${specId} Acceptance Criteria`, proof: 'landed'
+    }));
+    const candidate = headSha(root);
+    const baseline = assembleSpecReport(root, specId, { candidate }).specDigest;
+
+    // Appending a Receipt row to the Task's own TASK.md leaves the digest
+    // unchanged.
+    const taskFile = path.join(root, taskPath);
+    const withReceipt = appendReceiptRowToContent(fs.readFileSync(taskFile, 'utf8'), {
+      branch: 'codex/demo', headSha: candidate, upstream: '0', dirty: 0,
+      testsRun: 'tools/test-fixture.mjs: pass', docsTouched: 'none', remainingGap: 'none'
+    });
+    fs.writeFileSync(taskFile, withReceipt);
+    assert.ok(withReceipt.includes('## Receipt'), 'the fixture actually gained a Receipt section, or this proves nothing');
+    assert.equal(
+      assembleSpecReport(root, specId, { candidate }).specDigest, baseline,
+      'appending a Receipt row to a Task record leaves the Spec content digest unchanged'
+    );
+
+    // A second Receipt row: still unchanged.
+    fs.writeFileSync(taskFile, appendReceiptRowToContent(fs.readFileSync(taskFile, 'utf8'), {
+      branch: 'codex/demo', headSha: candidate, upstream: '0', dirty: 0,
+      testsRun: 'tools/test-fixture.mjs: pass (again)', docsTouched: 'none', remainingGap: 'none'
+    }));
+    assert.equal(assembleSpecReport(root, specId, { candidate }).specDigest, baseline, 'a second Receipt row also leaves the digest unchanged');
+
+    // Rewriting the Spec's own Updated, Latest event and Next gate header
+    // fields (exactly what claimWork/closeTask do on every ordinary
+    // lifecycle step) leaves the digest unchanged.
+    const specFile = path.join(root, specPath);
+    const specBefore = fs.readFileSync(specFile, 'utf8');
+    const specAfterHeaderEdit = specBefore
+      .replace(/\*\*Updated:\*\*.*/, '**Updated:** 2026-09-19')
+      .replace(/\*\*Latest event:\*\*.*/, '**Latest event:** TK-002 claimed by codex.')
+      .replace(/\*\*Next gate:\*\*.*/, '**Next gate:** Complete TK-002.');
+    assert.notEqual(specAfterHeaderEdit, specBefore, 'the fixture edit must actually change the three header fields for this case to mean anything');
+    fs.writeFileSync(specFile, specAfterHeaderEdit);
+    assert.equal(
+      assembleSpecReport(root, specId, { candidate }).specDigest, baseline,
+      'rewriting Updated, Latest event and Next gate leaves the digest unchanged - an ordinary claim or close never voids a passed verdict by itself'
+    );
+    fs.writeFileSync(specFile, specBefore);
+
+    // A real content change - the Task's own Status field - still moves the
+    // digest: exclusion is narrow, not a blanket "TASK.md never counts".
+    const statusChanged = fs.readFileSync(taskFile, 'utf8').replace('**Status:** done', '**Status:** in-progress');
+    fs.writeFileSync(taskFile, statusChanged);
+    assert.notEqual(
+      assembleSpecReport(root, specId, { candidate }).specDigest, baseline,
+      "changing the Task's own Status still moves the digest - the Receipt exclusion is narrow, not a blanket exemption for TASK.md"
+    );
+
+    console.log('ok - a Receipt row appended to a Task record, and the Spec header Updated/Latest event/Next gate fields, never move the content digest; the Task\'s own Status still does');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Review corrective (Medium): `gate --task` accepted any Task ID at all,
+// including one with no record or retained row under the named Spec, and
+// one whose Spec was already complete (exemption 2 protects an incomplete
+// Spec from refusal, not any string called a Task ID). Both are now refused
+// by name; a real Task ID under a still-open Spec is unaffected.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-gate-task-pr-validity-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    writeAt(root, 'specs/S-742-fixture/SPEC.md', tableSpec({
+      id: 'S-742', taskStatus: 'ready', checked: false, completion: 'Pending.'
+    }));
+
+    const noSuchTask = gate(root, { task: 'NOPE-999', spec: 'S-742' });
+    assert.equal(noSuchTask.mode, 'task-pr');
+    assert.equal(noSuchTask.refused, true, 'a Task ID with no record or retained row under the Spec is refused, not silently reported');
+    assert.match(noSuchTask.reason, /No Task record or retained row named NOPE-999 exists under S-742/);
+
+    const realTask = gate(root, { task: 'TK-001', spec: 'S-742' });
+    assert.equal(realTask.refused, false, 'a real Task ID under a still-open Spec is reported, exactly as before');
+
+    // A Task ID that is real, but whose Spec is already complete.
+    writeAt(root, 'specs/S-743-fixture/SPEC.md', tableSpec({
+      id: 'S-743', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }).replace('**Status:** active', '**Status:** complete'));
+    const completedSpecTask = gate(root, { task: 'TK-001', spec: 'S-743' });
+    assert.equal(completedSpecTask.refused, true, 'a Task PR against an already-complete Spec is refused - exemption 2 protects an incomplete Spec, not a closed one');
+    assert.match(completedSpecTask.reason, /S-743 is already complete/);
+
+    console.log('ok - gate --task refuses a Task ID with no record or retained row under the named Spec, and a Task ID whose Spec is already complete, naming both by name');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Review corrective (Low): `gate --spec` never checked that --candidate
+// exists in the repository at all, unlike `verdict`, which refuses a
+// nonexistent SHA by name.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-gate-nonexistent-candidate-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    writeAt(root, 'specs/S-744-fixture/SPEC.md', tableSpec({
+      id: 'S-744', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const bogusCandidate = '0000000000000000000000000000000000000f';
+    const result = gate(root, { spec: 'S-744', candidate: bogusCandidate });
+    assert.equal(result.refused, true, 'gate --spec refuses a candidate that does not exist in the repository');
+    assert.match(result.reason, /does not exist in this repository/);
+    assert.ok(result.reason.includes(bogusCandidate), 'the refusal names the given SHA');
+
+    console.log('ok - gate --spec refuses a nonexistent --candidate, the same way verdict does');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Review corrective (Medium): with exact-HEAD gone, two same-day verdicts on
+// unchanged content (same candidate, digest and result) with different
+// findings previously shared their append-only identity (Date, review,
+// Event), since neither findings nor reviewer are part of the Event cell.
+// Each verdict row now carries its own ordinal in the Event cell, unique by
+// construction; a byte-identical repeat (same candidate, result, digest,
+// findings and reviewer) is refused outright rather than recorded as a
+// second, pointless row.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-verdict-ordinal-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-745-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-745', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    const first = recordReviewVerdict(root, 'S-745', {
+      candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    const second = recordReviewVerdict(root, 'S-745', {
+      candidate, result: 'pass', findings: 'none', reviewer: 'Claude Sonnet 5 (separate context)'
+    });
+    assert.equal(first.ordinal, 1);
+    assert.equal(second.ordinal, 2, 'a second same-day verdict on unchanged content, with a different reviewer, is recordable as its own row');
+    assert.notEqual(first.row, second.row, 'the two rows are byte-distinct despite an identical date, candidate, digest and result');
+    // The two Event cells (everything up to the findings cell) differ only
+    // in their ordinal, proving the ordinal - not luck - is what
+    // distinguishes them.
+    const firstEvent = first.row.split(' | ')[2];
+    const secondEvent = second.row.split(' | ')[2];
+    assert.equal(firstEvent.replace('#1', '#2'), secondEvent, 'the two Event cells are identical except for the ordinal suffix');
+    assert.match(firstEvent, /\[[0-9a-f]{12}\] #1$/);
+    assert.match(secondEvent, /\[[0-9a-f]{12}\] #2$/);
+
+    // A byte-identical repeat of the first verdict (same candidate, result,
+    // digest, findings and reviewer) is refused, not recorded as row #3.
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.throws(
+      () => recordReviewVerdict(root, 'S-745', { candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)' }),
+      (error) => error instanceof Error && /already recorded/.test(error.message) && error.message.includes('#1'),
+      'an exact repeat of an already-recorded verdict is refused rather than duplicated'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused exact repeat writes nothing');
+
+    console.log('ok - two same-day verdicts on unchanged content with different reviewers get distinct Event cells via an incrementing ordinal, and an exact repeat is refused rather than duplicated');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

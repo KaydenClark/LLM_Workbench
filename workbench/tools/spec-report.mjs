@@ -94,14 +94,25 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
 // detached worktree, a dispatcher whose own HEAD is `integration`, and a
 // merge commit that never equals the reviewed tip all recognize the same
 // review as long as the Spec's own files are unchanged. The digest is a
-// SHA-256 over SPEC.md - with every Append-Only Evidence And Execution Log
-// DATA ROW stripped (`stripEvidenceRows` below), so recording a verdict, a
-// later `complete` close row, or a second verdict never changes the digest
-// their own recording depends on - and every `tasks/<id>/TASK.md` file,
-// sorted by directory name for a fixed, deterministic order. Nothing outside
-// the Spec directory - a Task's separate append-only Receipt log, for
-// instance - is part of it: the recommended shape names only these two file
-// kinds, and a Receipt is run history, not the reviewed capability itself.
+// SHA-256 over SPEC.md and every `tasks/<id>/TASK.md` file (sorted by
+// directory name for a fixed, deterministic order), each with its own
+// volatile, non-reviewed parts excluded first:
+//   - SPEC.md: every Append-Only Evidence And Execution Log DATA ROW
+//     (`stripEvidenceRows`), so recording a verdict, a later `complete`
+//     close row, or a second verdict never changes the digest their own
+//     recording depends on; and the `Updated`, `Latest event` and `Next
+//     gate` header fields (`stripVolatileSpecFields`), which `claimWork` and
+//     `closeTask` rewrite on every ordinary lifecycle step, never a change
+//     to the reviewed capability itself.
+//   - each TASK.md: its `## Receipt` section (`stripReceiptSection`,
+//     corrective for TK-004's own review: the Receipt lives inside TASK.md,
+//     task-receipt.mjs, so hashing the whole file voided a passed verdict on
+//     every `receipt` append, contrary to this comment's original claim
+//     that a Receipt was already excluded as "outside the Spec directory").
+// Everything else - the Task's own Status/Blockers/Proof/Planned
+// verification, a table-backed Spec's slice table, Acceptance Criteria, the
+// Completion Result, Decisions prose - is left untouched, so a real change
+// there still moves the digest.
 function computeSpecDigest(root, spec) {
   const specDir = path.dirname(spec.filePath);
   // Each entry is hashed as its name, then its byte length, then its own
@@ -120,7 +131,7 @@ function computeSpecDigest(root, spec) {
     hash.update(content);
     hash.update('\n');
   }
-  addEntry('SPEC.md', stripEvidenceRows(spec.content));
+  addEntry('SPEC.md', stripVolatileSpecFields(stripEvidenceRows(spec.content)));
   const tasksDir = path.join(specDir, 'tasks');
   if (fs.existsSync(tasksDir)) {
     const ids = fs.readdirSync(tasksDir, { withFileTypes: true })
@@ -130,10 +141,50 @@ function computeSpecDigest(root, spec) {
     for (const id of ids) {
       const taskPath = path.join(tasksDir, id, 'TASK.md');
       if (!fs.existsSync(taskPath)) continue;
-      addEntry(`tasks/${id}/TASK.md`, fs.readFileSync(taskPath, 'utf8'));
+      addEntry(`tasks/${id}/TASK.md`, stripReceiptSection(fs.readFileSync(taskPath, 'utf8')));
     }
   }
   return hash.digest('hex');
+}
+
+// Blanks the Spec header's `Updated`, `Latest event` and `Next gate` field
+// values (never the field name, never any other header field) - the three
+// lines `claimWork` and `closeTask` rewrite on every ordinary claim or
+// close. Each is a `**Field:** value` line appearing exactly once in a
+// well-formed Spec, so a non-global, line-anchored replace touches only that
+// literal field's own line, never a prose mention or an evidence-row cell
+// that happens to contain the same words.
+function stripVolatileSpecFields(content) {
+  return content
+    .replace(/^\*\*Updated:\*\*.*$/m, '**Updated:**')
+    .replace(/^\*\*Latest event:\*\*.*$/m, '**Latest event:**')
+    .replace(/^\*\*Next gate:\*\*.*$/m, '**Next gate:**');
+}
+
+// Strips a Task record's entire `## Receipt` section - heading and body -
+// the same way `stripEvidenceRows` finds the Evidence section's boundary,
+// but removing the heading too rather than only its data rows: a Receipt is
+// task-receipt.mjs's own append-only per-run log, live inside TASK.md,
+// never the reviewed capability itself, so a `receipt` call - which appends
+// a row there on every run, not only at close - must never move the digest
+// a recorded verdict depends on. A record with no Receipt section yet is
+// returned unchanged.
+function stripReceiptSection(content) {
+  const marker = /^## Receipt[ \t]*$/m;
+  const match = marker.exec(content);
+  let result = content;
+  if (match) {
+    const nextHeading = content.indexOf('\n## ', match.index + match[0].length);
+    const sectionEnd = nextHeading < 0 ? content.length : nextHeading;
+    result = content.slice(0, match.index) + content.slice(sectionEnd);
+  }
+  // Removing the section (or appendReceiptRowToContent's own trailing-
+  // whitespace trim before it first wrote one) can leave a different amount
+  // of trailing whitespace than a record that never had a Receipt section
+  // at all - normalized to exactly one trailing newline either way, so
+  // whether a Receipt section ever existed never shows up in the digest as
+  // a spurious whitespace difference.
+  return result.replace(/\s+$/, '\n');
 }
 
 // Strips every DATA row - never the header, never surrounding prose - from
@@ -238,9 +289,30 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   const digest = givenDigest ?? currentDigest;
   const digest12 = digest.slice(0, 12);
 
+  // Review corrective (Medium): with exact-HEAD gone, a second same-day
+  // verdict on unchanged content is ordinarily recordable (a second
+  // reviewer confirming, say), but two such rows sharing a candidate,
+  // digest and result differed only in their findings/reviewer cells - not
+  // part of the Event text - so tools/check-append-only.py's identity rule
+  // (Date, second cell, Event) could not tell them apart. Every verdict row
+  // now carries its own position among this Spec's verdict rows in the
+  // Event cell (`#<n>`), which is unique by construction (it always
+  // increments), so no two verdict rows for a Spec can ever share an
+  // identity - meanwhile an exact repeat of an already-recorded verdict
+  // (same candidate, result, digest, findings and reviewer) is refused
+  // outright rather than recorded as a pointless new row.
+  const existingVerdicts = parseVerdicts(parseEvidence(spec.content));
+  const duplicate = existingVerdicts.find((verdict) =>
+    verdict.candidate === candidate && verdict.result === result && verdict.digest === digest12
+    && verdict.findings === findings && verdict.reviewer === reviewer);
+  if (duplicate) {
+    throw new Error(`An identical verdict (${result} at ${candidate} [${digest12}], findings "${findings}", reviewer "${reviewer}") is already recorded for ${specId} as row #${duplicate.ordinal}; recording the exact same review twice is refused rather than duplicated.`);
+  }
+  const ordinal = existingVerdicts.length + 1;
+
   const date = new Date().toISOString().slice(0, 10);
   const remainingGap = findingsGap(findings);
-  const cells = [date, 'review', `Review verdict: ${result} at ${candidate} [${digest12}]`, findings, reviewer, remainingGap];
+  const cells = [date, 'review', `Review verdict: ${result} at ${candidate} [${digest12}] #${ordinal}`, findings, reviewer, remainingGap];
   const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
   const updated = appendEvidence(spec.content, row);
   atomicWrite(spec.filePath, updated);
@@ -269,7 +341,7 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
     correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings }).created;
   }
 
-  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, digest, digest12, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
+  return { specId: spec.id, candidate, result, findings, reviewer, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
 }
 
 // S-00J TK-003: one Task record per diagnosed defect in an already-recorded
@@ -462,15 +534,19 @@ function splitFindings(findings) {
 // newest last, since the log is append-only). A verdict row is identified by
 // its literal second cell `review` (recordReviewVerdict's own literal,
 // distinguishing it from a Task-id row) and a third cell matching
-// `Review verdict: pass|fail at <sha> [<digest12>]`; any row that fails
+// `Review verdict: pass|fail at <sha> [<digest12>] #<n>`; any row that fails
 // either test is not a verdict row and is silently skipped, matching the
 // same never-assume-column-identity discipline `parseEvidence` above already
 // uses for the rest of the table. S-00J TK-004 adds the trailing
-// `[<digest12>]` group: the 12-hex-character prefix of the content digest
-// (`computeSpecDigest`) the verdict was recorded against, which is what a
-// later reader actually matches on - never the candidate SHA, which is kept
-// only as the audit trail of what commit the reviewer looked at.
-const VERDICT_PATTERN = /^Review verdict: (pass|fail) at (\S+) \[([0-9a-f]{12})\]$/;
+// `[<digest12>]` group (the 12-hex-character prefix of the content digest
+// the verdict was recorded against, which is what a later reader actually
+// matches on - never the candidate SHA, kept only as the audit trail of what
+// commit the reviewer looked at) and the review corrective `#<n>` ordinal
+// (this row's own position among the Spec's verdict rows, 1-based - unique
+// by construction, since it always increments, so no two verdict rows for a
+// Spec can ever share a check-append-only.py identity even when their
+// candidate, digest and result are all identical).
+const VERDICT_PATTERN = /^Review verdict: (pass|fail) at (\S+) \[([0-9a-f]{12})\] #(\d+)$/;
 
 function parseVerdicts(evidence) {
   const verdicts = [];
@@ -484,6 +560,7 @@ function parseVerdicts(evidence) {
       result: match[1],
       candidate: match[2],
       digest: match[3],
+      ordinal: Number(match[4]),
       findings: cells[3],
       reviewer: cells[4],
       remainingGap: cells[5]
