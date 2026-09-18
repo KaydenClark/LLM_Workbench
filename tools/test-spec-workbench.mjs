@@ -1856,13 +1856,16 @@ function wikiClaimFixture() {
     }
 
     // (a) An in-progress Task with two Receipt rows: run count, latest
-    // branch, short SHA and dirty count all appear in the current-slice cell.
+    // branch, short SHA and dirty count all appear in the current-slice
+    // cell. The two rows' SHAs differ in their first seven characters (not
+    // only in dirty count), so "latest row" is pinned by the SHA the board
+    // shows, not merely by which dirty count happens to appear.
     writeAt(boardRoot, 'specs/S-711-two-runs/SPEC.md', freshRecordBackedSpec('S-711'));
     writeTaskWithRuns('specs/S-711-two-runs', 'TK-002', {
       specId: 'S-711', slice: 'Two-run slice', status: 'in-progress',
       runs: [
-        { branch: 'claude/x', headSha: 'ab12cd30'.padEnd(40, '0'), upstream: 'ahead 1 behind 0', dirty: 2, testsRun: 'first pass', docsTouched: 'none', remainingGap: 'open: first run' },
-        { branch: 'claude/x', headSha: 'ab12cd3e'.padEnd(40, '1'), upstream: 'ahead 2 behind 0', dirty: 0, testsRun: 'second pass', docsTouched: 'none', remainingGap: 'none' }
+        { branch: 'claude/x', headSha: 'ab12cd3'.padEnd(40, '0'), upstream: 'ahead 1 behind 0', dirty: 2, testsRun: 'first pass', docsTouched: 'none', remainingGap: 'open: first run' },
+        { branch: 'claude/x', headSha: 'ffeeddc'.padEnd(40, '1'), upstream: 'ahead 2 behind 0', dirty: 0, testsRun: 'second pass', docsTouched: 'none', remainingGap: 'none' }
       ]
     });
 
@@ -1901,12 +1904,14 @@ function wikiClaimFixture() {
 
     assert.match(
       board,
-      /\| \[S-711\]\(specs\/S-711-two-runs\/SPEC\.md\) \| TK-002: Two-run slice \(in-progress; runs 2, claude\/x @ ab12cd3, dirty 0\) \|/,
+      /\| \[S-711\]\(specs\/S-711-two-runs\/SPEC\.md\) \| TK-002: Two-run slice \(in-progress; runs 2, claude\/x @ ffeeddc, dirty 0\) \|/,
       '(a) an in-progress Task with two Receipt rows renders its run count and the latest run\'s branch, short SHA and dirty count'
     );
+    assert.doesNotMatch(board, /ab12cd3/,
+      '(a) the board shows only the latest run\'s SHA, never the earlier row\'s, pinning "latest" by SHA and not only by dirty count');
     assert.match(
       board,
-      /\| \[S-712\]\(specs\/S-712-one-run\/SPEC\.md\) \| TK-002: One-run slice \(in-progress; runs 1, claude\/y @ cccccc[c]?, dirty 0\) \|/,
+      /\| \[S-712\]\(specs\/S-712-one-run\/SPEC\.md\) \| TK-002: One-run slice \(in-progress; runs 1, claude\/y @ ccccccc, dirty 0\) \|/,
       '(b) a one-run Task is distinguishable at a glance from a two- or three-run Task'
     );
     assert.match(
@@ -1935,6 +1940,69 @@ function wikiClaimFixture() {
     console.log('ok - the hot board derives a per-Task run/branch/SHA/dirty signal from Receipt rows, never the full run table');
   } finally {
     fs.rmSync(boardRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Corrective review finding 3: the acceptance line says the board projects
+// each *active* Task's run count and latest branch/SHA/dirty count, but
+// `renderHotBoard` kept one selected slice per Spec, so a second in-progress
+// Task on the same Spec was invisible. When a Spec has more than one
+// in-progress Task, the current-slice cell lists every one of them, each
+// with its own signal when it has rows, joined by "; " in visible-id order.
+// A Spec with zero or one in-progress Task renders exactly as before this
+// finding (proven above); a ready or blocked Task is never listed beside an
+// in-progress one.
+// ============================================================================
+{
+  const multiRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'board-multi-task-'));
+  try {
+    fs.writeFileSync(path.join(multiRoot, 'BLUEPRINT.md'), ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    fs.writeFileSync(path.join(multiRoot, 'TASKBOARD.md'), ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    const todayStr = new Date().toISOString().slice(0, 10);
+    writeAt(multiRoot, 'specs/S-741-multi-task/SPEC.md',
+      recordBackedSpec('S-741').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+
+    // TK-002: in-progress with one Receipt row (its own signal).
+    let tk002 = taskRecordFixture({
+      id: 'TK-002', specId: 'S-741', slice: 'First in-progress slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-741 Acceptance Criteria'
+    });
+    tk002 = appendReceiptRowToContent(tk002, {
+      branch: 'claude/a', headSha: '1111111'.padEnd(40, '0'), upstream: 'none', dirty: 0,
+      testsRun: 'pass', docsTouched: 'none', remainingGap: 'none'
+    });
+    writeAt(multiRoot, 'specs/S-741-multi-task/tasks/TK-002/TASK.md', tk002);
+
+    // TK-003: also in-progress, no Receipt rows yet (no signal at all).
+    writeAt(multiRoot, 'specs/S-741-multi-task/tasks/TK-003/TASK.md', taskRecordFixture({
+      id: 'TK-003', specId: 'S-741', slice: 'Second in-progress slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-741 Acceptance Criteria'
+    }));
+
+    // TK-004: ready, a distractor that must never be listed beside the two
+    // in-progress Tasks once there is more than one of them.
+    writeAt(multiRoot, 'specs/S-741-multi-task/tasks/TK-004/TASK.md', taskRecordFixture({
+      id: 'TK-004', specId: 'S-741', slice: 'Not yet started slice', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-741 Acceptance Criteria'
+    }));
+
+    render(multiRoot);
+    const board = fs.readFileSync(path.join(multiRoot, 'TASKBOARD.md'), 'utf8');
+
+    assert.match(
+      board,
+      /\| \[S-741\]\(specs\/S-741-multi-task\/SPEC\.md\) \| TK-002: First in-progress slice \(in-progress; runs 1, claude\/a @ 1111111, dirty 0\); TK-003: Second in-progress slice \(in-progress\) \|/,
+      'a Spec with two in-progress Tasks lists both, each with its own signal, joined by "; " in visible-id order'
+    );
+    assert.doesNotMatch(board, /TK-004/,
+      'a ready Task is never listed beside two in-progress Tasks on the same Spec');
+
+    assert.deepEqual(doctor(multiRoot), [], 'a room with two in-progress Tasks on one Spec still passes doctor');
+
+    console.log('ok - the board lists every in-progress Task on a Spec, each with its own signal, and never mixes in a ready or blocked Task');
+  } finally {
+    fs.rmSync(multiRoot, { recursive: true, force: true });
   }
 }
 
@@ -2003,6 +2071,45 @@ function wikiClaimFixture() {
     );
     assert.equal(fs.existsSync(path.join(closeRoot, 'specs/S-722-table-only/tasks')), false,
       '(f) close on a table-backed Spec never creates a tasks/ directory, so no Receipt file exists for it anywhere');
+
+    // Corrective review finding 1: a failing Receipt append (here, an
+    // already-altered earlier row, which fails closed by design) must leave
+    // the record's Status, Proof and Receipt untouched, and must append no
+    // Spec evidence row. This also pins the *order* of the two writes: if a
+    // future edit moved the Receipt append to after the Spec's evidence
+    // append, the evidence row would already be on disk by the time the
+    // append throws, and the second assertion below would catch it.
+    writeAt(closeRoot, 'specs/S-723-failing-append/SPEC.md',
+      recordBackedSpec('S-723').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    const failingTaskPath = path.join(closeRoot, 'specs/S-723-failing-append/tasks/TK-002/TASK.md');
+    let corrupted = taskRecordFixture({
+      id: 'TK-002', specId: 'S-723', slice: 'Corrupted-receipt slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-723 Acceptance Criteria'
+    });
+    corrupted = appendReceiptRowToContent(corrupted, {
+      branch: 'claude/x', headSha: 'a'.repeat(40), upstream: 'none', dirty: 0,
+      testsRun: 'tools/test-fixture.mjs: pass', docsTouched: 'none', remainingGap: 'none'
+    });
+    // Alter one byte of an already-written row: its checksum no longer
+    // matches its recorded fields, so any reader of this Receipt fails
+    // closed rather than silently accepting or repairing it.
+    corrupted = corrupted.replace('tools/test-fixture.mjs: pass', 'tools/test-fixture.mjs: TAMPERED');
+    writeAt(closeRoot, 'specs/S-723-failing-append/tasks/TK-002/TASK.md', corrupted);
+    const failingSpecPath = path.join(closeRoot, 'specs/S-723-failing-append/SPEC.md');
+    const taskBeforeFailure = fs.readFileSync(failingTaskPath, 'utf8');
+    const specBeforeFailure = fs.readFileSync(failingSpecPath, 'utf8');
+
+    assert.throws(
+      () => closeTask(closeRoot, 'S-723', {
+        proof: 'tools/test-fixture.mjs: pass (rerun)', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr
+      }),
+      /altered|checksum/i,
+      'close propagates the Receipt chain failure rather than swallowing it'
+    );
+    assert.equal(fs.readFileSync(failingTaskPath, 'utf8'), taskBeforeFailure,
+      "a failing Receipt append leaves the Task record's Status, Proof and Receipt byte-identical to before close ran");
+    assert.equal(fs.readFileSync(failingSpecPath, 'utf8'), specBeforeFailure,
+      'a failing Receipt append leaves the Spec byte-identical: no evidence row is appended when the Receipt append never lands');
 
     console.log('ok - close appends a Receipt row for a record-backed Task with live Git facts, and writes no Receipt for a table-backed Spec');
   } finally {

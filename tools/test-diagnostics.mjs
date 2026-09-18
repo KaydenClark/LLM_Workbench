@@ -10,6 +10,7 @@ import test from 'node:test';
 import { EFFECTS, SCOPES, SEVERITIES, describe, finding, isRegistered, registeredCodes } from '../workbench/tools/diagnostics.mjs';
 import { claimWork, doctor, formatDoctorReport, nextWork, render, DOCTOR_GROUPS } from '../workbench/tools/spec-workbench.mjs';
 import { permissionScopeDrift } from '../workbench/tools/workbench-layout.mjs';
+import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
@@ -243,6 +244,55 @@ test('a letter-bearing row/record collision is reported once, never doubled as a
       'the same row/record pair must never also surface as a duplicate-id conflicting with itself'
     );
     assert.equal(cliDoctor(dir).status, 1, 'row-record-collision is a selection-effect finding, so it fails doctor like any other');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// S-00H TK-007 corrective: a malformed or altered Receipt on any active
+// Task used to make `receiptSignal` throw straight through `renderHotBoard`,
+// so `doctor` exited 1 with a raw, uncaught error and reported nothing else,
+// and `render` itself crashed instead of writing the board. `receipt-corrupt`
+// names the condition as an ordinary finding instead, and render falls back
+// to a `(receipt unreadable)` marker in the cell rather than the signal.
+test('a corrupted Task Receipt is a named receipt-corrupt finding, never crashes render or doctor, and does not hide an unrelated finding', () => {
+  const dir = project();
+  try {
+    // A record-backed Spec (its retained row is done, so it is not a
+    // row/record collision) whose one live Task record carries a Receipt
+    // with one row already altered by one byte: the row's checksum no
+    // longer matches its recorded fields.
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tasks: '| TK-001 | First slice | done | none | node test |' }));
+    let corrupted = [
+      '# TK-002 - Second slice', '', '**Task ID:** TK-002', '**Spec ID:** S-001', '**Slice:** Second slice',
+      '**Status:** in-progress', '**Blockers:** none', '**Destination:** spec-acceptance: S-001 Acceptance Criteria', ''
+    ].join('\n');
+    corrupted = appendReceiptRowToContent(corrupted, {
+      branch: 'claude/x', headSha: 'a'.repeat(40), upstream: 'none', dirty: 0,
+      testsRun: 'tools/test-fixture.mjs: pass', docsTouched: 'none', remainingGap: 'none'
+    });
+    corrupted = corrupted.replace('tools/test-fixture.mjs: pass', 'tools/test-fixture.mjs: TAMPERED');
+    write(dir, 'workbench/specs/S-001-first/tasks/TK-002/TASK.md', corrupted);
+    // An unrelated finding on a second Spec proves receipt-corrupt is one
+    // finding among many rather than a reason to abort the whole run.
+    write(dir, 'workbench/specs/S-002-stale/SPEC.md', spec('S-002', {
+      tasks: '| TK-001 | Stale slice | in-progress | none | pending |', updated: '2026-01-01'
+    }));
+
+    assert.doesNotThrow(() => render(dir), 'render must not crash on a corrupted Receipt; it falls back to a marker instead of the signal');
+    const board = fs.readFileSync(path.join(dir, 'TASKBOARD.md'), 'utf8');
+    assert.match(board, /TK-002: Second slice \(in-progress; receipt unreadable\)/,
+      'the board falls back to a (receipt unreadable) marker in place of the signal');
+
+    const findings = doctor(dir, { home: quietHome });
+    const corrupt = findings.find((item) => item.code === 'receipt-corrupt');
+    assert.ok(corrupt, 'the corrupted Receipt is reported by its own code, not a raw thrown error');
+    assert.equal(corrupt.blocks, 'selection', 'receipt-corrupt has the selection effect');
+    assert.equal(corrupt.specId, 'S-001');
+    assert.equal(corrupt.taskId, 'TK-002');
+    assert.ok(findings.some((item) => item.code === 'stale-claim' && item.specId === 'S-002'),
+      'an unrelated finding on another spec still surfaces beside receipt-corrupt');
+    assert.equal(cliDoctor(dir).status, 1, 'receipt-corrupt is a selection-effect finding, so it fails doctor like any other');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -763,6 +813,7 @@ const PINNED_EFFECTS = {
   'render-drift': ['error', 'specs', 'selection'],
   'broken-render-target': ['error', 'specs', 'selection'],
   'row-record-collision': ['error', 'specs', 'selection'],
+  'receipt-corrupt': ['error', 'specs', 'selection'],
   'blocked-slice': ['error', 'specs', 'selected-slice'],
   'invalid-adr': ['error', 'adr', 'none'],
   'untracked-provenance': ['error', 'adr', 'none'],

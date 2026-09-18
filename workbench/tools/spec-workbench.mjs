@@ -12,7 +12,7 @@ import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePa
 import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
@@ -166,10 +166,21 @@ export function closeTask(rootDir, id, options) {
   // one Receipt row here, with live Git facts, before the Spec's own
   // evidence row is appended; a table-backed Spec has no record to carry a
   // Receipt on, so it gets none.
+  //
+  // The Receipt append runs BEFORE the record is flipped to done. It fails
+  // closed on a non-Git room or an altered earlier row (task-receipt.mjs's
+  // own checksum chain), and it must fail before anything is written: doing
+  // this the other way round left a record marked done, with Proof, but no
+  // Receipt row and no Spec evidence row, on the exact failure this guards
+  // against - and a rerun would then close a different Task entirely. The
+  // record is re-read after the append so `writeTaskStatus` writes onto the
+  // Receipt-bearing content just landed on disk, not a stale in-memory copy
+  // from before the append.
   let content = spec.content;
   if (task.source === 'record') {
-    writeTaskStatus(task.record, { Status: 'done', Proof: proof });
     appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun: proof, docsTouched: docs, remainingGap });
+    const receipted = readTaskRecord(task.record.filePath, task.record.root);
+    writeTaskStatus(receipted, { Status: 'done', Proof: proof });
   } else {
     content = updateTaskRow(spec.content, task.id, (cells) => {
       cells[2] = 'done';
@@ -378,6 +389,17 @@ function packetFindings(specs, options = {}) {
     for (const slice of slices) {
       if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { specId: spec.id, taskId: slice.id }));
       if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, taskId: slice.id }));
+      // A malformed Receipt or an altered earlier row fails closed on read
+      // (task-receipt.mjs's own checksum chain); reported here by name so
+      // doctor keeps reporting every other spec, slice and scope instead of
+      // the raw exception this used to throw straight through the board.
+      if (slice.source === 'record') {
+        try {
+          readReceiptFromFile(slice.record.filePath);
+        } catch (error) {
+          issues.push(finding('receipt-corrupt', `${spec.id}/${slice.id} Receipt: ${error.message}`, { specId: spec.id, taskId: slice.id }));
+        }
+      }
     }
     // The selected slice is the first resumable or ready slice; a later slice
     // waiting on its predecessor is ordinary sequencing, not a finding. The
@@ -729,11 +751,26 @@ function renderHotBoard(specs) {
       continue;
     }
     const slices = slicesOf(spec).map((item) => ({ ...item, status: effectiveStatus(item, satisfiedIds(spec, completed)) }));
-    const task = slices.find((item) => item.status === 'in-progress')
+    // The acceptance line names each *active* Task's own signal, not one
+    // slice per Spec: a Spec with more than one in-progress Task lists every
+    // one of them (visible-id order), each with its own status and signal,
+    // and never mixes in a ready or blocked Task once there is more than
+    // one in-progress. A Spec with zero or one in-progress Task keeps the
+    // exact single-cell shape this board always rendered.
+    const inProgress = slices.filter((item) => item.status === 'in-progress').sort((a, b) => compareVisibleIds(a.id, b.id));
+    const task = inProgress[0]
       ?? slices.find((item) => item.status === 'ready')
       ?? slices.find((item) => item.status === 'blocked');
-    const signal = task ? receiptSignal(task) : null;
-    const slice = task ? `${task.id}: ${task.slice} (${task.status}${signal ? `; ${signal}` : ''})` : 'Acceptance / owner gate';
+    let slice;
+    if (inProgress.length > 1) {
+      slice = inProgress.map((item) => {
+        const itemSignal = receiptSignal(item);
+        return `${item.id}: ${item.slice} (${item.status}${itemSignal ? `; ${itemSignal}` : ''})`;
+      }).join('; ');
+    } else {
+      const signal = task ? receiptSignal(task) : null;
+      slice = task ? `${task.id}: ${task.slice} (${task.status}${signal ? `; ${signal}` : ''})` : 'Acceptance / owner gate';
+    }
     const blocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
     lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(spec.latestEvent)} | ${escapeCell(spec.nextGate)} |`);
   }
@@ -747,9 +784,19 @@ function renderHotBoard(specs) {
 // Receipt at all, and a record with no Receipt rows yet (no run has appended
 // one) returns `null` so the board renders exactly as it did before this
 // signal existed.
+// A malformed Receipt or an altered earlier row (task-receipt.mjs's own
+// checksum chain, by design) must never crash the board: `doctor` already
+// reports the same condition as `receipt-corrupt` (packetFindings, below),
+// so the render path falls back to a `receipt unreadable` marker in place of
+// the signal rather than throwing the raw error through `render`/`doctor`.
 function receiptSignal(task) {
   if (task.source !== 'record') return null;
-  const rows = readReceiptFromFile(task.record.filePath);
+  let rows;
+  try {
+    rows = readReceiptFromFile(task.record.filePath);
+  } catch {
+    return 'receipt unreadable';
+  }
   if (rows.length === 0) return null;
   const latest = rows[rows.length - 1];
   return `runs ${rows.length}, ${latest.branch} @ ${latest.headSha.slice(0, 7)}, dirty ${latest.dirty}`;

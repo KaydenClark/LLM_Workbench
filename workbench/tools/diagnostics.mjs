@@ -46,6 +46,14 @@ const registry = Object.freeze({
   // `malformed-spec`, lets doctor keep reporting every other spec and every
   // other scope instead of aborting the whole run on the first collision.
   'row-record-collision': entry('error', 'specs', 'selection', 'a spec carries both a slice-table row and a Task record for the same id'),
+  // S-00H TK-007 corrective: a Task's Receipt fails its own append-only
+  // checksum-chain verification, or its section is otherwise malformed. The
+  // Spec and its Task record both still parse fine - only the Receipt is
+  // unreadable - so this is registered separately from `malformed-spec` for
+  // the same reason `row-record-collision` is: doctor keeps reporting every
+  // other spec, slice and scope instead of the raw exception this used to
+  // throw straight through `renderHotBoard`.
+  'receipt-corrupt': entry('error', 'specs', 'selection', "a Task's Receipt fails its append-only check or is malformed"),
   // selected slice only
   'blocked-slice': entry('error', 'specs', 'selected-slice', 'the selected task names an unmet dependency'),
   // attention: visible, never blocking
