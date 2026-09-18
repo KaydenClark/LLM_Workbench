@@ -811,6 +811,7 @@ node workbench/tools/spec-workbench.mjs complete S-001
 node workbench/tools/spec-workbench.mjs convert-tasks S-001
 node workbench/tools/spec-workbench.mjs receipt S-001 --task TK-002 \
   --tests "[TESTS RUN AND RESULT]" --docs "[DOCS TOUCHED OR none]" --remaining-gap "[GAP OR none]"
+node workbench/tools/spec-workbench.mjs report S-001 --candidate [SHA] [--json]
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
 ```
@@ -824,7 +825,12 @@ append-only run row (branch, HEAD SHA, upstream distance, dirty file count,
 tests, docs, remaining gap, checksum) to a named in-progress Task record;
 `close` appends the run's final row on a record-backed Task before flipping
 it, and the hot board shows each in-progress Task's run count, latest branch,
-short SHA and dirty count without ever rendering the run table. `next` returns one eligible ready task. `show` loads one stable work packet.
+short SHA and dirty count without ever rendering the run table. `report`
+assembles a Spec's state for a separate-context reviewer, bound to the named
+candidate SHA (resolved, exists, matches `HEAD`): every Task with its status,
+proof or plan and Receipt runs (a record-backed Spec's retained done rows
+marked as history), every acceptance line with its checked state, the evidence
+rows, the completion result and the gaps; it informs and never refuses. `next` returns one eligible ready task. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result

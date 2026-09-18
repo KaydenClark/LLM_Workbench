@@ -21,7 +21,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 | [S-050](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) | TK-006: Reconcile release receipts and readiness verdict (blocked) | codex | live-device-and-private-repository-access | Repaired source PR84 and Template PR5/PR6 delivered; exact receipts reconciled. | Establish actual S052TK004 private repository and Mac/Windows Claude/Codex access before final readiness. |
 | [S-052](workbench/specs/S-052-private-session-transport/SPEC.md) | TK-004: Prove real Mac Windows Claude Codex continuation (blocked) | codex | live-device-and-private-repository-access | TK-003 closed with proof. | Establish actual private repository and Mac/Windows Claude/Codex access for TK-004. |
 | [S-00I](workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md) | TK-002: Move ADR lifecycle from frontmatter status to folder location (in-progress) | DISPATCHER | TK-001 | TK-002 claimed by DISPATCHER. | Close TK-002 with verification and documentation proof. |
-| [S-00J](workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md) | TK-001: Report the assembled Spec state for a reviewer at a stable seam (in-progress) | DISPATCHER | S-00H | TK-001 claimed by DISPATCHER. | Close TK-001 with verification and documentation proof. |
+| [S-00J](workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md) | TK-002: Record a separate-context review verdict against the immutable candidate (in-progress) | DISPATCHER | TK-001 | TK-002 claimed by DISPATCHER. | Close TK-002 with verification and documentation proof. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
