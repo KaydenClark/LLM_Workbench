@@ -32,11 +32,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
-import { appendEvidence, atomicWrite, findSpec, nextIdentity, slicesOf } from './spec-workbench.mjs';
-import { formatTaskRecord, parseTaskRecord } from './task-record.mjs';
+import { appendEvidence, atomicWrite, findSpec, loadSpecs, slicesOf } from './spec-workbench.mjs';
+import { formatTaskRecord, listTaskRecords, parseTaskRecord } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
 import { assertSafeWritePath } from './workbench-paths.mjs';
-import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
 
@@ -155,6 +155,19 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
   // row is written first (immediately above), so createCorrectiveTasks
   // re-reads it from disk as the exact row it names in each Task's Planned
   // verification, rather than a caller-supplied guess at its own position.
+  //
+  // Row-then-Tasks recovery: if the process dies in the gap between the
+  // atomicWrite above and the createCorrectiveTasks call below, the Spec's
+  // evidence log already durably carries the fail verdict row but no
+  // corrective Task exists for it yet - a state indistinguishable from a
+  // fail verdict recorded by some other path that never called this
+  // function through to the end. Recovery is simply calling
+  // createCorrectiveTasks(root, specId, { candidate, findings }) again (or
+  // re-running this same verdict command is not an option, since a second
+  // `verdict` call would append a second row - the recovery call is to the
+  // narrower seam): the duplicate-row check below finds no existing Task
+  // naming this row yet, so it proceeds exactly as if this call had reached
+  // it the first time.
   let correctiveTasks;
   if (result === 'fail') {
     correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings }).created;
@@ -166,15 +179,14 @@ export function recordReviewVerdict(rootDir, specId, options = {}) {
 // S-00J TK-003: one Task record per diagnosed defect in an already-recorded
 // fail verdict, through the exact same Task-record seam S-00H delivered
 // (`formatTaskRecord` / `parseTaskRecord` - never a second template),
-// allocated with the room's own visible-id allocator (`nextIdentity`) so a
-// corrective Task never collides with a retained table row or an existing
-// record. The verdict this Task answers is never a caller-supplied date or
-// ordinal: it is read back from the Spec's own append-only evidence log, so
-// a Task can never name a verdict that was never actually recorded. The
-// anchor is the most recent `fail` row for this exact candidate; its
-// position in the evidence log (not the candidate/date/result alone, which
-// two same-day verdicts could share) is what makes the reference
-// unambiguous.
+// allocated with the room's own visible-id allocator so a corrective Task
+// never collides with a retained table row or an existing record. The
+// verdict this Task answers is never a caller-supplied date or ordinal: it
+// is read back from the Spec's own append-only evidence log, so a Task can
+// never name a verdict that was never actually recorded. The anchor is the
+// most recent `fail` row for this exact candidate; its position in the
+// evidence log (not candidate+date+result alone, which two same-day
+// verdicts could share) is what makes the reference unambiguous.
 //
 // Blocks nothing already done (`Blockers: none`) and lands with
 // `Status: ready` and `Destination: spec-acceptance: <spec> Acceptance
@@ -185,8 +197,8 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   const root = path.resolve(rootDir);
   const candidate = requiredString(options.candidate, 'createCorrectiveTasks requires a --candidate SHA');
   const findings = requiredString(options.findings, 'createCorrectiveTasks requires --findings naming at least one defect');
-  const items = splitFindings(findings);
-  if (items.length === 0) {
+  const givenItems = splitFindings(findings);
+  if (givenItems.length === 0) {
     throw new Error(`A fail verdict for candidate ${candidate} on ${specId} names no corrective finding ("${findings}"); a failed verdict that leaves the Spec with no corrective Task is refused.`);
   }
 
@@ -209,14 +221,61 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // first): unambiguous by construction, unlike candidate+date+result alone,
   // which two verdicts recorded the same day could share.
   const rowOrdinal = anchorIndex + 1;
-  const verdictDate = evidence.rows[anchorIndex].cells[0];
+  const anchorRow = evidence.rows[anchorIndex];
+  const verdictDate = anchorRow.cells[0];
 
+  // S-00J TK-003 review corrective (Medium): the anchored row - never the
+  // caller's own argument - is the source of truth for what a corrective
+  // Task answers, so a caller cannot attach invented findings to a recorded
+  // row. `findings` stays a required argument (a caller must still name
+  // what it expects to find there) but is used only as an equality check
+  // against the row's own findings cell, both sides split and normalized
+  // the same way (`splitFindings` below) so the row's own newline-to-space
+  // collapsing at write time (`escapeMarkdownTableCell`) can never produce
+  // a false mismatch against a caller - such as the internal call from
+  // `recordReviewVerdict` above - that passed the original, unescaped text.
+  const items = splitFindings(anchorRow.cells[3]);
+  if (items.length === 0) {
+    throw new Error(`Evidence row ${rowOrdinal} on ${specId} (fail verdict at ${candidate}) names no corrective finding; corrective Tasks cannot be created from it.`);
+  }
+  if (JSON.stringify(items) !== JSON.stringify(givenItems)) {
+    throw new Error(`createCorrectiveTasks findings do not match evidence row ${rowOrdinal}'s own recorded findings for candidate ${candidate} on ${specId}; the recorded row is the source of truth for what a corrective Task answers, so a caller cannot attach different findings to it. Recorded: "${items.join('; ')}"; given: "${givenItems.join('; ')}".`);
+  }
+
+  // S-00J TK-003 review corrective (Medium): a second call for the same
+  // candidate and row would otherwise create a duplicate set of Tasks
+  // answering the same defects twice. Every Task this function has ever
+  // created for a row names that row's exact ordinal, candidate and date in
+  // its own Planned verification (built from `answeredMarker` below), so
+  // detecting "already created" is reading the existing records, never a
+  // second ledger that could drift from them.
+  const answeredMarker = `Answers evidence row ${rowOrdinal} (fail verdict at ${candidate} on ${verdictDate})`;
   const specDir = path.dirname(spec.filePath);
-  const created = [];
+  const existingRecords = listTaskRecords(specDir, root);
+  if (existingRecords.some((task) => task.plannedVerification && task.plannedVerification.startsWith(answeredMarker))) {
+    throw new Error(`Corrective Tasks already exist for candidate ${candidate}'s evidence row ${rowOrdinal} on ${specId}; createCorrectiveTasks refuses to create a duplicate set for a row already answered.`);
+  }
+
+  // S-00J TK-003 review corrective (Low): every candidate record is built
+  // and parsed back (validated) before anything is written, so a problem
+  // partway through the batch - a finding whose text the record vocabulary
+  // cannot carry, for instance - never leaves a partial set of corrective
+  // Tasks on disk. Ids are allocated from one `loadSpecs` snapshot, each
+  // newly allocated id added to the in-memory reservation list before the
+  // next is chosen - the same TK-prefixed, letter-bearing rule `next-id`
+  // uses, without a disk round trip between allocations in this batch:
+  // nothing is written until every id is already reserved in memory, so two
+  // allocations in the same batch can never collide, and there is nothing
+  // for a later allocation to fail to see.
+  const specs = loadSpecs(root);
+  const occupied = specs.flatMap((entry) => [...entry.rows, ...(entry.records ?? [])].map((item) => item.id));
+  const reservations = [...new Map(occupied.map((id) => [visibleIdKey(id), id])).values()];
+  const staged = [];
   for (const findingText of items) {
-    const { id } = nextIdentity(root, specId, { prefix: 'TK' });
+    const id = allocateVisibleId('TK', reservations, { requireLetter: true });
+    reservations.push(id);
     const filePath = path.join(specDir, 'tasks', id, 'TASK.md');
-    const plannedVerification = `Answers evidence row ${rowOrdinal} (fail verdict at ${candidate} on ${verdictDate}): ${findingText}`;
+    const plannedVerification = `${answeredMarker}: ${findingText}`;
     const content = formatTaskRecord({
       id,
       specId,
@@ -226,13 +285,27 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
       destination: `spec-acceptance: ${specId} Acceptance Criteria`,
       plannedVerification
     });
-    // Parsed back before it lands, matching `convertSpecSlices`'s own
-    // safety discipline: a record this refuses to produce is never written.
+    // Parsed back before it is staged, matching `convertSpecSlices`'s own
+    // safety discipline: a record this refuses to produce is never written,
+    // and here it is not even added to the batch the write loop below runs.
     parseTaskRecord(content, filePath, root);
-    assertSafeWritePath(root, filePath);
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    atomicWrite(filePath, content);
-    created.push({ id, filePath: path.relative(root, filePath).split(path.sep).join('/'), slice: findingText });
+    staged.push({ id, filePath, content, slice: findingText });
+  }
+
+  // Only once every record in the batch is already known good does the
+  // write loop run. A disk failure partway through THIS loop (as opposed to
+  // the row-then-Tasks gap `recordReviewVerdict` documents above) leaves a
+  // genuine partial set on disk with no automatic resume: the row-ordinal
+  // duplicate check above only refuses a second call once at least one
+  // matching Task has landed, so recovering from a partial batch means
+  // completing or removing the partial `tasks/<id>/` directories by hand
+  // before createCorrectiveTasks is called again for this same row.
+  const created = [];
+  for (const item of staged) {
+    assertSafeWritePath(root, item.filePath);
+    fs.mkdirSync(path.dirname(item.filePath), { recursive: true });
+    atomicWrite(item.filePath, item.content);
+    created.push({ id: item.id, filePath: path.relative(root, item.filePath).split(path.sep).join('/'), slice: item.slice });
   }
 
   return { specId, candidate, verdictRow: { ordinal: rowOrdinal, date: verdictDate }, created };
@@ -263,13 +336,29 @@ function findingsGap(findings) {
 
 // The findings string split into its individual items - "none" (the literal
 // a pass accepts) yields no items at all, everything else is split on ";"
-// and trimmed, blanks dropped. Shared by `findingsGap` above (the remaining-
-// gap evidence cell) and `createCorrectiveTasks` below (one Task per item),
-// so the two never drift into disagreeing about what counts as a finding.
+// with each item's internal whitespace normalized to single spaces, blanks
+// dropped after normalization. Shared by `findingsGap` above (the
+// remaining-gap evidence cell) and `createCorrectiveTasks` below (one Task
+// per item and the row-vs-caller equality check), so the two never drift
+// into disagreeing about what counts as a finding.
+//
+// S-00J TK-003 review corrective (Medium): a finding is destined for a
+// single-line `**Slice:**` / `**Planned verification:**` field in a Task
+// record (`task-record.mjs`'s field regex is line-anchored and `.` never
+// matches a newline), so an embedded newline - or a tab, or a run of extra
+// spaces - previously survived into those fields verbatim, truncating the
+// field on read and leaving the rest as orphan text in the record body.
+// Collapsing every whitespace run to one space mirrors what
+// `escapeMarkdownTableCell` already does for the evidence row's own findings
+// cell (it replaces a literal newline with a space); doing the same
+// normalization here, rather than only at the evidence-row boundary, is
+// also what keeps the row-vs-caller equality check above from a false
+// mismatch when the caller's raw text still carries the newline the row's
+// own cell already collapsed.
 function splitFindings(findings) {
   const trimmed = findings.trim();
   if (trimmed.toLowerCase() === 'none') return [];
-  return trimmed.split(';').map((item) => item.trim()).filter(Boolean);
+  return trimmed.split(';').map((item) => item.trim().replace(/\s+/g, ' ')).filter(Boolean);
 }
 
 // Every verdict row in the evidence log, parsed from its cells alone - never

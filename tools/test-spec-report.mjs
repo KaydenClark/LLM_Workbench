@@ -15,6 +15,7 @@ import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
+import { readTaskRecord } from '../workbench/tools/task-record.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 
 function initGitRoot(dir) {
@@ -1039,6 +1040,178 @@ function headingShadowSpec(id) {
     assert.equal(doctorFindings.filter((item) => item.blocks === 'all' || item.blocks === 'selection').length, 0, 'doctor reports no blocking finding once render has caught up');
 
     console.log('ok - a fail verdict creates one corrective Task per finding in the same operation, naming the verdict row it answers, without touching the Spec header Status or the retained done row, and the corrective Task is selectable by next and visible on the rendered board');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-003 review corrective (Medium): a finding containing an embedded
+// newline (or an internal run of extra whitespace) must round-trip through
+// readTaskRecord with its full text, normalized to a single line - never
+// truncated at the newline with orphan text left in the record body, since
+// `task-record.mjs`'s field regex is line-anchored and `.` never matches a
+// newline.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-finding-newline-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-723-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-723', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    const verdict = recordReviewVerdict(root, 'S-723', {
+      candidate, result: 'fail',
+      findings: 'Missing validation on\nthe login form; Stale doc   reference',
+      reviewer: 'Claude Sonnet 5 (separate context)'
+    });
+
+    assert.equal(verdict.correctiveTasks.length, 2);
+    const [firstTask, secondTask] = verdict.correctiveTasks;
+    const record = readTaskRecord(path.join(root, firstTask.filePath), root);
+    assert.equal(record.slice, 'Missing validation on the login form', 'the two-line finding round-trips through readTaskRecord with its full text, normalized to one line');
+    assert.equal(
+      record.plannedVerification,
+      `Answers evidence row 2 (fail verdict at ${candidate} on ${verdict.date}): Missing validation on the login form`
+    );
+
+    const raw = fs.readFileSync(path.join(root, firstTask.filePath), 'utf8');
+    const lines = raw.split('\n');
+    assert.equal(lines[0], `# ${firstTask.id} - Missing validation on the login form`, 'the title line carries the full normalized finding text, never truncated at an embedded newline');
+    assert.equal(lines[1], '', 'no orphan text follows the title line');
+    const sliceLineIndex = lines.findIndex((line) => line.startsWith('**Slice:**'));
+    assert.equal(lines[sliceLineIndex], '**Slice:** Missing validation on the login form', 'the Slice field carries the full normalized text on one line');
+    assert.equal(lines[sliceLineIndex + 1].startsWith('**Status:**'), true, 'no orphan text follows the Slice field - it is a single complete line');
+
+    const secondRecord = readTaskRecord(path.join(root, secondTask.filePath), root);
+    assert.equal(secondRecord.slice, 'Stale doc reference', 'an internal multi-space run within a finding is also collapsed to a single space');
+
+    console.log('ok - a finding containing an embedded newline (and an internal multi-space run) round-trips through readTaskRecord with its full text, normalized to a single line, with no orphan text left in the record body');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-003 review corrective (Medium): createCorrectiveTasks derives the
+// Tasks it creates from the anchored fail verdict row's own findings cell,
+// never from the caller's argument alone - a caller cannot attach invented
+// findings to a recorded row. A findings argument that does not match the
+// anchored row (after the same normalization both sides get) is refused by
+// name, and nothing is written.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-corrective-mismatch-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const candidate = headSha(root);
+    const specPath = 'specs/S-724-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-724', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: [
+        '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+        `| 2026-09-18 | review | Review verdict: fail at ${candidate} | Missing input validation; Stale doc reference | Claude Sonnet 5 (separate context) | 2 |`
+      ].join('\n')
+    }));
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+
+    assert.throws(
+      () => createCorrectiveTasks(root, 'S-724', { candidate, findings: 'Some invented finding never reviewed' }),
+      (error) => error instanceof Error
+        && /do not match evidence row 2/.test(error.message)
+        && error.message.includes(candidate)
+        && error.message.includes('Some invented finding never reviewed'),
+      "createCorrectiveTasks refuses by name when the given findings do not match the anchored fail verdict row's own recorded findings"
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused mismatch writes nothing to the Spec file');
+    assert.equal(fs.existsSync(path.join(root, 'specs/S-724-fixture/tasks')), false, 'no tasks/ directory is created by a refused mismatch');
+
+    console.log("ok - createCorrectiveTasks refuses by name when the caller's findings do not match the anchored fail verdict row's own recorded findings, and writes nothing");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-003 review corrective (Medium): a second createCorrectiveTasks
+// call for the same candidate and the same evidence row would otherwise
+// create a duplicate set of Tasks answering the same defects twice. It is
+// refused, naming the candidate and the row's own ordinal, and writes
+// nothing - detected by reading the existing Task records' own Planned
+// verification rather than a second ledger.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-corrective-duplicate-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-725-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-725', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    recordReviewVerdict(root, 'S-725', {
+      candidate, result: 'fail', findings: 'Missing input validation; Stale doc reference',
+      reviewer: 'Claude Sonnet 5 (separate context)'
+    });
+    const specAfterFirst = fs.readFileSync(path.join(root, specPath), 'utf8');
+    const tasksDirEntriesBefore = fs.readdirSync(path.join(root, 'specs/S-725-fixture/tasks')).sort();
+
+    assert.throws(
+      () => createCorrectiveTasks(root, 'S-725', { candidate, findings: 'Missing input validation; Stale doc reference' }),
+      (error) => error instanceof Error
+        && error.message.includes(candidate)
+        && /row 2/.test(error.message)
+        && /already exist/i.test(error.message),
+      'a second createCorrectiveTasks call for the same candidate and row is refused, naming the candidate and the row ordinal'
+    );
+
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), specAfterFirst, 'the refused duplicate call writes nothing to the Spec file');
+    const tasksDirEntriesAfter = fs.readdirSync(path.join(root, 'specs/S-725-fixture/tasks')).sort();
+    assert.deepEqual(tasksDirEntriesAfter, tasksDirEntriesBefore, 'the refused duplicate call creates no additional Task directory');
+
+    console.log('ok - a second createCorrectiveTasks call for the same candidate and row is refused, naming the candidate and the row ordinal, and writes nothing');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-003 review corrective (Low): a `pass` verdict, even one carrying
+// real (non-"none") findings text, creates no Task and no `tasks/`
+// directory at all - only a `fail` verdict ever triggers corrective-Task
+// creation.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-pass-no-tasks-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-726-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-726', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    const verdict = recordReviewVerdict(root, 'S-726', {
+      candidate, result: 'pass', findings: 'Cosmetic note only, not a real defect',
+      reviewer: 'Claude Sonnet 5 (separate context)'
+    });
+
+    assert.equal(verdict.result, 'pass');
+    assert.equal(verdict.correctiveTasks, undefined, 'a pass verdict never creates or returns corrective Tasks, even with non-"none" findings text');
+    assert.equal(fs.existsSync(path.join(root, 'specs/S-726-fixture/tasks')), false, 'a pass verdict creates no tasks/ directory at all');
+
+    console.log('ok - a pass verdict, even with real findings text, creates no Task and no tasks/ directory');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
