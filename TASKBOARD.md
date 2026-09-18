@@ -21,7 +21,7 @@ live in the linked spec. Commands live in `RUNBOOK.md`.
 | [S-050](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) | TK-006: Reconcile release receipts and readiness verdict (blocked) | codex | live-device-and-private-repository-access | Repaired source PR84 and Template PR5/PR6 delivered; exact receipts reconciled. | Establish actual S052TK004 private repository and Mac/Windows Claude/Codex access before final readiness. |
 | [S-052](workbench/specs/S-052-private-session-transport/SPEC.md) | TK-004: Prove real Mac Windows Claude Codex continuation (blocked) | codex | live-device-and-private-repository-access | TK-003 closed with proof. | Establish actual private repository and Mac/Windows Claude/Codex access for TK-004. |
 | [S-00I](workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md) | TK-006: Gate discard of retired records on verified `main`, a clean reference scan and recoverable Git identity (in-progress) | DISPATCHER | TK-005 | TK-006 claimed by DISPATCHER. | Close TK-006 with verification and documentation proof. |
-| [S-00J](workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md) | TK-006: Correct reviewed-unit language in the review and delivery skills (in-progress) | DISPATCHER | TK-004 | TK-006 claimed by DISPATCHER. | Close TK-006 with verification and documentation proof. |
+| [S-00J](workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md) | Acceptance / owner gate | DISPATCHER | none; S-00H is `complete` (integration `49c671e`). | TK-006 closed with proof. | Confirm acceptance criteria and completion result. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
