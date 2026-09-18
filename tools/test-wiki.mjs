@@ -235,7 +235,18 @@ test('the product wiki adopts the contract and both Lexicons route design questi
   assert.match(router, /design-concepts/, 'the product router routes to the collection');
   const findings = validateWiki(root);
   assert.deepEqual(findings.filter((item) => item.severity === 'error'), [], 'the product wiki validates without error findings');
-  assert.equal(fs.readdirSync(path.join(root, 'workbench', 'wiki', 'design-concepts')).filter((name) => !name.startsWith('.') && name !== 'README.md').length, 0, 'the product ships an empty design-concepts collection: agents do not author articles');
+  // S-00I TK-005: the collection is no longer empty - it carries S-00H's
+  // reconciled durable-owner article, authored on the owner's own explicit
+  // direction (the assigned Spec's lane handoff) as that retirement's
+  // required precondition, never authored un-directed by an agent. Every
+  // entry in the collection besides its README must still be a validated
+  // design-concept article, not an arbitrary file an agent slipped in.
+  const designConceptEntries = fs.readdirSync(path.join(root, 'workbench', 'wiki', 'design-concepts')).filter((name) => !name.startsWith('.') && name !== 'README.md');
+  for (const name of designConceptEntries) {
+    const content = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'design-concepts', name), 'utf8');
+    assert.match(content, /^---\ntype: design-concept\n/, `${name} must be a design-concept article, not an un-directed file`);
+    assert.match(content, /\nauthorized_by: /, `${name} must record who authorized it`);
+  }
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     assert.match(fs.readFileSync(path.join(root, relative), 'utf8'), /workbench\/wiki\/design-concepts\//, `${relative} routes design questions to the collection`);
   }
@@ -339,5 +350,33 @@ test('alphanumeric task tables remain forbidden copied live task state', () => {
     const target = path.join(project, 'workbench/wiki/Copied ID.md');
     fs.writeFileSync(target, note({}, '# Copied\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00A | Slice | ready | none | pending |\n'));
     assert.ok(validateWiki(project).some(item => item.code === 'copied-task-state' && /task state|live state/i.test(item.message)));
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// S-00I TK-005: SCHEMA.md's Update section already says "Never copy live
+// task rows, spec evidence, or generated Taskboard state into a note", but
+// the pre-anchor LIVE_STATE_MARKERS only ever matched a slice-table row
+// (starting with a bare `TK-...` cell) or the two literal region markers -
+// never a Spec's own Append-Only Evidence And Execution Log row, whose first
+// cell is a date and whose second cell is a Task id or the literal `spec` /
+// `review` (closeTask/completeSpec/recordReviewVerdict's own vocabulary in
+// spec-workbench.mjs and spec-report.mjs). A reconciliation that pastes a
+// Spec's evidence log into a Wiki note - "transform, never copy" - is
+// exactly the copied "spec evidence" SCHEMA.md already names, so it must
+// fail the same copied-task-state check a copied slice table already does.
+test('a Spec\'s own Append-Only Evidence And Execution Log row pasted into a wiki note is copied task state', () => {
+  const project = seededWiki();
+  try {
+    const pastedTaskRow = path.join(project, 'workbench/wiki/Pasted Task Evidence.md');
+    fs.writeFileSync(pastedTaskRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | TK-005 | Task closed | proof text | docs checked | none |\n'));
+    const pastedSpecRow = path.join(project, 'workbench/wiki/Pasted Spec Evidence.md');
+    fs.writeFileSync(pastedSpecRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |\n'));
+    const pastedReviewRow = path.join(project, 'workbench/wiki/Pasted Review Evidence.md');
+    fs.writeFileSync(pastedReviewRow, note({}, '# Pasted\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | review | Review verdict: pass at abc1234 [deadbeefcafe] #1 | none | Claude Opus 5 | none |\n'));
+    const findings = validateWiki(project);
+    for (const [file, label] of [[pastedTaskRow, 'Pasted Task Evidence.md'], [pastedSpecRow, 'Pasted Spec Evidence.md'], [pastedReviewRow, 'Pasted Review Evidence.md']]) {
+      assert.ok(findings.some((item) => item.note === `workbench/wiki/${label}` && item.code === 'copied-task-state'),
+        `${label} must be reported as copied-task-state; SCHEMA.md forbids copying spec evidence into a note`);
+    }
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });

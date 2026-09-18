@@ -69,7 +69,7 @@ blocking there would disable the tool in the situation that most needs it.
   field:
   [ADR-000H](../../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md),
   delivered by
-  [S-00H](../S-00H-task-artifact-and-terminology-migration/SPEC.md).
+  [S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md).
 - Registered blocking semantics, which the new findings must declare rather
   than invent:
   [ADR-0029](../../docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md).
@@ -90,7 +90,7 @@ blocking there would disable the tool in the situation that most needs it.
 
 None blocking. ADR-000J routes `upstream distance` into the Receipt, but the
 criterion that checks it belongs to
-[S-00H](../S-00H-task-artifact-and-terminology-migration/SPEC.md) TK-006, which
+[S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) TK-006, which
 owns the Receipt's fields — this Spec's TK-001 makes the value readable and
 claims nothing further about it. Neither Spec waits on the other.
 

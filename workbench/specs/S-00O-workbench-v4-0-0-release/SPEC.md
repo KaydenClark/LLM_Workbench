@@ -134,7 +134,7 @@ Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
 | Unit | Owner | Blocks on | Endpoint |
 |---|---|---|---|
 | Blueprint rewrite against every rung and the full recursive loop | [S-00P](../S-00P-workflow-canon-rework/SPEC.md) TK-001 | nothing; ready now | Reworked `BLUEPRINT.md` |
-| Standalone `TASK.md`, Task vocabulary, Packet, Receipt, Taskboard projection | [S-00H](../S-00H-task-artifact-and-terminology-migration/SPEC.md) | TT-Q10 for TK-003 and TK-004 only | S-00H `complete` |
+| Standalone `TASK.md`, Task vocabulary, Packet, Receipt, Taskboard projection | [S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) | TT-Q10 for TK-003 and TK-004 only | S-00H `complete` |
 | Retirement lifecycle by folder, reconciliation into durable owners, verified discard | [S-00I](../S-00I-folder-lifecycle-for-records/SPEC.md) | S-00H | S-00I `complete` |
 | Assembled-Spec review, corrective-Task return path, Human QA approval before closure | [S-00J](../S-00J-spec-qa-gate-at-integration/SPEC.md) | S-00H | S-00J `complete` |
 | AGENTS, RUNBOOK, LEXICON and `templates/` rewrite; ADR-000F, ADR-000G and ADR-000I reconciled | S-00P TK-002 onward | S-00H, S-00I, S-00J | S-00P `complete` |

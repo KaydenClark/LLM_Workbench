@@ -80,6 +80,16 @@ const registry = Object.freeze({
   // never blocking, exactly like the Spec case, and raised only by doctor's
   // explicit historical-route read, never by `next` or `claim`.
   'retired-task-not-done': entry('attention', 'specs', 'none', "a retired Task's Status is not done"),
+  // S-00I TK-005: a retired Spec's whole point is that its surviving current
+  // claims were transformed into a durable Wiki owner before the move - a
+  // precondition `retireSpec` enforces at retirement time, but the Wiki note
+  // itself is an ordinary note afterward and nothing stops it going stale or
+  // being deleted later. This is the one check that notices, covering both
+  // shapes named by the same message class: no active-roster Wiki note names
+  // the retired Spec's historical route in its `source_paths` at all
+  // ("missing"), or one does but its own `status` is no longer `active`
+  // ("stale") - visible and never blocking, exactly like `retired-not-complete`.
+  'retired-wiki-owner-stale': entry('attention', 'specs', 'none', "a retired Spec's Wiki durable owner is missing or its status is not active"),
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   // S-00I TK-002: lifecycle now comes from folder location (top level, or
   // ADR_LIFECYCLE_FOLDERS `proposed`/`archive`), not frontmatter `status`. A

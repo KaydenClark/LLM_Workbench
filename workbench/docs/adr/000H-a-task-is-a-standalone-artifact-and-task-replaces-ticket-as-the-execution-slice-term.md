@@ -4,7 +4,7 @@ canonicalized_in:
   - LEXICON.md
   - AGENTS.md
   - RUNBOOK.md
-  - workbench/specs/S-00H-task-artifact-and-terminology-migration/SPEC.md
+  - workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md
 ---
 
 # A Task is a standalone artifact and Task replaces Ticket as the execution-slice term
@@ -158,7 +158,7 @@ decision:
   test seam, and land with the decision.
 - **Left to the owning Spec.** The declared context unit in
   `workbench/manifest.json`, which
-  [S-00H](../../specs/S-00H-task-artifact-and-terminology-migration/SPEC.md)
+  [S-00H](../../specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)
   TK-008 owns with a red test at the consuming seam, and the `Ticket`-to-`Task`
   rename across `AGENTS.md`, `RUNBOOK.md`, the tools, the skills and the generic
   templates, which S-00H TK-003 and TK-004 own. The manifest asserts nothing

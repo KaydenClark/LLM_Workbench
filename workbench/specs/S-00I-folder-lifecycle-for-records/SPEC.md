@@ -104,7 +104,7 @@ Wiki record; `SPEC.md` is never resurrected.
   [ADR-000A](../../docs/adr/000A-active-adr-decisions-and-destination-blueprints.md).
 - A Task must be a record before it can occupy a folder:
   [ADR-000H](../../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md),
-  delivered by [S-00H](../S-00H-task-artifact-and-terminology-migration/SPEC.md).
+  delivered by [S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md).
 - Reconciliation transforms; it does not copy. The Wiki's copied-task-state
   validation stays in force, so a reconciliation that pastes a Spec into the
   Wiki fails.
