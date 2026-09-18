@@ -23,6 +23,7 @@ import {
   parseCliArgs,
   receiptTask,
   render,
+  retireSpec,
   scanReferences,
   slicesOf
 } from '../workbench/tools/spec-workbench.mjs';
@@ -3460,4 +3461,340 @@ function completeEmptyTableRecordBackedSpec(id) {
   } finally {
     fs.rmSync(registerRoot, { recursive: true, force: true });
   }
+}
+
+// ============================================================================
+// S-00I TK-005: retireSpec reconciles a completed Spec's surviving current
+// claims into a durable Wiki owner - never a copy, `wiki.mjs`'s own
+// `copied-task-state` and property validation is the enforcement, never
+// re-implemented here - and then retires the whole Spec directory (Task
+// records travel with it, never retired one by one first) with
+// `moveSpecDirectory`, cleaning up the branches its Tasks' Receipt rows
+// name. Every precondition is refused by name before any write. Red at the
+// pre anchor 0ba9bc40e7f9ee22876cfac8c5ee4670eaca89d2: `retireSpec` is not
+// exported from spec-workbench.mjs at all (confirmed by grep and in a
+// throwaway detached worktree at that commit), so the import above fails
+// before a single assertion in this file runs - the same shape TK-003's own
+// comment documents for `moveSpecDirectory`.
+// ============================================================================
+function retirementReadySpec(id, taskIds) {
+  const evidenceRows = taskIds.map((taskId) => `| 2026-09-18 | ${taskId} | Task closed | fixture proof | fixture docs | none |`);
+  return [
+    `# ${id} - Retirement Fixture`,
+    '',
+    `**Spec ID:** ${id}`,
+    '**Status:** complete',
+    '**Priority:** 0',
+    '**Owner:** agent',
+    '**Updated:** 2026-09-18',
+    '**Catalog description:** Proves Spec retirement.',
+    '**Blockers:** none',
+    '**Latest event:** Spec completed and removed from the hot board.',
+    '**Next gate:** none',
+    '',
+    '## Vertical Implementation Slices',
+    '',
+    '| Task | Slice | Status | Blockers | Proof |',
+    '|---|---|---|---|---|',
+    '',
+    '## Acceptance Criteria',
+    '',
+    '- [x] Expected behavior is verified.',
+    '',
+    '## Append-Only Evidence And Execution Log',
+    '',
+    '| Date | Task | Event | Verification | Docs | Remaining gap |',
+    '|---|---|---|---|---|---|',
+    ...evidenceRows,
+    '',
+    '## Completion Result',
+    '',
+    'Landed.',
+    '',
+    '## Supersession',
+    '',
+    '- Supersedes: none',
+    '- Superseded by: none',
+    ''
+  ].join('\n');
+}
+
+function retirementGuidebookNote(historicalRoute, overrides = {}) {
+  const {
+    type = 'guidebook',
+    knowledgeRole = 'canonical',
+    sourcePaths = [historicalRoute],
+    body = '# Fixture Capability\n\nDurable prose describing what shipped and why it is trusted.\n'
+  } = overrides;
+  return [
+    '---',
+    `type: ${type}`,
+    'status: active',
+    'sensitivity: normal',
+    `knowledge_role: ${knowledgeRole}`,
+    'provenance:',
+    '  - fixture',
+    'source_paths:',
+    ...sourcePaths.map((entry) => `  - ${entry}`),
+    'last_verified: 2026-09-18',
+    '---',
+    '',
+    body
+  ].join('\n');
+}
+
+{
+  const retireRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-retire-preconditions-'));
+  try {
+    initLifecycleFixture(retireRoot);
+    fs.writeFileSync(path.join(retireRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+
+    // S-560: complete, one done Task record - ready to retire once a durable
+    // owner exists.
+    writeAt(retireRoot, 'workbench/specs/S-560-precondition-fixture/SPEC.md', retirementReadySpec('S-560', ['TK-001']));
+    writeAt(retireRoot, 'workbench/specs/S-560-precondition-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({
+        id: 'TK-001', specId: 'S-560', slice: 'First slice',
+        destination: 'spec-acceptance: S-560 Acceptance Criteria', proof: 'landed'
+      }), { branch: 'claude/precondition-fixture' }));
+
+    // S-561: active, not complete - the status refusal.
+    writeAt(retireRoot, 'workbench/specs/S-561-active-fixture/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-561'));
+
+    // S-562: `complete` on its own header, but a live Task record is still
+    // in-progress - `report.gaps` must refuse it by name even though the
+    // header alone says complete. `completeSpec` would already have refused
+    // this Spec; retireSpec must not trust a hand-edited header either.
+    writeAt(retireRoot, 'workbench/specs/S-562-unfinished-task-fixture/SPEC.md', retirementReadySpec('S-562', ['TK-001']));
+    writeAt(retireRoot, 'workbench/specs/S-562-unfinished-task-fixture/tasks/TK-001/TASK.md', taskRecordFixture({
+      id: 'TK-001', specId: 'S-562', slice: 'Unfinished slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-562 Acceptance Criteria'
+    }));
+
+    execFileSync('git', ['init', '--quiet', retireRoot]);
+    execFileSync('git', ['-C', retireRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', retireRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', retireRoot, 'add', '-A']);
+    execFileSync('git', ['-C', retireRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+    execFileSync('git', ['-C', retireRoot, 'branch', 'integration']);
+
+    const historicalRoute = 'workbench/specs/retired/S-560-precondition-fixture/SPEC.md';
+
+    assert.throws(() => retireSpec(retireRoot), /--wiki/,
+      'refuses with no --wiki note named at all');
+    assert.throws(() => retireSpec(retireRoot, 'S-999', { wikiNote: 'workbench/wiki/guidebooks/none.md' }), /Unknown spec ID: S-999/,
+      'refuses an unknown Spec ID');
+    assert.throws(() => retireSpec(retireRoot, 'S-561', { wikiNote: 'workbench/wiki/guidebooks/none.md' }), /S-561 is active, not complete/,
+      'refuses a Spec that is not complete');
+    assert.throws(() => retireSpec(retireRoot, 'S-562', { wikiNote: 'workbench/wiki/guidebooks/none.md' }), /TK-001 is in-progress, not done/,
+      'refuses by name a Task record that is not done, even though the Spec header itself says complete');
+    assert.throws(() => retireSpec(retireRoot, 'S-560', { wikiNote: 'workbench/wiki/guidebooks/missing.md' }), /found no Wiki note/,
+      'refuses a Spec whose surviving claims name no durable owner: the note does not exist');
+
+    // A wiki note that exists but has the wrong shape, refused by name for
+    // each distinct reason before retireSpec ever calls moveSpecDirectory.
+    writeAt(retireRoot, 'workbench/wiki/guidebooks/wrong-type.md', retirementGuidebookNote(historicalRoute, { type: 'project' }));
+    assert.throws(() => retireSpec(retireRoot, 'S-560', { wikiNote: 'workbench/wiki/guidebooks/wrong-type.md' }), /must declare type design-concept or guidebook/,
+      'refuses a note that is not type design-concept or guidebook');
+
+    writeAt(retireRoot, 'workbench/wiki/guidebooks/wrong-role.md', retirementGuidebookNote(historicalRoute, { knowledgeRole: 'derived' }));
+    assert.throws(() => retireSpec(retireRoot, 'S-560', { wikiNote: 'workbench/wiki/guidebooks/wrong-role.md' }), /must declare knowledge_role canonical or curated/,
+      'refuses a note that is not knowledge_role canonical or curated');
+
+    writeAt(retireRoot, 'workbench/wiki/guidebooks/no-route.md', retirementGuidebookNote(historicalRoute, { sourcePaths: ['BLUEPRINT.md'] }));
+    assert.throws(() => retireSpec(retireRoot, 'S-560', { wikiNote: 'workbench/wiki/guidebooks/no-route.md' }), /source_paths must name S-560's historical route/,
+      'refuses a note whose source_paths does not name the Spec\'s own historical route');
+
+    // "Transform, never copy": a note that pastes the Spec's own evidence
+    // log fails wiki.mjs's copied-task-state validation, and retireSpec
+    // refuses it by that name rather than silently accepting a copy.
+    writeAt(retireRoot, 'workbench/wiki/guidebooks/pasted-copy.md', retirementGuidebookNote(historicalRoute, {
+      body: '# Copied\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | TK-001 | Task closed | fixture proof | fixture docs | none |\n'
+    }));
+    assert.throws(() => retireSpec(retireRoot, 'S-560', { wikiNote: 'workbench/wiki/guidebooks/pasted-copy.md' }), /copied-task-state/,
+      'refuses a Wiki note that pastes the Spec\'s own evidence log instead of transforming it into prose');
+
+    assert.equal(execFileSync('git', ['-C', retireRoot, 'status', '--porcelain'], { encoding: 'utf8' }).trim(), '',
+      'every refusal above wrote nothing to the working tree');
+
+    console.log('ok - retireSpec refuses an unknown or incomplete Spec, an unfinished Task record even on a hand-completed header, a missing Wiki note, and a Wiki note with the wrong type, knowledge_role, missing historical route, or copied task state - all before any write');
+  } finally {
+    fs.rmSync(retireRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// The real seam: retireSpec's success path. Task records travel with the
+// Spec directory (never retired one by one first, matching the TK-004
+// carried-Tasks decision `moveSpecDirectory` already implements), the
+// evidence row lands in the retired Spec's own log, render runs, and the
+// branches its Tasks' Receipt rows name are cleaned up: a branch proven
+// contained in the declared integration branch is deleted (never `-D`) with
+// its registered worktree removed first; an unmerged branch is left alone
+// and named with a reason; a branch with neither a local nor a remote ref
+// left is reported already cleaned up; a branch that exists only on the
+// remote is listed for the closeout recipe, never deleted; a Task with no
+// Receipt rows at all (the real S-00H/TK-003 shape) contributes no branch
+// and raises nothing.
+// ============================================================================
+{
+  const successRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-retire-success-'));
+  const remoteRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-retire-remote-'));
+  let worktreePath;
+  try {
+    initLifecycleFixture(successRoot);
+    fs.writeFileSync(path.join(successRoot, 'AGENTS.md'), '# Agents\n\nSee [S-570](workbench/specs/S-570-retiring-fixture/SPEC.md).\n\nRoutes to workbench/wiki.\n');
+
+    const taskIds = ['TK-001', 'TK-002', 'TK-003', 'TK-004', 'TK-005', 'TK-006'];
+    writeAt(successRoot, 'workbench/specs/S-570-retiring-fixture/SPEC.md', retirementReadySpec('S-570', taskIds));
+    writeAt(successRoot, 'workbench/specs/S-570-retiring-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-570', slice: 'Contained slice', destination: 'spec-acceptance: S-570 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/contained-fixture' }));
+    writeAt(successRoot, 'workbench/specs/S-570-retiring-fixture/tasks/TK-002/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-002', specId: 'S-570', slice: 'Contained-with-worktree slice', destination: 'spec-acceptance: S-570 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/contained-worktree-fixture' }));
+    writeAt(successRoot, 'workbench/specs/S-570-retiring-fixture/tasks/TK-003/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-003', specId: 'S-570', slice: 'Unmerged slice', destination: 'spec-acceptance: S-570 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/unmerged-fixture' }));
+    writeAt(successRoot, 'workbench/specs/S-570-retiring-fixture/tasks/TK-004/TASK.md',
+      doneTaskRecordFixture({ id: 'TK-004', specId: 'S-570', slice: 'No-Receipt slice', destination: 'spec-acceptance: S-570 Acceptance Criteria', proof: 'landed (pre-Receipt Task, the real S-00H/TK-003 shape)' }));
+    writeAt(successRoot, 'workbench/specs/S-570-retiring-fixture/tasks/TK-005/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-005', specId: 'S-570', slice: 'Remote-only slice', destination: 'spec-acceptance: S-570 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/remote-only-fixture' }));
+    writeAt(successRoot, 'workbench/specs/S-570-retiring-fixture/tasks/TK-006/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-006', specId: 'S-570', slice: 'Already-gone slice', destination: 'spec-acceptance: S-570 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/already-gone-fixture' }));
+
+    execFileSync('git', ['init', '--quiet', successRoot]);
+    execFileSync('git', ['-C', successRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', successRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', successRoot, 'add', '-A']);
+    execFileSync('git', ['-C', successRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+    execFileSync('git', ['-C', successRoot, 'branch', 'integration']);
+
+    // A branch fully contained in integration (the same commit as HEAD - the
+    // trivial but real containment case) with no worktree.
+    execFileSync('git', ['-C', successRoot, 'branch', 'claude/contained-fixture']);
+
+    // A second contained branch, but with a *registered worktree* - the
+    // worktree must be removed before the branch can be deleted at all.
+    execFileSync('git', ['-C', successRoot, 'branch', 'claude/contained-worktree-fixture']);
+    worktreePath = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-retire-worktree-'));
+    fs.rmdirSync(worktreePath);
+    execFileSync('git', ['-C', successRoot, 'worktree', 'add', '--quiet', worktreePath, 'claude/contained-worktree-fixture']);
+
+    // An unmerged branch: a real commit integration does not carry.
+    execFileSync('git', ['-C', successRoot, 'branch', 'claude/unmerged-fixture']);
+    execFileSync('git', ['-C', successRoot, 'checkout', '--quiet', 'claude/unmerged-fixture']);
+    fs.writeFileSync(path.join(successRoot, 'unmerged-only.txt'), 'not on integration\n');
+    execFileSync('git', ['-C', successRoot, 'add', '-A']);
+    execFileSync('git', ['-C', successRoot, 'commit', '--quiet', '-m', 'unmerged work']);
+    execFileSync('git', ['-C', successRoot, 'checkout', '--quiet', 'main']);
+
+    // A branch that exists only on a remote: pushed, then deleted locally.
+    execFileSync('git', ['init', '--quiet', '--bare', remoteRoot]);
+    execFileSync('git', ['-C', successRoot, 'remote', 'add', 'origin', remoteRoot]);
+    execFileSync('git', ['-C', successRoot, 'branch', 'claude/remote-only-fixture']);
+    execFileSync('git', ['-C', successRoot, 'push', '--quiet', 'origin', 'claude/remote-only-fixture']);
+    execFileSync('git', ['-C', successRoot, 'branch', '-D', 'claude/remote-only-fixture']);
+
+    // `claude/already-gone-fixture` (named by TK-006's Receipt row) is never
+    // created at all - the ordinary case once Branch Completion has already
+    // run for it, proven here rather than assumed.
+
+    const historicalRoute = 'workbench/specs/retired/S-570-retiring-fixture/SPEC.md';
+    // The design-concept shape additionally needs `authorized_by`, `parent`
+    // and the two closing sections `validateWiki` requires for that
+    // collection; injected directly rather than widening the shared helper
+    // for a shape only this one fixture needs.
+    const designConceptPath = path.join(successRoot, 'workbench/wiki/design-concepts/retirement-fixture-capability.md');
+    fs.writeFileSync(designConceptPath, retirementGuidebookNote(historicalRoute, {
+      type: 'design-concept',
+      body: [
+        '# Retirement Fixture Capability',
+        '',
+        'Durable prose describing what S-570 delivered and why it is trusted.',
+        '',
+        '## Evidence and Sources',
+        '',
+        '- [S-570](../../specs/retired/S-570-retiring-fixture/SPEC.md)',
+        '',
+        '## History',
+        '',
+        '- 2026-09-18: created on owner direction.',
+        ''
+      ].join('\n')
+    }).replace('---\n\n#', '---\nauthorized_by: owner\nparent: none\n\n#'));
+
+    execFileSync('git', ['-C', successRoot, 'add', '-A']);
+    execFileSync('git', ['-C', successRoot, 'commit', '--quiet', '-m', 'author the durable owner']);
+
+    assert.equal(loadSpecs(successRoot).some((spec) => spec.id === 'S-570'), true, 'S-570 starts on the active roster');
+
+    const receipt = retireSpec(successRoot, 'S-570', { wikiNote: 'workbench/wiki/design-concepts/retirement-fixture-capability.md' });
+
+    assert.equal(receipt.specId, 'S-570');
+    assert.equal(receipt.route, 'workbench/specs/retired/S-570-retiring-fixture/SPEC.md');
+    assert.equal(receipt.wikiNote, 'workbench/wiki/design-concepts/retirement-fixture-capability.md');
+    assert.equal(receipt.ownerApproval.required, false, 'recordOwnerApproval does not exist at this pre anchor, so retirement gates on complete only');
+
+    assert.deepEqual(receipt.branches.cleaned.sort(), ['claude/contained-fixture', 'claude/contained-worktree-fixture']);
+    assert.deepEqual(receipt.branches.remote, ['claude/remote-only-fixture']);
+    assert.deepEqual(receipt.branches.worktreesRemoved, [worktreePath]);
+    assert.ok(receipt.branches.skipped.some((item) => item.branch === 'claude/unmerged-fixture' && /not proven contained/.test(item.reason)));
+    assert.ok(receipt.branches.skipped.some((item) => item.branch === 'claude/already-gone-fixture' && /already cleaned up/.test(item.reason)));
+
+    assert.equal(execFileSync('git', ['-C', successRoot, 'branch', '--list', 'claude/contained-fixture'], { encoding: 'utf8' }).trim(), '', 'the contained branch is actually deleted');
+    assert.equal(execFileSync('git', ['-C', successRoot, 'branch', '--list', 'claude/contained-worktree-fixture'], { encoding: 'utf8' }).trim(), '', 'the contained, worktree-registered branch is actually deleted');
+    assert.ok(execFileSync('git', ['-C', successRoot, 'branch', '--list', 'claude/unmerged-fixture'], { encoding: 'utf8' }).includes('claude/unmerged-fixture'), 'the unmerged branch is never deleted');
+    assert.equal(fs.existsSync(worktreePath), false, 'the registered worktree is actually removed from disk');
+    assert.equal((execFileSync('git', ['-C', successRoot, 'worktree', 'list', '--porcelain'], { encoding: 'utf8' }).match(/^worktree /gm) ?? []).length, 1, 'only the main worktree remains');
+
+    const newSpecPath = path.join(successRoot, 'workbench/specs/retired/S-570-retiring-fixture/SPEC.md');
+    assert.ok(fs.existsSync(newSpecPath), 'the Spec directory moved to retired/');
+    for (const id of taskIds) {
+      assert.ok(fs.existsSync(path.join(successRoot, `workbench/specs/retired/S-570-retiring-fixture/tasks/${id}/TASK.md`)), `${id} travelled with its Spec rather than being retired one by one first`);
+    }
+    assert.ok(!fs.existsSync(path.join(successRoot, 'workbench/specs/S-570-retiring-fixture')), 'the old top-level directory is gone');
+
+    const movedContent = fs.readFileSync(newSpecPath, 'utf8');
+    assert.match(movedContent, /\| \d{4}-\d{2}-\d{2} \| spec \| Spec retired to workbench\/specs\/retired\/S-570-retiring-fixture\/SPEC\.md \| workbench\/wiki\/design-concepts\/retirement-fixture-capability\.md \| claude\/contained-fixture, claude\/contained-worktree-fixture \| \d+ \|/,
+      'the evidence row names the historical route, the wiki note, the cleaned branches, and the rewritten-reference count');
+
+    assert.match(fs.readFileSync(path.join(successRoot, 'AGENTS.md'), 'utf8'), /\[S-570\]\(workbench\/specs\/retired\/S-570-retiring-fixture\/SPEC\.md\)/,
+      'a live reference is rewritten by the same move moveSpecDirectory performs');
+
+    assert.equal(loadSpecs(successRoot).some((spec) => spec.id === 'S-570'), false, 'the active roster no longer carries S-570');
+    assert.equal(nextWork(successRoot), null, 'next offers nothing once the only Spec has retired');
+    const board = fs.readFileSync(path.join(successRoot, 'TASKBOARD.md'), 'utf8');
+    assert.doesNotMatch(board, /S-570/, 'render already ran inside retireSpec; the hot board never names a retired Spec');
+    const catalog = fs.readFileSync(path.join(successRoot, 'workbench/specs/CATALOG.md'), 'utf8');
+    assert.match(catalog, /### Retired/);
+    assert.match(catalog, /\[workbench\/specs\/retired\/S-570-retiring-fixture\/SPEC\.md\]/, 'the catalog\'s Retired heading reaches it by its historical route');
+
+    const shown = showSpec(successRoot, 'S-570');
+    assert.equal(shown.status, 'complete');
+    assert.equal(shown.path, 'workbench/specs/retired/S-570-retiring-fixture/SPEC.md');
+
+    assert.deepEqual(scanReferences(successRoot), [], 'no reference is left dangling anywhere in the room after retirement');
+    assert.deepEqual(doctor(successRoot).filter((item) => item.specId === 'S-570'), [], 'a correctly retired, complete Spec raises no identity or retired-status finding');
+
+    const porcelainAfter = execFileSync('git', ['-C', successRoot, 'status', '--porcelain'], { encoding: 'utf8' });
+    assert.ok(porcelainAfter.trim().length > 0, 'retirement actually changed something');
+    for (const line of porcelainAfter.split('\n').filter(Boolean)) {
+      assert.equal(line[1], ' ', `line "${line}" must be fully staged, matching moveSpecDirectory's own convention of leaving one reviewable candidate`);
+    }
+
+    console.log('ok - retireSpec carries a completed Spec\'s Task records with it into retired/, appends the evidence row into the moved file, runs render, and cleans up only the branches its Tasks\' Receipt rows prove contained - leaving an unmerged branch alone, listing a remote-only branch for the closeout recipe, and reporting an already-gone branch as already cleaned up');
+  } finally {
+    fs.rmSync(successRoot, { recursive: true, force: true });
+    fs.rmSync(remoteRoot, { recursive: true, force: true });
+    if (worktreePath) fs.rmSync(worktreePath, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// The `retire-spec` CLI verb parses like every other lifecycle command.
+// ============================================================================
+{
+  assert.deepEqual(
+    parseCliArgs(['retire-spec', 'S-500', '--wiki', 'workbench/wiki/guidebooks/x.md']),
+    { command: 'retire-spec', id: 'S-500', options: { wiki: 'workbench/wiki/guidebooks/x.md' } }
+  );
+  console.log('ok - retire-spec parses its --wiki option like every other lifecycle command');
 }
