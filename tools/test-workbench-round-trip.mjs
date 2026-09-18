@@ -56,6 +56,29 @@ try {
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.cpSync(path.join(sourceProduct, relative), target, { recursive: true });
   }
+  // S-00H TK-004: this is the exact `templates/` byte copy the rest of this
+  // round trip's Genesis step is built from. Sweep it for the retired
+  // `ticket` vocabulary the same way tools/test-controls-vocabulary-sweep.mjs
+  // sweeps the source, proving an adopted/generated candidate is not
+  // instructed into the retired Ticket model. The one exception is the
+  // identical allow-listed row that sweep carries: `templates/LEXICON.md`'s
+  // retired-term row necessarily names the term it retires.
+  {
+    const templateHits = [];
+    (function walk(dir) {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) { walk(full); continue; }
+        const relative = path.relative(product, full).split(path.sep).join('/');
+        fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
+          if (relative === 'templates/LEXICON.md' && line.includes('**Ticket** | Retired as a live term.')) return;
+          if (/ticket/i.test(line)) templateHits.push(`${relative}:${index + 1}: ${line.trim()}`);
+        });
+      }
+    })(path.join(product, 'templates'));
+    assert.deepEqual(templateHits, [],
+      `the candidate's templates/ copy fed into this round trip must not say Ticket outside the documented retired-term row:\n${templateHits.join('\n')}`);
+  }
   git(product, 'init', '-q', '-b', 'main');
   git(product, 'remote', 'add', 'origin', 'https://github.com/KaydenClark/LLM_Workbench.git');
   git(product, 'add', '.');

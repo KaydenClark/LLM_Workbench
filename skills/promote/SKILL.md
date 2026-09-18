@@ -8,7 +8,7 @@ description: Reconcile selected supported Workbench working material into its au
 Promote only selected material whose authority and evidence already exist.
 This primitive works with grilling decisions or other objective notepads;
 `make-it-so` can compose it before implementation. It does not start an
-interview, implement tickets, grant permission or infer invocation from a
+interview, implement tasks, grant permission or infer invocation from a
 passing mention. Read the Contract, manifest and assigned owner first.
 
 1. Resolve the named source and exact selection. Read its compact current

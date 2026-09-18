@@ -198,6 +198,29 @@ const release = makeRelease(suiteRoot);
   const installed = JSON.parse(fs.readFileSync(path.join(destination, 'workbench', 'tools', '.workbench-tools.json')));
   assert.equal(installed.source.commit, release.commit);
   assertNoStage(destination);
+
+  // S-00H TK-004: `workbench-tools.mjs install` copies this candidate's real
+  // `workbench/tools/*.mjs` into the derived room. Sweep that installed copy
+  // for the retired `ticket` vocabulary the same way the source-side sweep
+  // in tools/test-spec-workbench.mjs does, with the identical one exception
+  // (legacyCoreSkills's frozen historical bundle in workbench-layout.mjs):
+  // a freshly derived room's installed runtime must not say Ticket outside
+  // that documented, load-bearing exception.
+  const runtimeHits = [];
+  (function walk(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { walk(full); continue; }
+      if (!/\.mjs$/.test(entry.name)) continue;
+      const relative = path.relative(destination, full).split(path.sep).join('/');
+      fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
+        if (relative === 'workbench/tools/workbench-layout.mjs' && line.includes('to-tickets')) return;
+        if (/ticket/i.test(line)) runtimeHits.push(`${relative}:${index + 1}: ${line.trim()}`);
+      });
+    }
+  })(path.join(destination, 'workbench', 'tools'));
+  assert.deepEqual(runtimeHits, [],
+    `a freshly derived room's installed workbench/tools/ must not say Ticket outside the documented legacyCoreSkills exception:\n${runtimeHits.join('\n')}`);
 }
 
 for (const origin of ['git@github.com:KaydenClark/Example_Workbench.git', 'ssh://git@github.com/KaydenClark/Example_Workbench.git']) {

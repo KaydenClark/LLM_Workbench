@@ -78,7 +78,7 @@ project evidence. Resolve supported decisions within scope. If no confident
 next action can be established, record the blocker in the existing work owner
 and stop; do not create a next task for yourself or manufacture a queue item.
 
-Normal stance is set in the assigned SPEC and TASK (the ticket in that spec),
+Normal stance is set in the assigned SPEC and TASK (the task in that spec),
 not selected or recorded by the arriving agent. Builder, Auditor, Reviewer and
 Reconciler are portable behavior skills. A stance never grants, removes, or
 transfers authority; loading it never spawns an agent. Each defines Purpose,
@@ -129,13 +129,13 @@ explicitly bounded historical evidence.
 2. Run `[SPEC_DOCTOR_COMMAND]`.
 3. Run `[SPEC_NEXT_COMMAND]` and load only its assigned spec.
 4. Claim before editing.
-5. Implement one eligible vertical ticket with red/green TDD.
+5. Implement one eligible vertical task with red/green TDD.
 6. Close it with verification, docs status, and remaining gap.
 7. Complete only after acceptance/owner gates pass; render and doctor must remove
    completed specs from the hot Taskboard immediately.
 
 Do not read the full Blueprint, Taskboard, completed specs, or proof archive for
-normal selection. Use the Lexicon routing section to find task-relevant owners. A spec is a durable capability; a ticket is a temporary slice.
+normal selection. Use the Lexicon routing section to find task-relevant owners. A spec is a durable capability; a task is a temporary slice.
 Later change creates a linked superseding spec rather than rewriting history.
 
 ## Engineering And Verification
@@ -213,7 +213,7 @@ Evidence rows read at the commit each row names and are never re-anchored.
 
 ## Git Rules
 
-- Branch per spec/ticket from `[DEFAULT_BRANCH]`; never commit to protected
+- Branch per spec/task from `[DEFAULT_BRANCH]`; never commit to protected
   branches.
 - Default PR target: `[INTEGRATION_BRANCH_OR_DEFAULT]`; owner-only final merge:
   `[OWNER_ONLY_MERGE]`.
@@ -231,7 +231,7 @@ Before branches combine into the declared integration branch, a
 separate-context reviewer must check the immutable candidate against its
 controls, assigned spec, and named evidence. This gate challenges code,
 consequential report claims, and recommendations. Earlier review and audit are
-supports, not mandatory independent ceremonies per ticket. A new candidate
+supports, not mandatory independent ceremonies per task. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
 
 ### Branch Completion

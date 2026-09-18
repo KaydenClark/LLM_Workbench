@@ -14,14 +14,14 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `code-review` | Independently review a fixed implementation diff against its owning spec. |
 | `genesis` | Create a new greenfield Workbench project from a founding prompt. |
 | `grilling` | Run the question-at-a-time decision interview. |
-| `implement` | Drive one eligible ticket through red/green, review, and remote recovery. |
-| `make-it-so` | Promote settled decisions and execute their approved tickets. |
+| `implement` | Drive one eligible task through red/green, review, and remote recovery. |
+| `make-it-so` | Promote settled decisions and execute their approved tasks. |
 | `to-docs` | Route settled truth into its existing documentation owner. |
 | `to-spec` | Create or update one stable capability specification. |
-| `to-tickets` | Decompose a capability into dependency-aware implementation slices. |
+| `to-tasks` | Decompose a capability into dependency-aware implementation slices. |
 | `tracer-bullet` | Cut a capability into vertically testable slices. |
 | `update-harness` | Reconcile an adopted project with the current Workbench contract. |
-| `carry` | Own an assigned spec or ticket to its already-authorized endpoint and record what the owner still had to supply. |
+| `carry` | Own an assigned spec or task to its already-authorized endpoint and record what the owner still had to supply. |
 | `save` | Persist authorized work and verify its actual local or remote recovery boundary. |
 | `promote` | Reconcile selected supported claims directly into their existing durable owners. |
 | `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |

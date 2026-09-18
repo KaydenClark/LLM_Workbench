@@ -25,7 +25,13 @@ const stanceSkills = ['builder', 'auditor', 'reviewer', 'reconciler'];
 // exact.
 const notepadCoreSkills = [...legacyCoreSkills, 'carry', 'notepad', ...stanceSkills];
 const initialV32CoreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...stanceSkills];
-export const coreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
+// S-00H TK-004: `to-tickets` renames to `to-tasks` in the live bundle only.
+// `legacyCoreSkills` (and the frozen rows derived from it above) stays byte-
+// identical, because it is what a real v3.0.0-v3.2.0 manifest's declared
+// `skillPolicy.required` actually held; `validateManifest` below still needs
+// to recognize that historical shape exactly as released.
+const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' ? 'to-tasks' : name));
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

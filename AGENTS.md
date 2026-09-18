@@ -78,7 +78,7 @@ project evidence. Resolve supported decisions within scope. If no confident
 next action can be established, record the blocker in the existing work owner
 and stop; do not create a next task for yourself or manufacture a queue item.
 
-Normal stance is set in the assigned SPEC and TASK (the ticket in that spec),
+Normal stance is set in the assigned SPEC and TASK (the task in that spec),
 not selected or recorded by the arriving agent. Builder, Auditor, Reviewer and
 Reconciler are portable behavior skills. A stance never grants, removes, or
 transfers authority; loading it never spawns an agent. Each defines Purpose,
@@ -147,8 +147,8 @@ Unless the user names work directly:
 3. Run `node workbench/tools/spec-workbench.mjs next --json`.
 4. Load only the returned spec with `show S-###`; inspect referenced source/tests.
 5. Claim it before editing: `claim S-### --agent NAME`.
-6. Implement one eligible tracer-bullet ticket using red/green TDD.
-7. Close the ticket with named proof, docs status, and remaining gap.
+6. Implement one eligible tracer-bullet task using red/green TDD.
+7. Close the task with named proof, docs status, and remaining gap.
 8. Complete the spec only after every acceptance and owner gate is satisfied;
    render and doctor must remove it from the hot Taskboard immediately.
 
@@ -156,7 +156,7 @@ Do not load the full Blueprint, Taskboard, completed specs, or proof archive for
 normal task selection. Read Blueprint for cross-cutting architecture; read the
 Lexicon when a shared term is unclear or a selected skill depends on project
 vocabulary; read the Taskboard for an owner dashboard or collision review. A spec is a durable
-capability; a ticket is a temporary implementation slice. Later changes create
+capability; a task is a temporary implementation slice. Later changes create
 a new linked spec instead of rewriting a completed result.
 
 ## Engineering And Verification
@@ -322,7 +322,7 @@ Taskboard or rewrite append-only spec evidence rows.
 
 ## Git Rules
 
-- Branch per spec/ticket from the current PR target; the default staging base is
+- Branch per spec/task from the current PR target; the default staging base is
   `integration`. Prefixes: `codex/`, `claude/`, or `backup/`. Never commit
   directly to `main` or `integration`.
 - Default PR target is `integration`. Agents may merge below `integration` when
@@ -339,7 +339,7 @@ Before branches combine into `integration` (or the configured integration
 branch), a separate-context reviewer must check the immutable candidate against
 its controls, assigned spec, and named evidence. This gate challenges code,
 consequential report claims, and recommendations. Earlier review and audit are
-supports, not mandatory independent ceremonies per ticket. A new candidate
+supports, not mandatory independent ceremonies per task. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
 
 ### Branch Completion
@@ -409,7 +409,7 @@ A preserved historical copy is not blanket promotion of its claims.
 ## Long Session Control
 
 After a context summary or long interruption, rerun `doctor`, `next`, and
-`show` for the assigned spec. Keep ready/in-progress/blocked ticket state and
+`show` for the assigned spec. Keep ready/in-progress/blocked task state and
 the append-only evidence log current. An in-progress claim older than one
 UTC calendar day is stale (the diagnostic compares date-only stamps and
 requires a difference greater than one day); verify branch/commit activity before reclaiming it. After

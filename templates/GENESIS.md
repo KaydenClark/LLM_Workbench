@@ -289,7 +289,7 @@ After the Scaffold's running path is verified, create one stable
 Derive it from locked owner decisions, active ADRs, verified Actuality from the
 target, and bounded choices explicitly supplied in the founding prompt; link
 those sources and keep unresolved questions open. Put 1-3 one-context
-tracer-bullet tickets in its implementation table and record the Genesis result
+tracer-bullet tasks in its implementation table and record the Genesis result
 in its evidence log. The
 manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
 `feedback`, `tools`) and their collections; live grilling and handoff records
@@ -304,7 +304,7 @@ packet, so shape it exactly like this before running the gate:
 - `**Status:** active` (the copied `templates/SPEC.md` default is `planned`;
   Genesis activates the first spec because it is the work the loop picks up);
 - `**Priority:**` a single digit `0`-`9`;
-- at least one ticket row whose status is `ready` and whose blockers are
+- at least one task row whose status is `ready` and whose blockers are
   `none`; do not claim it before the gate runs;
 - at least one unchecked `- [ ]` acceptance box;
 - the `## Outcome`, `## Vertical Implementation Slices`,
@@ -380,7 +380,7 @@ Do not call bootstrap done on vibes. All of the following must hold:
       `workbench/sessions/.gitignore` keeps live records untracked; and
       `workbench/wiki/design-concepts/` exists even if empty.
 - [ ] A stable first spec under `workbench/specs/` is `active`, carries at
-      least one unclaimed `ready` ticket with no blockers and proof
+      least one unclaimed `ready` task with no blockers and proof
       requirements, keeps at least one unchecked acceptance box, and `render`
       plus `doctor` pass on the result.
 - [ ] A `workbench/wiki/MEMORY.md` room brain exists (from `templates/wiki/`),

@@ -130,7 +130,7 @@ for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
   );
 }
 
-const slicingSkill = read('skills/to-tickets/SKILL.md');
+const slicingSkill = read('skills/to-tasks/SKILL.md');
 for (const forbidden of [
   '.scratch/',
   'configured tracker',
@@ -139,7 +139,7 @@ for (const forbidden of [
   'local-ticket-template'
 ]) {
   assert.ok(!slicingSkill.includes(forbidden),
-    `to-tickets must not retain the imported ${forbidden} workflow`);
+    `to-tasks must not retain the imported ${forbidden} workflow`);
 }
 assertIncludesAll(slicingSkill, [
   'assigned `SPEC.md`',
@@ -147,9 +147,9 @@ assertIncludesAll(slicingSkill, [
   '`RUNBOOK.md`',
   'node workbench/tools/spec-workbench.mjs render',
   'node workbench/tools/spec-workbench.mjs doctor'
-], 'to-tickets');
+], 'to-tasks');
 assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
-  'to-tickets must treat TASKBOARD.md as a generated projection');
+  'to-tasks must treat TASKBOARD.md as a generated projection');
 
 const grilling = read('skills/grilling/SKILL.md');
 for (const [pattern, label] of [
@@ -180,7 +180,7 @@ assertIncludesAll(grilling, [
 
 const makeItSo = read('skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
-  'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tickets`',
+  'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',
   '`save`', '`carry`', '`implement`', 'specification-only',
   'current request controls every step', 'Stop here', 'main publication'
 ], 'make-it-so');
@@ -234,7 +234,7 @@ assertIncludesAll(adoption, [
 
 const implement = read('skills/implement/SKILL.md');
 assertIncludesAll(implement, [
-  'assigned stable `SPEC.md`', 'one eligible ticket', 'node workbench/tools/spec-workbench.mjs next --json',
+  'assigned stable `SPEC.md`', 'one eligible task', 'node workbench/tools/spec-workbench.mjs next --json',
   'node workbench/tools/spec-workbench.mjs show S-###', 'node workbench/tools/spec-workbench.mjs claim S-### --agent NAME',
   'red/green/refactor', 'project-owned verification', 'owning documentation',
   'node workbench/tools/spec-workbench.mjs close S-###', 'truthful checkpoint', 'commit and push', '`git.integrationBranch`'
@@ -307,7 +307,7 @@ assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workben
 assert.match(read('RUNBOOK.md'), /--layout-only/, 'the Runbook must document the layout-only mode');
 assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
 
-for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
+for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
   const skill = read(`skills/${name}/SKILL.md`);
   assert.match(skill, /workbench\/manifest\.json/,
     `${name} must route durable v3 workflow records through the manifest`);

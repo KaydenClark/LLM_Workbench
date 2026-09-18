@@ -60,7 +60,7 @@ remote check or a claim about agent reliability.
 Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
 root, branch, upstream and dirty state; run the project-local spec doctor and
 load the explicitly assigned spec. For owner-directed pickup, use `next --json`
-and `show` to resolve that assignment. The spec and ticket set the normal
+and `show` to resolve that assignment. The spec and task set the normal
 stance. Investigate within the task; do not invent a next task when blocked.
 Load remaining Runbook sections only for the operation being performed.
 
@@ -105,7 +105,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 | Decide or stress-test an idea | `grilling` with `notepad`; save answers/corrections before continuing |
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
-| Write specifications only | `to-spec` and needed `to-tickets`; stop at the specified endpoint |
+| Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
 | Deliver assigned work | `carry` with `implement`, verification, independent integration review and `save` |
 | Prepare another agent's continuation | core `handoff`; readable Markdown with inherited scope |
 | Review a candidate or readiness | `code-review`; report only, no implementation or main merge |
@@ -264,7 +264,7 @@ named by the plan, are relative to the evidence room. A `genesis-plan-1` request
 names `project.name/founding_prompt`, the seven `controls` and `memory` drafts
 (each with `file` and `sha256`), `selected_questions`, `active_adr_ids`, and
 `capabilities`. A capability names its `id`, `title`, `derived_from` question IDs,
-`outcome`, `acceptance` strings, and one `ticket` with `id` and `slice`.
+`outcome`, `acceptance` strings, and one `task` with `id` and `slice`.
 
 Selected questions must be locked and have matching current decision entries.
 Corrected or missing answers and changed evidence refuse derivation. The command
@@ -454,7 +454,7 @@ integration branch that resolves (`integration-branch-undeclared` or
 project-local `skills/` directory. It fails closed on symlinks,
 template placeholders, stubs, version drift, unstable spec paths, or
 structurally incomplete first specs. A rejected first spec carries a `reason`
-field naming the failing predicate (status, priority, ready ticket, sections,
+field naming the failing predicate (status, priority, ready task, sections,
 acceptance box, stamp, identity, or path), and a stray entry in the specs lane
 is listed in `entries`; dotfiles such as `.gitkeep` and `.DS_Store` are
 ignored. Readiness proves selection and claim, not doctor: run `render` and
@@ -815,7 +815,7 @@ node workbench/tools/spec-workbench.mjs doctor
 unfinished slice row of an active spec (carrying the row's plan as `Planned
 verification`, never as proof), leaves done rows and completed specs untouched,
 and refuses a second run; a spec whose `tasks/` directory exists is read from
-its records and its retained table is history. `next` returns one eligible ready ticket. `show` loads one stable work packet.
+its records and its retained table is history. `next` returns one eligible ready task. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
@@ -924,7 +924,7 @@ configured host and are never copied or weakened by the fixture. Use a
 disposable workspace. If the host refuses a required operation, preserve that
 result as unavailable or incomplete; it is not a reason to bypass its controls.
 `verify` clones fresh and proves the remote advanced, the
-ticket closed with proof, the test and CLI pass, doctor is clean, the tools
+task closed with proof, the test and CLI pass, doctor is clean, the tools
 receipt names the exact candidate, the live notepad never travelled, and the
 transcript names nothing outside the repository. This proof spends provider
 budget and is run for the release umbrella, not on every verification pass;
@@ -940,18 +940,18 @@ node workbench/tools/adr.mjs new --title "Decision title"
 ```
 
 `next-id` is a read-only proposal, not a reservation or permission to create work.
-Ticket proposals require the assigned spec and reserve labels from all specs in
+Task proposals require the assigned spec and reserve labels from all specs in
 the Workbench. Write the returned label only during authorized planning, then
 render and run doctor before requesting another. ADR `new` writes a proposed
 record through the existing exclusive-publication path. Existing paths stay fixed.
 
 New durable labels contain at least one letter, so they cannot reuse historical
-decimal IDs that are no longer present. Spec/ticket minimum width is three;
+decimal IDs that are no longer present. Spec/task minimum width is three;
 ADR allocation keeps width four. Width grows without truncation using alphabet
 `0-9 A-Z a-z`. Sorting uses suffix length then that alphabet, independent of
 locale; it is label ordering, not creation chronology. Case-folded and leading-zero
-collisions are refused. Letter-bearing ticket labels are unique across the room;
-legacy numeric ticket references retain their existing spec-qualified scope and
+collisions are refused. Letter-bearing task labels are unique across the room;
+legacy numeric task references retain their existing spec-qualified scope and
 are not claimed globally unique. Their bytes and lookup routes are preserved.
 
 Spec parsing, selection, blockers, claim/close, rendering, Genesis readiness,
@@ -989,7 +989,7 @@ inventory is reconciled; they are preserved. Ordinary `create --note NAME`
 remains available for legacy named context. Allocation assumes one writer and
 checks current records; it supplies neither a distributed lock nor an eternal
 registry of deleted local notes. Active handoff retention still prevents source
-cleanup. Durable spec/ticket/ADR behavior is described above.
+cleanup. Durable spec/task/ADR behavior is described above.
 
 New notepads are JSON. `workbench/tools/notepads.mjs` owns structural checks
 and updates. A new layout declares `sessions/notepads/`: bare names create
@@ -1331,7 +1331,7 @@ frontmatter, a retired `authority` property, an enum outside `type`,
 absolute or traversing `source_paths` entry, a duplicated note basename, and a
 `design-concepts/` article that lacks `type: design-concept`,
 `authorized_by`, `parent`, or its `Evidence and Sources` and `History`
-sections. `copied-task-state` flags generated-region markers or ticket rows
+sections. `copied-task-state` flags generated-region markers or task rows
 copied into a note; `secret-like-content` flags key blocks, tokens,
 credential assignments, absolute home paths, host temp handoff lanes, and
 email addresses in a `normal` note (the shared `workbench/tools/privacy.mjs`
@@ -1805,7 +1805,7 @@ For routine read-only runs, a final response note is enough.
 
 ## Evidence And Continuation Practices
 
-Size a ticket so a fresh context can recover its inputs, exercise one useful
+Size a task so a fresh context can recover its inputs, exercise one useful
 behavior at its public seam and finish named verification. There is no accepted
 universal byte or token threshold. Unknown consequential product choices belong
 in a decision slice of the already assigned spec before dependent implementation;

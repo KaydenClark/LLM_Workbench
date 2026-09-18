@@ -1,9 +1,9 @@
 ---
 name: carry
-description: Carry an assigned Workbench spec or ticket to its already-authorized endpoint - recover context, reconcile evidence, execute, verify, and update the owning records - returning to the owner only for a genuine decision, and recording each hand-back that was not one.
+description: Carry an assigned Workbench spec or task to its already-authorized endpoint - recover context, reconcile evidence, execute, verify, and update the owning records - returning to the owner only for a genuine decision, and recording each hand-back that was not one.
 ---
 
-Carry one already-assigned unit of work - a spec, or a named ticket inside one -
+Carry one already-assigned unit of work - a spec, or a named task inside one -
 from wherever it currently sits to the endpoint its existing authorization
 already reaches.
 
@@ -20,7 +20,7 @@ composes the existing skills - it replaces none of them and adds no new store.
 ## 1. Recover the assignment before asking about it
 
 The assignment is whatever the owner named. `carry` does not choose work: with
-no spec or ticket named, say so and stop - selection is `next`, and inventing a
+no spec or task named, say so and stop - selection is `next`, and inventing a
 queue item for yourself is exactly what `AGENTS.md` forbids. Recover the named
 assignment's state from the project rather than from the owner:
 
@@ -48,7 +48,7 @@ owner restating any of them.
 ## 2. Name the authorized endpoint
 
 Say plainly, before starting, where this run stops. The endpoint is whatever the
-existing authorization already reaches - typically the ticket closed with named
+existing authorization already reaches - typically the task closed with named
 proof, the owning documentation updated, and the work merged into the declared
 `git.integrationBranch`. Promotion from that branch is owner-only, and no
 invocation of `carry` moves it.
@@ -65,7 +65,7 @@ section 4 - a reason to stop and say so, never a reason to merge.
 
 ## 3. Run it
 
-Execute through the existing contracts: `/implement` for a ticket's red/green
+Execute through the existing contracts: `/implement` for a task's red/green
 loop, `/tracer-bullet` when the slice needs cutting, `/to-docs` for changed
 truth, `/code-review` for the separate-context gate before integration. Use the
 stance the SPEC and TASK assign.
@@ -85,7 +85,7 @@ node workbench/tools/spec-workbench.mjs doctor
 
 If one slice genuinely cannot proceed, record the blocker in its spec, push the
 truthful checkpoint, and carry the next eligible slice **within the named
-assignment**. A ticket-scoped invocation ends at that ticket; it does not walk
+assignment**. A task-scoped invocation ends at that task; it does not walk
 into the next spec, and it never selects work. Report every slice you skipped
 and why. A partial result reported as partial is honest; a partial
 result reported as done is not.

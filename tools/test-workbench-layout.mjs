@@ -233,7 +233,7 @@ function schemaOneFixture(project) {
     workbenchVersion: VERSION,
     provenance: { lifecycle: 'genesis' },
     lanes: { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' },
-    skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tickets', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
+    skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
   }, null, 2)}\n`);
 }
 
