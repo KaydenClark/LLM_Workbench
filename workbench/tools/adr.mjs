@@ -6,6 +6,7 @@
 // an untracked session collection is not evidence and is reported.
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { finding } from './diagnostics.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
@@ -88,6 +89,27 @@ export function insertFrontmatterKeys(content, fields, label) {
   if (!fence) throw new Error(`${label} parsed as having frontmatter but carries no locatable closing fence.`);
   const lines = missing.flatMap(([, value]) => value);
   return { content: `${content.slice(0, fence.index)}${fence.eol}${lines.join(fence.eol)}${content.slice(fence.index)}`, inserted: missing.map(([name]) => name) };
+}
+
+// S-00I TK-002: the inverse of `insertFrontmatterKeys` for a single scalar
+// key - remove it if present, touch nothing else. Line-based, like the rest
+// of this file's terminator handling, so a CRLF record loses only its
+// `key: value` line and gains no LF-terminated one. `status` is always a
+// plain scalar line in every record this migration ever writes to, never a
+// YAML list, so a single matching line is exactly what must go.
+export function stripFrontmatterKey(content, key) {
+  const eol = nativeEol(content);
+  const lines = content.split(eol);
+  if (lines[0] !== '---') return { content, removed: false };
+  let closeIndex = -1;
+  for (let index = 1; index < lines.length; index += 1) { if (lines[index] === '---') { closeIndex = index; break; } }
+  if (closeIndex === -1) return { content, removed: false };
+  const pattern = new RegExp(`^${key}:`);
+  let removedIndex = -1;
+  for (let index = 1; index < closeIndex; index += 1) { if (pattern.test(lines[index])) { removedIndex = index; break; } }
+  if (removedIndex === -1) return { content, removed: false };
+  lines.splice(removedIndex, 1);
+  return { content: lines.join(eol), removed: true };
 }
 
 // Enumerates the top-level directory and, when present, each lifecycle
@@ -366,6 +388,183 @@ export function localLinks(content) {
   return links;
 }
 
+// S-00I TK-002: the one-shot migration that moves lifecycle out of
+// frontmatter and into folder location. It refuses a dirty tree (the moved
+// candidate must be reviewable as the git-mv renames it produces) and
+// refuses a second run (once every record's lifecycle already agrees with
+// its folder and no leftover `status` key remains to strip, there is nothing
+// left to do). `status` is stripped only for the folder-mappable lifecycles
+// (`accepted`, `proposed`, `superseded`, `deprecated`); `rejected` has no
+// dedicated folder in ADR_LIFECYCLE_FOLDERS and keeps its frontmatter, since
+// folder cannot express what location does not distinguish.
+const STATUS_TO_FOLDER = Object.freeze({ proposed: 'proposed', superseded: 'archive', deprecated: 'archive', accepted: null });
+
+function splitLinkFragment(target) {
+  const index = target.indexOf('#');
+  return index === -1 ? [target, undefined] : [target.slice(0, index), target.slice(index + 1)];
+}
+
+// Rewrites every Markdown link in `content` - a file read from `oldDir`
+// before this migration, now living at `newDir` - that resolves (via
+// `oldDir`, so a moved referencing file's own stale relative text is
+// interpreted correctly) to a path this migration tracks in `locations`
+// (old absolute ADR record path -> current absolute path, including every
+// record that did not move, mapped to itself). A link to anything else -
+// another spec, a wiki note, a target this migration never touched - is
+// never matched and never rewritten.
+function rewriteAdrLinks(content, oldDir, newDir, locations) {
+  let count = 0;
+  const updated = content.replace(/(\[[^\]]*\]\()([^)]+)(\))/g, (whole, open, target, close) => {
+    if (/^(?:https?:|mailto:)/.test(target)) return whole;
+    const [rawPath, fragment] = splitLinkFragment(target);
+    if (!rawPath) return whole;
+    let decoded;
+    try { decoded = decodeURIComponent(rawPath); } catch { return whole; }
+    const oldAbsolute = path.resolve(oldDir, decoded);
+    if (!locations.has(oldAbsolute)) return whole;
+    const newAbsolute = locations.get(oldAbsolute);
+    const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/');
+    const rebuilt = fragment !== undefined ? `${relative}#${fragment}` : relative;
+    if (rebuilt === target) return whole;
+    count += 1;
+    return `${open}${rebuilt}${close}`;
+  });
+  return { content: updated, count };
+}
+
+// Every live Markdown surface this migration must repair a moved reference
+// in, outside the ADR collection itself (handled separately, since its own
+// records' directories change): root controls, the Wiki, every Spec's
+// `SPEC.md`, `skills/`, and `team templates/`. `templates/` (the blank
+// product mirror) is deliberately excluded.
+function collectExternalMarkdownFiles(root) {
+  const files = [];
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+    const file = path.join(root, name);
+    if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
+  }
+  const walk = (dir, match) => {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isSymbolicLink()) continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full, match);
+      else if (entry.isFile() && match(entry.name)) files.push(full);
+    }
+  };
+  walk(path.join(root, 'workbench', 'wiki'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'skills'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'team templates'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'workbench', 'specs'), (name) => name === 'SPEC.md');
+  return files;
+}
+
+// A `SPEC.md`'s Append-Only Evidence And Execution Log is frozen history:
+// `tools/check-append-only.py` pins its rows by Date/Ticket/Event, and this
+// migration must never rewrite a link inside one, even a stale one pointing
+// at a record's pre-migration path. Split the file into the part before that
+// section, the section itself (untouched), and the part after, so rewriting
+// can apply to live prose on both sides without ever touching the table.
+function splitEvidenceSection(content) {
+  const heading = '## Append-Only Evidence And Execution Log';
+  const headingIndex = content.indexOf(`\n${heading}`);
+  if (headingIndex === -1) return { prefix: content, evidence: '', suffix: '' };
+  const startOfHeading = headingIndex + 1;
+  const rest = content.slice(startOfHeading);
+  const nextHeading = rest.slice(heading.length).match(/\n## /);
+  const sectionEnd = nextHeading ? heading.length + nextHeading.index + 1 : rest.length;
+  return { prefix: content.slice(0, startOfHeading), evidence: rest.slice(0, sectionEnd), suffix: rest.slice(sectionEnd) };
+}
+
+export function migrateLifecycleFolders(root) {
+  const directory = collectionPath(root, 'adr');
+  assertSafeReadPath(root, directory);
+
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  const usesGit = gitStatus.status === 0;
+  if (usesGit && gitStatus.stdout.trim() !== '') {
+    throw new Error('adr migrate-folders refuses a dirty working tree; commit or stash first so the candidate shows only this migration');
+  }
+
+  const adrs = listAdrs(root);
+  const moves = [];
+  const strips = [];
+  for (const adr of adrs) {
+    const explicit = typeof adr.data?.status === 'string' ? adr.data.status.trim() : '';
+    if (!explicit || !Object.hasOwn(STATUS_TO_FOLDER, explicit)) continue;
+    const impliedFolder = STATUS_TO_FOLDER[explicit];
+    if (impliedFolder !== adr.folder) moves.push({ adr, toFolder: impliedFolder });
+    strips.push(adr);
+  }
+  if (moves.length === 0 && strips.length === 0) {
+    throw new Error('adr migrate-folders found nothing to migrate; the collection already reflects folder lifecycle');
+  }
+
+  // `locations` tracks every record's current absolute path, moved or not,
+  // so link rewriting (inside the collection and outside it) can resolve any
+  // reference against where a record actually lives right now.
+  const locations = new Map(adrs.map((adr) => [adr.filePath, adr.filePath]));
+  const oldDirOf = new Map(adrs.map((adr) => [adr.filePath, path.dirname(adr.filePath)]));
+  const movedByFolder = {};
+
+  for (const { adr, toFolder } of moves) {
+    const destinationDir = toFolder ? path.join(directory, toFolder) : directory;
+    fs.mkdirSync(destinationDir, { recursive: true });
+    const destination = path.join(destinationDir, adr.name);
+    assertSafeWritePath(root, destination);
+    if (fs.existsSync(destination)) throw new Error(`adr migrate-folders destination already exists: ${path.relative(root, destination)}`);
+    if (usesGit) {
+      const result = spawnSync('git', ['-C', root, 'mv', path.relative(root, adr.filePath), path.relative(root, destination)], { encoding: 'utf8' });
+      if (result.status !== 0) throw new Error(`git mv failed for ${adr.relativePath}: ${(result.stderr || result.stdout || '').trim()}`);
+    } else {
+      fs.renameSync(adr.filePath, destination);
+    }
+    locations.set(adr.filePath, destination);
+    (movedByFolder[toFolder] ??= []).push(adr.relativePath);
+  }
+
+  const stripped = [];
+  const referencesRewritten = {};
+  for (const adr of adrs) {
+    const currentPath = locations.get(adr.filePath);
+    let content = fs.readFileSync(currentPath, 'utf8');
+    let changed = false;
+    if (strips.includes(adr)) {
+      const result = stripFrontmatterKey(content, 'status');
+      if (result.removed) { content = result.content; changed = true; stripped.push(adr.relativePath); }
+    }
+    const rewritten = rewriteAdrLinks(content, oldDirOf.get(adr.filePath), path.dirname(currentPath), locations);
+    if (rewritten.count > 0) {
+      content = rewritten.content;
+      changed = true;
+      referencesRewritten[path.relative(root, currentPath).split(path.sep).join('/')] = rewritten.count;
+    }
+    if (changed) { assertSafeWritePath(root, currentPath); writeSafeFile(root, currentPath, content); }
+  }
+
+  const historicalReferencesLeft = {};
+  for (const file of collectExternalMarkdownFiles(root)) {
+    const original = fs.readFileSync(file, 'utf8');
+    const { prefix, evidence, suffix } = splitEvidenceSection(original);
+    const fileDir = path.dirname(file);
+    const rewrittenPrefix = rewriteAdrLinks(prefix, fileDir, fileDir, locations);
+    const rewrittenSuffix = rewriteAdrLinks(suffix, fileDir, fileDir, locations);
+    const skippedInEvidence = rewriteAdrLinks(evidence, fileDir, fileDir, locations).count;
+    const relative = path.relative(root, file).split(path.sep).join('/');
+    if (skippedInEvidence > 0) historicalReferencesLeft[relative] = skippedInEvidence;
+    const totalRewritten = rewrittenPrefix.count + rewrittenSuffix.count;
+    if (totalRewritten > 0) {
+      const finalContent = rewrittenPrefix.content + evidence + rewrittenSuffix.content;
+      assertSafeWritePath(root, file);
+      writeSafeFile(root, file, finalContent);
+      referencesRewritten[relative] = totalRewritten;
+    }
+  }
+
+  const register = writeRegister(root);
+  return { usesGit, moved: movedByFolder, stripped, referencesRewritten, historicalReferencesLeft, register };
+}
+
 function cell(value) {
   return String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 }
@@ -401,8 +600,10 @@ if (isMainModule(import.meta.url)) {
       console.log(JSON.stringify(normalizeAdrs(root, { date: options.date })));
     } else if (command === 'new') {
       console.log(JSON.stringify(newAdr(root, options)));
+    } else if (command === 'migrate-folders') {
+      console.log(JSON.stringify(migrateLifecycleFolders(root), null, 2));
     } else {
-      throw new Error('Usage: adr.mjs validate [--json] | normalize [--date YYYY-MM-DD] [--json] | register | new --title "Decision title" [--date YYYY-MM-DD]');
+      throw new Error('Usage: adr.mjs validate [--json] | normalize [--date YYYY-MM-DD] [--json] | register | new --title "Decision title" [--date YYYY-MM-DD] | migrate-folders');
     }
   } catch (error) {
     console.error(`error: ${error.message}`);

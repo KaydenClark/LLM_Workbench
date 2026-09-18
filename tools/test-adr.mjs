@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, listAdrs, localLinks, newAdr, normalizeAdrs, renderRegister, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
+import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, listAdrs, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, renderRegister, stripFrontmatterKey, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,6 +27,27 @@ function fixture() {
 
 function adr(status, extraFront = '', body = '') {
   return `---\nstatus: ${status}\ndate: 2026-09-04\n${extraFront}---\n\n# A decision\n\nThe decision.\n\n${body}Provenance: owner decision.\n`;
+}
+
+// S-00I TK-002: `migrate-folders` must show the reviewer renames, not
+// delete-plus-add, and must refuse a dirty tree - both only observable
+// against a real Git working tree, not the plain fixture() above.
+function gitFixture() {
+  const dir = fixture();
+  spawnSync('git', ['init', '--quiet', dir]);
+  spawnSync('git', ['-C', dir, 'config', 'user.email', 'fixture@example.com']);
+  spawnSync('git', ['-C', dir, 'config', 'user.name', 'Fixture']);
+  return dir;
+}
+
+function gitCommitAll(dir, message) {
+  spawnSync('git', ['-C', dir, 'add', '-A']);
+  const result = spawnSync('git', ['-C', dir, 'commit', '--quiet', '-m', message], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+}
+
+function gitStatus(dir) {
+  return spawnSync('git', ['-C', dir, 'status', '--porcelain'], { encoding: 'utf8' }).stdout;
 }
 
 test('a valid corpus validates, registers deterministically, and reports a stale register as attention', () => {
@@ -451,6 +472,133 @@ test('a leftover status frontmatter that disagrees with its lifecycle folder is 
     writeRegister(dir);
     assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'disagreeing-status' && item.adr === '0002-flat.md'), []);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-00I TK-002: the one-shot migration itself. It must show the reviewer
+// renames (git mv), strip the now folder-carried `status` key, rewrite every
+// live intra-collection and external Markdown link a move invalidates, and
+// leave an append-only evidence-table reference alone as counted history.
+test('migrate-folders moves records by git mv, strips status, rewrites intra-collection and external references, and leaves an append-only evidence reference as counted history', () => {
+  const dir = gitFixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-active.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    // 0002 links to 0001 (unmoved) - once 0002 itself moves into proposed/,
+    // that link must gain a `../` prefix even though 0001 never moves.
+    fs.writeFileSync(path.join(collection, '0002-draft.md'), adr('proposed', '', 'See [ADR-0001](0001-active.md).\n\n'));
+    fs.writeFileSync(path.join(collection, '0003-old.md'), adr('superseded', 'superseded_by: 0001-active.md\n'));
+    writeRegister(dir);
+
+    const specDir = path.join(dir, 'workbench/specs/S-901-demo');
+    fs.mkdirSync(specDir, { recursive: true });
+    const specFile = path.join(specDir, 'SPEC.md');
+    fs.writeFileSync(specFile, [
+      '# S-901 - Demo',
+      '',
+      '## Decisions And Contracts',
+      '',
+      '- See [ADR-0002](../../docs/adr/0002-draft.md).',
+      '',
+      '## Append-Only Evidence And Execution Log',
+      '',
+      '| Date | Commit | Claim | Method | Result |',
+      '|---|---|---|---|---|',
+      '| 2026-01-01 | abc123 | mentions [ADR-0002](../../docs/adr/0002-draft.md) | test | historical |',
+      '',
+      '## Completion Result',
+      '',
+      'Not started.',
+      ''
+    ].join('\n'));
+    gitCommitAll(dir, 'initial corpus');
+
+    const result = migrateLifecycleFolders(dir);
+    assert.equal(result.usesGit, true);
+    assert.deepEqual(result.moved.proposed, ['workbench/docs/adr/0002-draft.md']);
+    assert.deepEqual(result.moved.archive, ['workbench/docs/adr/0003-old.md']);
+    assert.deepEqual(result.stripped.sort(), ['workbench/docs/adr/0001-active.md', 'workbench/docs/adr/0002-draft.md', 'workbench/docs/adr/0003-old.md'].sort());
+
+    // git mv, not delete-plus-add: the candidate must show renames.
+    const status = gitStatus(dir);
+    assert.match(status, /^R  workbench\/docs\/adr\/0002-draft\.md -> workbench\/docs\/adr\/proposed\/0002-draft\.md$/m);
+    assert.match(status, /^R  workbench\/docs\/adr\/0003-old\.md -> workbench\/docs\/adr\/archive\/0003-old\.md$/m);
+
+    const movedDraft = fs.readFileSync(path.join(collection, 'proposed', '0002-draft.md'), 'utf8');
+    assert.doesNotMatch(movedDraft, /^status:/m, 'the folder-carried status key must be stripped');
+    assert.match(movedDraft, /\[ADR-0001\]\(\.\.\/0001-active\.md\)/, 'an outgoing link must gain the ../ its mover needs, even though the target itself never moved');
+
+    const movedOld = fs.readFileSync(path.join(collection, 'archive', '0003-old.md'), 'utf8');
+    assert.doesNotMatch(movedOld, /^status:/m);
+    assert.match(movedOld, /superseded_by: 0001-active\.md/, 'superseded_by is a fact, not lifecycle, and stays');
+
+    const active = fs.readFileSync(path.join(collection, '0001-active.md'), 'utf8');
+    assert.doesNotMatch(active, /^status:/m, 'an unmoved accepted record is also stripped');
+
+    assert.deepEqual(validateAdrs(dir), [], 'a fully migrated collection must validate with no findings at all');
+
+    const specContent = fs.readFileSync(specFile, 'utf8');
+    assert.match(specContent, /## Decisions And Contracts\n\n- See \[ADR-0002\]\(\.\.\/\.\.\/docs\/adr\/proposed\/0002-draft\.md\)\./, 'a live reference outside the collection must be rewritten to the moved record\'s real path');
+    assert.match(specContent, /mentions \[ADR-0002\]\(\.\.\/\.\.\/docs\/adr\/0002-draft\.md\)/, 'the append-only evidence row must keep its historical, now-stale path untouched');
+
+    const specRelative = 'workbench/specs/S-901-demo/SPEC.md';
+    assert.equal(result.referencesRewritten[specRelative], 1);
+    assert.equal(result.historicalReferencesLeft[specRelative], 1);
+    assert.ok(result.referencesRewritten['workbench/docs/adr/proposed/0002-draft.md'] >= 1);
+
+    assert.equal(fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8'), renderRegister(listAdrs(dir)), 'register must be regenerated by the migration itself');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('migrate-folders refuses a dirty working tree', () => {
+  const dir = gitFixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-draft.md'), adr('proposed'));
+    writeRegister(dir);
+    gitCommitAll(dir, 'initial corpus');
+    fs.appendFileSync(path.join(collection, '0001-draft.md'), '\n');
+    assert.throws(() => migrateLifecycleFolders(dir), /dirty working tree/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('migrate-folders refuses a second run once the collection already reflects folder lifecycle', () => {
+  const dir = gitFixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-draft.md'), adr('proposed'));
+    writeRegister(dir);
+    gitCommitAll(dir, 'initial corpus');
+    migrateLifecycleFolders(dir);
+    gitCommitAll(dir, 'migrate');
+    assert.throws(() => migrateLifecycleFolders(dir), /nothing to migrate/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// The command must still work by ordinary file move outside a Git checkout -
+// a fixture with no `.git` at all, as opposed to every test above.
+test('migrate-folders moves records without git when the collection is not inside a Git working tree', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-draft.md'), adr('proposed'));
+    writeRegister(dir);
+    const result = migrateLifecycleFolders(dir);
+    assert.equal(result.usesGit, false);
+    assert.deepEqual(result.moved.proposed, ['workbench/docs/adr/0001-draft.md']);
+    assert.ok(fs.existsSync(path.join(collection, 'proposed', '0001-draft.md')));
+    assert.ok(!fs.existsSync(path.join(collection, '0001-draft.md')));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('stripFrontmatterKey removes only the named scalar key and preserves a CRLF record\'s terminator', () => {
+  const crlf = '---\r\nstatus: proposed\r\ndate: 2026-09-04\r\n---\r\n\r\n# A decision\r\n';
+  const result = stripFrontmatterKey(crlf, 'status');
+  assert.equal(result.removed, true);
+  assert.equal(result.content, '---\r\ndate: 2026-09-04\r\n---\r\n\r\n# A decision\r\n');
+  assert.doesNotMatch(result.content, /(?<!\r)\n/);
+  const again = stripFrontmatterKey(result.content, 'status');
+  assert.equal(again.removed, false);
+  assert.equal(again.content, result.content);
 });
 
 test('missing and stale history are reported without rewriting history',()=>{
