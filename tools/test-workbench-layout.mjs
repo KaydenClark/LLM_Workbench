@@ -843,8 +843,11 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.1.3', twelve), 'invalid-skill-policy');
     assert.equal(outcome('v3.1.0', twelve), 'valid');
     assert.equal(outcome('v3.0.0', twelve), 'valid');
-    // The owner-authorized v3.2.0 repair retains the earlier stamped twenty.
-    assert.equal(outcome('v3.2.0', current.filter(name => name !== 'handoff')), 'valid');
+    // The owner-authorized v3.2.0 repair retains the earlier stamped twenty,
+    // built from `legacyCoreSkills` rather than by filtering `current`: S-00H
+    // TK-004 renamed one live name (to-tickets -> to-tasks) that this frozen
+    // row must keep saying to-tickets.
+    assert.equal(outcome('v3.2.0', [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...current.slice(-4)]), 'valid');
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, current), 'valid');
     assert.equal(outcome(VERSION, sixteen), 'invalid-skill-policy');
