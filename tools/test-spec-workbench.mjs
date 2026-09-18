@@ -32,7 +32,6 @@ import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
-import { assembleSpecReport } from '../workbench/tools/spec-report.mjs';
 
 // A record-backed Spec's `close` now appends a Receipt row, which reads live
 // Git facts (branch, HEAD SHA, upstream, dirty count) for the working tree
@@ -3336,5 +3335,57 @@ function completeEmptyTableRecordBackedSpec(id) {
     console.log('ok - assembleSpecReport shows a retired Task as history, with its own Receipt, so a reviewer still sees its proof');
   } finally {
     fs.rmSync(reportRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Corrective review finding 1 (S-00I TK-004 review, "nothing to carry"): the
+// contract comment above moveTaskRecord, its inline comment, and its thrown
+// message all describe refusing a done Task only when it has *both* no
+// Receipt run *and* no Proof to carry (AND) - but the guard itself read
+// `!activeTask.proof || receiptRows.length === 0` (OR), so either half
+// missing alone was enough to refuse. On the real room this refused
+// S-00H/TK-003 - done, with a long Proof, but zero Receipt rows because
+// Receipts postdate it - with a message that falsely claimed both were
+// missing. Proof alone, or a Receipt run alone, must be enough to carry.
+// ============================================================================
+{
+  const carryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-lifecycle-carry-'));
+  try {
+    initLifecycleFixture(carryRoot);
+    writeAt(carryRoot, 'workbench/specs/S-526-carry-fixture/SPEC.md', emptyTableRecordBackedSpec('S-526'));
+    // Proof set, no Receipt run at all - exactly the real room's S-00H/TK-003
+    // shape (Receipts postdate it). Must move: Proof alone is enough.
+    writeAt(carryRoot, 'workbench/specs/S-526-carry-fixture/tasks/TK-001/TASK.md', doneTaskRecordFixture({
+      id: 'TK-001', specId: 'S-526', slice: 'Proof only slice',
+      destination: 'spec-acceptance: S-526 Acceptance Criteria', proof: 'landed a long fix; no Receipt run exists'
+    }));
+    // Neither a Proof field nor a Receipt run - genuinely nothing to carry.
+    writeAt(carryRoot, 'workbench/specs/S-526-carry-fixture/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-526', slice: 'Neither slice', status: 'done', blockers: 'none',
+      destination: 'spec-acceptance: S-526 Acceptance Criteria'
+    }));
+
+    execFileSync('git', ['init', '--quiet', carryRoot]);
+    execFileSync('git', ['-C', carryRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', carryRoot, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', carryRoot, 'add', '-A']);
+    execFileSync('git', ['-C', carryRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    // Checked first, on the still-clean committed tree: a second move right
+    // after the first would find a dirty tree (the first move's own staged
+    // rename) and throw that refusal instead, masking this one.
+    assert.throws(() => moveTaskRecord(carryRoot, 'S-526', 'TK-002', 'retired'),
+      /no Receipt run and no Proof/,
+      'refuses a done Task with neither a Receipt run nor a Proof, naming both missing halves');
+
+    const result = moveTaskRecord(carryRoot, 'S-526', 'TK-001', 'retired');
+    assert.equal(result.taskId, 'TK-001');
+    assert.ok(fs.existsSync(path.join(carryRoot, 'workbench/specs/S-526-carry-fixture/tasks/retired/TK-001/TASK.md')),
+      'a done Task with Proof and zero Receipt rows moves; Proof alone is enough to carry');
+
+    console.log('ok - moveTaskRecord\'s nothing-to-carry guard refuses only when both a Receipt run and a Proof are absent, not either alone');
+  } finally {
+    fs.rmSync(carryRoot, { recursive: true, force: true });
   }
 }

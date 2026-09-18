@@ -1314,9 +1314,9 @@ export function moveSpecDirectory(rootDir, specId, folder) {
 //   - a dirty working tree (the moved candidate must be reviewable as the
 //     rename it produces) or a room with no Git working tree at all (an
 //     unrecoverable move, exactly as `moveSpecDirectory` refuses one);
-//   - a Task whose Receipt carries no run and whose Proof field is empty -
-//     "nothing to carry" into its own historical record, the Task analogue
-//     of refusing an incomplete Spec.
+//   - a Task whose Receipt carries no run AND whose Proof field is empty
+//     (both absent, not either alone) - "nothing to carry" into its own
+//     historical record, the Task analogue of refusing an incomplete Spec.
 export function moveTaskRecord(rootDir, specId, taskId, folder) {
   const root = path.resolve(rootDir);
   if (!TASK_LIFECYCLE_FOLDERS.includes(folder)) {
@@ -1338,17 +1338,21 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   if (gitStatus.stdout.trim() !== '') {
     throw new Error('move-task refuses a dirty working tree; commit or stash first so the candidate shows only this move');
   }
-  // "Nothing to carry": a Receipt with no run and an empty Proof field mean
-  // this Task's own record holds no evidence a later reader could rely on -
-  // the retirement move exists to relocate reconciled work, not to hide an
-  // unproven one behind a historical-looking path.
+  // "Nothing to carry": a Receipt with no run AND an empty Proof field
+  // together mean this Task's own record holds no evidence a later reader
+  // could rely on - the retirement move exists to relocate reconciled work,
+  // not to hide an unproven one behind a historical-looking path. Either
+  // half alone is still evidence: a long Proof with zero Receipt rows is the
+  // real room's ordinary shape for a Task that predates Receipts (e.g.
+  // S-00H/TK-003), and a Receipt run with no Proof field is still a run
+  // record. Only refuse when both halves are absent.
   let receiptRows;
   try {
     receiptRows = readReceiptFromFile(activeTask.filePath);
   } catch (error) {
     throw new Error(`${specId}/${taskId} Receipt could not be read: ${error.message}`);
   }
-  if (!activeTask.proof || receiptRows.length === 0) {
+  if (!activeTask.proof && receiptRows.length === 0) {
     throw new Error(`${specId}/${taskId} has no Receipt run and no Proof to carry; move-task refuses a Task with nothing to carry`);
   }
   const specDir = path.dirname(spec.filePath);
