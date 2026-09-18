@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Updated:** 2026-09-18
 **Catalog description:** Make a Task a standalone `TASK.md` artifact that owns active work state, and replace Ticket with Task across prose, tools and newly allocated identifiers.
-**Blockers:** None: TT-Q10 was answered by the owner on 2026-09-17 (`TK-###` stays, `TK` read as the Task prefix) and TK-003 is done, so TK-004 and TK-007 are both in progress with no open blocker; six of eight slices are landed.
+**Blockers:** none; all eight slices are landed and the Spec is complete (TT-Q10 was answered by the owner on 2026-09-17: `TK-###` stays, `TK` read as the Task prefix).
 **Latest event:** Spec completed and removed from the hot board.
 **Next gate:** none
 
@@ -332,7 +332,8 @@ in-progress Task's run count, latest branch, short SHA and dirty count without
 the run table. The manifest declares the context unit with provenance. The
 tools, root controls, skills, generic `templates/` mirror and team templates
 say Task, proven by two sweeps that failed first (203 lines in 27 tool files;
-90 lines in 23 control, skill and template files) and now run in the
+90 lines in 23 control, skill and template files under whole-line
+allow-listing, 91 in 24 as the shipped token-level sweep counts) and now run in the
 43-command suite; `to-tickets` is `to-tasks`, with the frozen legacy bundle
 keeping older manifests valid. TT-Q10 was answered by the owner: newly
 allocated identifiers keep `TK-###`, `TK` read as the Task prefix, so no
