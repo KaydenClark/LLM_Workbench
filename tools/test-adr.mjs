@@ -518,10 +518,12 @@ test('migrate-folders moves records by git mv, strips status, rewrites intra-col
     assert.deepEqual(result.moved.archive, ['workbench/docs/adr/0003-old.md']);
     assert.deepEqual(result.stripped.sort(), ['workbench/docs/adr/0001-active.md', 'workbench/docs/adr/0002-draft.md', 'workbench/docs/adr/0003-old.md'].sort());
 
-    // git mv, not delete-plus-add: the candidate must show renames.
+    // git mv, not delete-plus-add: the candidate must show renames (status
+    // `R`, with a trailing `M` since the move also stripped `status` and
+    // rewrote a link, so the working tree differs from the staged rename too).
     const status = gitStatus(dir);
-    assert.match(status, /^R  workbench\/docs\/adr\/0002-draft\.md -> workbench\/docs\/adr\/proposed\/0002-draft\.md$/m);
-    assert.match(status, /^R  workbench\/docs\/adr\/0003-old\.md -> workbench\/docs\/adr\/archive\/0003-old\.md$/m);
+    assert.match(status, /^R. workbench\/docs\/adr\/0002-draft\.md -> workbench\/docs\/adr\/proposed\/0002-draft\.md$/m);
+    assert.match(status, /^R. workbench\/docs\/adr\/0003-old\.md -> workbench\/docs\/adr\/archive\/0003-old\.md$/m);
 
     const movedDraft = fs.readFileSync(path.join(collection, 'proposed', '0002-draft.md'), 'utf8');
     assert.doesNotMatch(movedDraft, /^status:/m, 'the folder-carried status key must be stripped');
