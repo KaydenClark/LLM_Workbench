@@ -1,15 +1,15 @@
 # S-00I - Retirement Lifecycle By Folder For Records
 
 **Spec ID:** S-00I
-**Status:** blocked
+**Status:** active
 **Priority:** 3
-**Owner:** unassigned
+**Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-16
+**Updated:** 2026-09-18
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
-**Blockers:** S-00H must reach `complete` before TK-001 is claimable.
-**Latest event:** Rewritten 2026-09-16 against the WF grilling note at revision 57 under the v4.0.0 rollout (S-00O); ADR-acceptance and FND-Q07/FND-Q08 blockers removed as settled or superseded.
-**Next gate:** When S-00H is `complete`, set Status to `active`; `claim S-00I` then takes TK-001.
+**Blockers:** none; S-00H is `complete` (integration `49c671e`).
+**Latest event:** TK-001 claimed by DISPATCHER.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -139,7 +139,7 @@ blocker, and nothing in this Spec depends on it.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Make ADR successor and link resolution folder-aware | ready | S-00H | Red: `tools/test-adr.mjs` case for a superseded record whose successor lives in another folder fails because `adr.mjs` rejects a path in `superseded_by`; green: resolution by identity, every intra-ADR link proven (30 files at the anchor) |
+| TK-001 | Make ADR successor and link resolution folder-aware | in-progress | S-00H | Red: `tools/test-adr.mjs` case for a superseded record whose successor lives in another folder fails because `adr.mjs` rejects a path in `superseded_by`; green: resolution by identity, every intra-ADR link proven (30 files at the anchor) |
 | TK-002 | Move ADR lifecycle from frontmatter status to folder location | blocked | TK-001 | Red: a test asserting `REGISTER.md` and `HISTORY.md` are driven by location fails; green: every record migrated (52 at the anchor), register byte-stable for unchanged lifecycles, `archive` holds superseded and deprecated bodies untouched |
 | TK-003 | Apply folder lifecycle to Spec directories and repair every live reference | blocked | TK-002 | Red: a complete reference and link scan fails after a fixture Spec directory moves; green: move path, every ADR-to-spec reference resolves (19 records at the anchor), `CATALOG.md` names retired Specs by their historical route or stops claiming to include them |
 | TK-004 | Apply folder lifecycle to Task records and retire the stable-path rule | blocked | TK-003 | Red: a test moving a `TASK.md` record between folders fails; green: move path and `AGENTS.md` stable-path rule retired with stated reason in the same change |

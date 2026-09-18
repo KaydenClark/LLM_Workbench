@@ -1,15 +1,15 @@
 # S-00H - Task Artifact And Terminology Migration
 
 **Spec ID:** S-00H
-**Status:** active
+**Status:** complete
 **Priority:** 2
 **Owner:** DISPATCHER
 **Stance:** Builder
 **Updated:** 2026-09-18
 **Catalog description:** Make a Task a standalone `TASK.md` artifact that owns active work state, and replace Ticket with Task across prose, tools and newly allocated identifiers.
 **Blockers:** None: TT-Q10 was answered by the owner on 2026-09-17 (`TK-###` stays, `TK` read as the Task prefix) and TK-003 is done, so TK-004 and TK-007 are both in progress with no open blocker; six of eight slices are landed.
-**Latest event:** TK-007 claimed by DISPATCHER.
-**Next gate:** Close TK-007 with verification and documentation proof.
+**Latest event:** Spec completed and removed from the hot board.
+**Next gate:** none
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -236,13 +236,13 @@ this ticket has no dependency on the others and can land independently.
 
 ## Acceptance Criteria
 
-- [ ] A Task exists as its own `TASK.md` record carrying status, blockers and
+- [x] A Task exists as its own `TASK.md` record carrying status, blockers and
       the destination it advances.
 - [x] `next`, `claim`, `close` and `render` operate on Task records.
-- [ ] No live tool, skill, control, board column, or generic `templates/`
+- [x] No live tool, skill, control, board column, or generic `templates/`
       mirror uses `Ticket` for the execution slice, proven by a
       repository-wide sweep that failed before the change.
-- [ ] Newly allocated execution-slice identifiers take the owner's chosen Task
+- [x] Newly allocated execution-slice identifiers take the owner's chosen Task
       form, `TK-###` with `TK` as the Task prefix (TT-Q10, 2026-09-17), proven
       by the allocator test.
 - [x] Every historical `TK-###` identifier inside a completed Spec is
@@ -251,17 +251,17 @@ this ticket has no dependency on the others and can land independently.
       a Scoped handoff or local notepad only when present, remains executable
       from the required members alone, and a corrective Task assembles
       against a reconciled Wiki claim without a `SPEC.md`.
-- [ ] A Task's Receipt is append-only with one row per run, carrying branch,
+- [x] A Task's Receipt is append-only with one row per run, carrying branch,
       HEAD SHA, upstream distance, dirty file count, tests run with result,
       docs touched and remaining gap; a resumed Task appends rather than
       overwrites.
-- [ ] `TASKBOARD.md` projects canonical Task state, derives a Spec objective's
+- [x] `TASKBOARD.md` projects canonical Task state, derives a Spec objective's
       active state from its Task records, projects each active Task's run
       count and latest branch, short SHA and dirty-file count, and never
       renders the full run table.
 - [x] `workbench/manifest.json` declares the context unit (200k tokens) with
       provenance, and sizing guidance reads it rather than restating a number.
-- [ ] The full verification suite passes and `doctor` is clean.
+- [x] The full verification suite passes and `doctor` is clean.
 
 ## Testing Seams
 
@@ -313,17 +313,48 @@ already say Task.
 | 2026-09-17 | TK-006 | Ticket closed | Red: missing-module error for workbench/tools/task-receipt.mjs at the pre state; green tools/test-spec-workbench.mjs receipt block: every named field present, a second run appends rather than overwrites, a row appended mid-run with an open remaining gap and nothing further called is readable, an edited earlier row is refused, whitespace and trailing-CR values round-trip, detached HEAD records 'detached at <sha>', a following heading keeps its blank line, and the table round-trips through readTaskRecord with pipes and field-shaped text inside cells. Reviewer mutations (overwrite the last row, skip checksum verification, constant branch, raw checksum input, literal HEAD, dropped blank line) all red. Full suite 42/42 on the corrected tip 2abbdbd and on the keep-both merge commit 649f970; doctor no blocking finding; render no-op; live probe on S-00P TK-002 leaves show, next, doctor and the board byte-identical; task-record.mjs byte-identical. Separate-context review (Claude Opus 5): afc2a18 FAIL on a whitespace-wedge defect (raw value checksummed, trimmed on read, written before read-back) plus three Low findings, corrected in 2abbdbd and re-reviewed PASS; the reviewer independently reproduced the merge resolution onto TK-005 and ran it green. Built by Claude Sonnet 5 from the lane handoff. Landed by PR #105; integration 860fd18 contains 649f970 | Docs checked; no update needed: ADR-000H and the LEXICON.md Task receipt row already carry the row fields, the proactive-append discipline and the crash limitation; no control names the append seam; operational prose is S-00P phase two | Write half only: nothing calls appendReceiptRow yet, so no live Task carries a Receipt and the Receipt acceptance box stays unchecked until close (or a later slice) appends the row; TK-007 derives the board signal from these rows. The read-back line and the append-after-altered-row refusal are correct but unasserted; a lone interior CR is stripped rather than refused; readReceipt shares its name with an export of tools/workbench-tools.mjs; the checksum chain does not detect trailing-row or whole-section deletion, as its header now states. RUNTIME_TOOLS grew to nineteen with task-receipt.mjs, after task-packet.mjs made it eighteen (S-00O release surface) |
 | 2026-09-17 | spec | TT-Q10 answered by the owner: asked in chat with option A `T-###` (recommended) and option B `TASK-###`, the owner replied "We dont need to change them, I thought TK stood for task, but if T fits better, lets go with it". The dispatcher resolved the conditional as no change: newly allocated identifiers keep the `TK-###` form and `TK` is read as the Task prefix, because S-00P already holds live records under `tasks/TK-002/` to `tasks/TK-005/` and a `T-###` form would put two live prefixes in one room for no gain; the `T-001` versus `TK-001` confusion cost named in the escalation row disappears, and the allocator, the CLI `--prefix` check and record folder names stay as they are. Historical `TK-###` rows stay frozen as before | Owner answer received in chat 2026-09-17; read-only check of `workbench/tools/visible-ids.mjs`, the `--prefix` check in `spec-workbench.mjs` and the S-00P `tasks/` folders; no code changed | LEXICON.md Ticket row updated in this state PR to say `TK` is the Task prefix; TK-003 section and this Spec's header and Dependencies updated; TK-003 flipped to `ready` and this Spec converted to Task records with convert-tasks in the same PR | TK-003 becomes claimable; TK-004 and TK-007 still wait on TK-003 |
 | 2026-09-18 | TK-003 | Task closed | Red: repository-wide ticket-vocabulary sweep test in tools/test-spec-workbench.mjs fails at the pre anchor 5e8ac60 with 203 lines in 27 files; per touched tool a red at its seam (closeTicket export, malformed ticket row message, diagnostic descriptions, genesis capability.ticket key, generated fixture headers, the updateFields dollar-pattern expansion, the row/record collision aborting doctor). Green: sweep passes with a seven-entry allow-list that rots visibly (a rewritten allow-listed string turns the test red); parseSpecPacket accepts both the Task and the historical Ticket header; a completed Spec with a Ticket header, a TK-001 row and a Ticket closed row is byte-identical after render, doctor, next, claim, close, render, doctor and convert-tasks; updateFields writes a dollar-pattern value literally; the genesis first-Spec predicate reads the renamed field; row-record-collision (error, specs, selection) registered and pinned, doctor keeps its other scopes on a collision. Internal names spec.rows and spec.records, one public tasks key, ticketId to taskId, closeTicket to closeTask, parseTickets to parseTaskRows; new close rows say Task closed. Full suite 42/42 on the committed candidates 9bd14e1 and f1056a0, reproduced by the reviewer on a clean worktree; next --json on this room differs from the base only by the key name, doctor --json byte-identical, render no-op; historical TK-### rows byte-identical. Separate-context review (Claude Opus 5): 9bd14e1 PASS with two Medium documentation gaps and Lows, five mutations caught; corrective f1056a0 (bare catch in gitFindings replaced by a named guard; a real defect fixed where a letter-bearing id held as both a done row and a record made render throw Duplicate task ID against itself; sweep-block comments say task) re-reviewed PASS with three collision fixtures probed at both trees and seven mutations caught. Built by Claude Sonnet 5 from the lane handoff. Landed by PR #109; integration 6154167 contains f1056a0 | RUNBOOK.md Diagnostics And Blocking Effects selection row gains row-record-collision in this state PR (reviewer Medium); S-00M TK-003 slice section and Testing Seams citations of closeTicket repaired to closeTask and its post anchor advanced to 6154167 in this state PR (S-00M is planned, its live sections are not append-only); its Current Verified State keeps closeTicket with an annotation because that section reads at the pre anchor; ADR-000J (proposed, evidence) still says closeTicket and is left as history; LEXICON.md Spec cell repaired to stop saying slices sit in the table until S-00H lands; templates and skills are TK-004 | Vocabulary in controls, skills, templates and team templates is TK-004, which also shrinks the seven-entry allow-list (to-tickets skill name x3, local-ticket-template, one eligible ticket, ticket and proof store x2). tools/test-diagnostics.mjs pins the gitFindings guard's precision by a source-text regex only (reviewer Low): a behavioral gitFindings test is owed. The builder's claim of a corrected exit-code assertion is not visible in the delta. The sweep test excludes its own file. RUNTIME_TOOLS unchanged at nineteen |
+| 2026-09-18 | TK-004 | Task closed | Red: new tools/test-controls-vocabulary-sweep.mjs fails at the pre anchor 6bb57be with 90 live ticket lines in 23 files across AGENTS.md, RUNBOOK.md, LEXICON.md, skills, templates and team templates (measured by the reviewer and re-measured by the builder); genesis, round-trip and adoption tests red at the base on a generated room's own template-derived controls and real installed skills. Green: the sweep passes with a three-entry allow-list (the two Lexicon retired-term rows and the ADR-000H filename substring, narrowed by token with a mutation assertion); to-tickets renamed to to-tasks across directory, frontmatter, skills/README.md, the live coreSkills list, workbench/manifest.json, every composing skill and control and tools/test-skill-catalog.mjs, with the frozen legacyCoreSkills bundle keeping to-tickets so v3.0.0 to v3.2.0 manifests still validate; the rewritten to-tasks instructs the Task record and every command and field it names exists; templates stay generic and bracketed with Task headers in templates/SPEC.md; the sweep is in the AGENTS.md and RUNBOOK.md suite lists (43 commands); the TK-003 allow-list shrank from seven entries to two. Full 43-command suite on the committed candidate a2597e1, reproduced by the reviewer on a clean worktree; doctor no blocking finding (two attention skill-missing findings for the home-directory to-tasks copies); evaluate-workbench --path templates --include-controls 106.6/113 at base and candidate; render no-op. Separate-context review (Claude Opus 5): a40729a PASS with one High (sweep absent from the documented suite), two Mediums (fresh-room regression not as specified; red misreported as 48/19) and Lows, corrected in a2597e1 and re-reviewed PASS with the three regression tests proven red at the base and five sweep mutations caught. Built by Claude Sonnet 5 from the lane handoff. Landed by PR #114; integration 49c671e contains a2597e1 | Vocabulary-only edits landed in the lane itself: AGENTS.md, RUNBOOK.md (plus the suite-list line), LEXICON.md Ticket row, skills/README.md and eleven skills including the to-tasks rename, templates/AGENTS.md, GENESIS.md, LEXICON.md, README.md, RUNBOOK.md, SPEC.md and the four team templates; no procedure changed, S-00P phase two owns the workflow rewrite | The installed skill roots resolve to the owner's home directory, outside the repository: doctor reports skill-missing (attention) for .agents/skills/to-tasks and .claude/skills/to-tasks until the owner hand-copies skills/to-tasks/ there, since the core-skill installer refuses a Git-tracked root; the stale to-tickets copies simply stop being checked. No deprecation pointer for /to-tickets exists. The ADR-000H filename carries the word ticket and stays as accepted history. The installed-skill sweep arm cannot be mutation-tested on a dirty tree (installer fails closed on source identity). RUNBOOK.md Test And Build lists test-socket-contract.mjs while AGENTS.md does not, a pre-existing divergence |
+| 2026-09-18 | TK-007 | Task closed | Red at the pre anchor 6bb57be in tools/test-spec-workbench.mjs: the hot board showed no run signal for an in-progress Task with two Receipt rows; closeTask appended no Receipt row (0 rows, expected 1); receiptTask was not exported; a Spec with two in-progress Tasks showed only the first. Green: renderHotBoard appends 'runs N, branch @ sha7, dirty D' to the current-slice cell via receiptSignal reading readReceiptFromFile, lists every in-progress Task joined by '; ' in visible-id order when there are two or more and renders zero or one exactly as before, never emits the Receipt header, Checksum, Run or row text (mutation-proven); closeTask on a record-backed Task appends the run's Receipt row (tests from --proof, docs from --docs, gap from --remaining-gap) before flipping the record, so a failing append leaves the record and Spec byte-identical (red proven with an altered earlier row), and a table-backed close writes no Receipt; new receiptTask export and receipt CLI verb append one row to a named in-progress record, refuse any other status, and append on a second call; receipt-corrupt (error, specs, selection) registered and pinned, raised from packetFindings, with render falling back to 'receipt unreadable' and doctor keeping its other findings; the historical byte-identity block extended with claim, receipt, render and doctor. Full 42-command suite on the committed tip e9c3407 (the last commit re-renders TASKBOARD.md for the two-Task S-00H row), reproduced by the reviewer on a clean worktree; doctor no blocking finding; next --json and doctor --json byte-identical to the base on this room. Separate-context review (Claude Opus 5): 57a3a3a PASS with three Mediums (close half-applied when the append fails; corrupt Receipt aborted doctor and render; one Task per Spec shown), corrected in 7496ae4 and re-reviewed PASS at e9c3407 with eight mutations caught including the two that survived before. Built by Claude Sonnet 5 from the lane handoff. Landed by PR #113; integration 63b269e contains e9c3407 | RUNBOOK.md Spec Lifecycle And Retrieval gains the receipt verb and its one-line description, and Diagnostics And Blocking Effects lists receipt-corrupt in the selection row, both in this state PR; LEXICON.md Task receipt and Taskboard rows already state the append-only rows and the derived board signal; operational prose for the run loop is S-00P phase two | A close run by the dispatcher from a state branch stamps the dispatcher's branch, HEAD and dirty count into the Receipt rather than the lane's (the two rows this state PR writes are the first live example); ADR-000H assumes the run closes itself, so later lanes should run receipt on their own record at the end of a run, and S-00J's gate design should decide who closes. '; ' separates both status from signal and Task from Task in the cell; the Blocker column comes from the first in-progress Task only; concurrent receipt calls on one record have no lock, the same class as the notepad concurrent-write gap; the gitFindings guard's precision is pinned by a source-text regex (TK-003 carry-over) |
+| 2026-09-18 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
 ## Completion Result
 
-Not started.
+Delivered across eight landed Tasks (PRs #98, #100, #102, #104, #105, #109,
+#113, #114; integration `49c671e` contains the last). A Task is a standalone
+`workbench/specs/<spec>/tasks/<TK-###>/TASK.md` record with its own status,
+blockers, destination and planned verification, read by `next`, `claim`,
+`close` and `render` wherever a Spec has a `tasks/` directory, with
+`convert-tasks` migrating a live table one-shot and completed Specs never
+rewritten (S-00P and this Spec run on records). A Task loads its Packet from
+exactly its required members and appends an append-only per-run Receipt; the
+hot board derives a Spec objective's activity from its records and shows each
+in-progress Task's run count, latest branch, short SHA and dirty count without
+the run table. The manifest declares the context unit with provenance. The
+tools, root controls, skills, generic `templates/` mirror and team templates
+say Task, proven by two sweeps that failed first (203 lines in 27 tool files;
+90 lines in 23 control, skill and template files) and now run in the
+43-command suite; `to-tickets` is `to-tasks`, with the frozen legacy bundle
+keeping older manifests valid. TT-Q10 was answered by the owner: newly
+allocated identifiers keep `TK-###`, `TK` read as the Task prefix, so no
+allocator, folder or `--prefix` value changed, and every historical `TK-###`
+row is byte-identical, proven by test. New finding codes
+`row-record-collision` and `receipt-corrupt` (both selection effect) keep
+`doctor` reporting on a collision or a corrupt Receipt instead of aborting.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-S-00I and S-00J depend on this Spec reaching `complete`; S-00P phase two
-depends on all three. If the skill-catalog contract forbids renaming
-`to-tickets` in place, a linked follow-up Spec owns that rename. TT-Q10 was
-the owner's to answer and was answered on 2026-09-17 (`TK-###` stays).
+S-00I and S-00J start now that this Spec is `complete`; S-00P phase two
+depends on all three. `to-tickets` was renamed in place (TK-004), so no
+follow-up Spec is needed for it. TT-Q10 was the owner's to answer and was
+answered on 2026-09-17 (`TK-###` stays). Open limitations, each named in its
+Task's close row: the installed skill roots live in the owner's home directory,
+so `doctor` reports `skill-missing` for `to-tasks` there until the owner
+hand-copies it; a `close` run by the dispatcher stamps the dispatcher's Git
+facts into the Receipt rather than the lane's, which S-00J's gate design and
+S-00P phase two must settle; concurrent `receipt` calls on one record have no
+lock; ADR-000J still cites `closeTicket` as history; the Packet's cited-path
+filter drops bare-basename and not-yet-created seam citations; fresh rooms
+generated by `initialize()` declare no `contextUnit` (S-00O release gate).
 
 ## Supersession
 
