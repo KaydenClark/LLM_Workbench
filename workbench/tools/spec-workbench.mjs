@@ -14,6 +14,7 @@ import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
+import { assembleSpecReport } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -512,7 +513,11 @@ function collectionFindings(root) {
   return findings;
 }
 
-function loadSpecs(rootDir, options = {}) {
+// `loadSpecs`, `slicesOf` and `findSpec` (below) are exported so a separate
+// reader - S-00J TK-001's assembled-Spec report - composes this module's own
+// parsing and one-slice-truth resolution rather than reimplementing it. No
+// lifecycle command in this file changed to use a different reading path.
+export function loadSpecs(rootDir, options = {}) {
   const root = path.resolve(rootDir);
   const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
   if (!fs.existsSync(specsRoot)) return [];
@@ -570,7 +575,7 @@ function assertOneSliceTruth(spec) {
 // as it did before this migration. A spec whose row and record collide on one
 // id (`assertOneSliceTruth`) has no single source to resolve, so this refuses
 // by name rather than picking a source silently.
-function slicesOf(spec) {
+export function slicesOf(spec) {
   if (spec.sliceConflict) {
     throw new Error(`${spec.id} carries both a slice-table row and a Task record for ${spec.sliceConflict.id}; one Spec has one source of slice truth`);
   }
@@ -811,7 +816,7 @@ function blockersSatisfied(value, completed) {
   return value.split(',').map((item) => item.trim()).filter(Boolean).every((id) => completed.has(id));
 }
 
-function findSpec(rootDir, id) {
+export function findSpec(rootDir, id) {
   const matches = loadSpecs(rootDir).filter((spec) => spec.id === id);
   if (matches.length !== 1) throw new Error(matches.length ? `Duplicate spec ID: ${id}` : `Unknown spec ID: ${id}`);
   return matches[0];
@@ -1024,12 +1029,13 @@ async function main() {
   else if (command === 'receipt') result = receiptTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
+  else if (command === 'report') result = assembleSpecReport(root, id, { candidate: options.candidate });
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
