@@ -1483,6 +1483,27 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   };
 }
 
+// Finds a retired Spec's own durable Wiki owner by the one fact that names
+// it - a note's `source_paths` entry naming the Spec's historical route,
+// exactly the fact `retireSpec` itself required before the move - and
+// returns that note's frontmatter `status`, or `null` when no note names the
+// route at all. Never assumes there is exactly one match: the first is
+// returned, since `wiki.mjs`'s own basename-uniqueness check is what keeps
+// two notes from ever legitimately claiming the same route. A room with no
+// Wiki lane at all (an older or minimal room) reports `null` rather than
+// throwing, matching how the rest of this file treats an absent Wiki.
+function retiredSpecWikiOwnerStatus(root, historicalRoute) {
+  const wikiRoot = lanePath(root, 'wiki');
+  if (!fs.existsSync(wikiRoot)) return null;
+  for (const file of collectDirectoryFiles(wikiRoot)) {
+    if (!file.endsWith('.md')) continue;
+    const data = parseFrontmatter(fs.readFileSync(file, 'utf8')).data;
+    const sources = Array.isArray(data?.source_paths) ? data.source_paths : [];
+    if (sources.includes(historicalRoute)) return data.status ?? null;
+  }
+  return null;
+}
+
 // S-00I TK-005: reconciles a completed Spec's surviving current claims into
 // their named durable owner (a Wiki capability record - `wiki.mjs`'s own
 // `copied-task-state` and property validation is the enforcement, never
@@ -1506,15 +1527,17 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
 //   - the named Wiki note must exist under the Wiki lane, declare `type`
 //     design-concept or guidebook and `knowledge_role` canonical or curated,
 //     name this Spec's own post-retirement historical route in its
-//     `source_paths`, and pass `validateWiki` with no `copied-task-state` or
+//     `source_paths`, pass `validateWiki` with no `copied-task-state` or
 //     `invalid-note` finding against it - "transform, never copy" is
-//     `wiki.mjs`'s own enforcement, checked here rather than duplicated.
-//
-// Owner approval: at this room's pre anchor, `spec-report.mjs` exports no
-// `recordOwnerApproval` (grep confirms it; the sibling S-00J TK-005 lane
-// owns adding it). Per the lane handoff's named fallback for exactly this
-// case, retirement here gates on `complete` only, and the receipt records
-// which case applied rather than silently assuming the gate exists.
+//     `wiki.mjs`'s own enforcement, checked here rather than duplicated -
+//     and be linked from `workbench/wiki/MEMORY.md` (a relative link to the
+//     note's own path within the Wiki lane), since an unrouted note is not
+//     reachable from the room brain a cold-start agent actually starts at;
+//   - `assembleSpecReport`'s own `approvalGapReason` (S-00J TK-005) must
+//     find nothing missing: the Spec's latest `owner-qa` row bound to its
+//     current content digest must be an approval, reused exactly as
+//     `completeSpec`/`gate` already require it, never a second
+//     implementation of what "approved" means.
 //
 // Order of operations, and why it is not the reverse of the evidence row's
 // own wording ("before the move so the row travels with it"): the branch
@@ -1530,27 +1553,15 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
 // with" the move - both land in the one commit the caller makes from this
 // function's staged result, exactly as a supported move already left for its
 // caller to commit.
-// Finds a retired Spec's own durable Wiki owner by the one fact that names
-// it - a note's `source_paths` entry naming the Spec's historical route,
-// exactly the fact `retireSpec` itself required before the move - and
-// returns that note's frontmatter `status`, or `null` when no note names the
-// route at all. Never assumes there is exactly one match: the first is
-// returned, since `wiki.mjs`'s own basename-uniqueness check is what keeps
-// two notes from ever legitimately claiming the same route. A room with no
-// Wiki lane at all (an older or minimal room) reports `null` rather than
-// throwing, matching how the rest of this file treats an absent Wiki.
-function retiredSpecWikiOwnerStatus(root, historicalRoute) {
-  const wikiRoot = lanePath(root, 'wiki');
-  if (!fs.existsSync(wikiRoot)) return null;
-  for (const file of collectDirectoryFiles(wikiRoot)) {
-    if (!file.endsWith('.md')) continue;
-    const data = parseFrontmatter(fs.readFileSync(file, 'utf8')).data;
-    const sources = Array.isArray(data?.source_paths) ? data.source_paths : [];
-    if (sources.includes(historicalRoute)) return data.status ?? null;
-  }
-  return null;
-}
-
+//
+// Branch cleanup only ever reaches a branch a Task's own Receipt row names.
+// A lane branch that never appended a Receipt row at all (an early run, a
+// dispatcher-closed branch, or one abandoned mid-flight) is invisible to
+// that pass, so `unmergedBranchesNamingSpec` in the receipt separately lists
+// every local and remote branch whose name contains the Spec id and is not
+// proven contained in the declared integration branch - reported for a
+// human closeout to review, never deleted, since this function only ever
+// deletes a branch it has proven safe.
 export function retireSpec(rootDir, specId, options = {}) {
   const root = path.resolve(rootDir);
   const wikiNoteGiven = requireValue(options.wikiNote, 'retire-spec requires --wiki <note path>');
@@ -1604,14 +1615,39 @@ export function retireSpec(rootDir, specId, options = {}) {
   if (wikiFindings.length > 0) {
     throw new Error(`${wikiNoteRelative} fails Wiki validation, so it cannot be ${specId}'s durable owner: ${wikiFindings.map((item) => `${item.code}: ${item.message}`).join('; ')}`);
   }
+  // Review corrective (Low): a note can satisfy every property check above
+  // and still be unreachable from a cold-start agent's actual entry point.
+  // `MEMORY.md` is the one router `SCHEMA.md`/`LEXICON.md` name; a relative
+  // link to the note's own path within the Wiki lane is the same fact
+  // `roomBrainRouting` in `wiki.mjs` already checks for the router itself,
+  // applied here to the note this Spec is about to depend on.
+  const memoryPath = path.join(wikiRoot, 'MEMORY.md');
+  const memoryContent = fs.existsSync(memoryPath) ? fs.readFileSync(memoryPath, 'utf8') : '';
+  const wikiNoteRelativeToWikiRoot = path.relative(wikiRoot, wikiNoteAbsolute).split(path.sep).join('/');
+  if (!memoryContent.includes(wikiNoteRelativeToWikiRoot)) {
+    throw new Error(`${wikiNoteRelative} is not linked from workbench/wiki/MEMORY.md (no relative link to ${wikiNoteRelativeToWikiRoot} found); a durable owner unreachable from the room brain is not routed`);
+  }
 
-  // S-00J TK-005 has not landed at this room's pre anchor (no
-  // `recordOwnerApproval` export exists in spec-report.mjs); the handoff's
-  // named fallback for that case is to gate on `complete` only and record
-  // which case applied, rather than silently inventing an approval check.
+  // S-00J TK-005 has since landed `recordOwnerApproval` and its own
+  // `approvalGapReason` (the owner Human QA counterpart to
+  // `reviewGapReason`, already used by `completeSpec` and `gate`): a
+  // completed, otherwise-ready Spec is not enough to retire on its own -
+  // reconciliation is trusted only once the owner has actually looked at
+  // the current content and approved it. Reused exactly as `completeSpec`
+  // already does, never a second implementation of what "approved" means.
+  // `approvalGapReason` only names the current content digest for its
+  // "stale" case; it is appended here unconditionally so every refusal -
+  // no row at all, every row stale, or the latest row a finding - names the
+  // digest a caller can check a fresh `report` against.
+  const approvalReason = approvalGapReason(report);
+  if (approvalReason) {
+    throw new Error(`${specId} cannot retire: ${approvalReason} (current digest ${report.specDigest.slice(0, 12)})`);
+  }
   const ownerApproval = {
-    required: false,
-    note: 'spec-report.mjs exports no recordOwnerApproval at this pre anchor (S-00J TK-005 has not landed here); retirement gates on complete only'
+    required: true,
+    approvedBy: report.latestOwnerApproval.owner,
+    date: report.latestOwnerApproval.date,
+    digest: report.specDigest.slice(0, 12)
   };
 
   // Branch names must be read from the Spec's still-active records: their
@@ -1626,6 +1662,16 @@ export function retireSpec(rootDir, specId, options = {}) {
 
   const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
   const branches = cleanupContainedBranches(root, branchNames, integrationBranch);
+  // Review corrective (Low): branch cleanup above only ever reaches a
+  // branch a Task's own Receipt row actually names - a lane branch that
+  // never appended one (an early run, a dispatcher-closed branch, or one
+  // abandoned mid-flight) is invisible to it. This is a separate, read-only
+  // sweep naming every branch, local or remote, whose name contains the
+  // Spec id and is not proven contained in the declared integration branch,
+  // so a human closeout still has a punch list even when a branch left no
+  // Receipt trail. Never deletes anything - only `cleanupContainedBranches`
+  // above ever deletes, and only what it proved contained.
+  const unmergedBranchesNamingSpec = findUnmergedBranchesNamingSpec(root, specId, integrationBranch);
 
   const movedSpec = findSpec(root, specId);
   const referencesRewrittenCount = Object.values(moveResult.referencesRewritten).reduce((a, b) => a + b, 0);
@@ -1647,9 +1693,35 @@ export function retireSpec(rootDir, specId, options = {}) {
     referencesRewrittenCount,
     historicalReferencesLeft: moveResult.historicalReferencesLeft,
     branches,
+    unmergedBranchesNamingSpec,
     ownerApproval,
     evidenceRow: row
   };
+}
+
+// Every local (`refs/heads/`) and remote-tracking (`refs/remotes/`) branch
+// whose short name contains `specId` and is not proven an ancestor of
+// `integrationBranch` - a read-only sweep, never a deletion candidate list.
+// A `null` `integrationBranch` (no declared git block) reports every
+// matching branch, since nothing can be proven contained against no branch
+// at all. `refs/remotes/<remote>/HEAD` is a remote's own symbolic pointer,
+// never a real branch, and is excluded so it is never reported as one.
+function findUnmergedBranchesNamingSpec(root, specId, integrationBranch) {
+  const names = new Set();
+  for (const prefix of ['refs/heads/', 'refs/remotes/']) {
+    const listing = spawnSync('git', ['-C', root, 'for-each-ref', '--format=%(refname:short)', prefix], { encoding: 'utf8' });
+    for (const name of (listing.stdout ?? '').split('\n').map((line) => line.trim()).filter(Boolean)) {
+      if (name.endsWith('/HEAD') || !name.includes(specId)) continue;
+      names.add(name);
+    }
+  }
+  const unmerged = [];
+  for (const name of names) {
+    const contained = integrationBranch !== null
+      && spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', name, integrationBranch]).status === 0;
+    if (!contained) unmerged.push(name);
+  }
+  return unmerged.sort();
 }
 
 // Best-effort branch cleanup for the Tasks a retiring Spec is carrying:
