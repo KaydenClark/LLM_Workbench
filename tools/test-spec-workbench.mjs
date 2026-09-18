@@ -24,7 +24,7 @@ import {
   scanReferences
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
-import { validateAdrs } from '../workbench/tools/adr.mjs';
+import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
@@ -2392,6 +2392,55 @@ function completeFixtureSpec(id) {
     // An active, not-yet-complete Spec: the refusal fixture below.
     writeAt(lifecycleRoot, 'workbench/specs/S-800-active-fixture/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-800'));
 
+    // Corrective review finding 2: an unrelated Spec, untouched by the move
+    // in every sense (it does not move, and its own link's resolved target
+    // does not move either), carrying a redundant-but-correct self-link
+    // (`../S-700-.../SPEC.md` instead of the shorter `SPEC.md`). The move
+    // must not "normalize" this to a shorter canonical form - a file the
+    // move has no reason to touch must come out byte-identical.
+    writeAt(lifecycleRoot, 'workbench/specs/S-700-untouched-fixture/SPEC.md', [
+      '# S-700 - Untouched Fixture',
+      '',
+      '**Spec ID:** S-700',
+      '**Status:** active',
+      '**Priority:** 0',
+      '**Owner:** agent',
+      '**Updated:** 2026-09-18',
+      '**Catalog description:** Proves the move touches nothing it has no reason to.',
+      '**Blockers:** none',
+      '**Latest event:** Spec activated.',
+      '**Next gate:** Complete TK-001.',
+      '',
+      '## Decisions And Contracts',
+      '',
+      '- See [S-700](../S-700-untouched-fixture/SPEC.md) (itself, by a redundant relative path).',
+      '',
+      '## Vertical Implementation Slices',
+      '',
+      '| Task | Slice | Status | Blockers | Proof |',
+      '|---|---|---|---|---|',
+      '| TK-001 | First slice | ready | none | pending |',
+      '',
+      '## Acceptance Criteria',
+      '',
+      '- [ ] Expected behavior is verified.',
+      '',
+      '## Append-Only Evidence And Execution Log',
+      '',
+      '| Date | Task | Event | Verification | Docs | Remaining gap |',
+      '|---|---|---|---|---|---|',
+      '',
+      '## Completion Result',
+      '',
+      'Pending.',
+      '',
+      '## Supersession',
+      '',
+      '- Supersedes: none',
+      '- Superseded by: none',
+      ''
+    ].join('\n'));
+
     // An accepted ADR naming the retiring Spec's live path both as a body
     // link AND - corrective review finding 2 - as a `canonicalized_in`
     // frontmatter target, a root-relative fact rather than a body link, and
@@ -2411,6 +2460,10 @@ function completeFixtureSpec(id) {
       'Provenance: owner decision.',
       ''
     ].join('\n'));
+    // Seed a correct, up-to-date REGISTER.md/HISTORY.md before the move, so
+    // any staleness found afterward is attributable to the move and not to
+    // this fixture never having run `adr register` at all.
+    writeRegister(lifecycleRoot);
 
     // A Wiki guidebook naming the retiring Spec's live path.
     writeAt(lifecycleRoot, 'workbench/wiki/guidebooks/fixture-capability.md', [
@@ -2437,6 +2490,11 @@ function completeFixtureSpec(id) {
     execFileSync('git', ['-C', lifecycleRoot, 'config', 'user.name', 'Fixture']);
     execFileSync('git', ['-C', lifecycleRoot, 'add', '-A']);
     execFileSync('git', ['-C', lifecycleRoot, 'commit', '--quiet', '-m', 'initial corpus']);
+
+    const untouchedSpecPath = path.join(lifecycleRoot, 'workbench/specs/S-700-untouched-fixture/SPEC.md');
+    const untouchedContentBefore = fs.readFileSync(untouchedSpecPath, 'utf8');
+    const registerPath = path.join(lifecycleRoot, 'workbench/docs/adr/REGISTER.md');
+    const historyPath = path.join(lifecycleRoot, 'workbench/docs/adr/HISTORY.md');
 
     assert.deepEqual(SPEC_LIFECYCLE_FOLDERS, ['retired'], "archive is ADR-only per ADR-000I; a Spec's one lifecycle folder is retired");
 
@@ -2501,6 +2559,29 @@ function completeFixtureSpec(id) {
       'an accepted ADR\'s canonicalized_in target is rewritten to the moved Spec\'s real path');
     assert.deepEqual(validateAdrs(lifecycleRoot).filter((item) => item.code === 'invalid-adr'), [],
       'adr validate stays clean after the move: canonicalized_in still names an existing owner');
+
+    // Corrective review finding 1 (second round): a move that rewrites ADR
+    // bodies and canonicalized_in must also refresh the derived projections
+    // that echo those same paths as bare table text - moveSpecDirectory now
+    // calls writeRegister itself, so a supported move never leaves the
+    // collection's own register/history stale.
+    const registerAfter = fs.readFileSync(registerPath, 'utf8');
+    const historyAfter = fs.readFileSync(historyPath, 'utf8');
+    for (const [name, content] of [['REGISTER.md', registerAfter], ['HISTORY.md', historyAfter]]) {
+      assert.match(content, /workbench\/specs\/retired\/S-500-retiring-fixture\/SPEC\.md/, `${name} names the moved Spec's new path`);
+      assert.doesNotMatch(content, /workbench\/specs\/S-500-retiring-fixture\/SPEC\.md/, `${name} no longer names the pre-move path`);
+    }
+    assert.deepEqual(validateAdrs(lifecycleRoot).filter((item) => item.code === 'stale-register'), [],
+      'adr validate reports no stale-register once the move itself refreshes the projections');
+
+    // Corrective review finding 2: a Spec the move has no reason to touch -
+    // it does not move, and its own link's resolved target does not move
+    // either - must come out completely untouched, not "normalized" to a
+    // shorter equivalent relative form.
+    assert.equal(fs.readFileSync(untouchedSpecPath, 'utf8'), untouchedContentBefore,
+      'a Spec whose own links all resolve to unmoved targets is byte-identical after the move');
+    assert.ok(!Object.keys(result.referencesRewritten).some((file) => file.includes('S-700')),
+      'the move touches no file whose links all resolve to unmoved targets');
 
     assert.ok(Object.values(result.referencesRewritten).reduce((a, b) => a + b, 0) >= 6,
       'the move reports the live references it rewrote, counted');
@@ -2647,5 +2728,40 @@ function completeFixtureSpec(id) {
     console.log('ok - scanReferences finds a planted stale canonicalized_in frontmatter target');
   } finally {
     fs.rmSync(staleCanonRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Corrective review finding 1, continued: REGISTER.md and HISTORY.md name
+// their Spec-path owners as bare comma-separated table text, not Markdown
+// links, so scanReferences needs its own check for them too - the read-only
+// half of the fix, independent of any move, and the exact seam TK-006's
+// discard gate depends on to refuse certifying a room whose register still
+// points at a dead path.
+// ============================================================================
+{
+  const staleRegisterRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-lifecycle-stale-register-'));
+  try {
+    initLifecycleFixture(staleRegisterRoot);
+    fs.writeFileSync(path.join(staleRegisterRoot, 'workbench/docs/adr/REGISTER.md'), [
+      '# ADR Register',
+      '',
+      '> Derived by `adr.mjs register`; do not edit by hand. The directory listing is the source; this table is a projection.',
+      '',
+      '[Complete history](HISTORY.md). Only accepted active decisions follow.',
+      '',
+      '| ADR | Title | Status | Date | Canonicalized in |',
+      '|---|---|---|---|---|',
+      '| [0001](0001-fixture.md) | A stale-register decision | accepted | 2026-09-18 | AGENTS.md, workbench/specs/S-999-never-existed/SPEC.md |',
+      ''
+    ].join('\n'));
+
+    const stale = scanReferences(staleRegisterRoot);
+    assert.ok(stale.some((item) => item.file === 'workbench/docs/adr/REGISTER.md' && item.target === 'workbench/specs/S-999-never-existed/SPEC.md'),
+      'scanReferences finds a dead path named in REGISTER.md\'s bare Canonicalized-in table text');
+
+    console.log('ok - scanReferences finds a dead path in REGISTER.md\'s Canonicalized-in column, not only in Markdown links');
+  } finally {
+    fs.rmSync(staleRegisterRoot, { recursive: true, force: true });
   }
 }

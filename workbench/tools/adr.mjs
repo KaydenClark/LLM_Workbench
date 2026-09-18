@@ -487,6 +487,18 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations) {
     const oldAbsolute = path.resolve(oldDir, decoded);
     if (!locations.has(oldAbsolute)) return whole;
     const newAbsolute = locations.get(oldAbsolute);
+    // S-00I TK-003 corrective (round 2): a link needs recomputing only when
+    // something in its own resolution actually changed - the target's
+    // absolute location (`newAbsolute !== oldAbsolute`, a moved entry) or the
+    // referencing file's own directory (`newDir !== oldDir`, a moved
+    // referrer, whose unmoved target still needs its relative depth
+    // recomputed). When neither changed, this call is scanning a file the
+    // move has no reason to touch at all; recomputing anyway would still
+    // "succeed" by producing a resolvable path, but a shorter or otherwise
+    // differently-spelled one than the author wrote - a real-room dry run
+    // renormalized an active Spec's own untouched `../S-050-.../SPEC.md`
+    // self-link down to `SPEC.md` this way. Leave it exactly as written.
+    if (newAbsolute === oldAbsolute && newDir === oldDir) return whole;
     const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/');
     const rebuilt = fragment !== undefined ? `${relative}#${fragment}` : relative;
     if (rebuilt === target) return whole;

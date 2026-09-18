@@ -10,7 +10,7 @@ import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
-import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs } from './adr.mjs';
+import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
@@ -1086,6 +1086,18 @@ export function moveSpecDirectory(rootDir, specId, folder) {
     rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
   }
 
+  // Corrective review finding 1 (second round): REGISTER.md and HISTORY.md
+  // echo every ADR's canonicalized_in targets as bare comma-separated table
+  // text, which the rewrite passes above never touch (they rewrite Markdown
+  // links and frontmatter, not a derived projection's own generated cells).
+  // The move just rewrote at least one ADR's canonicalized_in above, so the
+  // projections are now stale by construction; regenerate them here, from
+  // the corrected frontmatter now on disk, rather than leaving that for a
+  // separate `adr register` call the move's own candidate would otherwise
+  // need. A room with no ADR collection at all is left alone - nothing here
+  // may conjure one into existence.
+  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+
   // Corrective review finding 3: `git mv` already stages the rename; leaving
   // the content rewrites above unstaged would show the candidate as a mix
   // (staged rename, unstaged edits) rather than one reviewable change. Stage
@@ -1117,19 +1129,43 @@ function canonicalizedInTargets(content) {
   return Array.isArray(value) ? value : (value ? [value] : []);
 }
 
+// REGISTER.md and HISTORY.md (`adr.mjs#renderRegister`) render each ADR's
+// canonicalized_in owners as bare, comma-separated table text in the last
+// cell of a data row - `AGENTS.md, workbench/specs/.../SPEC.md` - never as a
+// Markdown link, so `localLinks` cannot see them at all. A data row is
+// recognised the same way `renderRegister` writes one: its first cell opens
+// with a Markdown link (`| [0001](...)`), which the header and separator
+// rows never do.
+function registerPathCells(content) {
+  const paths = [];
+  for (const line of content.split('\n')) {
+    if (!/^\|\s*\[/.test(line)) continue;
+    const cells = parseMarkdownTableRow(line);
+    const last = cells[cells.length - 1];
+    if (!last || last === 'none') continue;
+    for (const item of last.split(',').map((entry) => entry.trim()).filter(Boolean)) paths.push(item);
+  }
+  return paths;
+}
+
 // S-00I TK-003: the complete reference and link scan, exported so TK-005
 // (Spec/Task retirement) and TK-006 (the discard gate) reuse it rather than
 // each writing their own. Read-only: it walks every live Markdown surface a
 // Spec or ADR move can touch (the same set `collectSpecReferenceFiles`
-// collects) and reports a local link, or a `canonicalized_in` frontmatter
+// collects) and reports a local link, a `canonicalized_in` frontmatter
 // target (corrective review finding 2 - a root-relative fact, not a body
-// link, so it needs its own check), that does not resolve on disk, skipping
-// each file's own Append-Only Evidence And Execution Log - a Spec's frozen
-// history is expected to keep naming a pre-move path, and that is not a
-// stale reference for this scan to report. A finding names the file and the
+// link, so it needs its own check), or - for REGISTER.md/HISTORY.md alone -
+// a dead path in their own bare-text Canonicalized-in column (corrective
+// review finding 1, second round: TK-006's discard gate must not certify a
+// room whose register still points at a dead path just because that path
+// never appeared inside a Markdown link). Each check skips a file's own
+// Append-Only Evidence And Execution Log - a Spec's frozen history is
+// expected to keep naming a pre-move path, and that is not a stale
+// reference for this scan to report. A finding names the file and the
 // unresolved target text; nothing here writes anything.
 export function scanReferences(rootDir) {
   const root = path.resolve(rootDir);
+  const adrCollection = collectionPath(root, 'adr');
   const findings = [];
   for (const file of collectSpecReferenceFiles(root)) {
     const original = fs.readFileSync(file, 'utf8');
@@ -1147,6 +1183,14 @@ export function scanReferences(rootDir) {
       const target = path.resolve(root, owner);
       if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) {
         findings.push({ file: relative, target: owner });
+      }
+    }
+    if (path.dirname(file) === adrCollection && ['REGISTER.md', 'HISTORY.md'].includes(path.basename(file))) {
+      for (const owner of registerPathCells(original)) {
+        const target = path.resolve(root, owner);
+        if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) {
+          findings.push({ file: relative, target: owner });
+        }
       }
     }
   }
