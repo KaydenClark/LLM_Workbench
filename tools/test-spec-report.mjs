@@ -14,7 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
-import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
+import { completeSpec, doctor, gate, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
 import { readTaskRecord } from '../workbench/tools/task-record.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 
@@ -1223,4 +1223,167 @@ function headingShadowSpec(id) {
 {
   assert.ok(RUNTIME_TOOLS.includes('spec-report.mjs'), 'spec-report.mjs is one of the Workbench-managed runtime tools');
   console.log('ok - spec-report.mjs is registered in RUNTIME_TOOLS');
+}
+
+// ============================================================================
+// S-00J TK-004 (red at the pre anchor e32a41434d0be4b70fe5fb066f37a55156e8273
+// 7): "current candidate" is redefined to bind a verdict to the assembled
+// Spec's CONTENT, never to a checkout's HEAD. Exact-HEAD binding fails
+// exactly the live review workflow the handoff names: a reviewer records a
+// verdict in a detached worktree checked out at the candidate, and the
+// dispatcher's own checkout later needs to recognize that same review from a
+// DIFFERENT commit whose tree is identical - a merge commit that never
+// equals the reviewed tip. This proves the gap with two real `git worktree`
+// checkouts of one fixture repository and a real (non-fast-forward) merge,
+// so the new merge commit's SHA genuinely differs from the reviewed
+// candidate's SHA while its file content stays byte-identical.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-cross-checkout-'));
+  const reviewWorktree = path.join(os.tmpdir(), `spec-report-cross-checkout-worktree-${process.pid}-${Date.now()}`);
+  try {
+    initGitRoot(root);
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-730-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-730', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'add the fixture Spec']);
+    const candidateSha = headSha(root);
+
+    // The reviewer's separate context: a detached worktree checked out
+    // exactly at the candidate, sharing this repository's object store but
+    // holding its own on-disk files.
+    execFileSync('git', ['-C', root, 'worktree', 'add', '--detach', reviewWorktree, candidateSha]);
+    recordReviewVerdict(reviewWorktree, 'S-730', {
+      candidate: candidateSha, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    execFileSync('git', ['-C', reviewWorktree, 'add', '-A']);
+    execFileSync('git', ['-C', reviewWorktree, 'commit', '--quiet', '-m', 'record review verdict']);
+    execFileSync('git', ['-C', reviewWorktree, 'branch', 'reviewed-branch']);
+    const reviewedBranchSha = execFileSync('git', ['-C', reviewWorktree, 'rev-parse', 'reviewed-branch'], { encoding: 'utf8' }).trim();
+
+    // The dispatcher's own checkout (`root`) merges the reviewed branch with
+    // a real merge commit, exactly like a GitHub merge: a brand-new commit
+    // SHA whose tree is identical to the reviewed branch's tree, never equal
+    // to `reviewedBranchSha` itself.
+    execFileSync('git', ['-C', root, 'merge', '--no-ff', '--quiet', '-m', 'merge reviewed branch', 'reviewed-branch']);
+    const mergeSha = headSha(root);
+    assert.notEqual(mergeSha, reviewedBranchSha, 'the merge produces a new commit SHA, distinct from the reviewed branch tip - exactly what "a merge commit that never equals the reviewed tip" describes');
+    assert.equal(
+      fs.readFileSync(path.join(root, specPath), 'utf8'),
+      fs.readFileSync(path.join(reviewWorktree, specPath), 'utf8'),
+      'the merge carries the reviewed content into root byte-identical - only the commit identity differs'
+    );
+
+    const report = assembleSpecReport(root, 'S-730', { candidate: mergeSha });
+    assert.ok(
+      report.latestVerdict && report.latestVerdict.result === 'pass',
+      'a verdict recorded in a detached worktree at the reviewed candidate is recognized from another checkout (here, after a real merge to a different commit SHA) of the same Spec content - the redefinition binds to content, never to which checkout recorded or reads it'
+    );
+
+    console.log('ok - a review verdict recorded in a detached worktree at the candidate is recognized from a different checkout after a real merge to a new commit SHA, as long as the Spec content is unchanged');
+  } finally {
+    try { execFileSync('git', ['-C', root, 'worktree', 'remove', '--force', reviewWorktree]); } catch { /* best-effort */ }
+    fs.rmSync(root, { recursive: true, force: true });
+    fs.rmSync(reviewWorktree, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-004 (red at the pre anchor e32a41434d0be4b70fe5fb066f37a55156e8273
+// 7 - `gate` does not exist yet): the gate the harness's merge-preparation
+// workflow requires. The discriminator is what the invoker presents, never
+// which checkout runs the command: a Spec ID with a candidate SHA is a Spec
+// candidate, refused (`refused: true`, naming why) when the assembled Spec
+// is incomplete or unreviewed for its current content - "the closeout path
+// proceeds for an incomplete Spec candidate" is exactly the gap this closes.
+// A Task ID with its Spec still open is a Task PR - what every PR in this
+// rollout is while S-00O exemption 2 (WF-7 deferred) holds - and is reported
+// (`refused: false`), never refused, regardless of the Spec's own
+// completeness: "a Task PR is refused where it should be reported" is the
+// gap this half closes.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-gate-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    // Deliberately incomplete: an unfinished Task, unchecked acceptance, no
+    // completion result - and no recorded verdict either.
+    writeAt(root, 'specs/S-740-fixture/SPEC.md', tableSpec({
+      id: 'S-740', taskStatus: 'ready', checked: false, completion: 'Pending.'
+    }));
+    const candidate = headSha(root);
+
+    const specGate = gate(root, { spec: 'S-740', candidate });
+    assert.equal(specGate.mode, 'spec-candidate');
+    assert.equal(specGate.refused, true, 'a Spec candidate for an incomplete, unreviewed Spec is refused');
+    assert.match(specGate.reason, /no review verdict is recorded/i);
+    assert.equal(specGate.specComplete, false);
+
+    const taskGate = gate(root, { task: 'TK-001', spec: 'S-740' });
+    assert.equal(taskGate.mode, 'task-pr');
+    assert.equal(taskGate.refused, false, 'a Task PR for a Task ID with its Spec still open is reported, never refused, under S-00O exemption 2');
+    assert.equal(taskGate.reason, null);
+    assert.equal(taskGate.specComplete, false, 'the Task-PR report still names the Spec as incomplete - it informs without refusing');
+
+    // Complete the Spec and record a passing verdict for its current
+    // content: the Spec-candidate gate now proceeds (refused: false).
+    writeAt(root, 'specs/S-740-fixture/SPEC.md', tableSpec({
+      id: 'S-740', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    recordReviewVerdict(root, 'S-740', {
+      candidate: headSha(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    const passedGate = gate(root, { spec: 'S-740', candidate: headSha(root) });
+    assert.equal(passedGate.refused, false, 'a complete Spec candidate with a passed current verdict proceeds unchanged');
+    assert.equal(passedGate.reason, null);
+    assert.equal(passedGate.specComplete, true);
+
+    console.log('ok - gate refuses an incomplete or unreviewed Spec candidate, reports (never refuses) a Task PR under S-00O exemption 2, and proceeds unchanged for a complete Spec candidate with a passed current verdict');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// The `gate` CLI verb: exit codes and the integration branch resolved from
+// the manifest declaration, never hardcoded.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-gate-cli-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    writeAt(root, 'specs/S-741-fixture/SPEC.md', tableSpec({
+      id: 'S-741', taskStatus: 'ready', checked: false, completion: 'Pending.'
+    }));
+    const candidate = headSha(root);
+    const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
+
+    const refused = spawnSync('node', [cliPath, 'gate', '--spec', 'S-741', '--candidate', candidate, '--json', '--path', root], { encoding: 'utf8' });
+    assert.equal(refused.status, 1, 'the gate verb exits 1 for a refused Spec candidate');
+    const refusedParsed = JSON.parse(refused.stdout);
+    assert.equal(refusedParsed.refused, true);
+    // No workbench/manifest.json exists in this fixture room, so a
+    // hardcoded "integration" would read as 'integration' here too; reading
+    // null instead is the proof this comes from declaredGit's manifest
+    // resolution rather than a literal - the room-level manifest.json case
+    // for declaredGit itself is already covered by workbench-layout's own
+    // tests, not re-proven here.
+    assert.equal(refusedParsed.integrationBranch, null, 'with no manifest declaring git.integrationBranch, gate reports it as unresolved rather than assuming the literal "integration"');
+
+    const reported = spawnSync('node', [cliPath, 'gate', '--task', 'TK-001', '--spec', 'S-741', '--json', '--path', root], { encoding: 'utf8' });
+    assert.equal(reported.status, 0, 'the gate verb exits 0 for a reported Task PR, even against the same incomplete Spec');
+    const reportedParsed = JSON.parse(reported.stdout);
+    assert.equal(reportedParsed.refused, false);
+
+    console.log('ok - the gate CLI verb exits 1 for a refused Spec candidate and 0 for a reported Task PR, and never hardcodes the integration branch (reads it through declaredGit, null when the manifest declares none)');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 }
