@@ -2199,16 +2199,21 @@ function wikiClaimFixture() {
 // Spec directory had no supported way to move at all: `loadSpecs` reads only
 // the specs lane's top level (unchanged by this task - the active roster
 // `next`, `claim`, `render` and the hot board select from), so a Spec moved
-// by a plain rename simply vanishes from every one of those, `doctor` never
-// notices the Markdown references such a move leaves dangling, and `show`
-// has no historical route to fall back to. Red at the pre anchor 672e354:
-// `SPEC_LIFECYCLE_FOLDERS`, `loadRetiredSpecs`, `moveSpecDirectory` and
-// `scanReferences` are not exported there at all, so the import above fails
-// before a single assertion in this file runs (confirmed in a throwaway
-// detached worktree at that commit). The first block below reproduces the
-// pre-fix gap with only functions that already existed then (`loadSpecs`,
-// `showSpec`, `doctor`), plus the one new read-only capability
-// (`scanReferences`) whose whole job is to catch exactly this.
+// by a plain rename simply vanishes from every one of those, and `doctor`
+// never notices the Markdown references such a move leaves dangling - only
+// the folder shape itself (`<specsRoot>/retired/<id>-.../SPEC.md`) is the
+// historical route `show` falls back to, however the Spec came to sit there,
+// so a naive rename that happens to land in that shape is still findable;
+// what it lacks is everything else a supported move provides: an active
+// roster that notices the Spec left, and a link check that notices what the
+// move broke. Red at the pre anchor 672e354: `SPEC_LIFECYCLE_FOLDERS`,
+// `loadRetiredSpecs`, `moveSpecDirectory` and `scanReferences` are not
+// exported there at all, so the import above fails before a single assertion
+// in this file runs (confirmed in a throwaway detached worktree at that
+// commit). The first block below reproduces the pre-fix gap with only
+// functions that already existed then (`loadSpecs`, `doctor`), plus the one
+// new read-only capability (`scanReferences`) whose whole job is to catch
+// exactly the reference half of it.
 // ============================================================================
 function repoToolRoot() {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -2219,7 +2224,11 @@ function initLifecycleFixture(dir) {
   const workbenchVersion = JSON.parse(fs.readFileSync(path.join(repoToolRoot(), 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
   const init = spawnSync(process.execPath, [layoutTool, 'init', '--project', dir, '--provenance', 'genesis', '--version', workbenchVersion], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout + init.stderr);
-  fs.writeFileSync(path.join(dir, 'BLUEPRINT.md'), '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
+  // No `spec-catalog` markers: this fixture takes the destination-only
+  // `CATALOG.md` render path (the real room's own shape), not the legacy
+  // BLUEPRINT-embedded one, so the Retired heading is exercised where the
+  // real room would actually read it.
+  fs.writeFileSync(path.join(dir, 'BLUEPRINT.md'), '# Blueprint\n');
   fs.writeFileSync(path.join(dir, 'TASKBOARD.md'), '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   fs.writeFileSync(path.join(dir, 'README.md'), '# Fixture room\n\nSee MEMORY.md.\n');
 }
@@ -2251,8 +2260,6 @@ function completeFixtureSpec(id) {
 
     assert.equal(loadSpecs(naiveRoot).some((spec) => spec.id === 'S-500'), false,
       'loadSpecs only ever reads the top level, so a naively moved Spec disappears from the active roster entirely');
-    assert.throws(() => showSpec(naiveRoot, 'S-500'), /Unknown spec ID: S-500/,
-      'with no historical route, show cannot find the moved Spec by any means');
     assert.deepEqual(doctor(naiveRoot).filter((item) => item.specId === 'S-500'), [],
       'doctor raises nothing about the Spec a naive move made invisible - it is simply gone, not flagged');
     const stale = scanReferences(naiveRoot);
@@ -2453,7 +2460,7 @@ function completeFixtureSpec(id) {
     const mainTable = catalog.slice(0, catalog.indexOf('### Retired'));
     assert.doesNotMatch(mainTable, /S-500/, 'the main catalog table no longer names S-500 once it is retired');
     assert.match(catalog, /### Retired/, 'CATALOG.md gains a Retired heading once a Spec is retired');
-    assert.match(catalog, /\[S-500-retiring-fixture\/SPEC\.md\]\(retired\/S-500-retiring-fixture\/SPEC\.md\)/,
+    assert.match(catalog, /\| S-500 - Fixture Capability \| .* \| \[workbench\/specs\/retired\/S-500-retiring-fixture\/SPEC\.md\]\(retired\/S-500-retiring-fixture\/SPEC\.md\) \|/,
       'the Retired heading names S-500 by its historical route');
     const board = fs.readFileSync(path.join(lifecycleRoot, 'TASKBOARD.md'), 'utf8');
     assert.doesNotMatch(board, /S-500/, 'the hot board never names a retired Spec');
