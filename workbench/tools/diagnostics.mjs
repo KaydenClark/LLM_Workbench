@@ -35,7 +35,13 @@ const registry = Object.freeze({
   'duplicate-id': entry('error', 'specs', 'selection', 'two packets claim one spec ID'),
   'invalid-state': entry('error', 'specs', 'selection', 'a spec or task status is outside the lifecycle vocabulary'),
   'contradictory-state': entry('error', 'specs', 'selection', 'a completed spec still has unfinished tasks'),
-  'unstable-path': entry('error', 'specs', 'selection', 'a spec is not at its stable declared path'),
+  // S-00I TK-004 corrective: the stable-path rule this description named is
+  // retired (AGENTS.md Edit Scope; ADR-000I, WF-8F) - lifecycle is folder
+  // location now, and a Spec or Task moves through `move-spec`/`move-task`,
+  // which keep links correct instead of never moving. This finding still
+  // covers a narrower, unchanged fact: only the top level is the active
+  // roster, so an active Spec directory must start `<lane>/<id>-` there.
+  'unstable-path': entry('error', 'specs', 'selection', 'an active Spec directory is not at `<lane>/<id>-...` on the top level'),
   'missing-evidence': entry('error', 'specs', 'selection', 'a done task has no proof'),
   'render-drift': entry('error', 'specs', 'selection', 'a generated projection region is stale; run render'),
   'broken-render-target': entry('error', 'specs', 'selection', 'a projection control or its generated region is missing'),
