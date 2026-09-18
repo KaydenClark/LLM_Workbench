@@ -816,6 +816,8 @@ node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
 node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-002 --to retired
 node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate [SHA]
 node workbench/tools/spec-workbench.mjs gate --task TK-002 --spec S-001
+node workbench/tools/spec-workbench.mjs approve S-001 --candidate [INTEGRATION SHA] --owner "[WHO]" \
+  [--finding "[FINDINGS]"] [--destination-change "[TEXT]"]
 node workbench/tools/spec-workbench.mjs verdict S-001 --candidate [SHA] --result pass|fail \
   --findings "[FINDINGS OR none]" --reviewer "[SEPARATE CONTEXT, MODEL AND MODE]"
 node workbench/tools/spec-workbench.mjs render
@@ -857,7 +859,13 @@ record under a still-open Spec, while S-00O exemption 2 holds) and refuses a
 Spec candidate that is incomplete, unreviewed for its current content or
 named by a SHA the repository does not hold; the closeout recipe below runs
 it before the merge. A verdict binds to the assembled Spec's content digest,
-so record it after the final `close` and before `complete`. `next` returns one eligible ready task. `show` loads one stable work packet.
+so record it after the final `close` and before `complete`. `approve` records
+the owner's Human QA on `integration` as one append-only `owner-qa` row naming
+who, when and the integration SHA inspected (contained in the declared
+integration branch, bound to the same content digest); a `--finding` creates
+corrective Tasks under the still-open Spec, a `--destination-change` records a
+return to Align and creates nothing, and `complete` refuses until the latest
+owner QA for the current content is an approval. `next` returns one eligible ready task. `show` loads one stable work packet.
 Writes use a temporary file plus rename and fail closed on ambiguous state.
 `render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
 `complete` requires every slice done, acceptance boxes checked, completion result
