@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { REGISTER_NAME, listAdrs, newAdr, normalizeAdrs, renderRegister, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
+import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, listAdrs, localLinks, newAdr, normalizeAdrs, renderRegister, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -250,6 +250,99 @@ test('lifecycle rejects missing, cyclic, partial and nonaccepted successor targe
     fs.writeFileSync(file, adr('deprecated'));
     writeRegister(dir);
     assert.ok(validateAdrs(dir).some(x => /deprecation_reason/.test(x.message)));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-00I TK-001: a successor is named by identity (a bare record filename),
+// never by location, so it must resolve wherever the record actually lives.
+// `listAdrs` becomes folder-aware over the closed `ADR_LIFECYCLE_FOLDERS` set,
+// and a record's own register/history row must link to its real relative path.
+test('a superseded record resolves a successor that lives in a lifecycle subfolder, and its row links to the real relative path', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'archive'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'archive', '0002-next.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, '0001-old.md'), adr('superseded', 'superseded_by: 0002-next.md\n'));
+    const records = listAdrs(dir);
+    assert.equal(records.length, 2, 'listAdrs must enumerate the top level and its lifecycle subfolders');
+    const successor = records.find((record) => record.name === '0002-next.md');
+    assert.equal(successor.folder, 'archive', 'a record read from a lifecycle subfolder must be tagged with that folder');
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'invalid-adr'), [], 'a cross-folder successor must resolve without an invalid-adr finding');
+    writeRegister(dir);
+    const register = fs.readFileSync(path.join(collection, REGISTER_NAME), 'utf8');
+    const history = fs.readFileSync(path.join(collection, 'HISTORY.md'), 'utf8');
+    assert.match(register, /\[0002\]\(archive\/0002-next\.md\)/, 'REGISTER.md must link to the successor by its real relative path, not its bare name');
+    assert.match(history, /\[0002\]\(archive\/0002-next\.md\)/, 'HISTORY.md must link to the successor by its real relative path, not its bare name');
+    assert.deepEqual(validateAdrs(dir), [], 'the register and history projections must not be stale after writeRegister');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a successor named by a path or a fragment is still refused, never resolved', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'archive'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'archive', '0002-next.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, '0001-old.md'), adr('superseded', 'superseded_by: archive/0002-next.md\n'));
+    assert.ok(validateAdrs(dir).some((item) => item.code === 'invalid-adr' && item.adr === '0001-old.md' && /whole-record superseded_by filename/.test(item.message)));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('flat collections list identically to before: every record is untagged and listing order is unchanged', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.writeFileSync(path.join(collection, '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    fs.writeFileSync(path.join(collection, '0002-second.md'), adr('proposed'));
+    const records = listAdrs(dir);
+    assert.deepEqual(records.map((record) => record.name), ['0001-first.md', '0002-second.md']);
+    assert.ok(records.every((record) => record.folder === null), 'a flat collection tags nothing, so nothing here changes shape');
+    assert.deepEqual(ADR_LIFECYCLE_FOLDERS, ['proposed', 'archive'], 'TK-002 reuses this exact closed set');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// The Spec's own count (30 files at an earlier anchor) is a floor, not a
+// pin: the build re-counts the real corpus at the candidate under test so a
+// silently dropped link is visible instead of trusting a stale prose number.
+test('every intra-ADR link in the real corpus resolves, and the re-counted totals are asserted', () => {
+  const records = listAdrs(root);
+  const names = new Set(records.map((record) => record.name));
+  let totalLinks = 0;
+  let filesWithLink = 0;
+  for (const record of records) {
+    let countForRecord = 0;
+    for (const link of localLinks(record.body)) {
+      const base = path.basename(link.split('?')[0]);
+      if (!ID_PATTERN.test(base)) continue;
+      countForRecord += 1;
+      const literal = path.resolve(path.dirname(record.filePath), link);
+      const resolved = fs.existsSync(literal) || names.has(base);
+      assert.ok(resolved, `${record.relativePath} links to unresolved ${link}`);
+    }
+    totalLinks += countForRecord;
+    if (countForRecord > 0) filesWithLink += 1;
+  }
+  assert.equal(filesWithLink, 33, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 58, 're-count of total intra-ADR link edges at this candidate');
+});
+
+test('an intra-ADR link resolves by the target record identity even when the literal relative path no longer matches where it lives', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench/docs/adr');
+    fs.mkdirSync(path.join(collection, 'proposed'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '0002-second.md'), adr('proposed'));
+    fs.writeFileSync(path.join(collection, '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n', 'See [the follow-up](0002-second.md).\n\n'));
+    const records = listAdrs(dir);
+    const record = records.find((item) => item.name === '0001-first.md');
+    const [link] = localLinks(record.body);
+    const literal = path.resolve(path.dirname(record.filePath), link);
+    assert.ok(!fs.existsSync(literal), 'the literal relative path must not exist once the target lives in a subfolder');
+    const byIdentity = records.find((item) => item.name === path.basename(link));
+    assert.ok(byIdentity, 'the link must still resolve by looking the target identity up across every lifecycle folder');
+    assert.equal(byIdentity.folder, 'proposed');
+    assert.deepEqual(validateAdrs(dir).filter((item) => item.code === 'invalid-adr'), []);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
