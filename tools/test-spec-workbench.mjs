@@ -26,6 +26,7 @@ import {
   scanReferences,
   slicesOf
 } from '../workbench/tools/spec-workbench.mjs';
+import { assembleSpecReport, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
@@ -43,6 +44,10 @@ function initGitRoot(dir) {
   execFileSync('git', ['-C', dir, 'config', 'user.email', 'fixture@example.com']);
   execFileSync('git', ['-C', dir, 'config', 'user.name', 'Fixture']);
   execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', 'init']);
+}
+
+function headSha(dir) {
+  return execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 }
 
 // One closed status vocabulary, not two: `spec-workbench.mjs` held its own
@@ -108,6 +113,14 @@ try {
     .replace('- [ ] Expected behavior is verified.', '- [x] Expected behavior is verified.')
     .replace('## Completion Result\n\nPending.', '## Completion Result\n\nPass: fixture lifecycle completed.');
   fs.writeFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), completedCandidate);
+  // S-00J TK-004: complete now refuses without a passed review verdict bound
+  // to the Spec's current content digest, so the main fixture lifecycle
+  // records one here, against the Spec exactly as it now stands (checked
+  // acceptance, filled Completion Result) - the same content completeSpec is
+  // about to see.
+  recordReviewVerdict(root, 'S-001', {
+    candidate: headSha(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+  });
   completeSpec(root, 'S-001', { date: '2026-07-12' });
   render(root);
 
@@ -2200,6 +2213,145 @@ function wikiClaimFixture() {
 }
 
 // ============================================================================
+// S-00J TK-004 (red at the pre anchor e32a41434d0be4b70fe5fb066f37a55156e8273
+// 7): complete refuses without a passed review verdict whose digest matches
+// the Spec's current content - naming exactly what is missing (no verdict at
+// all, every recorded verdict is for earlier content - a stale digest, or
+// the latest verdict for the current content is a fail) - and a passed
+// current verdict lets complete proceed exactly as before. Every other
+// completeSpec refusal (unfinished slice, unchecked acceptance, no
+// completion result, no evidence) already runs ahead of this check, proven
+// above with S-001 and S-301; each fixture Spec here is otherwise complete
+// in every one of those senses, isolating the new gate alone.
+// ============================================================================
+{
+  const gateRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-complete-gate-'));
+  initGitRoot(gateRoot);
+  try {
+    function completableSpec(id) {
+      return [
+        `# ${id} - Fixture Capability`,
+        '',
+        `**Spec ID:** ${id}`,
+        '**Status:** active',
+        '**Priority:** 0',
+        '**Owner:** agent',
+        '**Updated:** 2026-09-18',
+        '**Catalog description:** Proves the complete gate.',
+        '**Blockers:** none',
+        '**Latest event:** TK-001 closed.',
+        '**Next gate:** Complete.',
+        '',
+        '## Vertical Implementation Slices',
+        '',
+        '| Task | Slice | Status | Blockers | Proof |',
+        '|---|---|---|---|---|',
+        '| TK-001 | First slice | done | none | landed |',
+        '',
+        '## Acceptance Criteria',
+        '',
+        '- [x] Expected behavior is verified.',
+        '',
+        '## Append-Only Evidence And Execution Log',
+        '',
+        '| Date | Task | Event | Verification | Docs | Remaining gap |',
+        '|---|---|---|---|---|---|',
+        '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+        '',
+        '## Completion Result',
+        '',
+        'Pass: fixture completed.',
+        '',
+        '## Supersession',
+        '',
+        '- Supersedes: none',
+        '- Superseded by: none',
+        ''
+      ].join('\n');
+    }
+
+    // No verdict at all.
+    writeAt(gateRoot, 'specs/S-800-fixture/SPEC.md', completableSpec('S-800'));
+    assert.throws(
+      () => completeSpec(gateRoot, 'S-800', { date: '2026-09-18' }),
+      /no review verdict is recorded/i,
+      'complete refuses an otherwise-complete Spec with no recorded review verdict at all'
+    );
+
+    // Every recorded verdict is for earlier content: a stale digest. Record
+    // a pass, then change the Spec's content (a harmless field edit stands
+    // in for any real later edit) so the digest it was recorded against no
+    // longer matches.
+    writeAt(gateRoot, 'specs/S-801-fixture/SPEC.md', completableSpec('S-801'));
+    recordReviewVerdict(gateRoot, 'S-801', {
+      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    const s801Path = path.join(gateRoot, 'specs/S-801-fixture/SPEC.md');
+    fs.writeFileSync(s801Path, fs.readFileSync(s801Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after review).'));
+    assert.throws(
+      () => completeSpec(gateRoot, 'S-801', { date: '2026-09-18' }),
+      /earlier content/i,
+      'complete refuses when every recorded verdict is for content that no longer matches (a stale digest)'
+    );
+
+    // The latest verdict for the current content is a fail: hand-craft a
+    // fail-verdict row naming the Spec's own current digest (read back from
+    // the report, never recomputed by hand) without going through
+    // recordReviewVerdict, so no corrective Task exists to trip the earlier
+    // unfinished-slice check first - isolating this one reason.
+    writeAt(gateRoot, 'specs/S-802-fixture/SPEC.md', completableSpec('S-802'));
+    const s802Candidate = headSha(gateRoot);
+    const s802Report = assembleSpecReport(gateRoot, 'S-802', { candidate: s802Candidate });
+    const s802Path = path.join(gateRoot, 'specs/S-802-fixture/SPEC.md');
+    const failRow = `| 2026-09-18 | review | Review verdict: fail at ${s802Candidate} [${s802Report.specDigest.slice(0, 12)}] #1 | Some finding | Claude Opus 5 (separate context) | 1 |`;
+    fs.writeFileSync(s802Path, fs.readFileSync(s802Path, 'utf8').replace(
+      '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+      `| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |\n${failRow}`
+    ));
+    assert.throws(
+      () => completeSpec(gateRoot, 'S-802', { date: '2026-09-18' }),
+      /latest verdict for the current content is fail/i,
+      'complete refuses when the latest verdict bound to the current content digest is a fail'
+    );
+
+    // A passed current verdict lets complete proceed unchanged: the same
+    // single "Spec completed" evidence row this room's other completeSpec
+    // proof (S-001, above) already appends, nothing else different.
+    writeAt(gateRoot, 'specs/S-803-fixture/SPEC.md', completableSpec('S-803'));
+    recordReviewVerdict(gateRoot, 'S-803', {
+      candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
+    });
+    const s803Before = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
+    const s803SliceTableBefore = s803Before.slice(s803Before.indexOf('## Vertical Implementation Slices'), s803Before.indexOf('## Acceptance Criteria'));
+    const s803VerdictRowBefore = s803Before.split('\n').find((line) => line.includes('Review verdict: pass'));
+    completeSpec(gateRoot, 'S-803', { date: '2026-09-18' });
+    const s803After = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
+    // Exactly the same shape completeSpec has always produced (proven above
+    // with S-001): the header flips to complete, and one "Spec completed"
+    // row is appended - nothing else, which is what "byte-identical apart
+    // from the new refusal" means here.
+    assert.match(s803After, /\*\*Status:\*\* complete$/m);
+    assert.match(s803After, /\*\*Latest event:\*\* Spec completed and removed from the hot board\.$/m);
+    assert.match(s803After, /\*\*Next gate:\*\* none$/m);
+    assert.match(s803After, /\| 2026-09-18 \| spec \| Spec completed \| Acceptance gates satisfied \| Documentation impact recorded above \| none \|/);
+    assert.equal(
+      s803After.slice(s803After.indexOf('## Vertical Implementation Slices'), s803After.indexOf('## Acceptance Criteria')),
+      s803SliceTableBefore,
+      'the slice table is untouched by complete, exactly as before this Spec'
+    );
+    assert.ok(s803After.includes(s803VerdictRowBefore), 'the pass verdict row recorded before complete is preserved verbatim, append-only');
+    assert.equal(
+      s803After.split('\n').filter((line) => /^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)).length,
+      s803Before.split('\n').filter((line) => /^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)).length + 1,
+      'complete appends exactly one evidence row - the close row - on top of what was already recorded'
+    );
+
+    console.log('ok - complete refuses without a passed review verdict bound to the current content digest, naming no verdict, a stale digest, or a failed latest verdict as the reason, and a passed current verdict lets it proceed unchanged');
+  } finally {
+    fs.rmSync(gateRoot, { recursive: true, force: true });
+  }
+}
+
 // S-00I TK-003: folder lifecycle for Spec directories. Before this task, a
 // Spec directory had no supported way to move at all: `loadSpecs` reads only
 // the specs lane's top level (unchanged by this task - the active roster
