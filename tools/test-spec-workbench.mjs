@@ -15,6 +15,7 @@ import {
   doctor,
   nextWork,
   parseCliArgs,
+  receiptTask,
   render
 } from '../workbench/tools/spec-workbench.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
@@ -1987,5 +1988,70 @@ function wikiClaimFixture() {
     console.log('ok - close appends a Receipt row for a record-backed Task with live Git facts, and writes no Receipt for a table-backed Spec');
   } finally {
     fs.rmSync(closeRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00H TK-007: the `receipt` verb, the Receipt's second (proactive) writer.
+// It appends one row to a named in-progress Task record without touching
+// that Task's Status or the owning Spec at all, refuses a Task that is not
+// in-progress, and a second call appends rather than overwrites.
+// ============================================================================
+{
+  const receiptRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'receipt-verb-'));
+  initGitRoot(receiptRoot);
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    fs.writeFileSync(path.join(receiptRoot, 'BLUEPRINT.md'), ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    fs.writeFileSync(path.join(receiptRoot, 'TASKBOARD.md'), ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    writeAt(receiptRoot, 'specs/S-731-receipt-verb/SPEC.md', recordBackedSpec('S-731').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    writeAt(receiptRoot, 'specs/S-731-receipt-verb/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-731', slice: 'Mid-run slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-731 Acceptance Criteria'
+    }));
+    const specPath = path.join(receiptRoot, 'specs/S-731-receipt-verb/SPEC.md');
+    const taskPath = path.join(receiptRoot, 'specs/S-731-receipt-verb/tasks/TK-002/TASK.md');
+    const specBefore = fs.readFileSync(specPath, 'utf8');
+
+    const result = receiptTask(receiptRoot, 'S-731', {
+      task: 'TK-002', tests: 'tools/test-fixture.mjs: pass (mid-run)', docs: 'none', remainingGap: 'open: still implementing'
+    });
+    assert.equal(result.specId, 'S-731');
+    assert.equal(result.taskId, 'TK-002');
+    assert.equal(result.row.run, 1, 'the receipt verb returns the row it wrote');
+    assert.equal(result.row.testsRun, 'tools/test-fixture.mjs: pass (mid-run)');
+    assert.equal(result.row.remainingGap, 'open: still implementing');
+
+    const rowsAfterFirst = readReceiptFromFile(taskPath);
+    assert.equal(rowsAfterFirst.length, 1, 'the receipt verb appends one row to the named in-progress Task');
+    assert.match(fs.readFileSync(taskPath, 'utf8'), /\*\*Status:\*\* in-progress/,
+      'the receipt verb never touches the Task\'s own Status');
+    assert.equal(fs.readFileSync(specPath, 'utf8'), specBefore, 'the receipt verb never touches the owning Spec at all');
+
+    // A second call appends rather than overwrites.
+    receiptTask(receiptRoot, 'S-731', {
+      task: 'TK-002', tests: 'tools/test-fixture.mjs: pass (second mid-run)', docs: 'none', remainingGap: 'none'
+    });
+    const rowsAfterSecond = readReceiptFromFile(taskPath);
+    assert.equal(rowsAfterSecond.length, 2, 'a second receipt call appends a second row rather than overwriting the first');
+    assert.equal(rowsAfterSecond[0].testsRun, 'tools/test-fixture.mjs: pass (mid-run)', 'the first row is unchanged after a second call');
+    assert.equal(rowsAfterSecond[1].run, 2);
+
+    // Refuses a Task that is not in-progress.
+    writeAt(receiptRoot, 'specs/S-731-receipt-verb/tasks/TK-003/TASK.md', taskRecordFixture({
+      id: 'TK-003', specId: 'S-731', slice: 'Not yet started', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-731 Acceptance Criteria'
+    }));
+    assert.throws(
+      () => receiptTask(receiptRoot, 'S-731', { task: 'TK-003', tests: 'x', docs: 'none', remainingGap: 'none' }),
+      /TK-003 is ready, not in-progress/,
+      'the receipt verb refuses a Task that is not in-progress'
+    );
+    assert.equal(readReceiptFromFile(path.join(receiptRoot, 'specs/S-731-receipt-verb/tasks/TK-003/TASK.md')).length, 0,
+      'a refused receipt call writes nothing to the refused Task');
+
+    console.log('ok - the receipt verb appends one Receipt row to a named in-progress Task, touching neither its Status nor the Spec, and refuses a Task that is not in-progress');
+  } finally {
+    fs.rmSync(receiptRoot, { recursive: true, force: true });
   }
 }

@@ -188,6 +188,32 @@ export function closeTask(rootDir, id, options) {
   return showSpec(rootDir, id);
 }
 
+// The Receipt's second, proactive writer (ADR-000H): appends one row to a
+// named in-progress Task record as a run proceeds, on the same
+// before-interruption discipline `AGENTS.md` requires for notepads - not
+// deferred until a successful `close`. It touches only the named Task's
+// Receipt: never that Task's own Status field, and never the owning Spec.
+// Refuses a Task that carries no standalone record (a table row has none to
+// append to) and a Task that is not in-progress, naming its actual status
+// rather than silently appending to a Task no run is open on.
+export function receiptTask(rootDir, id, options) {
+  const root = path.resolve(rootDir);
+  const taskId = requireValue(options?.task, '--task is required');
+  const testsRun = requireValue(options?.tests, '--tests is required');
+  const docsTouched = requireValue(options?.docs, '--docs is required');
+  const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
+  const spec = findSpec(root, id);
+  const task = slicesOf(spec).find((item) => item.id === taskId);
+  if (!task || task.source !== 'record') {
+    throw new Error(`${id}/${taskId} has no Task record; the receipt verb appends only to a standalone record`);
+  }
+  if (task.declared !== 'in-progress') {
+    throw new Error(`${id}/${taskId} is ${task.declared}, not in-progress; the receipt verb appends only to an in-progress Task`);
+  }
+  const row = appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun, docsTouched, remainingGap });
+  return { specId: id, taskId, row };
+}
+
 // The one-time migration from an embedded slice table to standalone Task
 // records, for one active Spec. It writes a `TASK.md` per unfinished row and
 // removes that row, so no identifier is ever held in two places, and leaves
@@ -948,6 +974,7 @@ async function main() {
   else if (command === 'show') result = showSpec(root, id);
   else if (command === 'claim') result = claimWork(root, id, options);
   else if (command === 'close') result = closeTask(root, id, options);
+  else if (command === 'receipt') result = receiptTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
   else if (command === 'render') result = render(root);
@@ -955,7 +982,7 @@ async function main() {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|complete|convert-tasks|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
