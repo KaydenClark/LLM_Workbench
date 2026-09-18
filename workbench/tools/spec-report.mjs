@@ -406,6 +406,7 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
   // declaration) - the check below only ever runs once a branch is actually
   // named.
   const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
+  const containmentUnchecked = integrationBranch === null;
   if (integrationBranch && !isAncestorOfBranch(root, candidate, integrationBranch)) {
     throw new Error(`Candidate ${candidate} is not contained in the declared integration branch '${integrationBranch}' (checked via git merge-base --is-ancestor); an owner approval binds to a SHA on integration, never a lane tip.`);
   }
@@ -415,10 +416,39 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
   const digest12 = digest.slice(0, 12);
 
   const findingsCell = returnToAlign ? `Return to Align: ${destinationChange}` : (findingsInput || 'none');
-  const remainingGap = result === 'approve' ? 'none' : (returnToAlign ? 'destination change' : findingsGap(findingsInput));
+  // Review corrective (Low): an approval recorded with no declared
+  // integration branch at all skipped the ancestor check above with nothing
+  // to show for it - its remaining-gap cell read "none" exactly like a
+  // genuinely verified approval, making the two indistinguishable on the
+  // page. A finding's remaining-gap cell already carries real content (a
+  // defect count or "destination change"), so only the otherwise-"none"
+  // approve case needs the substitution.
+  const remainingGap = result === 'approve'
+    ? (containmentUnchecked ? 'integration branch undeclared; containment unchecked' : 'none')
+    : (returnToAlign ? 'destination change' : findingsGap(findingsInput));
+
+  // Review corrective (Medium): with no ordinal, two same-day owner-qa rows
+  // for the same candidate and content digest - two owners confirming, or
+  // two same-day Return-to-Align findings - shared their append-only
+  // identity (Date, owner-qa, Event), since neither findings nor owner is
+  // part of the Event cell; `tools/check-append-only.py` could not tell them
+  // apart. Every owner-qa row now carries its own position among this
+  // Spec's owner-qa rows in the Event cell (`#<n>`), mirroring
+  // `recordReviewVerdict`'s own ordinal exactly - unique by construction,
+  // since it always increments - while an exact repeat of an
+  // already-recorded entry (same candidate, result, digest, findings and
+  // owner) is refused outright rather than recorded as a pointless new row.
+  const existingApprovals = parseOwnerApprovals(parseEvidence(spec.content));
+  const duplicate = existingApprovals.find((entry) =>
+    entry.candidate === candidate && entry.result === result && entry.digest === digest12
+    && entry.findings === findingsCell && entry.owner === owner);
+  if (duplicate) {
+    throw new Error(`An identical owner QA entry (${result} at ${candidate} [${digest12}], findings "${findingsCell}", owner "${owner}") is already recorded for ${specId} as row #${duplicate.ordinal}; recording the exact same entry twice is refused rather than duplicated.`);
+  }
+  const ordinal = existingApprovals.length + 1;
 
   const date = new Date().toISOString().slice(0, 10);
-  const cells = [date, 'owner-qa', `Owner QA: ${result} at ${candidate} [${digest12}]`, findingsCell, owner, remainingGap];
+  const cells = [date, 'owner-qa', `Owner QA: ${result} at ${candidate} [${digest12}] #${ordinal}`, findingsCell, owner, remainingGap];
   const row = `| ${cells.map(escapeMarkdownTableCell).join(' | ')} |`;
   const updated = appendEvidence(spec.content, row);
   atomicWrite(spec.filePath, updated);
@@ -428,7 +458,7 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
     correctiveTasks = createCorrectiveTasks(root, specId, { candidate, findings: findingsInput }).created;
   }
 
-  return { specId: spec.id, candidate, owner, result, findings: findingsCell, date, remainingGap, digest, digest12, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
+  return { specId: spec.id, candidate, owner, result, findings: findingsCell, date, remainingGap, digest, digest12, ordinal, row, ...(correctiveTasks ? { correctiveTasks } : {}) };
 }
 
 // `git merge-base --is-ancestor <sha> <branch>` exits 0 exactly when `sha` is
@@ -675,14 +705,17 @@ function latestVerdictFor(verdicts, specDigest) {
   return null;
 }
 
-// S-00J TK-005: an owner-qa row, parsed from its cells alone exactly as
-// `parseVerdicts` above parses a review row - identified by its literal
-// second cell `owner-qa` and a third cell matching `Owner QA: approve|finding
-// at <sha> [<digest12>]`. No ordinal: unlike a review verdict (which a second
-// same-day reviewer could plausibly repeat), owner Human QA is a single
-// accountability event per candidate - "keep the record minimal" - so the row
-// carries no `#<n>`.
-const OWNER_QA_PATTERN = /^Owner QA: (approve|finding) at (\S+) \[([0-9a-f]{12})\]$/;
+// S-00J TK-005 (review corrective, Medium): an owner-qa row, parsed from its
+// cells alone exactly as `parseVerdicts` above parses a review row -
+// identified by its literal second cell `owner-qa` and a third cell matching
+// `Owner QA: approve|finding at <sha> [<digest12>] #<n>`. The `#<n>` ordinal
+// (this row's own position among the Spec's owner-qa rows, 1-based) mirrors
+// `recordReviewVerdict`'s own: two same-day owner-qa rows for one candidate
+// and digest - two owners confirming, or two same-day Return-to-Align
+// findings - would otherwise share their append-only identity (Date,
+// owner-qa, Event), since neither findings nor owner is part of the Event
+// cell.
+const OWNER_QA_PATTERN = /^Owner QA: (approve|finding) at (\S+) \[([0-9a-f]{12})\] #(\d+)$/;
 
 function parseOwnerApprovals(evidence) {
   const approvals = [];
@@ -696,6 +729,7 @@ function parseOwnerApprovals(evidence) {
       result: match[1],
       candidate: match[2],
       digest: match[3],
+      ordinal: Number(match[4]),
       findings: cells[3],
       owner: cells[4],
       remainingGap: cells[5]

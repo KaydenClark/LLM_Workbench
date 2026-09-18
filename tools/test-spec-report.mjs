@@ -34,10 +34,12 @@ function currentBranch(dir) {
   return execFileSync('git', ['-C', dir, 'branch', '--show-current'], { encoding: 'utf8' }).trim();
 }
 
-// S-00J TK-005: `recordOwnerApproval` refuses without a declared
-// `git.integrationBranch` to check the candidate against (`declaredGit` in
-// workbench-paths.mjs). This writes the minimal manifest that satisfies
-// exactly that read - deliberately without `schemaVersion: 2` - so none of
+// S-00J TK-005: `recordOwnerApproval` checks the candidate against the
+// declared `git.integrationBranch` (`declaredGit` in workbench-paths.mjs)
+// only once one is actually declared - a room with none skips the ancestor
+// check rather than refusing (see the "containment unchecked" remaining-gap
+// test below). This writes the minimal manifest that satisfies exactly that
+// read - deliberately without `schemaVersion: 2` - so none of
 // `doctor`'s schema-2-gated checks (`gitFindings`, `collectionFindings`,
 // `skillFindings`/`inspectSkills`) start reading this fixture as a real
 // managed room; only `declaredGit`'s own `manifest.git` read (which never
@@ -1698,15 +1700,21 @@ function headingShadowSpec(id) {
     assert.equal(approval.owner, 'Kayden Clark');
     assert.equal(approval.result, 'approve');
     assert.equal(approval.findings, 'none', 'an approve with no --finding records "none" in the findings cell, exactly like a pass verdict');
-    assert.equal(approval.remainingGap, 'none');
+    assert.equal(approval.ordinal, 1, 'the first owner-qa row on this Spec is #1');
+    // This fixture declares no git.integrationBranch at all (matching every
+    // other no-manifest fixture in this file), so the ancestor check above
+    // was skipped rather than satisfied - review corrective (Low): the
+    // remaining-gap cell says so, rather than reading "none" exactly like a
+    // genuinely verified approval would.
+    assert.equal(approval.remainingGap, 'integration branch undeclared; containment unchecked');
     assert.equal(approval.digest, reportBefore.specDigest, 'the approval binds to the content digest the same way a review verdict does');
 
     const specAfter = fs.readFileSync(path.join(root, specPath), 'utf8');
     assert.ok(specAfter.includes(approval.row), 'the exact row text the function returns is what lands in the Spec file');
     assert.match(
       approval.row,
-      new RegExp(`^\\| 2026-\\d{2}-\\d{2} \\| owner-qa \\| Owner QA: approve at ${candidate} \\[[0-9a-f]{12}\\] \\| none \\| Kayden Clark \\| none \\|$`),
-      'the row matches the handoff\'s exact six-cell shape: date, owner-qa, "Owner QA: approve at <sha> [<digest12>]", findings, owner, remaining gap'
+      new RegExp(`^\\| 2026-\\d{2}-\\d{2} \\| owner-qa \\| Owner QA: approve at ${candidate} \\[[0-9a-f]{12}\\] #1 \\| none \\| Kayden Clark \\| integration branch undeclared; containment unchecked \\|$`),
+      'the row matches the handoff\'s six-cell shape (date, owner-qa, "Owner QA: approve at <sha> [<digest12>] #<n>", findings, owner, remaining gap), with the ordinal mirroring a review verdict\'s own'
     );
 
     const reportAfter = assembleSpecReport(root, 'S-760', { candidate });
@@ -1715,7 +1723,7 @@ function headingShadowSpec(id) {
     assert.equal(reportAfter.latestOwnerApproval.owner, 'Kayden Clark');
     assert.equal(reportAfter.latestOwnerApproval.digest, reportBefore.specDigest.slice(0, 12));
 
-    console.log('ok - recordOwnerApproval appends the exact six-cell owner-qa row, bound to the Spec\'s content digest, and assembleSpecReport exposes it as ownerApproval / latestOwnerApproval beside the verdict');
+    console.log('ok - recordOwnerApproval appends the exact six-cell owner-qa row (with its own #<n> ordinal), bound to the Spec\'s content digest, names its remaining-gap cell "containment unchecked" when no integration branch is declared, and assembleSpecReport exposes it as ownerApproval / latestOwnerApproval beside the verdict');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -1976,6 +1984,125 @@ function headingShadowSpec(id) {
     assert.match(alignParsed.findings, /^Return to Align:/);
 
     console.log('ok - the approve CLI verb infers approve/finding from --finding and --destination-change exactly as the handoff\'s invocation shows, and records the same rows the exported function would');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Review corrective (Medium): `recordOwnerApproval`'s non-empty `--owner`
+// requirement and its closed `approve`/`finding` result vocabulary were
+// implemented (`requiredString` and a literal equality check) but untested -
+// replacing `requiredString` with a plain string, or the vocabulary check
+// with nothing, would have left every other test in this file green. Both
+// refusals write nothing, matching every other pre-write validation in this
+// module.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-approval-validation-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-766-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-766', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+
+    for (const owner of ['', '   ']) {
+      assert.throws(
+        () => recordOwnerApproval(root, 'S-766', { candidate, owner, result: 'approve' }),
+        (error) => error instanceof Error && /recordOwnerApproval requires --owner/.test(error.message),
+        `an ${owner === '' ? 'empty' : 'whitespace-only'} --owner is refused by name`
+      );
+    }
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused missing-owner call writes nothing to the Spec file');
+
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-766', { candidate, owner: 'Kayden Clark', result: 'reject' }),
+      (error) => error instanceof Error && /requires --result of approve or finding, got: reject/.test(error.message),
+      'an out-of-vocabulary result is refused by name'
+    );
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-766', { candidate, owner: 'Kayden Clark' }),
+      (error) => error instanceof Error && /requires --result of approve or finding, got: nothing/.test(error.message),
+      'a missing result is refused, distinguishably from a wrong one'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused out-of-vocabulary or missing result writes nothing');
+
+    console.log('ok - recordOwnerApproval refuses an empty or whitespace-only --owner and an out-of-vocabulary or missing --result, each writing nothing');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// Review corrective (Medium): with no ordinal, two same-day owner-qa rows for
+// one candidate and content digest shared their append-only identity (Date,
+// owner-qa, Event), since neither findings nor owner is part of the Event
+// cell - two different owners approving the same candidate on the same day,
+// or two same-day Return-to-Align findings, would have collapsed under
+// `tools/check-append-only.py`'s identity rule. Every owner-qa row now
+// carries its own position among this Spec's owner-qa rows in the Event
+// cell (`#<n>`), mirroring `recordReviewVerdict`'s own; a byte-identical
+// repeat (same candidate, result, digest, findings and owner) is refused
+// outright rather than recorded as a pointless new row, naming the existing
+// row's ordinal.
+// ============================================================================
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-owner-approval-ordinal-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-767-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({
+      id: 'S-767', taskStatus: 'done', checked: true, completion: 'Delivered.',
+      evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
+    }));
+    const candidate = headSha(root);
+
+    const first = recordOwnerApproval(root, 'S-767', { candidate, owner: 'Kayden Clark', result: 'approve' });
+    const second = recordOwnerApproval(root, 'S-767', { candidate, owner: 'A Second Reviewer', result: 'approve' });
+    assert.equal(first.ordinal, 1);
+    assert.equal(second.ordinal, 2, 'a second same-day owner-qa row on unchanged content, with a different owner, is recordable as its own row');
+    assert.notEqual(first.row, second.row, 'the two rows are byte-distinct despite an identical date, candidate, digest and result');
+    // The two Event cells (everything up to the findings cell) differ only
+    // in their ordinal, proving the ordinal - not luck - is what
+    // distinguishes them.
+    const firstEvent = first.row.split(' | ')[2];
+    const secondEvent = second.row.split(' | ')[2];
+    assert.equal(firstEvent.replace('#1', '#2'), secondEvent, 'the two Event cells are identical except for the ordinal suffix');
+    assert.match(firstEvent, /\[[0-9a-f]{12}\] #1$/);
+    assert.match(secondEvent, /\[[0-9a-f]{12}\] #2$/);
+
+    // A byte-identical repeat of the first entry (same candidate, result,
+    // digest, findings and owner) is refused, naming the existing row.
+    const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.throws(
+      () => recordOwnerApproval(root, 'S-767', { candidate, owner: 'Kayden Clark', result: 'approve' }),
+      (error) => error instanceof Error && /already recorded/.test(error.message) && error.message.includes('#1'),
+      'an exact repeat of an already-recorded owner-qa entry is refused rather than duplicated, naming the existing row'
+    );
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, 'a refused exact repeat writes nothing');
+
+    // The corrective-Task anchor still resolves to the most recent
+    // qualifying finding row by its own evidence-log position - unaffected
+    // by the owner-qa row's own #<n> ordinal, a separate counter.
+    const finding = recordOwnerApproval(root, 'S-767', {
+      candidate, owner: 'Kayden Clark', result: 'finding', findings: 'A late-breaking defect'
+    });
+    assert.equal(finding.ordinal, 3, 'the ordinal keeps incrementing across approve and finding rows alike');
+    assert.equal(finding.correctiveTasks.length, 1);
+    const correctiveContent = fs.readFileSync(path.join(root, finding.correctiveTasks[0].filePath), 'utf8');
+    assert.match(
+      correctiveContent,
+      /\*\*Planned verification:\*\* Answers evidence row 4 \(owner QA finding at /,
+      "the corrective Task's anchor still names the row's own evidence-log position, not the owner-qa event's #<n>"
+    );
+
+    console.log('ok - two same-day owner-qa rows on unchanged content with different owners get distinct Event cells via an incrementing ordinal, an exact repeat is refused naming the existing row, and the corrective-Task anchor keeps using the row\'s own evidence-log position');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

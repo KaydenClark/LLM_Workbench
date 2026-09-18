@@ -2373,7 +2373,7 @@ function wikiClaimFixture() {
     });
     const s806Report = assembleSpecReport(gateRoot, 'S-806', { candidate: s806Candidate });
     const s806Path = path.join(gateRoot, 'specs/S-806-fixture/SPEC.md');
-    const findingRow = `| 2026-09-18 | owner-qa | Owner QA: finding at ${s806Candidate} [${s806Report.specDigest.slice(0, 12)}] | Some finding | Kayden Clark | 1 |`;
+    const findingRow = `| 2026-09-18 | owner-qa | Owner QA: finding at ${s806Candidate} [${s806Report.specDigest.slice(0, 12)}] #1 | Some finding | Kayden Clark | 1 |`;
     fs.writeFileSync(s806Path, fs.readFileSync(s806Path, 'utf8').replace(
       '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
       `| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |\n${findingRow}`
