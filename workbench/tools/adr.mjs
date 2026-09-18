@@ -112,6 +112,56 @@ export function stripFrontmatterKey(content, key) {
   return { content: lines.join(eol), removed: true };
 }
 
+// S-00I TK-003 corrective: `canonicalized_in` names a repository-relative
+// path directly from the project root - unlike a body Markdown link, it is
+// never relative to the record's own directory, so it needs no `oldDir`/
+// `newDir` recomputation, only a literal lookup in `locations` (old absolute
+// path -> current absolute path) and a rewrite to the new root-relative
+// value when that differs. Handles both the ordinary list form
+// (`canonicalized_in:\n  - path`) and a same-line scalar
+// (`canonicalized_in: path`), line-based and terminator-preserving like the
+// rest of this file. A record whose `canonicalized_in` names nothing this
+// caller's `locations` map covers is returned unchanged.
+export function rewriteCanonicalizedIn(content, root, locations) {
+  const eol = nativeEol(content);
+  const lines = content.split(eol);
+  if (lines[0] !== '---') return { content, count: 0 };
+  let closeIndex = -1;
+  for (let index = 1; index < lines.length; index += 1) { if (lines[index] === '---') { closeIndex = index; break; } }
+  if (closeIndex === -1) return { content, count: 0 };
+  let count = 0;
+  let inBlock = false;
+  const rewriteTarget = (raw) => {
+    const oldAbsolute = path.resolve(root, raw);
+    if (!locations.has(oldAbsolute)) return null;
+    const newAbsolute = locations.get(oldAbsolute);
+    const relative = path.relative(root, newAbsolute).split(path.sep).join('/');
+    return relative === raw ? null : relative;
+  };
+  for (let index = 1; index < closeIndex; index += 1) {
+    const line = lines[index];
+    const keyMatch = line.match(/^canonicalized_in:\s*(.*)$/);
+    if (keyMatch) {
+      const scalar = keyMatch[1].trim();
+      if (scalar) {
+        const rewritten = rewriteTarget(scalar);
+        if (rewritten) { lines[index] = `canonicalized_in: ${rewritten}`; count += 1; }
+        inBlock = false;
+      } else {
+        inBlock = true;
+      }
+      continue;
+    }
+    if (inBlock) {
+      const item = line.match(/^(\s*-\s*)(.+)$/);
+      if (!item) { inBlock = false; continue; }
+      const rewritten = rewriteTarget(item[2].trim());
+      if (rewritten) { lines[index] = `${item[1]}${rewritten}`; count += 1; }
+    }
+  }
+  return { content: count > 0 ? lines.join(eol) : content, count };
+}
+
 // Enumerates the top-level directory and, when present, each lifecycle
 // subfolder in `ADR_LIFECYCLE_FOLDERS`. A flat collection with no subfolders
 // produces exactly the same list, in the same order, as before this change -
@@ -290,15 +340,19 @@ export function validateAdrs(root, options = {}) {
   return findings;
 }
 
-// Bring existing records into shape without editing a body. `status` defaults
-// to `proposed` because an inserted `accepted` would assert an acceptance
-// nobody made, and an accepted record still needs a `canonicalized_in` owner
-// only its author can name - normalize reports that record as unchanged and
-// `validate` keeps failing it.
+// Bring existing records into shape without editing a body. S-00I TK-002 made
+// folder the source of lifecycle truth: a record with no `status` key is not
+// an incomplete record any more, it is an ordinary migrated one (accepted at
+// the top level, or whatever its `proposed`/`archive` folder implies), so
+// inserting `status: proposed` here would re-add a stale, wrong key to the
+// whole collection the very first time normalize ran after that migration.
+// `date` is the only key this still inserts; an accepted record still needs a
+// `canonicalized_in` owner only its author can name, which normalize never
+// invents, so `validate` keeps failing a record that lacks one.
 export function normalizeAdrs(root, options = {}) {
   const date = options.date ?? new Date().toISOString().slice(0, 10);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('--date must be YYYY-MM-DD');
-  const fields = [['status', ['status: proposed']], ['date', [`date: ${date}`]]];
+  const fields = [['date', [`date: ${date}`]]];
   const changed = [];
   for (const adr of listAdrs(root)) {
     const content = fs.readFileSync(adr.filePath, 'utf8');
@@ -416,11 +470,13 @@ function splitLinkFragment(target) {
 // before this migration, now living at `newDir` - that resolves (via
 // `oldDir`, so a moved referencing file's own stale relative text is
 // interpreted correctly) to a path this migration tracks in `locations`
-// (old absolute ADR record path -> current absolute path, including every
-// record that did not move, mapped to itself). A link to anything else -
-// another spec, a wiki note, a target this migration never touched - is
-// never matched and never rewritten.
-function rewriteAdrLinks(content, oldDir, newDir, locations) {
+// (old absolute path -> current absolute path, including every entry that
+// did not move, mapped to itself). A link to anything else - another spec, a
+// wiki note, a target this migration never touched - is never matched and
+// never rewritten. Exported for reuse: the logic is folder-move-generic (it
+// carries no ADR-specific assumption), and S-00I TK-003 reuses this exact
+// function for Spec directory moves rather than writing a second one.
+export function rewriteAdrLinks(content, oldDir, newDir, locations) {
   let count = 0;
   const updated = content.replace(/(\[[^\]]*\]\()([^)]+)(\))/g, (whole, open, target, close) => {
     if (/^(?:https?:|mailto:)/.test(target)) return whole;
@@ -431,6 +487,18 @@ function rewriteAdrLinks(content, oldDir, newDir, locations) {
     const oldAbsolute = path.resolve(oldDir, decoded);
     if (!locations.has(oldAbsolute)) return whole;
     const newAbsolute = locations.get(oldAbsolute);
+    // S-00I TK-003 corrective (round 2): a link needs recomputing only when
+    // something in its own resolution actually changed - the target's
+    // absolute location (`newAbsolute !== oldAbsolute`, a moved entry) or the
+    // referencing file's own directory (`newDir !== oldDir`, a moved
+    // referrer, whose unmoved target still needs its relative depth
+    // recomputed). When neither changed, this call is scanning a file the
+    // move has no reason to touch at all; recomputing anyway would still
+    // "succeed" by producing a resolvable path, but a shorter or otherwise
+    // differently-spelled one than the author wrote - a real-room dry run
+    // renormalized an active Spec's own untouched `../S-050-.../SPEC.md`
+    // self-link down to `SPEC.md` this way. Leave it exactly as written.
+    if (newAbsolute === oldAbsolute && newDir === oldDir) return whole;
     const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/');
     const rebuilt = fragment !== undefined ? `${relative}#${fragment}` : relative;
     if (rebuilt === target) return whole;
@@ -473,7 +541,9 @@ function collectExternalMarkdownFiles(root) {
 // at a record's pre-migration path. Split the file into the part before that
 // section, the section itself (untouched), and the part after, so rewriting
 // can apply to live prose on both sides without ever touching the table.
-function splitEvidenceSection(content) {
+// Exported so S-00I TK-003 protects the same heading when a Spec directory
+// moves, rather than a second split implementation.
+export function splitEvidenceSection(content) {
   const heading = '## Append-Only Evidence And Execution Log';
   const headingIndex = content.indexOf(`\n${heading}`);
   if (headingIndex === -1) return { prefix: content, evidence: '', suffix: '' };

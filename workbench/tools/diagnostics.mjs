@@ -60,6 +60,13 @@ const registry = Object.freeze({
   'stale-claim': entry('attention', 'specs', 'none', 'an in-progress claim is older than one working day; verify activity before reclaiming'),
   'complete-on-integration': entry('attention', 'specs', 'none', 'the spec next would select is already complete or superseded at the declared integration ref; the checkout is behind it'),
   'broken-link': entry('attention', 'specs', 'none', 'a spec links to a missing local target'),
+  // S-00I TK-003: a Spec's lifecycle folder is retired, but its own header
+  // Status still disagrees (folder says done with it; the header does not
+  // say complete) - the Spec analogue of `disagreeing-status`, visible and
+  // never blocking. `loadSpecs` never returns a retired Spec to selection,
+  // so this can only ever be raised by doctor's explicit historical-route
+  // read, never by `next` or `claim`.
+  'retired-not-complete': entry('attention', 'specs', 'none', "a retired Spec's Status is not complete"),
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   // S-00I TK-002: lifecycle now comes from folder location (top level, or
   // ADR_LIFECYCLE_FOLDERS `proposed`/`archive`), not frontmatter `status`. A

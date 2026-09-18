@@ -3,13 +3,14 @@ import { inspectSkills } from './skill-inspection.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
-import { validateAdrs } from './adr.mjs';
+import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
@@ -27,6 +28,15 @@ const CATALOG_START = '<!-- spec-catalog:start -->';
 const CATALOG_END = '<!-- spec-catalog:end -->';
 const HOT_START = '<!-- hot-specs:start -->';
 const HOT_END = '<!-- hot-specs:end -->';
+
+// S-00I: the closed set of lifecycle subfolders a Spec directory may move
+// into, beneath the specs lane's top level (the active roster `loadSpecs`
+// still reads unchanged). ADR-000I reserves permanent `archive` for ADRs
+// alone; a Spec and its Tasks are transient working artifacts, so their one
+// terminal folder here is the transient `retired` staging area. Adding a
+// folder to this set is a lifecycle decision (another ADR), never a silent
+// tool change.
+export const SPEC_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 
 export function nextWork(rootDir) {
   refuseBlockedRuntime(rootDir);
@@ -417,36 +427,39 @@ export function gate(rootDir, options = {}) {
 export function render(rootDir) {
   const root = path.resolve(rootDir);
   const specs = loadSpecs(root);
+  const retired = loadRetiredSpecs(root);
   const blueprintPath = path.join(root, 'BLUEPRINT.md');
   const taskboardPath = path.join(root, 'TASKBOARD.md');
   const blueprint = fs.readFileSync(blueprintPath, 'utf8');
   const taskboard = fs.readFileSync(taskboardPath, 'utf8');
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) {
     // Legacy rooms keep their declared projection until an explicit rebuild.
-    atomicWrite(blueprintPath, replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs)));
+    atomicWrite(blueprintPath, replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs, retired)));
   } else {
     const catalogPath = path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md');
     assertSafeWritePath(root, catalogPath);
-    const relativeCatalog = renderCatalog(specs).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, '](');
+    const relativeCatalog = renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, '](');
     writeSafeFile(root, catalogPath, `# Spec Catalog\n\nDerived from stable specs; includes completed history.\n\n${CATALOG_START}\n${relativeCatalog}\n${CATALOG_END}\n`);
   }
   atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs)));
-  return { specs: specs.length, active: specs.filter((spec) => isHot(spec)).length };
+  return { specs: specs.length, active: specs.filter((spec) => isHot(spec)).length, retired: retired.length };
 }
 
 export function doctor(rootDir, options = {}) {
   const root = path.resolve(rootDir);
   const issues = [];
   let specs;
+  let retired;
   try {
     specs = loadSpecs(root, { allowDuplicates: true });
+    retired = loadRetiredSpecs(root);
   } catch (error) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
-  issues.push(...packetFindings(specs, options));
+  issues.push(...packetFindings(specs, options, retired));
   const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
-  if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
-  else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
+  if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs, retired), issues);
+  else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root, options.home));
@@ -460,9 +473,26 @@ export function validateSpecCandidate(root, filePath, content) {
   return packetFindings(specs);
 }
 
-function packetFindings(specs, options = {}) {
+function packetFindings(specs, options = {}, retiredSpecs = []) {
   const issues = [];
-  issues.push(...identityFindings(specs));
+  issues.push(...identityFindings(specs, retiredSpecs));
+  // S-00I TK-003: a retired Spec is outside ordinary selection, so it gets
+  // only the two checks that matter once a record is out of the active
+  // roster - its id cannot be reused (folded into identityFindings above,
+  // which already saw both arrays) and its own path must be stable for the
+  // folder it actually lives in - plus the one retirement-specific fact
+  // nothing else surfaces: a retired Spec whose own header still disagrees
+  // that it is complete. None of the active-roster checks below (slice
+  // status, blockers, stale-claim, broken-link) apply to a Spec `next`,
+  // `claim` and `render` never see again.
+  for (const spec of retiredSpecs) {
+    if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.lifecycleFolder}/${spec.id}-`)) {
+      issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.lifecycleFolder}/${spec.id}-`, { specId: spec.id }));
+    }
+    if (spec.status !== 'complete') {
+      issues.push(finding('retired-not-complete', `${spec.id} is retired in ${spec.lifecycleFolder}/ but its Status is ${spec.status}, not complete`, { specId: spec.id }));
+    }
+  }
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of specs) {
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
@@ -634,6 +664,41 @@ export function loadSpecs(rootDir, options = {}) {
   return specs;
 }
 
+// S-00I TK-003: the explicit historical route. `loadSpecs` above deliberately
+// keeps reading only the top level - the active roster `next`, `claim`,
+// `render` and the hot board select from - so a retired Spec never re-enters
+// selection through a shared reading path. This is the one other place a
+// retired Spec is read from, for `findSpec`/`show` and for doctor's identity
+// and retired-status checks. It mirrors `loadSpecs`'s own directory scan,
+// rooted one level deeper under each folder in `SPEC_LIFECYCLE_FOLDERS`, and
+// returns `[]` for a room that has never retired anything rather than
+// treating an absent `retired/` directory as an error.
+export function loadRetiredSpecs(rootDir) {
+  const root = path.resolve(rootDir);
+  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
+  const specs = [];
+  for (const folder of SPEC_LIFECYCLE_FOLDERS) {
+    const folderRoot = path.join(specsRoot, folder);
+    if (!fs.existsSync(folderRoot)) continue;
+    const paths = [];
+    for (const entry of fs.readdirSync(folderRoot, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const filePath = path.join(folderRoot, entry.name, 'SPEC.md');
+      if (fs.existsSync(filePath)) paths.push(filePath);
+    }
+    for (const filePath of paths.sort()) {
+      const specDir = path.dirname(filePath);
+      const records = listTaskRecords(specDir, root);
+      const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
+      const content = fs.readFileSync(filePath, 'utf8');
+      const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, recordBacked, lifecycleFolder: folder };
+      assertOneSliceTruth(spec);
+      specs.push(spec);
+    }
+  }
+  return specs;
+}
+
 // One source of slice truth per Spec. A Spec is record-backed when its own
 // `tasks/` directory exists; its embedded table then holds completed history
 // only, which `close` and the Spec's evidence log still own. An unfinished
@@ -754,11 +819,16 @@ function publicSlice(slice) {
   return { id: slice.id, slice: slice.slice, status: slice.declared, blockers: slice.blockers, proof: slice.proof ?? null };
 }
 
-function identityFindings(specs) {
+// S-00I TK-003: `retiredSpecs` (default `[]`) joins the same identity checks
+// as the active roster, so a retired Spec still holds its id against reuse
+// and a retired Task still holds its id against a new Spec claiming it -
+// `loadSpecs`'s own duplicate guard above calls this with one argument and
+// is unaffected.
+function identityFindings(specs, retiredSpecs = []) {
   const findings = [];
   const specIds = new Map();
   const globalTasks = new Map();
-  for (const spec of specs) {
+  for (const spec of [...specs, ...retiredSpecs]) {
     const specKey = visibleIdKey(spec.id);
     if (specIds.has(specKey)) findings.push(finding('duplicate-id', `Duplicate spec ID: ${spec.id} conflicts with ${specIds.get(specKey)}`, { specId: spec.id }));
     else specIds.set(specKey, spec.id);
@@ -809,7 +879,15 @@ function resolveSpecsRoot(root) {
   };
 }
 
-function renderCatalog(specs) {
+// S-00I TK-003: `retired` (default `[]`) is what keeps `CATALOG.md`'s claim
+// to "include completed history" true once a completed Spec's directory
+// leaves the top level - `loadSpecs` never returns it, so the main table
+// above can no longer name it. A separate heading, populated only when a
+// room has actually retired something, names each one by its historical
+// route instead; an empty `retired` list renders no heading at all, so a
+// room that has never retired a Spec gets byte-identical output to before
+// this heading existed.
+function renderCatalog(specs, retired = []) {
   const lines = [
     '| Spec | Description | Status |',
     '|---|---|---|'
@@ -818,6 +896,12 @@ function renderCatalog(specs) {
     lines.push(`| [${spec.id} - ${escapeCell(spec.title)}](${spec.relativePath}) | ${escapeCell(spec.description)} | ${escapeCell(spec.status)} |`);
   }
   if (specs.length === 0) lines.push('| none | No specs recorded yet. | n/a |');
+  if (retired.length > 0) {
+    lines.push('', '### Retired', '', 'Reconciled into durable owners and moved out of ordinary discovery; still reachable by their historical route.', '', '| Spec | Description | Historical route |', '|---|---|---|');
+    for (const spec of retired.slice().sort((a, b) => compareVisibleIds(a.id, b.id))) {
+      lines.push(`| ${spec.id} - ${escapeCell(spec.title)} | ${escapeCell(spec.description)} | [${spec.relativePath}](${spec.relativePath}) |`);
+    }
+  }
   return lines.join('\n');
 }
 
@@ -907,10 +991,301 @@ function blockersSatisfied(value, completed) {
   return value.split(',').map((item) => item.trim()).filter(Boolean).every((id) => completed.has(id));
 }
 
+// The active roster is tried first, unchanged; a retired Spec is reachable
+// only once nothing in the active roster claims the id, so a retired id can
+// never shadow a live one. `show` is this function's only caller, which is
+// how S-00I TK-003 satisfies "show finds a retired Spec by an explicit
+// historical route" without changing what `next`, `claim` or `render` see.
 export function findSpec(rootDir, id) {
   const matches = loadSpecs(rootDir).filter((spec) => spec.id === id);
-  if (matches.length !== 1) throw new Error(matches.length ? `Duplicate spec ID: ${id}` : `Unknown spec ID: ${id}`);
-  return matches[0];
+  if (matches.length > 1) throw new Error(`Duplicate spec ID: ${id}`);
+  if (matches.length === 1) return matches[0];
+  const retired = loadRetiredSpecs(rootDir).filter((spec) => spec.id === id);
+  if (retired.length > 1) throw new Error(`Duplicate spec ID: ${id}`);
+  if (retired.length === 1) return retired[0];
+  throw new Error(`Unknown spec ID: ${id}`);
+}
+
+// Every live Markdown surface a Spec move must repair a reference in: the
+// same external classes TK-002's ADR migration rewrote (root controls, the
+// Wiki, `skills/`, `team templates/`), plus the ADR collection itself - an
+// accepted ADR naming a live Spec path is exactly the reference class this
+// Spec's own Decisions section names for ADRs, the inverse direction - and
+// every Spec's `SPEC.md` and standalone `tasks/**/TASK.md` Task record,
+// walked recursively so a nested lifecycle folder (an already-retired Spec,
+// or its own already-retired Task) is covered without a second walker.
+// `excludeDir`, when given, drops anything already under a directory the
+// caller is handling separately (the Spec directory that is itself moving).
+function collectSpecReferenceFiles(root, excludeDir) {
+  const files = [];
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+    const file = path.join(root, name);
+    if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
+  }
+  const walk = (dir, match) => {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isSymbolicLink()) continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full, match);
+      else if (entry.isFile() && match(entry.name)) files.push(full);
+    }
+  };
+  walk(path.join(root, 'workbench', 'wiki'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'skills'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'team templates'), (name) => name.endsWith('.md'));
+  walk(path.join(root, 'workbench', 'docs', 'adr'), (name) => name.endsWith('.md'));
+  walk(resolveSpecsRoot(root).specsRoot, (name) => name === 'SPEC.md' || name === 'TASK.md');
+  const seen = new Set();
+  return files.filter((file) => {
+    if (excludeDir && (file === excludeDir || file.startsWith(excludeDir + path.sep))) return false;
+    if (seen.has(file)) return false;
+    seen.add(file);
+    return true;
+  });
+}
+
+// Every ordinary file beneath `dir`, recursively, as absolute paths. Used to
+// snapshot a Spec directory's contents before it moves, so the move can build
+// an old-path -> new-path map for every file it carries, not only `SPEC.md`.
+function collectDirectoryFiles(dir) {
+  const files = [];
+  const walk = (current) => {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      if (entry.isSymbolicLink()) continue;
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.isFile()) files.push(full);
+    }
+  };
+  walk(dir);
+  return files;
+}
+
+// Rewrites one file in place against `locations` (old absolute path -> new
+// absolute path, and - critically - every entry that did NOT move mapped to
+// itself, exactly as TK-002's own `locations` map does), protecting its
+// Append-Only Evidence And Execution Log (a Spec's own frozen history)
+// exactly as TK-002 protects the same heading: the section is carried
+// through untouched, its own link matches are counted as `historical` rather
+// than rewritten, and the file is only written back when a live match
+// outside that section actually changed. Also rewrites a
+// `canonicalized_in` frontmatter target (an ADR-only fact, harmless to check
+// on any other file since it is a no-op without frontmatter). Reused for
+// both halves of a Spec move - the moved files' own outgoing links, and
+// every external file's incoming ones - so the two passes cannot drift
+// apart. Mapping only the moving files, and leaving every unmoved target out
+// of `locations`, was corrective review finding 1: a moved file's own
+// outgoing link to an unmoved sibling still needs its relative depth
+// recomputed (the moved file sits one folder deeper now), and
+// `rewriteAdrLinks` can only do that when the unmoved target is in the map,
+// mapped to itself.
+function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals) {
+  const original = fs.readFileSync(filePath, 'utf8');
+  const { prefix, evidence, suffix } = splitEvidenceSection(original);
+  const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
+  const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations);
+  const rewrittenSuffix = rewriteAdrLinks(suffix, oldDir, newDir, locations);
+  const skippedInEvidence = rewriteAdrLinks(evidence, oldDir, newDir, locations).count;
+  const relative = path.relative(root, filePath).split(path.sep).join('/');
+  if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
+  const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
+  if (rewritten > 0) {
+    const finalContent = rewrittenPrefix.content + evidence + rewrittenSuffix.content;
+    assertSafeWritePath(root, filePath);
+    writeSafeFile(root, filePath, finalContent);
+    totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
+  }
+}
+
+// S-00I TK-003: moves a completed Spec's whole directory (Task records and
+// all) from the top level into a `SPEC_LIFECYCLE_FOLDERS` folder, with `git
+// mv` semantics, and repairs every live Markdown reference the move would
+// otherwise dangle - reusing TK-002's own rewriter (`rewriteAdrLinks`,
+// `splitEvidenceSection`, and now `rewriteCanonicalizedIn`) rather than a
+// second implementation. Refuses a dirty working tree (the moved candidate
+// must be reviewable as the rename it produces), a Spec that is not
+// `complete` (only reconciled work retires), a folder outside the closed
+// set, or a room with no Git working tree at all - corrective review finding
+// 3: a move outside Git cannot be recovered, unlike the ADR migration this
+// reuses, which supports a non-Git room because a whole-file rename there is
+// otherwise reversible by hand; a Spec move also rewrites content, which is
+// not. Moves no other Spec, and never touches `archive`, which ADR-000I
+// reserves for ADRs alone.
+export function moveSpecDirectory(rootDir, specId, folder) {
+  const root = path.resolve(rootDir);
+  if (!SPEC_LIFECYCLE_FOLDERS.includes(folder)) {
+    throw new Error(`move-spec refuses folder "${folder}"; the closed set is ${SPEC_LIFECYCLE_FOLDERS.join(', ')}`);
+  }
+  const specs = loadSpecs(root);
+  const matches = specs.filter((item) => item.id === specId);
+  if (matches.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
+  if (matches.length === 0) {
+    const alreadyRetired = loadRetiredSpecs(root).some((item) => item.id === specId);
+    throw new Error(alreadyRetired ? `${specId} is already retired` : `Unknown spec ID: ${specId}`);
+  }
+  const spec = matches[0];
+  if (spec.status !== 'complete') {
+    throw new Error(`${specId} is ${spec.status}, not complete; only a completed Spec may move to ${folder}`);
+  }
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) {
+    throw new Error('move-spec requires a Git working tree so the move is recoverable; none was found');
+  }
+  if (gitStatus.stdout.trim() !== '') {
+    throw new Error('move-spec refuses a dirty working tree; commit or stash first so the candidate shows only this move');
+  }
+  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
+  const oldSpecDir = path.dirname(spec.filePath);
+  if (path.dirname(oldSpecDir) !== specsRoot) {
+    throw new Error(`${specId} is not at the top level of ${specsPrefix}; move-spec only moves an active-roster Spec`);
+  }
+  const destinationRoot = path.join(specsRoot, folder);
+  const newSpecDir = path.join(destinationRoot, path.basename(oldSpecDir));
+  if (fs.existsSync(newSpecDir)) throw new Error(`move-spec destination already exists: ${path.relative(root, newSpecDir)}`);
+
+  // Snapshot every file the move carries before touching the filesystem;
+  // `oldSpecDir` will not exist once the directory itself has moved.
+  const movingFiles = collectDirectoryFiles(oldSpecDir);
+
+  fs.mkdirSync(destinationRoot, { recursive: true });
+  const moveResult = spawnSync('git', ['-C', root, 'mv', path.relative(root, oldSpecDir), path.relative(root, newSpecDir)], { encoding: 'utf8' });
+  if (moveResult.status !== 0) throw new Error(`git mv failed for ${specId}: ${(moveResult.stderr || moveResult.stdout || '').trim()}`);
+
+  // Corrective review finding 1: `locations` must carry every reference
+  // target this move can touch, not only the ones that are moving - a moved
+  // file's own outgoing link to an unmoved sibling Spec or ADR still needs
+  // its relative path recomputed, because the moved file itself now sits one
+  // folder deeper. `collectSpecReferenceFiles` is called once, after the
+  // move, excluding the Spec's own new directory (its files are mapped
+  // old-path -> new-path immediately below, not to themselves).
+  const locations = new Map();
+  for (const file of collectSpecReferenceFiles(root, newSpecDir)) {
+    locations.set(file, file);
+  }
+  for (const file of movingFiles) {
+    locations.set(file, path.join(newSpecDir, path.relative(oldSpecDir, file)));
+  }
+
+  const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
+  for (const oldFile of movingFiles) {
+    const newFile = locations.get(oldFile);
+    if (!newFile.endsWith('.md')) continue;
+    rewriteReferenceFile(root, newFile, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+  }
+  for (const file of collectSpecReferenceFiles(root, newSpecDir)) {
+    rewriteReferenceFile(root, file, path.dirname(file), path.dirname(file), locations, totals);
+  }
+
+  // Corrective review finding 1 (second round): REGISTER.md and HISTORY.md
+  // echo every ADR's canonicalized_in targets as bare comma-separated table
+  // text, which the rewrite passes above never touch (they rewrite Markdown
+  // links and frontmatter, not a derived projection's own generated cells).
+  // The move just rewrote at least one ADR's canonicalized_in above, so the
+  // projections are now stale by construction; regenerate them here, from
+  // the corrected frontmatter now on disk, rather than leaving that for a
+  // separate `adr register` call the move's own candidate would otherwise
+  // need. A room with no ADR collection at all is left alone - nothing here
+  // may conjure one into existence.
+  if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+
+  // Corrective review finding 3: `git mv` already stages the rename; leaving
+  // the content rewrites above unstaged would show the candidate as a mix
+  // (staged rename, unstaged edits) rather than one reviewable change. Stage
+  // everything instead of leaving everything unstaged, because the dirty-tree
+  // refusal above already guarantees that anything unstaged at this point is
+  // exactly what this move just produced - nothing pre-existing can be swept
+  // in by a wide `add`.
+  spawnSync('git', ['-C', root, 'add', '-A']);
+
+  return {
+    specId,
+    folder,
+    from: path.relative(root, oldSpecDir).split(path.sep).join('/'),
+    to: path.relative(root, newSpecDir).split(path.sep).join('/'),
+    usesGit: true,
+    referencesRewritten: totals.referencesRewritten,
+    historicalReferencesLeft: totals.historicalReferencesLeft
+  };
+}
+
+// The `canonicalized_in` targets a frontmatter block declares, normalized to
+// an array exactly as `validateAdrs` normalizes them (a bare scalar becomes a
+// one-element array; an absent key becomes `[]`), so this scanner and that
+// validator agree on what counts as a canonicalization target.
+function canonicalizedInTargets(content) {
+  const data = parseFrontmatter(content).data;
+  if (!data) return [];
+  const value = data.canonicalized_in;
+  return Array.isArray(value) ? value : (value ? [value] : []);
+}
+
+// REGISTER.md and HISTORY.md (`adr.mjs#renderRegister`) render each ADR's
+// canonicalized_in owners as bare, comma-separated table text in the last
+// cell of a data row - `AGENTS.md, workbench/specs/.../SPEC.md` - never as a
+// Markdown link, so `localLinks` cannot see them at all. A data row is
+// recognised the same way `renderRegister` writes one: its first cell opens
+// with a Markdown link (`| [0001](...)`), which the header and separator
+// rows never do.
+function registerPathCells(content) {
+  const paths = [];
+  for (const line of content.split('\n')) {
+    if (!/^\|\s*\[/.test(line)) continue;
+    const cells = parseMarkdownTableRow(line);
+    const last = cells[cells.length - 1];
+    if (!last || last === 'none') continue;
+    for (const item of last.split(',').map((entry) => entry.trim()).filter(Boolean)) paths.push(item);
+  }
+  return paths;
+}
+
+// S-00I TK-003: the complete reference and link scan, exported so TK-005
+// (Spec/Task retirement) and TK-006 (the discard gate) reuse it rather than
+// each writing their own. Read-only: it walks every live Markdown surface a
+// Spec or ADR move can touch (the same set `collectSpecReferenceFiles`
+// collects) and reports a local link, a `canonicalized_in` frontmatter
+// target (corrective review finding 2 - a root-relative fact, not a body
+// link, so it needs its own check), or - for REGISTER.md/HISTORY.md alone -
+// a dead path in their own bare-text Canonicalized-in column (corrective
+// review finding 1, second round: TK-006's discard gate must not certify a
+// room whose register still points at a dead path just because that path
+// never appeared inside a Markdown link). Each check skips a file's own
+// Append-Only Evidence And Execution Log - a Spec's frozen history is
+// expected to keep naming a pre-move path, and that is not a stale
+// reference for this scan to report. A finding names the file and the
+// unresolved target text; nothing here writes anything.
+export function scanReferences(rootDir) {
+  const root = path.resolve(rootDir);
+  const adrCollection = collectionPath(root, 'adr');
+  const findings = [];
+  for (const file of collectSpecReferenceFiles(root)) {
+    const original = fs.readFileSync(file, 'utf8');
+    const { prefix, suffix } = splitEvidenceSection(original);
+    const relative = path.relative(root, file).split(path.sep).join('/');
+    for (const section of [prefix, suffix]) {
+      for (const link of localLinks(section)) {
+        const target = path.resolve(path.dirname(file), link);
+        if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) {
+          findings.push({ file: relative, target: link });
+        }
+      }
+    }
+    for (const owner of canonicalizedInTargets(prefix)) {
+      const target = path.resolve(root, owner);
+      if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) {
+        findings.push({ file: relative, target: owner });
+      }
+    }
+    if (path.dirname(file) === adrCollection && ['REGISTER.md', 'HISTORY.md'].includes(path.basename(file))) {
+      for (const owner of registerPathCells(original)) {
+        const target = path.resolve(root, owner);
+        if (!target.startsWith(root + path.sep) || !fs.existsSync(target)) {
+          findings.push({ file: relative, target: owner });
+        }
+      }
+    }
+  }
+  return findings;
 }
 
 function publicSpec(spec) {
@@ -1132,12 +1507,14 @@ async function main() {
   else if (command === 'gate') {
     result = gate(root, { spec: options.spec, task: options.task, candidate: options.candidate });
     if (result.refused) process.exitCode = 1;
-  } else if (command === 'render') result = render(root);
+  }
+  else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
+  else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
     result = doctor(root, options);
     if (blocksSelection(result)) process.exitCode = 1;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|render|doctor [S-###] [options]');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|move-spec|render|doctor [S-###] [options]');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
