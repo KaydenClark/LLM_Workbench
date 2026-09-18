@@ -2417,8 +2417,15 @@ function completeFixtureSpec(id) {
 
     assert.equal(loadSpecs(naiveRoot).some((spec) => spec.id === 'S-500'), false,
       'loadSpecs only ever reads the top level, so a naively moved Spec disappears from the active roster entirely');
-    assert.deepEqual(doctor(naiveRoot).filter((item) => item.specId === 'S-500'), [],
-      'doctor raises nothing about the Spec a naive move made invisible - it is simply gone, not flagged');
+    // S-00I TK-005: `loadRetiredSpecs` (TK-003) already reads any directory
+    // under `retired/` regardless of how it got there, so doctor's retired-
+    // Spec checks already saw this naively moved S-500 before this Task; its
+    // Status (`complete`) and directory name both happen to be well-formed,
+    // so neither `unstable-path` nor `retired-not-complete` ever fired here.
+    // The new `retired-wiki-owner-stale` check does, correctly: nothing
+    // reconciled this naive move into a durable Wiki owner.
+    assert.deepEqual(doctor(naiveRoot).filter((item) => item.specId === 'S-500').map((item) => item.code), ['retired-wiki-owner-stale'],
+      'doctor raises only the new wiki-owner check about the Spec a naive move made invisible - no identity or render finding is flagged');
     const stale = scanReferences(naiveRoot);
     assert.ok(stale.some((item) => item.file === 'AGENTS.md' && item.target.includes('S-500-naive-fixture')),
       'the complete reference and link scan finds the now-dangling AGENTS.md reference a naive move left behind');
@@ -2764,7 +2771,16 @@ function completeFixtureSpec(id) {
     assert.equal(shown.path, 'workbench/specs/retired/S-500-retiring-fixture/SPEC.md');
 
     const afterMoveFindings = doctor(lifecycleRoot).filter((item) => item.specId === 'S-500');
-    assert.deepEqual(afterMoveFindings, [], 'a correctly retired, complete Spec raises no identity or retired-status finding');
+    // S-00I TK-005: this fixture retires S-500 through the bare
+    // `moveSpecDirectory` primitive, never through `retireSpec`'s own
+    // reconciliation gate, and authors no Wiki note naming S-500's
+    // historical route - so doctor's new `retired-wiki-owner-stale` check
+    // correctly flags exactly that, the one condition this fixture was
+    // never given an owner for. No identity or retired-status finding is
+    // raised, which stays the point of this test.
+    assert.deepEqual(afterMoveFindings.map((item) => [item.code, item.blocks]), [['retired-wiki-owner-stale', 'none']],
+      'a correctly retired, complete Spec raises no identity or retired-status finding; the wiki-owner check flags it for having no reconciled note, which this fixture never gave it');
+    assert.match(afterMoveFindings[0].message, /no Wiki note names its historical route/);
 
     // The Spec forbids a spot check filtered to this fixture's own name: the
     // whole-room scan must report nothing unresolved anywhere, not merely

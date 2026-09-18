@@ -482,7 +482,7 @@ export function doctor(rootDir, options = {}) {
   } catch (error) {
     return [finding(['upgrade-required', 'invalid-manifest'].includes(error.code) ? error.code : 'malformed-spec', error.message)];
   }
-  issues.push(...packetFindings(specs, options, retired));
+  issues.push(...packetFindings(specs, options, retired, root));
   const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs, retired), issues);
   else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
@@ -499,7 +499,7 @@ export function validateSpecCandidate(root, filePath, content) {
   return packetFindings(specs);
 }
 
-function packetFindings(specs, options = {}, retiredSpecs = []) {
+function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
   const issues = [];
   issues.push(...identityFindings(specs, retiredSpecs));
   // S-00I TK-003: a retired Spec is outside ordinary selection, so it gets
@@ -517,6 +517,21 @@ function packetFindings(specs, options = {}, retiredSpecs = []) {
     }
     if (spec.status !== 'complete') {
       issues.push(finding('retired-not-complete', `${spec.id} is retired in ${spec.lifecycleFolder}/ but its Status is ${spec.status}, not complete`, { specId: spec.id }));
+    }
+    // S-00I TK-005: retirement's whole precondition is that a durable Wiki
+    // owner existed at the time of the move; nothing stops that note going
+    // stale or disappearing afterward, so this is the one check that
+    // notices. `root` is only available from `doctor` (never from
+    // `validateSpecCandidate`'s bytes-only check, which never sees a
+    // retired Spec anyway since it validates one Spec's own candidate
+    // content), so this is skipped rather than thrown when it is absent.
+    if (root) {
+      const wikiOwnerStatus = retiredSpecWikiOwnerStatus(root, spec.relativePath);
+      if (wikiOwnerStatus === null) {
+        issues.push(finding('retired-wiki-owner-stale', `${spec.id} is retired but no Wiki note names its historical route ${spec.relativePath} in source_paths`, { specId: spec.id }));
+      } else if (wikiOwnerStatus !== 'active') {
+        issues.push(finding('retired-wiki-owner-stale', `${spec.id}'s Wiki durable owner is status ${wikiOwnerStatus}, not active`, { specId: spec.id }));
+      }
     }
   }
   // S-00I TK-004: the Task analogue of the retired-Spec check above, run over
@@ -1470,6 +1485,27 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
 // with" the move - both land in the one commit the caller makes from this
 // function's staged result, exactly as a supported move already left for its
 // caller to commit.
+// Finds a retired Spec's own durable Wiki owner by the one fact that names
+// it - a note's `source_paths` entry naming the Spec's historical route,
+// exactly the fact `retireSpec` itself required before the move - and
+// returns that note's frontmatter `status`, or `null` when no note names the
+// route at all. Never assumes there is exactly one match: the first is
+// returned, since `wiki.mjs`'s own basename-uniqueness check is what keeps
+// two notes from ever legitimately claiming the same route. A room with no
+// Wiki lane at all (an older or minimal room) reports `null` rather than
+// throwing, matching how the rest of this file treats an absent Wiki.
+function retiredSpecWikiOwnerStatus(root, historicalRoute) {
+  const wikiRoot = lanePath(root, 'wiki');
+  if (!fs.existsSync(wikiRoot)) return null;
+  for (const file of collectDirectoryFiles(wikiRoot)) {
+    if (!file.endsWith('.md')) continue;
+    const data = parseFrontmatter(fs.readFileSync(file, 'utf8')).data;
+    const sources = Array.isArray(data?.source_paths) ? data.source_paths : [];
+    if (sources.includes(historicalRoute)) return data.status ?? null;
+  }
+  return null;
+}
+
 export function retireSpec(rootDir, specId, options = {}) {
   const root = path.resolve(rootDir);
   const wikiNoteGiven = requireValue(options.wikiNote, 'retire-spec requires --wiki <note path>');

@@ -837,6 +837,7 @@ const PINNED_EFFECTS = {
   'disagreeing-status': ['attention', 'adr', 'none'],
   'retired-not-complete': ['attention', 'specs', 'none'],
   'retired-task-not-done': ['attention', 'specs', 'none'],
+  'retired-wiki-owner-stale': ['attention', 'specs', 'none'],
   'stale-note': ['attention', 'wiki', 'none'],
   'room-brain-unrouted': ['attention', 'wiki', 'none'],
   'stale-stamp': ['attention', 'wiki', 'none'],
