@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import {
   TASK_STATUSES as SLICE_STATUSES,
   claimWork,
@@ -19,6 +20,19 @@ import {
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { TASK_STATUSES, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
+import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
+
+// A record-backed Spec's `close` now appends a Receipt row, which reads live
+// Git facts (branch, HEAD SHA, upstream, dirty count) for the working tree
+// named by the room's own root. Every fixture room that closes a Task record
+// therefore needs to be a real, minimally-committed Git work tree first; a
+// plain temp directory has none of that for Git to read.
+function initGitRoot(dir) {
+  execFileSync('git', ['init', '--quiet', dir]);
+  execFileSync('git', ['-C', dir, 'config', 'user.email', 'fixture@example.com']);
+  execFileSync('git', ['-C', dir, 'config', 'user.name', 'Fixture']);
+  execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', 'init']);
+}
 
 // One closed status vocabulary, not two: `spec-workbench.mjs` held its own
 // separately-named closed status set beside the record reader's
@@ -37,6 +51,7 @@ assert.deepEqual(
 );
 
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-'));
+initGitRoot(root);
 try {
   write('BLUEPRINT.md', [
     '# Fixture Blueprint',
@@ -1778,5 +1793,127 @@ function wikiClaimFixture() {
     console.log('ok - a historical Ticket-header completed Spec is byte-identical after render, doctor, next, claim, close, render again, doctor and convert-tasks');
   } finally {
     fs.rmSync(historicalRoot, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00H TK-007: the hot board's derived Receipt signal. Per active
+// record-backed Task, the board renders its status, run count and the latest
+// run's branch, short SHA (seven characters) and dirty-file count - the
+// symptom - while the full run table stays in the Task's own Receipt rows -
+// the story. A Task with no Receipt rows yet renders exactly as before this
+// task, and the board never carries the Receipt header row, any Receipt row,
+// or the column names that module writes.
+//
+// This block builds each Task record's Receipt with the pure
+// `appendReceiptRowToContent` content-level seam directly, so every rendered
+// value (branch, short SHA, run count, dirty count) is exact and controlled;
+// no live Git process is needed to prove what the board renders.
+// ============================================================================
+{
+  const boardRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'board-receipt-signal-'));
+  try {
+    fs.writeFileSync(path.join(boardRoot, 'BLUEPRINT.md'), ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    fs.writeFileSync(path.join(boardRoot, 'TASKBOARD.md'), ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+
+    function writeTaskWithRuns(specDir, taskId, { specId, slice, status, runs }) {
+      let content = taskRecordFixture({
+        id: taskId, specId, slice, status, blockers: 'none', destination: `spec-acceptance: ${specId} Acceptance Criteria`
+      });
+      for (const run of runs) content = appendReceiptRowToContent(content, run);
+      const filePath = path.join(boardRoot, specDir, 'tasks', taskId, 'TASK.md');
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      fs.writeFileSync(filePath, content);
+    }
+
+    // An in-progress Task older than one day is `stale-claim` (attention,
+    // never blocking), which is correct diagnostic behavior but not what this
+    // block is proving; every fixture's `Updated` header is moved to today so
+    // `doctor` stays clean for the one thing this block does test.
+    const todayStr = new Date().toISOString().slice(0, 10);
+    function freshRecordBackedSpec(id) {
+      return recordBackedSpec(id).replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`);
+    }
+
+    // (a) An in-progress Task with two Receipt rows: run count, latest
+    // branch, short SHA and dirty count all appear in the current-slice cell.
+    writeAt(boardRoot, 'specs/S-711-two-runs/SPEC.md', freshRecordBackedSpec('S-711'));
+    writeTaskWithRuns('specs/S-711-two-runs', 'TK-002', {
+      specId: 'S-711', slice: 'Two-run slice', status: 'in-progress',
+      runs: [
+        { branch: 'claude/x', headSha: 'ab12cd30'.padEnd(40, '0'), upstream: 'ahead 1 behind 0', dirty: 2, testsRun: 'first pass', docsTouched: 'none', remainingGap: 'open: first run' },
+        { branch: 'claude/x', headSha: 'ab12cd3e'.padEnd(40, '1'), upstream: 'ahead 2 behind 0', dirty: 0, testsRun: 'second pass', docsTouched: 'none', remainingGap: 'none' }
+      ]
+    });
+
+    // (b) A Task with exactly one run, for a glance-level contrast with the
+    // two-run and three-run Tasks below.
+    writeAt(boardRoot, 'specs/S-712-one-run/SPEC.md', freshRecordBackedSpec('S-712'));
+    writeTaskWithRuns('specs/S-712-one-run', 'TK-002', {
+      specId: 'S-712', slice: 'One-run slice', status: 'in-progress',
+      runs: [
+        { branch: 'claude/y', headSha: 'cc'.repeat(20), upstream: 'none', dirty: 0, testsRun: 'pass', docsTouched: 'none', remainingGap: 'none' }
+      ]
+    });
+
+    // (b) A Task with three runs whose latest run is dirty: the run count and
+    // the dirty count must both be visible.
+    writeAt(boardRoot, 'specs/S-713-three-runs/SPEC.md', freshRecordBackedSpec('S-713'));
+    writeTaskWithRuns('specs/S-713-three-runs', 'TK-002', {
+      specId: 'S-713', slice: 'Three-run slice', status: 'in-progress',
+      runs: [
+        { branch: 'claude/z', headSha: 'd1'.repeat(20), upstream: 'none', dirty: 0, testsRun: 'pass 1', docsTouched: 'none', remainingGap: 'open: run 1' },
+        { branch: 'claude/z', headSha: 'd2'.repeat(20), upstream: 'none', dirty: 1, testsRun: 'pass 2', docsTouched: 'none', remainingGap: 'open: run 2' },
+        { branch: 'claude/z', headSha: 'd3'.repeat(20), upstream: 'none', dirty: 5, testsRun: 'pass 3', docsTouched: 'none', remainingGap: 'open: run 3' }
+      ]
+    });
+
+    // (c) A Task with no Receipt rows at all: renders exactly as before this
+    // task, with no run/branch/SHA/dirty suffix of any kind.
+    writeAt(boardRoot, 'specs/S-714-no-runs/SPEC.md', freshRecordBackedSpec('S-714'));
+    writeAt(boardRoot, 'specs/S-714-no-runs/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-714', slice: 'No-run slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-714 Acceptance Criteria'
+    }));
+
+    render(boardRoot);
+    const board = fs.readFileSync(path.join(boardRoot, 'TASKBOARD.md'), 'utf8');
+
+    assert.match(
+      board,
+      /\| \[S-711\]\(specs\/S-711-two-runs\/SPEC\.md\) \| TK-002: Two-run slice \(in-progress; runs 2, claude\/x @ ab12cd3, dirty 0\) \|/,
+      '(a) an in-progress Task with two Receipt rows renders its run count and the latest run\'s branch, short SHA and dirty count'
+    );
+    assert.match(
+      board,
+      /\| \[S-712\]\(specs\/S-712-one-run\/SPEC\.md\) \| TK-002: One-run slice \(in-progress; runs 1, claude\/y @ cccccc[c]?, dirty 0\) \|/,
+      '(b) a one-run Task is distinguishable at a glance from a two- or three-run Task'
+    );
+    assert.match(
+      board,
+      /\| \[S-713\]\(specs\/S-713-three-runs\/SPEC\.md\) \| TK-002: Three-run slice \(in-progress; runs 3, claude\/z @ d3d3d3d, dirty 5\) \|/,
+      '(b) a three-run Task shows its own run count, and a dirty latest run shows its dirty count'
+    );
+    assert.match(
+      board,
+      /\| \[S-714\]\(specs\/S-714-no-runs\/SPEC\.md\) \| TK-002: No-run slice \(in-progress\) \|/,
+      '(c) a Task with no Receipt rows renders exactly as it did before this task, with no run suffix'
+    );
+
+    // (d) The board never contains the Receipt header row, any Receipt row,
+    // or the column names that module writes - only the derived signal.
+    assert.doesNotMatch(board, /\| Run \| Branch \| HEAD SHA \| Upstream \| Dirty \| Tests \| Docs touched \| Remaining gap \| Checksum \|/,
+      '(d) the board never contains the Receipt header row this module writes');
+    assert.doesNotMatch(board, /\bChecksum\b/, '(d) the board never contains the Receipt column name Checksum');
+    assert.doesNotMatch(board, /\| Run \|/, '(d) the board never contains the Receipt column name Run as a table header');
+    assert.doesNotMatch(board, /## Receipt/, '(d) the board never contains the Receipt section heading');
+    assert.doesNotMatch(board, /open: first run|open: run 1|open: run 2|open: run 3/,
+      '(d) the board never contains Receipt row text such as a remaining-gap value');
+
+    assert.deepEqual(doctor(boardRoot), [], 'a room whose Tasks carry Receipt rows still passes doctor');
+
+    console.log('ok - the hot board derives a per-Task run/branch/SHA/dirty signal from Receipt rows, never the full run table');
+  } finally {
+    fs.rmSync(boardRoot, { recursive: true, force: true });
   }
 }

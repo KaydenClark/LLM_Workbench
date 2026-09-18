@@ -13,6 +13,7 @@ import { validateAdrs } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_STATUSES, formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -698,11 +699,27 @@ function renderHotBoard(specs) {
     const task = slices.find((item) => item.status === 'in-progress')
       ?? slices.find((item) => item.status === 'ready')
       ?? slices.find((item) => item.status === 'blocked');
-    const slice = task ? `${task.id}: ${task.slice} (${task.status})` : 'Acceptance / owner gate';
+    const signal = task ? receiptSignal(task) : null;
+    const slice = task ? `${task.id}: ${task.slice} (${task.status}${signal ? `; ${signal}` : ''})` : 'Acceptance / owner gate';
     const blocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
     lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(spec.latestEvent)} | ${escapeCell(spec.nextGate)} |`);
   }
   return lines.join('\n');
+}
+
+// The board's derived Receipt signal for one selected Task: the run count
+// and the latest run's branch, short SHA (seven characters) and dirty-file
+// count - the symptom ADR-000H's "What the board shows" names, never the full
+// run table or any Receipt row itself. A table-backed slice carries no
+// Receipt at all, and a record with no Receipt rows yet (no run has appended
+// one) returns `null` so the board renders exactly as it did before this
+// signal existed.
+function receiptSignal(task) {
+  if (task.source !== 'record') return null;
+  const rows = readReceiptFromFile(task.record.filePath);
+  if (rows.length === 0) return null;
+  const latest = rows[rows.length - 1];
+  return `runs ${rows.length}, ${latest.branch} @ ${latest.headSha.slice(0, 7)}, dirty ${latest.dirty}`;
 }
 
 function isHot(spec) {
