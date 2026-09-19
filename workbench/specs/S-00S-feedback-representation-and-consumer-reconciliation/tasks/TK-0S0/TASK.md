@@ -3,7 +3,7 @@
 **Task ID:** TK-0S0
 **Spec ID:** S-00S
 **Slice:** Inventory feedback representations, provenance identity and consumers
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00S Acceptance Criteria
 **Planned verification:** Red: a disposable fixture with byte-identical original and frozen snapshot is incorrectly treated as one role; green: the read-only inventory preserves distinct roles and records IDs, hashes, corrections, producers, revisions and consumers without changing feedback evidence
