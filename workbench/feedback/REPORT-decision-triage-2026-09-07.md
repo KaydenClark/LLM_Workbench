@@ -267,3 +267,17 @@ since diagnostic behavior comes after the requirements are agreed.
 
 `decision-triage-2026-09-07.csv` and `decision-triage-2026-09-07.json`. Every one of the 181 source items
 appears with a disposition, target artifact, confidence and the evidence the disposition rests on.
+
+
+## Finding Disposition Reconciliation (2026-09-19)
+
+Concrete findings are reconciled in [S-00N](../specs/S-00N-feedback-finding-dispositions/SPEC.md#existing-finding-disposition-register). Research decisions, proposed alternatives and question statuses retain their original vocabularies; this addendum does not accept or decline those proposals. Read-at `279341a`; named later repair evidence is explicitly anchored.
+
+| Finding | Disposition | Existing owner / gap | Evidence and retained limit |
+|---|---|---|---|
+| CAND-F installed duplication / diary path | `diagnostic` | S-051 | Compatibility/source diagnostics and adapter ownership; native cross-host proof remains bounded by S-051/S-053 receipts. |
+| CAND-F save/promote reconciliation audit | `test` | S-051 TK-003 | Installed public-seam composition fixture covers core save/promote with notepad/direct promotion, without personal Foundry dependency. |
+| CAND-Q overloaded recovery collection | `test` | S-048 | Checkpoint retirement retains separately routed operational recovery with restoration fixtures/receipt. |
+| R120 stale-claim day wording | `repaired` | S-00K | Root AGENTS and Runbook at 279341a name UTC calendar dates and greater-than-one-day semantics. Second-pass correction rejects the first report claim that no algorithm exists. |
+| R089 evaluated-model identity | `accepted-open` | Missing capability owner | Separate evaluated-model versus reporting-model requirement has no verified implementing owner here. S-00N retains the routing gap; no inference from general source provenance. |
+| R041 register hand-index claim | `declined` | S-047; ADR register owner | The report itself says reconciled, not changed: generated REGISTER and attention stale-register preserve the existing rule. |

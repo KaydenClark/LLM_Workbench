@@ -196,3 +196,19 @@ named above; the judgments in "What The Version Did Well" and in the challenged
 findings are the author's own and should be treated as such. A separate-context
 reviewer is still required before the adoption branch combines into
 `integration`.
+
+
+## Disposition Reconciliation (2026-09-19)
+
+Original findings above remain historical evidence. The owner reconciliation is
+[S-00N](../specs/S-00N-feedback-finding-dispositions/SPEC.md#existing-finding-disposition-register).
+Read the named capability Specs and tests at `git show 279341a:PATH`; these
+classes record supported mechanisms, not fresh native-host or release proof.
+
+| Finding | Disposition | Existing owner / gap | Evidence and retained limit |
+|---|---|---|---|
+| F-1 | `test` | S-028 | Migration residue is reported; automatic content/link rewriting remains deliberately declined. |
+| F-2 | `test` | S-028 | Invalid feedback status/impact is rejected rather than silently dropped. |
+| F-3 | `test` | S-028 | Migration reports broken links; it does not silently rewrite room content. |
+| F-4 | `test` | S-028 | Migrated Wiki frontmatter receives source-preserving normalization. |
+| F-5 | `test` | S-028 | Adoption/upgrade source identity recording is covered; S-032 and S-035 retain explicit unknown-source limitations. |
