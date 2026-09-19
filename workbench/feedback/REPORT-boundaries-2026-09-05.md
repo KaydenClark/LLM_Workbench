@@ -94,6 +94,16 @@ F-001 is a proposed follow-up awaiting owner authorization. There is no new
 self-created task, assigned repair or automated repair trigger. A fresh session
 should find this report from S-027 and accurately identify that pending decision.
 
+## Disposition Reconciliation (2026-09-19)
+
+This addendum records the supported disposition at source `3a0d817`. Original
+observations, proposed actions and evidence above remain historical; no new
+agent-outcome or installed-environment claim follows.
+
+| Finding | Disposition | Owning Spec and named evidence |
+|---|---|---|
+| F-001 | `test` | [S-028](../specs/S-028-harness-feedback-integrity/SPEC.md): schema 1/2 manifest-lane proof-freshness and contradiction fixtures; `git show 3a0d817:tools/test-guardrail-audit.mjs` |
+
 ## Review Boundary
 
 This is a Builder-produced report, with no independent PASS implied. The
