@@ -236,3 +236,26 @@ There is no evidence that these contradictory current-facing descriptions were i
 **Changes made:** this report, its evidence manifest and the local JSON audit note. Existing controls, code, Specs, ADRs and unrelated dirty work were preserved. The report is local review output, not an accepted redesign, a new implementation assignment, or a published result.
 
 **Grilling use:** start with Q01 and Q04 (product boundary), then Q05/Q02/Q14 (destination, journey, human acceptance), then Q03/Q07–Q13 (records and recipes), and finally Q15–Q17 (proof, lifecycle and residual sketches). Read the rationale already found before asking. Record answers and corrections in JSON; do not mark these recommendations accepted without the owner settling them.
+
+
+## Finding Disposition Reconciliation (2026-09-19)
+
+Concrete findings are reconciled in [S-00N](../specs/S-00N-feedback-finding-dispositions/SPEC.md#existing-finding-disposition-register). Research decisions, proposed alternatives and question statuses retain their original vocabularies; this addendum does not accept or decline those proposals. Read-at `279341a`; named later repair evidence is explicitly anchored.
+
+| Finding | Disposition | Existing owner / gap | Evidence and retained limit |
+|---|---|---|---|
+| 1.1; 2.1 discovery/destination journey | `accepted-open` | S-00P; S-00D; S-00E | Existing workflow and derivation/real-use owners; no Human QA or front-to-back outcome inferred from revised prose. |
+| 1.2 cross-capability journey | `accepted-open` | S-00P | Workflow owner holds accepted direction. Separate roadmap artifact is a question, not authorized new store. |
+| 1.3 entry/context cost | `accepted-open` | S-00L; S-00P | Freshness/context repairs are bounded; no universal token budget or automatic host context-clearing claim. |
+| 2.2 Genesis/Adoption consumer contradictions | `accepted-open` | S-00K; S-00P | Specific stale headings and code-disproves-Canon text require assembled current-owner readback; historical test green does not settle semantic equivalence. |
+| 2.3 current capability owner after lifecycle changes | `accepted-open` | S-00I; S-00Q | Durable Wiki reconciliation/retirement owners; preserved evidence is not automatic current capability truth. |
+| 2.4 relationship ambiguity retention | `accepted-open` | S-00G; S-00P | Ownership/domain relationship boundary remains explicit; the report question is not a new accepted modeling recipe. |
+| 2.5 unsupported legacy note schema | `accepted-open` | S-00K | Preserved legacy input is not resumability proof. Missing supported read/migration owner for still-needed records is explicit; no legacy deletion or fabricated conversion. |
+| 2.6 whole versus partial ADR supersession | `accepted-open` | S-00P | Existing workflow Canon reconciliation owner; record-level decision conflict requires its evidence, not merely valid metadata. |
+| 3.2 composition wording conflicts | `accepted-open` | S-00P; S-00R | Existing workflow/core-skill consumers own bounded reconciliation; optional external domain-modeling alignment has no verified current owner. |
+| 3.3 human verification | `accepted-open` | S-00J; S-00P | Human QA and engineering review remain separate; no source test substitutes for owner experience. |
+| 4.1 structural green versus semantic truth | `accepted-open` | S-00K | Read-only self-drift is machine evidence with semantic limitations; source/syntax green is never full foundation coherence or agent-outcome proof. |
+| 4.2 S014/S022 hot release rows | `accepted-open` | S-00K TK-0SA; S-00N TK-0SD | fe85046 retains blocked historical packets and unfinished obligations, routed to S-00O/S-050/S-052. No false supersession/completion; current Sol/CIC consumer state unverified. |
+| 4.2 Lexicon/router/Genesis/current-state prose | `accepted-open` | S-00K; S-00L | Current source reconciliation belongs to existing freshness owners; assembled source readback supplies final repair proof, not this historical report. |
+| 4.2 seed and adoption provenance | `diagnostic` | S-042; S-00K | Generation/provenance diagnostics retain historical role. Old adoption release is not inherently stale and absent retired JSON handoff must not be restored automatically. |
+| 4.2 S050/S052 external proof | `accepted-open` | S-050 TK-006; S-052 TK-004 | Actual device/private-repository proof remains an accepted live gate, not drift. |

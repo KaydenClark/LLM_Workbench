@@ -382,3 +382,25 @@ contains the change, not that a release was published or that a room received
 it. Every consequential recommendation here awaits owner authorization, and any
 resulting harness change needs its own separate-context review before
 integration.
+
+
+## Disposition Reconciliation (2026-09-19)
+
+Original findings above remain historical evidence. The owner reconciliation is
+[S-00N](../specs/S-00N-feedback-finding-dispositions/SPEC.md#existing-finding-disposition-register).
+Read the named capability Specs and tests at `git show 279341a:PATH`; these
+classes record supported mechanisms, not fresh native-host or release proof.
+
+| Finding | Disposition | Existing owner / gap | Evidence and retained limit |
+|---|---|---|---|
+| UP-013 | `diagnostic` | S-039 | tools-receipt-drift and tools-receipt-missing; missing was already emitted on validate --genesis, correcting the broad original claim. |
+| UP-014 | `test` | S-039 | Release-side verify classification fixture distinguishes stale receipt/runtime modified/source unavailable/authentic. Installed doctor source-unavailable limitation remains. |
+| UP-015 | `test` | S-040; S-045 | Linked realpath presence and refusal fixtures; later S-045 alignment retained. Dangling/file/invalid links still refuse. |
+| UP-016 | `test` | S-040 | Refusal remedy names --layout-only and route-selection contract; does not install personal skills. |
+| UP-017 | `test` | S-041 | Recorded unavailable-baseline closed vocabulary/parser fixtures. Option B declined; parsed proceeds/stop is not a machine enforcement gate. |
+| UP-018 | `diagnostic` | S-042 | stale-seed compares seed generation; legal room-local changes remain nonblocking. Historical seed identity is not current source version. |
+| UP-019 | `test` | S-043 | Doctor consequence grouping/count fixtures. First proposed remedy already shipped; JSON and blocking effects unchanged. |
+| UP-020 | `test` | S-037; S-042 | CRLF parsing and normalize fixtures; reporting-room 6+4 and simulation 25+4 are distinct evidence, not interchangeable measurements. |
+| UP-021 | `diagnostic` | S-042 | unverified-provenance and explicit record-source route. Historical adoption source.release remains preserved; current release mismatch alone is not repair authority. |
+| UP-022 | `test` | S-044 | Preflight names all failed controls; scaffold/reconcile contract preserves required controls. |
+| UP-023 | `test` | S-044 | Read-only unversioned classification fixtures; no destructive automatic conversion. |

@@ -894,3 +894,19 @@ The immediate cause of repeated misuse is not just agent behavior. It is version
 - Native discovery has not been proven strongly enough.
 
 Until those are converged and the two reproduced regressions are repaired, notepad use should be treated as implemented but not fully released or reliably enforced.
+
+## Disposition Reconciliation (2026-09-19)
+
+Original findings above remain historical evidence. The owner reconciliation is
+[S-00N](../specs/S-00N-feedback-finding-dispositions/SPEC.md#existing-finding-disposition-register).
+Read the named capability Specs and tests at `git show 279341a:PATH`; these
+classes record supported mechanisms, not fresh native-host or release proof.
+
+| Finding | Disposition | Existing owner / gap | Evidence and retained limit |
+|---|---|---|---|
+| What is wrong 1 | `repaired` | S-046 | The report already corrects branch identity and warns against wholesale stale-branch merge. S-046 completion/evidence at this read anchor records the integrated implementation; branch presence is not a new implementation gate. |
+| What is wrong 2 | `test` | S-046 | Report correction names 2d5124eb9cde94a87d59b8ff0b238baea8368f71; S-046 TK-007 records basename privacy and safe-sequence CLI regressions. |
+| What is wrong 3 | `test` | S-046 | Same basename privacy/safe-sequence regressions close the specific coverage gap; broader green tests never prove universal model compliance. |
+| What is wrong 4 | `diagnostic` | S-031; S-051 | Installed-copy/compatibility diagnostics expose the reported state. Windows personal/Claude/Codex installation and behavior remain unverified here. |
+| What is wrong 5 | `diagnostic` | S-042; S-00K | stale-seed exposes generation identity; K preserves adoption/layout history and absent retired receipt targets, rather than restoring obsolete live JSON handoffs. |
+| What is wrong 6 | `accepted-open` | S-050 TK-006; S-052 TK-004 | Real private-repository and Mac/Windows Claude/Codex proof remain explicit accepted obligations. No simulated or source-only proof closes them. |
