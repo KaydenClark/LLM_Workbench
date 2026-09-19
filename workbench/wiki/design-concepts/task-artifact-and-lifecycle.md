@@ -39,9 +39,10 @@ Every claim below is either read straight from the room's own live tool
 `spec-workbench.mjs`) or from ADR-000H's accepted decision text - never
 copied from S-00H's Spec body or its Tasks' own evidence rows, which stay
 `SPEC.md`'s and `TASK.md`'s own append-only history at their retired route.
-Where this article and a live tool ever disagree, the tool governs
-(`AGENTS.md` -> State Resolution); repair this note from direct proof rather
-than reconciling by inference.
+When this article, accepted Canon and a live tool disagree, follow
+`AGENTS.md` State Resolution: newer Canon identifies an implementation gap,
+newer verified Actuality identifies documentation drift, and unclear ordering
+requires investigation. Record the condition in its owner using direct proof.
 
 ## What A Task Carries
 

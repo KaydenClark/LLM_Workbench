@@ -210,6 +210,8 @@ node tools/test-control-fidelity.mjs
 node tools/test-spec-citation-anchors.mjs
 node tools/test-controls-vocabulary-sweep.mjs
 node tools/test-spec-report.mjs
+node tools/test-self-drift.mjs
+node tools/test-feedback-inventory.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
@@ -769,9 +771,12 @@ checks the target room's filled controls, product truth, active work and local
 proof. When the canonical LLM Workbench itself is updated, check the source
 WorkBench's own cold-start surface before and after the change as well.
 
-Until the public S-00K capability exists, perform and record this bounded
-manual check; do not report a clean Workbench update while it has known
-current-facing drift:
+Run `node workbench/tools/self-drift.mjs --phase pre --json` before the change
+and `--phase post --json` afterward. Preserve the receipts in the owning Spec
+evidence. The read-only machine report detects bounded contradictions and
+identity gaps; it does not certify arbitrary prose. Perform this semantic
+check as well, and do not call an update clean while known current-facing
+drift remains:
 
 1. Pin the Workbench source revision, manifest version and declared integration
    branch. Preserve unrelated dirty state and inspect from a clean task
@@ -793,9 +798,10 @@ current-facing drift:
    `doctor` or passing tests may be attached as evidence, but none replaces the
    self-drift result.
 
-The planned implementation and public machine-readable receipt are owned by
-[`S-00K`](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md). No command
-name is implied before that spec is implemented.
+The implementation, public machine-readable receipt and remaining proof are
+owned by [S-00K](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md).
+`cleanUpdate: false` deliberately leaves the semantic judgment to the named
+review; `no-machine-finding` means only the implemented checks found no issue.
 
 ### Spec Lifecycle And Retrieval
 
@@ -866,14 +872,28 @@ moves the directory with its Tasks into `retired/`, cleans contained lane
 branches, lists unmerged ones, and regenerates the board and the ADR
 register. `discard` is `git rm` of a retired Spec or, with `--task`, one
 retired Task record - never `archive` - and refuses by name before any write
-if the record is not retired, the tree is dirty, its retiring commit is not
-verified contained on the declared default branch, a complete reference and
+if the record is not retired, any Task in a retired Spec is unfinished, the tree is dirty, its latest retiring incarnation
+and current directory content are not verified contained on the declared default
+branch, a complete reference and
 link scan still finds a current pointer to it, or (for a Spec) its durable
 Wiki owner is missing or not active; a successful discard appends one row to
 the tracked, append-only `workbench/specs/DISCARDS.md` register (kind, record
 ID, historical path, retiring commit, discard parent commit, and the exact
-`git checkout` recovery command, which the test exercises) and files the gap
-as a corrective Task against the Wiki claim rather than restoring the record;
+`git checkout` recovery command for the entire directory at its latest verified
+content commit, which the test exercises). Historical links in the durable
+owner's Evidence and Sources section become immutable `git show <sha>:<path>`
+citations; operational links anywhere, including that owner, still refuse
+discard. A final Task discard retains tracked `tasks/.gitkeep` so fresh clones
+keep record-backed interpretation. A later gap is filed as a corrective Task
+against the Wiki claim rather than restoring the record; repeated identical
+findings refuse duplicate Tasks. Wiki-anchored corrective close appends only to
+frontmatter provenance. While the retired Spec still exists, corrective Tasks
+anchored to its failed review or owner finding stay inside that retired Spec
+and appear in `next`, `show` and the Taskboard. Claim and close operate on those
+Tasks without reopening or moving the historical Spec; ordinary historical
+Tasks are never reselected. Completion appends Task proof and Spec evidence.
+An unfinished Task prevents Spec discard even if the Taskboard is stale. Render markers are checked before removal, and staging failures
+are reported explicitly;
 `doctor` gains the blocking `discarded-reference` finding for a reference
 naming a path the register says was discarded, and
 `tools/check-append-only.py` now enumerates a Spec's `retired/` lifecycle
@@ -886,7 +906,12 @@ Spec's content digest,
 so record it after the final `close` and before `complete`. `approve` records
 the owner's Human QA on `integration` as one append-only `owner-qa` row naming
 who, when and the integration SHA inspected (contained in the declared
-integration branch, bound to the same content digest); a `--finding` creates
+integration branch, with its committed Spec and live/retired Task content matching
+the same local assembled digest). A mismatched or uncommitted capability is
+refused before writing. The premerge gate requires review, not owner approval;
+Human QA follows integration and remains required by `complete`. Administrative
+completion preserves that approval for retirement; substantive Task or Spec
+changes invalidate it, including retired Task proof. A `--finding` creates
 corrective Tasks under the still-open Spec, a `--destination-change` records a
 return to Align and creates nothing, and `complete` refuses until the latest
 owner QA for the current content is an approval. `next` returns one eligible ready task. `show` loads one stable work packet.
@@ -1856,7 +1881,9 @@ assigned target; it never authorizes a repair or invokes automated repair.
 3. Write `REPORT-topic-date.md` in the declared feedback lane using its
    `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
    Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
-   and Review Boundary. No findings is valid. Reports never live loose or in
+   and Review Boundary. Every finding requires exactly one Lexicon disposition,
+   recorded in its owning Spec with an evidence route; missing ownership stays
+   an explicit gap. No findings is valid. Reports never live loose or in
    the Wiki. If the format is absent in an older installation, these sections
    are sufficient; explicit upgrades may copy it from the source templates.
 4. Put accepted follow-up work in its existing linked spec; proposed repairs

@@ -81,3 +81,20 @@ Do not wait for every historical extension idea to become an ADR before proving 
 The original packet's 181 records, 178 source hashes and 59 ADR mappings passed integrity checks. Current targeted checks passed: core installer 12/12, fidelity 15/15, cross-provider fixture and doctor. The remote integration identity matches the inspected checkout. The [companion validation report](validation.json) checks ledger IDs, allowed dispositions, counts, source references, original proposition preservation, candidate accounting and output links.
 
 No runtime, control, spec, ADR or first-pass report was changed. These are local review artifacts. Principal remaining risks are incomplete runtime delivery, falsely treating a recommendation as owner acceptance, making private sync equivalent to durable promotion, and breaking recovery/provenance during retirement. Full-suite, live host enforcement, real cross-device continuation and agent-outcome claims are outside the checks performed here. See [evidence and limitations](evidence.md).
+
+
+## Finding Disposition Reconciliation (2026-09-19)
+
+Concrete findings are reconciled in [S-00N](../../specs/S-00N-feedback-finding-dispositions/SPEC.md#existing-finding-disposition-register). Research decisions, proposed alternatives and question statuses retain their original vocabularies; this addendum does not accept or decline those proposals. Read-at `279341a`; named later repair evidence is explicitly anchored.
+
+| Finding | Disposition | Existing owner / gap | Evidence and retained limit |
+|---|---|---|---|
+| Correction 1 original proposition preservation | `repaired` | S-00S | This second-pass ledger explicitly preserves original and latest propositions at 279341a; source readback/consumer reconciliation remains S-00S, not permission to discard first-pass evidence. |
+| Correction 2 Node rationale | `repaired` | S-00S | This report supplies the factual correction at 279341a without fabricating an owner-accepted replacement rationale. Original first-pass reasoning remains historical. |
+| Correction 3 discovery versus enforcement | `repaired` | S-051; S-053 | This report corrects category conflation; capability owners retain distinct discovery and native capability proof, with unavailable hosts explicit. |
+| Correction 4 S036 enforcement overclaim | `declined` | S-036; S-053 | Trust/auth blocked the native attempt before permission decision; no enforcement success/failure conclusion is supported. |
+| Correction 5 installer blanket refusal | `test` | S-045; S-051 | Installer fixtures cover Git-owned/symlinked roots while explicit replacement remains separately guarded. |
+| Correction 6 operational rollback | `test` | S-048 | Recovery destination separation and restoration proof retained; privacy scanning alone never proves safe cleanup. |
+| Correction 7 scoped historical decisions | `repaired` | S-00S | This report records the scope corrections at 279341a. No global exactly-one-note/UI/ensemble rule is inferred; research decision statuses remain unchanged. |
+| Correction 8 claim freshness | `repaired` | S-00K | UTC calendar-date wording present in AGENTS/Runbook at 279341a, matching the specified algorithm; no GPT_OS local-day rule imported. |
+| Correction 9 coverage boundaries | `accepted-open` | S-00N; S-00S | Named pre-existing coverage remains evidence; report recurrence keys alone do not prove longitudinal reconciliation. This N finding disposition and S representation reconciliation supply bounded work; no outcome guarantee. |

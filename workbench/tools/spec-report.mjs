@@ -33,7 +33,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
-import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
+import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
 import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
 import { assertSafeWritePath, declaredGit, lanePath } from './workbench-paths.mjs';
@@ -68,7 +68,7 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   // above: an approval recorded in one checkout is recognized from any other
   // as long as the Spec's own files are unchanged.
   const ownerApproval = parseOwnerApprovals(evidence);
-  const latestOwnerApproval = latestOwnerApprovalFor(ownerApproval, specDigest);
+  const latestOwnerApproval = latestOwnerApprovalFor(ownerApproval, specDigest, root, spec);
 
   const gaps = collectGaps({ tasks, acceptance, completionResult, evidence });
 
@@ -104,14 +104,14 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
 // detached worktree, a dispatcher whose own HEAD is `integration`, and a
 // merge commit that never equals the reviewed tip all recognize the same
 // review as long as the Spec's own files are unchanged. The digest is a
-// SHA-256 over SPEC.md and every `tasks/<id>/TASK.md` file (sorted by
+// SHA-256 over SPEC.md and live/retired `tasks/<id>/TASK.md` files (sorted by
 // directory name for a fixed, deterministic order), each with its own
 // volatile, non-reviewed parts excluded first:
 //   - SPEC.md: every Append-Only Evidence And Execution Log DATA ROW
 //     (`stripEvidenceRows`), so recording a verdict, a later `complete`
 //     close row, or a second verdict never changes the digest their own
 //     recording depends on; and the `Updated`, `Latest event` and `Next
-//     gate` header fields (`stripVolatileSpecFields`), which `claimWork` and
+//     gate` header fields plus administrative completion status (`stripVolatileSpecFields`), which `claimWork` and
 //     `closeTask` rewrite on every ordinary lifecycle step, never a change
 //     to the reviewed capability itself.
 //   - each TASK.md: its `## Receipt` section (`stripReceiptSection`,
@@ -119,11 +119,12 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
 //     task-receipt.mjs, so hashing the whole file voided a passed verdict on
 //     every `receipt` append, contrary to this comment's original claim
 //     that a Receipt was already excluded as "outside the Spec directory").
-// Everything else - the Task's own Status/Blockers/Proof/Planned
+// Candidate approval computes this same digest from Git blobs and refuses a
+// mismatch before writing. Everything else - the Task's own Status/Blockers/Proof/Planned
 // verification, a table-backed Spec's slice table, Acceptance Criteria, the
 // Completion Result, Decisions prose - is left untouched, so a real change
 // there still moves the digest.
-function computeSpecDigest(root, spec) {
+function computeSpecDigest(root, spec, candidate = null) {
   const specDir = path.dirname(spec.filePath);
   // Each entry is hashed as its name, then its byte length, then its own
   // content, each on its own line: the length prefix is what keeps one
@@ -141,18 +142,33 @@ function computeSpecDigest(root, spec) {
     hash.update(content);
     hash.update('\n');
   }
-  addEntry('SPEC.md', stripVolatileSpecFields(stripEvidenceRows(spec.content)));
-  const tasksDir = path.join(specDir, 'tasks');
-  if (fs.existsSync(tasksDir)) {
-    const ids = fs.readdirSync(tasksDir, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => entry.name)
-      .sort();
-    for (const id of ids) {
-      const taskPath = path.join(tasksDir, id, 'TASK.md');
-      if (!fs.existsSync(taskPath)) continue;
-      addEntry(`tasks/${id}/TASK.md`, stripReceiptSection(fs.readFileSync(taskPath, 'utf8')));
+  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  function committed(args) {
+    const result = spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+    if (result.status !== 0) throw new Error(`Cannot read committed content for ${spec.id} at ${candidate}: ${result.stderr?.trim() || result.error?.message || 'Git read failed'}`);
+    return result.stdout;
+  }
+  const specContent = candidate ? committed(['show', `${candidate}:${relativeDir}/SPEC.md`]) : spec.content;
+  addEntry('SPEC.md', stripVolatileSpecFields(stripEvidenceRows(specContent)));
+  let taskNames;
+  if (candidate) {
+    taskNames = committed(['ls-tree', '-r', '--name-only', '-z', candidate, '--', `${relativeDir}/tasks/`])
+      .split('\0').filter(Boolean).map((name) => name.slice(relativeDir.length + 1));
+  } else {
+    taskNames = [];
+    for (const folder of ['tasks', 'tasks/retired']) {
+      const directory = path.join(specDir, folder);
+      if (!fs.existsSync(directory)) continue;
+      for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+        if (entry.isDirectory() && fs.existsSync(path.join(directory, entry.name, 'TASK.md'))) {
+          taskNames.push(`${folder}/${entry.name}/TASK.md`);
+        }
+      }
     }
+  }
+  for (const name of taskNames.filter((name) => /^tasks\/(?:retired\/)?[^/]+\/TASK\.md$/.test(name)).sort()) {
+    const content = candidate ? committed(['show', `${candidate}:${relativeDir}/${name}`]) : fs.readFileSync(path.join(specDir, name), 'utf8');
+    addEntry(name, stripReceiptSection(content));
   }
   return hash.digest('hex');
 }
@@ -166,6 +182,8 @@ function computeSpecDigest(root, spec) {
 // that happens to contain the same words.
 function stripVolatileSpecFields(content) {
   return content
+    // Completion is administrative; Task status, acceptance and proof still bind.
+    .replace(/^\*\*Status:\*\* (?:complete|needs-review)$/m, '**Status:** active')
     .replace(/^\*\*Updated:\*\*.*$/m, '**Updated:**')
     .replace(/^\*\*Latest event:\*\*.*$/m, '**Latest event:**')
     .replace(/^\*\*Next gate:\*\*.*$/m, '**Next gate:**');
@@ -413,6 +431,10 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
 
   const spec = findSpec(root, specId);
   const digest = computeSpecDigest(root, spec);
+  const committedDigest = computeSpecDigest(root, spec, candidate);
+  if (digest !== committedDigest) {
+    throw new Error(`Owner QA candidate content at ${candidate} does not match the current assembled Spec/Tasks for ${spec.id}; inspect and name the committed content being approved before recording Human QA.`);
+  }
   const digest12 = digest.slice(0, 12);
 
   const findingsCell = returnToAlign ? `Return to Align: ${destinationChange}` : (findingsInput || 'none');
@@ -571,8 +593,7 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // nothing is written until every id is already reserved in memory, so two
   // allocations in the same batch can never collide, and there is nothing
   // for a later allocation to fail to see.
-  const specs = loadSpecs(root);
-  const occupied = specs.flatMap((entry) => [...entry.rows, ...(entry.records ?? [])].map((item) => item.id));
+  const occupied = occupiedIdentities(root, 'TK');
   const reservations = [...new Map(occupied.map((id) => [visibleIdKey(id), id])).values()];
   const staged = [];
   for (const findingText of items) {
@@ -651,13 +672,13 @@ function createOrphanCorrectiveTasks(root, specId, { candidate, items, wikiClaim
 
   const correctiveDir = path.join(resolveSpecsRoot(root).specsRoot, 'corrective');
   const existingOrphanRecords = listTaskRecords(correctiveDir, root);
-  const specs = loadSpecs(root);
-  const retiredSpecs = loadRetiredSpecs(root);
-  const occupied = [
-    ...specs.flatMap((entry) => [...entry.rows, ...(entry.records ?? [])].map((item) => item.id)),
-    ...retiredSpecs.flatMap((entry) => [...(entry.records ?? []), ...(entry.retiredRecords ?? [])].map((item) => item.id)),
-    ...existingOrphanRecords.map((item) => item.id)
-  ];
+  for (const findingText of items) {
+    const marker = `Answers a corrective wiki-claim finding for ${specId} at ${candidate}: ${findingText}`;
+    if (existingOrphanRecords.some(task => task.specId === specId && task.destination.reference === `${notePathRelative}#${heading}` && task.plannedVerification === marker)) {
+      throw new Error(`Corrective Tasks already exist for ${specId} at ${candidate}: ${findingText}`);
+    }
+  }
+  const occupied = occupiedIdentities(root, 'TK');
   const reservations = [...new Map(occupied.map((id) => [visibleIdKey(id), id])).values()];
 
   const staged = [];
@@ -827,10 +848,15 @@ function parseOwnerApprovals(evidence) {
 // The latest owner-qa entry bound to the Spec's CURRENT content digest, or
 // `null` when none matches it - mirrors `latestVerdictFor` exactly, same
 // "content binds, location does not" rule.
-function latestOwnerApprovalFor(approvals, specDigest) {
+function latestOwnerApprovalFor(approvals, specDigest, root, spec) {
   const digest12 = specDigest.slice(0, 12);
   for (let index = approvals.length - 1; index >= 0; index -= 1) {
-    if (approvals[index].digest === digest12) return approvals[index];
+    if (approvals[index].digest !== digest12) continue;
+    // Earlier versions could record a local digest against unrelated Git content.
+    // Retain those rows as history, but never treat one as valid authorization.
+    try {
+      if (computeSpecDigest(root, spec, approvals[index].candidate) === specDigest) return approvals[index];
+    } catch { /* Missing or moved historical content cannot prove approval. */ }
   }
   return null;
 }

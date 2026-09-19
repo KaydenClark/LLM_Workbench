@@ -45,7 +45,8 @@ export const SPEC_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 
 export function nextWork(rootDir) {
   refuseBlockedRuntime(rootDir);
-  const candidate = selectCandidate(loadSpecs(rootDir));
+  if (discardedReferences(path.resolve(rootDir)).length) return null;
+  const candidate = selectCandidate([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)]);
   if (candidate) return candidate;
   return selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir));
 }
@@ -109,9 +110,9 @@ function selectCandidate(specs, { specId, readyOnly = false } = {}) {
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   const candidates = [];
   for (const spec of specs) {
-    if (spec.status !== 'active' || (specId && spec.id !== specId)) continue;
+    if ((spec.status !== 'active' && spec.lifecycleFolder !== 'retired') || (specId && spec.id !== specId)) continue;
     const satisfied = satisfiedIds(spec, completed);
-    for (const slice of slicesOf(spec)) {
+    for (const slice of executionSlices(spec)) {
       const status = effectiveStatus(slice, satisfied);
       const resumable = !readyOnly && status === 'in-progress';
       const eligible = status === 'ready' && blockersSatisfied(slice.blockers, satisfied);
@@ -160,9 +161,7 @@ export function nextIdentity(rootDir, specId, options = {}) {
   if (!['S', 'TK'].includes(prefix)) throw new Error('--prefix must be S or TK');
   if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec ID');
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
-  const occupied = prefix === 'S'
-    ? specs.map(spec => spec.id)
-    : specs.flatMap(spec => [...spec.rows, ...spec.records].map(item => item.id));
+  const occupied = occupiedIdentities(rootDir, prefix);
   // Letter-bearing new durable labels do not reuse removed historical decimal
   // IDs. Numeric tasks also retain their old spec-qualified interpretation.
   const reservations = [...new Map(occupied.map(id => [visibleIdKey(id), id])).values()];
@@ -170,9 +169,40 @@ export function nextIdentity(rootDir, specId, options = {}) {
   return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}) };
 }
 
+// Identity is retained outside ordinary selection: retirement and discard do
+// not make a label reusable. Read declared lanes at each remote tip as well.
+export function occupiedIdentities(rootDir, prefix) {
+  const root = path.resolve(rootDir);
+  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  const occupied = prefix === 'S' ? specs.map(spec => spec.id)
+    : [...specs.flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
+  const register = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
+  if (fs.existsSync(register)) {
+    for (const line of fs.readFileSync(register, 'utf8').split('\n')) {
+      if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
+      const label = parseMarkdownTableRow(line)[2] ?? '';
+      occupied.push(...(label.match(new RegExp(`${prefix}-[0-9A-Za-z]{3,}`, 'g')) ?? []));
+    }
+  }
+  const refs = spawnSync('git', ['-C', root, 'for-each-ref', '--format=%(refname)', 'refs/remotes'], { encoding: 'utf8' });
+  if (refs.status === 0) for (const ref of refs.stdout.trim().split('\n').filter(Boolean)) {
+    const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8' });
+    let lane = resolveSpecsRoot(root).specsPrefix;
+    if (manifestResult.status === 0) {
+      try { lane = JSON.parse(manifestResult.stdout).lanes?.specs ?? lane; }
+      catch { throw new Error(`Cannot reserve IDs from malformed manifest at ${ref}`); }
+    }
+    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane, ...(manifestResult.status === 0 ? [] : ['specs'])], { encoding: 'utf8' });
+    if (![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.stderr.trim()}`);
+    occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
+  }
+  return [...new Set(occupied)];
+}
+
 export function claimWork(rootDir, id, options) {
   refuseBlockedRuntime(rootDir);
   requireValue(options?.agent, '--agent is required');
+  if (discardedReferences(path.resolve(rootDir)).length) throw new Error('discarded-reference: selection is blocked until current references are reconciled');
   // S-00I TK-006: an orphan corrective Task (no owning Spec directory left to
   // claim through) is addressed by its own Task ID directly, never a Spec
   // ID - there is no Spec ID left to name. `TASK.md`'s own id regex closes
@@ -180,13 +210,13 @@ export function claimWork(rootDir, id, options) {
   // never misroute a real Spec ID.
   if (/^TK-/.test(id)) return claimOrphanCorrectiveTask(path.resolve(rootDir), id, options);
   const date = validDate(options?.date ?? today());
-  const specs = loadSpecs(rootDir);
+  const specs = [...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)];
   const matches = specs.filter((item) => item.id === id);
   if (matches.length !== 1) throw new Error(matches.length ? `Duplicate spec ID: ${id}` : `Unknown spec ID: ${id}`);
   const spec = matches[0];
-  if (spec.status !== 'active') throw new Error(`${id} is ${spec.status}, not active`);
+  if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
   const candidate = selectCandidate(specs, { specId: id, readyOnly: true });
-  const slices = slicesOf(spec);
+  const slices = executionSlices(spec);
   const task = slices.find((item) => item.id === candidate?.taskId);
   if (!task) {
     // `blocked-slice` names the one shape doctor also reports: a slice that
@@ -205,6 +235,7 @@ export function claimWork(rootDir, id, options) {
   // while updating the header cannot leave the Spec announcing a claim that
   // the record never took.
   if (task.source === 'record') writeTaskStatus(task.record, { Status: 'in-progress' });
+  if (spec.lifecycleFolder === 'retired') return showSpec(rootDir, id);
   const content = task.source === 'record'
     ? spec.content
     : updateTaskRow(spec.content, task.id, (cells) => {
@@ -232,7 +263,7 @@ export function closeTask(rootDir, id, options) {
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
   const spec = findSpec(root, id);
-  const slices = slicesOf(spec);
+  const slices = executionSlices(spec);
   const task = slices.find((item) => item.declared === 'in-progress')
     ?? slices.find((item) => item.declared === 'ready');
   if (!task) throw new Error(`${id} has no open task to close`);
@@ -266,7 +297,7 @@ export function closeTask(rootDir, id, options) {
     });
   }
   const remaining = slices.find((item) => item.id !== task.id && item.declared !== 'done');
-  content = updateFields(content, {
+  if (spec.lifecycleFolder !== 'retired') content = updateFields(content, {
     Updated: date,
     'Latest event': `${task.id} closed with proof.`,
     'Next gate': remaining ? `Complete ${remaining.id}.` : 'Confirm acceptance criteria and completion result.'
@@ -332,8 +363,10 @@ function closeOrphanCorrectiveTask(root, taskId, options) {
 // unchanged when the note has no `provenance:` list at all, so the caller
 // can refuse rather than silently writing nothing.
 function appendProvenanceRow(content, text) {
+  const frontmatter = /^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/.exec(content);
+  if (!frontmatter) return content;
   const pattern = /^provenance:\n((?:  - .*\n)*)/m;
-  const match = pattern.exec(content);
+  const match = pattern.exec(frontmatter[0]);
   if (!match) return content;
   const at = match.index + match[0].length;
   return `${content.slice(0, at)}  - ${text}\n${content.slice(at)}`;
@@ -587,11 +620,8 @@ export function gate(rootDir, options = {}) {
   } else if (!report.complete) {
     reason = `${specId} is not complete: ${report.gaps.join('; ')}`;
   } else {
-    // S-00J TK-005: checked after the review-verdict gate, same ordering and
-    // the same shared reasoning functions `completeSpec` uses, so a Spec
-    // candidate whose current content lacks a recorded owner approval is
-    // refused exactly where `complete` would be.
-    reason = reviewGapReason(report) ?? approvalGapReason(report);
+    // Integration precedes owner Human QA. Closure retains its approval gate.
+    reason = reviewGapReason(report);
   }
   return {
     mode: 'spec-candidate',
@@ -624,7 +654,7 @@ export function render(rootDir) {
     const relativeCatalog = renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, '](');
     writeSafeFile(root, catalogPath, `# Spec Catalog\n\nDerived from stable specs; includes completed history.\n\n${CATALOG_START}\n${relativeCatalog}\n${CATALOG_END}\n`);
   }
-  atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs)));
+  atomicWrite(taskboardPath, replaceRegion(taskboard, HOT_START, HOT_END, renderHotBoard(specs, retired)));
   return { specs: specs.length, active: specs.filter((spec) => isHot(spec)).length, retired: retired.length };
 }
 
@@ -643,7 +673,7 @@ export function doctor(rootDir, options = {}) {
   const blueprint = fs.existsSync(path.join(root, 'BLUEPRINT.md')) ? fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8') : '';
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs, retired), issues);
   else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
-  checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
+  checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs, retired), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root, options.home));
   issues.push(...gitFindings(root, specs));
@@ -675,9 +705,17 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
   // folder it actually lives in - plus the one retirement-specific fact
   // nothing else surfaces: a retired Spec whose own header still disagrees
   // that it is complete. None of the active-roster checks below (slice
-  // status, blockers, stale-claim, broken-link) apply to a Spec `next`,
-  // `claim` and `render` never see again.
+  // status, stale-claim, broken-link) apply to completed history. Anchored
+  // corrective Tasks alone retain their execution dependency checks.
   for (const spec of retiredSpecs) {
+    if (!spec.sliceConflict) {
+      const completed = new Set([...specs, ...retiredSpecs].filter(item => ['complete', 'superseded'].includes(item.status)).map(item => item.id));
+      const satisfied = satisfiedIds(spec, completed);
+      const head = executionSlices(spec).find(slice => ['in-progress', 'ready'].includes(slice.declared));
+      if (head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
+        issues.push(finding('blocked-slice', `${spec.id}/${head.id} waits on ${head.blockers}`, { specId: spec.id, taskId: head.id }));
+      }
+    }
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.lifecycleFolder}/${spec.id}-`)) {
       issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.lifecycleFolder}/${spec.id}-`, { specId: spec.id }));
     }
@@ -712,7 +750,7 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
       }
     }
   }
-  const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
+  const completed = new Set([...specs, ...retiredSpecs].filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of specs) {
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
@@ -989,6 +1027,26 @@ export function slicesOf(spec) {
   }));
 }
 
+// Retired Specs retain their completed history. Only the corrective records
+// generated against a named review/owner finding re-enter execution; an old
+// ordinary Task edited to ready must never reopen historical work.
+function executionSlices(spec) {
+  const slices = slicesOf(spec);
+  if (spec.lifecycleFolder !== 'retired') return slices;
+  const rows = evidenceRows(spec.content).map(parseMarkdownTableRow);
+  return slices.filter(slice => {
+    const task = slice.record;
+    if (!task || task.destination.type !== 'spec-acceptance' || task.destination.reference !== `${spec.id} Acceptance Criteria`) return false;
+    const marker = /^Answers evidence row (\d+) \((fail verdict|owner QA finding) at (\S+) on (\d{4}-\d{2}-\d{2})\): (.+)$/.exec(task.plannedVerification ?? '');
+    if (!marker) return false;
+    const cells = rows[Number(marker[1]) - 1];
+    if (!cells || cells[0] !== marker[4]) return false;
+    const review = marker[2] === 'fail verdict';
+    const event = /^(Review verdict: fail|Owner QA: finding) at (\S+) \[[0-9a-f]{12}\] #\d+$/.exec(cells[2]);
+    return cells[1] === (review ? 'review' : 'owner-qa') && event?.[1] === (review ? 'Review verdict: fail' : 'Owner QA: finding') && event?.[2] === marker[3];
+  });
+}
+
 // The ids a slice may declare as satisfied: completed Specs, plus every done
 // slice of this Spec. A record-backed Spec's retained done rows count here,
 // which is how a record can name a predecessor that closed before the Spec
@@ -1167,8 +1225,11 @@ function renderCatalog(specs, retired = []) {
   return lines.join('\n');
 }
 
-function renderHotBoard(specs) {
-  const hot = specs.filter((spec) => isHot(spec)).sort((a, b) => a.priority - b.priority || compareVisibleIds(a.id, b.id));
+function renderHotBoard(specs, retired = []) {
+  const all = [...specs, ...retired];
+  const hot = all.filter((spec) => spec.lifecycleFolder === 'retired'
+    ? !spec.sliceConflict && executionSlices(spec).some(slice => ['ready', 'blocked', 'in-progress'].includes(slice.declared))
+    : isHot(spec)).sort((a, b) => a.priority - b.priority || compareVisibleIds(a.id, b.id));
   const lines = [
     '| Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |',
     '|---|---|---|---|---|---|'
@@ -1182,7 +1243,7 @@ function renderHotBoard(specs) {
   // the owner gate rather than a slice. That derivation is what makes the
   // board show whether an objective is active; the Spec header Status stays
   // the Spec's lifecycle truth and no command writes a second one.
-  const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
+  const completed = new Set(all.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   for (const spec of hot) {
     // A row/record collision already carries its own `row-record-collision`
     // finding from `packetFindings`; the board falls back to the owner-gate
@@ -1192,7 +1253,7 @@ function renderHotBoard(specs) {
       lines.push(`| [${spec.id}](${spec.relativePath}) | Acceptance / owner gate | ${escapeCell(spec.owner)} | ${escapeCell(spec.blockers)} | ${escapeCell(spec.latestEvent)} | ${escapeCell(spec.nextGate)} |`);
       continue;
     }
-    const slices = slicesOf(spec).map((item) => ({ ...item, status: effectiveStatus(item, satisfiedIds(spec, completed)) }));
+    const slices = executionSlices(spec).map((item) => ({ ...item, status: effectiveStatus(item, satisfiedIds(spec, completed)) }));
     // The acceptance line names each *active* Task's own signal, not one
     // slice per Spec: a Spec with more than one in-progress Task lists every
     // one of them (visible-id order), each with its own status and signal,
@@ -1214,7 +1275,9 @@ function renderHotBoard(specs) {
       slice = task ? `${task.id}: ${task.slice} (${task.status}${signal ? `; ${signal}` : ''})` : 'Acceptance / owner gate';
     }
     const blocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
-    lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(spec.latestEvent)} | ${escapeCell(spec.nextGate)} |`);
+    const event = spec.lifecycleFolder === 'retired' ? `Corrective work against retired ${spec.id}; historical completion preserved.` : spec.latestEvent;
+    const nextGate = spec.lifecycleFolder === 'retired' ? `Close ${task.id} with verification and documentation proof.` : spec.nextGate;
+    lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(event)} | ${escapeCell(nextGate)} |`);
   }
   return lines.join('\n');
 }
@@ -1937,19 +2000,59 @@ function parseWorktreeEntries(porcelain) {
 // "The commit that moved it": `retireSpec`'s own evidence row is written and
 // staged *before* the caller's commit exists, so it cannot literally embed
 // that commit's own SHA (the row would have to name a hash Git has not
-// computed yet). The row's real job is naming which historical route to
-// check; the commit itself is read back from Git, which already knows it
-// with certainty - the historical path is brand new (retirement never
-// reuses a path), so the one commit whose diff first adds it, found with
-// rename detection off so a `git mv` is never mistaken for a no-op, is
-// unambiguously the retiring commit. The same resolution covers a Task
-// (`moveTaskRecord` appends no evidence row to the moved record at all), so
-// one function serves both discard functions below.
+// computed yet). Resolve the most recent path addition, not the first one:
+// a removed and re-added route is a different incarnation whose containment
+// must be established independently.
 function resolveMovingCommit(root, relativePath) {
-  const result = spawnSync('git', ['-C', root, 'log', '--no-renames', '--diff-filter=A', '--format=%H', '--reverse', '--', relativePath], { encoding: 'utf8' });
+  const result = spawnSync('git', ['-C', root, 'log', '--no-renames', '--diff-filter=A', '--format=%H', '-1', '--', relativePath], { encoding: 'utf8' });
   if (result.status !== 0) return null;
   const shas = result.stdout.split('\n').map((line) => line.trim()).filter(Boolean);
   return shas.length > 0 ? shas[0] : null;
+}
+
+// Recovery covers the whole directory at its latest change, including proof
+// files added after retirement. Both incarnation and content must be on main.
+function recoveryIdentity(root, relativeDir, remoteRef) {
+  const result = spawnSync('git', ['-C', root, 'log', '-1', '--format=%H', '--', relativeDir], { encoding: 'utf8' });
+  const commit = result.stdout?.trim();
+  if (result.status !== 0 || !commit || spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', commit, remoteRef]).status !== 0) {
+    throw new Error(`discard current directory content is not verified contained in ${remoteRef}`);
+  }
+  const tree = ref => spawnSync('git', ['-C', root, 'rev-parse', `${ref}:${relativeDir}`], { encoding: 'utf8' });
+  const recovered = tree(commit);
+  const current = tree('HEAD');
+  if (recovered.status !== 0 || current.status !== 0 || recovered.stdout !== current.stdout) throw new Error('discard recovery commit does not match the complete current directory');
+  const quotedDir = /^[A-Za-z0-9_./-]+$/.test(relativeDir) ? relativeDir : "'" + relativeDir.replaceAll("'", "'\"'\"'") + "'";
+  return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${quotedDir}` };
+}
+
+function historicalWikiCitation(content, file, directory, root, commit) {
+  // Only evidence citations are history. An operational link elsewhere still
+  // participates in the complete reference gate and must be reconciled first.
+  return content.replace(/(^## Evidence and Sources\s*\n)([\s\S]*?)(?=^## |$(?![\s\S]))/m, (_, heading, body) => heading + body.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (original, label, target) => {
+    if (/^(?:https?:|mailto:)/.test(target)) return original;
+    const resolved = path.resolve(path.dirname(file), decodeURIComponent(target.split('#')[0]));
+    if (resolved !== directory && !resolved.startsWith(directory + path.sep)) return original;
+    const route = path.relative(root, resolved).split(path.sep).join('/');
+    return `${label} (\`git show ${commit}:${route}\`)`;
+  }));
+}
+
+function preflightDiscardRender(root, { specId, taskId } = {}) {
+  const prospective = specs => specs.filter(spec => taskId || spec.id !== specId).map(spec => spec.id !== specId ? spec : {
+    ...spec, retiredRecords: spec.retiredRecords.filter(task => task.id !== taskId)
+  });
+  const specs = prospective(loadSpecs(root));
+  const retired = prospective(loadRetiredSpecs(root));
+  const blueprint = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8');
+  const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+  if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs, retired));
+  replaceRegion(board, HOT_START, HOT_END, renderHotBoard(specs, retired));
+}
+
+function stageDiscard(root) {
+  const result = spawnSync('git', ['-C', root, 'add', '-A'], { encoding: 'utf8' });
+  if (result.status !== 0) throw new Error(`discard staging failed: ${result.stderr.trim() || 'unknown error'}`);
 }
 
 // The declared default branch's remote-tracking ref, or `null` when either
@@ -2082,6 +2185,13 @@ export function discardRetiredSpec(rootDir, specId) {
   if (spec.lifecycleFolder !== 'retired') {
     throw new Error(`${specId} is retired in ${spec.lifecycleFolder}/, not retired/; discard refuses every folder but retired, and never archive`);
   }
+  // A retired Spec can acquire new corrective work. A stale projection is
+  // not evidence that those obligations are gone, even after main contains it.
+  const unfinished = [
+    ...slicesOf(spec).filter(task => task.declared !== 'done').map(task => task.id),
+    ...(spec.retiredRecords ?? []).filter(task => taskStatus(task) !== 'done').map(task => task.id)
+  ];
+  if (unfinished.length) throw new Error(`${specId} cannot discard: unfinished Tasks ${unfinished.join(', ')}`);
   const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
   if (gitStatus.status !== 0) throw new Error('discard requires a Git working tree so the removal is recoverable; none was found');
   if (gitStatus.stdout.trim() !== '') throw new Error('discard refuses a dirty working tree; commit or stash first so the candidate shows only this removal');
@@ -2097,13 +2207,13 @@ export function discardRetiredSpec(rootDir, specId) {
   if (!contained) throw new Error(`${specId} cannot discard: the retiring commit ${movingCommit} is not verified contained in ${remoteRef}`);
 
   const specDir = path.dirname(spec.filePath);
-  // Resolved before the reference scan, not after: the durable-owner Wiki
-  // note's own "Evidence and Sources" citation of this Spec's historical
-  // route is a citation `retireSpec` itself required before the move, never
-  // a stray reference discard should refuse over. Every *other* reference
-  // still blocks, including one from a different Wiki note entirely.
+  // The owner remains in the complete scan. Only historical evidence links
+  // are converted to immutable Git citations in the prospective content.
   const wikiOwnerFile = retiredSpecWikiOwnerFile(root, spec.relativePath);
-  const references = referencesToPath(root, specDir, { excludeFiles: wikiOwnerFile ? [wikiOwnerFile] : [] });
+  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  const { recoveryCommit, recoveryCommand } = recoveryIdentity(root, relativeDir, remoteRef);
+  const updatedWiki = wikiOwnerFile ? historicalWikiCitation(fs.readFileSync(wikiOwnerFile, 'utf8'), wikiOwnerFile, specDir, root, recoveryCommit) : null;
+  const references = referencesToPath(root, specDir, { contentOverrides: new Map(wikiOwnerFile ? [[wikiOwnerFile, updatedWiki]] : []) });
   if (references.length > 0) {
     throw new Error(`${specId} cannot discard: a complete reference scan still finds ${references.length} current reference(s) naming it, starting with ${references[0].file} -> ${references[0].target}`);
   }
@@ -2117,20 +2227,21 @@ export function discardRetiredSpec(rootDir, specId) {
   }
 
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
-  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  preflightDiscardRender(root, { specId });
   const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
   if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
 
-  const recoveryCommand = `git checkout ${movingCommit} -- ${spec.relativePath}`;
+  atomicWrite(wikiOwnerFile, updatedWiki);
   const register = recordDiscard(root, { kind: 'spec', id: specId, historicalRoute: spec.relativePath, movingCommit, parentCommit, recoveryCommand });
 
   render(root);
-  spawnSync('git', ['-C', root, 'add', '-A']);
+  stageDiscard(root);
 
   return {
     specId,
     historicalRoute: spec.relativePath,
     retiringCommit: movingCommit,
+    recoveryCommit,
     discardParentCommit: parentCommit,
     recoveryCommand,
     register
@@ -2178,20 +2289,28 @@ export function discardRetiredTask(rootDir, specId, taskId) {
 
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
   const relativeDir = path.relative(root, taskDir).split(path.sep).join('/');
+  const { recoveryCommit, recoveryCommand } = recoveryIdentity(root, relativeDir, remoteRef);
+  preflightDiscardRender(root, { specId, taskId });
+  const keep = path.join(path.dirname(spec.filePath), 'tasks', '.gitkeep');
+  const createdKeep = !fs.existsSync(keep);
+  if (createdKeep) atomicWrite(keep, '');
   const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
-  if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}/${taskId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
+  if (rmResult.status !== 0) {
+    if (createdKeep) fs.unlinkSync(keep);
+    throw new Error(`git rm failed for ${specId}/${taskId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
+  }
 
-  const recoveryCommand = `git checkout ${movingCommit} -- ${historicalRoute}`;
   const register = recordDiscard(root, { kind: 'task', id: `${specId}/${taskId}`, historicalRoute, movingCommit, parentCommit, recoveryCommand });
 
   render(root);
-  spawnSync('git', ['-C', root, 'add', '-A']);
+  stageDiscard(root);
 
   return {
     specId,
     taskId,
     historicalRoute,
     retiringCommit: movingCommit,
+    recoveryCommit,
     discardParentCommit: parentCommit,
     recoveryCommand,
     register
@@ -2306,7 +2425,7 @@ export function referencesToPath(rootDir, targetPath, options = {}) {
   const underTarget = (candidate) => candidate === target || candidate.startsWith(target + path.sep);
   for (const file of collectSpecReferenceFiles(root, target)) {
     if (excludeFiles.has(file)) continue;
-    const original = fs.readFileSync(file, 'utf8');
+    const original = options.contentOverrides?.get(file) ?? fs.readFileSync(file, 'utf8');
     const { prefix, suffix } = splitEvidenceSection(original);
     const relative = path.relative(root, file).split(path.sep).join('/');
     for (const section of [prefix, suffix]) {

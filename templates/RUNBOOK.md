@@ -762,6 +762,12 @@ Expected result: [clean scope, verified base/target, reviewable PR].
 Closeout, once the integration review has passed. A pushed branch is
 recoverable, not delivered; finish the merge and clean up after yourself:
 
+For the Spec QA runtime, run the assembled review gate before merging. Record
+owner Human QA after integration, naming the inspected commit whose Spec and
+live/retired Task content matches the local assembled digest. Completion still
+requires that approval; administrative completion preserves it for retirement,
+while substantive changes require fresh review and approval.
+
 Run merge and containment verification as a fail-fast sequence. Pin the reviewed
 commit and reject a changed candidate. Merge must not delete branches before
 containment is verified. A linked worktree holding the target must not block
@@ -819,9 +825,11 @@ Workbench self-drift check before and after the change. Inspect the source
 controls, Specs and projections, manifest, ADR/Wiki routes, procedures,
 templates, managed artifacts and readable continuity metadata for stale
 current-facing statuses, blockers, versions, paths and owners. A target-project
-drift report, render, doctor or passing tests do not replace this check. Until
-the source Workbench provides its public self-drift seam, record the bounded
-manual check and do not call the source update clean while known current-facing
+drift report, render, doctor or passing tests do not replace this check. In the
+source Workbench, run `node workbench/tools/self-drift.mjs --phase pre --json`
+and `--phase post --json` around the change, then record the bounded semantic
+check. Machine output alone does not certify freshness; do not call the source
+update clean while known current-facing
 drift remains. Preserve explicitly bounded historical evidence.
 
 The runtime tools in `workbench/tools/` are Workbench-managed: their receipt
@@ -893,7 +901,9 @@ assigned target; it never authorizes a repair or invokes automated repair.
 3. Write `REPORT-topic-date.md` in the declared feedback lane using its
    `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
    Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
-   and Review Boundary. No findings is valid. Reports never live loose or in
+   and Review Boundary. Every finding requires exactly one Lexicon disposition,
+   recorded in its owning Spec with an evidence route; missing ownership stays
+   an explicit gap. No findings is valid. Reports never live loose or in
    the Wiki. If the format is absent in an older installation, these sections
    are sufficient; explicit upgrades may copy it from the source templates.
 4. Put accepted follow-up work in its existing linked spec; proposed repairs

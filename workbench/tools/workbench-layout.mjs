@@ -928,6 +928,7 @@ export const RUNTIME_TOOLS = Object.freeze([
   'notepads.mjs',
   'privacy.mjs',
   'project-evidence.mjs',
+  'self-drift.mjs',
   'sessions.mjs',
   'session-transport.mjs',
   'spec-packet.mjs',

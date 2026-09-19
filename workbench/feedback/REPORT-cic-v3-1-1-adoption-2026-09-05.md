@@ -357,3 +357,20 @@ such inference, and should.
 Improvement is not claimed. Whether these proposals reduce real friction is a
 question for later real-use evidence assessed by an independent evaluator, not
 for this report and not for a passing regression test.
+
+
+## Disposition Reconciliation (2026-09-19)
+
+Original findings above remain historical evidence. The owner reconciliation is
+[S-00N](../specs/S-00N-feedback-finding-dispositions/SPEC.md#existing-finding-disposition-register).
+Read the named capability Specs and tests at `git show 279341a:PATH`; these
+classes record supported mechanisms, not fresh native-host or release proof.
+
+| Finding | Disposition | Existing owner / gap | Evidence and retained limit |
+|---|---|---|---|
+| F-001 | `test` | S-032; S-035 UP-003 | Supported layout-only migration and its route are covered; the original never-creates-support-root mechanism claim was corrected. |
+| F-002 | `declined` | S-035 UP-010; S-031 | The claim attributed an installed copy to canonical release source. That attribution is unsupported; installed-copy drift remains separately diagnosed under UP-002. |
+| F-003 | `test` | S-028; S-032 | Source recording at adoption/migration seams; residual explicit unknown identity is preserved in S-035. |
+| F-004 | `test` | S-028 | Feedback-harvest completion checklist coverage. |
+| F-005 | `test` | S-034 | Control-fidelity comparison and dropped/changed-rule reconciliation. Does not establish repair of the reporting room; template ADR-row limitation remains in S-035. |
+| F-006 | `accepted-open` | Missing target-room owner | The reporting room settings.json omission/reason has no verified current owner or resolution in this source repository. S-00N records this routing gap; no external repair is authorized or scheduled. |

@@ -142,6 +142,21 @@ still apply to individual claims in the current operation.
 | **Explicit skill update** | A separately authorized operation that backs up differing installed core skills and synchronizes them to the exact checked-out LLM Workbench versions. | It is the only path that may replace an existing skill; routine setup cannot imply it, and the support-root-only upgrade mode (`workbench-upgrade.mjs upgrade --layout-only`) reads skill presence without replacing anything. |
 | **Control fidelity** | How a room's hand-reconciled controls relate to the templates they derive from: every template line is `filled` only when its fixed wording survives placeholder substitution, `unchanged`, `dropped`, or `changed`, and every extra room line is `added`, as `tools/control-fidelity.mjs report` states beside the checkout and manifest versions. | It is a report, never a gate: divergence is legitimate and is restored or recorded as a decision; silent divergence is the defect ([S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md)). |
 
+### Feedback Dispositions
+
+Every feedback finding has exactly one disposition from this closed set, recorded
+in its owning Spec. The report points to that owner and the supporting evidence.
+
+- **diagnostic** — a registered doctor code with mandatory remediation text.
+- **test** — a check added at a stable testing seam.
+- **repaired** — a direct code, configuration or documentation fix, named by its commit, that did not become a registered diagnostic or stable-seam test.
+- **declined** — not pursued, with the reason recorded.
+- **accepted-open** — real and accepted but not scheduled, naming the owning Spec; if no owner is established, report that gap explicitly.
+
+A disposition describes the supported outcome; it neither schedules a repair
+nor grants permission. A report and finding ID together identify an occurrence.
+
+
 ## Continuity Terms
 
 | Term | Definition | Distinction |
