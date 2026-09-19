@@ -872,7 +872,7 @@ moves the directory with its Tasks into `retired/`, cleans contained lane
 branches, lists unmerged ones, and regenerates the board and the ADR
 register. `discard` is `git rm` of a retired Spec or, with `--task`, one
 retired Task record - never `archive` - and refuses by name before any write
-if the record is not retired, the tree is dirty, its latest retiring incarnation
+if the record is not retired, any Task in a retired Spec is unfinished, the tree is dirty, its latest retiring incarnation
 and current directory content are not verified contained on the declared default
 branch, a complete reference and
 link scan still finds a current pointer to it, or (for a Spec) its durable
@@ -886,8 +886,13 @@ citations; operational links anywhere, including that owner, still refuse
 discard. A final Task discard retains tracked `tasks/.gitkeep` so fresh clones
 keep record-backed interpretation. A later gap is filed as a corrective Task
 against the Wiki claim rather than restoring the record; repeated identical
-findings refuse duplicate Tasks. Corrective close appends only to frontmatter
-provenance. Render markers are checked before removal, and staging failures
+findings refuse duplicate Tasks. Wiki-anchored corrective close appends only to
+frontmatter provenance. While the retired Spec still exists, corrective Tasks
+anchored to its failed review or owner finding stay inside that retired Spec
+and appear in `next`, `show` and the Taskboard. Claim and close operate on those
+Tasks without reopening or moving the historical Spec; ordinary historical
+Tasks are never reselected. Completion appends Task proof and Spec evidence.
+An unfinished Task prevents Spec discard even if the Taskboard is stale. Render markers are checked before removal, and staging failures
 are reported explicitly;
 `doctor` gains the blocking `discarded-reference` finding for a reference
 naming a path the register says was discarded, and

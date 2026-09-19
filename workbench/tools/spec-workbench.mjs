@@ -2185,6 +2185,13 @@ export function discardRetiredSpec(rootDir, specId) {
   if (spec.lifecycleFolder !== 'retired') {
     throw new Error(`${specId} is retired in ${spec.lifecycleFolder}/, not retired/; discard refuses every folder but retired, and never archive`);
   }
+  // A retired Spec can acquire new corrective work. A stale projection is
+  // not evidence that those obligations are gone, even after main contains it.
+  const unfinished = [
+    ...slicesOf(spec).filter(task => task.declared !== 'done').map(task => task.id),
+    ...(spec.retiredRecords ?? []).filter(task => taskStatus(task) !== 'done').map(task => task.id)
+  ];
+  if (unfinished.length) throw new Error(`${specId} cannot discard: unfinished Tasks ${unfinished.join(', ')}`);
   const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
   if (gitStatus.status !== 0) throw new Error('discard requires a Git working tree so the removal is recoverable; none was found');
   if (gitStatus.stdout.trim() !== '') throw new Error('discard refuses a dirty working tree; commit or stash first so the candidate shows only this removal');
