@@ -886,7 +886,12 @@ Spec's content digest,
 so record it after the final `close` and before `complete`. `approve` records
 the owner's Human QA on `integration` as one append-only `owner-qa` row naming
 who, when and the integration SHA inspected (contained in the declared
-integration branch, bound to the same content digest); a `--finding` creates
+integration branch, with its committed Spec and live/retired Task content matching
+the same local assembled digest). A mismatched or uncommitted capability is
+refused before writing. The premerge gate requires review, not owner approval;
+Human QA follows integration and remains required by `complete`. Administrative
+completion preserves that approval for retirement; substantive Task or Spec
+changes invalidate it, including retired Task proof. A `--finding` creates
 corrective Tasks under the still-open Spec, a `--destination-change` records a
 return to Align and creates nothing, and `complete` refuses until the latest
 owner QA for the current content is an approval. `next` returns one eligible ready task. `show` loads one stable work packet.

@@ -587,11 +587,8 @@ export function gate(rootDir, options = {}) {
   } else if (!report.complete) {
     reason = `${specId} is not complete: ${report.gaps.join('; ')}`;
   } else {
-    // S-00J TK-005: checked after the review-verdict gate, same ordering and
-    // the same shared reasoning functions `completeSpec` uses, so a Spec
-    // candidate whose current content lacks a recorded owner approval is
-    // refused exactly where `complete` would be.
-    reason = reviewGapReason(report) ?? approvalGapReason(report);
+    // Integration precedes owner Human QA. Closure retains its approval gate.
+    reason = reviewGapReason(report);
   }
   return {
     mode: 'spec-candidate',
