@@ -762,6 +762,12 @@ Expected result: [clean scope, verified base/target, reviewable PR].
 Closeout, once the integration review has passed. A pushed branch is
 recoverable, not delivered; finish the merge and clean up after yourself:
 
+For the Spec QA runtime, run the assembled review gate before merging. Record
+owner Human QA after integration, naming the inspected commit whose Spec and
+live/retired Task content matches the local assembled digest. Completion still
+requires that approval; administrative completion preserves it for retirement,
+while substantive changes require fresh review and approval.
+
 Run merge and containment verification as a fail-fast sequence. Pin the reviewed
 commit and reject a changed candidate. Merge must not delete branches before
 containment is verified. A linked worktree holding the target must not block

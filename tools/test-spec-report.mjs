@@ -14,7 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { assembleSpecReport, createCorrectiveTasks, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
-import { completeSpec, doctor, gate, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
+import { completeSpec, doctor, gate, nextWork, render, retireSpec } from '../workbench/tools/spec-workbench.mjs';
 import { readTaskRecord } from '../workbench/tools/task-record.mjs';
 import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
 import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
@@ -32,6 +32,13 @@ function headSha(dir) {
 
 function currentBranch(dir) {
   return execFileSync('git', ['-C', dir, 'branch', '--show-current'], { encoding: 'utf8' }).trim();
+}
+
+// S-00U regression seams exercise actual committed candidate content.
+function commitFixture(root) {
+  execFileSync('git', ['-C', root, 'add', '.']);
+  execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'fixture candidate']);
+  return headSha(root);
 }
 
 // S-00J TK-005: `recordOwnerApproval` checks the candidate against the
@@ -224,6 +231,59 @@ function headingShadowSpec(id) {
 // and a "### Completion Result" subsection both sit above the real "##
 // Completion Result" heading; the report must resolve the real section only.
 // ============================================================================
+// S-00U: reject approval that names an older integration tree while reading
+// newer local capability content, including retired Task proof.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'approval-content-binding-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specPath = 'specs/S-790-fixture/SPEC.md';
+    writeAt(root, specPath, tableSpec({id: 'S-790', taskStatus: 'done', checked: true,
+      completion: 'Delivered.', evidenceRow: '| 2026-09-19 | TK-001 | done | tested | docs | none |'}));
+    const candidate = commitFixture(root);
+    const original = fs.readFileSync(path.join(root, specPath), 'utf8');
+    const changed = original.replace('Expected behavior is verified.', 'Different capability is verified.');
+    writeAt(root, specPath, changed);
+    assert.throws(() => recordOwnerApproval(root, 'S-790', {candidate, owner: 'Fixture owner', result: 'approve'}),
+      /candidate content|committed content/i, 'uncommitted capability cannot be approved at an older SHA');
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), changed, 'refusal writes nothing');
+    commitFixture(root);
+    assert.throws(() => recordOwnerApproval(root, 'S-790', {candidate, owner: 'Fixture owner', result: 'approve'}),
+      /candidate content|committed content/i, 'a clean newer tree cannot acquire approval naming older content');
+    writeAt(root, specPath, original);
+    const current = commitFixture(root);
+    recordReviewVerdict(root, 'S-790', {candidate: current, result: 'pass', findings: 'none', reviewer: 'separate fixture context'});
+    assert.equal(gate(root, {spec: 'S-790', candidate: current}).refused, false, 'review permits integration before owner QA');
+    assert.throws(() => completeSpec(root, 'S-790'), /owner Human QA/, 'closure still requires owner QA');
+    recordOwnerApproval(root, 'S-790', {candidate: current, owner: 'Fixture owner', result: 'approve'});
+    const approved = assembleSpecReport(root, 'S-790').specDigest;
+    completeSpec(root, 'S-790');
+    const completed = assembleSpecReport(root, 'S-790');
+    assert.equal(completed.specDigest, approved, 'administrative completion preserves digest');
+    assert.equal(completed.latestOwnerApproval.result, 'approve');
+    const wikiPath = 'workbench/wiki/guidebooks/s790-capability.md';
+    writeAt(root, wikiPath, [
+      '---', 'type: guidebook', 'status: active', 'sensitivity: normal',
+      'knowledge_role: curated', 'provenance:', '  - fixture review', 'source_paths:',
+      '  - specs/retired/S-790-fixture/SPEC.md', 'last_verified: 2026-09-19', '---',
+      '', '# Fixture capability', '', 'Describes the verified capability and its limits.', ''
+    ].join('\n'));
+    writeAt(root, 'workbench/wiki/MEMORY.md', '# Wiki\n\n[Capability](guidebooks/s790-capability.md)\n');
+    commitFixture(root);
+    const retirement = retireSpec(root, 'S-790', {wikiNote: wikiPath});
+    assert.equal(retirement.ownerApproval.approvedBy, 'Fixture owner', 'original approval permits retirement after completion');
+    const taskPath = 'specs/retired/S-790-fixture/tasks/retired/TK-0U9/TASK.md';
+    writeAt(root, taskPath, taskRecordFixture({id:'TK-0U9', specId:'S-790', slice:'Retired proof', status:'done', blockers:'none', destination:'spec-acceptance: S-790', proof:'old proof'}));
+    const retiredDigest = assembleSpecReport(root, 'S-790').specDigest;
+    const retiredCandidate = commitFixture(root);
+    writeAt(root, taskPath, fs.readFileSync(path.join(root, taskPath), 'utf8').replace('old proof', 'new proof'));
+    assert.notEqual(assembleSpecReport(root, 'S-790').specDigest, retiredDigest, 'retired Task substantive proof is hashed');
+    assert.throws(() => recordOwnerApproval(root, 'S-790', {candidate: retiredCandidate, owner:'Fixture owner', result:'approve'}), /candidate content|committed content/i);
+    console.log('ok - S-00U committed approval binding, premerge order, completion digest and retired proof');
+  } finally { fs.rmSync(root, {recursive:true, force:true}); }
+}
+
 {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-heading-shadow-'));
   initGitRoot(root);
@@ -1406,17 +1466,18 @@ function headingShadowSpec(id) {
     // owner Human QA approval, checked after (and composing with) the
     // review-verdict gate above.
     const noApprovalGate = gate(root, { spec: 'S-740', candidate: headSha(root) });
-    assert.equal(noApprovalGate.refused, true, 'a complete, reviewed Spec candidate with no recorded owner approval is still refused');
-    assert.match(noApprovalGate.reason, /no owner Human QA approval is recorded/i);
+    assert.equal(noApprovalGate.refused, false, 'reviewed Spec may reach integration before Human QA');
+    assert.equal(noApprovalGate.reason, null);
+    assert.throws(() => completeSpec(root, 'S-740'), /no owner Human QA approval/i);
 
-    recordOwnerApproval(root, 'S-740', { candidate: headSha(root), owner: 'Kayden Clark', result: 'approve' });
+    recordOwnerApproval(root, 'S-740', { candidate: commitFixture(root), owner: 'Kayden Clark', result: 'approve' });
     const passedGate = gate(root, { spec: 'S-740', candidate: headSha(root) });
     assert.equal(passedGate.refused, false, 'a complete Spec candidate with a passed current verdict AND a recorded owner approval proceeds unchanged');
     assert.equal(passedGate.reason, null);
     assert.equal(passedGate.specComplete, true);
     assert.equal(passedGate.latestOwnerApproval.result, 'approve', 'gate shows latestOwnerApproval beside the verdict');
 
-    console.log('ok - gate refuses an incomplete or unreviewed Spec candidate, reports (never refuses) a Task PR under S-00O exemption 2, refuses a reviewed-but-unapproved Spec candidate, and proceeds unchanged once both a passed verdict and a recorded owner approval exist for the current content');
+    console.log('ok - gate refuses an incomplete or unreviewed Spec candidate, reports (never refuses) a Task PR under S-00O exemption 2, permits a reviewed Spec before Human QA, and retains owner approval for closure');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -1689,7 +1750,7 @@ function headingShadowSpec(id) {
       id: 'S-760', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const reportBefore = assembleSpecReport(root, 'S-760', { candidate });
     assert.equal(reportBefore.ownerApproval.length, 0, 'no owner-qa row exists yet');
     assert.equal(reportBefore.latestOwnerApproval, null);
@@ -1745,7 +1806,7 @@ function headingShadowSpec(id) {
       id: 'S-761', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
 
     assert.throws(
@@ -1790,7 +1851,7 @@ function headingShadowSpec(id) {
       id: 'S-762', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const finding = recordOwnerApproval(root, 'S-762', {
       candidate, owner: 'Kayden Clark', result: 'finding', findings: 'Missing empty-state copy; Stale screenshot in the README'
@@ -1847,7 +1908,7 @@ function headingShadowSpec(id) {
       id: 'S-763', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const finding = recordOwnerApproval(root, 'S-763', {
       candidate, owner: 'Kayden Clark', result: 'finding', destinationChange: 'The destination itself changed; this belongs in a new Spec'
@@ -1945,7 +2006,7 @@ function headingShadowSpec(id) {
       id: 'S-765', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
 
     const approveResult = spawnSync('node', [
@@ -1959,7 +2020,7 @@ function headingShadowSpec(id) {
     // A second candidate (HEAD moved), this time carrying --finding: infers
     // a finding against the existing destination.
     execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'move past the approved candidate']);
-    const movedCandidate = headSha(root);
+    const movedCandidate = commitFixture(root);
     const findingResult = spawnSync('node', [
       cliPath, 'approve', 'S-765', '--candidate', movedCandidate, '--owner', 'Kayden Clark',
       '--finding', 'The onboarding copy still references the old flow', '--json', '--path', root
@@ -1972,7 +2033,7 @@ function headingShadowSpec(id) {
     // A third candidate, this time carrying --destination-change: infers a
     // return to Align.
     execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'move past the finding candidate']);
-    const alignCandidate = headSha(root);
+    const alignCandidate = commitFixture(root);
     const alignResult = spawnSync('node', [
       cliPath, 'approve', 'S-765', '--candidate', alignCandidate, '--owner', 'Kayden Clark',
       '--destination-change', 'The owner wants a different destination entirely', '--json', '--path', root
@@ -2008,7 +2069,7 @@ function headingShadowSpec(id) {
       id: 'S-766', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
     const before = fs.readFileSync(path.join(root, specPath), 'utf8');
 
     for (const owner of ['', '   ']) {
@@ -2061,7 +2122,7 @@ function headingShadowSpec(id) {
       id: 'S-767', taskStatus: 'done', checked: true, completion: 'Delivered.',
       evidenceRow: '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |'
     }));
-    const candidate = headSha(root);
+    const candidate = commitFixture(root);
 
     const first = recordOwnerApproval(root, 'S-767', { candidate, owner: 'Kayden Clark', result: 'approve' });
     const second = recordOwnerApproval(root, 'S-767', { candidate, owner: 'A Second Reviewer', result: 'approve' });
