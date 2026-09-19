@@ -4,12 +4,12 @@
 > `workbench/specs/S-014-workbench-release-candidate/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-014
-**Status:** superseded
+**Status:** blocked
 **Priority:** 0
 **Owner:** codex
 **Updated:** 2026-09-19
-**Catalog description:** Historical release packet superseded by S-00O; unfinished acceptance is preserved, not claimed complete.
-**Blockers:** none; surviving current gates are owned by S-00O and S-052, not this historical packet.
+**Catalog description:** Historical release packet with current work routed to S-00O; unexecuted historical acceptance remains visible as a limitation.
+**Blockers:** Historical acceptance remains unexecuted; current operational gates belong to S-00O and S-052. No independent release assignment resumes here.
 **Latest event:** S-00K owner reconciliation removed the obsolete duplicate release assignment without changing historical proof.
 **Next gate:** Follow S-00O for current release work; owner-only main promotion and S-052 live-host proof remain separate gates.
 
@@ -25,8 +25,11 @@ historical CIC-specific evidence below; it does not reactivate CIC or approve ma
 
 ## Current Disposition
 
-This packet is **superseded, not completed**. Its unchecked acceptance and
+This packet is **historical and owner-routed, not completed**. Its unchecked acceptance and
 unfinished historical tasks remain below as evidence of what was never proven.
+The current runtime rejects `superseded` while historical tasks remain unfinished,
+so this record stays explicitly blocked; no task is marked done to suppress that
+check. This is a bounded projection limitation, not a new implementation queue.
 Current work routes to [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md), with
 [S-050](../S-050-workbench-v3-2-0-release/SPEC.md) retaining the delivered v3.2
 receipt and [S-052](../S-052-private-session-transport/SPEC.md) retaining the
@@ -369,9 +372,11 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 
 | 2026-09-19 | S-00K TK-0SA | Reconciled obsolete release assignment to S-00O; historical acceptance not completed | Read complete S-014/S-022/S-050/S-052 packets and S-00O release scope at parent `1a26de9`; current owners preserve release and live-host gates | Current disposition and README route updated; all prior evidence rows preserved | S-050 TK-006 and S-052 TK-004 remain open; current S-00O build/release and owner main approval remain open; CIC/Sol consumer state unverified |
 
+| 2026-09-19 | S-00K TK-0SA correction | Restored blocked status after the superseded candidate failed existing lifecycle validation; retained current-owner routing and all unfinished historical evidence | Doctor reports contradictory-state for superseded Specs with unfinished tasks; no runtime rule changed and no task was marked done | Current Disposition explains the remaining projection limitation; README no longer treats this packet as the current release gate | Current release and live-device gates remain with the mapped owners; historical tasks are unexecuted, not completed or silently dropped |
+
 ## Completion Result
 
-Superseded, not completed. Current obligations follow S-00O; original unchecked acceptance and unfinished task evidence remain preserved.
+Not completed. Current operational obligations follow S-00O; original unchecked acceptance and unfinished task evidence remain preserved. This packet stays blocked because current lifecycle validation cannot represent supersession with unfinished historical tasks.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -383,4 +388,4 @@ Superseded, not completed. Current obligations follow S-00O; original unchecked 
 ## Supersession
 
 - Supersedes: none
-- Superseded by: [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md).
+- Superseded by: none; formal supersession deferred because unfinished historical tasks must remain truthful. Current owner routes appear above.

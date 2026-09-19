@@ -230,8 +230,9 @@ The portable layout and skill-install contract is implemented in
 [`S-021`](workbench/specs/S-021-portable-workbench-v3/SPEC.md). The separate
 current release-readiness owner is
 [`S-00O`](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md); only the owner
-may promote `integration` to `main`. S-014 and S-022 preserve superseded release
-packets, not active assignments. The earlier v3.2 delivery receipt and its
+may promote `integration` to `main`. S-014 and S-022 preserve historical release
+packets whose current obligations are routed to these owners; their blocked
+status retains unexecuted historical tasks without presenting a new assignment. The earlier v3.2 delivery receipt and its
 remaining cross-device/private-service acceptance stay with
 [`S-050`](workbench/specs/S-050-workbench-v3-2-0-release/SPEC.md) and
 [`S-052`](workbench/specs/S-052-private-session-transport/SPEC.md).
