@@ -209,9 +209,7 @@ unresolved limitations.
 ADR-0055, `AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `RUNBOOK.md`,
 `skills/update-harness/SKILL.md`, the generic `templates/AGENTS.md`,
 `templates/LEXICON.md`, and `templates/RUNBOOK.md` carry the rule or route to
-this spec. The future implementation owns its tool, tests, receipt shape and
-any diagnostic registration. No current runtime behavior is changed by this
-planning record.
+this spec. The read-only runtime and focused regression now implement the machine-evidence seam; source update procedures and semantic reconciliation remain required before completion.
 
 ## Append-Only Evidence And Execution Log
 
@@ -220,10 +218,11 @@ planning record.
 | 2026-09-10 | spec | Owner requested a Workbench self-drift check as a mandatory part of every Workbench update; planned S-00K and ADR-0055 from the passive review | Preflight at `c0ac60a179235ef22fa6ea81aec74735087e06e5`; `doctor --json` reported five stale seeds and one provenance mismatch; `next --json` returned `null`; focused spec and diagnostic tests passed; notepad allocation exposed five unreadable legacy records | ADR, root/template routes, update skill and handoff authored; no implementation or stale-record repair performed | Implement S-00K in a clean task worktree, repair or owner-route baseline drift, run full verification and fresh no-memory review |
 | 2026-09-12 | spec | Bounded manual post-update self-drift check (no implementation exists yet, per Remaining Limitations below): this Git-recovery PR is itself a Workbench update, landing ADRs 000B-000K, specs S-00G-S-00K/S-054, and root/template control edits into `integration` | Inventoried the recovered ADRs, Specs, `CATALOG.md`, `HISTORY.md`/`REGISTER.md` (regenerated via `adr.mjs register`), and every cross-reference among them; found and repaired the S-00F/S-00K ID collision, wrong baseline counts in S-00I (also found still-stale in ADR-000I; see that ADR's own evidence), an unreachable S-054 citation anchor, broken links from file relocation, false tool-coverage claims in ADR-000K and a Spec, missing ADR-000H requirements in S-00H's scope, and unowned migrations claimed in ADR-000J/000K. `doctor --json` at the final commit: 48 findings, all `attention`/blocks-none (6 stale-seed/provenance findings confirmed pre-existing on `origin/integration` itself, unrelated to this recovery; 42 are locally-installed skill-core-version notices, not repository content); `next --json` returns `null` (expected — every recovered spec is gated on its own ADR's acceptance) | Every fix above is a linked commit on this PR's branch; this row and its sibling ADR/Spec corrections are the docs | The 6 stale-seed/provenance attention findings are known, pre-existing Workbench drift unrelated to this recovery and are not repaired here (separate scope); S-00K's own implementation remains not started |
 
+| 2026-09-19 | TK-001 | Activated by owner request; implemented read-only machine-evidence seam at `7f28eb8` | `node tools/test-self-drift.mjs` passed after missing-seam red; fixtures cover historical/planned classification, complete/pending contradiction, resolved blocker, unreadable JSON/symlink, seed generation identity and read-only JSON CLI; template guardrail before/after both 48.9, byte-identical reports | Public seam and limitations recorded here; shared procedures remain coordinator-owned | Full verification, source update integration, semantic cold-start read-back and owner reconciliation remain open; a machine report does not prove semantic freshness |
+
 ## Completion Result
 
-Pending. This is a planned capability and implementation handoff only. No
-Workbench self-drift checker or update integration has been implemented.
+In progress. The read-only public seam and focused regression exist at `7f28eb8`; update integration, broader proof, semantic reconciliation and independent review remain open. The CLI never represents its machine evidence alone as a clean-update certification.
 
 ## Remaining Limitations Or Follow-Up Specs
 
