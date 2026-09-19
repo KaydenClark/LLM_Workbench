@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Bind Human QA to inspected Git content, separate integration review from closure approval, and preserve proof across administrative completion.
 **Blockers:** none
-**Latest event:** Approval and lifecycle digest repairs implemented; targeted red/green passed and combined suite/review are pending.
-**Next gate:** Verify the immutable combined candidate and resolve independent review before integration; owner Human QA remains later.
+**Latest event:** Implementation proof is complete at 58a1b3b: all 51 checks and independent source review pass; owner Human QA remains open.
+**Next gate:** Finish exact proof-state review and integration delivery, then owner Human QA; do not mark complete or retire without that approval.
 
 > **Citation anchors.** pre=`bc370fe742d5ddb8348bf361fccea31205f6cee7` post=`bc370fe742d5ddb8348bf361fccea31205f6cee7`.
 
@@ -45,15 +45,15 @@ No implementation blocker. Final retirement sequence validation composes the S-0
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-0U0 | Repair approval binding, gate order and lifecycle digest with continuous regression proof | in-progress | none | Targeted spec-report and branch-closeout passed at f47d57f; combined suite/review pending |
+| TK-0U0 | Repair approval binding, gate order and lifecycle digest with continuous regression proof | done | none | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. |
 
 ## Acceptance Criteria
 
-- [ ] Mismatched committed/local Spec and live/retired Task content cannot acquire owner approval; refused operations write nothing.
-- [ ] Reviewed complete Spec passes premerge gate without owner approval; completion refuses until valid owner QA.
-- [ ] Review and approval survive administrative completion; substantive acceptance, proof and retired Task changes invalidate the digest.
-- [ ] Continuous fixture demonstrates review, integration, approval, completion and retirement without forged live approval.
-- [ ] Required suite and independent immutable candidate review pass; affected procedures and generic mirror agree.
+- [x] Mismatched committed/local Spec and live/retired Task content cannot acquire owner approval; refused operations write nothing.
+- [x] Reviewed complete Spec passes premerge gate without owner approval; completion refuses until valid owner QA.
+- [x] Review and approval survive administrative completion; substantive acceptance, proof and retired Task changes invalidate the digest.
+- [x] Continuous fixture demonstrates review, integration, approval, completion and retirement without forged live approval.
+- [x] Required suite and independent immutable candidate review pass; affected procedures and generic mirror agree.
 
 ## Testing Seams
 
@@ -74,12 +74,13 @@ RUNBOOK and generic template command descriptions; current S-00J limitations whe
 | 2026-09-19 | TK-0U0 | Authorized repair scope established | Source read at pre anchor; guardrail baseline 78/100 | New repair owner | Implementation and review pending; no owner approval inferred |
 
 | 2026-09-19 | TK-0U0 | Targeted red/green | Regression first failed Missing expected exception for uncommitted approval; test-spec-report and branch-closeout now pass, including approval-complete-retire fixture | RUNBOOK and generic mirror updated | Full suite and independent review pending; guardrail root remains 78/100, real repeated outcome evidence absent |
+| 2026-09-19 | TK-0U0 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+
+| 2026-09-19 | assembled verification | Full source proof and independent review passed at `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` | All 51 commands passed in a detached clean tree; before/after HEAD and status identical; separate-context reviewer reran retired-corrective and unfinished-discard probes | Shared S-00U VERIFICATION.md plus owning documentation | Final metadata review and integration delivery pending; owner Human QA, retirement, release and native/external proof are not supplied |
 
 ## Completion Result
 
-Implementation and procedure updates are prepared at `f47d57f`; combined
-verification and independent review remain pending. This is not Spec completion
-or owner Human QA. The real I/J approval gates remain open.
+Approval binds to committed Spec/Task content, premerge review is separated from owner QA, and administrative completion preserves substantive review identity. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Task delivery proof is complete; **whole-Spec closure is not approved**. Final proof-state review, integration delivery and real owner Human QA remain separate. No real record was retired/discarded and no main promotion or native-host proof is inferred.
 
 ## Supersession
 

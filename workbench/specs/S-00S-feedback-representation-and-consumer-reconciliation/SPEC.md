@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Reconcile feedback ledgers, snapshots, reports and evidence by provenance and consumer role before any duplicate representation is removed.
 **Blockers:** none
-**Latest event:** Canonical ledger/derived-view reconciliation and retain-all recommendation documented without source changes.
-**Next gate:** Complete assembled verification and independent review for TK-0S0/TK-0S1/TK-0S2; owner Human QA remains open.
+**Latest event:** Implementation proof is complete at 58a1b3b: all 51 checks and independent source review pass; owner Human QA remains open.
+**Next gate:** Finish exact proof-state review and integration delivery, then owner Human QA; do not mark complete or retire without that approval.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
@@ -133,21 +133,21 @@ cleanup operation; deletion or movement requires a later explicit authorization.
 
 ## Acceptance Criteria
 
-- [ ] Every in-scope feedback representation has a role, producer, source
+- [x] Every in-scope feedback representation has a role, producer, source
       revision, identity/hash, correction lineage and known consumer or an
       explicit unresolved gap.
-- [ ] The frozen first-pass snapshot is retained as a distinct role until its
+- [x] The frozen first-pass snapshot is retained as a distinct role until its
       consumer and lineage are reconciled; byte equality alone never removes it.
-- [ ] One canonical ledger and explicitly derived views are designated for each
+- [x] One canonical ledger and explicitly derived views are designated for each
       research pass without rewriting original evidence or limitations.
-- [ ] Reports, evidence and review inputs can be traced to the canonical source
+- [x] Reports, evidence and review inputs can be traced to the canonical source
       or are retained and named as unresolved.
-- [ ] Any removal recommendation is limited to exact/generated duplicates and
+- [x] Any removal recommendation is limited to exact/generated duplicates and
       includes owner gate, preservation receipt, rollback/recovery path and
       native/readability limits; no removal occurs as part of this Spec's plan.
-- [ ] S-00N remains the sole owner of existing finding dispositions, and Terra's
+- [x] S-00N remains the sole owner of existing finding dispositions, and Terra's
       pending/archive skill disposition remains outside this Spec.
-- [ ] Targeted checks, the full required verification suite, render and doctor
+- [x] Targeted checks, the full required verification suite, render and doctor
       pass, with pre-existing non-blocking findings distinguished from new proof.
 
 ## Testing Seams
@@ -184,10 +184,15 @@ socket or worktree controls change in this planning record.
 | 2026-09-19 | working candidate | Implemented read-only inventory public seam and preserved source representations | `node tools/test-feedback-inventory.mjs` red on absent seam then green; `node tools/feedback-inventory.mjs` inventories 33 files, including 181-record first-pass, frozen snapshot and second-pass ledgers; equal-byte snapshot remains a distinct role | Producer, correction lineage and actual consumer use remain explicit gaps; all removalEligible values false; no source evidence changed; full assembled verification and review remain open |
 
 | 2026-09-19 | e7b0906025909b9edd626e967b15e526e5d02509 | Completed bounded documentation reconciliation; recommend retaining every representation | Read report/evidence provenance and corrections; inventory fixture passes; verified 181 original/first-pass lineage mappings, both CSV ID sequences and Markdown headings, snapshot evidence hashes and all 33 Git blobs; feedback diff empty | RECONCILIATION.md and representation-inventory.json preserve canonical/derived roles and unresolved producer/use gaps. No deletion recommended or performed; assembled full suite, review and owner Human QA remain open. |
+| 2026-09-19 | TK-0S0 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+| 2026-09-19 | TK-0S1 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+| 2026-09-19 | TK-0S2 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+
+| 2026-09-19 | assembled verification | Full source proof and independent review passed at `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` | All 51 commands passed in a detached clean tree; before/after HEAD and status identical; separate-context reviewer reran retired-corrective and unfinished-discard probes | Shared S-00U VERIFICATION.md plus owning documentation | Final metadata review and integration delivery pending; owner Human QA, retirement, release and native/external proof are not supplied |
 
 ## Completion Result
 
-In progress. [Representation reconciliation](RECONCILIATION.md) designates canonical ledgers for both passes, maps derived views and correction/consumer routes, and recommends retaining all 33 artifacts. The [preservation inventory](representation-inventory.json) pins identities and reference candidates. All 181 record lineage mappings and 33 pinned Git blobs passed read-back. Actual external/private consumer use and reproducible export generation remain unverified. Common full-suite verification, separate-context review and owner Human QA remain open; no source records were changed.
+Representation inventory, canonical ledger designation, 181-record lineage and consumer reconciliation are prepared; the reviewed recommendation retains all 33 artifacts. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Task delivery proof is complete; **whole-Spec closure is not approved**. Final proof-state review, integration delivery and real owner Human QA remain separate. No real record was retired/discarded and no main promotion or native-host proof is inferred.
 
 ## Remaining Limitations Or Follow-Up Specs
 

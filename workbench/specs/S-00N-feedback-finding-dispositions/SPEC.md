@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Require every feedback finding to resolve into one of five named dispositions recorded in its owning Spec, and ratchet the registry so no future diagnostic lands without remediation text.
 **Blockers:** none
-**Latest event:** Historical finding dispositions and release owner/consumer reconciliation recorded; common proof pending.
-**Next gate:** Apply assembled verification and independent review to TK-001 through TK-0SD; preserve accepted-open and external proof limitations.
+**Latest event:** Implementation proof is complete at 58a1b3b: all 51 checks and independent source review pass; owner Human QA remains open.
+**Next gate:** Finish exact proof-state review and integration delivery, then owner Human QA; do not mark complete or retire without that approval.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf`.
 
@@ -150,17 +150,17 @@ disposition framework or authorize release work.
 
 ## Acceptance Criteria
 
-- [ ] `LEXICON.md` defines the five dispositions as a closed set.
-- [ ] Both `REPORT_FORMAT.md` copies require a disposition on every finding.
-- [ ] `templates/feedback/REPORT_FORMAT.md` stays generic and `[BRACKETED]`;
+- [x] `LEXICON.md` defines the five dispositions as a closed set.
+- [x] Both `REPORT_FORMAT.md` copies require a disposition on every finding.
+- [x] `templates/feedback/REPORT_FORMAT.md` stays generic and `[BRACKETED]`;
       the root copy stays filled.
-- [ ] A registry entry with empty remediation text fails the suite, proven by
+- [x] A registry entry with empty remediation text fails the suite, proven by
       temporarily emptying one and observing the failure.
-- [ ] The real registry passes that assertion unchanged, and the evidence row
+- [x] The real registry passes that assertion unchanged, and the evidence row
       says so rather than presenting the green as a repair.
-- [ ] Every finding already in `workbench/feedback/` carries a disposition, and
+- [x] Every finding already in `workbench/feedback/` carries a disposition, and
       each `accepted-open` names its owning Spec or reports the missing owner.
-- [ ] The full verification suite passes and `doctor` carries no blocking
+- [x] The full verification suite passes and `doctor` carries no blocking
       finding.
 
 ## Testing Seams
@@ -196,6 +196,13 @@ ADR-000K's `canonicalized_in` already names this Spec as of its acceptance.
 | 2026-09-19 | 3a0d817 | TK-003 required format implemented; TK-004 began bounded source-backed reconciliation | Format red then control-fidelity 18/18 green; guardrail self-test and template evaluation pass. Branch-lifecycle F-002/F-003 and boundaries F-001 route to existing S-027/S-028 stable-seam tests; research-ledger dispositions unchanged | Full shared immutable gate, remaining report finding inventory and K0SA-linked release-consumer reconciliation remain open; no bulk accepted-open or repair claim |
 
 | 2026-09-19 | 279341a; fe85046 | TK-004 historical report reconciliation and TK-0SD release owner/consumer mapping prepared | Read completed capability owner dispositions, original report findings/corrections and release owner packets; append report-scoped closed classes without rewriting original bytes or research vocabularies. fe85046 preserves blocked historical release rows and routes unfinished obligations | Explicit accepted-open owner gaps and semantic/native/source limits retained; common immutable suite and review still required; no repair scheduled by these dispositions |
+| 2026-09-19 | TK-001 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+| 2026-09-19 | TK-002 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+| 2026-09-19 | TK-003 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+| 2026-09-19 | TK-004 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+| 2026-09-19 | TK-0SD | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+
+| 2026-09-19 | assembled verification | Full source proof and independent review passed at `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` | All 51 commands passed in a detached clean tree; before/after HEAD and status identical; separate-context reviewer reran retired-corrective and unfinished-discard probes | Shared S-00U VERIFICATION.md plus owning documentation | Final metadata review and integration delivery pending; owner Human QA, retirement, release and native/external proof are not supplied |
 
 ## Existing Finding Disposition Register
 
@@ -321,7 +328,7 @@ Current release direction/readiness routes to S-00O; later reviewed source/Templ
 
 ## Completion Result
 
-In progress. TK-001 defines the five dispositions in root and generic Lexicons; TK-002 adds the whole-registry remediation ratchet. TK-003 now requires report disposition fields. TK-004 now carries the historical finding register and report addenda, preserving research/question status distinctions and explicit missing-owner gaps. TK-0SD records the existing release owner/consumer map and its limits. Shared immutable verification and final review remain open; accepted-open rows are not scheduled repairs.
+The closed disposition vocabulary, report contract, whole-registry ratchet and source-backed finding dispositions are implemented; accepted-open findings retain existing owners or explicit gaps. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Task delivery proof is complete; **whole-Spec closure is not approved**. Final proof-state review, integration delivery and real owner Human QA remain separate. No real record was retired/discarded and no main promotion or native-host proof is inferred.
 
 ## Remaining Limitations Or Follow-Up Specs
 

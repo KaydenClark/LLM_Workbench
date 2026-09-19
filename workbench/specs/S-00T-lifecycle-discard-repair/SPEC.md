@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Repair audited retirement identity, discard recovery, Wiki attribution, final Task persistence and corrective allocation defects before legacy migration.
 **Blockers:** none; explicit owner repair assignment precedes migration gates.
-**Latest event:** Retired corrective selection/claim/close and unfinished-discard guards pass focused regressions; accelerated history checker preserves full output and corruption criteria.
-**Next gate:** Coordinator verifies the final immutable assembly and obtains separate-context review before closeout.
+**Latest event:** Implementation proof is complete at 58a1b3b: all 51 checks and independent source review pass; owner Human QA remains open.
+**Next gate:** Finish exact proof-state review and integration delivery, then owner Human QA; do not mark complete or retire without that approval.
 
 > **Citation anchors.** pre=`f9f77a8c6318231acc54941643f95750f44ef20d` post=`f9f77a8c6318231acc54941643f95750f44ef20d`.
 
@@ -48,7 +48,7 @@ No runtime dependency blocks fixture repair. Integration requires separate-conte
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-0T0 | Repair discard and identity safety seams | in-progress | none | pending |
+| TK-0T0 | Repair discard and identity safety seams | done | none | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. |
 
 ## Acceptance Criteria
 
@@ -57,7 +57,7 @@ No runtime dependency blocks fixture repair. Integration requires separate-conte
 - [x] Final Task discard stays record-backed in the current checkout and a fresh clone; render/staging failures are visible.
 - [x] Allocation reserves lifecycle, corrective, discarded and remote-visible identities; repeated corrective calls refuse duplicates.
 - [x] A new corrective Task under an already-retired Spec is visible, selectable, claimable and closable without reopening or moving the historical Spec; unfinished Tasks explicitly prevent discard.
-- [ ] Focused red/green, full suite, manual self-drift check and independent candidate review are recorded.
+- [x] Focused red/green, full suite, manual self-drift check and independent candidate review are recorded.
 
 ## Testing Seams
 
@@ -92,12 +92,13 @@ do not expose this detailed procedure yet; S-00P owns that broader mirror rewrit
 
 | 2026-09-19 | caa8d2a | Closed independent retired-corrective interaction findings | Red: strengthened existing fixture cannot select the created Task; green at ad50c29 adds next/board/show/claim/close with immutable historical status/location, blockers and negative ordinary-history case. Follow-up red at a66ee6a shows discard deletes unfinished correction with an unrendered board; caa8d2a adds explicit no-write unfinished-Task refusal and aligns active dependency diagnostics with retired completion. Entire test-spec-workbench passes | Both review findings fixed at their existing seams; ordinary history never reopens; no real record mutation. Final assembled suite and review pending |
 | 2026-09-19 | c7084b1 | Preserved history verification while eliminating per-blob process overhead | Unchanged clean plus four corruption-case regression passes; original and batched checker outputs at e7b0906025909b9edd626e967b15e526e5d02509 are byte-identical (6978 bytes, SHA256 e4570a4dacefad9c634d97b3a7f1b43080d00ea6a2735845c61c5fe7c3f84820); root independently compared the outputs | Commit order, row identity, historical variants, retired coverage, orphan detection and diagnostics unchanged; batch protocol failures fail visibly; final full verification uses the same criteria |
+| 2026-09-19 | TK-0T0 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+
+| 2026-09-19 | assembled verification | Full source proof and independent review passed at `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` | All 51 commands passed in a detached clean tree; before/after HEAD and status identical; separate-context reviewer reran retired-corrective and unfinished-discard probes | Shared S-00U VERIFICATION.md plus owning documentation | Final metadata review and integration delivery pending; owner Human QA, retirement, release and native/external proof are not supplied |
 
 ## Completion Result
 
-Implementation prepared and fixture-verified at 9611b59. No real Spec or Task
-was retired or discarded. Integration review and final assembled verification
-remain; this is not owner Human QA or release approval.
+Audited discard recovery, identity reservation, Wiki preservation, final-Task persistence and retired corrective execution repairs are implemented. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Task delivery proof is complete; **whole-Spec closure is not approved**. Final proof-state review, integration delivery and real owner Human QA remain separate. No real record was retired/discarded and no main promotion or native-host proof is inferred.
 
 ## Remaining Limitations Or Follow-Up Specs
 

@@ -3,13 +3,13 @@
 **Spec ID:** S-00R
 **Status:** active
 **Priority:** 2
-**Owner:** codex-skills
+**Owner:** codex-director
 **Stance:** Builder
 **Updated:** 2026-09-19
 **Catalog description:** Reconcile core-skill lifecycle/inherited-scope instructions and establish evidence-based dispositions for optional archived and pending skill source without pre-judging removal.
 **Blockers:** S-00P phase two must publish current Canon before lifecycle wording changes; removal or relocation requires a per-item owner decision.
-**Latest event:** TK-0R0 inventory and owner-gated disposition rows implemented; named checks passed; remaining full-suite proof consolidated into the common immutable candidate run.
-**Next gate:** Obtain common immutable full-suite proof, including append-only history verification, before closing TK-0R0 and verifying TK-0R2; TK-0R1 still waits for S-00P Canon and TK-0R3 for per-item owner decisions.
+**Latest event:** TK-0R2 closed with proof.
+**Next gate:** Complete TK-0R1.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
@@ -163,10 +163,18 @@ avoid a clear catalog row.
 | 2026-09-19 | b54c8c7e7481ef6d9fe29b4ad1d7c72e2856f051 | Optional inventory and dispositions implemented; no source removal | Catalog red on missing inventory, green with 21 directory rows covering 38 tracked files; mutated missing owner gate rejected then restored green. Core composition and inspection pass; required suite commands pass after landed date fixture repair and local render, except append-only history test still running. Source/archive/notice diff empty. | Guardrail 78/100 before and after; real repeated outcome/control comparison/recency/uncertainty evidence absent. R0 remains in progress pending complete verification; R1 and R3 gates unchanged. |
 
 | 2026-09-19 | f6cb87f2fb5666922b44263f97270f53694e9402 | Verification checkpoint corrected after coordinator consolidation | Stopped only this lane's owned full-suite process and children while the append-only history check was running; retained completed per-command logs and an explicit incomplete receipt locally. | All other required commands passed individually after the documented fixture/render corrections; no full-suite PASS is claimed. Required append-only proof and separate-context review remain pending on the assembled immutable candidate. R0 remains in progress; R1 and R3 gates unchanged. |
+| 2026-09-19 | TK-0R0 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | Owner Human QA and whole-Spec closure are separate; declared native/external/consumer limits remain. Final proof-state delta review pending. |
+| 2026-09-19 | TK-0R2 | Task closed | Full 51-command suite passed on immutable 58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c; separate-context source review PASS; shared command proof in S-00U/VERIFICATION.md. | Owning Spec and named runtime/control/Wiki/reconciliation documentation updated; see S-00U/VERIFICATION.md and per-Spec evidence. | S-00R core lifecycle prose still waits for S-00P; per-item optional removal remains owner-gated. No optional files removed. |
+
+| 2026-09-19 | 58a1b3b | Optional inventory and disposition Tasks verified | All 51 source checks and independent source review pass; TK-0R0/TK-0R2 closed with proof | TK-0R1 remains S-00P-dependent and TK-0R3 per-item removal stays owner-gated; no optional source or notices changed |
 
 ## Completion Result
 
-Pending.
+TK-0R0 and TK-0R2 are delivered: every optional source has an inventory and
+retention/owner-gated disposition, with full source verification and independent
+review at `58a1b3b`. No optional bytes, notices or discovery changed. TK-0R1
+remains dependent on S-00P Canon, and TK-0R3 requires the explicit per-item
+owner decision before any removal or relocation. Whole-Spec closure is open.
 
 ## Remaining Limitations Or Follow-Up Specs
 

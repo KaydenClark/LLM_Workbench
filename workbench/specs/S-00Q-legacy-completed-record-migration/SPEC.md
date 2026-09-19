@@ -220,7 +220,7 @@ table intentionally carries no live rows.
 - [ ] `next-id` never proposes a used active, retired, corrective or
       remote-tracking-visible ID, and the four disclosed discard hazards are
       closed or explicitly proven harmless before the first real migration.
-- [ ] Every legacy Spec has exactly one Wiki article preserving useful capability
+- [x] Every legacy Spec has exactly one Wiki article preserving useful capability
       knowledge, decisions, limitations and proof references with links to actual
       ADR/source/test/control/procedure owners; copied Task state is rejected.
 - [ ] Every current consumer points to the durable owner rather than a retired
