@@ -194,6 +194,8 @@ completed spec evidence remain unchanged.
 | 2026-09-05 | TK-001 | Ticket closed | All 30 commands PASS on clean fa04e27; independent APPROVE; PR48 merged at 09f0875; remote containment verified | Root and template controls, tools, tests and linked spec gates updated | Real-work trial and local sync remain untested; owner deferred cleanup; main/release excluded |
 | 2026-09-05 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
 
+| 2026-09-19 | S-00N TK-004 | Recorded `test` disposition for report-scoped F-002 and F-003 in REPORT-branch-lifecycle-2026-09-05.md | Existing accepted implementation and stable-seam assertions at `git show 3a0d817:tools/test-governance-core.mjs`; focused check rerun for this reconciliation | Report addendum links this existing owner; original evidence and completed acceptance preserved | No broader report reconciliation or agent-outcome claim; remaining S-00N feedback inventory stays open |
+
 ## Completion Result
 
 v3.1.1 candidate preparation and authorized integration delivery are complete.

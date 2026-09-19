@@ -193,9 +193,11 @@ ADR-000K's `canonicalized_in` already names this Spec as of its acceptance.
 
 | 2026-09-19 | 28506c6 | Owner activated implementation; TK-001 vocabulary and TK-002 registry ratchet implemented | Vocabulary regression red then control-fidelity 17/17 green; disposable empty-remediation registry regression red then diagnostics 27/27 green; actual registry bytes unchanged. Full suite running, with append-only history test pending; no full PASS claimed yet | Report formats, existing-finding reconciliation and review remain open; the registry green is a future-addition ratchet, not a repair |
 
+| 2026-09-19 | 3a0d817 | TK-003 required format implemented; TK-004 began bounded source-backed reconciliation | Format red then control-fidelity 18/18 green; guardrail self-test and template evaluation pass. Branch-lifecycle F-002/F-003 and boundaries F-001 route to existing S-027/S-028 stable-seam tests; research-ledger dispositions unchanged | Full shared immutable gate, remaining report finding inventory and K0SA-linked release-consumer reconciliation remain open; no bulk accepted-open or repair claim |
+
 ## Completion Result
 
-In progress. TK-001 defines the five dispositions in root and generic Lexicons; TK-002 adds the whole-registry remediation ratchet. Report-format requirements and existing-finding dispositions remain open.
+In progress. TK-001 defines the five dispositions in root and generic Lexicons; TK-002 adds the whole-registry remediation ratchet. TK-003 now requires report disposition fields. TK-004 has reconciled three report-scoped findings to their accepted test owners; remaining findings and shared verification remain open.
 
 ## Remaining Limitations Or Follow-Up Specs
 
