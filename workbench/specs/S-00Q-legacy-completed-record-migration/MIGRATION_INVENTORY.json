@@ -39,7 +39,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "LEXICON.md",
@@ -54,12 +54,12 @@
         {
           "path": "workbench/tools/spec-workbench.mjs",
           "exists": true,
-          "sha256": "0d9839d6c4d62661d2c6d788a6c29f03a49d62e6d5e83d504051e55f7cfc33f3"
+          "sha256": "360d62c9c46af63767a7669d093af6b5facf8b5d6a5d3ab62a877cb55f85a152"
         },
         {
           "path": "tools/test-spec-workbench.mjs",
           "exists": true,
-          "sha256": "58958ecc481efacfa626466283fbc37b6e84673b6023ad79a0c1356469a076e7"
+          "sha256": "1cf5ae4c5f64ba64c04d499eee3df5f3e9ae3954f1010e76f461a3a7cf3a5f2d"
         }
       ],
       "claimGroups": [
@@ -520,7 +520,7 @@
         {
           "path": "workbench/tools/spec-workbench.mjs",
           "exists": true,
-          "sha256": "0d9839d6c4d62661d2c6d788a6c29f03a49d62e6d5e83d504051e55f7cfc33f3"
+          "sha256": "360d62c9c46af63767a7669d093af6b5facf8b5d6a5d3ab62a877cb55f85a152"
         },
         {
           "path": "workbench/tools/spec-packet.mjs",
@@ -530,7 +530,7 @@
         {
           "path": "tools/test-spec-workbench.mjs",
           "exists": true,
-          "sha256": "58958ecc481efacfa626466283fbc37b6e84673b6023ad79a0c1356469a076e7"
+          "sha256": "1cf5ae4c5f64ba64c04d499eee3df5f3e9ae3954f1010e76f461a3a7cf3a5f2d"
         },
         {
           "path": "AGENTS.md",
@@ -1017,7 +1017,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         }
       ],
       "claimGroups": [
@@ -1473,7 +1473,7 @@
         {
           "path": "workbench/tools/spec-workbench.mjs",
           "exists": true,
-          "sha256": "0d9839d6c4d62661d2c6d788a6c29f03a49d62e6d5e83d504051e55f7cfc33f3"
+          "sha256": "360d62c9c46af63767a7669d093af6b5facf8b5d6a5d3ab62a877cb55f85a152"
         },
         {
           "path": "tools/test-context-tools.mjs",
@@ -2231,7 +2231,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "README.md",
@@ -2463,7 +2463,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         }
       ],
       "claimGroups": [
@@ -3095,7 +3095,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "README.md",
@@ -3603,7 +3603,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         }
       ],
       "claimGroups": [
@@ -3758,7 +3758,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         }
       ],
       "claimGroups": [
@@ -3989,7 +3989,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "README.md",
@@ -5756,7 +5756,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         }
       ],
       "claimGroups": [
@@ -5977,7 +5977,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "LEXICON.md",
@@ -6521,7 +6521,7 @@
         {
           "path": "workbench/tools/spec-workbench.mjs",
           "exists": true,
-          "sha256": "0d9839d6c4d62661d2c6d788a6c29f03a49d62e6d5e83d504051e55f7cfc33f3"
+          "sha256": "360d62c9c46af63767a7669d093af6b5facf8b5d6a5d3ab62a877cb55f85a152"
         },
         {
           "path": "workbench/tools/workbench-layout.mjs",
@@ -6541,7 +6541,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "tools/test-diagnostics.mjs",
@@ -6800,7 +6800,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "tools/test-diagnostics.mjs",
@@ -7324,7 +7324,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "tools/test-workbench-upgrade.mjs",
@@ -7589,7 +7589,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "tools/test-wiki.mjs",
@@ -7859,7 +7859,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         }
       ],
       "claimGroups": [
@@ -8108,7 +8108,7 @@
         {
           "path": "RUNBOOK.md",
           "exists": true,
-          "sha256": "be930569fad6f418e64a233b277a662f45f989a941473320a17cfdbe9645e2ad"
+          "sha256": "dea841c8862fa6001ef555cd39c787c814a69c632836d0682b7eba0ca0cadccc"
         },
         {
           "path": "benchmarks/RESULTS.md",
@@ -9089,7 +9089,7 @@
         {
           "path": "workbench/tools/spec-workbench.mjs",
           "exists": true,
-          "sha256": "0d9839d6c4d62661d2c6d788a6c29f03a49d62e6d5e83d504051e55f7cfc33f3"
+          "sha256": "360d62c9c46af63767a7669d093af6b5facf8b5d6a5d3ab62a877cb55f85a152"
         },
         {
           "path": "tools/test-workbench-tools.mjs",
@@ -9603,7 +9603,7 @@
         {
           "path": "tools/test-spec-workbench.mjs",
           "exists": true,
-          "sha256": "58958ecc481efacfa626466283fbc37b6e84673b6023ad79a0c1356469a076e7"
+          "sha256": "1cf5ae4c5f64ba64c04d499eee3df5f3e9ae3954f1010e76f461a3a7cf3a5f2d"
         },
         {
           "path": "AGENTS.md",
@@ -9834,7 +9834,7 @@
         {
           "path": "workbench/tools/spec-workbench.mjs",
           "exists": true,
-          "sha256": "0d9839d6c4d62661d2c6d788a6c29f03a49d62e6d5e83d504051e55f7cfc33f3"
+          "sha256": "360d62c9c46af63767a7669d093af6b5facf8b5d6a5d3ab62a877cb55f85a152"
         },
         {
           "path": "workbench/tools/adr.mjs",
@@ -10097,7 +10097,7 @@
         {
           "path": "workbench/tools/spec-workbench.mjs",
           "exists": true,
-          "sha256": "0d9839d6c4d62661d2c6d788a6c29f03a49d62e6d5e83d504051e55f7cfc33f3"
+          "sha256": "360d62c9c46af63767a7669d093af6b5facf8b5d6a5d3ab62a877cb55f85a152"
         },
         {
           "path": "workbench/tools/diagnostics.mjs",
@@ -10597,7 +10597,7 @@
         {
           "path": "workbench/tools/spec-workbench.mjs",
           "exists": true,
-          "sha256": "0d9839d6c4d62661d2c6d788a6c29f03a49d62e6d5e83d504051e55f7cfc33f3"
+          "sha256": "360d62c9c46af63767a7669d093af6b5facf8b5d6a5d3ab62a877cb55f85a152"
         },
         {
           "path": "tools/test-diagnostics.mjs",
@@ -10617,7 +10617,7 @@
         {
           "path": "tools/check-append-only.py",
           "exists": true,
-          "sha256": "135642d76ea376582da9565509a2a8e14a0e4dec1739c3a0b497c36144af1c99"
+          "sha256": "970b66e15cdbc46dcc2c2b505a3dd27743793352e428061e8fd6a1d3a7818de1"
         },
         {
           "path": "AGENTS.md",
@@ -12638,5 +12638,6 @@
     ],
     "verdict": "PASS for per-Spec article preparation with corrected article hashes recorded here.",
     "limits": "Not an exhaustive atomic-claim proof, new native-host verification, consumer migration approval, retirement QA or discard approval."
-  }
+  },
+  "ownerSnapshotCommit": "58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c"
 }

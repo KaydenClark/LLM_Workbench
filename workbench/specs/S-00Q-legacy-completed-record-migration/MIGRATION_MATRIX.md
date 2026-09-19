@@ -2,6 +2,8 @@
 
 Frozen source: `bc370fe742d5ddb8348bf361fccea31205f6cee7`. Exactly **50 completed Specs -> 50 individual Wiki articles**. Original bytes remain recoverable at the pinned baseline; current source hashes are recorded separately. This is an auditable inventory and proposed claim routing, not retirement approval.
 
+Linked-owner identities were refreshed at `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c`; they are a pinned snapshot, not a claim about future branch tips.
+
 The machine-readable [inventory](MIGRATION_INVENTORY.json) contains full source/article SHA-256 identities, every level-two source section with line interval and content hash, linked-owner hashes and the current-consumer snapshot. Lines read at the immutable source commit. Article hashes bind the assembled bytes, not a claim that the baseline contained the new articles.
 
 Classification is by source-section purpose. A `current` group proposes current-meaning reconciliation; it does **not** certify that old requirements still describe current behavior. Independent article review compared core capabilities, decisions and important limitations against the original records, with live-source checks for evolved behavior; this is not exhaustive atomic-claim equivalence. `proof` remains bounded historical evidence, never fresh runtime proof.
