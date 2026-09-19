@@ -3,7 +3,7 @@
 **Task ID:** TK-002
 **Spec ID:** S-00N
 **Slice:** Ratchet the registry so every diagnostic carries remediation text
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00N Acceptance Criteria
 **Planned verification:** Red: temporarily empty one registry remediation and observe the test fail; green: the whole real registry passes unchanged

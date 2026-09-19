@@ -129,6 +129,21 @@ still apply to individual claims in the current operation.
 | **Ticket** | Retired as a live term. `Task` names the execution slice. | Historical `TK-###` identifiers stay readable exactly as written in append-only evidence and are never rewritten; `TK` is the Task identifier prefix, so newly allocated slices keep the `TK-###` form. |
 | **Coordination hand-back** | A point during an assigned run where the owner had to supply something that was not a preference, tradeoff, authorization, or unavailable resource under `AGENTS.md`'s governing gate: a settled decision repeated, evidence already in the project located for the agent, a routine technical finding reconciled, or an already-authorized step prompted. | It is a defect in a record, route, skill, or tool, recorded per occurrence with its cause and smallest correction in the assigned spec's evidence log by the `carry` skill. Answering a genuine owner decision is not one, and neither is a new framework built in response to one. `AGENTS.md` Safety And Change Control owns when an owner is asked; these four reasons restate that gate and never widen it. |
 
+### Feedback Dispositions
+
+Every feedback finding has exactly one disposition from this closed set, recorded
+in its owning Spec. The report points to that owner and the supporting evidence.
+
+- **diagnostic** — a registered doctor code with mandatory remediation text.
+- **test** — a check added at a stable testing seam.
+- **repaired** — a direct code, configuration or documentation fix, named by its commit, that did not become a registered diagnostic or stable-seam test.
+- **declined** — not pursued, with the reason recorded.
+- **accepted-open** — real and accepted but not scheduled, naming the owning Spec; if no owner is established, report that gap explicitly.
+
+A disposition describes the supported outcome; it neither schedules a repair
+nor grants permission. A report and finding ID together identify an occurrence.
+
+
 ## Continuity Terms
 
 | Term | Definition | Distinction |

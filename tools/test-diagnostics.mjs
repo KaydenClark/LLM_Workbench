@@ -82,9 +82,23 @@ function cliDoctor(dir, home = quietHome) {
   return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
 }
 
+function assertRegistryRemediation(describeEntry, codes) {
+  // The same assertion checks the real registry and the deliberately broken copy.
+}
+
+test('the registry rejects empty remediation text in a disposable module', async () => {
+  const source = fs.readFileSync(path.join(root, 'workbench/tools/diagnostics.mjs'), 'utf8');
+  const mutated = source.replace("'an optional transport operation was refused; local note use remains independent'", "''");
+  assert.notEqual(mutated, source);
+  const registry = await import(`data:text/javascript;base64,${Buffer.from(mutated).toString('base64')}`);
+  assert.throws(() => assertRegistryRemediation(registry.describe, registry.registeredCodes()), /session-transport-blocked requires remediation text/);
+});
+
 test('the registry is closed, typed, and every emitted code is registered', () => {
+  assertRegistryRemediation(describe, registeredCodes());
   for (const code of registeredCodes()) {
     const entry = describe(code);
+
     assert.ok(SEVERITIES.includes(entry.severity), `${code} severity`);
     assert.ok(SCOPES.includes(entry.scope), `${code} scope`);
     assert.ok(EFFECTS.includes(entry.blocks), `${code} effect`);

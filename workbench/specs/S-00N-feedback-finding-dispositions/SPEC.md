@@ -1,15 +1,15 @@
 # S-00N - Feedback Finding Dispositions
 
 **Spec ID:** S-00N
-**Status:** planned
+**Status:** active
 **Priority:** 3
-**Owner:** unassigned
+**Owner:** feedback-lane
 **Stance:** Builder
-**Updated:** 2026-09-15
+**Updated:** 2026-09-19
 **Catalog description:** Require every feedback finding to resolve into one of five named dispositions recorded in its owning Spec, and ratchet the registry so no future diagnostic lands without remediation text.
 **Blockers:** none
-**Latest event:** Spec authored at owner acceptance of ADR-000K, which had no delivery owner.
-**Next gate:** Activate this Spec, then `claim S-00N`, which takes TK-001, the first of its two unblocked slices; `claim` takes a Spec ID, selects the first eligible ready slice itself, and refuses a Spec that is still `planned`.
+**Latest event:** TK-002 claimed by feedback-lane.
+**Next gate:** Close TK-002 with verification and documentation proof.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf`.
 
