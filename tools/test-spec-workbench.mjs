@@ -4166,6 +4166,15 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
 
     console.log('ok - discardRetiredSpec refuses an unknown or still-active Spec, anything not literally under retired/ (proving discard never reaches archive), an unverifiable or unmet main-containment check, a live reference naming the record, a stale Wiki durable owner, and a dirty working tree - all before any write');
 
+    const reviewedNote = fs.readFileSync(notePath, 'utf8');
+    fs.writeFileSync(notePath, reviewedNote.replace('## Evidence and Sources', 'Use [the current procedure](../../specs/retired/S-580-discard-fixture/SPEC.md).\n\n## Evidence and Sources'));
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'operational owner reference']);
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-580'), /complete reference scan/, 'the durable owner has no whole-file exemption');
+    assert.equal(execFileSync('git', ['-C', discardRoot, 'status', '--porcelain'], { encoding: 'utf8' }), '');
+    fs.writeFileSync(notePath, reviewedNote);
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'reconcile operational reference']);
     const receipt = discardRetiredSpec(discardRoot, 'S-580');
     assert.equal(receipt.specId, 'S-580');
     assert.equal(receipt.historicalRoute, historicalRoute);
@@ -4282,6 +4291,17 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /not verified contained/, 'all current bytes need containment, including sibling proof');
     execFileSync('git', ['-C', taskDiscardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
 
+    const boardPath = path.join(taskDiscardRoot, 'TASKBOARD.md');
+    const validBoard = fs.readFileSync(boardPath, 'utf8');
+    fs.writeFileSync(boardPath, validBoard.replace('<!-- hot-specs:end -->', 'missing end marker'));
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'break render markers']);
+    assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /marker|region/i);
+    assert.equal(execFileSync('git', ['-C', taskDiscardRoot, 'status', '--porcelain'], { encoding: 'utf8' }), '', 'render preflight failure is mutation-free');
+    assert.ok(fs.existsSync(path.join(taskDiscardRoot, taskHistoricalRoute)));
+    fs.writeFileSync(boardPath, validBoard);
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'restore render markers']);
     const receipt = discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001');
     assert.equal(receipt.retiringCommit, readdedSha);
     assert.equal(findSpec(taskDiscardRoot, 'S-592').recordBacked, true);
@@ -4465,6 +4485,12 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     claimWork(orphanRoot, created.id, { agent: 'codex' });
     assert.equal(loadCorrectiveTasks(orphanRoot).find((task) => task.id === created.id).status, 'in-progress');
 
+    const wikiPath = path.join(orphanRoot, 'workbench/wiki/design-concepts/orphan-fixture-capability.md');
+    const validWiki = fs.readFileSync(wikiPath, 'utf8');
+    fs.writeFileSync(wikiPath, validWiki.replace(/^provenance:\n(?:  - .*\n)*/m, '') + '\nprovenance:\n  - body text\n');
+    assert.throws(() => closeTask(orphanRoot, created.id, { proof: 'fixed', docs: 'none', remainingGap: 'none' }), /no provenance/);
+    assert.equal(loadCorrectiveTasks(orphanRoot).find(task => task.id === created.id).status, 'in-progress');
+    fs.writeFileSync(wikiPath, validWiki);
     const closeReceipt = closeTask(orphanRoot, created.id, { proof: 'fixed the edge case', docs: 'none', remainingGap: 'none' });
     assert.equal(closeReceipt.status, 'done');
     assert.equal(closeReceipt.wikiNote, 'workbench/wiki/design-concepts/orphan-fixture-capability.md');
@@ -4492,6 +4518,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     initLifecycleFixture(root);
     writeAt(root, 'workbench/specs/S-00A-active/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-00A'));
     writeAt(root, 'workbench/specs/retired/S-00B-retired/SPEC.md', retirementReadySpec('S-00B', ['TK-001']));
+    writeAt(root, 'workbench/specs/retired/S-00B-retired/tasks/.gitkeep', '');
     writeAt(root, 'workbench/specs/S-00A-active/tasks/retired/TK-00A/TASK.md', doneTaskRecordFixture({ id: 'TK-00A', specId: 'S-00A', slice: 'Retired task', destination: 'spec-acceptance: S-00A Acceptance Criteria', proof: 'verified' }));
     // Retained rows must be done once standalone task records exist.
     const activePath = path.join(root, 'workbench/specs/S-00A-active/SPEC.md');
