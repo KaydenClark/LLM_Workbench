@@ -191,9 +191,11 @@ ADR-000K's `canonicalized_in` already names this Spec as of its acceptance.
 | 2026-09-15 | 87c1d45 | Spec authored at owner acceptance of ADR-000K, which recorded that no Spec owned its implementation | Read ADR-000K against both `REPORT_FORMAT.md` copies, `LEXICON.md`'s Feedback row and `tools/test-diagnostics.mjs` at the pre anchor | Confirmed neither report format mentions a disposition, that the Lexicon already places one in the owning Spec, and that the diagnostics test checks a summary for two `git`-scope codes rather than the registry; no implementation performed |
 | 2026-09-15 | 8a32f41 | Separate-context review of the acceptance candidate | Reviewer read this Spec against `tools/test-diagnostics.mjs`, `diagnostics.mjs` `PINNED_EFFECTS`, both `REPORT_FORMAT.md` copies and `blockersSatisfied` in `spec-workbench.mjs` | PASS with four should-fix findings. Two applied here: TK-002 was `blocked` with blockers `none`, which no tool catches and which would have withheld it from selection indefinitely, and `Next gate` named a `claim` the tooling refuses for a `planned` Spec. Reviewer confirmed the Current Verified State claims about the two-code summary check and the absent disposition field are accurate |
 
+| 2026-09-19 | 28506c6 | Owner activated implementation; TK-001 vocabulary and TK-002 registry ratchet implemented | Vocabulary regression red then control-fidelity 17/17 green; disposable empty-remediation registry regression red then diagnostics 27/27 green; actual registry bytes unchanged. Full suite running, with append-only history test pending; no full PASS claimed yet | Report formats, existing-finding reconciliation and review remain open; the registry green is a future-addition ratchet, not a repair |
+
 ## Completion Result
 
-Not started.
+In progress. TK-001 defines the five dispositions in root and generic Lexicons; TK-002 adds the whole-registry remediation ratchet. Report-format requirements and existing-finding dispositions remain open.
 
 ## Remaining Limitations Or Follow-Up Specs
 
