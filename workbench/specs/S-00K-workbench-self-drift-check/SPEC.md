@@ -1,15 +1,15 @@
 # S-00K - Workbench Self-Drift Check On Update
 
 **Spec ID:** S-00K
-**Status:** planned
+**Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** drift-lane
 **Stance:** Builder
-**Updated:** 2026-09-10
+**Updated:** 2026-09-19
 **Catalog description:** Check the canonical Workbench's own artifacts for semantic drift before an update is called complete.
-**Blockers:** explicit implementation activation; specification and handoff are complete, implementation is not authorized by this record alone
-**Latest event:** Planned from the owner-requested self-drift correction and passive drift review.
-**Next gate:** Activate S-00K for implementation in a clean task worktree.
+**Blockers:** none
+**Latest event:** TK-001 claimed by drift-lane.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -118,7 +118,7 @@ scope and time are explicit.
 
 ## Dependencies And Blockers
 
-S-00K is planned until explicitly activated. The implementation must first read
+The owner explicitly activated S-00K on 2026-09-18. The implementation must first read
 the current manifest and applicable controls, create a clean task worktree from
 the declared integration/default base, and preserve unrelated dirty state in
 the current checkout. It must inspect current provider/host availability only
@@ -180,6 +180,8 @@ turn a home-directory finding into a repository repair.
       current gate without treating historical v3.1 work as active.
 - [ ] The full required verification suite, render, doctor, and independent
       exact-candidate review pass before integration.
+
+The selected public seam is `node workbench/tools/self-drift.mjs --json`. It emits a read-only receipt with source revision, version, inventory, findings and explicit semantic-review limits. Machine checks do not certify arbitrary prose as current.
 
 ## Testing Seams
 

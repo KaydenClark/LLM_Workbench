@@ -3,8 +3,8 @@
 **Task ID:** TK-001
 **Spec ID:** S-00K
 **Slice:** Implement the Workbench self-drift seam, integrate it into update procedures, and prove cold-start-safe current state
-**Status:** deferred
-**Blockers:** S-00K
+**Status:** in-progress
+**Blockers:** none
 **Destination:** spec-acceptance: S-00K Acceptance Criteria
 **Planned verification:** Red disposable fixtures for stale current claims, resolved blockers, version/provenance drift, generated projection drift and unreadable required artifacts; green read-only self-drift seam, pre/post update receipt, focused/full suites and fresh no-memory read-back
 
