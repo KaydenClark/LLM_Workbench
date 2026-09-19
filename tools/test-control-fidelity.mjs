@@ -398,3 +398,12 @@ test('feedback disposition vocabulary is closed and shared by root and template'
     assert.deepEqual([...section.matchAll(/^- \*\*([a-z-]+)\*\*/gm)].map(match => match[1]), ['diagnostic', 'test', 'repaired', 'declined', 'accepted-open']);
   }
 });
+
+test('feedback formats require a disposition and owning evidence route', () => {
+  for (const relative of ['workbench/feedback/REPORT_FORMAT.md', 'templates/feedback/REPORT_FORMAT.md']) {
+    const content = read(root, relative);
+    assert.match(content, /Disposition \(required\)/, relative);
+    assert.match(content, /diagnostic.*test.*repaired.*declined.*accepted-open/, relative);
+    assert.match(content, /owning Spec/, relative);
+  }
+});
