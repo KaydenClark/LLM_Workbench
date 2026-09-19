@@ -24,6 +24,7 @@ import {
   moveSpecDirectory,
   moveTaskRecord,
   nextWork,
+  nextIdentity,
   parseCliArgs,
   receiptTask,
   referencesToPath,
@@ -4170,7 +4171,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.equal(receipt.historicalRoute, historicalRoute);
     assert.match(receipt.retiringCommit, /^[0-9a-f]{40}$/);
     assert.match(receipt.discardParentCommit, /^[0-9a-f]{40}$/);
-    assert.equal(receipt.recoveryCommand, `git checkout ${receipt.retiringCommit} -- ${historicalRoute}`);
+    assert.equal(receipt.recoveryCommand, `git checkout ${receipt.recoveryCommit} -- ${historicalDir}`);
     assert.equal(receipt.register, 'workbench/specs/DISCARDS.md');
     assert.ok(!fs.existsSync(path.join(discardRoot, historicalDir)), 'the whole retired Spec directory, not only SPEC.md, is actually gone');
 
@@ -4178,33 +4179,16 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.match(discards, /^# Discards$/m);
     assert.match(
       discards,
-      new RegExp(`\\| \\d{4}-\\d{2}-\\d{2} \\| spec \\| S-580 \\| ${escapeForRegExp(historicalRoute)} \\| ${receipt.retiringCommit} \\| ${receipt.discardParentCommit} \\| git checkout ${receipt.retiringCommit} -- ${escapeForRegExp(historicalRoute)} \\|`, 'm'),
+      new RegExp(`\\| \\d{4}-\\d{2}-\\d{2} \\| spec \\| S-580 \\| ${escapeForRegExp(historicalRoute)} \\| ${receipt.retiringCommit} \\| ${receipt.discardParentCommit} \\| git checkout ${receipt.recoveryCommit} -- ${escapeForRegExp(historicalDir)} \\|`, 'm'),
       'the discards register names the record, the retiring commit, the discard\'s parent commit, and a literal recovery command'
     );
 
     assert.equal(loadRetiredSpecs(discardRoot).some((spec) => spec.id === 'S-580'), false, 'S-580 is gone from the retired roster too');
     assert.deepEqual(doctor(discardRoot).filter((item) => item.specId === 'S-580'), [], 'a correctly discarded Spec raises no identity or lifecycle finding');
 
-    // The durable-owner Wiki note's own "Evidence and Sources" citation of
-    // S-580 - the exact sanctioned self-citation the gate excluded above -
-    // is genuinely dangling now that discard actually removed the file it
-    // pointed at. This is not new drift the gate should have caught (the
-    // gate proves nothing *else* still refers to the record; a record's own
-    // durable owner citing its own now-Git-only history is expected, per
-    // "a later corrective Task loads the reconciled Wiki capability claim
-    // and updates it"), so the new `discarded-reference` finding is doctor's
-    // safety net noticing it, exactly the class of gap a corrective Task
-    // (proven above and below) is what closes.
-    const staleAfterDiscard = scanReferences(discardRoot);
-    assert.deepEqual(staleAfterDiscard, [{
-      file: 'workbench/wiki/design-concepts/discard-fixture-capability.md',
-      target: '../../specs/retired/S-580-discard-fixture/SPEC.md'
-    }], 'discard leaves exactly one expected dangling reference behind: the durable owner\'s own now-history-only citation of the record it retired');
-    assert.deepEqual(
-      doctor(discardRoot).filter((item) => item.code === 'discarded-reference').map((item) => item.target),
-      ['../../specs/retired/S-580-discard-fixture/SPEC.md'],
-      'doctor surfaces that exact gap through the new discarded-reference finding, sourced from the same scan'
-    );
+    assert.deepEqual(scanReferences(discardRoot), [], 'successful discard leaves no dangling durable-owner citation');
+    assert.deepEqual(doctor(discardRoot).filter(item => item.code === 'discarded-reference'), []);
+    assert.match(fs.readFileSync(notePath, 'utf8'), /git show [0-9a-f]{40}:workbench\/specs\/retired\/S-580-discard-fixture\/SPEC.md/);
     const catalogAfter = fs.readFileSync(path.join(discardRoot, 'workbench/specs/CATALOG.md'), 'utf8');
     assert.doesNotMatch(catalogAfter, /S-580-discard-fixture/, 'render already ran inside discardRetiredSpec; the catalog no longer names the discarded Spec even by its historical route');
 
@@ -4246,14 +4230,6 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     writeAt(taskDiscardRoot, 'workbench/specs/S-592-task-discard-fixture/SPEC.md', emptyTableRecordBackedSpec('S-592'));
     writeAt(taskDiscardRoot, 'workbench/specs/S-592-task-discard-fixture/tasks/TK-001/TASK.md',
       withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-592', slice: 'Task discard fixture slice', destination: 'spec-acceptance: S-592 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/task-discard-fixture' }));
-    // TK-002 stays on the active roster throughout: `git rm -r` on TK-001's
-    // sole directory would otherwise leave `tasks/` itself empty (Git tracks
-    // no empty directory), flipping this Spec's own `recordBacked` read back
-    // to false against its deliberately empty embedded table - a real but
-    // orthogonal edge case this fixture sidesteps rather than exercises.
-    writeAt(taskDiscardRoot, 'workbench/specs/S-592-task-discard-fixture/tasks/TK-002/TASK.md',
-      doneTaskRecordFixture({ id: 'TK-002', specId: 'S-592', slice: 'Kept active so tasks/ never empties out', destination: 'spec-acceptance: S-592 Acceptance Criteria', proof: 'landed' }));
-
     execFileSync('git', ['init', '--quiet', taskDiscardRoot]);
     execFileSync('git', ['-C', taskDiscardRoot, 'config', 'user.email', 'fixture@example.com']);
     execFileSync('git', ['-C', taskDiscardRoot, 'config', 'user.name', 'Fixture']);
@@ -4289,11 +4265,41 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /discard refuses a dirty working tree/, 'refuses a dirty working tree');
     fs.rmSync(path.join(taskDiscardRoot, 'scratch.txt'));
 
+    const originalTask = fs.readFileSync(path.join(taskDiscardRoot, taskHistoricalRoute), 'utf8');
+    execFileSync('git', ['-C', taskDiscardRoot, 'rm', '-r', '--quiet', path.dirname(taskHistoricalRoute)]);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'remove first incarnation']);
+    writeAt(taskDiscardRoot, taskHistoricalRoute, originalTask.replace('Task discard fixture slice', 'Second incarnation'));
+    writeAt(taskDiscardRoot, path.dirname(taskHistoricalRoute) + '/proof.txt', 'second incarnation proof');
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 're-add retired task']);
+    const readdedSha = headSha(taskDiscardRoot);
+    assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /not verified contained/, 'obsolete first-add containment cannot authorize a re-add');
+    assert.equal(headSha(taskDiscardRoot), readdedSha);
+    execFileSync('git', ['-C', taskDiscardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    writeAt(taskDiscardRoot, path.dirname(taskHistoricalRoute) + '/proof.txt', 'latest proof');
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'update sibling proof']);
+    assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /not verified contained/, 'all current bytes need containment, including sibling proof');
+    execFileSync('git', ['-C', taskDiscardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+
     const receipt = discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001');
+    assert.equal(receipt.retiringCommit, readdedSha);
+    assert.equal(findSpec(taskDiscardRoot, 'S-592').recordBacked, true);
+    assert.deepEqual(findSpec(taskDiscardRoot, 'S-592').records, []);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'discard final Task']);
+    const fresh = fs.mkdtempSync(path.join(os.tmpdir(), 'task-discard-clone-'));
+    try {
+      execFileSync('git', ['clone', '--quiet', taskDiscardRoot, fresh]);
+      assert.equal(findSpec(fresh, 'S-592').recordBacked, true, 'record-backed interpretation survives fresh clone');
+      execFileSync('git', ['-C', fresh, 'checkout', receipt.recoveryCommit, '--', path.dirname(taskHistoricalRoute)]);
+      assert.match(fs.readFileSync(path.join(fresh, taskHistoricalRoute), 'utf8'), /Second incarnation/);
+      assert.equal(fs.readFileSync(path.join(fresh, path.dirname(taskHistoricalRoute), 'proof.txt'), 'utf8'), 'latest proof');
+    } finally { fs.rmSync(fresh, { recursive: true, force: true }); }
+
     assert.equal(receipt.specId, 'S-592');
     assert.equal(receipt.taskId, 'TK-001');
     assert.equal(receipt.historicalRoute, taskHistoricalRoute);
-    assert.equal(receipt.recoveryCommand, `git checkout ${receipt.retiringCommit} -- ${taskHistoricalRoute}`);
+    assert.equal(receipt.recoveryCommand, `git checkout ${receipt.recoveryCommit} -- ${path.dirname(taskHistoricalRoute)}`);
     assert.ok(!fs.existsSync(path.join(taskDiscardRoot, taskHistoricalRoute)), 'the retired Task directory is actually gone');
 
     const discards = fs.readFileSync(path.join(taskDiscardRoot, 'workbench/specs/DISCARDS.md'), 'utf8');
@@ -4436,6 +4442,10 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
       findings: 'The capability note omits an edge case',
       wikiClaim: 'workbench/wiki/design-concepts/orphan-fixture-capability.md#Evidence and Sources'
     });
+    assert.throws(() => createCorrectiveTasks(orphanRoot, 'S-590', {
+      candidate: 'deadbee2', findings: 'The capability note omits an edge case',
+      wikiClaim: 'workbench/wiki/design-concepts/orphan-fixture-capability.md#Evidence and Sources'
+    }), /already exist/, 'retry does not duplicate a corrective finding');
     assert.equal(receipt.specId, 'S-590');
     assert.equal(receipt.created.length, 1);
     const created = receipt.created[0];

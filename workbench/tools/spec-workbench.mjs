@@ -45,6 +45,7 @@ export const SPEC_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 
 export function nextWork(rootDir) {
   refuseBlockedRuntime(rootDir);
+  if (discardedReferences(path.resolve(rootDir)).length) return null;
   const candidate = selectCandidate(loadSpecs(rootDir));
   if (candidate) return candidate;
   return selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir));
@@ -160,9 +161,7 @@ export function nextIdentity(rootDir, specId, options = {}) {
   if (!['S', 'TK'].includes(prefix)) throw new Error('--prefix must be S or TK');
   if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec ID');
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
-  const occupied = prefix === 'S'
-    ? specs.map(spec => spec.id)
-    : specs.flatMap(spec => [...spec.rows, ...spec.records].map(item => item.id));
+  const occupied = occupiedIdentities(rootDir, prefix);
   // Letter-bearing new durable labels do not reuse removed historical decimal
   // IDs. Numeric tasks also retain their old spec-qualified interpretation.
   const reservations = [...new Map(occupied.map(id => [visibleIdKey(id), id])).values()];
@@ -170,9 +169,40 @@ export function nextIdentity(rootDir, specId, options = {}) {
   return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}) };
 }
 
+// Identity is retained outside ordinary selection: retirement and discard do
+// not make a label reusable. Read declared lanes at each remote tip as well.
+export function occupiedIdentities(rootDir, prefix) {
+  const root = path.resolve(rootDir);
+  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  const occupied = prefix === 'S' ? specs.map(spec => spec.id)
+    : [...specs.flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
+  const register = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
+  if (fs.existsSync(register)) {
+    for (const line of fs.readFileSync(register, 'utf8').split('\n')) {
+      if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
+      const label = parseMarkdownTableRow(line)[2] ?? '';
+      occupied.push(...(label.match(new RegExp(`${prefix}-[0-9A-Za-z]{3,}`, 'g')) ?? []));
+    }
+  }
+  const refs = spawnSync('git', ['-C', root, 'for-each-ref', '--format=%(refname)', 'refs/remotes'], { encoding: 'utf8' });
+  if (refs.status === 0) for (const ref of refs.stdout.trim().split('\n').filter(Boolean)) {
+    const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8' });
+    let lane = resolveSpecsRoot(root).specsPrefix;
+    if (manifestResult.status === 0) {
+      try { lane = JSON.parse(manifestResult.stdout).lanes?.specs ?? lane; }
+      catch { throw new Error(`Cannot reserve IDs from malformed manifest at ${ref}`); }
+    }
+    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane], { encoding: 'utf8' });
+    if (![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.stderr.trim()}`);
+    occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
+  }
+  return [...new Set(occupied)];
+}
+
 export function claimWork(rootDir, id, options) {
   refuseBlockedRuntime(rootDir);
   requireValue(options?.agent, '--agent is required');
+  if (discardedReferences(path.resolve(rootDir)).length) throw new Error('discarded-reference: selection is blocked until current references are reconciled');
   // S-00I TK-006: an orphan corrective Task (no owning Spec directory left to
   // claim through) is addressed by its own Task ID directly, never a Spec
   // ID - there is no Spec ID left to name. `TASK.md`'s own id regex closes
@@ -332,8 +362,10 @@ function closeOrphanCorrectiveTask(root, taskId, options) {
 // unchanged when the note has no `provenance:` list at all, so the caller
 // can refuse rather than silently writing nothing.
 function appendProvenanceRow(content, text) {
+  const frontmatter = /^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/.exec(content);
+  if (!frontmatter) return content;
   const pattern = /^provenance:\n((?:  - .*\n)*)/m;
-  const match = pattern.exec(content);
+  const match = pattern.exec(frontmatter[0]);
   if (!match) return content;
   const at = match.index + match[0].length;
   return `${content.slice(0, at)}  - ${text}\n${content.slice(at)}`;
@@ -1946,10 +1978,47 @@ function parseWorktreeEntries(porcelain) {
 // (`moveTaskRecord` appends no evidence row to the moved record at all), so
 // one function serves both discard functions below.
 function resolveMovingCommit(root, relativePath) {
-  const result = spawnSync('git', ['-C', root, 'log', '--no-renames', '--diff-filter=A', '--format=%H', '--reverse', '--', relativePath], { encoding: 'utf8' });
+  const result = spawnSync('git', ['-C', root, 'log', '--no-renames', '--diff-filter=A', '--format=%H', '-1', '--', relativePath], { encoding: 'utf8' });
   if (result.status !== 0) return null;
   const shas = result.stdout.split('\n').map((line) => line.trim()).filter(Boolean);
   return shas.length > 0 ? shas[0] : null;
+}
+
+// Recovery covers the whole directory at its latest change, including proof
+// files added after retirement. Both incarnation and content must be on main.
+function recoveryIdentity(root, relativeDir, remoteRef) {
+  const result = spawnSync('git', ['-C', root, 'log', '-1', '--format=%H', '--', relativeDir], { encoding: 'utf8' });
+  const commit = result.stdout?.trim();
+  if (result.status !== 0 || !commit || spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', commit, remoteRef]).status !== 0) {
+    throw new Error(`discard current directory content is not verified contained in ${remoteRef}`);
+  }
+  return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${relativeDir}` };
+}
+
+function historicalWikiCitation(content, file, directory, root, commit) {
+  // Only evidence citations are history. An operational link elsewhere still
+  // participates in the complete reference gate and must be reconciled first.
+  return content.replace(/(^## Evidence and Sources\s*\n)([\s\S]*?)(?=^## |$(?![\s\S]))/m, (_, heading, body) => heading + body.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (original, label, target) => {
+    if (/^(?:https?:|mailto:)/.test(target)) return original;
+    const resolved = path.resolve(path.dirname(file), decodeURIComponent(target.split('#')[0]));
+    if (resolved !== directory && !resolved.startsWith(directory + path.sep)) return original;
+    const route = path.relative(root, resolved).split(path.sep).join('/');
+    return `${label} (\`git show ${commit}:${route}\`)`;
+  }));
+}
+
+function preflightDiscardRender(root) {
+  const specs = loadSpecs(root);
+  const retired = loadRetiredSpecs(root);
+  const blueprint = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8');
+  const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+  if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs, retired));
+  replaceRegion(board, HOT_START, HOT_END, renderHotBoard(specs));
+}
+
+function stageDiscard(root) {
+  const result = spawnSync('git', ['-C', root, 'add', '-A'], { encoding: 'utf8' });
+  if (result.status !== 0) throw new Error(`discard staging failed: ${result.stderr.trim() || 'unknown error'}`);
 }
 
 // The declared default branch's remote-tracking ref, or `null` when either
@@ -2103,7 +2172,10 @@ export function discardRetiredSpec(rootDir, specId) {
   // a stray reference discard should refuse over. Every *other* reference
   // still blocks, including one from a different Wiki note entirely.
   const wikiOwnerFile = retiredSpecWikiOwnerFile(root, spec.relativePath);
-  const references = referencesToPath(root, specDir, { excludeFiles: wikiOwnerFile ? [wikiOwnerFile] : [] });
+  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  const { recoveryCommit, recoveryCommand } = recoveryIdentity(root, relativeDir, remoteRef);
+  const updatedWiki = wikiOwnerFile ? historicalWikiCitation(fs.readFileSync(wikiOwnerFile, 'utf8'), wikiOwnerFile, specDir, root, recoveryCommit) : null;
+  const references = referencesToPath(root, specDir, { contentOverrides: new Map(wikiOwnerFile ? [[wikiOwnerFile, updatedWiki]] : []) });
   if (references.length > 0) {
     throw new Error(`${specId} cannot discard: a complete reference scan still finds ${references.length} current reference(s) naming it, starting with ${references[0].file} -> ${references[0].target}`);
   }
@@ -2117,20 +2189,21 @@ export function discardRetiredSpec(rootDir, specId) {
   }
 
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
-  const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
+  preflightDiscardRender(root);
   const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
   if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
 
-  const recoveryCommand = `git checkout ${movingCommit} -- ${spec.relativePath}`;
+  atomicWrite(wikiOwnerFile, updatedWiki);
   const register = recordDiscard(root, { kind: 'spec', id: specId, historicalRoute: spec.relativePath, movingCommit, parentCommit, recoveryCommand });
 
   render(root);
-  spawnSync('git', ['-C', root, 'add', '-A']);
+  stageDiscard(root);
 
   return {
     specId,
     historicalRoute: spec.relativePath,
     retiringCommit: movingCommit,
+    recoveryCommit,
     discardParentCommit: parentCommit,
     recoveryCommand,
     register
@@ -2178,20 +2251,24 @@ export function discardRetiredTask(rootDir, specId, taskId) {
 
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
   const relativeDir = path.relative(root, taskDir).split(path.sep).join('/');
+  const { recoveryCommit, recoveryCommand } = recoveryIdentity(root, relativeDir, remoteRef);
+  preflightDiscardRender(root);
+  const keep = path.join(path.dirname(spec.filePath), 'tasks', '.gitkeep');
+  if (!fs.existsSync(keep)) atomicWrite(keep, '');
   const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
   if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}/${taskId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
 
-  const recoveryCommand = `git checkout ${movingCommit} -- ${historicalRoute}`;
   const register = recordDiscard(root, { kind: 'task', id: `${specId}/${taskId}`, historicalRoute, movingCommit, parentCommit, recoveryCommand });
 
   render(root);
-  spawnSync('git', ['-C', root, 'add', '-A']);
+  stageDiscard(root);
 
   return {
     specId,
     taskId,
     historicalRoute,
     retiringCommit: movingCommit,
+    recoveryCommit,
     discardParentCommit: parentCommit,
     recoveryCommand,
     register
@@ -2306,7 +2383,7 @@ export function referencesToPath(rootDir, targetPath, options = {}) {
   const underTarget = (candidate) => candidate === target || candidate.startsWith(target + path.sep);
   for (const file of collectSpecReferenceFiles(root, target)) {
     if (excludeFiles.has(file)) continue;
-    const original = fs.readFileSync(file, 'utf8');
+    const original = options.contentOverrides?.get(file) ?? fs.readFileSync(file, 'utf8');
     const { prefix, suffix } = splitEvidenceSection(original);
     const relative = path.relative(root, file).split(path.sep).join('/');
     for (const section of [prefix, suffix]) {

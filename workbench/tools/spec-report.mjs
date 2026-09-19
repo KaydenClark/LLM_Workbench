@@ -33,7 +33,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
-import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
+import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occupiedIdentities, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
 import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
 import { assertSafeWritePath, declaredGit, lanePath } from './workbench-paths.mjs';
@@ -651,13 +651,13 @@ function createOrphanCorrectiveTasks(root, specId, { candidate, items, wikiClaim
 
   const correctiveDir = path.join(resolveSpecsRoot(root).specsRoot, 'corrective');
   const existingOrphanRecords = listTaskRecords(correctiveDir, root);
-  const specs = loadSpecs(root);
-  const retiredSpecs = loadRetiredSpecs(root);
-  const occupied = [
-    ...specs.flatMap((entry) => [...entry.rows, ...(entry.records ?? [])].map((item) => item.id)),
-    ...retiredSpecs.flatMap((entry) => [...(entry.records ?? []), ...(entry.retiredRecords ?? [])].map((item) => item.id)),
-    ...existingOrphanRecords.map((item) => item.id)
-  ];
+  for (const findingText of items) {
+    const marker = `Answers a corrective wiki-claim finding for ${specId} at ${candidate}: ${findingText}`;
+    if (existingOrphanRecords.some(task => task.specId === specId && task.destination.reference === `${notePathRelative}#${heading}` && task.plannedVerification === marker)) {
+      throw new Error(`Corrective Tasks already exist for ${specId} at ${candidate}: ${findingText}`);
+    }
+  }
+  const occupied = occupiedIdentities(root, 'TK');
   const reservations = [...new Map(occupied.map((id) => [visibleIdKey(id), id])).values()];
 
   const staged = [];
