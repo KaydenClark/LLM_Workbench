@@ -97,9 +97,17 @@ Standalone room; no deployment wiki.
 
 ## Individual Spec Articles
 
-These articles preserve capability knowledge and distinguish historical proof
-from current behavior. Source Specs remain intact pending their lifecycle gates.
+One article per Spec preserves capability knowledge and distinguishes historical
+proof from current behavior. Original records remain intact pending lifecycle gates.
 
+- [Spec-Centered Progressive Disclosure](design-concepts/spec-S-001-progressive-disclosure.md)
+- [Held-Out Path-Safety Evaluation](design-concepts/spec-S-002-heldout-evaluation.md)
+- [Dependency-Safe Direct Claiming](design-concepts/spec-S-004-safe-direct-claim.md)
+- [Consistent Bootstrap Ownership Guidance](design-concepts/spec-S-005-bootstrap-doc-alignment.md)
+- [Evidence-Gated Harness Feedback](design-concepts/spec-S-006-feedback-automation.md)
+- [Import-Safe Feedback Helper Entry](design-concepts/spec-S-007-feedback-helper-import.md)
+- [Portable Verification Boundaries](design-concepts/spec-S-008-windows-verification-portability.md)
+- [Adoption When Git Writes Are Unavailable](design-concepts/spec-S-009-git-write-constrained-adoption.md)
 - [S-00A: Blueprint, Active ADRs And The Context Map](design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md)
 - [S-00B: Workbench Template Reformation](design-concepts/spec-S-00B-workbench-template-reformation.md)
 - [S-00C: Project Evidence And Blueprint Grilling Preparation](design-concepts/spec-S-00C-project-evidence-and-blueprint-grilling.md)
@@ -107,3 +115,19 @@ from current behavior. Source Specs remain intact pending their lifecycle gates.
 - [S-00E: Fresh Template Project Proof](design-concepts/spec-S-00E-fresh-template-project-proof.md)
 - [S-00F: The Named Template Upgrade Release Gate](design-concepts/spec-S-00F-template-upgrade-release-gate.md)
 - [S-00L: Lexicon Freshness Repair](design-concepts/spec-S-00L-lexicon-freshness-repair.md)
+- [Canonical Evaluator Invocation](design-concepts/spec-S-010-canonical-evaluator-entry.md)
+- [Reproducible Adoption Provenance](design-concepts/spec-S-012-adoption-provenance-proof.md)
+- [Verified Automation Run Outcomes](design-concepts/spec-S-013-automation-run-outcomes.md)
+- [Operable Genesis Readiness](design-concepts/spec-S-015-portable-v3-release-audit-recovery.md)
+- [Bounded Team Coordination (S-020)](design-concepts/spec-S-020-spec-native-team-coordination.md)
+- [Portable Workbench Architecture (S-021)](design-concepts/spec-S-021-portable-workbench-v3.md)
+- [Manifest And Managed Runtime (S-023)](design-concepts/spec-S-023-manifest-and-managed-runtime.md)
+- [Governance Claims And Diagnostics (S-024)](design-concepts/spec-S-024-governance-core-and-diagnostics.md)
+- [Portable Wiki Knowledge (S-025)](design-concepts/spec-S-025-portable-wiki-and-design-concepts.md)
+- [Workflow Composition And Cold Continuation (S-026)](design-concepts/spec-S-026-workflow-composition-and-cold-resume.md)
+- [S-046: JSON Notepad Foundation](design-concepts/spec-S-046-json-notepad-foundation.md)
+- [S-047: Visible Workbench Identifiers](design-concepts/spec-S-047-visible-workbench-identifiers.md)
+- [S-048: Checkpoint Retirement And Direct Promotion](design-concepts/spec-S-048-checkpoint-retirement.md)
+- [S-049: Assignment Ownership And Coordination Records](design-concepts/spec-S-049-assignment-ownership-and-coordination-record.md)
+- [S-051: Core Skill Ownership And Compatibility](design-concepts/spec-S-051-core-skill-ownership-and-compatibility.md)
+- [S-053: Configured Host Capabilities](design-concepts/spec-S-053-configured-host-capabilities.md)
