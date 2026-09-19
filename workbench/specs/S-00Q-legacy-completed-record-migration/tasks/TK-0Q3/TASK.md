@@ -22,3 +22,12 @@ Actual retirement remains gated on those prerequisites plus concrete batch revie
 
 Pin all source paths and tests before editing. Retire through the tool only
 after approval; restore the batch from the recorded pre-move commit on failure.
+
+## Prepared article result
+
+The 6 individual articles for this batch are authored, linked from the Wiki
+router and included in the [migration matrix](../../MIGRATION_MATRIX.md).
+Separate-context review covered their principal capabilities, decisions and
+limits; all article links and identities were checked. This completes article
+preparation only. Current-consumer migration, retirement QA and tool-mediated
+retirement remain open under the stated dependencies.

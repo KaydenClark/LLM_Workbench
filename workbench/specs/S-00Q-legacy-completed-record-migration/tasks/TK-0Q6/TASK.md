@@ -27,3 +27,12 @@ Actual retirement remains gated on those prerequisites plus concrete batch revie
 Preserve privacy boundaries, identifiers, checkpoint history and exact host
 limits. Stop and restore the pre-move batch if any private or host-specific
 material would enter the Wiki.
+
+## Prepared article result
+
+The 6 individual articles for this batch are authored, linked from the Wiki
+router and included in the [migration matrix](../../MIGRATION_MATRIX.md).
+Separate-context review covered their principal capabilities, decisions and
+limits; all article links and identities were checked. This completes article
+preparation only. Current-consumer migration, retirement QA and tool-mediated
+retirement remain open under the stated dependencies.

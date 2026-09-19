@@ -24,3 +24,12 @@ Actual retirement remains gated on those prerequisites plus concrete batch revie
 Retire only as one reviewed batch after the pre-move matrix and branch/commit
 rollback point are recorded. On failure, restore the pre-retirement commit; do
 not hand-move individual directories.
+
+## Prepared article result
+
+The 12 individual articles for this batch are authored, linked from the Wiki
+router and included in the [migration matrix](../../MIGRATION_MATRIX.md).
+Separate-context review covered their principal capabilities, decisions and
+limits; all article links and identities were checked. This completes article
+preparation only. Current-consumer migration, retirement QA and tool-mediated
+retirement remain open under the stated dependencies.

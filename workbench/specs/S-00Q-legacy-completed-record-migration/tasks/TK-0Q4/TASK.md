@@ -27,3 +27,12 @@ Actual retirement remains gated on those prerequisites plus concrete batch revie
 Preserve version labels, candidate SHAs, review verdicts and attribution
 unchanged. Roll back the whole batch to its recorded pre-move commit if any
 lineage becomes ambiguous.
+
+## Prepared article result
+
+The 9 individual articles for this batch are authored, linked from the Wiki
+router and included in the [migration matrix](../../MIGRATION_MATRIX.md).
+Separate-context review covered their principal capabilities, decisions and
+limits; all article links and identities were checked. This completes article
+preparation only. Current-consumer migration, retirement QA and tool-mediated
+retirement remain open under the stated dependencies.

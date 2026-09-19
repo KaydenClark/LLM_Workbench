@@ -27,3 +27,12 @@ Actual retirement remains gated on those prerequisites plus concrete batch revie
 Keep exact test/candidate anchors and correction chains. If current and
 historical claims cannot be separated safely, leave the affected record active
 and block the batch rather than partially retiring it.
+
+## Prepared article result
+
+The 10 individual articles for this batch are authored, linked from the Wiki
+router and included in the [migration matrix](../../MIGRATION_MATRIX.md).
+Separate-context review covered their principal capabilities, decisions and
+limits; all article links and identities were checked. This completes article
+preparation only. Current-consumer migration, retirement QA and tool-mediated
+retirement remain open under the stated dependencies.
