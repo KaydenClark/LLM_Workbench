@@ -3,8 +3,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { RUNTIME_TOOLS } from '../workbench/tools/workbench-layout.mjs';
 import { inspectSelfDrift } from '../workbench/tools/self-drift.mjs';
 
+assert.ok(RUNTIME_TOOLS.includes('self-drift.mjs'), 'installed runtime includes the public self-drift seam');
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'self-drift-'));
 function write(file, text) { fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true }); fs.writeFileSync(path.join(root, file), text); }
 try {
