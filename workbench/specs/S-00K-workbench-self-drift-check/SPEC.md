@@ -224,6 +224,8 @@ this spec. The read-only runtime and focused regression now implement the machin
 
 | 2026-09-19 | TK-0SA correction | Retracted the preceding doctor no-blocker claim for the supersession candidate `4338087` | Captured doctor output actually reports contradictory-state for both S-014 and S-022 because the runtime forbids superseded Specs with unfinished tasks; the shell continued after doctor and only the final command status was observed | Original row retained as append-only history; correction is explicit here | Resolve through the current lifecycle owner or retain blocked owner-routed historical packets; never mark unexecuted Tasks done just to silence the check |
 
+| 2026-09-19 | TK-0SA correction result | Preserved blocked S-014/S-022 historical records and current successor routes without changing lifecycle semantics | Both packets retain all original tasks and acceptance; no runtime expansion or false task completion; remaining historical hot rows explicitly disclose owner routing | Room-specific README and both current-disposition sections reconciled | Formal supersession remains limited by existing unfinished-task validation; this is an owner-routed limitation allowed by S-00K acceptance, not a clean projection claim |
+
 ## Completion Result
 
 In progress. The read-only public seam and focused regression exist at `7f28eb8`; update integration, broader proof, semantic reconciliation and independent review remain open. The CLI never represents its machine evidence alone as a clean-update certification.
