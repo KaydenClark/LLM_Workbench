@@ -192,7 +192,7 @@ export function occupiedIdentities(rootDir, prefix) {
       try { lane = JSON.parse(manifestResult.stdout).lanes?.specs ?? lane; }
       catch { throw new Error(`Cannot reserve IDs from malformed manifest at ${ref}`); }
     }
-    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane], { encoding: 'utf8' });
+    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane, ...(manifestResult.status === 0 ? [] : ['specs'])], { encoding: 'utf8' });
     if (![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.stderr.trim()}`);
     occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
   }
@@ -1988,7 +1988,8 @@ function recoveryIdentity(root, relativeDir, remoteRef) {
   const recovered = tree(commit);
   const current = tree('HEAD');
   if (recovered.status !== 0 || current.status !== 0 || recovered.stdout !== current.stdout) throw new Error('discard recovery commit does not match the complete current directory');
-  return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${relativeDir}` };
+  const quotedDir = /^[A-Za-z0-9_./-]+$/.test(relativeDir) ? relativeDir : "'" + relativeDir.replaceAll("'", "'\"'\"'") + "'";
+  return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${quotedDir}` };
 }
 
 function historicalWikiCitation(content, file, directory, root, commit) {

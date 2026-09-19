@@ -4201,6 +4201,12 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.deepEqual(scanReferences(discardRoot), [], 'successful discard leaves no dangling durable-owner citation');
     assert.deepEqual(doctor(discardRoot).filter(item => item.code === 'discarded-reference'), []);
     assert.match(fs.readFileSync(notePath, 'utf8'), /git show [0-9a-f]{40}:workbench\/specs\/retired\/S-580-discard-fixture\/SPEC.md/);
+    const cleanAgents = fs.readFileSync(path.join(discardRoot, 'AGENTS.md'), 'utf8');
+    fs.appendFileSync(path.join(discardRoot, 'AGENTS.md'), '\n[Discarded record](workbench/specs/retired/S-580-discard-fixture/SPEC.md)\n');
+    assert.ok(doctor(discardRoot).some(item => item.code === 'discarded-reference' && item.blocks === 'selection'));
+    assert.equal(nextWork(discardRoot), null, 'selection consumes the registered discarded-reference blocker');
+    assert.throws(() => claimWork(discardRoot, 'S-581', { agent: 'fixture' }), /discarded-reference/);
+    fs.writeFileSync(path.join(discardRoot, 'AGENTS.md'), cleanAgents);
     const catalogAfter = fs.readFileSync(path.join(discardRoot, 'workbench/specs/CATALOG.md'), 'utf8');
     assert.doesNotMatch(catalogAfter, /S-580-discard-fixture/, 'render already ran inside discardRetiredSpec; the catalog no longer names the discarded Spec even by its historical route');
 
