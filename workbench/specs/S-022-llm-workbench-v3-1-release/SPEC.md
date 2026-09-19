@@ -6,14 +6,29 @@
 > between status folders.
 
 **Spec ID:** S-022
-**Status:** blocked
+**Status:** superseded
 **Priority:** 0
 **Owner:** claude-fable-5-1
-**Updated:** 2026-09-05
-**Catalog description:** Release v3.1.0 as the first public v3 Workbench from one independently audited exact candidate proven by a cross-provider cold resume with Foundry absent.
-**Blockers:** Owner release-direction reconciliation remains pending; integration testing is authorized, main/release publication is not.
-**Latest event:** S-027 delivered the reviewed v3.1.1 candidate through PR #48 at integration 09f0875; historical release proof remains preserved.
-**Next gate:** Reconcile this historical release procedure and version intent with owner direction before any publication; do not reopen S-027 or require CIC for ordinary testing.
+**Updated:** 2026-09-19
+**Catalog description:** Historical release packet superseded by S-050; unfinished acceptance is preserved, not claimed complete.
+**Blockers:** none; surviving current gates are owned by S-050 and S-052, not this historical packet.
+**Latest event:** S-00K owner reconciliation removed the obsolete duplicate release assignment without changing historical proof.
+**Next gate:** Follow S-050 for current release work; owner-only main promotion and S-052 live-host proof remain separate gates.
+
+## Current Disposition
+
+This packet is **superseded, not completed**. Its unchecked acceptance and
+unfinished historical tasks remain below as evidence of what was never proven.
+Current work routes to [S-050](../S-050-workbench-v3-2-0-release/SPEC.md), with
+[S-050](../S-050-workbench-v3-2-0-release/SPEC.md) retaining the delivered v3.2
+receipt and [S-052](../S-052-private-session-transport/SPEC.md) retaining the
+actual private-service/device/provider proof gate. S-050 records the later reviewed source and Template integration delivery. Its TK-006 final-readiness gate remains open through S-052/TK-004 actual private-repository and Mac/Windows Claude/Codex evidence. The old v3.1.0 stamp, exact-candidate audit and S-014 handoff were not completed by this reconciliation.
+
+The original generation/stable-path notice and original requirements below are
+historical context. AGENTS owns today's folder-lifecycle rules. This disposition
+moves no file, publishes no release and authorizes no installation or deletion.
+No current CIC/Sol consumer read-back was established during this local
+reconciliation; any such consumer must be checked before reusing its old flow.
 
 ## Outcome
 
@@ -180,9 +195,11 @@ remote SHA read-back.
 
 | 2026-09-05 | release | S-027 integration delivery verified at `09f0875` via PR #48; release remains paused | Exact reviewed `fa04e27` is an ancestor of remote integration; main unchanged | Current gate reconciled; original baseline and append-only evidence preserved | Owner release-direction reconciliation, not S-027 preparation |
 
+| 2026-09-19 | S-00K TK-0SA | Reconciled obsolete release assignment to S-050; historical acceptance not completed | Read complete S-014/S-022/S-050/S-052 packets and S-00O release scope at parent `1a26de9`; current owners preserve release and live-host gates | Current disposition and README route updated; all prior evidence rows preserved | S-050 TK-006 and S-052 TK-004 remain open; current S-00O build/release and owner main approval remain open; CIC/Sol consumer state unverified |
+
 ## Completion Result
 
-Pending.
+Superseded, not completed. Current obligations follow S-050; original unchecked acceptance and unfinished task evidence remain preserved.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -193,4 +210,4 @@ Pending.
 ## Supersession
 
 - Supersedes: none
-- Superseded by: none
+- Superseded by: [S-050](../S-050-workbench-v3-2-0-release/SPEC.md).

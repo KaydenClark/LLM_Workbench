@@ -3,8 +3,8 @@
 **Task ID:** TK-0SA
 **Spec ID:** S-00K
 **Slice:** Reconcile the old release hot-queue with its current owner and Sol-coordinated disposition
-**Status:** blocked
-**Blockers:** S-00K
+**Status:** in-progress
+**Blockers:** none
 **Destination:** spec-acceptance: S-00K Acceptance Criteria
 **Planned verification:** Red: a stale release hot-queue claim remains current-facing without an owner or disposition; green: the self-drift result routes it to the existing owner, records Sol coordination and preserves historical evidence
 
