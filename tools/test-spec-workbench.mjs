@@ -4439,6 +4439,16 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.ok(stillRetired.records.some((task) => task.id === created.id), 'the new corrective Task is a live record on the still-retired Spec');
     assert.ok(!(stillRetired.retiredRecords ?? []).some((task) => task.id === created.id), 'and it is not itself a retired Task record');
 
+    // An old projection must not let discard erase a newly accepted obligation.
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'preserve open correction on main']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'update-ref', 'refs/remotes/origin/main', 'HEAD']);
+    const beforeRefusal = fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8');
+    assert.throws(() => discardRetiredSpec(correctiveRetiredRoot, 'S-591'), /unfinished/, 'open correction blocks discard without needing a fresh Taskboard');
+    assert.equal(fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8'), beforeRefusal);
+    assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, created.filePath)));
+    assert.equal(execFileSync('git', ['-C', correctiveRetiredRoot, 'status', '--porcelain'], { encoding: 'utf8' }), '', 'refusal writes and stages nothing');
+
     const retiredBytes = fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8');
     assert.equal(nextWork(correctiveRetiredRoot)?.taskId, created.id, 'retired-owner corrective Task remains selectable');
     render(correctiveRetiredRoot);
@@ -4469,6 +4479,16 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.equal(nextWork(correctiveRetiredRoot), null, 'ordinary historical Tasks are never reselected');
     assert.throws(() => claimWork(correctiveRetiredRoot, 'S-591', { agent: 'fixture' }), /no eligible ready task/);
     assert.throws(() => closeTask(correctiveRetiredRoot, 'S-591', { proof: 'no', docs: 'no', remainingGap: 'none' }), /no open task/);
+
+    writeAt(correctiveRetiredRoot, 'workbench/specs/S-592-successor/SPEC.md', fixtureSpec()
+      .replaceAll('S-001', 'S-592')
+      .replace('| TK-001 | First slice | ready | none | pending |', '| TK-001 | First slice | ready | S-591 | pending |'));
+    render(correctiveRetiredRoot);
+    assert.equal(nextWork(correctiveRetiredRoot)?.specId, 'S-592', 'a retired completed predecessor satisfies an active successor');
+    assert.equal(doctor(correctiveRetiredRoot).some(item => item.code === 'blocked-slice' && item.specId === 'S-592'), false,
+      'doctor and selection agree on retired completed dependencies');
+    claimWork(correctiveRetiredRoot, 'S-592', { agent: 'fixture' });
+    assert.equal(nextWork(correctiveRetiredRoot)?.status, 'in-progress');
 
     console.log('ok - createCorrectiveTasks against a retired (not discarded) Spec writes the new Task straight into its still-retired tasks/ directory, never under tasks/retired/, and never moves the Spec back out of retired/ - S-00J\'s deferred retired-folder case');
   } finally {
