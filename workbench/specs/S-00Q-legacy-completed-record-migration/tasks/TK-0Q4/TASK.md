@@ -11,6 +11,10 @@
 
 ## Delivery
 
+Create exactly one durable Wiki article per source Spec in this batch. Preserve
+useful capability knowledge, decisions, limitations and proof references; links
+connect related articles without merging them.
+
 Separate reusable operating contracts from historical candidate receipts.
 Current release procedure points to S-00O/Runbook; immutable old release proof
 keeps its version and scope. Do not fold S-014, S-022 or S-050 into this batch.

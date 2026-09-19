@@ -11,6 +11,8 @@
 
 ## Delivery
 
+Implementation is delegated once to [S-00T](../../../S-00T-lifecycle-discard-repair/SPEC.md); consume its reviewed evidence rather than repeating the repair.
+
 Repair only the existing allocation, discard and corrective-Task seams. Do not
 design a parallel lifecycle or relax any S-00I gate. Decide and test how frozen
 historical attribution is represented without remaining a current path

@@ -11,6 +11,10 @@
 
 ## Delivery
 
+Create exactly one durable Wiki article per source Spec in this batch. Preserve
+useful capability knowledge, decisions, limitations and proof references; links
+connect related articles without merging them.
+
 Keep local continuity distinct from optional transport and distinguish
 configured-host observations from enforcement or reliability claims. Do not
 close or migrate S-052.

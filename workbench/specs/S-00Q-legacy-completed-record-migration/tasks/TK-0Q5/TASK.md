@@ -11,6 +11,10 @@
 
 ## Delivery
 
+Create exactly one durable Wiki article per source Spec in this batch. Preserve
+useful capability knowledge, decisions, limitations and proof references; links
+connect related articles without merging them.
+
 Document the reusable diagnosis and repair models; keep one-off upstream fix
 dispositions and candidate corrections as versioned history. Never infer an
 actual consumer from similar names or identical bytes.

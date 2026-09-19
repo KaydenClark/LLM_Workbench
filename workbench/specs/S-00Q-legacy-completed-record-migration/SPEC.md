@@ -6,10 +6,10 @@
 **Owner:** unassigned
 **Stance:** Reconciler
 **Updated:** 2026-09-18
-**Catalog description:** Transform the 50 legacy completed Specs still on the active roster into capability-shaped durable knowledge, redirect current consumers, retire the records, and discard them only after verified default-branch containment and recovery proof.
-**Blockers:** S-00I, S-00J and S-00P must reach `complete`; the owner must choose the legacy-QA rule in TK-0Q0; TK-0Q1 must close the allocator and discard hazards before any real migration.
+**Catalog description:** Transform the 50 legacy completed Specs still on the active roster into one durable Wiki article per legacy Spec, redirect current consumers, retire the records, and discard them only after verified default-branch containment and recovery proof.
+**Blockers:** S-00I, S-00J and S-00P must reach `complete`; TK-0Q0 must prepare reviewable per-Spec articles and batch digests; TK-0Q1 must close the allocator and discard hazards before any real migration.
 **Latest event:** Planning record and ten bounded Tasks authored and structurally verified from the owner-directed legacy-record review; no migration, retirement or discard performed.
-**Next gate:** Keep this Spec unactivated. After S-00I, S-00J and S-00P are complete, the owner chooses the legacy-QA rule in TK-0Q0; only then may TK-0Q1 and the first capability batch be activated.
+**Next gate:** Keep this Spec unactivated. After S-00I, S-00J and S-00P are complete, TK-0Q0 prepares the inventory and reviewable batch digests under the recorded owner direction; only then may TK-0Q1 and the first capability batch be activated.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
@@ -17,7 +17,7 @@
 
 The 50 completed Specs that predate the current reconciliation lifecycle stop
 serving as current capability documentation. Their useful current meaning is
-rewritten into a small set of capability-shaped Wiki articles and the existing
+rewritten into exactly one Wiki article per legacy Spec and linked to the existing
 ADR, source, test, asset, control and procedure owners. Current consumers point
 to those owners. Each reconciled record then moves through `retired` and, only
 after exact default-branch containment, a clean current-reference scan and a
@@ -84,7 +84,7 @@ At the pre anchor:
 ### Complete migration inventory
 
 The inventory is complete and intentionally grouped by reader-facing
-capability, not by one article per Spec:
+capability, with exactly one article per Spec; batches organize execution and review only:
 
 | Batch | Legacy completed Specs | Capability destination to establish |
 |---|---|---|
@@ -101,10 +101,9 @@ capability, not by one article per Spec:
    exactly one durable destination, marks historical-only material explicitly,
    and records uncertainty without inferring a destination from filenames,
    dates, byte equality, references or green tests.
-2. Capability-shaped Wiki documentation explains what a reader needs now and
-   cites the current ADR/source/test/control owners. It does not paste Spec
-   requirements, Task state or evidence tables and does not create one article
-   mechanically for every Spec.
+2. Exactly one Wiki article per legacy Spec explains its useful capability knowledge,
+   decisions, limitations and proof references, citing current ADR/source/test/control
+   owners. It transforms meaning rather than pasting Task state or evidence tables.
 3. Current consumers move from active or retired Spec paths to the actual
    Wiki, ADR, source, test, control or procedure owner. Frozen evidence rows,
    ADR history and attribution keep their meaning through immutable
@@ -128,7 +127,10 @@ capability, not by one article per Spec:
 ### Owner gate: legacy QA
 
 No legacy Spec receives fabricated retrospective assembled-Spec review or
-Human QA. Before any batch retires, the owner must select and record one rule:
+Human QA. The owner selected durable transformation and review, then clarified exactly one
+Wiki article per Spec. The earlier alternatives remain below as decision lineage;
+option 1 supplies batch review, with per-Spec articles rather than merged articles.
+Individual unseen batch digests are not approved by this direction:
 
 1. **Recommended:** approve a current capability-batch migration digest. The
    digest inventories claims and destinations, verifies current behavior at
@@ -142,9 +144,9 @@ Human QA. Before any batch retires, the owner must select and record one rule:
    indefinitely. This reduces active-roster drift but does not reach the
    Blueprint's intended transient-record end state.
 
-TK-0Q0 records the owner's exact choice, evidence threshold and exception rule
-in this Spec before migration. Silence, old test evidence or the mere `complete`
-header is never interpreted as option 1.
+TK-0Q0 records the exact owner direction below, prepares the inventory and concrete
+batch digests, and retains per-batch review before retirement. Silence, old test
+evidence or the mere `complete` header never supplies approval of a batch.
 
 ### Migration and preservation contracts
 
@@ -172,7 +174,7 @@ header is never interpreted as option 1.
   recovery command. A failed migration restores the batch from its pre-change
   branch/commit; a post-discard correction uses the recorded Git recovery route
   on a new branch, never an unrecorded manual reconstruction.
-- TK-0Q1 is a prerequisite, not a second lifecycle implementation. It closes
+- TK-0Q1 is a prerequisite delivered once by [S-00T](../S-00T-lifecycle-discard-repair/SPEC.md), not a second lifecycle implementation. It closes
   the allocator collision and the four disclosed discard hazards at their
   existing seams, with regression tests, before any real legacy record is
   retired or discarded.
@@ -185,7 +187,7 @@ header is never interpreted as option 1.
 - Editing S-00I, S-00J, S-00K, S-00N, S-00O, S-00P, S-014, S-022, S-050 or
   S-052 as part of this planning change. Their owners receive precise handoffs;
   their history and state are not silently rewritten here.
-- Treating all similarly named Specs as one capability, generating 50 articles,
+- Treating all similarly named Specs as one capability, merging multiple Specs into one article,
   or deleting zero-reference records without semantic review.
 - Re-approving old releases, manufacturing unavailable host proof, inspecting
   an external repository, or touching Dungeon Friends.
@@ -196,11 +198,10 @@ header is never interpreted as option 1.
 
 - S-00I must be `complete` so the tested retirement/discard mechanism is the
   actual integration behavior, not an active candidate.
-- S-00J must be `complete` so the current approval model is settled before the
-  owner chooses a truthful legacy equivalence rule.
+- S-00J must be `complete` so the current approval model is settled before concrete legacy batch review.
 - S-00P must be `complete` so controls, terminology and Wiki routing no longer
   instruct the pre-lifecycle model while consumers are migrated.
-- The owner gate in TK-0Q0 blocks TK-0Q2 through TK-0Q9.
+- Concrete batch review in TK-0Q0 blocks TK-0Q2 through TK-0Q9.
 - TK-0Q1 blocks every real retirement or discard.
 - Each batch is bounded independently; its exact retirement commit must reach
   the declared default branch before its discard wave. A later batch does not
@@ -220,14 +221,14 @@ table intentionally carries no live rows.
       A-F, with claim classification, durable destination, consumer set,
       preservation route and uncertainty; no active/blocked record is smuggled
       into the completed inventory.
-- [ ] The owner-selected legacy-QA rule is recorded without fabricating
+- [ ] The selected per-Spec article and batch-review rule is recorded without fabricating
       retrospective S-00J review or Human QA.
 - [ ] `next-id` never proposes a used active, retired, corrective or
       remote-tracking-visible ID, and the four disclosed discard hazards are
       closed or explicitly proven harmless before the first real migration.
-- [ ] Every useful current claim from all 50 Specs is transformed into a
-      capability-shaped Wiki/ADR/source/test/control/procedure owner; copied
-      Task state and one-article-per-Spec output are rejected.
+- [ ] Every legacy Spec has exactly one Wiki article preserving useful capability
+      knowledge, decisions, limitations and proof references with links to actual
+      ADR/source/test/control/procedure owners; copied Task state is rejected.
 - [ ] Every current consumer points to the durable owner rather than a retired
       record before discard; frozen evidence, ADR history and attribution remain
       readable through immutable identity.
@@ -282,7 +283,7 @@ an expected end state.
 
 ## Documentation Impact
 
-The implementation primarily creates or updates capability-shaped articles in
+The implementation creates exactly one article per legacy Spec in
 the manifest-declared Wiki collections and routes them from
 `workbench/wiki/MEMORY.md`. Existing ADR/source/test/control/Runbook owners are
 updated only when a migrated current claim belongs there. `CATALOG.md` and
@@ -298,6 +299,8 @@ catalog/Taskboard rows. It performs no migration and changes no current owner.
 |---|---|---|---|---|
 | 2026-09-18 | 8dc257e | S-00Q planning baseline established from the owner-directed review | Parsed every top-level Spec header, ran `referencesToPath` across each completed directory, inspected the lifecycle and release owners, and ran `doctor --json` plus `next-id --prefix S --json` | 50 completed active-roster Specs, 19 with zero incoming references and 89 references total; S-00H is the sole retired Spec; next-id incorrectly proposes used S-00H; four discard hazards remain disclosed; no migration or lifecycle mutation performed |
 | 2026-09-18 | planning tree | S-00Q and ten Tasks are valid, collision-free planning records and remain unactivated | Rendered catalog; ran `show`, `report`, `next`, `doctor`, citation anchors, Wiki/ADR/control/spec-report and the full AGENTS suite; scanned 109 local and remote-tracking refs for S-00Q/TK-0Q0-TK-0Q9 | Render/show/report/citations and 42 of 44 suite commands passed; `next --json` remained null and doctor retained the same 48 nonblocking baseline findings. `test-spec-workbench` hit its pre-existing UTC-date-sensitive S-602 fixture (2026-09-17 became stale while the assertion expects clean). `test-check-append-only.py` did not finish under concurrent copies and was stopped without a result. No ID collision found and no implementation activated |
+
+| 2026-09-19 | owner direction in implementation session | Legacy migration approach clarified | Owner first said "I guess we should review some things, but I figured adding them all to the wiki or somewhere else durable would be good, like we do with current specs we get rid of"; then corrected "No like each spec should be a spec artical in the wiki please" | Exactly one Wiki article per legacy Spec; batches organize work and review only. Preserve useful capability knowledge, decisions, limitations and proof references. This supersedes the initial grouped-article plan; concrete batch approval and default-branch discard gates remain open. S-00T delivers TK-0Q1 runtime repairs once |
 
 ## Completion Result
 

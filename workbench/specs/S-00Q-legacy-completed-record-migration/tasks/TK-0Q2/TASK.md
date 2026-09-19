@@ -7,12 +7,13 @@
 **Blockers:** TK-0Q0, TK-0Q1
 **Destination:** spec-acceptance: S-00Q Acceptance Criteria lines 4-5
 **Stance:** Reconciler
-**Planned verification:** Red: the batch matrix identifies at least one useful current claim or consumer still owned only by a batch-A Spec; green: capability-shaped Wiki/current-owner destinations cover all twelve records, every current consumer resolves there, copied Task state is rejected, the owner-approved batch digest passes, and retire-spec leaves ordinary discovery clean.
+**Planned verification:** Red: the batch matrix identifies at least one useful current claim or consumer still owned only by a batch-A Spec; green: per-Spec Wiki/current-owner destinations cover all twelve records, every current consumer resolves there, copied Task state is rejected, the owner-approved batch digest passes, and retire-spec leaves ordinary discovery clean.
 
 ## Delivery
 
-Transform work selection, evaluation, feedback, portability, baseline and
-release-proof meaning into the smallest coherent durable owners. Keep historical
+Write one article for each of the twelve Specs, transforming work selection,
+evaluation, feedback, portability, baseline and release-proof meaning and linking
+to the existing implementation owners. Keep historical
 evaluation outcomes as bounded proof, not universal capability claims.
 
 ## Preservation And Rollback

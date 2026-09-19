@@ -11,7 +11,7 @@
 
 ## Delivery
 
-Build capability-shaped documentation around the portable room rather than six
+Build per-Spec documentation around the portable room rather than six
 Spec summaries. Preserve manifest/schema and migration evidence at the exact
 source/test owners that prove it.
 

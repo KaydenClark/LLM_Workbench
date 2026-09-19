@@ -4484,3 +4484,33 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     fs.rmSync(orphanRoot, { recursive: true, force: true });
   }
 }
+
+// Identity proposals cover all lifecycle locations and fetched parallel work.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'lifecycle-identities-'));
+  try {
+    initLifecycleFixture(root);
+    writeAt(root, 'workbench/specs/S-00A-active/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-00A'));
+    writeAt(root, 'workbench/specs/retired/S-00B-retired/SPEC.md', retirementReadySpec('S-00B', ['TK-001']));
+    writeAt(root, 'workbench/specs/S-00A-active/tasks/retired/TK-00A/TASK.md', doneTaskRecordFixture({ id: 'TK-00A', specId: 'S-00A', slice: 'Retired task', destination: 'spec-acceptance: S-00A Acceptance Criteria', proof: 'verified' }));
+    // Retained rows must be done once standalone task records exist.
+    const activePath = path.join(root, 'workbench/specs/S-00A-active/SPEC.md');
+    fs.writeFileSync(activePath, fs.readFileSync(activePath, 'utf8').replaceAll('| ready |', '| done |').replaceAll('| blocked |', '| done |'));
+    writeAt(root, 'workbench/specs/corrective/tasks/TK-00B/TASK.md', doneTaskRecordFixture({ id: 'TK-00B', specId: 'S-999', slice: 'Corrective', destination: 'wiki-claim: workbench/wiki/MEMORY.md#Routing', proof: 'verified' }));
+    writeAt(root, 'workbench/specs/DISCARDS.md', '# Discards\n\n| 2026-09-19 | spec | S-00C | retired/path | sha | sha | recovery |\n| 2026-09-19 | task | S-00C/TK-00C | retired/task | sha | sha | recovery |\n');
+    execFileSync('git', ['init', '--quiet', root]);
+    execFileSync('git', ['-C', root, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', root, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'local identities']);
+    const base = headSha(root);
+    writeAt(root, 'workbench/specs/S-00D-remote/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-00D').replaceAll('TK-001', 'TK-00D'));
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'remote-only identity']);
+    execFileSync('git', ['-C', root, 'update-ref', 'refs/remotes/origin/parallel', 'HEAD']);
+    execFileSync('git', ['-C', root, 'reset', '--hard', '--quiet', base]);
+    assert.equal(nextIdentity(root, undefined, { prefix: 'S' }).id, 'S-00E');
+    assert.equal(nextIdentity(root, 'S-00A', { prefix: 'TK' }).id, 'TK-00E');
+    console.log('ok - identity proposals reserve active, retired, corrective, discarded and remote-only IDs');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}

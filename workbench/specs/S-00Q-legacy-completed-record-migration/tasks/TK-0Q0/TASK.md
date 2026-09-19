@@ -12,8 +12,8 @@
 ## Delivery
 
 Re-read all 50 records at their immutable anchors and freeze a machine-readable
-plus readable migration matrix. Record the owner's choice among the three
-legacy-QA options in S-00Q. Do not infer approval from old evidence, status,
+plus readable migration matrix. Apply the recorded owner direction: exactly one Wiki article per legacy Spec,
+with batches used only for execution and review; prepare concrete digests for review. Do not infer approval from old evidence, status,
 silence or current green tests. If the owner changes the 50-record scope, record
 the changed inventory and reason before any batch proceeds.
 

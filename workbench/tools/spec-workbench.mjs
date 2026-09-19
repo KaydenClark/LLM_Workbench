@@ -1969,14 +1969,9 @@ function parseWorktreeEntries(porcelain) {
 // "The commit that moved it": `retireSpec`'s own evidence row is written and
 // staged *before* the caller's commit exists, so it cannot literally embed
 // that commit's own SHA (the row would have to name a hash Git has not
-// computed yet). The row's real job is naming which historical route to
-// check; the commit itself is read back from Git, which already knows it
-// with certainty - the historical path is brand new (retirement never
-// reuses a path), so the one commit whose diff first adds it, found with
-// rename detection off so a `git mv` is never mistaken for a no-op, is
-// unambiguously the retiring commit. The same resolution covers a Task
-// (`moveTaskRecord` appends no evidence row to the moved record at all), so
-// one function serves both discard functions below.
+// computed yet). Resolve the most recent path addition, not the first one:
+// a removed and re-added route is a different incarnation whose containment
+// must be established independently.
 function resolveMovingCommit(root, relativePath) {
   const result = spawnSync('git', ['-C', root, 'log', '--no-renames', '--diff-filter=A', '--format=%H', '-1', '--', relativePath], { encoding: 'utf8' });
   if (result.status !== 0) return null;
@@ -1992,6 +1987,10 @@ function recoveryIdentity(root, relativeDir, remoteRef) {
   if (result.status !== 0 || !commit || spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', commit, remoteRef]).status !== 0) {
     throw new Error(`discard current directory content is not verified contained in ${remoteRef}`);
   }
+  const tree = ref => spawnSync('git', ['-C', root, 'rev-parse', `${ref}:${relativeDir}`], { encoding: 'utf8' });
+  const recovered = tree(commit);
+  const current = tree('HEAD');
+  if (recovered.status !== 0 || current.status !== 0 || recovered.stdout !== current.stdout) throw new Error('discard recovery commit does not match the complete current directory');
   return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${relativeDir}` };
 }
 
@@ -2166,11 +2165,8 @@ export function discardRetiredSpec(rootDir, specId) {
   if (!contained) throw new Error(`${specId} cannot discard: the retiring commit ${movingCommit} is not verified contained in ${remoteRef}`);
 
   const specDir = path.dirname(spec.filePath);
-  // Resolved before the reference scan, not after: the durable-owner Wiki
-  // note's own "Evidence and Sources" citation of this Spec's historical
-  // route is a citation `retireSpec` itself required before the move, never
-  // a stray reference discard should refuse over. Every *other* reference
-  // still blocks, including one from a different Wiki note entirely.
+  // The owner remains in the complete scan. Only historical evidence links
+  // are converted to immutable Git citations in the prospective content.
   const wikiOwnerFile = retiredSpecWikiOwnerFile(root, spec.relativePath);
   const relativeDir = path.relative(root, specDir).split(path.sep).join('/');
   const { recoveryCommit, recoveryCommand } = recoveryIdentity(root, relativeDir, remoteRef);
