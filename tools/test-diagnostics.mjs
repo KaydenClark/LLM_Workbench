@@ -83,7 +83,10 @@ function cliDoctor(dir, home = quietHome) {
 }
 
 function assertRegistryRemediation(describeEntry, codes) {
-  // The same assertion checks the real registry and the deliberately broken copy.
+  for (const code of codes) {
+    const summary = describeEntry(code).summary;
+    assert.ok(typeof summary === 'string' && summary.trim(), `${code} requires remediation text`);
+  }
 }
 
 test('the registry rejects empty remediation text in a disposable module', async () => {
