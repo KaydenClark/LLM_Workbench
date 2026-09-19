@@ -866,14 +866,23 @@ moves the directory with its Tasks into `retired/`, cleans contained lane
 branches, lists unmerged ones, and regenerates the board and the ADR
 register. `discard` is `git rm` of a retired Spec or, with `--task`, one
 retired Task record - never `archive` - and refuses by name before any write
-if the record is not retired, the tree is dirty, its retiring commit is not
-verified contained on the declared default branch, a complete reference and
+if the record is not retired, the tree is dirty, its latest retiring incarnation
+and current directory content are not verified contained on the declared default
+branch, a complete reference and
 link scan still finds a current pointer to it, or (for a Spec) its durable
 Wiki owner is missing or not active; a successful discard appends one row to
 the tracked, append-only `workbench/specs/DISCARDS.md` register (kind, record
 ID, historical path, retiring commit, discard parent commit, and the exact
-`git checkout` recovery command, which the test exercises) and files the gap
-as a corrective Task against the Wiki claim rather than restoring the record;
+`git checkout` recovery command for the entire directory at its latest verified
+content commit, which the test exercises). Historical links in the durable
+owner's Evidence and Sources section become immutable `git show <sha>:<path>`
+citations; operational links anywhere, including that owner, still refuse
+discard. A final Task discard retains tracked `tasks/.gitkeep` so fresh clones
+keep record-backed interpretation. A later gap is filed as a corrective Task
+against the Wiki claim rather than restoring the record; repeated identical
+findings refuse duplicate Tasks. Corrective close appends only to frontmatter
+provenance. Render markers are checked before removal, and staging failures
+are reported explicitly;
 `doctor` gains the blocking `discarded-reference` finding for a reference
 naming a path the register says was discarded, and
 `tools/check-append-only.py` now enumerates a Spec's `retired/` lifecycle
