@@ -257,6 +257,11 @@ function headingShadowSpec(id) {
     assert.equal(gate(root, {spec: 'S-790', candidate: current}).refused, false, 'review permits integration before owner QA');
     assert.throws(() => completeSpec(root, 'S-790'), /owner Human QA/, 'closure still requires owner QA');
     recordOwnerApproval(root, 'S-790', {candidate: current, owner: 'Fixture owner', result: 'approve'});
+    const validApproval = fs.readFileSync(path.join(root, specPath), 'utf8');
+    const emptyCommit = execFileSync('git', ['-C', root, 'rev-list', '--max-parents=0', 'HEAD'], {encoding:'utf8'}).trim();
+    writeAt(root, specPath, validApproval.replace(`Owner QA: approve at ${current}`, `Owner QA: approve at ${emptyCommit}`));
+    assert.equal(assembleSpecReport(root, 'S-790').latestOwnerApproval, null, 'an inherited mismatched approval is not trusted');
+    writeAt(root, specPath, validApproval);
     const approved = assembleSpecReport(root, 'S-790').specDigest;
     completeSpec(root, 'S-790');
     const completed = assembleSpecReport(root, 'S-790');

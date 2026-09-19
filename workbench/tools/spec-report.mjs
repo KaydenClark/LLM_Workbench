@@ -68,7 +68,7 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   // above: an approval recorded in one checkout is recognized from any other
   // as long as the Spec's own files are unchanged.
   const ownerApproval = parseOwnerApprovals(evidence);
-  const latestOwnerApproval = latestOwnerApprovalFor(ownerApproval, specDigest);
+  const latestOwnerApproval = latestOwnerApprovalFor(ownerApproval, specDigest, root, spec);
 
   const gaps = collectGaps({ tasks, acceptance, completionResult, evidence });
 
@@ -849,10 +849,15 @@ function parseOwnerApprovals(evidence) {
 // The latest owner-qa entry bound to the Spec's CURRENT content digest, or
 // `null` when none matches it - mirrors `latestVerdictFor` exactly, same
 // "content binds, location does not" rule.
-function latestOwnerApprovalFor(approvals, specDigest) {
+function latestOwnerApprovalFor(approvals, specDigest, root, spec) {
   const digest12 = specDigest.slice(0, 12);
   for (let index = approvals.length - 1; index >= 0; index -= 1) {
-    if (approvals[index].digest === digest12) return approvals[index];
+    if (approvals[index].digest !== digest12) continue;
+    // Earlier versions could record a local digest against unrelated Git content.
+    // Retain those rows as history, but never treat one as valid authorization.
+    try {
+      if (computeSpecDigest(root, spec, approvals[index].candidate) === specDigest) return approvals[index];
+    } catch { /* Missing or moved historical content cannot prove approval. */ }
   }
   return null;
 }
