@@ -206,10 +206,11 @@ A passing target-project check, render, doctor or test suite does not establish
 semantic freshness. If a current-facing artifact still presents completed work
 as pending, carries a resolved blocker, points at a retired route, or has stale
 version/provenance information that could misroute a cold-start agent, the
-Workbench update is not complete. Until the planned self-drift capability
-(`workbench/specs/S-00K-workbench-self-drift-check/SPEC.md` in the source
-checkout located in step 1) exists, record the bounded manual self-check and
-its unresolved findings; do not silently call the update clean. Preserve
+Workbench update is not complete. In the source checkout located in step 1,
+run `node workbench/tools/self-drift.mjs --phase pre --json` before the change
+and `--phase post --json` afterward. Record both receipts and the bounded
+manual semantic check with its unresolved findings; no-machine-finding output
+is not a clean-update verdict. Preserve
 explicit historical and append-only evidence.
 
 ## 5. Re-verify and prove the migration

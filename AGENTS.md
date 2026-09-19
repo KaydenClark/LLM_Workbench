@@ -136,10 +136,10 @@ projection, manifest, procedure or managed artifact still presents completed
 work as pending, carries a resolved blocker, points at a retired route, or
 contains stale version/provenance information that can misroute a cold-start
 agent. Historical and append-only claims remain preserved when their scope and
-time are explicit. The planned self-drift capability and proof are owned by
-[`S-00K`](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md); until it
-exists, record a bounded manual self-check and do not claim a clean Workbench
-update while known current-facing drift remains.
+time are explicit. The self-drift capability and proof are owned by
+[`S-00K`](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md). Run its
+read-only pre/post receipt alongside the bounded manual semantic check in
+RUNBOOK; do not claim a clean update while known current-facing drift remains.
 
 ## Work Selection And Lifecycle
 
@@ -224,6 +224,7 @@ node tools/test-control-fidelity.mjs
 node tools/test-spec-citation-anchors.mjs
 node tools/test-controls-vocabulary-sweep.mjs
 node tools/test-spec-report.mjs
+node tools/test-self-drift.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls

@@ -94,3 +94,16 @@ one; `design-concepts/` carries the owner-directed articles routed above.
 ## Up-Link
 
 Standalone room; no deployment wiki.
+
+## Individual Spec Articles
+
+These articles preserve capability knowledge and distinguish historical proof
+from current behavior. Source Specs remain intact pending their lifecycle gates.
+
+- [S-00A: Blueprint, Active ADRs And The Context Map](design-concepts/spec-S-00A-blueprint-active-adr-and-context-map.md)
+- [S-00B: Workbench Template Reformation](design-concepts/spec-S-00B-workbench-template-reformation.md)
+- [S-00C: Project Evidence And Blueprint Grilling Preparation](design-concepts/spec-S-00C-project-evidence-and-blueprint-grilling.md)
+- [S-00D: Genesis From Blueprint And ADR Decisions](design-concepts/spec-S-00D-genesis-from-blueprint-and-adrs.md)
+- [S-00E: Fresh Template Project Proof](design-concepts/spec-S-00E-fresh-template-project-proof.md)
+- [S-00F: The Named Template Upgrade Release Gate](design-concepts/spec-S-00F-template-upgrade-release-gate.md)
+- [S-00L: Lexicon Freshness Repair](design-concepts/spec-S-00L-lexicon-freshness-repair.md)

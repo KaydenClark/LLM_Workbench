@@ -825,9 +825,11 @@ Workbench self-drift check before and after the change. Inspect the source
 controls, Specs and projections, manifest, ADR/Wiki routes, procedures,
 templates, managed artifacts and readable continuity metadata for stale
 current-facing statuses, blockers, versions, paths and owners. A target-project
-drift report, render, doctor or passing tests do not replace this check. Until
-the source Workbench provides its public self-drift seam, record the bounded
-manual check and do not call the source update clean while known current-facing
+drift report, render, doctor or passing tests do not replace this check. In the
+source Workbench, run `node workbench/tools/self-drift.mjs --phase pre --json`
+and `--phase post --json` around the change, then record the bounded semantic
+check. Machine output alone does not certify freshness; do not call the source
+update clean while known current-facing
 drift remains. Preserve explicitly bounded historical evidence.
 
 The runtime tools in `workbench/tools/` are Workbench-managed: their receipt

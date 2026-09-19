@@ -210,6 +210,7 @@ node tools/test-control-fidelity.mjs
 node tools/test-spec-citation-anchors.mjs
 node tools/test-controls-vocabulary-sweep.mjs
 node tools/test-spec-report.mjs
+node tools/test-self-drift.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
@@ -769,9 +770,12 @@ checks the target room's filled controls, product truth, active work and local
 proof. When the canonical LLM Workbench itself is updated, check the source
 WorkBench's own cold-start surface before and after the change as well.
 
-Until the public S-00K capability exists, perform and record this bounded
-manual check; do not report a clean Workbench update while it has known
-current-facing drift:
+Run `node workbench/tools/self-drift.mjs --phase pre --json` before the change
+and `--phase post --json` afterward. Preserve the receipts in the owning Spec
+evidence. The read-only machine report detects bounded contradictions and
+identity gaps; it does not certify arbitrary prose. Perform this semantic
+check as well, and do not call an update clean while known current-facing
+drift remains:
 
 1. Pin the Workbench source revision, manifest version and declared integration
    branch. Preserve unrelated dirty state and inspect from a clean task
@@ -793,9 +797,10 @@ current-facing drift:
    `doctor` or passing tests may be attached as evidence, but none replaces the
    self-drift result.
 
-The planned implementation and public machine-readable receipt are owned by
-[`S-00K`](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md). No command
-name is implied before that spec is implemented.
+The implementation, public machine-readable receipt and remaining proof are
+owned by [S-00K](workbench/specs/S-00K-workbench-self-drift-check/SPEC.md).
+`cleanUpdate: false` deliberately leaves the semantic judgment to the named
+review; `no-machine-finding` means only the implemented checks found no issue.
 
 ### Spec Lifecycle And Retrieval
 
