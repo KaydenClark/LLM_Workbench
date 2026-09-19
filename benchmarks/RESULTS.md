@@ -39,3 +39,10 @@ evidence, and uncertainty estimates. Deterministic safety checks and one native
 fresh-project continuation do not establish a general agent-reliability gain.
 
 | 2026-09-19 | S-00U approval and lifecycle repair, baseline bc370fe and candidate f47d57f | Root guardrail audit before/after; targeted report and branch-closeout regressions | 78/100 before and after, unchanged criteria | Repeated real outcomes, controls/prior/candidate comparison, recent outcome evidence and uncertainty remain missing; no reliability claim; full assembled verification separately recorded |
+## 2026-09-19 S-00T lifecycle repair baseline
+
+Guardrail audit is **78/100 before and after** (baseline f9f77a8; runtime
+candidate9611b59). Static20, drift25, discipline25, outcomes8. Remaining
+recommendations are repeated real trials, control/prior/candidate comparison,
+recent candidate evidence and uncertainty estimates. Disposable lifecycle
+regressions and static score preservation do not prove agent reliability.

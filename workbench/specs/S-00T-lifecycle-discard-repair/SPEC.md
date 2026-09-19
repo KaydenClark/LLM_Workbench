@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Repair audited retirement identity, discard recovery, Wiki attribution, final Task persistence and corrective allocation defects before legacy migration.
 **Blockers:** none; explicit owner repair assignment precedes migration gates.
-**Latest event:** TK-0T0 claimed by codex-lifecycle.
-**Next gate:** Close TK-0T0 with verification and documentation proof.
+**Latest event:** Runtime and regression fixtures pass at 9611b59; final assembled suite and independent review remain.
+**Next gate:** Coordinator verifies the final immutable assembly and obtains separate-context review before closeout.
 
 > **Citation anchors.** pre=`f9f77a8c6318231acc54941643f95750f44ef20d` post=`f9f77a8c6318231acc54941643f95750f44ef20d`.
 
@@ -33,7 +33,7 @@ Resolve the latest incarnation and require its complete current directory conten
 
 - This implements [S-00Q TK-0Q1](../S-00Q-legacy-completed-record-migration/tasks/TK-0Q1/TASK.md); Q migration/legacy-QA/main-promotion gates remain unchanged.
 - Repair the existing seams; do not retire or discard real records, approve legacy QA, or change release state.
-- Approval content binding/order belongs to S-00U in the coordinating lane.
+- Approval content binding/order belongs to [S-00U](../S-00U-approval-binding-and-lifecycle-digest/SPEC.md) in the coordinating lane.
 - Preserve append-only evidence and archive permanently.
 
 ## Non-Goals
@@ -52,10 +52,10 @@ No runtime dependency blocks fixture repair. Integration requires separate-conte
 
 ## Acceptance Criteria
 
-- [ ] Remove/re-add and post-retirement edits cannot bypass current-content containment; printed recovery restores the whole current directory.
-- [ ] Successful discard leaves no broken Wiki citation; operational references refuse before mutation.
-- [ ] Final Task discard stays record-backed in the current checkout and a fresh clone; render/staging failures are visible.
-- [ ] Allocation reserves lifecycle, corrective, discarded and remote-visible identities; repeated corrective calls refuse duplicates.
+- [x] Remove/re-add and post-retirement edits cannot bypass current-content containment; printed recovery restores the whole current directory.
+- [x] Successful discard leaves no broken Wiki citation; operational references refuse before mutation.
+- [x] Final Task discard stays record-backed in the current checkout and a fresh clone; render/staging failures are visible.
+- [x] Allocation reserves lifecycle, corrective, discarded and remote-visible identities; repeated corrective calls refuse duplicates.
 - [ ] Focused red/green, full suite, manual self-drift check and independent candidate review are recorded.
 
 ## Testing Seams
@@ -78,13 +78,24 @@ do not expose this detailed procedure yet; S-00P owns that broader mirror rewrit
 |---|---|---|---|---|
 | 2026-09-19 | f9f77a8c6318231acc54941643f95750f44ef20d | Repair baseline | Read audit findings and source seams; guardrail audit | 78/100; no real record mutation; S-00T/TK-0T0 absent across 139 visible refs |
 
+| 2026-09-19 | 9611b59 | Audited lifecycle defects repaired in disposable fixtures | Red on f9f77a8: new recovery assertion fails because only SPEC.md is recovered. Green: full tools/test-spec-workbench.mjs exits 0 at 9611b59 after independent regression cases for remove/re-add, newer sibling proof, full-directory recovery, missing owner no-write refusal, operational Wiki links, clean citation conversion, final-Task fresh-clone persistence, render preflight, identity reservations, duplicate corrective refusal and frontmatter provenance | Required suite run completed 40 commands (39 pass, initial S806 fixture failure then repaired8035b41 and whole targeted suite rerun green); append-only remained running and was stopped by coordinator instruction for one final immutable assembled run. Separate path-safety grader passed, template evaluation106.6/113, doctor48 nonblocking findings/no blocking findings. Full immutable assembled suite and separate-context review remain open |
+| 2026-09-19 | 9611b59 | Guardrail and bounded manual self-drift check | audit-guardrails before/after; inspect Q/T current fields, blockers, source/testing ownership and generated projections | 78/100 unchanged; missing repeated real outcome trials, controls/prior/candidate comparison, recent evidence and uncertainty estimates remain. No agent-outcome claim. Q permits one article per source Spec before lifecycle gates, preserves concrete retirement/default-branch gates, and routes runtime repair once to T. Known room provenance/skill attention remains visible |
+
 ## Completion Result
 
-Not started.
+Implementation prepared and fixture-verified at 9611b59. No real Spec or Task
+was retired or discarded. Integration review and final assembled verification
+remain; this is not owner Human QA or release approval.
 
 ## Remaining Limitations Or Follow-Up Specs
 
 Owner Human QA, main promotion, Q migration and release are separate gates. Static checks do not prove agent reliability.
+
+Discard checks candidate renderability before removal and removes a newly-created
+Task marker if git rm fails. Unexpected I/O errors after successful removal
+(for example Wiki/register writes or staging failures) are reported but the
+operation is not transactional. The previously clean parent commit and printed
+recovery identity preserve recovery; inspect the partial candidate before retrying.
 
 ## Supersession
 
