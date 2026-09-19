@@ -8,7 +8,7 @@
 **Updated:** 2026-09-19
 **Catalog description:** Repair audited retirement identity, discard recovery, Wiki attribution, final Task persistence and corrective allocation defects before legacy migration.
 **Blockers:** none; explicit owner repair assignment precedes migration gates.
-**Latest event:** Final review reproduced hidden corrective work under retired Specs; focused repair and unchanged-criteria history-check acceleration are underway.
+**Latest event:** Retired corrective selection/claim/close and unfinished-discard guards pass focused regressions; accelerated history checker preserves full output and corruption criteria.
 **Next gate:** Coordinator verifies the final immutable assembly and obtains separate-context review before closeout.
 
 > **Citation anchors.** pre=`f9f77a8c6318231acc54941643f95750f44ef20d` post=`f9f77a8c6318231acc54941643f95750f44ef20d`.
@@ -56,7 +56,7 @@ No runtime dependency blocks fixture repair. Integration requires separate-conte
 - [x] Successful discard leaves no broken Wiki citation; operational references refuse before mutation.
 - [x] Final Task discard stays record-backed in the current checkout and a fresh clone; render/staging failures are visible.
 - [x] Allocation reserves lifecycle, corrective, discarded and remote-visible identities; repeated corrective calls refuse duplicates.
-- [ ] A new corrective Task under an already-retired Spec is visible, selectable, claimable and closable without reopening or moving the historical Spec.
+- [x] A new corrective Task under an already-retired Spec is visible, selectable, claimable and closable without reopening or moving the historical Spec; unfinished Tasks explicitly prevent discard.
 - [ ] Focused red/green, full suite, manual self-drift check and independent candidate review are recorded.
 
 ## Testing Seams
@@ -89,6 +89,9 @@ do not expose this detailed procedure yet; S-00P owns that broader mirror rewrit
 | 2026-09-19 | 9611b59 | Guardrail and bounded manual self-drift check | audit-guardrails before/after; inspect Q/T current fields, blockers, source/testing ownership and generated projections | 78/100 unchanged; missing repeated real outcome trials, controls/prior/candidate comparison, recent evidence and uncertainty estimates remain. No agent-outcome claim. Q permits one article per source Spec before lifecycle gates, preserves concrete retirement/default-branch gates, and routes runtime repair once to T. Known room provenance/skill attention remains visible |
 
 | 2026-09-19 | 85ca7e9 | Independent review found a further retired-corrective visibility defect | Existing S-591 fixture creates a Task under a retired Spec, but fresh next returns null, board omits it and claim reports unknown Spec; strengthened fixture fails at expected Task identity | Corrective selection/claim/close/board repair is now part of this existing lifecycle safety slice; whole S-00J retired-folder acceptance remains open until continuous proof |
+
+| 2026-09-19 | caa8d2a | Closed independent retired-corrective interaction findings | Red: strengthened existing fixture cannot select the created Task; green at ad50c29 adds next/board/show/claim/close with immutable historical status/location, blockers and negative ordinary-history case. Follow-up red at a66ee6a shows discard deletes unfinished correction with an unrendered board; caa8d2a adds explicit no-write unfinished-Task refusal and aligns active dependency diagnostics with retired completion. Entire test-spec-workbench passes | Both review findings fixed at their existing seams; ordinary history never reopens; no real record mutation. Final assembled suite and review pending |
+| 2026-09-19 | c7084b1 | Preserved history verification while eliminating per-blob process overhead | Unchanged clean plus four corruption-case regression passes; original and batched checker outputs at e7b0906025909b9edd626e967b15e526e5d02509 are byte-identical (6978 bytes, SHA256 e4570a4dacefad9c634d97b3a7f1b43080d00ea6a2735845c61c5fe7c3f84820); root independently compared the outputs | Commit order, row identity, historical variants, retired coverage, orphan detection and diagnostics unchanged; batch protocol failures fail visibly; final full verification uses the same criteria |
 
 ## Completion Result
 
