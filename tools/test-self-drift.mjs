@@ -16,6 +16,10 @@ try {
   write('workbench/specs/S-002-example/SPEC.md', '**Spec ID:** S-002\n**Status:** blocked\n**Blockers:** S-001\n## Completion Result\nPending.\n');
   let report = inspectSelfDrift(root);
   assert.ok(report.findings.some(f => f.code === 'resolved-blocker' && f.artifact.endsWith('S-002-example/SPEC.md')));
+  for (const blockers of ['none; S-001 is complete (integration proof)', 'S-001 complete; owner approval remains open']) {
+    write('workbench/specs/S-002-example/SPEC.md', `**Spec ID:** S-002\n**Status:** blocked\n**Blockers:** ${blockers}\n## Completion Result\nPending.\n`);
+    assert.ok(!inspectSelfDrift(root).findings.some(f => f.code === 'resolved-blocker'), 'historical completion text is not a live dependency');
+  }
   write('workbench/specs/S-002-example/SPEC.md', '**Spec ID:** S-002\n**Status:** planned\n**Blockers:** none\n## Completion Result\nPending.\n');
   write('workbench/specs/retired/S-003-example/SPEC.md', '**Spec ID:** S-003\n**Status:** complete\n## Append-Only Evidence And Execution Log\nOld version v1.0.0 was pending.\n');
   report = inspectSelfDrift(root);
@@ -29,6 +33,17 @@ try {
   assert.equal(report.seedIdentity[0].release, 'v1.0.0');
   assert.equal(report.seedIdentity[0].repository, null);
   assert.notEqual(report.seedIdentity[0].observedHash, report.seedIdentity[0].recordedHash);
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json')));
+  manifest.provenance = { lifecycle: 'adoption', source: { repository: 'https://example.invalid/origin', release: 'v1.0.0', commit: 'a'.repeat(40) } };
+  write('workbench/manifest.json', JSON.stringify(manifest));
+  for (const name of ['S-001-example', 'S-002-example', 'retired']) fs.rmSync(path.join(root, 'workbench/specs', name), { recursive: true, force: true });
+  const adoption = inspectSelfDrift(root);
+  assert.equal(adoption.sourceIdentityRole, 'historical-adoption');
+  assert.ok(adoption.findings.some(f => f.code === 'unverified-provenance' && f.classification === 'historical' && f.effect === 'limitation'));
+  write('workbench/.workbench-seed.json', JSON.stringify({ documents: { 'workbench/sessions/notepads/templates/retired-handoff.json': { release: 'v1.0.0' } } }));
+  report = inspectSelfDrift(root);
+  assert.ok(!report.findings.some(f => f.code === 'unreadable' && f.artifact.endsWith('retired-handoff.json')), 'historical seed receipt does not make retired data required');
+  assert.equal(report.seedIdentity[0].targetState, 'absent');
   write('workbench/sessions/notepads/work/unreadable.json', '{');
   assert.ok(inspectSelfDrift(root).findings.some(f => f.code === 'unreadable' && f.artifact.endsWith('unreadable.json')));
   fs.unlinkSync(path.join(root, 'README.md'));

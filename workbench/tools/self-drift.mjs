@@ -7,11 +7,19 @@ import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { assertSafeReadPath, isMainModule, readManifest, laneRelative, collectionRelative } from './workbench-paths.mjs';
 import { doctor } from './spec-workbench.mjs';
+import { provenanceFindings, seededDocumentFindings } from './workbench-layout.mjs';
 
 const CONTROLS = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'README.md', 'TASKBOARD.md'];
 const HISTORY = /(?:^|\/)(?:retired|archive|checkpoints|recovery)(?:\/|$)/;
 function field(text, name) { return text.match(new RegExp(`^\\*\\*${name}:\\*\\* (.+)$`, 'm'))?.[1]?.trim() ?? null; }
 function section(text, name) { return text.match(new RegExp(`^## ${name}\\r?\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, 'm'))?.[1]?.trim() ?? ''; }
+function liveBlockers(text) {
+  const declared = field(text, 'Blockers') ?? '';
+  if (/^none\b/i.test(declared)) return [];
+  return [...declared.matchAll(/(S-[A-Z0-9]+)\b([^;,\n]*)/g)]
+    .filter(match => !/^\s*\(?\s*(?:is\s+)?(?:complete|completed|done|superseded|historical)\b/i.test(match[2]))
+    .map(match => match[1]);
+}
 function hash(bytes) { return crypto.createHash('sha256').update(bytes).digest('hex'); }
 
 export function inspectSelfDrift(project, options = {}) {
@@ -82,8 +90,8 @@ export function inspectSelfDrift(project, options = {}) {
   try {
     const seeds = JSON.parse(bodies.get('workbench/.workbench-seed.json') ?? '{}');
     for (const [artifact, identity] of Object.entries(seeds.documents ?? {})) {
-      const content = read(artifact);
-      seedIdentity.push({ artifact, repository: identity.repository ?? null, release: identity.release ?? null, commit: identity.commit ?? null, recordedHash: identity.contentHash ?? null, observedHash: content === null ? null : hash(Buffer.from(content)), identityLimit: 'Missing repository/commit fields remain unknown; matching bytes do not establish source generation' });
+      const content = read(artifact, false);
+      seedIdentity.push({ artifact, targetState: content === null ? 'absent' : 'present', repository: identity.repository ?? null, release: identity.release ?? null, commit: identity.commit ?? null, recordedHash: identity.contentHash ?? null, observedHash: content === null ? null : hash(Buffer.from(content)), identityLimit: 'Missing repository/commit fields remain unknown; matching bytes do not establish source generation' });
     }
   } catch { /* Invalid seed JSON already has an unreadable finding. */ }
   const specStates = new Map();
@@ -99,7 +107,7 @@ export function inspectSelfDrift(project, options = {}) {
     }
     const superseded = section(text, 'Supersession').match(/Superseded by:\s*(S-[A-Z0-9]+)/i)?.[1];
     if (superseded && !['complete', 'superseded'].includes(status)) finding('superseded-current', file, 'superseded work is not active work', `historical route to ${superseded}`, status, `Reconcile lifecycle with ${superseded}`);
-    for (const id of (['blocked', 'active'].includes(status) ? (field(text, 'Blockers') ?? '').match(/S-[A-Z0-9]+/g) ?? [] : [])) {
+    for (const id of (['blocked', 'active'].includes(status) ? liveBlockers(text) : [])) {
       const owner = specStates.get(id);
       if (owner?.status === 'complete' || owner?.historical) finding('resolved-blocker', file, `blocker ${id} remains live`, 'current unmet dependency', `${id} is complete or historical`, `Review the remaining gate against ${owner.file}; preserve historical evidence`);
     }
@@ -108,9 +116,12 @@ export function inspectSelfDrift(project, options = {}) {
   // evidence. Their ordinary blocking effects are unchanged by this command.
   if (manifest && !findings.some(f => /symbolic link|ordinary path inside/.test(f.observed))) {
     try {
-      for (const issue of doctor(root, { home: options.home })) {
+      const components = [...doctor(root, { home: options.home }), ...provenanceFindings(root), ...seededDocumentFindings(root)];
+      const unique = new Map(components.map(issue => [`${issue.code}:${issue.message}`, issue]));
+      for (const issue of unique.values()) {
+        const historical = issue.code === 'stale-seed' || (issue.code === 'unverified-provenance' && issue.field === 'release' && manifest.provenance?.lifecycle === 'adoption');
         const installed = ['incompatible-core', 'skill-missing', 'skill-shadow', 'skill-unreadable'].includes(issue.code);
-        findings.push({ code: issue.code, artifact: issue.document ?? issue.path ?? issue.file ?? issue.scope ?? 'workbench', claim: issue.summary ?? issue.message, expected: 'current owner and verified identity', observed: issue.message, correction: installed ? 'Inspect installed source read-only; replacement requires explicit update, native invocation remains unverified' : issue.summary ?? issue.message, classification: installed ? 'blocked' : 'stale', severity: installed ? 'attention' : issue.severity, effect: installed ? 'limitation' : 'blocks-clean-update', diagnosticEffect: issue.blocks });
+        findings.push({ code: issue.code, artifact: issue.document ?? issue.path ?? issue.file ?? issue.scope ?? 'workbench', claim: issue.summary ?? issue.message, expected: 'current owner and verified identity', observed: issue.message, correction: historical ? 'Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.' : installed ? 'Inspect installed source read-only; replacement requires explicit update, native invocation remains unverified' : issue.summary ?? issue.message, classification: historical ? 'historical' : installed ? 'blocked' : 'stale', severity: historical || installed ? 'attention' : issue.severity, effect: historical || installed ? 'limitation' : 'blocks-clean-update', diagnosticEffect: issue.blocks });
       }
     } catch (error) {
       finding('diagnostic-unreadable', 'workbench', 'component evidence is readable', 'diagnostic report', error.message, 'Reconcile the named unreadable owner', 'unreadable');
@@ -119,7 +130,7 @@ export function inspectSelfDrift(project, options = {}) {
   const git = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' });
   const sourceRevision = git.status === 0 ? git.stdout.trim() : null;
   const dirty = spawnSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' });
-  return { schemaVersion: 1, operation: 'workbench-self-drift', phase, sourceRevision, dirty: dirty.status === 0 ? Boolean(dirty.stdout.trim()) : null, workbenchVersion: manifest?.workbenchVersion ?? null, sourceIdentity: manifest?.provenance?.source ?? null, seedIdentity, inventory, findings, machineResult: findings.some(f => f.effect === 'blocks-clean-update') ? 'blocked' : 'no-machine-finding', cleanUpdate: false, limitations: ['Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.', 'Target-project drift is a separate operation.', 'Installed-source files do not prove native host callability; no installation or repair is performed.'] };
+  return { schemaVersion: 1, operation: 'workbench-self-drift', phase, sourceRevision, dirty: dirty.status === 0 ? Boolean(dirty.stdout.trim()) : null, workbenchVersion: manifest?.workbenchVersion ?? null, sourceIdentity: manifest?.provenance?.source ?? null, sourceIdentityRole: manifest?.provenance?.lifecycle === 'adoption' ? 'historical-adoption' : 'source-generation-unverified', seedIdentity, inventory, findings, machineResult: findings.some(f => f.effect === 'blocks-clean-update') ? 'blocked' : 'no-machine-finding', cleanUpdate: false, limitations: ['Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.', 'Target-project drift is a separate operation.', 'Installed-source files do not prove native host callability; no installation or repair is performed.'] };
 }
 
 if (isMainModule(import.meta.url)) {
