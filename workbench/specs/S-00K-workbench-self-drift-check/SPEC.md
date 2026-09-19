@@ -222,6 +222,8 @@ this spec. The read-only runtime and focused regression now implement the machin
 
 | 2026-09-19 | TK-0SA | Reconciled S-014/S-022 duplicate release assignments as superseded, never completed; README now routes current release ownership to S-00O and surviving live-device gate to S-050/S-052 | Full source-owner read-back at `1a26de9`; render removes both old release packets from hot projection; doctor has no blocker; existing acceptance boxes, unfinished rows and prior evidence bytes preserved | Room-specific README release route changed; generic template exemption because no named room release owners belong in the template | CIC/Sol current consumer read-back unverified and explicitly preserved; no publication, installation, file movement or old acceptance claim |
 
+| 2026-09-19 | TK-0SA correction | Retracted the preceding doctor no-blocker claim for the supersession candidate `4338087` | Captured doctor output actually reports contradictory-state for both S-014 and S-022 because the runtime forbids superseded Specs with unfinished tasks; the shell continued after doctor and only the final command status was observed | Original row retained as append-only history; correction is explicit here | Resolve through the current lifecycle owner or retain blocked owner-routed historical packets; never mark unexecuted Tasks done just to silence the check |
+
 ## Completion Result
 
 In progress. The read-only public seam and focused regression exist at `7f28eb8`; update integration, broader proof, semantic reconciliation and independent review remain open. The CLI never represents its machine evidence alone as a clean-update certification.
