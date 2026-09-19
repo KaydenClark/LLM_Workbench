@@ -593,8 +593,7 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // nothing is written until every id is already reserved in memory, so two
   // allocations in the same batch can never collide, and there is nothing
   // for a later allocation to fail to see.
-  const specs = loadSpecs(root);
-  const occupied = specs.flatMap((entry) => [...entry.rows, ...(entry.records ?? [])].map((item) => item.id));
+  const occupied = occupiedIdentities(root, 'TK');
   const reservations = [...new Map(occupied.map((id) => [visibleIdKey(id), id])).values()];
   const staged = [];
   for (const findingText of items) {
