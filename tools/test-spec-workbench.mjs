@@ -39,6 +39,18 @@ import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord,
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
 
+// `doctor`'s `stale-claim` rule (workbench/tools/spec-workbench.mjs) flags an
+// in-progress claim whose `Updated` date-only stamp is more than one day
+// behind the real clock. A fixture that claims/closes with a literal recent
+// date (e.g. '2026-09-17') therefore passes only until the calendar moves
+// past it, then fails two days later with no code change - this is the
+// fragility this constant removes. Fixtures that feed a doctor() check with
+// no `today` override use this computed value instead of a literal date so
+// they stay green regardless of when the suite runs. Fixtures that
+// deliberately assert stale-claim behavior still use an explicit literal or
+// offset date, never this constant.
+const TODAY = new Date().toISOString().slice(0, 10);
+
 // A record-backed Spec's `close` now appends a Receipt row, which reads live
 // Git facts (branch, HEAD SHA, upstream, dirty count) for the working tree
 // named by the room's own root. Every fixture room that closes a Task record
@@ -1830,11 +1842,11 @@ function wikiClaimFixture() {
     assert.equal(nextWork(historicalRoot).specId, 'S-602', 'selection is unaffected by the historical completed Spec');
     assert.equal(readHistorical(), beforeAnyCommand, 'next never rewrites the historical Spec');
 
-    claimWork(historicalRoot, 'S-602', { agent: 'codex', date: '2026-09-17' });
+    claimWork(historicalRoot, 'S-602', { agent: 'codex', date: TODAY });
     assert.equal(readHistorical(), beforeAnyCommand, 'claim on the sibling never rewrites the historical Spec');
 
     closeTask(historicalRoot, 'S-602', {
-      proof: 'node test', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-09-17'
+      proof: 'node test', docs: 'Docs checked; no update needed', remainingGap: 'none', date: TODAY
     });
     assert.equal(readHistorical(), beforeAnyCommand, 'close on the sibling never rewrites the historical Spec');
 
@@ -1852,7 +1864,7 @@ function wikiClaimFixture() {
     // given a Receipt row by the `receipt` verb; the historical Spec stays
     // byte-identical through both, exactly as it did through every other
     // command above.
-    claimWork(historicalRoot, 'S-602', { agent: 'codex', date: '2026-09-17' });
+    claimWork(historicalRoot, 'S-602', { agent: 'codex', date: TODAY });
     assert.equal(readHistorical(), beforeAnyCommand, 'claiming the converted TK-002 record never rewrites the historical Spec');
 
     const receipted = receiptTask(historicalRoot, 'S-602', {

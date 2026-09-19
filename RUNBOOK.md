@@ -815,6 +815,7 @@ node workbench/tools/spec-workbench.mjs report S-001 --candidate [SHA] [--json]
 node workbench/tools/spec-workbench.mjs move-spec S-001 --to retired
 node workbench/tools/spec-workbench.mjs move-task S-001 --task TK-002 --to retired
 node workbench/tools/spec-workbench.mjs retire-spec S-001 --wiki workbench/wiki/design-concepts/[NOTE].md
+node workbench/tools/spec-workbench.mjs discard S-001 [--task TK-002]
 node workbench/tools/spec-workbench.mjs gate --spec S-001 --candidate [SHA]
 node workbench/tools/spec-workbench.mjs gate --task TK-002 --spec S-001
 node workbench/tools/spec-workbench.mjs approve S-001 --candidate [INTEGRATION SHA] --owner "[WHO]" \
@@ -863,11 +864,25 @@ valid design-concept or guidebook routed from `MEMORY.md` that names the
 retired route and copies no task state; it then appends the retirement row,
 moves the directory with its Tasks into `retired/`, cleans contained lane
 branches, lists unmerged ones, and regenerates the board and the ADR
-register. `gate` reports a Task PR (a real Task
-record under a still-open Spec, while S-00O exemption 2 holds) and refuses a
-Spec candidate that is incomplete, unreviewed for its current content or
-named by a SHA the repository does not hold; the closeout recipe below runs
-it before the merge. A verdict binds to the assembled Spec's content digest,
+register. `discard` is `git rm` of a retired Spec or, with `--task`, one
+retired Task record - never `archive` - and refuses by name before any write
+if the record is not retired, the tree is dirty, its retiring commit is not
+verified contained on the declared default branch, a complete reference and
+link scan still finds a current pointer to it, or (for a Spec) its durable
+Wiki owner is missing or not active; a successful discard appends one row to
+the tracked, append-only `workbench/specs/DISCARDS.md` register (kind, record
+ID, historical path, retiring commit, discard parent commit, and the exact
+`git checkout` recovery command, which the test exercises) and files the gap
+as a corrective Task against the Wiki claim rather than restoring the record;
+`doctor` gains the blocking `discarded-reference` finding for a reference
+naming a path the register says was discarded, and
+`tools/check-append-only.py` now enumerates a Spec's `retired/` lifecycle
+folder so a retired Spec's own evidence log stays covered. `gate` reports a
+Task PR (a real Task record under a still-open Spec, while S-00O exemption 2
+holds) and refuses a Spec candidate that is incomplete, unreviewed for its
+current content or named by a SHA the repository does not hold; the closeout
+recipe below runs it before the merge. A verdict binds to the assembled
+Spec's content digest,
 so record it after the final `close` and before `complete`. `approve` records
 the owner's Human QA on `integration` as one append-only `owner-qa` row naming
 who, when and the integration SHA inspected (contained in the declared
