@@ -76,6 +76,57 @@ directory participates in the portable core bundle.
 
 The upstream baselines are covered by the [tracked third-party notice](../THIRD_PARTY_NOTICES.md).
 
+### Optional-source review
+
+Review scope: tracked repository sources at `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`, including
+core/optional skill text, catalog tests and feedback references. Name mentions
+are evidence of a reference, not proof that an installed skill consumes these
+bytes. No external installation was inspected. A repository no-consumer result
+does not authorize removal or establish absence of outside consumers.
+
+Every row covers its directory and supporting files. The pinned commit plus the
+row path is the recovery route: `git show <commit>:<path>/SKILL.md` reads the
+entry point, and `git ls-tree -r <commit> -- <path>` inventories all recoverable
+files. Pending sources entered in `6943c106acb8de56d55599ece4fcf29a59da4f41`;
+archived optional skills moved out of core in
+`26c34e976f479460d70574aaabe4e1c8c9f8792a`. These are repository provenance,
+not a claim that every item is wholly upstream-authored. The existing notice
+owner retains attribution for upstream-derived material; this review does not
+change or narrow its coverage.
+
+All items remain preserved outside discovery while the owner decides whether
+their recovery/reference purpose merits continued retention. The dispositions
+below authorize no removal, relocation, installation or promotion into core.
+Historical source can contain retired instructions; consult current controls
+before any reuse. Potential removal needs per-item approval, a complete
+consumer/reference review, preserved notices and a pinned recovery commit.
+
+<!-- optional-source:start -->
+| Source path | Consumer / recovery route | Provenance / attribution owner | Reviewed | Disposition |
+|---|---|---|---|---|
+| `skills-archive/optional-active-2026-09-01/ask-workbench` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this ask-workbench source pending retention or recoverable removal choice. |
+| `skills-archive/optional-active-2026-09-01/brainstorm` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this brainstorm source pending retention or recoverable removal choice. |
+| `skills-archive/optional-active-2026-09-01/grill-me` | Archived `ask-workbench/SKILL.md` routes here. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this grill-me source pending retention or recoverable removal choice. |
+| `skills-archive/optional-active-2026-09-01/sitrep` | Archived `ask-workbench/SKILL.md` routes here. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this sitrep source pending retention or recoverable removal choice. |
+| `skills-archive/optional-active-2026-09-01/writing-great-skills` | Archived `ask-workbench/SKILL.md` routes here. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this writing-great-skills source pending retention or recoverable removal choice. |
+| `skills-pending/codebase-design` | Pending `improve-codebase-architecture` and `setup-ts-deep-modules` name this skill. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this codebase-design source pending retention or recoverable removal choice. |
+| `skills-pending/design-an-interface` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this design-an-interface source pending retention or recoverable removal choice. |
+| `skills-pending/diagnosing-bugs` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this diagnosing-bugs source pending retention or recoverable removal choice. |
+| `skills-pending/domain-modeling` | Pending `wayfinder` and `improve-codebase-architecture` name this skill. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this domain-modeling source pending retention or recoverable removal choice. |
+| `skills-pending/improve-codebase-architecture` | Pending `diagnosing-bugs` routes here. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this improve-codebase-architecture source pending retention or recoverable removal choice. |
+| `skills-pending/loop-me` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this loop-me source pending retention or recoverable removal choice. |
+| `skills-pending/prototype` | Pending `wayfinder` names this skill; foundation audit records it as unshipped. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this prototype source pending retention or recoverable removal choice. |
+| `skills-pending/research` | Foundation audit records this source as unshipped. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this research source pending retention or recoverable removal choice. |
+| `skills-pending/resolving-merge-conflicts` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this resolving-merge-conflicts source pending retention or recoverable removal choice. |
+| `skills-pending/setup-pre-commit` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this setup-pre-commit source pending retention or recoverable removal choice. |
+| `skills-pending/setup-ts-deep-modules` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this setup-ts-deep-modules source pending retention or recoverable removal choice. |
+| `skills-pending/tdd` | Core `tracer-bullet/SKILL.md` mentions `/tdd`; this is not proof this optional copy supplies invocation. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this tdd source pending retention or recoverable removal choice. |
+| `skills-pending/teach` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this teach source pending retention or recoverable removal choice. |
+| `skills-pending/ubiquitous-language` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this ubiquitous-language source pending retention or recoverable removal choice. |
+| `skills-pending/wayfinder` | Foundation audit records this source as unshipped. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this wayfinder source pending retention or recoverable removal choice. |
+| `skills-pending/wizard` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this wizard source pending retention or recoverable removal choice. |
+<!-- optional-source:end -->
+
 ## Stance discovery
 
 Builder, Auditor, Reviewer and Reconciler ship as flat canonical directories with Claude adapters in the
