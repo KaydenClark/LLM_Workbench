@@ -389,3 +389,12 @@ test('an option whose value is another flag is an invocation error, and a closed
   assert.equal(piped.stdout, '{\n');
   assert.doesNotMatch(piped.stderr, /EPIPE|at .*\.mjs|Error/, `a closed pipe prints no stack trace: ${piped.stderr}`);
 });
+
+test('feedback disposition vocabulary is closed and shared by root and template', () => {
+  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+    const content = read(root, relative);
+    const section = content.split('### Feedback Dispositions')[1]?.split(/\n## /)[0];
+    assert.ok(section, `${relative} defines feedback dispositions`);
+    assert.deepEqual([...section.matchAll(/^- \*\*([a-z-]+)\*\*/gm)].map(match => match[1]), ['diagnostic', 'test', 'repaired', 'declined', 'accepted-open']);
+  }
+});

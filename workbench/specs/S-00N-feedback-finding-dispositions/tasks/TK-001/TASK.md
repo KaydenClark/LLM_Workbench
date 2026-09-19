@@ -3,7 +3,7 @@
 **Task ID:** TK-001
 **Spec ID:** S-00N
 **Slice:** Define the closed disposition vocabulary in `LEXICON.md`
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00N Acceptance Criteria
 **Planned verification:** Red: a control-fidelity assertion cannot find the five named dispositions; green: the Lexicon defines each class and the focused/full suites pass
