@@ -2404,7 +2404,7 @@ function wikiClaimFixture() {
     // passed verdict for the same digest, so only the approval-gap reason is
     // isolated.
     writeAt(gateRoot, 'specs/S-806-fixture/SPEC.md', completableSpec('S-806'));
-    const s806Candidate = headSha(gateRoot);
+    const s806Candidate = integratedFixtureCandidate(gateRoot);
     recordReviewVerdict(gateRoot, 'S-806', {
       candidate: s806Candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
