@@ -4439,6 +4439,37 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.ok(stillRetired.records.some((task) => task.id === created.id), 'the new corrective Task is a live record on the still-retired Spec');
     assert.ok(!(stillRetired.retiredRecords ?? []).some((task) => task.id === created.id), 'and it is not itself a retired Task record');
 
+    const retiredBytes = fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8');
+    assert.equal(nextWork(correctiveRetiredRoot)?.taskId, created.id, 'retired-owner corrective Task remains selectable');
+    render(correctiveRetiredRoot);
+    assert.match(fs.readFileSync(path.join(correctiveRetiredRoot, 'TASKBOARD.md'), 'utf8'), new RegExp(created.id), 'board exposes the corrective Task');
+    assert.ok(showSpec(correctiveRetiredRoot, 'S-591').tasks.some(task => task.id === created.id));
+    const correctivePath = path.join(correctiveRetiredRoot, created.filePath);
+    const readyContent = fs.readFileSync(correctivePath, 'utf8');
+    fs.writeFileSync(correctivePath, readyContent.replace('**Blockers:** none', '**Blockers:** S-ZZZ'));
+    assert.equal(nextWork(correctiveRetiredRoot), null, 'unmet corrective dependency prevents selection');
+    assert.throws(() => claimWork(correctiveRetiredRoot, 'S-591', { agent: 'fixture' }), /blocked-slice/);
+    render(correctiveRetiredRoot);
+    assert.ok(doctor(correctiveRetiredRoot).some(item => item.code === 'blocked-slice'));
+    fs.writeFileSync(correctivePath, readyContent);
+    claimWork(correctiveRetiredRoot, 'S-591', { agent: 'fixture' });
+    assert.equal(nextWork(correctiveRetiredRoot)?.status, 'in-progress');
+    assert.equal(fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8'), retiredBytes, 'claim preserves historical Spec header and evidence');
+    closeTask(correctiveRetiredRoot, 'S-591', { proof: 'corrective fixture passed', docs: 'Wiki checked', remainingGap: 'none' });
+    assert.equal(findSpec(correctiveRetiredRoot, 'S-591').status, 'complete', 'correction never reopens completed Spec');
+    assert.equal(findSpec(correctiveRetiredRoot, 'S-591').lifecycleFolder, 'retired');
+    assert.equal(readTaskRecord(correctivePath, correctiveRetiredRoot).status, 'done');
+    assert.match(fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8'), /Task closed.*corrective fixture passed/);
+    assert.equal(nextWork(correctiveRetiredRoot), null);
+    render(correctiveRetiredRoot);
+    assert.doesNotMatch(fs.readFileSync(path.join(correctiveRetiredRoot, 'TASKBOARD.md'), 'utf8'), new RegExp(created.id));
+    assert.equal(doctor(correctiveRetiredRoot).some(item => item.blocks === 'all' || item.blocks === 'selection'), false);
+    const oldTaskPath = path.join(correctiveRetiredRoot, path.dirname(historicalRoute), 'tasks/TK-001/TASK.md');
+    fs.writeFileSync(oldTaskPath, fs.readFileSync(oldTaskPath, 'utf8').replace('**Status:** done', '**Status:** ready'));
+    assert.equal(nextWork(correctiveRetiredRoot), null, 'ordinary historical Tasks are never reselected');
+    assert.throws(() => claimWork(correctiveRetiredRoot, 'S-591', { agent: 'fixture' }), /no eligible ready task/);
+    assert.throws(() => closeTask(correctiveRetiredRoot, 'S-591', { proof: 'no', docs: 'no', remainingGap: 'none' }), /no open task/);
+
     console.log('ok - createCorrectiveTasks against a retired (not discarded) Spec writes the new Task straight into its still-retired tasks/ directory, never under tasks/retired/, and never moves the Spec back out of retired/ - S-00J\'s deferred retired-folder case');
   } finally {
     fs.rmSync(correctiveRetiredRoot, { recursive: true, force: true });
