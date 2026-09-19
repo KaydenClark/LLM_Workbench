@@ -1,0 +1,1276 @@
+{
+  "schemaVersion": 1,
+  "operation": "feedback-representation-inventory",
+  "scope": "workbench/feedback",
+  "artifacts": [
+    {
+      "artifact": "workbench/feedback/.gitkeep",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "lastChangedCommit": "6d5beef8f6886be0cd5a8a2d1c71946b99021fe5",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
+          "match": "basename-only; identity requires review"
+        },
+        {
+          "artifact": "workbench/feedback/REPORT-decision-triage-2026-09-07.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-boundaries-2026-09-05.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "717b1e5bd6616c88677096f46acd80703d205fa4a27178966318236c174686d6",
+      "bytes": 6170,
+      "lastChangedCommit": "279341ae7e2fdff0a63a06a057675ee8113380d7",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md",
+        "workbench/specs/S-028-harness-feedback-integrity/SPEC.md",
+        "workbench/specs/S-048-checkpoint-retirement/checkpoint-inventory.json"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-branch-lifecycle-2026-09-05.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "9c6a5f2114140bebdfad46d6b895edebfc5daf162b0e353273959eb212eacb80",
+      "bytes": 4729,
+      "lastChangedCommit": "279341ae7e2fdff0a63a06a057675ee8113380d7",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "a8b0d87a93a05b92815908137ceb4a3a50d14a44ffd7720c7dc28ac811534bc4",
+      "bytes": 19567,
+      "lastChangedCommit": "09bbf88e1e859f6dab00eb254aea04da3edb344b",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/specs/S-048-checkpoint-retirement/checkpoint-inventory.json"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-decision-triage-2026-09-07.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "0739879c8285c8fec0b862c8d1d959acd96fc8d83d56eba6e336cebdb9640b05",
+      "bytes": 19635,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "6eeaf6ac8140c3749f5a131ce7b288d952698b5d4d337dd5d47547f41bab654c",
+      "bytes": 53823,
+      "lastChangedCommit": "099b1bbcd2c8a301443ab74e77e79e21c514b288",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-notepad-json-definition-2026-09-12.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "f8c60c9d81f99de5dbc173542495b0b18b2be759988c26b73fee96c88c4fc8b2",
+      "bytes": 36847,
+      "lastChangedCommit": "b4edb20602dfa36cab1ef779334ce42a8097d9c1",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "ea38054d74df15d454f23ff4c385a7e878a81c3cc974ec550319358ed4cd0a70",
+      "bytes": 36898,
+      "lastChangedCommit": "2a9e79baf787eed165e3e1bde56f9a225d9bb5ba",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/original-foundation-audit-2026-09-10.evidence.json",
+          "match": "full-path"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/original-foundation-audit-2026-09-10.evidence.json"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "7067f806c4b095a87c89f8218daa60fa87a852927092d8a07943915d440d7df8",
+      "bytes": 24582,
+      "lastChangedCommit": "288c8216aa7022924b050597faa943e37fde50c7",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md",
+        "workbench/specs/S-040-skill-gate-route-selection/SPEC.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-v3-1-1-acceptance-2026-09-05.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "20deac6fc09cfb03821eecb21fcd352093a1eb38c8009f53f442ac9451ae334f",
+      "bytes": 18211,
+      "lastChangedCommit": "f45ab309d129c3332949a48e4bdf3bf6b97535ad",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/specs/S-029-declared-integration-branch/SPEC.md",
+        "workbench/specs/S-040-skill-gate-route-selection/SPEC.md",
+        "workbench/specs/S-048-checkpoint-retirement/checkpoint-inventory.json"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT-v3-1-1-adoption-2026-09-05.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "687e31a514acf2a36f905388549f03963bba13840c837a639d6e896d6c734b69",
+      "bytes": 11655,
+      "lastChangedCommit": "47db4bb797fbc4a8acab752eba4d0d087fcf8e7a",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/REPORT_FORMAT.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "1035b0f88438abfb01902a8bb032e55e031833ff314146d9698e0ffc6a727071",
+      "bytes": 5564,
+      "lastChangedCommit": "3a0d817f781a35d28ede622a98a55e8e51ac9561",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
+          "match": "basename-only; identity requires review"
+        },
+        {
+          "artifact": "workbench/feedback/REPORT-decision-triage-2026-09-07.md",
+          "match": "basename-only; identity requires review"
+        },
+        {
+          "artifact": "workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/REPORT-v3-1-1-acceptance-2026-09-05.md",
+          "match": "basename-only; identity requires review"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-2026-09-07.csv",
+          "match": "basename-only; identity requires review"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-2026-09-07.json",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/automatically-resolved.md",
+          "match": "basename-only; identity requires review"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/candidate-register.json",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/changes-from-first-pass.md",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/clusters.json",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.csv",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.json",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.md",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/evidence-index.json",
+          "match": "full-path"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/final-adr-map.md",
+          "match": "basename-only; identity requires review"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/first-pass-snapshot.json",
+          "match": "full-path"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "RUNBOOK.md",
+        "TASKBOARD.md",
+        "skills/carry/SKILL.md",
+        "templates/ADOPTION.md",
+        "templates/GENESIS.md",
+        "templates/RUNBOOK.md",
+        "tools/test-control-fidelity.mjs",
+        "tools/test-diagnostics.mjs",
+        "tools/test-governance-core.mjs",
+        "tools/test-skill-catalog.mjs",
+        "tools/test-workbench-layout.mjs",
+        "workbench/.workbench-seed.json",
+        "workbench/docs/adr/000K-every-feedback-finding-carries-one-of-four-dispositions.md",
+        "workbench/feedback/REPORT-cic-v3-1-1-adoption-2026-09-05.md",
+        "workbench/feedback/REPORT-decision-triage-2026-09-07.md",
+        "workbench/feedback/REPORT-upstream-v3-1-1-summary-2026-09-06.md",
+        "workbench/feedback/REPORT-v3-1-1-acceptance-2026-09-05.md",
+        "workbench/feedback/decision-triage-2026-09-07.csv",
+        "workbench/feedback/decision-triage-2026-09-07.json",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/automatically-resolved.md",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/candidate-register.json",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/changes-from-first-pass.md",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/clusters.json",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.csv",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.json",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.md",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/evidence-index.json",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/final-adr-map.md",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/first-pass-snapshot.json",
+        "workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md",
+        "workbench/specs/S-00N-feedback-finding-dispositions/tasks/TK-003/TASK.md",
+        "workbench/specs/S-031-installed-skill-generation/SPEC.md",
+        "workbench/specs/S-034-control-fidelity-report/SPEC.md",
+        "workbench/specs/S-038-v3-1-2-upstream-fix-list/SPEC.md",
+        "workbench/specs/S-042-installed-state-repair/SPEC.md",
+        "workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md",
+        "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json",
+        "workbench/tools/self-drift.mjs",
+        "workbench/tools/workbench-layout.mjs",
+        "workbench/wiki/design-concepts/spec-S-028-harness-feedback-integrity.md",
+        "workbench/wiki/design-concepts/spec-S-031-installed-skill-generation.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-2026-09-07.csv",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "43d8df8bf512a566a1037d26f9ade768a2e715e1a25360f7dc2ed468e35090bc",
+      "bytes": 42139,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/REPORT-decision-triage-2026-09-07.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/REPORT-decision-triage-2026-09-07.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-2026-09-07.json",
+      "role": "first-pass-ledger",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "79f7895d553d735aa13817c8b56d24bf05d2be21e2510b471e88d2a4aa8fd6b4",
+      "bytes": 162583,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": "1628a65",
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/REPORT-decision-triage-2026-09-07.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "tools/test-feedback-inventory.mjs",
+        "workbench/feedback/REPORT-decision-triage-2026-09-07.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 181,
+        "sha256": "6b0a66bd71f033d8a9bf19994db61f675d43ee3141c48617e764f58ed640efb0",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+      "role": "report-or-format",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "9f9352fd2901067e2bb3fe7b0217525cb9c922b339a73aa9e6490269e59679e9",
+      "bytes": 14219,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/adjudication-queue.md",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "80265333daa2f249fb35ca7def6b1fbf2820cfcf2f2ee1413ff9cd2342363a62",
+      "bytes": 915,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/automatically-resolved.md",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "228664f6746e8c4e7eeb8b9ced9c7d23bc8356cff874c14bc501e543e3bdd167",
+      "bytes": 34114,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/candidate-register.json",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "596cfb7f3e200804a373688ae7f36c71febdca04bf0280ee2da5757b5fba42e8",
+      "bytes": 26163,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "some records lack a string ID",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/candidate-register.md",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "2d41099c77f91cf71b23f565c718f1f61b64d7a02b8f5a040abb57d5c9ca5562",
+      "bytes": 13691,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/changes-from-first-pass.md",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "f95a2e29d7f60a3ca1562c21550c9e0faa531e5bf4f01080f883318fe9c7a26b",
+      "bytes": 27958,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/clusters.json",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "0d5fcd7f624c88455e411f23484d7dc9a367826ae218ed6166e257f2aed9c744",
+      "bytes": 16073,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "some records lack a string ID"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.csv",
+      "role": "second-pass-derived-view",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "5c2af06c18095abd415e8c617fa10c8c349d88cf483c912577eee6a77d5f63f0",
+      "bytes": 264812,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.json",
+      "role": "second-pass-ledger",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "e1f6d83982d783df85180fe5358c2afec013aec880ae5ab69cda0e5c1da27ab0",
+      "bytes": 400777,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": "212762774b5cb7c065ab573bb487752fe98eff4c",
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "tools/feedback-inventory.mjs",
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 181,
+        "sha256": "6b0a66bd71f033d8a9bf19994db61f675d43ee3141c48617e764f58ed640efb0",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 160,
+        "sha256": "4557ccae21346d4bb381f0a58de98026658d3d4ea312091ceb3f5be90c8a6ff7",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.md",
+      "role": "second-pass-derived-view",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "c5901c1bb92da05734f23e031d7834d7262f0799ed5c836057845b1b1b2a2c86",
+      "bytes": 357097,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/evidence-index.json",
+      "role": "evidence",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "fa39a727dbd3b8c9dd76f7b431e711d9c2c0c74f424e8ebb327c15cc18b683b0",
+      "bytes": 5160,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": "212762774b5cb7c065ab573bb487752fe98eff4c",
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no record array; metadata/supporting representation",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/evidence.md",
+      "role": "evidence",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "afb93e2bae4d6d6b3d82baa22bd822a614ba8158b45444fe19ab7c7ef096a692",
+      "bytes": 3927,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        },
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "tools/test-feedback-inventory.mjs"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/existing-adr-map.json",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "ffdb413569c8623a33cb339ef1622aa0f44605f2f42bff4f87689c86c53ba678",
+      "bytes": 18313,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 59,
+        "sha256": "8967649805062c9d645e363ad77eb03db0a3ccc6863b58ded752c8d544066b4e",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/final-adr-map.md",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "1209a90060451b578b1f595ae69b4fe630d80e1312ef8a88e76f281995fe145d",
+      "bytes": 11402,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/first-pass-snapshot.json",
+      "role": "frozen-first-pass-snapshot",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "79f7895d553d735aa13817c8b56d24bf05d2be21e2510b471e88d2a4aa8fd6b4",
+      "bytes": 162583,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": "1628a65",
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [
+        "tools/feedback-inventory.mjs",
+        "tools/test-feedback-inventory.mjs",
+        "workbench/specs/S-00S-feedback-representation-and-consumer-reconciliation/SPEC.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 181,
+        "sha256": "6b0a66bd71f033d8a9bf19994db61f675d43ee3141c48617e764f58ed640efb0",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/historical-inventory-snapshot.json",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "0108a8f342bd1b44417a212fb73a6b06aa66c856a1abcb071d7c6ddef001174b",
+      "bytes": 162917,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no textual consumer reference found within feedback lane"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 181,
+        "sha256": "6b0a66bd71f033d8a9bf19994db61f675d43ee3141c48617e764f58ed640efb0",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 160,
+        "sha256": "4557ccae21346d4bb381f0a58de98026658d3d4ea312091ceb3f5be90c8a6ff7",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/owner-answers.json",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "d599f18c13bfcb1161bdbc9269551dd7dfba01b8e6861c3344a1932742ea1916",
+      "bytes": 14613,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "some records lack a string ID"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/validation.json",
+      "role": "supporting-representation",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "af323c5214a478de3ed5d8f3d01d0393c6043bb91ab7135778716c73ef0e940f",
+      "bytes": 1020,
+      "lastChangedCommit": "c37e847f71a18791477bb54f214dde5bc8910f8d",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/decision-triage-second-pass-2026-09-07/REPORT.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no record array; metadata/supporting representation"
+      ],
+      "repositoryReferenceCandidates": [],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    },
+    {
+      "artifact": "workbench/feedback/original-foundation-audit-2026-09-10.evidence.json",
+      "role": "evidence",
+      "roleBasis": "representation filename; review evidence before canonical designation",
+      "sha256": "08601a2bcdb049b56db01fcad67942a73ef023dca1553b3f71da7db7ffaf128e",
+      "bytes": 8478,
+      "lastChangedCommit": "b4edb20602dfa36cab1ef779334ce42a8097d9c1",
+      "recordedRevision": null,
+      "textualReferences": [
+        {
+          "artifact": "workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md",
+          "match": "basename-only; identity requires review"
+        }
+      ],
+      "producer": "unknown",
+      "correctionLineage": "unverified",
+      "removalEligible": false,
+      "gaps": [
+        "producer not independently established",
+        "runtime/review consumer use not established",
+        "correction lineage requires evidence read-back",
+        "no record array; metadata/supporting representation"
+      ],
+      "repositoryReferenceCandidates": [
+        "workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md"
+      ],
+      "reconciliation": "retain; textual references are navigation evidence, not proof of actual runtime/review use",
+      "recordIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      },
+      "sourceIdsIdentity": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "encoding": "UTF-8 compact JSON array, inventory order"
+      }
+    }
+  ],
+  "limitations": [
+    "Textual references are candidate consumers, not proof of actual consumer use; external repositories and private sources were not inspected.",
+    "Equal bytes preserve distinct roles. Canonical designation, correction lineage, consumer reconciliation and rollback proof remain separate gates.",
+    "No deletion, movement, source rewrite or cleanup recommendation is authorized by this inventory."
+  ],
+  "readAt": "e7b0906025909b9edd626e967b15e526e5d02509",
+  "scopeNote": "All 33 tracked feedback artifacts. Repository-reference candidates use literal full path or distinctive basename; no external/private consumer inspection."
+}
