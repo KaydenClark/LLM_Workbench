@@ -45,6 +45,30 @@ for (const skill of coreSkills) {
 assert.deepEqual(directoryNames(archivedSkillsRoot), [
   'ask-workbench', 'brainstorm', 'grill-me', 'sitrep', 'writing-great-skills'
 ], 'optional active skills must be retained outside the live discovery source');
+// Optional source is outside discovery but still needs an accountable catalog.
+// Inventory coverage is derived from directories so adding an item cannot silently
+// skip provenance and disposition review.
+const optionalRoots = ['skills-archive/optional-active-2026-09-01', 'skills-pending'];
+const optionalPaths = optionalRoots.flatMap((relative) =>
+  directoryNames(path.join(root, relative)).map((name) => `${relative}/${name}`)).sort();
+const optionalRegion = catalog.match(
+  /<!-- optional-source:start -->([\s\S]*?)<!-- optional-source:end -->/);
+assert.ok(optionalRegion, 'optional source needs a per-item inventory and disposition');
+const optionalRows = optionalRegion[1].split('\n')
+  .filter((line) => /^\| `skills-(?:archive|pending)\//.test(line))
+  .map((line) => line.split('|').slice(1, -1).map((cell) => cell.trim()));
+assert.deepEqual(optionalRows.map((row) => row[0].replaceAll('`', '')).sort(), optionalPaths,
+  'every optional item must have exactly one catalog row');
+for (const row of optionalRows) {
+  const [source, consumer, provenance, reviewed, disposition] = row;
+  assert.equal(row.length, 5, `${source}: inventory fields must stay explicit`);
+  assert.ok(consumer.length > 0, `${source}: name a consumer or recovery route`);
+  assert.match(provenance, /[0-9a-f]{40}/, `${source}: pin source provenance`);
+  assert.match(provenance, /THIRD_PARTY_NOTICES\.md/, `${source}: retain the notice owner`);
+  assert.match(reviewed, /^\d{4}-\d{2}-\d{2}$/, `${source}: date the bounded review`);
+  assert.match(disposition, /^(?:retained: .+|owner decision required: .+)$/,
+    `${source}: require a retention reason or explicit owner gate`);
+}
 assert.doesNotMatch(catalog, /KaydenClark\/skills/,
   'the portable bundle must not depend on Kayden private skills');
 assert.match(catalog, /presence-only/i,

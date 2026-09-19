@@ -1,15 +1,15 @@
 # S-00R - Core Skill Lifecycle And Optional Source Disposition
 
 **Spec ID:** S-00R
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** DISPATCHER
+**Owner:** codex-skills
 **Stance:** Builder
 **Updated:** 2026-09-19
 **Catalog description:** Reconcile core-skill lifecycle/inherited-scope instructions and establish evidence-based dispositions for optional archived and pending skill source without pre-judging removal.
 **Blockers:** S-00P phase two must publish current Canon before lifecycle wording changes; removal or relocation requires a per-item owner decision.
-**Latest event:** Planning packet authored from the pinned investigation baseline; no implementation performed.
-**Next gate:** After S-00P phase two clears, claim TK-0R0 to inventory optional source before any disposition action.
+**Latest event:** TK-0R0 claimed by codex-skills.
+**Next gate:** Close TK-0R0 with verification and documentation proof.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
