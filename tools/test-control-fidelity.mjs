@@ -399,6 +399,24 @@ test('feedback disposition vocabulary is closed and shared by root and template'
   }
 });
 
+test('chat continuity and map-fog-frontier vocabulary are shared by root and template', () => {
+  const rootLexicon = read(root, 'LEXICON.md');
+  const templateLexicon = read(root, 'templates/LEXICON.md');
+  for (const term of ['Chat', 'Conversation', 'Thread', 'Destination', 'Map', 'Decisions so far', 'Fog', 'Out of scope', 'Frontier']) {
+    const row = new RegExp(`^\\| \\*\\*${term}\\*\\* \\|.*$`, 'm');
+    const rootRow = rootLexicon.match(row)?.[0];
+    const templateRow = templateLexicon.match(row)?.[0];
+    assert.ok(rootRow, `LEXICON.md defines ${term}`);
+    assert.equal(templateRow, rootRow, `templates/LEXICON.md mirrors the shared ${term} definition exactly`);
+  }
+  assert.match(rootLexicon, /\*\*Frontier\*\* \| The open, unblocked and unclaimed Tasks/,
+    'Frontier is the actionable edge, not the whole active landscape');
+  assert.match(rootLexicon, /\*\*Fog\*\* \| Work[^\n]+cannot yet be stated as a precise decision question/,
+    'Fog graduates when its question becomes precise');
+  assert.match(rootLexicon, /\*\*Map\*\* \| The low-resolution decision index for one Spec/,
+    'a Map indexes one Spec without creating another truth store');
+});
+
 test('feedback formats require a disposition and owning evidence route', () => {
   for (const relative of ['workbench/feedback/REPORT_FORMAT.md', 'templates/feedback/REPORT_FORMAT.md']) {
     const content = read(root, relative);

@@ -51,3 +51,9 @@ origin rather than durable evidence.
 
 This record is `proposed`. `LEXICON.md` and `BLUEPRINT.md` remain live Canon as
 written until the owner accepts it.
+
+Owner clarification on 2026-09-19 superseded this proposal's
+Journey/Path/whole-active-landscape framing: Chat, Conversation and Thread are
+vocabulary rather than work structure, while a Map indexes one Spec and its
+Frontier is the open, unblocked and unclaimed Tasks. Do not accept this proposal
+as written; `LEXICON.md` owns the current definitions.
