@@ -211,6 +211,7 @@ node tools/test-spec-citation-anchors.mjs
 node tools/test-controls-vocabulary-sweep.mjs
 node tools/test-spec-report.mjs
 node tools/test-self-drift.mjs
+node tools/test-feedback-inventory.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls

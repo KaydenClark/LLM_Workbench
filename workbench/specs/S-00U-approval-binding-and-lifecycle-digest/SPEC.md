@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Bind Human QA to inspected Git content, separate integration review from closure approval, and preserve proof across administrative completion.
 **Blockers:** none
-**Latest event:** TK-0U0 claimed by codex-director.
-**Next gate:** Close TK-0U0 with verification and documentation proof.
+**Latest event:** Approval and lifecycle digest repairs implemented; targeted red/green passed and combined suite/review are pending.
+**Next gate:** Verify the immutable combined candidate and resolve independent review before integration; owner Human QA remains later.
 
 > **Citation anchors.** pre=`bc370fe742d5ddb8348bf361fccea31205f6cee7` post=`bc370fe742d5ddb8348bf361fccea31205f6cee7`.
 
@@ -45,7 +45,7 @@ No implementation blocker. Final retirement sequence validation composes the S-0
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-0U0 | Repair approval binding, gate order and lifecycle digest with continuous regression proof | in-progress | none | pending |
+| TK-0U0 | Repair approval binding, gate order and lifecycle digest with continuous regression proof | in-progress | none | Targeted spec-report and branch-closeout passed at f47d57f; combined suite/review pending |
 
 ## Acceptance Criteria
 
@@ -77,7 +77,9 @@ RUNBOOK and generic template command descriptions; current S-00J limitations whe
 
 ## Completion Result
 
-Pending.
+Implementation and procedure updates are prepared at `f47d57f`; combined
+verification and independent review remain pending. This is not Spec completion
+or owner Human QA. The real I/J approval gates remain open.
 
 ## Supersession
 
