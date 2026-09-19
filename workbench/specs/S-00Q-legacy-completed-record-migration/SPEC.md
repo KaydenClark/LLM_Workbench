@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Reconciler
-**Updated:** 2026-09-18
+**Updated:** 2026-09-19
 **Catalog description:** Transform the 50 legacy completed Specs still on the active roster into one durable Wiki article per legacy Spec, redirect current consumers, retire the records, and discard them only after verified default-branch containment and recovery proof.
-**Blockers:** Article inventory and authoring are authorized now. Retirement waits for S-00I/S-00J/S-00P completion, reviewed batch digests and TK-0Q1 repair proof; discard additionally waits for default-branch containment.
-**Latest event:** Owner clarified exactly one Wiki article per legacy Spec and authorized independent preparation before lifecycle gates; S-00T implements runtime repair prerequisites.
-**Next gate:** TK-0Q0 freezes the inventory and article routes; author article batches in parallel, keeping retirement/discard gated separately.
+**Blockers:** Article inventory and authoring are authorized now. Retirement waits for S-00I/S-00J/S-00P completion, an explicit legacy retirement QA rule, concrete review/approval and TK-0Q1 repair proof; discard additionally waits for default-branch containment.
+**Latest event:** All 50 individual articles are authored; pinned inventory and section-level claim matrix record hashes, current owners, consumers and semantic review gaps. No retirement QA mechanism or concrete digest is approved.
+**Next gate:** Review the 50 article claim mappings and resolve the legacy retirement QA rule; preserve the separate lifecycle and owner gates.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
@@ -127,10 +127,10 @@ capability, with exactly one article per Spec; batches organize execution and re
 ### Owner gate: legacy QA
 
 No legacy Spec receives fabricated retrospective assembled-Spec review or
-Human QA. The owner selected durable transformation and review, then clarified exactly one
-Wiki article per Spec. The earlier alternatives remain below as decision lineage;
-option 1 supplies batch review, with per-Spec articles rather than merged articles.
-Individual unseen batch digests are not approved by this direction:
+Human QA. The owner requested durable transformation, then explicitly clarified exactly one
+Wiki article per Spec. This authorizes article preparation. It does not select
+one of the retirement QA alternatives below or approve any concrete digest.
+The earlier alternatives remain proposals and decision lineage:
 
 1. **Recommended:** approve a current capability-batch migration digest. The
    digest inventories claims and destinations, verifies current behavior at
@@ -145,7 +145,7 @@ Individual unseen batch digests are not approved by this direction:
    Blueprint's intended transient-record end state.
 
 TK-0Q0 records the exact owner direction below, prepares the inventory and concrete
-batch digests, and retains per-batch review before retirement. Silence, old test
+batch digests, and retains an explicit QA-method decision and concrete review before retirement. Silence, old test
 evidence or the mere `complete` header never supplies approval of a batch.
 
 ### Migration and preservation contracts
@@ -215,7 +215,7 @@ table intentionally carries no live rows.
       A-F, with claim classification, durable destination, consumer set,
       preservation route and uncertainty; no active/blocked record is smuggled
       into the completed inventory.
-- [ ] The selected per-Spec article and batch-review rule is recorded without fabricating
+- [ ] The per-Spec article direction and a separately selected retirement QA rule are recorded without fabricating
       retrospective S-00J review or Human QA.
 - [ ] `next-id` never proposes a used active, retired, corrective or
       remote-tracking-visible ID, and the four disclosed discard hazards are
@@ -296,10 +296,16 @@ This clarification performs no real retirement or discard.
 
 | 2026-09-19 | owner direction in implementation session | Legacy migration approach clarified | Owner first said "I guess we should review some things, but I figured adding them all to the wiki or somewhere else durable would be good, like we do with current specs we get rid of"; then corrected "No like each spec should be a spec artical in the wiki please" | Exactly one Wiki article per legacy Spec; batches organize work and review only. Preserve useful capability knowledge, decisions, limitations and proof references. This supersedes the initial grouped-article plan; concrete batch approval and default-branch discard gates remain open. S-00T delivers TK-0Q1 runtime repairs once |
 
+| 2026-09-19 | source baseline bc370fe742d5ddb8348bf361fccea31205f6cee7; article byte identities in MIGRATION_INVENTORY.json | Prepared exactly 50 individual article routes and frozen claim-group inventory | Compared baseline complete Spec IDs against article IDs; hashed baseline/current source, articles and linked owners; checked local article links; indexed each level-two source section and captured referencesToPath consumer snapshot | 50/50 IDs, no duplicate or extra article; linked paths resolve. S-027/S-028 current source differs by later evidence, recorded separately. Section coverage is not atomic claim completeness; semantic review and consumer reconciliation remain open. Owner clarification does not select a retirement QA mechanism; no retirement/discard performed |
+
 ## Completion Result
 
-Article inventory and authoring are ready to begin. Runtime repairs are in
-progress under S-00T; no real legacy record has retired or been discarded.
+All 50 individual Wiki articles are authored. The [readable matrix](MIGRATION_MATRIX.md)
+and [machine inventory](MIGRATION_INVENTORY.json) pin the original 50 complete
+records at `bc370fe742d5ddb8348bf361fccea31205f6cee7`, their article hashes,
+section-level claim groups, linked owners and consumer snapshot. Structural
+coverage passes; semantic claim review, consumer migration, retirement QA and
+lifecycle gates remain open. No real legacy record has retired or been discarded.
 
 ## Remaining Limitations Or Follow-Up Specs
 

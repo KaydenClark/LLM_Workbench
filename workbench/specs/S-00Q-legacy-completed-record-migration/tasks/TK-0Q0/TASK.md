@@ -3,8 +3,9 @@
 **Task ID:** TK-0Q0
 **Spec ID:** S-00Q
 **Slice:** Freeze the legacy inventory and record the owner QA rule
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
+**Next gate:** Semantic claim review and explicit legacy retirement QA rule remain open.
 **Destination:** spec-acceptance: S-00Q Acceptance Criteria lines 1-2
 **Stance:** Reconciler
 **Planned verification:** Red: a generated inventory or owner-gate check reports any missing/extra completed path, unclassified claim group, unresolved destination, or missing concrete batch-review route; green: exactly the 50 baseline paths are covered, active/blocked records are excluded, and the owner's chosen migration approval rule and exception handling are readable without claiming retrospective S-00J compliance.
@@ -28,3 +29,7 @@ dropping only this Task's new planning artifact; no lifecycle state changes.
 - Every source path and claim group has a classification and proposed owner.
 - The owner gate is explicit, bounded and non-retrospective.
 - Uncertainty remains open rather than being forced into a destination.
+
+## Progress
+
+The [matrix](../../MIGRATION_MATRIX.md) and [machine inventory](../../MIGRATION_INVENTORY.json) cover exactly 50 baseline completed Specs and 50 individual articles. Source/article hashes, all level-two source sections, linked owner identities, consumer snapshots are captured; each article retains its limitations. Local article links and owner paths resolve. This is prepared section-level claim routing; it does not establish atomic claim completeness or approve retirement. The owner explicitly chose one article per Spec, but did not choose a retrospective or migration QA mechanism. Current consumers remain to reconcile; no record moved or was discarded.
