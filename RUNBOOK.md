@@ -827,73 +827,80 @@ node workbench/tools/spec-workbench.mjs doctor
 ```
 
 `convert-tasks` is one-shot: it writes one `tasks/<id>/TASK.md` record per
-unfinished slice row of an active spec (carrying the row's plan as `Planned
-verification`, never as proof), leaves done rows and completed specs untouched,
-and refuses a second run; a spec whose `tasks/` directory exists is read from
-its records and its retained table is history. `receipt` appends one
-append-only run row (branch, HEAD SHA, upstream distance, dirty file count,
-tests, docs, remaining gap, checksum) to a named in-progress Task record;
-`close` appends the run's final row on a record-backed Task before flipping
-it, and the hot board shows each in-progress Task's run count, latest branch,
-short SHA and dirty count without ever rendering the run table. `report`
-assembles a Spec's state for a separate-context reviewer and names the
-candidate SHA it was asked about, reporting whether it resolves, exists and
-matches `HEAD` as facts rather than preconditions: every Task with its status,
-proof or plan and Receipt runs (a record-backed Spec's retained done rows
-marked as history), every acceptance line with its checked state, the evidence
-rows, the completion result, the gaps and any verdict recorded for that
+unfinished slice row of an active spec (carrying the row's plan as
+`Planned verification`, never as proof), leaves done rows and completed
+specs untouched, and refuses a second run; a spec whose `tasks/` directory
+exists is read from its records and its retained table is history.
+`receipt` appends one append-only run row (branch, HEAD SHA, upstream
+distance, dirty file count, tests, docs, remaining gap, checksum) to a
+named in-progress Task record; `close` appends the run's final row on a
+record-backed Task before flipping it, and the hot board shows each
+in-progress Task's run count, latest branch, short SHA and dirty count
+without ever rendering the run table. `report` assembles a Spec's state
+for a separate-context reviewer and names the candidate SHA it was asked
+about, reporting whether it resolves, exists and matches `HEAD` as facts
+rather than preconditions: every Task with its status, proof or plan and
+Receipt runs (a record-backed Spec's retained done rows marked as
+history), every acceptance line with its checked state, the evidence rows,
+the completion result, the gaps and any verdict recorded for that
 candidate; an incomplete Spec is reported, never refused (only a missing
-`--candidate` option is an error). `verdict` appends one append-only evidence
-row (`review`, `Review verdict: pass|fail at <sha>`, findings, reviewer,
-remaining gap) and refuses a candidate that does not exist or is not the
-room's exact `HEAD`, a result other than pass or fail, or an empty reviewer,
-writing nothing on refusal. `move-spec` moves a complete Spec's directory
-into the specs lane's `retired/` folder with `git mv` semantics, refusing a
-dirty tree, an incomplete Spec, any other folder or a room without Git; it
-rewrites every live Markdown reference and ADR `canonicalized_in` target to
-the old path, regenerates the ADR register, leaves append-only rows and
-counts them, and stages the result; the top level stays the active roster,
-`show` still finds a retired Spec, and `CATALOG.md` lists it under Retired. `move-task` does the same for one done
-Task record into its Spec's `tasks/retired/`, refusing a Task that is not
-done or carries neither Proof nor a Receipt row; `show` lists retired Tasks
-separately and `report` shows them as history. `retire-spec` reconciles and
-retires a closed Spec: it refuses unless the Spec is complete with every Task
-done, every acceptance box checked and a real Completion Result, the owner's
-Human QA for the current content is an approval, and the named Wiki note is a
-valid design-concept or guidebook routed from `MEMORY.md` that names the
-retired route and copies no task state; it then appends the retirement row,
-moves the directory with its Tasks into `retired/`, cleans contained lane
-branches, lists unmerged ones, and regenerates the board and the ADR
-register. `discard` is `git rm` of a retired Spec or, with `--task`, one
-retired Task record - never `archive` - and refuses by name before any write
-if the record is not retired, the tree is dirty, its retiring commit is not
-verified contained on the declared default branch, a complete reference and
-link scan still finds a current pointer to it, or (for a Spec) its durable
-Wiki owner is missing or not active; a successful discard appends one row to
-the tracked, append-only `workbench/specs/DISCARDS.md` register (kind, record
-ID, historical path, retiring commit, discard parent commit, and the exact
-`git checkout` recovery command, which the test exercises) and files the gap
-as a corrective Task against the Wiki claim rather than restoring the record;
-`doctor` gains the blocking `discarded-reference` finding for a reference
-naming a path the register says was discarded, and
+`--candidate` option is an error). `verdict` appends one append-only
+evidence row (`review`, `Review verdict: pass|fail at <sha>`, findings,
+reviewer, remaining gap) and refuses a candidate that does not exist or is
+not the room's exact `HEAD`, a result other than pass or fail, or an empty
+reviewer, writing nothing on refusal. `move-spec` moves a complete Spec's
+directory into the specs lane's `retired/` folder with `git mv` semantics,
+refusing a dirty tree, an incomplete Spec, any other folder or a room
+without Git; it rewrites every live Markdown reference and ADR
+`canonicalized_in` target to the old path, regenerates the ADR register,
+leaves append-only rows and counts them, and stages the result; the top
+level stays the active roster, `show` still finds a retired Spec, and
+`CATALOG.md` lists it under Retired. `move-task` does the same for one
+done Task record into its Spec's `tasks/retired/`, refusing a Task that is
+not done or carries neither Proof nor a Receipt row; `show` lists retired
+Tasks separately and `report` shows them as history. `retire-spec`
+reconciles and retires a closed Spec: it refuses unless the Spec is
+complete with every Task done, every acceptance box checked and a real
+Completion Result, the owner's Human QA for the current content is an
+approval, and the named Wiki note is a valid design-concept or guidebook
+routed from `MEMORY.md` that names the retired route and copies no task
+state; it then appends the retirement row, moves the directory with its
+Tasks into `retired/`, cleans contained lane branches, lists unmerged
+ones, and regenerates the board and the ADR register. `discard` is `git
+rm` of a retired Spec or, with `--task`, one retired Task record - never
+`archive` - and refuses by name before any write if the record is not
+retired, the tree is dirty, its retiring commit is not verified contained
+on the declared default branch, a complete reference and link scan still
+finds a current pointer to it, or (for a Spec) its durable Wiki owner is
+missing or not active; a successful discard appends one row to the
+tracked, append-only `workbench/specs/DISCARDS.md` register (date, kind,
+record ID, historical path, retiring commit, discard parent commit, and
+the exact `git checkout` recovery command, which the test exercises) and
+files the gap as a corrective Task against the Wiki claim rather than
+restoring the record; `doctor` gains the blocking `discarded-reference`
+finding for a reference naming a path the register says was discarded, and
 `tools/check-append-only.py` now enumerates a Spec's `retired/` lifecycle
-folder so a retired Spec's own evidence log stays covered. `gate` reports a
-Task PR (a real Task record under a still-open Spec, while S-00O exemption 2
-holds) and refuses a Spec candidate that is incomplete, unreviewed for its
-current content or named by a SHA the repository does not hold; the closeout
-recipe below runs it before the merge. A verdict binds to the assembled
-Spec's content digest,
-so record it after the final `close` and before `complete`. `approve` records
-the owner's Human QA on `integration` as one append-only `owner-qa` row naming
-who, when and the integration SHA inspected (contained in the declared
-integration branch, bound to the same content digest); a `--finding` creates
-corrective Tasks under the still-open Spec, a `--destination-change` records a
-return to Align and creates nothing, and `complete` refuses until the latest
-owner QA for the current content is an approval. `next` returns one eligible ready task. `show` loads one stable work packet.
-Writes use a temporary file plus rename and fail closed on ambiguous state.
-`render` updates the hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy Blueprints retain their marked catalog until explicitly rebuilt; destination-only Blueprints are never rewritten by render.
-`complete` requires every slice done, acceptance boxes checked, completion result
-recorded, and evidence present; render then removes the spec from the hot board.
+folder so a retired Spec's own evidence log stays covered. `gate` reports
+a Task PR (a real Task record under a still-open Spec, while S-00O
+exemption 2 holds) and refuses a Spec candidate that is incomplete,
+unreviewed for its current content or named by a SHA the repository does
+not hold; the closeout recipe below runs it before the merge. A verdict
+binds to the assembled Spec's content digest, so record it after the final
+`close` and before `complete`. `approve` records the owner's Human QA on
+`integration` as one append-only `owner-qa` row naming who, when and the
+integration SHA inspected (contained in the declared integration branch,
+bound to the same content digest); a `--finding` creates corrective Tasks
+under the still-open Spec, a `--destination-change` records a return to
+Align and creates nothing, and `complete` refuses until the latest owner
+QA for the current content is an approval. `next` returns one eligible
+ready task. `show` loads one stable work packet. Writes use a temporary
+file plus rename and fail closed on ambiguous state. `render` updates the
+hot Taskboard and complete `CATALOG.md` in the manifest specs lane. Legacy
+Blueprints retain their marked catalog until explicitly rebuilt;
+destination-only Blueprints are never rewritten by render. `complete`
+requires every slice done, acceptance boxes checked, completion result
+recorded, and evidence present; render then removes the spec from the hot
+board.
 
 ### Architecture Decision Records
 

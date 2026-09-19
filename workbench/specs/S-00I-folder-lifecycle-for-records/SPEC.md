@@ -230,10 +230,10 @@ the reconciled owners preserve the evidence.
 - [x] A closed Spec and its Tasks are reconciled into readable durable owners
       without copying task state into the Wiki, then retired out of ordinary
       discovery with an explicit historical route.
-- [ ] Discard refuses before verified `main`, a clean complete reference scan
+- [x] Discard refuses before verified `main`, a clean complete reference scan
       and recoverable Git identity, and always for `archive`; after every gate
       it succeeds and a corrective Task still works against the Wiki record.
-- [ ] The full verification suite passes and `doctor` is clean.
+- [x] The full verification suite passes and `doctor` is clean.
 
 ## Testing Seams
 
@@ -278,7 +278,33 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 
 ## Completion Result
 
-Not started.
+Delivered across six landed Tasks (PRs #116, #122, #126, #130, #134 and #138;
+integration `49ec744` contains the last). Lifecycle is folder location for
+every record collection: the active roster is the top-level listing; ADRs carry
+no `status` frontmatter, `proposed/` holds records not yet Canon and the
+permanent `archive/` holds superseded and deprecated records with bodies
+untouched, migrated once by `adr migrate-folders`; a complete Spec moves as a
+directory into `retired/` through `retire-spec`, after reconciliation into a
+readable, `MEMORY.md`-routed Wiki capability record that copies no task state
+and after the owner's Human QA approval, with every live reference rewritten,
+append-only rows preserved and counted, contained lane branches cleaned and
+unmerged ones listed; a done Task record moves into `tasks/retired/` through
+`move-task`; `show`, `report` and the catalog's Retired heading keep the
+historical route while `next`, `claim`, `close`, `receipt` and the hot board
+forget retired records; successor resolution and every intra-ADR link work
+across folders, counted at build time; a complete reference and link scan
+covers Markdown links, `canonicalized_in` targets and the register's path
+cells; the `AGENTS.md` stable-path rule is retired with its reason. Discard of
+a retired record is `git rm` gated on verified containment in `main`, a clean
+complete scan and a recorded recovery identity, never for `archive`, and a
+later corrective Task works against the reconciled Wiki claim. S-00H is the
+first real retired Spec. S-00J's third acceptance line (a corrective Task for a
+retired Spec lands under `retired/<id>/tasks/` and the Spec never moves back
+out) is held by the corrective-Task test block in
+`tools/test-spec-workbench.mjs` at `e024f59`, not by the checker's `retired/`
+enumeration; the TK-006 close row attaches it to the latter and this sentence
+corrects that attribution. The suite ran green on this completion candidate (44
+commands, `doctor` clean).
 
 ## Remaining Limitations Or Follow-Up Specs
 
