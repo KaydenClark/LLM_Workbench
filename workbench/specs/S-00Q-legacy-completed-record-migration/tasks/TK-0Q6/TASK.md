@@ -4,7 +4,7 @@
 **Spec ID:** S-00Q
 **Slice:** Migrate S-046-S-049, S-051 and S-053
 **Status:** blocked
-**Blockers:** TK-0Q0, TK-0Q1
+**Blockers:** TK-0Q0
 **Destination:** spec-acceptance: S-00Q Acceptance Criteria lines 4-6
 **Stance:** Reconciler
 **Planned verification:** Red: the batch matrix finds continuity, identity, checkpoint-transition, execution-ownership, core-ownership or configured-host knowledge owned only by one of the six Specs; green: capability articles and live source/tests own current meaning, S-052 remains the sole live transport proof owner, consumers are redirected, and the approved batch retires without overstating host or model evidence.
@@ -18,6 +18,9 @@ connect related articles without merging them.
 Keep local continuity distinct from optional transport and distinguish
 configured-host observations from enforcement or reliability claims. Do not
 close or migrate S-052.
+
+Article authoring may proceed before S-00I/S-00J/S-00P completion and TK-0Q1.
+Actual retirement remains gated on those prerequisites plus concrete batch review.
 
 ## Preservation And Rollback
 

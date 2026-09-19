@@ -4,7 +4,7 @@
 **Spec ID:** S-00Q
 **Slice:** Migrate S-036-S-045
 **Status:** blocked
-**Blockers:** TK-0Q0, TK-0Q1
+**Blockers:** TK-0Q0
 **Destination:** spec-acceptance: S-00Q Acceptance Criteria lines 4-5
 **Stance:** Reconciler
 **Planned verification:** Red: the batch matrix finds an upgrade, runtime-integrity, repair or legacy-classification claim with no current owner outside the ten Specs; green: guidebook/design-concept and source/test owners cover every surviving claim, stale version-specific directions are historical, consumers are redirected, and the approved batch retires with clean links.
@@ -18,6 +18,9 @@ connect related articles without merging them.
 Document the reusable diagnosis and repair models; keep one-off upstream fix
 dispositions and candidate corrections as versioned history. Never infer an
 actual consumer from similar names or identical bytes.
+
+Article authoring may proceed before S-00I/S-00J/S-00P completion and TK-0Q1.
+Actual retirement remains gated on those prerequisites plus concrete batch review.
 
 ## Preservation And Rollback
 

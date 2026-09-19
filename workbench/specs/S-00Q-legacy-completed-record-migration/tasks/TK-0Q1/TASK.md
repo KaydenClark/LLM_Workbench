@@ -4,7 +4,7 @@
 **Spec ID:** S-00Q
 **Slice:** Close allocator and discard safety gaps before migration
 **Status:** blocked
-**Blockers:** S-00I
+**Blockers:** S-00T; runtime repair is delivered there once, independent of legacy retirement approval
 **Destination:** spec-acceptance: S-00Q Acceptance Criteria line 3
 **Stance:** Builder
 **Planned verification:** Red: fixtures reproduce next-id proposing retired S-00H, the post-discard Wiki dangling reference, duplicate orphan corrective Tasks, last-retired-Task fallback to table state, and first-add recovery identity after remove/re-add; green: allocation considers every lifecycle/corrective/remote-tracking-visible ID and each discard case is idempotent, record-backed, last-add recoverable and diagnostic-clean after the documented operation.

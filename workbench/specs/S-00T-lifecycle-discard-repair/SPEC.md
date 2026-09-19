@@ -68,7 +68,9 @@ Confirm failing regressions before code edits, run focused suite then every AGEN
 
 ## Documentation Impact
 
-This Spec owns repair proof and Q links to it. Runtime procedure documentation will describe immutable directory recovery. No generic control rule changes are needed for repair of existing contract.
+This Spec owns repair proof and Q links to it. RUNBOOK lifecycle procedure describes immutable directory recovery, historical
+citation conversion, final-Task persistence and failure handling. Generic templates
+do not expose this detailed procedure yet; S-00P owns that broader mirror rewrite. No generic control rule changes are needed for repair of existing contract.
 
 ## Append-Only Evidence And Execution Log
 

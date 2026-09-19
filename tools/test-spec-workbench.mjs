@@ -64,6 +64,16 @@ function initGitRoot(dir) {
   execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', 'init']);
 }
 
+// Simulate delivery of this exact fixture content before owner approval.
+function integratedFixtureCandidate(root) {
+  execFileSync('git', ['-C', root, 'add', '-A']);
+  execFileSync('git', ['-C', root, 'commit', '--quiet', '--allow-empty', '-m', 'deliver approval fixture']);
+  if (spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', 'refs/heads/integration']).status === 0) {
+    execFileSync('git', ['-C', root, 'branch', '-f', 'integration', 'HEAD']);
+  }
+  return headSha(root);
+}
+
 function headSha(dir) {
   return execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 }
@@ -159,7 +169,7 @@ try {
     /no owner Human QA approval is recorded/i,
     'complete still refuses a passed-verdict Spec with no recorded owner approval'
   );
-  recordOwnerApproval(root, 'S-001', { candidate: headSha(root), owner: 'Kayden Clark', result: 'approve' });
+  recordOwnerApproval(root, 'S-001', { candidate: integratedFixtureCandidate(root), owner: 'Kayden Clark', result: 'approve' });
   completeSpec(root, 'S-001', { date: '2026-07-12' });
   render(root);
 
@@ -2376,7 +2386,7 @@ function wikiClaimFixture() {
     recordReviewVerdict(gateRoot, 'S-805', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
-    recordOwnerApproval(gateRoot, 'S-805', { candidate: headSha(gateRoot), owner: 'Kayden Clark', result: 'approve' });
+    recordOwnerApproval(gateRoot, 'S-805', { candidate: integratedFixtureCandidate(gateRoot), owner: 'Kayden Clark', result: 'approve' });
     const s805Path = path.join(gateRoot, 'specs/S-805-fixture/SPEC.md');
     fs.writeFileSync(s805Path, fs.readFileSync(s805Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after owner approval).'));
     recordReviewVerdict(gateRoot, 'S-805', {
@@ -2419,7 +2429,7 @@ function wikiClaimFixture() {
     recordReviewVerdict(gateRoot, 'S-803', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
-    recordOwnerApproval(gateRoot, 'S-803', { candidate: headSha(gateRoot), owner: 'Kayden Clark', result: 'approve' });
+    recordOwnerApproval(gateRoot, 'S-803', { candidate: integratedFixtureCandidate(gateRoot), owner: 'Kayden Clark', result: 'approve' });
     const s803Before = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
     const s803SliceTableBefore = s803Before.slice(s803Before.indexOf('## Vertical Implementation Slices'), s803Before.indexOf('## Acceptance Criteria'));
     const s803VerdictRowBefore = s803Before.split('\n').find((line) => line.includes('Review verdict: pass'));
@@ -3793,13 +3803,9 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
       new RegExp(`no owner Human QA approval is recorded.*${preApprovalDigest}`, 's'),
       'refuses an otherwise-ready Spec with no recorded owner Human QA approval at all, naming the current content digest');
 
-    // Approve it - the candidate only has to be a real commit contained in
-    // the declared integration branch (the "audit trail" fact
-    // `recordOwnerApproval` checks), never HEAD; the digest it binds to is
-    // recomputed fresh from the Spec's current content regardless of which
-    // commit is named, exactly as `recordReviewVerdict`'s own "content
-    // binds, location does not" already works.
-    recordOwnerApproval(retireRoot, 'S-560', { candidate: retireRootInitialSha, owner: 'Kayden Clark', result: 'approve' });
+    // Approval binds to the exact committed fixture content delivered to
+    // integration, never an older unrelated contained commit.
+    recordOwnerApproval(retireRoot, 'S-560', { candidate: integratedFixtureCandidate(retireRoot), owner: 'Kayden Clark', result: 'approve' });
     execFileSync('git', ['-C', retireRoot, 'add', '-A']);
     execFileSync('git', ['-C', retireRoot, 'commit', '--quiet', '-m', 'record owner Human QA approval']);
 
@@ -3932,11 +3938,8 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     execFileSync('git', ['-C', successRoot, 'add', '-A']);
     execFileSync('git', ['-C', successRoot, 'commit', '--quiet', '-m', 'author the durable owner']);
 
-    // S-00J TK-005: retireSpec now also requires a current owner Human QA
-    // approval; the candidate only has to be a real commit contained in
-    // the declared integration branch, never HEAD ("content binds, location
-    // does not").
-    recordOwnerApproval(successRoot, 'S-570', { candidate: successRootInitialSha, owner: 'Kayden Clark', result: 'approve' });
+    // Owner QA inspects the exact assembled fixture content on integration.
+    recordOwnerApproval(successRoot, 'S-570', { candidate: integratedFixtureCandidate(successRoot), owner: 'Kayden Clark', result: 'approve' });
     execFileSync('git', ['-C', successRoot, 'add', '-A']);
     execFileSync('git', ['-C', successRoot, 'commit', '--quiet', '-m', 'record owner Human QA approval']);
 
@@ -4095,7 +4098,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     execFileSync('git', ['-C', discardRoot, 'add', '-A']);
     execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'author the durable owner']);
 
-    recordOwnerApproval(discardRoot, 'S-580', { candidate: discardRootInitialSha, owner: 'Kayden Clark', result: 'approve' });
+    recordOwnerApproval(discardRoot, 'S-580', { candidate: integratedFixtureCandidate(discardRoot), owner: 'Kayden Clark', result: 'approve' });
     execFileSync('git', ['-C', discardRoot, 'add', '-A']);
     execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'record owner Human QA approval']);
 
@@ -4391,7 +4394,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
     execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'author the durable owner']);
 
-    recordOwnerApproval(correctiveRetiredRoot, 'S-591', { candidate: correctiveInitialSha, owner: 'Kayden Clark', result: 'approve' });
+    recordOwnerApproval(correctiveRetiredRoot, 'S-591', { candidate: integratedFixtureCandidate(correctiveRetiredRoot), owner: 'Kayden Clark', result: 'approve' });
     execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
     execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'record owner Human QA approval']);
 

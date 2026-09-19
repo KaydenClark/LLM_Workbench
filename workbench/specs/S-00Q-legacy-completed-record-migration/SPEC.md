@@ -1,15 +1,15 @@
 # S-00Q - Legacy Completed Record Migration
 
 **Spec ID:** S-00Q
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Reconciler
 **Updated:** 2026-09-18
 **Catalog description:** Transform the 50 legacy completed Specs still on the active roster into one durable Wiki article per legacy Spec, redirect current consumers, retire the records, and discard them only after verified default-branch containment and recovery proof.
-**Blockers:** S-00I, S-00J and S-00P must reach `complete`; TK-0Q0 must prepare reviewable per-Spec articles and batch digests; TK-0Q1 must close the allocator and discard hazards before any real migration.
-**Latest event:** Planning record and ten bounded Tasks authored and structurally verified from the owner-directed legacy-record review; no migration, retirement or discard performed.
-**Next gate:** Keep this Spec unactivated. After S-00I, S-00J and S-00P are complete, TK-0Q0 prepares the inventory and reviewable batch digests under the recorded owner direction; only then may TK-0Q1 and the first capability batch be activated.
+**Blockers:** Article inventory and authoring are authorized now. Retirement waits for S-00I/S-00J/S-00P completion, reviewed batch digests and TK-0Q1 repair proof; discard additionally waits for default-branch containment.
+**Latest event:** Owner clarified exactly one Wiki article per legacy Spec and authorized independent preparation before lifecycle gates; S-00T implements runtime repair prerequisites.
+**Next gate:** TK-0Q0 freezes the inventory and article routes; author article batches in parallel, keeping retirement/discard gated separately.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
@@ -196,16 +196,10 @@ evidence or the mere `complete` header never supplies approval of a batch.
 
 ## Dependencies And Blockers
 
-- S-00I must be `complete` so the tested retirement/discard mechanism is the
-  actual integration behavior, not an active candidate.
-- S-00J must be `complete` so the current approval model is settled before concrete legacy batch review.
-- S-00P must be `complete` so controls, terminology and Wiki routing no longer
-  instruct the pre-lifecycle model while consumers are migrated.
-- Concrete batch review in TK-0Q0 blocks TK-0Q2 through TK-0Q9.
-- TK-0Q1 blocks every real retirement or discard.
-- Each batch is bounded independently; its exact retirement commit must reach
-  the declared default branch before its discard wave. A later batch does not
-  inherit that proof.
+- Inventory, source verification and one-article-per-Spec authoring may proceed now under the explicit owner direction. They do not depend on whole-Spec I/J/P completion or runtime discard repair.
+- TK-0Q0 establishes the shared inventory and article routes before article batches fan out.
+- Retirement still requires S-00I, S-00J and S-00P completion, TK-0Q1 repair proof delivered by S-00T, semantic completeness and concrete batch review.
+- Every discard additionally requires its exact retirement and current recovery content verified on the declared default branch. A later batch inherits none of that proof.
 
 ## Vertical Implementation Slices
 
@@ -290,8 +284,8 @@ updated only when a migrated current claim belongs there. `CATALOG.md` and
 `TASKBOARD.md` are regenerated projections. `DISCARDS.md` is tool-owned and is
 created/appended by successful discard operations, never hand-authored.
 
-This planning change itself adds only S-00Q, its Task records and derived
-catalog/Taskboard rows. It performs no migration and changes no current owner.
+Article preparation is now authorized; runtime repairs are delivered by S-00T.
+This clarification performs no real retirement or discard.
 
 ## Append-Only Evidence And Execution Log
 
@@ -304,7 +298,8 @@ catalog/Taskboard rows. It performs no migration and changes no current owner.
 
 ## Completion Result
 
-Not started. This Spec and all Tasks remain planned/blocked.
+Article inventory and authoring are ready to begin. Runtime repairs are in
+progress under S-00T; no real legacy record has retired or been discarded.
 
 ## Remaining Limitations Or Follow-Up Specs
 

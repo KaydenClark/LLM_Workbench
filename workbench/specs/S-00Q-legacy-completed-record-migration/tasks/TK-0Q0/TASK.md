@@ -3,11 +3,11 @@
 **Task ID:** TK-0Q0
 **Spec ID:** S-00Q
 **Slice:** Freeze the legacy inventory and record the owner QA rule
-**Status:** blocked
-**Blockers:** S-00I, S-00J, S-00P
+**Status:** ready
+**Blockers:** none; inventory and article preparation explicitly authorized before lifecycle gates
 **Destination:** spec-acceptance: S-00Q Acceptance Criteria lines 1-2
 **Stance:** Reconciler
-**Planned verification:** Red: a generated inventory or owner-gate check reports any missing/extra completed path, unclassified claim group, unresolved destination, or absent explicit legacy-QA choice; green: exactly the 50 baseline paths are covered, active/blocked records are excluded, and the owner's chosen migration approval rule and exception handling are readable without claiming retrospective S-00J compliance.
+**Planned verification:** Red: a generated inventory or owner-gate check reports any missing/extra completed path, unclassified claim group, unresolved destination, or missing concrete batch-review route; green: exactly the 50 baseline paths are covered, active/blocked records are excluded, and the owner's chosen migration approval rule and exception handling are readable without claiming retrospective S-00J compliance.
 
 ## Delivery
 
