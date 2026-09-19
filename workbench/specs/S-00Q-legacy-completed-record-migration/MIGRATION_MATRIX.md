@@ -4,7 +4,7 @@ Frozen source: `bc370fe742d5ddb8348bf361fccea31205f6cee7`. Exactly **50 complete
 
 The machine-readable [inventory](MIGRATION_INVENTORY.json) contains full source/article SHA-256 identities, every level-two source section with line interval and content hash, linked-owner hashes and the current-consumer snapshot. Lines read at the immutable source commit. Article hashes bind the assembled bytes, not a claim that the baseline contained the new articles.
 
-Classification is by source-section purpose. A `current` group proposes current-meaning reconciliation; it does **not** certify that old requirements still describe current behavior. Independent review must compare each group with the article and named live sources, especially superseded requirements. `proof` remains bounded historical evidence, never fresh runtime proof.
+Classification is by source-section purpose. A `current` group proposes current-meaning reconciliation; it does **not** certify that old requirements still describe current behavior. Independent article review compared core capabilities, decisions and important limitations against the original records, with live-source checks for evolved behavior; this is not exhaustive atomic-claim equivalence. `proof` remains bounded historical evidence, never fresh runtime proof.
 
 The owner explicitly requested one article per Spec. Grouping A-F coordinates work only. The earlier tentative answer does not select a retirement QA mechanism or approve any concrete digest. All retirement/discard gates remain open.
 
@@ -13,9 +13,15 @@ The owner explicitly requested one article per Spec. Grouping A-F coordinates wo
 - Baseline and article IDs match exactly: 50/50, no extras or duplicates; the inventory distinguishes baseline from current source bytes (S-027/S-028 carry new append-only disposition evidence).
 - Every local Markdown article link and frontmatter owner path exists; this checks file routes, not Markdown anchor semantics or implementation correctness.
 - Runtime reference inventory found 125 current-consumer occurrences before this matrix was authored. No consumers are silently declared migrated. Re-scan after routing edits and before retirement.
-- Every source section is retained by immutable identity and classified below. This is section-level claim-group coverage; atomic claim preservation and agreement with current sources remain review work.
+- Every source section is retained by immutable identity and classified below. This is section-level claim-group coverage; independent semantic review covers core capabilities, decisions and important limitations across all 50 articles; exhaustive atomic-claim equivalence is not claimed.
 - Article limitations remain in each linked article; host-specific outcomes, old release readiness and unavailable native-host/cross-device proof cannot be re-certified by link checks.
 - No real record moved or was deleted. Runtime repair results, owner QA, exact-main containment and recovery execution remain separate gates.
+
+## Independent article review
+
+A separate article-review agent, who authored this inventory but no articles, compared all 50 article bodies with the pinned source Outcome, Desired Behavior, Decisions, Completion and limitations, and checked evolved mechanisms at current source/test seams. Two omissions were found and corrected: S-051 now explains the single global core/discovery source and compatibility ranges; S-053 now lists the five accepted host capability checks. Both corrections passed readback and local-link checks. No other material misrepresentation was found in this scope.
+
+Result: **PASS for individual article preparation**, bound to the article hashes in the inventory. Original evidence remains recoverable. This is documentation integration review, not exhaustive atomic-claim certification, fresh native-host proof, retirement QA or approval to delete records.
 
 ## Per-Spec claim routes
 
@@ -35,7 +41,7 @@ Progressive disclosure keeps ordinary entry small: read the agent contract, foll
 
 Current owner routes: `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`, `BLUEPRINT.md`, `workbench/tools/spec-workbench.mjs`, `tools/test-spec-workbench.mjs`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-002: Held-Out Path-Safety Evaluation
 
@@ -53,7 +59,7 @@ The held-out task adds a security-oriented path-handling domain beside the devel
 
 Current owner routes: `evals/tasks/task_b_path_safety/task.json`, `evals/tasks/task_b_path_safety/grade.py`, `evals/tasks/task_b_path_safety/test_grade.py`, `evals/README.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-004: Dependency-Safe Direct Claiming
 
@@ -71,7 +77,7 @@ Direct claiming must enforce the same dependencies as selection. An agent may al
 
 Current owner routes: `workbench/tools/spec-workbench.mjs`, `workbench/tools/spec-packet.mjs`, `tools/test-spec-workbench.mjs`, `AGENTS.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-005: Consistent Bootstrap Ownership Guidance
 
@@ -89,7 +95,7 @@ A new project inherits its operating model through public setup instructions and
 
 Current owner routes: `README.md`, `templates/GENESIS.md`, `templates/ADOPTION.md`, `AGENTS.md`, `tools/test-evaluate-workbench.mjs`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-006: Evidence-Gated Harness Feedback
 
@@ -107,7 +113,7 @@ The feedback loop separates candidate construction from an independent integrati
 
 Current owner routes: `tools/feedback-automation.mjs`, `tools/test-feedback-automation.mjs`, `tools/test-eval-runner.mjs`, `evals/run.py`, `RUNBOOK.md`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-007: Import-Safe Feedback Helper Entry
 
@@ -125,7 +131,7 @@ A JavaScript file can be both a command-line program and an imported library. It
 
 Current owner routes: `tools/feedback-automation.mjs`, `tools/test-feedback-automation.mjs`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-008: Portable Verification Boundaries
 
@@ -143,7 +149,7 @@ Cross-platform verification needs stable serialized contracts without rewriting 
 
 Current owner routes: `tools/context-pack.mjs`, `workbench/tools/spec-workbench.mjs`, `tools/test-context-tools.mjs`, `tools/test-eval-runner.mjs`, `evals/tasks/task_b_path_safety/grade.py`, `evals/tasks/task_b_path_safety/test_grade.py`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-009: Adoption When Git Writes Are Unavailable
 
@@ -161,7 +167,7 @@ A host can allow ordinary document edits while refusing branch, stash or commit 
 
 Current owner routes: `templates/ADOPTION.md`, `README.md`, `tools/test-adoption-git-write-fallback.mjs`, `AGENTS.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-00A: S-00A: Blueprint, Active ADRs And The Context Map
 
@@ -179,7 +185,7 @@ The Blueprint describes the desired finished product. Accepted active ADR decisi
 
 Current owner routes: `LEXICON.md`, `BLUEPRINT.md`, `workbench/tools/adr.mjs`, `tools/test-adr.mjs`, `workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md`.
 
-Consumer snapshot: 3 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 3 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-00B: S-00B: Workbench Template Reformation
 
@@ -197,7 +203,7 @@ The reference room was changed from a fictional Example application into a copya
 
 Current owner routes: `AGENTS.md`, `RUNBOOK.md`, `README.md`, `tools/control-fidelity.mjs`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-00C: S-00C: Project Evidence And Blueprint Grilling Preparation
 
@@ -215,7 +221,7 @@ The project-evidence preparation seam turns explicitly named project sources int
 
 Current owner routes: `workbench/tools/project-evidence.mjs`, `tools/test-project-evidence.mjs`, `RUNBOOK.md`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-00D: S-00D: Genesis From Blueprint And ADR Decisions
 
@@ -233,7 +239,7 @@ The public derivation seam creates a new Workbench from a clean Template, a sour
 
 Current owner routes: `tools/genesis-from-decisions.mjs`, `tools/test-genesis-from-decisions.mjs`, `skills/genesis/SKILL.md`, `templates/GENESIS.md`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-00E: S-00E: Fresh Template Project Proof
 
@@ -251,7 +257,7 @@ A clean Template copy was used to create an independent Puffer Pond room through
 
 Current owner routes: `workbench/specs/S-00E-fresh-template-project-proof/PROOF.md`, `tools/genesis-from-decisions.mjs`, `tools/test-workbench-identity.mjs`.
 
-Consumer snapshot: 4 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 4 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-00F: S-00F: The Named Template Upgrade Release Gate
 
@@ -269,7 +275,7 @@ The producer must exercise each new Workbench version in the named Workbench_Tem
 
 Current owner routes: `AGENTS.md`, `RUNBOOK.md`, `README.md`, `skills/update-harness/SKILL.md`, `tools/workbench-tools.mjs`.
 
-Consumer snapshot: 3 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 3 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-00L: S-00L: Lexicon Freshness Repair
 
@@ -287,7 +293,7 @@ A terminology router also contains claims that can go stale: release lineage, a 
 
 Current owner routes: `LEXICON.md`, `workbench/manifest.json`, `tools/test-governance-core.mjs`, `tools/test-control-fidelity.mjs`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-010: Canonical Evaluator Invocation
 
@@ -304,7 +310,7 @@ A successful process exit is not enough if a directly invoked evaluator never ru
 
 Current owner routes: `tools/evaluate-workbench.mjs`, `tools/test-evaluate-workbench.mjs`, `RUNBOOK.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-012: Reproducible Adoption Provenance
 
@@ -322,7 +328,7 @@ Adoption proof must survive the original checkout and conversation. A cold revie
 
 Current owner routes: `templates/ADOPTION.md`, `README.md`, `tools/test-adoption-git-write-fallback.mjs`, `RUNBOOK.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-013: Verified Automation Run Outcomes
 
@@ -340,7 +346,7 @@ Run accounting distinguishes useful work, genuine absence of work and an interru
 
 Current owner routes: `tools/feedback-automation.mjs`, `tools/test-feedback-automation.mjs`, `RUNBOOK.md`, `README.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-015: Operable Genesis Readiness
 
@@ -358,7 +364,7 @@ A scaffold is not ready merely because expected filenames exist. Genesis readine
 
 Current owner routes: `workbench/tools/workbench-layout.mjs`, `workbench/tools/spec-packet.mjs`, `workbench/tools/template-placeholders.mjs`, `tools/test-workbench-layout.mjs`, `tools/test-workbench-dogfood.mjs`, `templates/GENESIS.md`, `AGENTS.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-020: Bounded Team Coordination (S-020)
 
@@ -376,7 +382,7 @@ A small agent team can work concurrently when its assignments have disjoint edit
 
 Current owner routes: `team templates/README.md`, `team templates/MANAGER.md`, `team templates/SUBAGENT.md`, `tools/team-coordination-demo.mjs`, `tools/test-team-coordination.mjs`, `tools/test-team-coordination-demo.mjs`.
 
-Consumer snapshot: 0 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 0 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-021: Portable Workbench Architecture (S-021)
 
@@ -394,7 +400,7 @@ A Workbench is a filled project with root controls and a manifest-routed support
 
 Current owner routes: `workbench/manifest.json`, `workbench/tools/workbench-paths.mjs`, `workbench/tools/workbench-layout.mjs`, `tools/workbench-adoption.mjs`, `tools/workbench-upgrade.mjs`, `tools/core-skill-installer.mjs`, `tools/test-workbench-adoption.mjs`, `tools/test-workbench-upgrade.mjs`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-023: Manifest And Managed Runtime (S-023)
 
@@ -412,7 +418,7 @@ Schema 2 declares six support lanes—docs, specs, wiki, sessions, feedback and 
 
 Current owner routes: `workbench/manifest.json`, `workbench/tools/workbench-paths.mjs`, `tools/workbench-tools.mjs`, `tools/test-workbench-tools.mjs`, `tools/test-workbench-layout.mjs`, `workbench/tools/sessions.mjs`, `workbench/docs/adr/0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md`, `workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md`.
 
-Consumer snapshot: 0 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 0 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-024: Governance Claims And Diagnostics (S-024)
 
@@ -430,7 +436,7 @@ Governance planes classify the role a claim plays in an operation. Intent, Canon
 
 Current owner routes: `LEXICON.md`, `AGENTS.md`, `workbench/tools/diagnostics.mjs`, `workbench/tools/adr.mjs`, `tools/test-diagnostics.mjs`, `tools/test-governance-core.mjs`, `tools/test-adr.mjs`, `workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md`, `workbench/docs/adr/0027-instruction-authority-is-separate-from-state-resolution.md`, `workbench/docs/adr/0029-diagnostics-carry-registered-blocking-semantics.md`.
 
-Consumer snapshot: 0 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 0 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-025: Portable Wiki Knowledge (S-025)
 
@@ -448,7 +454,7 @@ The Wiki holds durable explanations with explicit source links. MEMORY.md is its
 
 Current owner routes: `workbench/wiki/SCHEMA.md`, `workbench/wiki/AGENTS.md`, `workbench/wiki/design-concepts/README.md`, `workbench/tools/wiki.mjs`, `tools/test-wiki.mjs`, `workbench/docs/adr/0018-the-wiki-is-the-knowledge-base.md`, `workbench/docs/adr/0030-every-workbench-declares-a-design-concepts-collection.md`.
 
-Consumer snapshot: 0 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 0 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-026: Workflow Composition And Cold Continuation (S-026)
 
@@ -466,7 +472,7 @@ A composed workflow carries planning into implementation without depending on th
 
 Current owner routes: `workbench/tools/sessions.mjs`, `workbench/tools/notepads.mjs`, `tools/test-workbench-round-trip.mjs`, `tools/test-sessions.mjs`, `tools/test-direct-promotion.mjs`, `skills/make-it-so/SKILL.md`, `skills/promote/SKILL.md`, `RUNBOOK.md`.
 
-Consumer snapshot: 0 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 0 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-027: Assigned Work, Portable Stances And Delivery Boundaries
 
@@ -484,7 +490,7 @@ The normal entry route is `AGENTS.md -> RUNBOOK.md -> LEXICON.md`, followed by t
 
 Current owner routes: `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`, `skills/builder/SKILL.md`, `skills/auditor/SKILL.md`, `skills/reviewer/SKILL.md`, `skills/reconciler/SKILL.md`, `tools/test-governance-core.mjs`, `tools/test-branch-closeout.mjs`, `tools/test-workbench-tools.mjs`, `tools/test-workbench-adoption.mjs`.
 
-Consumer snapshot: 5 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 5 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-028: Feedback And Migration Integrity
 
@@ -502,7 +508,7 @@ Integrity checks must exercise the paths that consume a declaration rather than 
 
 Current owner routes: `tools/audit-guardrails.mjs`, `tools/feedback-automation.mjs`, `tools/workbench-adoption.mjs`, `templates/feedback/REPORT_FORMAT.md`, `templates/ADOPTION.md`, `skills/update-harness/SKILL.md`, `tools/test-guardrail-audit.mjs`, `tools/test-feedback-automation.mjs`, `tools/test-workbench-adoption.mjs`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-029: Declared Integration And Recoverable Completion
 
@@ -520,7 +526,7 @@ A review boundary needs a real merge destination. The manifest declares `git.def
 
 Current owner routes: `workbench/manifest.json`, `workbench/tools/workbench-paths.mjs`, `workbench/tools/spec-workbench.mjs`, `workbench/tools/workbench-layout.mjs`, `tools/workbench-adoption.mjs`, `workbench/docs/adr/0039-the-integration-branch-is-a-manifest-declared-fact.md`, `RUNBOOK.md`, `tools/test-diagnostics.mjs`, `tools/test-workbench-layout.mjs`.
 
-Consumer snapshot: 3 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 3 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-030: Mechanical Permission Scope And Declared Lanes
 
@@ -538,7 +544,7 @@ The permission file and prose edit scope must describe the same effective bounda
 
 Current owner routes: `templates/.claude/settings.json`, `templates/.claude/README.md`, `workbench/tools/workbench-layout.mjs`, `workbench/tools/diagnostics.mjs`, `RUNBOOK.md`, `tools/test-diagnostics.mjs`, `tools/test-workbench-layout.mjs`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-031: Installed Skill Identity And Inspection
 
@@ -556,7 +562,7 @@ A canonical skill source and an installed copy can diverge. A review must name t
 
 Current owner routes: `tools/skill-marker.mjs`, `workbench/tools/skill-inspection.mjs`, `workbench/tools/workbench-layout.mjs`, `skills/README.md`, `templates/feedback/REPORT_FORMAT.md`, `tools/test-skill-inspection.mjs`, `tools/test-core-skill-installer.mjs`.
 
-Consumer snapshot: 3 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 3 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-032: Upgrade Layout Without Replacing Skills
 
@@ -574,7 +580,7 @@ An already-adopted legacy room needs an upgrade route even when replacing its in
 
 Current owner routes: `tools/workbench-upgrade.mjs`, `tools/workbench-adoption.mjs`, `tools/workbench-tools.mjs`, `workbench/tools/workbench-layout.mjs`, `skills/update-harness/SKILL.md`, `skills/adoption/SKILL.md`, `RUNBOOK.md`, `tools/test-workbench-upgrade.mjs`, `tools/test-workbench-layout.mjs`, `tools/test-workbench-tools.mjs`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-033: Wiki Routing, Version Stamps And Safe Source Reads
 
@@ -592,7 +598,7 @@ A Wiki router is useful only if ordinary entry can reach it. The `room-brain-unr
 
 Current owner routes: `workbench/tools/wiki.mjs`, `workbench/tools/workbench-layout.mjs`, `workbench/tools/workbench-paths.mjs`, `workbench/tools/sessions.mjs`, `workbench/wiki/SCHEMA.md`, `RUNBOOK.md`, `tools/test-wiki.mjs`, `tools/test-sessions.mjs`, `tools/test-diagnostics.mjs`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-034: Control Fidelity Without Forced Uniformity
 
@@ -610,7 +616,7 @@ A room may deliberately diverge from its template. Fidelity reporting makes that
 
 Current owner routes: `tools/control-fidelity.mjs`, `tools/test-control-fidelity.mjs`, `workbench/tools/template-placeholders.mjs`, `templates/ADOPTION.md`, `skills/update-harness/SKILL.md`, `LEXICON.md`, `RUNBOOK.md`.
 
-Consumer snapshot: 3 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 3 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-035: Release Candidate Proof And Historical Disposition
 
@@ -628,7 +634,7 @@ A release candidate joins capability delivery, version identity and an account o
 
 Current owner routes: `workbench/tools/workbench-layout.mjs`, `tools/test-workbench-layout.mjs`, `tools/audit-guardrails.mjs`, `AGENTS.md`, `RUNBOOK.md`, `benchmarks/RESULTS.md`.
 
-Consumer snapshot: 8 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 8 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-036: Evidence-Bounded Upgrade Claims (S-036)
 
@@ -646,7 +652,7 @@ Upgrade reports must distinguish what a check observes from what an operator mig
 
 Current owner routes: `tools/control-fidelity.mjs`, `tools/workbench-tools.mjs`, `workbench/tools/workbench-layout.mjs`, `tools/test-control-fidelity.mjs`, `tools/test-workbench-upgrade.mjs`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-037: Line-Ending-Aware Records (S-037)
 
@@ -664,7 +670,7 @@ Portable record readers must accept ordinary LF and CRLF checkouts without requi
 
 Current owner routes: `workbench/tools/adr.mjs`, `workbench/tools/wiki.mjs`, `tools/workbench-adoption.mjs`, `tools/test-adr.mjs`, `tools/test-wiki.mjs`, `tools/test-workbench-adoption.mjs`.
 
-Consumer snapshot: 0 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 0 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-038: Source-Checked Finding Disposition (S-038)
 
@@ -682,7 +688,7 @@ An upstream finding is evidence to investigate, not an instruction to repair. S-
 
 Current owner routes: `workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`, `tools/audit-guardrails.mjs`, `AGENTS.md`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-039: Installed Runtime Integrity (S-039)
 
@@ -700,7 +706,7 @@ An installed room can compare its runtime files with the hashes in its managed-t
 
 Current owner routes: `workbench/tools/workbench-layout.mjs`, `tools/workbench-tools.mjs`, `workbench/tools/spec-workbench.mjs`, `tools/test-workbench-tools.mjs`, `tools/test-diagnostics.mjs`, `workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
 
-Consumer snapshot: 2 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 2 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-040: Skill Presence And Repair Routes (S-040)
 
@@ -718,7 +724,7 @@ A refusal should name the supported way forward. S-040 made presence-only instal
 
 Current owner routes: `tools/skill-presence.mjs`, `tools/core-skill-installer.mjs`, `tools/workbench-adoption.mjs`, `tools/workbench-upgrade.mjs`, `skills/update-harness/SKILL.md`, `tools/test-core-skill-installer.mjs`, `workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
 
-Consumer snapshot: 3 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 3 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-041: Recorded Baseline Availability (S-041)
 
@@ -736,7 +742,7 @@ A harness-only change may encounter a target with no reproducible green applicat
 
 Current owner routes: `workbench/tools/spec-packet.mjs`, `templates/ADOPTION.md`, `skills/update-harness/SKILL.md`, `tools/test-spec-workbench.mjs`, `AGENTS.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-042: Installed State Reporting And Repair (S-042)
 
@@ -754,7 +760,7 @@ Seeded documents and managed runtime files have different ownership. Runtime rec
 
 Current owner routes: `workbench/tools/workbench-layout.mjs`, `workbench/tools/spec-workbench.mjs`, `workbench/tools/adr.mjs`, `workbench/tools/wiki.mjs`, `tools/test-diagnostics.mjs`, `tools/test-workbench-layout.mjs`, `tools/test-adr.mjs`, `tools/test-wiki.mjs`.
 
-Consumer snapshot: 4 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 4 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-043: Diagnostics Ordered By Consequence (S-043)
 
@@ -772,7 +778,7 @@ Doctor's human-readable output groups findings by what they do: blocking, select
 
 Current owner routes: `workbench/tools/spec-workbench.mjs`, `workbench/tools/diagnostics.mjs`, `tools/test-diagnostics.mjs`, `workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
 
-Consumer snapshot: 1 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 1 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-044: Adoption Preflight And Legacy Classification (S-044)
 
@@ -790,7 +796,7 @@ Adoption preflight reports every unreconciled root control in one refusal, with 
 
 Current owner routes: `tools/workbench-classify.mjs`, `tools/workbench-adoption.mjs`, `tools/test-workbench-layout.mjs`, `tools/test-workbench-adoption.mjs`, `templates/ADOPTION.md`, `workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md`.
 
-Consumer snapshot: 3 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 3 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-045: Linked Follow-Up Reconciliation (S-045)
 
@@ -808,7 +814,7 @@ A completed result can leave an accepted obligation that needs a new owner. S-04
 
 Current owner routes: `tools/skill-presence.mjs`, `tools/core-skill-installer.mjs`, `workbench/tools/spec-workbench.mjs`, `tools/test-diagnostics.mjs`, `tools/test-workbench-layout.mjs`, `tools/test-spec-citation-anchors.mjs`, `tools/check-append-only.py`, `AGENTS.md`.
 
-Consumer snapshot: 11 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 11 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-046: S-046: JSON Notepad Foundation
 
@@ -826,7 +832,7 @@ A local JSON notepad preserves consequential context while work happens: objecti
 
 Current owner routes: `workbench/tools/notepads.mjs`, `skills/notepad/SKILL.md`, `skills/handoff/SKILL.md`, `tools/test-notepads.mjs`.
 
-Consumer snapshot: 8 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 8 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-047: S-047: Visible Workbench Identifiers
 
@@ -844,7 +850,7 @@ A visible identifier combines its artifact type prefix with a base-62 value. It 
 
 Current owner routes: `workbench/tools/visible-ids.mjs`, `tools/test-visible-ids.mjs`, `tools/test-visible-id-consumers.mjs`, `LEXICON.md`.
 
-Consumer snapshot: 7 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 7 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-048: S-048: Checkpoint Retirement And Direct Promotion
 
@@ -862,7 +868,7 @@ Checkpoint creation was retired while existing checkpoint history and recovery r
 
 Current owner routes: `workbench/tools/sessions.mjs`, `tools/test-sessions.mjs`, `skills/promote/SKILL.md`, `AGENTS.md`.
 
-Consumer snapshot: 6 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 6 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-049: S-049: Assignment Ownership And Coordination Records
 
@@ -880,7 +886,7 @@ The Carry skill owns an assigned Spec or Task through the endpoint already autho
 
 Current owner routes: `skills/carry/SKILL.md`, `workbench/manifest.json`, `tools/test-skill-catalog.mjs`, `workbench/tools/workbench-layout.mjs`.
 
-Consumer snapshot: 3 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 3 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-051: S-051: Core Skill Ownership And Compatibility
 
@@ -898,7 +904,7 @@ A core installation needs an identifiable source generation and compatible manif
 
 Current owner routes: `tools/core-skill-installer.mjs`, `tools/test-core-skill-installer.mjs`, `skills/update-harness/SKILL.md`, `workbench/manifest.json`.
 
-Consumer snapshot: 8 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 8 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.
 
 ### S-053: S-053: Configured Host Capabilities
 
@@ -916,4 +922,4 @@ Configured-host conformance asks what the actual host can do at named command se
 
 Current owner routes: `tools/configured-host.mjs`, `tools/test-configured-host.mjs`, `workbench/specs/S-053-configured-host-capabilities/local-host-result.json`.
 
-Consumer snapshot: 5 occurrences. Semantic review and retirement approval: **pending**.
+Consumer snapshot: 5 occurrences. Article semantic review: **passed for core capability, decisions and limitations**. Consumer reconciliation and retirement approval: **pending**.

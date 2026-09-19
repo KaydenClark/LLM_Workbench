@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Transform the 50 legacy completed Specs still on the active roster into one durable Wiki article per legacy Spec, redirect current consumers, retire the records, and discard them only after verified default-branch containment and recovery proof.
 **Blockers:** Article inventory and authoring are authorized now. Retirement waits for S-00I/S-00J/S-00P completion, an explicit legacy retirement QA rule, concrete review/approval and TK-0Q1 repair proof; discard additionally waits for default-branch containment.
-**Latest event:** All 50 individual articles are authored; pinned inventory and section-level claim matrix record hashes, current owners, consumers and semantic review gaps. No retirement QA mechanism or concrete digest is approved.
-**Next gate:** Review the 50 article claim mappings and resolve the legacy retirement QA rule; preserve the separate lifecycle and owner gates.
+**Latest event:** Independent semantic review passed all 50 individual articles after correcting S-051 architecture and S-053 capability-floor omissions; hashes and bounded review are recorded in the migration inventory.
+**Next gate:** Resolve the legacy retirement QA rule and reconcile current consumers before any lifecycle move; individual article preparation has passed bounded review.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
@@ -298,14 +298,17 @@ This clarification performs no real retirement or discard.
 
 | 2026-09-19 | source baseline bc370fe742d5ddb8348bf361fccea31205f6cee7; article byte identities in MIGRATION_INVENTORY.json | Prepared exactly 50 individual article routes and frozen claim-group inventory | Compared baseline complete Spec IDs against article IDs; hashed baseline/current source, articles and linked owners; checked local article links; indexed each level-two source section and captured referencesToPath consumer snapshot | 50/50 IDs, no duplicate or extra article; linked paths resolve. S-027/S-028 current source differs by later evidence, recorded separately. Section coverage is not atomic claim completeness; semantic review and consumer reconciliation remain open. Owner clarification does not select a retirement QA mechanism; no retirement/discard performed |
 
+| 2026-09-19 | original baseline bc370fe742d5ddb8348bf361fccea31205f6cee7; initial articles e7b0906; corrected article hashes in MIGRATION_INVENTORY.json | Independent semantic review of all 50 individual articles | Article reviewer did not author articles; compared core capabilities, decisions and limitations with pinned records, spot-checked evolved runtime/test seams, then read back S-051 single-source/compatibility and S-053 five-check corrections; verified article hashes and local links | PASS for per-Spec article preparation. Two omissions corrected; no other material misrepresentation found in reviewed scope. Not exhaustive atomic-claim certification, fresh host proof, consumer migration or retirement/discard approval |
+
 ## Completion Result
 
 All 50 individual Wiki articles are authored. The [readable matrix](MIGRATION_MATRIX.md)
 and [machine inventory](MIGRATION_INVENTORY.json) pin the original 50 complete
 records at `bc370fe742d5ddb8348bf361fccea31205f6cee7`, their article hashes,
 section-level claim groups, linked owners and consumer snapshot. Structural
-coverage passes; semantic claim review, consumer migration, retirement QA and
-lifecycle gates remain open. No real legacy record has retired or been discarded.
+coverage and bounded independent article semantic review pass. Consumer migration,
+retirement QA and lifecycle gates remain open; exhaustive atomic-claim equivalence
+and fresh native-host proof are not claimed. No real legacy record has retired or been discarded.
 
 ## Remaining Limitations Or Follow-Up Specs
 

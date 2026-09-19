@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Check the canonical Workbench's own artifacts for semantic drift before an update is called complete.
 **Blockers:** none
-**Latest event:** TK-0SA claimed by drift-reconciler.
-**Next gate:** Close TK-0SA with verification and documentation proof.
+**Latest event:** Source seam, update procedures, identity/native boundaries and historical release routing assembled; full verification underway.
+**Next gate:** Finish immutable full verification and independent cold-start read-back; preserve owner QA and native/consumer limitations.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -226,9 +226,11 @@ this spec. The read-only runtime and focused regression now implement the machin
 
 | 2026-09-19 | TK-0SA correction result | Preserved blocked S-014/S-022 historical records and current successor routes without changing lifecycle semantics | Both packets retain all original tasks and acceptance; no runtime expansion or false task completion; remaining historical hot rows explicitly disclose owner routing | Room-specific README and both current-disposition sections reconciled | Formal supersession remains limited by existing unfinished-task validation; this is an owner-routed limitation allowed by S-00K acceptance, not a clean projection claim |
 
+| 2026-09-19 | assembled pre/post | Exercised the public self-drift seam against baseline and fixed candidate | CLI from `e7b0906025909b9edd626e967b15e526e5d02509` inspected baseline `bc370fe742d5ddb8348bf361fccea31205f6cee7`: v3.2.1, 274 inventoried artifacts, one blocking resolved S-00H dependency in S-00P; assembled post check: v3.2.1, 272 artifacts and no machine-blocking finding | Root/generic update procedures and skill route to pre/post seam; S-00P live header corrected; S-014/S-022 retain blocked historical records with S-00O/S-050/S-052 routes | Inventory counts differ because live continuity and candidate source differ; hashes are bounded evidence, not semantic certification. Independent cold-start read-back, common suite and review pending; historical seed and installed/native limitations remain explicit |
+
 ## Completion Result
 
-In progress. The read-only public seam and focused regression exist at `7f28eb8`; update integration, broader proof, semantic reconciliation and independent review remain open. The CLI never represents its machine evidence alone as a clean-update certification.
+In progress. The assembled source at `e7b0906` includes the public seam, focused regressions, update procedures, identity/native boundaries and historical release owner routes. Full verification and independent cold-start read-back/review remain open. The CLI never represents its machine evidence alone as a clean-update certification.
 
 ## Remaining Limitations Or Follow-Up Specs
 

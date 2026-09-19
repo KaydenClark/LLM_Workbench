@@ -5,7 +5,7 @@
 **Slice:** Freeze the legacy inventory and record the owner QA rule
 **Status:** in-progress
 **Blockers:** none
-**Next gate:** Semantic claim review and explicit legacy retirement QA rule remain open.
+**Next gate:** Explicit legacy retirement QA rule and current-consumer reconciliation remain open.
 **Destination:** spec-acceptance: S-00Q Acceptance Criteria lines 1-2
 **Stance:** Reconciler
 **Planned verification:** Red: a generated inventory or owner-gate check reports any missing/extra completed path, unclassified claim group, unresolved destination, or missing concrete batch-review route; green: exactly the 50 baseline paths are covered, active/blocked records are excluded, and the owner's chosen migration approval rule and exception handling are readable without claiming retrospective S-00J compliance.
@@ -32,4 +32,4 @@ dropping only this Task's new planning artifact; no lifecycle state changes.
 
 ## Progress
 
-The [matrix](../../MIGRATION_MATRIX.md) and [machine inventory](../../MIGRATION_INVENTORY.json) cover exactly 50 baseline completed Specs and 50 individual articles. Source/article hashes, all level-two source sections, linked owner identities, consumer snapshots are captured; each article retains its limitations. Local article links and owner paths resolve. This is prepared section-level claim routing; it does not establish atomic claim completeness or approve retirement. The owner explicitly chose one article per Spec, but did not choose a retrospective or migration QA mechanism. Current consumers remain to reconcile; no record moved or was discarded.
+The [matrix](../../MIGRATION_MATRIX.md) and [machine inventory](../../MIGRATION_INVENTORY.json) cover exactly 50 baseline completed Specs and 50 individual articles. Source/article hashes, all level-two source sections, linked owner identities, consumer snapshots are captured; each article retains its limitations. Local article links and owner paths resolve. Independent review now passes all 50 articles for core capability, decisions and important limitations after S-051/S-053 corrections. This does not establish exhaustive atomic claim completeness or approve retirement. The owner explicitly chose one article per Spec, but did not choose a retrospective or migration QA mechanism. Current consumers remain to reconcile; no record moved or was discarded.

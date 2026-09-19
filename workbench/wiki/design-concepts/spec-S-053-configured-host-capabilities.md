@@ -19,6 +19,19 @@ last_verified: 2026-09-19
 
 Configured-host conformance asks what the actual host can do at named command seams. It keeps capability, enforcement and agent reliability separate: a runner operation passing does not establish that an agent discovers the skill or reliably obeys the workflow.
 
+The accepted minimum has five checks:
+
+1. Declared writable lanes work in supported relative, home-relative and absolute forms.
+2. A skill in the declared discovery root is discoverable and invocable by the configured provider.
+3. The declared Node runtime executes managed tools.
+4. The host supports its selected directory discovery adapter, a symlink or junction.
+5. Record syntax survives checkout, including line endings.
+
+An unavailable capability affects only the operation that needs it. Git network
+access, optional synchronization, provider enforcement hooks and model output
+quality are outside this floor. In particular, filesystem and parser probes
+cannot establish native provider discovery or invocation.
+
 The public command and its tests check bounded operations and return explicit unavailable or unverified results. Host configuration, tool paths and native provider behavior need their own evidence; fixture or source availability cannot substitute for that evidence.
 
 ## Historical proof and limits
