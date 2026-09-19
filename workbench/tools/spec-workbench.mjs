@@ -2004,9 +2004,12 @@ function historicalWikiCitation(content, file, directory, root, commit) {
   }));
 }
 
-function preflightDiscardRender(root) {
-  const specs = loadSpecs(root);
-  const retired = loadRetiredSpecs(root);
+function preflightDiscardRender(root, { specId, taskId } = {}) {
+  const prospective = specs => specs.filter(spec => taskId || spec.id !== specId).map(spec => spec.id !== specId ? spec : {
+    ...spec, retiredRecords: spec.retiredRecords.filter(task => task.id !== taskId)
+  });
+  const specs = prospective(loadSpecs(root));
+  const retired = prospective(loadRetiredSpecs(root));
   const blueprint = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8');
   const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs, retired));
@@ -2183,7 +2186,7 @@ export function discardRetiredSpec(rootDir, specId) {
   }
 
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
-  preflightDiscardRender(root);
+  preflightDiscardRender(root, { specId });
   const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
   if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
 
@@ -2246,11 +2249,15 @@ export function discardRetiredTask(rootDir, specId, taskId) {
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
   const relativeDir = path.relative(root, taskDir).split(path.sep).join('/');
   const { recoveryCommit, recoveryCommand } = recoveryIdentity(root, relativeDir, remoteRef);
-  preflightDiscardRender(root);
+  preflightDiscardRender(root, { specId, taskId });
   const keep = path.join(path.dirname(spec.filePath), 'tasks', '.gitkeep');
-  if (!fs.existsSync(keep)) atomicWrite(keep, '');
+  const createdKeep = !fs.existsSync(keep);
+  if (createdKeep) atomicWrite(keep, '');
   const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
-  if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}/${taskId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
+  if (rmResult.status !== 0) {
+    if (createdKeep) fs.unlinkSync(keep);
+    throw new Error(`git rm failed for ${specId}/${taskId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
+  }
 
   const register = recordDiscard(root, { kind: 'task', id: `${specId}/${taskId}`, historicalRoute, movingCommit, parentCommit, recoveryCommand });
 

@@ -4170,6 +4170,21 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     console.log('ok - discardRetiredSpec refuses an unknown or still-active Spec, anything not literally under retired/ (proving discard never reaches archive), an unverifiable or unmet main-containment check, a live reference naming the record, a stale Wiki durable owner, and a dirty working tree - all before any write');
 
     const reviewedNote = fs.readFileSync(notePath, 'utf8');
+    const memoryPath = path.join(discardRoot, 'workbench/wiki/MEMORY.md');
+    const routedMemory = fs.readFileSync(memoryPath, 'utf8');
+    execFileSync('git', ['-C', discardRoot, 'rm', '--quiet', 'workbench/wiki/design-concepts/discard-fixture-capability.md']);
+    fs.writeFileSync(memoryPath, '# Fixture Room Brain\n');
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'missing durable owner']);
+    const beforeMissingOwner = execFileSync('git', ['-C', discardRoot, 'write-tree'], { encoding: 'utf8' });
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-580'), /no Wiki note names/);
+    assert.equal(execFileSync('git', ['-C', discardRoot, 'write-tree'], { encoding: 'utf8' }), beforeMissingOwner);
+    assert.equal(execFileSync('git', ['-C', discardRoot, 'status', '--porcelain'], { encoding: 'utf8' }), '');
+    assert.ok(fs.existsSync(path.join(discardRoot, historicalRoute)));
+    fs.writeFileSync(notePath, reviewedNote);
+    fs.writeFileSync(memoryPath, routedMemory);
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'restore durable owner']);
     fs.writeFileSync(notePath, reviewedNote.replace('## Evidence and Sources', 'Use [the current procedure](../../specs/retired/S-580-discard-fixture/SPEC.md).\n\n## Evidence and Sources'));
     execFileSync('git', ['-C', discardRoot, 'add', '-A']);
     execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'operational owner reference']);
