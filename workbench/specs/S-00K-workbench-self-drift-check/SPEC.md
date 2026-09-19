@@ -3,13 +3,13 @@
 **Spec ID:** S-00K
 **Status:** active
 **Priority:** 1
-**Owner:** drift-lane
+**Owner:** drift-reconciler
 **Stance:** Builder
 **Updated:** 2026-09-19
 **Catalog description:** Check the canonical Workbench's own artifacts for semantic drift before an update is called complete.
 **Blockers:** none
-**Latest event:** TK-001 claimed by drift-lane.
-**Next gate:** Close TK-001 with verification and documentation proof.
+**Latest event:** TK-0SA claimed by drift-reconciler.
+**Next gate:** Close TK-0SA with verification and documentation proof.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -219,6 +219,8 @@ this spec. The read-only runtime and focused regression now implement the machin
 | 2026-09-12 | spec | Bounded manual post-update self-drift check (no implementation exists yet, per Remaining Limitations below): this Git-recovery PR is itself a Workbench update, landing ADRs 000B-000K, specs S-00G-S-00K/S-054, and root/template control edits into `integration` | Inventoried the recovered ADRs, Specs, `CATALOG.md`, `HISTORY.md`/`REGISTER.md` (regenerated via `adr.mjs register`), and every cross-reference among them; found and repaired the S-00F/S-00K ID collision, wrong baseline counts in S-00I (also found still-stale in ADR-000I; see that ADR's own evidence), an unreachable S-054 citation anchor, broken links from file relocation, false tool-coverage claims in ADR-000K and a Spec, missing ADR-000H requirements in S-00H's scope, and unowned migrations claimed in ADR-000J/000K. `doctor --json` at the final commit: 48 findings, all `attention`/blocks-none (6 stale-seed/provenance findings confirmed pre-existing on `origin/integration` itself, unrelated to this recovery; 42 are locally-installed skill-core-version notices, not repository content); `next --json` returns `null` (expected — every recovered spec is gated on its own ADR's acceptance) | Every fix above is a linked commit on this PR's branch; this row and its sibling ADR/Spec corrections are the docs | The 6 stale-seed/provenance attention findings are known, pre-existing Workbench drift unrelated to this recovery and are not repaired here (separate scope); S-00K's own implementation remains not started |
 
 | 2026-09-19 | TK-001 | Activated by owner request; implemented read-only machine-evidence seam at `7f28eb8` | `node tools/test-self-drift.mjs` passed after missing-seam red; fixtures cover historical/planned classification, complete/pending contradiction, resolved blocker, unreadable JSON/symlink, seed generation identity and read-only JSON CLI; template guardrail before/after both 48.9, byte-identical reports | Public seam and limitations recorded here; shared procedures remain coordinator-owned | Full verification, source update integration, semantic cold-start read-back and owner reconciliation remain open; a machine report does not prove semantic freshness |
+
+| 2026-09-19 | TK-0SA | Reconciled S-014/S-022 duplicate release assignments as superseded, never completed; README now routes current release ownership to S-00O and surviving live-device gate to S-050/S-052 | Full source-owner read-back at `1a26de9`; render removes both old release packets from hot projection; doctor has no blocker; existing acceptance boxes, unfinished rows and prior evidence bytes preserved | Room-specific README release route changed; generic template exemption because no named room release owners belong in the template | CIC/Sol current consumer read-back unverified and explicitly preserved; no publication, installation, file movement or old acceptance claim |
 
 ## Completion Result
 

@@ -4,14 +4,14 @@
 > `workbench/specs/S-014-workbench-release-candidate/SPEC.md`; never move between status folders.
 
 **Spec ID:** S-014
-**Status:** blocked
+**Status:** superseded
 **Priority:** 0
 **Owner:** codex
-**Updated:** 2026-09-05
-**Catalog description:** Prepare one exact-SHA, independently audited Workbench integration-to-main release candidate for owner approval through CIC.
-**Blockers:** Owner release-direction reconciliation remains pending; integration testing is authorized, main/release publication is not.
-**Latest event:** S-027 delivered the reviewed v3.1.1 candidate through PR #48 at integration 09f0875; historical release proof remains preserved.
-**Next gate:** Reconcile this historical release procedure and version intent with owner direction before any publication; do not reopen S-027 or require CIC for ordinary testing.
+**Updated:** 2026-09-19
+**Catalog description:** Historical release packet superseded by S-00O; unfinished acceptance is preserved, not claimed complete.
+**Blockers:** none; surviving current gates are owned by S-00O and S-052, not this historical packet.
+**Latest event:** S-00K owner reconciliation removed the obsolete duplicate release assignment without changing historical proof.
+**Next gate:** Follow S-00O for current release work; owner-only main promotion and S-052 live-host proof remain separate gates.
 
 ## Current Release Procedure Addendum
 
@@ -22,6 +22,21 @@ installed upgrade verified; upstream tests alone cannot establish readiness.
 [S-00F](../S-00F-template-upgrade-release-gate/SPEC.md) owns the v3.2.1 correction.
 This adds the missing release acceptance condition while preserving the
 historical CIC-specific evidence below; it does not reactivate CIC or approve main.
+
+## Current Disposition
+
+This packet is **superseded, not completed**. Its unchecked acceptance and
+unfinished historical tasks remain below as evidence of what was never proven.
+Current work routes to [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md), with
+[S-050](../S-050-workbench-v3-2-0-release/SPEC.md) retaining the delivered v3.2
+receipt and [S-052](../S-052-private-session-transport/SPEC.md) retaining the
+actual private-service/device/provider proof gate. The current release-readiness owner is S-00O. The old CIC-specific status publication and sole-promotion-PR choreography remains historical evidence; it is not a prerequisite for ordinary local delivery. No audit status, promotion PR, publication or owner approval is inferred here.
+
+The original generation/stable-path notice and original requirements below are
+historical context. AGENTS owns today's folder-lifecycle rules. This disposition
+moves no file, publishes no release and authorizes no installation or deletion.
+No current CIC/Sol consumer read-back was established during this local
+reconciliation; any such consumer must be checked before reusing its old flow.
 
 ## Outcome
 
@@ -352,9 +367,11 @@ gh pr list --state open --base main --head integration --json number,isDraft,hea
 
 | 2026-09-05 | release | S-027 integration delivery verified at `09f0875` via PR #48; release remains paused | Exact reviewed `fa04e27` is an ancestor of remote integration; main unchanged | Current gate reconciled; original baseline and append-only evidence preserved | Owner release-direction reconciliation, not S-027 preparation |
 
+| 2026-09-19 | S-00K TK-0SA | Reconciled obsolete release assignment to S-00O; historical acceptance not completed | Read complete S-014/S-022/S-050/S-052 packets and S-00O release scope at parent `1a26de9`; current owners preserve release and live-host gates | Current disposition and README route updated; all prior evidence rows preserved | S-050 TK-006 and S-052 TK-004 remain open; current S-00O build/release and owner main approval remain open; CIC/Sol consumer state unverified |
+
 ## Completion Result
 
-Pending.
+Superseded, not completed. Current obligations follow S-00O; original unchecked acceptance and unfinished task evidence remain preserved.
 
 ## Remaining Limitations Or Follow-Up Specs
 
@@ -366,4 +383,4 @@ Pending.
 ## Supersession
 
 - Supersedes: none
-- Superseded by: none
+- Superseded by: [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md).
