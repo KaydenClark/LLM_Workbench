@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Reconcile core-skill lifecycle/inherited-scope instructions and establish evidence-based dispositions for optional archived and pending skill source without pre-judging removal.
 **Blockers:** S-00P phase two must publish current Canon before lifecycle wording changes; removal or relocation requires a per-item owner decision.
-**Latest event:** TK-0R0 inventory and owner-gated disposition rows implemented; verification checkpoint pending append-only history test.
-**Next gate:** Finish required append-only test, then close TK-0R0 and verify TK-0R2; TK-0R1 still waits for S-00P Canon and TK-0R3 for per-item owner decisions.
+**Latest event:** TK-0R0 inventory and owner-gated disposition rows implemented; named checks passed; remaining full-suite proof consolidated into the common immutable candidate run.
+**Next gate:** Obtain common immutable full-suite proof, including append-only history verification, before closing TK-0R0 and verifying TK-0R2; TK-0R1 still waits for S-00P Canon and TK-0R3 for per-item owner decisions.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
@@ -161,6 +161,8 @@ avoid a clear catalog row.
 | 2026-09-19 | pending | Spec authored; no implementation performed | Read pinned core sources, `skills/README.md`, core/catalog tests, and active S-00I/S-00J/S-00P owners at the pre anchor | Composition is intentional; lifecycle wording and optional-source purpose need bounded reconciliation/disposition planning. No source, test, control, template, optional asset, or completed evidence changed. |
 
 | 2026-09-19 | b54c8c7e7481ef6d9fe29b4ad1d7c72e2856f051 | Optional inventory and dispositions implemented; no source removal | Catalog red on missing inventory, green with 21 directory rows covering 38 tracked files; mutated missing owner gate rejected then restored green. Core composition and inspection pass; required suite commands pass after landed date fixture repair and local render, except append-only history test still running. Source/archive/notice diff empty. | Guardrail 78/100 before and after; real repeated outcome/control comparison/recency/uncertainty evidence absent. R0 remains in progress pending complete verification; R1 and R3 gates unchanged. |
+
+| 2026-09-19 | f6cb87f2fb5666922b44263f97270f53694e9402 | Verification checkpoint corrected after coordinator consolidation | Stopped only this lane's owned full-suite process and children while the append-only history check was running; retained completed per-command logs and an explicit incomplete receipt locally. | All other required commands passed individually after the documented fixture/render corrections; no full-suite PASS is claimed. Required append-only proof and separate-context review remain pending on the assembled immutable candidate. R0 remains in progress; R1 and R3 gates unchanged. |
 
 ## Completion Result
 
