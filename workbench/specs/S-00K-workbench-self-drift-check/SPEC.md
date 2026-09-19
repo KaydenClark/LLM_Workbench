@@ -129,20 +129,35 @@ unavailable external service.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Implement the Workbench self-drift seam, integrate it into update procedures, and prove cold-start-safe current state | deferred | explicit S-00K activation | Red stale-current-claim cases; green current/history classification and blocking behavior; pre/post update receipt; focused and full suites; fresh no-memory read-back; independent review |
 
-### TK-001 - Implement the Workbench self-drift seam, integrate it into update procedures, and prove cold-start-safe current state
+### TK-0SA - Reconcile the old release hot-queue with its current owner and Sol-coordinated disposition
+
+**Stance:** Reconciler
+
+Trace old release hot-queue claims through their existing Specs and current
+owner. Coordinate the intended disposition with Sol where that is the named
+feedback/review dependency, without reopening completed evidence or silently
+deleting historical release records. The self-drift result must say whether the
+claim is current, historical, blocked, or owner-routed.
+
+### TK-0SB - Define seed and provenance identity semantics for self-drift findings
 
 **Stance:** Builder
 
-Start with red disposable fixtures for S-014/S-022-style stale blockers,
-resolved blocker text, version/provenance drift, generated projection drift,
-and unreadable required artifacts. Implement the smallest read-only seam that
-can inspect the declared artifact inventory and distinguish bounded history from
-current guidance. Integrate the seam into the canonical Workbench update
-procedure before and after update, retain a machine-readable receipt, and
-repair the baseline current-facing records through their existing owners. Prove
-that a target project drift check is not counted as the Workbench self-check.
+Establish the identity tuple the self-drift seam needs for seeded documents and
+manifest provenance: source repository, release, commit and content hash where
+available. Prove that matching names or bytes do not erase source-generation
+meaning, and preserve historical receipts and unresolved provenance limits.
+
+### TK-0SC - Inspect installed-source compatibility and explicit-update/native-callability limits
+
+**Stance:** Auditor
+
+Bound installed-state findings to read-only inspection. Distinguish the
+repository source from `.agents`/`.claude` installed copies, identify that
+replacement requires an explicit update operation, and record preservation and
+rollback limits. Do not perform installation, infer native host callability, or
+turn a home-directory finding into a repository repair.
 
 ## Acceptance Criteria
 

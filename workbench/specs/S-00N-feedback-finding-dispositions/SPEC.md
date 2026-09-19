@@ -76,10 +76,11 @@ remediation text fails the suite.
 
 ## Non-Goals
 
-- **Retroactively dispositioning the existing lane.** TK-004 dispositions the
-  findings currently in `workbench/feedback/`, but assigning `accepted-open` to
-  a finding does not schedule it, and this Spec creates no work item for any of
-  them.
+- Scheduling repairs beyond the disposition work. TK-004 dispositions the
+  findings currently in `workbench/feedback/`; assigning `accepted-open` to a
+  finding does not schedule it. Any missing owner or old release hot-queue
+  coordination remains explicit work in the owning record and is not silently
+  created by TK-004.
 - **Claiming the ratchet repairs anything.** All currently registered codes
   already carry remediation text. The test is a guard against future additions
   and is recorded that way so nobody later reads a green result as evidence it
@@ -97,10 +98,6 @@ dogfood boundary.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Define the closed disposition vocabulary in `LEXICON.md` | ready | none | Lexicon carries the five classes and what each asserts; `tools/test-control-fidelity.mjs` and the full suite pass |
-| TK-002 | Ratchet the registry so every diagnostic carries remediation text | ready | none | Red test proving a registry entry with empty remediation fails, run against a temporarily emptied entry; green assertion across the whole registry; the real registry passes unchanged |
-| TK-003 | Require the disposition field in both `REPORT_FORMAT.md` copies | blocked | TK-001 | Root copy filled and template copy generic and `[BRACKETED]`; `tools/test-guardrail-audit.mjs` and `node tools/evaluate-workbench.mjs --path templates --include-controls` pass |
-| TK-004 | Disposition the findings already in the feedback lane | blocked | TK-003 | Every existing report's findings carry a disposition from the closed set, with `accepted-open` naming the owning Spec; no finding scheduled by this slice |
 
 ### TK-001 - Define the closed disposition vocabulary in `LEXICON.md`
 
@@ -139,6 +136,17 @@ actually reached. Most will be `accepted-open` and must name the Spec that
 holds them. Where no Spec holds one, `accepted-open` is still the honest
 answer and the missing owner is reported as a gap — this slice dispositions
 findings, it does not create Specs for them.
+
+### TK-0SD - Reconcile old release hot-queue disposition with the existing owner and Sol coordination
+
+**Stance:** Reconciler
+
+After TK-004 records each finding's disposition, trace any old release
+hot-queue item to its existing owning Spec and consumer. Record Sol's
+coordination/dependency where the source names it, preserve the original
+finding and evidence, and leave an explicit gap when ownership or current
+consumer state cannot be proven. This Task does not create a duplicate
+disposition framework or authorize release work.
 
 ## Acceptance Criteria
 
