@@ -99,14 +99,14 @@ export function inspectSelfDrift(project, options = {}) {
     }
     const superseded = section(text, 'Supersession').match(/Superseded by:\s*(S-[A-Z0-9]+)/i)?.[1];
     if (superseded && !['complete', 'superseded'].includes(status)) finding('superseded-current', file, 'superseded work is not active work', `historical route to ${superseded}`, status, `Reconcile lifecycle with ${superseded}`);
-    for (const id of (status === 'blocked' ? (field(text, 'Blockers') ?? '').match(/S-[A-Z0-9]+/g) ?? [] : [])) {
+    for (const id of (['blocked', 'active'].includes(status) ? (field(text, 'Blockers') ?? '').match(/S-[A-Z0-9]+/g) ?? [] : [])) {
       const owner = specStates.get(id);
       if (owner?.status === 'complete' || owner?.historical) finding('resolved-blocker', file, `blocker ${id} remains live`, 'current unmet dependency', `${id} is complete or historical`, `Review the remaining gate against ${owner.file}; preserve historical evidence`);
     }
   }
   // Existing diagnostics supply projection, seed, source and managed-byte
   // evidence. Their ordinary blocking effects are unchanged by this command.
-  if (manifest && !findings.some(f => f.classification === 'unreadable')) {
+  if (manifest && !findings.some(f => /symbolic link|ordinary path inside/.test(f.observed))) {
     try {
       for (const issue of doctor(root, { home: options.home })) {
         const installed = ['incompatible-core', 'skill-missing', 'skill-shadow', 'skill-unreadable'].includes(issue.code);
