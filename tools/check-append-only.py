@@ -16,8 +16,28 @@ import os, subprocess, sys
 # this branch wrote while sitting outside the enumeration that claimed to
 # enforce the rule.
 SPEC_ROOT="workbench/specs"
-SPECS=sorted(d for d in os.listdir(SPEC_ROOT)
-             if os.path.isfile(os.path.join(SPEC_ROOT,d,"SPEC.md")))
+# S-00I TK-006: `os.listdir(SPEC_ROOT)` alone only ever sees a direct child
+# carrying `SPEC.md` - the active roster. S-00I TK-005 started retiring a
+# completed Spec one level deeper (`workbench/specs/retired/<id>/SPEC.md`),
+# and this enumeration never followed it there, so S-00H's own evidence log -
+# with its own retirement row - silently left append-only enforcement the
+# moment it retired. `SPEC_LIFECYCLE_FOLDERS` mirrors the one list
+# `workbench/tools/spec-workbench.mjs` exports under that name (`['retired']`
+# today; `archive` is ADR-only, never a Spec folder, per ADR-000I).
+SPEC_LIFECYCLE_FOLDERS=["retired"]
+def discover_specs(spec_root):
+    specs=[]
+    for name in sorted(os.listdir(spec_root)):
+        full=os.path.join(spec_root,name)
+        if not os.path.isdir(full): continue
+        if os.path.isfile(os.path.join(full,"SPEC.md")):
+            specs.append(name)
+        elif name in SPEC_LIFECYCLE_FOLDERS:
+            for sub in sorted(os.listdir(full)):
+                if os.path.isfile(os.path.join(full,sub,"SPEC.md")):
+                    specs.append(f"{name}/{sub}")
+    return specs
+SPECS=discover_specs(SPEC_ROOT)
 def sh(*a): return subprocess.run(a,capture_output=True,text=True)
 commits=[c for c in ("288c821","d31bf2c","a5e7fe0") if sh("git","cat-file","-e",c+"^{commit}").returncode==0]
 commits+=sh("git","rev-list","--reverse","5561906..HEAD").stdout.split()

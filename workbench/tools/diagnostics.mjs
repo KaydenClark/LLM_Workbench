@@ -90,6 +90,17 @@ const registry = Object.freeze({
   // ("missing"), or one does but its own `status` is no longer `active`
   // ("stale") - visible and never blocking, exactly like `retired-not-complete`.
   'retired-wiki-owner-stale': entry('attention', 'specs', 'none', "a retired Spec's Wiki durable owner is missing or its status is not active"),
+  // S-00I TK-006: the discard gate itself already refuses a discard while
+  // any current reference names the record, so this only ever fires when a
+  // record whose own discard is recorded in `workbench/specs/DISCARDS.md`
+  // still has a live reference naming it - a discard bypassed through a raw
+  // `git rm`, or a reference added back afterward. Scoped to a target this
+  // room's own register says was actually discarded, not every dead local
+  // link in the room (`broken-link` above already covers the ordinary,
+  // non-discard case, deliberately as `attention`); this stays `selection`
+  // because a reference naming a record Git no longer has at that path is a
+  // stronger, room-wide fact than one Spec's own broken link.
+  'discarded-reference': entry('error', 'specs', 'selection', "a live reference names a path this room's own discards register says was discarded"),
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   // S-00I TK-002: lifecycle now comes from folder location (top level, or
   // ADR_LIFECYCLE_FOLDERS `proposed`/`archive`), not frontmatter `status`. A

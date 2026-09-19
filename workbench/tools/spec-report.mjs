@@ -33,10 +33,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
-import { appendEvidence, atomicWrite, findSpec, loadSpecs, slicesOf } from './spec-workbench.mjs';
+import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, resolveSpecsRoot, slicesOf } from './spec-workbench.mjs';
 import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
-import { assertSafeWritePath, declaredGit } from './workbench-paths.mjs';
+import { assertSafeWritePath, declaredGit, lanePath } from './workbench-paths.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
@@ -499,7 +499,23 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
     throw new Error(`A fail verdict or owner QA finding for candidate ${candidate} on ${specId} names no corrective finding ("${findings}"); one that leaves the Spec with no corrective Task is refused.`);
   }
 
-  const spec = findSpec(root, specId);
+  // S-00I TK-006: once a Spec is discarded, `findSpec` finds it neither on
+  // the active roster nor in `retired/` - there is no `SPEC.md` left to
+  // anchor a fail-verdict or owner-QA row against at all, since that row
+  // lived in the file discard just removed. A caller who still names
+  // `--wiki-claim <note>#<heading>` is asking for exactly the case TK-006
+  // defines: anchor the corrective Task directly to the reconciled Wiki
+  // claim instead, skipping the row lookup below entirely (there is no row
+  // to look up). A caller who names no wiki claim gets `findSpec`'s own
+  // "Unknown spec ID" error unchanged - every existing caller of this
+  // function takes this branch exactly as before.
+  let spec;
+  try {
+    spec = findSpec(root, specId);
+  } catch (error) {
+    if (options.wikiClaim) return createOrphanCorrectiveTasks(root, specId, { candidate, items: givenItems, wikiClaim: options.wikiClaim });
+    throw error;
+  }
   const evidence = parseEvidence(spec.content);
   const anchor = findCorrectiveAnchor(evidence, candidate);
   if (!anchor) {
@@ -597,6 +613,76 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   }
 
   return { specId, candidate, verdictRow: { ordinal: rowOrdinal, date: verdictDate }, created };
+}
+
+// S-00I TK-006: the discarded-Spec branch `createCorrectiveTasks` above
+// dispatches to when `findSpec` finds no Spec at all and the caller named a
+// Wiki claim. There is no evidence log to anchor against (discard removed
+// it along with the Spec), so this skips `findCorrectiveAnchor` and the
+// row-matches-caller equality check entirely and builds one Task per
+// caller-given finding directly - the caller is asserting the finding
+// itself, not replaying a row this room can still read. Each Task's
+// `Destination` is `wiki-claim: <note>#<heading>` (the exact shape
+// `assembleTaskPacket`'s `resolveWikiClaim` in task-packet.mjs already
+// reads), validated the same way that resolver validates it: the note must
+// exist inside the Wiki collection and actually carry that heading. Written
+// into `<specs lane>/corrective/tasks/<id>/TASK.md` - the folder
+// `loadCorrectiveTasks` in spec-workbench.mjs defines and reads, since the
+// Spec directory a Task would ordinarily live under is gone.
+function createOrphanCorrectiveTasks(root, specId, { candidate, items, wikiClaim }) {
+  const match = /^([^#]+\.md)#(.+)$/.exec(String(wikiClaim).trim());
+  if (!match) throw new Error(`createCorrectiveTasks wikiClaim "${wikiClaim}" is unreadable; expected "<note path>#<claim heading>"`);
+  const [, notePathRaw, heading] = match;
+  const wikiRoot = lanePath(root, 'wiki');
+  const noteAbsolute = path.resolve(root, notePathRaw.trim());
+  const withinWiki = path.relative(wikiRoot, noteAbsolute);
+  if (withinWiki.startsWith('..') || path.isAbsolute(withinWiki)) {
+    throw new Error(`createCorrectiveTasks wikiClaim note "${notePathRaw}" must stay inside the Wiki collection`);
+  }
+  if (!fs.existsSync(noteAbsolute)) {
+    throw new Error(`createCorrectiveTasks found no Wiki note at ${notePathRaw}; a corrective Task after discard must name the reconciled Wiki claim that still exists`);
+  }
+  const noteContent = fs.readFileSync(noteAbsolute, 'utf8');
+  if (!new RegExp(`^## ${escapeRegExp(heading)}[ \t]*$`, 'm').test(noteContent)) {
+    throw new Error(`createCorrectiveTasks found no "${heading}" claim heading in ${notePathRaw}`);
+  }
+  const notePathRelative = path.relative(root, noteAbsolute).split(path.sep).join('/');
+  const destination = `wiki-claim: ${notePathRelative}#${heading}`;
+
+  const correctiveDir = path.join(resolveSpecsRoot(root).specsRoot, 'corrective');
+  const existingOrphanRecords = listTaskRecords(correctiveDir, root);
+  const specs = loadSpecs(root);
+  const retiredSpecs = loadRetiredSpecs(root);
+  const occupied = [
+    ...specs.flatMap((entry) => [...entry.rows, ...(entry.records ?? [])].map((item) => item.id)),
+    ...retiredSpecs.flatMap((entry) => [...(entry.records ?? []), ...(entry.retiredRecords ?? [])].map((item) => item.id)),
+    ...existingOrphanRecords.map((item) => item.id)
+  ];
+  const reservations = [...new Map(occupied.map((id) => [visibleIdKey(id), id])).values()];
+
+  const staged = [];
+  for (const findingText of items) {
+    const id = allocateVisibleId('TK', reservations, { requireLetter: true });
+    reservations.push(id);
+    const filePath = path.join(correctiveDir, 'tasks', id, 'TASK.md');
+    const plannedVerification = `Answers a corrective wiki-claim finding for ${specId} at ${candidate}: ${findingText}`;
+    const content = formatTaskRecord({
+      id, specId, slice: findingText, status: 'ready', blockers: 'none',
+      destination, plannedVerification
+    });
+    parseTaskRecord(content, filePath, root);
+    staged.push({ id, filePath, content, slice: findingText });
+  }
+
+  const created = [];
+  for (const item of staged) {
+    assertSafeWritePath(root, item.filePath);
+    fs.mkdirSync(path.dirname(item.filePath), { recursive: true });
+    atomicWrite(item.filePath, item.content);
+    created.push({ id: item.id, filePath: path.relative(root, item.filePath).split(path.sep).join('/'), slice: item.slice });
+  }
+
+  return { specId, candidate, wikiClaim: destination, created };
 }
 
 function requiredString(value, message) {
