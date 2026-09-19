@@ -37,3 +37,11 @@ benchmark discipline25, outcome evidence8. Remaining recommendations are real
 repeated outcome trials, controls/prior/candidate comparison, recent candidate
 evidence, and uncertainty estimates. Deterministic safety checks and one native
 fresh-project continuation do not establish a general agent-reliability gain.
+
+## 2026-09-19 S-00T lifecycle repair baseline
+
+Guardrail audit is **78/100 before and after** (baseline f9f77a8; runtime
+candidate9611b59). Static20, drift25, discipline25, outcomes8. Remaining
+recommendations are repeated real trials, control/prior/candidate comparison,
+recent candidate evidence and uncertainty estimates. Disposable lifecycle
+regressions and static score preservation do not prove agent reliability.
