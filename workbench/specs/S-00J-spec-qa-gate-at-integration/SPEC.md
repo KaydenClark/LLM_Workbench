@@ -222,9 +222,10 @@ answer, without weakening the immutable-candidate requirement from ADR-0037.
       content (the assembled Spec's digest, with the candidate SHA named)
       and refused for any other content or for a SHA the repository does
       not hold; TK-004 replaced the exact-`HEAD` rule TK-002 shipped.
-- [ ] A failed verdict produces corrective Task records under the still-open
+- [x] A failed verdict produces corrective Task records under the still-open
       Spec, visible on the board, without reopening done Tasks (the
-      retired-folder case once S-00I TK-005 exists).
+      retired-folder case held by the assertion S-00I TK-006 added,
+      integration `49ec744`).
 - [x] `complete` refuses without a passed verdict on the current candidate
       and a recorded owner approval naming the `integration` SHA.
 - [x] The harness's merge-preparation workflow refuses an incomplete or
@@ -235,7 +236,7 @@ answer, without weakening the immutable-candidate requirement from ADR-0037.
 - [x] The integration branch is resolved from the manifest declaration.
 - [x] Review and delivery skills name the assembled Spec as the reviewed
       unit; the independent review requirement is unchanged.
-- [ ] The full verification suite passes and `doctor` is clean.
+- [x] The full verification suite passes and `doctor` is clean.
 
 ## Testing Seams
 
@@ -277,7 +278,29 @@ TK-005.
 
 ## Completion Result
 
-Not started.
+Delivered across six landed Tasks (PRs #118, #120, #124, #128, #132, #136;
+integration `31c8c0e` contains the last). A separate-context reviewer obtains
+the assembled state of a Spec with `report S-### --candidate <sha>`: every
+Task with status, proof and Receipt runs (retained rows as history), every
+acceptance line, the evidence rows, the completion result and the gaps, bound
+to the Spec's content digest. A verdict is one append-only `review` row bound
+to that digest (`Review verdict: <result> at <sha> [<digest12>] #<n>`),
+refused for a candidate the repository does not hold or content that has
+moved, and never rewritten; a `fail` verdict creates one corrective Task
+record per finding under the still-open Spec, anchored to the row it answers,
+without reopening done Tasks. `complete` refuses without a passed current
+verdict and a recorded owner Human QA approval (`approve`, one `owner-qa` row
+naming who, when and the integration SHA inspected, contained in the declared
+integration branch), and a finding routes to corrective Tasks or a return to
+Align. The `gate` verb runs in the RUNBOOK closeout recipe: a Task PR under
+the room's Task-PR exemption is reported, a Spec candidate that is incomplete,
+unreviewed or unapproved is refused; the integration branch is resolved from
+the manifest. The review and delivery skills name the assembled Spec as the
+reviewed unit while keeping the immutable-candidate requirement for a Task PR.
+The retired-folder case of a corrective Task (never reopening a retired done
+Task, never moving a Spec back out of `retired/`) is held by the assertion
+S-00I TK-006 added. The suite ran green on this completion candidate (44
+commands, `doctor` clean).
 
 ## Remaining Limitations Or Follow-Up Specs
 
