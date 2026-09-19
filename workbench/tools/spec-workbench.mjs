@@ -192,7 +192,7 @@ export function occupiedIdentities(rootDir, prefix) {
       try { lane = JSON.parse(manifestResult.stdout).lanes?.specs ?? lane; }
       catch { throw new Error(`Cannot reserve IDs from malformed manifest at ${ref}`); }
     }
-    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane], { encoding: 'utf8' });
+    const result = spawnSync('git', ['-C', root, 'grep', '-h', '-E', `^\\*\\*(Spec ID|Task ID):\\*\\*|^\\|.*(S-|TK-)`, ref, '--', lane, ...(manifestResult.status === 0 ? [] : ['specs'])], { encoding: 'utf8' });
     if (![0, 1].includes(result.status)) throw new Error(`Cannot reserve IDs from ${ref}: ${result.stderr.trim()}`);
     occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
   }
@@ -1988,7 +1988,8 @@ function recoveryIdentity(root, relativeDir, remoteRef) {
   const recovered = tree(commit);
   const current = tree('HEAD');
   if (recovered.status !== 0 || current.status !== 0 || recovered.stdout !== current.stdout) throw new Error('discard recovery commit does not match the complete current directory');
-  return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${relativeDir}` };
+  const quotedDir = /^[A-Za-z0-9_./-]+$/.test(relativeDir) ? relativeDir : "'" + relativeDir.replaceAll("'", "'\"'\"'") + "'";
+  return { recoveryCommit: commit, recoveryCommand: `git checkout ${commit} -- ${quotedDir}` };
 }
 
 function historicalWikiCitation(content, file, directory, root, commit) {
@@ -2003,9 +2004,12 @@ function historicalWikiCitation(content, file, directory, root, commit) {
   }));
 }
 
-function preflightDiscardRender(root) {
-  const specs = loadSpecs(root);
-  const retired = loadRetiredSpecs(root);
+function preflightDiscardRender(root, { specId, taskId } = {}) {
+  const prospective = specs => specs.filter(spec => taskId || spec.id !== specId).map(spec => spec.id !== specId ? spec : {
+    ...spec, retiredRecords: spec.retiredRecords.filter(task => task.id !== taskId)
+  });
+  const specs = prospective(loadSpecs(root));
+  const retired = prospective(loadRetiredSpecs(root));
   const blueprint = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8');
   const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
   if (blueprint.includes(CATALOG_START) || blueprint.includes(CATALOG_END)) replaceRegion(blueprint, CATALOG_START, CATALOG_END, renderCatalog(specs, retired));
@@ -2182,7 +2186,7 @@ export function discardRetiredSpec(rootDir, specId) {
   }
 
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
-  preflightDiscardRender(root);
+  preflightDiscardRender(root, { specId });
   const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
   if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
 
@@ -2245,11 +2249,15 @@ export function discardRetiredTask(rootDir, specId, taskId) {
   const parentCommit = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
   const relativeDir = path.relative(root, taskDir).split(path.sep).join('/');
   const { recoveryCommit, recoveryCommand } = recoveryIdentity(root, relativeDir, remoteRef);
-  preflightDiscardRender(root);
+  preflightDiscardRender(root, { specId, taskId });
   const keep = path.join(path.dirname(spec.filePath), 'tasks', '.gitkeep');
-  if (!fs.existsSync(keep)) atomicWrite(keep, '');
+  const createdKeep = !fs.existsSync(keep);
+  if (createdKeep) atomicWrite(keep, '');
   const rmResult = spawnSync('git', ['-C', root, 'rm', '-r', '--quiet', relativeDir]);
-  if (rmResult.status !== 0) throw new Error(`git rm failed for ${specId}/${taskId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
+  if (rmResult.status !== 0) {
+    if (createdKeep) fs.unlinkSync(keep);
+    throw new Error(`git rm failed for ${specId}/${taskId}: ${(rmResult.stderr ?? '').toString().trim() || 'unknown error'}`);
+  }
 
   const register = recordDiscard(root, { kind: 'task', id: `${specId}/${taskId}`, historicalRoute, movingCommit, parentCommit, recoveryCommand });
 

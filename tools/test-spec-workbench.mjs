@@ -4170,6 +4170,21 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     console.log('ok - discardRetiredSpec refuses an unknown or still-active Spec, anything not literally under retired/ (proving discard never reaches archive), an unverifiable or unmet main-containment check, a live reference naming the record, a stale Wiki durable owner, and a dirty working tree - all before any write');
 
     const reviewedNote = fs.readFileSync(notePath, 'utf8');
+    const memoryPath = path.join(discardRoot, 'workbench/wiki/MEMORY.md');
+    const routedMemory = fs.readFileSync(memoryPath, 'utf8');
+    execFileSync('git', ['-C', discardRoot, 'rm', '--quiet', 'workbench/wiki/design-concepts/discard-fixture-capability.md']);
+    fs.writeFileSync(memoryPath, '# Fixture Room Brain\n');
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'missing durable owner']);
+    const beforeMissingOwner = execFileSync('git', ['-C', discardRoot, 'write-tree'], { encoding: 'utf8' });
+    assert.throws(() => discardRetiredSpec(discardRoot, 'S-580'), /no Wiki note names/);
+    assert.equal(execFileSync('git', ['-C', discardRoot, 'write-tree'], { encoding: 'utf8' }), beforeMissingOwner);
+    assert.equal(execFileSync('git', ['-C', discardRoot, 'status', '--porcelain'], { encoding: 'utf8' }), '');
+    assert.ok(fs.existsSync(path.join(discardRoot, historicalRoute)));
+    fs.writeFileSync(notePath, reviewedNote);
+    fs.writeFileSync(memoryPath, routedMemory);
+    execFileSync('git', ['-C', discardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'restore durable owner']);
     fs.writeFileSync(notePath, reviewedNote.replace('## Evidence and Sources', 'Use [the current procedure](../../specs/retired/S-580-discard-fixture/SPEC.md).\n\n## Evidence and Sources'));
     execFileSync('git', ['-C', discardRoot, 'add', '-A']);
     execFileSync('git', ['-C', discardRoot, 'commit', '--quiet', '-m', 'operational owner reference']);
@@ -4201,6 +4216,12 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.deepEqual(scanReferences(discardRoot), [], 'successful discard leaves no dangling durable-owner citation');
     assert.deepEqual(doctor(discardRoot).filter(item => item.code === 'discarded-reference'), []);
     assert.match(fs.readFileSync(notePath, 'utf8'), /git show [0-9a-f]{40}:workbench\/specs\/retired\/S-580-discard-fixture\/SPEC.md/);
+    const cleanAgents = fs.readFileSync(path.join(discardRoot, 'AGENTS.md'), 'utf8');
+    fs.appendFileSync(path.join(discardRoot, 'AGENTS.md'), '\n[Discarded record](workbench/specs/retired/S-580-discard-fixture/SPEC.md)\n');
+    assert.ok(doctor(discardRoot).some(item => item.code === 'discarded-reference' && item.blocks === 'selection'));
+    assert.equal(nextWork(discardRoot), null, 'selection consumes the registered discarded-reference blocker');
+    assert.throws(() => claimWork(discardRoot, 'S-581', { agent: 'fixture' }), /discarded-reference/);
+    fs.writeFileSync(path.join(discardRoot, 'AGENTS.md'), cleanAgents);
     const catalogAfter = fs.readFileSync(path.join(discardRoot, 'workbench/specs/CATALOG.md'), 'utf8');
     assert.doesNotMatch(catalogAfter, /S-580-discard-fixture/, 'render already ran inside discardRetiredSpec; the catalog no longer names the discarded Spec even by its historical route');
 
