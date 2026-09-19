@@ -5,11 +5,11 @@
 **Priority:** 3
 **Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-18
+**Updated:** 2026-09-19
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** TK-006 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Approval audit identified lifecycle and QA-binding defects; corrective implementations are assembled under S-00T and S-00U.
+**Next gate:** Verify and independently review the repaired integration candidate, then obtain real owner Human QA; completion remains unapproved.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -277,7 +277,12 @@ TK-005.
 
 ## Completion Result
 
-Not started.
+Original implementation Tasks are delivered, but whole-Spec closure is not
+approved. The 2026-09-19 audit found defects now addressed by
+[S-00T](../S-00T-lifecycle-discard-repair/SPEC.md) and
+[S-00U](../S-00U-approval-binding-and-lifecycle-digest/SPEC.md). Their repaired
+candidate requires complete verification and fresh independent review before
+integration, then owner Human QA. Historical Task proof is preserved.
 
 ## Remaining Limitations Or Follow-Up Specs
 

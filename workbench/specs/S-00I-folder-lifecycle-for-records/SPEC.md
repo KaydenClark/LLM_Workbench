@@ -8,8 +8,8 @@
 **Updated:** 2026-09-19
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** TK-006 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Approval audit identified lifecycle and QA-binding defects; corrective implementations are assembled under S-00T and S-00U.
+**Next gate:** Verify and independently review the repaired integration candidate, then obtain real owner Human QA; completion remains unapproved.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -278,15 +278,20 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 
 ## Completion Result
 
-Not started.
+Original implementation Tasks are delivered, but whole-Spec closure is not
+approved. The 2026-09-19 audit found defects now addressed by
+[S-00T](../S-00T-lifecycle-discard-repair/SPEC.md) and
+[S-00U](../S-00U-approval-binding-and-lifecycle-digest/SPEC.md). Their repaired
+candidate requires complete verification and fresh independent review before
+integration, then owner Human QA. Historical Task proof is preserved.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-`adr normalize` still inserts `status: proposed` into any record missing the
-key, which after TK-002 is every record, so running it would re-add a stale
-key to the whole collection; TK-003's lane corrects it in passing (insert
-only the date; never a lifecycle key). The `rejected` lifecycle has no folder
-yet. The order of closure that precedes reconciliation (assembled-Spec review,
+TK-003 already corrected `adr normalize` to insert only the date, never a
+lifecycle key; the earlier current-facing limitation was stale. The `rejected`
+lifecycle has no folder. S-00T owns the disclosed discard/recovery/corrective
+repairs and the remaining unexpected-I/O recovery limitation; S-00U owns the
+completion-to-retirement digest repair. The order of closure that precedes reconciliation (assembled-Spec review,
 integration, owner Human QA) is S-00J. Control and template prose for the
 lifecycle is S-00P phase two. A Wiki guidebook explaining the lifecycle to
 readers is optional owner-directed work.

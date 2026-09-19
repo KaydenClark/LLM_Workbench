@@ -234,10 +234,12 @@ In progress. The assembled source at `e7b0906` includes the public seam, focused
 
 ## Remaining Limitations Or Follow-Up Specs
 
-The current repository remains a useful baseline for the first regression but
-does not yet pass the new semantic self-drift standard. Existing unreadable
-legacy continuity records need their own safe reconciliation path. No new
-follow-up spec is authorized by this record.
+The original-checkout baseline recorded unreadable legacy continuity records;
+the clean candidate does not contain those local records and does not prove
+their reconciliation. Its machine report has no unreadable finding. The
+historical blocked release packets, installed-source/native limits and absent
+external consumer read-back remain explicit limitations. No new follow-up Spec
+or local-record deletion is authorized by this record.
 
 ## Supersession
 
