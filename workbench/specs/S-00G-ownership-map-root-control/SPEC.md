@@ -94,8 +94,9 @@ not accepted.
   that does, while a separate guard forbids a status-shaped field on a map row,
   so a single classification column cannot simply be added. What classifies a
   differing row, and where that classification is authored, is unsettled. Both
-  of those rulings are recorded only in the live grilling note named below and
-  in no tracked file, so neither is citable here as durable evidence.
+  of those rulings are recorded across several gitignored session records,
+  including the live note named below, and in no tracked file, so neither is
+  citable here as durable evidence.
 - Retiring or rewriting any Spec, Task or ADR.
 
 ## Dependencies And Blockers
@@ -113,15 +114,16 @@ material, not a decision; it is retained unresolved in its live grilling note
 and is deliberately not restated here.
 
 **Unreconciled, named rather than resolved.** This Spec and ADR-000D both carry
-FND-Q23 and FND-Q24 as open. The live grilling note and the 2026-09-21 audit
-board over it both state the owner locked each of them on 2026-09-15, and both
+FND-Q23 and FND-Q24 as open. The live grilling note and the audit board over
+it, generated 2026-09-19 at `cc53fad`, both state the owner locked each of them
+on 2026-09-15, and both
 already route the two questions to this Spec as their owner. Only FND-Q21 and
 FND-Q24B are recorded open on every source. Nothing here flips a status: the
 contradicting record is untracked and cannot retire a gate this Spec accepted,
 and an owner answer read out of a live note is not durable acceptance. Whoever
 next works this Spec reconciles FND-Q23 and FND-Q24 against a durable source
-before treating either as a live gate; ADR-000D carries the same stale claim and
-is the second owner to repair.
+before retiring either as a gate; until then both stand as this Spec records
+them. ADR-000D carries the same stale claim and is the second owner to repair.
 
 ## Vertical Implementation Slices
 
@@ -226,6 +228,7 @@ the same point.
 | 2026-09-12 | f2d2e87 | Review found ADR-000D and this Spec's Documentation Impact removed LEXICON.md's Artifact Ownership Schema "at acceptance", before TK-004 populates the map — leaving no route for an ownership question during TK-001-TK-003 | Re-read ADR-000D's Consequences against this Spec's own ticket sequencing | Corrected ADR-000D and Documentation Impact to defer schema removal until TK-004 lands; no implementation performed |
 | 2026-09-21 | spec | FND-Q24B, an open owner question asked 2026-09-15 that gates TK-004 beside FND-Q21/Q23/Q24, appeared in no tracked file in this repository: every copy lived in the gitignored `workbench/sessions/` tree, so a notepad flush would have erased the only record that the gate exists. Recorded here as a gate; the proposed shape put to the owner stays unresolved in its live note and is not promoted | `git grep -n FND-Q24B -- .` at `03b2332` returned nothing, while `grep -rl` over `workbench/sessions/` found it in eight ignored files; `git check-ignore -v` resolved each to `workbench/sessions/.gitignore` lines 12 and 19. Cross-checked against `workbench/feedback/REPORT-foundation-question-review-2026-09-11.md`, which carries a full section for the other 25 notepad-owned open questions but predates FND-Q24B. `S-00G/SPEC.md` is byte-identical at `03b2332` and `cc53fad`, the audit anchor | This Spec's Blockers, Next gate, Non-Goals, Dependencies, TK-004 row and section, and Remaining Limitations now name FND-Q24B; no other owner changed, no question restatused, no answer promoted | TK-004 stays `blocked` and gains no new gate in substance; the four open answers remain the owner's. The live note holding FND-Q24B's proposal is still the only copy of that proposal |
 | 2026-09-21 | spec | Separate-context review returned FAIL (High) on the row above's commit `4cc6277`: that commit restated FND-Q21, FND-Q23, FND-Q24 and FND-Q24B as four open owner questions and bumped `Updated` to 2026-09-21, while the same board it was derived from records FND-Q23 and FND-Q24 as `locked` by the owner on 2026-09-15, already owned by this Spec. A documentation-truth change shipped a gate line wrong in half its entries, freshly dated, having read the contradiction. Two Medium/Low findings also upheld: `decision-065`/`decision-066` entered a tracked record as identifiers resolvable in no tracked file, and the recovery pointer named a directory rather than a file | Reviewer ran the full suite at `4cc6277` independently: 46/46 pass, `doctor` attention count identical to base. Finding confirmed here directly against the board: `FND-Q21` and `FND-Q24B` are `decision_state: open` owned by the grilling note, while `FND-Q23` and `FND-Q24` are `locked` with `current_owning_artifact` already this Spec | Condition named, not resolved, per AGENTS.md State Resolution: no gate retired and no status flipped on an untracked source. Dependencies And Blockers gains an Unreconciled paragraph pointing at ADR-000D as the second stale owner; the header, Next gate, Non-Goals, TK-004 row and section carry the same qualification; the two decision identifiers are replaced by their plain premises with their untracked provenance stated; the recovery pointer names the exact note | ADR-000D still carries FND-Q23 and FND-Q24 as open and is unrepaired — out of this change's scope and left to its owner. Whether the owner in fact locked them on 2026-09-15 rests on untracked evidence and is not established here |
+| 2026-09-21 | spec | Fresh separate-context review of the corrected candidate `58d2c2f` returned PASS with three non-blocking findings, all accepted and fixed here: the Unreconciled paragraph dated the audit board 2026-09-21, which is this entry's date and not the board's; the Non-Goals bullet said the two restated rulings live in one ignored note when they appear in several; and one sentence read as though FND-Q23 and FND-Q24 were not gates until reconciled, inverting the header and TK-004 | Board `generated_at` confirmed here as `2026-09-19T06:32:45Z` with `audit_checkout` `cc53fad`. Reviewer ran the full suite at `58d2c2f` independently: 46/46 pass, 49 doctor attention findings identical to base and to `4cc6277`, `next --json` returning S-00Q/TK-0Q0, `render` a verified no-op, append-only clean across `03b2332`/`4cc6277`/`58d2c2f`, and zero live bare citations under the anchor regex | Three prose corrections in live sections only; no evidence row rewritten, no status flipped, no gate retired or loosened. Corrected in this candidate rather than deferred to a later Task, since S-00G is `planned` and blocked and no Task is scheduled to touch it | The reviewer's own residual finding stands: ADR-000D still presents FND-Q21/Q23/Q24 as flatly open with no pointer back to this discrepancy, so the pointer remains one-directional until ADR-000D's owner repairs it |
 
 ## Completion Result
 
