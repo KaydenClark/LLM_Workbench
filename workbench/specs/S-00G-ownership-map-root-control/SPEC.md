@@ -7,12 +7,12 @@
 **Stance:** Builder
 **Updated:** 2026-09-21
 **Catalog description:** Deliver `OWNERSHIP.json` as the eighth root control with a structured query surface, and teach every live root-surface consumer about it.
-**Blockers:** ADR-000B, ADR-000C and ADR-000D are `proposed`; FND-Q21, FND-Q23, FND-Q24 and FND-Q24B are open owner questions.
-**Latest event:** FND-Q24B recorded as a fourth open owner question on TK-004; no implementation started and no ADR accepted.
+**Blockers:** ADR-000B, ADR-000C and ADR-000D are `proposed`; FND-Q21, FND-Q23, FND-Q24 and FND-Q24B are recorded as open owner questions, with an unreconciled discrepancy on FND-Q23 and FND-Q24 named in Dependencies And Blockers.
+**Latest event:** FND-Q24B recorded as a fourth open owner question on TK-004, and the unreconciled FND-Q23/FND-Q24 lock claim named; no gate retired, no implementation started and no ADR accepted.
 **Next gate:** Owner accepts ADR-000B, ADR-000C and ADR-000D before TK-001-TK-003
-are claimable; TK-004 additionally needs FND-Q21, FND-Q23, FND-Q24 and
-FND-Q24B answered (see Dependencies And Blockers and each ticket's own
-Blockers column).
+are claimable; TK-004 additionally needs FND-Q21 and FND-Q24B answered and
+the FND-Q23/FND-Q24 discrepancy reconciled (see Dependencies And Blockers and
+each ticket's own Blockers column).
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -81,15 +81,21 @@ not accepted.
 - **Populating the map.** The allocation of responsibilities across artifact
   types is FND-Q21 and is open. Transcribing the existing Lexicon schema into
   JSON does not answer it and must not be treated as doing so.
-- **Entry lifecycle for map records.** FND-Q23 is open. `OWNERSHIP.json` is a
-  single file, so folder lifecycle cannot apply and an in-record status the
-  query filters on is required — but its design is not settled.
-- **The portability boundary.** FND-Q24 is open: which assignments are portable
-  Core and which may be project-specific extensions. Its follow-up FND-Q24B is
-  also open: decision-066 ruled that absence from the template does not classify
-  a differing row, so nothing yet classifies one, and decision-065 guard 2
-  forbids a status-shaped field on a map row. What classifies a differing row,
-  and where that classification is authored, is unsettled.
+- **Entry lifecycle for map records.** FND-Q23 is carried here as open; see
+  Dependencies And Blockers, where a live record claims the owner settled it.
+  `OWNERSHIP.json` is a single file, so folder lifecycle cannot apply and an
+  in-record status the query filters on is required — but its design is not
+  settled.
+- **The portability boundary.** FND-Q24 is carried here as open: which
+  assignments are portable Core and which may be project-specific extensions.
+  See Dependencies And Blockers — a live record claims the owner settled it.
+  Its follow-up FND-Q24B is open on every source. An earlier ruling held that
+  absence from the template does not classify a differing row, leaving nothing
+  that does, while a separate guard forbids a status-shaped field on a map row,
+  so a single classification column cannot simply be added. What classifies a
+  differing row, and where that classification is authored, is unsettled. Both
+  of those rulings are recorded only in the live grilling note named below and
+  in no tracked file, so neither is citable here as durable evidence.
 - Retiring or rewriting any Spec, Task or ADR.
 
 ## Dependencies And Blockers
@@ -97,7 +103,7 @@ not accepted.
 Blocked on owner acceptance of ADR-000B, ADR-000C and ADR-000D, and on owner
 answers to FND-Q21, FND-Q23, FND-Q24 and FND-Q24B. The first three slices below
 deliver the container and its consumers and need only the ADRs; the content
-slice needs the four open answers and cannot start without them.
+slice needs those answers and cannot start without them.
 
 FND-Q24B was asked on 2026-09-15, after this Spec was authored on 2026-09-12,
 which is why the first three evidence rows below do not name it. A proposed
@@ -106,6 +112,17 @@ answering, so it is open and must not be re-derived. That proposal is working
 material, not a decision; it is retained unresolved in its live grilling note
 and is deliberately not restated here.
 
+**Unreconciled, named rather than resolved.** This Spec and ADR-000D both carry
+FND-Q23 and FND-Q24 as open. The live grilling note and the 2026-09-21 audit
+board over it both state the owner locked each of them on 2026-09-15, and both
+already route the two questions to this Spec as their owner. Only FND-Q21 and
+FND-Q24B are recorded open on every source. Nothing here flips a status: the
+contradicting record is untracked and cannot retire a gate this Spec accepted,
+and an owner answer read out of a live note is not durable acceptance. Whoever
+next works this Spec reconciles FND-Q23 and FND-Q24 against a durable source
+before treating either as a live gate; ADR-000D carries the same stale claim and
+is the second owner to repair.
+
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
@@ -113,7 +130,7 @@ and is deliberately not restated here.
 | TK-001 | Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader | blocked | ADR-000B, ADR-000C, ADR-000D proposed | Red test for a missing/malformed map; green minimal reader; full suite |
 | TK-002 | Sweep and teach every live root-surface consumer about the eighth file | blocked | TK-001 | Red repo-wide sweep proving every hardcoded root-surface count/list is found; green update of every one found; `doctor` clean |
 | TK-003 | Ship a copy-ready `templates/OWNERSHIP.json` and update every template consumer | blocked | TK-002 | Template render and adoption tests pass; `evaluate-workbench --path templates` unchanged or improved |
-| TK-004 | Implement the structured query surface and move the schema out of `LEXICON.md` | blocked | TK-003, FND-Q21, FND-Q23, FND-Q24, FND-Q24B | Red test proving a query returns routes and never claim text; green query; Lexicon routes onward |
+| TK-004 | Implement the structured query surface and move the schema out of `LEXICON.md` | blocked | TK-003, FND-Q21, FND-Q24B, and FND-Q23/FND-Q24 pending reconciliation | Red test proving a query returns routes and never claim text; green query; Lexicon routes onward |
 
 ### TK-001 - Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader
 
@@ -156,9 +173,10 @@ surface and must learn the eighth file everywhere TK-002's sweep finds it under
 
 **Stance:** Builder
 
-Do not start this slice until FND-Q21, FND-Q23, FND-Q24 and FND-Q24B are
-answered. The guardrail is the test that matters: assert that a query result
-carries routes and never the claim text of the artifact it routes to.
+Do not start this slice until FND-Q21 and FND-Q24B are answered and the
+FND-Q23/FND-Q24 discrepancy in Dependencies And Blockers is reconciled. The
+guardrail is the test that matters: assert that a query result carries routes
+and never the claim text of the artifact it routes to.
 
 ## Acceptance Criteria
 
@@ -207,6 +225,7 @@ the same point.
 | 2026-09-12 | b4edb20 | Review found the six-consumer inventory was incomplete | Repo-wide grep for literal root-control-name arrays and "seven" root-surface mentions | Four more code consumers and two more template consumers found and named; TK-002/TK-003 changed from a fixed list to a sweep-and-fix pattern since the true count is not established as complete even now |
 | 2026-09-12 | f2d2e87 | Review found ADR-000D and this Spec's Documentation Impact removed LEXICON.md's Artifact Ownership Schema "at acceptance", before TK-004 populates the map — leaving no route for an ownership question during TK-001-TK-003 | Re-read ADR-000D's Consequences against this Spec's own ticket sequencing | Corrected ADR-000D and Documentation Impact to defer schema removal until TK-004 lands; no implementation performed |
 | 2026-09-21 | spec | FND-Q24B, an open owner question asked 2026-09-15 that gates TK-004 beside FND-Q21/Q23/Q24, appeared in no tracked file in this repository: every copy lived in the gitignored `workbench/sessions/` tree, so a notepad flush would have erased the only record that the gate exists. Recorded here as a gate; the proposed shape put to the owner stays unresolved in its live note and is not promoted | `git grep -n FND-Q24B -- .` at `03b2332` returned nothing, while `grep -rl` over `workbench/sessions/` found it in eight ignored files; `git check-ignore -v` resolved each to `workbench/sessions/.gitignore` lines 12 and 19. Cross-checked against `workbench/feedback/REPORT-foundation-question-review-2026-09-11.md`, which carries a full section for the other 25 notepad-owned open questions but predates FND-Q24B. `S-00G/SPEC.md` is byte-identical at `03b2332` and `cc53fad`, the audit anchor | This Spec's Blockers, Next gate, Non-Goals, Dependencies, TK-004 row and section, and Remaining Limitations now name FND-Q24B; no other owner changed, no question restatused, no answer promoted | TK-004 stays `blocked` and gains no new gate in substance; the four open answers remain the owner's. The live note holding FND-Q24B's proposal is still the only copy of that proposal |
+| 2026-09-21 | spec | Separate-context review returned FAIL (High) on the row above's commit `4cc6277`: that commit restated FND-Q21, FND-Q23, FND-Q24 and FND-Q24B as four open owner questions and bumped `Updated` to 2026-09-21, while the same board it was derived from records FND-Q23 and FND-Q24 as `locked` by the owner on 2026-09-15, already owned by this Spec. A documentation-truth change shipped a gate line wrong in half its entries, freshly dated, having read the contradiction. Two Medium/Low findings also upheld: `decision-065`/`decision-066` entered a tracked record as identifiers resolvable in no tracked file, and the recovery pointer named a directory rather than a file | Reviewer ran the full suite at `4cc6277` independently: 46/46 pass, `doctor` attention count identical to base. Finding confirmed here directly against the board: `FND-Q21` and `FND-Q24B` are `decision_state: open` owned by the grilling note, while `FND-Q23` and `FND-Q24` are `locked` with `current_owning_artifact` already this Spec | Condition named, not resolved, per AGENTS.md State Resolution: no gate retired and no status flipped on an untracked source. Dependencies And Blockers gains an Unreconciled paragraph pointing at ADR-000D as the second stale owner; the header, Next gate, Non-Goals, TK-004 row and section carry the same qualification; the two decision identifiers are replaced by their plain premises with their untracked provenance stated; the recovery pointer names the exact note | ADR-000D still carries FND-Q23 and FND-Q24 as open and is unrepaired — out of this change's scope and left to its owner. Whether the owner in fact locked them on 2026-09-15 rests on untracked evidence and is not established here |
 
 ## Completion Result
 
@@ -214,15 +233,19 @@ Not started.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-The map's contents depend on four open owner questions. This Spec delivers the
+The map's contents depend on open owner questions whose exact count is itself
+unreconciled: two (FND-Q21, FND-Q24B) on every source, four if FND-Q23 and
+FND-Q24 are still open as this Spec records them. This Spec delivers the
 container, its guardrail and its consumers; a later linked Spec may be needed if
 FND-Q24 makes project-specific extension a first-class mechanism.
 
 FND-Q24B's full text, proposed shape, unanswered sub-fork and stated
-verification limit exist only in `workbench/sessions/`, which is gitignored, so
-a notepad flush would lose them. This Spec records the gate, not the proposal;
-recovering the proposal before an answer means reading the live note while it
-still exists.
+verification limit exist only under `workbench/sessions/`, which is gitignored,
+so a notepad flush would lose them. This Spec records the gate, not the
+proposal. As a recovery reference and never as durable evidence, that material
+and the FND-Q23/FND-Q24 lock claims above are in
+`workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json`
+while it exists.
 
 ## Supersession
 
