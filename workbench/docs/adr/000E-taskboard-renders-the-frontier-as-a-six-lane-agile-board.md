@@ -21,7 +21,7 @@ The board has exactly six lanes:
 | **To do** | Shaped, unblocked and unclaimed — the Frontier proper. |
 | **In progress** | Claimed and being worked. |
 | **Blocked** | Stopped by a real impediment that must be worked on before it can continue. |
-| **Needs review** | Finished and waiting on feedback or approval. |
+| **Needs review** | Finished work where a director's attention is what clears it. |
 | **Complete** | Accepted and done. |
 
 The unit on the board is the Task as
@@ -38,18 +38,23 @@ it. A Blocked Task is incomplete. It says we failed to get this done and the
 impediment itself is now the job. Blocked should be rare, and a board full of
 Blocked is a report of trouble.
 
-**Needs review** means the work is finished and is waiting on a person. It is a
-**gate**, not an impediment. Nothing is wrong with it; it needs feedback or an
-approval, and the reviewer's attention is the only thing that moves it. A Task
-in Needs review is `complete` in every sense the doer controls.
+**Needs review** is finished work where a **director's** attention is what
+clears it. It is a **gate**, not an impediment. Nothing is wrong with it; it
+needs feedback or an approval. A Task in Needs review is `complete` in every
+sense the doer controls.
+
+A director is not necessarily the owner. An agent holding a directing role —
+director, steward, captain — can clear a Needs review item when it has the
+information and the authority to decide. Those roles are not yet defined in the
+Workbench; until they are, read "director" as whoever currently holds the
+authority to approve the item, which today is usually the owner.
 
 Both are obstacles. They are not equally harsh, and the difference is
-operational: Needs review is addressed to the owner or the director and tells
-them their attention on this item outranks other items on their list, while
-Blocked is addressed to whoever can remove the impediment. Recording an
-approval gate as Blocked destroys that signal in both directions — it reports a
-failure that did not happen, and it buries the queue of things only a person can
-release.
+operational: Needs review is addressed to the director and tells them their
+attention on this item outranks other items on their list, while Blocked is
+addressed to whoever can remove the impediment. Recording an approval gate as
+Blocked destroys that signal in both directions — it reports a failure that did
+not happen, and it buries the queue of things only a director can release.
 
 Considered and rejected: one `blocked` status covering approval gates too, which
 is what the Workbench did until this decision. Seven Specs whose only remaining
