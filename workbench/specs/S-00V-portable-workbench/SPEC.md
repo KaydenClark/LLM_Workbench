@@ -42,14 +42,13 @@ up after itself, and continuing without the owner reconstructing the project.
 
 Verified 2026-09-22 at the pre anchor.
 
-- **Skills.** Root `.claude/` is an empty directory, `.agents/` does not
-  exist, and `skills/` (21 core skills) is producer source rather than a
+- **Skills.** No `.claude/` is tracked, `.agents/` does not exist, and `skills/` (21 core skills) is producer source rather than a
   manifest discovery root; `workbench/manifest.json` declares discovery at
   `.agents/skills` and `.claude/skills` and `normalSetup: presence-only`.
   ADR-0046 keeps the installed core in the provider home as ignored managed
   state, so a clone never carries it. The owner's working catalog is a
-  separate Git checkout (KaydenClark/skills, 67 directories) that the root
-  controls do not name except for `research`.
+  separate Git checkout (KaydenClark/skills) that the root controls do not
+  name except for `research`.
 - **Continuity.** `workbench/sessions/.gitignore` ignores `notepads/*`
   and `handoffs/*`; AGENTS.md says live notes and handoffs stay untracked in
   project Git; the Lexicon Packet row calls them local and untracked;
@@ -60,8 +59,8 @@ Verified 2026-09-22 at the pre anchor.
   nothing; `next` reads only the local tree. `occupiedIdentities` in the
   same file already scans every `refs/remotes` tip when allocating IDs,
   which is the pattern a shared claim surface needs.
-- **Host floor.** README names Node 18+, Python 3.9+, git, `gh` and GitHub
-  with nothing to install; no tool checks that floor. `doctor --home`
+- **Host floor.** RUNBOOK's Prerequisites names Node 18+, Python 3.9+, git,
+  `gh` and GitHub with nothing to install; no tool checks that floor. `doctor --home`
   inspects only the global core skills.
 - **Owner-only truth.** The Claude auto-memory directory for this project
   holds 17 files a cloud agent never sees.
@@ -165,8 +164,9 @@ carried here; the record is working context, not evidence.
 - Committing notes or handoffs as durable evidence, or relaxing privacy rules
   on them.
 - Any host-specific setup beyond the floor: simulators, screen history, MCP
-  servers, Foundry, or the Workbench_Template release gate become optional
-  capabilities, not requirements.
+  servers, Foundry, or access to the Workbench_Template repository become
+  optional capabilities, not session requirements. AGENTS.md's Template
+  Upgrade Release Gate is untouched.
 - Direct commits to the integration branch for any purpose.
 
 ## Dependencies And Blockers
@@ -200,8 +200,8 @@ the committed candidate into a scrubbed directory and asserts that every
 discovery roots without touching the provider home; confirm it fails. Then
 the smallest green: declare `lanes.skills` in the manifest, move root
 `skills/` to `workbench/skills` with history preserved, add tracked
-adapters under `.claude/skills` and `.agents/skills` and stop ignoring
-the Claude adapter, ship the lane in `templates/`, teach Genesis and
+adapters under `.claude/skills` and `.agents/skills`, tracked rather than
+ignored as RUNBOOK's room-local extension procedure says today, ship the lane in `templates/`, teach Genesis and
 update-harness to lay it down and refresh it, add the doctor finding for a
 root `skills/` shadow and for a required skill missing from the lane, and
 retire the `--home` global-core inspection. The first commit proposes the
@@ -267,7 +267,8 @@ Then the full suite named in AGENTS.md on the committed candidate.
 - RUNBOOK.md: skills lane procedures, claim push and fetch, host floor check,
   round-trip gate wording, and the Portability and privacy matrix heading
   reading as host portability.
-- README.md: install text and skill discovery.
+- RUNBOOK.md Prerequisites and Install text; README.md only where it names
+  skill discovery or setup.
 - ADRs: supersede ADR-0017, amend ADR-0046, narrow ADR-0051, and record
   claim-on-branch; each authored by the Task that makes the change.
 - workbench/manifest.json and templates/: the lane and skillPolicy shape.
@@ -279,6 +280,7 @@ Then the full suite named in AGENTS.md on the committed candidate.
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-22 | — | Spec captured from the locked grilling record portable-workbench-cloud-deployable-2026-09-22 (revision 24); Lexicon term and renames promoted at `8dbd619da7e920edb5e819802aff9119f8cb1662` | `render`, `doctor`, vocabulary sweep and template evaluation on the committed candidate | LEXICON.md and templates/LEXICON.md updated; the rest of Documentation Impact waits on its Task | Everything in Desired Behavior is unbuilt; TK-001 is the only cut slice |
+| 2026-09-22 | — | Separate-context review of `edd6cbe` PASS for the integration gate with one Medium (host floor credited to README instead of RUNBOOK) and five Lows; all corrected in this commit | Reviewer ran doctor, render no-op, citation anchors, vocabulary sweep, control fidelity and template evaluation on a clean detached worktree; full 46-command suite green on `edd6cbe` | Spec wording only; LEXICON.md Last reviewed set to 2026-09-22 | Unchanged: nothing built |
 
 ## Completion Result
 

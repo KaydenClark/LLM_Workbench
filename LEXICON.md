@@ -1,6 +1,6 @@
 # LLM Workbench - Lexicon
 
-**Last reviewed:** 2026-09-12
+**Last reviewed:** 2026-09-22
 **Status:** active
 
 This is the canonical lookup table for shared Workbench language. It helps the
