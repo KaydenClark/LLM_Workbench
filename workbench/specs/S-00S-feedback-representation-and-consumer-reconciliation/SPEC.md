@@ -8,7 +8,7 @@
 **Updated:** 2026-09-23
 **Catalog description:** Reconcile feedback ledgers, snapshots, reports and evidence by provenance and consumer role before any duplicate representation is removed.
 **Blockers:** none
-**Latest event:** Owner clarified on 2026-09-23 that Human QA has been underway since 2026-09-19 and its reviews have failed. The earlier 51-check/source-review PASS is separate proof; no owner approval is recorded.
+**Latest event:** Owner clarified on 2026-09-23 that the Human QA process has been underway since 2026-09-19 and has produced failed reviews. The earlier 51-check/source-review PASS is a separate gate; no owner approval or per-Spec QA finding attribution is recorded here.
 **Next gate:** Reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
@@ -193,10 +193,11 @@ socket or worktree controls change in this planning record.
 | 2026-09-19 | review | Review verdict: pass at 0c34d05c479f4a434f6b102954f9fd2768549baf [7bd972cdc037] #2 | none | independent_review; separate Codex context; inherited model not separately identified; code-review mode; corrects prior receipt count: zero review findings | none |
 
 | 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
+| 2026-09-23 | evidence scope correction | The owner correction establishes the state of the overall Human QA process; it does not assign the S-00I/S-00J audit verdict to this Spec | The 2026-09-19 approval audit names only S-00I and S-00J and older pinned candidates; this Spec has separate source-verification evidence | Narrowed the live header and Completion Result without changing prior evidence | Map any specific owner QA finding to this Spec before asserting a per-Spec failed verdict or opening corrective work |
 
 ## Completion Result
 
-Representation inventory, canonical ledger designation, 181-record lineage and consumer reconciliation are prepared; the reviewed recommendation retains all 33 artifacts. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Task delivery proof is complete; **whole-Spec closure is not approved**. Final proof-state review, integration delivery and real owner Human QA remain separate. No real record was retired/discarded and no main promotion or native-host proof is inferred.
+Representation inventory, canonical ledger designation, 181-record lineage and consumer reconciliation are prepared; the reviewed recommendation retains all 33 artifacts. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Task delivery proof is complete; **whole-Spec closure is not approved**. Final proof-state review and integration delivery remain open; owner approval remains outstanding after ongoing Human QA. No real record was retired/discarded and no main promotion or native-host proof is inferred.
 
 ## Remaining Limitations Or Follow-Up Specs
 
