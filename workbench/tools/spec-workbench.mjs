@@ -675,7 +675,7 @@ export function doctor(rootDir, options = {}) {
   else checkRender(root, path.relative(root, path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')), CATALOG_START, CATALOG_END, renderCatalog(specs, retired).replaceAll(`](${resolveSpecsRoot(root).specsPrefix}/`, ']('), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs, retired), issues);
   issues.push(...collectionFindings(root));
-  issues.push(...skillFindings(root, options.home));
+  issues.push(...skillFindings(root));
   issues.push(...gitFindings(root, specs));
   return issues;
 }
@@ -807,9 +807,10 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
   return issues;
 }
 
-// Inspection reports ownership and compatibility without changing the home.
-function skillFindings(root, home) {
-  return inspectSkills(readManifest(root), path.resolve(home ?? os.homedir()));
+// Inspection reads the room's skills lane and discovery adapters; it never
+// reads the provider home and never writes (S-00V: skills ship in the room).
+function skillFindings(root) {
+  return inspectSkills(readManifest(root), root);
 }
 
 // The declared integration branch is the review gate's merge target. Its

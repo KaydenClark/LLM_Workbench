@@ -26,14 +26,16 @@ when a local checkout or old remote is named Example_Workbench.
    commit. Preserve unrelated work in separate checkouts. Read the target
    controls, create the dedicated upgrade spec, inventory all tracked files,
    and run its full baseline suite.
-2. Follow `skills/update-harness/SKILL.md` for that installed layout. For an
+2. Follow `workbench/skills/update-harness/SKILL.md` for that installed layout. For an
    already-v3 room, run the source's additive layout migration, reconcile the
    manifest version and changed control sections, and run the source's
    `tools/workbench-tools.mjs update --project TEMPLATE_ROOT --home BACKUP_HOME
-   --explicit-update`. Refresh eligible seeded documents. Keep original
-   adoption/genesis provenance and room identity. Record backup/rollback limits;
-   runtime backup alone must not be described as whole-room recovery. Updating
-   personal skills is a separate operation with its own authorization.
+   --explicit-update` and `tools/workbench-skills.mjs update --project
+   TEMPLATE_ROOT --home BACKUP_HOME --explicit-update`. Refresh eligible seeded
+   documents. Keep original adoption/genesis provenance and room identity.
+   Record backup/rollback limits; runtime and skills backups alone must not be
+   described as whole-room recovery. Publishing skills to the personal catalog
+   is a separate operation with its own authorization.
 3. Verify the target manifest, applicable control stamps and runtime receipt
    name the new version. From the pinned source run
    `node tools/workbench-tools.mjs verify --project TEMPLATE_ROOT` and compare
@@ -172,6 +174,7 @@ node tools/test-team-coordination.mjs
 node tools/test-team-coordination-demo.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
+node tools/test-skills-lane.mjs
 node tools/test-core-composition.mjs
 node tools/test-project-evidence.mjs
 node tools/test-genesis-from-decisions.mjs
@@ -289,11 +292,52 @@ self-contained synthetic fixtures. The owning S-00E evidence separately records
 the actual fresh project and native continuation; fixture success alone is not
 that proof.
 
-### Core-skill setup check
+### Skills lane check
 
-The public source bundle is intentionally limited to the 21 skills in
-`skills/README.md`. Test the missing-only installer against a disposable user
-home without touching a real account:
+The core skills ship inside every room at the manifest-declared `skills` lane,
+`workbench/skills`, and the two declared discovery roots (`.agents/skills`
+for Codex, `.claude/skills` for Claude Code) are tracked relative links into
+that lane, so a fresh clone discovers the skills with no provider home and no
+personal catalog. This repository's lane is the authoring source for
+the 21 core skills listed in `workbench/skills/README.md`; every other room
+receives receipt-backed copies from the release checkout:
+
+```bash
+node tools/workbench-skills.mjs install --project /absolute/project
+node tools/workbench-skills.mjs verify --project /absolute/project
+node tools/workbench-skills.mjs update --project /absolute/project --home /disposable-or-user-home --explicit-update
+node tools/workbench-skills.mjs rollback --project /absolute/project --backup /path/recorded/in/receipt
+node tools/test-skills-lane.mjs
+```
+
+`install` copies each required core skill into the lane as ordinary files,
+writes `workbench/skills/.workbench-skills.json` with the source repository,
+release, commit and a content hash per skill, and lays the two adapters down;
+it refuses a lane that already carries a receipt, a core name already present
+without one, or a discovery root that exists and resolves elsewhere
+(`adapter-collision`). `verify` reports `skills-receipt-drift` naming each
+core skill that is missing, modified or unaccounted for and each adapter that
+does not resolve into the lane (`source` on this repository), plus
+`updateAvailable` when the release holds newer bytes. `update` requires
+`--explicit-update`, replaces only changed core skills, backs the previous
+directories up under the user home's `.workbench-skills-backup-*`, records the
+path in the receipt and re-lays a missing adapter; `rollback` restores a
+recorded backup. Skills a room adds to the lane under other names are
+room-owned: never copied, hashed, replaced or removed. Genesis and Adoption
+run `install`; `update-harness` runs `update`. Doctor reads the lane and the
+adapters, never the provider home: a required skill missing from the lane is
+`skill-lane-missing` (blocks everything), an unsafe lane entry is
+`skill-lane-unreadable` (blocks everything), an absent or misresolving
+discovery root is `skill-adapter-missing` or `skill-adapter-broken`
+(attention), and a root `skills/` directory is `project-local-skills`
+(blocks everything) because it shadows the lane.
+
+### Personal catalog publication
+
+The owner's personal catalog (a separate Git checkout mounted as the provider
+home's discovery root) is a backup of every skill and the place a room may
+publish skills it creates. It is never on a room's critical path. Publishing this release's core into a provider home is
+a separately authorized operation; test it against a disposable home first:
 
 ```bash
 node tools/core-skill-installer.mjs install --home /tmp/workbench-user-home
@@ -301,15 +345,14 @@ node tools/test-core-skill-installer.mjs
 ```
 
 The installer writes missing canonical core directories into `.agents/skills`
-and missing Claude directory adapters into `.claude/skills`. Both applications
-then read the same implementation. Existing names and valid links remain
-untouched; presence does not certify their ownership or compatibility. Linked
-and Git-owned discovery roots are supported. New managed paths are ignored
-through the owning Git repository's local exclusions (or a discovery-root
-ignore file). No personal source is staged or committed. Unsafe collisions
-block before installation.
+and missing Claude directory adapters into `.claude/skills`. Existing names
+and valid links remain untouched. Linked and Git-owned discovery roots are
+supported. New managed paths are ignored through the owning Git repository's
+local exclusions (or a discovery-root ignore file). No personal source is
+staged or committed. Unsafe collisions block before installation.
 
-For an explicitly authorized core replacement, use the same release checkout:
+For an explicitly authorized replacement of the published core, use the same
+release checkout:
 
 ```bash
 node tools/core-skill-installer.mjs update --home /tmp/workbench-user-home --explicit-update
@@ -327,48 +370,36 @@ core source needs the [explicit migration plan](workbench/specs/S-051-core-skill
 A Git-owned provider home is refused because its backup would be versioned;
 a Git-owned `.agents` catalog with ignored managed core is supported.
 
-Every skill the installer or the explicit upgrade writes carries the managed
-skill marker `.workbench-skill.json` (schema 2): `source`, the `release` and
-`commit` of the checkout that wrote it (the same source identity as the tools
-receipt), and a `contentHash` of the skill's files. A schema 1 marker
-(`source` only) still counts as managed but names no generation. Check an
-installed bundle against the room's manifest without touching it:
-
-```bash
-node workbench/tools/spec-workbench.mjs doctor --home /tmp/workbench-user-home
-```
-
-`--home` defaults to the user home and is only ever read. A current schema 2
-marker declares `compatibleRooms.minimum` and `.maximum`, inclusive. The
-source baseline starts at v3.1.4 and the maximum is the producing release.
-Compare the room version with this explicit range; equality of release strings
-alone establishes nothing. Older complete generation markers without a range
-remain readable and report unknown compatibility. Exact installed runtime
-receipts and configured-host workflow proof remain separate evidence.
+Every skill the personal-catalog installer writes carries the managed skill
+marker `.workbench-skill.json` (schema 2): `source`, the `release` and
+`commit` of the checkout that wrote it (the same source identity as the lane
+receipts), a `contentHash` of the skill's files and an inclusive
+`compatibleRooms` range from the v3.1.4 baseline to the producing release. A
+schema 1 marker (`source` only) still counts as managed but names no
+generation. Doctor no longer reads the provider home; the retired
+`doctor --home` inspection is replaced by the lane findings above, and a
+published catalog is compared only by the installer's own `update` and
+`rollback` checks.
 
 | Finding | Meaning |
 |---|---|
-| `skill-missing` | A required discovery entry is absent. |
-| `skill-discovery-broken` | A link, skill file or content tree is unsafe or unreadable. |
-| `skill-generation-unknown` | The managed generation identity is incomplete or invalid. |
-| `skill-content-modified` | Current bytes differ from the marker; preserve the edits. |
-| `skill-compatibility-unknown` | No valid explicit room range is declared. |
-| `incompatible-core` | The room lies outside that declared range. |
-| `skill-source-conflict` | Same-named entries maintain distinct sources or link canonical per-skill source. |
+| `skill-lane-missing` | The lane, or a required core skill in it, is absent. Blocks everything. |
+| `skill-lane-unreadable` | The lane or a required skill is a link, a file, or holds a shared or linked `SKILL.md`. Blocks everything. |
+| `skill-adapter-missing` | A declared discovery root is absent, so that host cannot discover the lane. |
+| `skill-adapter-broken` | A declared discovery root does not resolve into the lane. |
 | `skill-duplicate-discovery` | A deprecated `.codex/skills` entry adds another Codex catalog. |
-| `core-generation-conflict` | Required core skills declare multiple global generations. |
+| `project-local-skills` | A root `skills/` directory shadows the lane. Blocks everything. |
 
-All skill findings are attention with effect `none`: they expose the affected
-capability without blocking unrelated selection. Normal setup preserves existing
-entries, doctor never repairs them, and explicit update retains its separate
-ownership and recovery checks. These checks establish filesystem discovery and
-declared compatibility, not native invocation or agent reliability.
+Doctor never repairs a finding; `workbench-skills.mjs update --explicit-update`
+from the release checkout does. These checks establish filesystem discovery,
+not native invocation or agent reliability.
 
 ### V3 support-root check
 
 Genesis uses the bounded layout helper to create and validate its declared
-support root. Schema 2 declares six lowercase lanes (`docs`, `specs`, `wiki`,
-`sessions`, `feedback`, `tools`) and ten collections (`docs/adr`,
+support root. Schema 2 declares seven lowercase lanes (`docs`, `specs`, `wiki`,
+`sessions`, `feedback`, `tools`, `skills`; a room stamped before the skills
+lane still validates with six until it updates) and ten collections (`docs/adr`,
 `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`,
 `sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`,
 `sessions/notepads`, `sessions/notepads/templates`, `sessions/recovery`), the wiki
@@ -454,8 +485,10 @@ version-matched first spec at a stable `workbench/specs/S-###-slug/SPEC.md`
 path, an installed `workbench/tools/` lane whose receipt names the manifest's
 release (`tools-receipt-missing` or `version-mismatch` otherwise), a declared
 integration branch that resolves (`integration-branch-undeclared` or
-`integration-branch-missing` otherwise), and no
-project-local `skills/` directory. It fails closed on symlinks,
+`integration-branch-missing` otherwise), an installed `workbench/skills` lane
+whose receipt names the manifest's release with both discovery adapters
+resolving into it (`skill-lane-missing` or `skill-adapter-broken` otherwise),
+and no root `skills/` directory (`project-local-skills`). It fails closed on symlinks,
 template placeholders, stubs, version drift, unstable spec paths, or
 structurally incomplete first specs. A rejected first spec carries a `reason`
 field naming the failing predicate (status, priority, ready task, sections,
@@ -560,10 +593,11 @@ never substitutes for this.
 
 Installation and explicit updates also require a clean Git source lane, an
 `origin`, and a concrete 40-character `HEAD`; source identity is resolved
-before a destination, receipt, or backup is created. Skill markers apply the
-same rule to the bundled `skills/` bytes. Managed-component updates record the
-new component generation in their receipt or marker without rewriting the
-room manifest's historical adoption source.
+before a destination, receipt, or backup is created. The skills lane receipt
+and the personal-catalog markers apply the same rule to the `workbench/skills`
+bytes. Managed-component updates record the new component generation in their
+receipt or marker without rewriting the room manifest's historical adoption
+source.
 
 Managed-tool updates and rollbacks reject symlinked lane ancestors, linked or
 nonregular managed files, and unsafe backup entries before copying or creating
@@ -640,8 +674,9 @@ The rule is recorded in
 
 ### V3 Adoption migration check
 
-Adoption requires seven filled root controls and all core skills in a
-user-scoped discovery root before it retires legacy project-local support paths.
+Adoption requires seven filled root controls before it retires legacy
+project-local support paths; it lays the core skills into the room's own
+`workbench/skills` lane from the release, so no provider home is read.
 Exercise the deterministic mixed-v2 fixture without touching a real project:
 
 ```bash
@@ -674,12 +709,13 @@ machine reader). It moves only documented durable lanes into their schema 2
 destinations (legacy `grilling diary/` into the untracked grilling collection,
 legacy `handoffs/` into the tracked checkpoints collection), preserves
 project-local skills under `workbench/sessions/recovery/adoption-legacy-skills/`
-after user-scoped core readiness, writes
+(a root `skills/` would shadow the lane), writes
 `workbench/sessions/recovery/adoption-recovery.json`, moves a root
 `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
 `workbench/feedback/WORKBENCH_FEEDBACK.md`, installs the receipt-backed runtime
-tools into `workbench/tools/`, then renders and validates the manifest-declared
-spec lane. Two root feedback files, or a root file beside a legacy
+tools into `workbench/tools/` and the receipt-backed core skills into
+`workbench/skills/` with their discovery adapters, then renders and validates
+the manifest-declared spec lane. Two root feedback files, or a root file beside a legacy
 `feedback/WORKBENCH_FEEDBACK.md`, block as `feedback-collision` before any
 mutation. An application's root `tools/` directory is never a migration
 source and is left untouched. Its `residue` result lists root filenames that
@@ -727,13 +763,14 @@ modes. Both require a clean, committed target with no support root, and both
 record the pre-migration SHA, tracked path inventory, and tools receipt in
 `workbench/sessions/recovery/upgrade-recovery.json`.
 
-`--layout-only` is the route for an already-adopted room and for any host whose
-discovery root the tool must not touch. It requires every core skill to be
-present in a user-scoped discovery root (`missing-user-skills` otherwise),
-reads that presence only, migrates the legacy lanes once through the Adoption
-seam, installs the receipt-backed runtime tools, and writes the recovery record
-with `skills: "presence-only"` and an empty `skillBackups`. It completes even
-when the discovery root is inside a foreign Git repository:
+Both modes migrate the legacy lanes once through the Adoption seam, install
+the receipt-backed runtime tools and the receipt-backed core skills lane with
+its discovery adapters, and write the recovery record with
+`skills: "lane-install"`, an empty `skillBackups`, `coreRecovery: null` and
+the `skillsLane` receipt reference. Neither reads, compares, marks, backs up
+or replaces a skill in the provider home; `--home` only names where a later
+`workbench-skills.mjs update` would put its backup. `--layout-only` is the
+route for an already-adopted room:
 
 ```bash
 node tools/workbench-upgrade.mjs upgrade \
@@ -743,14 +780,12 @@ node tools/workbench-upgrade.mjs upgrade \
   --layout-only
 ```
 
-`--explicit-update` is the only path that replaces a skill. It is limited to
-skills that the installer marked as Workbench-managed and blocks an unmanaged
-same-named skill, tracked core source, or a Git-owned provider home before
-mutation. It delegates to the canonical core updater above, retains the
-`.workbench-core-backup-*` recovery record, then runs the same layout phase.
-The upgrade receipt records `coreRecovery`, changed `skillBackups`, and
-`skills: "explicit-update"`. A later layout failure retains that core backup
-and reports partial completion:
+`--explicit-update` is the same route under the name every one-time upgrade
+historically required; it no longer replaces anything in the provider home,
+because the core now lives in the room's lane and a later
+`workbench-skills.mjs update --explicit-update` is the only path that replaces
+a core skill there. A layout failure reports partial completion with the
+pre-migration Git SHA as the recovery point:
 
 ```bash
 node tools/workbench-upgrade.mjs upgrade \
@@ -1024,9 +1059,9 @@ node tools/cross-provider-resume.mjs verify --workspace /disposable/workspace --
 
 `plan` builds a bare remote, runs Genesis with this candidate, reconciles selected claims
 into the spec owner, claims the first slice, pushes the planning checkpoint, destroys
-the planning clone, and installs the candidate skills into an isolated
-provider home (canonical `provider-home/.agents/skills` with installer-managed
-Claude adapters; no duplicate Codex skill tree). Between `plan` and `verify`,
+the planning clone, and prepares an isolated, skill-free provider home; the
+candidate skills travel inside the room's `workbench/skills` lane, so the
+resuming provider discovers them from its fresh clone. Between `plan` and `verify`,
 run the other provider from a fresh clone of `origin.git` with its home pointed
 at that isolated directory and the printed prompt, capturing its output to a
 transcript. Provider authentication and security settings stay with the
@@ -1335,19 +1370,19 @@ repair only (S-050/S-051): its original twenty-skill policy remains readable,
 while the repaired twenty-one-skill core is identified by source commit and
 content hashes. This exception does not authorize publication.
 
-For an authorized room-specific extension, keep its sole source at the project
-path `.agents/skills/NAME/SKILL.md`. Choose a name absent from required core and
-both global and project discovery roots; preserve any collision for explicit
-reconciliation. Track that source under the room's own Git policy. Create only
-a missing project `.claude/skills/NAME` directory symlink resolving to the same
-source, and ignore this generated adapter in project Git. On Windows, use a
-supported directory adapter only after checking the actual host; inability to
-create it leaves that discovery gate open. Do not duplicate implementation bytes
-or add `.codex/skills`. Compare resolved paths and then invoke the extension in
-the actual configured application. File presence and a valid alias alone do
-not prove native discovery or callability.
+For an authorized room-specific extension, keep its sole source in the lane at
+`workbench/skills/NAME/SKILL.md`. Choose a name absent from required core;
+preserve any collision for explicit reconciliation. The tracked
+`.agents/skills` and `.claude/skills` adapters already resolve into the lane,
+so both hosts discover the extension without a second copy or a per-skill
+link; `workbench-skills.mjs verify` lists it under `roomLocal` and never
+replaces or removes it. On Windows, confirm the host checked the adapter links
+out as links; inability to do so leaves that discovery gate open. Do not
+duplicate implementation bytes, add a root `skills/`, or add `.codex/skills`.
+Invoke the extension in the actual configured application: file presence and
+a resolving adapter alone do not prove native discovery or callability.
 
-Global installation does not publish room-local source into a personal catalog.
+Laying the lane down does not publish room-local source into a personal catalog.
 That acceptance is a separately authorized operation. The global doctor
 `--home` inspection covers the declared global core; inspect project extension
 names and adapters separately. A new room needs no local extension and no

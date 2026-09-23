@@ -28,7 +28,7 @@ test('fresh core composes local save and selected promotion using only installed
     for (const skill of ['save', 'promote', 'notepad', 'to-docs', 'handoff']) {
       const canonical = path.join(home, '.agents/skills', skill);
       assert.equal(fs.realpathSync(path.join(home, '.claude/skills', skill)), fs.realpathSync(canonical));
-      assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'skills', skill, 'SKILL.md'), 'utf8'));
+      assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'workbench', 'skills', skill, 'SKILL.md'), 'utf8'));
     }
     assert.equal(fs.readFileSync(path.join(home, '.agents/skills/handoff/assets/HANDOFF.md'), 'utf8'), fs.readFileSync(path.join(root, 'templates/HANDOFF.md'), 'utf8'), 'installed handoff carries its portable shape without a producer checkout');
     assert.equal(fs.existsSync(path.join(home, '.codex')), false);
@@ -58,16 +58,24 @@ test('fresh core composes local save and selected promotion using only installed
     assert.equal(retained.entries[0].id, 'blocker-001');
     assert.equal(retained.current.next_action, 'Verify the authorized remote.');
     assert.equal(fs.existsSync(path.join(project, 'skills')), false);
-    const local = path.join(project, '.agents/skills/room-demo');
-    const adapter = path.join(project, '.claude/skills/room-demo');
+    // S-00V: the room's core skills and any room-local extension live in the
+    // skills lane; both discovery adapters resolve into it with no per-skill
+    // link and nothing published to the personal catalog.
+    run(root, 'tools/workbench-skills.mjs', ['install', '--project', project]);
+    for (const skill of ['save', 'promote', 'notepad', 'to-docs', 'handoff']) {
+      assert.equal(fs.readFileSync(path.join(project, '.agents/skills', skill, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'workbench', 'skills', skill, 'SKILL.md'), 'utf8'));
+      assert.equal(fs.realpathSync(path.join(project, '.claude/skills', skill)), fs.realpathSync(path.join(project, 'workbench/skills', skill)));
+    }
+    const local = path.join(project, 'workbench/skills/room-demo');
     fs.mkdirSync(local, { recursive: true });
     fs.writeFileSync(path.join(local, 'SKILL.md'), '---\nname: room-demo\ndescription: Run the room demo.\n---\nRun node .agents/skills/room-demo/demo.mjs from the project.\n');
     fs.writeFileSync(path.join(local, 'demo.mjs'), 'process.stdout.write(JSON.stringify({steps: 2}));\n');
-    fs.mkdirSync(path.dirname(adapter), { recursive: true });
-    fs.symlinkSync(path.relative(path.dirname(adapter), local), adapter, 'dir');
-    assert.equal(fs.realpathSync(adapter), fs.realpathSync(local));
+    assert.equal(fs.realpathSync(path.join(project, '.claude/skills/room-demo')), fs.realpathSync(local));
     assert.deepEqual(run(project, '.agents/skills/room-demo/demo.mjs', []), { steps: 2 });
     assert.deepEqual(run(project, '.claude/skills/room-demo/demo.mjs', []), { steps: 2 });
+    const verified = run(root, 'tools/workbench-skills.mjs', ['verify', '--project', project]);
+    assert.equal(verified.status, 'valid');
+    assert.deepEqual(verified.roomLocal, ['room-demo'], 'a room-local skill is listed, never replaced or removed');
     assert.equal(fs.existsSync(path.join(home, '.agents/skills/room-demo')), false, 'room source is not published to the global catalog');
     assert.equal(fs.existsSync(path.join(project, '.codex/skills')), false);
 

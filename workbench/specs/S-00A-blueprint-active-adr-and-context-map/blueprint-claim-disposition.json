@@ -187,7 +187,7 @@
           "section": "Accepted V3 Direction",
           "text": "- LLM Workbench carries sixteen setup/planning/delivery workflow skills plus\n  four portable stance skills, under S-027 and S-049. On a brand-new installation it supplies a required skill only when\n  that skill is missing from user-scoped discovery.\n",
           "disposition": "superseded-count",
-          "owner": "skills/README.md",
+          "owner": "workbench/skills/README.md",
           "reason": "Core count follows the current manifest/catalog. Prior generation counts remain historical; the renewed v3.2 repair adds core handoff."
         },
         {
@@ -195,7 +195,7 @@
           "section": "Accepted V3 Direction",
           "text": "- Existing installed skills are accepted by presence and remain untouched.\n  Exact synchronization occurs only after an explicit skill-update request and\n  creates a recoverable backup first.\n",
           "disposition": "relocate-claim",
-          "owner": "skills/README.md",
+          "owner": "workbench/skills/README.md",
           "reason": "Presence-only setup and explicit recoverable replacement remain current skill-installation policy."
         },
         {
@@ -515,7 +515,7 @@
           "section": "Accepted V3.1.2 Direction",
           "text": "presence-only setup and explicit-only skill\nreplacement are unchanged; ",
           "disposition": "relocate-claim",
-          "owner": "skills/README.md",
+          "owner": "workbench/skills/README.md",
           "reason": "Setup presence and explicit replacement rules remain current."
         },
         {

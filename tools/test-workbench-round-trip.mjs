@@ -67,12 +67,11 @@ try {
   // Snapshot current source bytes, including uncommitted changes. A local clone
   // would leak its source path through Git's origin and installer receipts.
   // Keep raw stdout/stderr untouched: unexpected private paths must still fail.
-  // S-00H TK-004 follow-up: `skills/` and the core-skill installer chain ride
-  // along too, so the post-Genesis sweep below can install this candidate's
-  // real skills into a temp home rather than checking a copied-but-unused
-  // directory.
-  for (const relative of ['templates', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs', 'skills',
-    'tools/core-skill-installer.mjs', 'tools/skill-marker.mjs', 'tools/skill-presence.mjs']) {
+  // S-00V: the skills lane and its installer ride along too, so Genesis below
+  // lays this candidate's real skills into the room and the post-Genesis
+  // sweep reads them from the clone, never from a provider home.
+  for (const relative of ['templates', 'workbench/tools', 'workbench/manifest.json', 'tools/workbench-tools.mjs', 'workbench/skills',
+    'tools/workbench-skills.mjs']) {
     const target = path.join(product, relative);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.cpSync(path.join(sourceProduct, relative), target, { recursive: true });
@@ -94,6 +93,7 @@ try {
   git(first, 'push', '-q', 'origin', 'main', 'integration');
   node(product, path.join(product, 'workbench', 'tools', 'workbench-layout.mjs'), 'init', '--project', first, '--provenance', 'genesis', '--version', VERSION, '--name', 'Round Trip', '--date', DATE);
   node(product, path.join(product, 'tools', 'workbench-tools.mjs'), 'install', '--project', first);
+  node(product, path.join(product, 'tools', 'workbench-skills.mjs'), 'install', '--project', first);
   const stamp = `> Generated from LLM Workbench ${VERSION}.`;
   const productTemplates = path.join(product, 'templates');
   write(first, 'AGENTS.md', withTemplateBody('AGENTS.md', productTemplates, `# Round Trip - Agent Operating System\n\n${stamp}\n\n## Authority Order\n\n1. The current user request.\n2. This file.\n3. The assigned spec.\n\n## Work Selection And Lifecycle\n\nRun \`node workbench/tools/spec-workbench.mjs doctor\`, then \`next --json\`, then \`show\`, claim, implement red/green, close, render, doctor, push.`));
@@ -131,17 +131,17 @@ try {
     assert.deepEqual(controlHits, [],
       `the generated room's own controls must not say Ticket outside the documented retired-term row:\n${controlHits.join('\n')}`);
 
-    const skillHome = fs.mkdtempSync(path.join(workspace, 'skill-home-'));
-    const installedSkills = run(product, process.execPath, [path.join(product, 'tools', 'core-skill-installer.mjs'), 'install', '--home', skillHome]);
-    assert.equal(JSON.parse(installedSkills).status, 'complete', installedSkills);
+    // The skills a fresh agent reads are the ones the room carries in its
+    // lane, reached through both discovery adapters inside the clone.
     const skillHits = [];
-    for (const engineRoot of [path.join(skillHome, '.agents', 'skills'), path.join(skillHome, '.claude', 'skills')]) {
+    for (const engineRoot of [path.join(first, '.agents', 'skills'), path.join(first, '.claude', 'skills')]) {
+      assert.ok(fs.realpathSync(engineRoot).startsWith(fs.realpathSync(first)), `${engineRoot} resolves inside the room`);
       (function walk(dir) {
         for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
           const full = path.join(dir, entry.name);
           if (entry.isDirectory()) { walk(full); continue; }
           if (entry.name !== 'SKILL.md') continue;
-          const relative = path.relative(skillHome, full).split(path.sep).join('/');
+          const relative = path.relative(first, full).split(path.sep).join('/');
           fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
             if (/ticket/i.test(line)) skillHits.push(`${relative}:${index + 1}: ${line.trim()}`);
           });
@@ -149,7 +149,7 @@ try {
       })(engineRoot);
     }
     assert.deepEqual(skillHits, [],
-      `the skills a fresh agent installs from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
+      `the skills a fresh room carries from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
   }
 
   // ---- Selected claim reconciliation, claim, push -------------------------

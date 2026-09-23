@@ -9,11 +9,11 @@ import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 import { writeSafeFile } from '../workbench/tools/workbench-paths.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
-import { missingSkills } from './skill-presence.mjs';
 import { RUNTIME_TOOLS, sourceIdentity } from './workbench-tools.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const toolsInstaller = path.join(productRoot, 'tools', 'workbench-tools.mjs');
+const skillsInstaller = path.join(productRoot, 'tools', 'workbench-skills.mjs');
 // A root feedback file (current or legacy name) moves into the feedback lane
 // under the current name. An application's root `tools/` directory is never a
 // legacy source: it stays application-owned and is not listed here.
@@ -54,13 +54,6 @@ function parseOptions(args) {
   }
   for (const key of ['--project', '--home', '--version']) if (!options[key]) throw new Error(`Missing ${key}.`);
   return options;
-}
-
-// The same judgment the installer and the layout-only gate use. See
-// `skill-presence.mjs`: it lives in one place so the three cannot disagree
-// about one host, which is what S-045 TK-001 was opened to repair.
-function hasRequiredUserSkills(home) {
-  return missingSkills(home, coreSkills);
 }
 
 // Producing a missing control is the same procedure every time, and eight rooms
@@ -115,10 +108,8 @@ function preflight(project, home) {
   if (lstatOrNull(workbench)) return fail('support-root-exists', `${workbench} already exists; inspect and reconcile it before adoption.`);
   const unreconciled = unreconciledControls(project);
   if (unreconciled.length) return fail('unreconciled-controls', unreconciledControlsMessage(unreconciled), { controls: unreconciled, reconcileOrder: RECONCILE_ORDER, templateOverwriteWarning: TEMPLATE_OVERWRITE_WARNING });
-  const missingSkills = hasRequiredUserSkills(home);
-  if (missingSkills.length) {
-    return fail('missing-user-skills', 'Required core skills must be present in a user-scoped Codex or Claude discovery root before project-local skills can retire.', { missingSkills });
-  }
+  // S-00V: the core skills ship in the room's skills lane, laid down below
+  // from this release; the provider home is no longer a readiness gate.
   for (const { source, destination } of legacyLanes) {
     const sourcePath = path.join(project, source);
     const sourceEntry = lstatOrNull(sourcePath);
@@ -344,13 +335,21 @@ function migrate(options) {
     if (toolsReport.receipt?.source?.repository !== source.repository || toolsReport.receipt?.source?.commit !== source.commit) {
       throw new Error('Manifest and managed-tools receipt resolved different Workbench source identities.');
     }
+    const skillsInstalled = spawnSync(process.execPath, [skillsInstaller, 'install', '--project', project], { cwd: productRoot, encoding: 'utf8' });
+    const skillsReport = skillsInstalled.stdout ? JSON.parse(skillsInstalled.stdout) : null;
+    if (skillsInstalled.status !== 0 || skillsReport?.status !== 'installed') {
+      throw new Error(skillsReport?.error?.message ?? (skillsInstalled.stderr || 'Core skills install failed.'));
+    }
+    if (skillsReport.receipt?.source?.commit !== source.commit) {
+      throw new Error('Manifest and managed-skills receipt resolved different Workbench source identities.');
+    }
     render(project);
     // Only a finding that blocks all or selection makes the migration a
     // failure; nonblocking findings (a moved external link, a stale claim) are
     // reported so the adopting agent repairs them next.
-    const issues = doctor(project, { home });
+    const issues = doctor(project);
     if (blocksSelection(issues)) throw new Error(`Adoption rendered an invalid project: ${issues.filter((issue) => issue.blocks === 'all' || issue.blocks === 'selection').map((issue) => issue.code).join(', ')}.`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, residue, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, doctor: issues.length ? 'passed-with-findings' : 'passed', findings: issues.map((issue) => ({ code: issue.code, severity: issue.severity, blocks: issue.blocks, message: issue.message })) };
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, residue, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, skills: { status: 'installed', receipt: `${lanes.skills}/.workbench-skills.json` }, doctor: issues.length ? 'passed-with-findings' : 'passed', findings: issues.map((issue) => ({ code: issue.code, severity: issue.severity, blocks: issue.blocks, message: issue.message })) };
   } catch (error) {
     return { status: 'partial', moved, residue, error: { code: 'migration-failed', message: error.message } };
   }

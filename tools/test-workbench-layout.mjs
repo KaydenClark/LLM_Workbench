@@ -66,8 +66,14 @@ function installTools(project) {
   assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
 }
 
+function installSkills(project) {
+  const result = spawnSync(process.execPath, [path.join(root, 'tools', 'workbench-skills.mjs'), 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+}
+
 function completeGenesis(project, options = {}) {
   if (options.tools !== false) installTools(project);
+  if (options.skills !== false) installSkills(project);
   if (options.git !== false) gitRoom(project);
   const router = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
     .replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', '2026-09-01')
@@ -173,6 +179,9 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
       nextGate: 'Claim TK-001.'
     });
     assert.equal(fs.existsSync(path.join(project, 'skills')), false);
+    for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.realpathSync(path.join(project, discoveryRoot, 'genesis')), fs.realpathSync(path.join(project, 'workbench', 'skills', 'genesis')), `${discoveryRoot} resolves into the lane`);
+    }
     const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
     assert.equal(manifest.schemaVersion, 2);
     assert.deepEqual(manifest.lanes, LANES);
@@ -1125,7 +1134,7 @@ test('Genesis readiness fails closed on a permission file that withholds a decla
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     const settings = path.join(project, '.claude', 'settings.json');
-    fs.mkdirSync(path.dirname(settings));
+    fs.mkdirSync(path.dirname(settings), { recursive: true });
     fs.writeFileSync(settings, JSON.stringify({ permissions: { deny: ['Write(./secrets/**)'], ask: ['Bash(git push:*)'], allow: ['Edit(./src/**)', 'Edit(./AGENTS.md)'] } }));
 
     const drifted = run('validate', '--project', project, '--genesis');
@@ -1141,7 +1150,9 @@ test('Genesis readiness fails closed on a permission file that withholds a decla
     assert.equal(granted.status, 0, granted.stdout);
     assert.equal(granted.report.status, 'valid');
 
-    fs.rmSync(path.dirname(settings), { recursive: true, force: true });
+    // Only the permission file goes: `.claude/` also holds the tracked skills
+    // discovery adapter (S-00V), which a room without the file still needs.
+    fs.rmSync(settings, { force: true });
     const absent = run('validate', '--project', project, '--genesis');
     assert.equal(absent.status, 0, absent.stdout);
     assert.equal(absent.report.status, 'valid', 'a room without the file is unaffected');

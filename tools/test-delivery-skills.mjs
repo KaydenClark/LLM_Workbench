@@ -23,7 +23,7 @@ function git(cwd, ...args) {
 }
 
 test('code-review fixed diff disables a hostile textconv driver', () => {
-  const skill = read('skills/code-review/SKILL.md');
+  const skill = read('workbench/skills/code-review/SKILL.md');
   const command = skill.match(
     /^git diff ((?:--[a-z-]+ )+)"\$BASE_SHA" "\$HEAD_SHA" --$/m
   );
@@ -68,12 +68,12 @@ test('code-review fixed diff disables a hostile textconv driver', () => {
 });
 
 test('independence applies at integration, not every task close', () => {
-  const skill = read('skills/implement/SKILL.md');
+  const skill = read('workbench/skills/implement/SKILL.md');
   assert.match(skill, /separate-context review.*integration/s);
   assert.match(skill, /Earlier review.*not.*mandatory independent/s);
   assert.doesNotMatch(skill, /Only after the exact-head review is green, close/);
   for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
-    const content = read(`skills/${stance}/SKILL.md`);
+    const content = read(`workbench/skills/${stance}/SKILL.md`);
     for (const section of ['Purpose', 'Method / Posture', 'Obligations', 'Completion / Exit Condition']) {
       assert.ok(content.includes(`## ${section}`), `${stance}: ${section}`);
     }
@@ -85,7 +85,7 @@ test('independence applies at integration, not every task close', () => {
 
 
 test('notepad skills capture before interruption and preserve unresolved cleanup context', () => {
-  const grilling = read('skills/grilling/SKILL.md');
+  const grilling = read('workbench/skills/grilling/SKILL.md');
   const example = grilling.match(/```json\r?\n([\s\S]*?)```/);
   assert.ok(example, 'the executable example must create a JSON notepad');
   const note = JSON.parse(example[1]);
@@ -94,12 +94,12 @@ test('notepad skills capture before interruption and preserve unresolved cleanup
   assert.ok(Array.isArray(note.entries));
   assert.match(grilling, /before token exhaustion or Stop/);
   assert.match(grilling, /before asking the next question/);
-  const flow = read('skills/make-it-so/SKILL.md');
+  const flow = read('workbench/skills/make-it-so/SKILL.md');
   assert.match(flow, /Compose `notepad`/);
   assert.match(flow, /Verify durable read-back before cleanup/);
   assert.match(flow, /unresolved decisions,[\s\S]*handoff dependencies/);
   assert.doesNotMatch(flow, /Mark the notepad .*PROMOTED/);
-  const noteSkill = read('skills/notepad/SKILL.md');
+  const noteSkill = read('workbench/skills/notepad/SKILL.md');
   assert.match(noteSkill, /Delete the whole record only when everything important is reconciled/);
   assert.match(noteSkill, /Before voluntary[\s\S]*validate and read back/);
   assert.match(noteSkill, /Stop can end[\s\S]*before another write/);

@@ -5,15 +5,15 @@
 > manifest-declared path.
 
 **Spec ID:** S-00V
-**Status:** planned
+**Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** claude-fable-5-1
 **Stance:** Builder
-**Updated:** 2026-09-22
+**Updated:** 2026-09-23
 **Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
 **Blockers:** none
-**Latest event:** Spec captured from the locked grilling decisions; Lexicon term promoted at `8dbd619da7e920edb5e819802aff9119f8cb1662`; no implementation started.
-**Next gate:** TK-001's first commit proposes the ADR that adds the `skills` lane and supersedes the six-lane and home-installed-core decisions; the owner accepts it before TK-001 can land.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`8dbd619da7e920edb5e819802aff9119f8cb1662`.
 
@@ -136,7 +136,7 @@ carried here; the record is working context, not evidence.
 - FND-Q24B stays live under [S-00G](../S-00G-ownership-map-root-control/SPEC.md)
   as an ownership-origin question, independent of this Spec.
 - `workbench/skills` is the seventh lane. This supersedes the six-lane
-  count in [ADR-0017](../../docs/adr/0017-workbench-support-directory-has-six-lanes.md)
+  count in [ADR-0017](../../docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md)
   and turns the "per-room core copies" alternative that
   [ADR-0046](../../docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md)
   rejected into the decision, on the managed model of
@@ -171,8 +171,10 @@ carried here; the record is working context, not evidence.
 
 ## Dependencies And Blockers
 
-- None block TK-001. Its ADR needs owner acceptance before the Task lands
-  (Next gate above).
+- None block TK-001. Its ADR ([ADR-000M](../../docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md))
+  records the owner's locked PW-3, PW-3A and PW-4 decisions; the owner said on
+  2026-09-23 that ADRs written from his own decisions are accepted, so it
+  enters the active roster with the Task rather than waiting in `proposed/`.
 - The catalog review that decides which non-core skills join the lane starts
   from a tentative list (lexicon, domain-modeling, land, preflight,
   brainstorm, research, sitrep); the owner confirms the list in that Task.
@@ -188,7 +190,7 @@ planned slices listed under Remaining Limitations Or Follow-Up Specs.
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | A fresh clone discovers the core skills from `workbench/skills` | ready | none | Red: a test that clones this repository into a scrubbed directory and asserts each required skill resolves through both discovery roots fails; green after the lane, adapters, template lane, manifest and doctor land; full suite; the round-trip test reads skills from the clone |
+| TK-001 | A fresh clone discovers the core skills from `workbench/skills` | done | none | tools/test-skills-lane.mjs red on the pre-lane candidate, green after; full 47-command AGENTS suite green on the committed candidate; adr validate ok; render and doctor clean |
 
 ### TK-001 - A fresh clone discovers the core skills from `workbench/skills`
 
@@ -212,10 +214,13 @@ install text in the same Task.
 
 ## Acceptance Criteria
 
-- [ ] A scrubbed clone of a room resolves every required skill through both
-      discovery roots with no provider home and no personal catalog.
-- [ ] Genesis creates the skills lane and update-harness refreshes it, with
-      markers naming source release, commit and hash.
+- [x] A scrubbed clone of a room resolves every required skill through both
+      discovery roots with no provider home and no personal catalog
+      (`tools/test-skills-lane.mjs`, first test, clones the committed candidate).
+- [x] Genesis creates the skills lane and update-harness refreshes it, with
+      the lane receipt `.workbench-skills.json` naming source release, commit
+      and a hash per skill (`tools/test-skills-lane.mjs` second test,
+      `tools/test-genesis-from-decisions.mjs`, `tools/test-workbench-upgrade.mjs`).
 - [ ] A session's notepad and handoff can be committed and later removed
       without a privacy or provenance check treating them as durable evidence.
 - [ ] `claim` pushes the claim on the task branch; a second instance running
@@ -281,6 +286,9 @@ Then the full suite named in AGENTS.md on the committed candidate.
 |---|---|---|---|---|---|
 | 2026-09-22 | — | Spec captured from the locked grilling record portable-workbench-cloud-deployable-2026-09-22 (revision 24); Lexicon term and renames promoted at `8dbd619da7e920edb5e819802aff9119f8cb1662` | `render`, `doctor`, vocabulary sweep and template evaluation on the committed candidate | LEXICON.md and templates/LEXICON.md updated; the rest of Documentation Impact waits on its Task | Everything in Desired Behavior is unbuilt; TK-001 is the only cut slice |
 | 2026-09-22 | — | Separate-context review of `edd6cbe` PASS for the integration gate with one Medium (host floor credited to README instead of RUNBOOK) and five Lows; all corrected in this commit | Reviewer ran doctor, render no-op, citation anchors, vocabulary sweep, control fidelity and template evaluation on a clean detached worktree; full 46-command suite green on `edd6cbe` | Spec wording only; LEXICON.md Last reviewed set to 2026-09-22 | Unchanged: nothing built |
+| 2026-09-23 | TK-001 | Owner directed on 2026-09-23: every core skill lives in `workbench/skills` and whatever workbench is running uses its local skills; Spec activated and TK-001 claimed | Red: new `tools/test-skills-lane.mjs` failed on the committed candidate (no `lanes.skills`, no `tools/workbench-skills.mjs`); green after the lane, adapters, manifest, doctor findings and installer landed | Guardrail baseline before editing 78/100 | Full suite, review and integration delivery pending |
+| 2026-09-23 | TK-001 | Lane built: root `skills/` moved to `workbench/skills` with history; tracked `.agents/skills` and `.claude/skills` links; `tools/workbench-skills.mjs` install/verify/update/rollback with `.workbench-skills.json` receipt; Genesis, Adoption and the one-time upgrade lay the lane down; doctor reads the lane (`skill-lane-missing`, `skill-lane-unreadable`, `skill-adapter-missing`, `skill-adapter-broken`, `project-local-skills`) and `--home` is retired; ADR-000M accepted, ADR-0017 archived as superseded | Targeted red/green then the full AGENTS suite (47 commands including the new test) green on the committed candidate; `adr validate` ok; `render` and `doctor` clean | RUNBOOK skills lane and personal catalog procedures, LEXICON Support lane/Skills lane/Core skill bundle/Normal setup/Explicit skill update, README, BLUEPRINT skills sentence, templates GENESIS/ADOPTION/RUNBOOK/LEXICON/.claude settings, `workbench/skills/README.md`, `update-harness` skill | Personal-catalog copies on the owner's Mac still carry the v3.2.0 bundle until published from this lane; the remaining S-00V slices (catalog review, notes may travel, push-on-claim, host floor, Wiki audit, ends-clean round trip) are uncut |
+| 2026-09-23 | TK-001 | Task closed | tools/test-skills-lane.mjs red on the pre-lane candidate, green after; full 47-command AGENTS suite green on the committed candidate; adr validate ok; render and doctor clean | RUNBOOK skills lane and personal catalog sections, LEXICON rows, README, BLUEPRINT, templates (GENESIS, ADOPTION, RUNBOOK, LEXICON, .claude/settings.json), workbench/skills/README.md, update-harness skill, ADR-000M accepted and ADR-0017 archived | Owner Mac personal catalog still on the v3.2.0 bundle until published from the lane; remaining S-00V slices uncut |
 
 ## Completion Result
 

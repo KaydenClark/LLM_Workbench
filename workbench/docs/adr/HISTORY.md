@@ -21,9 +21,10 @@
 | [000I](proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md) | Record lifecycle is expressed by folder location with permanent archive and transient retired | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, RUNBOOK.md |
 | [000J](000J-completion-claims-are-checked-against-repository-state.md) | Completion claims are checked against repository state | accepted | 2026-09-12 | AGENTS.md, RUNBOOK.md, workbench/specs/S-00M-completion-claims-against-repository-state/SPEC.md |
 | [000K](000K-every-feedback-finding-carries-one-of-four-dispositions.md) | Every feedback finding carries one of five dispositions | accepted | 2026-09-12 | LEXICON.md, RUNBOOK.md, workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md |
+| [000M](000M-core-skills-ship-in-the-workbench-skills-lane.md) | Core skills ship in the workbench skills lane | accepted | 2026-09-23 | RUNBOOK.md, LEXICON.md, BLUEPRINT.md, workbench/specs/S-00V-portable-workbench/SPEC.md |
 | [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
-| [0017](0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
+| [0017](archive/0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | superseded | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0018](0018-the-wiki-is-the-knowledge-base.md) | The wiki is the knowledge base and holds collections | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
 | [0020](0020-a-check-blocks-only-the-change-it-evaluates.md) | A check may block only the change it evaluates | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [0023](0023-mechanical-guarantees-and-agent-obligations.md) | Tools check structure; agents carry judgment | accepted | 2026-09-04 | AGENTS.md |

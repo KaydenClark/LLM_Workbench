@@ -13,7 +13,7 @@ import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 // Exported (not just used locally) so a test can build the exact historical
 // v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
@@ -60,7 +60,15 @@ export function readManagedSkillMarker(skillDirectory) {
   } catch { return null; }
 }
 const legacyLanes = { specs: 'workbench/specs', wiki: 'workbench/wiki', grilling: 'workbench/grilling', handoffs: 'workbench/handoffs', feedback: 'workbench/feedback' };
-const skillPolicy = { required: coreSkills, discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' };
+// S-00V TK-001: the core skills ship in the room's skills lane and the two
+// discovery roots are tracked adapters into it, so setup lays the lane down
+// (`lane-install`) and the ordinary Workbench update replaces it
+// (`workbench-update`). The presence-only/explicit-only shape below is what
+// every room up to v3.2.1 declared when the core lived in the provider home;
+// it stays readable as a frozen row so those rooms validate until they update.
+const skillPolicy = { required: coreSkills, discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'lane-install', updates: 'workbench-update' };
+const providerHomeSkillPolicy = { required: coreSkills, discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' };
+export const SKILLS_RECEIPT = '.workbench-skills.json';
 // Taskboard owns the generated projection; Blueprint is destination-only.
 const generatedRegions = {
   'TASKBOARD.md': ['<!-- hot-specs:start -->', '<!-- hot-specs:end -->']
@@ -276,8 +284,10 @@ export function validateManifest(project) {
   if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance?.lifecycle)) {
     return fail('invalid-manifest', 'Manifest provenance.lifecycle is invalid.');
   }
-  if (JSON.stringify(manifest.lanes) !== JSON.stringify(lanes)) {
-    return fail('invalid-lane', 'Manifest lanes must exactly match the six v3.1 support lanes.', { lanes: manifest.lanes });
+  // The seven-lane shape is current; the six-lane shape is what every room
+  // declared before the skills lane and stays readable until it updates.
+  if (![lanes, SIX_LANES].some((shape) => JSON.stringify(manifest.lanes) === JSON.stringify(shape))) {
+    return fail('invalid-lane', 'Manifest lanes must exactly match the seven support lanes, or the six lanes declared before the skills lane.', { lanes: manifest.lanes });
   }
   if (![collections, notepadCollections, legacyCollections].some(shape => JSON.stringify(manifest.collections) === JSON.stringify(shape))) {
     return fail('invalid-collection', 'Manifest collections must match the current layout or the preserved v3.1 collection set.', { collections: manifest.collections });
@@ -316,11 +326,17 @@ export function validateManifest(project) {
   // to eighteen in v3.1.4 (S-046). A label is frozen once it is stamped, not
   // once it is published - v3.1.0 was never released and was still frozen
   // rather than redefined.
-  const legacyPolicy = { ...skillPolicy, required: legacyCoreSkills };
-  const stancePolicy = { ...skillPolicy, required: [...legacyCoreSkills, ...stanceSkills] };
-  const carryPolicy = { ...skillPolicy, required: [...legacyCoreSkills, 'carry', ...stanceSkills] };
-  const supportedLegacy = { 'v3.0.0': legacyPolicy, 'v3.1.0': legacyPolicy, 'v3.1.1': stancePolicy, 'v3.1.2': stancePolicy, 'v3.1.3': carryPolicy, 'v3.1.4': { ...skillPolicy, required: notepadCoreSkills }, 'v3.2.0': { ...skillPolicy, required: initialV32CoreSkills } };
-  const accepted = [skillPolicy, supportedLegacy[manifest.workbenchVersion]].filter(Boolean).map((policy) => JSON.stringify(policy));
+  const stanceRequired = [...legacyCoreSkills, ...stanceSkills];
+  const carryRequired = [...legacyCoreSkills, 'carry', ...stanceSkills];
+  // Each frozen row is a required list; a room at that release validates with
+  // it under either setup shape, because the provider-home shape is what the
+  // release stamped and the lane shape is what the Workbench update writes
+  // when it lays the lane into such a room before restamping it. v3.2.1 is
+  // frozen for the same reason: rooms stamped v3.2.1 declared the
+  // provider-home policy before the skills lane existed.
+  const supportedLegacy = { 'v3.0.0': legacyCoreSkills, 'v3.1.0': legacyCoreSkills, 'v3.1.1': stanceRequired, 'v3.1.2': stanceRequired, 'v3.1.3': carryRequired, 'v3.1.4': notepadCoreSkills, 'v3.2.0': initialV32CoreSkills, 'v3.2.1': coreSkills };
+  const legacyRequired = supportedLegacy[manifest.workbenchVersion];
+  const accepted = [skillPolicy, ...(legacyRequired ? [{ ...skillPolicy, required: legacyRequired }, { ...providerHomeSkillPolicy, required: legacyRequired }] : [])].map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
   }
@@ -1212,7 +1228,7 @@ export function permissionScopeDrift(project, declaredLanes = lanes) {
   // A null declaration falls back to the default lanes: the check never
   // throws and never silently checks nothing.
   const checked = declaredLanes ?? lanes;
-  const authorship = Object.entries(checked).filter(([name]) => name !== 'tools');
+  const authorship = Object.entries(checked).filter(([name]) => name !== 'tools' && name !== 'skills');
   let buckets;
   try {
     const permissions = JSON.parse(fs.readFileSync(file, 'utf8'))?.permissions ?? {};
@@ -1223,6 +1239,10 @@ export function permissionScopeDrift(project, declaredLanes = lanes) {
   }
   const withheld = [];
   for (const [lane, relative] of Object.entries(checked)) {
+    // The skills lane holds managed core (replaced only by the Workbench
+    // update) beside room-owned extensions, so neither an Edit grant nor an
+    // ask hold on it is drift; the permission file decides it per room.
+    if (lane === 'skills') continue;
     const reasons = [];
     const denied = restrictions(buckets.deny, relative, project)[0];
     const askedRestrictions = restrictions(buckets.ask, relative, project);
@@ -1287,8 +1307,43 @@ export function validate(options, requireGenesis) {
   if (drift) return fail('permission-scope-drift', permissionScopeMessage(drift), { control: drift.control, lanes: drift.lanes, reason: drift.lanes.map((entry) => `${entry.lane}: ${entry.reason}`).join('; ') });
   const gitIssue = validateGenesisGit(project);
   if (gitIssue) return gitIssue;
-  if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'Genesis must not create a project-local skills directory.');
+  if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'A root skills/ directory shadows the skills lane; move its contents into the lane or remove it.');
+  const skillsIssue = validateGenesisSkills(project, result.manifest);
+  if (skillsIssue) return skillsIssue;
   return report('valid', { manifest: result.manifest, controls });
+}
+
+// Readiness also needs the skills lane laid down from the release: every
+// required skill present with a receipt naming the manifest's release, and
+// both discovery adapters resolving into the lane. Doctor reports the same
+// conditions without blocking on the receipt (see skill-inspection.mjs).
+function validateGenesisSkills(project, manifest) {
+  const lane = manifest.lanes.skills;
+  if (!lane) return fail('skill-lane-missing', 'The manifest declares no skills lane; run workbench-layout.mjs migrate --project PATH once.', { control: 'workbench/skills' });
+  const receiptPath = path.join(project, lane, SKILLS_RECEIPT);
+  const receiptEntry = lstatOrNull(receiptPath);
+  if (!receiptEntry?.isFile() || receiptEntry.isSymbolicLink()) {
+    return fail('skill-lane-missing', `${lane} must carry the Workbench skills receipt; run workbench-skills.mjs install from the release checkout.`, { control: lane });
+  }
+  let receipt;
+  try { receipt = JSON.parse(fs.readFileSync(receiptPath, 'utf8')); } catch (error) {
+    return fail('skill-lane-missing', `${lane}/${SKILLS_RECEIPT} is unreadable: ${error.message}`, { control: lane });
+  }
+  if (receipt.source?.release !== manifest.workbenchVersion) {
+    return fail('skill-lane-missing', `${lane}/${SKILLS_RECEIPT} names release ${receipt.source?.release ?? 'none'}; the manifest declares ${manifest.workbenchVersion}.`, { control: lane });
+  }
+  for (const skill of manifest.skillPolicy.required) {
+    if (!lstatOrNull(path.join(project, lane, skill, 'SKILL.md'))?.isFile()) return fail('skill-lane-missing', `${lane}/${skill}/SKILL.md is missing.`, { control: lane, skill });
+    for (const discoveryRoot of manifest.skillPolicy.discovery) {
+      const adapter = path.join(project, discoveryRoot, skill, 'SKILL.md');
+      let resolved;
+      try { resolved = fs.realpathSync(adapter); } catch { resolved = null; }
+      if (resolved !== fs.realpathSync(path.join(project, lane, skill, 'SKILL.md'))) {
+        return fail('skill-adapter-broken', `${discoveryRoot}/${skill} does not resolve into ${lane}; run workbench-skills.mjs install from the release checkout.`, { control: discoveryRoot, skill });
+      }
+    }
+  }
+  return null;
 }
 
 if (isMainModule(import.meta.url)) {

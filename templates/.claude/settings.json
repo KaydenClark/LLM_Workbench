@@ -34,6 +34,7 @@
       "Edit(./workbench/wiki/**)",
       "Edit(./workbench/feedback/**)",
       "Edit(./workbench/sessions/**)",
+      "Edit(./workbench/skills/**)",
       "Bash([TEST_COMMAND])",
       "Bash([BUILD_COMMAND])",
       "Bash(node workbench/tools/spec-workbench.mjs:*)",

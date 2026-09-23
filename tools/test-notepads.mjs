@@ -743,7 +743,7 @@ test("the grilling skill's documented command produces the record it shows", () 
     // tool did not write, then instructing a write no path could perform. The
     // command and the example are held to each other here so the next drift
     // fails rather than ships.
-    const skill = fs.readFileSync(path.join(root, 'skills', 'grilling', 'SKILL.md'), 'utf8');
+    const skill = fs.readFileSync(path.join(root, 'workbench', 'skills', 'grilling', 'SKILL.md'), 'utf8');
     const documented = [...skill.matchAll(/```bash\r?\n([\s\S]*?)```/g)]
       .find((block) => /notepads\.mjs create/.test(block[1]));
     const example = skill.match(/```json\r?\n([\s\S]*?)```/);

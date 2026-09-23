@@ -104,7 +104,7 @@ the prospective S-003 pilot without a separate user request.
 
 ## Edit Scope
 
-May edit `templates/`, `workbench/` support lanes, `skills/`, `team templates/`,
+May edit `templates/`, `workbench/` support lanes including the `workbench/skills` lane, `team templates/`,
 `research templates/`, `tools/`, `evals/`, `outcomes/`, `benchmarks/`, and root
 control/docs files.
 Do not edit `LICENSE` without an explicit request, `research papers/`, or
@@ -187,6 +187,7 @@ Full suite for controls, templates, tools, evals, or specs:
 node tools/test-spec-workbench.mjs
 node tools/test-skill-catalog.mjs
 node tools/test-skill-inspection.mjs
+node tools/test-skills-lane.mjs
 node tools/test-core-composition.mjs
 node tools/test-project-evidence.mjs
 node tools/test-genesis-from-decisions.mjs

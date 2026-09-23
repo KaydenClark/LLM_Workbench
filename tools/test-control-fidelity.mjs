@@ -290,7 +290,7 @@ test('the protocols run the report and route AGENTS.md divergences to a recorded
   const phase4 = adoption.slice(adoption.indexOf('### Phase 4'), adoption.indexOf('### Phase 5'));
   assert.match(phase4, /node tools\/control-fidelity\.mjs report --project/, 'Adoption Phase 4 runs the report');
   assert.match(phase4, /`dropped` or `changed`[\s\S]*`AGENTS\.md`[\s\S]*(restored|restore)[\s\S]*(recorded|record)[\s\S]*ADR/, 'Adoption Phase 4 requires each AGENTS.md divergence to be restored or recorded');
-  const upgrade = fs.readFileSync(path.join(root, 'skills', 'update-harness', 'SKILL.md'), 'utf8');
+  const upgrade = fs.readFileSync(path.join(root, 'workbench', 'skills', 'update-harness', 'SKILL.md'), 'utf8');
   const section5 = upgrade.slice(upgrade.indexOf('## 5.'), upgrade.indexOf('## 6.'));
   assert.match(section5, /node tools\/control-fidelity\.mjs report --project/, 'update-harness section 5 runs the report');
   assert.match(section5, /`dropped` or `changed`[\s\S]*`AGENTS\.md`[\s\S]*(restored|restore)[\s\S]*(recorded|record)[\s\S]*ADR/, 'update-harness section 5 requires each AGENTS.md divergence to be restored or recorded');

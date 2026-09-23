@@ -7,7 +7,10 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const sourceRoot = path.join(root, 'skills');
+// S-00V: the authoring source is the producer's own skills lane. This
+// installer publishes it into a provider home (the owner's personal catalog,
+// a backup and publication target); it is never on a room's critical path.
+const sourceRoot = path.join(root, 'workbench', 'skills');
 import { coreSkills } from '../workbench/tools/workbench-layout.mjs';
 import { markerSourceIdentity, writeManagedMarker, readManagedMarker, skillContentHash } from './skill-marker.mjs';
 import { lstatOrNull, presentSkillPath, resolveSkillLink } from './skill-presence.mjs';

@@ -40,13 +40,22 @@ Run the checked-out helper on a brand-new host:
 node tools/core-skill-installer.mjs install [--home USER_HOME]
 ```
 
-It supplies a missing core skill only from this directory into the user-scoped
-Codex-compatible `.agents/skills` and Claude `.claude/skills` roots. Normal
-setup is presence-only: an existing same-named skill is accepted without a
-content comparison or replacement. A Git-owned or linked discovery root permits missing-only installation into
-its resolved directory without changing tracked source. Unsafe path collisions
-block before either discovery root is changed and return exact remediation. Replacing an existing skill is reserved for the
-explicit-update flow, not normal setup.
+This directory is the `workbench/skills` lane: every room carries these core
+skills inside its repository, laid down by Genesis and Adoption from the
+release (`tools/workbench-skills.mjs install`) with a receipt and reached by
+the tracked project-level `.agents/skills` (Codex) and `.claude/skills`
+(Claude Code) links, so a fresh clone discovers them with no provider home.
+The Workbench update refreshes the lane (`workbench-skills.mjs update
+--explicit-update`). The helper above is the separate personal-catalog
+publication route: it supplies a missing core skill only from this directory
+into the user-scoped `.agents/skills` and `.claude/skills` roots. That
+publication is presence-only: an existing same-named skill is accepted
+without a content comparison or replacement. A Git-owned or linked discovery
+root permits missing-only installation into its resolved directory without
+changing tracked source. Unsafe path collisions block before either discovery
+root is changed and return exact remediation. Replacing a published skill is
+reserved for the installer's explicit-update flow, never normal setup, and a
+room never depends on the personal catalog.
 
 ## Managed skill marker
 
@@ -129,12 +138,13 @@ consumer/reference review, preserved notices and a pinned recovery commit.
 
 ## Stance discovery
 
-Builder, Auditor, Reviewer and Reconciler ship as flat canonical directories with Claude adapters in the
-user discovery roots, so Claude's one-level scan sees them directly. If a user
-separately stores a stance below `stances/`, that nested installation also needs
-a flat top-level symlink. The missing-only installer never replaces a foreign
-symlink or rearranges existing installations. SPEC and TASK assign a stance;
-loading one changes method without changing authority or spawning an agent.
+Builder, Auditor, Reviewer and Reconciler ship as flat directories in the lane,
+so both hosts' one-level scan through the discovery adapters sees them
+directly. If a user separately stores a stance below `stances/` in a personal
+catalog, that nested installation also needs a flat top-level symlink there.
+The missing-only publication installer never replaces a foreign symlink or
+rearranges existing installations. SPEC and TASK assign a stance; loading one
+changes method without changing authority or spawning an agent.
 
 ## Composition And Authoring
 
