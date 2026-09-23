@@ -27,7 +27,8 @@
     "wiki": "workbench/wiki",
     "sessions": "workbench/sessions",
     "feedback": "workbench/feedback",
-    "tools": "workbench/tools"
+    "tools": "workbench/tools",
+    "skills": "workbench/skills"
   },
   "collections": {
     "adr": "workbench/docs/adr",
@@ -80,8 +81,8 @@
       ".agents/skills",
       ".claude/skills"
     ],
-    "normalSetup": "presence-only",
-    "updates": "explicit-only"
+    "normalSetup": "lane-install",
+    "updates": "workbench-update"
   },
   "workbenchId": "WB-4oRql1XWpf6VgsNwHUXW4Q"
 }

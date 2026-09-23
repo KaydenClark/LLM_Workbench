@@ -45,8 +45,8 @@ function makeRelease(base) {
   // S-00H TK-004 follow-up: the fresh-room regression sweeps this candidate's
   // real installed skills after Genesis, so `skills/` and the installer chain
   // it depends on ride along in the release fixture too.
-  fs.cpSync(path.join(repoRoot, 'skills'), path.join(release, 'skills'), { recursive: true });
-  for (const name of ['workbench-tools.mjs', 'genesis-from-decisions.mjs', 'core-skill-installer.mjs', 'skill-marker.mjs', 'skill-presence.mjs']) {
+  fs.cpSync(path.join(repoRoot, 'workbench', 'skills'), path.join(release, 'workbench', 'skills'), { recursive: true });
+  for (const name of ['workbench-tools.mjs', 'workbench-skills.mjs', 'genesis-from-decisions.mjs']) {
     fs.copyFileSync(path.join(repoRoot, 'tools', name), path.join(release, 'tools', name));
   }
   initializeGit(release, 'https://example.invalid/llm-workbench.git');
@@ -240,17 +240,19 @@ const release = makeRelease(suiteRoot);
   assert.deepEqual(controlHits, [],
     `a freshly derived room's own controls must not say Ticket outside the documented retired-term row:\n${controlHits.join('\n')}`);
 
-  const skillHome = fs.mkdtempSync(path.join(f.root, 'skill-home-'));
-  const installedSkills = command(process.execPath, [path.join(release.root, 'tools', 'core-skill-installer.mjs'), 'install', '--home', skillHome]);
-  assert.equal(JSON.parse(installedSkills).status, 'complete', installedSkills);
+  // S-00V: Genesis lays the candidate's skills into the room's own lane, so
+  // the sweep reads them through the room's discovery adapters.
+  const skillsReceipt = JSON.parse(fs.readFileSync(path.join(destination, 'workbench', 'skills', '.workbench-skills.json'), 'utf8'));
+  assert.equal(skillsReceipt.source.commit, release.commit, 'the generated room names the release that laid its skills down');
   const skillHits = [];
-  for (const engineRoot of [path.join(skillHome, '.agents', 'skills'), path.join(skillHome, '.claude', 'skills')]) {
+  for (const engineRoot of [path.join(destination, '.agents', 'skills'), path.join(destination, '.claude', 'skills')]) {
+    assert.ok(fs.realpathSync(engineRoot).startsWith(fs.realpathSync(destination)), `${engineRoot} resolves inside the room`);
     (function walk(dir) {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) { walk(full); continue; }
         if (entry.name !== 'SKILL.md') continue;
-        const relative = path.relative(skillHome, full).split(path.sep).join('/');
+        const relative = path.relative(destination, full).split(path.sep).join('/');
         fs.readFileSync(full, 'utf8').split('\n').forEach((line, index) => {
           if (/ticket/i.test(line)) skillHits.push(`${relative}:${index + 1}: ${line.trim()}`);
         });
@@ -258,7 +260,7 @@ const release = makeRelease(suiteRoot);
     })(engineRoot);
   }
   assert.deepEqual(skillHits, [],
-    `the skills a fresh agent installs from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
+    `the skills a fresh room carries from this candidate must not say Ticket:\n${skillHits.join('\n')}`);
 }
 
 for (const origin of ['git@github.com:KaydenClark/Example_Workbench.git', 'ssh://git@github.com/KaydenClark/Example_Workbench.git']) {

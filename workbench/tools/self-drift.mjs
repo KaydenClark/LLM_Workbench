@@ -116,11 +116,11 @@ export function inspectSelfDrift(project, options = {}) {
   // evidence. Their ordinary blocking effects are unchanged by this command.
   if (manifest && !findings.some(f => /symbolic link|ordinary path inside/.test(f.observed))) {
     try {
-      const components = [...doctor(root, { home: options.home }), ...provenanceFindings(root), ...seededDocumentFindings(root)];
+      const components = [...doctor(root), ...provenanceFindings(root), ...seededDocumentFindings(root)];
       const unique = new Map(components.map(issue => [`${issue.code}:${issue.message}`, issue]));
       for (const issue of unique.values()) {
         const historical = issue.code === 'stale-seed' || (issue.code === 'unverified-provenance' && issue.field === 'release' && manifest.provenance?.lifecycle === 'adoption');
-        const installed = ['incompatible-core', 'skill-missing', 'skill-shadow', 'skill-unreadable'].includes(issue.code);
+        const installed = ['skill-lane-missing', 'skill-lane-unreadable', 'skill-adapter-missing', 'skill-adapter-broken'].includes(issue.code);
         findings.push({ code: issue.code, artifact: issue.document ?? issue.path ?? issue.file ?? issue.scope ?? 'workbench', claim: issue.summary ?? issue.message, expected: 'current owner and verified identity', observed: issue.message, correction: historical ? 'Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.' : installed ? 'Inspect installed source read-only; replacement requires explicit update, native invocation remains unverified' : issue.summary ?? issue.message, classification: historical ? 'historical' : installed ? 'blocked' : 'stale', severity: historical || installed ? 'attention' : issue.severity, effect: historical || installed ? 'limitation' : 'blocks-clean-update', diagnosticEffect: issue.blocks });
       }
     } catch (error) {

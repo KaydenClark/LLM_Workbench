@@ -199,17 +199,17 @@ node workbench/tools/adr.mjs register
 `doctor` prints every registered finding with its severity and blocking
 effect and exits non-zero only for `all` or `selection` findings; a
 `selected-slice` finding is excluded by `next` and refused by `claim`, and an
-`attention` finding stays visible without blocking. `doctor --home USER_HOME`
-(default: the user home, only ever read) also checks each installed core skill's
-managed marker `.workbench-skill.json` (schema 2: `source`, `release`,
-`commit`, `contentHash`, and current `compatibleRooms.minimum`/`.maximum`).
-A room inside the declared inclusive range may differ from the global release.
-Missing, broken, modified, unknown generation/range, incompatible, conflicting
-source, duplicate Codex discovery and mixed global generations are attention
-findings with effect `none`. Older markers without a range remain unknown;
-version equality does not establish compatibility. Normal setup preserves
-existing names and explicit update owns repair. Filesystem discovery is distinct
-from configured-host invocation. `doctor` also reports
+`attention` finding stays visible without blocking. `doctor` also reads this
+room's `workbench/skills` lane and its `.agents/skills` and `.claude/skills`
+adapters, never a provider home: `skill-lane-missing` and
+`skill-lane-unreadable` are errors with effect `none` (repair them with the
+release checkout's `workbench-skills.mjs install` or `update
+--explicit-update`; the Genesis readiness gate fails closed on them),
+`skill-adapter-missing` and `skill-adapter-broken` are attention findings
+(a host that checked an adapter out as a plain file instead of a link reports
+`skill-adapter-broken`), and a root `skills/` directory is
+`project-local-skills`, which blocks everything because it shadows the lane.
+Filesystem discovery is distinct from configured-host invocation. `doctor` also reports
 `integration-branch-undeclared` and `integration-branch-missing` (scope
 `git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
 names a branch that resolves locally or on a remote; the Genesis readiness
@@ -533,24 +533,30 @@ save/promote while preserving checkpoint as a no-write compatibility notice.
 The v3.1.4 eighteen-skill manifest policy remains readable as a frozen legacy
 row; adding candidate source does not publish or stamp v3.2.0.
 
-For an authorized room-specific extension, keep its sole source at the project
-path `.agents/skills/NAME/SKILL.md`. Choose a name absent from required core and
-both global and project discovery roots; preserve any collision for explicit
-reconciliation. Track that source under the room's own Git policy. Create only
-a missing project `.claude/skills/NAME` directory symlink resolving to the same
-source, and ignore this generated adapter in project Git. On Windows, use a
-supported directory adapter only after checking the actual host; inability to
-create it leaves that discovery gate open. Do not duplicate implementation bytes
-or add `.codex/skills`. Compare resolved paths and then invoke the extension in
-the actual configured application. File presence and a valid alias alone do
-not prove native discovery or callability.
+The core skills live in this room's `workbench/skills` lane, laid down from
+the LLM Workbench release with a receipt (`.workbench-skills.json`) naming the
+source release, commit and a hash per skill. The tracked `.agents/skills`
+(Codex) and `.claude/skills` (Claude Code) links resolve into the lane, so a
+fresh clone discovers every core skill with no provider home. Check the lane
+from the release checkout with `node tools/workbench-skills.mjs verify
+--project PATH`; `doctor` reports `skill-lane-missing`, `skill-lane-unreadable`,
+`skill-adapter-missing`, `skill-adapter-broken` and `project-local-skills`
+without repairing them.
 
-Global installation does not publish room-local source into a personal catalog.
-That acceptance is a separately authorized operation. The global doctor
-`--home` inspection covers the declared global core; inspect project extension
-names and adapters separately. A new room needs no local extension and no
-personal catalog for core save/promote/notepad operation. Genesis's prohibition
-on a root `skills/` core shadow does not prohibit this room-owned source route.
+For an authorized room-specific extension, keep its sole source in the lane at
+`workbench/skills/NAME/SKILL.md`. Choose a name absent from required core;
+preserve any collision for explicit reconciliation. Both hosts discover it
+through the existing adapters, and `verify` lists it under `roomLocal` and
+never replaces or removes it. On Windows, confirm the host checked the adapter
+links out as links; inability to do so leaves that discovery gate open. Do not
+duplicate implementation bytes, add a root `skills/`, or add `.codex/skills`.
+Invoke the extension in the actual configured application: file presence and
+a resolving adapter alone do not prove native discovery or callability.
+
+Laying the lane down does not publish room-local source into a personal
+catalog. That is a separately authorized operation, and a personal catalog is
+never on this room's critical path. A new room needs no local extension and no
+personal catalog for core save/promote/notepad operation.
 
 ### Direct Owner Promotion
 
@@ -813,8 +819,10 @@ To upgrade:
 2. Re-copy only the changed template sections; keep this project's filled-in
    specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
 3. Update managed runtime tools only with that checkout's
-   `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`;
-   keep its receipt and backup as the component recovery point.
+   `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`
+   and the managed core skills only with
+   `node tools/workbench-skills.mjs update --project PATH --home HOME --explicit-update`;
+   keep each receipt and backup as that component's recovery point.
 4. Update each doc's version stamp to the new version. Do not rewrite the room
    manifest's historical adoption source to impersonate the newly installed
    component generation.

@@ -179,7 +179,7 @@ function releaseIdentity() {
   try {
     return sourceIdentity({
       root: releaseRoot,
-      managedPaths: ['workbench/tools', 'templates', 'tools/workbench-tools.mjs', 'tools/genesis-from-decisions.mjs']
+      managedPaths: ['workbench/tools', 'workbench/skills', 'templates', 'tools/workbench-tools.mjs', 'tools/workbench-skills.mjs', 'tools/genesis-from-decisions.mjs']
     });
   } catch (error) {
     fail('invalid-source-identity', error.message);
@@ -395,8 +395,12 @@ function materialize(stage, data) {
   runGit(stage, ['config', 'user.email', 'workbench-genesis@invalid.example'], 'configure generated Git email');
   const layout = path.join(releaseRoot, 'workbench', 'tools', 'workbench-layout.mjs');
   const installer = path.join(releaseRoot, 'tools', 'workbench-tools.mjs');
+  const skillsInstaller = path.join(releaseRoot, 'tools', 'workbench-skills.mjs');
   const initialized = runJson(layout, ['init', '--project', stage, '--provenance', 'genesis', '--version', release.release, '--source-commit', release.commit, '--source-repository', release.repository, '--name', plan.project.name, '--default-branch', 'main', '--integration-branch', 'integration'], stage, 'Workbench layout initialization');
   runJson(installer, ['install', '--project', stage], stage, 'managed runtime installation');
+  // S-00V: the core skills ship in the room. Genesis lays the lane and its
+  // discovery adapters down from the release so a clone finds them.
+  runJson(skillsInstaller, ['install', '--project', stage], stage, 'managed skills installation');
   for (const name of controls) fs.writeFileSync(path.join(stage, name), plan.drafts[name].bytes, { mode: 0o644 });
   fs.writeFileSync(path.join(stage, 'workbench', 'wiki', 'MEMORY.md'), plan.memory.bytes, { mode: 0o644 });
   const date = new Date().toISOString().slice(0, 10);

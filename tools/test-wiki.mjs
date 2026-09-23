@@ -14,6 +14,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
+const skillsInstaller = path.join(root, 'tools', 'workbench-skills.mjs');
 const vocabulary = new Set(templatePlaceholders);
 const WIKI_TEMPLATES = ['README.md', 'MEMORY.project.md', 'MEMORY.root.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
 
@@ -85,6 +86,7 @@ test('Genesis readiness requires the filled router and wiki contract files', () 
   try {
     assert.equal(run(layout, 'init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     assert.equal(run(installer, 'install', '--project', project).status, 0);
+    assert.equal(run(skillsInstaller, 'install', '--project', project).status, 0);
     // Readiness also needs the declared integration branch to resolve.
     for (const args of [['init', '-q', '-b', 'main'], ['commit', '-q', '--allow-empty', '-m', 'fixture'], ['branch', 'integration']]) {
       assert.equal(spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', ...args], { cwd: project, encoding: 'utf8' }).status, 0, args.join(' '));

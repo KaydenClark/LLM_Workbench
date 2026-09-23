@@ -77,11 +77,14 @@ history. `SPEC.md` and `TASK.md` are transient working artifacts that carry
 scope, state and evidence while their work is under way, and a later reader
 depends on the durable owners rather than on them.
 
-A manifest resolves the support collections and managed local runtime. Core skills
-compose reusable behavior within the caller's scope. One upstream-owned global
-core is shared by provider discovery adapters, alongside independently owned
-optional personal skills and project extensions. [Core ownership](workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md)
-keeps the base independent of a personal catalog.
+A manifest resolves the support collections, the managed local runtime and the
+managed core skills. Core skills compose reusable behavior within the caller's
+scope. The upstream-owned core ships inside every room in its skills lane,
+reached by both provider discovery adapters from a fresh clone, alongside
+room-owned extensions in the same lane; a personal catalog is a backup and
+publication target that no room depends on
+([skills lane](workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md),
+[Core ownership](workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md)).
 
 Local JSON notepads hold unfinished reasoning, source references and corrections.
 Supported settled claims move into their durable owners before cleanup. Optional

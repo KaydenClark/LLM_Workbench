@@ -128,11 +128,15 @@ Settle the target's starting point first:
   completed evidence, and Wiki content before reconciling them through the
   existing manifest. Update only the intended template sections and managed
   components. Run the release checkout's `workbench-tools.mjs update
-  --explicit-update` for runtime tools, retain its receipt and backup, and
-  compare the project-owned inventory afterward. The manifest's adoption
+  --explicit-update` for runtime tools and `workbench-skills.mjs update
+  --explicit-update` for the core skills in `workbench/skills`, retain each
+  receipt and backup, and compare the project-owned inventory afterward. A
+  room stamped before the skills lane existed gets the lane and its
+  `.agents/skills` and `.claude/skills` adapters from `workbench-skills.mjs
+  install` after the layout migration declares it. The manifest's adoption
   source remains historical; current tool and skill generations belong in
-  their receipts and markers. Exercise rollback from the recorded backup when
-  the upgrade's recovery proof has not already been established.
+  their receipts. Exercise rollback from the recorded backup when the
+  upgrade's recovery proof has not already been established.
 
 For the v3 spec-centered Workbench:
 
@@ -149,17 +153,19 @@ For the v3 spec-centered Workbench:
   through the release checkout's
   `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`,
   which backs up changed files and records a rollback path; never hand-copy a
-  runtime tool.
+  runtime tool;
+- refresh the Workbench-managed core skills in `workbench/skills/` only
+  through the release checkout's
+  `node tools/workbench-skills.mjs update --project PATH --home HOME --explicit-update`,
+  which replaces only changed core skills, backs the previous directories up,
+  records a rollback path and leaves room-added skills alone; never hand-copy
+  a core skill and never touch the provider home to update a room.
 
-Skill replacement stays a separate, explicitly authorized operation. The same
-command's other mode, `tools/workbench-upgrade.mjs upgrade --explicit-update`,
-run against a disposable or verified user home, combines the layout phase with
-skill replacement: it updates only skills bearing the Workbench-managed marker,
-backs up changed skill directories first, and records the pre-migration Git
-SHA, inventory, and backups in the same recovery record. It uses the canonical core updater and its recorded-backup rollback. It fails
-closed for tracked core source, a Git-owned provider home, or an unmanaged
-same-named skill; ignored managed core inside a personal catalog is supported. Normal setup remains presence-only; never use `--explicit-update`
-merely because a same-named skill exists.
+The one-time v2 route, `tools/workbench-upgrade.mjs upgrade --explicit-update`
+(or its `--layout-only` mode; the two are exclusive), lays the skills lane and
+its adapters down through Adoption's migration and records the pre-migration
+Git SHA, inventory and both receipts in the same recovery record; it never
+reads, compares or replaces skills in a provider home.
 
 Map capabilities, not every historical task. Create completed specs only for
 durable current capabilities whose acceptance and proof are already real. Move

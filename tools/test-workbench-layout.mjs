@@ -66,8 +66,14 @@ function installTools(project) {
   assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
 }
 
+function installSkills(project) {
+  const result = spawnSync(process.execPath, [path.join(root, 'tools', 'workbench-skills.mjs'), 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+  assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+}
+
 function completeGenesis(project, options = {}) {
   if (options.tools !== false) installTools(project);
+  if (options.skills !== false) installSkills(project);
   if (options.git !== false) gitRoom(project);
   const router = fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')
     .replaceAll('[PROJECT_NAME]', 'Fixture').replaceAll('[HARNESS_VERSION]', VERSION.slice(1)).replaceAll('[YYYY-MM-DD]', '2026-09-01')
@@ -173,6 +179,9 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
       nextGate: 'Claim TK-001.'
     });
     assert.equal(fs.existsSync(path.join(project, 'skills')), false);
+    for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.realpathSync(path.join(project, discoveryRoot, 'genesis')), fs.realpathSync(path.join(project, 'workbench', 'skills', 'genesis')), `${discoveryRoot} resolves into the lane`);
+    }
     const manifest = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8'));
     assert.equal(manifest.schemaVersion, 2);
     assert.deepEqual(manifest.lanes, LANES);
@@ -236,6 +245,52 @@ function schemaOneFixture(project) {
     skillPolicy: { required: ['adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness'], discovery: ['.agents/skills', '.claude/skills'], normalSetup: 'presence-only', updates: 'explicit-only' }
   }, null, 2)}\n`);
 }
+
+// S-00V: a room stamped before the skills lane declares six lanes and the
+// provider-home skill policy. `migrate` declares the seventh lane and the
+// lane policy, creates the empty lane, and then `workbench-skills.mjs
+// install` lays the skills down - the route every existing room takes.
+test('a six-lane schema 2 manifest gains the skills lane through migrate, after which the lane installs and migrate reports current', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    delete manifest.lanes.skills;
+    manifest.skillPolicy = { ...manifest.skillPolicy, normalSetup: 'presence-only', updates: 'explicit-only' };
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+    // The undeclared directory may already exist, empty (init's .gitkeep) or
+    // holding a room-local skill; migrate must accept both, not refuse them.
+    fs.mkdirSync(path.join(project, 'workbench', 'skills', 'room-demo'), { recursive: true });
+    fs.writeFileSync(path.join(project, 'workbench', 'skills', 'room-demo', 'SKILL.md'), '# room demo\n');
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'a pre-lane room still validates');
+    const skillsTool = path.join(root, 'tools', 'workbench-skills.mjs');
+    const refused = spawnSync(process.execPath, [skillsTool, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(JSON.parse(refused.stdout).error.code, 'invalid-lane', 'install needs the lane declared first');
+
+    const migrated = run('migrate', '--project', project);
+    assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
+    assert.equal(migrated.report.status, 'migrated');
+    assert.deepEqual(migrated.report.added, ['lanes.skills']);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.equal(after.lanes.skills, 'workbench/skills');
+    assert.equal(after.skillPolicy.normalSetup, 'lane-install');
+    assert.equal(after.skillPolicy.updates, 'workbench-update');
+    assert.deepEqual(after.skillPolicy.required, manifest.skillPolicy.required, 'the required list is untouched');
+    assert.equal(fs.statSync(path.join(project, 'workbench', 'skills')).isDirectory(), true);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const installed = spawnSync(process.execPath, [skillsTool, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(JSON.parse(installed.stdout).status, 'installed', installed.stdout);
+    for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.realpathSync(path.join(project, discoveryRoot, 'genesis')), fs.realpathSync(path.join(project, 'workbench', 'skills', 'genesis')));
+    }
+    const verified = JSON.parse(spawnSync(process.execPath, [skillsTool, 'verify', '--project', project], { cwd: root, encoding: 'utf8' }).stdout);
+    assert.equal(verified.status, 'valid');
+    assert.deepEqual(verified.roomLocal, ['room-demo'], 'the room-local skill that predated the lane survives migrate and install');
+    assert.equal(run('migrate', '--project', project).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
 
 test('a schema 1 manifest reports upgrade-required and migrates losslessly once', () => {
   const project = fixture();
@@ -1125,7 +1180,7 @@ test('Genesis readiness fails closed on a permission file that withholds a decla
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     const settings = path.join(project, '.claude', 'settings.json');
-    fs.mkdirSync(path.dirname(settings));
+    fs.mkdirSync(path.dirname(settings), { recursive: true });
     fs.writeFileSync(settings, JSON.stringify({ permissions: { deny: ['Write(./secrets/**)'], ask: ['Bash(git push:*)'], allow: ['Edit(./src/**)', 'Edit(./AGENTS.md)'] } }));
 
     const drifted = run('validate', '--project', project, '--genesis');
@@ -1141,7 +1196,9 @@ test('Genesis readiness fails closed on a permission file that withholds a decla
     assert.equal(granted.status, 0, granted.stdout);
     assert.equal(granted.report.status, 'valid');
 
-    fs.rmSync(path.dirname(settings), { recursive: true, force: true });
+    // Only the permission file goes: `.claude/` also holds the tracked skills
+    // discovery adapter (S-00V), which a room without the file still needs.
+    fs.rmSync(settings, { force: true });
     const absent = run('validate', '--project', project, '--genesis');
     assert.equal(absent.status, 0, absent.stdout);
     assert.equal(absent.report.status, 'valid', 'a room without the file is unaffected');

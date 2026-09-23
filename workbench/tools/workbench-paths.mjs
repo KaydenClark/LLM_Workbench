@@ -6,14 +6,21 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export const SCHEMA_VERSION = 2;
+// S-00V TK-001: `skills` is the seventh lane. Every room carries the core
+// skills it needs at `workbench/skills`, owned and versioned by LLM Workbench
+// and replaced by the ordinary Workbench update, so a fresh clone discovers
+// them without a provider home. Rooms stamped before the lane existed still
+// declare the six-lane shape below; `validateManifest` reads both.
 export const LANES = Object.freeze({
   docs: 'workbench/docs',
   specs: 'workbench/specs',
   wiki: 'workbench/wiki',
   sessions: 'workbench/sessions',
   feedback: 'workbench/feedback',
-  tools: 'workbench/tools'
+  tools: 'workbench/tools',
+  skills: 'workbench/skills'
 });
+export const SIX_LANES = Object.freeze(Object.fromEntries(Object.entries(LANES).filter(([name]) => name !== 'skills')));
 export const COLLECTIONS = Object.freeze({
   adr: 'workbench/docs/adr',
   'design-concepts': 'workbench/wiki/design-concepts',

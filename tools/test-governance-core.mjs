@@ -142,11 +142,11 @@ test('feedback and transition docs preserve review ownership and harvest observe
     assert.match(format, /explicit(?:ly)? supplied destination/i,
       `${relative} lets an assigned independent review write to its external evidence owner`);
   }
-  for (const relative of ['templates/ADOPTION.md', 'templates/GENESIS.md', 'skills/update-harness/SKILL.md']) {
+  for (const relative of ['templates/ADOPTION.md', 'templates/GENESIS.md', 'workbench/skills/update-harness/SKILL.md']) {
     const content = read(relative);
     assert.match(content, /none observed/i, `${relative} requires a truthful feedback-harvest result`);
   }
-  const update = read('skills/update-harness/SKILL.md');
+  const update = read('workbench/skills/update-harness/SKILL.md');
   assert.match(update, /workbench-upgrade\.mjs upgrade --explicit-update/,
     'the existing update route owns explicitly authorized v2-root to v3-support-root transitions');
   assert.doesNotMatch(update, /Foundry\/Halls\/Forge/,
@@ -162,7 +162,7 @@ test('controls, protocols, and core skills resolve the integration branch from t
   assert.match(gitRules, /declared integration branch/, 'the template names the declared integration branch');
   const root = read('AGENTS.md');
   assert.match(root, /`workbench\/manifest\.json`[^\n]*`git\.integrationBranch`|`git\.integrationBranch`[^\n]*`workbench\/manifest\.json`/, 'root AGENTS.md names the manifest declaration of its integration branch');
-  for (const relative of ['skills/genesis/SKILL.md', 'skills/adoption/SKILL.md']) {
+  for (const relative of ['workbench/skills/genesis/SKILL.md', 'workbench/skills/adoption/SKILL.md']) {
     const skill = read(relative);
     assert.match(skill, /git\.integrationBranch/, `${relative} resolves the branch from the manifest`);
     assert.match(skill, /create[^\n]*from the default branch/i, `${relative} creates the declared branch from the default branch when authorization permits`);
@@ -171,7 +171,7 @@ test('controls, protocols, and core skills resolve the integration branch from t
 });
 
 test('Genesis, Adoption, and update-harness completion require a committed prefixed branch and a resolving declared integration branch', () => {
-  for (const relative of ['templates/GENESIS.md', 'templates/ADOPTION.md', 'skills/update-harness/SKILL.md']) {
+  for (const relative of ['templates/GENESIS.md', 'templates/ADOPTION.md', 'workbench/skills/update-harness/SKILL.md']) {
     const content = read(relative);
     assert.match(content, /^- \[ \] [^\n]*exists as a commit on a prefixed task branch/m, `${relative} requires the run to exist as a commit on a prefixed branch`);
     assert.match(content, /^- \[ \] [^\n]*declared integration branch[\s\S]{0,400}records the explicit reason/m, `${relative} requires the declared integration branch on the remote or a recorded omission reason`);

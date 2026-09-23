@@ -18,6 +18,7 @@ const specTool = path.join(root, 'workbench', 'tools', 'spec-workbench.mjs');
 const wikiTool = path.join(root, 'workbench', 'tools', 'wiki.mjs');
 const installer = path.join(root, 'tools', 'core-skill-installer.mjs');
 const toolsInstaller = path.join(root, 'tools', 'workbench-tools.mjs');
+const skillsInstaller = path.join(root, 'tools', 'workbench-skills.mjs');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 
 function fixture() {
@@ -66,6 +67,11 @@ function project(version = VERSION) {
   git(dir, 'init', '-q', '-b', 'main');
   git(dir, 'commit', '-q', '--allow-empty', '-m', 'fixture');
   git(dir, 'branch', 'integration');
+  // S-00V: a room carries its core skills in the skills lane; doctor reports
+  // an uninstalled lane, which is not the behavior under test in the fixtures
+  // that expect an empty report.
+  const skills = spawnSync(process.execPath, [skillsInstaller, 'install', '--project', dir], { cwd: root, encoding: 'utf8' });
+  assert.equal(skills.status, 0, skills.stdout);
   write(dir, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
   write(dir, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   // A complete schema 2 project carries its wiki router; doctor reports a
@@ -328,47 +334,41 @@ function snapshot(directory) {
   return entries;
 }
 
-test('doctor --home reports unknown generation or compatibility per required skill, never writes to the home, and reads schema 1 as unknown', () => {
+// S-00V: doctor reads the room's skills lane and discovery adapters, never
+// the provider home. An uninstalled lane or a missing core skill is an error
+// that blocks nothing (the room repairs it with one release command); a root
+// skills/ shadow blocks everything.
+test('doctor reports the skills lane from the room, never reads or writes the provider home, and blocks only on a root skills shadow', () => {
   const dir = project(VERSION);
   const home = fixture();
   try {
     write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
     render(dir);
-    const installed = spawnSync(process.execPath, [installer, 'install', '--home', home], { cwd: root, encoding: 'utf8' });
-    assert.equal(installed.status, 0, installed.stdout);
-    assert.deepEqual(doctor(dir, { home }), [], 'a freshly installed bundle from this release is neither stale nor unknown');
-
-    const staleMarker = path.join(home, '.claude', 'skills', 'genesis', '.workbench-skill.json');
-    fs.writeFileSync(staleMarker, JSON.stringify({ ...JSON.parse(fs.readFileSync(staleMarker, 'utf8')), release: 'v0.0.0', compatibleRooms: { minimum: 'v0.0.0', maximum: 'v0.0.0' } }));
-    fs.rmSync(path.join(home, '.agents', 'skills', 'builder', '.workbench-skill.json'));
-    fs.writeFileSync(path.join(home, '.agents', 'skills', 'reviewer', '.workbench-skill.json'), '{"schemaVersion":1,"source":"LLM Workbench core"}\n');
-    // A schema 2 marker from another source is not a Workbench generation even when it names the manifest release.
-    fs.writeFileSync(path.join(home, '.claude', 'skills', 'auditor', '.workbench-skill.json'), `${JSON.stringify({ schemaVersion: 2, source: 'someone else', release: VERSION, commit: 'unknown', contentHash: 'x' })}\n`);
     const before = snapshot(home);
-
-    const findings = doctor(dir, { home });
-
-    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.skill, item.root]).sort(), [
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'auditor'],
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'builder'],
-      ['skill-generation-unknown', 'attention', 'skills', 'none', 'reviewer'],
-      ['skill-compatibility-unknown', 'attention', 'skills', 'none', 'genesis']
-    ].flatMap(row => ['.agents/skills', '.claude/skills'].map(discovery => [...row, discovery])).concat([['core-generation-conflict', 'attention', 'skills', 'none', undefined, undefined]]).sort());
-    assert.equal(findings.find((item) => item.code === 'skill-compatibility-unknown').release, 'v0.0.0');
-    assert.match(findings.find((item) => item.code === 'skill-compatibility-unknown').message, /valid room compatibility range/);
-    assert.deepEqual(snapshot(home), before, 'doctor never writes to the home');
-    const cli = cliDoctor(dir, home);
-    assert.equal(cli.status, 0, 'skill findings are attention and never block');
-    assert.equal(cli.findings.length, 9, 'both discovery entries expose canonical marker changes and mixed global generation');
-    assert.equal(nextWork(dir).taskId, 'TK-001');
+    assert.deepEqual(doctor(dir), [], 'a lane laid down from this release is clean');
     assert.ok(SCOPES.includes('skills'));
-    assert.deepEqual(doctor(dir, { home: quietHome }), [], 'a healthy declared compatible core has no skill findings');
-    const empty = fixture();
-    try {
-      const absent = doctor(dir, { home: empty }).filter(item => item.scope === 'skills');
-      assert.equal(absent.length, JSON.parse(fs.readFileSync(path.join(dir, 'workbench/manifest.json'))).skillPolicy.required.length * 2);
-      assert.ok(absent.every(item => item.code === 'skill-missing' && item.blocks === 'none'));
-    } finally { fs.rmSync(empty, { recursive: true, force: true }); }
+
+    const required = JSON.parse(fs.readFileSync(path.join(dir, 'workbench/manifest.json'))).skillPolicy.required;
+    fs.rmSync(path.join(dir, 'workbench', 'skills', 'builder'), { recursive: true, force: true });
+    fs.rmSync(path.join(dir, '.claude', 'skills'), { force: true });
+    const findings = doctor(dir);
+    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks, item.skill ?? item.root]).sort(), [
+      ['skill-adapter-missing', 'attention', 'skills', 'none', '.claude/skills'],
+      ['skill-lane-missing', 'error', 'skills', 'none', 'builder']
+    ]);
+    assert.deepEqual(snapshot(home), before, 'doctor never touches the home');
+    const cli = cliDoctor(dir, home);
+    assert.equal(cli.status, 0, 'lane findings are visible and never block selection');
+    assert.equal(nextWork(dir).taskId, 'TK-001');
+
+    for (const skill of required) fs.rmSync(path.join(dir, 'workbench', 'skills', skill), { recursive: true, force: true });
+    const uninstalled = doctor(dir).filter((item) => item.scope === 'skills');
+    assert.deepEqual(uninstalled.map((item) => [item.code, item.blocks]), [['skill-adapter-missing', 'none'], ['skill-lane-missing', 'none']], 'an uninstalled lane is one finding, not one per skill');
+
+    fs.mkdirSync(path.join(dir, 'skills', 'shadow'), { recursive: true });
+    const shadowed = cliDoctor(dir, home);
+    assert.notEqual(shadowed.status, 0, 'a root skills/ shadow blocks everything');
+    assert.ok(shadowed.findings.some((item) => item.code === 'project-local-skills' && item.blocks === 'all'));
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
@@ -859,16 +859,13 @@ const PINNED_EFFECTS = {
   'stale-note': ['attention', 'wiki', 'none'],
   'room-brain-unrouted': ['attention', 'wiki', 'none'],
   'stale-stamp': ['attention', 'wiki', 'none'],
-  'skill-missing': ['attention', 'skills', 'none'],
-  'skill-discovery-broken': ['attention', 'skills', 'none'],
-  'skill-content-modified': ['attention', 'skills', 'none'],
-  'skill-compatibility-unknown': ['attention', 'skills', 'none'],
-  'incompatible-core': ['attention', 'skills', 'none'],
-  'skill-source-conflict': ['attention', 'skills', 'none'],
+  // S-00V: the lane findings mirror `integration-branch-missing` - an error
+  // every run shows that blocks nothing, repaired by one release command.
+  'skill-lane-missing': ['error', 'skills', 'none'],
+  'skill-lane-unreadable': ['error', 'skills', 'none'],
+  'skill-adapter-missing': ['attention', 'skills', 'none'],
+  'skill-adapter-broken': ['attention', 'skills', 'none'],
   'skill-duplicate-discovery': ['attention', 'skills', 'none'],
-  'core-generation-conflict': ['attention', 'skills', 'none'],
-  'stale-skill': ['attention', 'skills', 'none'],
-  'skill-generation-unknown': ['attention', 'skills', 'none'],
   'stale-seed': ['attention', 'feedback', 'none'],
   'unverified-provenance': ['attention', 'manifest', 'none']
 };
@@ -909,7 +906,7 @@ test('every registered diagnostic code is pinned, so registering one without a p
 
 test('doctor plain output groups findings by consequence, counts each group, and prints blocking findings first', () => {
   const mixed = [
-    finding('skill-generation-unknown', '.claude/skills/auditor has no schema 2 marker'),
+    finding('skill-adapter-missing', '.claude/skills is absent, so that host cannot discover workbench/skills'),
     finding('blocked-slice', 'S-001 TK-001 names S-999'),
     finding('invalid-adr', 'ADR-0001 is missing required frontmatter'),
     finding('duplicate-id', 'two packets claim S-001')
@@ -920,14 +917,14 @@ test('doctor plain output groups findings by consequence, counts each group, and
     'selected slice (1) - next excludes the slice and claim refuses it',
     '  blocked-slice [blocks selected-slice, error]: S-001 TK-001 names S-999',
     'informational (2) - reported only; nothing is blocked',
-    '  skill-generation-unknown [blocks none, attention]: .claude/skills/auditor has no schema 2 marker',
+    '  skill-adapter-missing [blocks none, attention]: .claude/skills is absent, so that host cannot discover workbench/skills',
     '  invalid-adr [blocks none, error]: ADR-0001 is missing required frontmatter'
   ].join('\n'), 'a blocking finding must not be buried among findings that block nothing');
 
   assert.equal(formatDoctorReport([]), 'ok - spec workbench doctor passed');
   assert.equal(formatDoctorReport(mixed.filter((item) => item.blocks === 'none')), [
     'informational (2) - reported only; nothing is blocked',
-    '  skill-generation-unknown [blocks none, attention]: .claude/skills/auditor has no schema 2 marker',
+    '  skill-adapter-missing [blocks none, attention]: .claude/skills is absent, so that host cannot discover workbench/skills',
     '  invalid-adr [blocks none, error]: ADR-0001 is missing required frontmatter',
     'ok - no blocking finding; attention and slice findings above stay visible'
   ].join('\n'), 'a room whose findings block nothing still says so on the last line');

@@ -270,20 +270,18 @@ carries. Copy a template only into a control that does not exist yet, and merge
 by hand everywhere else. The migration's own refusal repeats this order and
 warning, and names every unreconciled control at once rather than the first.
 
-Install or verify the closed core bundle in the intended user home, then run the
-bounded migration seam. Missing-only setup uses canonical `.agents/skills`
-source and Claude adapters, preserving existing names. Explicit core replacement
-uses the release checkout's `core-skill-installer.mjs update --explicit-update`;
-retain its recorded backup for `rollback --backup`. Never migrate tracked
-personal core source as an incidental adoption repair:
+Run the bounded migration seam from the release checkout. It lays the core
+skills into the room's own `workbench/skills` lane with a receipt and the
+tracked `.agents/skills` and `.claude/skills` discovery adapters, so the room
+needs no provider home and no personal catalog to run:
 
 ```bash
-node tools/core-skill-installer.mjs install --home [USER_HOME]
 node tools/workbench-adoption.mjs migrate \
   --project [ABSOLUTE_PROJECT_PATH] \
   --home [USER_HOME] \
   --version v3.2.1
 node tools/workbench-tools.mjs verify --project [ABSOLUTE_PROJECT_PATH]
+node tools/workbench-skills.mjs verify --project [ABSOLUTE_PROJECT_PATH]
 node workbench/tools/workbench-layout.mjs validate --project [ABSOLUTE_PROJECT_PATH]
 node workbench/tools/spec-workbench.mjs next --json
 node workbench/tools/spec-workbench.mjs doctor
@@ -291,17 +289,19 @@ node workbench/tools/spec-workbench.mjs doctor
 
 The first three commands run from the checked-out LLM Workbench release; the
 last three run the project's own installed copies. The migration installs the
-runtime tools into `workbench/tools/` with a receipt recording the exact source
-release, commit, and hashes (`verify` confirms it); it never reads or writes an
-application's root `tools/` directory.
+runtime tools into `workbench/tools/` and the core skills into
+`workbench/skills/`, each with a receipt recording the exact source release,
+commit, and hashes (each `verify` confirms it); it never reads or writes an
+application's root `tools/` directory, and it never reads or writes a skill in
+`[USER_HOME]`.
 
 The migration moves only known unambiguous durable paths: `specs/`, `Wiki/`,
 root `MEMORY.md`, `feedback/`, `grilling diary/`, and `handoffs/` to their
 manifest-declared lanes and collections (legacy grilling records become the
 untracked `workbench/sessions/grilling/`; legacy handoffs become the tracked
 `workbench/sessions/checkpoints/`). It preserves a legacy project-local
-`skills/` folder as `workbench/sessions/recovery/adoption-legacy-skills/`
-only after every required core skill is already user-scoped. It writes the
+`skills/` folder as `workbench/sessions/recovery/adoption-legacy-skills/`,
+because a root `skills/` would shadow the lane. It writes the
 explicit recovery record at `workbench/sessions/recovery/adoption-recovery.json`,
 moves a root `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
 `workbench/feedback/`, installs the runtime tools, renders the projections, and
@@ -313,8 +313,8 @@ from `origin/HEAD`) and lists an unresolved one as
 permits, create that branch from the default branch and push it; otherwise
 record the omission reason in the owning spec.
 
-An existing `workbench/` root, a legacy path collision, unfilled controls, or
-missing user-scoped core skill blocks before migration; inspect and reconcile
+An existing `workbench/` root, a legacy path collision, or unfilled controls
+block before migration; inspect and reconcile
 the conflict rather than overwriting it. An `unreconciled-controls` refusal
 lists every failing control at once, each with its own reason
 (`missing-control` or `bracketed-control`), so one run tells you the whole

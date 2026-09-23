@@ -46,7 +46,7 @@ test('explicit update preserves changed core bytes in a backup and rollback rest
     assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), changed);
     const result = maintain(home, 'update', '--explicit-update');
     assert.equal(result.report.status, 'updated', result.stdout);
-    assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'skills/genesis/SKILL.md'), 'utf8'));
+    assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'workbench/skills/genesis/SKILL.md'), 'utf8'));
     assert.equal(fs.realpathSync(adapter), fs.realpathSync(canonical));
     const restored = maintain(home, 'rollback', '--backup', result.report.backup);
     assert.equal(restored.report.status, 'rolled-back', restored.stdout);
@@ -284,7 +284,7 @@ test('normal setup installs only missing bundled core skills in both user discov
     );
     assert.equal(
       fs.readFileSync(path.join(home, '.agents', 'skills', 'adoption', 'SKILL.md'), 'utf8'),
-      fs.readFileSync(path.join(root, 'skills', 'adoption', 'SKILL.md'), 'utf8')
+      fs.readFileSync(path.join(root, 'workbench', 'skills', 'adoption', 'SKILL.md'), 'utf8')
     );
     assert.ok(result.report.skipped.some((entry) =>
       entry.engine === 'codex' && entry.skill === 'genesis' && entry.reason === 'already-present'
@@ -321,7 +321,7 @@ test('a Git-owned discovery root installs the missing skills and leaves Git unto
     assert.equal(result.report.status, 'complete');
     assert.equal(
       fs.readFileSync(path.join(gitRoot, 'genesis', 'SKILL.md'), 'utf8'),
-      fs.readFileSync(path.join(root, 'skills', 'genesis', 'SKILL.md'), 'utf8'));
+      fs.readFileSync(path.join(root, 'workbench', 'skills', 'genesis', 'SKILL.md'), 'utf8'));
     assert.equal(JSON.parse(fs.readFileSync(path.join(gitRoot, 'genesis', '.workbench-skill.json'), 'utf8')).release, VERSION,
       'the installed copy still carries its marker');
 
@@ -496,7 +496,7 @@ test('all four stances are available through one-level discovery and a repeated 
     for (const provider of ['.agents', '.claude']) {
       for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {
         const file = path.join(home, provider, 'skills', stance, 'SKILL.md');
-        assert.equal(fs.readFileSync(file, 'utf8'), fs.readFileSync(path.join(root, 'skills', stance, 'SKILL.md'), 'utf8'));
+        assert.equal(fs.readFileSync(file, 'utf8'), fs.readFileSync(path.join(root, 'workbench', 'skills', stance, 'SKILL.md'), 'utf8'));
       }
     }
     for (const stance of ['builder', 'auditor', 'reviewer', 'reconciler']) {

@@ -291,12 +291,15 @@ target, and bounded choices explicitly supplied in the founding prompt; link
 those sources and keep unresolved questions open. Put 1-3 one-context
 tracer-bullet tasks in its implementation table and record the Genesis result
 in its evidence log. The
-manifest declares the six lanes (`docs`, `specs`, `wiki`, `sessions`,
-`feedback`, `tools`) and their collections; live grilling and handoff records
+manifest declares the seven lanes (`docs`, `specs`, `wiki`, `sessions`,
+`feedback`, `tools`, `skills`) and their collections; live grilling and handoff records
 under `workbench/sessions/` stay untracked. Reusable schema/examples in
 `sessions/notepads/templates/` are tracked; `sessions/checkpoints/`
 retains frozen history. Operational `sessions/recovery/` stays ignored and is
-excluded from notepad discovery. Do not create a project-local `skills/` discovery directory.
+excluded from notepad discovery. The release lays the core skills down in
+`workbench/skills` with its receipt and the tracked `.agents/skills` and
+`.claude/skills` links into it (`tools/workbench-skills.mjs install`); do not
+create a root `skills/` directory, which shadows the lane.
 
 The readiness gate (`validate --genesis`) accepts only an actionable first
 packet, so shape it exactly like this before running the gate:

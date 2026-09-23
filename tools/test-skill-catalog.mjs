@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const skillsRoot = path.join(root, 'skills');
+const skillsRoot = path.join(root, 'workbench', 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
 import { coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
@@ -20,11 +20,11 @@ const directoryNames = (directory) => fs.readdirSync(directory, { withFileTypes:
   .map((entry) => entry.name)
   .sort();
 
-const catalog = read('skills/README.md');
+const catalog = read('workbench/skills/README.md');
 const catalogRegion = catalog.match(
   /<!-- core-skills:start -->([\s\S]*?)<!-- core-skills:end -->/
 );
-assert.ok(catalogRegion, 'skills/README.md must declare the closed core-skill bundle');
+assert.ok(catalogRegion, 'workbench/skills/README.md must declare the closed core-skill bundle');
 const catalogNames = catalogRegion[1]
   .split('\n')
   .filter((line) => /^\| `[^`]+` \|/.test(line))
@@ -38,7 +38,7 @@ assert.deepEqual(directoryNames(skillsRoot), coreSkills,
 for (const skill of coreSkills) {
   const source = path.join(skillsRoot, skill, 'SKILL.md');
   assert.ok(fs.statSync(source).isFile(), `${skill} must contain SKILL.md`);
-  assert.match(read(`skills/${skill}/SKILL.md`), /^---\nname: /,
+  assert.match(read(`workbench/skills/${skill}/SKILL.md`), /^---\nname: /,
     `${skill} must retain skill frontmatter`);
 }
 
@@ -88,14 +88,14 @@ const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'e
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
 const workflowWord = words[bundleSize - stanceCount];
 for (const [relative, expected] of [
-  ['skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`]],
-  ['README.md', [`closed ${bundleSize}-skill public source bundle`]],
-  ['RUNBOOK.md', [`limited to the ${bundleSize} skills`]],
+  ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`]],
+  ['README.md', [`closed ${bundleSize}-skill core bundle`]],
+  ['RUNBOOK.md', [`the ${bundleSize} core skills`]],
   ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
   ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
 ]) {
   assertIncludesAll(read(relative), expected,
-    `${relative} states the core bundle size and must match the ${bundleSize} skills in skills/`);
+    `${relative} states the core bundle size and must match the ${bundleSize} skills in workbench/skills/`);
 }
 
 // S-049: `RUNBOOK.md`'s documented Genesis command carried `--version v3.1.2`
@@ -103,8 +103,8 @@ for (const [relative, expected] of [
 // a mismatch with `invalid-source-identity` - a root control shipping a command
 // that cannot run. Every documented `--version` literal must be this release.
 const VERSION = JSON.parse(read('workbench/manifest.json')).workbenchVersion;
-for (const relative of ['RUNBOOK.md', 'templates/ADOPTION.md', 'skills/adoption/SKILL.md',
-  'skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'tools/workbench-adoption.mjs',
+for (const relative of ['RUNBOOK.md', 'templates/ADOPTION.md', 'workbench/skills/adoption/SKILL.md',
+  'workbench/skills/update-harness/SKILL.md', 'tools/workbench-upgrade.mjs', 'tools/workbench-adoption.mjs',
   'workbench/tools/workbench-layout.mjs']) {
   const stale = [...read(relative).matchAll(/--version (v\d+\.\d+\.\d+)/g)]
     .map((match) => match[1])
@@ -134,7 +134,7 @@ const forbiddenLivePatterns = [
   /workbench\/handoffs\b/
 ];
 for (const name of coreSkills) {
-  const skill = read(`skills/${name}/SKILL.md`);
+  const skill = read(`workbench/skills/${name}/SKILL.md`);
   for (const pattern of forbiddenLivePatterns) {
     assert.doesNotMatch(skill, pattern,
       `${name} must not expose retired paths or parallel truth-routing instructions`);
@@ -154,7 +154,7 @@ for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
   );
 }
 
-const slicingSkill = read('skills/to-tasks/SKILL.md');
+const slicingSkill = read('workbench/skills/to-tasks/SKILL.md');
 for (const forbidden of [
   '.scratch/',
   'configured tracker',
@@ -175,7 +175,7 @@ assertIncludesAll(slicingSkill, [
 assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
   'to-tasks must treat TASKBOARD.md as a generated projection');
 
-const grilling = read('skills/grilling/SKILL.md');
+const grilling = read('workbench/skills/grilling/SKILL.md');
 for (const [pattern, label] of [
   [/\/domain-modeling/, 'imported domain-modeling invocation'],
   [/CONTEXT\.md/, 'parallel context file'],
@@ -202,7 +202,7 @@ assertIncludesAll(grilling, [
   'Before a voluntary'
 ], 'grilling');
 
-const makeItSo = read('skills/make-it-so/SKILL.md');
+const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
   'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',
   '`save`', '`carry`', '`implement`', 'specification-only',
@@ -211,12 +211,12 @@ assertIncludesAll(makeItSo, [
 assert.doesNotMatch(makeItSo, /every pending approval|universal execution authorization/i,
   'composition must never replace the narrower user endpoint');
 
-const checkpoint = read('skills/checkpoint/SKILL.md');
+const checkpoint = read('workbench/skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
 assert.match(checkpoint, /copying is retired/i, 'checkpoint must retire copy creation');
 assert.match(checkpoint, /writes nothing/, 'legacy invocation must explain its no-write refusal');
 
-const toDocs = read('skills/to-docs/SKILL.md');
+const toDocs = read('workbench/skills/to-docs/SKILL.md');
 assertIncludesAll(toDocs, [
   'settled conversation',
   '`LEXICON.md`',
@@ -232,7 +232,7 @@ assertIncludesAll(toDocs, [
 assert.doesNotMatch(toDocs, /ask (the )?user|interview the user|create a second|issue tracker/i,
   'to-docs must persist settled truth without restarting discovery or adding stores');
 
-const toSpec = read('skills/to-spec/SKILL.md');
+const toSpec = read('workbench/skills/to-spec/SKILL.md');
 assertIncludesAll(toSpec, [
   'already-settled conversation',
   '`workbench/manifest.json`',
@@ -244,19 +244,19 @@ for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for
   assert.ok(!toSpec.includes(forbidden), `to-spec must not retain ${forbidden}`);
 }
 
-const genesis = read('skills/genesis/SKILL.md');
+const genesis = read('workbench/skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
   '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`git.integrationBranch`', 'commit and push',
   'workbench/tools/workbench-layout.mjs init', 'tools/workbench-tools.mjs install'
 ], 'genesis');
 
-const adoption = read('skills/adoption/SKILL.md');
+const adoption = read('workbench/skills/adoption/SKILL.md');
 assertIncludesAll(adoption, [
   '`templates/ADOPTION.md`', 'one-time', 'existing project', '`/update-harness`', 'private remote', 'commit and push',
   'workbench-adoption.mjs', 'migrate', 'manifest-declared', 'project-local `skills/`', '`git.integrationBranch`'
 ], 'adoption');
 
-const implement = read('skills/implement/SKILL.md');
+const implement = read('workbench/skills/implement/SKILL.md');
 assertIncludesAll(implement, [
   'assigned stable `SPEC.md`', 'one eligible task', 'node workbench/tools/spec-workbench.mjs next --json',
   'node workbench/tools/spec-workbench.mjs show S-###', 'node workbench/tools/spec-workbench.mjs claim S-### --agent NAME',
@@ -267,7 +267,7 @@ assertIncludesAll(implement, [
 // S-049: carry owns an assigned unit of work to its authorized endpoint and
 // records what the owner still had to supply. Both halves are load-bearing: a
 // carry that delivers without the coordination record measures nothing.
-const carry = read('skills/carry/SKILL.md');
+const carry = read('workbench/skills/carry/SKILL.md');
 assertIncludesAll(carry, [
   'already-assigned',
   'assigned `SPEC.md`',
@@ -296,7 +296,7 @@ assert.match(carry, /Do not answer one with a new framework/,
 assert.match(carry, /Stopping\s+before an already-authorized step/,
   'carry must name stopping short of the authorized endpoint as the failure it removes');
 
-const codeReview = read('skills/code-review/SKILL.md');
+const codeReview = read('workbench/skills/code-review/SKILL.md');
 assertIncludesAll(codeReview, [
   'fixed diff', '`BASE_SHA`', '`HEAD_SHA`',
   'git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --',
@@ -313,14 +313,14 @@ assertIncludesAll(codeReview, [
 // `skills/` is the bundled core installed into every room, so no core skill
 // may name the room-specific S-00O id; the condition is stated generically.
 for (const skill of coreSkills) {
-  assert.doesNotMatch(read(`skills/${skill}/SKILL.md`), /S-00O/,
+  assert.doesNotMatch(read(`workbench/skills/${skill}/SKILL.md`), /S-00O/,
     `${skill} must not name the room-specific S-00O id; state the Task-PR exemption generically`);
 }
 for (const [name, relativePath] of [
-  ['code-review', 'skills/code-review/SKILL.md'],
-  ['reviewer', 'skills/reviewer/SKILL.md'],
-  ['carry', 'skills/carry/SKILL.md'],
-  ['implement', 'skills/implement/SKILL.md']
+  ['code-review', 'workbench/skills/code-review/SKILL.md'],
+  ['reviewer', 'workbench/skills/reviewer/SKILL.md'],
+  ['carry', 'workbench/skills/carry/SKILL.md'],
+  ['implement', 'workbench/skills/implement/SKILL.md']
 ]) {
   const content = read(relativePath);
   assertIncludesAll(content, [
@@ -336,13 +336,13 @@ for (const [name, relativePath] of [
   ], `${name} reviewed-unit language`);
 }
 assert.ok(
-  read('skills/implement/SKILL.md').includes(
+  read('workbench/skills/implement/SKILL.md').includes(
     'a separate-context review of the assembled Spec is required'
   ),
   'implement must state the integration-branch review of the assembled Spec as separate-context, matching carry and code-review'
 );
 
-const updateHarness = read('skills/update-harness/SKILL.md');
+const updateHarness = read('workbench/skills/update-harness/SKILL.md');
 assert.match(updateHarness, /checked-out LLM Workbench repository/,
   'update-harness must identify the product-local source');
 assert.doesNotMatch(updateHarness, /\/Users\/kayden\/GPT_OS\//,
@@ -371,7 +371,7 @@ assert.match(read('RUNBOOK.md'), /--layout-only/, 'the Runbook must document the
 assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
 
 for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
-  const skill = read(`skills/${name}/SKILL.md`);
+  const skill = read(`workbench/skills/${name}/SKILL.md`);
   assert.match(skill, /workbench\/manifest\.json/,
     `${name} must route durable v3 workflow records through the manifest`);
 }
