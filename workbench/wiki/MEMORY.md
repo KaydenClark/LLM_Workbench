@@ -43,6 +43,17 @@ The shared runtime is `workbench/tools/notepads.mjs`; its operations are
 documented in [RUNBOOK](../../RUNBOOK.md) and its judgment in the `notepad`
 skill. This router does not copy their state or the local grilling queue.
 
+## Skills Reference
+
+The individual pages below explain the three owner-directed skill concepts and
+link to their executable or planned source. They are curated context, not
+instruction authority. The [S-00W Spec](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
+owns the accepted redesign and work state.
+
+- [Grilling: arrive at a shared design concept](skill-grilling.md)
+- [Grill-me: start a saved design inquiry](skill-grill-me.md)
+- [Notepad: preserve one objective's working context](skill-notepad.md)
+
 ## Release And Distribution Routing
 
 The reconciled release scope and complete historical inventory live in
