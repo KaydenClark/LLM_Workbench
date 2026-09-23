@@ -38,6 +38,8 @@ Depends on: TT-Q4, TT-Q3, FND-Q15
 
 ### TT-Q3 (open)
 
+**Answered by the owner 2026-09-23.** Workbench 1:* Workbenches and 1:* Projects, each Project with its own Workbench; one Blueprint per Workbench; Blueprint 1:* Specs and Tasks; Spec 1:* Tasks and Chats; Task 1:1 Chat. The Lexicon's Workbench, Project, Blueprint, Spec, Task, Chat and Director rows now own the answer; the options below are history.
+
 **Question.** What are the hierarchy and cardinality among Project, Workbench, host chat, assignment, Spec, and Task?
 
 **What changed.** TT-Q1 locked Chat and Thread. FND-Q19 fixed the three altitudes. ADR-000H makes Task a record. The manifest binds one Workbench to one project. A Spec owns its own branch (FND-Q14). Cross-Spec needs are already expressed as Spec-level Blockers (S-00C blocked by S-00B, and so on).
@@ -48,6 +50,8 @@ Depends on: TT-Q4, TT-Q3, FND-Q15
 Depends on: FND-Q03
 
 ### TT-Q4 (open)
+
+**Answered by the owner 2026-09-23.** A Task is worked in one Chat, and a Chat never works several Tasks: it completes its Task, cleans up and ends, and a Director opens the next Chat. The Lexicon's Task, Chat and Director rows now own the answer; the options below are history.
 
 **Question.** Must one Task fit in one host chat/context, and may one chat carry more than one Task?
 
