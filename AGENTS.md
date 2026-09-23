@@ -349,6 +349,15 @@ consequential report claims, and recommendations. Earlier review and audit are
 supports, not mandatory independent ceremonies per task. A new candidate
 requires a fresh review; self-review alone cannot satisfy the integration gate.
 
+Owner Human QA is an owner-led evaluation process, not the approval command. It
+can be underway through audits and corrective cycles before the eventual
+approval on `integration`. An ongoing or failed Human QA review has findings to
+reconcile; it is not a request for the owner to start QA or an ordinary
+dependency blocker. Record that state and the next corrective action in the
+owning Spec, then refresh the Taskboard projection. Passing tests or a
+separate-context source review does not reset a failed Human QA gate to
+"awaiting approval"; only the owner's actual approval records approval.
+
 ### Branch Completion
 
 A task is not finished at the push. A pushed branch is recoverable, not

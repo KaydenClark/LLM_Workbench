@@ -5,11 +5,11 @@
 **Priority:** 3
 **Owner:** codex-feedback-reconciler
 **Stance:** Builder
-**Updated:** 2026-09-19
+**Updated:** 2026-09-23
 **Catalog description:** Reconcile feedback ledgers, snapshots, reports and evidence by provenance and consumer role before any duplicate representation is removed.
 **Blockers:** none
-**Latest event:** Implementation proof is complete at 58a1b3b: all 51 checks and independent source review pass; owner Human QA remains open.
-**Next gate:** Owner Human QA once integration contains the reviewed candidate; record approval or corrective findings before any Spec completion or retirement.
+**Latest event:** Owner clarified on 2026-09-23 that Human QA has been underway since 2026-09-19 and its reviews have failed. The earlier 51-check/source-review PASS is separate proof; no owner approval is recorded.
+**Next gate:** Reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
 
 > **Citation anchors.** pre=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f` post=`8dc257eb9b9615c9e6a26beda95209dbcdb4f05f`.
 
@@ -191,6 +191,8 @@ socket or worktree controls change in this planning record.
 | 2026-09-19 | assembled verification | Full source proof and independent review passed at `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` | All 51 commands passed in a detached clean tree; before/after HEAD and status identical; separate-context reviewer reran retired-corrective and unfinished-discard probes | Shared S-00U VERIFICATION.md plus owning documentation | Final metadata review and integration delivery pending; owner Human QA, retirement, release and native/external proof are not supplied |
 | 2026-09-19 | review | Review verdict: pass at 75a565aa40d62f93903a396079bb2051bc1692ad [7bd972cdc037] #1 | none; source and proof-state delivery reviewed, owner QA and disclosed native/external/recovery limits remain separate | independent_review; separate Codex context; inherited model not separately identified; code-review mode | 2 |
 | 2026-09-19 | review | Review verdict: pass at 0c34d05c479f4a434f6b102954f9fd2768549baf [7bd972cdc037] #2 | none | independent_review; separate Codex context; inherited model not separately identified; code-review mode; corrects prior receipt count: zero review findings | none |
+
+| 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
 
 ## Completion Result
 

@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-17
+**Updated:** 2026-09-23
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
 **Blockers:** TK-002 onward wait on S-00I and S-00J reaching `complete`. S-00H is complete and retired; TK-001 is done and landed.
 **Latest event:** TK-001 closed with proof.
-**Next gate:** After S-00I/S-00J repairs, integration Human QA and completion, claim TK-002 for the AGENTS rewrite.
+**Next gate:** After the active S-00I/S-00J Human QA findings are reconciled, corrected results pass review and owner QA, and both Specs complete, claim TK-002 for the AGENTS rewrite.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
@@ -319,6 +319,8 @@ workflow. No other owner changes.
 | 2026-09-17 | TK-001 | Ticket closed | Red: 31-claim rung-and-stage assertion in tools/test-blueprint-contract.mjs fails at pre anchor e3c5c8f with every claim unstated; green at 0c154b2; full suite 42/42 on the committed candidate; doctor no blocking finding; render no-op; evaluate-workbench --include-controls 113/113. Separate-context review (Claude Fable 5.1) PASS and SEMANTIC PASS on 2029876, two low findings (WF-8G discard gate, WF-8D branch cleanup) corrected in 0c154b2 and re-reviewed PASS and SEMANTIC PASS. Built by Claude Opus 5 from the lane handoff. Landed by PR #96; integration f84b469 contains 0c154b2 | BLUEPRINT.md rewritten (the deliverable); templates/BLUEPRINT.md untouched by design under the shared eight-heading contract; no other owner changed | The contract assertion is phrasing-coupled, not semantic proof; semantic fidelity rests on the separate-context review. A second candidate for this Task, origin/claude/S-00P-TK-001-blueprint-workflow-rework at a7e83c0 from a session the dispatcher did not start, satisfied the same acceptance and is left unmerged for the owner to delete. TK-002 onward stay blocked on S-00H, S-00I and S-00J |
 
 | 2026-09-19 | S-00K | Corrected current blocker header and next gate | Verified S-00H retired complete at bc370fe; I/J remain unapproved | Removed resolved H from live blocker wording; historical dependency rows preserved | I/J repair and owner QA still required |
+
+| 2026-09-23 | owner correction | S-00I/S-00J Human QA is already underway with failed reviews, not waiting for the owner to begin | Direct owner clarification on 2026-09-23; read current S-00I/S-00J gates and the 2026-09-19 failed approval audit | Corrected dependent next gate; earlier evidence preserved | TK-002 still waits for corrected I/J results, owner approval and completion |
 
 ## Completion Result
 

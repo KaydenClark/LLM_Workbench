@@ -5,11 +5,11 @@
 **Priority:** 3
 **Owner:** feedback-lane
 **Stance:** Builder
-**Updated:** 2026-09-19
+**Updated:** 2026-09-23
 **Catalog description:** Require every feedback finding to resolve into one of five named dispositions recorded in its owning Spec, and ratchet the registry so no future diagnostic lands without remediation text.
 **Blockers:** none
-**Latest event:** Implementation proof is complete at 58a1b3b: all 51 checks and independent source review pass; owner Human QA remains open.
-**Next gate:** Owner Human QA once integration contains the reviewed candidate; record approval or corrective findings before any Spec completion or retirement.
+**Latest event:** Owner clarified on 2026-09-23 that Human QA has been underway since 2026-09-19 and its reviews have failed. The earlier 51-check/source-review PASS is separate proof; no owner approval is recorded.
+**Next gate:** Reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf`.
 
@@ -327,6 +327,8 @@ The first/second-pass JSON/CSV/Markdown ledgers, candidate/ADR maps, evidence ma
 Read `git show fe85046:workbench/specs/S-014-workbench-release-candidate/SPEC.md` and the corresponding S-022 path: both remain blocked historical packets with original unfinished tasks/acceptance intact. S-014 names CIC's fixed release contract as downstream consumer; no current Sol identity, live dependency readback or consumer receipt is established in these owners. This is an explicit consumer-state gap, not an authorization to reactivate CIC or message another person.
 
 Current release direction/readiness routes to S-00O; later reviewed source/Template delivery evidence routes to S-050; the real native/private continuity obligation is S-050 TK-006 -> S-052 TK-004. Root README's room-specific route changed in 4338087; generic README is exempt because it must not name this room's release Specs. fe85046 corrected the attempted supersession after runtime refused unfinished rows; the correction and earlier failed claim remain append-only. No old checkbox was silently completed and no ordinary work is made dependent on CIC. TK-0SD's substantive reconciliation is recorded; common verification and review still gate task closure.
+
+| 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
 
 ## Completion Result
 
