@@ -783,7 +783,10 @@ function migrateUnlocked(options) {
     // the lane policy (the required list is untouched) and creates the empty
     // lane, so `workbench-skills.mjs install` can lay the skills down next.
     if (!manifest.lanes.skills) {
-      try { assertSafeWritePath(project, path.join(project, lanes.skills)); }
+      // The placeholder path checks every ancestor (workbench/, the lane) as
+      // an ordinary directory or absent; the lane itself may already exist,
+      // empty or holding room-local skills, and is checked explicitly next.
+      try { assertSafeWritePath(project, path.join(project, lanes.skills, '.gitkeep')); }
       catch (error) { return fail('lane-collision', error.message); }
       const laneEntry = lstatOrNull(path.join(project, lanes.skills));
       if (laneEntry && (laneEntry.isSymbolicLink() || !laneEntry.isDirectory())) return fail('lane-collision', `${lanes.skills} must be an ordinary directory.`);

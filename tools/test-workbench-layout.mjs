@@ -259,7 +259,10 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     delete manifest.lanes.skills;
     manifest.skillPolicy = { ...manifest.skillPolicy, normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-    fs.rmSync(path.join(project, 'workbench', 'skills'), { recursive: true, force: true });
+    // The undeclared directory may already exist, empty (init's .gitkeep) or
+    // holding a room-local skill; migrate must accept both, not refuse them.
+    fs.mkdirSync(path.join(project, 'workbench', 'skills', 'room-demo'), { recursive: true });
+    fs.writeFileSync(path.join(project, 'workbench', 'skills', 'room-demo', 'SKILL.md'), '# room demo\n');
     assert.equal(run('validate', '--project', project).report.status, 'valid', 'a pre-lane room still validates');
     const skillsTool = path.join(root, 'tools', 'workbench-skills.mjs');
     const refused = spawnSync(process.execPath, [skillsTool, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
@@ -282,6 +285,9 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
       assert.equal(fs.realpathSync(path.join(project, discoveryRoot, 'genesis')), fs.realpathSync(path.join(project, 'workbench', 'skills', 'genesis')));
     }
+    const verified = JSON.parse(spawnSync(process.execPath, [skillsTool, 'verify', '--project', project], { cwd: root, encoding: 'utf8' }).stdout);
+    assert.equal(verified.status, 'valid');
+    assert.deepEqual(verified.roomLocal, ['room-demo'], 'the room-local skill that predated the lane survives migrate and install');
     assert.equal(run('migrate', '--project', project).report.status, 'current');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
