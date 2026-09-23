@@ -246,6 +246,46 @@ function schemaOneFixture(project) {
   }, null, 2)}\n`);
 }
 
+// S-00V: a room stamped before the skills lane declares six lanes and the
+// provider-home skill policy. `migrate` declares the seventh lane and the
+// lane policy, creates the empty lane, and then `workbench-skills.mjs
+// install` lays the skills down - the route every existing room takes.
+test('a six-lane schema 2 manifest gains the skills lane through migrate, after which the lane installs and migrate reports current', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    delete manifest.lanes.skills;
+    manifest.skillPolicy = { ...manifest.skillPolicy, normalSetup: 'presence-only', updates: 'explicit-only' };
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+    fs.rmSync(path.join(project, 'workbench', 'skills'), { recursive: true, force: true });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'a pre-lane room still validates');
+    const skillsTool = path.join(root, 'tools', 'workbench-skills.mjs');
+    const refused = spawnSync(process.execPath, [skillsTool, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(JSON.parse(refused.stdout).error.code, 'invalid-lane', 'install needs the lane declared first');
+
+    const migrated = run('migrate', '--project', project);
+    assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
+    assert.equal(migrated.report.status, 'migrated');
+    assert.deepEqual(migrated.report.added, ['lanes.skills']);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.equal(after.lanes.skills, 'workbench/skills');
+    assert.equal(after.skillPolicy.normalSetup, 'lane-install');
+    assert.equal(after.skillPolicy.updates, 'workbench-update');
+    assert.deepEqual(after.skillPolicy.required, manifest.skillPolicy.required, 'the required list is untouched');
+    assert.equal(fs.statSync(path.join(project, 'workbench', 'skills')).isDirectory(), true);
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const installed = spawnSync(process.execPath, [skillsTool, 'install', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(JSON.parse(installed.stdout).status, 'installed', installed.stdout);
+    for (const discoveryRoot of ['.agents/skills', '.claude/skills']) {
+      assert.equal(fs.realpathSync(path.join(project, discoveryRoot, 'genesis')), fs.realpathSync(path.join(project, 'workbench', 'skills', 'genesis')));
+    }
+    assert.equal(run('migrate', '--project', project).report.status, 'current');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
 test('a schema 1 manifest reports upgrade-required and migrates losslessly once', () => {
   const project = fixture();
   try {

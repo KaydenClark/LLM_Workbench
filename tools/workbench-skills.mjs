@@ -141,20 +141,33 @@ function copySkill(skill, laneDir) {
 // A discovery adapter is a relative directory link from the project root into
 // the lane. One that already resolves there is left alone; anything else at
 // that path is a collision the room reconciles by hand, never overwritten.
-function layAdapters(project, laneDir, discovery) {
-  const written = [];
+// Preflight runs before any skill is copied so a refusal leaves no partial
+// lane behind; laying runs after the copies.
+function preflightAdapters(project, laneDir, discovery) {
+  const pending = [];
+  const laneReal = lstatOrNull(laneDir) ? fs.realpathSync(laneDir) : path.resolve(laneDir);
   for (const discoveryRoot of discovery) {
     const adapter = path.join(project, discoveryRoot);
     const entry = lstatOrNull(adapter);
     if (entry) {
       let resolved = null;
       try { resolved = fs.realpathSync(adapter); } catch {}
-      if (resolved === fs.realpathSync(laneDir)) continue;
+      if (resolved === laneReal) continue;
       return fail('adapter-collision', `${discoveryRoot} already exists and does not resolve into the skills lane; move its contents into the lane and remove it before installing.`, { root: discoveryRoot });
     }
     const parent = path.dirname(adapter);
     const parentEntry = lstatOrNull(parent);
     if (parentEntry && (!parentEntry.isDirectory() || parentEntry.isSymbolicLink())) return fail('adapter-collision', `${path.relative(project, parent)} must be an ordinary directory.`, { root: discoveryRoot });
+    pending.push(discoveryRoot);
+  }
+  return { pending };
+}
+
+function layAdapters(project, laneDir, pending) {
+  const written = [];
+  for (const discoveryRoot of pending) {
+    const adapter = path.join(project, discoveryRoot);
+    const parent = path.dirname(adapter);
     fs.mkdirSync(parent, { recursive: true });
     fs.symlinkSync(path.relative(parent, laneDir).split(path.sep).join('/'), adapter, 'dir');
     written.push(discoveryRoot);
@@ -184,13 +197,14 @@ export function install(project, options = {}) {
   for (const skill of coreSkills) {
     if (lstatOrNull(path.join(lane, skill))) return fail('skills-collision', `${relative}/${skill} already exists without a receipt; inspect and remove it before installing.`, { skill });
   }
+  const preflight = preflightAdapters(project, lane, discovery);
+  if (preflight.status === 'blocked') return preflight;
   fs.mkdirSync(lane, { recursive: true });
   const placeholder = path.join(lane, '.gitkeep');
   if (lstatOrNull(placeholder)?.isFile()) fs.unlinkSync(placeholder);
   const skills = {};
   for (const skill of coreSkills) skills[skill] = copySkill(skill, lane);
-  const adapters = layAdapters(project, lane, discovery);
-  if (adapters.status === 'blocked') return adapters;
+  const adapters = layAdapters(project, lane, preflight.pending);
   const receipt = { schemaVersion: 1, source: identity, installedAt: options.date ?? new Date().toISOString().slice(0, 10), skills, adapters: discovery, backups: [] };
   writeReceipt(lane, receipt);
   return { status: 'installed', lane: relative, receipt, adaptersWritten: adapters.written };
@@ -242,8 +256,9 @@ export function update(project, options = {}) {
     const state = laneSkillState(lane, skill);
     return state.status !== 'present' || state.hash !== skillContentHash(path.join(sourceLane, skill));
   });
-  const adapters = layAdapters(project, lane, discovery);
-  if (adapters.status === 'blocked') return adapters;
+  const preflight = preflightAdapters(project, lane, discovery);
+  if (preflight.status === 'blocked') return preflight;
+  const adapters = layAdapters(project, lane, preflight.pending);
   if (changed.length === 0) return { status: 'current', lane: relative, receipt, adaptersWritten: adapters.written };
   const backupRoot = fs.mkdtempSync(path.join(home, '.workbench-skills-backup-'));
   const backedUp = [];
@@ -268,6 +283,10 @@ export function rollback(project, options = {}) {
   const { lane, relative } = resolved;
   const backupRoot = path.resolve(options.backup ?? '');
   if (!options.backup || !lstatOrNull(backupRoot)?.isDirectory()) return fail('invalid-backup', '--backup must name an existing backup directory recorded in the receipt.');
+  // Only a backup this lane's own receipt recorded may be restored: bytes
+  // from an unrecorded directory are not a rollback, whatever their shape.
+  const current = readReceipt(lane);
+  if (!(current?.backups ?? []).some((entry) => entry?.path && path.resolve(entry.path) === backupRoot)) return fail('invalid-backup', `${backupRoot} is not a backup recorded in ${relative}/${RECEIPT_NAME}.`, { backup: backupRoot });
   const previous = readReceipt(backupRoot);
   if (!previous?.skills || typeof previous.skills !== 'object' || Array.isArray(previous.skills)) return fail('invalid-backup', `${backupRoot} carries no valid receipt to restore.`);
   const restored = [];

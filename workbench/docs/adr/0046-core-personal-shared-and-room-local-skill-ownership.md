@@ -21,6 +21,15 @@ no third .codex/skills catalog. Room-local source remains local until explicitly
 accepted into the personal catalog. One authoritative source per skill and one
 discovery entry per application are the invariants.
 
+Amended by [ADR-000M](000M-core-skills-ship-in-the-workbench-skills-lane.md)
+on 2026-09-23: the three ownership scopes stand, but the installed core now
+lives inside every room at the `workbench/skills` lane, reached by the
+tracked `.agents/skills` and `.claude/skills` adapters, and the personal
+catalog is a backup and publication target only. The "per-room core copies"
+alternative below became the decision; the rest of this record, including the
+one-source-per-skill and one-discovery-entry-per-application invariants,
+remains active.
+
 Considered alternatives: Per-room core copies reintroduce duplicate implementations. Making the personal
 catalog mandatory contradicts standalone setup. Preserving tracked duplicate
 core sources forever would design around migration residue, not the target.

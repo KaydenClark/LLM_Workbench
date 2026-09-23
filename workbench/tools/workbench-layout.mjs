@@ -778,6 +778,21 @@ function migrateUnlocked(options) {
   if (manifest.schemaVersion === SCHEMA_VERSION) {
     const valid = validateManifest(project);
     if (valid.status !== 'valid') return valid;
+    // S-00V: a room stamped before the skills lane declares six lanes and the
+    // provider-home skill policy. Migration declares the seventh lane and
+    // the lane policy (the required list is untouched) and creates the empty
+    // lane, so `workbench-skills.mjs install` can lay the skills down next.
+    if (!manifest.lanes.skills) {
+      try { assertSafeWritePath(project, path.join(project, lanes.skills)); }
+      catch (error) { return fail('lane-collision', error.message); }
+      const laneEntry = lstatOrNull(path.join(project, lanes.skills));
+      if (laneEntry && (laneEntry.isSymbolicLink() || !laneEntry.isDirectory())) return fail('lane-collision', `${lanes.skills} must be an ordinary directory.`);
+      fs.mkdirSync(path.join(project, lanes.skills), { recursive: true });
+      if (!fs.readdirSync(path.join(project, lanes.skills)).length) fs.writeFileSync(path.join(project, lanes.skills, '.gitkeep'), '');
+      const updated = { ...manifest, lanes: { ...manifest.lanes, skills: lanes.skills }, skillPolicy: { ...skillPolicy, required: manifest.skillPolicy.required } };
+      writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
+      return report('migrated', { manifestPath, manifest: updated, moved: [], added: ['lanes.skills'], next: 'run workbench-skills.mjs install --project PATH from the release checkout' });
+    }
     if (JSON.stringify(manifest.collections) === JSON.stringify(collections)) {
       try { assertSafeReadPath(project, path.join(project, SEED_RECORD)); }
       catch (error) { return fail('lane-collision', error.message); }

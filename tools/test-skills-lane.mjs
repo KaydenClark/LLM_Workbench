@@ -109,4 +109,36 @@ test('the release lays the lane into a fresh room with a receipt and adapters, v
   }
 });
 
+test('install refuses an adapter collision before copying anything, and rollback accepts only a backup the receipt recorded', () => {
+  const workspace = fixture('skills-lane-guards-');
+  try {
+    const project = path.join(workspace, 'room');
+    fs.mkdirSync(project);
+    run(project, 'git', ['init', '-q', '-b', 'main']);
+    const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
+    const version = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
+    json(node(root, layout, 'init', '--project', project, '--provenance', 'genesis', '--version', version, '--name', 'Guard Room', '--default-branch', 'main', '--integration-branch', 'integration'));
+    const skillsTool = path.join(root, 'tools', 'workbench-skills.mjs');
+    fs.mkdirSync(path.join(project, '.claude', 'skills', 'mine'), { recursive: true });
+    fs.writeFileSync(path.join(project, '.claude', 'skills', 'mine', 'SKILL.md'), '# mine\n');
+    const collided = node(root, skillsTool, 'install', '--project', project);
+    assert.equal(JSON.parse(collided.stdout).error.code, 'adapter-collision');
+    const laneEntries = fs.readdirSync(path.join(project, 'workbench', 'skills')).filter((name) => name !== '.gitkeep');
+    assert.deepEqual(laneEntries, [], 'a refused install copies nothing into the lane');
+    fs.rmSync(path.join(project, '.claude', 'skills'), { recursive: true, force: true });
+    assert.equal(json(node(root, skillsTool, 'install', '--project', project)).status, 'installed');
+
+    const foreign = path.join(workspace, 'foreign-backup');
+    fs.mkdirSync(path.join(foreign, 'save'), { recursive: true });
+    fs.writeFileSync(path.join(foreign, 'save', 'SKILL.md'), '# foreign bytes\n');
+    const receipt = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'skills', '.workbench-skills.json'), 'utf8'));
+    fs.writeFileSync(path.join(foreign, '.workbench-skills.json'), JSON.stringify({ ...receipt, skills: { save: 'x' } }));
+    const refused = node(root, skillsTool, 'rollback', '--project', project, '--backup', foreign);
+    assert.equal(JSON.parse(refused.stdout).error.code, 'invalid-backup', refused.stdout);
+    assert.notEqual(fs.readFileSync(path.join(project, 'workbench', 'skills', 'save', 'SKILL.md'), 'utf8'), '# foreign bytes\n', 'an unrecorded directory never restores bytes');
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});
+
 test.after(() => fs.rmSync(scrubbedHome, { recursive: true, force: true }));

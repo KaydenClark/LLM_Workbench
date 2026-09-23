@@ -199,17 +199,17 @@ node workbench/tools/adr.mjs register
 `doctor` prints every registered finding with its severity and blocking
 effect and exits non-zero only for `all` or `selection` findings; a
 `selected-slice` finding is excluded by `next` and refused by `claim`, and an
-`attention` finding stays visible without blocking. `doctor --home USER_HOME`
-(default: the user home, only ever read) also checks each installed core skill's
-managed marker `.workbench-skill.json` (schema 2: `source`, `release`,
-`commit`, `contentHash`, and current `compatibleRooms.minimum`/`.maximum`).
-A room inside the declared inclusive range may differ from the global release.
-Missing, broken, modified, unknown generation/range, incompatible, conflicting
-source, duplicate Codex discovery and mixed global generations are attention
-findings with effect `none`. Older markers without a range remain unknown;
-version equality does not establish compatibility. Normal setup preserves
-existing names and explicit update owns repair. Filesystem discovery is distinct
-from configured-host invocation. `doctor` also reports
+`attention` finding stays visible without blocking. `doctor` also reads this
+room's `workbench/skills` lane and its `.agents/skills` and `.claude/skills`
+adapters, never a provider home: `skill-lane-missing` and
+`skill-lane-unreadable` are errors with effect `none` (repair them with the
+release checkout's `workbench-skills.mjs install` or `update
+--explicit-update`; the Genesis readiness gate fails closed on them),
+`skill-adapter-missing` and `skill-adapter-broken` are attention findings
+(a host that checked an adapter out as a plain file instead of a link reports
+`skill-adapter-broken`), and a root `skills/` directory is
+`project-local-skills`, which blocks everything because it shadows the lane.
+Filesystem discovery is distinct from configured-host invocation. `doctor` also reports
 `integration-branch-undeclared` and `integration-branch-missing` (scope
 `git`, effect `none`) until `workbench/manifest.json` `git.integrationBranch`
 names a branch that resolves locally or on a remote; the Genesis readiness

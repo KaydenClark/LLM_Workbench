@@ -326,11 +326,16 @@ recorded backup. Skills a room adds to the lane under other names are
 room-owned: never copied, hashed, replaced or removed. Genesis and Adoption
 run `install`; `update-harness` runs `update`. Doctor reads the lane and the
 adapters, never the provider home: a required skill missing from the lane is
-`skill-lane-missing` (blocks everything), an unsafe lane entry is
-`skill-lane-unreadable` (blocks everything), an absent or misresolving
-discovery root is `skill-adapter-missing` or `skill-adapter-broken`
-(attention), and a root `skills/` directory is `project-local-skills`
-(blocks everything) because it shadows the lane.
+`skill-lane-missing` and an unsafe lane entry is `skill-lane-unreadable`
+(both severity `error` with effect `none`, like a missing integration branch:
+visible in every run, repaired by one release command, never a reason to
+stall selection; the Genesis readiness gate fails closed on them), an absent
+or misresolving discovery root is `skill-adapter-missing` or
+`skill-adapter-broken` (attention, effect `none`), and a root `skills/`
+directory is `project-local-skills` (blocks everything) because it shadows
+the lane. A room stamped before the lane declares it with
+`workbench-layout.mjs migrate --project PATH` from the release checkout,
+then runs `install`.
 
 ### Personal catalog publication
 
@@ -383,8 +388,8 @@ published catalog is compared only by the installer's own `update` and
 
 | Finding | Meaning |
 |---|---|
-| `skill-lane-missing` | The lane, or a required core skill in it, is absent. Blocks everything. |
-| `skill-lane-unreadable` | The lane or a required skill is a link, a file, or holds a shared or linked `SKILL.md`. Blocks everything. |
+| `skill-lane-missing` | The lane, or a required core skill in it, is absent. Error, effect `none`; Genesis readiness fails closed on it. |
+| `skill-lane-unreadable` | The lane or a required skill is a link, a file, or holds a shared or linked `SKILL.md`. Error, effect `none`. |
 | `skill-adapter-missing` | A declared discovery root is absent, so that host cannot discover the lane. |
 | `skill-adapter-broken` | A declared discovery root does not resolve into the lane. |
 | `skill-duplicate-discovery` | A deprecated `.codex/skills` entry adds another Codex catalog. |
@@ -1383,9 +1388,9 @@ Invoke the extension in the actual configured application: file presence and
 a resolving adapter alone do not prove native discovery or callability.
 
 Laying the lane down does not publish room-local source into a personal catalog.
-That acceptance is a separately authorized operation. The global doctor
-`--home` inspection covers the declared global core; inspect project extension
-names and adapters separately. A new room needs no local extension and no
+That acceptance is a separately authorized operation. Doctor inspects the lane
+and its adapters from the room tree and never reads a provider home. A new
+room needs no local extension and no
 personal catalog for core save/promote/notepad operation. Genesis's prohibition
 on a root `skills/` core shadow does not prohibit this room-owned source route.
 
@@ -1568,8 +1573,9 @@ the top: `blocking (N)` first (effects `all` and `selection`), then
 Grouping is presentation: an `error` under `informational` is still an `error`
 in the registry and in `--json`; it simply stops nothing.
 
-`doctor --home USER_HOME` names the home whose discovery roots the `skills`
-scope reads (default: the user home); doctor never writes there.
+The `skills` scope reads the room's `workbench/skills` lane and its
+`.agents/skills` and `.claude/skills` adapters; the retired `--home` option
+is ignored, and doctor never reads or writes a provider home.
 
 `permission-scope-drift` (severity `error`, scope `controls`, effect `none`)
 is reported when `.claude/settings.json` exists and withholds a
