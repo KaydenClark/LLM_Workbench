@@ -9,7 +9,7 @@ before it entered Git history. Read every "S-00F" recommendation below as
 "S-00K" — the historical wording is preserved as written, not edited row by
 row, since the report's dated findings are otherwise unchanged.
 
-**Date:** 2026-09-11. **Source record:** `workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json` at revision 28, 80 questions, 84 entries. **Endpoint:** rewritten suggested answers for every unsettled question, with at least one option each and two where a real fork exists. This report changes no Canon, restatuses no question, and authorizes no work; the owner picks in the grilling session.
+**Date:** 2026-09-11. **Source record:** `workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json` at revision 28, 80 questions, 84 entries. **Endpoint:** rewritten suggested answers for every unsettled question, with at least one option each and two where a real fork exists. This report changes no Canon, restatuses no question, and authorizes no work; the owner picks in the grilling session. Later dated annotations mark questions the owner has since answered (TT-Q3, TT-Q4 and the Chat half of FND-Q03 on 2026-09-23).
 
 **Evidence base.** The merged grilling note and its 45 decisions and 13 corrections; the eight proposed ADRs 000B to 000I and planned Specs S-00F to S-00J; the four handoffs of 2026-09-10 and 2026-09-11; the original-foundation audit report and the two handwritten-note reconstructions; the live diffs on AGENTS, LEXICON, RUNBOOK, BLUEPRINT and README; the live ADR register; the core skill catalog and skills-pending inventory; tools/test-blueprint-contract.mjs, workbench/tools/visible-ids.mjs, and the notepads runtime usage. Live state was read at detached `c0ac60a` with the pre-existing dirty tree preserved. Nothing here is verified agent-outcome evidence; it is source inspection.
 
@@ -25,6 +25,8 @@ Context boundary, chats, next, the Implement loop, gate failure.
 
 ### FND-Q03 (open)
 
+**Partly answered 2026-09-23.** The Chat half is settled by TT-Q4: a Chat works one Task, completes it, cleans up and ends. What the next context loads stays with the Packet definition in the Lexicon.
+
 **Question.** What should end one useful working context, and what must the next one load?
 
 **What changed.** FND-Q19 (approved) already defines a Task as the smallest bounded work an agent can complete without overflowing its useful context, so the Task is the context unit by definition. ADR-000H makes it a standalone TASK.md. The audit measured 5,614 words in AGENTS plus Lexicon before any Spec; S-00G moves the ownership schema out of the Lexicon, which is the largest single entry cut on the table. The original notes say one ticket, then repeat, and their 100k figure is a sketch, not a limit. The notepad runtime triggers on survival value, not elapsed time.
@@ -36,7 +38,9 @@ Context boundary, chats, next, the Implement loop, gate failure.
 
 Depends on: TT-Q4, TT-Q3, FND-Q15
 
-### TT-Q3 (open)
+### TT-Q3 (answered 2026-09-23)
+
+**Answered by the owner 2026-09-23.** Workbench 1:* Workbenches and 1:* Projects, each Project with its own Workbench; one Blueprint per Workbench; Blueprint 1:* Specs and Tasks; Spec 1:* Tasks and Chats; Task 1:1 Chat. The Lexicon's Workbench, Project, Blueprint, Spec, Task, Chat and Director rows now own the answer; the options below are history.
 
 **Question.** What are the hierarchy and cardinality among Project, Workbench, host chat, assignment, Spec, and Task?
 
@@ -47,7 +51,9 @@ Depends on: TT-Q4, TT-Q3, FND-Q15
 
 Depends on: FND-Q03
 
-### TT-Q4 (open)
+### TT-Q4 (answered 2026-09-23)
+
+**Answered by the owner 2026-09-23.** A Task is worked in one Chat, and a Chat never works several Tasks: it completes its Task, cleans up and ends, and a Director opens the next Chat. The Lexicon's Task, Chat and Director rows now own the answer; the options below are history.
 
 **Question.** Must one Task fit in one host chat/context, and may one chat carry more than one Task?
 
