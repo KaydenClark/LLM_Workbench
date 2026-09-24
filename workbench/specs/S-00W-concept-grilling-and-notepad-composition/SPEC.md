@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-24
 **Catalog description:** Preserve the accepted shared concept contract for grilling, notepad and grill-me while each skill has its own delivery Spec.
-**Blockers:** none for planning; implementation has not been assigned.
-**Latest event:** Owner directed a per-skill split on 2026-09-24; the three original implementation Tasks are deferred in favor of individual delivery Specs. The planning packet's historical proof remains below.
-**Next gate:** Verify the composed journey through the individual grilling, notepad and grill-me Specs; do not execute the deferred Tasks from this packet.
+**Blockers:** Individual S-00X, S-00Y and S-00Z delivery precedes the shared integration checks.
+**Latest event:** Owner-directed per-skill split retained the three original Task IDs for shared integration proof only; their 2026-09-23 implementation text remains in Git history.
+**Next gate:** After S-00X and S-00Y deliver, activate TK-00L for the standalone boundary check; S-00Z then enables the composed entry check.
 
 > **Citation anchors.** pre=`4ae75687c0786026d2c959459e642a29da24e4d0` post=`4ae75687c0786026d2c959459e642a29da24e4d0`.
 
@@ -60,7 +60,7 @@ Verified at the pre anchor on 2026-09-23:
 
 ## Dependencies And Blockers
 
-The three individual delivery Specs own implementation and page maintenance. This packet retains their accepted shared design and its historical planning evidence. Its original Tasks are deferred to avoid two executable owners for the same source. S-00Z checks the landed [S-00V](../S-00V-portable-workbench/SPEC.md) lane and [S-00R](../S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) archive disposition before adding `grill-me`.
+The three individual delivery Specs own implementation and page maintenance. This packet retains their accepted shared design and three smaller cross-skill integration Tasks. None of those Tasks owns an individual skill source or article. S-00Z checks the landed [S-00V](../S-00V-portable-workbench/SPEC.md) lane and [S-00R](../S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) archive disposition before adding `grill-me`.
 
 ## Vertical Implementation Slices
 
@@ -85,7 +85,7 @@ Instruction-level scenario transcripts can inspect the exact recommendation, ans
 
 ## Verification Procedure
 
-The original Tasks are deferred. S-00X, S-00Y and S-00Z own the behavior-changing work and its red/green proof; this paragraph preserves the shared scenario expectations. Run targeted skill/catalog, composition, project-evidence, notepad and Wiki checks as applicable, then the full AGENTS/RUNBOOK suite. Capture guardrail baseline and after-score for harness edits, with limits. Run `self-drift.mjs --phase pre` and `--phase post` plus the Runbook semantic inventory. Evaluate at least the scenarios named in Acceptance Criteria in fresh contexts, record actual transcript excerpts and human limitations, and obtain separate-context review of the immutable candidate before integration.
+S-00X, S-00Y and S-00Z own behavior changes and red/green proof. This Spec checks only the shared journey after their delivery and routes any skill defect back to its individual owner. Run targeted skill/catalog, composition, project-evidence, notepad and Wiki checks as applicable, then the full AGENTS/RUNBOOK suite. Capture guardrail baseline and after-score for harness edits, with limits. Run `self-drift.mjs --phase pre` and `--phase post` plus the Runbook semantic inventory. Evaluate at least the scenarios named in Acceptance Criteria in fresh contexts, record actual transcript excerpts and human limitations, and obtain separate-context review of the immutable candidate before integration.
 
 ## Documentation Impact
 
@@ -100,10 +100,11 @@ The 2026-09-23 planning pass created three skill articles and routed them from `
 | 2026-09-23 | review | Separate-context review of `eb66fd935bda2f9cf910b517d0174c06acb94011` found no blocking correctness issue | Codex CLI `codex review --commit` using gpt-5.5, review mode; it checked links, source claims and packet shape. First attempt with the CLI's configured gpt-6-sol failed before review because that model was unavailable. | No document change requested by reviewer | Review covers this planning candidate only; no conversational or installed-skill acceptance inferred |
 | 2026-09-24 | planning correction | Owner directed one skill-sized delivery Spec per skill; original three Tasks deferred without executing or closing them | Checked current managed source lane, manifest inventory, existing three Wiki pages and 21-skill catalog; no skill behavior trial | Individual S-00X, S-00Y and S-00Z now own source, verification and page destinations; this Spec retains the shared accepted design | Composed behavior remains unverified; individual delivery and independent review remain open |
 | 2026-09-24 | planning verification | Checked the per-skill split and deferred original execution Tasks | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding. Clean pre/post self-drift at 4940233 had identical seven pre-existing findings, machineResult blocked and cleanUpdate false; bounded read-back found no new contradiction in touched current-facing routes | Catalog rendered; three existing skill pages linked to managed source and individual delivery Specs | Immutable review and skill behavior remain open |
+| 2026-09-24 | planning correction | Found that deferred original Tasks would leave S-00W without a completion path; recut TK-00L/M/N as cross-skill integration checks | Individual Specs retain all skill-source and page ownership; no behavior trial or Task closure | S-00W now owns only the shared journey and narrow shared-route consistency | Integration proof waits on individual skill delivery |
 
 ## Completion Result
 
-Accepted shared design packet only. Original implementation Tasks are deferred in favor of S-00X, S-00Y and S-00Z. No Task execution or behavioral proof is claimed.
+Accepted shared design packet with three cross-skill integration Tasks. Individual delivery belongs to S-00X, S-00Y and S-00Z. No integration Task execution or behavioral proof is claimed.
 
 ## Supersession
 

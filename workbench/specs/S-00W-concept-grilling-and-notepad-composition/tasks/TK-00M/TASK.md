@@ -1,27 +1,24 @@
-# TK-00M - Compose grilling with reusable notepad continuity
+# TK-00M - Prove grill-me composition through the managed lane
 
 **Task ID:** TK-00M
 **Spec ID:** S-00W
-**Slice:** Compose grilling with reusable notepad continuity
-**Status:** deferred
-**Blockers:** TK-00L
-**Destination:** spec-acceptance: S-00W Acceptance Criteria lines 5-6
+**Slice:** Prove grill-me composition through the managed lane
+**Status:** blocked
+**Blockers:** TK-00L, S-00Z
+**Destination:** spec-acceptance: S-00W shared journey
 **Stance:** Builder
-**Planned verification:** Red: an entry/resume scenario loses whether the owner's answer is pending or confirmed, fails to preserve a correction, or requires a grilling-specific runtime for unrelated notes; green: grill-me starts grilling with revision-checked notepad capture, resumes at the correct decision, and unrelated notepad work remains valid. Run targeted notepad, core-composition, project-evidence and catalog checks, then the required suite; inspect installed distribution separately without asserting native invocation.
+**Planned verification:** Observe the named fresh-context scenario, record exact transcript or checkable artifact, run relevant targeted checks and the required suite, then obtain separate-context review of the immutable candidate.
 
 ## Delivery
 
-**2026-09-24 planning correction:** This original slice is retained as historical planning context and is not executable. S-00Y notepad and S-00Z grill-me now own the skill-sized delivery. Do not claim or close this Task as implementation proof.
-
-After TK-00L establishes the inquiry contract, add a repository-owned `grill-me` entry at the then-current manifest skill source lane and compose grilling with the existing `notepad` primitive. Make the smallest notepad skill wording change needed to explain provisional capture, corrected readback and confirmed meaning for this composition while retaining independent objective use. Keep the existing runtime, schema, privacy scan, revision checks, corrections, resume and cleanup guarantees. Align manifest/catalog/distribution references with the canonical source and distinguish source from installed copies. Resolve source location against S-00V's landed layout and preserve S-00R's archive gate.
+After the grill-me Spec delivers, start and resume the composed entry through the repository discovery route. Preserve a corrected pending readback, confirm it explicitly, and verify that only then does the next question become ready. Record the actual source revision and installed-versus-repository boundary.
 
 ## Done Criteria
 
-- `grill-me` provides a clear entry point for grilling plus notepad, within the caller's scope.
-- Resume preserves pending versus confirmed meaning and linked corrections; silence never becomes confirmation.
-- Notepad remains useful for an unrelated objective without grilling-specific fields or a runtime migration.
-- Repository and distribution references name the actual canonical source; no global installation is claimed without separate proof.
+- The composed entry uses the two delivered primitives and preserves pending versus confirmed meaning without a new storage authority.
+- Named proof distinguishes source behavior, structural checks and owner Human QA.
+- No individual skill source or page is claimed as delivered by this Task.
 
 ## Preservation And Rollback
 
-Do not migrate or rewrite live or legacy notes. If the composition fails, revert the new skill source and inventory changes together while leaving existing note bytes and the archived wrapper untouched.
+The 2026-09-23 implementation plan remains recoverable at commit d069a11 and earlier history. Preserve individual skill owners and accepted S-00W design; reverse only this Task's integration-route changes if its proof fails.
