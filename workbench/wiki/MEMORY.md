@@ -67,11 +67,13 @@ copying task state here.
 ## Grilling Destination Audit Ledger
 
 Every unique grilling question put to the owner, with its answer, reason and
-intended result, is in
-[grilling-destination-audit-ledger.md](grilling-destination-audit-ledger.md).
-It is the destination the v4 Workbench is audited against: look a question up by
-its ID, or audit one artifact through the ledger's Destination By Artifact
-index. The ledger records intent, not implementation state.
+intended result, is recorded in
+[grilling-destination-audit-ledger.json](grilling-destination-audit-ledger.json).
+That JSON file is the ledger itself, not a projection: readable views are
+rendered from it and never edited by hand. It is the destination the v4
+Workbench is audited against; look a question up by its `id`, or audit one
+artifact by the `result` entries that name it. `tools/test-grilling-ledger.mjs`
+keeps it valid.
 
 ## Task Artifact And Lifecycle Routing
 
