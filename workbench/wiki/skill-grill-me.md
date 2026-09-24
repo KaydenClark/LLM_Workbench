@@ -6,12 +6,13 @@ knowledge_role: curated
 provenance:
   - Owner-accepted concept and S-00W planning, 2026-09-23
 source_paths:
+  - workbench/specs/S-00Z-grill-me-skill-rebuild/SPEC.md
   - workbench/specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md
-  - skills/grilling/SKILL.md
-  - skills/notepad/SKILL.md
+  - workbench/skills/grilling/SKILL.md
+  - workbench/skills/notepad/SKILL.md
   - skills-archive/optional-active-2026-09-01/grill-me/SKILL.md
   - workbench/manifest.json
-last_verified: 2026-09-23
+last_verified: 2026-09-24
 ---
 
 # Grill-me: start a saved design inquiry
@@ -28,18 +29,22 @@ The session ends at the endpoint the owner authorized. A confirmed design concep
 
 ## Source and distribution boundary
 
-**Verified current state, 2026-09-23:** The repository's [manifest](../manifest.json) and [core catalog](../../skills/README.md) do not list `grill-me` as a current core skill; there is no `skills/grill-me/SKILL.md`. A preserved [archived wrapper](../../skills-archive/optional-active-2026-09-01/grill-me/SKILL.md) is outside live discovery. A machine-installed personal wrapper was inspected during planning and only invokes grilling; its local path is not a portable source for this article. Repository authoring does not update that installation.
+**Verified current state, 2026-09-24:** The repository's [manifest](../manifest.json) and [core catalog](../skills/README.md) do not list `grill-me` as a current core skill; there is no `workbench/skills/grill-me/SKILL.md`. A preserved [archived wrapper](../../skills-archive/optional-active-2026-09-01/grill-me/SKILL.md) is outside live discovery. A machine-installed personal wrapper was inspected during planning and only invokes grilling; its local path is not a portable source for this article. Repository authoring does not update that installation.
 
-The Spec proposes a repository-owned source at the skill lane declared when implementation begins, with catalog and distribution alignment. [S-00V Portable Workbench](../specs/S-00V-portable-workbench/SPEC.md) may change that lane first; [S-00R](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) retains the archived wrapper's separate disposition. This page explains the intended composition while the current entry point remains unshipped in the repository core.
+The individual delivery Spec proposes a repository-owned source in the managed skill lane, with catalog and distribution alignment. [S-00V Portable Workbench](../specs/S-00V-portable-workbench/SPEC.md) established that lane; [S-00R](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) retains the archived wrapper's separate disposition. This page explains the intended composition while the current entry point remains unshipped in the repository core.
 
 ## Sources
 
+- [Individual delivery Spec](../specs/S-00Z-grill-me-skill-rebuild/SPEC.md)
+
 - [Concept and acceptance](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
-- [Grilling source](../../skills/grilling/SKILL.md) and [notepad source](../../skills/notepad/SKILL.md)
-- [Manifest](../manifest.json) and [core catalog](../../skills/README.md)
+- [Grilling source](../skills/grilling/SKILL.md) and [notepad source](../skills/notepad/SKILL.md)
+- [Manifest](../manifest.json) and [core catalog](../skills/README.md)
 - [Archived wrapper](../../skills-archive/optional-active-2026-09-01/grill-me/SKILL.md)
 - [Wiki router](MEMORY.md)
 
 ## History
 
 - 2026-09-23: Created as an individual article for the accepted entry-point design; current and intended sources distinguished.
+
+- 2026-09-24: Source links reconciled to the managed skills lane; S-00Z owns this skill's future delivery. No behavior change claimed.

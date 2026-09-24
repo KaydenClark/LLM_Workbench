@@ -1,25 +1,24 @@
-# TK-00N - Prove the composed concept flow at the entry routes
+# TK-00N - Prove the complete shared concept journey
 
 **Task ID:** TK-00N
 **Spec ID:** S-00W
-**Slice:** Prove the composed concept flow at the entry routes
+**Slice:** Prove the complete shared concept journey
 **Status:** blocked
 **Blockers:** TK-00M
-**Destination:** spec-acceptance: S-00W Acceptance Criteria lines 1-7
+**Destination:** spec-acceptance: S-00W shared journey
 **Stance:** Builder
-**Planned verification:** Red: a cold-start route or realistic owner/agent transcript contradicts confirmation-before-lock, persistence independence or bounded concept readiness; green: root and template routes, executable skills, catalog checks and three Wiki explanations agree, the required suite and Wiki validation pass, and fresh standalone/composed/resume scenarios carry a named human-evaluation limit. Record guardrail and self-drift pre/post receipts and obtain independent candidate review before integration.
+**Planned verification:** Observe the named fresh-context scenario, record exact transcript or checkable artifact, run relevant targeted checks and the required suite, then obtain separate-context review of the immutable candidate.
 
 ## Delivery
 
-Exercise the complete three-skill user journey in fresh contexts: a recommendation differs from the owner's answer; pending and corrected readbacks hold progression; confirmation changes the ready tree; an upstream premise invalidates only dependents; irrelevant branches disappear; missing evidence blocks a false concept-ready claim; a final concept readback precedes any specification transition. Include grilling without persistence, grill-me with notepad, unrelated notepad use and resume with pending versus confirmed meaning. Make only the narrow root, generic template, catalog and Wiki wording changes required by observed contradictions. Reconcile overlapping Skills Wiki page changes through the single page owner before integration.
+Run the owner-facing end-to-end scenario: recommendation differs from the answer; corrected readback holds progression; a confirmed premise updates affected branches; missing evidence blocks a false ready verdict; and a final concept readback precedes any specification transition. Check the current root/template entry route and the three individual Wiki pages against observed behavior. Return any individual skill defect to its owning Spec; this Task records only integration proof and narrow shared-route corrections.
 
 ## Done Criteria
 
-- Each named conversation scenario has an observed result and cited transcript or checkable artifact, with failures and human limits explicit.
-- Current controls, generic mirrors, skills, catalog inventory and Wiki pages describe the same delivered flow.
-- Targeted and full verification, self-drift semantic review, guardrail comparison and separate-context candidate review are recorded at their proper gates.
-- No result claims owner Human QA or native installed-skill behavior without that separate evidence.
+- The composed journey and current routes agree on what was observed, with human interpretation limits and independent review recorded.
+- Named proof distinguishes source behavior, structural checks and owner Human QA.
+- No individual skill source or page is claimed as delivered by this Task.
 
 ## Preservation And Rollback
 
-Preserve unrelated controls, source, Wiki pages and historical evidence. Revert this Task's alignment edits if they introduce a new contradiction; do not rewrite prior proof or another branch's page without reconciliation.
+The 2026-09-23 implementation plan remains recoverable at commit d069a11 and earlier history. Preserve individual skill owners and accepted S-00W design; reverse only this Task's integration-route changes if its proof fails.

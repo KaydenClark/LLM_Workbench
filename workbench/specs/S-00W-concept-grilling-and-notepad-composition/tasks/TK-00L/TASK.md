@@ -1,25 +1,24 @@
-# TK-00L - Settle one design decision before the next question
+# TK-00L - Prove the grilling/notepad boundary
 
 **Task ID:** TK-00L
 **Spec ID:** S-00W
-**Slice:** Settle one design decision before the next question
-**Status:** ready
-**Blockers:** none
-**Destination:** spec-acceptance: S-00W Acceptance Criteria lines 1-4
+**Slice:** Prove the grilling/notepad boundary
+**Status:** blocked
+**Blockers:** S-00X, S-00Y
+**Destination:** spec-acceptance: S-00W shared journey
 **Stance:** Builder
-**Planned verification:** Red: a fresh-context grilling scenario advances from a pending or corrected answer, treats a recommendation as accepted, or declares an empty ready frontier complete; green: the question, owner answer, pending/corrected readback, explicit confirmation, affected dependency update and next question occur in order, and a final concept readback stays gated on owner confirmation. Run targeted catalog and scenario checks, then the required suite; report human interpretation limits.
+**Planned verification:** Observe the named fresh-context scenario, record exact transcript or checkable artifact, run relevant targeted checks and the required suite, then obtain separate-context review of the immutable candidate.
 
 ## Delivery
 
-Make the repository-owned grilling source a standalone inquiry and synthesis skill. Ask one consequential ready question with recommended answer, why and impact; distinguish a provisional owner answer from a confirmed decision. Wait on the current decision while the owner corrects the Question / Answer / Why / Impact readback. Maintain a changing dependency map and ready frontier, prune irrelevant branches, reopen a settled answer only for a named reason, and synthesize the concept at meaningful boundaries. Remove notepad runtime mechanics from this primitive while preserving optional evidence lookup and the caller's authority limits.
+After the individual grilling and notepad Specs deliver, run one standalone grilling scenario and one unrelated notepad scenario in fresh contexts. Verify that inquiry does not require storage and continuity does not require a design interview. Record the observed results and route any source defect back to the relevant individual Spec.
 
 ## Done Criteria
 
-- The owner can correct the readback before locking; no next substantive question is asked while it is pending.
-- A confirmed answer changes only affected dependencies; unsupported readiness and missing facts remain visible.
-- The bounded final concept readback is confirmed before transition.
-- A fresh grilling scenario runs without a notepad runtime or new storage requirement.
+- Both primitives work independently at the interface they claim; no source or Wiki page is rebuilt by this Task.
+- Named proof distinguishes source behavior, structural checks and owner Human QA.
+- No individual skill source or page is claimed as delivered by this Task.
 
 ## Preservation And Rollback
 
-Preserve existing notepad data and optional project-evidence behavior. Revert only this skill source and its targeted verification changes if the scenario regresses; do not rewrite historical question entries.
+The 2026-09-23 implementation plan remains recoverable at commit d069a11 and earlier history. Preserve individual skill owners and accepted S-00W design; reverse only this Task's integration-route changes if its proof fails.
