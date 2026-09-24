@@ -63,6 +63,27 @@
     "counted": "false only for REC rows, which were recovered from transcripts and stay outside the 240 count."
   },
   "maintenance": "Add a question only when the owner actually answered it in a grilling session, with its source record. When a later answer replaces an earlier one, mark the earlier question superseded and name the replacement; never delete a question. Keep the file valid for tools/test-grilling-ledger.mjs.",
+  "progress_assessment": {
+    "commit": "6ae38b9dfc10144dff5481910c29f46ba09b1f8c",
+    "date": "2026-09-24",
+    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle.",
+    "statuses": {
+      "implemented-and-completed": "Every Result artifact exists at the pinned commit and says what the Answer says; any owning Spec or Task is complete.",
+      "specced": "A Spec carries this answer, but no Task is cut for this part.",
+      "specced-and-tasked": "The owning Spec has Tasks for it, and none has started.",
+      "in-progress": "A Task for it is claimed or in progress, or part of the Result is delivered and the rest is pending.",
+      "not-started": "No Spec or Task carries it, and the Result is absent or contradicted.",
+      "no-build-obligation": "Open, withdrawn, superseded, deferred past v4, not a question, or no artifact change."
+    },
+    "tally": {
+      "implemented-and-completed": 107,
+      "specced": 6,
+      "specced-and-tasked": 10,
+      "in-progress": 48,
+      "not-started": 19,
+      "no-build-obligation": 54
+    }
+  },
   "families": [
     {
       "id": "V3",
@@ -195,7 +216,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:5",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/0013-seven-file-workbench-contract.md"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "root done, template partial",
+        "evidence": "ADR-0013:11-13 names the seven files and no eighth control (ADR-000B still in proposed/); LEXICON.md:99,149,204 define root controls and Support root 'not a second control plane'; S-021 SPEC.md:63-66 (complete). templates/LEXICON.md has Root controls (:99), Workbench Contract (:189), Support lane (:194) but no Support root row.",
+        "gap": "templates/LEXICON.md lacks the Support root definition and its 'not a second control plane' boundary."
+      }
     },
     {
       "id": "V3-2",
@@ -245,7 +272,13 @@
         "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md",
         "workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-3",
@@ -300,7 +333,13 @@
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md",
         "workbench/specs/S-00V-portable-workbench/SPEC.md",
         "workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-4",
@@ -347,7 +386,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:8",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-0047:10-14 gives separate genesis/adoption/upgrade contracts; workbench/skills/{genesis,adoption,update-harness}/SKILL.md route to each other (adoption SKILL.md:6-12); templates/GENESIS.md:16-17; RUNBOOK.md:18,681,764 sections; README.md:70-72,166-167,185+ name Genesis, Adoption and the update. S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-5",
@@ -395,7 +440,13 @@
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md",
         "workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md:170,178-179 excludes Foundry machinery; ADR-0015 and ADR-0026 accepted in workbench/docs/adr/; LEXICON.md:225 Foundry row (downstream extension); S-021 SPEC.md:121-122 Non-Goals list FUIDs, Job Orders, flights, Claims, Captain/CIC.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-6",
@@ -436,7 +487,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:10",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/specs/S-014-workbench-release-candidate/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "AGENTS.md:338,369 and templates/AGENTS.md:222,257 keep the integration->main merge owner-only; CLAUDE.md:15 same; S-014 SPEC.md:28,36 marks the sole-promotion-PR choreography historical (S-014 stays blocked by design, routed to S-00O).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-7",
@@ -479,7 +536,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:11",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md:169-170 needs no private catalog for local work; ADR-000M:27-30 (accepted) catalog is backup/publication only, never on critical path, doctor never reads it; S-021 SPEC.md:92-94 not a dependency on the private catalog. S-021 complete; S-00V TK-001 done.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-7A",
@@ -520,7 +583,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:12",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/skills/README.md:1-7,40-47 documents the public Workbench-owned 21-skill source laid down by Genesis/Adoption; S-021 SPEC.md acceptance [x] 'never depend on' the private catalog; ADR-000M:13-14 lane laid down from the release. S-00V TK-001 done.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-7B",
@@ -555,7 +624,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:13",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-0046:13-14 'A fresh room must work without the personal catalog' and :34 mandatory catalog rejected; ADR-000M:30 'doctor never reads it'. No substitution contract exists anywhere in controls.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-8",
@@ -599,7 +674,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:14",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "root done, template partial",
+        "evidence": "LEXICON.md:150-153 define core bundle, Normal setup (lane-install) and Explicit skill update (backup + replace changed); tools/workbench-skills.mjs install/verify/update/rollback; RUNBOOK.md:296-322; manifest skillPolicy normalSetup lane-install. templates/LEXICON.md has only the Skills lane row (:195).",
+        "gap": "templates/LEXICON.md lacks the Core skill bundle, Normal setup and Explicit skill update rows (no backup-and-replace definition); S-00V lists a templates sweep as a pending slice."
+      }
     },
     {
       "id": "V3-8A",
@@ -635,7 +716,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:15",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-000M:13-14 lane 'owned and versioned by LLM Workbench'; tools/workbench-skills.mjs:5-8,55-66 receipt records source release and commit plus a hash per skill (RUNBOOK.md:315-317). S-00V TK-001 done.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-8B",
@@ -672,7 +759,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:16",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:115-117 'No Forge publication step or private skills-repository change'; workbench/skills/ and tools/workbench-skills.mjs ship in the same repository tree at 6ae38b9. S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-9",
@@ -717,7 +810,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:17",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-9A",
@@ -754,7 +853,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:18",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-9B",
@@ -791,7 +896,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:19",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "LEXICON.md:152-153 setup never touches existing skills and explicit update is the only replacement path; templates/LEXICON.md:195 'replaced only by the Workbench update'; RUNBOOK.md:318-322 update requires --explicit-update and backs up previous directories.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-9C",
@@ -835,7 +946,13 @@
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-10",
@@ -878,7 +995,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:21",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/manifest.json holds schema, version, provenance, lanes and skillPolicy; workbench/tools/workbench-layout.mjs:274-313 validateManifest; ADR-0032:10-14 (accepted) 'all consumers resolve paths through one reader'; RUNBOOK.md:448-449.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-10A",
@@ -919,7 +1042,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:22",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/manifest.json carries schemaVersion 2, workbenchVersion v3.2.1, provenance (lifecycle, source release/commit) and lanes; workbench-layout.mjs:278-285,313 rejects schema 1, bad version, bad lifecycle, missing git block.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-10B",
@@ -962,7 +1091,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:23",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-10C",
@@ -1008,7 +1143,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:24",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "spec-workbench.mjs:8-12,100 stays spec/task mechanics and resolves paths via workbench-paths.mjs; workbench-layout.mjs, tools/test-skill-catalog.mjs, tools/workbench-skills.mjs are bounded helpers; AGENTS.md:41-44 forbids a required coordination system; procedures stay in RUNBOOK Markdown.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-11",
@@ -1058,7 +1199,13 @@
         "workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md",
         "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md",
         "workbench/specs/S-048-checkpoint-retirement/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by ADR-0054",
+        "evidence": "Replaced by ADR-0054, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-11A",
@@ -1101,7 +1248,13 @@
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md",
         "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by ADR-0054",
+        "evidence": "Replaced by ADR-0054, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-11B",
@@ -1144,7 +1297,13 @@
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/specs/S-048-checkpoint-retirement/SPEC.md",
         "workbench/docs/adr/0054-direct-promotion-into-durable-owners.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by ADR-0054",
+        "evidence": "Replaced by ADR-0054, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-11C",
@@ -1186,7 +1345,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:28",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md",
         "workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/manifest.json declares all seven lanes and collections; workbench-layout.mjs:467,794 writes .gitkeep into empty directories and :257,269 excludes .gitkeep when counting records; ADR-0032:10 declares lanes and collections.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-12",
@@ -1223,7 +1388,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:29",
         "workbench/specs/S-021-portable-workbench-v3/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md (complete) records the v3 portable-layout capability and :103-105 'The breaking stable-path change is v3'; LEXICON.md:224 v3.0.0 row; README.md:185-200 publishes the v3 versioning/setup contract (current v3.2.1).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-12A",
@@ -1263,7 +1434,13 @@
       "notes": "Later stamps (v3.1.x, v3.2.x) continue the v3 line per the Lexicon.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:30"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:103-105 'breaking stable-path change is v3. Genesis creates only v3'; LEXICON.md:224 v3.0.0 row; workbench/manifest.json workbenchVersion 'v3.2.1'.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-12B",
@@ -1303,7 +1480,13 @@
       "notes": "Matches the standing AGENTS.md dogfood boundary (root is real, templates/ is the blank product). PW-3A later extended the same dogfood logic to move root skills/ into workbench/skills.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:31"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 TK-006 done (SPEC.md:156); workbench/manifest.json exists; tools/test-workbench-dogfood.mjs:12-17 asserts the manifest, no root specs/, and S-021 at workbench/specs/.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-12C",
@@ -1348,7 +1531,13 @@
       "notes": "ADR-0032 (manifest schema 2) reused the same pattern: schema 1 is upgrade-required with one lossless migration, not accepted as current.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:32"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:103-105 forbids permanent dual sources; workbench-layout.mjs:278,586 schema 1 -> upgrade-required 'migrate once'; tools/workbench-adoption.mjs:25-29 legacyLanes; tools/workbench-upgrade.mjs:37-69 one-time --layout-only/--explicit-update upgrade.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-13",
@@ -1393,7 +1582,13 @@
       "notes": "The principle stands; the count does not. The S-051 owner waiver (2026-09-09) permits a 21-skill core, ADR-000H renamed to-tickets to to-tasks, and ADR-000M places the skills in workbench/skills.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:33"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 TK-005 done (SPEC.md:155); workbench/tools/workbench-paths.mjs is the one reader; tools/test-skill-catalog.mjs:144,238 checks manifest-authority naming; RUNBOOK.md:448-449 'nothing hardcodes a support path'. Principle holds for the 21-skill core.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-13A",
@@ -1439,7 +1634,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:34",
         "workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md:61"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by S-051",
+        "evidence": "Replaced by S-051, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-13B",
@@ -1485,7 +1686,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:35",
         "workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md:61"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by S-051",
+        "evidence": "Replaced by S-051, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-13C",
@@ -1515,7 +1722,13 @@
       "notes": "Historical delivery decision for the v3 candidate; the one-release principle continues under ADR-000M, where the release owns and versions the skills lane.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:36"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:115-117 'No Forge publication step or private skills-repository change is part of this capability'; S-021 complete with TK-005/TK-006 done in one candidate; ADR-000M keeps skills release-owned.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-14",
@@ -1560,7 +1773,13 @@
       "notes": "ADR-0047 later restated the preservation contract for Genesis, Adoption and upgrade.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:37"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "templates/ADOPTION.md:98-118,316-318 inventory, migrate, refuse collisions; tools/workbench-adoption.mjs migrate with legacy-path-collision refusals; RUNBOOK.md:681-705 V3 Adoption migration check; S-021 TK-003 done.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-14A",
@@ -1599,7 +1818,13 @@
       "notes": "Legacy handoffs/checkpoints go to the frozen workbench/sessions/checkpoints collection; S-048 retired checkpoints as a live capability. S-044 adds a separate classification step before migration.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:38"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "templates/ADOPTION.md:98-118 Phase 0 inventory/classify and :267,316-318 stop on collision rather than overwrite; tools/workbench-adoption.mjs:25-29,113-152 legacy lane table and legacy-path-collision; RUNBOOK.md:704-705 refuses collisions before mutation.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-14B",
@@ -1643,7 +1868,13 @@
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:39",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-003",
         "workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-15",
@@ -1691,7 +1922,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:40",
         "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md:90"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3A",
+        "evidence": "Replaced by PW-3A; that row carries the build obligation. PW-3A is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-15A",
@@ -1730,7 +1967,13 @@
       "notes": "",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:41"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench-layout.mjs:456-467 init writes manifest, lanes and collections and adds .gitkeep to empty ones; templates/GENESIS.md:286-294,384-385 declared lanes, empty design-concepts kept, first spec under workbench/specs/; RUNBOOK.md:489-490 readiness needs one actionable first spec.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-15B",
@@ -1772,7 +2015,13 @@
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:42",
         "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md:90"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-16",
@@ -1818,7 +2067,13 @@
       "notes": "The \"missing-only skill rules\" part changed: under ADR-000M (PW-3) both upgrade modes lay the skills lane down and never read or replace the provider home.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:43"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "update-harness skill partly stale",
+        "evidence": "tools/workbench-upgrade.mjs:57-105 migrates once via Adoption, lays the lane, records lifecycle upgrade; RUNBOOK.md:764-806; S-021 TK-004 done; test-workbench-upgrade 5/5 in a clean clone. But workbench/skills/update-harness/SKILL.md:25-40,113-118 still say --layout-only requires user-scoped presence and writes skills \"presence-only\".",
+        "gap": "update-harness SKILL.md Route selection and v2 bullet contradict its own :164 and the tool (lane-install, provider home never read); no Task carries the fix (S-00V controls sweep uncut)."
+      }
     },
     {
       "id": "V3-16A",
@@ -1857,7 +2112,13 @@
       "notes": "The \"presence gate\" clause is superseded by ADR-000M (PW-3): the upgrade lays down workbench/skills and does not gate on user-scoped presence.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:44"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "tools/workbench-adoption.mjs:320-345 moves legacy skills/ to recovery then installs the lane; workbench-upgrade.mjs:94-104 calls Adoption migrate once and records tools+skillsLane receipts; RUNBOOK.md:772-779; S-021 SPEC.md evidence TK-004 row. Presence gate removed as the notes say (no missing-user-skills check in the tool).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-16B",
@@ -1896,7 +2157,13 @@
       "notes": "Recovery records belong in the ignored workbench/sessions/recovery/ collection.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:45"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "tools/workbench-upgrade.mjs:67-80 refuses missing HEAD/dirty tree and records git ls-files inventory; :100 writes upgrade-recovery.json with preMigration gitSha+inventory; RUNBOOK.md:767-770; S-021 SPEC.md:237 and TK-004 done; test-workbench-upgrade 5/5 (incl. dirty-project refusal) in a clean 6ae38b9 clone.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-17",
@@ -1932,7 +2199,13 @@
       "notes": "",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:46"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:295-296 acceptance, :308-321 Testing Seams, :335-336 Verification Procedure name fixtures and the Genesis/Adoption/v2 exercises; all three test files exist and pass in a clean 6ae38b9 clone (layout 70/70, adoption ok, upgrade 5/5). S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-17A",
@@ -1972,7 +2245,13 @@
       "notes": "The skill-install cases targeted the provider-home installer; under ADR-000M the equivalent lane cases belong in tools/test-skills-lane.mjs.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:47"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:310-319 lists the disposable-home, fixture and parser cases; tools/test-core-skill-installer.mjs (27/27: missing-only :268, collision :472, Git root :305, explicit update+backup :36); test-workbench-layout.mjs:362 traversal (absolute lanes fail the exact-lane check, workbench-layout.mjs:290); lane cases in test-skills-lane.mjs 3/3.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-17B",
@@ -2001,7 +2280,13 @@
       "notes": "",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:48"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:335-336 'Run fresh Genesis, mixed Adoption, and v2 update fixtures from clean recoverable starting points'; TK-006 done (:156). Fixtures pass in a clean 6ae38b9 clone: layout fresh-Genesis test (:157), adoption 'mixed v2 adoption' ok, upgrade dirty-project refusal.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-17C",
@@ -2031,7 +2316,13 @@
       "notes": "Under ADR-000M, discovery goes through the tracked .agents/skills and .claude/skills adapters into workbench/skills, not user-scoped homes.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:49"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:131-132 Non-Goal on model-outcome claims; :302-304 acceptance requires both engine discovery checks and one cold-context resume. Discovery now via lane adapters: tools/test-skills-lane.mjs:37 resolves every required skill through both roots (3/3 pass). S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-17D",
@@ -2065,7 +2356,13 @@
       "notes": "The demo may be assembled from existing RUNBOOK checks; the answer does not require a single named v3 demo procedure.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:50"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:302-304 acceptance 'the under-one-minute demo pass without an unsupported model-outcome claim' [x]; RUNBOOK.md:307-311 lane install/verify commands, :349-350 installer (presence-only), :420-422 layout checks hold the demo commands.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-18",
@@ -2101,7 +2398,13 @@
       "notes": "Historical delivery decision for the v3 candidate.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:51"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:115-117 'Portable work is authored directly in LLM Workbench from current integration. No Forge publication step...'; ADR-0026 active in workbench/docs/adr/ (action none). S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-18A",
@@ -2129,7 +2432,13 @@
       "notes": "Historical and operational.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:52"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "no artifact change",
+        "evidence": "Every Result action is none; the durable branch rule lives in AGENTS.md Git Rules.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-18B",
@@ -2165,7 +2474,13 @@
       "notes": "PW-4 (2026-09-22) later kept [the owner's private skills repository] as a backup and optional publication target, still never on a room's critical path.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:53"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:115-117 and :128-129 Non-Goal exclude the private skills repository; tools/test-skill-catalog.mjs:72 asserts the catalog does not name it, and the test passes in a clean 6ae38b9 clone.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-19",
@@ -2202,7 +2517,13 @@
       "notes": "Parent question; sub-answers 19A-19D name each repair.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:54"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:51-56 records the red catalog test, S-011 and S-014 as prerequisites and :136-142 the order; S-014 SPEC.md:363 'v3 dependency reconciliation' updated current state while rows :354-366 stay append-only. S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-19A",
@@ -2237,7 +2558,13 @@
       "notes": "The project-local ownership that S-011 lost was itself later changed again: ADR-000M (2026-09-23) put the core skills back inside each room at workbench/skills. That does not reopen S-011.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:55"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-011 SPEC.md:7 Status superseded, :13 and :326 'Superseded by: S-021 ... for skill ownership, distribution, and completion gates'; historical task rows kept (:111). S-021 SPEC.md Supersession 'Supersedes: S-011 skill ownership/distribution/completion contract only.'",
+        "gap": ""
+      }
     },
     {
       "id": "V3-19B",
@@ -2267,7 +2594,13 @@
       "notes": "Later decisions route release gates to S-00O and S-052; that is later history, not a change to this answer.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:56"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-014 SPEC.md:363 reconciled state to exact refs 08ab78e/9e6c71b and blocked release on S-021; :364-365 received the S-021 candidate (d80d14c). Header :7-14 now routes release work to S-00O, which is later history.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-19C",
@@ -2301,7 +2634,13 @@
       "notes": "The answer's destinations for PR #42 are GitHub (closed unmerged after replacement proof) and S-014 evidence (named obsolete); it names no separate durable record of which intent is rebuilt.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:57"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "`gh pr view 42` -> CLOSED, mergedAt null, closedAt 2026-09-04 (claude/respec-forge-verticality -> integration), after S-021 completed; S-014 SPEC.md:363 names 'obsolete PR #42'.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-19D",
@@ -2334,7 +2673,13 @@
       "notes": "",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:58"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:51-53 and :141-142 state the red catalog test is the first prerequisite; TK-001 done. tools/test-skill-catalog.mjs passes in a clean 6ae38b9 clone ('portable 21-skill source bundle ... aligned').",
+        "gap": ""
+      }
     },
     {
       "id": "V3-20",
@@ -2371,7 +2716,13 @@
       "notes": "Parent question; 20A lists what is authorized, 20B what is excluded.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:59"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:119-132 scope/Non-Goals incl. :130 'Merging integration into main'; AGENTS.md:338 'only the owner merges integration into main'; templates/AGENTS.md:222-223 generic 'owner-only final merge: [OWNER_ONLY_MERGE]'.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-20A",
@@ -2411,7 +2762,13 @@
       "notes": "Exact pushed-head verification and the PR #42 reconciliation are recorded in S-014 evidence and on GitHub rather than a separate durable owner.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:60"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:150-156 six done red/green tasks, :280-281 independent review; S-014 SPEC.md:365-366 resumed exact-head audit on d80d14c; PR #42 closed unmerged (gh); `gh pr list --base main` shows integration->main PR #73 merged 2026-09-06.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-20B",
@@ -2442,7 +2799,13 @@
       "notes": "Scope for the v3 runway only. Later S-00V/ADR-000M allow publishing room skills to the personal catalog as a separately authorized operation; that does not change this runway's exclusion.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:61"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:119-132 Non-Goals: Foundry machinery (:121), catalog/guidebook rewrite (:125-126), credentials/visibility/private skills repo (:128-129), main merge (:130), unproven outcome claims (:131). S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-21",
@@ -2485,7 +2848,13 @@
       "notes": "Status superseded by owner-locked PW-3/PW-3A/PW-4 carried into S-00V TK-001. The 'never replace without explicit update' part survives (see V3-22A).",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:65"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-21A",
@@ -2520,7 +2889,13 @@
       "notes": "Still holds; later decisions enlarged the bundle (see V3-21B) and ADR-000M places it in the workbench/skills lane.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:66"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:23 'minimum closed 12-skill workflow'; workbench/skills/README.md:3-31 closed 21-skill bundle table spanning genesis/adoption/update-harness through grilling, to-spec, to-tasks, implement, code-review and stances.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-21B",
@@ -2561,7 +2936,13 @@
       "notes": "Supersession chain: S-027/ADR-0036 (stances), S-046/S-049 (notepad, carry), S-050/S-051 (save, promote, handoff), S-00H/ADR-000H (to-tasks). checkpoint stays in the core only as the retirement explainer after S-048. Duplicate of V3-13A.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:67"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by ADR-000H",
+        "evidence": "Replaced by ADR-000H, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-21C",
@@ -2602,7 +2983,13 @@
       "notes": "The 'no project-local skill copies' rule was reversed: ADR-0046 had rejected per-room core copies; ADR-000M made them the decision. Root skills/ still counts as a shadow.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:68"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by PW-3",
+        "evidence": "Replaced by PW-3; that row carries the build obligation. PW-3 is implemented & completed (S-00V TK-001 done).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-22",
@@ -2644,7 +3031,13 @@
       "notes": "Additive, fail-closed and explicit-update-only replacement survive in lane form; the user-scoped target and foreign-Git-root refusal do not. S-051 treated blanket refusal prose as drift.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:69"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by ADR-000M",
+        "evidence": "Replaced by ADR-000M, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-22A",
@@ -2684,7 +3077,13 @@
       "notes": "Still holds after ADR-000M; the replaced skill is the lane copy rather than a provider-home copy.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:70"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "LEXICON.md:153 Explicit skill update 'only path that may replace a core skill'; templates/LEXICON.md:195 Skills lane 'replaced only by the Workbench update' (no separate row); manifest.json skillPolicy.updates 'workbench-update'; tools/workbench-skills.mjs:243 refuses without --explicit-update.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-22B",
@@ -2724,7 +3123,13 @@
       "notes": "Content is still compared only on explicit update; what changed is the setup model, not the no-compare-on-setup intent for room-added skills.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:71"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by ADR-000M",
+        "evidence": "Replaced by ADR-000M, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-22C",
@@ -2764,7 +3169,13 @@
       "notes": "S-051 narrowed it: an unmanaged same-named skill is refused rather than backed up and replaced. ADR-000M moved the update into the room lane; the provider-home installer (core-skill-installer.mjs) is only for personal-catalog publication.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:72"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "LEXICON.md:153; RUNBOOK.md:297-326 Skills lane check (update backs up changed core, records path, rollback); templates/RUNBOOK.md:821-825 and templates/LEXICON.md:195 carry the generic update/receipt rule; tools/workbench-skills.mjs:241-277 update/backup, rollback; test-skills-lane 3/3.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-23",
@@ -2799,7 +3210,13 @@
       "notes": "The principle belongs in S-021 and BLUEPRINT's plain-files wording; the answer does not require the phrase 'guidebook-first' in a root control.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:73"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:73-75 'Markdown guidebooks own procedures in bounded chunks ... no umbrella lifecycle program'; RUNBOOK.md and templates/RUNBOOK.md stay Markdown procedures naming single-purpose tools; no workbench.mjs exists. S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-23A",
@@ -2833,7 +3250,13 @@
       "notes": "ADR-000H renamed 'ticket' to 'task'. spec-workbench.mjs may carry several spec/task commands (render, doctor, next, claim, close, move, report) but stays spec/task-scoped; the answer sets no size bound.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:74"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "No tools/workbench.mjs or workbench/tools/workbench.mjs; spec-workbench.mjs dispatch (:2640-2717) holds only spec/task commands (next, claim, close, render, doctor, move-spec, report...). S-021 SPEC.md:109-111, :257.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-23B",
@@ -2877,7 +3300,13 @@
       "notes": "The approval clause belongs in AGENTS.md as well as S-021 (see the AGENTS.md result).",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:75"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "AGENTS clause missing",
+        "evidence": "RUNBOOK index intact; LEXICON.md:78,102 and templates/LEXICON.md:78,102 route guidebooks; manifest collections.guidebooks = workbench/wiki/guidebooks. `grep -i guidebook AGENTS.md templates/AGENTS.md` -> none; the approval clause lives only in S-021 SPEC.md:106-108.",
+        "gap": "AGENTS.md and templates/AGENTS.md do not state that AGENTS may approve a bounded subordinate guidebook; no Spec or Task carries that edit."
+      }
     },
     {
       "id": "V3-23C",
@@ -2912,7 +3341,13 @@
       "notes": "Deferred, not open: triage v2 (2026-09-23) lists it under 'Backlog after v4' as owner-deferred.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:76"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "deferred after v4",
+        "evidence": "Decision status deferred; the row records it in the backlog after v4, and every Result action is none.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-24",
@@ -2953,7 +3388,13 @@
       "notes": "Parent question; 24A-24C refine it.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:77"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:20, :33-35; BLUEPRINT.md:170 'does not require Foundry' and :179-180 does not import Foundry machinery; ADR-0026 active. templates/BLUEPRINT.md has no Foundry text, correctly: it is the blank project template (AGENTS dogfood boundary).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-24A",
@@ -2989,7 +3430,13 @@
       "notes": "Scope of v3.0.0. Later decisions superseded the 12-skill and missing-only parts (21 skills; in-room lane per ADR-000M); S-021 keeps the original as history.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:78"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:283-306 acceptance all [x], TK-001..TK-006 done, Completion Result :367-370; workbench/manifest.json exists as layout/skill authority (now seven lanes, 21 skills per later decisions).",
+        "gap": ""
+      }
     },
     {
       "id": "V3-24B",
@@ -3020,7 +3467,13 @@
       "notes": "",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:79"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-021 SPEC.md:119-132 Non-Goals exclude Foundry machinery, orchestration, generalized plugin/marketplace, pending-skill rewrites and guidebook reorganization; :374-375 deferred list. S-021 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "V3-24C",
@@ -3060,7 +3513,13 @@
       "notes": "Same answer as V3-6.",
       "source_refs": [
         "workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:80"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "AGENTS.md:338,369 owner-only integration->main; templates/AGENTS.md:222-223,257-258 generic owner-only merge; S-021 SPEC.md:305-306 [x] hands the candidate to S-014; S-014 SPEC.md:364-365 received it; PR #73 integration->main merged 2026-09-06 (gh).",
+        "gap": ""
+      }
     },
     {
       "id": "WB-1",
@@ -3103,7 +3562,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:238",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Decisions And Contracts, Q1 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-027 SPEC.md:4 complete, :110 TK-001 done; evidence :159 fresh Round One PASS, :162 first report, :166 fresh continuation PASS. ADR-0038 active (setup proof first; reports never repair). RUNBOOK.md:69-75 and :1916; templates/RUNBOOK.md:23-29 and :902 put Round One before reporting.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-2",
@@ -3144,7 +3609,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:240",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q2, Q5 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "AGENTS.md:3-7 and templates/AGENTS.md:5-9: entry AGENTS -> RUNBOOK -> LEXICON, SPEC mandatory after selection, Blueprint only for architecture. ADR-0035 active (keeps seven controls). RUNBOOK.md:60-67 and templates/RUNBOOK.md:14-21; LEXICON.md:10 and templates/LEXICON.md:12 Task Routing. S-027 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-3",
@@ -3186,7 +3657,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:242",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/skills/{builder,auditor,reviewer,reconciler}/SKILL.md exist, reached through .agents/skills and .claude/skills adapters. ADR-0036 active (flat symlink for nested install; never spawns). AGENTS.md:81-86 = templates/AGENTS.md:81-86; LEXICON.md:179-187 Stance Terms; workbench/skills/README.md:144.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-4",
@@ -3226,7 +3703,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:244",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q4 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "AGENTS.md:346-351 and templates/AGENTS.md:235-238: separate-context reviewer checks the immutable candidate; earlier review is support. ADR-0037 active. workbench/skills/implement/SKILL.md:70 and workbench/skills/code-review/SKILL.md:44 point to the integration review gate.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-5",
@@ -3262,7 +3745,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:246",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q2, Q5 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "AGENTS.md:93-97 = templates/AGENTS.md:93-97 list the six cold-continuation items and 'No universal handoff artifact is required'. ADR-0035 active; its v3.2.0 reconciliation note replaces the checkpoint clause with ADR-0054 direct promotion, as the row's notes say.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-6",
@@ -3302,7 +3791,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:248",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q6, Q15 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "AGENTS.md:74-79 = templates/AGENTS.md:74-79: investigate via Contract/ADRs/specs/Wiki; if no confident action, record blocker and stop. ADR-0035 active. RUNBOOK.md:66 and templates/RUNBOOK.md:20 'Investigate within the task; do not invent a next task when blocked.'",
+        "gap": ""
+      }
     },
     {
       "id": "WB-7",
@@ -3342,7 +3837,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:250",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q7 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/feedback/REPORT_FORMAT.md and templates/feedback/REPORT_FORMAT.md exist; RUNBOOK.md:1914-1937 and templates/RUNBOOK.md:900+ store reports in the declared feedback lane, follow-up in its spec, no repair authorized. ADR-0038 active: 'Reports never repair or authorize repair'.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-8",
@@ -3380,7 +3881,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:252",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q8 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-0038 active: 'Continue v3.1 as v3.1.1 ... Preserve historical release proof'; S-027 SPEC.md:18-19 outcome, status complete. The Blueprint line (added bfae8c0) was removed at 2971f7d; current canon says Blueprint carries no release chronology (AGENTS.md:52-53). Substance sits in ADR-0038/S-027.",
+        "gap": "ADR-0038 canonicalized_in still names BLUEPRINT.md although 2971f7d removed the line and current canon keeps release chronology out of the Blueprint; no Spec owns that drift."
+      }
     },
     {
       "id": "WB-9",
@@ -3415,7 +3922,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:254",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q9 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-0038 active Consequences: 'defer Master Workbench until real contrasting deliveries establish an observation need'; S-027 SPEC.md:238 Completion Result records the deferral; S-027 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-10",
@@ -3453,7 +3966,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:273",
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:289 (Provisional ADR decision)",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "AGENTS+ADR done, Blueprint dropped",
+        "evidence": "ADR-0034 active; AGENTS.md:88-91 = templates/AGENTS.md:88-91 carry the rule. BLUEPRINT.md had 'Every required step must have immediate delivery value (ADR-0034)' until 2971f7d removed it; BLUEPRINT.md at 6ae38b9 has no such principle, yet ADR-0034 canonicalized_in still names BLUEPRINT.md.",
+        "gap": "Root BLUEPRINT.md no longer carries the ADR-0034 principle its canonicalized_in claims; either restore it or drop BLUEPRINT.md from ADR-0034 canonicalized_in. No Spec owns this."
+      }
     },
     {
       "id": "WB-11",
@@ -3496,7 +4015,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:275",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q1, Q11, Q13, Q14 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-027 SPEC.md:110 TK-001 done (PR48 merged, remote containment verified), acceptance :123-126 checked, status complete. workbench/feedback/REPORT_FORMAT.md and the four stance skills under workbench/skills/ exist.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-12",
@@ -3537,7 +4062,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:277",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "Each workbench/skills/{builder,auditor,reviewer,reconciler}/SKILL.md has exactly four ## headings: Purpose, Method / Posture, Obligations, Completion / Exit Condition. AGENTS.md:83-86 = templates/AGENTS.md:83-86; LEXICON.md:183 and templates/LEXICON.md:168 Stance rows.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-13",
@@ -3578,7 +4109,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:279",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q1, Q11, Q13, Q14 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "RUNBOOK.md:69-75 and templates/RUNBOOK.md:23-29: setup-only Round One by a fresh agent precedes feedback testing. ADR-0038 active. S-027 SPEC.md:52 Desired Behavior 3, :126 acceptance checked, :159 Round One PASS.",
+        "gap": ""
+      }
     },
     {
       "id": "WB-14",
@@ -3620,7 +4157,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:281",
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:283 (correction added 2026-09-23)",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "RUNBOOK.md:71-72 = templates/RUNBOOK.md:25-26 'Return the result in chat only: no feedback report, handoff, checkpoint, self-created task...'; AGENTS.md:97 = templates/AGENTS.md:97 'A read-only setup check may return only in chat.'; ADR-0038 'Round One creates no prose artifact.'",
+        "gap": ""
+      }
     },
     {
       "id": "WB-15",
@@ -3656,7 +4199,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:284",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q6, Q15 row)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "AGENTS.md:77-79 = templates/AGENTS.md:77-79 'record the blocker in the existing work owner and stop; do not create a next task for yourself or manufacture a queue item.' ADR-0035 active: 'never manufacture the next task.'",
+        "gap": ""
+      }
     },
     {
       "id": "WB-16",
@@ -3697,7 +4246,13 @@
         "workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:286",
         "workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md",
         "workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "14 of 43 TASK.md lack Stance",
+        "evidence": "AGENTS.md:81-86 = templates/AGENTS.md; ADR-0036 active; templates/SPEC.md:10,62 carry Stance and every live SPEC header has it. But 14 of 43 workbench/specs/*/tasks/*/TASK.md have no Stance field (e.g. S-00P tasks/TK-003, TK-004; S-00I TK-002..006; S-00J TK-002,005,006).",
+        "gap": "The standalone TASK.md form does not carry the Stance field consistently, and nothing requires it; the SPEC-level Stance is present."
+      }
     },
     {
       "id": "U313-0",
@@ -3727,7 +4282,13 @@
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=0]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#boundaries"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-045 SPEC.md:123-125 '**v3.1.3 does not publish.** This work is delivered to the declared git.integrationBranch...'; S-045 status complete (:4).",
+        "gap": ""
+      }
     },
     {
       "id": "U313-1",
@@ -3757,7 +4318,13 @@
       "notes": "The rationale text is recorded next to the owner's answer; it reads as the agent's framing that the owner accepted.",
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1]"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-045 SPEC.md:107-110 'REPLACES IT: all six remaining tickets land in v3.1.3, TK-005 first'; ticket table :144-150 all done; status complete.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-1A",
@@ -3785,7 +4352,13 @@
       "notes": "'TK-005 first' is the owner's only ordering constraint (S-045).",
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1A]"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-045 SPEC.md:144-150: TK-001, 002, 003, 005, 006, 007 all done. TK-001/002/003/007 declare TK-005 as blocker; TK-006 declares TK-002, which itself waits on TK-005. :108-110 names 'TK-005 first' as the only ordering constraint.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-1B",
@@ -3814,7 +4387,13 @@
       "notes": "",
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1B]"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-045 SPEC.md:6 'Owner: claude'; :109-111 ordering left to the implementing agent; all six tickets closed in the 2026-09-07 evidence rows (:247 onward). S-046 is untouched by S-045.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-2",
@@ -3850,7 +4429,13 @@
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=2]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#execution_plan_locked"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-045 SPEC.md:114-119 decision recorded by TK-005 (row :247); TK-001 done (:144) implements it in tools/core-skill-installer.mjs (:60 realpath, :94-121 gitOwnedRoots); S-045 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-2A",
@@ -3889,7 +4474,13 @@
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=2A]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#findings[why-install-is-blocked]"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-045 SPEC.md:114-119 'A symlinked and/or Git-owned discovery root is SUPPORTED ... never touches Git'; tools/core-skill-installer.mjs:60,:94-121; tools/test-core-skill-installer.mjs:297-334 and :387 prove HEAD/index untouched and symlinked root resolved.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-3",
@@ -3919,7 +4510,13 @@
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=3]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "withdrawn",
+        "evidence": "Withdrawn by the asking agent; every Result action is none.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-4",
@@ -3949,7 +4546,13 @@
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=4]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#boundaries"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "withdrawn",
+        "evidence": "Withdrawn; Result action none. The 'main is the owner's' boundary is recorded at S-045 SPEC.md:123-125.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-5",
@@ -3978,7 +4581,13 @@
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=5]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "withdrawn",
+        "evidence": "Withdrawn by the asking agent; Result action none. S-046 stays in its own lane.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-6",
@@ -4007,7 +4616,13 @@
       "notes": "",
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=6]"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "withdrawn",
+        "evidence": "Withdrawn; Result action none.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-7",
@@ -4045,7 +4660,13 @@
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=7]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#findings[public-repo-exposure]",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:48"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "zip removed; records not updated",
+        "evidence": "`git ls-tree -r 6ae38b9 | grep -c .zip` -> 0, so the in-repo copy is retired. Old path still cited at workbench/feedback/REPORT-decision-triage-2026-09-07.md:5, decision-triage-2026-09-07.json:6, decision-triage-second-pass-2026-09-07/first-pass-snapshot.json:6. The private copy was not re-checked (outside repo).",
+        "gap": "No owner records the relocation or its sha256 check; three feedback citations and the S-049 evidence still name the removed repo path. No Spec or Task carries this."
+      }
     },
     {
       "id": "U313-8",
@@ -4071,7 +4692,13 @@
       "notes": "When measured, the count was seven specs, not six. The correcting row was itself later corrected by an appended withdrawal row.",
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=8]"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-045 SPEC.md:250 correcting row names the claim, seven carrier specs (adds S-036) and the disproving measurement; :257 appends the withdrawal of its 'none true when written' part. The completed specs' rows are unedited. S-045 complete.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-9",
@@ -4100,7 +4727,13 @@
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=9]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "withdrawn",
+        "evidence": "Withdrawn by the asking agent; Result action none. The guard still holds: templates/GENESIS.md reads 'exact 21-skill policy', and tools/test-skill-catalog.mjs derives it from the bundle size.",
+        "gap": ""
+      }
     },
     {
       "id": "U313-10",
@@ -4134,7 +4767,13 @@
       "source_refs": [
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#spawned_branches[id=10]",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#promoted.open_carried_forward"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by CAND-N",
+        "evidence": "Replaced by CAND-N; that row carries the build obligation. CAND-N is in progress (S-052 TK-004 blocked).",
+        "gap": ""
+      }
     },
     {
       "id": "CAND-N",
@@ -4177,7 +4816,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions[CAND-N]",
         "workbench/sessions/grilling/cand-n-private-session-transport-2026-09-07.json",
         "workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json (CAND-N)"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-052 TK-004 blocked",
+        "evidence": "ADR-0051 active; workbench/tools/session-transport.mjs, RUNBOOK.md:1277+, templates/RUNBOOK.md:437+, AGENTS.md:405-406 and templates/AGENTS.md:294-295 deliver the transport. S-052 TK-001..003 done; TK-004 blocked (SPEC.md:84, :124-128). It does not record the 2026-09-21 sequencing (clean up the audit first, PC handoff as the pre-main test).",
+        "gap": "S-052 TK-004 real Mac/Windows continuation is unbuilt. The 2026-09-21 order (clean up the failed audit, then the PC handoff before any main merge) is not recorded in S-052."
+      }
     },
     {
       "id": "BPR-1",
@@ -4232,7 +4877,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-002",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-1)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-000A exists at workbench/docs/adr/000A-...md:15-24 (Canon, destination Blueprint, Lexicon owns Context Map, Specs own delivery); AGENTS.md:49-53 = templates/AGENTS.md:49-53; LEXICON.md:68-70 identical in templates/LEXICON.md:68-70; S-00A SPEC.md status complete (TK-00A, TK-00B done).",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-2",
@@ -4282,7 +4933,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-005",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-2)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "LEXICON.md:19-25 and templates/LEXICON.md:21-27 hold Context Map entry routes; RUNBOOK.md:60-65 and templates/RUNBOOK.md:14-19 Ordinary Entry AGENTS->RUNBOOK->LEXICON; AGENTS.md:3-5,55-60 mirrored in templates/AGENTS.md:5-7,55-59; ADR-000A:23 'The Lexicon owns the only Context Map'.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-3",
@@ -4331,7 +4988,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-004",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-3)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-000A:16-18 planes classify one claim, rationale distinct; ADR-0025 sits in workbench/docs/adr/archive/; AGENTS.md:40-41,49-50 and templates/AGENTS.md:41,49-50; ADR term LEXICON.md:211 and templates/LEXICON.md:197 keep decision and rationale distinct. S-00A complete.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-4",
@@ -4377,7 +5040,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-001",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-4)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-000A:15-19 accepted non-superseded decisions are Canon, canonicalized_in not a duplication prerequisite, no instruction authority; ADR-0002 in workbench/docs/adr/archive/; AGENTS.md:49-50 = templates/AGENTS.md:49-50.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-5",
@@ -4428,7 +5097,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-006",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-5)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md and templates/BLUEPRINT.md carry only the eight destination headings, enforced with status/version/catalog exclusions by tools/test-blueprint-contract.mjs:7-12; ADR-000A:21-22; AGENTS.md:52-53 = templates/AGENTS.md:52-53; Blueprint term LEXICON.md:135, templates/LEXICON.md:130.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-5A",
@@ -4475,7 +5150,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-007",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-5A)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "Destination/Requirements/Decisions rows at LEXICON.md:68-70 identical in templates/LEXICON.md:68-70; S-00A SPEC.md:61-73 Decisions And Contracts and :74 Blueprint rebuild contract; ADR-000A:23 'Specs own scoped delivery'. S-00A complete.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-6",
@@ -4521,7 +5202,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-008",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-6)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/tools/adr.mjs:285-299 enforces deprecation_reason, one whole-record successor, no fragment/path, cycle and non-accepted target rejection; tools/test-adr.mjs:326-344 covers them; RUNBOOK.md:963-976 and templates/RUNBOOK.md:219-223; ADR-000A:26-28. S-00A TK-00A done.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-6A",
@@ -4573,7 +5260,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-009",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-6A)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by WF-8F",
+        "evidence": "Replaced by WF-8F; that row carries the build obligation. WF-8F is in progress (Blueprint done, controls contradict).",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-7",
@@ -4619,7 +5312,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-010",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": "S-050 release still open",
+        "evidence": "Repair delivered: S-00A complete; S-050 SPEC.md:57-58 and :86 put the S-00A rebuild in v3.2.0 scope (acceptance :185 checked); root controls and templates/ mirrors agree. S-050 stays active only for its separate TK-006 readiness verdict.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-7A",
@@ -4669,7 +5368,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-011",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7A)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": "S-050 release still open",
+        "evidence": "AGENTS.md:242-256 gate (producer-only, not mirrored, as intended); RUNBOOK.md:18-56 procedure; S-00C complete; S-050 TK-005 done with the Template proof recorded at SPEC.md:120,231. S-050 stays active only for its separate TK-006 readiness verdict.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-7B",
@@ -4710,7 +5415,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-012",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-00B-workbench-template-reformation/SPEC.md Status complete (TK-00C done), recasting the reference room as a copyable Workbench Template; AGENTS.md:245-246 'Workbench_Template ... (formerly Example_Workbench)'; README.md:221 names Workbench_Template.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-7B1",
@@ -4752,7 +5463,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-013",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B1)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": "S-050 release still open",
+        "evidence": "S-00B complete with no personalization claim (Non-Goals); S-050 SPEC.md:18-20 Outcome excludes fresh-copy personalization and TK-005 is done (:120). S-050 stays active only for its separate TK-006 readiness verdict.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-7B2",
@@ -4802,7 +5519,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-014",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B2)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "All four staged Specs exist and are complete per spec-index: S-00B (template), S-00C (evidence + Blueprint grilling), S-00D (Genesis from Blueprint/ADRs), S-00E (fresh-copy proof), each with its task done.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-7C",
@@ -4841,7 +5564,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-022",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7C)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "AGENTS.md:254-256 'does not add an external repository prerequisite ... or authorize other room updates'; README.md:222-227; Non-Goals exclude unnamed/downstream rollout in S-00B, S-00C ('Broad portfolio intake'), S-00D ('downstream rollout'), S-00E ('Deploying to an unnamed real project').",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-8A",
@@ -4887,7 +5616,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-015",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8A)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md and templates/BLUEPRINT.md contain only the eight destination sections; tools/test-blueprint-contract.mjs:8-12 excludes catalog/version/health markers; workbench/specs/CATALOG.md is the derived spec inventory (spec-catalog block).",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-8B",
@@ -4933,7 +5668,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-016",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8B)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md:3-166 and templates/BLUEPRINT.md:3-31 use the eight headings, asserted by tools/test-blueprint-contract.mjs:7-10; S-00A SPEC.md:74-92 lists them with omission allowed; Blueprint term LEXICON.md:135 and templates/LEXICON.md:130 name the eight elements.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-8C",
@@ -4978,7 +5719,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-017",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8C)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md has only inline links to active ADRs 000A (:59), 000M (:86), 0046 (:87), no ADR list; workbench/docs/adr/REGISTER.md lists only accepted active decisions; RUNBOOK.md:2090 and templates/RUNBOOK.md:1064 'only materially relevant active ADR links'.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-8D",
@@ -5018,7 +5765,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-018",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8D)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/specs/S-00A-blueprint-active-adr-and-context-map/blueprint-claim-disposition.json exists; tools/test-blueprint-contract.mjs:13-20 reconstructs every source byte and checks each claim's disposition and existing owner; S-00A TK-00B done.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-8E",
@@ -5064,7 +5817,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-019",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8E)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "RUNBOOK.md:2086-2092 and templates/RUNBOOK.md:1060-1066 require an explicit semantic pass/fail Blueprint verdict; tools/test-blueprint-contract.mjs:7-20 mechanical checks; S-00A SPEC.md:109 Blueprint Review Checklist. S-00A complete.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-8F",
@@ -5118,7 +5877,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-020",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8F)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by WF-8",
+        "evidence": "Replaced by WF-8; that row carries the build obligation. WF-8 is in progress (S-00J active, S-00P TK-002 blocked).",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-8F1",
@@ -5163,7 +5928,13 @@
         "workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-021",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8F1)",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "RUNBOOK.md:113 and templates/RUNBOOK.md:67 'report only, no implementation or main merge'; RUNBOOK.md:2092 'Only Kayden approves/merges main' (template :1066 'Only the owner'); AGENTS.md:338; templates/AGENTS.md:222-223 owner-only final merge; ADR-000A:37-38.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-R1",
@@ -5202,7 +5973,13 @@
         "workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-002",
         "workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-010",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R1)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/skills/grilling/SKILL.md:132-142 explicit direction to stop/hand off ends the interview, handoff exit composes Markdown with the exact job; workbench/skills/handoff/SKILL.md:12-15 exact job/endpoint, make-it-so/carry cannot expand it, :21-22 inherited authorization.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-R2",
@@ -5241,7 +6018,13 @@
         "workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-001",
         "workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-011",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R2)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/skills/handoff/SKILL.md:9-10 declared handoffs collection and .md file, never a new JSON handoff; AGENTS.md:397-399 = templates/AGENTS.md:286-288 'Handoffs are separate human-readable Markdown ... Do not serialize a handoff as a JSON notepad.'",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-R3",
@@ -5281,7 +6064,13 @@
         "workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-012",
         "workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-004",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R3)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/skills/handoff/SKILL.md:12-15 carries explicit exclusions, 'create specifications; do not implement' limits the recipient to the named specs; S-00A SPEC.md:126 Grilling Record Reconciliation records the locked decisions with S-00B..S-00E as staged successors.",
+        "gap": ""
+      }
     },
     {
       "id": "BPR-R4",
@@ -5316,7 +6105,13 @@
         "workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-003",
         "workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-013",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R4)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/skills/handoff/SKILL.md:31-37 recipient read-back test (job, limits, next step) and 'File existence alone is insufficient.'",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q01",
@@ -5365,7 +6160,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-047",
         "workbench/specs/S-00P-workflow-canon-rework/SPEC.md TK-001"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Blueprint done, AGENTS pending",
+        "evidence": "BLUEPRINT.md:33-45 states the ladder (idea, Align, design concept, Blueprint, Spec/Task delivery; prototype optional), S-00P TK-001 done. S-00P TK-002..TK-005 blocked; ADR-000G still in workbench/docs/adr/proposed/.",
+        "gap": "AGENTS/RUNBOOK/LEXICON rewrite and templates mirror (S-00P TK-002..005, blocked on S-00I/S-00J); ADR-000G still proposed. Blueprint uses the WF rung names, not Scope/Plan/Verify verbatim."
+      }
     },
     {
       "id": "FND-Q02",
@@ -5407,7 +6208,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-021",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-005",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "board done; ADR-000E proposed, unowned",
+        "evidence": "TASKBOARD.md:13-31 is generated by render from Spec/Task records and templates/TASKBOARD.md:21 says completed specs disappear. ADR-000E sits in workbench/docs/adr/proposed/; S-00P TK-004 reconciles only 000F/000G/000I, so no live Spec carries 000E. LEXICON has no Taskboard/Kanban row.",
+        "gap": "ADR-000E acceptance has no carrying Spec/Task; LEXICON (and template) lack the Kanban/project-management Taskboard wording."
+      }
     },
     {
       "id": "FND-Q02A",
@@ -5451,7 +6258,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-035",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-036",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-052"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "TASK.md projection done; 000E proposed",
+        "evidence": "S-00H (retired, complete) moved work state into TASK.md and render projects it (spec-index tasks sourced from tasks/*/TASK.md); LEXICON.md:74 Work state row routes to Spec/Tasks with the board as generated view. ADR-000E (Kanban, not navigation view) is still in proposed/.",
+        "gap": "ADR-000E acceptance carried by no Spec; LEXICON.md and templates/LEXICON.md have no Taskboard row calling it the Kanban/project-management view."
+      }
     },
     {
       "id": "FND-Q03",
@@ -5501,7 +6314,13 @@
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
         "workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "root done; template, carry pending",
+        "evidence": "ADR-000H:47-120 (Packet, Receipt, One Task one context) accepted; workbench/manifest.json:48-55 declares contextUnit 200000 with provenance; LEXICON.md:138-144 Task/Packet/Task receipt/Chat/Director rows match. LEXICON.md:144 itself says carry does not say this yet.",
+        "gap": "workbench/skills/carry/SKILL.md lacks one-Task-per-Chat/director behaviour (S-01C TK-00T does not name it); templates/LEXICON.md has no Packet or Task receipt row."
+      }
     },
     {
       "id": "FND-Q04",
@@ -5530,7 +6349,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-003",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
         "workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "not a question",
+        "evidence": "Decision status not-a-question; the only Result action is none.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q05",
@@ -5569,7 +6394,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[4]",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
         "workbench/specs/S-00P-workflow-canon-rework/SPEC.md TK-001"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md is a future-state destination against every rung (BLUEPRINT.md:33-45, 60-78, 120-155) with no current status; S-00P TK-001 done (landed f84b469, blueprint contract test). The template update was conditional on a shape change; the eight headings were kept (S-00P SPEC Dogfood boundary).",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q06",
@@ -5607,7 +6438,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[5]",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
         "workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md:76-80"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "no artifact change",
+        "evidence": "Every Result action is none.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q07",
@@ -5661,7 +6498,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-016",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080",
         "workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md Dependencies And Blockers"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by WF-8D/8E/8F",
+        "evidence": "Replaced by WF-8D/8E/8F; that row carries the build obligation. WF-8D is in progress (S-00I active, ADR-000I proposed).",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q08",
@@ -5702,7 +6545,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-011",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-039",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by WF-8F",
+        "evidence": "Replaced by WF-8F; that row carries the build obligation. WF-8F is in progress (Blueprint done, controls contradict).",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q09",
@@ -5734,7 +6583,13 @@
       "notes": "The lexicon skill this answer governs is the owner's personal installed copy, outside the repository; the grilling notepad owns open questions.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-019"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "LEXICON.md:5-8 describes the Lexicon only as the canonical lookup table for shared language; no text names it the Navlink hub or shared-understanding record or says it holds only settled meaning. S-00P TK-004's listed Lexicon items do not include this. The Context Map entry routes (LEXICON.md:19) predate the answer.",
+        "gap": "Lexicon header (root and template) describing dictionary, Context Map, shared-understanding record, Navlink hub and settled-only meaning; no Spec/Task carries it. Owner's installed skill outside repo not assessed."
+      }
     },
     {
       "id": "FND-Q10",
@@ -5761,7 +6616,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[9]",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q10"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q11",
@@ -5788,7 +6649,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[10]",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q11"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q12",
@@ -5828,7 +6695,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[11]",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
         "workbench/specs/S-00E-fresh-template-project-proof/SPEC.md"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "rule done; v4 run S-00O TK-003",
+        "evidence": "AGENTS.md:242 and RUNBOOK.md:18 carry the Template Upgrade Release Gate; S-00F and S-00E are complete. The v4 Template upgrade is S-00O TK-003, blocked; the external repository state was not checked.",
+        "gap": "Workbench_Template upgrade for the v4 release (S-00O TK-003, blocked behind S-00P)."
+      }
     },
     {
       "id": "FND-Q13",
@@ -5869,7 +6742,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-020",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-025"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "grilling done; promote pending",
+        "evidence": "workbench/skills/grilling/SKILL.md:7 says it never writes canonical files during the interview. workbench/skills/promote/SKILL.md:31-36 promotes directly via sessions.mjs promote, not as scoped Task/Spec work; LEXICON.md:138 says no home for a spec-less Task is built and ADR-000H still assumes a parent Spec.",
+        "gap": "promote routing through Task/Spec work, spec-less Task in LEXICON/ADR-000H; no Spec or Task carries these. domain-modeling stays pending (not core), so its conditional clause is not triggered."
+      }
     },
     {
       "id": "FND-Q14",
@@ -5916,7 +6795,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-024",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-032",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-036"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00J tasks done; ADR-000F proposed",
+        "evidence": "BLUEPRINT.md:128-135 describes assembled-Spec review then owner Human QA on integration; S-00J TK-001..TK-006 done incl. TK-005 owner Human QA before closure, but S-00J is active awaiting Human QA. ADR-000F still in proposed/; AGENTS.md:348 still names an immutable-candidate review, not the Spec QA gate.",
+        "gap": "S-00J completion; AGENTS/templates naming the two gates (S-00P TK-002/TK-005 blocked); ADR-000F acceptance (S-00P TK-004 blocked)."
+      }
     },
     {
       "id": "FND-Q15",
@@ -5947,7 +6832,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-004",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "no artifact change",
+        "evidence": "Every Result action is none (measurement belongs to the audit workbench).",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q16",
@@ -5974,7 +6865,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[15]",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q16"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q17a",
@@ -6006,7 +6903,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[16]",
         "workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md section 4.3",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q17a"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q17b",
@@ -6047,7 +6950,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-023",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037",
         "workbench/sessions/notepads/work/grilling-artifact-progress-audit-2026-09-19.json#decision-002"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "git grep of LEXICON.md and templates/LEXICON.md finds no Map, Fog or Frontier row; ADR-000E (still in proposed/) keeps the Journey/Path Frontier wording at 000E:10-16. No live Spec references ADR-000E or these terms.",
+        "gap": "Map/Fog/Frontier Lexicon rows (root and template) and an ADR-000E revision with the Map/Fog/Frontier model and the E-1 board; nothing carries them."
+      }
     },
     {
       "id": "FND-Q17c",
@@ -6089,7 +6998,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[18]",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:353"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "LEXICON.md:137 Spec row says nothing about nesting or blocking; no TASKBOARD.json exists and no Spec names it. Pre-existing support is only Task blockers naming an S-### id (spec-workbench.mjs:118) and a free-text Spec Blockers field shown on TASKBOARD.md.",
+        "gap": "Spec nesting/blocking in LEXICON (root and template) and Spec-to-Spec dependsOn/unblocks on the board; no Spec or Task carries it."
+      }
     },
     {
       "id": "FND-Q17d",
@@ -6125,7 +7040,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[19]",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-002",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:362"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q17e",
@@ -6167,7 +7088,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-010",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-010",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:371"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "deferred after v4",
+        "evidence": "Owner deferred the coordinator until single-Task execution is proven (backlog after v4). BLUEPRINT.md:152-155 already names the coordinator as intended future model.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q17f",
@@ -6200,7 +7127,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[21]",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:64-65",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:382"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; the backlog-after-v4 sort is a triage suggestion, not an owner answer.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q17g",
@@ -6235,7 +7168,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[22]",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-002",
         "workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:393"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer.",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q18",
@@ -6265,7 +7204,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-025",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-025"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "no artifact change",
+        "evidence": "Every Result action is none (interview sequencing).",
+        "gap": ""
+      }
     },
     {
       "id": "FND-Q19",
@@ -6322,7 +7267,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-046",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-042",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "000H done; 000F/000G proposed",
+        "evidence": "ADR-000H is accepted (REGISTER.md) and S-00H delivered standalone TASK.md. ADR-000F and ADR-000G are still in workbench/docs/adr/proposed/ (S-00P TK-004 blocked); LEXICON.md:137 Spec row still reads as a stable capability record.",
+        "gap": "ADR-000F/000G acceptance and LEXICON Blueprint/Spec/Task altitude rows (root and template) via S-00P TK-004/TK-005, blocked on S-00I/S-00J."
+      }
     },
     {
       "id": "FND-Q20",
@@ -6367,7 +7318,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-021",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-002",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (FND-Q20)"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-001 blocked; relations unnamed",
+        "evidence": "No OWNERSHIP.json at root. S-00G (planned) cuts TK-001 for the map's validated schema (SPEC.md:132, blocked on ADR-000B/C/D proposed, not started), but neither its SPEC.md nor ADR-000D names the nine relations or instance_edge. No inherits/refines explanation exists in LEXICON or the Wiki.",
+        "gap": "Nine-relation schema with instance_edge routes in S-00G/OWNERSHIP.json; ADR-000D acceptance; a durable inherits-vs-refines explanation with a named owner."
+      }
     },
     {
       "id": "FND-Q21",
@@ -6410,7 +7367,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-062",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-026",
         "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-004 blocked",
+        "evidence": "S-00G TK-004 (blocked) populates the map; S-00G SPEC.md:10,82-83,135 still records FND-Q21 as open and gates TK-004 on it. No OWNERSHIP.json; LEXICON.md still carries the Artifact Ownership Schema.",
+        "gap": "S-00G must drop the open FND-Q21 gate; 28 rows in OWNERSHIP.json; Lexicon schema moved out (TK-004)."
+      }
     },
     {
       "id": "FND-Q21A",
@@ -6451,7 +7414,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-031",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-007",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-018"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-004 blocked",
+        "evidence": "S-00G TK-004 (blocked) delivers the structured query and exhaustive coverage (S-00G acceptance). ADR-000D still in proposed/; no OWNERSHIP.json. S-00G does not name rows for OWNERSHIP.json or TASKBOARD.json.",
+        "gap": "ADR-000D acceptance; OWNERSHIP.json with query surface and rows for OWNERSHIP.json/TASKBOARD.json; S-00G still records FND-Q21/Q23/Q24 open and calls the map a root control."
+      }
     },
     {
       "id": "FND-Q21B",
@@ -6491,7 +7460,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-022",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-007",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-019"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-004 blocked",
+        "evidence": "S-00G TK-004 (blocked) populates the map rows; S-00G does not describe the six scoped rows or the Taskboard representation owner. LEXICON.md:67 Boundaries row says the request and Spec may narrow the task (unchanged).",
+        "gap": "Six scoped rows with per-scope owners and summarizes relation in OWNERSHIP.json; Boundaries wording review in LEXICON root and template."
+      }
     },
     {
       "id": "FND-Q21C",
@@ -6535,7 +7510,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-062",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-023",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-025"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-004 blocked; rest uncarried",
+        "evidence": "Only the map's Decisions row is carried, by S-00G TK-004 (blocked). git grep finds no four-tier rule or unescalated-choice refusal in S-00J or ADR-000H; S-00J TASKs are all done without it.",
+        "gap": "Four-tier Decisions row in OWNERSHIP.json; Task body decision section and ADR-000H note; S-00J Spec QA refusal of unescalated durable choices (no carrier for the last two)."
+      }
     },
     {
       "id": "FND-Q21D",
@@ -6580,7 +7561,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-024",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-008",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-026"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-004 blocked",
+        "evidence": "S-00G TK-004 (blocked) populates rows and makes LEXICON route onward. No OWNERSHIP.json; no sitrep skill in workbench/skills/ and no live Spec carries one.",
+        "gap": "28-row map; Lexicon Context Map pointing to OWNERSHIP.json; sitrep core skill has no carrier."
+      }
     },
     {
       "id": "FND-Q22",
@@ -6634,7 +7621,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-021",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "ADR-000C is in proposed/ and S-00G only depends on it; ADR-0033 is still accepted at top level (REGISTER.md). LEXICON.md:204 and templates/LEXICON.md:189 still define the Contract as seven root controls plus the assigned spec, contradicting the answer.",
+        "gap": "ADR-000C acceptance, ADR-0033 archived, Contract/Routed artifacts/Core rows in LEXICON root and template, AGENTS wording; no Spec or Task carries these."
+      }
     },
     {
       "id": "FND-Q22A",
@@ -6676,7 +7669,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-007",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-024"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-004 blocked",
+        "evidence": "S-00G Desired Behavior and TK-004 (blocked) carry routes-not-claims: a query returns routes, never claim text. ADR-000D still in proposed/; no OWNERSHIP.json.",
+        "gap": "ADR-000D acceptance; OWNERSHIP.json query returning routes only (S-00G TK-001..TK-004)."
+      }
     },
     {
       "id": "FND-Q23",
@@ -6733,7 +7732,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-041",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-011",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-009"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "folder lifecycle done; map pending",
+        "evidence": "S-00I TK-001..006 done deliver folder lifecycle for ADRs/Specs/Tasks, but ADR-000I is still in proposed/. S-00G SPEC.md:84-87 still says an in-record status is required (contradicts). adr.mjs has no list --status and REGISTER.md has no proposed count.",
+        "gap": "S-00G repair and guard tests; ADR-000D/000I acceptance (000I via S-00P TK-004); adr.mjs list --status and REGISTER proposed-count header have no carrier."
+      }
     },
     {
       "id": "FND-Q23A",
@@ -6793,7 +7798,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-014",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027",
         "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-001..003 blocked",
+        "evidence": "S-00G TK-001 (root file), TK-002 (root-surface consumers sweep), TK-003 (templates/OWNERSHIP.json) are blocked on ADR-000B/C/D proposed. ADR-0013 is still accepted; S-00G title and catalog still say root control.",
+        "gap": "OWNERSHIP.json root and template; ADR-000B acceptance; ADR-0013 archived; S-00G/CATALOG root-control wording; consumer sweep."
+      }
     },
     {
       "id": "FND-Q24",
@@ -6841,7 +7852,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-033",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-010",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Lexicon done; S-00G, 000D pending",
+        "evidence": "LEXICON.md:128-130 and templates/LEXICON.md:128 define the Ownership origin model and retire portability model. S-00G SPEC.md:89-99 and ADR-000D:44-50 still carry FND-Q24 as open; no comparator or classification exists.",
+        "gap": "S-00G rows classified by origin, primary/supporting roles and a row-keyed comparator (TK-003/TK-004 blocked); S-00G and ADR-000D stop describing FND-Q24 as open."
+      }
     },
     {
       "id": "FND-Q24B",
@@ -6875,7 +7892,13 @@
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-002",
         "workbench/sessions/handoffs/fnd-q24b-divergence-disposition-shape-2026-09-22.md",
         "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer.",
+        "gap": ""
+      }
     },
     {
       "id": "RB-Q1",
@@ -6920,7 +7943,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-003",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-049",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "root done, template missing",
+        "evidence": "ADR-000H:51-60,72-77 define Packet members and Receipt; LEXICON.md:139-140 Packet and Task receipt rows; spec-workbench.mjs:289 close appends the Receipt, :1298-1308 renders the board signal; S-00H complete. templates/LEXICON.md has no Packet or Task receipt row (only Task :133, Ticket :138).",
+        "gap": "templates/LEXICON.md lacks Packet and Task receipt rows. `show` (spec-workbench.mjs:149) does not assemble the Task Packet; assembleTaskPacket (task-packet.mjs) has no CLI caller, only tests."
+      }
     },
     {
       "id": "RB-Q1A",
@@ -6956,7 +7985,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-050",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-020",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "root done, template missing",
+        "evidence": "LEXICON.md:139 Packet row carries required and optional members, working-context-only and executable-from-required-members wording; ADR-000H:51-70 carries the definition; task-packet.mjs implements it (S-00H TK-005 done). `grep -n -i packet templates/LEXICON.md` -> no Packet row.",
+        "gap": "templates/LEXICON.md has no Packet row (required/optional members, working-context-only constraint)."
+      }
     },
     {
       "id": "RB-Q2",
@@ -6998,7 +8033,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-051",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-046",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-035"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "root done, template missing",
+        "evidence": "ADR-000H:72-77 append-only one row per run, :99-101 rejects a level beneath Task, :111-112 Spec-not-Task sizing rule; LEXICON.md:138 Task and :140 Task receipt rows match; templates/LEXICON.md:133 Task row carries the sizing rule but the template has no Task receipt row.",
+        "gap": "templates/LEXICON.md has no Task receipt row (append-only, one row per run)."
+      }
     },
     {
       "id": "RB-Q2A",
@@ -7033,7 +8074,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-052",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-000H:124-132 states the derived-signal boundary (run count, latest branch, short SHA, dirty count; full table never rendered); spec-workbench.mjs:1298-1308 receiptSignal renders `runs N, branch @ sha7, dirty N` from TASK.md Receipt rows; S-00H TK-007 done, S-00H complete.",
+        "gap": ""
+      }
     },
     {
       "id": "RB-Q2B",
@@ -7075,7 +8122,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-054",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:21"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/manifest.json:48-55 contextUnit 200000 tokens with decisionDate, source, consideredAlternatives, reason; workbench-layout.mjs:358-372 readContextUnit validates it (tools/test-workbench-layout.mjs:2301); ADR-000H:112-120 says sizing reads the declared value; S-00H TK-008 done.",
+        "gap": ""
+      }
     },
     {
       "id": "RB-Q3",
@@ -7109,7 +8162,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-021",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:36"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "no artifact change",
+        "evidence": "Every Result action is `none`: budget grading is owned by the audit workbench project, not LLM_Workbench.",
+        "gap": ""
+      }
     },
     {
       "id": "RB-Q3A",
@@ -7138,7 +8197,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-056",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-022",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "no artifact change",
+        "evidence": "Every Result action is `none`: scoped out to the audit workbench project; nothing is owed in LLM_Workbench.",
+        "gap": ""
+      }
     },
     {
       "id": "RB-Q4",
@@ -7188,7 +8253,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-057",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059",
         "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00M TK-001 ready",
+        "evidence": "ADR-000J accepted (workbench/docs/adr/REGISTER.md:14). S-00M SPEC.md:4 Status planned, :101-104 TK-001 ready, TK-002..TK-004 blocked, none started. diagnostics.mjs has no detached/untracked-lane code; close (spec-workbench.mjs:255-300) has no dirty/unpushed refusal; AGENTS.md/RUNBOOK.md lack the rule.",
+        "gap": "Git-state attention diagnostics, close refusal on dirty/unpushed unless recorded with reason, and the AGENTS/RUNBOOK rule are unbuilt; S-00M TK-004 names AGENTS/RUNBOOK but not the templates/ mirrors."
+      }
     },
     {
       "id": "RB-Q5",
@@ -7236,7 +8307,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-007",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-024",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-058"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00N active, Human QA open",
+        "evidence": "ADR-000K accepted (REGISTER.md:15); LEXICON.md:156 and templates/LEXICON.md:141 Feedback Dispositions; REPORT_FORMAT.md:32 in both copies requires the field; tools/test-diagnostics.mjs:91-107 remediation ratchet. S-00N SPEC.md:4 still active with all Tasks done; next gate is Human QA reconciliation.",
+        "gap": "S-00N not complete: owner Human QA findings still to reconcile. Built vocabulary has five classes (adds `repaired`) versus the locked four."
+      }
     },
     {
       "id": "RB-Q6",
@@ -7276,7 +8353,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (RB-Q6)",
         "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "superseded by S-00V TK-001",
+        "evidence": "Replaced by S-00V TK-001, which is not a ledger row; that record carries the build obligation, so its progress is not read here.",
+        "gap": ""
+      }
     },
     {
       "id": "TT-Q1",
@@ -7314,7 +8397,13 @@
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-014",
         "workbench/sessions/notepads/grilling/task-ticket-chat-workflow-clarification-2026-09-10.json#decision-001",
         "workbench/sessions/recovery/grilling-artifact-progress-audit/GRILLING-PROGRESS-BOARD.json (TT-Q1 owner-clarification-2026-09-19)"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "LEXICON.md:141-143 define Chat (context in which a Conversation happens; several Chats form a Thread), Conversation (descriptive, not an artifact) and Thread; templates/LEXICON.md:134-136 mirror them.",
+        "gap": ""
+      }
     },
     {
       "id": "TT-Q2",
@@ -7365,7 +8454,13 @@
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-007",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-042",
         "workbench/sessions/notepads/grilling/task-ticket-chat-workflow-clarification-2026-09-10.json#decision-002"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "ADR-000H active in workbench/docs/adr/ (REGISTER accepted); S-00H is complete in workbench/specs/retired/; LEXICON.md:138,145 and templates/LEXICON.md:133,138 define Task with its own TASK.md and retire Ticket; workbench/skills/to-tasks/SKILL.md:9,34-35 writes tasks/<TK>/TASK.md.",
+        "gap": ""
+      }
     },
     {
       "id": "TT-Q3",
@@ -7423,7 +8518,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:26",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:51"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Lexicon done; rest absent",
+        "evidence": "LEXICON.md:124-125,135,137 and templates/LEXICON.md:124-125,130,132 state room nesting and 1:many cardinalities. No artifact-model Wiki article, ADR-000H/AGENTS still assume a parent Spec (LEXICON.md:138 says so), no workbench/tasks/, and no 'Artifact model and definitions' Spec exists.",
+        "gap": "Wiki artifact-model article with diagram, ADR-000H + AGENTS stance amendment for spec-less Tasks at workbench/tasks/, and the owning Spec are all missing."
+      }
     },
     {
       "id": "TT-Q4",
@@ -7476,7 +8577,13 @@
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-051",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:21",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:51"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Lexicon done; carry/controls not",
+        "evidence": "LEXICON.md:138,141,144 and templates/LEXICON.md:133-134,137 carry one Task per Chat and Director (alias Dispatcher). LEXICON.md:144 says the carry skill does not say this yet; grep director in AGENTS.md/RUNBOOK.md/workbench/skills/carry/SKILL.md -> none; S-01C (carry rebuild) does not mention Director.",
+        "gap": "carry skill change, AGENTS/RUNBOOK Director way of working (+ templates), and the owning 'Artifact model and definitions' Spec are missing."
+      }
     },
     {
       "id": "TT-Q5",
@@ -7506,7 +8613,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q5)",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:27"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status is open; no owner answer recorded.",
+        "gap": ""
+      }
     },
     {
       "id": "TT-Q6",
@@ -7542,7 +8655,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q6)",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:28"
-      ]
+      ],
+      "progress": {
+        "status": "specced",
+        "sub_label": "S-00V DB4; no Task cut",
+        "evidence": "S-00V/SPEC.md:102-109 (Desired Behavior 4) carries claim pushed on the task branch; only TK-001 is cut. AGENTS.md:152 claim step is still local `claim S-### --agent NAME`; spec-workbench.mjs has no git push. No Lexicon row distinguishes selection/claim/authorization.",
+        "gap": "Push-on-claim Task not cut; AGENTS Work Selection claim step and Lexicon distinction not written."
+      }
     },
     {
       "id": "TT-Q7",
@@ -7579,7 +8698,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q7)",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:29"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "partial in AGENTS",
+        "evidence": "AGENTS.md:348 separate-context reviewer and :396-398 handoffs are Markdown for a new chat; LEXICON.md:141,176 Chat and Scoped handoff rows are consistent (templates mirror). No AGENTS rule that a fresh Chat is needed when context is used up; no Spec carries it.",
+        "gap": "AGENTS.md (+ templates) lacks the fresh-Chat-on-exhausted-context rule and the one-Chat-per-Task link; no owning Spec."
+      }
     },
     {
       "id": "TT-Q8",
@@ -7609,7 +8734,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q8)",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:30"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "3 pages; per-skill TKs ready",
+        "evidence": "Answered part only. workbench/wiki/MEMORY.md:46-57 routes skill-grilling/grill-me/notepad pages (status: partial planning articles); per-skill Specs S-00X..S-01S each carry a ready 'prove the routed article' Task (e.g. TK-00O), none started.",
+        "gap": "18 remaining skill pages and reconciliation of the 3 planning pages await the ready per-skill Tasks; owner-facing vs internal classification stays open."
+      }
     },
     {
       "id": "TT-Q9",
@@ -7655,7 +8786,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-032",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:31"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "AGENTS part done; ADR-000L absent",
+        "evidence": "AGENTS.md:396-399 notepads JSON, handoffs Markdown for a new chat; LEXICON.md:175 Notepad is objective-scoped. No ADR-000L in workbench/docs/adr/ or proposed/; workbench/skills/notepad/SKILL.md:57,87 still say 'one writer per note'. No Spec carries it.",
+        "gap": "ADR-000L (notepad belongs to its objective) not in repo; notepad skill wording not changed to one writer at a time; no owning Spec/Task."
+      }
     },
     {
       "id": "TT-Q10",
@@ -7698,7 +8835,13 @@
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-036",
         "workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md:10",
         "workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md:155"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "LEXICON.md:145 and templates/LEXICON.md:138: TK is the Task prefix, historical TK-### readable; retired S-00H SPEC.md:10,155 records TT-Q10 and S-00H is complete. Generated TASKBOARD.md columns carry no Ticket (header 'Current slice', cells TK-###).",
+        "gap": ""
+      }
     },
     {
       "id": "TT-Q11",
@@ -7729,7 +8872,13 @@
       "notes": "Only piecemeal rulings exist: Ticket retired (WF-5), 'Codex Task' rejected as a name for a Chat and Conversation kept informal (TT-Q1), Dispatcher accepted as an alias for Director (decision-068). The gap triage calls this vocabulary hygiene that blocks nothing.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q11)"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status is open; the only Result action is none.",
+        "gap": ""
+      }
     },
     {
       "id": "TT-Q12",
@@ -7774,7 +8923,13 @@
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-023",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q12)",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:32"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "answered part; S-00G blocked",
+        "evidence": "Answered part only. LEXICON.md:48 and templates/LEXICON.md:48 Artifact Ownership Schema route truths; AGENTS.md:260 Documentation Ownership And Proof and :411 'Promote only supported claims ... into their proper durable owners' (templates/AGENTS.md:165,300). S-00G TK-001..TK-004 all blocked on proposed ADR-000B/C/D.",
+        "gap": "S-00G ownership-map routing rows not built (Tasks blocked); evidence-threshold clause remains open."
+      }
     },
     {
       "id": "WF-1",
@@ -7824,7 +8979,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-019",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-022",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[0]"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00P TK-004 blocked",
+        "evidence": "BLUEPRINT.md:62-66 states Blueprint as product destination and Spec as PRD-shaped scoped destination (S-00P TK-001 done). LEXICON.md:137 Spec row still 'A stable capability record'; ADR-000G still in adr/proposed/ and its line 11 gives the Blueprint 'the future-facing PRD function'.",
+        "gap": "LEXICON/templates Spec+Blueprint rows and ADR-000G reconciliation pending under S-00P TK-004/TK-005 (blocked). BLUEPRINT.md never states the Contract, not the Blueprint, owns the operating agreement."
+      }
     },
     {
       "id": "WF-2",
@@ -7863,7 +9024,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-011",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[1]"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "root Blueprint done, Lexicon pending",
+        "evidence": "BLUEPRINT.md:34-41 names the ladder idea -> Align through grilling -> confirmed design concept -> Blueprint and Align's start/exit. LEXICON.md and templates/LEXICON.md have no Align row; the Design concept row (LEXICON.md:121) predates and does not define Align's exit.",
+        "gap": "Align and design-concept Lexicon rows (root and template) owned by S-00P TK-004/TK-005, both blocked on S-00I/S-00J completion."
+      }
     },
     {
       "id": "WF-3",
@@ -7896,7 +9063,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-071",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[2]"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md:38-46 allows research, brainstorming and wayfinding for a named uncertainty and places an optional prototype after the Blueprint and before a Spec, outside the standard rungs. Delivered by S-00P TK-001 (done, PR #96); S-00P stays active only for other controls.",
+        "gap": ""
+      }
     },
     {
       "id": "WF-4",
@@ -7928,7 +9101,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-072",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[3]"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "nuance unowned",
+        "evidence": "BLUEPRINT.md:42-46 records the optional prototype step and the carry-forward-after-ordinary-verification rule (S-00P TK-001 done). `grep -niE 'established|proving|throwaway' BLUEPRINT.md` finds no established-versus-fresh-project nuance.",
+        "gap": "The established-project reuse preference and fresh-project separate codebase/proving-stack nuance is absent from BLUEPRINT.md, and no S-00P Task carries it."
+      }
     },
     {
       "id": "WF-5",
@@ -7978,7 +9157,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-018",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-021",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[4]"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "adr/REGISTER.md:13 lists 000H accepted; S-00H is complete and retired (workbench/specs/retired/S-00H-.../SPEC.md). LEXICON.md:145 and templates/LEXICON.md:138 retire Ticket; workbench/skills/to-tasks/SKILL.md exists, no to-tickets; `git grep -wi ticket` over controls, templates, skills, tools hits only the Lexicon row.",
+        "gap": ""
+      }
     },
     {
       "id": "WF-6",
@@ -8022,7 +9207,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-023",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[5]"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00P TK-004 blocked",
+        "evidence": "BLUEPRINT.md:62-70 gives the three altitudes and stacked Specs; BLUEPRINT.md:120-122 has the Taskboard project Task state. LEXICON.md:137 Spec row still 'A stable capability record'; ADR-000G still in adr/proposed/.",
+        "gap": "Spec row as objective-with-destination (root and template) and ADR-000G reconciliation pending under S-00P TK-004/TK-005, blocked."
+      }
     },
     {
       "id": "WF-7",
@@ -8068,7 +9259,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-083",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[6]"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "BLUEPRINT.md:142-145 states the nested integration -> Spec branch -> Task branch topology; S-00O SPEC.md:114-122 records exemption 2 (each Task lands as its own PR). AGENTS.md:334 still says 'Branch per spec/task from the current PR target', with no nested topology named as destination.",
+        "gap": "AGENTS.md and templates/AGENTS.md Git Rules/Branch Completion rewrite (S-00P TK-002/TK-005) blocked; S-00O is blocked and its exemption acceptance box unchecked."
+      }
     },
     {
       "id": "WF-8",
@@ -8121,7 +9318,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-020",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-009",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[7]"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00J active, S-00P TK-002 blocked",
+        "evidence": "BLUEPRINT.md:122-134 states Task TDD/verify, assembled-Spec review and integration Human QA. S-00J tasks TK-001..TK-006 done but Spec active at failed Human QA (SPEC.md:11). RUNBOOK.md:945-957 has the gate procedure; AGENTS.md:146-156 still the eight-step Spec-ticket procedure.",
+        "gap": "S-00J not complete (owner QA failing); AGENTS Work Selection/verification rewrite (TK-002), RUNBOOK rewrite (TK-003) and templates mirror (TK-005) all blocked; templates/RUNBOOK.md:771-773 only a fragment."
+      }
     },
     {
       "id": "WF-8A",
@@ -8169,7 +9372,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-073",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085",
         "workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (WF-8A)"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00P TK-003/TK-004 blocked",
+        "evidence": "RUNBOOK.md:928-935 files a later gap as a corrective Task against the Wiki claim, never restoring the record (S-00I TK-006 done); BLUEPRINT.md:139-140 matches. LEXICON.md:138 Task row still 'a thin vertical slice of a Spec'; ADR-000H Packet not widened; templates/RUNBOOK.md lacks the procedure.",
+        "gap": "Task row widening (root/template), ADR-000H Packet amendment or successor, and templates/RUNBOOK corrective-Task procedure pending under S-00P TK-004/TK-005 (blocked); S-00I still active."
+      }
     },
     {
       "id": "WF-8B",
@@ -8206,7 +9415,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8B)",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-068",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "AGENTS.md:349-350 and templates/AGENTS.md:238 say earlier review is 'not mandatory independent ceremonies per task', and AGENTS.md:153 keeps red/green TDD. Neither names the assembled Spec as the separate-context review unit; AGENTS.md:347 still reviews each immutable candidate. S-00O row is action none.",
+        "gap": "AGENTS.md/templates Engineering And Verification and gate wording naming the assembled-Spec review await S-00P TK-002/TK-005 (blocked)."
+      }
     },
     {
       "id": "WF-8C",
@@ -8246,7 +9461,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8C)",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-069",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00J active, S-00P TK-002 blocked",
+        "evidence": "S-00J TK-002/TK-003 done: RUNBOOK.md:945-956 binds the verdict to the assembled digest and has --finding create corrective Tasks under the still-open Spec. S-00J remains active at failed Human QA (SPEC.md:11). AGENTS.md:346-352 gate does not name the assembled Spec or corrective-Task loop.",
+        "gap": "S-00J completion; AGENTS gate rewrite (TK-002), RUNBOOK rewrite (TK-003) and templates/AGENTS+RUNBOOK mirror (TK-005) blocked; templates/RUNBOOK.md has no failed-review procedure."
+      }
     },
     {
       "id": "WF-8D",
@@ -8286,7 +9507,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8D)",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-070",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00I active, ADR-000I proposed",
+        "evidence": "S-00I TK-004/TK-006 done: RUNBOOK.md:903-906 move-task retires a done Task out of ordinary discovery; AGENTS.md:370-378 deletes branches only after proven containment. S-00I is active pending failed Human QA (SPEC.md:11); ADR-000I still in adr/proposed/.",
+        "gap": "S-00I completion, ADR-000I reconciliation (S-00P TK-004), and templates/AGENTS mirror (TK-005) pending; AGENTS names branch cleanup but not Task worktree cleanup."
+      }
     },
     {
       "id": "WF-8E",
@@ -8335,7 +9562,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-027",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-074",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-079"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00I/S-00J active",
+        "evidence": "BLUEPRINT.md:128-138 fixes review -> integration -> owner Human QA -> close -> Wiki reconciliation -> retirement. RUNBOOK.md:906-910,953-958 approve/complete/retire-spec gates exist (S-00J TK-005, S-00I TK-005 done). AGENTS.md:155-156 step 8 still completes on acceptance/owner gate, not this order.",
+        "gap": "S-00I and S-00J not complete (failed Human QA); AGENTS/templates Work Selection rewrite owned by S-00P TK-002/TK-005, blocked."
+      }
     },
     {
       "id": "WF-8F",
@@ -8389,7 +9622,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#finding-035",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-016"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Blueprint done, controls contradict",
+        "evidence": "BLUEPRINT.md:72-78 names durable owners and calls SPEC.md/TASK.md transient; S-00I SPEC.md:80-83 gates discard on verified main. Contradicted live: LEXICON.md:100 and templates/LEXICON.md:100 'The Spec is the durable capability owner'; AGENTS.md:160-162 and templates/AGENTS.md:142 'A spec is a durable capability'.",
+        "gap": "LEXICON rows (TK-004), AGENTS text/table (TK-002), templates (TK-005) all blocked; ADR-000I still proposed; S-00I not complete."
+      }
     },
     {
       "id": "WF-8G",
@@ -8434,7 +9673,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8G)",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-081",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-023"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Blueprint done, AGENTS contradicts",
+        "evidence": "BLUEPRINT.md:67-70 states the scope-and-destination rule; retired S-00H SPEC.md:9,21 has TASK.md own active work state. Contradicted live: AGENTS.md:275 and :289 (and templates/AGENTS.md:193) author work state in the Spec; LEXICON.md:137 Spec row still 'stable capability record'.",
+        "gap": "AGENTS/templates ownership table and work-state sentence (S-00P TK-002/TK-005) and Lexicon Spec/Task rows (TK-004) pending, all blocked."
+      }
     },
     {
       "id": "WF-8H",
@@ -8486,7 +9731,13 @@
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:13",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:39",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:45"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "No workbench/wiki/features/ exists (ls workbench/wiki); manifest declares no features collection; spec-workbench.mjs:1805 retire-spec accepts only design-concept or guidebook; design-concepts/README.md:32-35 keeps 'The owner alone authorizes creating an article'. `git grep -i wiki/features` outside sessions hits only the ledger.",
+        "gap": "features/ collection and README, manifest+template mirror, retire-spec type gate, MEMORY.md route and design-concepts README reconciliation; no Spec or Task carries any of it."
+      }
     },
     {
       "id": "WF-9",
@@ -8526,7 +9777,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020",
         "workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[8]"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "root done, template missing",
+        "evidence": "BLUEPRINT.md:147-150 returns failed Human QA to Align at the implicated scope; RUNBOOK.md:955-957 `approve --destination-change` records a return to Align and --finding creates corrective Tasks. templates/RUNBOOK.md has no Human QA failure procedure (only :771-773).",
+        "gap": "templates/RUNBOOK.md Human QA failure procedure and the RUNBOOK rewrite owned by S-00P TK-003/TK-005, blocked."
+      }
     },
     {
       "id": "WF-10",
@@ -8557,7 +9814,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-10)",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-076",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#finding-037"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "BLUEPRINT.md:152-155 plans the coordinator as the intended parallel model beyond consistent single-Task execution, with no assignment depending on it. S-00P TK-001 done; no coordinator Spec exists in spec-index (none required by the answer).",
+        "gap": ""
+      }
     },
     {
       "id": "WF-11",
@@ -8595,7 +9858,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (WF-11)",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:37"
-      ]
+      ],
+      "progress": {
+        "status": "specced-and-tasked",
+        "sub_label": "S-00O TK-004/TK-005 blocked",
+        "evidence": "S-00O SPEC.md:199 'TK-004 | Run one full WF-11 cycle on another workbench | blocked | TK-003' and :200 TK-005 receipt blocked; detail at :251-275; acceptance :286 unchecked. S-00O status blocked (SPEC.md:4) behind S-00P.",
+        "gap": "The WF-11 cycle has not run; TK-004 waits on TK-001..TK-003 and an owner-named target workbench (SPEC.md:188); TK-005 receipt not written."
+      }
     },
     {
       "id": "WF-12",
@@ -8637,7 +9906,13 @@
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-082",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-083"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00P TK-002..005 blocked",
+        "evidence": "BLUEPRINT.md rewrite delivered by S-00P TK-001 (done); S-00P SPEC.md:218-277 carries the controls rewrite; S-00O SPEC.md:105-112 records exemption 1 keeping full scope. S-00H complete; S-00I/S-00J active at failed Human QA; S-00P active; S-00O blocked.",
+        "gap": "Rollout incomplete: S-00I, S-00J, S-00P not complete; S-00P TK-002..TK-005 and all S-00O Tasks blocked."
+      }
     },
     {
       "id": "TRACK",
@@ -8679,7 +9954,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions[TRACK]",
         "Claude session d0f544c9-14ff-47fd-bc58-963bfa29a8c8 (owner message 2026-09-22T20:19Z)"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "No board Spec (TASKBOARD.json, six lanes) exists: the S-00O SPEC.md:136-141 capability map lists only S-00P/S-00H/S-00I/S-00J. The proposed ADR-000E was last touched by 9027808 (folder migration) and has no E-1..E-11 amendment.",
+        "gap": "Author the board Spec, put it in the S-00O build order, and amend proposed ADR-000E to the locked E-1..E-11 answers."
+      }
     },
     {
       "id": "E-1",
@@ -8741,7 +10022,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-003",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#directive-003",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-002"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "`git grep TASKBOARD.json` at 6ae38b9 finds no hit outside the ledger; TASKBOARD.md is still the generated Markdown projection; proposed ADR-000E and active ADR-0013 unamended; no board Spec in workbench/specs.",
+        "gap": "Board Spec, generator, TASKBOARD.json, ADR-000E/0013/000B amendments and control/template wording all missing."
+      }
     },
     {
       "id": "E-2",
@@ -8769,7 +10056,13 @@
       "notes": "Same correction records the owner saying the six lanes he specified were meant for TASKBOARD itself (feeds E-1).",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-001"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "withdrawn",
+        "evidence": "Decision status is withdrawn; no v4 artifact is owed.",
+        "gap": ""
+      }
     },
     {
       "id": "E-3",
@@ -8812,7 +10105,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#finding-003",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Lexicon partial; ADR/board absent",
+        "evidence": "LEXICON.md:138 and templates/LEXICON.md:133 note that small work may be a Task under the Blueprint with no Spec, but no lane-gating rule; ADR-000H not amended (LEXICON.md:138 says it still assumes a parent Spec); no board Spec exists.",
+        "gap": "Spec-lane-gated-by-Tasks rule, ADR-000H amendment and the board Spec (Spec/Task cards, child progress) are missing."
+      }
     },
     {
       "id": "E-4",
@@ -8851,7 +10150,13 @@
       "notes": "Umbrella question; its sub-parts are E-4A (where Backlog lives), E-4B (planned = Backlog), E-4C (Needs review). E-4B later made 'planned' the Backlog separator, which narrows decision-006's rejection.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-006"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "`git grep -i backlog` over controls, ADRs, specs, skills, tools and templates at 6ae38b9 finds only ADR-0035:13 (unrelated); no board Spec; proposed ADR-000E has no Backlog text.",
+        "gap": "Backlog lane definition in a board Spec, ADR-000E amendment and Lexicon row are missing."
+      }
     },
     {
       "id": "E-4A",
@@ -8884,7 +10189,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-007",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-005"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "No board Spec exists; no Backlog wording in workbench/tools/spec-workbench.mjs or templates/SPEC.md; nothing records acceptance of a one-sentence Backlog Spec.",
+        "gap": "Board Spec and doctor/parser acceptance of a minimal Backlog Spec are missing."
+      }
     },
     {
       "id": "E-4B",
@@ -8923,7 +10234,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-008",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-006"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "workbench/skills/to-spec/SKILL.md and to-tasks/SKILL.md have no Backlog/To do rule (grep). Specs authored 2026-09-23/24 (S-00X..S-01S) are planned yet each already has a ready Task, the opposite of cut-at-activation.",
+        "gap": "to-spec/to-tasks rules and the board lane function mapping planned to Backlog are missing."
+      }
     },
     {
       "id": "E-4C",
@@ -8961,7 +10278,13 @@
       "notes": "Rejects the agent's recommendation that independent review is part of doing the work.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-009"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "workbench/tools/task-record.mjs:35 TASK_STATUSES = ready, in-progress, blocked, done, deferred (no needs-review); proposed ADR-000E has no Needs review text; no board Spec.",
+        "gap": "Task-level needs-review status, ADR-000E amendment and the board Spec lane are missing."
+      }
     },
     {
       "id": "E-5",
@@ -8999,7 +10322,13 @@
       "notes": "Agent proposal adopted by owner confirmation.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-010"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "workbench/tools/spec-workbench.mjs has no lane function, --review flag or needsReview (grep); RUNBOOK.md Spec Lifecycle documents only today's next/claim; no board Spec.",
+        "gap": "Shared lane function, next To-do/--review behavior, derived Spec lane, RUNBOOK docs and owning board Spec are missing."
+      }
     },
     {
       "id": "E-6",
@@ -9044,7 +10373,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-011",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-013",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-017"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "No WBID or board Spec in workbench/specs; S-00O/SPEC.md:28-29,136-141 build list names only S-00P, S-00H, S-00I, S-00J; S-00P tasks/TK-002/TASK.md:7 blockers are TK-001, S-00H, S-00I, S-00J (no board Spec).",
+        "gap": "Both Specs absent; S-00O build order and S-00P TK-002..005 dependencies not updated."
+      }
     },
     {
       "id": "E-7",
@@ -9076,7 +10411,13 @@
       "notes": "Rejects the agent's recommendation to activate S-00O and auto-place the seven Human-QA Specs. The principle was extended to the whole v4 update in E-8.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-012"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "The only buildable Result is the board Spec's migration rule and no board Spec exists; the touch-and-update principle is recorded in no durable owner (the other Result action is none).",
+        "gap": "Board Spec with a keep-statuses-as-found migration is missing."
+      }
     },
     {
       "id": "E-8",
@@ -9116,7 +10457,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-003",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#finding-005",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-013"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "workbench/tools/visible-ids.mjs:5 base-62 mixed-case alphabet and :38 default width 3; ADR-0041:22-23 still says alphabet and width are not owner-approved; no WBID Spec exists.",
+        "gap": "ADR-0041 amendment, uppercase width-4 allocator with dual-form lookup, and the WBID Spec are missing."
+      }
     },
     {
       "id": "E-9",
@@ -9168,7 +10515,13 @@
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-034",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-037"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "No workbench/tasks/ directory; LEXICON.md:138 says no home for a spec-less Task is built; ADR-000H, task-record.mjs and wiki task-artifact-and-lifecycle.md name only Spec-directory Task paths.",
+        "gap": "workbench/tasks/ home, ADR-000H amendment, Lexicon home naming, tool support and wiki path rule are missing."
+      }
     },
     {
       "id": "E-10",
@@ -9209,7 +10562,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-015",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-008"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "No sitrep in workbench/skills (ls) or manifest skillPolicy.required; S-00V/SPEC.md:180 lists sitrep only in an uncut, tentative catalog-review list; no board Spec.",
+        "gap": "sitrep core skill reading TASKBOARD.json, manifest listing and board Spec are missing."
+      }
     },
     {
       "id": "E-11",
@@ -9246,7 +10605,13 @@
       "notes": "Agent proposal agreed by owner.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-016"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "No board Spec and no sitrep skill exist; no owner records the derived Complete substates. Substrate only: retired/ folder lifecycle (S-00I, active under Human QA; ADR-000I still in proposed/).",
+        "gap": "Board Spec derivation rule and sitrep two-count Complete report are missing."
+      }
     },
     {
       "id": "ACC-1",
@@ -9283,7 +10648,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-1, current.next_action)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer. ADR-000B/C/D remain in workbench/docs/adr/proposed/ and S-00G SPEC.md:12 still gates on their acceptance.",
+        "gap": ""
+      }
     },
     {
       "id": "ACC-2",
@@ -9324,7 +10695,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-2, current.next_action)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer. ADR-000B is still proposed and ADR-0013 (seven files) is still active in workbench/docs/adr/.",
+        "gap": ""
+      }
     },
     {
       "id": "ACC-3",
@@ -9365,7 +10742,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-009",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)"
-      ]
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "ADR-000C still proposed",
+        "evidence": "Answered part only. ADR-000C (workbench/docs/adr/proposed/000C, lines 10-18) states the three-carrier Contract but is not accepted, and no Spec carries the control update: S-00G SPEC.md:212-214 leaves AGENTS.md and BLUEPRINT.md to 'ADR acceptance, which is a separate step from this Spec'. AGENTS.md:22 still ranks BLUEPRINT.md as procedural Canon; LEXICON.md:204 still says seven root controls.",
+        "gap": "Accept ADR-000C; update AGENTS.md Authority Order and the LEXICON.md Workbench Contract row plus templates mirrors. The open part (what binds Blueprint claims) still needs an owner decision."
+      }
     },
     {
       "id": "ACC-4",
@@ -9398,7 +10781,13 @@
       "notes": "Gap triage calls it agent-answerable from decision-024/027 (Canon classifies claims in context; planes are lenses), with owner confirmation; no answer is recorded.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-4)"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer. ADR-000D is proposed and S-00G TK-004 is blocked.",
+        "gap": ""
+      }
     },
     {
       "id": "ACC-5",
@@ -9438,7 +10827,13 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-5)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
-      ]
+      ],
+      "progress": {
+        "status": "no-build-obligation",
+        "sub_label": "needs decision",
+        "evidence": "Decision status open; no owner answer. Premise not triggered: ADR-0013 and ADR-0033 are still active in workbench/docs/adr/ (REGISTER.md).",
+        "gap": ""
+      }
     },
     {
       "id": "PW-1",
@@ -9483,7 +10878,13 @@
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-001",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-001"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Lexicon done; Blueprint/Runbook not",
+        "evidence": "LEXICON.md:126-130 define Portable Workbench, Host portability, Ownership origin model and retire Portable layout/Portability model; templates/LEXICON.md:126-128 mirror. BLUEPRINT.md:5,104 unchanged; RUNBOOK.md:1033 still 'Portability and privacy matrix'.",
+        "gap": "BLUEPRINT.md (+ template) portability sentence and RUNBOOK matrix host-portability framing pending; S-00V controls-sweep slice not cut."
+      }
     },
     {
       "id": "PW-2",
@@ -9522,7 +10923,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-002",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-010"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "S-00G relabel missing",
+        "evidence": "LEXICON.md:128 points to S-00G and FND-Q24B; S-00V/SPEC.md:136-137,160 records the independence and Non-Goal; S-00G/SPEC.md:135 gates TK-004 on FND-Q24B but S-00G/SPEC.md:89 still labels it 'The portability boundary', not an ownership-origin question.",
+        "gap": "S-00G does not relabel FND-Q24B as an ownership-origin-model question (still uses the retired 'portability' framing)."
+      }
     },
     {
       "id": "PW-3",
@@ -9582,7 +10989,13 @@
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-002",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-003",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-003"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": "S-00V TK-001 done",
+        "evidence": "S-00V TK-001 done (spec index; review PASS row SPEC.md:296). ADR-000M active, ADR-0017 in archive/, ADR-0046:24-31 amended; manifest lanes.skills; tracked .claude/skills and .agents/skills; LEXICON.md:150-153,209 and templates/LEXICON.md:194-195; RUNBOOK skills lane.",
+        "gap": ""
+      }
     },
     {
       "id": "PW-3A",
@@ -9624,7 +11037,13 @@
       "notes": "Reverses the Genesis prohibition on a root skills/ shadow into a doctor finding.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-004"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": "S-00V TK-001 done",
+        "evidence": "Root skills/ absent and workbench/skills holds 21 skills; templates/GENESIS.md:300-301 and templates/ADOPTION.md:274,293 lay the lane down; diagnostics.mjs:144 project-local-skills finding; README.md:86-93 and RUNBOOK.md:397 describe the lane.",
+        "gap": ""
+      }
     },
     {
       "id": "PW-4",
@@ -9662,7 +11081,13 @@
       "notes": "Candidate list (lexicon, domain-modeling, land, preflight, brainstorm, research, sitrep) is tentative; the catalog-review Task settles it.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-005"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "ADR/Runbook done; review uncut",
+        "evidence": "ADR-0046:24-29 names the personal catalog backup and publication target only; RUNBOOK.md:341-345 'Personal catalog publication' section. S-00V/SPEC.md:178-180,306-307 lists the catalog review as a planned slice; no Task cut.",
+        "gap": "Catalog-review Task (owner confirms which non-core skills join the lane) not cut."
+      }
     },
     {
       "id": "PW-5",
@@ -9714,7 +11139,13 @@
       "notes": "",
       "source_refs": [
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-006"
-      ]
+      ],
+      "progress": {
+        "status": "specced",
+        "sub_label": "S-00V DB3; no Task cut",
+        "evidence": "S-00V/SPEC.md:93-101 Desired Behavior 3 carries it, only TK-001 cut. AGENTS.md:405 still 'notes and handoffs stay untracked'; workbench/sessions/.gitignore ignores handoffs/* and notepads/*; tools/test-workbench-round-trip.mjs:172 asserts the notepad never enters the commit.",
+        "gap": "Notes-may-travel slice not cut: AGENTS, .gitignore, Lexicon Packet, ADR narrowing ADR-0051/0040/0028, RUNBOOK and round-trip test all unchanged."
+      }
     },
     {
       "id": "PW-6",
@@ -9761,7 +11192,13 @@
       "notes": "Owner asked whether the claim commits to integration; the answer 'no, task branch' was accepted.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-007"
-      ]
+      ],
+      "progress": {
+        "status": "specced",
+        "sub_label": "S-00V DB4; no Task cut",
+        "evidence": "S-00V/SPEC.md:102-109 Desired Behavior 4 carries push-on-claim/fetch-all; only TK-001 cut. workbench/tools/spec-workbench.mjs has no git push or fetch (grep); no claim-on-branch ADR.",
+        "gap": "Push-on-claim slice not cut; claim/next, ADR, RUNBOOK and Taskboard remote-tip reading unbuilt."
+      }
     },
     {
       "id": "PW-7",
@@ -9803,7 +11240,13 @@
       "notes": "Only the one-line ruling is the owner's; floor list and doctor mechanics are agent-resolved under his delegation. Relies on sitrep (E-10). doctor --home retires with the global core.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-008"
-      ]
+      ],
+      "progress": {
+        "status": "specced",
+        "sub_label": "S-00V DB5; no Task cut",
+        "evidence": "S-00V/SPEC.md:110-116 Desired Behavior 5 carries the host floor; no Task cut. diagnostics.mjs has no host-floor finding; RUNBOOK.md Prerequisites names gh for PR workflows, not push rights or GitHub network; no capability-blocked rule in AGENTS.md.",
+        "gap": "Host-floor slice not cut: doctor finding, AGENTS capability rule and RUNBOOK floor wording unbuilt."
+      }
     },
     {
       "id": "PW-8",
@@ -9836,7 +11279,13 @@
       "source_refs": [
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-009",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (PW-8 row)"
-      ]
+      ],
+      "progress": {
+        "status": "specced",
+        "sub_label": "S-00V DB6; no Task cut",
+        "evidence": "S-00V/SPEC.md:117-119 Desired Behavior 6 and its acceptance line carry the Wiki audit; Remaining Limitations lists it as an uncut slice; no audit recorded.",
+        "gap": "Wiki audit Task not cut or run; host-memory knowledge not yet promoted."
+      }
     },
     {
       "id": "PW-9",
@@ -9870,7 +11319,13 @@
       "notes": "The owner's answer is three words; the reading is the agent's and was not confirmed by the owner, so the owning Spec should treat it as open to correction.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-010"
-      ]
+      ],
+      "progress": {
+        "status": "specced",
+        "sub_label": "S-00V DB7; no Task cut",
+        "evidence": "S-00V/SPEC.md:120-125 Desired Behavior 7 and acceptance carry the ends-clean gate and demos; no Task cut. tools/test-workbench-round-trip.mjs:172 still asserts the notepad never enters the commit.",
+        "gap": "Cold-clone ends-clean round-trip gate and cloud/two-instance demos not cut or built."
+      }
     },
     {
       "id": "PW-10",
@@ -9922,7 +11377,13 @@
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-011",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-002",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-004"
-      ]
+      ],
+      "progress": {
+        "status": "in-progress",
+        "sub_label": "Spec+Lexicon+lane done; rest pending",
+        "evidence": "S-00V exists (active, TK-001 done); LEXICON.md:126-130 rows; ADR-000M supersedes ADR-0017 and amends ADR-0046; manifest lanes.skills landed. BLUEPRINT.md:5,104 unsharpened; AGENTS note/capability rules absent; no ADR narrowing ADR-0051/0040 or recording claim-on-branch.",
+        "gap": "BLUEPRINT/AGENTS sharpening (+ templates) and the ADR-0051/0040 narrowing and claim-on-branch ADRs remain, assigned to uncut S-00V slices."
+      }
     },
     {
       "id": "REC-01",
@@ -9958,7 +11419,13 @@
         "workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-01",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions",
         "Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 164-165"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench/skills/carry/SKILL.md exists with `name: carry`; S-049 SPEC.md:154 'The name is `carry`. Owner decision, 2026-09-07, from four candidates.'; S-049 Status complete.",
+        "gap": ""
+      }
     },
     {
       "id": "REC-02",
@@ -9999,7 +11466,13 @@
         "workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-02",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions",
         "Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 164-165"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-049 SPEC.md:126-129 records carry as core-bundle, not repo-local; workbench-layout.mjs:38 coreSkills and manifest skillPolicy.required include carry; S-049 TK-001 done with seventeen pinned (SPEC.md:192-196). The bundle later grew to 21 (workbench/skills/README.md:4); carry stays core.",
+        "gap": ""
+      }
     },
     {
       "id": "REC-03",
@@ -10041,7 +11514,13 @@
         "workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-03",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions",
         "Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 524-529"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "workbench-layout.mjs:337 supportedLegacy freezes 'v3.1.2': stanceRequired (sixteen) and 'v3.1.3': carryRequired (seventeen); commit b1c7160 stamped the manifest v3.1.3 (later advanced to v3.2.1); S-049 SPEC.md:131-138,169-174 withdraws 'lands in v3.1.2' and records the v3.1.3 decision.",
+        "gap": ""
+      }
     },
     {
       "id": "REC-04",
@@ -10071,7 +11550,13 @@
         "workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-04",
         "workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions",
         "Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 524-529"
-      ]
+      ],
+      "progress": {
+        "status": "implemented-and-completed",
+        "sub_label": null,
+        "evidence": "S-049 SPEC.md:136-139 (Decisions And Contracts) and :169-171 (Dependencies And Blockers) record that the owner confirmed rooms outside the repository ran v3.1.2, so the freeze prevents a live break; S-049 complete.",
+        "gap": ""
+      }
     }
   ]
 }
