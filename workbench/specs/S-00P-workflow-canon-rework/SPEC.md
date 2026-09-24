@@ -18,8 +18,9 @@
 Canon describes the workflow the owner settled, in two phases. First, now:
 `BLUEPRINT.md` describes every rung (Idea -> Align through grilling ->
 confirmed design concept -> Blueprint -> recursive Spec/Task delivery) and the
-full recursive loop, including the intended nested branch topology, assembled-
-Spec QA, corrective Tasks, owner Human QA on `integration`, reconciliation and
+full recursive loop, including the intended nested branch topology, Task
+review before Spec-branch merge, assembled-Spec QA, corrective Tasks, owner
+Human QA on `integration`, reconciliation and
 retirement, and the coordinator as future scope. Last, after S-00H, S-00I and
 S-00J land: `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` and the generic
 `templates/` mirror describe the same workflow using only commands and records
@@ -78,8 +79,9 @@ At the pre anchor:
    including the intended nested branch topology and the coordinator as future
    scope, without any current status appearing in the file.
 2. After phase two, `AGENTS.md` describes work selection and lifecycle on Task
-   records, the reviewed unit as the assembled Spec, the corrective-Task return
-   path, owner Human QA on `integration`, retirement after reconciliation, and
+   records, Task review before Spec-branch merge, assembled-Spec QA, the
+   corrective-Task return path, owner Human QA on `integration`, retirement
+   after reconciliation, and
    the Git topology that is actually in force; `RUNBOOK.md` names only commands
    that exist; `LEXICON.md` defines Align, design concept, Spec, Task, retired,
    archive, assembled-Spec review and Human QA consistently; and the generic
@@ -122,12 +124,14 @@ bind this Spec:
   accumulating in the Spec branch. During this rollout S-00O exemption 2
   defers it, so phase two describes the intended topology as destination in
   the Blueprint and the actually enforced route in the controls.
-- **WF-8, WF-8B, WF-8C.** Tasks use red/green TDD, relevant tests, actual
-  behavior checks and preserved proof; there is no per-Task independent-review
-  ceremony. A separate context checks the assembled Spec and the combined Task
-  results; a failed review diagnoses and creates corrective Tasks under the
-  still-open Spec, then a fresh immutable candidate is reviewed. `integration`
-  is the owner's Human QA surface.
+- **WF-8, WF-8B, WF-8C, corrected 2026-09-24.** Tasks use red/green TDD,
+  relevant tests, actual behavior checks and preserved proof. Each completed
+  Task is reviewed before its branch joins the Spec branch. A separate context
+  checks the assembled Spec and the combined Task results; a failed review
+  diagnoses and creates corrective Tasks under the still-open Spec, then a
+  fresh immutable candidate is reviewed. An approved Spec branch merges into
+  `integration`, the owner's Human QA surface. The earlier no-per-Task-review
+  answer is superseded by the owner's restored workflow map.
 - **WF-8D, WF-8E, WF-8F, WF-8A, WF-8G.** Completed Tasks are reconciled into
   the Spec, retired from ordinary discovery and their contained branches
   cleaned up. A Spec closes only after assembled-Spec review passes and owner
@@ -201,8 +205,8 @@ TK-002; TK-005 waits on both.
 Write the rungs from decision-067 and decision-082, the altitudes from WF-6
 with correction-023, Align's start and exit from WF-2 with WF-3's allowed
 investigations and WF-4's optional prototype placement, the intended branch
-topology from WF-7, QA at each altitude from WF-8, WF-8B and WF-8C, the
-lifecycle from WF-8D, WF-8E, WF-8F, WF-8A and WF-8G, the loop-back from WF-9,
+topology from WF-7, Task review and QA at each altitude from WF-8, WF-8B and
+WF-8C, the lifecycle from WF-8D, WF-8E, WF-8F, WF-8A and WF-8G, the loop-back from WF-9,
 and the coordinator as future scope from WF-10. Place them under the existing
 headings: the journey under Desired Experience And Behavior, the altitudes and
 artifact owners under Integrated System Design, the loop and retirement under
@@ -229,9 +233,10 @@ Preserve the stable-path retirement S-00I TK-004 made. Every command named
 must exist. S-00H TK-004 will already have removed the word `Ticket` from
 the controls, so the red test is not a vocabulary sweep: it is an assertion
 at the control-fidelity seam that Work Selection And Lifecycle names
-`TASK.md` as the record `claim` takes and describes the assembled-Spec
-review and the corrective-Task return path. `TASK.md`, `assembled Spec` and
-`corrective Task` occur zero times in `AGENTS.md` at the pre anchor, and
+`TASK.md` as the record `claim` takes and describes Task review before
+Spec-branch merge, assembled-Spec QA and the corrective-Task return path.
+`TASK.md`, `assembled Spec` and `corrective Task` occur zero times in
+`AGENTS.md` at the pre anchor, and
 S-00H TK-004 changes vocabulary only, so the assertion stays false until
 this rewrite. Green also requires every backticked `spec-workbench.mjs` command
 in the file to exist in the CLI usage string, and the after-score of the
@@ -242,9 +247,10 @@ criterion weakened.
 
 **Stance:** Builder
 
-Replace the ticket lifecycle procedures with the Task lifecycle, add the
-assembled-Spec review, corrective-Task creation, Human QA approval and
-closure, reconciliation, retirement and discard procedures using the exact
+Replace the ticket lifecycle procedures with the Task lifecycle, add Task
+review before Spec-branch merge, assembled-Spec QA, corrective-Task creation,
+Human QA approval and closure, reconciliation, retirement and discard
+procedures using the exact
 commands S-00H, S-00I and S-00J shipped, and reconcile the Template Upgrade
 Release Gate and self-drift sections. Reconcile `README.md` where it names
 the workflow or a retired route. Run each documented command as the green
@@ -279,7 +285,7 @@ template with its reason.
 ## Acceptance Criteria
 
 - [x] `BLUEPRINT.md` names every rung, the three altitudes, the full recursive loop, the intended topology, reconciliation and retirement, and the coordinator as future scope, with no current status, and passes the Blueprint contract test including its new rung assertion.
-- [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, the assembled-Spec review, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
+- [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, Task review before Spec-branch merge, assembled-Spec QA, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
 - [ ] S-00H's repository-wide `Ticket` sweep still passes after phase two, and no control or template instructs the embedded-row route; this verifies S-00H's result rather than owning it a second time.
 - [ ] ADR-000F, ADR-000G and ADR-000I are each accepted, amended or superseded, the register is regenerated, and no active record contradicts a locked WF answer.
 - [ ] `templates/` mirrors the reworked controls, generic and `[BRACKETED]`, and a freshly generated room speaks the new workflow.
@@ -321,6 +327,9 @@ workflow. No other owner changes.
 | 2026-09-19 | S-00K | Corrected current blocker header and next gate | Verified S-00H retired complete at bc370fe; I/J remain unapproved | Removed resolved H from live blocker wording; historical dependency rows preserved | I/J repair and owner QA still required |
 
 | 2026-09-23 | owner correction | S-00I/S-00J Human QA is already underway with failed reviews, not waiting for the owner to begin | Direct owner clarification on 2026-09-23; read current S-00I/S-00J gates and the 2026-09-19 failed approval audit | Corrected dependent next gate; earlier evidence preserved | TK-002 still waits for corrected I/J results, owner approval and completion |
+| 2026-09-24 | owner workflow correction | Owner confirmed the original brace-and-arrow workflow as the desired framework and corrected the earlier no-per-Task-review answer; Genesis is setup followed by grilling, not the workflow entry | Direct owner statement and readback confirmation; Blueprint destination map updated in the same candidate | Current WF-8 contract and Blueprint map reconciled; historical evidence retained | Remaining skill-by-skill Align and delivery details are still being grilled; TK-002 gate remains unchanged |
+| 2026-09-24 | independent review of `482dc6b` | Separate-context review found that phase-two acceptance omitted Task review and the map assertion could miss its removal | 48/48 AGENTS suite passed on clean `482dc6b`; reviewer reported P2 and P3, both corrected in the next candidate; the map test fails if `Review Task` is removed and passes when restored | Acceptance and test aligned with the owner correction | Fresh review and full-suite proof on the corrected candidate remain |
+| 2026-09-24 | corrected workflow map `cb8ff78` | Owner-approved arrow-and-brace destination map, Task-review acceptance and focused regression checked together | 48/48 AGENTS suite passed on clean `cb8ff78`; separate-context full-branch review found no actionable issue; guardrail 78/100 before and after, with no criteria change; post self-drift returned `cleanUpdate: false` with seven existing attention findings and no new touched-owner contradiction | Blueprint, proposed ADR correction and this Spec aligned; generic template kept generic by design | No agent-outcome improvement claimed: repeated real trials, controls/prior/candidate comparison, recent outcome evidence and uncertainty remain missing; S-00Q stale claim and historical identity findings remain outside this correction |
 
 ## Completion Result
 

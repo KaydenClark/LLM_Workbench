@@ -54,3 +54,10 @@ origin rather than durable evidence.
 
 This record is `proposed`. `BLUEPRINT.md`, `AGENTS.md` and `LEXICON.md` remain
 live Canon as written until the owner accepts it.
+
+Owner correction, 2026-09-24: the opening claim that the Blueprint owns the
+future-facing PRD function is superseded. The Blueprint owns the grand product
+destination; each Spec is the PRD-shaped smaller destination. The owner also
+restored Task review before merge into the Spec branch. The current destination
+and full workflow map live in `BLUEPRINT.md`; this proposal remains historical
+evidence until its separate disposition.
