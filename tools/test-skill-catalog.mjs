@@ -225,6 +225,23 @@ assert.doesNotMatch(grilling, /Ask the next `\[open\]` question/,
 assert.ok(grilling.indexOf('Question / Answer / Why / Impact') < grilling.indexOf('## Exits'),
   'the pending readback belongs to the interview, before its exits');
 
+// S-00Y: the notepad primitive keeps pending and confirmed meaning apart when a
+// design inquiry uses it, and a resume reads a correction together with its
+// original, then rechecks live state before relying on either. These pin the
+// source contract; the fresh-context run in S-00Y records the behavior.
+const notepadSkill = read('workbench/skills/notepad/SKILL.md');
+assertIncludesAll(notepadSkill, [
+  '--kind source_record',
+  '`current.unresolved`',
+  'Saving is not acceptance',
+  'only a `decision` entry',
+  'The current view carries no entries',
+  'the correction holds',
+  'recheck live state before relying on either'
+], 'notepad pending and correction contract');
+assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < notepadSkill.indexOf('## 4.'),
+  'rechecking a corrected claim belongs to saving and resuming, before cleanup');
+
 const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
   'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',
