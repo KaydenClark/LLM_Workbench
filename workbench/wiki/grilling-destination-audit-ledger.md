@@ -358,11 +358,11 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 - update `templates/LEXICON.md` - Mirrors the generic root-control and support-root definitions.
 - create `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Desired Behavior)` - Every Genesis or Adoption ends with exactly the seven root controls plus lowercase workbench/.
 
-**Related:** [V3-2](#v3-2), [V3-15](#v3-15)
+**Related:** [V3-2](#v3-2), [V3-15](#v3-15), [FND-Q23A](#fnd-q23a)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q1
 
-**Notes:** Board flags this row superseded, but only an accepted later decision can replace it: ADR-000B (a proposal for eight root files adding OWNERSHIP.json) does not supersede ADR-0013 unless the owner accepts it.
+**Notes:** Board flags this row superseded, but only an accepted later decision can replace it: ADR-000B (a proposal for eight root files adding OWNERSHIP.json) does not supersede ADR-0013 unless the owner accepts it. FND-Q23A's Result (an eight-file root surface under ADR-000B) is the competing destination; the two are reconciled only by the owner's acceptance or rejection of ADR-000B.
 
 **Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:5; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0013-seven-file-workbench-contract.md
 
@@ -508,13 +508,13 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Answer:** It must remain fully set up without that repository; "the instruction is to replace confusing bundled/project-local skill copies, not to make Kayden's private catalog mandatory."
 
-**Reason:** Homework: the live external catalog is the private [the owner's private skills repository] repo; Genesis and Adoption do not need it. The owner's intent was to remove confusing skill copies, not to create a private dependency.
+**Reason:** Homework: the live external catalog is the owner's private skills repository; Genesis and Adoption do not need it. The owner's intent was to remove confusing skill copies, not to create a private dependency.
 
 **Result:**
 
 - update `BLUEPRINT.md` - A fresh room works without the personal catalog.
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Personal catalog is only a backup and publication target, never on a room's critical path; doctor never reads it.
-- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts)` - LLM Workbench is not a dependency on [the owner's private skills repository].
+- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts)` - LLM Workbench does not depend on the owner's private skills repository.
 
 **Related:** [V3-7A](#v3-7a), [V3-7B](#v3-7b), [V3-3](#v3-3), [PW-4](#pw-4)
 
@@ -819,7 +819,7 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q10B
 
-**Notes:** The idea that the manifest records the skill contract is unchanged; its contents changed.
+**Notes:** The idea that the manifest records the skill contract stands; later decisions changed which skills and policies it records.
 
 **Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:23; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
@@ -1119,7 +1119,7 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling Q13B (recorded as deferred)
 
-**Answer:** No in this release. Its host-level transient lane remains outside the portable core; [the retired v3.0 handoffs lane] is used by the bundled checkpoint/recovery contract. Superseded: handoff joined the required core under the S-051 owner waiver (2026-09-09), handoffs became untracked Markdown in workbench/sessions/handoffs, and the tracked [the retired v3.0 handoffs lane] lane was retired.
+**Answer:** No in this release. Its host-level transient lane remains outside the portable core; the bundled checkpoint/recovery contract uses the v3.0 tracked handoffs lane. Superseded: handoff joined the required core under the S-051 owner waiver (2026-09-09), handoffs became untracked Markdown in workbench/sessions/handoffs, and the v3.0 tracked handoffs lane was retired.
 
 **Reason:** Recorded in the answer: the handoff skill's host-level transient lane was outside the portable 12-skill core for v3.
 
@@ -1700,7 +1700,7 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Answer:** Repair its stale canonical-path contract as the first prerequisite and establish a green baseline before broader v3 behavior changes.
 
-**Reason:** Homework: test-skill-catalog failed because update-harness named the retired [a retired Foundry socket path] path while the test expected the older Workbench Factory name, so the full suite was not a clean release baseline.
+**Reason:** Homework: test-skill-catalog failed because update-harness named a retired Foundry socket path while the test expected the older Workbench Factory name, so the full suite was not a clean release baseline.
 
 **Result:**
 
@@ -2420,9 +2420,11 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 - create `workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md` - Defer Master Workbench until real contrasting deliveries establish an observation need.
 - create `workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md` - Records the Master Workbench deferral in its completion result.
 
+**Related:** [BPR-5](#bpr-5)
+
 **Aliases:** workbench-boundaries Q9
 
-**Notes:** The Markdown source carries the locked decision (the 2026-09-19 board wrongly said 'no settled result'). Named example projects are candidates, not pilot assignments. ADR-0038 and S-027 own the sequencing; the Blueprint describes the finished product and does not carry it.
+**Notes:** The Markdown source carries the locked decision (the 2026-09-19 board wrongly said 'no settled result'). Named example projects are candidates, not pilot assignments. ADR-0038 and S-027 own the sequencing; the Blueprint describes the finished product and carries no delivery sequencing (BPR-5).
 
 **Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:254; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q9 row)
 
@@ -2472,7 +2474,7 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Aliases:** workbench-boundaries Q11 (spawned)
 
-**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Resume header: sequence Q11's feedback workflow after Round One; S-027 carries that sequence.
+**Notes:** The Markdown source carries the locked decision (the 2026-09-19 board wrongly said 'no settled result recorded'). Resume header: sequence Q11's feedback workflow after Round One; S-027 is the owner of that sequence.
 
 **Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:275; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q1, Q11, Q13, Q14 row)
 
@@ -4607,7 +4609,7 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Related:** [RB-Q1](#rb-q1), [TT-Q9](#tt-q9), [FND-Q03](#fnd-q03), [FND-Q24](#fnd-q24)
 
-**Notes:** Two reviewer constraints (optional members never instruct or prove; notepads and handoffs are untracked, so a Task must run from required members alone) were carried as drafting constraints; the owner did not rule on them separately. The Lexicon Packet row states both (see result).
+**Notes:** Two reviewer constraints (optional members never instruct or prove; notepads and handoffs are untracked, so a Task must run from required members alone) were carried as drafting constraints; the owner did not rule on them separately. The Lexicon Packet row result names both.
 
 **Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-050; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-020; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
 
@@ -4922,9 +4924,9 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Question:** What does next mean: next eligible Ticket (now Task), next action inside current work, or owner recommendation?
 
-**Status:** open · answered Not answered by the owner; the 2026-09-23 triage v2 cites AGENTS.md, not an owner message
+**Status:** open
 
-**Answer:** No owner answer. AGENTS.md Work Selection already gives the working meaning: `next` is the next eligible Task returned by `spec-workbench.mjs next`.
+**Answer:** No owner answer. AGENTS.md Work Selection is the rule that gives the working meaning: `next` is the next eligible Task returned by `spec-workbench.mjs next`.
 
 **Reason:** Not recorded.
 
@@ -5004,7 +5006,7 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Result:**
 
-- update `workbench/wiki/skill-<name>.md pages and workbench/wiki/MEMORY.md` - One Wiki page per owner-facing skill in the aihero.dev/skills shape, routed from MEMORY.md.
+- update `workbench/wiki/skill-<name>.md pages and workbench/wiki/MEMORY.md` - One Wiki page per skill in the aihero.dev/skills shape, routed from MEMORY.md; which skills are owner-facing is the open part.
 
 **Related:** [TT-Q11](#tt-q11)
 
@@ -6148,7 +6150,7 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Answer:** FND-Q24B stays live under S-00G, relabeled an ownership-origin-model question. It is neither parked behind nor folded into Portable Workbench; the two are independent. The existing FND-Q24B handoff stays valid for a separate deep-dive chat. No priority order between them was set.
 
-**Reason:** Owner: OWNERSHIP.json depends on FND-Q24B, so FND-Q24B still needs an answer; it just belongs to a different Spec.
+**Reason:** Owner (2026-09-22), correcting the recommendation to park FND-Q24B: 'OWNERSHIP.json is still being built, so FND-Q24B still needs an answer; it simply belongs to a different Spec' than Portable Workbench.
 
 **Result:**
 
@@ -6357,7 +6359,7 @@ Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-cha
 
 **Related:** [PW-1](#pw-1), [PW-5](#pw-5), [PW-6](#pw-6), [WF-11](#wf-11)
 
-**Notes:** The owner's answer is three words; the reading is unconfirmed by the owner, so S-00V carries it as open to correction.
+**Notes:** The owner's answer is three words; the reading is the agent's and was not confirmed by the owner, so the owning Spec should treat it as open to correction.
 
 **Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-010
 
@@ -6507,7 +6509,7 @@ Each durable artifact the answers name, with the questions whose Result lands th
 - `ADR-000I`: [BPR-6A](#bpr-6a), [FND-Q07](#fnd-q07), [FND-Q23](#fnd-q23), [WF-8D](#wf-8d), [WF-8F](#wf-8f)
 - `ADR-000J`: [RB-Q4](#rb-q4)
 - `ADR-000K`: [RB-Q5](#rb-q5)
-- `ADR-000L (not yet created)`: [TT-Q9](#tt-q9)
+- `ADR-000L (named, no repository path)`: [TT-Q9](#tt-q9)
 - `ADR-000M`: [V3-2](#v3-2), [V3-3](#v3-3), [V3-7](#v3-7), [V3-7A](#v3-7a), [V3-7B](#v3-7b), [V3-8A](#v3-8a), [V3-9](#v3-9), [V3-9A](#v3-9a), [V3-9C](#v3-9c), [V3-10B](#v3-10b), [V3-14B](#v3-14b), [V3-15](#v3-15), [V3-15B](#v3-15b), [V3-21](#v3-21), [V3-21C](#v3-21c), [V3-22](#v3-22), [V3-22B](#v3-22b), [PW-3](#pw-3)
 - `ADR-0013`: [V3-1](#v3-1), [FND-Q23A](#fnd-q23a), [E-1](#e-1)
 - `ADR-0015`: [V3-5](#v3-5)
@@ -6630,16 +6632,16 @@ Each durable artifact the answers name, with the questions whose Result lands th
 - `templates/SPEC.md`: [WB-16](#wb-16), [E-4A](#e-4a)
 - `templates/TASKBOARD.md`: [FND-Q02](#fnd-q02), [E-1](#e-1)
 - `templates/wiki`: [WF-8H](#wf-8h)
-- `Outside the repo or not yet created: GitHub PR #42`: [V3-19C](#v3-19c), [V3-20A](#v3-20a)
-- `Outside the repo or not yet created: llm-workbench-decision-recovery.zip in the GPT_OS workbench root`: [U313-7](#u313-7)
-- `Outside the repo or not yet created: new ADR: claim on the task branch with fetch-all`: [PW-6](#pw-6)
-- `Outside the repo or not yet created: owner's personal installed lexicon skill`: [FND-Q09](#fnd-q09)
-- `Outside the repo or not yet created: sitrep core skill`: [FND-Q21D](#fnd-q21d)
-- `Outside the repo or not yet created: skills-pending/domain-modeling/SKILL.md`: [FND-Q13](#fnd-q13)
-- `Outside the repo or not yet created: Spec 'Artifact model and definitions'`: [TT-Q3](#tt-q3), [TT-Q4](#tt-q4)
-- `Outside the repo or not yet created: TASKBOARD render`: [PW-6](#pw-6)
-- `Outside the repo or not yet created: WBID Spec`: [E-6](#e-6), [E-8](#e-8)
-- `Outside the repo or not yet created: Workbench_Template repository`: [FND-Q12](#fnd-q12)
+- `Named without a repository path: GitHub PR #42`: [V3-19C](#v3-19c), [V3-20A](#v3-20a)
+- `Named without a repository path: llm-workbench-decision-recovery.zip in the GPT_OS workbench root`: [U313-7](#u313-7)
+- `Named without a repository path: new ADR: claim on the task branch with fetch-all`: [PW-6](#pw-6)
+- `Named without a repository path: owner's personal installed lexicon skill`: [FND-Q09](#fnd-q09)
+- `Named without a repository path: sitrep core skill`: [FND-Q21D](#fnd-q21d)
+- `Named without a repository path: skills-pending/domain-modeling/SKILL.md`: [FND-Q13](#fnd-q13)
+- `Named without a repository path: Spec 'Artifact model and definitions'`: [TT-Q3](#tt-q3), [TT-Q4](#tt-q4)
+- `Named without a repository path: TASKBOARD render`: [PW-6](#pw-6)
+- `Named without a repository path: WBID Spec`: [E-6](#e-6), [E-8](#e-8)
+- `Named without a repository path: Workbench_Template repository`: [FND-Q12](#fnd-q12)
 
 ## Maintenance
 
