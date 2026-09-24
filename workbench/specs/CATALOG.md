@@ -36,7 +36,7 @@ Derived from stable specs; includes completed history.
 | [S-00U - Approval Binding And Lifecycle Digest Repair](S-00U-approval-binding-and-lifecycle-digest/SPEC.md) | Bind Human QA to inspected Git content, separate integration review from closure approval, and preserve proof across administrative completion. | active |
 | [S-00V - Portable Workbench](S-00V-portable-workbench/SPEC.md) | Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself. | active |
 | [S-00W - Concept Grilling And Notepad Composition](S-00W-concept-grilling-and-notepad-composition/SPEC.md) | Preserve the accepted shared concept contract for grilling, notepad and grill-me while each skill has its own delivery Spec. | planned |
-| [S-00X - grilling skill rebuild](S-00X-grilling-skill-rebuild/SPEC.md) | Settle a shared design concept through one consequential question at a time. | planned |
+| [S-00X - grilling skill rebuild](S-00X-grilling-skill-rebuild/SPEC.md) | Settle a shared design concept through one consequential question at a time. | active |
 | [S-00Y - notepad skill rebuild](S-00Y-notepad-skill-rebuild/SPEC.md) | Preserve one objective's working context in revision-checked JSON without making it authority. | planned |
 | [S-00Z - grill-me skill rebuild](S-00Z-grill-me-skill-rebuild/SPEC.md) | Provide a repository-owned entry point that composes grilling with notepad. | planned |
 | [S-010 - Canonical Evaluator Entry Detection](S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
