@@ -60,6 +60,8 @@ rules; neither an ID nor allocation grants authority.
 
 Before dependent work, name the active note and returned revision in local
 execution state, verify relevant Actuality, and correct any stale current view.
+The current view carries no entries and no corrections: before relying on a
+saved claim, read its topic (section 3) so any correction travels with it.
 An unavailable runtime blocks the dependent capture operation; report it and
 continue only independent work whose context can safely be preserved.
 
@@ -97,7 +99,20 @@ node workbench/tools/notepads.mjs append --note NOTE --revision N \
 ```
 
 The superseded entry stays. A reader who retrieves it gets the correction with
-it, which is the whole point of keeping both.
+it, which is the whole point of keeping both. On resume the correction holds
+and the original is history, but both record only what was believed when they
+were written: recheck live state before relying on either.
+
+Keep pending meaning apart from confirmed meaning. When a design inquiry saves
+an owner answer before its readback is confirmed (as `grilling` does), append it
+as `--kind source_record` with the owner's words as the content and the
+readback as `--interpretation`, adding `--question-id ID` when the inquiry keeps
+stable question IDs, and list the pending readback in `current.unresolved`.
+Saving is not acceptance. A revised readback is a `correction` of that entry.
+Once confirmed, only a `decision` entry records the owner's answer; append it
+and clear the item from `current.unresolved`. The composing skill owns the
+question map and its statuses; this is the whole convention, with no other kind
+or status for pending meaning.
 
 Keep the resumption view current whenever the state or the next action moves:
 
