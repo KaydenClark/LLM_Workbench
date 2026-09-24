@@ -71,6 +71,7 @@ test('the progress assessment is pinned to one integration commit and its tally 
   assert.match(assessment.commit ?? '', /^[0-9a-f]{40}$/, 'progress_assessment.commit is a full integration SHA');
   assert.match(assessment.date ?? '', /^\d{4}-\d{2}-\d{2}$/, 'progress_assessment.date is an ISO date');
   assert.ok(typeof assessment.method === 'string' && assessment.method.trim(), 'progress_assessment.method says how rows were judged');
+  assert.deepEqual(Object.keys(assessment).sort(), ['commit', 'date', 'method', 'statuses', 'tally'], 'progress_assessment holds only commit, date, method, statuses and tally');
   assert.deepEqual(Object.keys(assessment.statuses ?? {}), PROGRESS, 'progress_assessment.statuses defines every status in order');
   const tally = Object.fromEntries(PROGRESS.map((status) => [status, 0]));
   for (const question of questions) tally[question.progress?.status] += 1;
@@ -86,6 +87,7 @@ test('every question carries a separate progress reading with evidence', () => {
     assert.ok(typeof progress.evidence === 'string' && progress.evidence.trim(), `${question.id} progress needs evidence`);
     assert.ok(progress.sub_label === null || (typeof progress.sub_label === 'string' && progress.sub_label.trim()), `${question.id} sub_label is null or text`);
     assert.equal(typeof progress.gap, 'string', `${question.id} gap is text`);
+    assert.doesNotMatch(`${progress.evidence} ${progress.gap}`, /(^|[\s(`'"])\/(Users|home|private|tmp)\//, `${question.id} progress cites repo-relative paths only`);
     if (progress.status !== 'implemented-and-completed' && progress.status !== 'no-build-obligation') assert.ok(progress.gap.trim(), `${question.id} is not complete, so it names its gap`);
     if (NO_BUILD_STATUSES.has(question.status)) assert.equal(progress.status, 'no-build-obligation', `${question.id} is ${question.status}, so it carries no build obligation of its own`);
     if (question.status === 'superseded') assert.match(progress.sub_label ?? '', /^superseded by /, `${question.id} names its successor instead of being counted twice`);

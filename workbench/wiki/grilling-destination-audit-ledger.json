@@ -77,10 +77,10 @@
     },
     "tally": {
       "implemented-and-completed": 107,
-      "specced": 8,
-      "specced-and-tasked": 9,
+      "specced": 6,
+      "specced-and-tasked": 10,
       "in-progress": 48,
-      "not-started": 18,
+      "not-started": 19,
       "no-build-obligation": 54
     }
   },
@@ -3886,7 +3886,7 @@
         "status": "implemented-and-completed",
         "sub_label": null,
         "evidence": "ADR-0038 active: 'Continue v3.1 as v3.1.1 ... Preserve historical release proof'; S-027 SPEC.md:18-19 outcome, status complete. The Blueprint line (added bfae8c0) was removed at 2971f7d; current canon says Blueprint carries no release chronology (AGENTS.md:52-53). Substance sits in ADR-0038/S-027.",
-        "gap": ""
+        "gap": "ADR-0038 canonicalized_in still names BLUEPRINT.md although 2971f7d removed the line and current canon keeps release chronology out of the Blueprint; no Spec owns that drift."
       }
     },
     {
@@ -7320,9 +7320,9 @@
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (FND-Q20)"
       ],
       "progress": {
-        "status": "specced",
-        "sub_label": "S-00G planned; relations not named",
-        "evidence": "No OWNERSHIP.json at root. S-00G (planned) owns the map schema (TK-001, blocked on ADR-000B/C/D proposed) but its SPEC.md and ADR-000D never name the nine relations or instance_edge. No inherits/refines explanation exists in LEXICON or the Wiki.",
+        "status": "specced-and-tasked",
+        "sub_label": "S-00G TK-001 blocked; relations unnamed",
+        "evidence": "No OWNERSHIP.json at root. S-00G (planned) cuts TK-001 for the map's validated schema (SPEC.md:132, blocked on ADR-000B/C/D proposed, not started), but neither its SPEC.md nor ADR-000D names the nine relations or instance_edge. No inherits/refines explanation exists in LEXICON or the Wiki.",
         "gap": "Nine-relation schema with instance_edge routes in S-00G/OWNERSHIP.json; ADR-000D acceptance; a durable inherits-vs-refines explanation with a named owner."
       }
     },
@@ -10744,10 +10744,10 @@
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)"
       ],
       "progress": {
-        "status": "specced",
-        "sub_label": "ADR still proposed",
-        "evidence": "Answered part only. ADR-000C (proposed/000C:10-18) states the three-carrier Contract but is not accepted; S-00G carries it as a blocker with no Task for the control update (SPEC.md:214). AGENTS.md:22 still ranks BLUEPRINT.md as procedural Canon; LEXICON.md:204 Contract row still says seven root controls.",
-        "gap": "Accept ADR-000C; update AGENTS.md Authority Order and LEXICON.md Workbench Contract row plus templates mirrors. The open part (what binds Blueprint claims) still needs an owner decision."
+        "status": "not-started",
+        "sub_label": "ADR-000C still proposed",
+        "evidence": "Answered part only. ADR-000C (workbench/docs/adr/proposed/000C, lines 10-18) states the three-carrier Contract but is not accepted, and no Spec carries the control update: S-00G SPEC.md:212-214 leaves AGENTS.md and BLUEPRINT.md to 'ADR acceptance, which is a separate step from this Spec'. AGENTS.md:22 still ranks BLUEPRINT.md as procedural Canon; LEXICON.md:204 still says seven root controls.",
+        "gap": "Accept ADR-000C; update AGENTS.md Authority Order and the LEXICON.md Workbench Contract row plus templates mirrors. The open part (what binds Blueprint claims) still needs an owner decision."
       }
     },
     {
