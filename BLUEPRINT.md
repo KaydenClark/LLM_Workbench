@@ -35,10 +35,11 @@ One ladder carries an idea to delivered software, and an agent can always say
 which rung the work is on: an owner idea, Align through grilling, a confirmed
 design concept, the Blueprint, then recursive Spec and Task delivery.
 
-Align begins with an owner idea and proceeds through grilling. It reaches for
-research, brainstorming and wayfinding only as far as a named uncertainty
-requires, and it ends when owner and agent explicitly confirm a shared design
-concept. That confirmed concept is what gets blueprinted, so nothing is
+An owner may explore an idea in conversation before it is clear enough to
+Align. `grill-me`, brainstorming or wayfinding can open Align; a grilling
+session starts through `grill-me`. Align reaches for research as far as a named
+uncertainty requires, and ends when owner and agent explicitly confirm a shared
+design concept. That confirmed concept is what gets blueprinted, so nothing is
 specified from an understanding the two have not agreed on. A prototype is
 optional rather than a standard rung: it sits after the Blueprint and before a
 Spec, where existing evidence cannot settle whether an approach is plausible,
@@ -116,6 +117,60 @@ require repeated controlled observations with uncertainty and failures preserved
 
 New projects receive a coherent starter; existing projects adopt or explicitly
 update it while preserving their product truth and deliberate local differences.
+Genesis is first-time setup and leads into grilling so a new room can form its
+Blueprint. Setup and updates are separate from the governing idea-to-delivery
+workflow below.
+
+The owner can revisit this destination map when deciding where work belongs.
+Arrows show progression; braces show loops and branches, including the return
+to Align after failed Human QA:
+
+```text
+Idea
+  -> optional conversation to explore the idea
+  -> Align through grill-me, wayfinding, brainstorming and needed research
+  -> Confirm shared design concept
+  -> Blueprint the idea
+  -> {
+       Main branch
+         -> Integration branch
+              -> Spec branch {
+                   Create Spec
+                     -> Create Tasks
+                     -> Update Taskboard
+                     -> {
+                          Pick up a hot non-conflicting Task
+                            -> Create one Task branch/worktree from the Spec branch
+                            -> Implement
+                            -> QA / Verify
+                            -> Commit and push Task branch
+                            -> Review Task
+                            -> Merge Task into Spec branch
+                            -> Delete Task branch after containment
+                            -> Pick up next hot Task
+                            -> Repeat Tasks in parallel where they do not conflict
+                        }
+                     -> Repeat until the Spec is assembled
+                     -> Whole-Spec QA / Verify
+                     -> If findings: create corrective Tasks -> repeat Task loop
+                     -> If approved: merge Spec into Integration
+                 }
+              -> Owner Human QA on Integration
+              -> {
+                   Pass -> owner-only merge Integration into Main
+                   Fail -> return to Align
+                             -> revisit shared design concept / Blueprint as needed
+                             -> repeat delivery loop
+                 }
+     }
+```
+
+The Blueprint owns the grand destination and what counting to 100 means. A
+PRD-shaped Spec owns a smaller destination and its completion meaning, like
+reaching 20; it is derived from Blueprint needs, active ADRs, verified evidence,
+Actuality and project- or Spec-required checks. Thin executable Tasks advance
+that Spec, like reaching 5. The Taskboard is a Kanban projection for progress
+and coordination; Specs and Tasks retain substantive state and evidence.
 
 Delivery then repeats one loop. A need in the Blueprint creates a Spec; the Spec
 creates its Tasks; the Taskboard projects their state so the next hot Task is
@@ -125,12 +180,12 @@ and lands the proven Task branch. The finished Task is reconciled into its Spec
 and then retired out of ordinary discovery, its branch cleaned up once the Spec
 branch contains it, and the next hot Task follows, until the Spec is assembled.
 
+Each completed Task receives review before its branch joins the Spec branch.
 An assembled Spec is checked in a separate context against its own destination
-and the combined results of its Tasks; that is where independent review belongs,
-rather than in a ceremony repeated for every Task. A review that fails diagnoses
+and the combined results of its Tasks. A review that fails diagnoses
 the gap and creates corrective Tasks under the still-open Spec, and the fresh
-candidate is reviewed again. Once review passes, the owner performs Human QA on
-the integration branch, which is the surface where the owner sees whether the
+candidate is reviewed again. An approved Spec branch merges into integration;
+the owner then performs Human QA on that branch, which is the surface where the
 scoped destination is genuinely there. No Git merge closes a Spec; the owner's
 confirmation does. A closed Spec is reconciled into its durable owners, the Wiki
 holding the current capability knowledge a later reader needs, and is then

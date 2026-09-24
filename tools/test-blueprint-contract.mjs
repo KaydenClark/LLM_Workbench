@@ -26,10 +26,17 @@ for (const source of inventory.sources) {
 // Collapse the file's line wrapping so each claim is checked against the prose
 // rather than against where a line happens to break.
 const blueprint = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8').replace(/\s+/g, ' ');
+assert.match(
+  fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8'),
+  /```text\nIdea[\s\S]*?Create one Task branch\/worktree from the Spec branch[\s\S]*?If findings: create corrective Tasks -> repeat Task loop[\s\S]*?Fail -> return to Align[\s\S]*?```/,
+  'owner workflow map must keep its branch and return loops in arrow-and-brace form'
+);
 const workflow = [
   ['rung: an owner idea opens Align', /\bidea\b[\s\S]{0,200}?\bAlign\b/i],
+  ['rung: an owner may explore an idea before Align', /explore an idea in conversation before it is clear enough to Align/i],
   ['rung: Align proceeds through grilling', /\bAlign\b[\s\S]{0,300}?grilling/i],
-  ['rung: research, brainstorming and wayfinding resolve a named Align uncertainty', /research, brainstorming and wayfinding/i],
+  ['rung: grill-me, brainstorming and wayfinding can open Align', /grill-me.{0,3} brainstorming or wayfinding can open Align/i],
+  ['rung: Align uses research for a named uncertainty', /Align reaches for research as far as a named uncertainty requires/i],
   ['rung: Align ends when owner and agent confirm a shared design concept', /confirm[\s\S]{0,120}?shared design concept/i],
   ['rung: the confirmed design concept is what gets blueprinted', /design concept[\s\S]{0,400}?Blueprint/i],
   ['rung: a prototype is optional, after the Blueprint and before a Spec', /optional[\s\S]{0,120}?prototype|prototype[\s\S]{0,120}?optional/i],
@@ -42,6 +49,7 @@ const workflow = [
   ['altitude: stacked Specs realize the Blueprint journey', /stack/i],
   ['altitude: a gap against an existing destination is corrective Task work', /corrective Task/i],
   ['loop: the Taskboard projects Task state', /Taskboard/],
+  ['loop: a Task receives review before joining the Spec branch', /Each completed Task receives review before its branch joins the Spec branch/i],
   ['loop: an agent picks up the hot Task', /hot Task/i],
   ['loop: a Task is implemented with red/green TDD', /red\/green/i],
   ['loop: the proven Task branch lands', /Task branch/i],
