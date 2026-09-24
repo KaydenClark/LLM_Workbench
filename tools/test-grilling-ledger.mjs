@@ -58,3 +58,36 @@ test('the counting block matches the questions it counts', () => {
   const familyIds = new Set(families.map((family) => family.id));
   for (const question of questions) assert.ok(familyIds.has(question.family), `${question.id} belongs to an undeclared family`);
 });
+
+// Build progress is a dated reading of the destination against one integration
+// commit. It lives beside the destination fields, never inside them, so a
+// stale reading can be replaced without touching a settled answer.
+const PROGRESS = ['implemented-and-completed', 'specced', 'specced-and-tasked', 'in-progress', 'not-started', 'no-build-obligation'];
+const NO_BUILD_STATUSES = new Set(['open', 'withdrawn', 'not-a-question', 'superseded']);
+
+test('the progress assessment is pinned to one integration commit and its tally matches', () => {
+  const { progress_assessment: assessment, questions } = ledger();
+  assert.ok(assessment, 'the ledger needs a top-level progress_assessment');
+  assert.match(assessment.commit ?? '', /^[0-9a-f]{40}$/, 'progress_assessment.commit is a full integration SHA');
+  assert.match(assessment.date ?? '', /^\d{4}-\d{2}-\d{2}$/, 'progress_assessment.date is an ISO date');
+  assert.ok(typeof assessment.method === 'string' && assessment.method.trim(), 'progress_assessment.method says how rows were judged');
+  assert.deepEqual(Object.keys(assessment.statuses ?? {}), PROGRESS, 'progress_assessment.statuses defines every status in order');
+  const tally = Object.fromEntries(PROGRESS.map((status) => [status, 0]));
+  for (const question of questions) tally[question.progress?.status] += 1;
+  assert.deepEqual(assessment.tally, tally, 'progress_assessment.tally counts every question once');
+});
+
+test('every question carries a separate progress reading with evidence', () => {
+  for (const question of ledger().questions) {
+    const { progress } = question;
+    assert.ok(progress && typeof progress === 'object', `${question.id} needs a progress object`);
+    assert.deepEqual(Object.keys(progress).sort(), ['evidence', 'gap', 'status', 'sub_label'], `${question.id} progress holds only status, sub_label, evidence and gap`);
+    assert.ok(PROGRESS.includes(progress.status), `${question.id} has unknown progress status ${progress.status}`);
+    assert.ok(typeof progress.evidence === 'string' && progress.evidence.trim(), `${question.id} progress needs evidence`);
+    assert.ok(progress.sub_label === null || (typeof progress.sub_label === 'string' && progress.sub_label.trim()), `${question.id} sub_label is null or text`);
+    assert.equal(typeof progress.gap, 'string', `${question.id} gap is text`);
+    if (progress.status !== 'implemented-and-completed' && progress.status !== 'no-build-obligation') assert.ok(progress.gap.trim(), `${question.id} is not complete, so it names its gap`);
+    if (NO_BUILD_STATUSES.has(question.status)) assert.equal(progress.status, 'no-build-obligation', `${question.id} is ${question.status}, so it carries no build obligation of its own`);
+    if (question.status === 'superseded') assert.match(progress.sub_label ?? '', /^superseded by /, `${question.id} names its successor instead of being counted twice`);
+  }
+});

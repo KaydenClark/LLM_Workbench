@@ -72,8 +72,11 @@ intended result, is recorded in
 That JSON file is the ledger itself, not a projection: readable views are
 rendered from it and never edited by hand. It is the destination the v4
 Workbench is audited against; look a question up by its `id`, or audit one
-artifact by the `result` entries that name it. `tools/test-grilling-ledger.mjs`
-keeps it valid.
+artifact by the `result` entries that name it. Each question also carries a
+separate `progress` reading of how far that result is built, pinned by
+`progress_assessment` to one `integration` commit; re-run the assessment to
+refresh it, and never mix progress into the destination fields.
+`tools/test-grilling-ledger.mjs` keeps it valid.
 
 ## Task Artifact And Lifecycle Routing
 
