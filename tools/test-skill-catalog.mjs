@@ -201,6 +201,29 @@ assertIncludesAll(grilling, [
   '`handoff`',
   'Before a voluntary'
 ], 'grilling');
+// S-00W's owner-accepted interaction order: recommendation -> owner answer ->
+// pending readback -> confirmation or corrected readback -> lock -> map update
+// -> next question. These pin the contract the source must state; they cannot
+// prove a fresh conversation follows it, which S-00X records separately.
+assertIncludesAll(grilling, [
+  'Question / Recommended answer / Why / Impact',
+  'Question / Answer / Why / Impact',
+  'pending',
+  'Silence never confirms',
+  'no special command',
+  'ready frontier',
+  'named changed premise',
+  'only the dependent',
+  'An empty frontier is not proof',
+  'final concept readback',
+  'works without a notepad'
+], 'grilling interaction contract');
+assert.doesNotMatch(grilling, /FULL planned question list/,
+  'grilling must keep a dynamic decision map, not a full questionnaire up front');
+assert.doesNotMatch(grilling, /Ask the next `\[open\]` question/,
+  'grilling must ask the most consequential ready question, not the next open one');
+assert.ok(grilling.indexOf('Question / Answer / Why / Impact') < grilling.indexOf('## Exits'),
+  'the pending readback belongs to the interview, before its exits');
 
 const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
