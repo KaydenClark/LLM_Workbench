@@ -64,6 +64,15 @@ for skill ownership/compatibility, optional private session transport and the
 configured-host capability floor. This route preserves their open gates without
 copying task state here.
 
+## Grilling Destination Audit Ledger
+
+Every unique grilling question put to the owner, with its answer, reason and
+intended result, is in
+[grilling-destination-audit-ledger.md](grilling-destination-audit-ledger.md).
+It is the destination the v4 Workbench is audited against: look a question up by
+its ID, or audit one artifact through the ledger's Destination By Artifact
+index. The ledger records intent, not implementation state.
+
 ## Task Artifact And Lifecycle Routing
 
 What a Task carries in and out (the Packet it loads, the append-only Receipt
