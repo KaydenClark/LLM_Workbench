@@ -46,3 +46,14 @@ candidate9611b59). Static20, drift25, discipline25, outcomes8. Remaining
 recommendations are repeated real trials, control/prior/candidate comparison,
 recent candidate evidence and uncertainty estimates. Disposable lifecycle
 regressions and static score preservation do not prove agent reliability.
+
+## 2026-09-24 S-00P owner workflow map
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `6ae38b9` and **78/100 after** at `cb8ff78`, with no
+criteria change (static 20/20, drift 25/25, discipline 25/25, outcome evidence
+8/30). The corrected candidate passed all 48 AGENTS suite commands and a
+separate-context full-branch review found no actionable issue. The audit still
+recommends repeated real outcome trials, controls/prior/candidate comparison,
+recent outcome evidence and uncertainty estimates. This documentation and
+contract check does not establish improved agent outcomes.
