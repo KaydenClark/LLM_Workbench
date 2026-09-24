@@ -12,24 +12,25 @@ last_verified: 2026-09-24
 
 # Grilling Destination Audit Ledger
 
-This is the official list of every unique question the owner answered while designing the Workbench in grilling sessions, with the answer, the reason for it, and the result the answer was meant to produce. It is the destination the v4 Workbench is audited against: for each row, an auditor checks that the named Result exists in the Workbench and says what the Answer says.
+This is the official list of every unique question put to the owner while designing the Workbench in grilling sessions, including the few still open or withdrawn, with the answer, the reason for it, and the result the answer was meant to produce. It is the destination the v4 Workbench is audited against: for each row, an auditor checks that the named Result exists in the Workbench and says what the Answer says.
 
 The grilling notes themselves are local, untracked working records. This ledger is their durable, tracked summary. It records the destination, not progress: it never says whether a result was built. Implementation state belongs to the owning Specs and to the audit that runs against this ledger. Like every wiki note, it routes and records; it authorizes no work by itself (`AGENTS.md` -> Authority Order).
 
 ## How To Read A Row
 
 - **Question**: the latest faithful wording. Reconstructed questions are flagged in Notes.
-- **Status**: `locked` (settled in the notes); `answered-in-chat` (the owner answered in a session but the note was never updated; recovered from his own messages); `partially-answered`; `open`; `deferred` (settled as later work); `withdrawn` (not an owner question, or withdrawn in session); `superseded` (replaced by a later answer, named in the row); `not-a-question`.
+- **Status**: `locked` (settled in the notes); `answered-in-chat` (the owner answered in a session but the note was never updated; recovered from his own messages); `partially-answered` (the owner answered part of the question; the row says which part is open); `open`; `deferred` (settled as later work); `withdrawn` (not an owner question, or withdrawn in session); `superseded` (replaced by a later answer, named in the row); `not-a-question`.
 - **Answer**: the owner's settled answer, in his words where they carry the meaning.
 - **Reason**: why he answered that way. `Inference:` marks a reason derived from context; `Not recorded.` means no reason survives in any source.
 - **Result**: the durable effect the answer should have: an artifact to create, update or retire, and what must be true there. This is what the audit checks.
-- **Provenance**: the local grilling record and entry the row came from.
+- Paths are as of 2026-09-24. An ADR or Spec that later moves between lifecycle folders (`proposed/`, `archive/`, `retired/`) keeps its ID; find it by ID.
+- **Provenance**: the grilling record and entry the row came from. These are local, untracked working records (notepads, session transcripts, recovery files), named so the source can be traced on the owner's machine; they are not durable evidence, and this ledger is their durable copy.
 
 ## Counting
 
 The 2026-09-23 destination audit held 254 rows for 240 distinct question IDs. Fourteen IDs (CAND-N, FND-Q20, FND-Q21A, FND-Q21B, FND-Q21C, FND-Q21D, FND-Q22, FND-Q22A, FND-Q23, FND-Q23A, FND-Q24, FND-Q24B, RB-Q6, WF-11) were assessed twice, once by the 2026-09-19 board pass and once by the later pass; each appears here once, with its current answer. The twelve original Task/Ticket/Chat questions (Q1-Q12 of the 2026-09-10 clarification note) are the same questions as TT-Q1..TT-Q12 and are listed as aliases. This ledger therefore has **240 questions**, plus **4 recovered questions** (REC-01..REC-04) that were asked and answered before their note existed and are kept outside the 240 count.
 
-Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, open 12, withdrawn 6, deferred 3, not-a-question 1.
+Status of the 240 questions: locked 179, superseded 25, open 14, answered-in-chat 10, withdrawn 6, partially-answered 3, deferred 2, not-a-question 1.
 
 ## Sources
 
@@ -218,7 +219,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - [FND-Q17c](#fnd-q17c) Multi-Spec objectives and Spec nesting (answered-in-chat)
 - [FND-Q17d](#fnd-q17d) Leftover behavior from Spec managers/Captain (open)
 - [FND-Q17e](#fnd-q17e) Portable unattended runner or coordinator (deferred)
-- [FND-Q17f](#fnd-q17f) Recurring approved maintenance actions (deferred)
+- [FND-Q17f](#fnd-q17f) Recurring approved maintenance actions (open)
 - [FND-Q17g](#fnd-q17g) Which residual sketch names still matter (open)
 - [FND-Q18](#fnd-q18) First terrain for foundation grilling (locked)
 - [FND-Q19](#fnd-q19) Blueprint, Spec and Task altitudes (locked)
@@ -254,14 +255,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - [TT-Q2](#tt-q2) Task is a standalone artifact (locked)
 - [TT-Q3](#tt-q3) Workbench Project Spec Task cardinality (locked)
 - [TT-Q4](#tt-q4) One Task per Chat (locked)
-- [TT-Q5](#tt-q5) Meaning of next (answered-in-chat)
+- [TT-Q5](#tt-q5) Meaning of next (open)
 - [TT-Q6](#tt-q6) Selection, claim and authorization (answered-in-chat)
 - [TT-Q7](#tt-q7) When a fresh chat is needed (answered-in-chat)
-- [TT-Q8](#tt-q8) Owner-facing versus internal skills (answered-in-chat)
+- [TT-Q8](#tt-q8) Owner-facing versus internal skills (partially-answered)
 - [TT-Q9](#tt-q9) Chat, notepad and handoff continuity (answered-in-chat)
 - [TT-Q10](#tt-q10) Board name and Task identifiers (answered-in-chat)
 - [TT-Q11](#tt-q11) Accepted aliases and retired terms (open)
-- [TT-Q12](#tt-q12) Where settled answers are promoted (answered-in-chat)
+- [TT-Q12](#tt-q12) Where settled answers are promoted (partially-answered)
 
 **WF - Workbench workflow**
 
@@ -311,7 +312,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - [ACC-1](#acc-1) Timing of ADR-000B/C/D acceptance (open)
 - [ACC-2](#acc-2) Seven-vs-eight root file window (open)
-- [ACC-3](#acc-3) Blueprint outside the Contract (answered-in-chat)
+- [ACC-3](#acc-3) Blueprint outside the Contract (partially-answered)
 - [ACC-4](#acc-4) Routes-not-claims guardrail violation (open)
 - [ACC-5](#acc-5) Repointing links in completed Specs (open)
 
@@ -361,9 +362,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q1
 
-**Notes:** Board flags this row superseded, but no accepted later decision replaced it: proposed ADR-000B (eight root files adding OWNERSHIP.json) sits in workbench/docs/adr/proposed/ only and does not supersede ADR-0013.
+**Notes:** Board flags this row superseded, but only an accepted later decision can replace it: ADR-000B (a proposal for eight root files adding OWNERSHIP.json) does not supersede ADR-0013 unless the owner accepts it.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:5; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0013-seven-file-workbench-contract.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:5; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0013-seven-file-workbench-contract.md
 
 ### V3-2
 
@@ -379,7 +380,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/manifest.json (lanes)` - Declares every lane; now seven lanes (docs, specs, wiki, sessions, feedback, tools, skills) under schema 2.
+- update `workbench/manifest.json (lanes)` - Declares every lane: seven lanes (docs, specs, wiki, sessions, feedback, tools, skills) under schema 2.
 - create `workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md` - Schema 2 declares the lanes and collections and migrates the five-lane v3.0 layout once (grilling -> sessions/grilling, handoffs -> sessions/checkpoints).
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Adds workbench/skills as the seventh lane, superseding ADR-0017's six-lane count.
 - update `LEXICON.md (Support root row) and templates/LEXICON.md` - Define the lowercase support root and its declared lanes.
@@ -388,9 +389,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q2
 
-**Notes:** Five-lane answer shipped in v3.0.0 (S-021 TK-002) and is preserved as history. ADR-0017 (six lanes) is itself now archived, superseded_by ADR-000M.
+**Notes:** The five-lane answer (v3.0.0, S-021 TK-002) is preserved as history. ADR-0017 (six lanes) was itself superseded by ADR-000M.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:6; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:6; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md
 
 ### V3-3
 
@@ -400,7 +401,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling (promoted to S-021 the same day)
 
-**Answer:** Generated and adopted projects carry no project-local skill discovery tree. On a brand-new installation only, LLM Workbench supplies a missing required core skill from its tracked skills/ source into user-scoped discovery; an installed skill stays untouched unless the user explicitly requests an update; the private Kayden catalog is not a product dependency. Superseded by PW-3/PW-3A/PW-4 (ADR-000M): core skills now ship in every room at workbench/skills with tracked .agents/skills and .claude/skills adapters.
+**Answer:** Generated and adopted projects carry no project-local skill discovery tree. On a brand-new installation only, LLM Workbench supplies a missing required core skill from its tracked skills/ source into user-scoped discovery; an installed skill stays untouched unless the user explicitly requests an update; the private Kayden catalog is not a product dependency. Superseded by PW-3/PW-3A/PW-4 (ADR-000M): core skills ship in every room at workbench/skills with tracked .agents/skills and .claude/skills adapters.
 
 **Reason:** S-021 Why It Matters: the v2.3 product treated its broad local skills catalog as project discovery and tied a public product to Kayden's private machine topology; homework found copying external skills back into projects would recreate the prohibited shadow.
 
@@ -417,7 +418,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Intermediate change: S-045 TK-005 (owner decision 2026-09-07) allowed install into a symlinked or Git-owned user root. The 'not a product dependency' clause on the private catalog survives in ADR-000M.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:7; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/specs/S-00V-portable-workbench/SPEC.md; workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:7; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md; workbench/specs/S-00V-portable-workbench/SPEC.md; workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md
 
 ### V3-4
 
@@ -442,9 +443,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q4
 
-**Notes:** Skill paths moved from root skills/ to workbench/skills under PW-3A/ADR-000M; the route split itself is unchanged.
+**Notes:** PW-3A/ADR-000M relocated skill paths from root skills/ to workbench/skills; the route split itself is unchanged.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:8; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:8; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0047-preservation-contracts-for-genesis-adoption-and-upgrade.md
 
 ### V3-5
 
@@ -469,7 +470,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q5
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:9; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md; workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:9; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0015-workbench-base-and-foundry-capabilities.md; workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md
 
 ### V3-6
 
@@ -487,41 +488,41 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - update `AGENTS.md (Git Rules) and templates/AGENTS.md` - Only the owner merges integration into main; agents may merge below integration.
 - update `CLAUDE.md` - States the integration target and that only the owner merges integration to main.
-- update `workbench/specs/S-014-workbench-release-candidate/SPEC.md` - Owned the v3 exact-head integration-to-main promotion PR.
+- update `workbench/specs/S-014-workbench-release-candidate/SPEC.md` - Records the v3 exact-head integration-to-main promotion PR choreography as historical.
 
 **Related:** [V3-20](#v3-20), [V3-24C](#v3-24c)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q6
 
-**Notes:** The owner-only main merge is intact. The 'one PR left open' choreography is now recorded as historical in S-014, and current release readiness is owned by S-00O; later proposed ADR-000F (two QA gates) is not accepted.
+**Notes:** The owner-only main merge still holds. The 'one PR left open' choreography is historical to S-014, and release readiness belongs to S-00O; ADR-000F (two QA gates) is a later proposal and changes this answer only if the owner accepts it.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:10; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:10; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-014-workbench-release-candidate/SPEC.md
 
 ### V3-7
 
 **Topic:** No dependency on private skills repo
 
-**Question:** How should the public LLM Workbench behave when KaydenClark/skills is private, unavailable, or unauthenticated?
+**Question:** How should the public LLM Workbench behave when [the owner's private skills repository] is private, unavailable, or unauthenticated?
 
 **Status:** locked · answered 2026-08-31, v3 layout and shared-skills grilling (promoted to S-021 the same day)
 
 **Answer:** It must remain fully set up without that repository; "the instruction is to replace confusing bundled/project-local skill copies, not to make Kayden's private catalog mandatory."
 
-**Reason:** Homework: the live external catalog is the private KaydenClark/skills repo; Genesis and Adoption do not need it. The owner's intent was to remove confusing skill copies, not to create a private dependency.
+**Reason:** Homework: the live external catalog is the private [the owner's private skills repository] repo; Genesis and Adoption do not need it. The owner's intent was to remove confusing skill copies, not to create a private dependency.
 
 **Result:**
 
 - update `BLUEPRINT.md` - A fresh room works without the personal catalog.
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Personal catalog is only a backup and publication target, never on a room's critical path; doctor never reads it.
-- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts)` - LLM Workbench is not a dependency on KaydenClark/skills.
+- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts)` - LLM Workbench is not a dependency on [the owner's private skills repository].
 
 **Related:** [V3-7A](#v3-7a), [V3-7B](#v3-7b), [V3-3](#v3-3), [PW-4](#pw-4)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q7
 
-**Notes:** Core answer still holds and is strengthened by PW-4/ADR-000M. Its side remark about replacing project-local skill copies was reversed by PW-3: core skills now ship per room in workbench/skills.
+**Notes:** Core answer still holds and is strengthened by PW-4/ADR-000M. Its side remark about replacing project-local skill copies was reversed by PW-3: core skills ship per room in workbench/skills.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:11; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:11; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
 ### V3-7A
 
@@ -538,16 +539,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/skills/README.md` - Documents the public Workbench-owned core skill source that setup uses.
-- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria)` - Source and installed-skill contracts never depend on KaydenClark/skills.
+- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Acceptance Criteria)` - Source and installed-skill contracts never depend on [the owner's private skills repository].
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Genesis and Adoption lay the lane down from the release checkout, not a catalog.
 
 **Related:** [V3-7](#v3-7), [V3-7B](#v3-7b), [V3-21](#v3-21)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q7A
 
-**Notes:** The package moved from root skills/ to workbench/skills (PW-3A); the answer is unchanged.
+**Notes:** PW-3A relocated the package from root skills/ to workbench/skills; the answer is unchanged.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:12; workbench/specs/S-021-portable-workbench-v3/SPEC.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:12; workbench/specs/S-021-portable-workbench-v3/SPEC.md
 
 ### V3-7B
 
@@ -570,7 +571,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q7B
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:13; workbench/specs/S-021-portable-workbench-v3/SPEC.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:13; workbench/specs/S-021-portable-workbench-v3/SPEC.md
 
 ### V3-8
 
@@ -596,7 +597,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Partly superseded by PW-3/ADR-000M: 'presence-only' normal setup became lane-install (manifest normalSetup: lane-install, updates: workbench-update). Release ownership of versions and the explicit, backed-up update still stand.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:14; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:14; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
 ### V3-8A
 
@@ -619,7 +620,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q8A
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:15; workbench/specs/S-021-portable-workbench-v3/SPEC.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:15; workbench/specs/S-021-portable-workbench-v3/SPEC.md
 
 ### V3-8B
 
@@ -631,7 +632,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Answer:** Yes, so no second repository or publication gate is required.
 
-**Reason:** Stated in the answer: keeping both in one release removes any second repository or publication gate (reinforced by Q18B: one repository, no KaydenClark/skills PR).
+**Reason:** Stated in the answer: keeping both in one release removes any second repository or publication gate (reinforced by Q18B: one repository, no [the owner's private skills repository] PR).
 
 **Result:**
 
@@ -642,7 +643,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q8B
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:16; workbench/specs/S-021-portable-workbench-v3/SPEC.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:16; workbench/specs/S-021-portable-workbench-v3/SPEC.md
 
 ### V3-9
 
@@ -652,7 +653,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling (promoted to S-021 the same day)
 
-**Answer:** It proves every required core skill name is discoverable at user scope and that generated/adopted projects do not shadow them locally; it ignores unrelated catalogs and does not compare existing skill contents during normal setup. Superseded by PW-3 (ADR-000M): the check now reads the room's workbench/skills lane and its adapters, never the provider home.
+**Answer:** It proves every required core skill name is discoverable at user scope and that generated/adopted projects do not shadow them locally; it ignores unrelated catalogs and does not compare existing skill contents during normal setup. Superseded by PW-3 (ADR-000M): the check reads the room's workbench/skills lane and its adapters, never the provider home.
 
 **Reason:** Q22: ordinary setup is additive and fail-closed, so it checks presence only and never alters existing skills.
 
@@ -668,7 +669,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The 'ignore unrelated catalogs' part survives (doctor never reads the personal catalog).
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:17; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:17; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
 ### V3-9A
 
@@ -678,13 +679,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling (promoted to S-021 the same day)
 
-**Answer:** Required Workbench-owned names, user-scoped Codex/Claude discovery, and absence of project-local shadows; no remote identity or Kayden catalog check. Superseded by PW-3 (ADR-000M): discovery is now the tracked .agents/skills and .claude/skills adapters into the in-room workbench/skills lane.
+**Answer:** Required Workbench-owned names, user-scoped Codex/Claude discovery, and absence of project-local shadows; no remote identity or Kayden catalog check. Superseded by PW-3 (ADR-000M): discovery is the tracked .agents/skills and .claude/skills adapters into the in-room workbench/skills lane.
 
 **Reason:** Inference from Q3 and Q7: user-scope discovery avoided project-local copies and a private-catalog dependency.
 
 **Result:**
 
-- update `workbench/manifest.json (skillPolicy.required, discovery)` - Lists required names and the two discovery roots, now .agents/skills and .claude/skills inside the room.
+- update `workbench/manifest.json (skillPolicy.required, discovery)` - Lists required names and the two in-room discovery roots, .agents/skills and .claude/skills.
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Tracked adapters into the lane replace user-scoped discovery.
 
 **Related:** [V3-9](#v3-9), [V3-3](#v3-3), [PW-3](#pw-3)
@@ -693,7 +694,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** No Kayden catalog check still holds.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:18; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:18; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
 ### V3-9B
 
@@ -716,9 +717,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q9B
 
-**Notes:** Context changed under PW-3/ADR-000M: installed skills now sit in the tracked lane with a per-skill hash receipt, and verify/doctor can report modified core skills (skills-receipt-drift; earlier skill-content-modified as a non-blocking attention finding). Replacement still happens only through the explicit update.
+**Notes:** Context changed under PW-3/ADR-000M: installed skills sit in the tracked lane with a per-skill hash receipt, and verify/doctor report modified core skills (skills-receipt-drift; earlier skill-content-modified as a non-blocking attention finding). Replacement happens only through the explicit update.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:19; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:19; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
 ### V3-9C
 
@@ -734,7 +735,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `tools/core-skill-installer.mjs` - After S-045: installs missing skills into a linked or Git-owned root without add/commit/stash; now limited to separately authorized catalog publication.
+- update `tools/core-skill-installer.mjs` - Limited to separately authorized catalog publication; per S-045 it installs missing skills into a linked or Git-owned root without add/commit/stash.
 - update `tools/workbench-skills.mjs install; RUNBOOK.md (Skills lane check)` - Refuses an existing receipt, an unreceipted core name, or a colliding discovery root (adapter-collision).
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Lane install never touches room-added skills or the provider home.
 
@@ -744,7 +745,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Never replacing existing same-named skills and giving exact remediation still hold in the lane model.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:20; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:20; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-045-v3-1-2-follow-ups/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
 ### V3-10
 
@@ -768,7 +769,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q10
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:21; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:21; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md
 
 ### V3-10A
 
@@ -794,7 +795,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Schema 2 (ADR-0032) extended the field set (collections, source release and commit, git branches, workbenchId); the base fields remain.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:22; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:22; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md
 
 ### V3-10B
 
@@ -820,7 +821,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The idea that the manifest records the skill contract is unchanged; its contents changed.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:23; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:23; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
 ### V3-10C
 
@@ -845,9 +846,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q10C
 
-**Notes:** Later specs added more narrow tools (e.g. workbench-tools.mjs, self-drift.mjs, workbench-skills.mjs); none is an umbrella lifecycle program.
+**Notes:** Later specs may add more narrow tools (e.g. workbench-tools.mjs, self-drift.mjs, workbench-skills.mjs); none may be an umbrella lifecycle program.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:24; workbench/specs/S-021-portable-workbench-v3/SPEC.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:24; workbench/specs/S-021-portable-workbench-v3/SPEC.md
 
 ### V3-11
 
@@ -874,7 +875,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Tracked status of manifest, specs, Wiki and feedback still holds.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:25; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md; workbench/docs/adr/0054-direct-promotion-into-durable-owners.md; workbench/specs/S-048-checkpoint-retirement/SPEC.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:25; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0028-live-session-records-stay-untracked-and-checkpoints-are-durable.md; workbench/docs/adr/0054-direct-promotion-into-durable-owners.md; workbench/specs/S-048-checkpoint-retirement/SPEC.md
 
 ### V3-11A
 
@@ -884,7 +885,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling (promoted to S-021 the same day)
 
-**Answer:** workbench/specs/, workbench/wiki/ and workbench/feedback/ are tracked; durable checkpoint handoffs are tracked under workbench/handoffs/. Superseded by ADR-0032 (handoff checkpoints moved to sessions/checkpoints; sessions/handoffs untracked) and then ADR-0054/S-048 (no new checkpoints).
+**Answer:** workbench/specs/, workbench/wiki/ and workbench/feedback/ are tracked; durable checkpoint handoffs are tracked under [the retired v3.0 handoffs lane]. Superseded by ADR-0032 (handoff checkpoints moved to sessions/checkpoints; sessions/handoffs untracked) and then ADR-0054/S-048 (no new checkpoints).
 
 **Reason:** Inference: durable records must survive a clone; checkpoints were then the chosen durable form of session records.
 
@@ -900,7 +901,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** specs, wiki and feedback remain tracked.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:26; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md; workbench/docs/adr/0054-direct-promotion-into-durable-owners.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:26; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md; workbench/docs/adr/0054-direct-promotion-into-durable-owners.md
 
 ### V3-11B
 
@@ -916,7 +917,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `workbench/specs/S-048-checkpoint-retirement/SPEC.md` - Retires new checkpoint copies; checkpoint skill now explains the retired workflow and routes to notepads or direct promotion.
+- create `workbench/specs/S-048-checkpoint-retirement/SPEC.md` - Retires new checkpoint copies; the checkpoint skill explains the retired workflow and routes to notepads or direct promotion.
 - create `workbench/docs/adr/0054-direct-promotion-into-durable-owners.md` - Direct promotion into durable owners.
 - create `workbench/docs/adr/0040-json-notepads-preserve-objective-continuity.md` - Live grilling records become local JSON notepads.
 
@@ -926,7 +927,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Live grilling state staying local still holds (AGENTS.md), narrowed by S-00V letting notes be committed temporarily as transport.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:27; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-048-checkpoint-retirement/SPEC.md; workbench/docs/adr/0054-direct-promotion-into-durable-owners.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:27; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/specs/S-048-checkpoint-retirement/SPEC.md; workbench/docs/adr/0054-direct-promotion-into-durable-owners.md
 
 ### V3-11C
 
@@ -950,7 +951,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q11C
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:28; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:28; workbench/specs/S-021-portable-workbench-v3/SPEC.md; workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md
 
 ### V3-12
 
@@ -966,16 +967,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records the v3 capability; completed as v3.0.0 with a dogfooded workbench/ support root.
+- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records the v3 capability: v3.0.0 with a dogfooded workbench/ support root.
 - update `README.md` - Publishes the v3 setup contract.
 
 **Related:** [V3-12A](#v3-12a), [V3-12B](#v3-12b), [V3-12C](#v3-12c), [V3-24](#v3-24)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q12
 
-**Notes:** Historical release decision; the version has since moved on (manifest workbenchVersion v3.2.1, v4.0.0 owned by S-00O).
+**Notes:** Historical release decision; later versions belong to later specs (v4.0.0 to S-00O).
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:29; workbench/specs/S-021-portable-workbench-v3/SPEC.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:29; workbench/specs/S-021-portable-workbench-v3/SPEC.md
 
 ### V3-12A
 
@@ -992,16 +993,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts)` - Records that the breaking stable-path change is v3 and that Genesis creates only v3.
-- update `LEXICON.md (v3.0.0 row)` - Defines v3.0.0 as the completed portable-layout candidate (S-021).
+- update `LEXICON.md (v3.0.0 row)` - Defines v3.0.0 as the portable-layout candidate (S-021).
 - update `workbench/manifest.json` - workbenchVersion carries a v3 label.
 
 **Related:** [V3-12](#v3-12), [V3-12B](#v3-12b), [V3-12C](#v3-12c)
 
 **Aliases:** v3 layout grilling Q12A
 
-**Notes:** v3.0.0 was never promoted to main; later stamps (v3.1.x, v3.2.x) continue the v3 line per the Lexicon.
+**Notes:** Later stamps (v3.1.x, v3.2.x) continue the v3 line per the Lexicon.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:30
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:30
 
 ### V3-12B
 
@@ -1027,7 +1028,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Matches the standing AGENTS.md dogfood boundary (root is real, templates/ is the blank product). PW-3A later extended the same dogfood logic to move root skills/ into workbench/skills.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:31
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:31
 
 ### V3-12C
 
@@ -1054,7 +1055,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** ADR-0032 (manifest schema 2) reused the same pattern: schema 1 is upgrade-required with one lossless migration, not accepted as current.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:32
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:32
 
 ### V3-13
 
@@ -1079,9 +1080,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q13
 
-**Notes:** The principle stands; the count does not. The core grew from 12 to 21 skills (S-051 owner waiver, 2026-09-09) and to-tickets became to-tasks (ADR-000H). The skills now live in workbench/skills (ADR-000M).
+**Notes:** The principle stands; the count does not. The S-051 owner waiver (2026-09-09) permits a 21-skill core, ADR-000H renamed to-tickets to to-tasks, and ADR-000M places the skills in workbench/skills.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:33
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:33
 
 ### V3-13A
 
@@ -1097,8 +1098,8 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Original contract: exactly the 12 locked core skills (historical, completed).
-- update `workbench/manifest.json (required core skills)` - Now lists the 21-skill core: the 12 with to-tasks, plus carry, notepad, save, promote, handoff and the four stances.
+- update `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Original contract: exactly the 12 locked core skills (historical).
+- update `workbench/manifest.json (required core skills)` - Lists the 21-skill core: the 12 with to-tasks, plus carry, notepad, save, promote, handoff and the four stances.
 - update `workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md (Decisions And Contracts)` - Owner waiver keeps v3.2.0 while permitting the 21-skill core including handoff.
 - update `LEXICON.md (Core skill bundle row)` - Defines the core as seventeen workflow skills and four stance skills counted from the manifest.
 
@@ -1106,9 +1107,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q13A
 
-**Notes:** Also the same list as V3-21B. checkpoint remains shipped but its collection was retired by S-048.
+**Notes:** Also the same list as V3-21B. checkpoint stays in the required core, but S-048 retired its checkpoint collection.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:34; workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md:61
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:34; workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md:61
 
 ### V3-13B
 
@@ -1118,13 +1119,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling Q13B (recorded as deferred)
 
-**Answer:** No in this release. Its host-level transient lane remains outside the portable core; workbench/handoffs/ is used by the bundled checkpoint/recovery contract. Superseded: handoff joined the required core under the S-051 owner waiver (2026-09-09), handoffs became untracked Markdown in workbench/sessions/handoffs, and the tracked workbench/handoffs/ lane was retired.
+**Answer:** No in this release. Its host-level transient lane remains outside the portable core; [the retired v3.0 handoffs lane] is used by the bundled checkpoint/recovery contract. Superseded: handoff joined the required core under the S-051 owner waiver (2026-09-09), handoffs became untracked Markdown in workbench/sessions/handoffs, and the tracked [the retired v3.0 handoffs lane] lane was retired.
 
 **Reason:** Recorded in the answer: the handoff skill's host-level transient lane was outside the portable 12-skill core for v3.
 
 **Result:**
 
-- update `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Remaining Limitations)` - Listed generic /handoff as deferred and not blocking v3.
+- update `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Remaining Limitations)` - Lists generic /handoff as deferred and not blocking v3.
 - update `workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md` - Adds handoff to the required core as a bundled skill.
 - update `workbench/docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md` - Maps the old tracked handoffs lane to sessions/checkpoints and declares a sessions/handoffs collection.
 - update `AGENTS.md (Session Records And Checkpoints) and templates/AGENTS.md` - Handoffs are human-readable Markdown in the handoffs collection, untracked in project Git.
@@ -1135,7 +1136,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Source marks this [deferred] though it states a firm "no" for v3. Checkpoints themselves were later retired (S-048) and are frozen history.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:35; workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md:61
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:35; workbench/specs/S-051-core-skill-ownership-and-compatibility/SPEC.md:61
 
 ### V3-13C
 
@@ -1159,7 +1160,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Historical delivery decision for the v3 candidate; the one-release principle continues under ADR-000M, where the release owns and versions the skills lane.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:36
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:36
 
 ### V3-14
 
@@ -1186,7 +1187,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** ADR-0047 later restated the preservation contract for Genesis, Adoption and upgrade.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:37
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:37
 
 ### V3-14A
 
@@ -1210,9 +1211,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q14A
 
-**Notes:** Legacy handoffs/checkpoints now land in the frozen workbench/sessions/checkpoints collection; checkpoints were retired as a live capability by S-048. S-044 added a separate classification step before migration.
+**Notes:** Legacy handoffs/checkpoints go to the frozen workbench/sessions/checkpoints collection; S-048 retired checkpoints as a live capability. S-044 adds a separate classification step before migration.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:38
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:38
 
 ### V3-14B
 
@@ -1222,13 +1223,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling Q14B
 
-**Answer:** Only after every required core skill is present in user-scoped discovery and the old folder is backed up or recoverable; existing user-scoped skills are never replaced during ordinary Adoption. Superseded in part by PW-3/PW-3A (ADR-000M): Adoption now lays the core into the room's workbench/skills lane, so user-scoped presence is no longer the gate.
+**Answer:** Only after every required core skill is present in user-scoped discovery and the old folder is backed up or recoverable; existing user-scoped skills are never replaced during ordinary Adoption. Superseded in part by PW-3/PW-3A (ADR-000M): Adoption lays the core into the room's workbench/skills lane, so user-scoped presence is not the gate.
 
 **Reason:** Inference: removing local skills before a replacement is discoverable would leave the project with no working skills; backup keeps removal recoverable.
 
 **Result:**
 
-- update `tools/workbench-adoption.mjs` - Now lays the skills lane down and preserves a legacy root skills/ as workbench/sessions/recovery/adoption-legacy-skills.
+- update `tools/workbench-adoption.mjs` - Lays the skills lane down and preserves a legacy root skills/ as workbench/sessions/recovery/adoption-legacy-skills.
 - update `templates/ADOPTION.md` - Adoption installs core skills into workbench/skills and never reads or writes skills in the user home.
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Core skills ship in the room lane; a root skills/ is a doctor finding.
 
@@ -1236,9 +1237,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q14B
 
-**Notes:** The "back up or keep recoverable" half and "never replace existing user-scoped skills" still hold (the provider home is not touched at all). Only the user-scoped presence gate was replaced. Owner decisions PW-3/PW-3A/PW-4 (2026-09-22, ADR-000M, S-00V TK-001) moved the core skills into each room's tracked workbench/skills lane; Genesis, Adoption and upgrade now lay the lane down and no longer read or gate on the provider home.
+**Notes:** The "back up or keep recoverable" half and "never replace existing user-scoped skills" still hold (Adoption must not touch the provider home at all). Only the user-scoped presence gate was replaced. Owner decisions PW-3/PW-3A/PW-4 (2026-09-22, ADR-000M, S-00V TK-001) place the core skills in each room's tracked workbench/skills lane; Genesis, Adoption and upgrade lay the lane down and never read or gate on the provider home.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:39; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-003; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:39; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-003; workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
 
 ### V3-15
 
@@ -1248,7 +1249,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling Q15; supersession recorded 2026-09-23 gap triage
 
-**Answer:** A greenfield project with the seven filled root controls, a valid workbench/manifest.json, declared support lanes, user-scoped core-skill presence, and its first spec under workbench/specs/. Superseded in part: Genesis now lays down the workbench/skills lane (S-00V, ADR-000M), so user-scoped skill presence is no longer a Genesis concern.
+**Answer:** A greenfield project with the seven filled root controls, a valid workbench/manifest.json, declared support lanes, user-scoped core-skill presence, and its first spec under workbench/specs/. Superseded in part: Genesis lays down the workbench/skills lane (S-00V, ADR-000M), so user-scoped skill presence is not a Genesis concern.
 
 **Reason:** Inference: a greenfield project should be ready to work on first run, with controls, support root, skills and a first spec in place.
 
@@ -1263,9 +1264,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q15
 
-**Notes:** The seven-control, manifest, lanes and first-spec parts still stand. The 2026-09-23 audit found Genesis never checked user-scoped presence; gap triage recorded it as superseded, closed by PR #145. Owner decisions PW-3/PW-3A/PW-4 (2026-09-22, ADR-000M, S-00V TK-001) moved the core skills into each room's tracked workbench/skills lane; Genesis, Adoption and upgrade now lay the lane down and no longer read or gate on the provider home.
+**Notes:** The seven-control, manifest, lanes and first-spec parts still stand. The 2026-09-23 gap triage recorded the user-scoped presence part as superseded. Owner decisions PW-3/PW-3A/PW-4 (2026-09-22, ADR-000M, S-00V TK-001) place the core skills in each room's tracked workbench/skills lane; Genesis, Adoption and upgrade lay the lane down and never read or gate on the provider home.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:40; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md:90
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:40; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md:90
 
 ### V3-15A
 
@@ -1289,7 +1290,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q15A
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:41
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:41
 
 ### V3-15B
 
@@ -1299,7 +1300,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling Q15B; supersession recorded 2026-09-23 gap triage
 
-**Answer:** Genesis records a truthful recoverable partial scaffold and stops incomplete with exact remediation rather than claiming readiness. Superseded: Genesis now lays the workbench/skills lane down from the release (S-00V, ADR-000M), so a provider-home skill install is no longer part of Genesis.
+**Answer:** Genesis records a truthful recoverable partial scaffold and stops incomplete with exact remediation rather than claiming readiness. Superseded: Genesis lays the workbench/skills lane down from the release (S-00V, ADR-000M), so a provider-home skill install is not part of Genesis.
 
 **Reason:** Stated in the answer: never claim readiness that was not reached; leave a recoverable result and exact remediation.
 
@@ -1313,9 +1314,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q15B
 
-**Notes:** The truthful-partial-result principle still applies to lane and adapter failures. The 2026-09-23 audit found Genesis never called the installer; gap triage recorded it superseded, closed by PR #145.
+**Notes:** The truthful-partial-result principle still applies to lane and adapter failures. The 2026-09-23 gap triage recorded the provider-home install part as superseded.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:42; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md:90
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:42; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md:90
 
 ### V3-16
 
@@ -1342,7 +1343,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The "missing-only skill rules" part changed: under ADR-000M (PW-3) both upgrade modes lay the skills lane down and never read or replace the provider home.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:43
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:43
 
 ### V3-16A
 
@@ -1366,9 +1367,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q16A
 
-**Notes:** The "presence gate" clause is superseded by ADR-000M (PW-3): the upgrade now lays down workbench/skills and does not gate on user-scoped presence.
+**Notes:** The "presence gate" clause is superseded by ADR-000M (PW-3): the upgrade lays down workbench/skills and does not gate on user-scoped presence.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:44
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:44
 
 ### V3-16B
 
@@ -1392,9 +1393,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q16B
 
-**Notes:** Recovery records now live in the ignored workbench/sessions/recovery/ collection.
+**Notes:** Recovery records belong in the ignored workbench/sessions/recovery/ collection.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:45
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:45
 
 ### V3-17
 
@@ -1417,7 +1418,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q17
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:46
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:46
 
 ### V3-17A
 
@@ -1441,9 +1442,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q17A
 
-**Notes:** The skill-install cases targeted the provider-home installer; under ADR-000M the equivalent lane cases live in tools/test-skills-lane.mjs.
+**Notes:** The skill-install cases targeted the provider-home installer; under ADR-000M the equivalent lane cases belong in tools/test-skills-lane.mjs.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:47
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:47
 
 ### V3-17B
 
@@ -1465,7 +1466,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q17B
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:48
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:48
 
 ### V3-17C
 
@@ -1487,9 +1488,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q17C
 
-**Notes:** Discovery is now through the tracked .agents/skills and .claude/skills adapters into workbench/skills (ADR-000M), not user-scoped homes.
+**Notes:** Under ADR-000M, discovery goes through the tracked .agents/skills and .claude/skills adapters into workbench/skills, not user-scoped homes.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:49
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:49
 
 ### V3-17D
 
@@ -1512,9 +1513,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** v3 layout grilling Q17D
 
-**Notes:** The 2026-09-23 audit noted RUNBOOK has no single named v3 demo procedure; the demo is assembled from existing checks.
+**Notes:** The demo may be assembled from existing RUNBOOK checks; the answer does not require a single named v3 demo procedure.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:50
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:50
 
 ### V3-18
 
@@ -1531,7 +1532,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts)` - Portable work is authored directly in LLM Workbench from current integration; no Forge publication step.
-- none `workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md` - Later ADR carrying the same direction; no new change required by this answer.
+- none `workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md` - Carries the same direction: portable work is authored in LLM Workbench, which Foundry extends.
 
 **Related:** [V3-18A](#v3-18a), [V3-18B](#v3-18b), [V3-24](#v3-24), [V3-5](#v3-5)
 
@@ -1539,7 +1540,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Historical delivery decision for the v3 candidate.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:51
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:51
 
 ### V3-18A
 
@@ -1555,7 +1556,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- none `none` - One-off branching instruction for the v3 run; the durable branch rule already lives in AGENTS.md Git Rules.
+- none `none` - One-off branching instruction for the v3 run; the durable branch rule belongs in AGENTS.md Git Rules.
 
 **Related:** [V3-18](#v3-18)
 
@@ -1563,7 +1564,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Historical and operational.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:52
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:52
 
 ### V3-18B
 
@@ -1573,22 +1574,22 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** locked · answered 2026-08-31, v3 layout and shared-skills grilling Q18B
 
-**Answer:** One. Skills, templates, guidebook edits, focused tools, migrations, and proof ship in LLM Workbench; there is no KaydenClark/skills PR.
+**Answer:** One. Skills, templates, guidebook edits, focused tools, migrations, and proof ship in LLM Workbench; there is no [the owner's private skills repository] PR.
 
 **Reason:** Inference: the private catalog must not be a product dependency (V3-7), so nothing ships through it.
 
 **Result:**
 
 - update `workbench/specs/S-021-portable-workbench-v3/SPEC.md (Decisions And Contracts, Non-Goals)` - No private skills-repository change is part of the capability.
-- update `tools/test-skill-catalog.mjs` - Fails if the catalog depends on KaydenClark/skills.
+- update `tools/test-skill-catalog.mjs` - Fails if the catalog depends on [the owner's private skills repository].
 
 **Related:** [V3-18](#v3-18), [V3-13C](#v3-13c), [V3-7](#v3-7), [PW-4](#pw-4)
 
 **Aliases:** v3 layout grilling Q18B
 
-**Notes:** PW-4 (2026-09-22) later kept KaydenClark/skills as a backup and optional publication target, still never on a room's critical path.
+**Notes:** PW-4 (2026-09-22) later kept [the owner's private skills repository] as a backup and optional publication target, still never on a room's critical path.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:53
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:53
 
 ### V3-19
 
@@ -1605,7 +1606,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records the baseline repairs (S-011, S-014, PR #42, red catalog test) as prerequisites the v3 runway must clear first.
-- update `workbench/specs/S-014-workbench-release-candidate/SPEC.md` - Current state reconciled to live refs while its append-only evidence rows stay unchanged.
+- update `workbench/specs/S-014-workbench-release-candidate/SPEC.md` - Reconciles its current state to live refs while its append-only evidence rows stay unchanged.
 
 **Related:** [V3-19A](#v3-19a), [V3-19B](#v3-19b), [V3-19C](#v3-19c), [V3-19D](#v3-19d), [V3-20A](#v3-20a)
 
@@ -1613,7 +1614,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Parent question; sub-answers 19A-19D name each repair.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:54
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:54
 
 ### V3-19A
 
@@ -1629,7 +1630,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/specs/S-011-agent-skills-adoption/SPEC.md` - Status marked superseded for skill ownership, distribution and completion only; historical proof left intact.
+- update `workbench/specs/S-011-agent-skills-adoption/SPEC.md` - Marks its status superseded for skill ownership, distribution and completion only; historical proof stays intact.
 - create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - New linked capability that names 'Supersedes: S-011 skill ownership/distribution/completion contract only'.
 
 **Related:** [V3-19](#v3-19), [V3-3](#v3-3), [V3-21](#v3-21)
@@ -1638,7 +1639,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The project-local ownership that S-011 lost was itself later changed again: ADR-000M (2026-09-23) put the core skills back inside each room at workbench/skills. That does not reopen S-011.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:55
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:55
 
 ### V3-19B
 
@@ -1650,19 +1651,19 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Answer:** Reconcile its stale claim against the actual 46-commit integration candidate before release-gate proof.
 
-**Reason:** Inference: homework showed integration 46 commits ahead of main (main now an ancestor) and doctor reporting a stale S-014 claim, so S-014's recorded state no longer matched the candidate it was supposed to gate.
+**Reason:** Inference: homework showed integration 46 commits ahead of main (main an ancestor) and doctor reporting a stale S-014 claim, so S-014's recorded state no longer matched the candidate it was supposed to gate.
 
 **Result:**
 
-- update `workbench/specs/S-014-workbench-release-candidate/SPEC.md` - Current state, blocker and ticket status reconciled to the exact integration refs; release work blocked until the S-021 v3 candidate reaches integration.
+- update `workbench/specs/S-014-workbench-release-candidate/SPEC.md` - Reconciles current state, blocker and ticket status to the exact integration refs; release work waits until the S-021 v3 candidate reaches integration.
 
 **Related:** [V3-19](#v3-19), [V3-20](#v3-20), [V3-24C](#v3-24c)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q19B
 
-**Notes:** S-014 is now blocked with current release gates routed to S-00O and S-052; that is later history, not a change to this answer.
+**Notes:** Later decisions route release gates to S-00O and S-052; that is later history, not a change to this answer.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:56
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:56
 
 ### V3-19C
 
@@ -1678,16 +1679,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- retire `GitHub PR #42 (claude/respec-forge-verticality -> integration)` - Closed unmerged once S-021 replacement proof existed; only still-useful intent rebuilt on current integration.
+- retire `GitHub PR #42 (claude/respec-forge-verticality -> integration)` - Closed unmerged after S-021 replacement proof exists; only still-useful intent is rebuilt on current integration.
 - update `workbench/specs/S-014-workbench-release-candidate/SPEC.md` - Evidence names PR #42 as obsolete in the v3 dependency reconciliation.
 
 **Related:** [V3-19](#v3-19), [V3-20A](#v3-20a)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q19C
 
-**Notes:** No durable record states which intent from #42 was rebuilt; the closure (2026-09-04) is visible only on GitHub.
+**Notes:** The answer's destinations for PR #42 are GitHub (closed unmerged after replacement proof) and S-014 evidence (named obsolete); it names no separate durable record of which intent is rebuilt.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:57
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:57
 
 ### V3-19D
 
@@ -1699,18 +1700,18 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Answer:** Repair its stale canonical-path contract as the first prerequisite and establish a green baseline before broader v3 behavior changes.
 
-**Reason:** Homework: test-skill-catalog failed because update-harness named the retired Foundry/Sockets/Forge path while the test expected the older Workbench Factory name, so the full suite was not a clean release baseline.
+**Reason:** Homework: test-skill-catalog failed because update-harness named the retired [a retired Foundry socket path] path while the test expected the older Workbench Factory name, so the full suite was not a clean release baseline.
 
 **Result:**
 
-- update `tools/test-skill-catalog.mjs` - Stale canonical-path assertion repaired so the catalog test is green before other v3 changes.
+- update `tools/test-skill-catalog.mjs` - The canonical-path assertion matches the current path, so the catalog test is green before other v3 changes.
 - update `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - States the red catalog test is a prerequisite baseline failure that the first slice (TK-001) repairs.
 
 **Related:** [V3-19](#v3-19)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q19D
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:58
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:58
 
 ### V3-20
 
@@ -1735,7 +1736,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Parent question; 20A lists what is authorized, 20B what is excluded.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:59
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:59
 
 ### V3-20A
 
@@ -1753,15 +1754,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Promoted capability with six dependency-ordered red/green tickets (TK-001..TK-006) and independent review of the exact pushed candidate.
 - update `workbench/specs/S-014-workbench-release-candidate/SPEC.md` - Resumes its exact-head audit, status and integration-to-main promotion PR after the S-021 candidate lands.
-- retire `GitHub PR #42` - Reconciled and closed after replacement proof.
+- retire `GitHub PR #42` - Closed unmerged after replacement proof exists.
 
 **Related:** [V3-20](#v3-20), [V3-19C](#v3-19c), [V3-24C](#v3-24c)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q20A
 
-**Notes:** Exact pushed-head verification and the PR #42 reconciliation are not written into a durable owner; they show only on GitHub and in S-014 evidence.
+**Notes:** Exact pushed-head verification and the PR #42 reconciliation are recorded in S-014 evidence and on GitHub rather than a separate durable owner.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:60
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:60
 
 ### V3-20B
 
@@ -1785,7 +1786,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Scope for the v3 runway only. Later S-00V/ADR-000M allow publishing room skills to the personal catalog as a separately authorized operation; that does not change this runway's exclusion.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:61
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:61
 
 ### V3-21
 
@@ -1795,13 +1796,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling (promoted to S-021)
 
-**Answer:** Yes, as a brand-new-install fallback only: it supplies a required skill from its own skills/ source only when absent, ignores KaydenClark/skills, and never replaces or re-sources an existing skill without an explicit update request. Superseded by ADR-000M (owner decisions PW-3, PW-3A, PW-4, 2026-09-22/23): the core now ships inside every room at workbench/skills, not as a provider-home fallback.
+**Answer:** Yes, as a brand-new-install fallback only: it supplies a required skill from its own skills/ source only when absent, ignores [the owner's private skills repository], and never replaces or re-sources an existing skill without an explicit update request. Superseded by ADR-000M (owner decisions PW-3, PW-3A, PW-4, 2026-09-22/23): the core ships inside every room at workbench/skills, not as a provider-home fallback.
 
 **Reason:** Homework: the public product must work without Kayden's private catalog (V3-7), and copying external skills into projects would recreate the prohibited shadow. ADR-000M later reasoned that a clone with provider-home skills discovers nothing, so a cloud instance cannot start from the repository alone.
 
 **Result:**
 
-- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records LLM Workbench as brand-new-install source of last resort for its core skills, not a dependency on KaydenClark/skills.
+- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records LLM Workbench as brand-new-install source of last resort for its core skills, not a dependency on [the owner's private skills repository].
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Supersedes the fallback model: every room carries the core in the workbench/skills lane with tracked adapters; the personal catalog is backup and publication target only.
 - update `LEXICON.md (Core skill bundle, Skills lane rows) and templates/LEXICON.md` - Define the bundle as the closed core every room carries in its skills lane.
 
@@ -1811,7 +1812,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Status superseded by owner-locked PW-3/PW-3A/PW-4 carried into S-00V TK-001. The 'never replace without explicit update' part survives (see V3-22A).
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:65
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:65
 
 ### V3-21A
 
@@ -1834,9 +1835,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q21A
 
-**Notes:** Still holds; the bundle has grown (see V3-21B) and now lives in the workbench/skills lane (ADR-000M).
+**Notes:** Still holds; later decisions enlarged the bundle (see V3-21B) and ADR-000M places it in the workbench/skills lane.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:66
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:66
 
 ### V3-21B
 
@@ -1846,14 +1847,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling (promoted to S-021)
 
-**Answer:** genesis, adoption, update-harness, grilling, checkpoint, make-it-so, to-docs, to-spec, to-tickets, tracer-bullet, implement and code-review; routing and unrelated Kayden skills are outside the product. Superseded by later owner decisions: the core is now 21 skills (17 workflow plus 4 stances), adding carry, notepad, save, promote, handoff and the four stances, with to-tickets renamed to-tasks (ADR-000H).
+**Answer:** genesis, adoption, update-harness, grilling, checkpoint, make-it-so, to-docs, to-spec, to-tickets, tracer-bullet, implement and code-review; routing and unrelated Kayden skills are outside the product. Superseded by later owner decisions: the core is 21 skills (17 workflow plus 4 stances), adding carry, notepad, save, promote, handoff and the four stances, with to-tickets renamed to-tasks (ADR-000H).
 
 **Reason:** Homework: grilling closes over eight skills; adding the three setup entrypoints gives a closed 12-skill bundle, while router/convenience skills stay optional.
 
 **Result:**
 
-- update `workbench/manifest.json (skillPolicy.required)` - Lists the required core names; now 21 including to-tasks.
-- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records the original 12-skill core as completed v3 history.
+- update `workbench/manifest.json (skillPolicy.required)` - Lists the 21 required core names, including to-tasks.
+- create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records the original 12-skill core as v3 history.
 - update `LEXICON.md (Core skill bundle row) and templates/LEXICON.md` - States the closed set of seventeen workflow skills and four stance skills.
 
 **Related:** [V3-13A](#v3-13a), [V3-10B](#v3-10b), [V3-21A](#v3-21a), [V3-24A](#v3-24a)
@@ -1862,7 +1863,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Supersession chain: S-027/ADR-0036 (stances), S-046/S-049 (notepad, carry), S-050/S-051 (save, promote, handoff), S-00H/ADR-000H (to-tasks). checkpoint stays in the core only as the retirement explainer after S-048. Duplicate of V3-13A.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:67
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:67
 
 ### V3-21C
 
@@ -1878,7 +1879,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/manifest.json (skillPolicy discovery, lanes.skills)` - Discovery roots .agents/skills and .claude/skills now point into the workbench/skills lane.
+- update `workbench/manifest.json (skillPolicy discovery, lanes.skills)` - Discovery roots .agents/skills and .claude/skills point into the workbench/skills lane.
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Installed core moves from the provider home into each room; root skills/ becomes a doctor finding.
 - create `tools/workbench-skills.mjs` - Lays the lane down with a receipt during Genesis/Adoption and updates it on explicit update.
 
@@ -1888,7 +1889,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The 'no project-local skill copies' rule was reversed: ADR-0046 had rejected per-room core copies; ADR-000M made them the decision. Root skills/ still counts as a shadow.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:68
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:68
 
 ### V3-22
 
@@ -1905,16 +1906,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `LEXICON.md (Normal setup, Explicit skill update rows) and templates/LEXICON.md` - Normal setup lays the lane down and never touches room skills under other names; only explicit update replaces a core skill.
-- create `workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md` - Allowed missing installs inside a Git-owned or linked discovery root without changing its tracked source.
-- create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Setup now targets the in-room lane, not the user-scoped root.
+- create `workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md` - Allows missing installs inside a Git-owned or linked discovery root without changing its tracked source.
+- create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Setup targets the in-room lane, not the user-scoped root.
 
 **Related:** [V3-22A](#v3-22a), [V3-22B](#v3-22b), [V3-22C](#v3-22c), [V3-9C](#v3-9c), [V3-21C](#v3-21c)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q22
 
-**Notes:** Additive, fail-closed and explicit-update-only replacement survive in lane form; the user-scoped target and foreign-Git-root refusal do not. S-051 noted blanket refusal prose had become drift.
+**Notes:** Additive, fail-closed and explicit-update-only replacement survive in lane form; the user-scoped target and foreign-Git-root refusal do not. S-051 treated blanket refusal prose as drift.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:69
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:69
 
 ### V3-22A
 
@@ -1931,16 +1932,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `LEXICON.md (Explicit skill update row) and templates/LEXICON.md` - Explicit update is the only path that may replace a core skill; routine setup and doctor cannot imply it.
-- update `workbench/manifest.json (skillPolicy.updates)` - Update policy requires an explicit request (now workbench-update via --explicit-update).
+- update `workbench/manifest.json (skillPolicy.updates)` - Update policy requires an explicit request (workbench-update via --explicit-update).
 - create `tools/workbench-skills.mjs` - update refuses without --explicit-update.
 
 **Related:** [V3-22](#v3-22), [V3-9B](#v3-9b), [V3-8](#v3-8)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q22A
 
-**Notes:** Still holds after ADR-000M; the replaced skill is now the lane copy rather than a provider-home copy.
+**Notes:** Still holds after ADR-000M; the replaced skill is the lane copy rather than a provider-home copy.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:70
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:70
 
 ### V3-22B
 
@@ -1950,13 +1951,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-08-31, v3 layout and shared-skills grilling (promoted to S-021)
 
-**Answer:** No. Presence satisfies setup; contents are compared only during an explicitly requested update. Superseded by ADR-000M: normal setup is now 'lane-install' - Genesis/Adoption lay the lane down from the release with a receipt holding a content hash per skill.
+**Answer:** No. Presence satisfies setup; contents are compared only during an explicitly requested update. Superseded by ADR-000M: normal setup is 'lane-install' - Genesis/Adoption lay the lane down from the release with a receipt holding a content hash per skill.
 
 **Reason:** Inference: avoid blocking setup on harmless local edits to existing skills; comparison belongs to the deliberate update. ADR-000M replaced presence checks in the provider home with a room-owned lane whose receipt records identity.
 
 **Result:**
 
-- update `workbench/manifest.json (skillPolicy.normalSetup)` - Was presence-only; now lane-install for rooms with the skills lane (older six-lane rooms keep presence-only until they update).
+- update `workbench/manifest.json (skillPolicy.normalSetup)` - lane-install for rooms with the skills lane; older six-lane rooms keep presence-only until they update.
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Normal setup lays down the lane with a per-skill hash receipt.
 - update `LEXICON.md (Normal setup row) and templates/LEXICON.md` - Normal setup lays the lane and adapters down from the release.
 
@@ -1966,7 +1967,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Content is still compared only on explicit update; what changed is the setup model, not the no-compare-on-setup intent for room-added skills.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:71
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:71
 
 ### V3-22C
 
@@ -1990,9 +1991,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q22C
 
-**Notes:** S-051 narrowed it: an unmanaged same-named skill is refused rather than backed up and replaced. ADR-000M moved the update into the room lane; the provider-home installer (core-skill-installer.mjs) is now only for personal-catalog publication.
+**Notes:** S-051 narrowed it: an unmanaged same-named skill is refused rather than backed up and replaced. ADR-000M moved the update into the room lane; the provider-home installer (core-skill-installer.mjs) is only for personal-catalog publication.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:72
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:72
 
 ### V3-23
 
@@ -2015,9 +2016,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q23
 
-**Notes:** The phrase 'guidebook-first' appears in no root control; the principle lives in S-021 and BLUEPRINT's plain-files wording.
+**Notes:** The principle belongs in S-021 and BLUEPRINT's plain-files wording; the answer does not require the phrase 'guidebook-first' in a root control.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:73
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:73
 
 ### V3-23A
 
@@ -2033,16 +2034,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/tools/spec-workbench.mjs` - Stays scoped to spec/task mechanics and becomes manifest-aware; no workbench.mjs orchestrator exists.
+- update `workbench/tools/spec-workbench.mjs` - Stays scoped to spec/task mechanics and manifest-aware; no workbench.mjs orchestrator.
 - create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records that only bounded layout/manifest and skill seams are added and no monolithic orchestrator appears.
 
 **Related:** [V3-23](#v3-23), [V3-10C](#v3-10c)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q23A
 
-**Notes:** 'ticket' is now 'task' (ADR-000H). spec-workbench.mjs has grown (render, doctor, next, claim, close, move, report) but stays spec/task-scoped; no durable size bound is recorded.
+**Notes:** ADR-000H renamed 'ticket' to 'task'. spec-workbench.mjs may carry several spec/task commands (render, doctor, next, claim, close, move, report) but stays spec/task-scoped; the answer sets no size bound.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:74
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:74
 
 ### V3-23B
 
@@ -2061,15 +2062,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - update `RUNBOOK.md and templates/RUNBOOK.md` - Remains the authoritative procedure index.
 - update `LEXICON.md (Procedures route; Wiki article and guidebook row) and templates/LEXICON.md` - A linked Wiki guidebook may hold an extended procedure; it cannot authorize work.
 - update `workbench/manifest.json (collections.guidebooks = workbench/wiki/guidebooks)` - Declares the guidebook collection.
-- update `AGENTS.md and templates/AGENTS.md` - Intended home of the clause that AGENTS.md may approve a subordinate guidebook.
+- update `AGENTS.md and templates/AGENTS.md` - States that AGENTS.md may approve a bounded subordinate guidebook when a procedure genuinely needs one.
 
 **Related:** [V3-23](#v3-23), [V3-23C](#v3-23c)
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q23B
 
-**Notes:** The approval clause is stated only in S-021 (lines 106-108); AGENTS.md itself does not say it approves subordinate guidebooks.
+**Notes:** The approval clause belongs in AGENTS.md as well as S-021 (see the AGENTS.md result).
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:75
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:75
 
 ### V3-23C
 
@@ -2086,7 +2087,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - none `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Records broad guidebook taxonomy as deferred and not blocking v3.
-- none `workbench/wiki/guidebooks (manifest-declared collection)` - Future home of any guidebook library once the owner decides; currently empty.
+- none `workbench/wiki/guidebooks (manifest-declared collection)` - Home of any guidebook library once the owner decides.
 
 **Related:** [V3-23B](#v3-23b), [V3-24B](#v3-24b), [V3-20B](#v3-20b)
 
@@ -2094,7 +2095,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Deferred, not open: triage v2 (2026-09-23) lists it under 'Backlog after v4' as owner-deferred.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:76
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:76
 
 ### V3-24
 
@@ -2112,7 +2113,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - create `workbench/specs/S-021-portable-workbench-v3/SPEC.md` - Outcome: ready to use in other projects while Foundry remains unfinished, without turning it into Foundry.
 - update `BLUEPRINT.md and templates/BLUEPRINT.md` - Portable Workbench does not require Foundry or import its machinery.
-- none `workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md` - Later ADR carries the Workbench/Foundry boundary.
+- none `workbench/docs/adr/0026-workbench-is-the-sole-source-and-foundry-extends-it.md` - Carries the Workbench/Foundry boundary.
 
 **Related:** [V3-5](#v3-5), [V3-24A](#v3-24a), [V3-24B](#v3-24b), [V3-24C](#v3-24c)
 
@@ -2120,7 +2121,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Parent question; 24A-24C refine it.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:77
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:77
 
 ### V3-24A
 
@@ -2143,9 +2144,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q24A
 
-**Notes:** Scope of v3.0.0, which completed. The 12-skill and missing-only parts were later superseded (21 skills; in-room lane per ADR-000M); S-021 keeps the original as history.
+**Notes:** Scope of v3.0.0. Later decisions superseded the 12-skill and missing-only parts (21 skills; in-room lane per ADR-000M); S-021 keeps the original as history.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:78
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:78
 
 ### V3-24B
 
@@ -2167,7 +2168,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** llm-workbench-v3-layout-and-shared-skills Q24B
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:79
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:79
 
 ### V3-24C
 
@@ -2193,7 +2194,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Same answer as V3-6.
 
-**Provenance:** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:80
+**Provenance (local records):** workbench/sessions/grilling/llm-workbench-v3-layout-and-shared-skills-2026-08-31.md:80
 
 ## WB - Workbench boundaries redesign
 
@@ -2219,9 +2220,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** workbench-boundaries Q1
 
-**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Resume header asked promotion to reconcile Q1 wording with Q14's chat-only Round One; S-027 and ADR-0038 did so.
+**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Resume header asked promotion to reconcile Q1 wording with Q14's chat-only Round One; the reconciled wording belongs in S-027 and ADR-0038.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:238; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Decisions And Contracts, Q1 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:238; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Decisions And Contracts, Q1 row)
 
 ### WB-2
 
@@ -2245,9 +2246,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** workbench-boundaries Q2
 
-**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. The seven-control part was later revisited by proposed ADR-000B/000C (still proposed); this row records the 2026-09-04 answer only.
+**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Proposed ADR-000B/000C later revisit the seven-control part; this row records the 2026-09-04 answer only.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:240; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q2, Q5 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:240; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q2, Q5 row)
 
 ### WB-3
 
@@ -2273,7 +2274,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. The agent's recommendation (embed stance sections instead) was not adopted.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:242; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:242; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)
 
 ### WB-4
 
@@ -2299,7 +2300,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Later WF-8C refined the reviewed unit to the assembled Spec; consistent with this answer.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:244; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q4 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:244; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q4 row)
 
 ### WB-5
 
@@ -2324,7 +2325,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. The 'promote a checkpoint' clause was later superseded by direct promotion into durable owners (ADR-0054, S-048; noted in ADR-0035's v3.2.0 reconciliation). The rest stands.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:246; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q2, Q5 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:246; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q2, Q5 row)
 
 ### WB-6
 
@@ -2348,9 +2349,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** workbench-boundaries Q6
 
-**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Resume header: Q6 autonomy stays within an assigned task per Q15; promotion reconciled this.
+**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Resume header: Q6 autonomy stays within an assigned task per Q15; the promoted wording reflects that.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:248; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q6, Q15 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:248; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q6, Q15 row)
 
 ### WB-7
 
@@ -2376,7 +2377,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:250; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q7 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:250; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q7 row)
 
 ### WB-8
 
@@ -2400,7 +2401,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. The recommendation (new linked pivot spec, settle version ownership) was not adopted as worded.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:252; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q8 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:252; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q8 row)
 
 ### WB-9
 
@@ -2417,14 +2418,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - create `workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md` - Defer Master Workbench until real contrasting deliveries establish an observation need.
-- update `BLUEPRINT.md and templates/BLUEPRINT.md` - S-027 routed Q9 here: real contrasting owner-selected work before any Master Workbench.
 - create `workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md` - Records the Master Workbench deferral in its completion result.
 
 **Aliases:** workbench-boundaries Q9
 
-**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Named example projects are candidates, not pilot assignments. The Blueprint sentence was later removed in a Blueprint rebuild, so ADR-0038 and S-027 now carry it.
+**Notes:** The Markdown source carries the locked decision (the 2026-09-19 board wrongly said 'no settled result'). Named example projects are candidates, not pilot assignments. ADR-0038 and S-027 own the sequencing; the Blueprint describes the finished product and does not carry it.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:254; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q9 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:254; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q9 row)
 
 ### WB-10
 
@@ -2448,7 +2448,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:273; workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:289 (Provisional ADR decision); workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:273; workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:289 (Provisional ADR decision); workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md
 
 ### WB-11
 
@@ -2472,9 +2472,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** workbench-boundaries Q11 (spawned)
 
-**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Resume header: sequence Q11's feedback workflow after Round One; S-027 did.
+**Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Resume header: sequence Q11's feedback workflow after Round One; S-027 carries that sequence.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:275; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q1, Q11, Q13, Q14 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:275; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q1, Q11, Q13, Q14 row)
 
 ### WB-12
 
@@ -2500,7 +2500,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:277; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:277; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)
 
 ### WB-13
 
@@ -2526,7 +2526,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. The question was framed around the report; the answer rejected that framing. Its 'leaves a recoverable outcome' wording was narrowed by Q14 to a chat-only result.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:279; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q1, Q11, Q13, Q14 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:279; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q1, Q11, Q13, Q14 row)
 
 ### WB-14
 
@@ -2552,7 +2552,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Owner reversal: he first locked an answer letting the agent 'create the task for itself and leave a summary of its findings... a handoff', then reversed it in the same turn. The reversal was only recorded on 2026-09-23, recovered from the transcript.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:281; workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:283 (correction added 2026-09-23); workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:281; workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:283 (correction added 2026-09-23); workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md
 
 ### WB-15
 
@@ -2577,7 +2577,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. The question's premise (agents create their own next tasks) was withdrawn by the answer itself; the locked rule is that they do not.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:284; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q6, Q15 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:284; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q6, Q15 row)
 
 ### WB-16
 
@@ -2603,7 +2603,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Earlier progress board wrongly said 'no settled result recorded'; the Markdown source carries the locked decision. Troubleshooting-mode stance policy remains deliberately undecided.
 
-**Provenance:** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:286; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)
+**Provenance (local records):** workbench/sessions/grilling/workbench-boundaries-redesign-2026-09-04.md:286; workbench/sessions/checkpoints/workbench-boundaries-grilling-2026-09-04.md; workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md (Q3, Q12, Q16 row)
 
 ## U313 - Unblocking v3.1.3 open work
 
@@ -2615,7 +2615,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** locked · answered 2026-09-07, unblocking-v3-1-3 notepad (owner, unprompted)
 
-**Answer:** No. v3.1.3 is under construction; main is not updated until the build is done.
+**Answer:** No. main is not updated until the v3.1.3 build is done.
 
 **Reason:** Owner: v3.1.3 'is under construction'. Related owner words the same day: 'I decide when we merge up with main.'
 
@@ -2629,7 +2629,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Stated by the owner unprompted rather than asked as a question.
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=0]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#boundaries
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=0]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#boundaries
 
 ### U313-1
 
@@ -2653,7 +2653,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The rationale text is recorded next to the owner's answer; it reads as the agent's framing that the owner accepted.
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1]
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1]
 
 ### U313-1A
 
@@ -2675,9 +2675,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** unblocking-v3-1-3 planned_questions id 1A
 
-**Notes:** S-045 records that 'TK-005 first' was the owner's only ordering constraint.
+**Notes:** 'TK-005 first' is the owner's only ordering constraint (S-045).
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1A]
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1A]
 
 ### U313-1B
 
@@ -2699,7 +2699,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** unblocking-v3-1-3 planned_questions id 1B
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1B]
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=1B]
 
 ### U313-2
 
@@ -2722,7 +2722,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** unblocking-v3-1-3 planned_questions id 2
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=2]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#execution_plan_locked
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=2]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#execution_plan_locked
 
 ### U313-2A
 
@@ -2748,7 +2748,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Covers installing missing skills only; replacing an existing skill in a Git-owned root is not part of this answer.
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=2A]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#findings[why-install-is-blocked]
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=2A]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#findings[why-install-is-blocked]
 
 ### U313-3
 
@@ -2764,7 +2764,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- none `none` - No owner decision; the agent picks the assignment. The miss was logged as a coordination hand-back in the notepad.
+- none `none` - No owner decision; the agent picks the assignment. The miss belongs in the notepad as a coordination hand-back.
 
 **Related:** [U313-9](#u313-9), [U313-5](#u313-5)
 
@@ -2772,7 +2772,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The asking agent recorded this as a hand-back: ticket ordering inside an assigned spec is the agent's, per carry's ask gate.
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=3]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=3]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs
 
 ### U313-4
 
@@ -2788,13 +2788,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- none `none` - S-014 and S-022 left as they were; the boundary 'deliver to integration, main is the owner's' governs the session.
+- none `none` - No change to S-014 or S-022; the boundary 'deliver to integration, main is the owner's' governs the session.
 
 **Related:** [U313-0](#u313-0), [U313-6](#u313-6)
 
 **Aliases:** unblocking-v3-1-3 planned_questions id 4
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=4]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#boundaries
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=4]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#boundaries
 
 ### U313-5
 
@@ -2818,7 +2818,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Self-resolved by the asking agent; not an owner decision.
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=5]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=5]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs
 
 ### U313-6
 
@@ -2840,7 +2840,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** unblocking-v3-1-3 planned_questions id 6
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=6]
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=6]
 
 ### U313-7
 
@@ -2850,21 +2850,21 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** locked · answered 2026-09-07, unblocking-v3-1-3 notepad; owner words recovered 2026-09-23 (triage v2)
 
-**Answer:** Move it to the GPT_OS workbench root (GPT_OS workbench root , a private repo): 'We can do something with it later.' It was moved and verified byte-identical by sha256; the LLM_Workbench tree is clear of it.
+**Answer:** Move it to the GPT_OS workbench root (a private repo): 'We can do something with it later.' The private copy must be byte-identical by sha256, and no copy stays in the LLM_Workbench tree.
 
 **Reason:** Recorded finding: LLM_Workbench is a public repo, the feedback lane is not ignored, and the zip held personal conversation content one 'git add -A' from publication.
 
 **Result:**
 
-- create `GPT_OS workbench root llm-workbench-decision-recovery.zip (private, outside this repo)` - Zip kept privately, byte-identical.
+- create `llm-workbench-decision-recovery.zip in the GPT_OS workbench root (private, outside this repo)` - Holds the zip privately, byte-identical to the original by sha256.
 - retire `workbench/feedback/llm-workbench-decision-recovery.zip` - No copy in the public LLM_Workbench tree.
-- update `workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (evidence) and workbench/feedback/REPORT-decision-triage-2026-09-07.md, decision-triage-2026-09-07.json, decision-triage-second-pass-2026-09-07/first-pass-snapshot.json` - Record the relocation and sha256 check, and repoint the four citations that still name the old repo path.
+- update `workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (evidence) and workbench/feedback/REPORT-decision-triage-2026-09-07.md, decision-triage-2026-09-07.json, decision-triage-second-pass-2026-09-07/first-pass-snapshot.json` - Record the relocation and its sha256 check, and cite the private location rather than the old repo path.
 
 **Aliases:** unblocking-v3-1-3 planned_questions id 7
 
-**Notes:** Only the citation repair remains per the 2026-09-23 gap triage.
+**Notes:** Citations that name the old in-repo path repoint to the private location (see the S-049 result).
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=7]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#findings[public-repo-exposure]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:48
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=7]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#findings[public-repo-exposure]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:48
 
 ### U313-8
 
@@ -2886,7 +2886,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** When measured, the count was seven specs, not six. The correcting row was itself later corrected by an appended withdrawal row.
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=8]
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=8]
 
 ### U313-9
 
@@ -2902,15 +2902,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- none `templates/GENESIS.md and tools/test-skill-catalog.mjs` - Count left in place; the catalog test keeps it matched to the bundle size.
+- none `templates/GENESIS.md and tools/test-skill-catalog.mjs` - Count stays as written; the catalog test keeps it matched to the bundle size.
 
 **Related:** [U313-3](#u313-3)
 
 **Aliases:** unblocking-v3-1-3 planned_questions id 9
 
-**Notes:** Self-resolved by the asking agent; not an owner decision. The count later moved to 21 with the bundle.
+**Notes:** Self-resolved by the asking agent; not an owner decision. The count follows the bundle, which later owner decisions set at 21.
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=9]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#planned_questions[id=9]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#coordination_hand_backs
 
 ### U313-10
 
@@ -2935,7 +2935,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Listed as a spawned branch, not a planned question.
 
-**Provenance:** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#spawned_branches[id=10]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#promoted.open_carried_forward
+**Provenance (local records):** workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#spawned_branches[id=10]; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#promoted.open_carried_forward
 
 ## CAND - Private session transport (CAND-N)
 
@@ -2949,7 +2949,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Answer:** 2026-09-08: use optional private Git transport (workbench_sessions) with a stable Workbench identity, selected live collections, one writer per note, preserved conflicts and explicit remote confirmation; Git history retention accepted. 2026-09-21: 'Approved transport design remains settled. Clean up the failed audit first; then use the real PC handoff as a deployment-readiness test before any merge to main.' That interview authorized no test or cleanup.
 
-**Reason:** 2026-09-07: the owner works on two machines, is open to a shared private Git repo, found Meshnet file transfer unsatisfactory, and the OpenBrain solution was never built. 2026-09-21: the prior audit failed, so the Workbench was not ready for the PC readiness test.
+**Reason:** 2026-09-07: the owner works on two machines, is open to a shared private Git repo, found Meshnet file transfer unsatisfactory, and the OpenBrain solution had not been built. 2026-09-21: the prior audit failed, so the Workbench was not ready for the PC readiness test.
 
 **Result:**
 
@@ -2961,9 +2961,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** decision-triage CAND-N (R054, R136); blocked-obligations-review CAND-N
 
-**Notes:** Original wording 'How continuity crosses machines' is a triage title, reconstructed as a question. The 2026-09-07 six-point recommendation was an agent proposal; the owner's 2026-09-08 selection adopted it. Two audits disagreed ('implemented' vs 'documented-only'); the real cross-device proof is still outstanding.
+**Notes:** Original wording 'How continuity crosses machines' is a triage title, reconstructed as a question. The 2026-09-07 six-point recommendation was an agent proposal; the owner's 2026-09-08 selection adopted it. The 2026-09-21 answer makes the real cross-device handoff the pre-main readiness test.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-001; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions[CAND-N]; workbench/sessions/grilling/cand-n-private-session-transport-2026-09-07.json; workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json (CAND-N)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-001; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions[CAND-N]; workbench/sessions/grilling/cand-n-private-session-transport-2026-09-07.json; workbench/specs/S-050-workbench-v3-2-0-release/reconciliation.json (CAND-N)
 
 ## BPR - Blueprint and ADR boundary review
 
@@ -2992,7 +2992,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The question itself is a retrospective framing written in the 2026-09-09 review; it was not asked in these words. The answer is the owner's locked ownership model from the 2026-09-08 note. ADR-000A wholly supersedes ADR-0002 and ADR-0025.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[0]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-001; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-002; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-1); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[0]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-001; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-002; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-1); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-2
 
@@ -3019,7 +3019,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** BPR-2 merges two original questions: 2026-09-08 Q2 (universal reading) and Q4 (routing owner), so BPR numbers 2-4 do not match the original note. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[1]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-003; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-003; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-005; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-2); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[1]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-003; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-003; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-005; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-2); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-3
 
@@ -3046,7 +3046,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[2]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-002; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-004; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-3); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[2]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-002; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-004; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-3); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-4
 
@@ -3072,7 +3072,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** BPR-4 is the original 2026-09-08 Q1 ('Should accepted non-superseded ADRs be authoritative?'). Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[3]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-002; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-001; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-4); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[3]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-002; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-001; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-4); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-5
 
@@ -3099,7 +3099,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[4]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-004; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-006; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-5); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[4]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-004; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-006; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-5); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-5A
 
@@ -3125,7 +3125,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Later extended, not reversed: FND-Q21C (2026-09-12) built a four-tier Decisions rule on locked BPR-5A, adding execution-local choices in the Task body and 'always an ADR' for a change to what a Core artifact type owns. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[5]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-004; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-007; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-5A); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[5]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-004; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-007; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-5A); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-6
 
@@ -3149,9 +3149,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** BPR source id 6; workbench-foundation-rework BPR-6; blueprint-adr-boundary-2026-09-08 Q6
 
-**Notes:** 'rejected' was kept as historical compatibility (ADR-000A); FND-Q23 later locked the five record statuses. Lifecycle location later moved to folders (proposed ADR-000I, S-00I), which changes where state lives but not the four-state contract. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
+**Notes:** 'rejected' was kept as historical compatibility (ADR-000A); FND-Q23 later locked the five record statuses. The WF-8F answer later placed lifecycle in folder location (ADR-000I, S-00I), which changes where state lives but not the four-state contract. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[6]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-005; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-002; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-008; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-6); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[6]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-005; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-002; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-008; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-6); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-6A
 
@@ -3161,7 +3161,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-09-08, blueprint-adr-boundary-2026-09-08 decision-009; restated in BPR review 2026-09-09 decision-005; stable-path half replaced by the WF-8F answer (2026-09-16)
 
-**Answer:** Yes. Superseded and deprecated ADRs stay in the current tree 'at stable paths' as historical evidence; ordinary routing and the default register show only active accepted decisions; history is reached through predecessor/successor links or a history-focused investigation. 'Tidy navigation, not evidence deletion.' Superseded in part by WF-8F and proposed ADR-000I: lifecycle is folder location, and retired ADRs move to a permanent archive/ with link-rewriting moves instead of keeping stable paths.
+**Answer:** Yes. Superseded and deprecated ADRs stay in the current tree 'at stable paths' as historical evidence; ordinary routing and the default register show only active accepted decisions; history is reached through predecessor/successor links or a history-focused investigation. 'Tidy navigation, not evidence deletion.' Superseded in part by WF-8F (ADR-000I): lifecycle is folder location, and retired ADRs move to a permanent archive/ with link-rewriting moves instead of keeping stable paths.
 
 **Reason:** Kayden asked whether retired ADRs could be deleted since Git keeps them; a committed deletion breaks current-tree links and forces history reconstruction. Keeping them while routing only to active records stops agents treating retired architecture as current.
 
@@ -3170,15 +3170,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - update `workbench/docs/adr/REGISTER.md and workbench/docs/adr/HISTORY.md (rendered by workbench/tools/adr.mjs)` - REGISTER shows only accepted active decisions; HISTORY keeps every retained record reachable.
 - create `workbench/docs/adr/archive/` - Permanent home for superseded and deprecated ADRs under the later folder lifecycle.
 - update `AGENTS.md (Edit Scope dogfood boundary) and templates/AGENTS.md` - Record that the stable-path rule is retired and reachability comes from moves that rewrite links.
-- update `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md` - Accept as the successor rule for where retired records live (reconciled by S-00P TK-004).
+- update `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md` - Accepted successor rule for where retired records live (S-00P TK-004).
 
 **Related:** [BPR-6](#bpr-6), [WF-8F](#wf-8f), [FND-Q23](#fnd-q23)
 
 **Aliases:** BPR source id 6A; workbench-foundation-rework BPR-6A; blueprint-adr-boundary-2026-09-08 Q6A
 
-**Notes:** Partial supersession: the reachability and active-only-routing halves still stand; only 'stable paths' was replaced. ADR-000I is still in proposed/ while AGENTS.md cites it. FND-Q23 finding-015 named the locked stable-path rule as an obstacle to folder moves. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
+**Notes:** Partial supersession: the reachability and active-only-routing halves still stand; only 'stable paths' was replaced. FND-Q23 finding-015 named the locked stable-path rule as an obstacle to folder moves. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[7]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-005; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-003; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-009; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-6A); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[7]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-005; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-003; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-009; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-6A); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-7
 
@@ -3204,7 +3204,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[8]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-006; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#correction-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-010; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[8]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-006; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#correction-001; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-010; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-7A
 
@@ -3229,9 +3229,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** BPR source id 7A; workbench-foundation-rework BPR-7A; blueprint-adr-boundary-2026-09-08 Q7A
 
-**Notes:** The original 7A lock also required each v3.2-updated room to prepare a Blueprint grilling review; Q7B1 correction-002 removed unbuilt capabilities from v3.2 acceptance, so the BPR restatement treats them as future work. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
+**Notes:** The original 7A lock also required each v3.2-updated room to prepare a Blueprint grilling review; Q7B1 correction-002 removed those future capabilities from v3.2 acceptance, so the BPR restatement treats them as future work. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[9]; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-011; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7A); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[9]; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-011; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7A); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-7B
 
@@ -3256,7 +3256,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[10]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-006; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-004; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-012; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[10]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-006; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#finding-004; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-012; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-7B1
 
@@ -3281,7 +3281,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[11]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-006; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#correction-002; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-013; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B1); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[11]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-006; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#correction-002; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-013; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B1); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-7B2
 
@@ -3293,7 +3293,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Answer:** Staged capability Specs: first a valid copyable Workbench Template; then project-evidence intake with a prepared Blueprint grilling notepad; then Genesis turning locked Blueprint and ADR decisions into Specs and a valid project Workbench; then fresh-copy end-to-end proof. Each stage proves its own seam, and the Blueprint keeps the full destination without claiming delivery.
 
-**Reason:** Stated in the lock: 'Each stage proves its own seam.' Inference: staging keeps unbuilt steps visible without claiming them in v3.2.
+**Reason:** Stated in the lock: 'Each stage proves its own seam.' Inference: staging keeps later steps visible without claiming them in v3.2.
 
 **Result:**
 
@@ -3308,7 +3308,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The original lock names four stages (template first); the BPR restatement lists the three stages after the template, which is S-00B. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[12]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-007; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-014; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B2); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[12]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-007; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-014; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7B2); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-7C
 
@@ -3333,7 +3333,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[13]; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-022; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7C); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[13]; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-022; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-7C); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-8A
 
@@ -3359,7 +3359,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[14]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-008; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-015; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8A); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[14]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-008; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-015; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8A); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-8B
 
@@ -3383,9 +3383,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** BPR source id 8B; workbench-foundation-rework BPR-8B; blueprint-adr-boundary-2026-09-08 Q8B
 
-**Notes:** FND-Q06 (open) later asked whether Blueprint acceptance should rest on recoverable meaning or a fixed outline. The current contract test requires all eight headings on both canonical files, which does not exercise the 'omit inapplicable sections' latitude. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
+**Notes:** FND-Q06 later asked whether Blueprint acceptance should rest on recoverable meaning or a fixed outline; its recovered answer limits the exact-heading test to the root and template Blueprints, so downstream rooms keep the 'omit inapplicable sections' latitude. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[15]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-008; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-016; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8B); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[15]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-008; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-016; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8B); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-8C
 
@@ -3411,7 +3411,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The per-ADR relevance check from the original lock is shortened out of the BPR restatement. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[16]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-008; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-017; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8C); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[16]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-008; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-017; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8C); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-8D
 
@@ -3436,7 +3436,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[17]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-009; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-018; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8D); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[17]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-009; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-018; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8D); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-8E
 
@@ -3462,7 +3462,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[18]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-009; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-019; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8E); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[18]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-009; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-019; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8E); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-8F
 
@@ -3472,24 +3472,24 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** superseded · answered 2026-09-09 (01:02 UTC), blueprint-adr-boundary-2026-09-08 decision-020; restated in BPR review 2026-09-09 decision-009; task-level half replaced by WF-8/WF-8B (2026-09-12)
 
-**Answer:** Integration merge is task-level: a bounded separate-context review of the task candidate. Main is whole-Workbench release-level: independently review the exact integration candidate against the last release, disposition drift, verify coherent Blueprint/ADR/Spec/evidence/template state, then release that exact candidate. Superseded in part by WF-8/WF-8B and proposed ADR-000F: the integration gate reviews the assembled Spec branch, not each Task; the main half stands.
+**Answer:** Integration merge is task-level: a bounded separate-context review of the task candidate. Main is whole-Workbench release-level: independently review the exact integration candidate against the last release, disposition drift, verify coherent Blueprint/ADR/Spec/evidence/template state, then release that exact candidate. Superseded in part by WF-8/WF-8B (ADR-000F): the integration gate reviews the assembled Spec branch, not each Task; the main half stands.
 
 **Reason:** Not recorded for the original split. For the change, ADR-000F records that a Task is too small to show a Spec's acceptance, so a task-level gate can pass repeatedly while the capability stays unmet.
 
 **Result:**
 
-- update `RUNBOOK.md (Independent Review Boundaries) and templates/RUNBOOK.md` - Whole-Workbench main-readiness review checks drift and semantic ownership; integration review wording moves to the assembled Spec (S-00P TK-003).
+- update `RUNBOOK.md (Independent Review Boundaries) and templates/RUNBOOK.md` - Whole-Workbench main-readiness review checks drift and semantic ownership; integration review wording names the assembled Spec (S-00P TK-003).
 - update `AGENTS.md (Git Rules) and templates/AGENTS.md` - Integration gate reviews the Spec branch rather than a per-Task candidate (S-00P TK-002).
-- update `workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md` - Accept as the rule fixing the reviewed unit at integration as the Spec branch.
+- update `workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md` - Accepted rule fixing the reviewed unit at integration as the Spec branch.
 - update `BLUEPRINT.md and templates/BLUEPRINT.md` - Describe independent review of the assembled Spec, not a per-Task ceremony.
 
 **Related:** [BPR-8F1](#bpr-8f1), [BPR-8E](#bpr-8e), [WF-8](#wf-8), [WF-8B](#wf-8b), [FND-Q07](#fnd-q07), [WF-12](#wf-12)
 
 **Aliases:** BPR source id 8F; workbench-foundation-rework BPR-8F; blueprint-adr-boundary-2026-09-08 Q8F
 
-**Notes:** Partial supersession: the main-release half still stands. AGENTS.md and RUNBOOK.md still carry task-level integration wording pending S-00P; 2026-09-23 gap triage lists this as 'BPR-8F residual'. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
+**Notes:** Partial supersession: the main-release half still stands. AGENTS.md and RUNBOOK.md integration wording follows the Spec-branch half (S-00P TK-002, TK-003); the 2026-09-23 gap triage grouped this as 'BPR-8F residual'. Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[19]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-009; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-020; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8F); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[19]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-009; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-020; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8F); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-8F1
 
@@ -3515,7 +3515,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Wording and ruling in the 2026-09-09 review were reconstructed retrospectively from the owner's locked 2026-09-08 grilling note (blueprint-adr-boundary-2026-09-08) and the task chat, not asked again live; the owner's original lock is cited in source_refs.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[20]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-009; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-021; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8F1); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[20]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-009; workbench/sessions/notepads/work/blueprint-adr-boundary-2026-09-08.json#decision-021; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-8F1); workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md (Grilling Record Reconciliation)
 
 ### BPR-R1
 
@@ -3540,7 +3540,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Asked live in the 2026-09-09 retrospective review, not reconstructed. Concerns the handoff incident after the 2026-09-08 grilling (task 01a08334).
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[21]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-002; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-010; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R1)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[21]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-002; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-010; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R1)
 
 ### BPR-R2
 
@@ -3565,7 +3565,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Asked live in the 2026-09-09 retrospective review.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[22]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-001; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-011; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R2)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[22]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-001; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-011; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R2)
 
 ### BPR-R3
 
@@ -3582,15 +3582,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/skills/handoff/SKILL.md` - Carry explicit exclusions: for 'create specifications; do not implement' the recipient authors the named specifications only.
-- create `workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md` - Promoted durable record of the locked decisions (with planned S-00B to S-00E), leaving implementation to later Tasks.
+- create `workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md` - Durable record of the locked decisions (with S-00B to S-00E as the staged successors), leaving implementation to later Tasks.
 
 **Related:** [BPR-R1](#bpr-r1), [BPR-R2](#bpr-r2), [BPR-R4](#bpr-r4)
 
 **Aliases:** BPR source id R3; workbench-foundation-rework BPR-R3
 
-**Notes:** Asked live in the 2026-09-09 retrospective review. Finding-004 (read-back at c0ac60a) found the promotion-and-scoping endpoint already reached, with no duplicate change needed.
+**Notes:** Asked live in the 2026-09-09 retrospective review.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[23]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-002; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-012; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-004; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R3)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[23]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-002; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-012; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-004; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R3)
 
 ### BPR-R4
 
@@ -3614,7 +3614,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Asked live in the 2026-09-09 retrospective review. Correction-003's detailed proof checklist (read back note, inspect branch, run diagnostics) was the agent's proposed rule; the owner's lock is the simpler recipient-completion test.
 
-**Provenance:** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[24]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-003; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-003; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-013; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R4)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#current.questions[24]; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#finding-003; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#correction-003; workbench/sessions/notepads/grilling/blueprint-adr-boundary-review-2026-09-09.json#decision-013; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (BPR-R4)
 
 ## FND - Foundation ownership
 
@@ -3633,7 +3633,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `BLUEPRINT.md (Desired Experience And Behavior, Desired Lifecycle)` - States the idea-to-verified-completion ladder with Align, Scope, Plan, Implement, Verify; prototype optional; Blueprint is the Destination, Spec the Journey, Task the Path (S-00P TK-001).
-- update `workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md` - Replace Explore/Prototype/Implement with the six owner phase names and demote Prototype to optional before acceptance (S-00P TK-004).
+- update `workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md` - Names the six owner phases in place of Explore/Prototype/Implement and treats Prototype as optional (S-00P TK-004).
 - update `AGENTS.md, RUNBOOK.md, LEXICON.md (workflow rewrite)` - Controls describe the same six-phase workflow (S-00P TK-002 to TK-004).
 - update `templates/BLUEPRINT.md, templates/AGENTS.md, templates/RUNBOOK.md, templates/LEXICON.md` - Generic mirror of the reworked workflow (S-00P TK-005).
 
@@ -3641,9 +3641,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** original-foundation-audit Q01; RB-workflow-phases
 
-**Notes:** Notepad status is 'approved' (owner-settled, awaiting promotion). decision-016 also said verified Specs and Tasks may be deleted; that thread continues in FND-Q07/FND-Q08. The owner said Task-versus-Ticket renaming was not a priority (later settled by ADR-000H). Board flags the result as narrowed: the Blueprint uses the rung ladder, not the words Scope/Plan/Verify.
+**Notes:** The source notepad records status 'approved' (owner-settled). decision-016 also said verified Specs and Tasks may be deleted; that thread continues in FND-Q07/FND-Q08. The owner said Task-versus-Ticket renaming was not a priority (later settled by ADR-000H). A board note flagged a narrowed reading (the rung ladder instead of the words Scope/Plan/Verify); the destination is the owner's phase names as answered.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-016; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-047; workbench/specs/S-00P-workflow-canon-rework/SPEC.md TK-001
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-016; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-047; workbench/specs/S-00P-workflow-canon-rework/SPEC.md TK-001
 
 ### FND-Q02
 
@@ -3659,7 +3659,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md` - Decision that the Frontier is the active landscape and TASKBOARD renders it; to be accepted or amended by S-00P TK-004.
+- update `workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md` - Accepted decision that the Frontier is the active landscape and TASKBOARD renders it (S-00P TK-004).
 - update `LEXICON.md (Taskboard / Hot projection / Work state rows)` - Taskboard is the Kanban and project-management view that projects Spec and Task state; completed work leaves the board.
 - update `TASKBOARD.md and templates/TASKBOARD.md` - Board shows active Specs and Tasks only, rendered from their owners, and clears when work is verified complete.
 
@@ -3669,7 +3669,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** decision-037 requires promoting the ownership sentence in the FND-Q02A form because as first worded it contradicted LEXICON.md (board owning state). Later E-1 (2026-09-22, workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-003) redirected the board to a six-lane TASKBOARD.json Agile board; that later answer governs board shape.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-021; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-005; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-021; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-005; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037
 
 ### FND-Q02A
 
@@ -3695,7 +3695,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** decision-035 corrects decision-022's 'navigation view' wording. RB-Q2A (decision-052) applies this: the board shows only a derived run signal per Task. E-1 (2026-09-22) later reshaped the board into a six-lane TASKBOARD.json; whether it is generated or hand-written was left unconfirmed there.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-022; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-035; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-036; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-052
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-022; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-035; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-036; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-052
 
 ### FND-Q03
 
@@ -3714,15 +3714,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - update `workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md (What a Task carries in and out; One Task, one context)` - Packet (TASK.md, Spec acceptance lines, cited paths, Contract; optional handoff/notepad) and per-run Receipt; work over one context unit becomes a Spec with Tasks.
 - update `workbench/manifest.json (contextUnit)` - Declares the 200k context unit with provenance as a planning goalpost, never a gate.
 - update `LEXICON.md (Task, Packet, Task receipt, Chat, Director rows) and templates/LEXICON.md` - One Chat works one Task, completes and cleans up, then ends; a director starts the next unblocked Task.
-- update `workbench/skills/carry/SKILL.md` - Carry becomes one Task per Chat or director behaviour rather than a whole Spec in one Chat (TT-Q4 consequence).
+- update `workbench/skills/carry/SKILL.md` - Carry works one Task per Chat or acts as director behaviour, never a whole Spec in one Chat (TT-Q4 consequence).
 
 **Related:** [TT-Q4](#tt-q4), [TT-Q3](#tt-q3), [FND-Q19](#fnd-q19), [FND-Q17e](#fnd-q17e)
 
 **Aliases:** TT-Q4 (overlap)
 
-**Notes:** Audit-origin question; notepad still says open. Agent proposal-009 (Suggested A/B) is not the answer. Triage v2 recovered the answer; TT decision-067 states FND-Q03 closes on the TT-Q4 answer (context ends at Task close plus cleanup).
+**Notes:** Audit-origin question; the source notepad records it as open; the answer recovered by triage v2 and TT decision-067 settles it. Agent proposal-009 (Suggested A/B) is not the answer. TT decision-067 states FND-Q03 closes on the TT-Q4 answer (context ends at Task close plus cleanup).
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[2]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-026; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[2]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-026; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md
 
 ### FND-Q04
 
@@ -3738,13 +3738,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- none `none` - No separate artifact; the core rhythm is the governing principle carried by FND-Q01 and the Blueprint. The Blueprint currently promises a software-project harness.
+- none `none` - No separate artifact; the core rhythm is the governing principle carried by FND-Q01 and the Blueprint.
 
 **Related:** [FND-Q01](#fnd-q01), [FND-Q17f](#fnd-q17f)
 
 **Notes:** Came from the agent-run original-foundation-audit. Agent proposals (proposal-015 software core plus project recipes; report options A/B) and the gap-triage 'software first; backlog the rest' are not owner answers.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-003; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-003; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md
 
 ### FND-Q05
 
@@ -3760,15 +3760,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `BLUEPRINT.md` - Future-state description of the finished Workbench against every workflow rung; no current status (done in S-00P TK-001).
-- none `workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md` - Already defines the Blueprint as the adaptable destination narrative of the finished product.
+- update `BLUEPRINT.md` - Future-state description of the finished Workbench against every workflow rung; no current status (S-00P TK-001).
+- none `workbench/docs/adr/000A-active-adr-decisions-and-destination-blueprints.md` - Defines the Blueprint as the adaptable destination narrative of the finished product.
 - update `templates/BLUEPRINT.md` - Generic destination-only Blueprint shape (S-00P TK-005 if the shape changes).
 
 **Related:** [FND-Q06](#fnd-q06), [FND-Q01](#fnd-q01)
 
-**Notes:** Audit-origin question; notepad still open. The owner's answer predates the question (given 2026-09-08) and was mapped to it by triage v2. Agent report options (five scenario walkthroughs) were never adopted.
+**Notes:** Audit-origin question; the source notepad records it as open; the answer recovered by triage v2 settles it. The owner's answer predates the question (given 2026-09-08) and was mapped to it by triage v2. Agent report options (five scenario walkthroughs) were never adopted.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[4]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md TK-001
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[4]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/specs/S-00P-workflow-canon-rework/SPEC.md TK-001
 
 ### FND-Q06
 
@@ -3784,15 +3784,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- none `workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md` - Already records the eight-section shape with adaptable headings and omission of inapplicable sections.
+- none `workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md` - Records the eight-section shape with adaptable headings and omission of inapplicable sections.
 - none `tools/test-blueprint-contract.mjs` - Requires the exact eight headings only in BLUEPRINT.md and templates/BLUEPRINT.md.
 - none `templates/BLUEPRINT.md` - Tells downstream rooms to adapt headings and omit a genuinely inapplicable section.
 
 **Related:** [FND-Q05](#fnd-q05)
 
-**Notes:** Audit-origin question; notepad still open. The recovered answer is the S-00A text the owner accepted, not a direct reply to this question. Report noted stale Genesis/Adoption Blueprint wording as factual drift (S-00D), not an owner decision.
+**Notes:** Audit-origin question; the source notepad records it as open; the answer recovered by triage v2 settles it. The recovered answer is the S-00A text the owner accepted, not a direct reply to this question. Report noted stale Genesis/Adoption Blueprint wording as factual drift (S-00D), not an owner decision.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[5]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md:76-80
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[5]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md:76-80
 
 ### FND-Q07
 
@@ -3809,7 +3809,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md TK-005, TK-006` - Closed Specs and Tasks are reconciled into durable owners and retired by folder; discard only after verified main, clean reference scan and recoverable Git identity.
-- update `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md` - Drop the FND-Q07/Q08 hold and transient-archive clearing wording; match the WF-8D/8E/8F retirement model (S-00P TK-004).
+- update `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md` - Carries no FND-Q07/Q08 hold or transient-archive clearing; matches the WF-8D/8E/8F retirement model (S-00P TK-004).
 - update `AGENTS.md (Dogfood boundary lifecycle rule) and templates/AGENTS.md` - Stable-declared-path rule retired; lifecycle is folder location, moved only by move-spec/move-task.
 - create `workbench/wiki/ (reconciled capability articles)` - Each retired Spec's current truth lives in a Wiki article per WF-8F/WF-8H.
 
@@ -3817,9 +3817,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** FND-Q07-Q08-archive-lifecycle; FND-Q07-Q08-deletion-gate
 
-**Notes:** Notepad register still reads 'held'; S-00I records that WF decision-079 and decision-080 answered the hold and that the stale register is not a blocker. Agent report option A (keep held, sixth precondition) was not adopted.
+**Notes:** The source notepad register records it as 'held'; the later WF decision-079 and decision-080 answers settle the hold (S-00I records the same). Agent report option A (keep held, sixth precondition) was not adopted.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-017; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-011; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-039; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-016; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md Dependencies And Blockers
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-017; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-011; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-039; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-016; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080; workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md Dependencies And Blockers
 
 ### FND-Q08
 
@@ -3836,14 +3836,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - create `workbench/wiki/ (one reconciled article per retired Spec/feature)` - The Wiki carries each retired capability's current explanation and is the landing route after retirement (WF-8F/WF-8H).
-- update `LEXICON.md Context Map (Spec catalog route) and templates/LEXICON.md` - Retire 'includes completed history'; route current-contract questions to Blueprint, ADRs, Wiki, source/tests, README and RUNBOOK.
+- update `LEXICON.md Context Map (Spec catalog route) and templates/LEXICON.md` - Does not describe the Spec catalog as including completed history; routes current-contract questions to Blueprint, ADRs, Wiki, source/tests, README and RUNBOOK.
 - update `workbench/specs/S-00I-folder-lifecycle-for-records/SPEC.md TK-005` - Reconcile-and-retire step moves a closed Spec's surviving claims into these owners before retirement.
 
 **Related:** [FND-Q07](#fnd-q07), [WF-8F](#wf-8f), [WF-8H](#wf-8h), S-00Q
 
-**Notes:** correction-011 reversed decision-018's 'no replacement archive' into a transient archive; WF-8D/8F later replaced that with retire-by-folder and Wiki reconciliation. Notepad still reads 'held'. Agent proposal-016 (cold-start test) and report option A (OWNERSHIP.json routing, no capability record) were not adopted.
+**Notes:** correction-011 reversed decision-018's 'no replacement archive' into a transient archive; WF-8D/8F later replaced that with retire-by-folder and Wiki reconciliation. The source notepad records it as 'held'; the WF-8F answer settles it. Agent proposal-016 (cold-start test) and report option A (OWNERSHIP.json routing, no capability record) were not adopted.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-018; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-011; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-039; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-018; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-011; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-039; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080
 
 ### FND-Q09
 
@@ -3860,13 +3860,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `LEXICON.md (header and Task Routing / Context Map) and templates/LEXICON.md` - Describes the Lexicon as dictionary, Context Map, shared-understanding record and Navlink hub, holding only settled meaning.
-- update `lexicon skill (personal copy ~/.claude/skills/lexicon/SKILL.md; not in workbench/skills)` - Remove the instruction to record unsettled questions beside settled terms.
+- update `owner's personal installed lexicon skill (outside the repo)` - Carries no instruction to record unsettled questions beside settled terms.
 
 **Related:** [FND-Q02A](#fnd-q02a), [FND-Q13](#fnd-q13)
 
-**Notes:** The skill that conflicts lives outside the repository; the grilling notepad owns open questions.
+**Notes:** The lexicon skill this answer governs is the owner's personal installed copy, outside the repository; the grilling notepad owns open questions.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-019
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-019
 
 ### FND-Q10
 
@@ -3888,7 +3888,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Audit-origin question. Context: five legacy records were unreadable to note discovery and blocked identifier allocation. Report option A (migrate or retire, never ignore) and gap-triage 'backlog; S-00Q lane' are agent suggestions, not owner answers. A bounded search of the owner's own transcript messages on 2026-09-24 found no answer. The 2026-09-23 triage v2 classed it as agent-carryable, not an owner decision.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[9]; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q10
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[9]; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q10
 
 ### FND-Q11
 
@@ -3910,7 +3910,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Audit-origin question; 'these older active records' means pre-ADR-000A ADRs such as ADR-0054, which partially supersedes ADR-0028. Report option A (successor to ADR-0028 in S-00I TK-002) is an agent suggestion. A bounded search of the owner's own transcript messages on 2026-09-24 found no answer. The 2026-09-23 triage v2 classed it as agent-carryable, not an owner decision.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[10]; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q11
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[10]; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q11
 
 ### FND-Q12
 
@@ -3932,9 +3932,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Related:** [FND-Q04](#fnd-q04), [FND-Q01](#fnd-q01), [BPR-7A](#bpr-7a)
 
-**Notes:** Audit-origin question; notepad still open. The owner quotes were release instructions mapped to this question by triage v2, not a direct reply. Agent proposal-012 (named core skill set) and gap-triage 'the 21-skill lane is the answer' are not owner answers.
+**Notes:** Audit-origin question; the source notepad records it as open; the answer recovered by triage v2 settles it. The owner quotes were release instructions mapped to this question by triage v2, not a direct reply. Agent proposal-012 (named core skill set) and gap-triage 'the 21-skill lane is the answer' are not owner answers.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[11]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/specs/S-00E-fresh-template-project-proof/SPEC.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[11]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/specs/S-00E-fresh-template-project-proof/SPEC.md
 
 ### FND-Q13
 
@@ -3951,14 +3951,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/skills/grilling/SKILL.md and workbench/skills/promote/SKILL.md` - Grilling never writes Canon during the interview; promotion runs as scoped Task or Spec work.
-- update `skills-pending/domain-modeling/SKILL.md ('Update CONTEXT.md inline')` - Drop inline Canon writes in favour of Task-based promotion if the skill enters core.
+- update `skills-pending/domain-modeling/SKILL.md ('Update CONTEXT.md inline')` - If the skill enters core, it promotes through Task-based work and makes no inline Canon writes.
 - update `LEXICON.md Task row and workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md` - Allow a spec-less Task for small promotion work (E-3 generalizes this).
 
 **Related:** [FND-Q21C](#fnd-q21c), [E-3](#e-3), [TT-Q12](#tt-q12), [FND-Q09](#fnd-q09)
 
-**Notes:** The spec-less Task implied here was never implemented because ADR-000H placed Tasks under Specs; E-3 (decision-005) later made Tasks-without-Spec an owner answer. FND-Q21C confirmed that editing a Contract artifact is Task execution, not a new decision tier.
+**Notes:** ADR-000H placed Tasks under Specs, which conflicted with the spec-less Task implied here; E-3 (decision-005) later made Tasks-without-Spec an owner answer. FND-Q21C confirmed that editing a Contract artifact is Task execution, not a new decision tier.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-020; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-025
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-020; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-025
 
 ### FND-Q14
 
@@ -3974,8 +3974,8 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md` - Records the two gates; accepted or amended by S-00P TK-004.
-- update `workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md` - Builds the Spec QA gate at the Spec branch into integration and requires recorded owner Human QA approval before closure.
+- update `workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md` - Records the two gates as an accepted decision (S-00P TK-004).
+- update `workbench/specs/S-00J-spec-qa-gate-at-integration/SPEC.md` - Owns the Spec QA gate at the Spec branch into integration and requires recorded owner Human QA approval before closure.
 - update `AGENTS.md (Git Rules, Human QA) and templates/AGENTS.md` - Name the Spec QA gate and the integration-to-main Human QA gate (S-00P TK-002, TK-005).
 - update `BLUEPRINT.md (Desired Lifecycle)` - Describes Spec review into integration and owner Human QA before main.
 
@@ -3985,7 +3985,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** decision-032 supersedes decision-024's release-batch reading. The 'what should they be shown' half was not answered here; WF-8 and agent proposal-020 (Human QA lane plus demo artifact) cover it. Notepad status 'approved'.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-024; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-032; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-036
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-024; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-032; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-036
 
 ### FND-Q15
 
@@ -4007,9 +4007,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** RB-Q3 (overlap)
 
-**Notes:** The 2026-09-12 quotes answered RB-Q3 (budget/size grading); triage v2 applied them to FND-Q15. Notepad still open. Agent proposal-014 counters were not adopted.
+**Notes:** The 2026-09-12 quotes answered RB-Q3 (budget/size grading); triage v2 applied them to FND-Q15. The source notepad records it as open; the triage v2 mapping of the 2026-09-12 answer settles it. Agent proposal-014 counters were not adopted.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-004; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-004; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
 
 ### FND-Q16
 
@@ -4031,7 +4031,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Audit-origin question. Report option A (retire S-014/S-022 as superseded, keep S-050/S-052) and gap-triage remark are agent suggestions. A bounded search of the owner's own transcript messages on 2026-09-24 found no answer. The 2026-09-23 triage v2 classed it as agent-carryable, not an owner decision.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[15]; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q16
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[15]; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q16
 
 ### FND-Q17a
 
@@ -4053,7 +4053,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Audit-origin residual-sketch question from the original operating-principles reference. Report option A (close as explanatory, Wiki crosswalk) and gap-triage 'backlog as one group' are agent suggestions. A bounded search of the owner's own transcript messages on 2026-09-24 found no answer. The 2026-09-23 triage v2 classed it as agent-carryable, not an owner decision.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[16]; workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md section 4.3; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q17a
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json current.questions[16]; workbench/feedback/REPORT-original-foundation-audit-2026-09-10.md section 4.3; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md FND-Q17a
 
 ### FND-Q17b
 
@@ -4070,14 +4070,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `LEXICON.md (Map, Fog, Frontier rows) and templates/LEXICON.md` - Define Map, Fog and Frontier as shared vocabulary; no new structural artifact.
-- update `workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md` - Replace the superseded Journey/Path Frontier wording with the Map/Fog/Frontier model and the E-1 six-lane board.
+- update `workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md` - States the Map/Fog/Frontier model and the E-1 six-lane board, not the superseded Journey/Path Frontier wording.
 - none `TASKBOARD.md` - Projects the Frontier across Specs and owns no state.
 
 **Related:** [FND-Q02](#fnd-q02), [FND-Q02A](#fnd-q02a), [E-1](#e-1), [TT-Q1](#tt-q1)
 
-**Notes:** The 2026-09-19 refinement replaces decision-023's Journey/Path wording. Branch claude/adr-acceptance-and-lane-model rewrote ADR-000E as a six-lane board decision, unmerged; integration's LEXICON.md has no Map/Fog/Frontier rows yet.
+**Notes:** The 2026-09-19 refinement replaces decision-023's Journey/Path wording.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-023; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037; workbench/sessions/notepads/work/grilling-artifact-progress-audit-2026-09-19.json#decision-002
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-023; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037; workbench/sessions/notepads/work/grilling-artifact-progress-audit-2026-09-19.json#decision-002
 
 ### FND-Q17c
 
@@ -4085,7 +4085,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Question:** Does one objective span multiple capabilities without the owner rebuilding its state?
 
-**Status:** answered-in-chat · answered 2026-09-16 22:06 chat (triage v2; Claude session e6998d8a line 72)
+**Status:** answered-in-chat · answered 2026-09-16 22:06 chat (triage v2; Claude session e6998d8a line 73)
 
 **Answer:** Specs nest and block each other, the same way Tasks do: "SPECs can nest and block each other, same as tasks. we are changing that." In the same message he said a Task can be created and merged into integration without a Spec branch.
 
@@ -4094,15 +4094,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `LEXICON.md (Spec row) and templates/LEXICON.md` - A Spec may nest under and block other Specs, as Tasks do.
-- update `workbench/tools/spec-workbench.mjs (Blockers) and the planned board Spec (TASKBOARD.json dependsOn/unblocks, blocked-obligations decision-011)` - Spec-to-Spec blocking is recorded on the Spec record and projected on the board so the chain is visible without the owner rebuilding it.
+- update `workbench/tools/spec-workbench.mjs (Blockers) and the board Spec (TASKBOARD.json dependsOn/unblocks, blocked-obligations decision-011)` - Spec-to-Spec blocking is recorded on the Spec record and projected on the board so the chain is visible without the owner rebuilding it.
 
 **Related:** [FND-Q19](#fnd-q19), [FND-Q17d](#fnd-q17d), [FND-Q17e](#fnd-q17e), [TT-Q3](#tt-q3), [WF-12](#wf-12)
 
 **Aliases:** original-foundation-audit Q17c; REPORT-foundation-question-review FND-Q17c (residual sketches)
 
-**Notes:** Both source notepads still show status open; the answer was recovered from the owner chat by triage v2. The 2026-09-11 review proposed a "Journey group" of Specs plus one notepad (agent proposal, not adopted). TT decision-067 (2026-09-23) says a director/dispatcher monitors the Spec and starts each unblocked Task, which also informs this question.
+**Notes:** Both source notepads record it as open; the answer recovered from the owner chat by triage v2 settles it. The 2026-09-11 review proposed a "Journey group" of Specs plus one notepad (agent proposal, not adopted). TT decision-067 (2026-09-23) says a director/dispatcher monitors the Spec and starts each unblocked Task, which also informs this question.
 
-**Provenance:** workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:33; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[18]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[18]; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:353
+**Provenance (local records):** workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:33; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[18]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[18]; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:353
 
 ### FND-Q17d
 
@@ -4126,7 +4126,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The 2026-09-11 review (proposal-002, agent) called it effectively closed by FND-Q02A and TT-Q5 and needing only a restatus; the owner never adopted that. Related owner context: blocked-obligations correction-001 (2026-09-22) says a director is whoever tells the agent what to do and becomes a stance later; TT decision-067 describes the dispatcher/director. Question wording names Q02/Q03 of the original audit; the "Spec managers and Captain" gloss comes from the review report.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[19]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[19]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-002; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:362
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[19]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[19]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-002; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:362
 
 ### FND-Q17e
 
@@ -4134,7 +4134,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Question:** Is a portable unattended runner actually required, or should core describe a bounded host capability?
 
-**Status:** deferred · answered 2026-09-16 20:13 chat (triage v2; Claude session 16e531bc line 166)
+**Status:** deferred · answered 2026-09-16 20:13 chat (triage v2; Claude session 16e531bc line 167)
 
 **Answer:** A coordinator comes later; first prove single-Task execution: "There should be a coordinator, but that will be built in a little bit. Right now let's just prove that we can execute a task every single time consistently." Backlog after v4.
 
@@ -4149,9 +4149,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** original-foundation-audit Q17e; REPORT-foundation-question-review FND-Q17e (residual sketches)
 
-**Notes:** Source notepads still show open; proposal-010 (agent, options A/B) was never chosen explicitly. The owner message began "Its more B"; which question and option list that B referred to in that chat is not verified, so it is not recorded as a choice. TT decision-067 (2026-09-23) later names a dispatcher/director that starts the next unblocked Task.
+**Notes:** The source notepads record it as open and the recovered owner answer settles it; proposal-010 (agent, options A/B) was never chosen explicitly. The owner message began "Its more B"; which question and option list that B referred to in that chat is not verified, so it is not recorded as a choice. TT decision-067 (2026-09-23) later names a dispatcher/director that starts the next unblocked Task.
 
-**Provenance:** workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:34; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:64; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-010; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-010; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:371
+**Provenance (local records):** workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:34; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:64; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-010; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-010; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:371
 
 ### FND-Q17f
 
@@ -4159,7 +4159,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Question:** Are there recurring approved data-retrieval or maintenance actions the present contract cannot express?
 
-**Status:** deferred
+**Status:** open
 
 **Answer:** Open - no owner answer. Sorted "backlog after v4" by the 2026-09-23 triage v2 ("recurring maintenance; no need yet").
 
@@ -4173,9 +4173,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** original-foundation-audit Q17f; REPORT-foundation-question-review FND-Q17f (residual sketches)
 
-**Notes:** The backlog placement is the triage agent's sort, not an owner quote. The review report suggestion (recurring Task form in S-00H) is an agent proposal that was not adopted.
+**Notes:** The 2026-09-23 triage v2 sorted it as backlog after v4 ('recurring maintenance; no need yet'); that is the triage agent's sort, not an owner quote. The review report suggestion (recurring Task form in S-00H) is an agent proposal that was not adopted.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[21]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[21]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:64-65; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:382
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[21]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[21]; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:64-65; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:382
 
 ### FND-Q17g
 
@@ -4199,7 +4199,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The 2026-09-11 review (proposal-002, agent) said it was effectively closed by existing routes and suggested disposing each sketch name and closing; the owner never adopted that. Triage v2 sorted it agent-carryable, with no owner decision needed.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[22]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[22]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-002; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:393
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[22]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions[22]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-002; workbench/feedback/REPORT-foundation-question-review-2026-09-11.md:393
 
 ### FND-Q18
 
@@ -4221,7 +4221,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** original-foundation-audit Q18
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-025; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-025
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-025; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-025
 
 ### FND-Q19
 
@@ -4248,7 +4248,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Owner caveat on decision-046: "If you meant as something entirely different than our current task.md, then I think you figured out what should be our ticket definition" (resolved by RB-Q2: no level beneath Task). Later answers refine it: Tasks may exist without a Spec (E-3/E-9, blocked-obligations correction-004; FND-Q13 decision-020); on 2026-09-16 the owner said a Task can merge to integration without a Spec branch; S-00O exemption 2 defers the Spec-branch topology (S-00P WF-7). TT-Q2 reads a standalone TASK.md as already approved through this answer.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-026; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-006; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-036; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-046; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-042; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-026; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-006; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-036; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-046; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-042; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004
 
 ### FND-Q20
 
@@ -4258,7 +4258,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** locked · answered 2026-09-12, workbench-foundation-rework decision-060; reconfirmed 2026-09-22, blocked-obligations decision-002
 
-**Answer:** Nine relations: owns, inherits, refines, references, summarizes, provides evidence for, canonicalizes, supersedes, blocks. Each is stored once, directional, with no inverse vocabulary (the query renders reverse labels), and each carries an instance_edge route to where instances are recorded. Inherits and refines stay separate. On 2026-09-22 he confirmed it stays locked: the decision was never blocked, only S-00G delivery is, and inherits-versus-refines needs a durable explanation.
+**Answer:** Nine relations: owns, inherits, refines, references, summarizes, provides evidence for, canonicalizes, supersedes, blocks. Each is stored once, directional, with no inverse vocabulary (the query renders reverse labels), and each carries an instance_edge route to where instances are recorded. Inherits and refines stay separate. On 2026-09-22 he confirmed it stays locked: the decision was never blocked, only S-00G delivery was, and inherits-versus-refines needs a durable explanation.
 
 **Reason:** A hand-kept inverse list is a derived view maintained by hand, which the maintain-once-derive-views rule forbids. Inherits and refines answer different questions: refines narrows a destination down the delivery chain; inherits binds a constraint the child may never weaken, which carries the upward-discovery rule.
 
@@ -4274,7 +4274,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** decision-060 settles a reviewer counter-proposal (proposal-021) in part: it took the no-inverse substitution, rejected the collapse of inherits and refines into derives_from, and widened the type-level point. The board wording adds "Owner says the proposed vocabulary looks mostly complete". The 2026-09-22 revisit asked "Should FND-Q20 remain locked as recorded?". FND-Q24 decision-066 later notes that primary ownership versus supporting roles is not yet expressible in these nine.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-060; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-021; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-002; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (FND-Q20)
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-060; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-021; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-002; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (FND-Q20)
 
 ### FND-Q21
 
@@ -4290,16 +4290,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json` - The map carries the 28 responsibility rows as allocated by FND-Q21A-D; S-00G stops calling FND-Q21 open.
-- update `LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md` - The draft allocation leaves the Lexicon; the Lexicon routes ownership questions to OWNERSHIP.json.
+- create `workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json` - The map carries the 28 responsibility rows as allocated by FND-Q21A-D; S-00G does not describe FND-Q21 as open.
+- update `LEXICON.md (Artifact Ownership Schema) and templates/LEXICON.md` - The Lexicon carries no draft allocation and routes ownership questions to OWNERSHIP.json.
 
 **Related:** [FND-Q21A](#fnd-q21a), [FND-Q21B](#fnd-q21b), [FND-Q21C](#fnd-q21c), [FND-Q21D](#fnd-q21d), [FND-Q20](#fnd-q20), [TT-Q12](#tt-q12)
 
 **Aliases:** original-foundation-audit Q21
 
-**Notes:** The umbrella question has no decision entry of its own and still reads open in both FND notepads and on the board; gap triage records it locked 2026-09-22 via the sub-questions. The count moved 27 -> 28 (decision-026 supersedes decision-063's "no 28th row"). decision-062 says the first clause of TT-Q12 closes on FND-Q21 as a whole.
+**Notes:** The umbrella question has no decision entry of its own; both FND notepads and the board record it as open, and the 2026-09-22 sub-question answers settle it (gap triage records it locked via the sub-questions). The count moved 27 -> 28 (decision-026 supersedes decision-063's "no 28th row"). decision-062 says the first clause of TT-Q12 closes on FND-Q21 as a whole.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[27]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-017; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#directive-009; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-062; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-026; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#current.questions[27]; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-017; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#directive-009; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-062; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-026; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
 
 ### FND-Q21A
 
@@ -4315,16 +4315,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json` - Exhaustive type-level map answered by query, including rows for OWNERSHIP.json and TASKBOARD.json; S-00G no longer says the allocation is open.
+- create `workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json` - Exhaustive type-level map answered by query, including rows for OWNERSHIP.json and TASKBOARD.json; S-00G does not describe the allocation as open.
 - update `workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md` - Accepted: the ownership map is an exhaustive type-level framework answered by structured query.
 
 **Related:** [FND-Q21](#fnd-q21), [FND-Q22A](#fnd-q22a), [FND-Q23A](#fnd-q23a), [FND-Q20](#fnd-q20)
 
 **Aliases:** original-foundation-audit Q21A; blocked-obligations-review FND-Q21A (2026-09-22 revisit)
 
-**Notes:** directive-007 records the owner rejecting a reviewer proposal to reduce to six record types. The 2026-09-22 revisit asked whether it should "remain approved as comprehensive coverage"; delivery stays gated on ADR-000B/C/D acceptance (decision vs delivery split).
+**Notes:** directive-007 records the owner rejecting a reviewer proposal to reduce to six record types. The 2026-09-22 revisit asked whether it should "remain approved as comprehensive coverage"; the owner separated the decision from its delivery, which depends on ADR-000B/C/D acceptance.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-008; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-030; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-031; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-007; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-018
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-008; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-030; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-031; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-007; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-018
 
 ### FND-Q21B
 
@@ -4341,7 +4341,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - create `workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json` - Six scoped rows with per-scope owners, declared gaps with routes, and the Taskboard as representation owner with a summarizes relation.
-- update `LEXICON.md Boundaries wording and templates/LEXICON.md` - No longer reads as if a Spec could narrow a safety boundary.
+- update `LEXICON.md Boundaries wording and templates/LEXICON.md` - Does not read as if a Spec could narrow a safety boundary.
 
 **Related:** [FND-Q21](#fnd-q21), [FND-Q21D](#fnd-q21d), [FND-Q20](#fnd-q20), [FND-Q02A](#fnd-q02a), [E-1](#e-1)
 
@@ -4349,7 +4349,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** History: decision-061 said project-scope Work state = none (the board is the view, not the author); correction-007 (2026-09-22) moved it to tentative when the owner pushed back; decision-019 settled Option B, keeping "none" only for a project-wide author of state values. decision-061 corrected the reviewer's inverse count (two and four).
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-061; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-022; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-007; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-019
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-061; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-022; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-007; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-019
 
 ### FND-Q21C
 
@@ -4373,9 +4373,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** blocked-obligations-review FND-Q21C (2026-09-22 revisit)
 
-**Notes:** decision-062 rejected the reviewer's "Task records the choice in its Receipt" clause and withdrew the claim that this closes TT-Q12: its first clause closes on FND-Q21 as a whole; its evidence-threshold clause stays open. S-00H is now retired, so the TASK.md body-section home needs a current owner.
+**Notes:** decision-062 rejected the reviewer's "Task records the choice in its Receipt" clause and withdrew the claim that this closes TT-Q12: its first clause closes on FND-Q21 as a whole; its evidence-threshold clause stays open. The TASK.md body-section shape belongs to the S-00H successor.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-062; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-023; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-025
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-062; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-023; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-025
 
 ### FND-Q21D
 
@@ -4393,7 +4393,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - create `workbench/specs/S-00G-ownership-map-root-control/SPEC.md and OWNERSHIP.json` - 28 rows: 21 single-owner, 6 scoped, 1 representation, with distinct question strings and the ordered Navigation pair.
 - update `LEXICON.md Context Map and templates/LEXICON.md` - The Lexicon Context Map is the first route and points to OWNERSHIP.json.
-- create `sitrep core skill (planned board Spec, blocked-obligations decision-015)` - sitrep is the read-out owner of the representation row.
+- create `sitrep core skill (board Spec, blocked-obligations decision-015)` - sitrep is the read-out owner of the representation row.
 
 **Related:** [FND-Q21](#fnd-q21), [FND-Q21B](#fnd-q21b), [FND-Q21C](#fnd-q21c), [FND-Q02A](#fnd-q02a), [E-10](#e-10)
 
@@ -4401,7 +4401,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** decision-063 (2026-09-13) said "no 28th row; the inventory stays fixed at 27". correction-008 (2026-09-23 00:57) said not to present 28 as locked; decision-026 (01:09) then locked 28, superseding both. proposal-024 records that the question was asked on 2026-09-12 and answered on 2026-09-13.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-063; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-024; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-008; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-026
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-063; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-024; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-008; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-026
 
 ### FND-Q22
 
@@ -4428,7 +4428,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** decision-027 (2026-09-11) first put the ownership schema in the Contract; decision-033 removed it. Vocabulary was consolidated on 2026-09-22 (blocked decision-027): OWNERSHIP.json is a routing artifact, not a Contract carrier or root control. The root-file count (eighth file) follows ADR-000B. The gap triage cites "owner-authored ADRs are accepted"; the transcript audit (F8) labels that blanket rule an agent interpretation.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-027; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-033; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-044; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-006; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-021; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-027; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-033; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-044; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-006; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-021; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027
 
 ### FND-Q22A
 
@@ -4453,7 +4453,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** correction-007 changed Blueprint -> Spec -> Taskboard to Blueprint -> Spec -> Task and said not to infer a Taskboard relationship from this answer; the 2026-09-22 answers later added the Taskboard as a summarizing projection. decision-028's "four governing artifacts" Contract is superseded by FND-Q22 (three carriers) and the 2026-09-22 vocabulary (Core = Contract + routing artifacts).
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-028; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-029; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-007; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-024
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-028; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-029; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-007; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-024
 
 ### FND-Q23
 
@@ -4469,9 +4469,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-002, TK-004) and OWNERSHIP.json` - No lifecycle or status field; red tests for the three guards (identifier scan within values, not anchored); governance-core allow-list entry for OWNERSHIP.json; stale "in-record status required" and "FND-Q23 open" text removed.
+- update `workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-002, TK-004) and OWNERSHIP.json` - No lifecycle or status field; tests for the three guards (identifier scan within values, not anchored); governance-core allow-list entry for OWNERSHIP.json; no "in-record status required" or "FND-Q23 open" text.
 - update `workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md` - States OWNERSHIP.json rows carry no lifecycle and ADR-000I does not apply to it.
-- update `workbench/tools/adr.mjs and workbench/docs/adr/REGISTER.md` - REGISTER header shows a computed count of proposed records with a when-to-care hint; adr.mjs gains list --status (decision-064).
+- update `workbench/tools/adr.mjs and workbench/docs/adr/REGISTER.md` - REGISTER header shows a computed count of proposed records with a when-to-care hint; adr.mjs offers list --status (decision-064).
 - update `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md` - Lifecycle by folder location for ADRs, Specs, Tasks: archive permanent, retired transient (decisions 040-041).
 
 **Related:** [FND-Q23A](#fnd-q23a), [FND-Q20](#fnd-q20), [FND-Q21C](#fnd-q21c), [FND-Q22A](#fnd-q22a), [WF-8F](#wf-8f)
@@ -4480,7 +4480,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Asked as one bundle on 2026-09-15, withdrawn as put (correction-015: "that is a lot of questions in one"), deep-dived in a separate chat and returned. correction-017 fixed decision-065's "no tool change" clause (one allow-list entry in tools/test-governance-core.mjs); finding-030 fixed guard 1 to scan within values. Earlier folder-lifecycle decisions 040/041 were recorded under this ID; the reviewer objection (finding-019) was noted as "valid, I will take it into consideration".
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-065; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-064; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-025; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-030; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-017; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-040; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-041; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-011; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-009
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-065; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-064; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-025; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-030; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-017; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-040; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-041; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-011; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-009
 
 ### FND-Q23A
 
@@ -4499,7 +4499,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - create `OWNERSHIP.json (repo root) and templates/OWNERSHIP.json` - The ownership map exists at root as a routing artifact, outside the Contract.
 - update `workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md` - Accepted: eight root files; Contract membership separate from root placement; file list names TASKBOARD.json per E-1.
 - retire `workbench/docs/adr/0013-seven-file-workbench-contract.md` - Archived as superseded; its seven-file, no-eighth-control rule no longer holds.
-- update `workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md` - Title, catalog description and outcome drop "root control".
+- update `workbench/specs/S-00G-ownership-map-root-control/SPEC.md and workbench/specs/CATALOG.md` - Title, catalog description and outcome do not call it a "root control".
 - update `Root-surface consumers: workbench/tools/workbench-layout.mjs, tools/control-fidelity.mjs, their tests, RUNBOOK.md, templates/ADOPTION.md` - They know about the eighth root file.
 
 **Related:** [FND-Q22](#fnd-q22), [FND-Q22A](#fnd-q22a), [FND-Q21A](#fnd-q21a), [FND-Q23](#fnd-q23), [E-1](#e-1)
@@ -4508,7 +4508,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Two reversals: correction-009 (2026-09-11) said the Lexicon is the map and no separate document; decision-034 reversed it; correction-012 said separate but not a root control; correction-013 made it the eighth root control; 2026-09-22 renamed it a routing artifact, not a root control. The board question string was stale (finding-027).
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-009; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-034; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-012; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-013; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-038; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-014; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-009; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-034; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-012; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-013; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-038; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-014; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
 
 ### FND-Q24
 
@@ -4525,8 +4525,8 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `LEXICON.md (Ownership origin model row) and templates/LEXICON.md` - The term, the two origins and the retired "portability model" name are defined.
-- update `workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-003, TK-004) and OWNERSHIP.json` - Rows classified by origin and the three classifications; primary vs supporting roles expressible; a row-keyed JSON comparator for upgrades; S-00G stops calling FND-Q24 open.
-- update `workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md` - No longer carries FND-Q24 as open.
+- update `workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-003, TK-004) and OWNERSHIP.json` - Rows classified by origin and the three classifications; primary vs supporting roles expressible; a row-keyed JSON comparator for upgrades; S-00G does not describe FND-Q24 as open.
+- update `workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md` - Does not carry FND-Q24 as open.
 
 **Related:** [FND-Q24B](#fnd-q24b), [FND-Q20](#fnd-q20), [PW-1](#pw-1), [PW-2](#pw-2), [FND-Q21D](#fnd-q21d)
 
@@ -4534,7 +4534,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The owner rejected the proposal-019 definition of core (11 classes x 27 responsibilities) and demoted the presence and type tests from deciders to facts. His success criterion moved to the Portable Workbench term and gained "cleaning up after itself" (PW decision-001). The divergence disposition needs its own closed set; ADR-000K dispositions do not fit. The field shape is FND-Q24B.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-066; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-019; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-033; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-010; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-066; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-019; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-033; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-010; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001
 
 ### FND-Q24B
 
@@ -4550,7 +4550,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- none `workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-004)` - Owns the answer; to be decided when S-00G is built, with an agent proposal first.
+- none `workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-004)` - Owns the answer, decided within S-00G with an agent proposal first.
 
 **Related:** [FND-Q24](#fnd-q24), [FND-Q23](#fnd-q23), [PW-2](#pw-2)
 
@@ -4558,7 +4558,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The 2026-09-22 revisit worded it: what field shape in OWNERSHIP.json classifies a project-vs-upstream row difference without a status-shaped field? Asked 2026-09-15 with proposal-026 (two authored facts: upstream strength, project intent; conflict computed) and an unanswered sub-fork (is an undeclared difference a conflict or a reportable finding?). The owner paused, then on 2026-09-15 said not to resume it automatically (directive-012). Handed off 2026-09-22 for a deep-dive.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-026; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (FND-Q24B); workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-002; workbench/sessions/handoffs/fnd-q24b-divergence-disposition-shape-2026-09-22.md; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-026; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (FND-Q24B); workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-002; workbench/sessions/handoffs/fnd-q24b-divergence-disposition-shape-2026-09-22.md; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
 
 ## RB - Foundation rework
 
@@ -4584,9 +4584,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** from-scratch review suggestion (proposal-003)
 
-**Notes:** The open remainder became RB-Q1A. RB-Q2 and RB-Q4 later extended the receipt (append-only per-run rows, upstream distance). Promoted into ADR-000H on 2026-09-12 (decision-059).
+**Notes:** The open remainder became RB-Q1A. RB-Q2 and RB-Q4 later extended the receipt (append-only per-run rows, upstream distance). decision-059 (2026-09-12) directed its promotion into ADR-000H.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-003; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-049; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-003; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-049; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
 
 ### RB-Q1A
 
@@ -4598,7 +4598,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Answer:** Suggested A with one extension: keep the incumbent name Packet and define it in LEXICON.md; Ticket stays retired and points to Task. Required members: TASK, the Spec acceptance lines it satisfies, the cited source and test paths, the Contract. Optional members, in his words "optional handoff or notepad": a Scoped handoff and the objective's local notepad when they exist.
 
-**Reason:** Not recorded as an owner reason. Recorded context (finding-020): Packet is already the tool-backed term, and reusing Ticket would give one word two meanings, which the Lexicon forbids.
+**Reason:** Not recorded as an owner reason. Recorded context (finding-020, 2026-09-12): Packet was then the tool-backed term, and reusing Ticket would give one word two meanings, which the Lexicon forbids.
 
 **Result:**
 
@@ -4607,9 +4607,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Related:** [RB-Q1](#rb-q1), [TT-Q9](#tt-q9), [FND-Q03](#fnd-q03), [FND-Q24](#fnd-q24)
 
-**Notes:** Two reviewer constraints (optional members never instruct or prove; notepads and handoffs are untracked, so a Task must run from required members alone) were carried as drafting constraints; the owner did not rule on them separately. The Lexicon Packet row now states both.
+**Notes:** Two reviewer constraints (optional members never instruct or prove; notepads and handoffs are untracked, so a Task must run from required members alone) were carried as drafting constraints; the owner did not rule on them separately. The Lexicon Packet row states both (see result).
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-050; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-020; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-050; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-020; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
 
 ### RB-Q2
 
@@ -4634,7 +4634,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Resolves the owner caveat on decision-046 (FND-Q19) about a possible "ticket definition" level. The 250k figure was superseded by 200k in RB-Q2B. TT decision-067 (2026-09-23) later adds one Task per Chat.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-004; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-051; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-046; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-035
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-004; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-051; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-046; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-035
 
 ### RB-Q2A
 
@@ -4655,9 +4655,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Related:** [RB-Q2](#rb-q2), [RB-Q1](#rb-q1), [FND-Q02A](#fnd-q02a), [E-1](#e-1)
 
-**Notes:** The board is being replaced by a generated TASKBOARD.json (E-1, 2026-09-22); the boundary carries over.
+**Notes:** E-1 (2026-09-22) later redirected the board to TASKBOARD.json; the boundary carries over.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-052; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-052; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
 
 ### RB-Q2B
 
@@ -4681,7 +4681,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** decision-053 first kept a number on Suggested A terms; decision-054 settled on B at 200k after the reviewer noted 250k is the ceiling while ~200k is where quality degrades. Triage v2 cites this as the ~200k "goalpost, not a gate" behind FND-Q03/TT-Q4.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-053; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-054; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:21
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-053; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-054; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:21
 
 ### RB-Q3
 
@@ -4705,7 +4705,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Not promoted by decision (decision-059); finding-021 (always-read surface about 8,104 words) stays an unowned observation in this repo. directive-006 (FND-Q22) called shrinking the always-read surface accepted direction, "not yet a budget".
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-055; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-056; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-021; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:36
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-055; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-056; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-021; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:36
 
 ### RB-Q3A
 
@@ -4727,7 +4727,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** finding-022 recorded two conflicts (presence-rubric gaming; AGENTS.md ban on turning structural improvement into an agent-outcome claim) as inputs for the audit workbench, not obligations here.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-056; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-022; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-056; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-022; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059
 
 ### RB-Q4
 
@@ -4745,16 +4745,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - update `workbench/docs/adr/000J-completion-claims-are-checked-against-repository-state.md` - Accepted record of the close gate and diagnostics.
 - update `workbench/specs/S-00M-completion-claims-against-repository-state/SPEC.md` - Owns the build: close refusal, git-state diagnostics, receipt upstream distance.
-- update `workbench/tools/diagnostics.mjs and workbench/tools/spec-workbench.mjs` - New git-scope attention findings; close checks repository state.
+- update `workbench/tools/diagnostics.mjs and workbench/tools/spec-workbench.mjs` - Git-scope attention findings; close checks repository state.
 - update `AGENTS.md, RUNBOOK.md and templates/` - Carry the completion-claim rule (ADR-000J canonicalized_in).
 
 **Related:** [RB-Q1](#rb-q1), [RB-Q2](#rb-q2), [RB-Q5](#rb-q5), [RB-Q6](#rb-q6)
 
 **Aliases:** from-scratch review suggestion (proposal-006)
 
-**Notes:** Promoted as proposed ADR-000J on 2026-09-12; ADR-000J is now in the active roster and S-00M is planned.
+**Notes:** decision-059 (2026-09-12) promoted it as ADR-000J; S-00M owns delivery.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-006; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-023; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-057; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-006; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-023; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-057; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059; workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
 
 ### RB-Q5
 
@@ -4779,9 +4779,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** from-scratch review suggestion 6 (decision-048); proposal-007
 
-**Notes:** ADR-000K now lists five dispositions: it records that "repaired" was added "during the same exchange", so the filename still says four. The locked notepad answer has four; the source of the fifth is only the ADR text.
+**Notes:** The locked notepad answer has four classes. ADR-000K's text records a fifth, "repaired", as added "during the same exchange", while its filename says four; the ADR text is the only source for the fifth.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-048; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-007; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-024; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-058
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-048; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-007; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-024; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-058
 
 ### RB-Q6
 
@@ -4789,24 +4789,24 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Question:** How do the two unmerged notepad safety fixes and the v3.1.4 installed skills converge so continuity is reliable?
 
-**Status:** superseded · answered 2026-09-12 verification (correction-014, finding-025); closed 2026-09-23 by PR #145
+**Status:** superseded · answered premise found stale 2026-09-11 (correction-014, finding-025); superseded by the owner's 2026-09-23 skills-lane direction (S-00V TK-001)
 
-**Answer:** No owner answer to either suggestion: verification found the premise stale (both notepad fixes were already in HEAD) and the installed skills current (correction-014, finding-025). The installed-core half was reopened on 2026-09-22 as whether to authorize a core update. Superseded by S-00V TK-001 (PR #145): core skills ship in the room's workbench/skills lane, so the global installed copy is no longer inspected.
+**Answer:** No owner answer to either suggestion: on 2026-09-11 verification found both notepad fixes already present and the installed skills current, so the question's premise was stale (correction-014, finding-025). The installed-core half was reopened on 2026-09-22 as whether to authorize a core update. Superseded by the owner's 2026-09-23 skills-lane direction (S-00V TK-001): core skills ship in the room's workbench/skills lane, so the global installed copy is not inspected.
 
 **Reason:** Not recorded as an owner reason; it dissolved on verification. The owner direction behind S-00V TK-001 (2026-09-23): every core skill lives in workbench/skills and the running workbench uses its local skills.
 
 **Result:**
 
-- update `workbench/specs/S-00V-portable-workbench/SPEC.md TK-001` - Records the installed-core question closed: rooms read core skills from workbench/skills; the owner Mac catalog is refreshed from the lane.
-- none `workbench/tools/notepads.mjs` - Both notepad safety fixes were already in HEAD; no forward-port Task or Spec.
+- update `workbench/specs/S-00V-portable-workbench/SPEC.md TK-001` - Rooms read core skills from their workbench/skills lane and the owner's installed catalog is refreshed from that lane, so the global installed copy is not a convergence target.
+- none `workbench/tools/notepads.mjs` - Carries the basename privacy scan and the safe-integer entry-suffix guard; no forward-port Task or Spec is owed (premise found stale 2026-09-11).
 
 **Related:** [PW-3](#pw-3), [RB-Q4](#rb-q4)
 
 **Aliases:** from-scratch review suggestion (proposal-008); blocked-obligations-review RB-Q6 (installed-core mismatch)
 
-**Notes:** The source notepad marks it locked; the blocked-obligations revisit marked it open; the addendum says record it as resolved by PR #145 / S-00V TK-001, not as either label. Triage v2 lists it among closed or out-of-scope rows.
+**Notes:** The source notepad records it as locked and the blocked-obligations revisit as open; the owner's 2026-09-23 skills-lane direction (S-00V TK-001; PR #145 as provenance) settles it rather than either label. Triage v2 lists it among closed or out-of-scope rows.
 
-**Provenance:** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-008; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#correction-014; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-025; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (RB-Q6); workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#proposal-008; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#correction-014; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#finding-025; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-059; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (RB-Q6); workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md
 
 ## TT - Task, Ticket and Chat terms
 
@@ -4833,7 +4833,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The 2026-09-19 clarification (Chat is the context in which a Conversation occurs, rather than the Conversation itself) is recorded only in the 2026-09-19 progress board, not in the TT note.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-014; workbench/sessions/notepads/grilling/task-ticket-chat-workflow-clarification-2026-09-10.json#decision-001; workbench/sessions/recovery/grilling-artifact-progress-audit/GRILLING-PROGRESS-BOARD.json (TT-Q1 owner-clarification-2026-09-19)
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-014; workbench/sessions/notepads/grilling/task-ticket-chat-workflow-clarification-2026-09-10.json#decision-001; workbench/sessions/recovery/grilling-artifact-progress-audit/GRILLING-PROGRESS-BOARD.json (TT-Q1 owner-clarification-2026-09-19)
 
 ### TT-Q2
 
@@ -4850,7 +4850,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - create `workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md` - Accepted ADR: a Task is a standalone artifact.
-- update `workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md` - Lands standalone TASK.md records under tasks/<id>/ and migrates slice generation.
+- update `workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md` - Standalone TASK.md records live under tasks/<id>/, and slice generation produces them.
 - update `LEXICON.md (Task, TASK, Ticket rows) and templates/LEXICON.md` - Task defined as the standalone execution slice; TASK no longer an alias for a Ticket.
 - create `workbench/skills/to-tasks/SKILL.md` - Generates Task files instead of embedded Ticket rows.
 
@@ -4860,7 +4860,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Register status is 'approved' (2026-09-11). History checks found no earlier TASK.md in LLM_Workbench, GPT_OS or Foundry, so this is locked as new or recovered intent. FND-Q19 itself does not say 'standalone file'; that is the owner's reading. Later answers (E-3, E-9, TT-Q3) allow a Task with no parent Spec.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-015; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-006; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-007; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-042; workbench/sessions/notepads/grilling/task-ticket-chat-workflow-clarification-2026-09-10.json#decision-002
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-015; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-006; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-007; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-042; workbench/sessions/notepads/grilling/task-ticket-chat-workflow-clarification-2026-09-10.json#decision-002
 
 ### TT-Q3
 
@@ -4879,15 +4879,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - update `LEXICON.md (Workbench, Project, Blueprint, Spec, Task rows) and templates/LEXICON.md` - State the room nesting and the 1:many cardinalities.
 - create `Durable artifact-model article in workbench/wiki with diagram, plus ownership-map relation rows (S-00G)` - The 1:many artifact model is modeled out and visible to agents before v4 is complete (owner requirement in decision-068).
 - update `workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md and AGENTS.md stance rule (plus templates/AGENTS.md)` - Allow a Task directly under the Blueprint with no Spec, with a home at workbench/tasks/TK-XXXX/TASK.md (E-9).
-- create `New Spec 'Artifact model and definitions' (proposed in TT note finding-037, not yet created)` - Owns the model article, the spec-less Task home, the carry skill change and the Director way of working.
+- create `Spec 'Artifact model and definitions' (proposed in TT note finding-037)` - Owns the model article, the spec-less Task home, the carry skill change and the Director way of working.
 
 **Related:** [TT-Q4](#tt-q4), [E-3](#e-3), [E-9](#e-9), [FND-Q13](#fnd-q13), [FND-Q19](#fnd-q19), [FND-Q03](#fnd-q03), [FND-Q17c](#fnd-q17c), [WF-6](#wf-6)
 
 **Aliases:** task-ticket-chat-workflow-clarification-2026-09-10 Q3; workbench-foundation-rework-2026-09-11 TT-Q3
 
-**Notes:** Open in every note until 2026-09-23; the board and verdict rows saying open are stale. The note reads 'A Contract artifacts : A Blueprint' as one Blueprint per Workbench artifact set, with the Blueprint routed outside the three-control Contract, and asks to flag it if the owner meant otherwise. 'assignment' is not separately answered.
+**Notes:** Every source note recorded it as open until the 2026-09-23 answer, which settles it; board and verdict rows that say open predate that answer. The note reads 'A Contract artifacts : A Blueprint' as one Blueprint per Workbench artifact set, with the Blueprint routed outside the three-control Contract, and asks to flag it if the owner meant otherwise. 'assignment' is not separately answered.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-034; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-037; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-014; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:26; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:51
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-034; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-037; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-014; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:26; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:51
 
 ### TT-Q4
 
@@ -4906,7 +4906,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - update `LEXICON.md (Task, Chat, Director rows) and templates/LEXICON.md` - One Task per Chat; a Chat ends after its Task; Director (alias Dispatcher) watches and dispatches, never executes.
 - update `workbench/skills/carry/SKILL.md` - Carrying a Spec means directing it (a new Chat per Task), or carry is not used on a Spec.
 - update `AGENTS.md and RUNBOOK.md (Director way of working) plus templates mirrors` - Document the Director as the way a Spec is worked.
-- create `New Spec 'Artifact model and definitions' (proposed in TT note finding-037)` - Owns the carry and Director changes.
+- create `Spec 'Artifact model and definitions' (proposed in TT note finding-037)` - Owns the carry and Director changes.
 
 **Related:** [TT-Q3](#tt-q3), [FND-Q03](#fnd-q03), [TT-Q7](#tt-q7), [WF-10](#wf-10), [FND-Q17e](#fnd-q17e)
 
@@ -4914,7 +4914,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Supersedes a 2026-09-23 agent derivation that one Chat may run several Tasks in sequence. Earlier RB-Q2/RB-Q2B settled context sizing as an aspiration, not a hard gate. FND-Q03 closes on this answer.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-035; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-051; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:21; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:51
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-035; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#decision-051; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:21; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:51
 
 ### TT-Q5
 
@@ -4922,23 +4922,23 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Question:** What does next mean: next eligible Ticket (now Task), next action inside current work, or owner recommendation?
 
-**Status:** answered-in-chat · answered 2026-09-23 triage v2 (source column cites AGENTS.md, not a dated owner message)
+**Status:** open · answered Not answered by the owner; the 2026-09-23 triage v2 cites AGENTS.md, not an owner message
 
-**Answer:** `next` means the next eligible Task returned by the tool (`spec-workbench.mjs next`), as in AGENTS Work Selection.
+**Answer:** No owner answer. AGENTS.md Work Selection already gives the working meaning: `next` is the next eligible Task returned by `spec-workbench.mjs next`.
 
 **Reason:** Not recorded.
 
 **Result:**
 
-- update `AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md` - 'next' names the tool's next eligible Task; keep this wording through the S-00P TK-002 rewrite.
+- update `AGENTS.md (Work Selection And Lifecycle) and templates/AGENTS.md` - 'next' names the tool's next eligible Task, and keeps that meaning through the S-00P TK-002 rewrite.
 
 **Related:** [TT-Q6](#tt-q6)
 
 **Aliases:** task-ticket-chat-workflow-clarification-2026-09-10 Q5; workbench-foundation-rework-2026-09-11 TT-Q5
 
-**Notes:** The TT note register still says open. The only cited source is AGENTS.md, so this is the existing Workbench rule adopted in the owner's triage rather than a quoted owner message.
+**Notes:** The triage listed AGENTS.md as the answer's source, so this is the existing Workbench rule, not an owner ruling. Agent-carryable per triage v2: confirming the control wording needs no new owner decision.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q5); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:27
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q5); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:27
 
 ### TT-Q6
 
@@ -4961,9 +4961,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** task-ticket-chat-workflow-clarification-2026-09-10 Q6; workbench-foundation-rework-2026-09-11 TT-Q6
 
-**Notes:** The TT note register still says open. Activation and assignment are not separately answered.
+**Notes:** The TT note register records it as open; the answer recovered here settles it. Activation and assignment are not separately answered.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q6); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:28
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q6); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:28
 
 ### TT-Q7
 
@@ -4986,9 +4986,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** task-ticket-chat-workflow-clarification-2026-09-10 Q7; workbench-foundation-rework-2026-09-11 TT-Q7
 
-**Notes:** The TT note register still says open. No 'prohibited' case is stated.
+**Notes:** The TT note register records it as open; the answer recovered here settles it. No 'prohibited' case is stated.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q7); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:29
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q7); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:29
 
 ### TT-Q8
 
@@ -4996,9 +4996,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Question:** Which skills are owner-facing commands and which are internal composition details?
 
-**Status:** answered-in-chat · answered 2026-09-23 07:35 UTC chat (triage v2)
+**Status:** partially-answered · answered 2026-09-23 07:35 UTC chat (triage v2)
 
-**Answer:** Skills the owner invokes are owner-facing. The Wiki skill pages (aihero.dev/skills shape) document them.
+**Answer:** Answered part: the owner wants a Wiki skills reference in the aihero.dev/skills shape, one readable entry per skill (2026-09-23). Open part: which skills are owner-facing versus internal; he gave no classification.
 
 **Reason:** Not recorded.
 
@@ -5010,9 +5010,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** task-ticket-chat-workflow-clarification-2026-09-10 Q8; workbench-foundation-rework-2026-09-11 TT-Q8
 
-**Notes:** The TT note register still says open. The gap triage had flagged TT-Q8 as the one real owner decision; triage v2 then recovered this answer. No list of which skills are owner-facing is given.
+**Notes:** The earlier 'skills the owner invokes are owner-facing' line was an agent summary, not his words; a bounded transcript search found no such statement. The TT note register records it as open.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q8); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:30
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q8); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:30
 
 ### TT-Q9
 
@@ -5028,7 +5028,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `New ADR-000L 'notepad belongs to its objective' (proposed on PR #92, not in the repo)` - A notepad belongs to its objective; writers are serialized, not exclusive.
+- create `ADR-000L 'notepad belongs to its objective' (proposed on PR #92)` - A notepad belongs to its objective; writers are serialized, not exclusive.
 - update `AGENTS.md (Session Records) and templates/AGENTS.md` - Notepads are objective-owned JSON; handoffs are Markdown for a new Chat.
 - update `LEXICON.md (Notepad row) and templates/LEXICON.md` - Notepad belongs to its objective.
 - update `workbench/skills/notepad/SKILL.md` - Reword 'one writer per note' to one writer at a time.
@@ -5037,9 +5037,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** task-ticket-chat-workflow-clarification-2026-09-10 Q9; workbench-foundation-rework-2026-09-11 TT-Q9
 
-**Notes:** The TT note register still says open. The Spec and Task parts of the relationship are not stated beyond the Packet row (handoff and notepad join a Task's packet only when they exist).
+**Notes:** The TT note register records it as open; the answer recovered here settles it. The Spec and Task parts of the relationship are not stated beyond the Packet row (handoff and notepad join a Task's packet only when they exist).
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-032; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:31
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-032; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:31
 
 ### TT-Q10
 
@@ -5063,9 +5063,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** task-ticket-chat-workflow-clarification-2026-09-10 Q10; workbench-foundation-rework-2026-09-11 TT-Q10; S-00H TT-Q10 (rephrased: what form do new Task identifiers take)
 
-**Notes:** The TT note register still says open; finding-036 records that a later session rephrased the question as the identifier form (T-### versus TASK-### had been considered) and that answer lives in S-00H. The owner message itself was not found in a bounded transcript search.
+**Notes:** The TT note register records it as open, and the S-00H record settles it; finding-036 records that a later session rephrased the question as the identifier form (T-### versus TASK-### had been considered) and that answer was recorded in S-00H. The owner message itself was not found in a bounded transcript search.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-036; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md:10; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md:155
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-036; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md:10; workbench/specs/retired/S-00H-task-artifact-and-terminology-migration/SPEC.md:155
 
 ### TT-Q11
 
@@ -5089,7 +5089,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Only piecemeal rulings exist: Ticket retired (WF-5), 'Codex Task' rejected as a name for a Chat and Conversation kept informal (TT-Q1), Dispatcher accepted as an alias for Director (decision-068). The gap triage calls this vocabulary hygiene that blocks nothing.
 
-**Provenance:** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q11)
+**Provenance (local records):** workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q11)
 
 ### TT-Q12
 
@@ -5097,7 +5097,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Question:** Which settled answers belong in the Lexicon, root controls, an owning Spec, or an ADR, and what evidence must precede promotion?
 
-**Status:** answered-in-chat · answered 2026-09-12, FND note decision-062 (first clause); 2026-09-09 01:48 and 2026-09-23 02:28 UTC chats (triage v2, PW-10)
+**Status:** partially-answered · answered 2026-09-12, FND note decision-062 (first clause); 2026-09-09 01:48 and 2026-09-23 02:28 UTC chats (triage v2, PW-10)
 
 **Answer:** First clause: settled answers route by the whole ownership map (FND-Q21): definitions to the Lexicon, obligations to root controls, scoped capability choices to a Spec, cross-cutting choices to an ADR. Owner: locked answers go 'in some state of durable in the contract, docs, or specs' / 'in their durable places'.
 
@@ -5113,9 +5113,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** task-ticket-chat-workflow-clarification-2026-09-10 Q12; workbench-foundation-rework-2026-09-11 TT-Q12
 
-**Notes:** Register says partially-answered with the evidence-threshold remainder open. The owner's triage words say locked answers are promoted; reading 'locked' as the evidence threshold is an interpretation. proposal-017's claim that FND-Q21C closed TT-Q12 was withdrawn by decision-062.
+**Notes:** Answered part: where settled answers go (decision-062 and the owner's 'in their durable places'). Open part: the evidence threshold before promotion; reading 'locked' as that threshold is an interpretation, not his ruling. proposal-017's claim that FND-Q21C closed TT-Q12 was withdrawn by decision-062.
 
-**Provenance:** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-062; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-023; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q12); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:32
+**Provenance (local records):** workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-062; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-023; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#current.questions (TT-Q12); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:32
 
 ## WF - Workbench workflow
 
@@ -5135,16 +5135,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - update `BLUEPRINT.md` - States the product-level destination and journey; each Spec is the PRD-shaped smaller destination; the Contract, not the Blueprint, owns the operating agreement.
 - update `templates/BLUEPRINT.md` - Stays a generic reusable shape; each project fills its own product destination.
-- update `workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md` - Reconciled (accepted, amended or superseded) under S-00P TK-004; its claim that the Blueprint owns the future-facing PRD function is superseded.
+- update `workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md` - Reconciled (accepted, amended or superseded) under S-00P TK-004 so it no longer claims the Blueprint owns the future-facing PRD function.
 - update `LEXICON.md (Blueprint, Spec rows) and templates/LEXICON.md` - Blueprint defined as the product destination; Spec as the PRD-shaped scoped destination.
 
 **Related:** [WF-2](#wf-2), [WF-6](#wf-6), [FND-Q05](#fnd-q05)
 
 **Aliases:** workbench-workflow-2026-09-10 Q1; workbench-foundation-rework-2026-09-11 WF-1
 
-**Notes:** Original wording: 'Does BLUEPRINT.md remain the single PRD-shaped destination artifact, rather than adding a separate PRD?' The owner objected to the shorthand 'no separate PRD' (correction-019); the replacement wording proposed there was withdrawn by correction-022 and must not be presented again. The allocation itself is settled. Supersedes the assumption in proposed ADR-000G.
+**Notes:** Original wording: 'Does BLUEPRINT.md remain the single PRD-shaped destination artifact, rather than adding a separate PRD?' The owner objected to the shorthand 'no separate PRD' (correction-019); the replacement wording proposed there was withdrawn by correction-022 and must not be presented again. The allocation itself is settled. Supersedes the ADR-000G assumption that the Blueprint owns the future-facing PRD function.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[0]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-019; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-022; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[0]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[0]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-019; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-022; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[0]
 
 ### WF-2
 
@@ -5167,9 +5167,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** workbench-workflow-2026-09-10 Q2; workbench-foundation-rework-2026-09-11 WF-2
 
-**Notes:** Original wording: 'What starts an Explore phase, and what is the minimum exit artifact or decision?' Explore was renamed Align. proposal-011 (agent Suggestions A/B, including a drafted Blueprint delta as exit artifact) was not adopted; the answer comes from decision-067. The note records Lexicon promotion of Align as pending, not an open choice.
+**Notes:** Original wording: 'What starts an Explore phase, and what is the minimum exit artifact or decision?' Explore was renamed Align. proposal-011 (agent Suggestions A/B, including a drafted Blueprint delta as exit artifact) was not adopted; the answer comes from decision-067. The source note treats Lexicon promotion of Align as follow-on promotion work, not an open choice.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[1]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-011; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[1]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[1]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-011; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[1]
 
 ### WF-3
 
@@ -5193,7 +5193,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Original wording: 'Are research, grilling, and wayfinding optional Explore methods, and are any others part of the standard flow?' Reworded by correction-020 because grilling and the confirmation exit were already settled in WF-2. Suggestions were written by a reconciliation agent; the owner adopted A without prototypes.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[2]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-071; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[2]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[2]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-071; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[2]
 
 ### WF-4
 
@@ -5217,7 +5217,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Original wording: 'When is a Prototype needed, what feedback does it seek, and what makes it ready to promote or discard?' An earlier always-discard recommendation (Suggestion B) was an agent proposal and was not adopted.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[3]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-072; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[3]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[3]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-072; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[3]
 
 ### WF-5
 
@@ -5244,7 +5244,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The merged note showed WF-5 open until correction-018 (2026-09-15) repaired the register to the 2026-09-12 decision. RB-Q2 (decision-051) later confirmed there is no level beneath Task, so WF-5 stands. Acceptance of the decision was recorded as separate from completing the migration.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[4]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-043; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-018; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-021; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[4]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[4]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-043; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-018; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-021; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[4]
 
 ### WF-6
 
@@ -5270,7 +5270,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Original wording: 'How do Blueprint, specs, and the generated Taskboard relate after the terminology change?' correction-023 fixed the owner's readback: a Spec is an objective with a destination, not only an objective. Derive Specs from Blueprint needs, active ADRs, verified Actuality and required evidence.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[5]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-023; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[5]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[5]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-023; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[5]
 
 ### WF-7
 
@@ -5296,7 +5296,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Original wording: 'What does the Implement loop do, and how should dependencies and parallel work be represented?' Branch separation alone does not prevent conflicting work; coordination is WF-10. Same day, the owner deferred WF-7 for the rollout itself (directive-018: 'We can work tasks without having a spec branch'), recorded as S-00O exemption 2; the nested topology stays the destination.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[6]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-083; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[6]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[6]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-083; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[6]
 
 ### WF-8
 
@@ -5323,7 +5323,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Original wording: 'What does QA/Verify require, including a human check, and what exact conditions stop or return work to implementation?' Earlier detailed gate conditions (proposal-013, proposal-020, restated in directive-009 on 2026-09-12: one new Task per unmet acceptance line, a Human QA lane showing the demo artifact) were agent-verified proposals; the locked answer is the 2026-09-16 altitude model. Spec retirement is separate (WF-8E).
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[7]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-069; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-013; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-020; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-009; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[7]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[7]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-069; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-013; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-020; workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#directive-009; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[7]
 
 ### WF-8A
 
@@ -5350,7 +5350,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Original wording asked whether a retired Spec reopens or every finding becomes a new linked Spec. Suggestions A/B were a reconciliation agent's; the owner rejected the reopen framing. The boundary between a corrective Task and a new Spec is refined by WF-8G.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[8]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-073; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (WF-8A)
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[8]; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-073; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085; workbench/sessions/notepads/grilling/workbench-foundation-rework-2026-09-11.json#current.questions (WF-8A)
 
 ### WF-8B
 
@@ -5367,7 +5367,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `AGENTS.md (Engineering And Verification, integration review gate) and templates/AGENTS.md` - Task proof is mandatory; separate-context review is required for the assembled Spec, not each Task; owned by S-00P TK-002 and TK-005.
-- none `workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md` - During the bootstrap exemptions, separate-context review per PR is retained because each Task lands as its own PR.
+- none `workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md` - S-00O must keep separate-context review per PR during the bootstrap exemptions, because each Task lands as its own PR.
 
 **Related:** [WF-8](#wf-8), [WF-8C](#wf-8c), [WF-7](#wf-7)
 
@@ -5375,7 +5375,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Previous wording: 'Does every completed Task require separate-context independent review before it merges into the Spec branch, or ordinary Task verification with independent review reserved for the completed Spec branch?' Do not add an unapproved risk-triggered review policy.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8B); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8B); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-068; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018
 
 ### WF-8C
 
@@ -5399,7 +5399,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Previous wording asked whether the completed Spec candidate still needs a separate-context reviewer or whether Task proof plus whole-Spec proof replace it. The meaning of 'threw the old Tasks away' was left to WF-8D.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8C); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-069; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8C); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-069; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085
 
 ### WF-8D
 
@@ -5423,7 +5423,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Previous wording asked whether only the branch/worktree and board presence are thrown away, or also the TASK.md record. The recorded result says this does not approve irreversible evidence deletion or a transient-folder clearing policy; that is the agent's interpretation. WF-8F later made Specs and Tasks transient, discardable after the change is verified on main.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8D); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-070; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8D); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-070; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-085
 
 ### WF-8E
 
@@ -5450,7 +5450,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The owner first said not to lock this (proposal-027, chat line 216), then gave input under '8.' (decision-074), then explicitly locked Suggestion A the same day. Suggestion text was a reconciliation agent's.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8E); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-027; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-074; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-079
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8E); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#proposal-027; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-074; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-079
 
 ### WF-8F
 
@@ -5476,7 +5476,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The owner paused this once ('this question really feels like we keep rehashing this one... specs might go to the archive', directive-015); finding-035 reconstructed the lineage before decision-080 locked the transient lifecycle. The owner asked that the lifecycle be tested against varied examples (footer banner, add-to-cart, game asset, GitHub guide).
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8F); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-075; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-015; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#finding-035; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-016
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8F); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-075; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-015; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#finding-035; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-080; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-016
 
 ### WF-8G
 
@@ -5501,7 +5501,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The owner first picked Suggestion B ('B, we would need to reopen the spec if it was big enough or create a new one'); decision-081 read that as a size-based rule. The owner's correction-023 replaced that reading with scope and destination. Agent Suggestion A (destination-statement test) was not adopted as written.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8G); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-081; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-023
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8G); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-081; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-023
 
 ### WF-8H
 
@@ -5525,9 +5525,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Related:** [WF-8E](#wf-8e), [WF-8F](#wf-8f), [WF-8A](#wf-8a), [PW-8](#pw-8)
 
-**Notes:** Question wording is reconstructed from decision-086; the WF note has no question object for WF-8H. Two README conflicts were left unresolved. The 2026-09-23 gap triage called it a v4.x addition; the owner corrected that to v4 scope. No Spec claims it yet.
+**Notes:** Question wording is reconstructed from decision-086; the WF note has no question object for WF-8H. decision-086 left two README conflicts unsettled; the design-concepts README result carries their reconciliation. The 2026-09-23 gap triage called it a v4.x addition; the owner corrected that to v4 scope.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-086; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:13; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:39; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:45
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-086; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:13; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:39; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:45
 
 ### WF-9
 
@@ -5552,7 +5552,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Original wording: 'Which transitions are optional, repeatable, or permitted to loop backward?' correction-020: not every defect means the design concept was wrong or needs a Blueprint rewrite; repair ownership is WF-8A and WF-8G.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-9); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[8]
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-9); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#correction-020; workbench/sessions/notepads/grilling/workbench-workflow-2026-09-10.json#current.questions[8]
 
 ### WF-10
 
@@ -5568,13 +5568,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `BLUEPRINT.md` - Plans the coordinator as future scope; the current proof target is consistent single-Task execution. No Spec for the coordinator now.
+- update `BLUEPRINT.md` - Plans the coordinator as future scope; the current proof target is consistent single-Task execution. The coordinator gets no Spec in the current rollout.
 
 **Related:** [FND-Q17e](#fnd-q17e), [WF-7](#wf-7), [TT-Q4](#tt-q4), [WF-12](#wf-12)
 
 **Notes:** Added by correction-020 as an unapproved agent question; Suggestion A was the agent's recommendation and the owner chose closer to B, deferred. The 2026-09-23 Director role (TT-Q3/TT-Q4) later describes how a Spec is watched and dispatched.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-10); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-076; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#finding-037
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-10); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-076; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#finding-037
 
 ### WF-11
 
@@ -5597,9 +5597,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Aliases:** blocked-obligations-review-2026-09-21 WF-11
 
-**Notes:** This is the acceptance test for the rollout; earlier pilots are supporting evidence. A separate question in blocked-obligations-review ('Should WF-11 remain blocked until its declared predecessors complete...') is open there; it is about sequencing, not the answer. A 2026-09-23 verdict row mislabeled WF-11 open; the addendum confirmed it is locked.
+**Notes:** This is the acceptance test for the rollout; earlier pilots are supporting evidence. A separate question in blocked-obligations-review ('Should WF-11 remain blocked until its declared predecessors complete...') concerns sequencing, not this answer. A 2026-09-23 verdict row mislabeled WF-11 open; the addendum confirmed it is locked.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-11); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-077; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (WF-11); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:37
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-11); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-077; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (WF-11); workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:37
 
 ### WF-12
 
@@ -5623,7 +5623,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Same day the owner said 'Yes I guess WF-12 is being contradicted' and chose to run the rollout through five Specs rather than a Spec per capability (directive-018); S-00O exemption 1 limits that to the delivery route and keeps the scope. Suggestion text was a reconciliation agent's.
 
-**Provenance:** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-12); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-078; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-082; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-083
+**Provenance (local records):** workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-12); workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-078; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-082; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#directive-018; workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-083
 
 ## TRACK - Blocked-obligations track choice
 
@@ -5641,9 +5641,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `New board Spec (TASKBOARD.json, six lanes), not yet authored; placed in workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md build order` - The readable board track is worked before ADR-000B/C/D acceptance.
+- create `New board Spec (TASKBOARD.json, six lanes), placed in workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md build order` - The readable board track is worked before ADR-000B/C/D acceptance.
 - update `workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md` - Amend 000E to the locked E-1..E-11 board answers.
-- none `ADR-000B/000C/000D (proposed)` - Acceptance deferred behind the board track; ACC-1..ACC-5 not started.
+- none `ADR-000B/000C/000D (proposed)` - Acceptance waits behind the board track; ACC-1..ACC-5 follow it.
 
 **Related:** [E-1](#e-1), [E-6](#e-6), [ACC-1](#acc-1), [FND-Q02A](#fnd-q02a)
 
@@ -5651,7 +5651,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** The 'locked' status is the agent's reading of an owner redirect, not a literal choice of option A. Later E-6 (decision-017) ordered v4 as WBID Spec, then board Spec, then S-00P rewrites, then the S-00O release.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions[TRACK]; Claude session d0f544c9-14ff-47fd-bc58-963bfa29a8c8 (owner message 2026-09-22T20:19Z)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions[TRACK]; Claude session d0f544c9-14ff-47fd-bc58-963bfa29a8c8 (owner message 2026-09-22T20:19Z)
 
 ## E - Taskboard and work representation
 
@@ -5672,7 +5672,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 - update `workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md` - Amended or superseded: the board is generated TASKBOARD.json with six lanes; Complete holds until capture and record deletion (replaces 'completed verified work leaves the board').
 - update `workbench/docs/adr/0013-seven-file-workbench-contract.md` - Amended: the root artifact is TASKBOARD.json, not TASKBOARD.md.
 - update `workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md` - Its root file list names TASKBOARD.json instead of TASKBOARD.md.
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Owns the generator, card schema v1 and six lanes, listed in S-00O's build order.
+- create `board Spec (TASKBOARD.json board)` - Owns the generator, card schema v1 and six lanes, listed in S-00O's build order.
 - create `TASKBOARD.json (root) and templates/TASKBOARD.md` - Generated TASKBOARD.json replaces TASKBOARD.md in the root and in templates.
 - update `AGENTS.md, LEXICON.md, README.md (+ templates mirrors)` - Describe TASKBOARD.json as the generated board instead of the TASKBOARD.md projection.
 
@@ -5680,7 +5680,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** decision-003 wrongly listed generated vs hand-written, keeping TASKBOARD.md, and Complete-hold as unconfirmed; correction-002 records the owner saying these were already settled. Waiting Tasks in To do is the owner's tentative 'I would guess'. Owner also asked for owner, approver, dependencies, priority, start/due date fields. Later decision-023 adds: every card value must be reproducible from a non-generated owner.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#directive-001; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#directive-002; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-003; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#directive-003; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-002
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#directive-001; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#directive-002; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-003; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#directive-003; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-002
 
 ### E-2
 
@@ -5696,13 +5696,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- none `none` - No v4 artifact from this question; director as a stance is later work. (A LEXICON.md Director row was later added from the TT-Q3/TT-Q4 answers, not from E-2.)
+- none `none` - No v4 artifact from this question; director as a stance is later work. Wherever LEXICON.md defines Director (from the TT-Q3/TT-Q4 answers, not E-2), it must stay consistent with this answer: the Director is whoever tells the agent what to do, the owner or a directing agent that escalates to the owner when it cannot decide.
 
 **Related:** [TT-Q3](#tt-q3), [TT-Q4](#tt-q4), [FND-Q17e](#fnd-q17e)
 
 **Notes:** Same correction records the owner saying the six lanes he specified were meant for TASKBOARD itself (feeds E-1).
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-001
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-001
 
 ### E-3
 
@@ -5720,13 +5720,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - update `LEXICON.md Task row (+ templates/LEXICON.md)` - A Task may exist without a parent Spec; a Spec's lane is gated by its Tasks' lanes.
 - update `workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md` - Amended so a Task need not be a slice of a Spec.
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Spec and Task cards both shown; Spec card carries child-Task progress; Spec lane gated by its Tasks.
+- create `board Spec (TASKBOARD.json board)` - Spec and Task cards both shown; Spec card carries child-Task progress; Spec lane gated by its Tasks.
 
 **Related:** [E-9](#e-9), [E-5](#e-5), [TT-Q3](#tt-q3), [FND-Q13](#fnd-q13), [FND-Q19](#fnd-q19)
 
 **Notes:** The agent's 'Spec gets its own card only when...' rule was rejected. finding-003 missed the earlier definition; correction-004 found FND-Q13 decision-020. TT-Q3 was later locked (decision-067) consistent with this.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-005; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#finding-003; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-005; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#finding-003; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-004; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067
 
 ### E-4
 
@@ -5742,15 +5742,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Backlog lane defined as owner-requested wish-list work not yet started; residual lane.
+- create `board Spec (TASKBOARD.json board)` - Backlog lane defined as owner-requested wish-list work not yet started; residual lane.
 - update `workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md` - Amended to carry the Backlog meaning.
-- update `LEXICON.md (+ templates/LEXICON.md)` - Inference: a Backlog term once the board lands.
+- update `LEXICON.md (+ templates/LEXICON.md)` - Inference: LEXICON.md defines Backlog as a board term.
 
 **Related:** [E-4A](#e-4a), [E-4B](#e-4b), [E-4C](#e-4c), [E-1](#e-1)
 
 **Notes:** Umbrella question; its sub-parts are E-4A (where Backlog lives), E-4B (planned = Backlog), E-4C (Needs review). E-4B later made 'planned' the Backlog separator, which narrows decision-006's rejection.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-006
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-006
 
 ### E-4A
 
@@ -5762,18 +5762,18 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Answer:** As a bare-bones Spec, which can be as little as one sentence and be improved later. 'Why can't we have backlog spec items?... Anything not a part of v4 got moved to the backlog.' 'If I have asked for it, and described it, it should go on here.' Backlog is the residual lane. No separate BL- record type.
 
-**Reason:** Owner: backlog Spec items already exist in practice (the work set aside from v4); a Spec can start as one sentence.
+**Reason:** Owner: work set aside from v4 belongs in Backlog as Spec items, and a Spec can start as one sentence.
 
 **Result:**
 
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Spec validation accepts a one-sentence Spec without flagging it; such Specs sit in Backlog.
+- create `board Spec (TASKBOARD.json board)` - Spec validation accepts a one-sentence Spec without flagging it; such Specs sit in Backlog.
 - update `workbench/tools/spec-workbench.mjs and templates/SPEC.md` - Doctor and the Spec parser accept a minimal Backlog Spec.
 
 **Related:** [E-4](#e-4), [E-4B](#e-4b)
 
 **Notes:** Agent option A (separate BL- record) rejected. correction-005: the agent wrongly treated 'nothing is labeled backlog today' as a gap; the interview designs the future board.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-007; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-005
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-007; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-005
 
 ### E-4B
 
@@ -5791,13 +5791,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - update `workbench/skills/to-spec/SKILL.md` - A new Spec enters Backlog as planned, with no Tasks cut.
 - update `workbench/skills/to-tasks/SKILL.md` - Tasks are cut when a Spec moves from Backlog to To do.
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Lane function maps planned Specs to Backlog.
+- create `board Spec (TASKBOARD.json board)` - Lane function maps planned Specs to Backlog.
 
 **Related:** [E-4](#e-4), [E-4A](#e-4a), [E-7](#e-7)
 
 **Notes:** S-00O's lane was not addressed here and was carried to E-7. The process change is part of v4.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-008; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-006
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-008; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-006
 
 ### E-4C
 
@@ -5814,14 +5814,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/docs/adr/proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md` - Needs review covers the independent-reviewer stage, not only work cleared by a director.
-- update `workbench/tools/task-record.mjs` - Tasks gain a needs-review status.
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Needs review lane holds Tasks awaiting independent QA/verification.
+- update `workbench/tools/task-record.mjs` - Tasks support a needs-review status.
+- create `board Spec (TASKBOARD.json board)` - Needs review lane holds Tasks awaiting independent QA/verification.
 
 **Related:** [E-5](#e-5), [E-3](#e-3), [FND-Q17b](#fnd-q17b)
 
 **Notes:** Rejects the agent's recommendation that independent review is part of doing the work.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-009
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-009
 
 ### E-5
 
@@ -5839,13 +5839,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - update `workbench/tools/spec-workbench.mjs` - Shared lane function; next reads To do; next --review; doctor non-blocking on needsReview/Backlog; derived Spec lane.
 - update `RUNBOOK.md Spec Lifecycle And Retrieval (+ templates/RUNBOOK.md)` - Document next, next --review and lane behavior.
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Owns this tooling.
+- create `board Spec (TASKBOARD.json board)` - Owns this tooling.
 
 **Related:** [E-1](#e-1), [E-3](#e-3), [E-4C](#e-4c)
 
 **Notes:** Agent proposal adopted by owner confirmation.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-010
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-010
 
 ### E-6
 
@@ -5861,16 +5861,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `new WBID Spec (not yet authored)` - Allocator + dual-form lookup + ADR-0041 amendment; first in v4 build order.
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Second in v4 build order.
+- create `WBID Spec` - Allocator + dual-form lookup + ADR-0041 amendment; first in v4 build order.
+- create `board Spec (TASKBOARD.json board)` - Second in v4 build order.
 - update `workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md` - Build list and order include both new Specs before S-00P TK-002 and the release.
 - update `workbench/specs/S-00P-workflow-canon-rework/SPEC.md` - TK-002..TK-005 depend on the board Spec.
 
 **Related:** [E-8](#e-8), [E-1](#e-1), [E-10](#e-10)
 
-**Notes:** decision-011 first put the WBID Spec last (a full re-pad); decision-013 shrank it (touch-and-update) and left its position open; decision-017 placed it first. Authoring and implementation were a separate authorized run.
+**Notes:** decision-011 first put the WBID Spec last (a full re-pad); decision-013 shrank it (touch-and-update) and left its position open; decision-017 placed it first. Authoring and implementing the two Specs is a separate authorized run.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-011; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-013; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-017
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-011; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-013; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-017
 
 ### E-7
 
@@ -5886,14 +5886,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Migration keeps Spec statuses as found; no re-statusing step.
+- create `board Spec (TASKBOARD.json board)` - Migration keeps Spec statuses as found; no re-statusing step.
 - none `none named` - Owner did not name a durable home for the touch-and-update principle.
 
 **Related:** [E-8](#e-8), [E-4B](#e-4b)
 
 **Notes:** Rejects the agent's recommendation to activate S-00O and auto-place the seven Human-QA Specs. The principle was extended to the whole v4 update in E-8.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-012
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-012
 
 ### E-8
 
@@ -5911,13 +5911,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - update `workbench/docs/adr/0041-visible-base62-workbench-identifiers.md` - Amended: uppercase 0-9A-Z, width 4, former IDs retained, dual-form lookup.
 - update `workbench/tools/visible-ids.mjs` - Allocator uppercase width 4; S-00Q and S-000Q resolve as one value.
-- create `new WBID Spec (not yet authored)` - Shrinks to allocator + dual-form lookup + ADR-0041 amendment; a sweep is a verification-time check only.
+- create `WBID Spec` - Scoped to allocator + dual-form lookup + ADR-0041 amendment; a sweep is a verification-time check only.
 
 **Related:** [E-6](#e-6), [E-7](#e-7)
 
 **Notes:** Builds on decision-004/correction-003 (every artifact gets a WBID, width 4, uppercase; recycling not adopted). Amends decision-011's re-pad plan.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-004; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-003; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#finding-005; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-013
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-004; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-003; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#finding-005; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-013
 
 ### E-9
 
@@ -5943,7 +5943,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Resolves the FND-Q13 decision-020 vs FND-Q19 decision-026 tension. TT note finding-037 proposes an 'Artifact model and definitions' Spec to carry the ADR-000H/AGENTS amendment.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-014; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-034; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-037
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-014; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-034; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067; workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-037
 
 ### E-10
 
@@ -5961,13 +5961,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - create `workbench/skills/sitrep/SKILL.md` - Core skill reading TASKBOARD.json with the owner's report order.
 - update `workbench/manifest.json skillPolicy` - sitrep listed as a required core skill.
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Delivers sitrep; cards carry human-readable titles and progress.
+- create `board Spec (TASKBOARD.json board)` - Delivers sitrep; cards carry human-readable titles and progress.
 
 **Related:** [E-1](#e-1), [E-11](#e-11), [PW-7](#pw-7), [PW-4](#pw-4), [FND-Q02A](#fnd-q02a)
 
-**Notes:** PW-7 relies on sitrep surfacing blocked/needs-review Tasks; under PW-3/PW-4 it ships in workbench/skills. S-00V lists sitrep in its tentative catalog list.
+**Notes:** PW-7 relies on sitrep surfacing blocked/needs-review Tasks; under PW-3/PW-4 it ships in workbench/skills. The PW-4 tentative catalog candidate list names sitrep.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-015; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-008
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-015; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-008
 
 ### E-11
 
@@ -5983,15 +5983,15 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `new board Spec (TASKBOARD.json board; not yet authored)` - Complete-card substate derived from record state/folder.
+- create `board Spec (TASKBOARD.json board)` - Complete-card substate derived from record state/folder.
 - create `workbench/skills/sitrep/SKILL.md` - Reports Complete as two counts (ready to capture, ready to delete).
-- none `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md` - Relied on: its retired/ folder marks captured records.
+- none `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md` - ADR-000I keeps retired/ as the folder that marks captured records; the derived Complete substate relies on it.
 
 **Related:** [E-1](#e-1), [E-10](#e-10)
 
 **Notes:** Agent proposal agreed by owner.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-016
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-016
 
 ## ACC - ADR acceptance and Contract binding
 
@@ -6010,13 +6010,13 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - none `workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md` - Once decided: moved out of proposed/ at the chosen time.
-- none `workbench/specs/S-00G-ownership-map-root-control/SPEC.md` - Its Next gate (owner accepts 000B/C/D) records the timing.
+- none `workbench/specs/S-00G-ownership-map-root-control/SPEC.md` - Its Next gate records the chosen acceptance timing for 000B/C/D.
 
 **Related:** [ACC-2](#acc-2), [ACC-5](#acc-5), [FND-Q22](#fnd-q22), [FND-Q23](#fnd-q23), [CAND-N](#cand-n)
 
 **Notes:** Owner's only related words: "For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct" (2026-09-23). This is a conditional view on accepting his own ADRs plus a wish to talk; it does not answer the timing. A gap-triage reading of 'now' is interpretation, and whether 000B/C/D count as ADRs he just created is not established.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-1, current.next_action); workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-1, current.next_action); workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md
 
 ### ACC-2
 
@@ -6038,9 +6038,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Related:** [ACC-1](#acc-1), [E-1](#e-1), [FND-Q22](#fnd-q22), [FND-Q23A](#fnd-q23a)
 
-**Notes:** ACC-2 now also covers TASKBOARD.md -> TASKBOARD.json in 000B's list. Owner's related words: "For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct" (2026-09-23); reading 'land in one change so no window opens' from them is interpretation.
+**Notes:** Since E-1 (2026-09-22), ACC-2 also covers TASKBOARD.md -> TASKBOARD.json in 000B's list. Owner's related words: "For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct" (2026-09-23); reading 'land in one change so no window opens' from them is interpretation.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-2, current.next_action); workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-2, current.next_action); workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md
 
 ### ACC-3
 
@@ -6048,7 +6048,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Question:** With BLUEPRINT.md outside the Contract (000C), what keeps its claims from reading as non-binding?
 
-**Status:** answered-in-chat · answered 2026-09-23 01:24 UTC chat (triage v2); recorded as blocked-obligations-review decision-027
+**Status:** partially-answered · answered 2026-09-23 01:24 UTC chat (triage v2); recorded as blocked-obligations-review decision-027
 
 **Answer:** Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent.
 
@@ -6062,9 +6062,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Related:** [FND-Q22](#fnd-q22), [ACC-4](#acc-4), [FND-Q23](#fnd-q23)
 
-**Notes:** The recovered answer fixes the Blueprint's place; it does not directly say what makes its claims binding. The gap triage calls the binding part answerable from decision-024/027 with agent-proposed wording for owner confirmation.
+**Notes:** Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-009; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-009; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)
 
 ### ACC-4
 
@@ -6087,7 +6087,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Gap triage calls it agent-answerable from decision-024/027 (Canon classifies claims in context; planes are lenses), with owner confirmation; no answer is recorded.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-4)
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-4)
 
 ### ACC-5
 
@@ -6109,9 +6109,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Related:** [ACC-1](#acc-1), [ACC-2](#acc-2), [FND-Q23](#fnd-q23)
 
-**Notes:** Premise not yet triggered: ADR-0013 and ADR-0033 are still active. Owner's related words: "For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct" (2026-09-23). The gap-triage reading 'agents repoint links' is interpretation.
+**Notes:** The question applies once ADR-0013 and ADR-0033 are archived after 000B/C acceptance. Owner's related words: "For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct" (2026-09-23). The gap-triage reading 'agents repoint links' is interpretation.
 
-**Provenance:** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-5); workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md
+**Provenance (local records):** workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-5); workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md
 
 ## PW - Portable, cloud-deployable Workbench
 
@@ -6129,14 +6129,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `LEXICON.md Core Terms (Portable Workbench, Host portability, Ownership origin model; retired Portable layout, Portability model)` - Term and renames recorded.
-- update `templates/LEXICON.md` - Generic rows mirrored.
-- update `BLUEPRINT.md lines 5 and 101 (+ templates/BLUEPRINT.md)` - Portability quality sentence sharpened to the plain definition.
-- update `RUNBOOK.md Portability and privacy matrix` - Reads as host portability.
+- update `LEXICON.md Core Terms (Portable Workbench, Host portability, Ownership origin model; retired Portable layout, Portability model)` - Defines Portable Workbench, Host portability and Ownership origin model, and lists Portable layout and Portability model as retired terms.
+- update `templates/LEXICON.md` - Mirrors the generic rows.
+- update `BLUEPRINT.md portability quality sentence (+ templates/BLUEPRINT.md)` - The portability quality sentence states the plain definition.
+- update `RUNBOOK.md Portability and privacy matrix` - The matrix is framed as host portability.
 
 **Related:** [PW-2](#pw-2), [PW-10](#pw-10), [FND-Q24](#fnd-q24)
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-001; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-001
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-001; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-001
 
 ### PW-2
 
@@ -6148,19 +6148,19 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Answer:** FND-Q24B stays live under S-00G, relabeled an ownership-origin-model question. It is neither parked behind nor folded into Portable Workbench; the two are independent. The existing FND-Q24B handoff stays valid for a separate deep-dive chat. No priority order between them was set.
 
-**Reason:** Owner: OWNERSHIP.json is still being built, so FND-Q24B still needs an answer; it just belongs to a different Spec.
+**Reason:** Owner: OWNERSHIP.json depends on FND-Q24B, so FND-Q24B still needs an answer; it just belongs to a different Spec.
 
 **Result:**
 
-- update `workbench/specs/S-00G-ownership-map-root-control/SPEC.md` - FND-Q24B remains an open S-00G gate as an ownership-origin question.
-- update `LEXICON.md Ownership origin model row` - Points to S-00G and the open FND-Q24B.
+- update `workbench/specs/S-00G-ownership-map-root-control/SPEC.md` - S-00G carries FND-Q24B as its gate, labeled an ownership-origin question, until the owner answers it.
+- update `LEXICON.md Ownership origin model row` - Points to S-00G and FND-Q24B.
 - update `workbench/specs/S-00V-portable-workbench/SPEC.md` - Non-Goal: FND-Q24B is independent of Portable Workbench.
 
 **Related:** [PW-1](#pw-1), [FND-Q24](#fnd-q24), [FND-Q24B](#fnd-q24b)
 
 **Notes:** Owner corrected the agent's recommendation to park FND-Q24B.
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-002; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-010
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-002; workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-010
 
 ### PW-3
 
@@ -6177,18 +6177,18 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - create `workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md` - Records the seventh lane, tracked adapters and update-only replacement.
-- retire `workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md` - Six-lane ADR superseded.
+- retire `workbench/docs/adr/archive/0017-workbench-support-directory-has-six-lanes.md` - The six-lane ADR is marked superseded.
 - update `workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md` - Core tracked per room on the ADR-0031 managed model.
-- update `workbench/manifest.json` - lanes.skills and reshaped skillPolicy.
+- update `workbench/manifest.json` - Declares lanes.skills and the reshaped skillPolicy.
 - create `.claude/skills and .agents/skills` - Tracked adapters into workbench/skills.
 - update `LEXICON.md, RUNBOOK.md (+ templates mirrors)` - Support lane, Normal setup, Explicit skill update rows and skills lane procedure.
 - create `workbench/specs/S-00V-portable-workbench/SPEC.md TK-001` - Owns the lane build.
 
 **Related:** [PW-3A](#pw-3a), [PW-4](#pw-4), [PW-7](#pw-7)
 
-**Notes:** finding-003: no earlier record of the workbench/skills decision was found; this note became its recording owner. Triage v2 lists PW-3 as closed.
+**Notes:** finding-003: no earlier record of the workbench/skills decision was found; this note became its recording owner. Triage v2 records PW-3 as settled.
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-002; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-003; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-003
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-002; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-003; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#finding-003
 
 ### PW-3A
 
@@ -6204,7 +6204,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `workbench/skills/` - Holds the producer's skill source; root skills/ removed.
+- create `workbench/skills/` - Holds the producer's skill source; no root skills/ directory remains.
 - update `templates/GENESIS.md, templates/ADOPTION.md` - Genesis and Adoption lay down the lane from the release checkout.
 - update `workbench/tools/spec-workbench.mjs doctor` - A root skills/ directory is reported as a finding.
 - update `RUNBOOK.md, README.md` - Describe the lane instead of root skills/.
@@ -6213,7 +6213,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Reverses the Genesis prohibition on a root skills/ shadow into a doctor finding.
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-004
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-004
 
 ### PW-4
 
@@ -6223,21 +6223,21 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Status:** locked · answered 2026-09-22, portable-workbench-cloud-deployable decision-005
 
-**Answer:** 'If we need it, it should be included in workbench/skills. But we should keep https://github.com/KaydenClark/skills as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.
+**Answer:** 'If we need it, it should be included in workbench/skills. But we should keep [the owner's private skills repository] as a backup of all of the skills, and a place every workbench can publish skills to that they create.' The Contract names only skills that ship in the lane. The specific candidate list was not confirmed.
 
 **Reason:** Inference: a cloud agent only has what the room ships, so a needed skill must be in the lane; the personal catalog stays useful as backup and publication target.
 
 **Result:**
 
-- update `workbench/specs/S-00V-portable-workbench/SPEC.md` - Catalog-review Task: owner confirms which non-core skills join the lane (tentative list recorded).
-- update `workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md` - Names KaydenClark/skills as backup and publication target, never on the critical path.
+- update `workbench/specs/S-00V-portable-workbench/SPEC.md` - Catalog-review Task: owner confirms which non-core skills join the lane, starting from the tentative list.
+- update `workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md` - Names [the owner's private skills repository] as backup and publication target, never on the critical path.
 - update `RUNBOOK.md Portable Save, Promote And Room-Local Skills` - Names the publication destination; publishing stays separately authorized.
 
 **Related:** [PW-3](#pw-3), [PW-3A](#pw-3a), [E-10](#e-10)
 
-**Notes:** Candidate list (lexicon, domain-modeling, land, preflight, brainstorm, research, sitrep) is tentative, pending the catalog-review Task.
+**Notes:** Candidate list (lexicon, domain-modeling, land, preflight, brainstorm, research, sitrep) is tentative; the catalog-review Task settles it.
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-005
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-005
 
 ### PW-5
 
@@ -6253,16 +6253,16 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `AGENTS.md Session Records (+ templates/AGENTS.md)` - Lift 'Live notes and handoffs stay untracked'; add promote-before-end exit rule.
+- update `AGENTS.md Session Records (+ templates/AGENTS.md)` - Allows temporary commits of notes and handoffs in place of 'Live notes and handoffs stay untracked'; states the promote-before-end exit rule.
 - update `workbench/sessions/.gitignore` - Allow temporary commits of notepads/handoffs.
-- update `LEXICON.md Packet row` - Notes no longer described as always untracked.
+- update `LEXICON.md Packet row` - Does not describe notes as always untracked.
 - create `new ADR narrowing ADR-0051 / ADR-0040 / ADR-0028` - Notes may be committed temporarily as transport.
-- update `RUNBOOK.md and tools/test-workbench-round-trip.mjs` - Drop 'the notepad never enters the commit'.
+- update `RUNBOOK.md and tools/test-workbench-round-trip.mjs` - Neither asserts 'the notepad never enters the commit'.
 - update `workbench/specs/S-00V-portable-workbench/SPEC.md` - Slice: notes may travel.
 
 **Related:** [PW-9](#pw-9), [PW-10](#pw-10)
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-006
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-006
 
 ### PW-6
 
@@ -6288,7 +6288,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Owner asked whether the claim commits to integration; the answer 'no, task branch' was accepted.
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-007
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-007
 
 ### PW-7
 
@@ -6306,14 +6306,14 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 - update `workbench/tools/spec-workbench.mjs doctor` - Tracked host-floor check; missing item is an all-effect finding.
 - update `AGENTS.md (+ templates/AGENTS.md)` - Capability-blocked Task rule: set blocked or needs-review naming the missing capability.
-- update `RUNBOOK.md Prerequisites` - Floor sharpened: gh with push rights, GitHub network.
+- update `RUNBOOK.md Prerequisites` - Floor names gh with push rights and GitHub network.
 - update `workbench/specs/S-00V-portable-workbench/SPEC.md` - Slice: host floor check and routing.
 
 **Related:** [E-10](#e-10), [PW-3](#pw-3)
 
 **Notes:** Only the one-line ruling is the owner's; floor list and doctor mechanics are agent-resolved under his delegation. Relies on sitrep (E-10). doctor --home retires with the global core.
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-008
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-008
 
 ### PW-8
 
@@ -6336,7 +6336,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Audit mechanics are agent-resolved. Owner 2026-09-23 correction: 'PW-8 and the whole of portability are v4 scope', overruling a gap-triage label that it only matters for cloud use.
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-009; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (PW-8 row)
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-009; workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (PW-8 row)
 
 ### PW-9
 
@@ -6357,9 +6357,9 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Related:** [PW-1](#pw-1), [PW-5](#pw-5), [PW-6](#pw-6), [WF-11](#wf-11)
 
-**Notes:** The owner's answer is three words; the reading is unconfirmed and S-00V carries it as open to correction.
+**Notes:** The owner's answer is three words; the reading is unconfirmed by the owner, so S-00V carries it as open to correction.
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-010
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-010
 
 ### PW-10
 
@@ -6375,8 +6375,8 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- create `workbench/specs/S-00V-portable-workbench/SPEC.md` - Portable Workbench Spec owning the Tasks (authored, PR #143).
-- update `LEXICON.md, templates/LEXICON.md` - Term and renames (done).
+- create `workbench/specs/S-00V-portable-workbench/SPEC.md` - Portable Workbench Spec owning the Tasks.
+- update `LEXICON.md, templates/LEXICON.md` - Defines the Portable Workbench term and records the renames.
 - update `BLUEPRINT.md, AGENTS.md, RUNBOOK.md (+ templates mirrors)` - Sharpened quality sentence, note-tracking and capability rules, procedures.
 - create `ADRs superseding ADR-0017, amending ADR-0046, narrowing ADR-0051/0040, recording claim-on-branch` - Each authored by the Task that makes the change.
 - update `workbench/manifest.json` - lanes.skills and skillPolicy reshape.
@@ -6385,7 +6385,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Map is agent-resolved under the owner's delegation. The whole portability set is v4 scope (owner, 2026-09-23).
 
-**Provenance:** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-011; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-002; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-004
+**Provenance (local records):** workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-011; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-002; workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#verification-004
 
 ## REC - Recovered pre-notepad questions
 
@@ -6412,7 +6412,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Recovered from transcript; not in the 240-ID count. Only the outcome survived in the notepad context before recovery.
 
-**Provenance:** workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-01; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions; Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 164-165
+**Provenance (local records):** workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-01; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions; Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 164-165
 
 ### REC-02
 
@@ -6438,7 +6438,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Recovered from transcript; not in the 240-ID count. S-049 notes the question was asked with its cost understated, before origin/main had been checked.
 
-**Provenance:** workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-02; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions; Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 164-165
+**Provenance (local records):** workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-02; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions; Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 164-165
 
 ### REC-03
 
@@ -6455,7 +6455,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 **Result:**
 
 - update `workbench/tools/workbench-layout.mjs supportedLegacy` - v3.1.2 frozen at the sixteen-skill policy; v3.1.3 carries the seventeen-skill policy.
-- update `workbench/manifest.json` - Room stamped v3.1.3 at the time.
+- update `workbench/manifest.json` - Stamps the room v3.1.3 for this release.
 - update `workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)` - Withdraws 'lands in v3.1.2'; records the v3.1.3 decision and the rejected alternatives.
 
 **Related:** [REC-04](#rec-04), [REC-02](#rec-02), [U313-1](#u313-1)
@@ -6464,7 +6464,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Recovered from transcript; not in the 240-ID count. Replaced an earlier agent-recorded 'lands in v3.1.2' decision based on a stale claim that v3.1.2 was unpublished. Opening v3.1.3 made the S-045 question (U313-1) live.
 
-**Provenance:** workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-03; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions; Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 524-529
+**Provenance (local records):** workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-03; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions; Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 524-529
 
 ### REC-04
 
@@ -6480,7 +6480,7 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Result:**
 
-- update `workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)` - Records that rooms outside the repo run v3.1.2, so freezing v3.1.2 prevents a live break, not a theoretical one.
+- update `workbench/specs/S-049-assignment-ownership-and-coordination-record/SPEC.md (Decisions And Contracts; Dependencies And Blockers)` - Records that rooms outside the repo ran v3.1.2 on 2026-09-07, so freezing v3.1.2 prevents a live break, not a theoretical one.
 
 **Related:** [REC-03](#rec-03)
 
@@ -6488,21 +6488,77 @@ Status of the 240 questions: locked 179, superseded 25, answered-in-chat 14, ope
 
 **Notes:** Recovered from transcript; not in the 240-ID count.
 
-**Provenance:** workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-04; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions; Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 524-529
+**Provenance (local records):** workbench/sessions/recovery/grilling-transcript-completeness-2026-09-23/recovered-questions.json#REC-04; workbench/sessions/grilling/unblocking-v3-1-3-open-work-2026-09-07.json#recovered_prior_questions; Claude session 7f601d2b-dccd-43a5-9c63-0cc2750325e4 lines 524-529
 
 ## Destination By Artifact
 
 Each durable artifact the answers name, with the questions whose Result lands there. Audit an artifact by reading these rows together.
 
 - `.claude/skills`: [PW-3](#pw-3)
-- `.claude/skills/lexicon/SKILL.md`: [FND-Q09](#fnd-q09)
-- `ADR-000L (intended)`: [TT-Q9](#tt-q9)
+- `ADR-0002`: [BPR-4](#bpr-4)
+- `ADR-000A`: [BPR-1](#bpr-1), [BPR-2](#bpr-2), [BPR-3](#bpr-3), [BPR-4](#bpr-4), [BPR-5](#bpr-5), [BPR-5A](#bpr-5a), [BPR-6](#bpr-6), [BPR-8F1](#bpr-8f1)
+- `ADR-000B`: [FND-Q23A](#fnd-q23a), [E-1](#e-1)
+- `ADR-000C`: [FND-Q22](#fnd-q22), [ACC-3](#acc-3)
+- `ADR-000D`: [FND-Q20](#fnd-q20), [FND-Q21A](#fnd-q21a), [FND-Q22A](#fnd-q22a), [FND-Q23](#fnd-q23), [FND-Q24](#fnd-q24)
+- `ADR-000E`: [FND-Q02](#fnd-q02), [FND-Q02A](#fnd-q02a), [FND-Q17b](#fnd-q17b), [TRACK](#track), [E-1](#e-1), [E-4](#e-4), [E-4C](#e-4c)
+- `ADR-000F`: [BPR-8F](#bpr-8f), [FND-Q14](#fnd-q14), [FND-Q19](#fnd-q19)
+- `ADR-000G`: [FND-Q01](#fnd-q01), [FND-Q19](#fnd-q19), [WF-1](#wf-1), [WF-6](#wf-6)
+- `ADR-000H`: [FND-Q02A](#fnd-q02a), [FND-Q03](#fnd-q03), [FND-Q13](#fnd-q13), [FND-Q19](#fnd-q19), [FND-Q21C](#fnd-q21c), [RB-Q1](#rb-q1), [RB-Q1A](#rb-q1a), [RB-Q2](#rb-q2), [RB-Q2A](#rb-q2a), [RB-Q2B](#rb-q2b), [TT-Q2](#tt-q2), [TT-Q3](#tt-q3), [WF-5](#wf-5), [WF-8A](#wf-8a), [E-3](#e-3), [E-9](#e-9)
+- `ADR-000I`: [BPR-6A](#bpr-6a), [FND-Q07](#fnd-q07), [FND-Q23](#fnd-q23), [WF-8D](#wf-8d), [WF-8F](#wf-8f)
+- `ADR-000J`: [RB-Q4](#rb-q4)
+- `ADR-000K`: [RB-Q5](#rb-q5)
+- `ADR-000L (not yet created)`: [TT-Q9](#tt-q9)
+- `ADR-000M`: [V3-2](#v3-2), [V3-3](#v3-3), [V3-7](#v3-7), [V3-7A](#v3-7a), [V3-7B](#v3-7b), [V3-8A](#v3-8a), [V3-9](#v3-9), [V3-9A](#v3-9a), [V3-9C](#v3-9c), [V3-10B](#v3-10b), [V3-14B](#v3-14b), [V3-15](#v3-15), [V3-15B](#v3-15b), [V3-21](#v3-21), [V3-21C](#v3-21c), [V3-22](#v3-22), [V3-22B](#v3-22b), [PW-3](#pw-3)
+- `ADR-0013`: [V3-1](#v3-1), [FND-Q23A](#fnd-q23a), [E-1](#e-1)
+- `ADR-0015`: [V3-5](#v3-5)
+- `ADR-0017`: [PW-3](#pw-3), [PW-10](#pw-10)
+- `ADR-0025`: [BPR-3](#bpr-3)
+- `ADR-0026`: [V3-5](#v3-5)
+- `ADR-0028`: [V3-11](#v3-11), [PW-5](#pw-5)
+- `ADR-0032`: [V3-2](#v3-2), [V3-10](#v3-10), [V3-10A](#v3-10a), [V3-11A](#v3-11a), [V3-11C](#v3-11c), [V3-13B](#v3-13b)
+- `ADR-0033`: [FND-Q22](#fnd-q22)
+- `ADR-0034`: [WB-10](#wb-10)
+- `ADR-0035`: [WB-2](#wb-2), [WB-5](#wb-5), [WB-6](#wb-6), [WB-15](#wb-15)
+- `ADR-0036`: [WB-3](#wb-3), [WB-16](#wb-16)
+- `ADR-0037`: [WB-4](#wb-4)
+- `ADR-0038`: [WB-1](#wb-1), [WB-7](#wb-7), [WB-8](#wb-8), [WB-9](#wb-9), [WB-13](#wb-13), [WB-14](#wb-14)
+- `ADR-0040`: [V3-11B](#v3-11b), [PW-5](#pw-5)
+- `ADR-0041`: [E-8](#e-8)
+- `ADR-0046`: [V3-3](#v3-3), [V3-7B](#v3-7b), [V3-22](#v3-22), [U313-10](#u313-10), [PW-3](#pw-3), [PW-4](#pw-4), [PW-10](#pw-10)
+- `ADR-0047`: [V3-4](#v3-4)
+- `ADR-0051`: [CAND-N](#cand-n), [PW-5](#pw-5), [PW-10](#pw-10)
+- `ADR-0054`: [V3-11](#v3-11), [V3-11A](#v3-11a), [V3-11B](#v3-11b)
 - `AGENTS.md`: [V3-6](#v3-6), [V3-10C](#v3-10c), [V3-11](#v3-11), [V3-13B](#v3-13b), [V3-20](#v3-20), [V3-23B](#v3-23b), [V3-24C](#v3-24c), [WB-2](#wb-2), [WB-3](#wb-3), [WB-4](#wb-4), [WB-5](#wb-5), [WB-6](#wb-6), [WB-10](#wb-10), [WB-12](#wb-12), [WB-14](#wb-14), [WB-15](#wb-15), [WB-16](#wb-16), [CAND-N](#cand-n), [BPR-1](#bpr-1), [BPR-2](#bpr-2), [BPR-3](#bpr-3), [BPR-4](#bpr-4), [BPR-5](#bpr-5), [BPR-6A](#bpr-6a), [BPR-7](#bpr-7), [BPR-7A](#bpr-7a), [BPR-7B](#bpr-7b), [BPR-7C](#bpr-7c), [BPR-8F](#bpr-8f), [BPR-8F1](#bpr-8f1), [BPR-R2](#bpr-r2), [FND-Q01](#fnd-q01), [FND-Q07](#fnd-q07), [FND-Q12](#fnd-q12), [FND-Q14](#fnd-q14), [FND-Q22](#fnd-q22), [RB-Q4](#rb-q4), [TT-Q3](#tt-q3), [TT-Q4](#tt-q4), [TT-Q5](#tt-q5), [TT-Q6](#tt-q6), [TT-Q7](#tt-q7), [TT-Q9](#tt-q9), [TT-Q12](#tt-q12), [WF-7](#wf-7), [WF-8](#wf-8), [WF-8B](#wf-8b), [WF-8C](#wf-8c), [WF-8D](#wf-8d), [WF-8E](#wf-8e), [WF-8F](#wf-8f), [WF-8G](#wf-8g), [E-1](#e-1), [ACC-3](#acc-3), [PW-5](#pw-5), [PW-7](#pw-7), [PW-10](#pw-10)
-- `BLUEPRINT.md`: [V3-5](#v3-5), [V3-7](#v3-7), [V3-24](#v3-24), [WB-8](#wb-8), [WB-9](#wb-9), [WB-10](#wb-10), [BPR-5](#bpr-5), [BPR-7](#bpr-7), [BPR-8A](#bpr-8a), [BPR-8B](#bpr-8b), [BPR-8C](#bpr-8c), [BPR-8D](#bpr-8d), [BPR-8F](#bpr-8f), [FND-Q01](#fnd-q01), [FND-Q05](#fnd-q05), [FND-Q14](#fnd-q14), [FND-Q17e](#fnd-q17e), [WF-1](#wf-1), [WF-2](#wf-2), [WF-3](#wf-3), [WF-4](#wf-4), [WF-6](#wf-6), [WF-7](#wf-7), [WF-8](#wf-8), [WF-8E](#wf-8e), [WF-8F](#wf-8f), [WF-8G](#wf-8g), [WF-9](#wf-9), [WF-10](#wf-10), [WF-12](#wf-12), [PW-1](#pw-1), [PW-10](#pw-10)
+- `BLUEPRINT.md`: [V3-5](#v3-5), [V3-7](#v3-7), [V3-24](#v3-24), [WB-8](#wb-8), [WB-10](#wb-10), [BPR-5](#bpr-5), [BPR-7](#bpr-7), [BPR-8A](#bpr-8a), [BPR-8B](#bpr-8b), [BPR-8C](#bpr-8c), [BPR-8D](#bpr-8d), [BPR-8F](#bpr-8f), [FND-Q01](#fnd-q01), [FND-Q05](#fnd-q05), [FND-Q14](#fnd-q14), [FND-Q17e](#fnd-q17e), [WF-1](#wf-1), [WF-2](#wf-2), [WF-3](#wf-3), [WF-4](#wf-4), [WF-6](#wf-6), [WF-7](#wf-7), [WF-8](#wf-8), [WF-8E](#wf-8e), [WF-8F](#wf-8f), [WF-8G](#wf-8g), [WF-9](#wf-9), [WF-10](#wf-10), [WF-12](#wf-12), [PW-1](#pw-1), [PW-10](#pw-10)
 - `CLAUDE.md`: [V3-6](#v3-6)
 - `LEXICON.md`: [V3-1](#v3-1), [V3-2](#v3-2), [V3-3](#v3-3), [V3-5](#v3-5), [V3-8](#v3-8), [V3-9B](#v3-9b), [V3-10B](#v3-10b), [V3-12A](#v3-12a), [V3-13A](#v3-13a), [V3-21](#v3-21), [V3-21B](#v3-21b), [V3-22](#v3-22), [V3-22A](#v3-22a), [V3-22B](#v3-22b), [V3-22C](#v3-22c), [V3-23B](#v3-23b), [WB-2](#wb-2), [WB-3](#wb-3), [WB-12](#wb-12), [BPR-1](#bpr-1), [BPR-2](#bpr-2), [BPR-3](#bpr-3), [BPR-5](#bpr-5), [BPR-5A](#bpr-5a), [BPR-7](#bpr-7), [BPR-8B](#bpr-8b), [FND-Q01](#fnd-q01), [FND-Q02](#fnd-q02), [FND-Q02A](#fnd-q02a), [FND-Q03](#fnd-q03), [FND-Q08](#fnd-q08), [FND-Q09](#fnd-q09), [FND-Q13](#fnd-q13), [FND-Q17b](#fnd-q17b), [FND-Q17c](#fnd-q17c), [FND-Q19](#fnd-q19), [FND-Q20](#fnd-q20), [FND-Q21](#fnd-q21), [FND-Q21B](#fnd-q21b), [FND-Q21D](#fnd-q21d), [FND-Q22](#fnd-q22), [FND-Q24](#fnd-q24), [RB-Q1](#rb-q1), [RB-Q1A](#rb-q1a), [RB-Q2](#rb-q2), [RB-Q5](#rb-q5), [TT-Q1](#tt-q1), [TT-Q2](#tt-q2), [TT-Q3](#tt-q3), [TT-Q4](#tt-q4), [TT-Q6](#tt-q6), [TT-Q7](#tt-q7), [TT-Q9](#tt-q9), [TT-Q10](#tt-q10), [TT-Q12](#tt-q12), [WF-1](#wf-1), [WF-2](#wf-2), [WF-5](#wf-5), [WF-6](#wf-6), [WF-8A](#wf-8a), [WF-8F](#wf-8f), [WF-8G](#wf-8g), [E-1](#e-1), [E-3](#e-3), [E-4](#e-4), [E-9](#e-9), [ACC-3](#acc-3), [PW-1](#pw-1), [PW-2](#pw-2), [PW-3](#pw-3), [PW-5](#pw-5), [PW-10](#pw-10), [REC-02](#rec-02)
 - `README.md`: [V3-4](#v3-4), [V3-12](#v3-12), [BPR-7B](#bpr-7b), [WF-8H](#wf-8h), [E-1](#e-1), [PW-3A](#pw-3a)
 - `RUNBOOK.md`: [V3-4](#v3-4), [V3-8](#v3-8), [V3-9](#v3-9), [V3-9B](#v3-9b), [V3-9C](#v3-9c), [V3-10C](#v3-10c), [V3-13](#v3-13), [V3-14](#v3-14), [V3-14A](#v3-14a), [V3-15A](#v3-15a), [V3-16](#v3-16), [V3-16A](#v3-16a), [V3-16B](#v3-16b), [V3-17D](#v3-17d), [V3-22C](#v3-22c), [V3-23](#v3-23), [V3-23B](#v3-23b), [WB-1](#wb-1), [WB-2](#wb-2), [WB-6](#wb-6), [WB-7](#wb-7), [WB-13](#wb-13), [WB-14](#wb-14), [CAND-N](#cand-n), [BPR-2](#bpr-2), [BPR-6](#bpr-6), [BPR-7](#bpr-7), [BPR-7A](#bpr-7a), [BPR-7C](#bpr-7c), [BPR-8C](#bpr-8c), [BPR-8E](#bpr-8e), [BPR-8F](#bpr-8f), [BPR-8F1](#bpr-8f1), [FND-Q01](#fnd-q01), [FND-Q12](#fnd-q12), [FND-Q23A](#fnd-q23a), [RB-Q4](#rb-q4), [TT-Q4](#tt-q4), [WF-8](#wf-8), [WF-8A](#wf-8a), [WF-8C](#wf-8c), [WF-9](#wf-9), [E-5](#e-5), [PW-1](#pw-1), [PW-3](#pw-3), [PW-3A](#pw-3a), [PW-4](#pw-4), [PW-5](#pw-5), [PW-6](#pw-6), [PW-7](#pw-7), [PW-10](#pw-10)
+- `Spec S-00A`: [BPR-1](#bpr-1), [BPR-5A](#bpr-5a), [BPR-7](#bpr-7), [BPR-8B](#bpr-8b), [BPR-8D](#bpr-8d), [BPR-8E](#bpr-8e), [BPR-R3](#bpr-r3)
+- `Spec S-00B`: [BPR-7B](#bpr-7b), [BPR-7B1](#bpr-7b1), [BPR-7B2](#bpr-7b2), [BPR-7C](#bpr-7c)
+- `Spec S-00C`: [BPR-7A](#bpr-7a), [BPR-7B2](#bpr-7b2)
+- `Spec S-00D`: [BPR-7B2](#bpr-7b2)
+- `Spec S-00E`: [BPR-7B2](#bpr-7b2), [BPR-7C](#bpr-7c)
+- `Spec S-00F`: [FND-Q12](#fnd-q12)
+- `Spec S-00G`: [FND-Q20](#fnd-q20), [FND-Q21](#fnd-q21), [FND-Q21A](#fnd-q21a), [FND-Q21B](#fnd-q21b), [FND-Q21C](#fnd-q21c), [FND-Q21D](#fnd-q21d), [FND-Q22A](#fnd-q22a), [FND-Q23](#fnd-q23), [FND-Q23A](#fnd-q23a), [FND-Q24](#fnd-q24), [TT-Q3](#tt-q3), [TT-Q12](#tt-q12), [PW-2](#pw-2)
+- `Spec S-00H`: [FND-Q21C](#fnd-q21c), [TT-Q2](#tt-q2), [TT-Q10](#tt-q10), [WF-5](#wf-5), [WF-8G](#wf-8g)
+- `Spec S-00I`: [FND-Q07](#fnd-q07), [FND-Q08](#fnd-q08), [WF-8D](#wf-8d), [WF-8E](#wf-8e), [WF-8F](#wf-8f), [WF-8H](#wf-8h)
+- `Spec S-00J`: [FND-Q14](#fnd-q14), [FND-Q21C](#fnd-q21c), [WF-8](#wf-8), [WF-8C](#wf-8c), [WF-8E](#wf-8e)
+- `Spec S-00M`: [RB-Q4](#rb-q4)
+- `Spec S-00N`: [RB-Q5](#rb-q5)
+- `Spec S-00O`: [WF-7](#wf-7), [WF-11](#wf-11), [WF-12](#wf-12), [TRACK](#track), [E-6](#e-6)
+- `Spec S-00P`: [WF-12](#wf-12), [E-6](#e-6)
+- `Spec S-00V`: [RB-Q6](#rb-q6), [PW-2](#pw-2), [PW-3](#pw-3), [PW-4](#pw-4), [PW-5](#pw-5), [PW-6](#pw-6), [PW-7](#pw-7), [PW-8](#pw-8), [PW-9](#pw-9), [PW-10](#pw-10)
+- `Spec S-011`: [V3-19A](#v3-19a)
+- `Spec S-014`: [V3-6](#v3-6), [V3-19](#v3-19), [V3-19B](#v3-19b), [V3-19C](#v3-19c), [V3-20A](#v3-20a), [V3-24C](#v3-24c)
+- `Spec S-021`: [V3-1](#v3-1), [V3-3](#v3-3), [V3-5](#v3-5), [V3-7](#v3-7), [V3-7A](#v3-7a), [V3-8B](#v3-8b), [V3-9](#v3-9), [V3-12](#v3-12), [V3-12A](#v3-12a), [V3-12B](#v3-12b), [V3-12C](#v3-12c), [V3-13](#v3-13), [V3-13A](#v3-13a), [V3-13B](#v3-13b), [V3-13C](#v3-13c), [V3-14](#v3-14), [V3-15](#v3-15), [V3-15B](#v3-15b), [V3-16](#v3-16), [V3-16A](#v3-16a), [V3-16B](#v3-16b), [V3-17](#v3-17), [V3-17A](#v3-17a), [V3-17B](#v3-17b), [V3-17C](#v3-17c), [V3-17D](#v3-17d), [V3-18](#v3-18), [V3-18B](#v3-18b), [V3-19](#v3-19), [V3-19A](#v3-19a), [V3-19D](#v3-19d), [V3-20](#v3-20), [V3-20A](#v3-20a), [V3-20B](#v3-20b), [V3-21](#v3-21), [V3-21A](#v3-21a), [V3-21B](#v3-21b), [V3-23](#v3-23), [V3-23A](#v3-23a), [V3-24](#v3-24), [V3-24A](#v3-24a), [V3-24B](#v3-24b), [V3-24C](#v3-24c)
+- `Spec S-027`: [WB-1](#wb-1), [WB-8](#wb-8), [WB-9](#wb-9), [WB-11](#wb-11), [WB-13](#wb-13)
+- `Spec S-045`: [U313-0](#u313-0), [U313-1](#u313-1), [U313-1A](#u313-1a), [U313-1B](#u313-1b), [U313-2](#u313-2), [U313-2A](#u313-2a), [U313-8](#u313-8)
+- `Spec S-048`: [V3-11](#v3-11), [V3-11A](#v3-11a), [V3-11B](#v3-11b)
+- `Spec S-049`: [U313-7](#u313-7), [REC-01](#rec-01), [REC-02](#rec-02), [REC-03](#rec-03), [REC-04](#rec-04)
+- `Spec S-050`: [U313-10](#u313-10), [BPR-7](#bpr-7), [BPR-7A](#bpr-7a), [BPR-7B1](#bpr-7b1)
+- `Spec S-051`: [V3-13A](#v3-13a), [V3-13B](#v3-13b)
+- `Spec S-052`: [CAND-N](#cand-n)
 - `TASKBOARD.json`: [FND-Q17c](#fnd-q17c), [RB-Q2A](#rb-q2a), [TRACK](#track), [E-1](#e-1), [E-3](#e-3), [E-4](#e-4), [E-4A](#e-4a), [E-4B](#e-4b), [E-4C](#e-4c), [E-5](#e-5), [E-6](#e-6), [E-7](#e-7), [E-10](#e-10), [E-11](#e-11)
 - `TASKBOARD.md`: [FND-Q02](#fnd-q02), [TT-Q10](#tt-q10)
 - `templates`: [BPR-7](#bpr-7), [RB-Q4](#rb-q4)
@@ -6522,47 +6578,15 @@ Each durable artifact the answers name, with the questions whose Result lands th
 - `tools/workbench-adoption.mjs`: [V3-12C](#v3-12c), [V3-14](#v3-14), [V3-14A](#v3-14a), [V3-14B](#v3-14b)
 - `tools/workbench-skills.mjs`: [V3-8](#v3-8), [V3-8A](#v3-8a), [V3-8B](#v3-8b), [V3-9](#v3-9), [V3-9C](#v3-9c), [V3-10C](#v3-10c), [V3-21C](#v3-21c), [V3-22A](#v3-22a), [V3-22C](#v3-22c)
 - `tools/workbench-upgrade.mjs`: [V3-12C](#v3-12c), [V3-16](#v3-16), [V3-16A](#v3-16a), [V3-16B](#v3-16b)
-- `workbench/docs/adr/000A`: [BPR-1](#bpr-1), [BPR-2](#bpr-2), [BPR-3](#bpr-3), [BPR-4](#bpr-4), [BPR-5](#bpr-5), [BPR-5A](#bpr-5a), [BPR-6](#bpr-6), [BPR-8F1](#bpr-8f1)
-- `workbench/docs/adr/000H`: [FND-Q02A](#fnd-q02a), [FND-Q03](#fnd-q03), [FND-Q13](#fnd-q13), [FND-Q19](#fnd-q19), [FND-Q21C](#fnd-q21c), [RB-Q1](#rb-q1), [RB-Q1A](#rb-q1a), [RB-Q2](#rb-q2), [RB-Q2A](#rb-q2a), [RB-Q2B](#rb-q2b), [TT-Q2](#tt-q2), [TT-Q3](#tt-q3), [WF-5](#wf-5), [WF-8A](#wf-8a), [E-3](#e-3), [E-9](#e-9)
-- `workbench/docs/adr/000J`: [RB-Q4](#rb-q4)
-- `workbench/docs/adr/000K`: [RB-Q5](#rb-q5)
-- `workbench/docs/adr/000M`: [V3-2](#v3-2), [V3-3](#v3-3), [V3-7](#v3-7), [V3-7A](#v3-7a), [V3-7B](#v3-7b), [V3-8A](#v3-8a), [V3-9](#v3-9), [V3-9A](#v3-9a), [V3-9C](#v3-9c), [V3-10B](#v3-10b), [V3-14B](#v3-14b), [V3-15](#v3-15), [V3-15B](#v3-15b), [V3-21](#v3-21), [V3-21C](#v3-21c), [V3-22](#v3-22), [V3-22B](#v3-22b), [PW-3](#pw-3)
-- `workbench/docs/adr/0013`: [V3-1](#v3-1), [FND-Q23A](#fnd-q23a), [E-1](#e-1)
-- `workbench/docs/adr/0015`: [V3-5](#v3-5)
-- `workbench/docs/adr/0026`: [V3-5](#v3-5)
-- `workbench/docs/adr/0028`: [V3-11](#v3-11), [PW-5](#pw-5)
-- `workbench/docs/adr/0032`: [V3-2](#v3-2), [V3-10](#v3-10), [V3-10A](#v3-10a), [V3-11A](#v3-11a), [V3-11C](#v3-11c), [V3-13B](#v3-13b)
-- `workbench/docs/adr/0033`: [FND-Q22](#fnd-q22)
-- `workbench/docs/adr/0034`: [WB-10](#wb-10)
-- `workbench/docs/adr/0035`: [WB-2](#wb-2), [WB-5](#wb-5), [WB-6](#wb-6), [WB-15](#wb-15)
-- `workbench/docs/adr/0036`: [WB-3](#wb-3), [WB-16](#wb-16)
-- `workbench/docs/adr/0037`: [WB-4](#wb-4)
-- `workbench/docs/adr/0038`: [WB-1](#wb-1), [WB-7](#wb-7), [WB-8](#wb-8), [WB-9](#wb-9), [WB-13](#wb-13), [WB-14](#wb-14)
-- `workbench/docs/adr/0040`: [V3-11B](#v3-11b), [PW-5](#pw-5)
-- `workbench/docs/adr/0041`: [E-8](#e-8)
-- `workbench/docs/adr/0046`: [V3-3](#v3-3), [V3-7B](#v3-7b), [V3-22](#v3-22), [U313-10](#u313-10), [PW-3](#pw-3), [PW-4](#pw-4), [PW-10](#pw-10)
-- `workbench/docs/adr/0047`: [V3-4](#v3-4)
-- `workbench/docs/adr/0051`: [CAND-N](#cand-n), [PW-5](#pw-5), [PW-10](#pw-10)
-- `workbench/docs/adr/0054`: [V3-11](#v3-11), [V3-11A](#v3-11a), [V3-11B](#v3-11b)
 - `workbench/docs/adr/archive`: [BPR-6A](#bpr-6a)
-- `workbench/docs/adr/archive/0002`: [BPR-4](#bpr-4)
-- `workbench/docs/adr/archive/0017`: [PW-3](#pw-3), [PW-10](#pw-10)
-- `workbench/docs/adr/archive/0025`: [BPR-3](#bpr-3)
 - `workbench/docs/adr/HISTORY.md`: [BPR-6A](#bpr-6a)
-- `workbench/docs/adr/proposed/000B`: [FND-Q23A](#fnd-q23a), [E-1](#e-1)
-- `workbench/docs/adr/proposed/000C`: [FND-Q22](#fnd-q22), [ACC-3](#acc-3)
-- `workbench/docs/adr/proposed/000D`: [FND-Q20](#fnd-q20), [FND-Q21A](#fnd-q21a), [FND-Q22A](#fnd-q22a), [FND-Q23](#fnd-q23), [FND-Q24](#fnd-q24)
-- `workbench/docs/adr/proposed/000E`: [FND-Q02](#fnd-q02), [FND-Q02A](#fnd-q02a), [FND-Q17b](#fnd-q17b), [TRACK](#track), [E-1](#e-1), [E-4](#e-4), [E-4C](#e-4c)
-- `workbench/docs/adr/proposed/000F`: [BPR-8F](#bpr-8f), [FND-Q14](#fnd-q14), [FND-Q19](#fnd-q19)
-- `workbench/docs/adr/proposed/000G`: [FND-Q01](#fnd-q01), [FND-Q19](#fnd-q19), [WF-1](#wf-1), [WF-6](#wf-6)
-- `workbench/docs/adr/proposed/000I`: [BPR-6A](#bpr-6a), [FND-Q07](#fnd-q07), [FND-Q23](#fnd-q23), [WF-8D](#wf-8d), [WF-8F](#wf-8f)
 - `workbench/docs/adr/REGISTER.md`: [BPR-6A](#bpr-6a), [BPR-8C](#bpr-8c), [FND-Q23](#fnd-q23)
 - `workbench/feedback/llm-workbench-decision-recovery.zip`: [U313-7](#u313-7)
 - `workbench/feedback/REPORT-decision-triage-2026-09-07.md`: [U313-7](#u313-7)
 - `workbench/feedback/REPORT_FORMAT.md`: [WB-7](#wb-7), [WB-11](#wb-11), [RB-Q5](#rb-q5)
 - `workbench/manifest.json`: [V3-2](#v3-2), [V3-8](#v3-8), [V3-9A](#v3-9a), [V3-10](#v3-10), [V3-10A](#v3-10a), [V3-10B](#v3-10b), [V3-11C](#v3-11c), [V3-12A](#v3-12a), [V3-12B](#v3-12b), [V3-13A](#v3-13a), [V3-21B](#v3-21b), [V3-21C](#v3-21c), [V3-22A](#v3-22a), [V3-22B](#v3-22b), [V3-23B](#v3-23b), [V3-24A](#v3-24a), [FND-Q03](#fnd-q03), [RB-Q2B](#rb-q2b), [WF-8H](#wf-8h), [E-10](#e-10), [PW-3](#pw-3), [PW-10](#pw-10), [REC-02](#rec-02), [REC-03](#rec-03)
 - `workbench/sessions/.gitignore`: [V3-11A](#v3-11a), [PW-5](#pw-5)
-- `workbench/skills`: [V3-8B](#v3-8b), [FND-Q09](#fnd-q09), [PW-3A](#pw-3a)
+- `workbench/skills`: [V3-8B](#v3-8b), [PW-3A](#pw-3a)
 - `workbench/skills/adoption`: [V3-4](#v3-4)
 - `workbench/skills/builder`: [WB-3](#wb-3), [WB-11](#wb-11), [WB-12](#wb-12)
 - `workbench/skills/carry`: [FND-Q03](#fnd-q03), [TT-Q4](#tt-q4), [REC-01](#rec-01)
@@ -6579,31 +6603,6 @@ Each durable artifact the answers name, with the questions whose Result lands th
 - `workbench/skills/to-tasks`: [TT-Q2](#tt-q2), [WF-5](#wf-5), [E-4B](#e-4b)
 - `workbench/skills/update-harness`: [V3-4](#v3-4), [V3-16](#v3-16)
 - `workbench/specs/CATALOG.md`: [BPR-8A](#bpr-8a), [FND-Q23A](#fnd-q23a)
-- `workbench/specs/retired/S-00H`: [FND-Q21C](#fnd-q21c), [TT-Q2](#tt-q2), [TT-Q10](#tt-q10), [WF-5](#wf-5), [WF-8G](#wf-8g)
-- `workbench/specs/S-00A`: [BPR-1](#bpr-1), [BPR-5A](#bpr-5a), [BPR-7](#bpr-7), [BPR-8B](#bpr-8b), [BPR-8D](#bpr-8d), [BPR-8E](#bpr-8e), [BPR-R3](#bpr-r3)
-- `workbench/specs/S-00B`: [BPR-7B](#bpr-7b), [BPR-7B1](#bpr-7b1), [BPR-7B2](#bpr-7b2), [BPR-7C](#bpr-7c)
-- `workbench/specs/S-00C`: [BPR-7A](#bpr-7a), [BPR-7B2](#bpr-7b2)
-- `workbench/specs/S-00D`: [BPR-7B2](#bpr-7b2)
-- `workbench/specs/S-00E`: [BPR-7B2](#bpr-7b2), [BPR-7C](#bpr-7c)
-- `workbench/specs/S-00F`: [FND-Q12](#fnd-q12)
-- `workbench/specs/S-00G`: [FND-Q20](#fnd-q20), [FND-Q21](#fnd-q21), [FND-Q21A](#fnd-q21a), [FND-Q21B](#fnd-q21b), [FND-Q21C](#fnd-q21c), [FND-Q21D](#fnd-q21d), [FND-Q22A](#fnd-q22a), [FND-Q23](#fnd-q23), [FND-Q23A](#fnd-q23a), [FND-Q24](#fnd-q24), [TT-Q3](#tt-q3), [TT-Q12](#tt-q12), [PW-2](#pw-2)
-- `workbench/specs/S-00I`: [FND-Q07](#fnd-q07), [FND-Q08](#fnd-q08), [WF-8D](#wf-8d), [WF-8E](#wf-8e), [WF-8F](#wf-8f), [WF-8H](#wf-8h)
-- `workbench/specs/S-00J`: [FND-Q14](#fnd-q14), [FND-Q21C](#fnd-q21c), [WF-8](#wf-8), [WF-8C](#wf-8c), [WF-8E](#wf-8e)
-- `workbench/specs/S-00M`: [RB-Q4](#rb-q4)
-- `workbench/specs/S-00N`: [RB-Q5](#rb-q5)
-- `workbench/specs/S-00O`: [WF-7](#wf-7), [WF-11](#wf-11), [WF-12](#wf-12), [TRACK](#track), [E-6](#e-6)
-- `workbench/specs/S-00P`: [WF-12](#wf-12), [E-6](#e-6)
-- `workbench/specs/S-00V`: [RB-Q6](#rb-q6), [PW-2](#pw-2), [PW-3](#pw-3), [PW-4](#pw-4), [PW-5](#pw-5), [PW-6](#pw-6), [PW-7](#pw-7), [PW-8](#pw-8), [PW-9](#pw-9), [PW-10](#pw-10)
-- `workbench/specs/S-011`: [V3-19A](#v3-19a)
-- `workbench/specs/S-014`: [V3-6](#v3-6), [V3-19](#v3-19), [V3-19B](#v3-19b), [V3-19C](#v3-19c), [V3-20A](#v3-20a), [V3-24C](#v3-24c)
-- `workbench/specs/S-021`: [V3-1](#v3-1), [V3-3](#v3-3), [V3-5](#v3-5), [V3-7](#v3-7), [V3-7A](#v3-7a), [V3-8B](#v3-8b), [V3-9](#v3-9), [V3-12](#v3-12), [V3-12A](#v3-12a), [V3-12B](#v3-12b), [V3-12C](#v3-12c), [V3-13](#v3-13), [V3-13A](#v3-13a), [V3-13B](#v3-13b), [V3-13C](#v3-13c), [V3-14](#v3-14), [V3-15](#v3-15), [V3-15B](#v3-15b), [V3-16](#v3-16), [V3-16A](#v3-16a), [V3-16B](#v3-16b), [V3-17](#v3-17), [V3-17A](#v3-17a), [V3-17B](#v3-17b), [V3-17C](#v3-17c), [V3-17D](#v3-17d), [V3-18](#v3-18), [V3-18B](#v3-18b), [V3-19](#v3-19), [V3-19A](#v3-19a), [V3-19D](#v3-19d), [V3-20](#v3-20), [V3-20A](#v3-20a), [V3-20B](#v3-20b), [V3-21](#v3-21), [V3-21A](#v3-21a), [V3-21B](#v3-21b), [V3-23](#v3-23), [V3-23A](#v3-23a), [V3-24](#v3-24), [V3-24A](#v3-24a), [V3-24B](#v3-24b), [V3-24C](#v3-24c)
-- `workbench/specs/S-027`: [WB-1](#wb-1), [WB-8](#wb-8), [WB-9](#wb-9), [WB-11](#wb-11), [WB-13](#wb-13)
-- `workbench/specs/S-045`: [U313-0](#u313-0), [U313-1](#u313-1), [U313-1A](#u313-1a), [U313-1B](#u313-1b), [U313-2](#u313-2), [U313-2A](#u313-2a), [U313-8](#u313-8)
-- `workbench/specs/S-048`: [V3-11](#v3-11), [V3-11A](#v3-11a), [V3-11B](#v3-11b)
-- `workbench/specs/S-049`: [U313-7](#u313-7), [REC-01](#rec-01), [REC-02](#rec-02), [REC-03](#rec-03), [REC-04](#rec-04)
-- `workbench/specs/S-050`: [U313-10](#u313-10), [BPR-7](#bpr-7), [BPR-7A](#bpr-7a), [BPR-7B1](#bpr-7b1)
-- `workbench/specs/S-051`: [V3-13A](#v3-13a), [V3-13B](#v3-13b)
-- `workbench/specs/S-052`: [CAND-N](#cand-n)
 - `workbench/tasks`: [E-9](#e-9)
 - `workbench/tools/adr.mjs`: [BPR-6](#bpr-6), [BPR-6A](#bpr-6a), [FND-Q23](#fnd-q23)
 - `workbench/tools/diagnostics.mjs`: [RB-Q4](#rb-q4)
@@ -6622,7 +6621,7 @@ Each durable artifact the answers name, with the questions whose Result lands th
 - `workbench/wiki/skill-<name>.md`: [TT-Q8](#tt-q8)
 - `templates/ADOPTION.md`: [V3-4](#v3-4), [V3-14](#v3-14), [V3-14A](#v3-14a), [V3-14B](#v3-14b), [FND-Q23A](#fnd-q23a), [PW-3A](#pw-3a)
 - `templates/AGENTS.md`: [V3-6](#v3-6), [V3-11](#v3-11), [V3-13B](#v3-13b), [V3-20](#v3-20), [V3-23B](#v3-23b), [V3-24C](#v3-24c), [WB-2](#wb-2), [WB-3](#wb-3), [WB-4](#wb-4), [WB-5](#wb-5), [WB-6](#wb-6), [WB-10](#wb-10), [WB-12](#wb-12), [WB-14](#wb-14), [WB-15](#wb-15), [WB-16](#wb-16), [CAND-N](#cand-n), [BPR-1](#bpr-1), [BPR-2](#bpr-2), [BPR-3](#bpr-3), [BPR-4](#bpr-4), [BPR-5](#bpr-5), [BPR-6A](#bpr-6a), [BPR-8F](#bpr-8f), [BPR-8F1](#bpr-8f1), [BPR-R2](#bpr-r2), [FND-Q01](#fnd-q01), [FND-Q07](#fnd-q07), [FND-Q14](#fnd-q14), [FND-Q22](#fnd-q22), [TT-Q3](#tt-q3), [TT-Q5](#tt-q5), [TT-Q6](#tt-q6), [TT-Q7](#tt-q7), [TT-Q9](#tt-q9), [TT-Q12](#tt-q12), [WF-7](#wf-7), [WF-8](#wf-8), [WF-8B](#wf-8b), [WF-8C](#wf-8c), [WF-8D](#wf-8d), [WF-8E](#wf-8e), [WF-8F](#wf-8f), [WF-8G](#wf-8g), [ACC-3](#acc-3), [PW-5](#pw-5), [PW-7](#pw-7)
-- `templates/BLUEPRINT.md`: [V3-24](#v3-24), [WB-8](#wb-8), [WB-9](#wb-9), [WB-10](#wb-10), [BPR-5](#bpr-5), [BPR-8A](#bpr-8a), [BPR-8B](#bpr-8b), [BPR-8C](#bpr-8c), [BPR-8D](#bpr-8d), [BPR-8F](#bpr-8f), [FND-Q01](#fnd-q01), [FND-Q05](#fnd-q05), [WF-1](#wf-1), [PW-1](#pw-1)
+- `templates/BLUEPRINT.md`: [V3-24](#v3-24), [WB-8](#wb-8), [WB-10](#wb-10), [BPR-5](#bpr-5), [BPR-8A](#bpr-8a), [BPR-8B](#bpr-8b), [BPR-8C](#bpr-8c), [BPR-8D](#bpr-8d), [BPR-8F](#bpr-8f), [FND-Q01](#fnd-q01), [FND-Q05](#fnd-q05), [WF-1](#wf-1), [PW-1](#pw-1)
 - `templates/feedback/REPORT_FORMAT.md`: [RB-Q5](#rb-q5)
 - `templates/GENESIS.md`: [V3-4](#v3-4), [V3-15](#v3-15), [V3-15A](#v3-15a), [PW-3A](#pw-3a), [REC-02](#rec-02)
 - `templates/LEXICON.md`: [V3-1](#v3-1), [V3-2](#v3-2), [V3-3](#v3-3), [V3-8](#v3-8), [V3-9B](#v3-9b), [V3-10B](#v3-10b), [V3-21](#v3-21), [V3-21B](#v3-21b), [V3-22](#v3-22), [V3-22A](#v3-22a), [V3-22B](#v3-22b), [V3-22C](#v3-22c), [V3-23B](#v3-23b), [WB-12](#wb-12), [BPR-1](#bpr-1), [BPR-2](#bpr-2), [BPR-3](#bpr-3), [BPR-5](#bpr-5), [BPR-5A](#bpr-5a), [BPR-8B](#bpr-8b), [FND-Q01](#fnd-q01), [FND-Q02A](#fnd-q02a), [FND-Q03](#fnd-q03), [FND-Q08](#fnd-q08), [FND-Q09](#fnd-q09), [FND-Q17b](#fnd-q17b), [FND-Q17c](#fnd-q17c), [FND-Q19](#fnd-q19), [FND-Q21](#fnd-q21), [FND-Q21B](#fnd-q21b), [FND-Q21D](#fnd-q21d), [FND-Q22](#fnd-q22), [FND-Q24](#fnd-q24), [RB-Q1](#rb-q1), [RB-Q1A](#rb-q1a), [RB-Q2](#rb-q2), [RB-Q5](#rb-q5), [TT-Q1](#tt-q1), [TT-Q2](#tt-q2), [TT-Q3](#tt-q3), [TT-Q4](#tt-q4), [TT-Q6](#tt-q6), [TT-Q7](#tt-q7), [TT-Q9](#tt-q9), [TT-Q10](#tt-q10), [TT-Q12](#tt-q12), [WF-1](#wf-1), [WF-2](#wf-2), [WF-5](#wf-5), [WF-6](#wf-6), [WF-8A](#wf-8a), [WF-8F](#wf-8f), [WF-8G](#wf-8g), [E-3](#e-3), [E-4](#e-4), [E-9](#e-9), [ACC-3](#acc-3), [PW-1](#pw-1), [PW-10](#pw-10)
@@ -6631,15 +6630,16 @@ Each durable artifact the answers name, with the questions whose Result lands th
 - `templates/SPEC.md`: [WB-16](#wb-16), [E-4A](#e-4a)
 - `templates/TASKBOARD.md`: [FND-Q02](#fnd-q02), [E-1](#e-1)
 - `templates/wiki`: [WF-8H](#wf-8h)
-- `Other or not yet created: GitHub PR #42`: [V3-19C](#v3-19c), [V3-20A](#v3-20a)
-- `Other or not yet created: GPT_OS workbench root llm-workbench-decision-recovery.zip`: [U313-7](#u313-7)
-- `Other or not yet created: new ADR: claim on the task branch with fetch-all`: [PW-6](#pw-6)
-- `Other or not yet created: New Spec 'Artifact model and definitions'`: [TT-Q3](#tt-q3), [TT-Q4](#tt-q4)
-- `Other or not yet created: new WBID Spec`: [E-6](#e-6), [E-8](#e-8)
-- `Other or not yet created: sitrep core skill`: [FND-Q21D](#fnd-q21d)
-- `Other or not yet created: skills-pending/domain-modeling/SKILL.md`: [FND-Q13](#fnd-q13)
-- `Other or not yet created: TASKBOARD render`: [PW-6](#pw-6)
-- `Other or not yet created: Workbench_Template repository`: [FND-Q12](#fnd-q12)
+- `Outside the repo or not yet created: GitHub PR #42`: [V3-19C](#v3-19c), [V3-20A](#v3-20a)
+- `Outside the repo or not yet created: llm-workbench-decision-recovery.zip in the GPT_OS workbench root`: [U313-7](#u313-7)
+- `Outside the repo or not yet created: new ADR: claim on the task branch with fetch-all`: [PW-6](#pw-6)
+- `Outside the repo or not yet created: owner's personal installed lexicon skill`: [FND-Q09](#fnd-q09)
+- `Outside the repo or not yet created: sitrep core skill`: [FND-Q21D](#fnd-q21d)
+- `Outside the repo or not yet created: skills-pending/domain-modeling/SKILL.md`: [FND-Q13](#fnd-q13)
+- `Outside the repo or not yet created: Spec 'Artifact model and definitions'`: [TT-Q3](#tt-q3), [TT-Q4](#tt-q4)
+- `Outside the repo or not yet created: TASKBOARD render`: [PW-6](#pw-6)
+- `Outside the repo or not yet created: WBID Spec`: [E-6](#e-6), [E-8](#e-8)
+- `Outside the repo or not yet created: Workbench_Template repository`: [FND-Q12](#fnd-q12)
 
 ## Maintenance
 

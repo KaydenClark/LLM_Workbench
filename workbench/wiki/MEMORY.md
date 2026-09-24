@@ -64,7 +64,7 @@ copying task state here.
 
 ## Grilling Destination Audit Ledger
 
-Every unique grilling question the owner answered, with its answer, reason and
+Every unique grilling question put to the owner, with its answer, reason and
 intended result, is in
 [grilling-destination-audit-ledger.md](grilling-destination-audit-ledger.md).
 It is the destination the v4 Workbench is audited against: look a question up by
