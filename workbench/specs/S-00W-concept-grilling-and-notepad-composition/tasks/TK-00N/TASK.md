@@ -3,13 +3,15 @@
 **Task ID:** TK-00N
 **Spec ID:** S-00W
 **Slice:** Prove the composed concept flow at the entry routes
-**Status:** blocked
+**Status:** deferred
 **Blockers:** TK-00M
 **Destination:** spec-acceptance: S-00W Acceptance Criteria lines 1-7
 **Stance:** Builder
 **Planned verification:** Red: a cold-start route or realistic owner/agent transcript contradicts confirmation-before-lock, persistence independence or bounded concept readiness; green: root and template routes, executable skills, catalog checks and three Wiki explanations agree, the required suite and Wiki validation pass, and fresh standalone/composed/resume scenarios carry a named human-evaluation limit. Record guardrail and self-drift pre/post receipts and obtain independent candidate review before integration.
 
 ## Delivery
+
+**2026-09-24 planning correction:** This original slice is retained as historical planning context and is not executable. S-00X grilling, S-00Y notepad and S-00Z grill-me now own the skill-sized delivery. Do not claim or close this Task as implementation proof.
 
 Exercise the complete three-skill user journey in fresh contexts: a recommendation differs from the owner's answer; pending and corrected readbacks hold progression; confirmation changes the ready tree; an upstream premise invalidates only dependents; irrelevant branches disappear; missing evidence blocks a false concept-ready claim; a final concept readback precedes any specification transition. Include grilling without persistence, grill-me with notepad, unrelated notepad use and resume with pending versus confirmed meaning. Make only the narrow root, generic template, catalog and Wiki wording changes required by observed contradictions. Reconcile overlapping Skills Wiki page changes through the single page owner before integration.
 

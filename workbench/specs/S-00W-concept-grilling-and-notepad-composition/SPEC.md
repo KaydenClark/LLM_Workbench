@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-23
-**Catalog description:** Settle a shared design concept through one-question-at-a-time grilling, with an independent notepad composed by grill-me.
+**Updated:** 2026-09-24
+**Catalog description:** Preserve the accepted shared concept contract for grilling, notepad and grill-me while each skill has its own delivery Spec.
 **Blockers:** none for planning; implementation has not been assigned.
-**Latest event:** Planning packet passed the 46-command suite and separate-context review of `eb66fd935bda2f9cf910b517d0174c06acb94011`; no skill behavior changed.
-**Next gate:** Activate an approved Task for implementation, then reconcile its source and distribution route with S-00V and the Skills Wiki branch before editing shared skill or Wiki owners.
+**Latest event:** Owner directed a per-skill split on 2026-09-24; the three original implementation Tasks are deferred in favor of individual delivery Specs. The planning packet's historical proof remains below.
+**Next gate:** Verify the composed journey through the individual grilling, notepad and grill-me Specs; do not execute the deferred Tasks from this packet.
 
 > **Citation anchors.** pre=`4ae75687c0786026d2c959459e642a29da24e4d0` post=`4ae75687c0786026d2c959459e642a29da24e4d0`.
 
@@ -46,9 +46,9 @@ Verified at the pre anchor on 2026-09-23:
 ## Decisions And Contracts
 
 - **Owner-accepted interaction order:** recommendation -> owner answer -> pending readback -> explicit confirmation or corrected readback -> lock -> dependent-map update -> next design question. A pending answer and confirmed decision are distinct in user-facing language and any saved context.
-- **Source ownership:** The current repository source is `skills/grilling/SKILL.md` and `skills/notepad/SKILL.md`. A later implementation adds a repository-owned `grill-me` entry under the then-current manifest-declared skill source lane and updates the declared skill inventory, catalog and distribution contract. It must not silently promote the archived wrapper or assume global installation changed. If S-00V lands first, use its managed lane and adapter rules; do not create a competing root source. The historical archived item remains under S-00R's disposition gate.
+- **Source ownership:** The current source is in the manifest-declared `workbench/skills` lane. [S-00X](../S-00X-grilling-skill-rebuild/SPEC.md) owns grilling delivery, [S-00Y](../S-00Y-notepad-skill-rebuild/SPEC.md) owns notepad delivery, and [S-00Z](../S-00Z-grill-me-skill-rebuild/SPEC.md) owns the proposed repository-owned `grill-me` entry and its inventory/distribution change. The archived wrapper remains under S-00R's disposition gate.
 - **No runtime migration:** Preserve the current notepad schema, correction links, privacy scan, revision checks, typed collections and ignored live notes. If a scenario exposes a genuine runtime gap, record it and obtain a scoped owner decision rather than introducing a new storage framework under this Spec.
-- **Documentation ownership:** The three individual skill Wiki pages explain the accepted destination and current limitation; the executable skills and their tests own implementation. Root and template controls are aligned narrowly when implementation changes the operational contract. The Wiki router remains the only index. The unmerged Skills Wiki branch must reuse these page owners or reconcile edits before integration.
+- **Documentation ownership:** Each individual skill Spec owns its Wiki page alongside its source and tests. This packet preserves the accepted composition contract. The Wiki router remains the only index; the unmerged oversized Skills Wiki packet has no delivery authority.
 - **Planning boundary:** This Spec and its Tasks describe later work. Writing this packet does not claim a Task, implement a skill, install a global skill, publish a release, or approve the Skills Wiki branch.
 
 ## Non-Goals
@@ -60,7 +60,7 @@ Verified at the pre anchor on 2026-09-23:
 
 ## Dependencies And Blockers
 
-There is no prerequisite to author this planning packet. Implementation Tasks are ordered by delivered behavior and remain unstarted until assigned. Before the source/distribution Task, inspect the then-current [S-00V](../S-00V-portable-workbench/SPEC.md) outcome and [S-00R](../S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) archived-source disposition, and reconcile the isolated Skills Wiki branch's overlapping page proposals. None authorizes edits in those lanes here.
+The three individual delivery Specs own implementation and page maintenance. This packet retains their accepted shared design and its historical planning evidence. Its original Tasks are deferred to avoid two executable owners for the same source. S-00Z checks the landed [S-00V](../S-00V-portable-workbench/SPEC.md) lane and [S-00R](../S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) archive disposition before adding `grill-me`.
 
 ## Vertical Implementation Slices
 
@@ -85,11 +85,11 @@ Instruction-level scenario transcripts can inspect the exact recommendation, ans
 
 ## Verification Procedure
 
-For each behavior-changing Task, first show a targeted scenario or stable test failing for the intended behavior, then make the smallest source change and rerun it green. Run targeted skill/catalog, composition, project-evidence, notepad and Wiki checks as applicable, then the full AGENTS/RUNBOOK suite. Capture guardrail baseline and after-score for harness edits, with limits. Run `self-drift.mjs --phase pre` and `--phase post` plus the Runbook semantic inventory. Evaluate at least the scenarios named in Acceptance Criteria in fresh contexts, record actual transcript excerpts and human limitations, and obtain separate-context review of the immutable candidate before integration.
+The original Tasks are deferred. S-00X, S-00Y and S-00Z own the behavior-changing work and its red/green proof; this paragraph preserves the shared scenario expectations. Run targeted skill/catalog, composition, project-evidence, notepad and Wiki checks as applicable, then the full AGENTS/RUNBOOK suite. Capture guardrail baseline and after-score for harness edits, with limits. Run `self-drift.mjs --phase pre` and `--phase post` plus the Runbook semantic inventory. Evaluate at least the scenarios named in Acceptance Criteria in fresh contexts, record actual transcript excerpts and human limitations, and obtain separate-context review of the immutable candidate before integration.
 
 ## Documentation Impact
 
-This authoring pass creates three skill articles and routes them from `workbench/wiki/MEMORY.md`. Future implementation owns narrow `AGENTS.md`/`RUNBOOK.md`/`BLUEPRINT.md` and generic template wording changes only where meaning changes, plus `skills/README.md`, manifest skill inventory, catalog assertions and distribution receipts when `grill-me` becomes canonical. The executing agent records docs checked or the exact update in each Task proof.
+The 2026-09-23 planning pass created three skill articles and routed them from `workbench/wiki/MEMORY.md`. Their individual delivery Specs now own later page maintenance and any narrow `AGENTS.md`/`RUNBOOK.md`/`BLUEPRINT.md`, generic template, `workbench/skills/README.md`, manifest, catalog or distribution change required by delivered behavior. Each executing skill Task records its documentation proof.
 
 ## Append-Only Evidence And Execution Log
 
@@ -98,10 +98,12 @@ This authoring pass creates three skill articles and routes them from `workbench
 | 2026-09-23 | planning | Owner-directed design captured at pre anchor in isolated branch | Current controls, three skill sources, catalog seams, Wiki schema, S-00V and S-00R inspected; pre self-drift: 49 attention findings, `machineResult: blocked`, `cleanUpdate: false`; no behavior trial | Spec, Tasks and three individual skill Wiki pages authored in this pass | Skill implementation, source distribution, owner-led scenario evaluation and independent review remain future gates |
 | 2026-09-23 | planning verification | Checked the authored packet and Wiki routes | All 46 commands in the AGENTS full suite passed; `wiki.mjs validate`, citation-anchor tests, `render`, `show S-00W`, `doctor` and `git diff --check` passed. Post self-drift retained the same 49 pre-existing attention findings, `machineResult: blocked`, `cleanUpdate: false`; bounded semantic review found no new current-facing contradiction in touched owners. | Three new pages routed from the sole Wiki index; Catalog generated from the Spec | No interview behavior or installed-skill behavior was exercised; independent candidate review and later implementation proof remain open |
 | 2026-09-23 | review | Separate-context review of `eb66fd935bda2f9cf910b517d0174c06acb94011` found no blocking correctness issue | Codex CLI `codex review --commit` using gpt-5.5, review mode; it checked links, source claims and packet shape. First attempt with the CLI's configured gpt-6-sol failed before review because that model was unavailable. | No document change requested by reviewer | Review covers this planning candidate only; no conversational or installed-skill acceptance inferred |
+| 2026-09-24 | planning correction | Owner directed one skill-sized delivery Spec per skill; original three Tasks deferred without executing or closing them | Checked current managed source lane, manifest inventory, existing three Wiki pages and 21-skill catalog; no skill behavior trial | Individual S-00X, S-00Y and S-00Z now own source, verification and page destinations; this Spec retains the shared accepted design | Composed behavior remains unverified; individual delivery and independent review remain open |
+| 2026-09-24 | planning verification | Checked the per-skill split and deferred original execution Tasks | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding. Clean pre/post self-drift at 4940233 had identical seven pre-existing findings, machineResult blocked and cleanUpdate false; bounded read-back found no new contradiction in touched current-facing routes | Catalog rendered; three existing skill pages linked to managed source and individual delivery Specs | Immutable review and skill behavior remain open |
 
 ## Completion Result
 
-Planning packet only. No Task execution or behavioral proof is claimed.
+Accepted shared design packet only. Original implementation Tasks are deferred in favor of S-00X, S-00Y and S-00Z. No Task execution or behavioral proof is claimed.
 
 ## Supersession
 

@@ -3,13 +3,15 @@
 **Task ID:** TK-00L
 **Spec ID:** S-00W
 **Slice:** Settle one design decision before the next question
-**Status:** ready
+**Status:** deferred
 **Blockers:** none
 **Destination:** spec-acceptance: S-00W Acceptance Criteria lines 1-4
 **Stance:** Builder
 **Planned verification:** Red: a fresh-context grilling scenario advances from a pending or corrected answer, treats a recommendation as accepted, or declares an empty ready frontier complete; green: the question, owner answer, pending/corrected readback, explicit confirmation, affected dependency update and next question occur in order, and a final concept readback stays gated on owner confirmation. Run targeted catalog and scenario checks, then the required suite; report human interpretation limits.
 
 ## Delivery
+
+**2026-09-24 planning correction:** This original slice is retained as historical planning context and is not executable. S-00X grilling now owns the skill-sized delivery. Do not claim or close this Task as implementation proof.
 
 Make the repository-owned grilling source a standalone inquiry and synthesis skill. Ask one consequential ready question with recommended answer, why and impact; distinguish a provisional owner answer from a confirmed decision. Wait on the current decision while the owner corrects the Question / Answer / Why / Impact readback. Maintain a changing dependency map and ready frontier, prune irrelevant branches, reopen a settled answer only for a named reason, and synthesize the concept at meaningful boundaries. Remove notepad runtime mechanics from this primitive while preserving optional evidence lookup and the caller's authority limits.
 

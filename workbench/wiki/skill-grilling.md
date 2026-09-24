@@ -6,10 +6,11 @@ knowledge_role: curated
 provenance:
   - Owner-accepted concept and S-00W planning, 2026-09-23
 source_paths:
+  - workbench/specs/S-00X-grilling-skill-rebuild/SPEC.md
   - workbench/specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md
-  - skills/grilling/SKILL.md
+  - workbench/skills/grilling/SKILL.md
   - BLUEPRINT.md
-last_verified: 2026-09-23
+last_verified: 2026-09-24
 ---
 
 # Grilling: arrive at a shared design concept
@@ -36,11 +37,13 @@ The finish is a confirmed concept readback: problem, intended user and experienc
 
 `grilling` is intended to work without persistence. [Notepad](skill-notepad.md) can preserve working context; [grill-me](skill-grill-me.md) is the intended entry point that composes them. Lexicon, domain-modeling and wayfinder may help within the caller's scope, but do not grant new authority.
 
-**Verified current source, 2026-09-23:** [`skills/grilling/SKILL.md`](../../skills/grilling/SKILL.md) embeds notepad mechanics, requests a full question list upfront and selects the next open question. It does not yet enforce the pending-readback confirmation sequence or the dynamic dependency/readiness rules above. The design is planned, not delivered; follow the current executable source for present behavior and the [Spec](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) for the intended change.
+**Verified current source, 2026-09-24:** [`workbench/skills/grilling/SKILL.md`](../skills/grilling/SKILL.md) embeds notepad mechanics, requests a full question list upfront and selects the next open question. It does not yet enforce the pending-readback confirmation sequence or the dynamic dependency/readiness rules above. The design is planned, not delivered; follow the current executable source for present behavior and the [Spec](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) for the intended change.
 
 ## Sources
 
-- [Grilling source](../../skills/grilling/SKILL.md)
+- [Individual delivery Spec](../specs/S-00X-grilling-skill-rebuild/SPEC.md)
+
+- [Grilling source](../skills/grilling/SKILL.md)
 - [Concept and acceptance](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
 - [Blueprint: Desired Experience And Behavior](../../BLUEPRINT.md#desired-experience-and-behavior)
 - [Wiki router](MEMORY.md)
@@ -48,3 +51,5 @@ The finish is a confirmed concept readback: problem, intended user and experienc
 ## History
 
 - 2026-09-23: Created from the accepted design and verified repository source; intended behavior remains separate from implemented behavior.
+
+- 2026-09-24: Source links reconciled to the managed skills lane; S-00X owns this skill's future delivery. No behavior change claimed.

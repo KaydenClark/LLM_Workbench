@@ -47,8 +47,10 @@ skill. This router does not copy their state or the local grilling queue.
 
 The individual pages below explain the three owner-directed skill concepts and
 link to their executable or planned source. They are curated context, not
-instruction authority. The [S-00W Spec](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
-owns the accepted redesign and work state.
+instruction authority. [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
+preserves the accepted shared concept; each linked page names its individual
+delivery Spec. Other core skill articles belong to their individual Specs as
+they are authored.
 
 - [Grilling: arrive at a shared design concept](skill-grilling.md)
 - [Grill-me: start a saved design inquiry](skill-grill-me.md)

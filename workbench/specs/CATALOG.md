@@ -35,13 +35,35 @@ Derived from stable specs; includes completed history.
 | [S-00T - Lifecycle Discard And Identity Repair](S-00T-lifecycle-discard-repair/SPEC.md) | Repair audited retirement identity, discard recovery, Wiki attribution, final Task persistence and corrective allocation defects before legacy migration. | active |
 | [S-00U - Approval Binding And Lifecycle Digest Repair](S-00U-approval-binding-and-lifecycle-digest/SPEC.md) | Bind Human QA to inspected Git content, separate integration review from closure approval, and preserve proof across administrative completion. | active |
 | [S-00V - Portable Workbench](S-00V-portable-workbench/SPEC.md) | Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself. | active |
-| [S-00W - Concept Grilling And Notepad Composition](S-00W-concept-grilling-and-notepad-composition/SPEC.md) | Settle a shared design concept through one-question-at-a-time grilling, with an independent notepad composed by grill-me. | planned |
+| [S-00W - Concept Grilling And Notepad Composition](S-00W-concept-grilling-and-notepad-composition/SPEC.md) | Preserve the accepted shared concept contract for grilling, notepad and grill-me while each skill has its own delivery Spec. | planned |
+| [S-00X - grilling skill rebuild](S-00X-grilling-skill-rebuild/SPEC.md) | Settle a shared design concept through one consequential question at a time. | planned |
+| [S-00Y - notepad skill rebuild](S-00Y-notepad-skill-rebuild/SPEC.md) | Preserve one objective's working context in revision-checked JSON without making it authority. | planned |
+| [S-00Z - grill-me skill rebuild](S-00Z-grill-me-skill-rebuild/SPEC.md) | Provide a repository-owned entry point that composes grilling with notepad. | planned |
 | [S-010 - Canonical Evaluator Entry Detection](S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
 | [S-011 - Agent Skills Adoption](S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |
 | [S-012 - Reproducible Adoption Provenance](S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
 | [S-013 - Standardized Automation Run Outcomes](S-013-automation-run-outcomes/SPEC.md) | Give scheduled Workbench runs a fail-closed JSON outcome and verified-idle streak contract. | complete |
 | [S-014 - Workbench Release Candidate](S-014-workbench-release-candidate/SPEC.md) | Historical release packet with current work routed to S-00O; unexecuted historical acceptance remains visible as a limitation. | blocked |
 | [S-015 - Portable v3 Release Audit Recovery](S-015-portable-v3-release-audit-recovery/SPEC.md) | Make generated v3 controls and Genesis validation enforce one operable manifest-declared spec lane before release. | complete |
+| [S-01A - handoff skill rebuild](S-01A-handoff-skill-rebuild/SPEC.md) | Transfer one objective to a named destination in readable Markdown. | planned |
+| [S-01B - promote skill rebuild](S-01B-promote-skill-rebuild/SPEC.md) | Move selected supported working claims into their existing durable owners. | planned |
+| [S-01C - carry skill rebuild](S-01C-carry-skill-rebuild/SPEC.md) | Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible. | planned |
+| [S-01D - adoption skill rebuild](S-01D-adoption-skill-rebuild/SPEC.md) | Bring an existing project into the Workbench once while preserving room truth. | planned |
+| [S-01E - checkpoint skill rebuild](S-01E-checkpoint-skill-rebuild/SPEC.md) | Keep the retired checkpoint command as an accurate compatibility route. | planned |
+| [S-01F - code-review skill rebuild](S-01F-code-review-skill-rebuild/SPEC.md) | Review an immutable candidate against the repository and capability contracts. | planned |
+| [S-01G - genesis skill rebuild](S-01G-genesis-skill-rebuild/SPEC.md) | Create a new Workbench room from a founding prompt and a recoverable remote boundary. | planned |
+| [S-01H - implement skill rebuild](S-01H-implement-skill-rebuild/SPEC.md) | Deliver one eligible assigned Task through red/green and verified recovery. | planned |
+| [S-01I - make-it-so skill rebuild](S-01I-make-it-so-skill-rebuild/SPEC.md) | Compose approved work through the exact endpoint the owner authorized. | planned |
+| [S-01J - to-docs skill rebuild](S-01J-to-docs-skill-rebuild/SPEC.md) | Route settled truth into the existing documentation owner. | planned |
+| [S-01K - to-spec skill rebuild](S-01K-to-spec-skill-rebuild/SPEC.md) | Turn a settled capability decision into one stable, bounded Spec. | planned |
+| [S-01L - to-tasks skill rebuild](S-01L-to-tasks-skill-rebuild/SPEC.md) | Cut one assigned Spec into dependency-aware Task records. | planned |
+| [S-01M - tracer-bullet skill rebuild](S-01M-tracer-bullet-skill-rebuild/SPEC.md) | Find the thinnest demonstrable end-to-end slice of a capability. | planned |
+| [S-01N - update-harness skill rebuild](S-01N-update-harness-skill-rebuild/SPEC.md) | Update an adopted room to a verified Workbench version without losing room truth. | planned |
+| [S-01O - save skill rebuild](S-01O-save-skill-rebuild/SPEC.md) | Persist authorized work and prove the recovery boundary actually reached. | planned |
+| [S-01P - builder skill rebuild](S-01P-builder-skill-rebuild/SPEC.md) | Deliver the assigned result with useful verification and truthful documentation. | planned |
+| [S-01Q - auditor skill rebuild](S-01Q-auditor-skill-rebuild/SPEC.md) | Determine whether named claims hold on the assigned target and evidence. | planned |
+| [S-01R - reviewer skill rebuild](S-01R-reviewer-skill-rebuild/SPEC.md) | Challenge candidate correctness, downstream impact and consequential claims. | planned |
+| [S-01S - reconciler skill rebuild](S-01S-reconciler-skill-rebuild/SPEC.md) | Leave achieved work and its existing truth owners consistent for continuation. | planned |
 | [S-020 - Spec-Native Team Coordination](S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
 | [S-021 - Portable Workbench v3](S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | complete |
 | [S-022 - LLM Workbench v3.1 Release](S-022-llm-workbench-v3-1-release/SPEC.md) | Historical release packet with current work routed to S-050; unexecuted historical acceptance remains visible as a limitation. | blocked |
