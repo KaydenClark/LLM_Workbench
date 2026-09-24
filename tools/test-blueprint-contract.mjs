@@ -28,7 +28,7 @@ for (const source of inventory.sources) {
 const blueprint = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8').replace(/\s+/g, ' ');
 assert.match(
   fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8'),
-  /```text\nIdea[\s\S]*?Create one Task branch\/worktree from the Spec branch[\s\S]*?If findings: create corrective Tasks -> repeat Task loop[\s\S]*?Fail -> return to Align[\s\S]*?```/,
+  /```text\nIdea[\s\S]*?Create one Task branch\/worktree from the Spec branch[\s\S]*?Review Task\s+-> Merge Task into Spec branch[\s\S]*?If findings: create corrective Tasks -> repeat Task loop[\s\S]*?Fail -> return to Align[\s\S]*?```/,
   'owner workflow map must keep its branch and return loops in arrow-and-brace form'
 );
 const workflow = [

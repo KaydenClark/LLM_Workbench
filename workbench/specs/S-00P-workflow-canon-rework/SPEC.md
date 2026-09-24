@@ -285,7 +285,7 @@ template with its reason.
 ## Acceptance Criteria
 
 - [x] `BLUEPRINT.md` names every rung, the three altitudes, the full recursive loop, the intended topology, reconciliation and retirement, and the coordinator as future scope, with no current status, and passes the Blueprint contract test including its new rung assertion.
-- [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, the assembled-Spec review, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
+- [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, Task review before Spec-branch merge, assembled-Spec QA, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
 - [ ] S-00H's repository-wide `Ticket` sweep still passes after phase two, and no control or template instructs the embedded-row route; this verifies S-00H's result rather than owning it a second time.
 - [ ] ADR-000F, ADR-000G and ADR-000I are each accepted, amended or superseded, the register is regenerated, and no active record contradicts a locked WF answer.
 - [ ] `templates/` mirrors the reworked controls, generic and `[BRACKETED]`, and a freshly generated room speaks the new workflow.
@@ -328,6 +328,7 @@ workflow. No other owner changes.
 
 | 2026-09-23 | owner correction | S-00I/S-00J Human QA is already underway with failed reviews, not waiting for the owner to begin | Direct owner clarification on 2026-09-23; read current S-00I/S-00J gates and the 2026-09-19 failed approval audit | Corrected dependent next gate; earlier evidence preserved | TK-002 still waits for corrected I/J results, owner approval and completion |
 | 2026-09-24 | owner workflow correction | Owner confirmed the original brace-and-arrow workflow as the desired framework and corrected the earlier no-per-Task-review answer; Genesis is setup followed by grilling, not the workflow entry | Direct owner statement and readback confirmation; Blueprint destination map updated in the same candidate | Current WF-8 contract and Blueprint map reconciled; historical evidence retained | Remaining skill-by-skill Align and delivery details are still being grilled; TK-002 gate remains unchanged |
+| 2026-09-24 | independent review of `482dc6b` | Separate-context review found that phase-two acceptance omitted Task review and the map assertion could miss its removal | 48/48 AGENTS suite passed on clean `482dc6b`; reviewer reported P2 and P3, both corrected in the next candidate; the map test fails if `Review Task` is removed and passes when restored | Acceptance and test aligned with the owner correction | Fresh review and full-suite proof on the corrected candidate remain |
 
 ## Completion Result
 
