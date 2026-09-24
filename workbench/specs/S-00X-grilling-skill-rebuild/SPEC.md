@@ -9,7 +9,7 @@
 **Catalog description:** Settle a shared design concept through one consequential question at a time.
 **Blockers:** none.
 **Latest event:** TK-00O closed with proof.
-**Next gate:** Separate-context review of the TK-00O candidate before integration; owner Human QA follows on `integration`.
+**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-00X`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -71,7 +71,7 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 - [x] A changed upstream premise reopens only dependent answers, and missing evidence prevents a false concept-ready verdict.
 - [x] The named scenario is observed in a fresh or otherwise independent context: A fresh standalone conversation shows no next design question before confirmation and no specification transition before a confirmed final concept readback.
 - [x] `workbench/wiki/skill-grilling.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
-- [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
+- [x] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
 
@@ -95,10 +95,11 @@ Maintain `workbench/wiki/skill-grilling.md` and its sole router entry alongside 
 | 2026-09-24 | TK-00O | Fresh-context scenario: one general-purpose Claude Opus 5.5 subagent given only the grilling source, owner scripted by the implementing agent, no notepad | T1 one question with Question / Recommended answer / Why / Impact and a provisional map. T2 owner answered against the recommendation: pending readback of the owner's answer, owner reason separated from inference, one same-decision clarification, no new design question. T3 owner correction: revised pending readback, no progression. T4 "Yes, that's right": lock, compact map change, recomputed frontier, exactly one next question. T5 owner agreed and asked for the spec: no spec; pending readback, four-part final concept readback and four named concept-changing open choices. T6 named premise change (no in-app reader): reopened only the read-detection decision, kept purpose locked, marked the confirmed summary affected | None | One run, one model, scripted owner, no notepad composition exercised; not owner Human QA or a repeated trial |
 | 2026-09-24 | TK-00O | Gates before close | Full AGENTS suite 48/48 on committed candidate `00c88f0`; guardrail 78/100 before and after, remaining recommendations are the four pre-existing Outcome-evidence items; self-drift pre and post both `blocked` with the same seven pre-existing attention findings; `wiki.mjs validate` ok; `git diff --check` clean. Bounded semantic check: RUNBOOK grilling route, BLUEPRINT confirmation requirement and the grill-me/notepad articles agree with the delivered source; no other control or template repeated the retired full-question-list wording | Docs checked: RUNBOOK, BLUEPRINT, templates and `workbench/skills/README.md` need no update because their grilling wording stays accurate | Coordination hand-backs this run: zero |
 | 2026-09-24 | TK-00O | Task closed | Red/green tools/test-skill-catalog.mjs (red 85858f1, green 00c88f0); full AGENTS suite 48/48 at 00c88f0; fresh-context six-turn scenario matched the interaction contract; wiki validate ok | workbench/skills/grilling/SKILL.md and workbench/wiki/skill-grilling.md; RUNBOOK, BLUEPRINT, templates and skills README checked with no update needed because their grilling wording stays accurate | Separate-context candidate review; owner Human QA of conversational fidelity; installed personal skill copies not updated; S-00W shared-journey check after S-00Y and S-00Z |
+| 2026-09-24 | TK-00O review | Separate-context review of immutable candidate `18f62503107a5f15b7d07020f2f63c980d4be7ce` against base `6ae38b9`: PASS, no High/Medium/Low findings | Codex CLI `codex exec -s read-only -m gpt-5.5`; reviewer ran `wiki.mjs validate` and `git diff --check` (both pass) and checked by source review the project-evidence open-question path, genesis `open|tentative|locked` statuses, notepad `source_record`/`decision` separation, the catalog assertions and the append-only rows. A first attempt with `codex review --base` reviewed nothing because the CLI refuses a prompt together with `--base` | None | Reviewer could not re-run fixture tests in its sandbox (`EPERM` on `mkdtemp`); it compared against the implementing agent's summary of the pinned upstream text rather than fetching it. Owner Human QA remains |
 
 ## Completion Result
 
-TK-00O delivered the interaction contract in `workbench/skills/grilling/SKILL.md` and reconciled `workbench/wiki/skill-grilling.md` with the pinned upstream comparison and one fresh-context scenario. The Spec is not complete: the separate-context review gate and owner Human QA of conversational fidelity remain.
+TK-00O delivered the interaction contract in `workbench/skills/grilling/SKILL.md` and reconciled `workbench/wiki/skill-grilling.md` with the pinned upstream comparison and one fresh-context scenario. A separate-context review passed. The Spec is not complete: owner Human QA of conversational fidelity remains.
 
 ## Supersession
 
