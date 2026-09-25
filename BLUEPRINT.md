@@ -134,27 +134,38 @@ Idea
   -> {
        Main branch
          -> Integration branch
+              -> Owner tells the Director to start the version
+              -> Director starts a Dispatcher for each Spec and coordinates them
               -> Spec branch {
-                   Create Spec
+                   Dispatcher creates Spec
                      -> Create Tasks
                      -> Update Taskboard
                      -> {
-                          Pick up a hot non-conflicting Task
+                          Dispatch a Worker to a hot non-conflicting Task
                             -> Create one Task branch/worktree from the Spec branch
                             -> Implement
-                            -> QA / Verify
+                            -> Worker self-checks its claims and proof, updates the card
                             -> Commit and push Task branch
-                            -> Review Task
+                            -> Hand back to the Dispatcher
                             -> Merge Task into Spec branch
                             -> Delete Task branch after containment
-                            -> Pick up next hot Task
+                            -> Dispatcher picks the next step
+                            -> Missed step: card back to In progress -> new Task to fix it
                             -> Repeat Tasks in parallel where they do not conflict
                         }
                      -> Repeat until the Spec is assembled
-                     -> Whole-Spec QA / Verify
+                     -> Dispatcher whole-Spec QA / Verify
+                     -> Director QA / approval in a separate context
                      -> If findings: create corrective Tasks -> repeat Task loop
                      -> If approved: merge Spec into Integration
                  }
+              -> Direct Blueprint Task {
+                   Dispatch a Worker from Integration
+                     -> Task branch -> Worker self-check -> Hand back
+                     -> Dispatcher QA / Verify -> merge into Integration
+                     -> Director QA on Integration
+                 }
+              -> Director has approved every Spec in the version or escalated blockers
               -> Owner Human QA on Integration
               -> {
                    Pass -> owner-only merge Integration into Main
@@ -166,48 +177,73 @@ Idea
 ```
 
 The Blueprint owns the grand destination and what counting to 100 means. A
-PRD-shaped Spec owns a smaller destination and its completion meaning, like
-reaching 20; it is derived from Blueprint needs, active ADRs, verified evidence,
+PRD-shaped Spec owns a local destination and its completion meaning, like
+reaching 1 through 5; it is derived from Blueprint needs, active ADRs, verified evidence,
 Actuality and project- or Spec-required checks. Thin executable Tasks advance
-that Spec, like reaching 5. The Taskboard is a Kanban projection for progress
+that Spec one brick at a time, each about 0.1 of the count. The Taskboard is a Kanban projection for progress
 and coordination; Specs and Tasks retain substantive state and evidence.
 
 Delivery then repeats one loop. A need in the Blueprint creates a Spec; the Spec
 creates its Tasks; the Taskboard projects their state so the next hot Task is
-visible without reading the whole board. An agent picks up that hot Task,
-implements it with red/green TDD, verifies the behavior that actually resulted,
-and lands the proven Task branch. The finished Task is reconciled into its Spec
+visible without reading the whole board. A Dispatcher sends a Worker to that hot
+Task; the Worker implements it with red/green TDD, verifies the behavior that
+actually resulted, self-checks its claims and proof, updates its card and hands
+back the proven Task branch. The finished Task is reconciled into its Spec
 and then retired out of ordinary discovery, its branch cleaned up once the Spec
 branch contains it, and the next hot Task follows, until the Spec is assembled.
 
-Each completed Task receives review before its branch joins the Spec branch.
-An assembled Spec is checked in a separate context against its own destination
-and the combined results of its Tasks. A review that fails diagnoses
-the gap and creates corrective Tasks under the still-open Spec, and the fresh
-candidate is reviewed again. An approved Spec branch merges into integration;
-the owner then performs Human QA on that branch, which is the surface where the
-scoped destination is genuinely there. No Git merge closes a Spec; the owner's
-confirmation does. A closed Spec is reconciled into its durable owners, the Wiki
+A Task has no review or approval gate. It is one attempt at one step: its
+Worker self-checks that its claims are valid and backed by proof before handing
+back, and the Dispatcher reads that report and chooses the next step. Merging a
+Task into its Spec branch is coordination and containment, not QA. A Task that
+misses its step is not reopened and not discarded: its report stays in the Spec
+evidence as diagnostic proof, its `TASK.md` stays the record until the Spec is
+cleaned up into the features Wiki, its card returns to In progress, and a new
+Task, named for its objective, fixes what the check found. Work that stops
+unexpectedly leaves what it recorded as it went.
+
+When the Spec is assembled, its Dispatcher verifies the whole Spec against its
+own destination and the combined results of its Tasks, doing that QA itself or
+dispatching it and owning the result. The Director then approves it in a
+separate context; neither the Dispatcher nor any agent that implemented a Task
+in the candidate can give that approval. A check that fails diagnoses the gap
+and creates corrective Tasks under the still-open Spec, and the fresh candidate
+is checked again. An approved Spec branch merges into integration. Once the
+Director has approved every Spec in the version or escalated its blockers, the
+owner performs Human QA on integration, the surface where the destinations are
+genuinely there; what that Human QA consists of is each project's own choice.
+No Git merge closes a Spec; the owner's confirmation does. A closed Spec is reconciled into its durable owners, the Wiki
 holding the current capability knowledge a later reader needs, and is then
 retired. Once the exact change is verified on the default branch, the transient
 Spec and Task records may be discarded, with Git preserving recoverable history.
 A later gap against that same destination is a corrective Task that updates the
 reconciled record instead of reviving a closed Spec.
 
-Branch topology follows the same altitudes. A Spec branch is cut from the
+Branch topology follows the work, never the role. A Spec branch is cut from the
 integration branch, each Task branch is cut from its Spec branch and worked in
 its own worktree, and proven Task results accumulate in the Spec branch until
-the assembled Spec is reviewed and reaches the owner.
+the assembled Spec is approved. A Task that advances the Blueprint directly,
+with no intermediate Spec destination, has its Task branch cut from integration
+and merged back into it: the Dispatcher sends its Worker from integration,
+verifies the result and merges it, and the Director checks it there. A direct
+Task that outgrows one context, or a run of them chasing one objective, becomes
+a Spec. No role works from main.
 
 Failed Human QA returns to Align at whatever scope the failure actually
 implicates, and the design-concept and delivery loop runs again from there. A
 defect is not by itself evidence that the shared design concept was wrong, and
 the loop is chosen at the scope the diagnosis supports.
 
-Parallel work is coordinated rather than improvised: a coordinator hands
-independent Tasks to separate agents and keeps a single durable writer for
-shared state. That is the intended model beyond consistent single-Task
-execution, and no ordinary assignment depends on it.
+Parallel work is directed rather than improvised. Director, Dispatcher and
+Worker are roles defined by responsibility, not by branch, and the owner is the
+human above them, not the Director. The owner tells the Director to start a
+version; the Director starts a Dispatcher for each Spec, coordinates between
+them, approves each assembled Spec and escalates blockers to the owner. A
+Dispatcher plans its Spec, sends Workers to as many non-conflicting Tasks as can
+run in parallel, reads their reports, picks the next step and keeps a single
+durable writer for shared state. A Worker carries out one Task and hands back.
+That is the intended model beyond consistent single-Task execution, and no
+ordinary assignment depends on it.
 
 The Workbench Template exercises the same update contract as a real installed
 room. Whole-product readiness examines the combined system before owner-controlled

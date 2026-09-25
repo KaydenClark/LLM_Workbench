@@ -93,10 +93,12 @@ repository-level enforcement, which is out of scope.
   controls by [S-00P](../S-00P-workflow-canon-rework/SPEC.md). The note is
   untracked working material named as origin, not durable evidence.
 - The two gates, their triggers and the reviewed unit are described by
-  [ADR-000F](../../docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
-  which is `proposed` and is evidence, not instruction. Its open "failure
-  return path" is now WF-8C, and S-00P TK-004 accepts, amends or supersedes
-  the record to match. ADR acceptance is not a blocker of this Spec.
+  [ADR-000F](../../docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
+  accepted on 2026-09-24 with the SCR role model: the Spec's Dispatcher
+  verifies the assembled Spec, the Director approves it in a separate context,
+  and owner Human QA follows once every Spec in the version is approved. The
+  reviewer this Spec's report serves is that Director. Its open "failure
+  return path" is WF-8C. ADR acceptance was never a blocker of this Spec.
 - Independent review at integration, which this extends rather than replaces:
   [ADR-0037](../../docs/adr/0037-independent-review-at-integration.md). The
   reviewed unit becomes the assembled Spec; the immutable-candidate
@@ -280,6 +282,7 @@ TK-005.
 | 2026-09-19 | review | Review verdict: pass at 0c34d05c479f4a434f6b102954f9fd2768549baf [06abcbb7e739] #2 | none | independent_review; separate Codex context; inherited model not separately identified; code-review mode; corrects prior receipt count: zero review findings | none |
 
 | 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
+| 2026-09-24 | claude/scr-review-boundary-promotion | ADR-000F accepted and moved out of `proposed/`; the Decisions link and status updated | Owner-confirmed SCR readback promoted; `adr.mjs validate` clean | No gate behavior changed. Recorded owner approval here is per Spec, while SCR-6 places Human QA after the Director approves every Spec in the version; whether the per-Spec approval record stays is left for the owner at the S-00J Human QA reconciliation |
 
 ## Completion Result
 

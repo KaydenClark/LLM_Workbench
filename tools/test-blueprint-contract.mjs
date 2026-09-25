@@ -28,9 +28,13 @@ for (const source of inventory.sources) {
 const blueprint = fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8').replace(/\s+/g, ' ');
 assert.match(
   fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8'),
-  /```text\nIdea[\s\S]*?Create one Task branch\/worktree from the Spec branch[\s\S]*?Review Task\s+-> Merge Task into Spec branch[\s\S]*?If findings: create corrective Tasks -> repeat Task loop[\s\S]*?Fail -> return to Align[\s\S]*?```/,
+  /```text\nIdea[\s\S]*?Create one Task branch\/worktree from the Spec branch[\s\S]*?Worker self-checks its claims and proof[\s\S]*?Hand back to the Dispatcher\s+-> Merge Task into Spec branch[\s\S]*?If findings: create corrective Tasks -> repeat Task loop[\s\S]*?Fail -> return to Align[\s\S]*?```/,
   'owner workflow map must keep its branch and return loops in arrow-and-brace form'
 );
+// SCR 2026-09-24: no per-Task review or approval gate, and the 100/20/5 scale
+// is replaced by Spec ~1-5 and Task ~0.1. Either returning would reintroduce a
+// settled contradiction, so their absence is asserted, not just the new text.
+assert.doesNotMatch(fs.readFileSync(path.join(root, 'BLUEPRINT.md'), 'utf8'), /Review Task|Each completed Task receives review|reaching 20|reaching 5\b/, 'BLUEPRINT.md must not restore per-Task review or the superseded scale');
 const workflow = [
   ['rung: an owner idea opens Align', /\bidea\b[\s\S]{0,200}?\bAlign\b/i],
   ['rung: an owner may explore an idea before Align', /explore an idea in conversation before it is clear enough to Align/i],
@@ -49,7 +53,15 @@ const workflow = [
   ['altitude: stacked Specs realize the Blueprint journey', /stack/i],
   ['altitude: a gap against an existing destination is corrective Task work', /corrective Task/i],
   ['loop: the Taskboard projects Task state', /Taskboard/],
-  ['loop: a Task receives review before joining the Spec branch', /Each completed Task receives review before its branch joins the Spec branch/i],
+  ['loop: a Task has no review or approval gate; its Worker self-checks', /no (separate-context )?review or approval gate[\s\S]{0,200}?self-check/i],
+  ['loop: merging a Task is containment, not QA', /containment/i],
+  ['scale: a Spec is a local destination such as 1 through 5 and a Task is about 0.1', /1 through 5[\s\S]{0,300}?0\.1/i],
+  ['roles: Director, Dispatcher and Worker are defined by responsibility, not branch', /Director[\s\S]{0,40}?Dispatcher[\s\S]{0,40}?Worker[\s\S]{0,600}?responsibilit/i],
+  ['roles: the owner is the human above the Director', /owner[\s\S]{0,80}?not the Director|not the Director[\s\S]{0,80}?owner/i],
+  ['roles: the Director approves an assembled Spec in a separate context', /Director[\s\S]{0,200}?separate context|separate context[\s\S]{0,200}?Director/i],
+  ['topology: a direct Blueprint Task branches from and merges into integration', /directly[\s\S]{0,200}?Task branch[\s\S]{0,200}?integration/i],
+  ['loop: a missed Task is not reopened; its card returns to In progress and a new Task fixes it', /not reopened[\s\S]{0,400}?In progress[\s\S]{0,300}?new Task/i],
+  ['loop: Human QA follows Director approval of every Spec in the version', /Director has approved every Spec|every Spec[\s\S]{0,120}?Director[\s\S]{0,120}?approved/i],
   ['loop: an agent picks up the hot Task', /hot Task/i],
   ['loop: a Task is implemented with red/green TDD', /red\/green/i],
   ['loop: the proven Task branch lands', /Task branch/i],
@@ -65,7 +77,7 @@ const workflow = [
   ['loop: failed Human QA returns to Align at the appropriate scope', /Human QA[\s\S]{0,300}?Align|Align[\s\S]{0,300}?Human QA/i],
   ['topology: a Task branch is cut from its Spec branch', /Spec branch/i],
   ['owners: SPEC and TASK records are transient working artifacts', /transient/i],
-  ['scope: a coordinator is the intended parallel-work model', /coordinator/i]
+  ['scope: a Director with a Dispatcher per Spec is the intended parallel-work model', /Dispatcher for each Spec|Dispatcher per Spec/i]
 ];
 const unstated = workflow.filter(([, pattern]) => !pattern.test(blueprint)).map(([claim]) => claim);
 assert.deepEqual(unstated, [], 'BLUEPRINT.md must let a reader state every rung, altitude and loop stage');

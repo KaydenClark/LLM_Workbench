@@ -5,10 +5,10 @@
 **Priority:** 1
 **Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-23
+**Updated:** 2026-09-24
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
 **Blockers:** TK-002 onward wait on S-00I and S-00J reaching `complete`. S-00H is complete and retired; TK-001 is done and landed.
-**Latest event:** TK-001 closed with proof.
+**Latest event:** Owner-confirmed SCR answers promoted: no per-Task review gate, Director > Dispatcher > Worker, version-level Human QA; ADR-000F accepted.
 **Next gate:** After the active S-00I/S-00J Human QA findings are reconciled, corrected results pass review and owner QA, and both Specs complete, claim TK-002 for the AGENTS rewrite.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
@@ -18,10 +18,11 @@
 Canon describes the workflow the owner settled, in two phases. First, now:
 `BLUEPRINT.md` describes every rung (Idea -> Align through grilling ->
 confirmed design concept -> Blueprint -> recursive Spec/Task delivery) and the
-full recursive loop, including the intended nested branch topology, Task
-review before Spec-branch merge, assembled-Spec QA, corrective Tasks, owner
-Human QA on `integration`, reconciliation and
-retirement, and the coordinator as future scope. Last, after S-00H, S-00I and
+full recursive loop, including the intended branch topology, the Worker's
+self-check with no per-Task review gate, Dispatcher whole-Spec QA and Director
+approval, corrective Tasks, owner Human QA on `integration`, reconciliation and
+retirement, and the Director, Dispatcher and Worker roles as the intended
+parallel model. Last, after S-00H, S-00I and
 S-00J land: `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` and the generic
 `templates/` mirror describe the same workflow using only commands and records
 that exist, and ADR-000F, ADR-000G and ADR-000I are accepted, amended or
@@ -76,15 +77,17 @@ At the pre anchor:
    the three delivery altitudes (Blueprint as the product-level destination,
    Spec as one scoped objective with its own destination, Task as the counting
    that reaches or repairs it), and the full recursive loop from decision-082,
-   including the intended nested branch topology and the coordinator as future
-   scope, without any current status appearing in the file.
+   including the intended branch topology and the Director, Dispatcher and
+   Worker roles as the intended parallel model, without any current status appearing in the file.
 2. After phase two, `AGENTS.md` describes work selection and lifecycle on Task
-   records, Task review before Spec-branch merge, assembled-Spec QA, the
-   corrective-Task return path, owner Human QA on `integration`, retirement
-   after reconciliation, and
+   records, the Worker's self-check with no per-Task review gate, Dispatcher
+   whole-Spec QA and Director approval of the assembled Spec, the
+   corrective-Task return path, owner Human QA on `integration` after every
+   Spec in the version is approved, retirement after reconciliation, and
    the Git topology that is actually in force; `RUNBOOK.md` names only commands
    that exist; `LEXICON.md` defines Align, design concept, Spec, Task, retired,
-   archive, assembled-Spec review and Human QA consistently; and the generic
+   archive, assembled-Spec review, Human QA, Director, Dispatcher and Worker
+   consistently; and the generic
    `templates/` mirror carries the same shape, `[BRACKETED]`.
 3. The ADR register shows ADR-000F, ADR-000G and ADR-000I as accepted, amended
    or superseded, never `proposed`, and no active record contradicts a locked
@@ -124,14 +127,31 @@ bind this Spec:
   accumulating in the Spec branch. During this rollout S-00O exemption 2
   defers it, so phase two describes the intended topology as destination in
   the Blueprint and the actually enforced route in the controls.
-- **WF-8, WF-8B, WF-8C, corrected 2026-09-24.** Tasks use red/green TDD,
-  relevant tests, actual behavior checks and preserved proof. Each completed
-  Task is reviewed before its branch joins the Spec branch. A separate context
-  checks the assembled Spec and the combined Task results; a failed review
-  diagnoses and creates corrective Tasks under the still-open Spec, then a
-  fresh immutable candidate is reviewed. An approved Spec branch merges into
-  `integration`, the owner's Human QA surface. The earlier no-per-Task-review
-  answer is superseded by the owner's restored workflow map.
+- **WF-8, WF-8B, WF-8C, as settled by SCR on 2026-09-24.** Tasks use red/green
+  TDD, relevant tests, actual behavior checks and preserved proof. A Task has
+  no review or approval gate: it is one attempt at one step, its Worker
+  self-checks its claims and proof and hands back, and the Dispatcher merges it
+  for containment and chooses the next step. The Dispatcher verifies the
+  assembled Spec, doing that QA itself or dispatching it, and the Director
+  approves it in a separate context; neither the Dispatcher nor a Task
+  implementer can approve. A failed check diagnoses and creates corrective
+  Tasks under the still-open Spec, then a fresh immutable candidate. An
+  approved Spec branch merges into `integration`, the owner's Human QA surface.
+  The morning's restored "Review Task" map step is superseded by the owner's
+  later SCR answers, which return to WF-8B; accepted
+  [ADR-000F](../../docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md)
+  records the result.
+- **SCR-4 to SCR-8, 2026-09-24.** Director > Dispatcher > Worker, defined by
+  responsibility, not branch; the owner is the human above the Director, not
+  the Director. The Director starts a Dispatcher for each Spec, coordinates
+  them and escalates blockers. A Task that advances the Blueprint directly is
+  sent by a Dispatcher from `integration`, merged back there and checked by
+  the Director; no role works from `main`. A Task that misses its step is not
+  reopened: its `TASK.md` stays the record until Spec cleanup, its card
+  returns to In progress and a new Task fixes it. Owner Human QA comes after
+  the Director has approved every Spec in the version or escalated blockers,
+  which replaces FND-Q14's "not batched by release" clause. A Spec is a local
+  destination of about 1 to 5 in the Blueprint's 100, and a Task about 0.1.
 - **WF-8D, WF-8E, WF-8F, WF-8A, WF-8G.** Completed Tasks are reconciled into
   the Spec, retired from ordinary discovery and their contained branches
   cleaned up. A Spec closes only after assembled-Spec review passes and owner
@@ -145,8 +165,9 @@ bind this Spec:
 - **WF-9.** Delivery repeats recursively; failed Human QA returns to Align and
   the design-concept and delivery loop at the appropriate scope, without
   inferring that every defect proves the design concept wrong.
-- **WF-10, WF-11, WF-12.** A coordinator is the intended parallel-work model
-  and future Blueprint scope; the current proof target is consistent
+- **WF-10, WF-11, WF-12.** The Director and its Dispatchers are the intended
+  parallel-work model and future Blueprint scope (the WF-10 coordinator, named
+  by SCR); the current proof target is consistent
   single-Task execution. Mission success is one full cycle on another
   workbench (owned by S-00O). Rollout scope is the full workflow plus this
   Blueprint rework, delivered through only the Specs needed to establish it.
@@ -179,8 +200,8 @@ generic and `[BRACKETED]`.
   Those are S-00H, S-00I and S-00J.
 - Answering TT-Q10, confirming correction-019's wording, or reopening any
   locked WF question.
-- Spec-branch tooling or the coordinator; the Blueprint describes both as
-  intended, and later Specs deliver them.
+- Spec-branch tooling or Director and Dispatcher tooling; the Blueprint
+  describes both as intended, and later Specs deliver them.
 - The v4.0.0 stamp, the Template gate and the WF-11 cycle; those are S-00O.
 - Creating Wiki design-concept articles; the Blueprint is the destination
   owner, and Wiki articles remain optional owner-directed work.
@@ -233,8 +254,12 @@ Preserve the stable-path retirement S-00I TK-004 made. Every command named
 must exist. S-00H TK-004 will already have removed the word `Ticket` from
 the controls, so the red test is not a vocabulary sweep: it is an assertion
 at the control-fidelity seam that Work Selection And Lifecycle names
-`TASK.md` as the record `claim` takes and describes Task review before
-Spec-branch merge, assembled-Spec QA and the corrective-Task return path.
+`TASK.md` as the record `claim` takes, states that a Task has no review or
+approval gate, and describes Dispatcher whole-Spec QA, Director approval and
+the corrective-Task return path. The rewrite also reconciles the integration
+review gate with accepted ADR-000F: a direct Blueprint Task is merged into
+`integration` by its Dispatcher and checked there by the Director, and owner
+Human QA follows the Director's approval of every Spec in the version.
 `TASK.md`, `assembled Spec` and `corrective Task` occur zero times in
 `AGENTS.md` at the pre anchor, and
 S-00H TK-004 changes vocabulary only, so the assertion stays false until
@@ -247,8 +272,9 @@ criterion weakened.
 
 **Stance:** Builder
 
-Replace the ticket lifecycle procedures with the Task lifecycle, add Task
-review before Spec-branch merge, assembled-Spec QA, corrective-Task creation,
+Replace the ticket lifecycle procedures with the Task lifecycle, add the
+Worker hand-back with no per-Task review, Dispatcher whole-Spec QA and Director
+approval, corrective-Task creation,
 Human QA approval and closure, reconciliation, retirement and discard
 procedures using the exact
 commands S-00H, S-00I and S-00J shipped, and reconcile the Template Upgrade
@@ -267,7 +293,9 @@ Task widened to work that reaches or repairs a destination including against
 a reconciled Wiki record, `retired` and `archive` with their opposite
 retentions, assembled-Spec review and Human QA, and remove the gap
 disclaimers S-00H's completion made false. Reconcile the three proposed ADRs
-as the Decisions section requires and regenerate the register. The red test
+as the Decisions section requires and regenerate the register. ADR-000F was
+accepted on 2026-09-24 and the Director, Dispatcher and Worker rows landed in
+the same change, so this Task keeps both consistent and does not redo them. The red test
 is the extended `tools/test-adr.mjs` assertion; green also requires the
 Lexicon's Context Map routes to resolve.
 
@@ -284,8 +312,8 @@ template with its reason.
 
 ## Acceptance Criteria
 
-- [x] `BLUEPRINT.md` names every rung, the three altitudes, the full recursive loop, the intended topology, reconciliation and retirement, and the coordinator as future scope, with no current status, and passes the Blueprint contract test including its new rung assertion.
-- [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, Task review before Spec-branch merge, assembled-Spec QA, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
+- [x] `BLUEPRINT.md` names every rung, the three altitudes, the full recursive loop, the intended topology, reconciliation and retirement, and the Director, Dispatcher and Worker model as intended scope, with no current status, and passes the Blueprint contract test including its new rung assertion.
+- [ ] `AGENTS.md`, `RUNBOOK.md` and `LEXICON.md` describe the Task-record workflow, the Worker self-check with no per-Task review gate, Dispatcher whole-Spec QA and Director approval, the corrective-Task return path, Human QA closure, reconciliation and retirement, naming only commands and records that exist, proven by the command-existence sweep.
 - [ ] S-00H's repository-wide `Ticket` sweep still passes after phase two, and no control or template instructs the embedded-row route; this verifies S-00H's result rather than owning it a second time.
 - [ ] ADR-000F, ADR-000G and ADR-000I are each accepted, amended or superseded, the register is regenerated, and no active record contradicts a locked WF answer.
 - [ ] `templates/` mirrors the reworked controls, generic and `[BRACKETED]`, and a freshly generated room speaks the new workflow.
@@ -330,6 +358,7 @@ workflow. No other owner changes.
 | 2026-09-24 | owner workflow correction | Owner confirmed the original brace-and-arrow workflow as the desired framework and corrected the earlier no-per-Task-review answer; Genesis is setup followed by grilling, not the workflow entry | Direct owner statement and readback confirmation; Blueprint destination map updated in the same candidate | Current WF-8 contract and Blueprint map reconciled; historical evidence retained | Remaining skill-by-skill Align and delivery details are still being grilled; TK-002 gate remains unchanged |
 | 2026-09-24 | independent review of `482dc6b` | Separate-context review found that phase-two acceptance omitted Task review and the map assertion could miss its removal | 48/48 AGENTS suite passed on clean `482dc6b`; reviewer reported P2 and P3, both corrected in the next candidate; the map test fails if `Review Task` is removed and passes when restored | Acceptance and test aligned with the owner correction | Fresh review and full-suite proof on the corrected candidate remain |
 | 2026-09-24 | corrected workflow map `cb8ff78` | Owner-approved arrow-and-brace destination map, Task-review acceptance and focused regression checked together | 48/48 AGENTS suite passed on clean `cb8ff78`; separate-context full-branch review found no actionable issue; guardrail 78/100 before and after, with no criteria change; post self-drift returned `cleanUpdate: false` with seven existing attention findings and no new touched-owner contradiction | Blueprint, proposed ADR correction and this Spec aligned; generic template kept generic by design | No agent-outcome improvement claimed: repeated real trials, controls/prior/candidate comparison, recent outcome evidence and uncertainty remain missing; S-00Q stale claim and historical identity findings remain outside this correction |
+| 2026-09-24 | owner SCR grilling promoted | Owner-confirmed SCR readback (SCR-1 to SCR-8) promoted: no per-Task review gate, Director > Dispatcher > Worker by responsibility, direct Blueprint Tasks via integration, missed-Task handling, version-level Human QA; supersedes the same-day restored Task review | tools/test-blueprint-contract.mjs red on the pre-change Blueprint (map lacks the Worker self-check and hand-back), green after; `adr.mjs validate` clean with the register regenerated | BLUEPRINT.md Desired Lifecycle; LEXICON.md and templates/LEXICON.md Director, Dispatcher and Worker rows; ADR-000F accepted and amended; ADR-000G correction note; S-00J link; grilling destination audit ledger SCR rows | AGENTS.md, RUNBOOK.md and templates controls still describe review of each integration candidate and name no Director, Dispatcher or Worker: TK-002, TK-003 and TK-005. ADR-000G and ADR-000I stay proposed for TK-004. The board lanes (ADR-000E, E-1 to E-11) still have no Spec |
 
 ## Completion Result
 
@@ -337,7 +366,7 @@ Pending.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-Spec-branch tooling and the coordinator are described as destination and
+Spec-branch tooling and Director and Dispatcher tooling are described as destination and
 delivered by later Specs derived from the reworked Blueprint. Any Wiki
 design-concept article remains optional owner-directed work.
 
