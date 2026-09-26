@@ -252,8 +252,11 @@ install text in the same Task.
       `tools/test-genesis-from-decisions.mjs`, `tools/test-workbench-upgrade.mjs`).
 - [ ] A session's notepad and handoff can be committed and later removed
       without a privacy or provenance check treating them as durable evidence.
-- [ ] `claim` pushes the claim on the task branch; a second instance running
-      `next` after a fetch does not receive that Task.
+- [x] `claim` pushes the claim on the task branch; a second instance running
+      `next` after a fetch does not receive that Task (the TK-01L
+      push-on-claim block in `tools/test-spec-workbench.mjs`, a bare-remote
+      fixture with one clone per instance; mechanism and choices in
+      [ADR-000O](../../docs/adr/000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md)).
 - [x] The host floor check reports each floor item, and a Task needing an
       optional capability the host lacks lands in blocked or needs-review
       with the capability named (TK-00H host floor tests in
