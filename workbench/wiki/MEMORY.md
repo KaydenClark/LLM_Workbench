@@ -66,6 +66,7 @@ they are authored.
 - [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
 - [Auditor: check named claims against pinned evidence](skill-auditor.md)
 - [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
+- [To-spec: turn a settled decision into one bounded Spec](skill-to-spec.md)
 - [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
 
 ## Release And Distribution Routing

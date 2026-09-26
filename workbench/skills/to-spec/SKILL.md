@@ -1,18 +1,21 @@
 ---
 name: to-spec
-description: Turn an already-settled conversation into one stable Workbench capability spec without restarting the interview.
+description: Turn an already-settled conversation into Workbench capability specs, one Spec per capability, without restarting the interview.
 ---
 
 # To Spec
 
-Synthesize the current already-settled conversation into one
-stable capability record at the `specs` lane declared by
-`workbench/manifest.json` (normally `workbench/specs/S-###-slug/SPEC.md`). Do
-not restart grilling or implement the capability.
+Synthesize the current already-settled conversation into capability records
+at the `specs` lane declared by `workbench/manifest.json` (normally
+`workbench/specs/S-###-slug/SPEC.md`): one Spec per capability. When the
+conversation settles several capabilities, such as a rebuild of each skill,
+author or reuse one Spec for each; never bundle them into one delivery owner.
+Do not restart grilling or implement the capability.
 
 1. Verify the project root, nearest controls, existing specs, and relevant source
    or tests. Reuse an existing owning spec when the capability already has one;
-   otherwise obtain a read-only proposal with `spec-workbench.mjs next-id --prefix S --json` and write the returned visible ID only within the authorized planning scope. Existing stable paths never change.
+   otherwise obtain a read-only proposal with `spec-workbench.mjs next-id --prefix S --json` and write the returned visible ID only within the authorized planning scope. An
+   existing Spec's path changes only through `move-spec`.
 2. Compose `notepad` before drafting when a handoff or existing working record
    supplies context. Read its entries with correction context and compare them
    with the compact current view and live owners. Correct a stale current view
@@ -23,9 +26,12 @@ not restart grilling or implement the capability.
 4. Capture the outcome, why it matters, verified current state, desired behavior,
    decisions/contracts, non-goals, dependencies, acceptance, test seams,
    documentation impact, and append-only evidence structure.
-5. Set the normal stance in the assigned SPEC and each TASK during
-   authorized planning, usually Builder for implementation; do not make arriving
-   agents select or record their own stance.
+5. Author a new Spec at status `planned` with no owner claim, and set the
+   normal stance in the SPEC and each TASK during authorized planning, usually
+   Builder for implementation; do not make arriving agents select or record
+   their own stance. Specifying is not starting: do not `claim`, activate or
+   implement the Spec, and record no implementation or verification evidence
+   for work that has not happened.
 6. Seed `Vertical Implementation Slices` only with the smallest vertical tracer
    bullet needed to make the capability schedulable, cut with the
    `/tracer-bullet` discipline so it pierces every layer of the stack. Use
