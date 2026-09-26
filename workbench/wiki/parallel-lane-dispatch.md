@@ -55,11 +55,14 @@ cleanup commands are RUNBOOK -> Version-Control Procedures.
 ## Merging overlapping lanes
 
 When lanes touch the same files, merge one at a time. Review content at the
-branch's own SHA; at its turn the builder rebases onto the current tip; the
-dispatcher confirms the rebased content equals the approved content
-(`git diff <base> <approved>` against `git diff <newtip> <rebased>`, excluding
-generated regions) instead of paying for a full re-review; then open the PR and
-merge with `--match-head-commit`. Conflicts are almost always generated
+branch's own SHA; at its turn the builder rebases onto the current tip. The
+rebased tip is a new candidate, and the `AGENTS.md` integration gate governs
+it: a new candidate needs a fresh separate-context review, and self-review
+cannot satisfy that gate. A diff-equality check (`git diff <base> <approved>`
+against `git diff <newtip> <rebased>`, excluding generated regions) is
+preparatory evidence handed to that reviewer, which keeps the fresh review a
+short delta check; it is never a substitute for it. Then open the PR and merge
+with `--match-head-commit`. Conflicts are almost always generated
 Taskboard/Blueprint regions (resolve by re-running `render`), registries, and
 test-file tails. Keep reviewer agents alive so delta re-checks are cheap.
 
