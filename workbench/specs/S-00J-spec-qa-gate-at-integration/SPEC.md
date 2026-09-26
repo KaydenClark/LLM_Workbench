@@ -96,10 +96,15 @@ repository-level enforcement, which is out of scope.
   controls by [S-00P](../S-00P-workflow-canon-rework/SPEC.md). The note is
   untracked working material named as origin, not durable evidence.
 - The two gates, their triggers and the reviewed unit are described by
-  [ADR-000F](../../docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
-  which is `proposed` and is evidence, not instruction. Its open "failure
-  return path" is now WF-8C, and S-00P TK-004 accepts, amends or supersedes
-  the record to match. ADR acceptance is not a blocker of this Spec.
+  [ADR-000F](../../docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
+  accepted on 2026-09-26 at the owner's 2026-09-24 direction with the SCR role
+  model: the Spec's Dispatcher verifies the assembled Spec and the Director
+  approves it in a separate context before integration. Owner Human QA
+  normally follows the Director's approval of the version's Specs, but that is
+  the described cadence, not a replacement for this Spec's per-Spec,
+  content-bound owner approval (T1 below), and the owner chooses when to QA.
+  Its open "failure return path" is WF-8C; S-00P TK-004 keeps the record
+  consistent. ADR acceptance was never a blocker of this Spec.
 - Independent review at integration, which this extends rather than replaces:
   [ADR-0037](../../docs/adr/0037-independent-review-at-integration.md). The
   reviewed unit becomes the assembled Spec; the immutable-candidate
@@ -182,8 +187,8 @@ verified main) and the separate-context-review grilling decisions 009, 011 and
 012 of 2026-09-24 (closure, meaning features capture and record cleanup, waits
 for verification on main; TASK.md stays the record until cleanup). The
 [ledger](../../wiki/grilling-destination-audit-ledger.json) carries the WF and
-FND rows; the SCR decisions are owner answers in grilling notes whose promotion
-is still pending.
+FND rows; the SCR decisions, owner answers in grilling notes, are promoted as the
+ledger's SCR rows and accepted ADR-000F.
 
 | Step | Transition | Gate | Owner |
 |---|---|---|---|

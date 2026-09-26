@@ -9,7 +9,7 @@
   ],
   "counting": {
     "destination_audit_rows": 254,
-    "unique_question_ids": 240,
+    "unique_question_ids": 251,
     "reassessed_ids": [
       "CAND-N",
       "FND-Q20",
@@ -34,7 +34,7 @@
       "REC-04"
     ],
     "status_tally": {
-      "locked": 179,
+      "locked": 190,
       "superseded": 25,
       "open": 14,
       "answered-in-chat": 10,
@@ -80,7 +80,7 @@
       "specced": 6,
       "specced-and-tasked": 10,
       "in-progress": 48,
-      "not-started": 19,
+      "not-started": 30,
       "no-build-obligation": 54
     }
   },
@@ -162,6 +162,12 @@
       "name": "Portable, cloud-deployable Workbench",
       "dates": "2026-09-22 to 2026-09-23",
       "record": "portable-workbench-cloud-deployable-2026-09-22"
+    },
+    {
+      "id": "SCR",
+      "name": "Separate-context review boundary",
+      "dates": "2026-09-24",
+      "record": "separate-context-review-boundary-2026-09-24"
     },
     {
       "id": "REC",
@@ -6790,7 +6796,7 @@
       "aliases": [
         "FND-Q14-Q19-qa-lifecycle"
       ],
-      "notes": "decision-032 supersedes decision-024's release-batch reading. The 'what should they be shown' half was not answered here; WF-8 and agent proposal-020 (Human QA lane plus demo artifact) cover it. Notepad status 'approved'.",
+      "notes": "decision-032 supersedes decision-024's release-batch reading. The 'what should they be shown' half was not answered here; WF-8 and agent proposal-020 (Human QA lane plus demo artifact) cover it. Notepad status 'approved'. SCR-6 (2026-09-24) replaces the 'not batched by release' clause with a version cadence: owner Human QA normally follows the Director's approval of the version's Specs or escalation of their blockers. Reconciled 2026-09-26: that cadence is the default, not the only permitted time; the owner chooses when to QA, and approval stays a per-Spec, content-bound record (S-00J closure-capture contract T1). The integration to main position stands.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-024",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-032",
@@ -8540,7 +8546,7 @@
         {
           "artifact": "LEXICON.md (Task, Chat, Director rows) and templates/LEXICON.md",
           "action": "update",
-          "effect": "One Task per Chat; a Chat ends after its Task; Director (alias Dispatcher) watches and dispatches, never executes."
+          "effect": "One Task per Chat; a Chat ends after its Task; Director, Dispatcher and Worker are separate roles per SCR-4 (Dispatcher is not an alias)."
         },
         {
           "artifact": "workbench/skills/carry/SKILL.md",
@@ -8569,7 +8575,7 @@
         "task-ticket-chat-workflow-clarification-2026-09-10 Q4",
         "workbench-foundation-rework-2026-09-11 TT-Q4"
       ],
-      "notes": "Supersedes a 2026-09-23 agent derivation that one Chat may run several Tasks in sequence. Earlier RB-Q2/RB-Q2B settled context sizing as an aspiration, not a hard gate. FND-Q03 closes on this answer.",
+      "notes": "Supersedes a 2026-09-23 agent derivation that one Chat may run several Tasks in sequence. Earlier RB-Q2/RB-Q2B settled context sizing as an aspiration, not a hard gate. FND-Q03 closes on this answer. Refined 2026-09-24 by SCR-4: Director and Dispatcher are separate roles (Director > Dispatcher > Worker), no Task is approved individually, and the owner is not the Director. The Chat 1:1 answer stands.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-067",
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#decision-068",
@@ -9410,7 +9416,7 @@
       "aliases": [
         "WF note previous wording: separate-context review per Task before merge into the Spec branch"
       ],
-      "notes": "Previous wording: 'Does every completed Task require separate-context independent review before it merges into the Spec branch, or ordinary Task verification with independent review reserved for the completed Spec branch?' Do not add an unapproved risk-triggered review policy.",
+      "notes": "Previous wording: 'Does every completed Task require separate-context independent review before it merges into the Spec branch, or ordinary Task verification with independent review reserved for the completed Spec branch?' Do not add an unapproved risk-triggered review policy. Reaffirmed 2026-09-24 by SCR-1/SCR-5/SCR-7 after a same-day restoration of Task review.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions (WF-8B)",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-068",
@@ -10053,7 +10059,7 @@
         "FND-Q17e"
       ],
       "aliases": [],
-      "notes": "Same correction records the owner saying the six lanes he specified were meant for TASKBOARD itself (feeds E-1).",
+      "notes": "Same correction records the owner saying the six lanes he specified were meant for TASKBOARD itself (feeds E-1). SCR-4 later defined Director, Dispatcher and Worker; the owner is the human above the Director, not the Director.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-001"
       ],
@@ -10275,7 +10281,7 @@
         "FND-Q17b"
       ],
       "aliases": [],
-      "notes": "Rejects the agent's recommendation that independent review is part of doing the work.",
+      "notes": "Rejects the agent's recommendation that independent review is part of doing the work. Refined 2026-09-24 by SCR-1/SCR-7 and the confirmed readback: Needs review holds work handed back and waiting for the Director's approval of the assembled Spec, not a per-Task review.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-009"
       ],
@@ -11383,6 +11389,438 @@
         "sub_label": "Spec+Lexicon+lane done; rest pending",
         "evidence": "S-00V exists (active, TK-001 done); LEXICON.md:126-130 rows; ADR-000M supersedes ADR-0017 and amends ADR-0046; manifest lanes.skills landed. BLUEPRINT.md:5,104 unsharpened; AGENTS note/capability rules absent; no ADR narrowing ADR-0051/0040 or recording claim-on-branch.",
         "gap": "BLUEPRINT/AGENTS sharpening (+ templates) and the ADR-0051/0040 narrowing and claim-on-branch ADRs remain, assigned to uncut S-00V slices."
+      }
+    },
+    {
+      "id": "SCR-1",
+      "family": "SCR",
+      "counted": true,
+      "topic": "Task QA is self-performed",
+      "question": "Does a Task require separate-context review, or does its implementing agent self-verify before hand-back?",
+      "status": "locked",
+      "answer": "No separate-context QA or approval gate on a Task. A Task is a small one-time instruction: do the bounded step, update proof that Actuality moved closer to the destination, report back, end. The Worker self-checks that its claims are valid and backed by proof before hand-back; destination-level QA waits until the Spec is assembled.",
+      "answered": "2026-09-24, SCR note decision-001, correction-003; readback confirmed decision-012",
+      "reason": "Owner: 'we would be taking a step, and then 2 other people verify if we took it, if our shoe was tied, and if we fell over in the process. I want us to run to the destination set in the spec, and then check to make sure we did it correctly.'",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "The labeled interpretation states that a Task has no review or approval gate and its Worker self-checks; the verbatim source map keeps its 'Review Task' step, read as the Worker's self-check and hand-back."
+        },
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "action": "update",
+          "effect": "Records no Task gate as an accepted decision."
+        },
+        {
+          "artifact": "AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors",
+          "action": "update",
+          "effect": "Controls stop describing per-Task review (S-00P TK-002, TK-003, TK-005)."
+        }
+      ],
+      "related": [
+        "WF-8B",
+        "E-4C",
+        "BPR-8F"
+      ],
+      "aliases": [],
+      "notes": "Returns to the 2026-09-16 WF-8B answer after correction-001 briefly restored a Dispatcher approval gate per Task. Supersedes the per-Task review reading of the 2026-09-24 afternoon 'Review Task' map step (PR #151); the map itself stays verbatim as the owner's source, with the interpretation labeled separately.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-001",
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-003"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-2",
+      "family": "SCR",
+      "counted": true,
+      "topic": "Separate-context review judges the assembled Spec",
+      "question": "When does separate-context review occur, and what exact unit and destination does it judge?",
+      "status": "locked",
+      "answer": "When every Task in a Spec is complete. The unit is the assembled Spec and the combined Actuality and proof its Tasks produced; the check is whether the Spec's local destination was reached and moves the product toward the Blueprint destination. It has two agent checks: the Dispatcher's whole-Spec Verify/QA, then the Director's separate-context approval.",
+      "answered": "2026-09-24, SCR note decision-002, correction-002; readback confirmed decision-012",
+      "reason": "Inference: a single Task cannot demonstrate the Spec destination, so the destination check waits for the assembled whole.",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "Dispatcher whole-Spec QA then Director separate-context approval of the assembled Spec before it combines into integration."
+        },
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "action": "update",
+          "effect": "Spec QA gate held by the Dispatcher and Director."
+        }
+      ],
+      "related": [
+        "WF-8C",
+        "FND-Q14"
+      ],
+      "aliases": [],
+      "notes": "Keeps WF-8C and FND-Q14's Spec QA gate; adds who performs it.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-002",
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-002"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-3",
+      "family": "SCR",
+      "counted": true,
+      "topic": "Who may approve the assembled Spec",
+      "question": "Which prior involvement disqualifies an agent from performing the assembled-Spec review?",
+      "status": "locked",
+      "answer": "The Director owns the separate-context approval of a Spec a Dispatcher carries. The Dispatcher does the prior whole-Spec self-QA but may not give the Director approval; agents that implemented Tasks in the candidate are also ineligible.",
+      "answered": "2026-09-24, SCR note decision-003; readback confirmed decision-012",
+      "reason": "Inference: the approval is only independent if neither the carrier nor a builder of the candidate gives it.",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "action": "update",
+          "effect": "Names the ineligible parties."
+        },
+        {
+          "artifact": "LEXICON.md (Director, Dispatcher, Worker rows) and templates/LEXICON.md",
+          "action": "update",
+          "effect": "Dispatcher and Worker rows say neither can approve a Spec they worked."
+        }
+      ],
+      "related": [
+        "WF-8C",
+        "SCR-2"
+      ],
+      "aliases": [],
+      "notes": "None.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-003"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-4",
+      "family": "SCR",
+      "counted": true,
+      "topic": "Director, Dispatcher and Worker",
+      "question": "What canonical term names the agent that carries a Spec by dispatching Task agents, and what authority does that term imply?",
+      "status": "locked",
+      "answer": "Director > Dispatcher > Worker, three roles. A Dispatcher owns and carries a Spec by launching and sequencing Workers and verifying the assembled Spec before hand-back; the Director holds the approval boundary across Specs; a Worker owns and self-verifies one Task. Corrected the same day: the owner is the human, not the Director.",
+      "answered": "2026-09-24, SCR note decision-004, correction-007; readback confirmed decision-012",
+      "reason": "Owner, correction-007: 'I am the human, not the director.' Inference: separate roles let an agent hold the Director role later without removing the owner.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Director, Dispatcher, Worker rows) and templates/LEXICON.md",
+          "action": "update",
+          "effect": "Director, Dispatcher and Worker defined as separate roles; Dispatcher is no longer an alias."
+        },
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "Names the three roles and the owner above them."
+        }
+      ],
+      "related": [
+        "TT-Q4",
+        "E-2"
+      ],
+      "aliases": [],
+      "notes": "Refines TT-Q4 (Director with Dispatcher as alias) and E-2 (Director as whoever directs; the owner now). Verifier is not a term: the Dispatcher may dispatch its whole-Spec QA and owns the result.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-004",
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-007"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-4A",
+      "family": "SCR",
+      "counted": true,
+      "topic": "Roles are not branches",
+      "question": "Are Director, Dispatcher and Worker defined by their responsibilities independent of branch placement, with branches as work topology rather than role definitions?",
+      "status": "locked",
+      "answer": "Yes. Roles are defined by responsibility and approval boundary, not by Git branch placement. Branches attach to the work being accumulated; Director does not mean integration and Dispatcher does not mean Spec branch.",
+      "answered": "2026-09-24, SCR note decision-005; readback confirmed decision-012",
+      "reason": "Owner: 'we dont have responsibilities or roles tied to branches, branches are tied to work.'",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "Branch topology follows the work, never the role."
+        }
+      ],
+      "related": [
+        "WF-7"
+      ],
+      "aliases": [],
+      "notes": "None.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-005"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-4B",
+      "family": "SCR",
+      "counted": true,
+      "topic": "Task ancestry: Spec or Blueprint",
+      "question": "How does Task branch ancestry differ when a Task advances a Spec destination versus the Blueprint destination directly?",
+      "status": "locked",
+      "answer": "Most Tasks are children of Specs and branch from the Spec work. A Task may instead be a direct child of the Blueprint when no intermediate Spec destination is needed; it branches from and merges straight into integration, which is metaphorically the Blueprint accumulation branch.",
+      "answered": "2026-09-24, SCR note decision-006, correction-004; readback confirmed decision-012",
+      "reason": "Inference: a small localized change needs no intermediate destination (E-9).",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "Direct Blueprint Task branches from and merges into integration."
+        }
+      ],
+      "related": [
+        "E-9",
+        "E-3",
+        "TT-Q3"
+      ],
+      "aliases": [],
+      "notes": "Keeps E-3 and E-9 (spec-less Task).",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-006",
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-004"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-5",
+      "family": "SCR",
+      "counted": true,
+      "topic": "No approval gate per Task",
+      "question": "Who performs or controls approval for a Spec-scoped Task and for a direct Blueprint-scoped Task, and what may the parent work owner decide from that verdict?",
+      "status": "locked",
+      "answer": "Nobody runs an approval gate per Task. The Worker self-verifies and hands back; the Dispatcher consumes the report, updates the view of Actuality and chooses the next step, for a Spec-scoped and a direct Blueprint Task alike. Merge or sequencing is coordination and containment, not destination-level QA.",
+      "answered": "2026-09-24, SCR note decision-007, correction-005; readback confirmed decision-012",
+      "reason": "Owner: 'this isnt a review ceremony, this is us monitoring work, and ensuring proof of work.'",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "Merge is containment; the Dispatcher reads the report."
+        },
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "action": "update",
+          "effect": "Records the rule."
+        }
+      ],
+      "related": [
+        "WF-8B",
+        "SCR-1"
+      ],
+      "aliases": [],
+      "notes": "correction-005 corrected decision-007, which had the Director consume a direct Task's report.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-007",
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-005"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-6",
+      "family": "SCR",
+      "counted": true,
+      "topic": "Director QA and Human QA",
+      "question": "What does a passing Director review authorize, and how does project-specific Human QA relate to it?",
+      "status": "locked",
+      "answer": "Two acts by two parties. The Director approves each Spec its Dispatcher carries (a pass lets the Spec branch merge into integration and moves its card to Complete) and coordinates across Dispatchers. Owner Human QA comes after the Director has approved every Spec in the version or escalated blockers, and ends in the owner-only integration to main merge. What Human QA consists of is project-specific; here it is the owner monitoring, asking the Director questions and starting the next steps. Closure (features Wiki capture, record deletion) follows verification on main.",
+      "answered": "2026-09-24, SCR note decision-011, correction-006, correction-007; readback confirmed decision-012",
+      "reason": "Owner vision: 'I tell the director, we are ready to start the version of the workbench, make it so. The director then spins up a dispatcher for each spec... The human QA part is after the director has approved all of the specs.' Earlier rationale kept: per-Spec owner QA of parallel Specs cannot judge the integrated whole (FND decision-024).",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "action": "update",
+          "effect": "Human QA's normal cadence follows the Director's approval of the version's Specs or escalated blockers; the owner chooses when to QA; approval stays per Spec and content-bound; closure follows the S-00J closure-capture contract order."
+        },
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "Human QA's version cadence is the described default, not the only permitted time; the owner chooses when to QA, approval is recorded per Spec, and closure follows main verification."
+        },
+        {
+          "artifact": "AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors",
+          "action": "update",
+          "effect": "Human QA wording states the version cadence as default, owner-selected timing and per-Spec recorded approval (S-00P TK-002)."
+        }
+      ],
+      "related": [
+        "FND-Q14",
+        "WF-8E",
+        "E-2"
+      ],
+      "aliases": [],
+      "notes": "Replaces FND-Q14's 'not batched by release' clause with the version cadence as default; keeps its integration to main position and WF-8E's closure rule. Reconciled 2026-09-26 with the owner-selected Human QA timing recorded in S-00J and S-00P: version completion is not the only trigger, the per-Spec content-bound approval rows (S-00J T1) stay, no batch-approval command exists, and closure follows the S-00J closure-capture contract (main verification, then complete, then features capture, retirement and discard). The first promotion candidate e318f14 made Human QA version-only and closed a Spec before main verification; neither placement was promoted.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-011",
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-006",
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-007"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-7",
+      "family": "SCR",
+      "counted": true,
+      "topic": "No grouped-slice review",
+      "question": "Must every Task receive approval before merge, or may several completed Tasks be reviewed together as one vertical slice?",
+      "status": "locked",
+      "answer": "Neither. Do not QA every Task and do not add a second reviewer for grouped brick-laying slices. Run toward the local destination the Spec describes, then do whole-Spec QA. A Task ends after its one attempt; if it missed, do not reopen it, create a new Task.",
+      "answered": "2026-09-24, SCR note decision-008; readback confirmed decision-012",
+      "reason": "Owner's brick road: Tasks lay bricks, Specs map the local terrain, the Blueprint says where to and why.",
+      "result": [
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "action": "update",
+          "effect": "Rejects per-Task and per-slice gates."
+        }
+      ],
+      "related": [
+        "WF-8B",
+        "SCR-1"
+      ],
+      "aliases": [],
+      "notes": "None.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-008"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-7A",
+      "family": "SCR",
+      "counted": true,
+      "topic": "Direct Blueprint Task QA",
+      "question": "At what destination boundary is accumulated direct Blueprint Task work QAed when there is no Spec?",
+      "status": "locked",
+      "answer": "The full hierarchy still runs: Dispatcher -> Worker -> Dispatcher -> Director, with Git integration -> Task branch -> integration -> integration. The Dispatcher sends the Worker from integration, verifies and merges the result, and the Director checks it on integration. No role works from main. A direct Task that outgrows one context or repeats one objective becomes a Spec.",
+      "answered": "2026-09-24, SCR note decision-010 via correction-005; readback confirmed decision-012",
+      "reason": "Owner: 'its the director > dispatcher > worker hierarchy that is important. The only one they cant work from is main.'",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "Direct Blueprint Task path and E-9 guard, labeled destination design that never bypasses the AGENTS.md separate-context review before integration."
+        },
+        {
+          "artifact": "workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md",
+          "action": "update",
+          "effect": "Records the direct-Task route as destination design; ADR-0037's separate-context review before branches combine into integration stays the operative gate until S-00P TK-002."
+        },
+        {
+          "artifact": "AGENTS.md and RUNBOOK.md (integration review gate, Human QA, lifecycle) plus templates mirrors",
+          "action": "update",
+          "effect": "Integration review gate reconciled for direct Tasks without bypassing the pre-integration review (S-00P TK-002)."
+        }
+      ],
+      "related": [
+        "E-9",
+        "SCR-4B",
+        "SCR-5"
+      ],
+      "aliases": [],
+      "notes": "Reconciled 2026-09-26: the Director's check of a direct Task on integration is destination design from the owner's answer. The first promotion candidate e318f14 placed it after integration in place of AGENTS.md's operative pre-integration review; reconciling the destination route with that gate stays open in S-00P TK-004, without reopening the owner answer.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-010",
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-005"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "S-00P TK-002 blocked",
+        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+      }
+    },
+    {
+      "id": "SCR-8",
+      "family": "SCR",
+      "counted": true,
+      "topic": "A missed Task",
+      "question": "When an unsuccessful one-attempt Task is thrown away, which parts are retired, discarded, preserved as proof, or carried into the newly created Task?",
+      "status": "locked",
+      "answer": "A Task that did not complete its run is not discarded: its TASK.md is the record until the Spec is cleaned up into the features Wiki. Its hand-back report stays as diagnostic proof in the Spec evidence. Its card returns to In progress and a new Task, named for its objective (the card title, not the WBID), fixes what the check found, starting fresh unless the Dispatcher deliberately builds on the old tip. The worktree is removed at hand-back; the missed branch is named in the Spec evidence and its deletion is covered by the Director's Spec approval. A Worker that stops unexpectedly leaves what it documented as it went; updating the card is part of finishing a Task.",
+      "answered": "2026-09-24, SCR note decision-009; readback confirmed decision-012",
+      "reason": "Owner: 'we cant discard a task that didnt complete its run... The WBID is just a quick reference link... What the cards should hold is the title. The cards are basically the agile tickets.'",
+      "result": [
+        {
+          "artifact": "BLUEPRINT.md (Desired Lifecycle)",
+          "action": "update",
+          "effect": "Missed Task handling in the loop."
+        },
+        {
+          "artifact": "board Spec (TASKBOARD.json board)",
+          "action": "create",
+          "effect": "A missed Task card returns to In progress; cards show titles, not WBIDs."
+        }
+      ],
+      "related": [
+        "WF-8D",
+        "E-1",
+        "E-11",
+        "E-7",
+        "WF-8H"
+      ],
+      "aliases": [],
+      "notes": "Refines decision-008 (what the new Task inherits); keeps WF-8D and E-11 cleanup; ties to E-7 decision-015 (sitrep in titles). Supersedes the unanswered draft recommendation to discard the TASK.md outright.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-009"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": "no board Spec",
+        "evidence": "At 6ae38b9 BLUEPRINT.md said the finished Task is reconciled and retired but named no missed-Task path; no TASKBOARD.json or board Spec exists.",
+        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md; the board lanes (ADR-000E, E-1 to E-11) still need their board Spec."
       }
     },
     {

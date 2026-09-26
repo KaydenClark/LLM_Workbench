@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
 **Blockers:** TK-002 onward wait on S-00I and S-00J; S-00J TK-01T will let TK-002 consume their reviewed integration delivery (`S-###:delivered`) instead of final `complete`. S-00H is complete and retired; TK-001 is done and landed.
-**Latest event:** 2026-09-26 Lane H landed the Codex wave's expanded TK-002..TK-005 packets reworded to consume S-00J's closure-capture transition contract (`complete` after main verification; features capture after `complete`, before cleanup). The pending SCR candidate still needs a fresh reconciled candidate.
-**Next gate:** S-00J TK-01R/TK-01S/TK-01T and S-00I's feature-capture and continuous-demo Tasks reach reviewed integration delivery; TK-01T converts TK-002's blockers; then TK-002 (AGENTS), TK-003/TK-004, TK-005. A reconciled SCR candidate lands separately. No claim or closure is authorized by this planning packet.
+**Latest event:** 2026-09-26 Lane H reconciled the owner-confirmed SCR answers onto current integration: the owner's arrow-and-brace map stays verbatim beside a labeled interpretation, Director/Dispatcher/Worker Lexicon rows land, and ADR-000F is accepted with its Human QA timing, closure order and direct-Task gate placement corrected from the unlanded e318f14 candidate.
+**Next gate:** S-00J TK-01R/TK-01S/TK-01T and S-00I's feature-capture and continuous-demo Tasks reach reviewed integration delivery; TK-01T converts TK-002's blockers; then TK-002 (AGENTS), TK-003/TK-004, TK-005. No claim or closure is authorized by this planning packet.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
@@ -119,6 +119,24 @@ with a new immutable candidate and fresh Director review. Preserve source
 arrow/brace notation and corrections; label prose interpretation separately.
 Do not accept unresolved ADRs or infer answers from the candidate's changes.
 
+**SCR reconciliation (2026-09-26).** The owner-confirmed SCR answers (SCR-1
+to SCR-8, readback confirmed 2026-09-24) are promoted from a fresh candidate on
+current integration rather than imported from e318f14. `BLUEPRINT.md` keeps
+the owner's arrow-and-brace map verbatim with its provenance and reads it in a
+separately labeled interpretation; `LEXICON.md` and `templates/LEXICON.md`
+define Director, Dispatcher and Worker; accepted
+[ADR-000F](../../docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md)
+carries the gates and roles; the
+[ledger](../../wiki/grilling-destination-audit-ledger.json) carries the SCR
+rows. Three e318f14 placements were corrected, not imported: Human QA's
+version cadence is the described default while the owner still chooses when to
+QA and per-Spec content-bound approval (S-00J T1) stays; closure follows the
+S-00J contract order above; and the Director's check of a direct Blueprint
+Task on `integration` is labeled destination design, with `AGENTS.md`'s
+separate-context review before integration remaining the operative gate until
+TK-002 rewrites `AGENTS.md`. The `AGENTS.md`, `RUNBOOK.md` and template control
+wording stays with TK-002, TK-003 and TK-005.
+
 ### Delivery prerequisites (repair planned in S-00J TK-01T)
 
 The current resolver satisfies an S-ID blocker only for a `complete` or
@@ -197,6 +215,23 @@ closure order supersedes this earlier wording:
   fresh immutable candidate is reviewed. An approved Spec branch merges into
   `integration`, the owner's Human QA surface. The earlier no-per-Task-review
   answer is superseded by the owner's restored workflow map.
+- **SCR-1 to SCR-8, 2026-09-24, readback confirmed.** A Task has no review or
+  approval gate: its Worker self-checks and hands back, and the Dispatcher
+  merges it for containment and chooses the next step. This supersedes the
+  same-day per-Task review reading in the bullet above; the owner's source map
+  keeps its "Review Task" step verbatim, read as that self-check and hand-back.
+  The Dispatcher does or dispatches whole-Spec QA and owns it; the Director
+  approves the assembled Spec in a separate context; neither the Dispatcher nor
+  a Task implementer can approve. Director > Dispatcher > Worker are roles by
+  responsibility, not branch; the owner is the human above the Director; no
+  role works from `main`; the Director and its Dispatchers are the WF-10
+  coordinator. A missed Task keeps its `TASK.md` as the record, its card
+  returns to In progress, its worktree is removed and a new Task named for its
+  objective fixes it. A direct Blueprint Task's route through `integration` is
+  destination design under the operative pre-integration gate. Human QA's
+  version cadence is the default; its timing, per-Spec approval and the
+  closure order follow the September 26 reconciliation above. A Spec is about 1
+  to 5 of the Blueprint's 100 and a Task about 0.1.
 - **WF-8D, WF-8E, WF-8F, WF-8A, WF-8G.** Completed Tasks are reconciled into
   the Spec, retired from ordinary discovery and their contained branches
   cleaned up. A Spec closes only after assembled-Spec review passes and owner
@@ -405,6 +440,7 @@ workflow. No other owner changes.
 | 2026-09-26 | Dispatcher planning | Expanded existing TK-002–005 execution packets under the current Director -> Dispatcher -> Worker assignment; preserved every blocker and Task identity. Proposed explicit delivery prerequisites separately from closure; no runtime or shared control mutation | Base 89d4042; immutable SCR review at e318f144247d4288d2364f8103c78069d64aa919 found timing, closure, direct-Task routing, notation-test and composition gaps; targeted candidate Blueprint/ADR/ledger tests pass but are not delivery approval. Planning-suite results are returned with the immutable candidate to Director | This Spec records current assignment and supersession; Workers author individual packets. Shared projections remain Director-owned | TK-002 still blocked; Director must coordinate J/I/O mechanism and release shared lanes, refresh projections, and review the resulting immutable candidate; no owner approval or main promotion inferred |
 | 2026-09-26 | Lane H planning | Codex wave packets TK-002..TK-005 carried onto current integration and reworded so closure consumes S-00J's closure-capture transition contract: `complete` follows main verification; features capture follows `complete` and precedes transient cleanup. Delivery-prerequisite repair named as S-00J TK-01T; no blocker removed | Read WF-8E/WF-8H/WF-8F in the ledger and the SCR grilling decisions 009/011/012; render and doctor in the assembled tree | Planning only; Status and Blockers fields of TK-002..TK-005 unchanged; no control, template or runtime change |
 | 2026-09-26 | review | Review verdict: pass at 7e7ed363d408c518ff035b2b1e2c38b5e3f948e3 [e8d98a166a58] #1 | none; TK-002..TK-005 closure wording consumes the S-00J closure-capture contract (complete after main verification, capture after complete and before cleanup), Status/Blockers unchanged, no edge removed, links resolve; full suite 48/48 on 7e7ed36, fresh-clone doctor clean | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | SCR reconciliation | Owner-confirmed SCR answers (SCR-1 to SCR-8, readback decision-012) promoted from a fresh candidate on integration `9ca103d` instead of importing unlanded `e318f14`: source map kept verbatim with provenance and a labeled interpretation; Director, Dispatcher and Worker rows; ADR-000F accepted; SCR ledger rows. Corrected, not imported: version-only Human QA (now the default cadence with owner-selected timing and per-Spec approval), closure before main verification (now the S-00J contract order), and the direct-Task Director check after integration (now labeled destination design under the operative pre-integration gate) | tools/test-blueprint-contract.mjs red on an in-memory brace-removal mutation the old keyword check accepted, green with the line-by-line structure check against the map at `482dc6b` plus arrow, indentation and loop-line mutations; test-adr re-counted on the composed corpus (accepted-ADR-to-Spec 22 files / 26 edges, intra-ADR 35 / 64); adr.mjs register regenerated and validate clean; test-grilling-ledger 5/5; guardrail 106.6/113 before and after, identical report; full suite on the committed candidate is in the Worker hand-back | BLUEPRINT.md Desired Lifecycle; LEXICON.md and templates/LEXICON.md; ADR-000F accepted, ADR-000G correction note and link; S-00J ADR-000F link and SCR promotion note; S-00P September 26 reconciliation and SCR decision bullet; TK-004 source path; grilling ledger SCR rows and FND-Q14, TT-Q4, WF-8B, E-2, E-4C notes | AGENTS.md, RUNBOOK.md and template controls still describe review of each integration candidate and name no Director, Dispatcher or Worker (TK-002, TK-003, TK-005); reconciling the direct-Task destination route with the pre-integration gate stays open (TK-004); ADR-000G and ADR-000I stay proposed; the board lanes still have no Spec; separate-context Director review of this candidate is pending |
 
 ## Completion Result
 
