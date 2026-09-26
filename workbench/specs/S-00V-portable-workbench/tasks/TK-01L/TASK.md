@@ -3,7 +3,7 @@
 **Task ID:** TK-01L
 **Spec ID:** S-00V
 **Slice:** `claim` pushes the claim on its task branch and `next` skips a Task claimed on any remote tip
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00V box 4 (`claim` pushes the claim on the task branch; a second instance running `next` after a fetch does not receive that Task)
 **Stance:** Builder
