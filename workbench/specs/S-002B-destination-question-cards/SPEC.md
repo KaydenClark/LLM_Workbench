@@ -3,13 +3,13 @@
 **Spec ID:** S-002B
 **Status:** active
 **Priority:** 1
-**Owner:** DQC dispatcher
+**Owner:** codex-dqc-result
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving concept understanding, source lineage, Expected result and achieved Result through public safe record operations.
 **Blockers:** none
-**Latest event:** Director approved narrow Result write/read residual; inherited DQC behavior verified at current remote integration.
-**Next gate:** Dispatch one Sol worker for TK-002S; dispatcher performs whole-Spec QA and reports immutable candidate to Director.
+**Latest event:** TK-002S claimed by codex-dqc-result.
+**Next gate:** Close TK-002S with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
 

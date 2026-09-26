@@ -3,7 +3,7 @@
 **Task ID:** TK-002S
 **Spec ID:** S-002B
 **Slice:** Record achieved Result independently of Expected result
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Public revision-safe Result write preserves Expected result, origin, identity and history and reloads through JSON and readable show.
