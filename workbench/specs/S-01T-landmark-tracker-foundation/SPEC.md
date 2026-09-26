@@ -371,7 +371,8 @@ delivered yet.
 
 - Implementation proceeds through TK-01X, TK-01Y, TK-01Z and TK-02A.
 - Owed to S-00P (root controls): Runbook procedure for the Tracker and the
-  suite-list line for its test, supplied as wording when TK-01X lands.
+  suite-list line for its test; the exact wording is in
+  [TK-01X Remaining Gaps](tasks/TK-01X/TASK.md#remaining-gaps).
 - Initial content can evolve; no exhaustive catalog approval is required.
 - Pre-existing attention findings remain with their current owners; neither this
   planning change nor structural checks establish a clean Workbench update.

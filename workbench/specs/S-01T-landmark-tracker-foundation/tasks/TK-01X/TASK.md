@@ -117,7 +117,63 @@ README procedure, and Remaining Gaps (Runbook wording for S-00P, suite-list
 line if not directly editable, anything deferred). Close with
 `node workbench/tools/spec-workbench.mjs close S-01T ...` after commit and push.
 
+## Delivered Shape (implementation choices within the Task's latitude)
+
+- **Discovery.** An additive top-level `landmarkTracker` manifest block
+  (`root` plus exactly the `destination-questions` and `landmarks`
+  collections, each flat directly under the root; projection fixed at
+  `<root>/TRACKER.json`), beside `git`. `collections` and `lanes` are
+  untouched, so S-00I TK-01U's `collections.features` key cannot collide and
+  an undeclared room validates byte-for-byte as before. Resolver:
+  `declaredTracker`, `trackerDeclaration`, `trackerRootPath`,
+  `trackerCollectionPath`, `trackerProjectionPath` in `workbench-paths.mjs`
+  (undeclared -> `tracker-undeclared`, malformed -> `invalid-tracker`).
+  Validator: `validateManifest` reuses the registered `invalid-collection`
+  (shape, lane/collection overlap) and `missing-collection` (absent or linked
+  directory) codes and reports `tracker` only when declared.
+- **Identity.** `DQC-` and `LMK-` prefixes through `allocateVisibleId`
+  (default width 3; neither prefix occurs anywhere in the repository);
+  `visible-ids.mjs` unchanged.
+- **Runtime.** `workbench/tools/landmark-tracker.mjs` (in `RUNTIME_TOOLS`):
+  `capture`, `add-landmark`, `revise ID --expect-revision N`,
+  `link ID --landmark LMK-... --expect-revision N`, `rebuild [--check]`,
+  `show [ID]`, each with `--json` and `--path`. Procedure:
+  [README](../../../../landmark-tracker/README.md).
+- **Demo.** `node tools/landmark-tracker-demo.mjs` (release-side, like
+  `tools/team-coordination-demo.mjs`).
+
 ## Remaining Gaps
 
-- Distributions, Documentation and Recovery Tasks remain.
-- A doctor-level Tracker drift check is not in this slice unless trivial.
+- Distributions (TK-01Y), Landmark Wiki evidence (TK-01Z) and reference
+  recovery (TK-02A) remain. Other source types (grilling questions, Specs,
+  ADRs, Tasks) are not yet counted items; only DQCs are.
+- No doctor-level Tracker drift finding: `rebuild --check` is the seam
+  (refuses `projection-drift`), and this repository's test asserts the shipped
+  projection is current. Wiring it into `doctor` needs a registered code.
+- New Genesis rooms do not declare the Tracker root by default (`init` and
+  `COLLECTIONS` are unchanged); declaring it for new rooms is a Genesis and
+  template decision, not made here.
+- `--expect-revision` is a stale-read check, not a lock (stated in the README);
+  concurrent writers are not isolated.
+- Owed to S-00P (root controls, not edited here):
+  - AGENTS full-suite line, after `node tools/test-notepads.mjs`:
+    `node tools/test-landmark-tracker.mjs`
+  - RUNBOOK, section "Landmark Tracker: accepted design and available
+    operations": replace "No Tracker runtime is implemented by this
+    documentation change." and "These paths are a delivery contract, not
+    evidence of installed collections or commands." with this paragraph:
+    "The foundation runtime is `workbench/tools/landmark-tracker.mjs`, and its
+    record procedure lives in `workbench/landmark-tracker/README.md`. A room
+    declares the Tracker with the manifest's additive `landmarkTracker` block
+    (the root and its flat `destination-questions` and `landmarks`
+    collections); without it every Tracker command refuses with
+    `tracker-undeclared`. Capture a DQC with `capture --title ... --question
+    ... [--source ID@REV] --reason ...`, add a landmark with `add-landmark`,
+    change either with `revise ID --expect-revision N --reason ...`, connect a
+    DQC with `link ID --landmark LMK-... --expect-revision N --reason ...`, and
+    regenerate `TRACKER.json` with `rebuild`; every write also rebuilds it and
+    `rebuild --check` refuses projection drift. `--expect-revision` refuses a
+    stale read but is not a lock: keep one writer per record. Never hand-edit
+    `TRACKER.json`."
+  - AGENTS "When the Landmark Tracker capability is available ..." stays
+    accurate while S-01T is incomplete; revisit when S-01T completes.
