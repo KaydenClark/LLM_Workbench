@@ -9,7 +9,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { finding } from './diagnostics.mjs';
 import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS, liveRecordPath, markdownLinkTargets } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, isSafeRelative, IGNORED_COLLECTIONS, liveRecordPath, markdownLinkTargets } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'deprecated', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
@@ -431,15 +431,21 @@ export function occupiedAdrLabels(root) {
       let declared;
       try { declared = JSON.parse(manifest.stdout).collections?.adr; }
       catch { throw new Error(`Cannot reserve ADR labels from malformed manifest at ${ref}`); }
+      // The same rule `collectionRelative` applies to the local manifest;
+      // only the source differs, so a tip can never widen or redirect the scan.
       if (declared !== undefined) {
-        if (typeof declared !== 'string' || path.isAbsolute(declared) || declared.split(/[\\/]/).includes('..')) throw new Error(`Cannot reserve ADR labels from unsafe adr collection at ${ref}`);
+        if (!isSafeRelative(declared)) {
+          const failure = new Error(`Cannot reserve ADR labels from unsafe adr collection at ${ref}: ${JSON.stringify(declared)}`);
+          failure.code = 'invalid-collection';
+          throw failure;
+        }
         collection = declared;
       }
     }
-    const listing = git('ls-tree', '-r', '-z', '--name-only', ref, '--', `${collection.replace(/\/+$/, '')}/`);
+    const listing = git('ls-tree', '-r', '-z', '--name-only', ref, '--', `${collection}/`);
     if (listing.status !== 0) throw new Error(`Cannot reserve ADR labels from ${ref}: ${listing.stderr.trim()}`);
     for (const file of listing.stdout.split('\0').filter(Boolean)) {
-      const parts = path.posix.relative(collection.replace(/\\/g, '/'), file).split('/');
+      const parts = path.posix.relative(collection, file).split('/');
       const name = parts.at(-1);
       if (parts.length > 2 || (parts.length === 2 && !ADR_LIFECYCLE_FOLDERS.includes(parts[0]))) continue;
       const match = name.match(ID_PATTERN);
