@@ -466,6 +466,15 @@ assertIncludesAll(toSpec, [
   '`/to-tasks`',
   'keep the Tasks it already has'
 ], 'to-spec planned-without-Tasks contract');
+// The runtime refuses a Spec with neither a slice row nor a `tasks/`
+// directory (`malformed-spec`, and `next`/`render`/`show` fail for the whole
+// room), so the Task-less Spec is written record-backed with an empty,
+// tracked `tasks/` directory.
+assertIncludesAll(toSpec, [
+  'empty `tasks/` directory',
+  '`.gitkeep`',
+  'malformed'
+], 'to-spec runtime-valid Task-less Spec');
 assert.doesNotMatch(toSpec, /Seed `Vertical Implementation Slices`/,
   'to-spec must not seed a Task row into a new planned Spec');
 assert.doesNotMatch(toSpec, /each TASK during authorized planning/,
