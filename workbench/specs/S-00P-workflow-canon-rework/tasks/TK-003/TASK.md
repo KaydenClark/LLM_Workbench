@@ -40,8 +40,9 @@ evidence or authorization to bypass its blockers.
 4. Director must release the shared root-control and test lane before execution.
    TK-002 owns `AGENTS.md`; TK-004 owns `LEXICON.md` and ADR reconciliation;
    TK-005 owns the generic template mirror. Coordinate their settled contracts
-   before editing shared procedures. One Dispatcher writes Spec and generated
-   state; the Worker returns proof and proposed state changes to that writer.
+   before editing shared procedures. Dispatcher is the sole writer of the
+   assigned `SPEC.md`; Director owns shared projections unless explicitly
+   released; the Worker returns proof and proposed state changes to Dispatcher.
 
 ## Exact File Lane
 
