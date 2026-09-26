@@ -27,7 +27,7 @@ anew. Every unfinished claim now has a named primary successor:
 
 | Original acceptance | Primary successor and preserved scope |
 |---|---|
-| 1 fresh-clone discovery | Each successor proves its own public path; the three compose the original demo |
+| 1 fresh-clone discovery | Each successor proves its own public path; the [S-001Z composed demonstration](../S-001Z-landmark-tracker-view/SPEC.md#verification-procedure--composed-demonstration) joins them in one disposable room |
 | 2 ungrouped/unanswered DQC and Expected result | S-002B; completed TK-01X proof retained |
 | 3 later/overlapping landmarks, retitling | S-002A; completed TK-01X behavior retained |
 | 4 rebuildable readable view and expanded lineage/evidence | S-001Z |
@@ -39,7 +39,7 @@ anew. Every unfinished claim now has a named primary successor:
 | 10 multi-Spec readable article with no WBIDs | S-002A |
 | 11 Wiki collection/schema/retirement compatibility | S-002A consumes S-00I TK-01U and existing owners, without taking their writer lease |
 | 12 movement/reference/recovery | S-002A consumes the immediate lifecycle seam; original TK-02A is its retained packet |
-| 13 checks/demo/review/Human QA | Each successor owns whole-Spec proof; Director reviews composed behavior; owner Human QA remains owner-led |
+| 13 checks/demo/review/Human QA | Each successor owns whole-Spec proof; S-001Z Verification Procedure owns the named combined recipe; Director reviews assembled behavior; owner Human QA remains owner-led |
 
 Unfinished TK-01Z is retained as source context for S-002A article/assessment
 claims and S-002B workflow composition. Unfinished TK-02A is retained as source
@@ -429,6 +429,8 @@ The original workflow diagram is preserved byte-for-byte.
 | 2026-09-26 | review | Review verdict: pass at 5f3cf09bc86a4d5f9632a751bf56e4eddd6f134b [8253ed245462] #9 | No defects on the delta since fb51799: the verdict row is accurate and the merge of integration ebf4268 leaves the reviewed delivery unchanged. Full AGENTS suite 48/48 at 5f3cf09 (dirty []); doctor no blocking finding. | codex exec gpt-5.5, read-only sandbox, separate context from the Lane J dispatcher and worker | 2 |
 
 | 2026-09-26 | none | Owner-authorized delivery split: all thirteen original acceptance rows assigned by claim to S-001Z/S-002A/S-002B; old unfinished packets no longer assigned for execution | Compared current b00a2e3 state, retained completed Tasks and original append-only log bytes, confirmed no open S-01T PR and no current remote S-01T branch; old local codex dispatcher branch e58655d is historical packet work | Delivery Transfer and retained packet release sections link successors; peer scoped packets imported exactly | Successors own unfinished delivery and Human QA; no completion or new runtime status claimed |
+
+| 2026-09-26 | review | Fresh-context Luna navigation readback PASS at 4e68ca488fa258f7dce0161aeebcd2946e492990 against b00a2e338436ef7b281b0cc53e74f891af32f18c | Tracked tree only: all 13 acceptance routes supported; old TK-01Z/TK-02A deferred and explicitly non-executable; five done Task files byte-identical and original evidence rows preserved. Independent local byte/read-state check agrees. | Original map and successor owners read without notes; Director assigns S-001Z Verification Procedure to resolve the sole nonblocking unnamed-composed-proof ambiguity | Navigation/preservation review only, not runtime, integration approval or Human QA. Exact runnable combined proof awaits worker interfaces |
 
 ## Completion Result
 

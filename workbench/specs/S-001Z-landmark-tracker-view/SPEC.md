@@ -111,6 +111,45 @@ suite/demo and the full AGENTS suite on a committed candidate. Invalid-state and
 source immutability assertions use actual before/after bytes. Capture self-drift
 and guardrail before/after with existing findings left visible.
 
+## Verification Procedure — Composed Demonstration
+
+This Spec owns the single under-one-minute reproducible composed recipe for the
+assembled immutable candidate. Each successor contributes its own acceptance;
+this is final combined QA proof, not another parent Spec or a prerequisite to
+current independent slices. The Tracker dispatcher coordinates the proof and a
+scoped worker authors any additive fixture/runner; the dispatcher does not
+implement runtime or demo Tasks.
+
+Run in one disposable manifest-declared room through the actual delivered public
+CLI/API. Preserve this ordered scenario:
+
+1. Capture an unanswered DQC with original question identities and revisions.
+2. Connect it to a landmark that appears later, preserving origin and identity.
+3. Retain Expected result while recording achieved Result, with source history.
+4. Inspect actual supporting assessment evidence, rationale and revisions in
+   the public readable view; no Task-completion proxy or fabricated proof.
+5. Validate the actual bytes of a designated readable Landmark article without
+   WBIDs; keep identity-bearing provenance in structured records.
+6. Rebuild and inspect the exact 30/20/50 example and shared-item deduplication
+   without flattening mixed DQC contributions or changing source records.
+
+The existing verified foundation command is
+`node tools/landmark-tracker-demo.mjs`. Reuse its disposable-room setup and
+existing example proof where useful. The Result, readable-detail and article
+validation commands must be taken from the delivered worker interfaces; their
+flags and a combined runner are deliberately not presented as available yet.
+
+At the assembled candidate, record here the exact runnable recipe/runner,
+immutable SHA, elapsed time, output, per-successor acceptance contribution and
+limits. S-002B contributes source lineage/Expected result/Result preservation;
+S-002A contributes landmark linkage and actual article byte validation;
+S-001Z contributes readable evidence/revisions and deterministic projection
+arithmetic. Actual durable-content comparison and applicable gates still need
+their own named evidence; a no-WBID validator alone does not establish Verified.
+
+Current status: scenario and proof owner assigned; new public operations and
+exact combined command remain pending worker delivery. No combined pass claimed.
+
 ## Documentation Impact
 
 Update the Tracker README and assigned Task proof for delivered readable
@@ -132,3 +171,5 @@ version/release/main promotion; other rooms; one dispatcher owning all delivery.
 | 2026-09-26 | none | Serial identity reservation under explicit owner three-Spec split | Live base b00a2e338436ef7b281b0cc53e74f891af32f18c; next-id proposal saved before next allocation | This minimal scaffold | Dispatcher scope/Tasks and source transfer mapping pending |
 
 | 2026-09-26 | TK-002U | Director approved distinct readable evidence slice after Result display remained with DQC TK-002S | Persisted public fixture at 52ca38c preserves evidence in JSON and omits it in readable formatTracker; parseArgs rejects show --expand | Scoped Tracker requirement and worker packet; central IDs S/T preserved | Red/green worker and DQC runtime lease release pending |
+
+| 2026-09-26 | none | Director assigns this Verification Procedure as the single composed-demo owner | One-room scenario covers DQC lineage, later landmark, separate Expected result/Result, readable assessment evidence, actual article byte validation, 30/20/50 and shared dedup | Named recipe owner linked from original source; commands await actual worker delivery | Scoped worker fixture/runner and exact assembled candidate proof pending; no completion claim |
