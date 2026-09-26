@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** Lane I recorded the identity-touch decision (explicit `widen-id` verb) and cut TK-02B for uppercase width-four allocation; no runtime changed yet.
-**Next gate:** A Lane I worker claims and delivers TK-02B; dual-form selection is the next slice.
+**Latest event:** TK-02B claimed by claude-lane-I.
+**Next gate:** Close TK-02B with verification and documentation proof.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 

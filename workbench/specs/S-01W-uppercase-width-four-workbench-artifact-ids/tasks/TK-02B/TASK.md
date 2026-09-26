@@ -3,7 +3,7 @@
 **Task ID:** TK-02B
 **Spec ID:** S-01W
 **Slice:** Allocate new Spec and Task IDs as uppercase width-four
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-01W Desired Behavior 1 and 6 for the public Spec and Task allocation routes (`next-id --prefix S`, `next-id S-### --prefix TK` and the corrective-Task allocations that share its rule).
