@@ -1111,6 +1111,39 @@ citation-anchor coverage accept the new syntax. Existing numeric syntax remains
 readable. Socket/team registry IDs and internal entry sequence IDs keep their
 existing formats; these commands do not allocate those artifact types.
 
+The [Landmark Tracker Foundation specification](workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md)
+owns delivery of the accepted design below. No Tracker runtime is implemented
+by this documentation change.
+
+### Landmark Tracker: accepted design and available operations
+
+The Landmark Tracker distinguishes evolving concept understanding from delivery
+state. DQCs and landmarks maintain the former; the generated Tracker displays
+it; Specs and Tasks carry implementation and Taskboard projects their state.
+The intended root is `workbench/landmark-tracker/`, containing generated
+`TRACKER.json` and flat `destination-questions/` and `landmarks/` JSON records.
+These paths are a delivery contract, not evidence of installed collections or
+commands. Resolve availability from the actual manifest and verified runtime;
+do not invent a Tracker invocation or use an existing command as its substitute.
+
+Once implemented, workflow transitions and ongoing alignment maintain source
+records with what changed, why and evidence. Keep original grilling questions
+and corrections reachable. DQCs may precede a landmark, Spec, Task or known Wiki
+destination; an answered question records Expected result, while Result records
+achieved delivery. Assess the actual durable content before claiming Verified;
+Task completion, article existence and structural validation alone are insufficient.
+Keep live links current through supported move operations and retain immutable
+citations for historical proof. Ignored notes require their own retention or
+safe transfer until reconciliation; tracked Git history does not recover them.
+
+A Landmark Wiki page contains no WBIDs, including metadata and link targets.
+Keep identity-bearing provenance in the structured records and delivery evidence;
+use readable control or other identifier-free source routes in the article.
+Ordinary feature explanations and cross-cutting design models retain their
+respective Wiki purposes. Collection/schema support must be delivered and
+verified before claiming those article types are available. Routine Wiki work
+within an authorized assignment adds no independent publishing ceremony.
+
 ### JSON Notepads
 
 Visible note identifiers can be allocated without changing existing note paths:

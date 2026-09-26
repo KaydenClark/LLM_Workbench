@@ -282,6 +282,19 @@ closeout or rely on a final write after Stop. This obligation covers saved local
 context for conversation continuation, not computer crashes or device loss;
 an interruption can still preempt an unsaved write.
 
+When the Landmark Tracker capability is available, workflow activity maintains
+current pre-delivery understanding in DQCs and landmark records, preserving
+what changed, why, affected claims and evidence. The generated Tracker reflects
+those sources. Grilling notepads remain useful historical and handoff-like
+context; do not discard needed origins or corrections merely because a card
+exists. Until that capability is delivered, preserve working context through
+the existing notepad runtime. Confirmation of understanding never grants
+implementation or promotion authority. The grilling primitive remains unaware
+of Tracker machinery; workflow composition performs the record maintenance.
+Wiki creation and updates are ordinary authorized delivery and reconciliation,
+not a separate publishing ceremony. Apply claim-level ownership and the current
+request throughout; no record or projection can manufacture authority.
+
 Notepads, including grilling records, use JSON, including when older workflow
 examples say Markdown. Handoffs are separate human-readable Markdown (`.md`)
 files: they give a receiving agent or a new chat plain-language instructions

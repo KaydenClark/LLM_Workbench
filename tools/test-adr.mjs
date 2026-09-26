@@ -418,7 +418,7 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
     if (countForRecord > 0) filesWithLink += 1;
   }
   assert.equal(filesWithLink, 35, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 61, 're-count of total intra-ADR link edges at this candidate');
+  assert.equal(totalLinks, 62, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never

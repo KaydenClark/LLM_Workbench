@@ -7,6 +7,17 @@ canonicalized_in:
 
 # The Frontier is the active landscape and TASKBOARD renders it
 
+## Current reconciliation
+
+The original proposal below is retained as historical rationale. Its sole-view
+claim is superseded by the owner-approved additive documentation/alignment
+Tracker in [the Landmark Tracker decision](../000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md).
+Taskboard remains the implementation view. This does not activate this proposal
+or redefine the technical ready-Task sense of Frontier; the new model does not
+depend on that ambiguous name.
+
+## Original proposal
+
 The **Frontier** is a concept, not a file: the active landscape where many
 Journeys and Paths proceed at once toward the Blueprint Destination. Four terms
 are distinct and interconnected. The **Destination** is the finished product the

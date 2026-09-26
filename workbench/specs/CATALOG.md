@@ -64,6 +64,7 @@ Derived from stable specs; includes completed history.
 | [S-01Q - auditor skill rebuild](S-01Q-auditor-skill-rebuild/SPEC.md) | Determine whether named claims hold on the assigned target and evidence. | planned |
 | [S-01R - reviewer skill rebuild](S-01R-reviewer-skill-rebuild/SPEC.md) | Challenge candidate correctness, downstream impact and consequential claims. | planned |
 | [S-01S - reconciler skill rebuild](S-01S-reconciler-skill-rebuild/SPEC.md) | Leave achieved work and its existing truth owners consistent for continuation. | planned |
+| [S-01T - Landmark Tracker Foundation](S-01T-landmark-tracker-foundation/SPEC.md) | Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking. | planned |
 | [S-020 - Spec-Native Team Coordination](S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
 | [S-021 - Portable Workbench v3](S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | complete |
 | [S-022 - LLM Workbench v3.1 Release](S-022-llm-workbench-v3-1-release/SPEC.md) | Historical release packet with current work routed to S-050; unexecuted historical acceptance remains visible as a limitation. | blocked |

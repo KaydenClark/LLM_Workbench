@@ -22,6 +22,7 @@
 | [000J](000J-completion-claims-are-checked-against-repository-state.md) | Completion claims are checked against repository state | accepted | 2026-09-12 | AGENTS.md, RUNBOOK.md, workbench/specs/S-00M-completion-claims-against-repository-state/SPEC.md |
 | [000K](000K-every-feedback-finding-carries-one-of-four-dispositions.md) | Every feedback finding carries one of five dispositions | accepted | 2026-09-12 | LEXICON.md, RUNBOOK.md, workbench/specs/S-00N-feedback-finding-dispositions/SPEC.md |
 | [000M](000M-core-skills-ship-in-the-workbench-skills-lane.md) | Core skills ship in the workbench skills lane | accepted | 2026-09-23 | RUNBOOK.md, LEXICON.md, BLUEPRINT.md, workbench/specs/S-00V-portable-workbench/SPEC.md |
+| [000N](000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md) | Landmark Tracker connects evolving understanding to durable knowledge | accepted | 2026-09-26 | BLUEPRINT.md, LEXICON.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md |
 | [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](archive/0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | superseded | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
