@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** Lane I cut TK-002O (explicit `widen-id` touch) after TK-002K landed in PR #202.
-**Next gate:** A Lane I worker claims and delivers TK-002O. Acceptance lines 1-2 are checked; lines 3-5 remain open.
+**Latest event:** TK-002O claimed by claude-lane-I.
+**Next gate:** Close TK-002O with verification and documentation proof.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 

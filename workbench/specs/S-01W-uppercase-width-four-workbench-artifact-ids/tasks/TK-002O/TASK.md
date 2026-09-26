@@ -3,7 +3,7 @@
 **Task ID:** TK-002O
 **Spec ID:** S-01W
 **Slice:** Widen an active record's ID with the explicit widen-id verb
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-01W Desired Behavior 5 and acceptance line 3 (eligible touch migration preserves former IDs, live links and immutable history without renaming completed records).
