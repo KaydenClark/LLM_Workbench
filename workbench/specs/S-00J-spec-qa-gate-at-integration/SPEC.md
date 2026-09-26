@@ -5,11 +5,11 @@
 **Priority:** 3
 **Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-23
+**Updated:** 2026-09-26
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** Owner clarified on 2026-09-23 that Human QA has been underway since 2026-09-19 and its reviews have failed. The earlier 51-check/source-review PASS is separate proof; no owner approval is recorded.
-**Next gate:** Reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
+**Latest event:** 2026-09-26 Lane H renumbered the Codex wave packets to TK-01R/TK-01S (TK-00G/TK-00H went to S-00V and TK-01Q to S-01U first), wrote the closure-capture transition contract from the owner's WF-8E/WF-8H/WF-8F and SCR answers, released TK-01R and added TK-01T for the reviewed-delivery blocker. Human QA remains underway with failed reviews; no owner approval is recorded.
+**Next gate:** Execute TK-01R, then TK-01S, then TK-01T serially in one runtime lane; Dispatcher whole-Spec QA precedes separate-context review of each immutable candidate. Do not request that the owner restart Human QA.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -23,8 +23,9 @@ destination, bound to an immutable candidate. A failed review is diagnostic and
 generative: it states what is wrong and creates corrective Tasks under the
 still-open Spec, after which a fresh candidate is reviewed. A passed review
 lets the Spec move to `integration`, where the owner performs Human QA. A Spec
-closes only after that review passed and the owner's approval on `integration`
-is recorded; no Git merge closes it. All of this is a local tool and process
+closes only after that review passed, the owner's approval on `integration`
+is recorded, and the approved delivered content is verified on main; no Git
+merge alone closes it. All of this is a local tool and process
 gate in the harness's own workflow, not GitHub enforcement.
 
 ## Why It Matters
@@ -71,7 +72,9 @@ the branch resolved from the manifest declaration.
 `integration` remains the Human QA branch. The owner inspects assembled
 behavior there and records approval or a finding. `complete` refuses without a
 passed review verdict on the exact candidate and a recorded owner approval
-naming the `integration` SHA inspected. A failed Human QA finding against an
+naming the `integration` SHA inspected, and final closure additionally requires
+verification of the approved delivered content on the declared default branch.
+A failed Human QA finding against an
 existing destination becomes corrective Task work; a changed destination
 returns to Align.
 
@@ -129,12 +132,75 @@ repository-level enforcement, which is out of scope.
 
 ## Dependencies And Blockers
 
-Blocked on S-00H reaching `complete`, because the assembled-Spec report and
-corrective Tasks read and create Task records; `claim`'s blocker model
-resolves whole completed Spec IDs, so the dependency is expressed at Spec
-granularity and the owner's two-lane limit is respected. The former blocker
-"WF-8 is an open owner question" is stale: WF-8, WF-8B, WF-8C and WF-8E are
-locked.
+S-00H is complete and its Task-record seam is available. The original
+implementation dependency is satisfied. The 2026-09-26 corrective packets
+are deferred pending a Director write-lane release, rather than represented
+as blocked on completed S-00H or on whole-Spec S-00G completion.
+
+Coordinate the narrow Task-body decision representation with its S-00H-successor
+owner and S-00G's decision-routing work. The ownership-map portability schema,
+FND-Q24B and proposed ADR acceptance are not prerequisites for detecting an
+explicit unresolved durable Task choice. They remain unresolved in their own
+owners; this Spec does not decide them. S-00I consumes the main-verified closure
+result before feature capture, per the closure-capture transition contract below. S-00P owns shared role/procedure prose; the
+Director coordinates any P/I/O delivery prerequisite correction without
+bypassing existing blockers.
+
+### Corrective delivery contract — 2026-09-26
+
+The assigned role chain is Worker self-check/report, Dispatcher whole-Spec QA,
+then separate Director review of the immutable assembled Spec before integration.
+This supersedes older per-Task review wording in this Spec's current procedure;
+completed Task records and evidence remain history. Human QA remains owner-led
+and separate, at useful owner-selected review points; main promotion stays
+owner-only. Final closure follows verification of the delivered content on main.
+
+The existing [decision-routing ledger](../../wiki/grilling-destination-audit-ledger.json)
+records FND-Q21C's four-tier rule and explicit S-00J destination: durable Task
+choices escalate at close and remain a gap until reconciled. Task bodies carry
+choices; Receipts carry run facts. TT-Q12 is only partially answered: its
+promotion-evidence threshold remains open. A selected encoding or a filled owner
+route does not prove approval or settle that threshold.
+
+Existing per-Spec content-bound owner-QA rows are the proposed minimum for a
+named accumulated approval scope: each Spec requires its own explicit approval,
+and observations/findings never approve other Specs. The main-proof representation
+and narrow decision-body encoding are implementation proposals to settle in the
+coordinated lanes, not new accepted schemas. Direct Blueprint Task and missed-attempt
+coverage depend on their artifact owners; no fake Spec or Task is introduced here.
+
+### Closure-capture transition contract - 2026-09-26
+
+This is the one transition contract S-00I and S-00P consume. It resolves the
+2026-09-26 wave finding that S-00P's TK-003/TK-005 packets put `complete`
+after features capture while this Spec's TK-01S put capture after `complete`.
+The owner's recorded answers settle it, so no owner question was asked:
+WF-8E (review, integration, owner Human QA, then close, then Wiki
+reconciliation, then retirement), WF-8H (the features article is written at
+the closure point and is not a new gate), WF-8F and FND-Q07 (discard only after
+verified main) and the separate-context-review grilling decisions 009, 011 and
+012 of 2026-09-24 (closure, meaning features capture and record cleanup, waits
+for verification on main; TASK.md stays the record until cleanup). The
+[ledger](../../wiki/grilling-destination-audit-ledger.json) carries the WF and
+FND rows; the SCR decisions are owner answers in grilling notes whose promotion
+is still pending.
+
+| Step | Transition | Gate | Owner |
+|---|---|---|---|
+| T0 | Reviewed delivery | Every Task done, acceptance checked, Dispatcher whole-Spec QA, separate Director PASS verdict bound to the immutable candidate, candidate contained in the declared integration branch with matching committed digest. The Spec stays `active`. | S-00J (existing `gate`, TK-01T consumer) |
+| T1 | Owner approval | A per-Spec content-bound owner-QA row at owner-selected timing; an accumulated scope names each Spec. Tests, review and observations are never approval. | S-00J (existing `recordOwnerApproval`) |
+| T2 | Main verification | The owner alone promotes integration to main. The approved candidate is an ancestor of the refreshed declared default-branch ref and its committed digest equals the approved digest. | S-00J TK-01S |
+| T3 | `complete` | Refuses without T0, T1 and T2 and writes nothing on refusal; records the observed main ref/SHA and approved candidate/digest in the completion evidence row. | S-00J TK-01S |
+| T4 | Features capture | Requires T3. Writes the Spec's features Wiki article at the closure point. A failed capture leaves the Spec complete and uncaptured, visible, and never reverts `complete`. | S-00I |
+| T5 | Retirement | Requires the captured features article as the retirement target. TASK.md records, including missed attempts, stay until this step. | S-00I |
+| T6 | Discard | Requires recorded T2 proof, a clean reference scan and recoverable Git identity. | S-00I |
+
+Consequences: `complete` is gated on main verification and not on features
+capture; capture precedes all transient-record cleanup. A dependent that needs
+only the delivered behavior on integration consumes T0 through an explicit
+reviewed-delivery blocker (TK-01T); a dependent that needs final closure keeps
+a plain Spec blocker and consumes T3. Existing blocker edges are kept, never
+deleted to unblock work.
 
 ## Vertical Implementation Slices
 
@@ -236,6 +302,14 @@ answer, without weakening the immutable-candidate requirement from ADR-0037.
 - [x] Review and delivery skills name the assembled Spec as the reviewed
       unit; the independent review requirement is unchanged.
 - [x] The full verification suite passes and `doctor` is clean.
+- [ ] An explicit unresolved durable decision in a live or retired Task body
+      remains visible and refuses assembled-Spec readiness and closure until
+      reconciled to its durable owner; legacy absence is not affirmative proof.
+- [ ] Final closure requires verification of approved delivered content on the
+      declared default branch, while reviewed integration delivery remains
+      possible before owner QA; approvals cover only explicitly named Specs.
+- [ ] Corrective delivery preserves S-00U F1/F2/F3/F6 and supplies fresh full-suite,
+      Dispatcher whole-Spec QA and separate Director immutable-candidate review.
 
 ## Testing Seams
 
@@ -248,8 +322,10 @@ manifest branch declaration; and the skill catalog and inspection tests.
 
 Run the targeted test for the touched seam, then the full verification suite
 named in `AGENTS.md`, then
-`node workbench/tools/spec-workbench.mjs doctor`. Each Task lands as its own
-reviewed PR into `integration` under S-00O exemption 2.
+`node workbench/tools/spec-workbench.mjs doctor`. Workers self-check and return
+proof to the Dispatcher; the Dispatcher verifies the assembled Spec. Separate
+Director review of the immutable assembled candidate is required before
+integration. Shared write lanes and generated projections remain Director-coordinated.
 
 ## Documentation Impact
 
@@ -281,9 +357,13 @@ TK-005.
 
 | 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
 
+| 2026-09-26 | 89d4042fb8931b9d720af75bffea1c28803d72aa | Dispatcher reconciled original delivery and authored Worker-drafted corrective packets under the Director assignment; no runtime implementation | At this base, test-spec-report and test-branch-closeout exit 0, including F1/F2/F3/F6; doctor reports seven attention findings and no blockers; git merge-base confirms original source 58a1b3b and reviewed proof-state 0c34d05 are contained | Added explicit durable-decision QA and main-verified closure criteria; preserved completed Tasks and prior evidence; packets remain deferred pending coordinated interfaces and write lanes | Self-drift pre cleanUpdate false from stale S-00Q; six historical identity limitations; guardrail 78/100 with repeated real outcome proof missing. No new implementation red/green, full corrective suite, Director review, owner approval or main promotion claimed |
+| 2026-09-26 | TK-01T | Lane H planning: closure-capture transition contract derived from WF-8E, WF-8H, WF-8F, FND-Q07 and SCR grilling decisions 009/011/012; Codex packets renumbered TK-00G to TK-01R and TK-00H to TK-01S after S-00V took TK-00G..TK-01P in PR #160 and S-01U took TK-01Q in PR #161; TK-01R released with a disposed Task-body Decisions interface; TK-01S proof representation disposed; TK-01T added for the finding-4 deadlock | Read the ledger rows and the SCR grilling note; next-id allocated TK-01R, TK-01S, TK-01T in order on integration 9022183; render and doctor in the assembled tree | Planning only; no runtime change, no owner approval, no closure |
+| 2026-09-26 | review | Review verdict: pass at 60849d27e24d8413ffa7d8e986654fe1d9dbf6c0 [83af78a7d077] #3 | none; renumbering-only delta from PASSed dcda8a1 verified by diff comparison, IDs unique, closure-capture contract gates complete on main verification not on features capture; full suite 48/48 on 60849d2, fresh-clone doctor clean on the pre-renumber tree | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+
 ## Completion Result
 
-Committed-content approval binding, merge/QA ordering, stable administrative digest and active/retired/discarded corrective routes are implemented and fixture-verified. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. Task delivery proof is complete; **whole-Spec closure is not approved**. Final proof-state review and integration delivery remain open; owner approval remains outstanding after ongoing Human QA. No real record was retired/discarded and no main promotion or native-host proof is inferred.
+Committed-content approval binding, merge/QA ordering, stable administrative digest and active/retired/discarded corrective routes are implemented and fixture-verified. Source `58a1b3b2caaaa0ece5414d4c027d97c388ab1b1c` passed the full 51-command suite and separate-context source review. Shared [verification](../S-00U-approval-binding-and-lifecycle-digest/VERIFICATION.md) records commands, red/green cases and limits. That source and reviewed proof-state `0c34d05c479f4a434f6b102954f9fd2768549baf` are ancestors of integration `89d4042fb8931b9d720af75bffea1c28803d72aa`; their integration delivery is complete. The new corrective packets remain undelivered, and **whole-Spec closure is not approved**. Owner approval remains outstanding after ongoing Human QA. No real record was retired/discarded and no main promotion or native-host proof is inferred.
 
 ## Remaining Limitations Or Follow-Up Specs
 
