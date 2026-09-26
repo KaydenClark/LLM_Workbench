@@ -58,7 +58,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 
 | User intent | Behavior and endpoint |
 |---|---|
-| Decide or stress-test an idea | `grilling` with `notepad`; save answers/corrections before continuing |
+| Decide or stress-test an idea | `grill-me`, the entry composing `grilling` with `notepad`; save answers/corrections before continuing |
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
 | Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
