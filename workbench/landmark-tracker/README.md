@@ -208,7 +208,26 @@ check that it is current, with:
 node workbench/tools/landmark-tracker.mjs rebuild
 node workbench/tools/landmark-tracker.mjs rebuild --check   # refuses projection-drift
 node workbench/tools/landmark-tracker.mjs show              # readable view
+node workbench/tools/landmark-tracker.mjs show --expand     # assessment evidence and revisions
+node workbench/tools/landmark-tracker.mjs show DQC-000A --expand
 ```
+
+`show --expand` retains the readable view and adds each scope's distinct
+contribution identities, state, fractions, basis, supporting evidence,
+assessment revision, holder and item revision. It also works with a landmark
+identity. The default view stays compact; `--json` returns the same data with
+or without `--expand`. Expansion reads existing assessment rows and writes
+no source record or projection.
+
+Missing fractions, basis or evidence are shown as `none recorded`; missing
+revisions and holders as `unknown`. Derived contributions name their inputs,
+whose rows carry their own evidence. Invalid contributions retain their codes
+and have no displayed fractions. Expansion does not walk lineage recursively,
+so shared identities still count once per scope and navigation cycles terminate.
+
+A disposable-room check is `node tools/test-tracker-readable-evidence.mjs`
+from the Workbench source checkout. It exercises expanded DQC, landmark and
+whole views, source-byte preservation, fresh-process reads and clone/rebuild.
 
 The projection is derived from the records and the room's resolvable
 identities and is byte-for-byte deterministic, so a fresh clone rebuilds the
