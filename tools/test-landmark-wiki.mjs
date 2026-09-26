@@ -88,7 +88,7 @@ test('explicit custom namespaces cover metadata and links without inventory read
   }
   for (const extraPrefixes of [null, 'CUSTOM', [42]]) assert.throws(() => validateLandmarkArticle(dir, article, { extraPrefixes }), error => error.code === 'invalid-invocation');
   fs.writeFileSync(path.join(dir, article), `${readable}S-curve and HTTP-API.\n`);
-  assert.deepEqual(cli(dir, 'validate', article, '--json').report.findings.map(hit => hit.id), ['S-curve']);
+  assert.deepEqual(cli(dir, 'validate', article, '--json').report.findings.map(hit => [hit.id, hit.code]), [['S-curve', 'landmark-wbid'], ['HTTP-API', 'landmark-ambiguous']]);
   fs.writeFileSync(path.join(dir, article), Buffer.from(before[article], 'base64'));
   assert.deepEqual(snapshot(dir), before);
 });
