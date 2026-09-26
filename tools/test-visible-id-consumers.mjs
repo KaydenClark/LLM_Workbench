@@ -57,10 +57,10 @@ test('new task allocation reserves repeated legacy labels across the whole Workb
     const before = fs.readFileSync(path.join(dir, 'workbench/specs/S-001-fixture/SPEC.md'));
     const result = cli(dir, ['next-id', 'S-001', '--prefix', 'TK']);
     assert.equal(result.status, 0, result.stdout || result.stderr);
-    assert.equal(result.json.id, 'TK-00A');
+    assert.equal(result.json.id, 'TK-000A');
     assert.equal(result.json.reserved, false, 'read-only proposal does not reserve or create a task');
     assert.deepEqual(fs.readFileSync(path.join(dir, 'workbench/specs/S-001-fixture/SPEC.md')), before);
-    assert.equal(cli(dir, ['next-id', '--prefix', 'S']).json.id, 'S-00A');
+    assert.equal(cli(dir, ['next-id', '--prefix', 'S']).json.id, 'S-000A');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -104,7 +104,7 @@ test('numeric task aliases in different legacy specs reserve one label without b
     assert.ok(!workbench.doctor(dir).some(issue => issue.code === 'duplicate-id'));
     const result = cli(dir, ['next-id', 'S-001', '--prefix', 'TK']);
     assert.equal(result.status, 0, result.stdout || result.stderr);
-    assert.equal(result.json.id, 'TK-00A');
+    assert.equal(result.json.id, 'TK-000A');
     assert.deepEqual(fs.readFileSync(second), original);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
@@ -137,3 +137,84 @@ test('next and claim agree for out-of-order mixed ready task labels', () => {
   assert.equal(claimed.tasks.find(task=>task.status==='in-progress').id, selected.taskId);
  } finally {fs.rmSync(dir,{recursive:true,force:true});}
 });
+
+// S-01W TK-02B: the public `next-id` routes propose uppercase width-four
+// labels under one shared artifact policy, reserve every existing spelling,
+// and leave legacy records exactly where and as they were.
+function snapshot(dir) {
+  const specsDir = path.join(dir, 'workbench/specs');
+  const files = new Map();
+  const walk = (folder) => {
+    for (const entry of fs.readdirSync(folder, { withFileTypes: true })) {
+      const full = path.join(folder, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else files.set(path.relative(dir, full), fs.readFileSync(full));
+    }
+  };
+  walk(specsDir);
+  return files;
+}
+const EARLY_LETTERS = [...'ABCDEFGHIJKLMNOP'];
+
+test('next-id proposes uppercase width-four Spec and Task labels in a numeric legacy room', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001', [['TK-001', 'done', 'none']], 'complete');
+    spec(dir, 'S-002', [['TK-001', 'ready', 'none'], ['TK-002', 'ready', 'none']]);
+    const before = snapshot(dir);
+    const specId = cli(dir, ['next-id', '--prefix', 'S']);
+    assert.equal(specId.status, 0, specId.stdout || specId.stderr);
+    assert.deepEqual(specId.json, { status: 'proposed', id: 'S-000A', reserved: false });
+    const taskId = cli(dir, ['next-id', 'S-002', '--prefix', 'TK']);
+    assert.equal(taskId.status, 0, taskId.stdout || taskId.stderr);
+    assert.deepEqual(taskId.json, { status: 'proposed', id: 'TK-000A', reserved: false, specId: 'S-002' });
+    assert.deepEqual(snapshot(dir), before, 'a proposal leaves every legacy path and byte unchanged');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const [occupiedSpelling, label] of [['00Q', 'short'], ['000Q', 'widened']]) {
+  test(`next-id treats a ${label} legacy label as occupying every spelling of that identity`, () => {
+    const dir = room();
+    try {
+      spec(dir, 'S-001', [...EARLY_LETTERS.map(letter => [`TK-00${letter}`, 'done', 'none']), [`TK-${occupiedSpelling}`, 'done', 'none']], 'complete');
+      for (const letter of EARLY_LETTERS) spec(dir, `S-00${letter}`, [['TK-001', 'done', 'none']], 'complete', `legacy-${letter.toLowerCase()}`);
+      spec(dir, `S-${occupiedSpelling}`, [['TK-001', 'ready', 'none']], 'active', 'occupied');
+      const before = snapshot(dir);
+      const specId = cli(dir, ['next-id', '--prefix', 'S']);
+      assert.equal(specId.status, 0, specId.stdout || specId.stderr);
+      assert.equal(specId.json.id, 'S-000R');
+      const taskId = cli(dir, ['next-id', `S-${occupiedSpelling}`, '--prefix', 'TK']);
+      assert.equal(taskId.status, 0, taskId.stdout || taskId.stderr);
+      assert.equal(taskId.json.id, 'TK-000R');
+      assert.equal(taskId.json.reserved, false);
+      assert.deepEqual(snapshot(dir), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+
+test('next-id treats a lowercase legacy label as occupying its uppercase identity', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-00a', [['TK-00a', 'ready', 'none']]);
+    assert.equal(cli(dir, ['next-id', '--prefix', 'S']).json.id, 'S-000B');
+    assert.equal(cli(dir, ['next-id', 'S-00a', '--prefix', 'TK']).json.id, 'TK-000B');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const collision of ['spec', 'task']) {
+  test(`next-id refuses duplicate ${collision} records that alias one identity instead of choosing a winner`, () => {
+    const dir = room();
+    try {
+      spec(dir, 'S-00Q', [[collision === 'task' ? 'TK-00Q' : 'TK-001', 'ready', 'none']], 'active', 'short');
+      spec(dir, collision === 'spec' ? 'S-000Q' : 'S-00R', [[collision === 'task' ? 'TK-000Q' : 'TK-001', 'ready', 'none']], 'active', 'widened');
+      const before = snapshot(dir);
+      const specId = cli(dir, ['next-id', '--prefix', 'S']);
+      assert.notEqual(specId.status, 0);
+      assert.match(specId.stderr + specId.stdout, /duplicate/i);
+      const taskId = cli(dir, ['next-id', 'S-00Q', '--prefix', 'TK']);
+      assert.notEqual(taskId.status, 0);
+      assert.match(taskId.stderr + taskId.stdout, /duplicate/i);
+      assert.deepEqual(snapshot(dir), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}

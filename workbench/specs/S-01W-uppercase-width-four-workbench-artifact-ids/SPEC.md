@@ -1,15 +1,15 @@
 # S-01W - Uppercase Width-Four Workbench Artifact IDs
 
 **Spec ID:** S-01W
-**Status:** planned
+**Status:** active
 **Priority:** 1
 **Owner:** claude-lane-I
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** Lane I rebuilt the S-00O planning packet on integration 1a6f6e0 and re-allocated this Spec as S-01W (the draft's S-01U was taken by PR #161); no Tasks allocated or runtime changed.
-**Next gate:** Lane I resolves identity touch versus completed-only lifecycle-move semantics, then allocates the first implementation Task with `next-id`.
+**Latest event:** TK-02B closed with proof: `next-id` and corrective-Task allocation now share one uppercase width-four artifact policy; full suite green at 1bdc1a8.
+**Next gate:** Separate-context integration review and landing of the TK-02B candidate; then the Dispatcher cuts the dual-form selection slice. No acceptance box is checked until the assembled capability is verified.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -80,19 +80,31 @@ S-01W. Retain this identity until supported touch migration applies. This planni
 - E-6 establishes this separate capability before board delivery and S-00P's
   controls rewrite. E-7/E-8 prohibit mass status and ID sweeps. A read-only QA
   inventory may identify omissions; it does not authorize bulk mutation.
-- This record is planned. No Task IDs or Task records exist yet; each is allocated
-  with `next-id` when cut. Proposed slices below are unallocated.
+- Each Task is allocated with `next-id` when cut. The first slice is TK-02B;
+  the other proposed slices below are unallocated.
 - Artifact allocation needs a separate uppercase codec/policy; preserve the
   exported base62 connection-ID codec unless an independently assigned change
   expressly requires otherwise.
 - **Implementation proposal, unresolved:** retain former IDs in explicit
   Spec/Task metadata with parser/serializer round-trip coverage. Exact field
   shape belongs to the implementation design, not a recovered owner answer.
+- **Identity touch decision (Director, 2026-09-26, derived from E-8; owner-vetoable):**
+  E-8 names `move-spec`/`move-task` as the touch, but both move only complete
+  Specs and done Tasks (into `retired/`), which E-8 also forbids renaming. The
+  touch is therefore an explicit identity-only `widen-id S-###|TK-###` verb: it
+  reuses the move machinery's live-reference rewrite, records the former ID in
+  explicit record metadata, refuses complete, done and retired records, dirty
+  trees and occupied aliases, and is run by an agent starting substantive work
+  on an active record; a read-only inventory at QA/verify time finds records
+  it missed. Rejected: (B) widening automatically inside `claim`, which adds a
+  repo-wide rename side effect to claim and merge conflicts for parallel lanes;
+  (C) no widening at all, which leaves mixed widths in live folders
+  indefinitely. Built in the touch-and-update slice, after allocation and
+  dual-form lookup.
 - **Director-confirmed boundary:** preserve the completed-record exclusion and
   design identity-only touch separately from lifecycle moves. Reuse supported
   reference-preservation machinery where appropriate, without treating retirement
-  as identity normalization. The eligible active-record trigger remains an
-  implementation proposal to resolve before the migration slice.
+  as identity normalization. The eligible active-record trigger is the explicit `widen-id` verb above.
 - Sol handles normal delivery; Luna handles deterministic checks; Astra handles
   ambiguous or consequential review. Integration review uses separate context;
   no additional different-model ceremony is imposed.
@@ -112,15 +124,17 @@ post-main closure using reconciled live controls. No completion gate is bypassed
 by this proposal. Implementation waits for Director release of named shared lanes
 and Dispatcher allocation of real Tasks through `next-id` on the current
 integration tip immediately before each commit (no Task-ID lease holds).
-The migration slice additionally needs the trigger/metadata proposal resolved.
+The migration slice builds the `widen-id` verb decided above; its exact
+former-ID field shape is settled in that slice.
 
 ## Vertical Implementation Slices
 
-These are proposed slices, not allocated Tasks or selectable table rows. No Task
-IDs or Task records are created. An empty `tasks/.gitkeep` preserves the existing
-record-backed parser mode in fresh clones; it is not a Task or an allocation.
+These are proposed slices; an allocated slice links its Task record under
+`tasks/`, and the rest are not selectable until cut.
 
 ### First slice - Public new-ID proposal
+
+Allocated as [TK-02B](tasks/TK-02B/TASK.md).
 
 **Stance:** Builder
 
@@ -182,7 +196,7 @@ packet and S-00P; owner Human QA and closure follow live controls.
 
 ## Acceptance Criteria
 
-- [ ] Public new artifact allocation is uppercase, minimum width four, collision-safe and read-only when proposing an ID.
+- [x] Public new artifact allocation is uppercase, minimum width four, collision-safe and read-only when proposing an ID.
 - [ ] Legacy/widened public selectors resolve one record; ambiguity refuses and numerical Task scope remains intact.
 - [ ] Eligible touch migration preserves former IDs, live links and immutable history without renaming completed records.
 - [ ] Supported artifact consumers follow the policy and connection identities remain compatible.
@@ -234,10 +248,14 @@ using ignored recovery material as durable evidence.
 |---|---|---|---|---|---|
 | 2026-09-26 | none allocated | Director-released capability packet authored under S-00O | Source inspection at 89d4042; no runtime tests | This Spec | Task allocation (the then-current S-00J lease was retired by the later Lane I rebuild), shared lanes, implementation and assembled verification |
 | 2026-09-26 | none allocated | Lane I (claude-lane-I) rebuilt unmerged S-00O planning candidate 34dfa2f onto integration 1a6f6e0: PR #161 had taken S-01U, so supported `next-id` re-allocated the identity Spec as S-01W and then the board Spec as S-01X; every reference in S-00O, S-01W, S-01X and the direct-Task proposal was renumbered and the stale Task-ID lease wording removed (no lease holds). | `next-id --prefix S` returned S-01W on clean integration 1a6f6e0 and, with both records present, the next free Spec ID after S-01X; render then doctor (no blocking finding) on the committed candidate and in a fresh clone of the pushed branch; the full suite, separate-context review and verdict are recorded by the landing PR's own evidence, not claimed here | This Spec, S-01X, S-00O, TASKBOARD.md, CATALOG.md | Touch-versus-lifecycle semantics, first implementation Task and assembled verification |
+| 2026-09-26 | TK-02B | Lane I recorded the Director's identity-touch decision (explicit `widen-id` verb; automatic widening in `claim` and no widening rejected; owner-vetoable) and cut TK-02B from the first slice, its ID proposed by `next-id S-01W --prefix TK` on integration d4ec0d6 immediately before the record was saved. | render; doctor no blocking finding; show S-01W lists TK-02B ready | This Spec (header, Decisions, Dependencies, first slice), TK-02B TASK.md, TASKBOARD.md, CATALOG.md | TK-02B implementation; dual-form selection, `widen-id` touch, consumer coverage and assembled QA slices remain unallocated |
+| 2026-09-26 | TK-02B | Task closed | Red at b35a65a plus the new tests: test-visible-ids.mjs could not import allocateArtifactId; test-visible-id-consumers.mjs 6 of 17 failed (next-id returned width-three labels where width four was asserted; the two duplicate-alias-record refusal cases were already green through the record loaders); test-spec-report.mjs and test-spec-workbench.mjs corrective-Task assertions failed on width-three IDs. Green at 1bdc1a8: test-visible-ids.mjs 9/9, test-visible-id-consumers.mjs 17/17, test-spec-workbench.mjs, test-spec-report.mjs, test-workbench-identity.mjs (base62 connection IDs), test-adr.mjs, test-notepads.mjs and test-spec-citation-anchors.mjs pass; full AGENTS suite 48 pass 0 fail on 1bdc1a8 with a clean tree. Guardrail 106.6/113 before and after; S-00K self-drift pre and post both report the same 7 attention findings and no new one. | ADR-0041 amended: owner decision E-8 settles uppercase 0-9A-Z width four for artifact labels, delivered allocation is separated from remaining dual-form lookup and widen-id touch work, and the connection-ID account is kept. RUNBOOK Visible identifiers (alphabet 0-9 A-Z a-z, minimum width three) and the LEXICON WBID base-62 wording are now stale for Spec and Task allocation: routed to S-00P, which owns those controls and their templates mirrors. | Dual-form public selection, the explicit widen-id touch verb with former-ID metadata, moving ADR and notepad allocation onto the artifact policy, and assembled capability QA remain later S-01W slices (unallocated). RUNBOOK and LEXICON wording routed to S-00P. Separate-context integration review not yet run. |
+| 2026-09-26 | review | Review verdict: pass at 69ab30d037b2da168dca5b56c11cba2e346fd398 [0a2b38ef5cf2] #1 | No blocking findings. Non-blocking: next-id folds an active-plus-retired alias pair as occupied inventory rather than refusing at allocation (doctor diagnoses it; active duplicate records refuse via the loaders); carried into the dual-form selection slice. Dispatcher accepts the worker's reading that spelling duplicates in reference text reserve one ID without refusing while duplicate records refuse, as consistent with Desired Behavior 3. Full AGENTS suite 48/48 at 69ab30d (read-only runner, dirty []). Reviewer ran doctor; did not run fixtures or the suite (read-only sandbox). | codex exec gpt-5.5, read-only sandbox, separate context from the Lane I dispatcher and its worker | 4 |
+| 2026-09-26 | TK-02B | Acceptance line 1 checked and Completion Result updated for TK-02B's delivered allocation, before the landing review of this candidate. | TK-02B evidence above (red/green, suite 48/48 at 69ab30d, review PASS) | This Spec (Acceptance, Completion Result), TASKBOARD.md | Acceptance lines 2-5 |
 
 ## Completion Result
 
-Pending. Planning packet only; no runtime delivery, review verdict or owner approval.
+Pending. TK-02B delivered public uppercase width-four allocation for new Spec and Task IDs (acceptance line 1). Dual-form selection, the `widen-id` touch, consumer coverage and assembled QA remain; no owner approval.
 
 ## Remaining Limitations Or Follow-Up Specs
 
