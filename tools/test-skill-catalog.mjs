@@ -429,6 +429,36 @@ assert.doesNotMatch(reconcileSection, /through the project's\s+`workbench\/manif
   'update-harness must not send a v2 room to a manifest it does not have yet');
 assert.match(reconcileSection, /records\s+`provenance\.lifecycle: upgrade`/,
   'update-harness must state that the route records lifecycle upgrade');
+
+// S-01N: the route text follows the S-00V lane model the upgrade tool
+// implements (both one-time modes lay the skills lane down; the provider home
+// is never read), names managed-byte verification for both managed lanes and
+// the manifest version stamp the v3 route needs (keeping the historical source
+// record, per S-00N UP-021), carries no release literal
+// that goes stale at the next stamp, and uses folder-lifecycle wording.
+const routeSelection = updateHarness.slice(updateHarness.indexOf('## Route selection'), updateHarness.indexOf('## 1.'));
+assert.doesNotMatch(updateHarness, /presence-only|user-scoped discovery root|reads skill presence/i,
+  'update-harness must not describe the retired provider-home presence route');
+assert.doesNotMatch(routeSelection, /skill-path-collision|unmanaged-skill/,
+  'update-harness route selection must not attribute provider-home installer refusals to the upgrade route');
+assert.match(reconcileSection, /skills: "lane-install"/,
+  'update-harness must state the recovery record the one-time route writes');
+assert.match(updateHarness, /workbench-tools\.mjs verify --project/,
+  'update-harness must verify managed runtime-tool bytes');
+assert.match(updateHarness, /workbench-skills\.mjs verify --project/,
+  'update-harness must verify managed core-skill bytes');
+assert.match(reconcileSection, /manifest `workbenchVersion`[^.]*verified target version/,
+  'update-harness v3 route must stamp the manifest version');
+assert.match(reconcileSection, /`provenance\.source`[^.]*historical/,
+  'update-harness v3 route keeps the historical source record (S-00N UP-021) while stamping the version');
+assert.match(reconcileSection, /workbench-layout\.mjs seed-documents --project/,
+  'update-harness v3 route must refresh eligible seeded documents after the stamp');
+assert.doesNotMatch(updateHarness, /\bv\d+\.\d+\.\d+\b/,
+  'update-harness must use the verified target version, not a release literal');
+assert.doesNotMatch(updateHarness, /\bstable (spec|`workbench\/specs)|spec paths are stable/,
+  'update-harness must not use the retired stable-spec-path wording');
+assert.match(updateHarness.slice(updateHarness.indexOf('## 1.'), updateHarness.indexOf('## 2.')), /`workbenchVersion`/,
+  'update-harness reads the canonical version from the source manifest');
 const adoptionOpening = adoption.slice(0, adoption.indexOf('\n1. '));
 assert.ok(adoptionOpening.includes('workbench-upgrade.mjs upgrade --layout-only'),
   'adoption must point an already-adopted room at the layout-only route by name');
