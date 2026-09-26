@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Cut one assigned Spec into dependency-aware Task records.
 **Blockers:** none.
-**Latest event:** TK-01C closed with proof.
-**Next gate:** Owner Human QA on `integration`, then `complete S-01L`.
+**Latest event:** TK-02D claimed by claude-lane-G-worker.
+**Next gate:** Close TK-02D with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -56,12 +56,19 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-01C | Audit to-tasks, deliver the smallest supported source/documentation change and prove the routed article | done | none | Red/green tools/test-skill-catalog.mjs (red 91bb65b, green fde45b8); test-skill-inspection 5/5 and test-delivery-skills 3/3; full AGENTS suite 48/48 at 594dc1a; fresh-context scenario cut an active record-backed Spec into two parsed TASK.md records with title, Stance, Destination, Blockers and Planned verification, left the owner-gated slice uncut, wrote nothing into the planned Spec and did not run convert-tasks, and next --json returned exactly one Task; three runtime gaps confirmed by throwaway probes; wiki validate ok |
+| TK-02D | Let `convert-tasks` convert a planned Spec that the same request activates, behind an explicit `--activate` opt-in | in-progress | none | Red/green in tools/test-spec-workbench.mjs beside the convertSpecSlices tests; one manual CLI run in a disposable room; full suite |
 
 ### TK-01C - Deliver the to-tasks skill destination
 
 **Stance:** Builder
 
 Inspect the current source, its callers/composition and relevant tests. Demonstrate the first meaningful gap at a stable seam or record that no source defect was found. Repair only the supported gap, exercise the scenario below, reconcile this skill's Wiki article and router, then record exact evidence and limits. Keep this task one skill wide.
+
+### TK-02D - Convert a planned Spec on activation
+
+**Stance:** Builder
+
+Corrective runtime slice for TK-01C runtime gap 3. `convert-tasks` refuses a planned Spec, so a request that activates a Spec and cuts its Tasks has no single safe step. Add an explicit `--activate` opt-in (`{ activate: true }` on `convertSpecSlices`): without it behavior is unchanged and the planned refusal names the route; with it, a planned Spec's records are staged and parsed first and only then is its `**Status:**` set to `active` and the records written, so a refusal writes nothing. Keep resolver, closure, claim/close, `next` and Task-record parsing untouched. Update the to-tasks source and its Wiki article for the activation route. RUNBOOK wording is recorded as a Remaining gap for the S-00P controls lane, not edited here.
 
 ## Acceptance Criteria
 
