@@ -1,15 +1,15 @@
 # S-01L - to-tasks skill rebuild
 
 **Spec ID:** S-01L
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-G-worker
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-09-26
 **Catalog description:** Cut one assigned Spec into dependency-aware Task records.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-01C for this skill only.
+**Blockers:** none.
+**Latest event:** TK-01C claimed by claude-lane-G-worker.
+**Next gate:** Close TK-01C with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -55,7 +55,7 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01C | Audit to-tasks, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
+| TK-01C | Audit to-tasks, deliver the smallest supported source/documentation change and prove the routed article | in-progress | none | pending |
 
 ### TK-01C - Deliver the to-tasks skill destination
 
