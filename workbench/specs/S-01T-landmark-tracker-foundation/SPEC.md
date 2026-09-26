@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** 2026-09-26 TK-01Y closed with proof: related grilling questions, Specs, ADRs, Tasks and DQCs count by typed room-scoped identity, distributions at DQC, landmark and Workbench scope expose numerator, denominator and evidence, and `node tools/landmark-tracker-demo.mjs` shows each outcome; addendum 7725529 moves DQC and landmark allocation to `allocateArtifactId`.
-**Next gate:** Lane J closes corrective Tasks TK-02G, TK-02H and TK-02I; TK-01Z and TK-02A stay deferred until S-00I TK-01U is done on integration.
+**Latest event:** TK-02G claimed by claude-lane-J.
+**Next gate:** Close TK-02G with verification and documentation proof.
 
 ## Outcome
 
