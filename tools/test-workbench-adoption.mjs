@@ -360,6 +360,40 @@ function fixtureSpec() {
   }
 }
 
+// S-01D TK-00U: adoption happens once. A room this helper has already adopted
+// refuses a second run before any mutation, so its one `adoption` provenance
+// and its recovery record stay exactly as the first run left them; the skill
+// routes such a room to update-harness instead. The provider home here is
+// empty and stays empty: the core skills come from the release, not the home.
+{
+  const project = fixture();
+  const home = fixture();
+  try {
+    seedControls(project);
+    write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+    const first = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-26');
+    assert.equal(first.status, 0, first.stdout);
+    assert.equal(JSON.parse(first.stdout).status, 'complete', 'the first adoption completes with an empty provider home');
+    assert.deepEqual(fs.readdirSync(home), [], 'adoption writes nothing into the provider home');
+    const manifestBefore = read(project, 'workbench/manifest.json');
+    const recoveryBefore = read(project, 'workbench/sessions/recovery/adoption-recovery.json');
+    assert.equal(JSON.parse(manifestBefore).provenance.lifecycle, 'adoption');
+
+    const second = run('migrate', '--project', project, '--home', home, '--version', VERSION, '--date', '2026-09-27');
+    assert.notEqual(second.status, 0, 'a second adoption of an adopted room must be refused');
+    const refusal = JSON.parse(second.stdout);
+    assert.equal(refusal.status, 'blocked');
+    assert.equal(refusal.error.code, 'support-root-exists');
+    assert.deepEqual(refusal.moved, [], 'the refused second adoption moves nothing');
+    assert.equal(read(project, 'workbench/manifest.json'), manifestBefore, 'the first adoption provenance is not rewritten');
+    assert.equal(read(project, 'workbench/sessions/recovery/adoption-recovery.json'), recoveryBefore,
+      'the first recovery record is not rewritten');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+}
+
 console.log('ok - mixed v2 adoption preserves durable truth and blocks collisions');
 
 // S-00H TK-004 follow-up: adoption preserves the project's own pre-existing
