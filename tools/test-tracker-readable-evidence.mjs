@@ -174,3 +174,32 @@ test('expanded whole Tracker deduplicates shared related identities in its aggre
     assert.ok(output.includes(card.id));
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('derived evidence stays with its inputs and invalid assessments retain their codes', () => {
+  const { dir, card } = fixture();
+  try {
+    write(dir, 'revise', card.id, '--expect-revision', '3', '--assess', 'derived', '--basis', 'Mean of fixture inputs', '--reason', 'Derive fixture');
+    const derived = cli(dir, 'show', card.id, '--expand');
+    assert.match(derived, /derived from: grilling-question:FX-REL/);
+    assert.ok(derived.includes('fixture-related-proof@r7'));
+    assert.ok(!derived.includes('fixture-article@immutable-revision'), 'previous own evidence is not current derived evidence');
+    const other = write(dir, 'capture', '--title', 'Fixture conflict', '--question', 'Which fraction?', '--reason', 'Fixture conflict');
+    write(dir, 'relate', other.id, '--expect-revision', '1', '--item', 'grilling-question:FX-REL@r8', '--assess', 'Idea=1', '--basis', 'Conflicting fixture judgment', '--evidence', 'fixture-conflict@r8', '--reason', 'Conflict fixture');
+    const invalid = cli(dir, 'show', '--expand');
+    assert.match(invalid, /distribution withheld/);
+    assert.match(invalid, /contribution grilling-question:FX-REL \[invalid\]: fractions: none recorded/);
+    assert.match(invalid, /codes: conflicting-assessment/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('empty expanded Tracker reports no items and fabricates no contribution', () => {
+  const { dir, card } = fixture();
+  try {
+    fs.unlinkSync(path.join(dir, declaration.collections['destination-questions'], `${card.id}.json`));
+    cli(dir, 'rebuild');
+    const output = cli(dir, 'show', '--expand');
+    assert.match(output, /Workbench: no items/);
+    assert.ok(!output.includes('contribution '));
+    assert.ok(!output.includes('Verified'));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
