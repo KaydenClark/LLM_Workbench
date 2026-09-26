@@ -58,7 +58,7 @@ Derived from stable specs; includes completed history.
 | [S-01K - to-spec skill rebuild](S-01K-to-spec-skill-rebuild/SPEC.md) | Turn a settled capability decision into one stable, bounded Spec. | planned |
 | [S-01L - to-tasks skill rebuild](S-01L-to-tasks-skill-rebuild/SPEC.md) | Cut one assigned Spec into dependency-aware Task records. | planned |
 | [S-01M - tracer-bullet skill rebuild](S-01M-tracer-bullet-skill-rebuild/SPEC.md) | Find the thinnest demonstrable end-to-end slice of a capability. | planned |
-| [S-01N - update-harness skill rebuild](S-01N-update-harness-skill-rebuild/SPEC.md) | Update an adopted room to a verified Workbench version without losing room truth. | planned |
+| [S-01N - update-harness skill rebuild](S-01N-update-harness-skill-rebuild/SPEC.md) | Update an adopted room to a verified Workbench version without losing room truth. | active |
 | [S-01O - save skill rebuild](S-01O-save-skill-rebuild/SPEC.md) | Persist authorized work and prove the recovery boundary actually reached. | planned |
 | [S-01P - builder skill rebuild](S-01P-builder-skill-rebuild/SPEC.md) | Deliver the assigned result with useful verification and truthful documentation. | planned |
 | [S-01Q - auditor skill rebuild](S-01Q-auditor-skill-rebuild/SPEC.md) | Determine whether named claims hold on the assigned target and evidence. | planned |
