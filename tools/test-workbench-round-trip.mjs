@@ -204,12 +204,17 @@ try {
   run(second, process.execPath, ['--test', 'tests/hello.test.mjs']);
   assert.equal(run(second, process.execPath, ['src/hello.mjs', 'World']).trim(), 'Hello, World!');
 
-  // ---- Close, render, doctor, push, read back ----------------------------
+  // ---- Commit and push, close, render, doctor, push, read back -----------
+  // S-00M TK-003: close refuses a dirty or unpushed tree, so the slice is
+  // committed and pushed before its completion is claimed.
+  git(second, 'add', '-A');
+  git(second, 'commit', '-q', '-m', 'S-001/TK-001: greet by name');
+  git(second, 'push', '-q', 'origin', 'main');
   node(second, tool(second), 'close', 'S-001', '--proof', 'node --test tests/hello.test.mjs red then green; node src/hello.mjs World prints Hello, World!', '--docs', 'README.md usage retained; RUNBOOK.md commands executed', '--remaining-gap', 'none');
   node(second, tool(second), 'render');
   node(second, tool(second), 'doctor');
   git(second, 'add', '-A');
-  git(second, 'commit', '-q', '-m', 'S-001/TK-001: greet by name');
+  git(second, 'commit', '-q', '-m', 'Close S-001/TK-001 with proof');
   git(second, 'push', '-q', 'origin', 'main');
   const finalSha = git(second, 'rev-parse', 'HEAD');
   assert.equal(git(second, 'ls-remote', 'origin', 'main').split('\t')[0], finalSha, 'the proof is remotely recoverable');
