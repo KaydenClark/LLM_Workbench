@@ -3,7 +3,7 @@
 **Task ID:** TK-00J
 **Spec ID:** S-00V
 **Slice:** A committed notepad or handoff stays privacy-checked and is refused as durable evidence
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00V box 3 (a session's notepad and handoff can be committed and later removed without a privacy or provenance check treating them as durable evidence)
 **Stance:** Builder
