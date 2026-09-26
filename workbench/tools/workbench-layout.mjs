@@ -35,7 +35,12 @@ const initialV32CoreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', '
 // `skillPolicy.required` actually held; `validateManifest` below still needs
 // to recognize that historical shape exactly as released.
 const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' ? 'to-tasks' : name));
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
+// v3.2.1 stamped the twenty-one-skill bundle with `handoff`; it is frozen
+// below. S-00Z grows the live bundle with `grill-me`, the repository-owned
+// entry composing grilling with notepad, ahead of the stances so every
+// `slice(-4)` stance read stays exact.
+const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -333,8 +338,10 @@ export function validateManifest(project) {
   // release stamped and the lane shape is what the Workbench update writes
   // when it lays the lane into such a room before restamping it. v3.2.1 is
   // frozen for the same reason: rooms stamped v3.2.1 declared the
-  // provider-home policy before the skills lane existed.
-  const supportedLegacy = { 'v3.0.0': legacyCoreSkills, 'v3.1.0': legacyCoreSkills, 'v3.1.1': stanceRequired, 'v3.1.2': stanceRequired, 'v3.1.3': carryRequired, 'v3.1.4': notepadCoreSkills, 'v3.2.0': initialV32CoreSkills, 'v3.2.1': coreSkills };
+  // provider-home policy before the skills lane existed, and its
+  // twenty-one-skill row stays exact now that `grill-me` grows the live
+  // bundle (S-00Z).
+  const supportedLegacy = { 'v3.0.0': legacyCoreSkills, 'v3.1.0': legacyCoreSkills, 'v3.1.1': stanceRequired, 'v3.1.2': stanceRequired, 'v3.1.3': carryRequired, 'v3.1.4': notepadCoreSkills, 'v3.2.0': initialV32CoreSkills, 'v3.2.1': handoffCoreSkills };
   const legacyRequired = supportedLegacy[manifest.workbenchVersion];
   const accepted = [skillPolicy, ...(legacyRequired ? [{ ...skillPolicy, required: legacyRequired }, { ...providerHomeSkillPolicy, required: legacyRequired }] : [])].map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {

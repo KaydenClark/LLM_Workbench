@@ -904,6 +904,16 @@ test('each listed legacy version validates only at the policy its release declar
     // row must keep exactly as it was released.
     assert.equal(outcome('v3.2.0', [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...current.slice(-4)]), 'valid');
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
+    // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
+    // live bundle with `grill-me`, so the v3.2.1 row freezes at twenty-one and
+    // a room stamped v3.2.1 validates with either the frozen row or the
+    // current policy the Workbench update writes before restamping.
+    const twentyOne = current.filter((name) => name !== 'grill-me');
+    assert.equal(twentyOne.length, 21);
+    assert.equal(outcome('v3.2.1', twentyOne), 'valid');
+    assert.equal(outcome('v3.2.1', current), 'valid');
+    assert.equal(outcome('v3.2.1', sixteen), 'invalid-skill-policy');
+    assert.equal(outcome('v9.9.9', twentyOne), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, current), 'valid');
     assert.equal(outcome(VERSION, sixteen), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, twelve), 'invalid-skill-policy');

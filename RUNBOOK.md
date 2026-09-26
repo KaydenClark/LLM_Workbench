@@ -300,7 +300,7 @@ The core skills ship inside every room at the manifest-declared `skills` lane,
 for Codex, `.claude/skills` for Claude Code) are tracked relative links into
 that lane, so a fresh clone discovers the skills with no provider home and no
 personal catalog. This repository's lane is the authoring source for
-the 21 core skills listed in `workbench/skills/README.md`; every other room
+the 22 core skills listed in `workbench/skills/README.md`; every other room
 receives receipt-backed copies from the release checkout:
 
 ```bash
