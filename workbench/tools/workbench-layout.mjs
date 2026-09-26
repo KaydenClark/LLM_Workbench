@@ -129,6 +129,16 @@ export function insideWorkTree(project) {
 // paths. `upstream` is null when none is configured, and otherwise
 // `{ name, gone, ahead, behind }`, with null distance when the upstream ref is
 // gone. `options.git` names the Git executable, so a test can make it absent.
+//
+// S-00M TK-003 adds three fields for `close`, leaving the shapes above as
+// they were: `untrackedOther` lists every other untracked, non-ignored file
+// (repository-relative, including files outside the room root), so `dirty`,
+// the three lane lists and `untrackedOther` together are exactly what
+// `git status --porcelain` shows and what the Receipt's Dirty column counts;
+// `remotes` lists the configured remote names; and `pushed` is true only
+// when some `refs/remotes/*` ref contains HEAD, so a commit that reached any
+// remote counts as pushed with or without an upstream, and an unborn HEAD,
+// a room with no remote, or a commit no remote has is not.
 export function readRepositoryState(root, options = {}) {
   const unknown = (reason, detail) => ({ known: false, reason, detail: String(detail ?? '').trim() });
   try {
@@ -151,6 +161,7 @@ export function readRepositoryState(root, options = {}) {
     let upstream = null;
     const dirty = [];
     const untracked = { controls: [], adr: [], specs: [] };
+    const untrackedOther = [];
     const within = (file, lane) => file.startsWith(`${lane}/`);
     const entries = status.stdout.split('\0');
     for (let index = 0; index < entries.length; index += 1) {
@@ -173,14 +184,24 @@ export function readRepositoryState(root, options = {}) {
         const file = entry.slice(2);
         // Lanes are root-relative; porcelain paths are repository-relative.
         const relative = prefix && file.startsWith(prefix) ? file.slice(prefix.length) : (prefix ? null : file);
-        if (relative === null) continue;
-        if (controls.includes(relative)) untracked.controls.push(file);
+        if (relative === null) untrackedOther.push(file);
+        else if (controls.includes(relative)) untracked.controls.push(file);
         else if (within(relative, lanes.adr)) untracked.adr.push(file);
         else if (within(relative, lanes.specs)) untracked.specs.push(file);
+        else untrackedOther.push(file);
       }
     }
-    for (const list of [dirty, untracked.controls, untracked.adr, untracked.specs]) list.sort();
-    return { known: true, head, dirty, untracked, upstream };
+    for (const list of [dirty, untracked.controls, untracked.adr, untracked.specs, untrackedOther]) list.sort();
+    const remoteList = run(['remote']);
+    if (remoteList.error || remoteList.status !== 0) return unknown('git-failed', remoteList.error?.message ?? remoteList.stderr);
+    const remotes = remoteList.stdout.split('\n').filter(Boolean).sort();
+    let pushed = false;
+    if (run(['rev-parse', '--verify', '--quiet', 'HEAD']).status === 0) {
+      const containing = run(['for-each-ref', '--contains', 'HEAD', '--format=%(refname)', 'refs/remotes']);
+      if (containing.error || containing.status !== 0) return unknown('git-failed', containing.error?.message ?? containing.stderr);
+      pushed = containing.stdout.trim() !== '';
+    }
+    return { known: true, head, dirty, untracked, upstream, untrackedOther, remotes, pushed };
   } catch (error) {
     return unknown('git-failed', error?.message ?? error);
   }
