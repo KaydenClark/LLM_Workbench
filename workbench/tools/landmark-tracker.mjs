@@ -978,7 +978,7 @@ function parseAssessment(raw) {
   return Object.fromEntries(STEPS.filter(step => Object.hasOwn(contributions, step)).map(step => [step, contributions[step]]));
 }
 
-const QUESTION_REVISIONS = ['title', 'question', 'answer', 'confirm', 'expected-change', 'expected-home', 'source', 'uncertainty', 'resolve-uncertainty', 'correction', 'assess', 'basis', 'evidence', 'claim', 'claim-evidence', 'affects'];
+const QUESTION_REVISIONS = ['title', 'question', 'answer', 'confirm', 'expected-change', 'expected-home', 'result', 'source', 'uncertainty', 'resolve-uncertainty', 'correction', 'assess', 'basis', 'evidence', 'claim', 'claim-evidence', 'affects'];
 
 // A schema 1 record gains empty related and claims lists on its next write;
 // the upgrade is recorded, and nothing it held is changed.
@@ -1034,6 +1034,10 @@ function reviseQuestion(record, options, revision) {
       revision
     };
     changes.push({ field: 'expectedResult', from: record.expectedResult, to: next.expectedResult });
+  }
+  if (options.result !== undefined) {
+    next.result = { summary: options.result, revision };
+    changes.push({ field: 'result', from: record.result, to: next.result });
   }
   for (const source of parseSources(options.source)) {
     const existing = next.sources.find(item => item.id === source.id);
@@ -1258,6 +1262,7 @@ function formatCard(card) {
   lines.push(`  origin: "${card.origin.title}" from ${card.origin.sources.map(source => source.revision ? `${source.id}@${source.revision}` : source.id).join(', ') || 'no recorded source'}`);
   lines.push(`  answer: ${card.answered ? card.answer : 'unanswered'}`);
   if (card.expectedResult) lines.push(`  expected result: ${card.expectedResult.change}${card.expectedResult.home ? ` -> ${card.expectedResult.home}` : ''}`);
+  if (card.result) lines.push(`  result: ${card.result.summary} (revision ${card.result.revision})`);
   lines.push(`  assessment: ${card.assessment.state === 'assessed' ? `${Object.entries(card.assessment.contributions).map(([step, fraction]) => `${step} ${fraction}`).join(', ')} (basis: ${card.assessment.basis})` : card.assessment.state === 'derived' ? `derived from related items (basis: ${card.assessment.basis})` : 'unassessed'}`);
   for (const entry of card.related ?? []) lines.push(`  related ${entry.key}${entry.revision ? `@${entry.revision}` : ''} [${entry.resolution}, ${entry.state}]: ${entry.reason}`);
   if (card.relatedBy?.length) lines.push(`  related by: ${card.relatedBy.join(', ')}`);
