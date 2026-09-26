@@ -23,11 +23,13 @@ project to the durable knowledge that explains it. The owner and agents need to
 see what they understand, what remains uncertain, what changed, and whether that
 understanding has reached its intended documentation destination.
 
-This article explains the accepted design. The foundation runtime now captures,
-revises and links DQCs and landmarks and rebuilds the generated view; its
-procedure lives beside the records in the [Tracker README](../../landmark-tracker/README.md).
-Coverage of other source types, Landmark Wiki content assessment and record-move
-recovery are still being delivered. The [Runbook](../../../RUNBOOK.md#landmark-tracker-accepted-design-and-available-operations)
+This article explains the accepted design. The runtime now captures, revises
+and links DQCs and landmarks, counts their related grilling questions, Specs,
+ADRs, Tasks and DQCs, and rebuilds the generated view with inspectable
+distributions at card, landmark and Workbench scope; its procedure lives beside
+the records in the [Tracker README](../../landmark-tracker/README.md).
+Landmark Wiki content assessment and record-move recovery are still being
+delivered. The [Runbook](../../../RUNBOOK.md#landmark-tracker-accepted-design-and-available-operations)
 routes to delivery and states the available-operation boundary.
 
 ## Four pieces with distinct jobs
@@ -193,3 +195,6 @@ we can build on while answers, inventory and detailed destinations evolve.
 - 2026-09-26: The foundation runtime landed (capture, revise, link, rebuild,
   show); the availability sentence now routes to the Tracker README, and the
   remaining delivery is named without claiming it.
+- 2026-09-26: Distributions across source types and scopes landed; the
+  availability sentence now names them and leaves Landmark Wiki content
+  assessment and record-move recovery as the remaining delivery.

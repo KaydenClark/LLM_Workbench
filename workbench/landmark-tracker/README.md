@@ -20,7 +20,7 @@ All commands run from anywhere inside the room (or take `--path DIR`) and
 accept `--json` for a machine-readable result. A refusal exits 1 and names its
 code: `tracker-undeclared`, `invalid-manifest`, `missing-collection`,
 `unsafe-path`, `invalid-record`, `identity-collision`, `unknown-identity`,
-`stale-revision`, `private-content`, `projection-drift` or
+`stale-revision`, `private-content`, `dependency-cycle`, `projection-drift` or
 `invalid-invocation`.
 
 ## Capture
@@ -91,6 +91,44 @@ node workbench/tools/landmark-tracker.mjs revise DQC-001 --expect-revision N \
 A status such as `done` is not a step and is refused; completing a Task never
 stands in for Verified.
 
+A DQC's own assessment can instead be derived from its related items (see
+[Relate](#relate-constituents)): `--assess derived --basis "..."`, with no
+`--evidence`, because the evidence is the related items' own. A derived card
+contributes the mean of its related items' fractions, is `derived-incomplete`
+while any of them is unassessed or unknown, and is refused with
+`dependency-cycle` - naming the chain, for example `DQC-001 -> DQC-004 ->
+DQC-001` - if it would depend on itself through other derived cards.
+
+### Claims and changed understanding
+
+Name the specific statements a card's documentation must carry, and the
+evidence for each:
+
+```bash
+node workbench/tools/landmark-tracker.mjs revise DQC-001 --expect-revision N \
+  --claim "C1=The statement" --claim-evidence "C1=<artifact>@<revision>" \
+  --reason "Why these claims"
+```
+
+Evidence is appended with the record revision it was recorded at and is never
+replaced. When understanding changes, the same revision that changes it names
+each claim it affects and assesses why:
+
+```bash
+node workbench/tools/landmark-tracker.mjs revise DQC-001 --expect-revision N \
+  --answer "The corrected answer" \
+  --affects "C1=Why C1 no longer holds as stated" --reason "Why it changed"
+```
+
+`--affects` is refused unless the revision changes understanding (title,
+question, answer, confirmation, Expected result, sources, uncertainty,
+corrections or assessment), names an existing claim, and does not also
+re-evidence that claim. The claim becomes `affected` - with what changed, why
+and the revision - and appears in the projection's `reconciliation` list until
+new `--claim-evidence` for it is recorded at a later revision. Other claims,
+the card's assessment and every record related to it are untouched: a relation
+alone never makes a target stale.
+
 ## Link
 
 Connect a DQC to zero, one or several landmarks, at any time:
@@ -101,6 +139,38 @@ node workbench/tools/landmark-tracker.mjs link DQC-001 --landmark LMK-001 \
 ```
 
 The relation lives on the DQC. Linking an unknown landmark is refused.
+
+## Relate constituents
+
+Declare what contributes to a DQC's documentation progress - related grilling
+questions, Specs, ADRs, Tasks and other DQCs - by type and room-scoped
+identity:
+
+```bash
+node workbench/tools/landmark-tracker.mjs relate DQC-001 --item spec:S-01T@<revision> \
+  --expect-revision N --reason "Why it is related" \
+  [--assess Planned=1 --basis "..." --evidence "<artifact>@<revision>"]
+```
+
+`--item` is `TYPE:IDENTITY[@REVISION]` with `TYPE` one of `dqc`,
+`grilling-question`, `spec`, `adr` or `task`. A letter-bearing Task label
+(`task:TK-01X`) is unique in the room; a legacy numeric one is unique only in
+its Spec and must be written Spec-qualified (`task:S-00H/TK-003`), keeping
+those bytes - a bare numeric label is refused. The relation and any assessment
+of a non-DQC item live on this DQC's record; there is no second assessment
+store. A related DQC contributes its own record's assessment, so assessing the
+relation is refused. `relate` on an item already related re-assesses it
+(`--assess`) or records a newer `@REVISION`; with neither it is refused.
+
+Specs, Tasks and ADRs resolve against the room's own lanes in any lifecycle
+folder (`room`), DQCs against the Tracker (`tracker`); an identity that does
+not resolve is `unknown` and makes every aggregate holding it incomplete.
+Grilling questions live in untracked notes a clone does not have, so they are
+taken as `declared`. The resolver reads identities only, never a record's
+status: a done Task or an accepted ADR contributes only what an assessment
+says. A capture's `--source` lineage is navigation; a source counts once it is
+declared with `relate`. Every declared item counts as one unit - there is no
+supporting-reference exclusion and no effort weight.
 
 ## Rebuild
 
@@ -113,19 +183,51 @@ node workbench/tools/landmark-tracker.mjs rebuild --check   # refuses projection
 node workbench/tools/landmark-tracker.mjs show              # readable view
 ```
 
-The projection is derived from the records alone and is byte-for-byte
-deterministic, so a fresh clone rebuilds the same view. It shows meaningful
-titles, an explicit `No landmark` group, each card's origin, sources,
-corrections, history and assessment, and per-step distributions at card,
-landmark and Workbench scope:
+The projection is derived from the records and the room's resolvable
+identities and is byte-for-byte deterministic, so a fresh clone rebuilds the
+same view. It shows meaningful titles, an explicit `No landmark` group, each
+card's origin, sources, corrections, history, assessment, related items,
+`relatedBy`, expandable `lineage` and claims, an `items` index of every
+distinct identity with its holders, a `reconciliation` list, and per-step
+distributions at three scopes:
 
 `percentage = sum(item contributions to step) / distinct item count * 100`
 
-Each distinct DQC counts once, even when several landmarks share it. An
-unassessed card is shown as `unassessed`, stays in the denominator and makes
-its aggregate `incomplete`; it is never inferred as Idea. Empty input shows no
-items and no distribution. Coverage of other source types (grilling
-questions, Specs, ADRs, Tasks) is S-01T TK-01Y.
+| Scope | Distinct items counted |
+|---|---|
+| Card (`questions[].distribution`) | the DQC itself and its declared related items |
+| Landmark (`landmarks[].aggregate`) | the union of its DQCs' card scopes |
+| Workbench (`workbench`) | the union of every card scope |
+
+Each aggregate carries its `numerators` (per-step sums), `denominator`,
+`counted` identities, a `bySourceType` breakdown, and a `contributions` row
+per item with its fractions, basis, evidence, the revision it was assessed at,
+the record holding it and the item revision read - the fraction rationale and
+evidence revision at every scope. A card with 0.6 Journey / 0.4 Review plus one
+related Verified item gives 30% Journey, 20% Review, 50% Verified at card,
+landmark and Workbench scope alike.
+
+A shared identity counts once in an aggregate, and stays visible beneath each
+card that relates it (`relatedBy`, `items[].holders`). A related DQC is one
+item carrying its own assessment; expanding its lineage shows its children for
+navigation but never adds them to the parent's aggregate. A DQC met again on
+the lineage path is marked `cycle` and not expanded: navigation cycles are
+kept. Outcomes are explicit:
+
+| Status | When | Distribution |
+|---|---|---|
+| `empty` | no items | none; never completion |
+| `incomplete` | an item is unassessed or unknown | computed, the missing items in the denominator and named |
+| `invalid` | a fraction is nonfinite, negative, an unknown step or does not sum to one, or one identity carries two different assessments | withheld; the item is named with its codes and never dropped |
+| `complete` | every item assessed | computed |
+
+Writes refuse invalid fractions, so an invalid state reaches the view only
+through two relations assessing one identity differently; a bad fraction that
+arrives on disk refuses `rebuild` with `invalid-record` instead.
+
+Schema 1 records written before these fields existed still load, and are
+upgraded to schema 2 (empty related and claims lists, recorded in history) on
+their next write.
 
 ## Write safety and the concurrency guarantee
 
