@@ -1,21 +1,75 @@
-# TK-002T - Validate every byte of a Landmark Wiki article before accepting it
+# TK-002T - Validate a readable Landmark article across all bytes
 
 **Task ID:** TK-002T
 **Spec ID:** S-002A
-**Slice:** Validate every byte of a Landmark Wiki article before accepting it
+**Slice:** Validate a readable Landmark article across all bytes
 **Status:** ready
 **Stance:** Builder
 **Blockers:** none
-**Destination:** spec-acceptance: Public Landmark article validation rejects WBIDs anywhere in actual article bytes while preserving readable identifier-free articles and structured provenance ownership.
-**Planned verification:** Red: public validation cannot reject a WBID in body, metadata, comments, link targets or URLs. Green: standalone CLI/module validates actual files and returns explicit malformed/identifier findings without mutation; valid readable article passes. Own focused tests and README, then full AGENTS suite on immutable candidate.
+**Destination:** spec-acceptance: Explicit Landmark article validation rejects WBIDs in complete bytes, accepts readable valid content, and preserves files/index on every refusal.
+**Planned verification:** Red: a public fresh-process validation call accepts WBIDs in actual designated article metadata, prose, comments, URLs or link targets, or cannot validate an identifier-free article. Green: each offending article returns a named useful refusal with location; valid designated article passes; unsafe/missing inputs visibly fail without writes; unrelated feature article with legitimate identity-bearing retirement provenance remains valid under its existing validator. Targeted node tools/test-landmark-wiki.mjs and existing Wiki/Tracker suites, full AGENTS checks on immutable committed candidate, self-drift/guardrail pre/post and one-command under-minute demo.
 
-## Scope And Ownership
+## Outcome
 
-Independent new validator module/test only; no wiki.mjs, test-wiki.mjs, layout/path/manifest or root controls currently owned by H/S-00P. Records dispatcher fully authors packet before claim.
+A caller explicitly designates an existing readable Landmark Markdown article
+and runs a public read-only validation command/API. Every byte is checked for
+WBIDs; named findings identify offending content. A passing article can be
+maintained by several delivery Specs while structured identity provenance stays
+in records. This is a complete usable author-to-validator path; shared Wiki
+validator integration is a later slice after its file slot is released.
 
-## Reservation
+## Required Behavior
 
-Director authorized serial allocation; this is the first bounded Task only.
-The owning dispatcher completes requirements, test packet, documentation and
-worker handoff before dispatch. Source baseline is b00a2e3; preserve completed
-S-01T TK-01X/TK-01Y evidence and schema contracts.
+- Add the smallest public command/API in `workbench/tools/landmark-wiki.mjs`
+  with ordinary project path/CLI/output conventions. Explicit designation is
+  the validation call, not a broad rule applied to every design-concept article.
+- Check metadata, body, hidden comments, URLs/link targets and all remaining
+  Markdown bytes. Trace actual WBID grammar/type inventory; preserve legacy
+  identifiers, avoid treating unrelated ordinary hyphenated words as identities.
+  Do not scan only rendered prose, exempt source links, or weaken the rule to
+  fit existing fixtures. State any ambiguity in detection precisely.
+- Validate inputs and safe existing readable article path first using existing
+  public helpers. Useful missing/unsafe/non-Markdown/non-file errors; no write
+  or generated projection update on success or refusal.
+- Fixture a valid readable article and structured identity-bearing provenance
+  outside it. Ordinary feature/retirement article provenance keeps existing
+  rules: do not change shared Wiki schema/type/collection or historical articles.
+- Tests use actual article files, CLI in a fresh process, refusal snapshots and
+  meaningful expected results. No real records are retired/discarded/approved.
+
+## File Lane
+
+New module `workbench/tools/landmark-wiki.mjs`; new test
+`tools/test-landmark-wiki.mjs`; narrow new usage document
+`workbench/landmark-tracker/LANDMARK-WIKI.md` if needed. Assigned TASK receipt
+only. Runtime installation registration may require traced additional files;
+report precise needed seam to dispatcher before touching shared installer files.
+
+Do not mutate `landmark-tracker.mjs`, `test-landmark-tracker.mjs`, `wiki.mjs`,
+`test-wiki.mjs`, manifest, path/layout modules, lifecycle/diagnostics, schema or
+root/generic controls. DQC owns first shared runtime slot; active S-00I TK-01U
+owns shared Wiki/lifecycle consumers. Request narrowly necessary file release
+through dispatcher; do not wait for a whole Spec.
+
+## Sources To Load
+
+Assigned S-002A desired behavior 3/4 and acceptance; root AGENTS entry controls;
+existing `visible-ids.mjs`, `workbench-paths.mjs`, `wiki.mjs`, Tracker README
+and delivered TK-01X/TK-01Y proof at b00a2e3. Existing source is read-only evidence.
+
+## Done Criteria And Closing Proof
+
+Record semantic red failure and green immutable SHAs, dirty state, targeted and
+full suite commands/results, documentation, remaining gap, self-drift and
+78/100 baseline guardrail limits. Supply a reproducible public command demo in
+under one minute using a disposable valid/offending article, no manual fixture
+construction needed by the owner. Shared wiring/assessment/lifecycle remain
+explicit later obligations, not completion claims for this Task.
+
+Worker self-checks and reports. Dispatcher owns shared Spec/evidence and whole
+Spec QA. Separate-context review follows immutable candidate; fixture success
+never resets owner Human QA. No integration/main merge by this worker.
+
+## Task Receipt
+
+Append named runtime receipts as work proceeds under current TASK conventions.
