@@ -57,6 +57,20 @@ test('valid explicitly designated article passes CLI/API without touching articl
   assert.deepEqual(snapshot(dir), before);
 });
 
+test('human-readable CLI output identifies refusals and absolute in-root paths work', t => {
+  const dir = room(t);
+  const before = snapshot(dir);
+  const valid = spawnSync(process.execPath, [tool, 'validate', path.join(dir, article), '--path', dir], { encoding: 'utf8' });
+  assert.equal(valid.status, 0);
+  assert.equal(valid.stdout, `valid: ${article}\n`);
+  fs.writeFileSync(path.join(dir, article), `${readable}S-001\n`);
+  const invalid = spawnSync(process.execPath, [tool, 'validate', article, '--path', dir], { encoding: 'utf8' });
+  assert.equal(invalid.status, 1);
+  assert.match(invalid.stdout, /landmark-wbid: S-001 at workbench\/wiki\/landmark.md:4:1/);
+  fs.writeFileSync(path.join(dir, article), readable);
+  assert.deepEqual(snapshot(dir), before);
+});
+
 for (const [area, text, id] of [
   ['metadata', '---\nsource_paths: [S-001]\n---\n', 'S-001'],
   ['prose', 'Built through TK-002T.\n', 'TK-002T'],
@@ -119,6 +133,7 @@ test('missing, unsafe, linked, non-file and unreadable article inputs visibly re
     ['workbench/wiki/missing.md', 'missing-article'],
     [path.join(outside, 'outside.md'), 'unsafe-article'],
     ['../outside.md', 'unsafe-article'],
+    ['..\\outside.md', 'unsafe-article'],
     ['workbench/wiki/linked.md', 'unsafe-article'],
     ['workbench/wiki/escape/outside.md', 'unsafe-article'],
     ['workbench/wiki/directory.md', 'invalid-article'],
