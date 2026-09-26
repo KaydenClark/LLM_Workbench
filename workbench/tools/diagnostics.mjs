@@ -136,6 +136,11 @@ const registry = Object.freeze({
   // visible in every doctor run and blocks only the Genesis readiness gate
   'integration-branch-undeclared': entry('error', 'git', 'none', 'the manifest declares no git.integrationBranch; declare the branch the independent review gate merges into'),
   'integration-branch-missing': entry('error', 'git', 'none', 'the declared integration branch resolves neither as a local head nor on a remote'),
+  // S-00M TK-002 (ADR-000J): the repository state a completion claim can
+  // hide. Both are visible in every doctor run and block nothing: detached is
+  // a legitimate inspection state, and the false claim is refused at `close`.
+  'detached-head': entry('attention', 'git', 'none', 'HEAD is detached; an inspection state that blocks nothing, but switch to a branch before committing work you intend to deliver'),
+  'untracked-controls': entry('attention', 'git', 'none', 'untracked files sit under the root controls, the ADR collection or the spec lane; commit or remove them before claiming the work done'),
   'unfilled-control': entry('error', 'controls', 'all', 'a root control is empty, a stub, or carries template placeholders'),
   'unsafe-control': entry('error', 'controls', 'all', 'a root control is not an ordinary file'),
   'version-mismatch': entry('error', 'controls', 'all', 'a control version stamp disagrees with the manifest'),
