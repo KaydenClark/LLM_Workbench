@@ -21,6 +21,9 @@ next task. Troubleshooting stance selection is outside this skill.
 
 Pin the revision and scope, distinguish observations from inference, and seek
 counterevidence. Read controls, the assigned spec and only relevant sources.
+Stay inside the assigned target and project: do not read another project to
+settle a claim, and report anything outside that boundary only as a lead
+marked not examined.
 
 Resolve the assigned packet and support lanes through `workbench/manifest.json`.
 
@@ -32,5 +35,9 @@ a fixed diff when applicable. A finding is evidence, not repair authorization.
 
 ## Completion / Exit Condition
 
-Return a bounded verdict with source references, verification and limitations.
+Return a bounded verdict: one finding per named claim, each marked
+supported, unsupported or uncertain. Uncertain means the available evidence
+cannot decide the claim; name what would. Each finding cites its source path
+at the pinned revision, the check it ran and its limit. List any leads not
+examined after the findings.
 Do not publish a release status or silently repair findings.
