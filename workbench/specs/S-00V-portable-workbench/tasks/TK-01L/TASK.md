@@ -3,8 +3,8 @@
 **Task ID:** TK-01L
 **Spec ID:** S-00V
 **Slice:** `claim` pushes the claim on its task branch and `next` skips a Task claimed on any remote tip
-**Status:** blocked
-**Blockers:** S-00M
+**Status:** ready
+**Blockers:** none
 **Destination:** spec-acceptance: S-00V box 4 (`claim` pushes the claim on the task branch; a second instance running `next` after a fetch does not receive that Task)
 **Stance:** Builder
 **Planned verification:** Red: a bare-remote fixture in `tools/test-spec-workbench.mjs` where instance A claims (task branch cut from integration, claim as its first commit, pushed) and instance B runs `next` after a fetch and does not receive that Task; a second test for the no-remote fallback that says so; green after `claim`/`next` change; the claim-on-branch ADR; `adr validate`; full AGENTS suite; separate-context review.
@@ -30,7 +30,7 @@ second one. S-00M TK-002/TK-003 also edit `close` and git-state reading in
 contained, the S-00V dispatcher removes `S-00M` from Blockers in its own commit
 with an evidence row citing the containing commit.
 
-The Taskboard display of remote claims is a separate Task because S-01V
+The Taskboard display of remote claims is a separate Task because the generated JSON taskboard Spec from S-00O (ID pending allocation)
 replaces the Markdown board. Control wording (AGENTS Git Rules claim push,
 RUNBOOK claim procedure) is written by the controls sweep, not here.
 
