@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, liveRecordPath, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
+import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, liveRecordPath, markdownLinkTargets, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
 import { insertFrontmatterKeys, localLinks, parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
 import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
@@ -154,7 +154,7 @@ export function validateWiki(root, options = {}) {
       const live = typeof source === 'string' ? liveRecordPath(root, source) : null;
       if (live) liveTargets.add(live);
     }
-    for (const link of localLinks(content)) {
+    for (const link of markdownLinkTargets(content)) {
       const live = liveRecordPath(root, path.resolve(path.dirname(file), link));
       if (live) liveTargets.add(live);
     }

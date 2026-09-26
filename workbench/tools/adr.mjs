@@ -9,7 +9,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { finding } from './diagnostics.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS, liveRecordPath, markdownLinkTargets } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'deprecated', 'rejected']);
 export const REGISTER_NAME = 'REGISTER.md';
@@ -298,6 +298,15 @@ export function validateAdrs(root, options = {}) {
         if (!current) { lifecycleError(`has missing superseded_by target ${successor}`); break; }
         if (!['accepted', 'superseded', 'deprecated'].includes(current.status)) { lifecycleError('successor must be an accepted decision or its historical successor'); break; }
       }
+    }
+    // Reference-style and angle-bracket links are not in localLinks (it keeps
+    // the literal inline form the broken-link check below needs), so live
+    // records named that way are caught here (S-00V TK-02E).
+    const inline = new Set(localLinks(adr.body));
+    for (const link of markdownLinkTargets(adr.body)) {
+      if (inline.has(link)) continue;
+      const live = liveRecordPath(root, path.resolve(path.dirname(adr.filePath), link));
+      if (live) findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${live}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, { adr: adr.name, target: live }));
     }
     for (const link of localLinks(adr.body)) {
       const target = path.resolve(path.dirname(adr.filePath), link);

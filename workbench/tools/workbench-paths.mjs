@@ -139,6 +139,28 @@ export function collectionRelative(root, name) {
 // Returns the project-relative live path an absolute or root-relative target
 // names, or null when the target is outside every live collection (the
 // tracked notepad templates are durable and return null).
+// Every local link target a Markdown text names: inline links, including the
+// angle-bracket form, and reference-style definitions (`[n]: path`). The
+// live-record citation checks read this rather than an inline-only parser, so
+// a reference-style link to a committed notepad or handoff cannot slip past
+// them (S-00V TK-02E). Fragments are dropped; web and mail targets skipped.
+export function markdownLinkTargets(content) {
+  const targets = [];
+  for (const pattern of [
+    /\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)]+))/g,
+    /^ {0,3}\[[^\]\n]+\]:\s*(?:<([^>\n]+)>|(\S+))/gm
+  ]) {
+    for (const match of String(content ?? '').matchAll(pattern)) {
+      const value = (match[1] ?? match[2]).split('#')[0];
+      if (!value || /^(?:[a-z][a-z0-9+.-]*:)/i.test(value)) continue;
+      let decoded = value;
+      try { decoded = decodeURIComponent(value); } catch { decoded = value; }
+      targets.push(decoded);
+    }
+  }
+  return targets;
+}
+
 export function liveRecordPath(root, target) {
   const base = path.resolve(root);
   const relative = path.relative(base, path.resolve(base, target)).split(path.sep).join('/');

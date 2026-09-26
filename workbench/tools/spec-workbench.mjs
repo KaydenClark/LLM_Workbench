@@ -10,7 +10,7 @@ import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, readManifest } from './workbench-paths.mjs';
+import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
@@ -940,7 +940,7 @@ function liveRecordCitations(spec) {
   const issues = [];
   const seen = new Set();
   for (const source of sources) {
-    for (const link of localLinks(source.content)) {
+    for (const link of markdownLinkTargets(source.content)) {
       const target = liveRecordPath(spec.root, path.resolve(path.dirname(source.filePath), link));
       if (!target || seen.has(target)) continue;
       seen.add(target);
