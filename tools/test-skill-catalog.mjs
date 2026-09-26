@@ -370,6 +370,25 @@ assertIncludesAll(codeReview, [
   'nearest `AGENTS.md`', 'assigned stable `SPEC.md`', 'Findings first', 'review-only', 'separately authorized'
 ], 'code-review');
 
+// S-01Q: the Auditor stance reports one classified finding per named claim,
+// each traceable to its pinned evidence, check and limit, and stays inside the
+// assigned target. These pin the source contract; the fresh-context run in
+// S-01Q records the behavior. "bounded verdict" stays the LEXICON wrapper.
+const auditorSkill = read('workbench/skills/auditor/SKILL.md');
+assertIncludesAll(auditorSkill, [
+  'bounded verdict',
+  'supported, unsupported or uncertain',
+  'Each finding cites',
+  'the check it ran and its limit',
+  'Stay inside the assigned target and project',
+  'not examined',
+  'silently repair'
+], 'auditor finding and scope contract');
+assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorSkill.indexOf('## Completion / Exit Condition'),
+  'the three result classes belong to the auditor exit report');
+assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
+  'the no-widening boundary belongs to the auditor method, before its obligations');
+
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and
 // recorded with `verdict` - while a Task PR under the room's Task-PR
