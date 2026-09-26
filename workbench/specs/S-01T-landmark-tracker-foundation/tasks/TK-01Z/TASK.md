@@ -9,12 +9,17 @@
 **Destination:** spec-acceptance: Completing a linked Task without the expected durable documentation does not produce Verified; actual content comparison and applicable gates do; several delivery Specs maintain one readable article with no WBIDs in any bytes while structured provenance stays recoverable; feature/design-concept routes and collection/schema/retirement consumers agree with delivered Wiki behavior; workflow composition maintains sources while the grilling primitive stays independent
 **Planned verification:** Red: in a disposable room, a done linked Task with missing or wrong Landmark Wiki content, stale evidence, an unresolved gate, a WBID hidden in article metadata, a comment, a URL or a link target, and a duplicate-article requirement each still produce Verified or pass. Green: actual readable claims match Expected result with revision and gate proof; complete-byte no-WBID scans pass for Landmark Wiki pages; provenance is recoverable from DQC, landmark and delivery records; feature articles consumed from S-00I validate unchanged; the grilling primitive is byte-unchanged. Targeted tests, then the full AGENTS suite; a demo contrasting missing knowledge with the assessed two-Spec article in under a minute.
 
-## Release
+## Assignment Transfer — 2026-09-26
 
-Lane J releases this Task by setting Status `ready` once TK-01Y is done and
-[S-00I TK-01U](../../../S-00I-folder-lifecycle-for-records/tasks/TK-01U/TASK.md)
-is done on integration. It is `deferred` with no Blockers entry because the
-runtime cannot resolve a cross-Spec Task blocker.
+Landmark Records — S-002A owns article validation/actual-content assessment; Destination Question Cards — S-002B owns workflow source maintenance/composition.
+
+See [foundation Delivery Transfer](../../SPEC.md#delivery-transfer--2026-09-26)
+and its linked successor owners. This deferred record preserves the original
+unfinished packet; it is no longer assigned for execution and must not be
+released as a duplicate Task. No completion proof is invented. Successors
+slice the retained requirements into bounded Tasks, preserving actual shared-file
+leases rather than a blanket whole-Spec barrier. The runtime has no transferred
+Task status, so deferred remains the truthful non-executable representation.
 
 ## Compatibility Pin
 

@@ -1,15 +1,59 @@
 # S-01T - Landmark Tracker Foundation
 
 **Spec ID:** S-01T
-**Status:** active
+**Status:** planned
 **Priority:** 1
-**Owner:** claude-lane-J
+**Owner:** successor dispatchers (see Delivery Transfer)
 **Stance:** Builder
 **Updated:** 2026-09-26
-**Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
+**Catalog description:** Preserved foundation design and completed proof; remaining delivery is assigned to Tracker S-001Z, Records S-002A and DQC S-002B.
 **Blockers:** none
-**Latest event:** 2026-09-26 TK-01Y (distributions across source types and scopes, with DQC and landmark identities on allocateArtifactId) closed and reviewed; corrective TK-02G, TK-02H and TK-02I closed without code change.
-**Next gate:** Lane J releases TK-01Z (after S-00I TK-01U is done on integration) and TK-02A (after S-00I TK-01U is done on integration); until then no S-01T Task is eligible.
+**Latest event:** Owner-directed three-capability split transfers all unfinished delivery to named successors; completed TK-01X/TK-01Y and corrective proof remain intact.
+**Next gate:** Follow the scoped successor Specs below; do not release the retained TK-01Z/TK-02A historical packets for duplicate execution.
+
+## Delivery Transfer — 2026-09-26
+
+The owner explicitly authorized three smaller independently demonstrable Specs.
+This foundation remains the preserved design/evidence source, not a fourth
+active delivery capability or dispatcher assignment:
+
+- [Landmark Tracker — S-001Z](../S-001Z-landmark-tracker-view/SPEC.md): projection, arithmetic and readable evidence; initial residual TK-002U.
+- [Landmark Records — S-002A](../S-002A-landmark-records/SPEC.md): landmark relationships, article validation/assessment and live-reference recovery; initial residual TK-002T.
+- [Destination Question Cards — S-002B](../S-002B-destination-question-cards/SPEC.md): concept sources, revision/history/Result and workflow composition; initial residual TK-002S.
+
+The original Acceptance Criteria below are retained as lineage. Numbering means
+their existing top-to-bottom order; checked evidence is neither reset nor claimed
+anew. Every unfinished claim now has a named primary successor:
+
+| Original acceptance | Primary successor and preserved scope |
+|---|---|
+| 1 fresh-clone discovery | Each successor proves its own public path; the [S-001Z composed demonstration](../S-001Z-landmark-tracker-view/SPEC.md#verification-procedure--composed-demonstration) joins them in one disposable room |
+| 2 ungrouped/unanswered DQC and Expected result | S-002B; completed TK-01X proof retained |
+| 3 later/overlapping landmarks, retitling | S-002A; completed TK-01X behavior retained |
+| 4 rebuildable readable view and expanded lineage/evidence | S-001Z |
+| 5 exact vocabulary, 30/20/50, units/deduplication | S-001Z; completed TK-01Y proof retained |
+| 6 explicit outcomes and safe invalid writes | S-001Z owns aggregate/cycle outcomes; S-002B owns record-write preservation; each preserves its existing proof |
+| 7 actual content and applicable gates before Verified | S-002A owns article comparison; S-002B stores supported assessment; S-001Z projects it without completion inference |
+| 8 changed understanding and affected claims | S-002B owns source history/evidence; S-002A owns actual article claim comparison; S-001Z owns reconciliation visibility |
+| 9 workflow composition and retained notes | S-002B, respecting existing per-skill/S-00P writers and Tracker-unaware grilling |
+| 10 multi-Spec readable article with no WBIDs | S-002A |
+| 11 Wiki collection/schema/retirement compatibility | S-002A consumes S-00I TK-01U and existing owners, without taking their writer lease |
+| 12 movement/reference/recovery | S-002A consumes the immediate lifecycle seam; original TK-02A is its retained packet |
+| 13 checks/demo/review/Human QA | Each successor owns whole-Spec proof; S-001Z Verification Procedure owns the named combined recipe; Director reviews assembled behavior; owner Human QA remains owner-led |
+
+Unfinished TK-01Z is retained as source context for S-002A article/assessment
+claims and S-002B workflow composition. Unfinished TK-02A is retained as source
+context for S-002A lifecycle claims. Neither is an active duplicate assignment.
+Their former whole-task release paragraphs are replaced by these named transfers;
+real shared-file ordering still applies only to the immediate operation. Existing
+S-00I TK-01U is an active shared writer, not a whole-successor completion gate.
+No task was moved, deleted, marked done or had its historical proof rewritten.
+
+Representation limit: the runtime rejects a `superseded` Spec with unfinished
+Tasks and has no transferred Task status. This source therefore uses `planned`
+with the two retained packets `deferred`; prose and linked owners explicitly
+withdraw their execution assignment. This does not claim capability completion
+or authorize widening the lifecycle runtime to add a status.
 
 ## Outcome
 
@@ -20,9 +64,9 @@ its progress toward durable documentation. Landmarks can overlap and outlive
 several Specs. Wiki explanations become correct, readable knowledge through
 ordinary delivery. Tracker monitors documenting; Taskboard monitors implementation.
 
-This is one capability encompassing records, their generated view and the
-workflow/documentation integration needed to make that view truthful. It is
-not one Spec per candidate landmark or one Spec per implementation layer.
+The original combined foundation described these interacting capabilities.
+Its delivery is now split by the Delivery Transfer above; this section preserves
+the original destination and does not assign combined delivery to one dispatcher.
 
 ## Why It Matters
 
@@ -233,14 +277,15 @@ the Claude Director to continue the dispatch run; that instruction authorized
 decomposition. Lane J converted the Codex dispatcher's four unallocated packet
 drafts (candidate `e58655d`, input only, not carried) into Task records,
 allocating each ID with `next-id S-01T --prefix TK` on integration `ec848e5`
-immediately before saving it. The records in `tasks/` are authoritative:
+immediately before saving it. The done records in `tasks/` remain authoritative proof. The two unfinished
+records remain historical packet sources under the Delivery Transfer above:
 
 | Task | Slice | Status | Blockers or release |
 |---|---|---|---|
 | [TK-01X](tasks/TK-01X/TASK.md) | Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view | done | none |
 | [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | done | none |
-| [TK-01Z](tasks/TK-01Z/TASK.md) | Assess actual Landmark Wiki content so two Specs maintain one readable article | deferred | TK-01Y done and S-00I TK-01U done on integration |
-| [TK-02A](tasks/TK-02A/TASK.md) | Keep live Tracker references and historical proof through record moves | deferred | TK-01X done and S-00I TK-01U done on integration |
+| [TK-01Z](tasks/TK-01Z/TASK.md) | Assess actual Landmark Wiki content so two Specs maintain one readable article | deferred (transferred packet) | S-002A article/assessment and S-002B composition |
+| [TK-02A](tasks/TK-02A/TASK.md) | Keep live Tracker references and historical proof through record moves | deferred (transferred packet) | S-002A lifecycle/reference/recovery |
 | [TK-02G](tasks/TK-02G/TASK.md) | Corrective: TK-01X receipt provenance (46df442 fail verdict) | done | none |
 | [TK-02H](tasks/TK-02H/TASK.md) | Corrective clause from the 46df442 fail verdict (a passing check, not a defect) | done | none |
 | [TK-02I](tasks/TK-02I/TASK.md) | Corrective clause from the 46df442 fail verdict (a passing check, not a defect) | done | none |
@@ -383,23 +428,22 @@ The original workflow diagram is preserved byte-for-byte.
 | 2026-09-26 | review | Review verdict: pass at fb5179931070fdafd8017ad334e32471b643e8e5 [8253ed245462] #8 | No defects on the delta since 5213af7: the verdict row is accurate, the clean integration merge loses nothing, and closing corrective TK-02G (answered by the receipt-provenance correction row) and TK-02H and TK-02I (passing-check clauses) without code change is justified. Header, slice table and Completion Result are truthful. Full AGENTS suite 48/48 at fb51799 (dirty []); doctor no blocking finding. | codex exec gpt-5.5, read-only sandbox, separate context from the Lane J dispatcher and worker | 2 |
 | 2026-09-26 | review | Review verdict: pass at 5f3cf09bc86a4d5f9632a751bf56e4eddd6f134b [8253ed245462] #9 | No defects on the delta since fb51799: the verdict row is accurate and the merge of integration ebf4268 leaves the reviewed delivery unchanged. Full AGENTS suite 48/48 at 5f3cf09 (dirty []); doctor no blocking finding. | codex exec gpt-5.5, read-only sandbox, separate context from the Lane J dispatcher and worker | 2 |
 
+| 2026-09-26 | none | Owner-authorized delivery split: all thirteen original acceptance rows assigned by claim to S-001Z/S-002A/S-002B; old unfinished packets no longer assigned for execution | Compared current b00a2e3 state, retained completed Tasks and original append-only log bytes, confirmed no open S-01T PR and no current remote S-01T branch; old local codex dispatcher branch e58655d is historical packet work | Delivery Transfer and retained packet release sections link successors; peer scoped packets imported exactly | Successors own unfinished delivery and Human QA; no completion or new runtime status claimed |
+
+| 2026-09-26 | review | Fresh-context Luna navigation readback PASS at 4e68ca488fa258f7dce0161aeebcd2946e492990 against b00a2e338436ef7b281b0cc53e74f891af32f18c | Tracked tree only: all 13 acceptance routes supported; old TK-01Z/TK-02A deferred and explicitly non-executable; five done Task files byte-identical and original evidence rows preserved. Independent local byte/read-state check agrees. | Original map and successor owners read without notes; Director assigns S-001Z Verification Procedure to resolve the sole nonblocking unnamed-composed-proof ambiguity | Navigation/preservation review only, not runtime, integration approval or Human QA. Exact runnable combined proof awaits worker interfaces |
+
 ## Completion Result
 
-Capability delivery pending; owner Human QA is not satisfied. Of the four
-authored Tasks, TK-01X (the foundation path) is done and lands through its own
-Task PR; TK-01Y (distributions) is done and lands through its own Task PR;
-TK-01Z and TK-02A remain deferred on S-00I TK-01U. Corrective Tasks TK-02G,
-TK-02H and TK-02I from the 46df442 fail verdict are closed without code change. Three acceptance lines are checked: TK-01X delivers the
-ungrouped-DQC line (`tools/test-landmark-tracker.mjs` capture, reload, clone,
-retitle and confirm cases), and TK-01Y delivers the distribution-examples and
-explicit-outcomes lines (its pure-seam, typed-identity, scoped 30/20/50,
-shared-identity, cycle and invalid-write cases). The changed-understanding
-line is delivered for Tracker claims by TK-01Y but stays open until TK-01Z
-assesses actual Landmark Wiki claims. Every other line spans later Tasks.
+The foundation is not claimed complete and owner Human QA is not satisfied.
+TK-01X/TK-01Y delivered behavior and corrective TK-02G/TK-02H/TK-02I evidence
+remain above. The three existing checked acceptance lines retain their proof.
+All remaining delivery is assigned to the linked successors; this source owns
+no further executable Task. Deferred TK-01Z/TK-02A remain reachable source
+packets, not duplicate work queued for lane J.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Implementation proceeds through TK-01Z and TK-02A; TK-01X and TK-01Y are done.
+- Implementation proceeds through S-001Z, S-002A and S-002B. TK-01Z/TK-02A are transferred source packets; TK-01X/TK-01Y remain done.
 - Owed to S-00P (root controls): Runbook procedure for the Tracker and the
   suite-list line for its test; the exact wording is in
   [TK-01X Remaining Gaps](tasks/TK-01X/TASK.md#remaining-gaps) and
@@ -412,4 +456,4 @@ assesses actual Landmark Wiki claims. Every other line spans later Tasks.
 
 - Supersedes: no existing capability Spec. Source interpretations superseded by
   owner corrections are preserved in the decision lineage above.
-- Superseded by: none.
+- Delivery superseded by S-001Z, S-002A and S-002B as mapped above; original design and append-only evidence remain here. Runtime status representation is explicitly limited above.

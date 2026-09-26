@@ -48,7 +48,7 @@ Read source observations at the pre anchor using `git show`:
 - [Landmark Tracker - S-001Z](../S-001Z-landmark-tracker-view/SPEC.md) owns generated distributions/view; [Landmark Records - S-002A](../S-002A-landmark-records/SPEC.md) owns landmark relationships, actual Wiki assessment and lifecycle/recovery. DQC owns concept record operations and initially common safety/discovery seams.
 - Preserve current schemas, DQC_PREFIX/LMK_PREFIX, typed related entries {type,id,revision,reason,assessment}, source entries {id,revision}, DQC-authored landmarks edges and append-oriented history. Do not invent a generic record envelope or reverse relationship ownership.
 - First mutation lease for shared `workbench/tools/landmark-tracker.mjs` belongs to the DQC Result worker. Release exact clean seam commit before another lane edits that module. Independent tests/Wiki/proof can proceed in parallel; whole-Spec completion is not a dependency barrier.
-- Original acceptance transfer: primary DQC ownership of S-01T acceptance 2 and 9; record-write portions of 6 and concept-revision/affected-evidence portions of 8; DQC-specific fresh-clone/demo/QA portions of 1 and 13. Records owns actual durable-content reconciliation and Tracker owns arithmetic. Source-owner mapping is reconciled by its single writer; no original acceptance is silently closed.
+- Original acceptance transfer: primary DQC ownership of S-01T acceptance 2 and 9; record-write portions of 6 and concept-revision/affected-evidence portions of 8; DQC-specific fresh-clone/demo/QA portions of 1 and 13. Records owns actual durable-content reconciliation and Tracker owns arithmetic. Source-owner mapping is confirmed in the imported immutable foundation Delivery Transfer at 28103a70; no original acceptance is silently closed.
 
 ## Non-Goals
 
@@ -93,6 +93,7 @@ Update `workbench/landmark-tracker/README.md` with actual Result operation and l
 | 2026-09-26 | none | Serial identity reservation under explicit owner three-Spec split | Live base b00a2e338436ef7b281b0cc53e74f891af32f18c; next-id proposal saved before next allocation | This minimal scaffold | Dispatcher scope/Tasks and source transfer mapping pending |
 | 2026-09-26 | planning | DQC boundary and Result residual approved by Director under explicit owner three-Spec split | Baseline b00a2e3 Tracker suite 23/23; open PR lookup found unrelated 92/77 only; pre guardrail 78/100; pre self-drift cleanUpdate false, stale S-00Q and historical seed/provenance limits | Narrow successor authored; original completed source evidence preserved | Serial Task ID, worker red/green, composition residual inspection, cross-Spec QA and independent review remain |
 | 2026-09-26 | planning verification | Checked complete DQC packet and claimed worker; composition Task reserved serially after importing exact Tracker TK-002U | 48 planning-suite commands ran across clean 959b043 and e11bc795 claim states: 47 passed, layout reversible manifest probe hit sandbox EPERM; authorized layout rerun passed 71/71. These are per-command planning results, not fixed-candidate full-suite proof. Result worker candidate 912563f passed dispatcher Result 5/5 and public demo; candidate full suite/review outstanding | TK-002V planning only, bundle/version/install and writer gate explicit; projections generated locally | Workflow composition and cross-Spec QA remain open; owner Human QA unchanged |
+| 2026-09-26 | whole-Spec QA | Reproduced inherited public DQC/landmark/view behavior and imported single-writer foundation transfer | Clean df987692: inherited Tracker 23/23, shared public demo PASS 2.52s, prior Result 5/5 and demo PASS; post drift cleanUpdate false dirty false, guardrails 78/100, known seven findings unchanged. Committed source map imported exactly from 28103a70, source original completed evidence unchanged | Confirmed DQC transfer and preserved original TK-01Z/TK-02A redirected history; shared demo ownership remains Tracker | Fixed worker full-suite, Task receipts/closure and assembled independent review outstanding; workflow maintenance TK-002V deferred and other composition paths open |
 
 ## Completion Result
 
@@ -104,5 +105,5 @@ No clean Workbench update or agent-outcome reliability claim. Whole-Spec composi
 
 ## Supersession
 
-- Supersedes: DQC obligations of original S-01T only after explicit source-owner transfer mapping; historical foundation source and completed Tasks remain intact.
+- Supersedes: DQC obligations explicitly transferred from original S-01T Delivery Transfer at 28103a70; historical foundation source and completed Tasks remain intact.
 - Superseded by: none.
