@@ -978,6 +978,9 @@ for (const operation of ['read', 'create']) {
   });
 }
 
+// S-01W TK-002Q: notepad allocation follows the one artifact policy -
+// uppercase `0-9A-Z`, minimum width four, letter-bearing - while every legacy
+// spelling keeps its file, bytes and identity.
 test('visible ID allocation and lookup preserve existing note paths', () => {
   const dir = project();
   try {
@@ -986,12 +989,44 @@ test('visible ID allocation and lookup preserve existing note paths', () => {
     for (let i = 1; i <= 9; i++) seed(dir, { note: `reserved-${i}`, id: `N-${String(i).padStart(3, '0')}` });
     const allocated = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Allocated note']);
     assert.equal(allocated.status, 0, allocated.stdout);
-    assert.equal(allocated.json.id, 'N-00A');
-    assert.equal(allocated.json.note, 'workbench/sessions/notepads/work/N-00A.json');
-    assert.equal(cli(dir, ['read', '--id', 'N-00A', '--view', 'current']).json.id, 'N-00A');
+    assert.equal(allocated.json.id, 'N-000A', 'uppercase, width four, letter-bearing');
+    assert.equal(allocated.json.note, 'workbench/sessions/notepads/work/N-000A.json');
+    assert.equal(cli(dir, ['read', '--id', 'N-000A', '--view', 'current']).json.id, 'N-000A');
     assert.equal(cli(dir, ['read', '--id', 'N-010', '--view', 'current']).json.note, 'workbench/sessions/notepads/work/legacy-numeric.json');
+    assert.equal(cli(dir, ['read', '--id', 'N-0010', '--view', 'current']).json.note, 'workbench/sessions/notepads/work/legacy-numeric.json', 'a widened spelling reaches the legacy record');
     assert.deepEqual(fs.readFileSync(path.join(dir, 'workbench/sessions/notepads/work/legacy-numeric.json')), before);
-    assert.ok(listNotes(dir).notes.some(note => note.id === 'N-00A'));
+    assert.ok(listNotes(dir).notes.some(note => note.id === 'N-000A'));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('width-three and lowercase legacy note IDs reserve their identities and stay readable after allocation', () => {
+  const dir = project();
+  try {
+    const short = seed(dir, { note: 'legacy-short', id: 'N-00A' });
+    const lower = seed(dir, { note: 'legacy-lower', id: 'N-00b' });
+    const bytes = [short, lower].map(item => [item.note, fs.readFileSync(path.join(dir, item.note))]);
+    const allocated = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'After legacy labels']);
+    assert.equal(allocated.status, 0, allocated.stdout);
+    assert.equal(allocated.json.id, 'N-000C', 'N-00A occupies N-000A and N-00b occupies N-000B');
+    assert.equal(cli(dir, ['read', '--id', 'N-000A', '--view', 'current']).json.note, short.note);
+    assert.equal(cli(dir, ['read', '--id', 'N-00B', '--view', 'current']).json.note, lower.note);
+    for (const [note, before] of bytes) assert.deepEqual(fs.readFileSync(path.join(dir, note)), before, `${note} keeps its bytes`);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('allocation refuses an inventory where two notes alias one visible identity', () => {
+  const dir = project();
+  try {
+    seed(dir, { note: 'first-alias', id: 'N-00A' });
+    const work = path.join(dir, 'workbench/sessions/notepads/work');
+    const copy = JSON.parse(fs.readFileSync(path.join(work, 'first-alias.json'), 'utf8'));
+    fs.writeFileSync(path.join(work, 'second-alias.json'), `${JSON.stringify({ ...copy, id: 'N-000a' }, null, 2)}\n`);
+    const before = fs.readdirSync(work).sort();
+    const result = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Must not pick a winner']);
+    assert.equal(result.status, 1, result.stdout);
+    assert.equal(result.json.status, 'blocked');
+    assert.match(result.json.error.message, /collision/i);
+    assert.deepEqual(fs.readdirSync(work).sort(), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -1063,10 +1098,10 @@ test('identity lookup and legacy filename lookup remain explicit and cannot shad
 test('allocation skips a legacy filename whose visible ID belongs to another record', () => {
   const dir = project();
   try {
-    const original = seed(dir, { note: 'N-001', id: 'different-note' });
+    const original = seed(dir, { note: 'N-000A', id: 'different-note' });
     const before = fs.readFileSync(path.join(dir, original.note));
     const allocated = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Skip occupied filename']);
-    assert.equal(allocated.json.id, 'N-002', allocated.stdout);
+    assert.equal(allocated.json.id, 'N-000B', allocated.stdout);
     assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
@@ -1074,10 +1109,10 @@ test('allocation skips a legacy filename whose visible ID belongs to another rec
 test('allocation reserves visible destination aliases independently of filesystem sensitivity', () => {
   const dir = project();
   try {
-    const original = seed(dir, { note: 'N-0001', id: 'legacy-name' });
+    const original = seed(dir, { note: 'N-00a', id: 'legacy-name' });
     const before = fs.readFileSync(path.join(dir, original.note));
     const result = cli(dir, ['allocate', '--prefix', 'N', '--objective', 'notepad-runtime', '--title', 'Reserve destination aliases']);
-    assert.equal(result.json.id, 'N-002');
+    assert.equal(result.json.id, 'N-000B', 'the width-three lowercase filename N-00a reserves N-000A');
     assert.deepEqual(fs.readFileSync(path.join(dir, original.note)), before);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
