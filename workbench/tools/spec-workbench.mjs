@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, readRepositoryState, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -264,9 +264,12 @@ export function closeTask(rootDir, id, options) {
   const date = validDate(options?.date ?? today());
   const spec = findSpec(root, id);
   const slices = executionSlices(spec);
-  const task = slices.find((item) => item.declared === 'in-progress')
-    ?? slices.find((item) => item.declared === 'ready');
+  // S-00M TK-003: `close` names no Task, so it closes only a claimed one;
+  // falling through to the first ready Task closed work nobody claimed.
+  const task = slices.find((item) => item.declared === 'in-progress');
+  if (!task && slices.some((item) => item.declared === 'ready')) throw new Error(`${id} has no in-progress task to close; claim one first`);
   if (!task) throw new Error(`${id} has no open task to close`);
+  const recordedGap = gitStateAtClose(root, remainingGap, options?.gitStateReason);
   // Proof text for a record goes on the record; the Spec's append-only
   // evidence row below is appended either way, because the Spec still owns
   // the evidence log whichever source its slices come from. `close` is the
@@ -286,7 +289,7 @@ export function closeTask(rootDir, id, options) {
   // from before the append.
   let content = spec.content;
   if (task.source === 'record') {
-    appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun: proof, docsTouched: docs, remainingGap });
+    appendReceiptRow(task.record.filePath, { repoRoot: root, testsRun: proof, docsTouched: docs, remainingGap: recordedGap });
     const receipted = readTaskRecord(task.record.filePath, task.record.root);
     writeTaskStatus(receipted, { Status: 'done', Proof: proof });
   } else {
@@ -302,9 +305,47 @@ export function closeTask(rootDir, id, options) {
     'Latest event': `${task.id} closed with proof.`,
     'Next gate': remaining ? `Complete ${remaining.id}.` : 'Confirm acceptance criteria and completion result.'
   });
-  content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(task.id)} | Task closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(remainingGap)} |`);
+  content = appendEvidence(content, `| ${escapeCell(date)} | ${escapeCell(task.id)} | Task closed | ${escapeCell(proof)} | ${escapeCell(docs)} | ${escapeCell(recordedGap)} |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
+}
+
+// S-00M TK-003 (ADR-000J): a completion claim the repository contradicts is
+// refused before anything is written. Dirty means anything
+// `git status --porcelain` shows - exactly what the Receipt's Dirty column
+// counts. Unpushed means no remote-tracking ref contains HEAD. With
+// `--git-state-reason` the close proceeds and returns the remaining gap with
+// the observed state and the reason appended, which `closeTask` writes into
+// the Receipt row (inside its checksum chain) and the Spec evidence row, so
+// the waiver stays readable rather than being consumed by the check. A
+// reason on a clean, pushed tree is refused rather than dropped. An unknown
+// state (no Git, not a repository) refuses nothing; a reason given there is
+// still recorded, beside the unknown state.
+function gitStateAtClose(root, remainingGap, reasonOption) {
+  const reason = reasonOption === undefined ? null : requireValue(reasonOption, '--git-state-reason must not be empty');
+  if (reason?.includes('\n')) throw new Error('--git-state-reason must be one line');
+  const record = (summary) => `${remainingGap} Git state at close: ${summary}; recorded reason: ${reason}`;
+  const state = readRepositoryState(root);
+  if (!state.known) return reason ? record(`unknown (${state.reason})`) : remainingGap;
+  const files = [...state.dirty, ...state.untracked.controls, ...state.untracked.adr, ...state.untracked.specs, ...state.untrackedOther].sort();
+  const findings = [];
+  if (files.length > 0) {
+    const shown = files.length > 10 ? `${files.slice(0, 10).join(', ')}, and ${files.length - 10} more` : files.join(', ');
+    findings.push(`dirty-tree (${files.length} ${files.length === 1 ? 'file' : 'files'}: ${shown})`);
+  }
+  if (!state.pushed) {
+    const where = state.remotes.length === 0 ? 'no remote'
+      : state.upstream && !state.upstream.gone ? `ahead ${state.upstream.ahead} behind ${state.upstream.behind} of ${state.upstream.name}`
+        : state.upstream ? `upstream ${state.upstream.name} is gone`
+          : state.head.detached ? 'detached HEAD, no upstream' : 'no upstream';
+    findings.push(`unpushed (${where})`);
+  }
+  if (findings.length === 0) {
+    if (reason) throw new Error('--git-state-reason given but the tree is clean and pushed; nothing to record');
+    return remainingGap;
+  }
+  if (reason) return record(findings.join(' and '));
+  throw new Error(`close refused: ${findings.join(' and ')}; commit and push, or rerun with --git-state-reason "<why>" to record the state and reason`);
 }
 
 // S-00I TK-006: claims an orphan corrective Task by its own Task ID - see
@@ -821,12 +862,39 @@ function skillFindings(root) {
   return inspectSkills(readManifest(root), root);
 }
 
-// The declared integration branch is the review gate's merge target. Its
-// absence is an error every doctor run shows and none blocks: a room can
-// create the branch in one command, and selection must not wait on it.
 function gitFindings(root, specs) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];
+  return [...integrationBranchFindings(root, specs), ...repositoryStateFindings(root)];
+}
+
+// S-00M TK-002: what TK-001's reader sees and no other finding observes. Both
+// codes are registered `attention`/`none`, so they change neither doctor's
+// exit code nor next's selection. An unknown state (no Git, not a repository,
+// unresolvable lanes) reports nothing here: `integration-branch-missing`
+// already names the not-a-repository case, and guessing Git state is worse
+// than stating none.
+const UNTRACKED_NAMED = 10;
+function repositoryStateFindings(root) {
+  const state = readRepositoryState(root);
+  if (!state.known) return [];
+  const findings = [];
+  if (state.head.detached) {
+    findings.push(finding('detached-head', 'HEAD is detached; this is an inspection state, not a blocker, but switch to a branch before committing work you intend to deliver'));
+  }
+  const files = [...state.untracked.controls, ...state.untracked.adr, ...state.untracked.specs];
+  if (files.length > 0) {
+    const named = files.slice(0, UNTRACKED_NAMED).join(', ');
+    const more = files.length > UNTRACKED_NAMED ? ` and ${files.length - UNTRACKED_NAMED} more` : '';
+    findings.push(finding('untracked-controls', `${files.length} untracked file(s) under the root controls, the ADR collection or the spec lane: ${named}${more}; commit or remove them before claiming the work done`, { files }));
+  }
+  return findings;
+}
+
+// The declared integration branch is the review gate's merge target. Its
+// absence is an error every doctor run shows and none blocks: a room can
+// create the branch in one command, and selection must not wait on it.
+function integrationBranchFindings(root, specs) {
   const declared = declaredGit(root);
   if (!declared) return [finding('integration-branch-undeclared', 'workbench/manifest.json declares no git.integrationBranch; declare the branch the independent review gate merges into')];
   if (!insideWorkTree(root)) {

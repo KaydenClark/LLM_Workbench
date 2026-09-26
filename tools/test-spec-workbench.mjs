@@ -39,6 +39,7 @@ import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
+import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
 
 // `doctor`'s `stale-claim` rule (workbench/tools/spec-workbench.mjs) flags an
 // in-progress claim whose `Updated` date-only stamp is more than one day
@@ -62,6 +63,23 @@ function initGitRoot(dir) {
   execFileSync('git', ['-C', dir, 'config', 'user.email', 'fixture@example.com']);
   execFileSync('git', ['-C', dir, 'config', 'user.name', 'Fixture']);
   execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', 'init']);
+}
+
+// S-00M TK-003: `close` refuses on a dirty tree or a HEAD no remote-tracking
+// ref contains, so a fixture that closes in a real Git work tree must first
+// be clean and pushed, exactly as an agent's own close would be. The bare
+// remote lives inside `.git/`, where it is neither a working-tree file nor
+// left behind when the fixture directory is removed.
+function publishFixture(dir, message = 'publish fixture') {
+  const remotes = execFileSync('git', ['-C', dir, 'remote'], { encoding: 'utf8' }).split('\n');
+  if (!remotes.includes('origin')) {
+    const remote = path.join(dir, '.git', 'fixture-remote.git');
+    execFileSync('git', ['init', '--quiet', '--bare', remote]);
+    execFileSync('git', ['-C', dir, 'remote', 'add', 'origin', remote]);
+  }
+  execFileSync('git', ['-C', dir, 'add', '-A']);
+  execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', message]);
+  execFileSync('git', ['-C', dir, 'push', '--quiet', '-u', 'origin', 'HEAD'], { stdio: 'ignore' });
 }
 
 // Simulate delivery of this exact fixture content before owner approval.
@@ -102,6 +120,150 @@ assert.deepEqual(
   'option flags must not be consumed as an optional spec ID'
 );
 
+// ============================================================================
+// S-00M TK-003: `close` refuses a completion claim the repository
+// contradicts - a dirty tree or a HEAD no remote-tracking ref contains -
+// before writing anything, unless `--git-state-reason` records why; a
+// permitted close keeps the observed state and the reason in the Receipt row
+// and the Spec evidence row, where a reviewer reads them.
+// ============================================================================
+{
+  const stateRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-git-state-'));
+  initGitRoot(stateRoot);
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    writeAt(stateRoot, 'BLUEPRINT.md', ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    writeAt(stateRoot, 'TASKBOARD.md', ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    writeAt(stateRoot, 'specs/S-751-git-state/SPEC.md', recordBackedSpec('S-751').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    writeAt(stateRoot, 'specs/S-751-git-state/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-751', slice: 'Git-state slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-751 Acceptance Criteria'
+    }));
+    publishFixture(stateRoot);
+    const specPath = path.join(stateRoot, 'specs/S-751-git-state/SPEC.md');
+    const taskPath = path.join(stateRoot, 'specs/S-751-git-state/tasks/TK-002/TASK.md');
+    const closeOptions = { proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr };
+
+    // (1) A dirty tree - one tracked change and one untracked file outside
+    // every lane, on a pushed branch - is refused before any write.
+    writeAt(stateRoot, 'TASKBOARD.md', '# Fixture Taskboard\n\nedited\n');
+    writeAt(stateRoot, 'scratch.txt', 'untracked\n');
+    const specBefore = fs.readFileSync(specPath, 'utf8');
+    const taskBefore = fs.readFileSync(taskPath, 'utf8');
+    assert.throws(
+      () => closeTask(stateRoot, 'S-751', closeOptions),
+      /^Error: close refused: dirty-tree \(2 files: TASKBOARD\.md, scratch\.txt\); commit and push, or rerun with --git-state-reason "<why>" to record the state and reason$/,
+      '(1) close on a dirty, pushed tree is refused, naming dirty-tree and its files'
+    );
+    assert.equal(fs.readFileSync(specPath, 'utf8'), specBefore, '(1) a refused close leaves the Spec byte-identical');
+    assert.equal(fs.readFileSync(taskPath, 'utf8'), taskBefore, '(1) a refused close leaves the Task record byte-identical');
+    assert.equal(readReceiptFromFile(taskPath).length, 0, '(1) a refused close appends no Receipt row');
+
+    // (2) A clean tree whose HEAD no remote-tracking ref contains is refused,
+    // naming unpushed and the upstream distance, or the missing upstream.
+    execFileSync('git', ['-C', stateRoot, 'checkout', '--quiet', '--', 'TASKBOARD.md']);
+    fs.rmSync(path.join(stateRoot, 'scratch.txt'));
+    execFileSync('git', ['-C', stateRoot, 'commit', '--quiet', '--allow-empty', '-m', 'local only']);
+    const branch = execFileSync('git', ['-C', stateRoot, 'rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf8' }).trim();
+    assert.throws(
+      () => closeTask(stateRoot, 'S-751', closeOptions),
+      new RegExp(`^Error: close refused: unpushed \\(ahead 1 behind 0 of origin/${branch}\\); commit and push, or rerun with --git-state-reason "<why>" to record the state and reason$`),
+      '(2) close on a clean branch ahead of its upstream is refused, naming unpushed and the distance'
+    );
+    execFileSync('git', ['-C', stateRoot, 'switch', '--quiet', '-c', 'no-upstream']);
+    assert.throws(() => closeTask(stateRoot, 'S-751', closeOptions), /^Error: close refused: unpushed \(no upstream\);/,
+      '(2) a branch with no upstream at an unpushed commit is refused, saying so');
+    execFileSync('git', ['-C', stateRoot, 'checkout', '--quiet', '--detach']);
+    assert.throws(() => closeTask(stateRoot, 'S-751', closeOptions), /^Error: close refused: unpushed \(detached HEAD, no upstream\);/,
+      '(2) a detached HEAD at an unpushed commit is refused, saying so');
+    execFileSync('git', ['-C', stateRoot, 'switch', '--quiet', branch]);
+    assert.equal(fs.readFileSync(specPath, 'utf8'), specBefore, '(2) a refused close leaves the Spec byte-identical');
+    assert.equal(readReceiptFromFile(taskPath).length, 0, '(2) a refused close appends no Receipt row');
+
+    // (3) With --git-state-reason the same dirty, unpushed close succeeds, and
+    // the observed state and the reason are readable afterward in the
+    // Receipt row (inside its checksum chain) and the Spec evidence row.
+    writeAt(stateRoot, 'scratch.txt', 'untracked | piped\n');
+    const reason = 'owner asked to close before the push | retry later';
+    closeTask(stateRoot, 'S-751', { ...closeOptions, remainingGap: 'TK-003 follow-up', gitStateReason: reason });
+    const recorded = `TK-003 follow-up Git state at close: dirty-tree (1 file: scratch.txt) and unpushed (ahead 1 behind 0 of origin/${branch}); recorded reason: ${reason}`;
+    const receiptRows = readReceiptFromFile(taskPath);
+    assert.equal(receiptRows.length, 1, '(3) a permitted close appends exactly one Receipt row, whose checksum chain still validates');
+    assert.equal(receiptRows[0].remainingGap, recorded, '(3) the Receipt row carries the remaining gap, the observed Git state and the reason');
+    assert.equal(receiptRows[0].dirty, 1, '(3) the Receipt row still reads its Dirty count from live Git facts');
+    const evidenceRow = fs.readFileSync(specPath, 'utf8').split('\n').find((line) => line.includes('| TK-002 | Task closed |'));
+    assert.ok(evidenceRow, '(3) the Spec evidence row is appended');
+    assert.equal(parseMarkdownTableRow(evidenceRow)[5], recorded, '(3) the Spec evidence row carries the same recorded state and reason');
+    assert.match(fs.readFileSync(taskPath, 'utf8'), /\*\*Status:\*\* done/, '(3) the permitted close flips the Task to done');
+
+    // (4) Clean and pushed closes exactly as before; a reason given there is
+    // refused rather than silently dropped; an unknown state (not a
+    // repository) closes exactly as before.
+    writeAt(stateRoot, 'specs/S-752-table/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-752').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    fs.rmSync(path.join(stateRoot, 'scratch.txt'));
+    claimWork(stateRoot, 'S-752', { agent: 'fixture', date: todayStr });
+    publishFixture(stateRoot);
+    const tableSpecPath = path.join(stateRoot, 'specs/S-752-table/SPEC.md');
+    const tableBefore = fs.readFileSync(tableSpecPath, 'utf8');
+    assert.throws(
+      () => closeTask(stateRoot, 'S-752', { ...closeOptions, gitStateReason: 'nothing to waive' }),
+      /^Error: --git-state-reason given but the tree is clean and pushed; nothing to record$/,
+      '(4) a reason on a clean, pushed tree is refused rather than silently dropped'
+    );
+    assert.equal(fs.readFileSync(tableSpecPath, 'utf8'), tableBefore, '(4) the refused reason writes nothing');
+    closeTask(stateRoot, 'S-752', closeOptions);
+    const cleanRow = fs.readFileSync(tableSpecPath, 'utf8').split('\n').find((line) => line.includes('| TK-001 | Task closed |'));
+    assert.equal(parseMarkdownTableRow(cleanRow)[5], 'none', '(4) a clean, pushed close records the remaining gap unchanged');
+
+    const unknownRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-git-unknown-'));
+    try {
+      writeAt(unknownRoot, 'specs/S-753-unknown/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-753'));
+      claimWork(unknownRoot, 'S-753', { agent: 'fixture', date: todayStr });
+      closeTask(unknownRoot, 'S-753', closeOptions);
+      const unknownRow = fs.readFileSync(path.join(unknownRoot, 'specs/S-753-unknown/SPEC.md'), 'utf8').split('\n').find((line) => line.includes('| TK-001 | Task closed |'));
+      assert.equal(parseMarkdownTableRow(unknownRow)[5], 'none', '(4) outside any repository the close is neither refused nor annotated');
+    } finally {
+      fs.rmSync(unknownRoot, { recursive: true, force: true });
+    }
+
+    assert.equal(parseCliArgs(['close', 'S-751', '--git-state-reason', reason]).options.gitStateReason, reason,
+      'the CLI flag --git-state-reason reaches closeTask as gitStateReason');
+    console.log('ok - close refuses a dirty or unpushed tree unless --git-state-reason records the state and reason');
+  } finally {
+    fs.rmSync(stateRoot, { recursive: true, force: true });
+  }
+}
+
+// S-00M TK-003 (dispatcher addition): `close` names no Task, so with no
+// in-progress Task it must not fall through to the first ready one - a Task
+// nobody claimed would be closed as done. It refuses before any write.
+{
+  const unclaimedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-unclaimed-'));
+  try {
+    writeAt(unclaimedRoot, 'specs/S-761-unclaimed/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-761'));
+    const tablePath = path.join(unclaimedRoot, 'specs/S-761-unclaimed/SPEC.md');
+    const tableBefore = fs.readFileSync(tablePath, 'utf8');
+    const options = { proof: 'must not persist', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12' };
+    assert.throws(() => closeTask(unclaimedRoot, 'S-761', options), /^Error: S-761 has no in-progress task to close; claim one first$/,
+      'close on a Spec whose only open Task is ready (never claimed) is refused');
+    assert.equal(fs.readFileSync(tablePath, 'utf8'), tableBefore, 'the refused close leaves the table-backed Spec byte-identical');
+
+    writeAt(unclaimedRoot, 'specs/S-762-unclaimed-record/SPEC.md', recordBackedSpec('S-762'));
+    writeAt(unclaimedRoot, 'specs/S-762-unclaimed-record/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-762', slice: 'Unclaimed slice', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-762 Acceptance Criteria'
+    }));
+    const recordPath = path.join(unclaimedRoot, 'specs/S-762-unclaimed-record/tasks/TK-002/TASK.md');
+    const recordBefore = fs.readFileSync(recordPath, 'utf8');
+    assert.throws(() => closeTask(unclaimedRoot, 'S-762', options), /^Error: S-762 has no in-progress task to close; claim one first$/,
+      'close on a record-backed Spec whose only open Task is ready is refused');
+    assert.equal(fs.readFileSync(recordPath, 'utf8'), recordBefore, 'the refused close leaves the ready Task record byte-identical');
+    console.log('ok - close refuses a Spec with no in-progress Task instead of closing an unclaimed ready one');
+  } finally {
+    fs.rmSync(unclaimedRoot, { recursive: true, force: true });
+  }
+}
+
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-'));
 initGitRoot(root);
 try {
@@ -133,6 +295,7 @@ try {
     'a spec must not complete before its task and acceptance gates'
   );
 
+  publishFixture(root);
   const closed = closeTask(root, 'S-001', {
     proof: 'node test | tee proof.log',
     docs: 'Docs checked; no update needed',
@@ -624,6 +787,7 @@ try {
     'claiming a Task record leaves the Spec slice table untouched');
   assert.equal(nextWork(root).status, 'in-progress', 'a claimed record resumes before new work is selected');
 
+  publishFixture(root);
   const closedRecord = closeTask(root, 'S-301', {
     proof: 'node test | tee record.log',
     docs: 'Docs checked; no update needed',
@@ -663,6 +827,7 @@ try {
   // than a slice; its active state is derived from the records, and no second
   // Spec status is written anywhere.
   claimWork(root, 'S-301', { agent: 'codex', date: '2026-07-12' });
+  publishFixture(root);
   closeTask(root, 'S-301', {
     proof: 'see $& and $` output', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12'
   });
@@ -702,6 +867,7 @@ try {
     destination: 'spec-acceptance: S-310 Acceptance Criteria'
   })}**Proof:** superseded by the rerun\n`);
   render(root);
+  publishFixture(root);
   closeTask(root, 'S-310', {
     proof: 'see $& and $` output',
     docs: 'Docs checked; no update needed',
@@ -1856,6 +2022,7 @@ function wikiClaimFixture() {
     claimWork(historicalRoot, 'S-602', { agent: 'codex', date: TODAY });
     assert.equal(readHistorical(), beforeAnyCommand, 'claim on the sibling never rewrites the historical Spec');
 
+    publishFixture(historicalRoot);
     closeTask(historicalRoot, 'S-602', {
       proof: 'node test', docs: 'Docs checked; no update needed', remainingGap: 'none', date: TODAY
     });
@@ -2115,8 +2282,12 @@ function wikiClaimFixture() {
     // (e) close on a record-backed Task appends one Receipt row carrying the
     // close's tests, docs and remaining-gap values with live Git facts, and
     // the Spec's evidence row is still appended.
+    // S-00M TK-003: this fixture is deliberately dirty and remote-less so
+    // the Dirty column has a non-zero live value to prove, so the close
+    // records that state and a reason rather than being refused.
     closeTask(closeRoot, 'S-721', {
-      proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr
+      proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr,
+      gitStateReason: 'fixture proves live Receipt Git facts'
     });
     const taskRecordPath = path.join(closeRoot, 'specs/S-721-close-receipt/tasks/TK-002/TASK.md');
     const taskAfterClose = fs.readFileSync(taskRecordPath, 'utf8');
@@ -2124,7 +2295,8 @@ function wikiClaimFixture() {
     assert.equal(rows.length, 1, '(e) close appends exactly one Receipt row to a record-backed Task');
     assert.equal(rows[0].testsRun, 'tools/test-fixture.mjs: pass', "(e) the Receipt row's Tests column carries close's --proof value");
     assert.equal(rows[0].docsTouched, 'Docs checked; no update needed', "(e) the Receipt row's Docs touched column carries close's --docs value");
-    assert.equal(rows[0].remainingGap, 'none', "(e) the Receipt row's Remaining gap column carries close's --remaining-gap value");
+    assert.match(rows[0].remainingGap, /^none Git state at close: dirty-tree \(4 files: [^)]*\) and unpushed \(no remote\); recorded reason: fixture proves live Receipt Git facts$/,
+      "(e) the Receipt row's Remaining gap column carries close's --remaining-gap value, then the recorded Git state and reason");
     assert.equal(rows[0].branch, expectedBranch, '(e) the Receipt row reads its branch from live Git facts, not a caller-supplied value');
     assert.equal(rows[0].headSha, expectedSha, '(e) the Receipt row reads its HEAD SHA from live Git facts, not a caller-supplied value');
     assert.equal(rows[0].dirty, 3, '(e) the Receipt row reads its dirty file count from live Git facts, not a caller-supplied value');
@@ -2140,6 +2312,8 @@ function wikiClaimFixture() {
     // therefore no Task record file) ever created for it.
     writeAt(closeRoot, 'specs/S-722-table-only/SPEC.md',
       fixtureSpec().replaceAll('S-001', 'S-722').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    claimWork(closeRoot, 'S-722', { agent: 'fixture', date: todayStr });
+    publishFixture(closeRoot);
     closeTask(closeRoot, 'S-722', {
       proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr
     });
@@ -2175,6 +2349,7 @@ function wikiClaimFixture() {
     corrupted = corrupted.replace('tools/test-fixture.mjs: pass', 'tools/test-fixture.mjs: TAMPERED');
     writeAt(closeRoot, 'specs/S-723-failing-append/tasks/TK-002/TASK.md', corrupted);
     const failingSpecPath = path.join(closeRoot, 'specs/S-723-failing-append/SPEC.md');
+    publishFixture(closeRoot);
     const taskBeforeFailure = fs.readFileSync(failingTaskPath, 'utf8');
     const specBeforeFailure = fs.readFileSync(failingSpecPath, 'utf8');
 
@@ -4465,6 +4640,11 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     claimWork(correctiveRetiredRoot, 'S-591', { agent: 'fixture' });
     assert.equal(nextWork(correctiveRetiredRoot)?.status, 'in-progress');
     assert.equal(fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8'), retiredBytes, 'claim preserves historical Spec header and evidence');
+    // S-00M TK-003: close refuses a dirty or unpushed tree, so the claim is
+    // committed and "pushed" the way this fixture already simulates its remote.
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'claim corrective Task']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'update-ref', 'refs/remotes/origin/main', 'HEAD']);
     closeTask(correctiveRetiredRoot, 'S-591', { proof: 'corrective fixture passed', docs: 'Wiki checked', remainingGap: 'none' });
     assert.equal(findSpec(correctiveRetiredRoot, 'S-591').status, 'complete', 'correction never reopens completed Spec');
     assert.equal(findSpec(correctiveRetiredRoot, 'S-591').lifecycleFolder, 'retired');
