@@ -219,6 +219,87 @@ test('new reserves ADR labels held only at a remote tip, in every spelling, with
   }
 });
 
+// TK-002Q review corrective: a remote tip's declared `adr` collection is
+// held to the same `isSafeRelative` rule the local manifest uses, and an
+// unreadable tip refuses, so allocation never scans the wrong tree or
+// under-reserves. Each refusal writes nothing.
+function remoteRoom() {
+  const dir = gitFixture();
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adr-remote-'));
+  const git = (...args) => {
+    const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+    assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
+    return result.stdout.trim();
+  };
+  fs.writeFileSync(path.join(dir, 'workbench', 'docs', 'adr', '0001-local.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+  git('checkout', '--quiet', '-b', 'main');
+  gitCommitAll(dir, 'Seed the room');
+  assert.equal(spawnSync('git', ['init', '--quiet', '--bare', remote]).status, 0);
+  git('remote', 'add', 'origin', remote);
+  git('push', '--quiet', 'origin', 'main');
+  const cleanup = () => { fs.rmSync(dir, { recursive: true, force: true }); fs.rmSync(remote, { recursive: true, force: true }); };
+  return { dir, git, cleanup };
+}
+
+function publishRemoteBranch({ dir, git }, change) {
+  git('checkout', '--quiet', '-b', 'claude/other-lane');
+  change();
+  gitCommitAll(dir, 'Another lane changes its tree');
+  git('push', '--quiet', 'origin', 'claude/other-lane');
+  git('checkout', '--quiet', 'main');
+  git('branch', '--quiet', '-D', 'claude/other-lane');
+  git('fetch', '--quiet', 'origin');
+}
+
+function assertAdrNewRefuses(dir, pattern) {
+  const collection = path.join(dir, 'workbench', 'docs', 'adr');
+  const before = fs.readdirSync(collection, { recursive: true }).sort();
+  assert.throws(() => newAdr(dir, { title: 'Must refuse', date: '2026-09-26' }), pattern);
+  const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Must refuse'], { cwd: dir, encoding: 'utf8' });
+  assert.notEqual(cli.status, 0, cli.stdout);
+  assert.match(cli.stderr + cli.stdout, pattern);
+  assert.deepEqual(fs.readdirSync(collection, { recursive: true }).sort(), before, 'a refusal writes nothing');
+  assert.equal(gitStatus(dir), '', 'the working tree stays clean');
+}
+
+for (const [label, declared] of [['dot', '.'], ['dot-prefixed', './workbench/docs/adr'], ['backslash', 'workbench\\docs\\adr'], ['whitespace', 'workbench/docs/my adr'], ['non-workbench', 'docs/adr']]) {
+  test(`new refuses a remote tip whose manifest declares an unsafe adr collection (${label})`, () => {
+    const room = remoteRoom();
+    try {
+      publishRemoteBranch(room, () => {
+        const manifestFile = path.join(room.dir, 'workbench', 'manifest.json');
+        const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+        manifest.collections.adr = declared;
+        fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+      });
+      assertAdrNewRefuses(room.dir, /unsafe adr collection at refs\/remotes\/origin\/claude\/other-lane/);
+    } finally { room.cleanup(); }
+  });
+}
+
+test('new refuses a remote tip whose manifest is malformed JSON', () => {
+  const room = remoteRoom();
+  try {
+    publishRemoteBranch(room, () => fs.writeFileSync(path.join(room.dir, 'workbench', 'manifest.json'), '{ "collections": '));
+    assertAdrNewRefuses(room.dir, /malformed manifest at refs\/remotes\/origin\/claude\/other-lane/);
+  } finally { room.cleanup(); }
+});
+
+test('new refuses an unreadable remote tip: a tip that is not a commit and a commit whose tree is missing', () => {
+  const room = remoteRoom();
+  try {
+    const blob = spawnSync('git', ['-C', room.dir, 'hash-object', '-w', '--stdin'], { input: 'not a tree\n', encoding: 'utf8' }).stdout.trim();
+    room.git('update-ref', 'refs/remotes/origin/blob-tip', blob);
+    assertAdrNewRefuses(room.dir, /Cannot reserve ADR labels from refs\/remotes\/origin\/blob-tip/);
+    room.git('update-ref', '-d', 'refs/remotes/origin/blob-tip');
+    const tree = spawnSync('git', ['-C', room.dir, 'mktree'], { input: `100644 blob ${blob}\tstray.md\n`, encoding: 'utf8' }).stdout.trim();
+    const commit = room.git('commit-tree', tree, '-m', 'Tip with a missing tree');
+    room.git('update-ref', 'refs/remotes/origin/missing-tree', commit);
+    fs.rmSync(path.join(room.dir, '.git', 'objects', tree.slice(0, 2), tree.slice(2)));
+    assertAdrNewRefuses(room.dir, /Cannot reserve ADR labels from refs\/remotes\/origin\/missing-tree/);
+  } finally { room.cleanup(); }
+});
+
 test('the product corpus validates with a current register and no error findings', () => {
   const findings = validateAdrs(root);
   assert.deepEqual(findings.filter((item) => item.severity === 'error'), []);
