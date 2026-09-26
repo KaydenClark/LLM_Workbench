@@ -170,6 +170,34 @@ test('read returns one topic with its correction context and excludes unrelated 
   }
 });
 
+test('a design inquiry keeps a pending answer, its correction and the confirmed decision apart on resume', () => {
+  const dir = project();
+  try {
+    // S-00Y: the convention the notepad and grilling skills document, with no
+    // new kind or status. A pending answer is a source_record listed as
+    // unresolved; only a decision records the confirmed meaning.
+    const created = seed(dir, { objective: 'reading-list-design' });
+    appendEntry(dir, { note: created.note, revision: 1, kind: 'source_record', topic: 'purpose', 'question-id': '1', content: 'Nudges are for reading.', interpretation: 'Pending readback: nudges never suggest discarding.' });
+    appendEntry(dir, { note: created.note, revision: 2, kind: 'correction', topic: 'purpose', corrects: 'source_record-001', content: 'Owner corrected the readback: an archive button is still allowed.' });
+    setCurrent(dir, { note: created.note, revision: 3, 'next-action': 'Confirm the corrected purpose readback.', unresolved: 'purpose readback pending confirmation' });
+
+    const pending = readNote(dir, { note: created.note, entry: 'correction-001' });
+    assert.deepEqual(pending.entries.map((entry) => [entry.id, entry.included_as]),
+      [['correction-001', 'match'], ['source_record-001', 'context']],
+      'resuming from the correction returns the original it corrects');
+    assert.deepEqual(pending.current.unresolved, ['purpose readback pending confirmation']);
+    assert.deepEqual(readNote(dir, { note: created.note, kind: 'decision' }).entries, [], 'nothing is confirmed while the readback is pending');
+
+    appendEntry(dir, { note: created.note, revision: 4, kind: 'decision', topic: 'purpose', 'question-id': '1', content: 'Confirmed: nudges are for reading; archive stays.' });
+    setCurrent(dir, { note: created.note, revision: 5, unresolved: '' });
+    const confirmed = readNote(dir, { note: created.note, topic: 'purpose' });
+    assert.deepEqual(confirmed.entries.map((entry) => entry.kind), ['source_record', 'correction', 'decision'], 'pending, corrected and confirmed meaning stay distinguishable');
+    assert.deepEqual(confirmed.current.unresolved, []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('read paginates explicitly and never truncates silently', () => {
   const dir = project();
   try {
