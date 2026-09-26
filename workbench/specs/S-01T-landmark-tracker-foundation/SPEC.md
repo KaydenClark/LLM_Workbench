@@ -321,6 +321,7 @@ The original workflow diagram is preserved byte-for-byte.
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-26 | none | Owner invokes to-docs and to-spec; no Tasks. Planning baseline at 147ad3fec3f6df1bcf9a002e7ecf7e78d726bc3c in isolated codex/landmark-tracker-foundation. | Doctor: zero blockers, seven attention findings. Self-drift pre: same seven findings, cleanUpdate false. Guardrail baseline 78/100; four outcome-evidence recommendations. | Prior confirmed design and correction lineage synthesized above; unrelated checkpoint edit preserved in original checkout. | Verification of authored planning candidate pending; capability not implemented. |
+| 2026-09-26 | none | Planning verification at 541aac0a1e167f7d93cd72783a48bf740f2e9a64; corrected only the ADR corpus expected-link count afterward. | All 48 required commands executed: 47 passed; ADR count 61 versus actual 62 failed, then all 29 ADR tests passed with the count reconciled. Wiki/ADR validation, render, doctor, exact workflow-map preservation and no-WBID/no-Task checks passed. See [planning verification receipt](planning-verification.json). | Root/generic owners, accepted ADR-000N, readable article, router and historical reconciliation links documented. Initial independent review passed 84eaf20; final immutable candidate review follows. | Seven existing attention findings remain; guardrail 78/100 unchanged with four outcome-evidence recommendations. No runtime, Tasks or Human QA completion claimed. |
 
 ## Completion Result
 
