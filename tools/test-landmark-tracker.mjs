@@ -6,6 +6,13 @@
 // by a fresh process and a clone, evolved, connected to a landmark, and
 // projected into a generated TRACKER.json that never authors source.
 //
+// S-01T TK-01Y extends the same seams: related grilling questions, Specs, ADRs,
+// Tasks and DQCs contribute with typed room-scoped identity, and every
+// aggregate (DQC, landmark and Workbench scope) exposes its numerator,
+// denominator, evidence revision and rationale, deduplicating shared identity
+// without flattening a mixed DQC, and ending empty, incomplete or invalid
+// input with an explicit outcome.
+//
 // Every record here is a fixture concept invented for the test room; none is a
 // real owner concept.
 import assert from 'node:assert/strict';
@@ -24,6 +31,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rootManifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8'));
 const trackerTool = path.join(root, 'workbench', 'tools', 'landmark-tracker.mjs');
 const STEPS = ['Idea', 'Aligning', 'Confirmed', 'Mapped', 'Planned', 'Journey', 'Review', 'Verified'];
+// TK-01Y: an empty aggregate carries every inspection field, all empty.
+const EMPTY_AGGREGATE = Object.freeze({ items: 0, denominator: 0, status: 'empty', counted: [], numerators: null, distribution: null, unassessed: [], unknown: [], invalid: [], bySourceType: {}, contributions: [] });
 const DECLARATION = Object.freeze({
   root: 'workbench/landmark-tracker',
   collections: {
@@ -292,19 +301,19 @@ test('TRACKER.json rebuilds deterministically from records with the exact 30/20/
     const nothing = tracker(dir);
     assert.deepEqual(nothing.steps, STEPS);
     assert.deepEqual(nothing.questions, []);
-    assert.deepEqual(nothing.workbench, { items: 0, status: 'empty', counted: [], unassessed: [], distribution: null }, 'empty input shows no items, never completion');
+    assert.deepEqual(nothing.workbench, EMPTY_AGGREGATE, 'empty input shows no items, never completion');
 
     const mixed = capture(dir).id;
     const verified = ok(cli(dir, 'capture', '--title', 'Fixture door latch', '--question', 'How does the fixture door stay latched?', '--reason', 'Second fixture concept'), 'captured').id;
     const partial = tracker(dir);
     assert.equal(partial.workbench.status, 'incomplete', 'unassessed items make the aggregate explicitly incomplete');
-    assert.deepEqual(partial.workbench.unassessed, [mixed, verified]);
+    assert.deepEqual(partial.workbench.unassessed, [`dqc:${mixed}`, `dqc:${verified}`]);
     assert.equal(partial.workbench.distribution.Idea, 0, 'the renderer invents no progress');
 
     ok(cli(dir, 'revise', mixed, '--expect-revision', '1', '--assess', 'Journey=0.6,Review=0.4', '--basis', 'Draft article underway; one section already assessed', '--evidence', 'fixture-draft@r1', '--reason', 'First assessment'), 'revised');
     ok(cli(dir, 'revise', verified, '--expect-revision', '1', '--assess', 'Verified=1', '--basis', 'Durable contents checked against the expected claims', '--evidence', 'fixture-article@r3', '--reason', 'Verified against actual contents'), 'revised');
     const view = tracker(dir);
-    assert.deepEqual(view.workbench.counted, [mixed, verified]);
+    assert.deepEqual(view.workbench.counted, [`dqc:${mixed}`, `dqc:${verified}`]);
     assert.equal(view.workbench.items, 2);
     assert.equal(view.workbench.status, 'complete');
     assert.deepEqual(view.workbench.distribution, { Idea: 0, Aligning: 0, Confirmed: 0, Mapped: 0, Planned: 0, Journey: 30, Review: 20, Verified: 50 });
@@ -449,4 +458,450 @@ test('the one-command demo runs the whole path end to end and reproduces 30/20/5
   assert.match(demo.stdout, /landmark: No landmark/);
   assert.match(demo.stdout, /origin: "How a fixture room keeps its lantern lit"/);
   assert.match(demo.stdout, /30\/20\/50 example: PASS/);
+  // TK-01Y extensions of the same demo.
+  assert.match(demo.stdout, /shared identity: spec:S-0AA counted once across DQC-\S+ and DQC-\S+/);
+  assert.match(demo.stdout, /lineage expansion: .*DQC-\S+ stays one item/);
+  assert.match(demo.stdout, /navigation cycle preserved/);
+  assert.match(demo.stdout, /refused \(dependency-cycle\): .*DQC-\S+ -> DQC-\S+ -> DQC-\S+/);
+  assert.match(demo.stdout, /\[incomplete\]/);
+  assert.match(demo.stdout, /\[invalid\]/);
+  assert.match(demo.stdout, /reconciliation: DQC-\S+#C1 affected at r\d+/);
+  assert.match(demo.stdout, /distributions scoped: PASS/);
+});
+
+// ------------------------------------------------------------------ TK-01Y
+// Documentation distributions across source types and scopes.
+
+const ZERO_STEPS = Object.freeze(Object.fromEntries(STEPS.map((step) => [step, 0])));
+const steps = (values) => ({ ...ZERO_STEPS, ...values });
+
+// Fixture room records the Tracker resolves by typed identity: a Spec with a
+// record-backed Task marked done, two legacy Specs whose table rows both use
+// the numeric label TK-003, and an accepted ADR. None is a real owner record.
+function seedRoomRecords(dir) {
+  const specs = path.join(dir, 'workbench', 'specs');
+  const write = (relative, content) => {
+    fs.mkdirSync(path.dirname(path.join(specs, relative)), { recursive: true });
+    fs.writeFileSync(path.join(specs, relative), content);
+  };
+  write('S-0AA-fixture-lantern/SPEC.md', '# S-0AA - Fixture lantern\n\n**Spec ID:** S-0AA\n**Status:** active\n');
+  write('S-0AA-fixture-lantern/tasks/TK-0AB/TASK.md', '# TK-0AB - Fixture wick\n\n**Task ID:** TK-0AB\n**Spec ID:** S-0AA\n**Status:** done\n');
+  write('S-00H-fixture-legacy/SPEC.md', '# S-00H - Fixture legacy\n\n| Task | Slice | Status |\n|---|---|---|\n| TK-003 | Legacy fixture slice | done |\n');
+  write('S-00M-fixture-other/SPEC.md', '# S-00M - Fixture other\n\n| Task | Slice | Status |\n|---|---|---|\n| TK-003 | Another legacy fixture slice | done |\n');
+  const adr = path.join(dir, 'workbench', 'docs', 'adr');
+  fs.mkdirSync(adr, { recursive: true });
+  fs.writeFileSync(path.join(adr, '0ACC-fixture-decision.md'), '---\nid: 0ACC\nstatus: accepted\n---\n# Fixture decision\n');
+}
+
+function dqc(dir, title, extra = []) {
+  return ok(cli(dir, 'capture', '--title', title, '--question', `What does ${title.toLowerCase()} settle?`, '--reason', 'fixture concept', ...extra), 'captured').id;
+}
+
+function assess(dir, id, revision, contributions, basis = 'Fixture basis for the fractions', evidence = 'fixture-evidence@r1') {
+  return ok(cli(dir, 'revise', id, '--expect-revision', String(revision), '--assess', contributions, '--basis', basis, '--evidence', evidence, '--reason', 'fixture assessment'), 'revised');
+}
+
+function relate(dir, id, revision, item, extra = []) {
+  return ok(cli(dir, 'relate', id, '--item', item, '--expect-revision', String(revision), '--reason', `fixture relation to ${item}`, ...extra), 'related');
+}
+
+function revisionOf(dir, id) {
+  return ok(cli(dir, 'show', id), 'shown').record.revision;
+}
+
+function card(view, id) {
+  return view.questions.find((item) => item.id === id);
+}
+
+test('the pure distribution seam: exact order, one unit per distinct item, and explicit empty, incomplete and invalid outcomes', async () => {
+  const { distribution } = await import('../workbench/tools/landmark-tracker.mjs');
+  assert.deepEqual(distribution([]), EMPTY_AGGREGATE, 'empty input shows no items');
+
+  const mixed = { key: 'dqc:DQC-001', type: 'dqc', id: 'DQC-001', assessment: { contributions: { Journey: 0.6, Review: 0.4 }, basis: 'mixed basis', evidence: ['draft@r1'], revision: 2 } };
+  const verified = { key: 'spec:S-0AA', type: 'spec', id: 'S-0AA', assessment: { contributions: { Verified: 1 }, basis: 'checked', evidence: ['article@r3'], revision: 3 } };
+  const example = distribution([mixed, verified]);
+  assert.equal(example.status, 'complete');
+  assert.equal(example.items, 2);
+  assert.equal(example.denominator, 2);
+  assert.deepEqual(example.counted, ['dqc:DQC-001', 'spec:S-0AA']);
+  assert.deepEqual(Object.keys(example.distribution), STEPS, 'the exact ordered vocabulary');
+  assert.deepEqual(example.distribution, steps({ Journey: 30, Review: 20, Verified: 50 }));
+  assert.deepEqual(example.numerators, steps({ Journey: 0.6, Review: 0.4, Verified: 1 }));
+  assert.deepEqual(example.contributions.map((entry) => [entry.key, entry.state, entry.basis, entry.revision]), [['dqc:DQC-001', 'assessed', 'mixed basis', 2], ['spec:S-0AA', 'assessed', 'checked', 3]]);
+  assert.deepEqual(example.bySourceType.dqc.distribution, steps({ Journey: 60, Review: 40 }));
+  assert.deepEqual(example.bySourceType.spec.distribution, steps({ Verified: 100 }));
+  assert.deepEqual(Object.keys(example.bySourceType), ['dqc', 'spec']);
+
+  const shared = distribution([mixed, verified, { ...verified }]);
+  assert.equal(shared.items, 2, 'a shared identity counts once');
+  assert.deepEqual(shared.distribution, example.distribution);
+
+  const conflict = distribution([mixed, verified, { ...verified, assessment: { ...verified.assessment, contributions: { Review: 1 } } }]);
+  assert.equal(conflict.status, 'invalid', 'two different assessments of one identity are never silently resolved');
+  assert.equal(conflict.distribution, null);
+  assert.deepEqual(conflict.invalid.map((entry) => [entry.key, entry.codes]), [['spec:S-0AA', ['conflicting-assessment']]]);
+  assert.equal(conflict.items, 2);
+
+  const incomplete = distribution([mixed, { key: 'adr:ADR-0ACC', type: 'adr', id: 'ADR-0ACC', assessment: null }, { key: 'spec:S-0ZZ', type: 'spec', id: 'S-0ZZ', state: 'unknown', assessment: null }]);
+  assert.equal(incomplete.status, 'incomplete');
+  assert.equal(incomplete.denominator, 3, 'missing assessments and unknown identities stay in the denominator');
+  assert.deepEqual(incomplete.unassessed, ['adr:ADR-0ACC']);
+  assert.deepEqual(incomplete.unknown, ['spec:S-0ZZ']);
+  assert.deepEqual(incomplete.distribution, steps({ Journey: 20, Review: 13.333333 }));
+
+  const invalid = [
+    ['nonfinite', { Journey: Infinity }],
+    ['nonfinite', { Journey: Number.NaN, Review: 1 }],
+    ['negative', { Journey: -0.5, Review: 1.5 }],
+    ['unknown-step', { done: 1 }],
+    ['wrong-sum', { Journey: 0.5, Review: 0.4 }]
+  ];
+  for (const [code, contributions] of invalid) {
+    const result = distribution([mixed, { key: 'task:TK-0AB', type: 'task', id: 'TK-0AB', assessment: { contributions, basis: 'b', evidence: ['e'], revision: 1 } }]);
+    assert.equal(result.status, 'invalid', code);
+    assert.equal(result.distribution, null, `${code} withholds the distribution`);
+    assert.deepEqual(result.counted, ['dqc:DQC-001', 'task:TK-0AB'], `${code} never drops the bad record`);
+    assert.ok(result.invalid[0].codes.includes(code), `${code}: ${JSON.stringify(result.invalid)}`);
+  }
+});
+
+test('related grilling questions, Specs, ADRs, Tasks and DQCs persist with typed room-scoped identity through restart and rebuild', () => {
+  const dir = room();
+  try {
+    seedRoomRecords(dir);
+    const a = dqc(dir, 'Fixture lantern upkeep');
+    const b = dqc(dir, 'Fixture fuel supply');
+    const items = [
+      'grilling-question:FX-Q1@r4',
+      'spec:S-0AA@abc123',
+      'adr:ADR-0ACC',
+      'task:TK-0AB',
+      'task:S-00H/TK-003',
+      'task:S-00M/TK-003',
+      `dqc:${b}`,
+      'spec:S-0ZZ'
+    ];
+    let revision = 1;
+    const resolutions = {};
+    for (const item of items) {
+      const result = relate(dir, a, revision, item);
+      revision = result.revision;
+      resolutions[result.item.display] = result.resolution;
+    }
+    assert.deepEqual(resolutions, {
+      'grilling-question:FX-Q1': 'declared',
+      'spec:S-0AA': 'room',
+      'adr:ADR-0ACC': 'room',
+      'task:TK-0AB': 'room',
+      'task:S-00H/TK-003': 'room',
+      'task:S-00M/TK-003': 'room',
+      [`dqc:${b}`]: 'tracker',
+      'spec:S-0ZZ': 'unknown'
+    });
+    const stored = JSON.parse(fs.readFileSync(path.join(dir, DECLARATION.collections['destination-questions'], `${a}.json`), 'utf8'));
+    assert.equal(stored.schema, 'landmark-tracker/destination-question@2');
+    assert.deepEqual(stored.related.map((entry) => `${entry.type}:${entry.id}`), items.map((item) => item.replace(/@.*$/, '')));
+    assert.deepEqual(stored.related.find((entry) => entry.type === 'task' && entry.id === 'S-00H/TK-003').id, 'S-00H/TK-003', 'the legacy Spec-qualified label keeps its bytes');
+    assert.equal(stored.related.find((entry) => entry.type === 'spec' && entry.id === 'S-0AA').revision, 'abc123');
+    assert.equal(stored.history.at(-1).changes[0].field, 'related');
+
+    // A fresh process reads the persisted relations; the projection keys them by type.
+    const view = tracker(dir);
+    const scope = card(view, a).distribution;
+    assert.deepEqual(scope.counted, [`dqc:${a}`, `dqc:${b}`, 'grilling-question:FX-Q1', 'spec:S-0AA', 'spec:S-0ZZ', 'adr:ADR-0ACC', 'task:TK-0AB', 'task:S-00H/TK-003', 'task:S-00M/TK-003'].sort((x, y) => scope.counted.indexOf(x) - scope.counted.indexOf(y)));
+    assert.equal(scope.items, 9, 'two numeric TK-003 labels under different Specs are distinct items; nothing is filtered');
+    assert.equal(scope.status, 'incomplete');
+    assert.deepEqual(scope.unknown, ['spec:S-0ZZ']);
+    assert.deepEqual(Object.keys(scope.bySourceType).sort(), ['adr', 'dqc', 'grilling-question', 'spec', 'task']);
+    assert.equal(scope.bySourceType.task.items, 3);
+    assert.deepEqual(card(view, b).relatedBy, [a], 'the related DQC shows who relates it');
+
+    // A bare numeric Task label is ambiguous across Specs and is refused; a
+    // letter-bearing label already related through its Spec is the same item.
+    const before = snapshot(dir);
+    refused(cli(dir, 'relate', a, '--item', 'task:TK-003', '--expect-revision', String(revision), '--reason', 'ambiguous'), 'invalid-record');
+    refused(cli(dir, 'relate', a, '--item', 'task:S-0AA/TK-0AB', '--expect-revision', String(revision), '--reason', 'same item'), 'invalid-record');
+    refused(cli(dir, 'relate', a, '--item', 'wiki:Fixture', '--expect-revision', String(revision), '--reason', 'unknown type'), 'invalid-record');
+    refused(cli(dir, 'relate', a, '--item', `dqc:${a}`, '--expect-revision', String(revision), '--reason', 'self'), 'invalid-record');
+    assert.deepEqual(snapshot(dir), before);
+
+    const file = path.join(dir, DECLARATION.root, 'TRACKER.json');
+    const bytes = fs.readFileSync(file, 'utf8');
+    fs.rmSync(file);
+    ok(cli(dir, 'rebuild'), 'rebuilt');
+    assert.equal(fs.readFileSync(file, 'utf8'), bytes, 'the rebuild from records is byte-identical');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('the 30/20/50 example holds at DQC, landmark and Workbench scope with inspectable numerator, denominator, evidence revision and rationale', () => {
+  const dir = room();
+  try {
+    seedRoomRecords(dir);
+    const a = dqc(dir, 'Fixture lantern upkeep');
+    assess(dir, a, 1, 'Journey=0.6,Review=0.4', 'Draft article underway; one section assessed', 'fixture-draft@r1');
+    relate(dir, a, 2, 'spec:S-0AA@r7', ['--assess', 'Verified=1', '--basis', 'Durable contents checked against expected claims', '--evidence', 'fixture-article@r3']);
+    const landmark = ok(cli(dir, 'add-landmark', '--title', 'Fixture lighting', '--summary', 'Light', '--reason', 'fixture'), 'captured').id;
+    ok(cli(dir, 'link', a, '--landmark', landmark, '--expect-revision', '3', '--reason', 'belongs'), 'linked');
+    const view = tracker(dir);
+    const scopes = {
+      dqc: card(view, a).distribution,
+      landmark: view.landmarks.find((item) => item.id === landmark).aggregate,
+      workbench: view.workbench
+    };
+    for (const [name, aggregate] of Object.entries(scopes)) {
+      assert.equal(aggregate.status, 'complete', name);
+      assert.equal(aggregate.denominator, 2, name);
+      assert.deepEqual(aggregate.numerators, steps({ Journey: 0.6, Review: 0.4, Verified: 1 }), name);
+      assert.deepEqual(aggregate.distribution, steps({ Journey: 30, Review: 20, Verified: 50 }), name);
+      const mixed = aggregate.contributions.find((entry) => entry.key === `dqc:${a}`);
+      assert.deepEqual([mixed.state, mixed.contributions, mixed.basis, mixed.evidence, mixed.revision, mixed.holder], ['assessed', { Journey: 0.6, Review: 0.4 }, 'Draft article underway; one section assessed', ['fixture-draft@r1'], 2, a], name);
+      const spec = aggregate.contributions.find((entry) => entry.key === 'spec:S-0AA');
+      assert.deepEqual([spec.state, spec.contributions, spec.basis, spec.evidence, spec.revision, spec.holder, spec.itemRevision], ['assessed', { Verified: 1 }, 'Durable contents checked against expected claims', ['fixture-article@r3'], 3, a, 'r7'], name);
+    }
+    const shown = ok(cli(dir, 'show', a), 'shown');
+    assert.deepEqual(shown.view.distribution.distribution, scopes.dqc.distribution, 'show exposes the same DQC-scope view');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('shared identity counts once per aggregate while every relationship stays navigable, and a mixed DQC stays one item', () => {
+  const dir = room();
+  try {
+    seedRoomRecords(dir);
+    const a = dqc(dir, 'Fixture lantern upkeep');
+    assess(dir, a, 1, 'Journey=0.6,Review=0.4');
+    relate(dir, a, 2, 'grilling-question:FX-Q1', ['--assess', 'Idea=1', '--basis', 'recorded need', '--evidence', 'fixture-note@r1']);
+    relate(dir, a, 3, 'grilling-question:FX-Q2', ['--assess', 'Aligning=1', '--basis', 'open alignment', '--evidence', 'fixture-note@r2']);
+    relate(dir, a, 4, 'spec:S-0AA', ['--assess', 'Planned=1', '--basis', 'bounded plan', '--evidence', 'fixture-plan@r1']);
+    const b = dqc(dir, 'Fixture fuel supply');
+    assess(dir, b, 1, 'Mapped=1');
+    relate(dir, b, 2, 'spec:S-0AA', ['--assess', 'Planned=1', '--basis', 'bounded plan', '--evidence', 'fixture-plan@r1']);
+    const parent = dqc(dir, 'Fixture household light');
+    assess(dir, parent, 1, 'Verified=1');
+    relate(dir, parent, 2, `dqc:${a}`);
+    const landmark = ok(cli(dir, 'add-landmark', '--title', 'Fixture lighting', '--summary', 'Light', '--reason', 'fixture'), 'captured').id;
+    ok(cli(dir, 'link', a, '--landmark', landmark, '--expect-revision', '5', '--reason', 'belongs'), 'linked');
+    ok(cli(dir, 'link', b, '--landmark', landmark, '--expect-revision', '3', '--reason', 'belongs'), 'linked');
+
+    const view = tracker(dir);
+    const lighting = view.landmarks.find((item) => item.id === landmark).aggregate;
+    assert.equal(lighting.items, 5, 'A, B, two questions and the shared Spec - the Spec once');
+    assert.equal(lighting.counted.filter((key) => key === 'spec:S-0AA').length, 1);
+    const index = view.items.find((item) => item.key === 'spec:S-0AA');
+    assert.deepEqual(index.relatedBy, [a, b], 'the shared Spec stays visible beneath each related question');
+    assert.deepEqual(index.holders.map((holder) => holder.dqc), [a, b]);
+    assert.ok(card(view, a).related.some((entry) => entry.key === 'spec:S-0AA'));
+    assert.ok(card(view, b).related.some((entry) => entry.key === 'spec:S-0AA'));
+
+    // The parent counts the mixed DQC as one unit; A's own children are not flattened in.
+    const scope = card(view, parent).distribution;
+    assert.deepEqual(scope.counted, [`dqc:${a}`, `dqc:${parent}`]);
+    assert.deepEqual(scope.distribution, steps({ Journey: 30, Review: 20, Verified: 50 }));
+    const lineage = card(view, parent).lineage;
+    assert.equal(lineage.key, `dqc:${parent}`);
+    const child = lineage.related.find((node) => node.key === `dqc:${a}`);
+    assert.deepEqual(child.related.map((node) => node.key), ['grilling-question:FX-Q1', 'grilling-question:FX-Q2', 'spec:S-0AA'], 'lineage expansion shows the children for navigation');
+    assert.equal(view.workbench.items, 6, 'Workbench scope counts every distinct declared constituent once');
+
+    // No supporting-reference exclusion and no effort weighting exist to pass.
+    refused(cli(dir, 'relate', parent, '--item', 'spec:S-0AA', '--weight', '3', '--expect-revision', '3', '--reason', 'weighted'), 'invalid-invocation');
+    refused(cli(dir, 'relate', parent, '--item', 'spec:S-0AA', '--supporting', '--expect-revision', '3', '--reason', 'excluded'), 'invalid-invocation');
+
+    // A second, different assessment of the shared Spec is an explicit conflict, not a silent pick.
+    const c = dqc(dir, 'Fixture wick trimming');
+    relate(dir, c, 1, 'spec:S-0AA', ['--assess', 'Review=1', '--basis', 'a different reading', '--evidence', 'fixture-review@r2']);
+    const conflicted = tracker(dir);
+    assert.equal(conflicted.workbench.status, 'invalid');
+    assert.equal(conflicted.workbench.distribution, null);
+    assert.deepEqual(conflicted.workbench.invalid.map((entry) => entry.key), ['spec:S-0AA']);
+    assert.ok(conflicted.workbench.counted.includes('spec:S-0AA'), 'the conflicting record is never dropped');
+    assert.equal(conflicted.items.find((item) => item.key === 'spec:S-0AA').state, 'invalid');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('navigation cycles are preserved while arithmetic dependency cycles are refused naming the identity chain', () => {
+  const dir = room();
+  try {
+    const a = dqc(dir, 'Fixture lantern upkeep');
+    const b = dqc(dir, 'Fixture fuel supply');
+    assess(dir, a, 1, 'Journey=1');
+    assess(dir, b, 1, 'Review=1');
+    relate(dir, a, 2, `dqc:${b}`);
+    relate(dir, b, 2, `dqc:${a}`);
+    const view = tracker(dir);
+    assert.deepEqual(card(view, a).relatedBy, [b]);
+    assert.deepEqual(card(view, b).relatedBy, [a]);
+    const lineage = card(view, a).lineage;
+    const down = lineage.related.find((node) => node.key === `dqc:${b}`);
+    assert.deepEqual(down.related, [{ key: `dqc:${a}`, type: 'dqc', id: a, cycle: true }], 'the navigation cycle is shown, not expanded forever');
+    assert.deepEqual(card(view, a).distribution.distribution, steps({ Journey: 50, Review: 50 }));
+
+    // A derived assessment depends arithmetically on its related items.
+    ok(cli(dir, 'revise', a, '--expect-revision', '3', '--assess', 'derived', '--basis', 'Derived from the related fixture concepts', '--reason', 'derive'), 'revised');
+    const derived = tracker(dir);
+    const own = derived.workbench.contributions.find((entry) => entry.key === `dqc:${a}`);
+    assert.equal(own.state, 'derived');
+    assert.deepEqual(own.contributions, { Review: 1 });
+    assert.deepEqual(own.derivedFrom, [`dqc:${b}`]);
+
+    const before = snapshot(dir);
+    const refusal = refused(cli(dir, 'revise', b, '--expect-revision', '3', '--assess', 'derived', '--basis', 'Derived too', '--reason', 'close the loop'), 'dependency-cycle');
+    assert.match(refusal.error.message, new RegExp(`${b} -> ${a} -> ${b}`));
+    assert.deepEqual(refusal.error.chain, [b, a, b]);
+    assert.deepEqual(snapshot(dir), before, 'the refused cycle writes nothing');
+
+    // A cycle that arrives on disk (a hand edit or a merge) refuses the rebuild too.
+    const file = path.join(dir, DECLARATION.collections['destination-questions'], `${b}.json`);
+    const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+    record.assessment = { derived: 'related', basis: 'hand edit', revision: record.revision };
+    fs.writeFileSync(file, `${JSON.stringify(record, null, 2)}\n`);
+    const onDisk = snapshot(dir);
+    refused(cli(dir, 'rebuild'), 'dependency-cycle');
+    assert.deepEqual(snapshot(dir), onDisk, 'TRACKER.json keeps its prior bytes');
+
+    // A derived card whose related item is unassessed is incomplete, never guessed.
+    const dir2 = room();
+    try {
+      const c = dqc(dir2, 'Fixture wick trimming');
+      relate(dir2, c, 1, 'grilling-question:FX-Q9');
+      ok(cli(dir2, 'revise', c, '--expect-revision', '2', '--assess', 'derived', '--basis', 'Derived from the fixture question', '--reason', 'derive'), 'revised');
+      const pending = tracker(dir2);
+      const entry = pending.workbench.contributions.find((item) => item.key === `dqc:${c}`);
+      assert.equal(entry.state, 'derived-incomplete');
+      assert.equal(pending.workbench.status, 'incomplete');
+      assert.deepEqual(pending.workbench.unassessed, [`dqc:${c}`, 'grilling-question:FX-Q9']);
+    } finally { fs.rmSync(dir2, { recursive: true, force: true }); }
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a done Task or an accepted ADR never yields Verified by itself', () => {
+  const dir = room();
+  try {
+    seedRoomRecords(dir);
+    const a = dqc(dir, 'Fixture lantern upkeep');
+    relate(dir, a, 1, 'task:TK-0AB');
+    relate(dir, a, 2, 'adr:ADR-0ACC');
+    const view = tracker(dir);
+    const scope = card(view, a).distribution;
+    assert.equal(scope.status, 'incomplete');
+    assert.equal(scope.distribution.Verified, 0);
+    assert.deepEqual(scope.unassessed, [`dqc:${a}`, 'adr:ADR-0ACC', 'task:TK-0AB']);
+    for (const status of ['done', 'accepted', 'complete']) {
+      refused(cli(dir, 'relate', a, '--item', 'spec:S-0AA', '--assess', `${status}=1`, '--basis', 'status', '--evidence', 'TASK.md', '--expect-revision', '3', '--reason', 'status is not a step'), 'invalid-record');
+    }
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('invalid distribution updates are refused by name and leave source and TRACKER.json bytes unchanged', () => {
+  const dir = room();
+  try {
+    seedRoomRecords(dir);
+    const a = dqc(dir, 'Fixture lantern upkeep');
+    const b = dqc(dir, 'Fixture fuel supply');
+    relate(dir, a, 1, 'spec:S-0AA', ['--assess', 'Planned=1', '--basis', 'plan', '--evidence', 'fixture-plan@r1']);
+    ok(cli(dir, 'revise', a, '--expect-revision', '2', '--claim', 'C1=The lantern needs fuel', '--claim-evidence', 'C1=fixture-note@r1', '--reason', 'claim'), 'revised');
+    const before = snapshot(dir);
+    const attempts = [
+      ['invalid-record', ['relate', a, '--item', 'adr:ADR-0ACC', '--assess', 'Journey=Infinity', '--basis', 'b', '--evidence', 'e', '--expect-revision', '3', '--reason', 'nonfinite']],
+      ['invalid-record', ['relate', a, '--item', 'adr:ADR-0ACC', '--assess', 'Journey=-0.5,Review=1.5', '--basis', 'b', '--evidence', 'e', '--expect-revision', '3', '--reason', 'negative']],
+      ['invalid-record', ['relate', a, '--item', 'adr:ADR-0ACC', '--assess', 'Shipped=1', '--basis', 'b', '--evidence', 'e', '--expect-revision', '3', '--reason', 'unknown step']],
+      ['invalid-record', ['relate', a, '--item', 'adr:ADR-0ACC', '--assess', 'Journey=0.5,Review=0.4', '--basis', 'b', '--evidence', 'e', '--expect-revision', '3', '--reason', 'wrong sum']],
+      ['invalid-record', ['relate', a, '--item', 'adr:ADR-0ACC', '--assess', 'Verified=1', '--expect-revision', '3', '--reason', 'no basis or evidence']],
+      ['invalid-record', ['relate', a, '--item', `dqc:${b}`, '--assess', 'Verified=1', '--basis', 'b', '--evidence', 'e', '--expect-revision', '3', '--reason', 'a DQC carries its own assessment']],
+      ['invalid-record', ['relate', a, '--item', 'spec:S-0AA', '--expect-revision', '3', '--reason', 'already related with nothing new']],
+      ['stale-revision', ['relate', a, '--item', 'adr:ADR-0ACC', '--expect-revision', '1', '--reason', 'stale']],
+      ['unknown-identity', ['relate', 'DQC-ZZZ', '--item', 'adr:ADR-0ACC', '--expect-revision', '1', '--reason', 'unknown holder']],
+      ['invalid-record', ['revise', b, '--expect-revision', '1', '--assess', 'derived', '--basis', 'nothing to derive from', '--reason', 'empty derivation']],
+      ['invalid-record', ['revise', a, '--expect-revision', '3', '--assess', 'derived', '--basis', 'b', '--evidence', 'e', '--reason', 'derived takes evidence from related items']],
+      ['invalid-record', ['revise', a, '--expect-revision', '3', '--affects', 'C1=Nothing changed', '--reason', 'no changed understanding']],
+      ['invalid-record', ['revise', a, '--expect-revision', '3', '--answer', 'Fuel', '--affects', 'C9=Unknown claim', '--reason', 'unknown claim']],
+      ['invalid-record', ['revise', a, '--expect-revision', '3', '--answer', 'Fuel', '--affects', 'C1=Affected', '--claim-evidence', 'C1=same@r1', '--reason', 'affected and re-evidenced at once']],
+      ['invalid-record', ['revise', a, '--expect-revision', '3', '--claim-evidence', 'C9=fixture@r1', '--reason', 'evidence for an unknown claim']]
+    ];
+    for (const [code, args] of attempts) {
+      refused(cli(dir, ...args), code);
+      assert.deepEqual(snapshot(dir), before, `${code} ${args.join(' ')} must write nothing`);
+    }
+
+    // A nonfinite fraction that reaches disk (JSON 1e999 parses as Infinity)
+    // refuses the rebuild by name rather than dropping the record.
+    const file = path.join(dir, DECLARATION.collections['destination-questions'], `${a}.json`);
+    const text = fs.readFileSync(file, 'utf8').replace('"Planned": 1', '"Planned": 1e999');
+    assert.match(text, /1e999/);
+    fs.writeFileSync(file, text);
+    const edited = snapshot(dir);
+    const refusal = refused(cli(dir, 'rebuild'), 'invalid-record');
+    assert.match(refusal.error.message, new RegExp(a));
+    assert.deepEqual(snapshot(dir), edited);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('changed understanding records what changed, why and the revision, assesses specific affected claims and keeps original proof', () => {
+  const dir = room();
+  try {
+    const a = dqc(dir, 'Fixture lantern upkeep');
+    const b = dqc(dir, 'Fixture fuel supply');
+    ok(cli(dir, 'revise', a, '--expect-revision', '1', '--answer', 'Oil keeps the lantern lit.',
+      '--claim', 'C1=The lantern burns oil', '--claim', 'C2=The lantern has one wick',
+      '--claim-evidence', 'C1=fixture-note@r1', '--claim-evidence', 'C2=fixture-sketch@r2',
+      '--assess', 'Review=1', '--basis', 'Candidate article assessed', '--evidence', 'fixture-draft@r2', '--reason', 'first answer'), 'revised');
+    ok(cli(dir, 'revise', b, '--expect-revision', '1', '--claim', 'K1=Fuel arrives weekly', '--claim-evidence', 'K1=fixture-log@r1', '--reason', 'claim'), 'revised');
+    relate(dir, b, 2, `dqc:${a}`);
+    const bBefore = card(tracker(dir), b);
+
+    ok(cli(dir, 'revise', a, '--expect-revision', '2', '--answer', 'Wax keeps the lantern lit.',
+      '--affects', 'C1=The claim names oil; the corrected answer names wax',
+      '--reason', 'Owner corrected the fuel'), 'revised');
+    const view = tracker(dir);
+    const changed = card(view, a);
+    const c1 = changed.claims.find((claim) => claim.key === 'C1');
+    const c2 = changed.claims.find((claim) => claim.key === 'C2');
+    assert.equal(c1.status, 'affected');
+    assert.deepEqual(c1.affectedBy, [{ revision: 3, changed: ['answer'], reason: 'Owner corrected the fuel', assessment: 'The claim names oil; the corrected answer names wax' }]);
+    assert.deepEqual(c1.evidence, [{ ref: 'fixture-note@r1', revision: 2 }], 'the original proof stays at its revision');
+    assert.equal(c2.status, 'supported', 'an unaffected claim keeps its standing');
+    assert.deepEqual(c2.evidence, [{ ref: 'fixture-sketch@r2', revision: 2 }]);
+    assert.deepEqual(changed.reconciliation, ['C1']);
+    assert.deepEqual(changed.assessment.contributions, { Review: 1 }, 'changed understanding does not reset the card');
+    const answerChange = changed.history.at(-1).changes.find((change) => change.field === 'answer');
+    assert.deepEqual(answerChange, { field: 'answer', from: 'Oil keeps the lantern lit.', to: 'Wax keeps the lantern lit.' });
+
+    // The relating card is not made stale by the relation alone.
+    const related = card(view, b);
+    assert.deepEqual(related.claims, bBefore.claims);
+    assert.deepEqual(related.reconciliation, []);
+    assert.deepEqual(view.reconciliation, [{ dqc: a, claim: 'C1', revision: 3, reason: 'Owner corrected the fuel', assessment: 'The claim names oil; the corrected answer names wax' }]);
+
+    // New evidence reconciles C1 and keeps the earlier proof interpretable.
+    ok(cli(dir, 'revise', a, '--expect-revision', '3', '--claim', 'C1=The lantern burns wax', '--claim-evidence', 'C1=fixture-article@r5', '--reason', 'Claim restated against the corrected answer'), 'revised');
+    const reconciled = card(tracker(dir), a).claims.find((claim) => claim.key === 'C1');
+    assert.equal(reconciled.status, 'supported');
+    assert.equal(reconciled.text, 'The lantern burns wax');
+    assert.deepEqual(reconciled.evidence, [{ ref: 'fixture-note@r1', revision: 2 }, { ref: 'fixture-article@r5', revision: 4 }]);
+    assert.equal(reconciled.affectedBy.length, 1, 'the affecting change stays in the account');
+    assert.deepEqual(tracker(dir).reconciliation, []);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a foundation (schema 1) record still loads and upgrades on its next write', () => {
+  const dir = room();
+  try {
+    const at = '2026-09-26T00:00:00.000Z';
+    const legacy = {
+      schema: 'landmark-tracker/destination-question@1', id: 'DQC-001', revision: 1,
+      title: 'Fixture legacy concept', question: 'What did the foundation capture?', answer: null,
+      confirmation: null, expectedResult: null, result: null, uncertainty: [], sources: [], landmarks: [], assessment: null,
+      origin: { title: 'Fixture legacy concept', question: 'What did the foundation capture?', sources: [], revision: 1, at },
+      history: [{ revision: 1, at, reason: 'fixture', changes: [{ field: 'captured' }] }]
+    };
+    const file = path.join(dir, DECLARATION.collections['destination-questions'], 'DQC-001.json');
+    fs.writeFileSync(file, `${JSON.stringify(legacy, null, 2)}\n`);
+    ok(cli(dir, 'rebuild'), 'rebuilt');
+    const view = card(tracker(dir), 'DQC-001');
+    assert.deepEqual(view.related, []);
+    assert.deepEqual(view.claims, []);
+    relate(dir, 'DQC-001', 1, 'grilling-question:FX-Q1');
+    const upgraded = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(upgraded.schema, 'landmark-tracker/destination-question@2');
+    assert.deepEqual(upgraded.origin, legacy.origin, 'the origin survives the upgrade');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
