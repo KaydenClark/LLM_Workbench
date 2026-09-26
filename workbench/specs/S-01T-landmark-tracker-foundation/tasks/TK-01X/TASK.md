@@ -3,7 +3,7 @@
 **Task ID:** TK-01X
 **Spec ID:** S-01T
 **Slice:** Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: An unanswered, ungrouped DQC is valid and visible without a Spec, Task, landmark or predetermined Wiki destination; confirmation and Expected result can be added without destroying origin history; a later landmark connection and retitling preserve DQC and source identities; the generated Tracker is rebuilt from records

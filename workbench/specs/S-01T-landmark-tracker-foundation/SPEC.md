@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** 2026-09-26 Lane J authored TK-01X (foundation, ready), TK-01Y (distributions, blocked on TK-01X), TK-01Z (Landmark Wiki evidence, deferred) and TK-02A (reference recovery, deferred) from the Codex packet draft, allocated by `next-id` on integration, and pinned features/identity compatibility with S-00I.
-**Next gate:** Claim and deliver TK-01X with red/green TDD and a one-command demo; Lane J releases TK-01Z and TK-02A once their named cross-Spec conditions hold.
+**Latest event:** TK-01X claimed by claude-lane-J.
+**Next gate:** Close TK-01X with verification and documentation proof.
 
 ## Outcome
 
@@ -237,7 +237,7 @@ immediately before saving it. The records in `tasks/` are authoritative:
 
 | Task | Slice | Status | Blockers or release |
 |---|---|---|---|
-| [TK-01X](tasks/TK-01X/TASK.md) | Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view | ready | none |
+| [TK-01X](tasks/TK-01X/TASK.md) | Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view | in-progress (claude-lane-J) | none |
 | [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | blocked | TK-01X |
 | [TK-01Z](tasks/TK-01Z/TASK.md) | Assess actual Landmark Wiki content so two Specs maintain one readable article | deferred | TK-01Y done and S-00I TK-01U done on integration |
 | [TK-02A](tasks/TK-02A/TASK.md) | Keep live Tracker references and historical proof through record moves | deferred | TK-01X done and S-00I TK-01U done on integration |
