@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** TK-02I claimed by claude-lane-J.
-**Next gate:** Close TK-02I with verification and documentation proof.
+**Latest event:** TK-02I closed with proof.
+**Next gate:** Complete TK-01Z.
 
 ## Outcome
 
@@ -376,6 +376,7 @@ The original workflow diagram is preserved byte-for-byte.
 | 2026-09-26 | review | Review verdict: pass at 5213af7bb90d2c3305ca3487bf2f96153fe5f834 [bae17762439e] #7 | No High/Medium/Low findings. TK-01Y distributions, the allocateArtifactId addendum, records and the two checked acceptance lines verified against the Task contract. The --assess derived basis is an explicit author opt-in with unit weights, exposed derivedFrom and refused cycles, so it respects requirements 9-12. Full AGENTS suite 48/48 at 5213af7 (dirty []); test-landmark-tracker 23/23; doctor no blocking finding; rebuild --check current. | codex exec gpt-5.5, read-only sandbox, separate context from the Lane J dispatcher and worker | 4 |
 | 2026-09-26 | TK-02G | Task closed | Answered without a code change: the receipt-provenance Medium from the 46df442 fail verdict is resolved by the append-only correction row 'Correction: TK-01X Receipt run 1 provenance' (a66e19e), which separates the verified candidate d5c0951 from the close-time writes in 46df442. Re-reviews PASS at 957034a, e75f528, 05a382f, b7a404a and 9c0a82d; TK-01X landed in PR #198. TK-01Y applied the lesson by stating in its close that close-time writes land only in the close commit. | Docs checked; no update needed: the correction row already records the provenance | none |
 | 2026-09-26 | TK-02H | Task closed | Answered without a code change: this corrective Task was split from the 46df442 fail verdict's findings cell at a semicolon, and its text ('root controls, templates and visible-ids untouched') records a check the reviewer found passing, not a defect. The only defect in that verdict was the receipt-provenance Medium, answered by TK-02G. Later re-reviews confirmed the same observations with no findings. | Docs checked; no update needed: no defect to document | none |
+| 2026-09-26 | TK-02I | Task closed | Answered without a code change: this corrective Task was split from the 46df442 fail verdict's findings cell at a semicolon, and its text ('manifest/path changes additive. Reviewer sandbox could not mkdtemp for targeted tests.') records a check the reviewer found passing, not a defect. The only defect in that verdict was the receipt-provenance Medium, answered by TK-02G. Later re-reviews confirmed the same observations with no findings. | Docs checked; no update needed: no defect to document | none |
 
 ## Completion Result
 
