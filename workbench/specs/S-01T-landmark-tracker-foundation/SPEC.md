@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** TK-02G closed with proof.
-**Next gate:** Complete TK-01Z.
+**Latest event:** TK-02H claimed by claude-lane-J.
+**Next gate:** Close TK-02H with verification and documentation proof.
 
 ## Outcome
 
