@@ -134,8 +134,42 @@ test('all legacy/current type identities and widened suffixes are found, ordinar
   const result = cli(dir, 'validate', article, '--json');
   assert.equal(result.status, 1);
   assert.deepEqual(result.report.findings.map(hit => hit.id), ids);
-  fs.writeFileSync(path.join(dir, article), `${readable}HTTP-API, UTF-8, source-path, XS-001, LMKish-001 and WB-short.\n`);
+  fs.writeFileSync(path.join(dir, article), `${readable}source-path, human-readable and LMKish-001.\n`);
   assert.equal(cli(dir, 'validate', article, '--json').status, 0);
+});
+
+test('default generic namespace candidates refuse as incomplete rather than silently pass', t => {
+  const dir = room(t);
+  for (const id of ['XS-001', 'CUSTOM-000A', 'HTTP-API', 'UTF-8']) {
+    fs.writeFileSync(path.join(dir, article), `${readable}${id}\n`);
+    const before = snapshot(dir);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.status, 1);
+    assert.equal(result.report.status, 'incomplete');
+    assert.equal(result.report.findings[0].code, 'landmark-ambiguous');
+    assert.equal(result.report.findings[0].id, id);
+    assert.deepEqual(snapshot(dir), before);
+  }
+});
+
+test('percent-encoded URL and link identities retain original-byte locations', async t => {
+  const dir = room(t);
+  const content = `${readable}[More](https://example.invalid/%53%2D%30%30%31)\n[Card](../%44QC-000A.json)\n`;
+  fs.writeFileSync(path.join(dir, article), content);
+  const before = snapshot(dir);
+  const result = cli(dir, 'validate', article, '--json');
+  assert.equal(result.status, 1);
+  assert.equal(result.report.status, 'invalid');
+  assert.deepEqual(result.report.findings.map(hit => hit.id), ['S-001', 'DQC-000A']);
+  for (const [index, token] of ['%53', '%44'].entries()) {
+    const offset = content.indexOf(token);
+    assert.equal(result.report.findings[index].byteOffset, Buffer.byteLength(content.slice(0, offset)));
+    assert.equal(result.report.findings[index].line, content.slice(0, offset).split('\n').length);
+    assert.equal(result.report.findings[index].column, Array.from(content.slice(content.lastIndexOf('\n', offset) + 1, offset)).length + 1);
+  }
+  const { validateLandmarkArticle } = await import('../workbench/tools/landmark-wiki.mjs');
+  assert.deepEqual(validateLandmarkArticle(dir, article), result.report);
+  assert.deepEqual(snapshot(dir), before);
 });
 
 test('missing, unsafe, linked, non-file and unreadable article inputs visibly refuse without writes', async t => {
