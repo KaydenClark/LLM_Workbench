@@ -352,3 +352,141 @@ test('an orphan corrective Task claims by a widened spelling of its stored ID', 
     assert.ok(fs.existsSync(record), 'the record keeps its stored path');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+// S-01W TK-002O: `widen-id S-###|TK-###` is the explicit identity-only touch.
+// These fixtures pin its refusals - each leaves every byte and path as it was -
+// and its former-ID metadata. The full widen, link-rewrite, evidence, repeat,
+// recovery and cold-clone journey lives in tools/test-spec-workbench.mjs.
+function gitRoom() {
+  const dir = room();
+  const git = (...args) => spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+  git('init', '--quiet');
+  git('config', 'user.email', 'fixture@example.com');
+  git('config', 'user.name', 'Fixture');
+  return { dir, git, commit: (message) => { git('add', '-A'); const result = git('commit', '--quiet', '-m', message); assert.equal(result.status, 0, result.stderr); } };
+}
+function recordSpec(dir, id, tasks, { status = 'active', slug = 'fixture', folder = null, extraHeader = '' } = {}) {
+  const specDir = path.join(dir, 'workbench/specs', ...(folder ? [folder] : []), `${id}-${slug}`);
+  fs.mkdirSync(specDir, { recursive: true });
+  fs.writeFileSync(path.join(specDir, 'SPEC.md'), `# ${id} - Widen fixture\n\n**Spec ID:** ${id}\n${extraHeader}**Status:** ${status}\n**Priority:** 1\n**Owner:** test\n**Updated:** 2026-09-26\n**Catalog description:** Verify widen-id.\n**Blockers:** none\n**Latest event:** Fixture created.\n**Next gate:** Verify the slice.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n\n## Acceptance Criteria\n\n- [ ] Fixture verified.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n\n## Completion Result\n\nPending.\n`);
+  for (const [task, state] of tasks) {
+    const record = path.join(specDir, 'tasks', task, 'TASK.md');
+    fs.mkdirSync(path.dirname(record), { recursive: true });
+    fs.writeFileSync(record, `# ${task} - Widen ${task}\n\n**Task ID:** ${task}\n**Spec ID:** ${id}\n**Slice:** Widen ${task}\n**Status:** ${state}\n**Blockers:** none\n**Destination:** spec-acceptance: ${id} Acceptance Criteria\n${state === 'done' ? '**Proof:** verified fixture\n' : ''}`);
+  }
+  return path.join(specDir, 'SPEC.md');
+}
+function refuses(dir, args, pattern) {
+  const before = snapshot(dir);
+  const result = cli(dir, args);
+  assert.notEqual(result.status, 0, `${args.join(' ')} must refuse`);
+  assert.match(result.stderr, pattern, `${args.join(' ')}: ${result.stderr}`);
+  assert.deepEqual(snapshot(dir), before, `${args.join(' ')} leaves every record byte and path unchanged`);
+  return result;
+}
+
+test('widen-id refuses a widened Spec alias already held by a retired record, naming both', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    const active = recordSpec(dir, 'S-00Q', [['TK-00A', 'ready']], { slug: 'short' });
+    const retired = recordSpec(dir, 'S-000Q', [['TK-00B', 'done']], { status: 'complete', slug: 'widened', folder: 'retired' });
+    commit('alias corpus');
+    const result = refuses(dir, ['widen-id', 'S-00Q'], /duplicate spec ID/i);
+    assert.ok(result.stderr.includes(relative(dir, active)) && result.stderr.includes(relative(dir, retired)));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id refuses a widened Task alias already held by a record in another Spec', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    recordSpec(dir, 'S-00Q', [['TK-00A', 'ready']], { slug: 'short' });
+    recordSpec(dir, 'S-00N', [['TK-000A', 'done']], { status: 'complete', slug: 'retired', folder: 'retired' });
+    commit('task alias corpus');
+    const result = refuses(dir, ['widen-id', 'TK-00A'], /TK-000A/);
+    assert.match(result.stderr, /S-00N/);
+    refuses(dir, ['widen-id', 'TK-00A', '--spec', 'S-00Q'], /S-00N\/TK-000A/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id refuses an occupied Spec or Task destination path', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    recordSpec(dir, 'S-00Q', [['TK-00A', 'ready']]);
+    fs.writeFileSync(path.join(dir, 'workbench/specs/S-000Q-fixture'), 'not a record\n');
+    fs.writeFileSync(path.join(dir, 'workbench/specs/S-00Q-fixture/tasks/TK-000A'), 'not a record\n');
+    commit('occupied destinations');
+    refuses(dir, ['widen-id', 'S-00Q'], /destination already exists: workbench\/specs\/S-000Q-fixture/);
+    refuses(dir, ['widen-id', 'TK-00A'], /destination already exists: workbench\/specs\/S-00Q-fixture\/tasks\/TK-000A/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id refuses a symlinked Spec or Task record as an unsafe path', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    const specFile = recordSpec(dir, 'S-00Q', [['TK-00A', 'ready']]);
+    const taskFile = path.join(path.dirname(specFile), 'tasks/TK-00A/TASK.md');
+    for (const [file, target] of [[specFile, 'linked-spec.md'], [taskFile, 'linked-task.md']]) {
+      fs.renameSync(file, path.join(dir, target));
+      fs.symlinkSync(path.relative(path.dirname(file), path.join(dir, target)), file);
+    }
+    commit('symlinked records');
+    refuses(dir, ['widen-id', 'S-00Q'], /unsafe/i);
+    refuses(dir, ['widen-id', 'TK-00A'], /unsafe/i);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id refuses a slice-table row and asks for --spec when a numeric Task label recurs', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    spec(dir, 'S-00T', [['TK-00C', 'ready', 'none']], 'active', 'table');
+    const first = recordSpec(dir, 'S-001', [['TK-001', 'ready']], { slug: 'first' });
+    recordSpec(dir, 'S-002', [['TK-001', 'ready']], { slug: 'second' });
+    commit('numeric corpus');
+    refuses(dir, ['widen-id', 'TK-00C'], /slice-table row/);
+    refuses(dir, ['widen-id', 'TK-001'], /--spec/);
+    const firstTask = fs.readFileSync(path.join(path.dirname(first), 'tasks/TK-001/TASK.md'));
+    const widened = cli(dir, ['widen-id', 'TK-001', '--spec', 'S-0002']);
+    assert.equal(widened.status, 0, widened.stderr);
+    assert.equal(widened.json.id, 'TK-0001');
+    assert.equal(widened.json.specId, 'S-002');
+    assert.equal(widened.json.formerId, 'TK-001');
+    assert.ok(fs.existsSync(path.join(dir, 'workbench/specs/S-002-second/tasks/TK-0001/TASK.md')));
+    assert.deepEqual(fs.readFileSync(path.join(path.dirname(first), 'tasks/TK-001/TASK.md')), firstTask, "S-001's own numeric TK-001 keeps its Spec-scoped identity");
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('widen-id normalizes a width-four lowercase identity through a case-only rename', () => {
+  const { dir, commit } = gitRoom();
+  try {
+    recordSpec(dir, 'S-000q', [['TK-00A', 'ready']], { slug: 'lower' });
+    commit('lowercase corpus');
+    const widened = cli(dir, ['widen-id', 'S-000q']);
+    assert.equal(widened.status, 0, widened.stderr);
+    assert.equal(widened.json.id, 'S-000Q');
+    assert.equal(widened.json.formerId, 'S-000q');
+    assert.deepEqual(fs.readdirSync(path.join(dir, 'workbench/specs')).filter(name => name.startsWith('S-')), ['S-000Q-lower']);
+    const shown = cli(dir, ['show', 'S-000q']);
+    assert.equal(shown.json.id, 'S-000Q');
+    assert.equal(shown.json.path, 'workbench/specs/S-000Q-lower/SPEC.md');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('the Former ID field parses, formats and round-trips, and refuses a spelling of another identity', async () => {
+  const { formatTaskRecord, parseTaskRecord } = await import('../workbench/tools/task-record.mjs');
+  const fields = { id: 'TK-000A', formerId: 'TK-00A', specId: 'S-000Q', slice: 'Widened', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-000Q Acceptance Criteria' };
+  const content = formatTaskRecord(fields);
+  assert.match(content, /^\*\*Task ID:\*\* TK-000A\n\*\*Former ID:\*\* TK-00A\n/m, 'the Former ID sits directly under the record ID it describes');
+  const parsed = parseTaskRecord(content);
+  assert.equal(parsed.formerId, 'TK-00A');
+  assert.equal(formatTaskRecord({ ...fields, formerId: parsed.formerId }), content, 'format(parse(record)) reproduces the bytes');
+  assert.equal(parseTaskRecord(formatTaskRecord({ ...fields, formerId: undefined })).formerId, null, 'a record that never widened carries no Former ID');
+  assert.throws(() => parseTaskRecord(formatTaskRecord({ ...fields, formerId: 'TK-00B' })), /Former ID/);
+  assert.throws(() => parseTaskRecord(formatTaskRecord({ ...fields, formerId: 'TK-000A' })), /Former ID/);
+  const { dir } = gitRoom();
+  try {
+    recordSpec(dir, 'S-000Q', [['TK-00A', 'ready']], { extraHeader: '**Former ID:** S-00Z\n' });
+    const shown = cli(dir, ['show', 'S-000Q']);
+    assert.notEqual(shown.status, 0);
+    assert.match(shown.stderr, /Former ID/);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

@@ -5853,3 +5853,172 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-00V TK-01L: push-on-claim and fetch-before-select (end) ----
+
+// ---- S-01W TK-002O: explicit widen-id touch (start) ----
+// `widen-id S-###|TK-###` widens one eligible active record to its uppercase
+// width-four spelling: folder, ID field and title change, the former spelling
+// is kept in a `**Former ID:**` field, live links are repaired by the move
+// machinery's reference rewrite, evidence rows stay byte-identical and
+// counted, the former ID still resolves, a repeat run is a no-op, and every
+// refusal (complete, done, retired, dirty) leaves the room untouched. Like
+// `move-spec`, the result is staged, never committed.
+{
+  const widenRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'widen-id-'));
+  const cloneRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'widen-id-clone-'));
+  const cli = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+  const run = (...args) => {
+    const result = spawnSync(process.execPath, [cli, ...args, '--path', widenRoot, '--json'], { encoding: 'utf8' });
+    return { ...result, json: result.status === 0 && result.stdout.trim() ? JSON.parse(result.stdout) : null };
+  };
+  const git = (...args) => execFileSync('git', ['-C', widenRoot, ...args], { encoding: 'utf8' });
+  const read = (relative) => fs.readFileSync(path.join(widenRoot, relative), 'utf8');
+  const evidenceOf = (content) => content.slice(content.indexOf('## Append-Only Evidence And Execution Log'), content.indexOf('## Completion Result'));
+  const tree = () => {
+    const files = new Map();
+    const walk = (dir) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        if (entry.name === '.git') continue;
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else files.set(path.relative(widenRoot, full), fs.readFileSync(full, 'utf8'));
+      }
+    };
+    walk(widenRoot);
+    return files;
+  };
+  const oldDir = 'workbench/specs/S-00Q-widen-fixture';
+  const newDir = 'workbench/specs/S-000Q-widen-fixture';
+  const linker = 'workbench/specs/S-00R-linker/SPEC.md';
+  try {
+    initLifecycleFixture(widenRoot);
+    fs.writeFileSync(path.join(widenRoot, 'AGENTS.md'), `# Agents\n\nSee [S-00Q](${oldDir}/SPEC.md).\n`);
+    const withEvidence = (content, row) => content.replace('|---|---|---|---|---|---|\n', `|---|---|---|---|---|---|\n${row}\n`);
+    writeAt(widenRoot, `${oldDir}/SPEC.md`, withEvidence(emptyTableRecordBackedSpec('S-00Q'), '| 2026-09-20 | TK-00A | Cut for [S-00Q](../S-00Q-widen-fixture/SPEC.md) | fixture | none | none |')
+      .replace('## Acceptance Criteria', 'Allocated as [TK-00A](tasks/TK-00A/TASK.md).\n\n## Acceptance Criteria'));
+    writeAt(widenRoot, `${oldDir}/tasks/TK-00A/TASK.md`, taskRecordFixture({ id: 'TK-00A', specId: 'S-00Q', slice: 'Open slice', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-00Q Acceptance Criteria' }));
+    writeAt(widenRoot, `${oldDir}/tasks/TK-00B/TASK.md`, doneTaskRecordFixture({ id: 'TK-00B', specId: 'S-00Q', slice: 'Delivered slice', destination: 'spec-acceptance: S-00Q Acceptance Criteria', proof: 'landed' }));
+    writeAt(widenRoot, linker, withEvidence(emptyTableRecordBackedSpec('S-00R'), '| 2026-09-21 | TK-00C | Linked [S-00Q](../S-00Q-widen-fixture/SPEC.md) | fixture | none | none |')
+      .replace('## Acceptance Criteria', 'Depends on [S-00Q](../S-00Q-widen-fixture/SPEC.md) and [TK-00A](../S-00Q-widen-fixture/tasks/TK-00A/TASK.md).\n\n## Acceptance Criteria'));
+    writeAt(widenRoot, 'workbench/specs/S-00R-linker/tasks/TK-00C/TASK.md', taskRecordFixture({ id: 'TK-00C', specId: 'S-00R', slice: 'Linker slice', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-00R Acceptance Criteria' }));
+    writeAt(widenRoot, 'workbench/specs/S-00P-complete/SPEC.md', completeFixtureSpec('S-00P'));
+    writeAt(widenRoot, 'workbench/specs/retired/S-00N-retired/SPEC.md', completeFixtureSpec('S-00N'));
+    render(widenRoot);
+    execFileSync('git', ['init', '--quiet', widenRoot]);
+    git('config', 'user.email', 'fixture@example.com');
+    git('config', 'user.name', 'Fixture');
+    git('add', '-A');
+    git('commit', '--quiet', '-m', 'widen corpus');
+
+    // Refusals change nothing.
+    const clean = tree();
+    for (const [args, pattern] of [
+      [['widen-id', 'S-00P'], /S-00P is complete/],
+      [['widen-id', 'S-00N'], /S-00N is retired/],
+      [['widen-id', 'TK-00B'], /S-00Q\/TK-00B is done/]
+    ]) {
+      const refused = run(...args);
+      assert.notEqual(refused.status, 0, `${args.join(' ')} must refuse`);
+      assert.match(refused.stderr, pattern, `${args.join(' ')}: ${refused.stderr}`);
+      assert.deepEqual(tree(), clean, `${args.join(' ')} leaves every byte and path unchanged`);
+    }
+    fs.writeFileSync(path.join(widenRoot, 'stray.md'), 'uncommitted\n');
+    const dirty = run('widen-id', 'S-00Q');
+    assert.notEqual(dirty.status, 0);
+    assert.match(dirty.stderr, /dirty working tree/);
+    fs.rmSync(path.join(widenRoot, 'stray.md'));
+    assert.deepEqual(tree(), clean, 'a dirty-tree refusal writes nothing');
+
+    // Widen the Spec.
+    const head = git('rev-parse', 'HEAD').trim();
+    const doneTaskBefore = read(`${oldDir}/tasks/TK-00B/TASK.md`);
+    const ownEvidenceBefore = evidenceOf(read(`${oldDir}/SPEC.md`));
+    const linkerEvidenceBefore = evidenceOf(read(linker));
+    const widened = run('widen-id', 'S-00Q');
+    assert.equal(widened.status, 0, widened.stderr);
+    assert.equal(widened.json.status, 'widened');
+    assert.equal(widened.json.id, 'S-000Q');
+    assert.equal(widened.json.formerId, 'S-00Q');
+    assert.equal(widened.json.from, oldDir);
+    assert.equal(widened.json.to, newDir);
+    assert.equal(widened.json.committed, false, 'widen-id stages its change like move-spec and commits nothing');
+    assert.equal(git('rev-parse', 'HEAD').trim(), head);
+    assert.ok(!fs.existsSync(path.join(widenRoot, oldDir)) && fs.existsSync(path.join(widenRoot, newDir)));
+    const widenedSpec = read(`${newDir}/SPEC.md`);
+    assert.match(widenedSpec, /^# S-000Q - Task Lifecycle Fixture$/m);
+    assert.match(widenedSpec, /^\*\*Spec ID:\*\* S-000Q\n\*\*Former ID:\*\* S-00Q\n/m);
+    assert.equal(evidenceOf(widenedSpec), ownEvidenceBefore, "the Spec's own evidence rows stay byte-identical");
+    assert.equal(evidenceOf(read(linker)), linkerEvidenceBefore, "another Spec's evidence row naming the old path stays byte-identical");
+    assert.equal(widened.json.historicalReferencesLeft[linker], 1, 'the historical link left in evidence is counted');
+    assert.equal(widened.json.historicalReferencesLeft[`${newDir}/SPEC.md`], 1);
+    assert.match(read(linker), /Depends on \[S-00Q\]\(\.\.\/S-000Q-widen-fixture\/SPEC\.md\) and \[TK-00A\]\(\.\.\/S-000Q-widen-fixture\/tasks\/TK-00A\/TASK\.md\)/, 'live links are rewritten');
+    assert.match(read('AGENTS.md'), /\(workbench\/specs\/S-000Q-widen-fixture\/SPEC\.md\)/);
+    assert.match(read(`${newDir}/tasks/TK-00A/TASK.md`), /^\*\*Spec ID:\*\* S-000Q$/m, 'an open child Task names the widened parent');
+    assert.equal(read(`${newDir}/tasks/TK-00B/TASK.md`), doneTaskBefore, 'a done child Task keeps its bytes');
+    assert.match(read('TASKBOARD.md'), /S-000Q/, 'the hot board is re-rendered');
+    assert.ok(git('status', '--porcelain').split('\n').filter(Boolean).every((line) => line[1] === ' '), 'every change is staged as one reviewable candidate');
+    for (const selector of ['S-00Q', 'S-000Q', 'S-00q']) {
+      const shown = run('show', selector);
+      assert.equal(shown.status, 0, shown.stderr);
+      assert.equal(shown.json.id, 'S-000Q', `the former spelling ${selector} resolves to the widened record`);
+      assert.equal(shown.json.formerId, 'S-00Q');
+      assert.equal(shown.json.path, `${newDir}/SPEC.md`);
+    }
+    const findings = doctor(widenRoot);
+    assert.deepEqual(findings.filter((item) => ['unstable-path', 'duplicate-id', 'malformed-spec'].includes(item.code)), []);
+    assert.deepEqual(findings.filter((item) => item.code === 'broken-link').map((item) => item.message).sort(),
+      ['S-000Q links to missing ../S-00Q-widen-fixture/SPEC.md', 'S-00R links to missing ../S-00Q-widen-fixture/SPEC.md'],
+      'only the two frozen evidence links still name the old path (attention only), exactly as move-spec leaves historical references');
+    const staged = tree();
+    for (const selector of ['S-000Q', 'S-00Q']) {
+      const again = run('widen-id', selector);
+      assert.equal(again.status, 0, again.stderr);
+      assert.equal(again.json.status, 'unchanged', 'a repeat run is a no-op');
+      assert.equal(again.json.formerId, 'S-00Q');
+      assert.deepEqual(tree(), staged);
+    }
+    git('commit', '--quiet', '-m', 'widen S-00Q');
+
+    // Widen the Task; prove recovery from the staged result first.
+    const beforeTask = tree();
+    const firstTry = run('widen-id', 'TK-00A');
+    assert.equal(firstTry.status, 0, firstTry.stderr);
+    git('reset', '--quiet', '--hard', 'HEAD');
+    git('clean', '--quiet', '-fd');
+    assert.deepEqual(tree(), beforeTask, 'the clean-tree precondition makes HEAD a complete recovery point');
+    const task = run('widen-id', 'TK-00A');
+    assert.equal(task.status, 0, task.stderr);
+    assert.equal(task.json.status, 'widened');
+    assert.equal(task.json.id, 'TK-000A');
+    assert.equal(task.json.specId, 'S-000Q');
+    assert.equal(task.json.formerId, 'TK-00A');
+    assert.equal(task.json.to, `${newDir}/tasks/TK-000A`);
+    const taskRecord = read(`${newDir}/tasks/TK-000A/TASK.md`);
+    assert.match(taskRecord, /^# TK-000A - Open slice$/m);
+    assert.match(taskRecord, /^\*\*Task ID:\*\* TK-000A\n\*\*Former ID:\*\* TK-00A\n/m);
+    assert.match(read(`${newDir}/SPEC.md`), /Allocated as \[TK-00A\]\(tasks\/TK-000A\/TASK\.md\)/);
+    assert.match(read(linker), /\[TK-00A\]\(\.\.\/S-000Q-widen-fixture\/tasks\/TK-000A\/TASK\.md\)/);
+    const shownTask = run('show', 'S-00Q').json.tasks.find((item) => item.id === 'TK-000A');
+    assert.equal(shownTask.formerId, 'TK-00A');
+    assert.equal(run('widen-id', 'TK-00A').json.status, 'unchanged');
+    assert.equal(run('widen-id', 'TK-000a', '--spec', 'S-00Q').json.status, 'unchanged');
+    git('commit', '--quiet', '-m', 'widen TK-00A');
+
+    // A cold clone resolves the former IDs from repository state alone.
+    fs.rmSync(cloneRoot, { recursive: true, force: true });
+    execFileSync('git', ['clone', '--quiet', widenRoot, cloneRoot]);
+    const cold = spawnSync(process.execPath, [cli, 'show', 'S-00Q', '--path', cloneRoot, '--json'], { encoding: 'utf8' });
+    assert.equal(cold.status, 0, cold.stderr);
+    const coldSpec = JSON.parse(cold.stdout);
+    assert.equal(coldSpec.id, 'S-000Q');
+    assert.equal(coldSpec.formerId, 'S-00Q');
+    assert.equal(coldSpec.tasks.find((item) => item.id === 'TK-000A').formerId, 'TK-00A');
+
+    const usage = spawnSync(process.execPath, [cli, 'no-such-command'], { encoding: 'utf8' });
+    assert.match(usage.stderr, /widen-id/, 'the CLI usage names widen-id');
+    console.log('ok - widen-id widens an active Spec and Task once to width four with a Former ID field, rewrites live links, keeps evidence byte-identical and counted, resolves former IDs (also from a cold clone), is a no-op on repeat, stages without committing, and refuses complete, done, retired and dirty cases without mutation');
+  } finally {
+    fs.rmSync(widenRoot, { recursive: true, force: true });
+    fs.rmSync(cloneRoot, { recursive: true, force: true });
+  }
+}
+// ---- S-01W TK-002O: explicit widen-id touch (end) ----

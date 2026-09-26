@@ -75,10 +75,30 @@ historical labels keep their per-Spec scope. Two different stored spellings
 behind one key, including an active record and a retired one, refuse by name
 at the selector; allocation still folds them as one occupied identity.
 
-Not yet delivered, and owned by later S-01W slices: the explicit
-identity-only `widen-id` touch verb that widens an eligible active record
-while preserving its former ID, and moving ADR and notepad allocation onto
-the artifact policy. Library callers of the `spec-report.mjs` functions that
+Delivered by S-01W TK-002O: the explicit identity-only touch,
+`widen-id S-###|TK-### [--spec S-###]` in `workbench/tools/spec-workbench.mjs`.
+It widens one planned, active or blocked Spec, or one open Task record under
+such a Spec, to the uppercase width-four spelling of its own collision key
+(`S-00Q` to `S-000Q`, numeric `TK-001` to `TK-0001`): the record directory,
+its ID field and title change, and the previous spelling is kept in one
+`**Former ID:**` header field directly under the ID field. That field must be
+another spelling of the same identity, appears at most once, and parses and
+round-trips through `parseFormerId`/`formatTaskRecord` in
+`workbench/tools/task-record.mjs`; the former spelling keeps resolving through
+dual-form lookup. Live links are repaired by the lifecycle moves' own
+reference rewrite, evidence rows stay byte-identical and are counted as
+historical, open child Tasks name the widened parent, and done and retired
+records keep their bytes. It never changes status, and it refuses complete,
+reviewed, done and retired records, a dirty tree, an occupied destination or
+alias, and an unsafe record path before writing anything. A repeat run is a
+no-op. Like `move-spec` it stages the change and commits nothing. The verdict
+digest (`computeSpecDigest`) deliberately includes the field: widening already
+changes the digested ID field, title and Task paths, so a widened record is a
+new review candidate.
+
+Not yet delivered, and owned by later S-01W slices: moving ADR and notepad
+allocation onto the artifact policy, and the read-only QA-time inventory of
+records still short. Library callers of the `spec-report.mjs` functions that
 pass a selector straight through (rather than the CLI) still echo it where
 those functions return or record the caller's spelling. Until then ADR allocation keeps its width-four
 base-62 call and notepads keep theirs, and both keep their current output.

@@ -15,8 +15,8 @@ import { coordinationContext, publicCoordination, publishClaim } from './claim-c
 import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
-import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
+import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
 import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
@@ -238,14 +238,7 @@ export function occupiedIdentities(rootDir, prefix) {
   const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
   const occupied = prefix === 'S' ? specs.map(spec => spec.id)
     : [...specs.flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
-  const register = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
-  if (fs.existsSync(register)) {
-    for (const line of fs.readFileSync(register, 'utf8').split('\n')) {
-      if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
-      const label = parseMarkdownTableRow(line)[2] ?? '';
-      occupied.push(...(label.match(new RegExp(`${prefix}-[0-9A-Za-z]{3,}`, 'g')) ?? []));
-    }
-  }
+  occupied.push(...discardedLabels(root, prefix));
   const refs = spawnSync('git', ['-C', root, 'for-each-ref', '--format=%(refname)', 'refs/remotes'], { encoding: 'utf8' });
   if (refs.status === 0) for (const ref of refs.stdout.trim().split('\n').filter(Boolean)) {
     const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8' });
@@ -259,6 +252,20 @@ export function occupiedIdentities(rootDir, prefix) {
     occupied.push(...(result.stdout.match(new RegExp(`\\b${prefix}-[0-9A-Za-z]{3,}\\b`, 'g')) ?? []));
   }
   return [...new Set(occupied)];
+}
+
+// Labels the discard register (`DISCARDS.md`) still holds: a discarded record's
+// identity stays reserved even though its record is gone.
+function discardedLabels(root, prefix) {
+  const register = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
+  if (!fs.existsSync(register)) return [];
+  const labels = [];
+  for (const line of fs.readFileSync(register, 'utf8').split('\n')) {
+    if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
+    const label = parseMarkdownTableRow(line)[2] ?? '';
+    labels.push(...(label.match(new RegExp(`${prefix}-[0-9A-Za-z]{3,}`, 'g')) ?? []));
+  }
+  return labels;
 }
 
 // S-00V TK-01L (ADR-000O): a coordinated room commits the claim on its task
@@ -1264,6 +1271,7 @@ export function loadSpecs(rootDir, options = {}) {
     const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
     const content = options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8');
     const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked };
+    spec.formerId = specFormerId(content, spec.id);
     assertOneSliceTruth(spec);
     return spec;
   });
@@ -1272,6 +1280,16 @@ export function loadSpecs(rootDir, options = {}) {
     if (collision) throw new Error(collision.message);
   }
   return specs;
+}
+
+// S-01W TK-002O: a Spec's `**Former ID:**` header field, read through the
+// same rule a Task record uses (`parseFormerId` in task-record.mjs). The Spec
+// packet parser keeps the last of a repeated field, so a repeat is refused
+// here rather than silently choosing one former spelling.
+function specFormerId(content, id) {
+  const values = [...content.matchAll(/^\*\*Former ID:\*\*\s*(.+)$/gm)].map((match) => match[1]);
+  if (values.length > 1) throw new Error(`${id} has a duplicated field "Former ID"; a record carries at most one former spelling`);
+  return parseFormerId(values[0], id);
 }
 
 // S-00I TK-003: the explicit historical route. `loadSpecs` above deliberately
@@ -1303,6 +1321,7 @@ export function loadRetiredSpecs(rootDir) {
       const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
       const content = fs.readFileSync(filePath, 'utf8');
       const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked, lifecycleFolder: folder };
+      spec.formerId = specFormerId(content, spec.id);
       assertOneSliceTruth(spec);
       specs.push(spec);
     }
@@ -1569,6 +1588,7 @@ function publicSlice(slice) {
   // other Task's `show` output is unchanged.
   if (slice.capabilities.length > 0) result.capabilities = slice.capabilities;
   if (slice.missingCapabilities.length > 0) result.missingCapabilities = slice.missingCapabilities;
+  if (slice.record?.formerId) result.formerId = slice.record.formerId;
   return result;
 }
 
@@ -1580,6 +1600,7 @@ function publicSlice(slice) {
 function publicRetiredTask(task) {
   return {
     id: task.id,
+    ...(task.formerId ? { formerId: task.formerId } : {}),
     slice: task.slice,
     status: taskStatus(task),
     blockers: task.blockers.length > 0 ? task.blockers.join(', ') : 'none',
@@ -1925,7 +1946,21 @@ function collectDirectoryFiles(dir) {
 // `rewriteAdrLinks` can only do that when the unmoved target is in the map,
 // mapped to itself.
 function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals) {
-  const original = fs.readFileSync(filePath, 'utf8');
+  const finalContent = planReferenceRewrite(root, filePath, fs.readFileSync(filePath, 'utf8'), oldDir, newDir, locations, totals);
+  if (finalContent !== null) {
+    assertSafeWritePath(root, filePath);
+    writeSafeFile(root, filePath, finalContent);
+  }
+}
+
+// The pure half of `rewriteReferenceFile`: computes the rewritten bytes for
+// `original` (read from wherever the caller holds it) as the file that will
+// live at `filePath`, records the counts in `totals` under that path, and
+// returns the new content, or null when no live match changed. `widen-id`
+// (S-01W TK-002O) plans every rewrite with this before it touches the tree, so
+// a refusal can never leave a partial mutation; the lifecycle moves keep
+// calling `rewriteReferenceFile` exactly as before.
+function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals) {
   const { prefix, evidence, suffix } = splitEvidenceSection(original);
   const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
   const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations);
@@ -1934,12 +1969,9 @@ function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals)
   const relative = path.relative(root, filePath).split(path.sep).join('/');
   if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
   const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
-  if (rewritten > 0) {
-    const finalContent = rewrittenPrefix.content + evidence + rewrittenSuffix.content;
-    assertSafeWritePath(root, filePath);
-    writeSafeFile(root, filePath, finalContent);
-    totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
-  }
+  if (rewritten === 0) return null;
+  totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
+  return rewrittenPrefix.content + evidence + rewrittenSuffix.content;
 }
 
 // S-00I TK-003: moves a completed Spec's whole directory (Task records and
@@ -2192,6 +2224,246 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
     referencesRewritten: totals.referencesRewritten,
     historicalReferencesLeft: totals.historicalReferencesLeft
   };
+}
+
+// S-01W TK-002O: the explicit identity-only touch. `widen-id S-###|TK-###`
+// widens one eligible record to the uppercase width-four spelling of its own
+// collision key (`widenedIdentity`: `S-00Q` -> `S-000Q`, `TK-00a` ->
+// `TK-000A`, numeric `TK-001` -> `TK-0001`), the spelling `allocateArtifactId`
+// would give that identity. It renames the record's directory, rewrites its
+// ID field and title, records the previous spelling in one `**Former ID:**`
+// field directly under the ID field (`parseFormerId` in task-record.mjs), and
+// repairs every live link with the lifecycle moves' own reference machinery
+// (`collectSpecReferenceFiles`, `planReferenceRewrite`, the old-path ->
+// new-path `locations` map, the frozen Append-Only Evidence section left
+// byte-identical and its link matches counted as historical). Widening a Spec
+// also points its open (not done) Task records' `**Spec ID:**` at the widened
+// parent; done and retired records keep their bytes.
+//
+// It never changes status and never touches a completed, reviewed or retired
+// record: a Spec must be planned, active or blocked, a Task must be an
+// active-roster record that is not done, under such a Spec. A record already
+// at its widened spelling is a no-op (checked before the clean-tree
+// precondition, so a repeat run on the staged result stays a no-op). Every
+// other refusal - a dirty tree, an occupied destination path, an identity
+// alias held by another record or a discarded label, a symlinked, hard-linked
+// or unstable record path, a slice-table row, an ambiguous numeric Task label
+// without `--spec` - is decided before anything is written, from a complete
+// in-memory plan, so a refusal leaves no partial mutation.
+//
+// Like `move-spec` and `move-task`, the result is staged with `git add -A`
+// and never committed: the dirty-tree refusal guarantees the stage holds only
+// this change, HEAD remains the recovery point (`git reset --hard HEAD`), and
+// the agent commits it as one reviewable candidate. The projections are
+// re-rendered so the Taskboard and catalog name the widened ID.
+const WIDENABLE_SPEC_STATUSES = Object.freeze(['planned', 'active', 'blocked']);
+
+export function widenedIdentity(id) {
+  const key = visibleIdKey(id);
+  if (!key) throw new Error(`${id} is not a visible identifier`);
+  const separator = key.indexOf('-');
+  return `${key.slice(0, separator)}-${key.slice(separator + 1).padStart(ARTIFACT_ID_MIN_WIDTH, '0')}`;
+}
+
+export function widenId(rootDir, selector, options = {}) {
+  const root = path.resolve(rootDir);
+  const parts = visibleIdParts(selector);
+  if (!parts || !['S', 'TK'].includes(parts.prefix)) throw new Error('Usage: widen-id S-###|TK-### [--spec S-###]');
+  if (parts.prefix === 'S') {
+    if (options.spec) throw new Error('widen-id S-### takes no --spec');
+    return widenSpecIdentity(root, selector);
+  }
+  return widenTaskIdentity(root, selector, options.spec);
+}
+
+function widenSpecIdentity(root, selector) {
+  const id = resolveSpecId(root, selector);
+  const spec = loadSpecs(root).find((item) => item.id === id);
+  if (!spec) {
+    if (loadRetiredSpecs(root).some((item) => item.id === id)) throw new Error(`${id} is retired; widen-id never renames a retired record`);
+    throw new Error(`Unknown spec ID: ${id}`);
+  }
+  if (!WIDENABLE_SPEC_STATUSES.includes(spec.status)) {
+    throw new Error(`${id} is ${spec.status}; widen-id widens only a ${WIDENABLE_SPEC_STATUSES.join(', ')} Spec and never renames a completed or reviewed record`);
+  }
+  const widened = widenedIdentity(id);
+  if (widened === id) return { status: 'unchanged', kind: 'spec', id, formerId: spec.formerId, path: spec.relativePath };
+  if (spec.formerId) throw new Error(`${id} already records Former ID ${spec.formerId}; an identity widens once`);
+  requireCleanWidenTree(root);
+  refuseDiscardedAlias(root, 'S', id);
+  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
+  const oldDir = path.dirname(spec.filePath);
+  const base = path.basename(oldDir);
+  if (path.dirname(oldDir) !== specsRoot || !base.startsWith(`${id}-`)) {
+    throw new Error(`${spec.relativePath} is not at ${specsPrefix}/${id}-...; widen-id refuses an unstable record path`);
+  }
+  const newDir = path.join(specsRoot, `${widened}${base.slice(id.length)}`);
+  const edits = new Map([[spec.filePath, (content) => widenRecordHeader(content, 'Spec ID', id, widened)]]);
+  for (const task of spec.records) {
+    if (taskStatus(task) === 'done' || task.specId === widened || visibleIdKey(task.specId) !== visibleIdKey(id)) continue;
+    edits.set(task.filePath, (content) => replaceIdField(content, 'Spec ID', task.specId, widened));
+  }
+  const newSpecFile = path.join(newDir, 'SPEC.md');
+  const planned = applyIdentityWiden(root, oldDir, newDir, edits, (writes) => {
+    const content = writes.get(newSpecFile);
+    const packet = parseSpecPacket(content, newSpecFile, root, { recordBacked: spec.recordBacked });
+    if (packet.id !== widened || specFormerId(content, packet.id) !== id) throw new Error(`widen-id could not write a readable ${widened} record`);
+    for (const [file, text] of writes) if (path.basename(file) === 'TASK.md') parseTaskRecord(text, file, root);
+  });
+  return { status: 'widened', kind: 'spec', id: widened, formerId: id, ...planned };
+}
+
+function widenTaskIdentity(root, selector, specSelector) {
+  const all = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  const key = visibleIdKey(selector);
+  const numeric = /^TK-\d+$/.test(selector);
+  let scope = all;
+  if (specSelector) {
+    const specId = resolveSpecId(root, specSelector);
+    scope = all.filter((spec) => spec.id === specId);
+    if (scope.length === 0) throw new Error(`Unknown spec ID: ${specId}`);
+  }
+  const holders = (specs) => specs.flatMap((spec) => [
+    ...spec.rows.map((item) => ({ spec, item, source: 'slice-table row' })),
+    ...(spec.records ?? []).map((item) => ({ spec, item, source: spec.lifecycleFolder ? 'record under a retired Spec' : 'record' })),
+    ...(spec.retiredRecords ?? []).map((item) => ({ spec, item, source: 'retired record' }))
+  ]).filter((entry) => visibleIdKey(entry.item.id) === key);
+  const describeHolders = (entries) => entries.map((entry) => `${entry.spec.id}/${entry.item.id} (${entry.source})`).join(' and ');
+  const matches = holders(scope);
+  if (matches.length === 0) throw new Error(`Unknown Task ID: ${specSelector ? `${scope[0].id}/` : ''}${selector}`);
+  const owners = [...new Set(matches.map((entry) => entry.spec.id))];
+  if (owners.length > 1) {
+    if (numeric) throw new Error(`${selector} names Tasks in ${owners.join(' and ')}; numeric Task labels are Spec-scoped, so pass --spec S-###`);
+    throw new Error(`widen-id refuses ${selector}: the identity is held by ${describeHolders(matches)}; an occupied alias is never widened over`);
+  }
+  if (matches.length > 1) throw new Error(`Duplicate task ID: ${selector} matches ${describeHolders(matches)}; widen-id refuses rather than choosing one`);
+  const { spec, item: task, source } = matches[0];
+  if (spec.lifecycleFolder || source === 'retired record') throw new Error(`${spec.id}/${task.id} is retired; widen-id never renames a retired record`);
+  if (source === 'slice-table row') throw new Error(`${spec.id}/${task.id} is a slice-table row, not a Task record; widen-id widens record-backed Tasks only`);
+  if (taskStatus(task) === 'done') throw new Error(`${spec.id}/${task.id} is done; widen-id never renames a completed record`);
+  if (!WIDENABLE_SPEC_STATUSES.includes(spec.status)) {
+    throw new Error(`${spec.id} is ${spec.status}; widen-id widens a Task only under a ${WIDENABLE_SPEC_STATUSES.join(', ')} Spec`);
+  }
+  const widened = widenedIdentity(task.id);
+  if (widened === task.id) return { status: 'unchanged', kind: 'task', id: task.id, specId: spec.id, formerId: task.formerId, path: task.relativePath };
+  if (task.formerId) throw new Error(`${spec.id}/${task.id} already records Former ID ${task.formerId}; an identity widens once`);
+  requireCleanWidenTree(root);
+  if (!numeric) {
+    // Letter-bearing Task labels are whole-room identities (ADR-0041), so any
+    // other holder anywhere - a record under a retired Spec, a retired record,
+    // an orphan corrective Task, a discarded label - occupies the alias.
+    const others = [
+      ...holders(all).filter((entry) => entry.item !== task),
+      ...loadCorrectiveTasks(root).filter((item) => visibleIdKey(item.id) === key).map((item) => ({ spec: { id: item.specId }, item, source: 'corrective record' }))
+    ];
+    if (others.length > 0) throw new Error(`widen-id refuses ${spec.id}/${task.id}: ${widened} is an occupied alias held by ${describeHolders(others)}`);
+    refuseDiscardedAlias(root, 'TK', task.id);
+  }
+  const tasksDir = path.join(path.dirname(spec.filePath), 'tasks');
+  const oldDir = path.dirname(task.filePath);
+  if (path.dirname(oldDir) !== tasksDir) throw new Error(`${task.relativePath} is not at the top level of tasks/; widen-id refuses an unstable record path`);
+  const newDir = path.join(tasksDir, widened);
+  const newTaskFile = path.join(newDir, 'TASK.md');
+  const edits = new Map([[task.filePath, (content) => widenRecordHeader(content, 'Task ID', task.id, widened)]]);
+  const planned = applyIdentityWiden(root, oldDir, newDir, edits, (writes) => {
+    const record = parseTaskRecord(writes.get(newTaskFile), newTaskFile, root);
+    if (record.id !== widened || record.formerId !== task.id) throw new Error(`widen-id could not write a readable ${widened} record`);
+  });
+  return { status: 'widened', kind: 'task', id: widened, formerId: task.id, specId: spec.id, ...planned };
+}
+
+function requireCleanWidenTree(root) {
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) throw new Error('widen-id requires a Git working tree so the change is recoverable; none was found');
+  if (gitStatus.stdout.trim() !== '') throw new Error('widen-id refuses a dirty working tree; commit or stash first so the candidate shows only this identity change');
+}
+
+function refuseDiscardedAlias(root, prefix, id) {
+  const label = discardedLabels(root, prefix).find((item) => visibleIdKey(item) === visibleIdKey(id));
+  if (label) throw new Error(`widen-id refuses ${id}: its identity is also the discarded label ${label} in DISCARDS.md, an occupied alias`);
+}
+
+// Replaces the record's own ID field with the widened spelling followed by
+// the one `**Former ID:**` line, and the matching `# ID - Title` heading.
+function widenRecordHeader(content, field, oldId, newId) {
+  const idLine = new RegExp(`^\\*\\*${field}:\\*\\*[ \\t]*${escapeRegExp(oldId)}[ \\t]*$`, 'm');
+  const title = new RegExp(`^# ${escapeRegExp(oldId)} - `, 'm');
+  if (!idLine.test(content) || !title.test(content)) throw new Error(`${oldId} has no ${field} field and matching title for widen-id to rewrite`);
+  return content.replace(idLine, () => `**${field}:** ${newId}\n**Former ID:** ${oldId}`).replace(title, () => `# ${newId} - `);
+}
+
+function replaceIdField(content, field, from, to) {
+  return content.replace(new RegExp(`^\\*\\*${field}:\\*\\*[ \\t]*${escapeRegExp(from)}[ \\t]*$`, 'm'), () => `**${field}:** ${to}`);
+}
+
+// Plans every write in memory, validates it, and only then mutates: `git mv`
+// of the record directory, the planned writes, the ADR register, the
+// projections, and one `git add -A`.
+function applyIdentityWiden(root, oldDir, newDir, edits, validate) {
+  for (const file of edits.keys()) assertSafeWritePath(root, file);
+  refuseOccupiedDestination(root, oldDir, newDir);
+  const movingFiles = collectDirectoryFiles(oldDir);
+  const unmoved = collectSpecReferenceFiles(root, oldDir);
+  const locations = new Map(unmoved.map((file) => [file, file]));
+  for (const file of movingFiles) locations.set(file, path.join(newDir, path.relative(oldDir, file)));
+  const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
+  const writes = new Map();
+  for (const oldFile of movingFiles) {
+    const newFile = locations.get(oldFile);
+    let content = fs.readFileSync(oldFile, 'utf8');
+    let changed = false;
+    if (newFile.endsWith('.md')) {
+      const rewritten = planReferenceRewrite(root, newFile, content, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+      if (rewritten !== null) { content = rewritten; changed = true; }
+    }
+    if (edits.has(oldFile)) { content = edits.get(oldFile)(content); changed = true; }
+    if (changed) { assertSafeWritePath(root, oldFile); writes.set(newFile, content); }
+  }
+  if ([...edits.keys()].some((file) => !writes.has(locations.get(file)))) throw new Error('widen-id refuses a record that is not an ordinary file inside its own directory');
+  for (const file of unmoved) {
+    const rewritten = planReferenceRewrite(root, file, fs.readFileSync(file, 'utf8'), path.dirname(file), path.dirname(file), locations, totals);
+    if (rewritten !== null) { assertSafeWritePath(root, file); writes.set(file, rewritten); }
+  }
+  validate(writes);
+  const projections = ['BLUEPRINT.md', 'TASKBOARD.md'].every((name) => fs.existsSync(path.join(root, name)));
+  try {
+    moveRecordDirectory(root, oldDir, newDir);
+    for (const [file, content] of writes) writeSafeFile(root, file, content);
+    if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+    if (projections) render(root);
+    spawnSync('git', ['-C', root, 'add', '-A']);
+  } catch (error) {
+    throw new Error(`widen-id failed after it began writing: ${error.message}; the tree was clean at HEAD before it started, so \`git reset --hard HEAD\` restores it`);
+  }
+  return {
+    from: path.relative(root, oldDir).split(path.sep).join('/'),
+    to: path.relative(root, newDir).split(path.sep).join('/'),
+    committed: false,
+    referencesRewritten: totals.referencesRewritten,
+    historicalReferencesLeft: totals.historicalReferencesLeft
+  };
+}
+
+// An existing destination refuses, except the source itself seen through a
+// case-insensitive filesystem (`S-000q-x` -> `S-000Q-x`).
+function refuseOccupiedDestination(root, from, to) {
+  let target;
+  try { target = fs.lstatSync(to); } catch (error) { if (error.code === 'ENOENT') return; throw error; }
+  const source = fs.lstatSync(from);
+  if (target.ino === source.ino && target.dev === source.dev) return;
+  throw new Error(`widen-id destination already exists: ${path.relative(root, to).split(path.sep).join('/')}`);
+}
+
+// A case-only rename goes through a temporary name so it also lands on a
+// case-insensitive filesystem.
+function moveRecordDirectory(root, from, to) {
+  const relative = (value) => path.relative(root, value);
+  const temporary = `${to}.widen-id-${process.pid}`;
+  const steps = from.toLowerCase() === to.toLowerCase() ? [[from, temporary], [temporary, to]] : [[from, to]];
+  for (const [source, destination] of steps) {
+    const moved = spawnSync('git', ['-C', root, 'mv', relative(source), relative(destination)], { encoding: 'utf8' });
+    if (moved.status !== 0) throw new Error(`git mv ${relative(source)} failed: ${(moved.stderr || moved.stdout || '').trim()}`);
+  }
 }
 
 // Finds a retired Spec's own durable Wiki owner by the one fact that names
@@ -3013,6 +3285,8 @@ export function referencesToPath(rootDir, targetPath, options = {}) {
 function publicSpec(spec) {
   return {
     id: spec.id,
+    // S-01W TK-002O: present only on a record `widen-id` widened.
+    ...(spec.formerId ? { formerId: spec.formerId } : {}),
     title: spec.title,
     status: spec.status,
     priority: spec.priority,
@@ -3266,6 +3540,7 @@ async function main() {
   }
   else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
   else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to);
+  else if (command === 'widen-id') result = widenId(root, id, { spec: options.spec });
   else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
   else if (command === 'discard') result = options.task ? discardRetiredTask(root, id, options.task) : discardRetiredSpec(root, id);
   else if (command === 'render') result = render(root);
@@ -3274,7 +3549,7 @@ async function main() {
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
