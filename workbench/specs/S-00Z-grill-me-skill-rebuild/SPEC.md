@@ -1,15 +1,15 @@
 # S-00Z - grill-me skill rebuild
 
 **Spec ID:** S-00Z
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-fable-5-1
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-09-26
 **Catalog description:** Provide a repository-owned entry point that composes grilling with notepad.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-00Q for this skill only.
+**Blockers:** none.
+**Latest event:** TK-00Q claimed by claude-fable-5-1.
+**Next gate:** Close TK-00Q with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -53,7 +53,7 @@ The grilling and notepad contracts must be available before the composed entry i
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00Q | Audit grill-me, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
+| TK-00Q | Audit grill-me, deliver the smallest supported source/documentation change and prove the routed article | in-progress | none | pending |
 
 ### TK-00Q - Deliver the grill-me skill destination
 
