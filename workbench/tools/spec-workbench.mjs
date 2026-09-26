@@ -602,6 +602,28 @@ export function convertSpecSlices(rootDir, id, options = {}) {
   }
   const specDir = path.dirname(spec.filePath);
   const tasksDir = path.join(specDir, 'tasks');
+  // S-01L TK-002P: a planned record-backed Spec - to-spec's shape, a `tasks/`
+  // directory and no unfinished table row (`loadSpecs` already refuses a
+  // record-backed Spec that still holds one) - has no row to convert. to-tasks
+  // writes its first records; `--activate` is then only the activation gate.
+  // Every live record was parsed by `loadSpecs` (an unparseable one refuses
+  // before this point, naming its file), and `slicesOf` refuses a row/record
+  // collision, so this checks that at least one record exists and changes
+  // nothing but Status.
+  if (activating && spec.recordBacked) {
+    const tasks = slicesOf(spec).map((slice) => slice.id);
+    if (tasks.length === 0) {
+      throw new Error(`${id} has no Task record under ${path.relative(root, tasksDir).split(path.sep).join('/')} to activate; write its first TASK.md record(s) with to-tasks, then run convert-tasks ${id} --activate`);
+    }
+    atomicWrite(spec.filePath, updateFields(spec.content, { Status: 'active' }));
+    return {
+      specId: id,
+      activated: true,
+      converted: [],
+      retained: spec.rows.filter((row) => row.status === 'done').map((row) => row.id),
+      tasks
+    };
+  }
   if (fs.existsSync(tasksDir)) {
     throw new Error(`${id} already has ${path.relative(root, tasksDir).split(path.sep).join('/')}; conversion runs once and refuses to run again`);
   }
