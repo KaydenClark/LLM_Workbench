@@ -458,10 +458,11 @@ assert.doesNotMatch(toSpec, /Existing stable paths never change/,
 // live Actuality when it is activated, by to-tasks with the tracer-bullet
 // discipline. The correction limits this to new Specs: a reused Spec keeps
 // the Tasks it already has.
+// The portable source states the rule without citing this repository's
+// ledger ID, which a target room cannot resolve.
 assertIncludesAll(toSpec, [
   'no Task cut',
   'no Task row',
-  'owner answer E-4B',
   '(`planned` -> `active`)',
   '`/to-tasks`',
   'keep the Tasks it already has'
@@ -475,6 +476,8 @@ assertIncludesAll(toSpec, [
   '`.gitkeep`',
   'malformed'
 ], 'to-spec runtime-valid Task-less Spec');
+assert.doesNotMatch(toSpec, /E-4B/,
+  'to-spec is portable and must not cite a Workbench-local owner-answer ID');
 assert.doesNotMatch(toSpec, /Seed `Vertical Implementation Slices`/,
   'to-spec must not seed a Task row into a new planned Spec');
 assert.doesNotMatch(toSpec, /each TASK during authorized planning/,

@@ -32,7 +32,7 @@ Do not restart grilling or implement the capability.
    stance. Specifying is not starting: do not `claim`, activate or implement
    the Spec, and record no implementation or verification evidence for work
    that has not happened.
-6. A new Spec enters Backlog as `planned` with no Task cut (owner answer E-4B):
+6. A new Spec enters Backlog as `planned` with no Task cut:
    leave `Vertical Implementation Slices` with no Task row and write no
    `TASK.md` record. Create the Spec's empty `tasks/` directory, tracked with a
    `.gitkeep`, so the runtime reads it as record-backed with no Task yet;
@@ -40,7 +40,7 @@ Do not restart grilling or implement the capability.
    Tasks are cut from live Actuality when the Spec is activated
    (`planned` -> `active`), by `/to-tasks` with the `/tracer-bullet`
    discipline, which also sets each Task's stance. You may note the intended
-   slice direction in prose. E-4B applies to new Specs only: when you reuse an
+   slice direction in prose. This applies to new Specs only: when you reuse an
    existing Spec, keep the Tasks it already has.
 7. Preserve project vocabulary from `LEXICON.md` and cross-cutting boundaries
    from `BLUEPRINT.md`. A spec owns one capability; it replaces neither.
