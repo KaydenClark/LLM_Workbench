@@ -10,7 +10,7 @@ import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
+import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
@@ -920,6 +920,31 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
     for (const link of localLinks(spec.content)) {
       const target = path.resolve(path.dirname(spec.filePath), link);
       if (!target.startsWith(spec.root + path.sep) || !fs.existsSync(target)) issues.push(finding('broken-link', `${spec.id} links to missing ${link}`, { specId: spec.id }));
+    }
+    issues.push(...liveRecordCitations(spec));
+  }
+  return issues;
+}
+
+// S-00V TK-00J: a notepad or handoff may be committed temporarily so a
+// continuation travels with the branch, but committing one is transport,
+// never evidence. A Spec or active Task record that links a live record -
+// committed or not - is citing working context that will be promoted and
+// removed, so it is reported with the ADR validator's registered code rather
+// than left to surface later as a `broken-link` once the record is gone.
+function liveRecordCitations(spec) {
+  const sources = [{ filePath: spec.filePath, content: spec.content }];
+  for (const record of spec.records ?? []) {
+    if (record.filePath && fs.existsSync(record.filePath)) sources.push({ filePath: record.filePath, content: fs.readFileSync(record.filePath, 'utf8') });
+  }
+  const issues = [];
+  const seen = new Set();
+  for (const source of sources) {
+    for (const link of localLinks(source.content)) {
+      const target = liveRecordPath(spec.root, path.resolve(path.dirname(source.filePath), link));
+      if (!target || seen.has(target)) continue;
+      seen.add(target);
+      issues.push(finding('untracked-provenance', `${spec.id} cites live record ${target}; a notepad or handoff is working context even when committed, so cite the durable owner it was promoted into`, { specId: spec.id, target }));
     }
   }
   return issues;

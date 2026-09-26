@@ -305,7 +305,7 @@ export function validateAdrs(root, options = {}) {
       if (relative.startsWith(`${collectionRelative(root, 'notepad-templates')}/`)) continue;
       for (const collection of IGNORED_COLLECTIONS) {
         if (relative.startsWith(`${collectionRelative(root, collection)}/`)) {
-          findings.push(finding('untracked-provenance', `${adr.relativePath} references untracked ${relative}; reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
+          findings.push(finding('untracked-provenance', `${adr.relativePath} references live record ${relative}; a notepad or handoff is working context even when committed, so reconcile selected claims into a durable owner first`, { adr: adr.name, target: relative }));
         }
       }
       // A body link is for a reader, so it is checked literally: identity

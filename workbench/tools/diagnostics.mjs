@@ -109,7 +109,12 @@ const registry = Object.freeze({
   // record - visible, never silently reinterpreted, and never blocking.
   'disagreeing-status': entry('attention', 'adr', 'none', "an ADR's leftover status frontmatter disagrees with its lifecycle folder"),
   'invalid-adr': entry('error', 'adr', 'none', 'an ADR is missing required frontmatter or names an unknown canonicalization target'),
-  'untracked-provenance': entry('error', 'adr', 'none', 'a durable reference targets an untracked session path'),
+  // Shared since S-00V TK-00J: the ADR validator, the Spec packet checks and
+  // the wiki validator emit it. A live session record may be committed
+  // temporarily for a continuation, so the code's name predates that; what it
+  // reports is a durable citation of working context, tracked or not. Its
+  // `scope` stays the lane it was registered for, as with `invalid-note`.
+  'untracked-provenance': entry('error', 'adr', 'none', 'a durable reference targets a live session record, committed or not'),
   // notepads: refusals the runtime returns to its caller. None of them blocks,
   // because a live note is local working context that no selection depends on;
   // each is a fail-closed answer to one write or read, not a project state.

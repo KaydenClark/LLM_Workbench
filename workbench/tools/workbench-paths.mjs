@@ -132,6 +132,21 @@ export function collectionRelative(root, name) {
   return declared ?? COLLECTIONS[name];
 }
 
+// S-00V TK-00J: a live record - a notepad, handoff, grilling note or recovery
+// file - is working context whether or not Git tracks it. Committing one is
+// transport for a continuation, never promotion or evidence, so a durable
+// owner that cites one is citing something that will be promoted and removed.
+// Returns the project-relative live path an absolute or root-relative target
+// names, or null when the target is outside every live collection (the
+// tracked notepad templates are durable and return null).
+export function liveRecordPath(root, target) {
+  const base = path.resolve(root);
+  const relative = path.relative(base, path.resolve(base, target)).split(path.sep).join('/');
+  const templates = collectionRelative(root, 'notepad-templates');
+  if (relative === templates || relative.startsWith(`${templates}/`)) return null;
+  return IGNORED_COLLECTIONS.some(name => relative.startsWith(`${collectionRelative(root, name)}/`)) ? relative : null;
+}
+
 export function lanePath(root, name) {
   return path.resolve(path.resolve(root), laneRelative(root, name));
 }
