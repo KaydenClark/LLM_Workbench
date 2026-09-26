@@ -53,11 +53,6 @@ skill. This router does not copy their state or the local grilling queue.
 
 ## Skills Reference
 
-The individual pages below explain core skills and link to their executable
-or planned source. They are curated context, not instruction authority.
-[S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
-preserves the accepted shared concept of grilling, grill-me and notepad; each linked page names its individual
-delivery Spec. Other core skill articles belong to their individual Specs as
 The individual pages below explain core skills and link to their executable or
 planned source. They are curated context, not
 instruction authority. [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
