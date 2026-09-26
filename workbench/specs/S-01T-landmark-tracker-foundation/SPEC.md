@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** TK-02I closed with proof.
-**Next gate:** Complete TK-01Z.
+**Latest event:** 2026-09-26 TK-01Y (distributions across source types and scopes, with DQC and landmark identities on allocateArtifactId) closed and reviewed; corrective TK-02G, TK-02H and TK-02I closed without code change.
+**Next gate:** Lane J releases TK-01Z (after S-00I TK-01U is done on integration) and TK-02A (after S-00I TK-01U is done on integration); until then no S-01T Task is eligible.
 
 ## Outcome
 
@@ -241,6 +241,9 @@ immediately before saving it. The records in `tasks/` are authoritative:
 | [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | done | none |
 | [TK-01Z](tasks/TK-01Z/TASK.md) | Assess actual Landmark Wiki content so two Specs maintain one readable article | deferred | TK-01Y done and S-00I TK-01U done on integration |
 | [TK-02A](tasks/TK-02A/TASK.md) | Keep live Tracker references and historical proof through record moves | deferred | TK-01X done and S-00I TK-01U done on integration |
+| [TK-02G](tasks/TK-02G/TASK.md) | Corrective: TK-01X receipt provenance (46df442 fail verdict) | done | none |
+| [TK-02H](tasks/TK-02H/TASK.md) | Corrective clause from the 46df442 fail verdict (a passing check, not a defect) | done | none |
+| [TK-02I](tasks/TK-02I/TASK.md) | Corrective clause from the 46df442 fail verdict (a passing check, not a defect) | done | none |
 
 Cross-Spec conditions are expressed as `deferred` plus a Release section,
 because the runtime resolves only this Spec's Task IDs and whole Spec IDs.
@@ -382,9 +385,9 @@ The original workflow diagram is preserved byte-for-byte.
 
 Capability delivery pending; owner Human QA is not satisfied. Of the four
 authored Tasks, TK-01X (the foundation path) is done and lands through its own
-Task PR; TK-01Y (distributions) is done on its stacked branch; TK-01Z and
-TK-02A remain, as do corrective Tasks TK-02G, TK-02H and TK-02I from the
-46df442 fail verdict. Three acceptance lines are checked: TK-01X delivers the
+Task PR; TK-01Y (distributions) is done and lands through its own Task PR;
+TK-01Z and TK-02A remain deferred on S-00I TK-01U. Corrective Tasks TK-02G,
+TK-02H and TK-02I from the 46df442 fail verdict are closed without code change. Three acceptance lines are checked: TK-01X delivers the
 ungrouped-DQC line (`tools/test-landmark-tracker.mjs` capture, reload, clone,
 retitle and confirm cases), and TK-01Y delivers the distribution-examples and
 explicit-outcomes lines (its pure-seam, typed-identity, scoped 30/20/50,
