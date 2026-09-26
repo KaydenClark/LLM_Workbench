@@ -43,4 +43,10 @@ local tree lacks); if not, record it in this Task's remaining gap.
 
 ## Decisions
 
-None yet.
+| Choice | Scope | Disposition | Durable owner |
+|---|---|---|---|
+| The Planned verification's ADR red (a base62 ADR allocation that emits a lowercase suffix) is unreachable: `visibleIdKey` folds case, and every lowercase base62 candidate shares its key with an uppercase candidate of smaller ordinal, so the old ADR allocator already emitted the same labels as `allocateArtifactId` (checked over 3000 consecutive allocations). The ADR past-`000Z` case is kept as a characterization test that passed before and after; the ADR red comes from the remote-tip case. Notepads did change (width three, numeric first), so their red is real. | task | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |
+| Remote-tip ADR reservation is included. `occupiedAdrLabels` in `adr.mjs` reads every `refs/remotes` tip the way `next-id` does (ADR-000O), using each tip's declared `adr` collection, its top level and lifecycle folders, and fails closed on a malformed manifest, an unsafe declared path or an unreadable tip. It lives in `adr.mjs` rather than reusing `occupiedIdentities`, because `spec-workbench.mjs` imports `adr.mjs`. | durable | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |
+| Notepads take the policy's letter-bearing default like every other artifact; no `visible-ids.mjs` option was added. | task | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |
+| Records that alias one identity still refuse allocation (local ADR files, same-prefix note IDs), now checked in each consumer, because `allocateArtifactId` folds repeated spellings instead of throwing as `allocateVisibleId` did. | task | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |
+| No runtime caller of `allocateVisibleId` remains. It stays exported from the managed `visible-ids.mjs` for installed rooms or scripts that import it, with its unit tests unchanged. | durable | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |
