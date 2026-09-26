@@ -308,8 +308,10 @@ node workbench/tools/spec-workbench.mjs doctor
 Definitions/ownership routes: Lexicon. Product direction: Blueprint. Authority
 and workflow maintenance: AGENTS. Availability and recovery: Runbook. Rationale:
 accepted ADR. Readable explanation and evolving initial map: Wiki and its router.
-Shared agent/control guidance is mirrored in generic templates, whose Blueprint
-retains placeholders rather than copying this product's inventory. The project
+Shared agent/control guidance is mirrored in generic templates. The generic
+Blueprint remains unchanged: this product-specific direction belongs to the
+filled root Blueprint, and preserving its existing placeholder vocabulary keeps
+Genesis compatibility without a runtime change. The project
 Spec, ADR and owner-directed Wiki article are project truth, not generic seeds.
 No manifest or managed runtime/skill bytes are changed by this planning work.
 The original workflow diagram is preserved byte-for-byte.
