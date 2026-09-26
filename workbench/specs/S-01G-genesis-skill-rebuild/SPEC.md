@@ -1,15 +1,15 @@
 # S-01G - genesis skill rebuild
 
 **Spec ID:** S-01G
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-C-worker
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-09-26
 **Catalog description:** Create a new Workbench room from a founding prompt and a recoverable remote boundary.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-00X for this skill only.
+**Blockers:** none.
+**Latest event:** TK-00X claimed by claude-lane-C-worker.
+**Next gate:** Close TK-00X with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -53,7 +53,7 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00X | Audit genesis, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
+| TK-00X | Audit genesis, deliver the smallest supported source/documentation change and prove the routed article | in-progress | none | pending |
 
 ### TK-00X - Deliver the genesis skill destination
 
