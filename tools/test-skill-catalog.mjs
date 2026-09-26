@@ -453,6 +453,38 @@ assert.doesNotMatch(toSpec, /into one\s+stable capability record/,
   'to-spec must not fold a multi-capability conversation into one record');
 assert.doesNotMatch(toSpec, /Existing stable paths never change/,
   'to-spec must not restate the retired stable-path rule');
+// S-01K TK-002L, owner answer E-4B: `planned` is the Backlog separator. A new
+// Spec enters Backlog as `planned` with no Task cut; its Tasks are cut from
+// live Actuality when it is activated, by to-tasks with the tracer-bullet
+// discipline. The correction limits this to new Specs: a reused Spec keeps
+// the Tasks it already has.
+// The portable source states the rule without citing this repository's
+// ledger ID, which a target room cannot resolve.
+assertIncludesAll(toSpec, [
+  'no Task cut',
+  'no Task row',
+  '(`planned` -> `active`)',
+  '`/to-tasks`',
+  'keep the Tasks it already has'
+], 'to-spec planned-without-Tasks contract');
+// The runtime refuses a Spec with neither a slice row nor a `tasks/`
+// directory (`malformed-spec`, and `next`/`render`/`show` fail for the whole
+// room), so the Task-less Spec is written record-backed with an empty,
+// tracked `tasks/` directory.
+assertIncludesAll(toSpec, [
+  'empty `tasks/` directory',
+  '`.gitkeep`',
+  'malformed'
+], 'to-spec runtime-valid Task-less Spec');
+assert.doesNotMatch(toSpec, /E-4B/,
+  'to-spec is portable and must not cite a Workbench-local owner-answer ID');
+assert.doesNotMatch(toSpec, /Seed `Vertical Implementation Slices`/,
+  'to-spec must not seed a Task row into a new planned Spec');
+assert.doesNotMatch(toSpec, /each TASK during authorized planning/,
+  'to-spec cuts no Task, so it must not set a stance on one');
+const toSpecRow = catalogRegion[1].split('\n').find((line) => line.startsWith('| `to-spec` |'));
+assert.match(toSpecRow, /no Task cut/,
+  'the to-spec catalog row must carry the planned-without-Tasks entry');
 
 const genesis = read('workbench/skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
