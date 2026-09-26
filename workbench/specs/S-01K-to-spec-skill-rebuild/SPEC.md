@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Turn a settled capability decision into one stable, bounded Spec.
 **Blockers:** none.
-**Latest event:** TK-01B closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01K`.
+**Latest event:** TK-002L claimed by claude-lane-C-worker.
+**Next gate:** Close TK-002L with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -40,6 +40,7 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 - This Spec owns to-spec alone. Shared controls, manifest, catalog and the sole Wiki router are edited only as required by this skill's proven change; neighboring skill specs retain their own source and article ownership.
 - A Wiki article is curated context, not instruction authority or proof of behavior. Current source and tests establish Actuality; accepted controls and this assigned Spec establish the target.
 - The oversized unmerged Skills Wiki packet is planning evidence, not a live S-00V owner. S-00V now names Portable Workbench. For the shared grilling/notepad/grill-me journey, S-00W remains the design source while the individual skill Specs own delivery.
+- **Owner answer E-4B governs Task timing** (`workbench/wiki/grilling-destination-audit-ledger.json`, locked 2026-09-22, blocked-obligations-review decision-008 with correction-006): `planned` is the Backlog separator; to-spec scopes a Spec that enters Backlog as `planned` with no Tasks cut, and its Tasks are cut from live Actuality when it moves to To do (`planned` -> `active`) through to-tasks. The correction limits this to new Specs: in-flight Specs keep their existing Tasks, and pre-cut Tasks in planned Specs are not an issue. The planning packet's scenario wording ("with a small first slice") and TK-01B's delivered step 6 predate this answer; for new Specs they are superseded by E-4B, which the corrective TK-002L delivers. TK-01B's evidence and acceptance record stay as history.
 
 ## Non-Goals
 
@@ -56,12 +57,19 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-01B | Audit to-spec, deliver the smallest supported source/documentation change and prove the routed article | done | none | Red/green tools/test-skill-catalog.mjs (red 5903e05, green 4c872ca); full AGENTS suite 48/48 at 9d8963b and c4d9e12; fresh-context three-turn scenario produced one planned unclaimed Spec with one first slice and an open owner gate, declined to bundle a second capability, implemented nothing; wiki validate ok |
+| TK-002L | Corrective: a new Spec from to-spec enters `planned` with no Task cut (owner answer E-4B) | in-progress | none | Pending |
 
 ### TK-01B - Deliver the to-spec skill destination
 
 **Stance:** Builder
 
 Inspect the current source, its callers/composition and relevant tests. Demonstrate the first meaningful gap at a stable seam or record that no source defect was found. Repair only the supported gap, exercise the scenario below, reconcile this skill's Wiki article and router, then record exact evidence and limits. Keep this task one skill wide.
+
+### TK-002L - A new Spec enters planned with no Task cut
+
+**Stance:** Builder
+
+Corrective for owner answer E-4B. TK-01B's step 6 still tells to-spec to seed `Vertical Implementation Slices` with a first tracer-bullet slice, so a new `planned` Spec is written with a Task row, contradicting E-4B and the landed to-tasks rule that Tasks are cut at activation. Pin the contract red at the catalog seam (`tools/test-skill-catalog.mjs`): a new Spec enters `planned` with no Task row cut; decomposition through tracer-bullet and to-tasks runs at activation from live Actuality; an existing Spec's Tasks stay. Then make the smallest to-spec source change to green and align its discovery description and catalog row if they imply seeding. Check what `doctor`, `next`, `render` and `convert-tasks --activate` do with a planned Spec whose slice table is empty and record any tooling gap here without changing shared tooling or templates. Exercise a fresh-context scenario (planning request, then activation) and reconcile `workbench/wiki/skill-to-spec.md`.
 
 ## Acceptance Criteria
 
@@ -72,6 +80,7 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 - [x] The named scenario is observed in a fresh or otherwise independent context: A per-skill planning request yields one manifest-routed Spec with a small first slice and no implementation claim.
 - [x] `workbench/wiki/skill-to-spec.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
 - [x] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
+- [ ] TK-002L (owner answer E-4B): a new Spec from to-spec enters `planned` with no Task row cut, decomposition is routed to to-tasks at activation, and an existing Spec's Tasks stay; proved red/green at the catalog seam and in a fresh-context planning-then-activation scenario.
 
 ## Testing Seams
 
@@ -97,6 +106,7 @@ Maintain `workbench/wiki/skill-to-spec.md` and its sole router entry alongside t
 | 2026-09-26 | TK-01B | Gates before close | Full AGENTS suite 48/48 on committed candidates `9d8963b` and `c4d9e12` (read-only runner printing the candidate header, dirty list empty); guardrail `evaluate-workbench.mjs --path templates --include-controls` 106.6/113 before (`c05f303`) and after (`9d8963b`), byte-identical report, remaining recommendations the pre-existing Team coordination items; self-drift pre at `c05f303` and post at `9d8963b` and `c4d9e12` all `blocked`, cleanUpdate false, with the same seven pre-existing findings (one stale-claim, five stale-seed, one unverified-provenance); `wiki.mjs validate` ok; `git diff --check` clean. Bounded semantic check: the grilling, grill-me, make-it-so, to-docs and tracer-bullet sources and the RUNBOOK behavior route still describe to-spec accurately; `templates/SPEC.md` already starts a Spec at `planned` with one `ready` slice, matching the source | Docs checked: RUNBOOK, BLUEPRINT, LEXICON and templates need no update because none restates the bundling, entry-status or path rule that changed and their to-spec wording stays accurate (and S-00P owns their rewrite); `workbench/skills/README.md` row updated | Coordination hand-backs this run: zero |
 | 2026-09-26 | TK-01B | Task closed | Red/green tools/test-skill-catalog.mjs (red 5903e05, green 4c872ca); full AGENTS suite 48/48 at 9d8963b and c4d9e12; fresh-context three-turn scenario produced one planned unclaimed Spec with one first slice and an open owner gate, declined to bundle a second capability, implemented nothing; wiki validate ok | workbench/skills/to-spec/SKILL.md, workbench/skills/README.md, new workbench/wiki/skill-to-spec.md and its workbench/wiki/MEMORY.md entry; RUNBOOK, BLUEPRINT, LEXICON and templates checked with no update needed because none restates the changed bundling, entry-status or path rule and their to-spec wording stays accurate | Separate-context candidate review; owner Human QA of conversational fidelity; E-4B no-Tasks-while-planned entry needs its board and template change; S-00P Task-record slice shape; installed personal skill copies not updated |
 | 2026-09-26 | review | Review verdict: pass at f7951a59ab199aa8efab097a23ed71a7fe38ccff [0d24ab50167e] #1 | none. Separate-context review of immutable f7951a5 (base 058f089): no High/Medium/Low; reviewer ran git diff --check and wiki.mjs validate (pass), confirmed the diff is one skill wide with no AGENTS/RUNBOOK/LEXICON/BLUEPRINT/templates edit, the red/green claim (5903e05 red, 4c872ca green) is plausible, and the article's upstream claims match the supplied pinned to-spec text. Landing rebase onto 889d856 as 02493e1 changed only generated TASKBOARD/CATALOG and the MEMORY.md router hunk (intro already generalised on integration; to-spec entry kept beside checkpoint and auditor); git diff 058f089 f7951a5 equals git diff 889d856 02493e1 otherwise. Full AGENTS suite rerun by the dispatcher on the landing head | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the implementing worker and the dispatcher; read-only sandbox could not run fixture tests (EPERM on mkdtemp) | 4 |
+| 2026-09-26 | TK-01B retro review | Delta review of landed PR #169 (merge efc3543, head 7f0f86e) vs reviewed f7951a5 (base 058f089): PASS, no findings | Codex gpt-5.5 read-only, Lane E, log E-retro-review-1.log; supplied by the Director | None | none from this review |
 
 ## Completion Result
 
