@@ -30,7 +30,7 @@ second one. S-00M TK-002/TK-003 also edit `close` and git-state reading in
 contained, the S-00V dispatcher removes `S-00M` from Blockers in its own commit
 with an evidence row citing the containing commit.
 
-The Taskboard display of remote claims is a separate Task because S-01V
+The Taskboard display of remote claims is a separate Task because the generated JSON taskboard Spec from S-00O (ID pending allocation)
 replaces the Markdown board. Control wording (AGENTS Git Rules claim push,
 RUNBOOK claim procedure) is written by the controls sweep, not here.
 

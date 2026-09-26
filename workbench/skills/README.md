@@ -166,7 +166,7 @@ candidates the review checked and found unreferenced.
 | `lexicon` | none | none | out of scope | "Lexicon" in the controls and lane skills names the root control `LEXICON.md`, which every clone carries; nothing names the skill. |
 | `land` | none | none | out of scope | Only the verb ("landed") appears; no reference composes the skill. |
 | `preflight` | none | none | out of scope | RUNBOOK's historical GPT_OS "Preflight" rules are explicitly not an imported Workbench algorithm; nothing names the skill. |
-| `sitrep` | none | none | out of scope | Appears only in the optional-source inventory above; S-01V's room-core sitrep owns its return. |
+| `sitrep` | none | none | out of scope | Appears only in the optional-source inventory above; the room-core sitrep planned with the generated JSON taskboard Spec from S-00O (ID pending allocation) owns its return. |
 | `diagnosing-bugs` | none | none | out of scope | Appears only in the optional-source inventory above, which authorizes no promotion into core. |
 | `codebase-design` | none | none | out of scope | Appears only in the optional-source inventory above, which authorizes no promotion into core. |
 <!-- referenced-skills:end -->
