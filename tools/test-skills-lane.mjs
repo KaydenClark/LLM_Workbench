@@ -141,4 +141,71 @@ test('install refuses an adapter collision before copying anything, and rollback
   }
 });
 
+// S-00V TK-00G: the catalog review. A skill the Contract (the seven root
+// controls) names, or a lane skill composes as a required step, must ship in
+// the lane, or a clone would stop at a reference it cannot resolve. The scan
+// finds every syntactic skill reference - a backticked slash command
+// (`/name`) or backticked names followed by "skill(s)" - and fails for any
+// target outside the lane that has no recorded disposition. Whether a
+// reference is required is a reading of its context, not something a regex
+// can decide, so the disposition table in `workbench/skills/README.md`
+// records that reading and this test holds the table to the lane.
+const rootControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+const referenceRequirements = ['required', 'optional', 'none'];
+const referenceDispositions = ['joined', 'optional mention', 'out of scope'];
+
+function skillReferences(text) {
+  const names = new Set();
+  for (const match of text.matchAll(/`\/([a-z][a-z0-9-]*)`/g)) names.add(match[1]);
+  const flat = text.replace(/\s+/g, ' ');
+  for (const match of flat.matchAll(/((?:`\/?[a-z][a-z0-9-]*`(?:,\s*|\s+(?:and|or)\s+))*`\/?[a-z][a-z0-9-]*`)\s+skills?\b/g)) {
+    for (const name of match[1].matchAll(/`\/?([a-z][a-z0-9-]*)`/g)) names.add(name[1]);
+  }
+  return names;
+}
+
+function referencedSkillRows(catalog) {
+  const region = catalog.match(/<!-- referenced-skills:start -->([\s\S]*?)<!-- referenced-skills:end -->/);
+  if (!region) return [];
+  return region[1].split('\n')
+    .filter((line) => /^\| `[a-z][a-z0-9-]*` \|/.test(line))
+    .map((line) => line.split('|').slice(1, -1).map((cell) => cell.trim()))
+    .map(([skill, reference, requirement, disposition, reason]) => ({ skill: skill.replaceAll('`', ''), reference, requirement, disposition, reason }));
+}
+
+test('every skill the root controls or a lane SKILL.md references ships in the lane or carries a recorded non-lane disposition', () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8'));
+  const laneDir = path.join(root, manifest.lanes.skills);
+  const laneSkills = fs.readdirSync(laneDir, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+  const sources = [...rootControls, ...laneSkills.map((skill) => `${manifest.lanes.skills}/${skill}/SKILL.md`)];
+  const referencedBy = new Map();
+  for (const source of sources) {
+    for (const name of skillReferences(fs.readFileSync(path.join(root, source), 'utf8'))) {
+      if (!referencedBy.has(name)) referencedBy.set(name, []);
+      referencedBy.get(name).push(source);
+    }
+  }
+  const rows = referencedSkillRows(fs.readFileSync(path.join(laneDir, 'README.md'), 'utf8'));
+  const bySkill = new Map(rows.map((row) => [row.skill, row]));
+  assert.equal(bySkill.size, rows.length, 'each skill has one disposition row');
+  const unclassified = [...referencedBy.keys()].filter((name) => !laneSkills.includes(name) && !bySkill.has(name)).sort()
+    .map((name) => `${name} (${referencedBy.get(name).join(', ')})`);
+  assert.deepEqual(unclassified, [], 'every referenced skill outside the lane needs a disposition row in workbench/skills/README.md: join it to the lane or record why the reference is optional or not a skill');
+  for (const row of rows) {
+    assert.ok(referenceRequirements.includes(row.requirement), `${row.skill}: requirement is one of ${referenceRequirements.join(', ')}`);
+    assert.ok(referenceDispositions.includes(row.disposition), `${row.skill}: disposition is one of ${referenceDispositions.join(', ')}`);
+    assert.ok(row.reason.length > 0, `${row.skill}: the row gives the reading that decided it`);
+    const cited = [...row.reference.matchAll(/`([^`]+)`/g)].map((match) => match[1]);
+    assert.ok(row.reference === 'none' || cited.length > 0, `${row.skill}: the reference cell cites the deciding file or says none`);
+    for (const file of cited) assert.ok(fs.existsSync(path.join(root, file)), `${row.skill}: cited reference ${file} exists`);
+    const inLane = laneSkills.includes(row.skill) && manifest.skillPolicy.required.includes(row.skill);
+    if (row.requirement === 'required' || row.disposition === 'joined') {
+      assert.equal(row.requirement === 'required' && row.disposition === 'joined', true, `${row.skill}: a required reference is joined, and only a required one`);
+      assert.ok(inLane, `${row.skill}: a joined skill ships in the lane and in skillPolicy.required`);
+    } else {
+      assert.equal(laneSkills.includes(row.skill), false, `${row.skill}: a lane skill needs no non-lane disposition row`);
+    }
+  }
+});
+
 test.after(() => fs.rmSync(scrubbedHome, { recursive: true, force: true }));

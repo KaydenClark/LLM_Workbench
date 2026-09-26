@@ -137,6 +137,40 @@ consumer/reference review, preserved notices and a pinned recovery commit.
 | `skills-pending/wizard` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this wizard source pending retention or recoverable removal choice. |
 <!-- optional-source:end -->
 
+## Referenced non-lane skills
+
+A skill ships in this lane when the Workbench Contract (the seven root
+controls) names it or a lane skill composes it as a required step; otherwise a
+clone would stop at a reference it cannot resolve (S-00V TK-00G, from the
+owner's rule "If we need it, it should be included in workbench/skills").
+An optional mention ("may", "can", an example) is an optional capability, not
+a lane member. Each row below records the reading of one reference to a skill
+outside the lane; the owner may correct any row. `tools/test-skills-lane.mjs`
+scans the root controls and every lane `SKILL.md` for backticked slash
+commands and backticked names followed by "skill", and fails for a target
+outside the lane with no row here, or a `joined` row whose skill is missing
+from the lane or `skillPolicy.required`. Rows with no reference record
+candidates the review checked and found unreferenced.
+
+<!-- referenced-skills:start -->
+| Skill | Reference | Requirement | Disposition | Reason |
+|---|---|---|---|---|
+| `domain-modeling` | `workbench/skills/grilling/SKILL.md` | optional | optional mention | Grilling says it "may challenge a concept" within the caller's authorization; the interview completes without it. |
+| `wayfinder` | `workbench/skills/grilling/SKILL.md`, `BLUEPRINT.md` | optional | optional mention | Grilling says it "may" narrow an oversized inquiry and the Blueprint says wayfinding "can open Align"; neither makes it a step. |
+| `tdd` | `workbench/skills/tracer-bullet/SKILL.md` | optional | optional mention | Cited as an example of verifying at a public seam. The required red/green practice is stated in AGENTS.md Engineering And Verification and carried by the lane's `implement` and `builder`, so the practice needs no separate skill. |
+| `brainstorm` | `BLUEPRINT.md` | optional | optional mention | Brainstorming "can open Align"; the stated session entry is `grill-me`, which ships in the lane. |
+| `prototype` | `BLUEPRINT.md` | optional | optional mention | The Blueprint calls a prototype "optional rather than a standard rung". |
+| `research` | `BLUEPRINT.md`, `README.md` | none | out of scope | The Blueprint names research as an activity reached as far as a named uncertainty requires, not the skill; README cites Simon Willison's external `research` repository as the pattern behind `tools/new-research-project.mjs`. |
+| `init` | `README.md` | none | out of scope | Claude Code's built-in `/init` command, named as a generated file Genesis rejects; not a skill. |
+| `path` | `RUNBOOK.md` | none | out of scope | `/path` is a project-relative path form in the permission matcher description; not a skill. |
+| `lexicon` | none | none | out of scope | "Lexicon" in the controls and lane skills names the root control `LEXICON.md`, which every clone carries; nothing names the skill. |
+| `land` | none | none | out of scope | Only the verb ("landed") appears; no reference composes the skill. |
+| `preflight` | none | none | out of scope | RUNBOOK's historical GPT_OS "Preflight" rules are explicitly not an imported Workbench algorithm; nothing names the skill. |
+| `sitrep` | none | none | out of scope | Appears only in the optional-source inventory above; S-01V's room-core sitrep owns its return. |
+| `diagnosing-bugs` | none | none | out of scope | Appears only in the optional-source inventory above, which authorizes no promotion into core. |
+| `codebase-design` | none | none | out of scope | Appears only in the optional-source inventory above, which authorizes no promotion into core. |
+<!-- referenced-skills:end -->
+
 ## Stance discovery
 
 Builder, Auditor, Reviewer and Reconciler ship as flat directories in the lane,
