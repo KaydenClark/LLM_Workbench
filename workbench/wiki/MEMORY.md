@@ -64,6 +64,7 @@ they are authored.
 - [Grill-me: start a saved design inquiry](skill-grill-me.md)
 - [Notepad: preserve one objective's working context](skill-notepad.md)
 - [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
+- [Update-harness: move a room to a newer Workbench without losing its truth](skill-update-harness.md)
 
 ## Release And Distribution Routing
 
