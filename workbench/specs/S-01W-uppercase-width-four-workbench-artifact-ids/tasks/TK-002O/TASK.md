@@ -40,4 +40,9 @@ recorded in the Task's Decisions section as a durable choice routed to ADR-0041.
 
 ## Decisions
 
-None yet; the former-ID field shape is decided and recorded here during the Task.
+| Choice | Scope | Disposition | Durable owner |
+|---|---|---|---|
+| Former-ID field shape: a widened Spec or Task record keeps its previous spelling in one `**Former ID:**` header field placed directly under its own `**Spec ID:**`/`**Task ID:**` line; the value must be another spelling of the same identity (same prefix and collision key, never the current spelling), appears at most once, and is absent on a record that never widened. `parseFormerId` and `formatTaskRecord` in `task-record.mjs` read and write it for both record kinds; `show` reports it as `formerId`. | durable | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |
+| Verdict digest treatment: `computeSpecDigest` includes the Former ID field with no new normalization. Widening already changes the digested ID field, title and Task directory names, so excluding the field alone would buy nothing; a widened record is a new review candidate, which is why the verb runs when substantive work starts. | durable | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |
+| Staging: `widen-id` follows `move-spec`/`move-task` and stages its change with `git add -A` without committing; the clean-tree precondition keeps HEAD the recovery point and the agent commits one reviewable candidate. It also re-renders the Taskboard and catalog. | durable | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |
+| Eligibility and scope: a planned, active or blocked Spec, or an open (not done) record-backed Task under such a Spec; complete, needs-review, superseded, done, retired and slice-table rows refuse. Widening a Spec points its open child Tasks' `**Spec ID:**` at the widened parent; done and retired records keep their bytes. A numeric Task label that recurs across Specs needs `--spec`. | durable | reconciled | workbench/docs/adr/0041-visible-base62-workbench-identifiers.md |

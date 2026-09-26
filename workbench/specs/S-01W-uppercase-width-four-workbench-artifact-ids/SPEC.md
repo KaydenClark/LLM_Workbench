@@ -85,9 +85,12 @@ S-01W. Retain this identity until supported touch migration applies. This planni
 - Artifact allocation needs a separate uppercase codec/policy; preserve the
   exported base62 connection-ID codec unless an independently assigned change
   expressly requires otherwise.
-- **Implementation proposal, unresolved:** retain former IDs in explicit
-  Spec/Task metadata with parser/serializer round-trip coverage. Exact field
-  shape belongs to the implementation design, not a recovered owner answer.
+- **Former-ID metadata (settled in TK-002O, an implementation design choice,
+  not a recovered owner answer):** a widened Spec or Task record keeps its
+  previous spelling in one `**Former ID:**` header field directly under its ID
+  field, with parser/serializer round-trip coverage. The field shape, digest
+  treatment and staging choice are recorded in the
+  [TK-002O](tasks/TK-002O/TASK.md) Decisions table and ADR-0041.
 - **Identity touch decision (Director, 2026-09-26, derived from E-8; owner-vetoable):**
   E-8 names `move-spec`/`move-task` as the touch, but both move only complete
   Specs and done Tasks (into `retired/`), which E-8 also forbids renaming. The
@@ -269,7 +272,7 @@ Pending. TK-02B delivered public uppercase width-four allocation for new Spec an
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Former-ID field and eligible touch trigger remain implementation proposals.
+- The read-only QA-time inventory of records `widen-id` has not yet widened belongs to the assembled QA slice.
 - Board and S-00P controls delivery consume this capability in E-6 order.
 - Future artifact types need their own runtime integration; this Spec does not fabricate unavailable consumers.
 
