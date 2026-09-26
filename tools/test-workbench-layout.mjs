@@ -257,7 +257,10 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     delete manifest.lanes.skills;
-    manifest.skillPolicy = { ...manifest.skillPolicy, normalSetup: 'presence-only', updates: 'explicit-only' };
+    // A room stamped before the lane holds the bundle its release stamped:
+    // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
+    // bundle with. The provider-home shape validates only with a stamped row.
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => name !== 'grill-me'), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
     // holding a room-local skill; migrate must accept both, not refuse them.

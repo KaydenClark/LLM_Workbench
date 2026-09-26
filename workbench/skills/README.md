@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 21-skill bundle (seventeen workflow skills and four stances),
+is a closed 22-skill bundle (eighteen workflow skills and four stances),
 counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
