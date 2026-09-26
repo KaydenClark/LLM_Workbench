@@ -74,6 +74,7 @@ they are authored.
 - [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
 - [Code review: check one fixed candidate against both contracts](skill-code-review.md)
 - [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
+- [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
 
 ## Release And Distribution Routing
 
