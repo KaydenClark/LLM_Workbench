@@ -244,6 +244,29 @@ test('a durable citation naming a committed notepad or handoff is refused as non
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('a reference-style or angle-bracket link to a committed live record is refused like an inline one', () => {
+  // S-00V TK-02E: the live-record checks read every Markdown link form, not
+  // only `[text](path)`, so `[text][n]` with `[n]: path` and `[text](<path>)`
+  // cannot cite a committed notepad or handoff past untracked-provenance.
+  const { dir } = committedRoom();
+  try {
+    write(dir, 'workbench/docs/adr/0001-fixture.md', '---\nstatus: accepted\ndate: 2026-09-26\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A decision\n\nSee [the handoff][h] and [the note](<../../sessions/notepads/work/travel-note.json>).\n\n[h]: ../../sessions/handoffs/travel-handoff.md\n');
+    assert.deepEqual(validateAdrs(dir).filter(item => item.code === 'untracked-provenance').map(item => item.target).sort(), [COMMITTED_HANDOFF, COMMITTED_NOTE].sort());
+    fs.rmSync(path.join(dir, 'workbench/docs/adr/0001-fixture.md'));
+
+    write(dir, 'workbench/wiki/travel.md', wikiNote('Travel', { body: 'From [the note][n] and [the handoff](<../sessions/handoffs/travel-handoff.md>).\n\n[n]: ../sessions/notepads/work/travel-note.json\n' }));
+    assert.deepEqual(validateWiki(dir).filter(item => item.code === 'untracked-provenance').map(item => item.target).sort(), [COMMITTED_HANDOFF, COMMITTED_NOTE].sort());
+    fs.rmSync(path.join(dir, 'workbench/wiki/travel.md'));
+
+    // Doctor needs a valid manifest, and a tracked notepad fails its ignore
+    // check until TK-01K lifts it, so the notepad is untracked here.
+    git(dir, 'rm', '-q', '--cached', COMMITTED_NOTE);
+    git(dir, 'commit', '-q', '-m', 'Untrack the notepad');
+    write(dir, 'workbench/specs/S-001-fixture/SPEC.md', `${fixtureSpec('| 2026-09-26 | TK-001 | Cited a note | [note][n] and [handoff](<../../sessions/handoffs/travel-handoff.md>) | none | none |')}\n[n]: ../../sessions/notepads/work/travel-note.json\n`);
+    assert.deepEqual(doctor(dir).filter(item => item.code === 'untracked-provenance').map(item => [item.specId, item.target]).sort(), [['S-001', COMMITTED_HANDOFF], ['S-001', COMMITTED_NOTE]]);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('removing a committed notepad and handoff leaves no dangling-evidence finding', () => {
   const { dir, baseline, withHandoff } = committedRoom();
   try {
