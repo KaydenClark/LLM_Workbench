@@ -7,13 +7,13 @@
 **Spec ID:** S-00V
 **Status:** active
 **Priority:** 1
-**Owner:** claude-fable-5-1
+**Owner:** claude-lane-F
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
 **Blockers:** none
-**Latest event:** Remaining slices cut into eleven Task records under `tasks/` mapping acceptance boxes 3-8; four are ready (TK-00G catalog review, TK-00H host floor, TK-00I Wiki host-memory audit, TK-00J committed notes stay non-evidence) and seven are blocked on predecessors or collision holds (S-00P, S-00M, S-01V).
-**Next gate:** Claim and carry the ready Tasks TK-00H and TK-00I first, then TK-00G and TK-00J; lift each collision hold in its own commit when the named condition is contained in integration; completion waits on all eight acceptance boxes.
+**Latest event:** TK-00G claimed by claude-lane-F.
+**Next gate:** Close TK-00G with verification and documentation proof.
 
 > **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7`.
 

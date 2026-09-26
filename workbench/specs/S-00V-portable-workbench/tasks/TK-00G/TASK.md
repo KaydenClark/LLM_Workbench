@@ -3,7 +3,7 @@
 **Task ID:** TK-00G
 **Spec ID:** S-00V
 **Slice:** Every skill the Contract names or a lane skill composes as a required step ships in `workbench/skills`
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00V box 7 (the round-trip test starts with nothing outside the clone and ends with everything promoted, pushed, and nothing needed left on the instance)
 **Stance:** Builder
