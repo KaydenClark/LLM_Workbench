@@ -12,7 +12,7 @@ import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
-import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
 import { assembleSpecReport, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
@@ -162,10 +162,10 @@ export function nextIdentity(rootDir, specId, options = {}) {
   if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec ID');
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
   const occupied = occupiedIdentities(rootDir, prefix);
-  // Letter-bearing new durable labels do not reuse removed historical decimal
-  // IDs. Numeric tasks also retain their old spec-qualified interpretation.
-  const reservations = [...new Map(occupied.map(id => [visibleIdKey(id), id])).values()];
-  const id = allocateVisibleId(prefix, reservations, { requireLetter: true });
+  // The shared artifact policy is letter-bearing, so new durable labels do not
+  // reuse removed historical decimal IDs; numeric tasks also retain their old
+  // spec-qualified interpretation.
+  const id = allocateArtifactId(prefix, occupied);
   return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}) };
 }
 

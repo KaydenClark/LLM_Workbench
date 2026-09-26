@@ -4604,6 +4604,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.equal(receipt.created.length, 1);
     const created = receipt.created[0];
     assert.equal(created.filePath, `workbench/specs/retired/S-591-corrective-fixture/tasks/${created.id}/TASK.md`);
+    assert.match(created.id, /^TK-[0-9A-Z]{4,}$/, 'S-01W TK-02B: a corrective Task on a retired Spec follows the shared uppercase width-four artifact policy');
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, created.filePath)));
     assert.ok(!created.filePath.includes('/tasks/retired/'), 'the new corrective Task never lands under tasks/retired/ - that folder holds a reconciled done Task, not a fresh one');
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, historicalRoute)), 'the Spec is still retired');
@@ -4725,6 +4726,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.equal(receipt.created.length, 1);
     const created = receipt.created[0];
     assert.match(created.filePath, /^workbench\/specs\/corrective\/tasks\/TK-[0-9A-Za-z]+\/TASK\.md$/);
+    assert.match(created.id, /^TK-[0-9A-Z]{4,}$/, 'S-01W TK-02B: an orphan corrective Task follows the shared uppercase width-four artifact policy');
     assert.ok(fs.existsSync(path.join(orphanRoot, created.filePath)));
     const taskContent = fs.readFileSync(path.join(orphanRoot, created.filePath), 'utf8');
     assert.match(taskContent, /\*\*Destination:\*\* wiki-claim: workbench\/wiki\/design-concepts\/orphan-fixture-capability\.md#Evidence and Sources/);
@@ -4791,8 +4793,9 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'remote-only identity']);
     execFileSync('git', ['-C', root, 'update-ref', 'refs/remotes/origin/parallel', 'HEAD']);
     execFileSync('git', ['-C', root, 'reset', '--hard', '--quiet', base]);
-    assert.equal(nextIdentity(root, undefined, { prefix: 'S' }).id, 'S-00E');
-    assert.equal(nextIdentity(root, 'S-00A', { prefix: 'TK' }).id, 'TK-00E');
+    // S-01W TK-02B: width-three reservations occupy their width-four spellings.
+    assert.equal(nextIdentity(root, undefined, { prefix: 'S' }).id, 'S-000E');
+    assert.equal(nextIdentity(root, 'S-00A', { prefix: 'TK' }).id, 'TK-000E');
     console.log('ok - identity proposals reserve active, retired, corrective, discarded and remote-only IDs');
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }

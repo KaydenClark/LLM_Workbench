@@ -37,7 +37,7 @@ import { appendEvidence, atomicWrite, findSpec, loadRetiredSpecs, loadSpecs, occ
 import { formatTaskRecord, listTaskRecords, parseTaskRecord, taskStatus } from './task-record.mjs';
 import { readReceiptFromFile } from './task-receipt.mjs';
 import { assertSafeWritePath, declaredGit, lanePath } from './workbench-paths.mjs';
-import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 
 const PLACEHOLDER_COMPLETION = /^pending\.?$/i;
 
@@ -595,16 +595,15 @@ export function createCorrectiveTasks(rootDir, specId, options = {}) {
   // cannot carry, for instance - never leaves a partial set of corrective
   // Tasks on disk. Ids are allocated from one `loadSpecs` snapshot, each
   // newly allocated id added to the in-memory reservation list before the
-  // next is chosen - the same TK-prefixed, letter-bearing rule `next-id`
-  // uses, without a disk round trip between allocations in this batch:
+  // next is chosen - the shared artifact policy (`allocateArtifactId`)
+  // `next-id` uses, without a disk round trip between allocations in this batch:
   // nothing is written until every id is already reserved in memory, so two
   // allocations in the same batch can never collide, and there is nothing
   // for a later allocation to fail to see.
-  const occupied = occupiedIdentities(root, 'TK');
-  const reservations = [...new Map(occupied.map((id) => [visibleIdKey(id), id])).values()];
+  const reservations = occupiedIdentities(root, 'TK');
   const staged = [];
   for (const findingText of items) {
-    const id = allocateVisibleId('TK', reservations, { requireLetter: true });
+    const id = allocateArtifactId('TK', reservations);
     reservations.push(id);
     const filePath = path.join(specDir, 'tasks', id, 'TASK.md');
     const plannedVerification = `${answeredMarker}: ${findingText}`;
@@ -685,12 +684,11 @@ function createOrphanCorrectiveTasks(root, specId, { candidate, items, wikiClaim
       throw new Error(`Corrective Tasks already exist for ${specId} at ${candidate}: ${findingText}`);
     }
   }
-  const occupied = occupiedIdentities(root, 'TK');
-  const reservations = [...new Map(occupied.map((id) => [visibleIdKey(id), id])).values()];
+  const reservations = occupiedIdentities(root, 'TK');
 
   const staged = [];
   for (const findingText of items) {
-    const id = allocateVisibleId('TK', reservations, { requireLetter: true });
+    const id = allocateArtifactId('TK', reservations);
     reservations.push(id);
     const filePath = path.join(correctiveDir, 'tasks', id, 'TASK.md');
     const plannedVerification = `Answers a corrective wiki-claim finding for ${specId} at ${candidate}: ${findingText}`;

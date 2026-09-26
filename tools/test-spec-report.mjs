@@ -1060,6 +1060,9 @@ function headingShadowSpec(id) {
     assert.notEqual(secondTask.id, 'TK-001');
     assert.match(firstTask.id, /^TK-[0-9A-Za-z]+$/);
     assert.ok(/[A-Za-z]/.test(firstTask.id.slice(3)), 'the allocated id is letter-bearing, matching the room\'s allocator rule');
+    // S-01W TK-02B: corrective Tasks share next-id's uppercase width-four artifact policy.
+    assert.equal(firstTask.id, 'TK-000A', 'corrective Tasks follow the shared uppercase width-four artifact policy');
+    assert.equal(secondTask.id, 'TK-000B');
 
     const firstContent = fs.readFileSync(path.join(root, firstTask.filePath), 'utf8');
     assert.match(firstContent, new RegExp(`^# ${firstTask.id} - Missing input validation$`, 'm'));
