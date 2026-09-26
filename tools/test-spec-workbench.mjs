@@ -201,6 +201,7 @@ assert.deepEqual(
     // repository) closes exactly as before.
     writeAt(stateRoot, 'specs/S-752-table/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-752').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
     fs.rmSync(path.join(stateRoot, 'scratch.txt'));
+    claimWork(stateRoot, 'S-752', { agent: 'fixture', date: todayStr });
     publishFixture(stateRoot);
     const tableSpecPath = path.join(stateRoot, 'specs/S-752-table/SPEC.md');
     const tableBefore = fs.readFileSync(tableSpecPath, 'utf8');
@@ -217,6 +218,7 @@ assert.deepEqual(
     const unknownRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-git-unknown-'));
     try {
       writeAt(unknownRoot, 'specs/S-753-unknown/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-753'));
+      claimWork(unknownRoot, 'S-753', { agent: 'fixture', date: todayStr });
       closeTask(unknownRoot, 'S-753', closeOptions);
       const unknownRow = fs.readFileSync(path.join(unknownRoot, 'specs/S-753-unknown/SPEC.md'), 'utf8').split('\n').find((line) => line.includes('| TK-001 | Task closed |'));
       assert.equal(parseMarkdownTableRow(unknownRow)[5], 'none', '(4) outside any repository the close is neither refused nor annotated');
@@ -229,6 +231,36 @@ assert.deepEqual(
     console.log('ok - close refuses a dirty or unpushed tree unless --git-state-reason records the state and reason');
   } finally {
     fs.rmSync(stateRoot, { recursive: true, force: true });
+  }
+}
+
+// S-00M TK-003 (dispatcher addition): `close` names no Task, so with no
+// in-progress Task it must not fall through to the first ready one - a Task
+// nobody claimed would be closed as done. It refuses before any write.
+{
+  const unclaimedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-unclaimed-'));
+  try {
+    writeAt(unclaimedRoot, 'specs/S-761-unclaimed/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-761'));
+    const tablePath = path.join(unclaimedRoot, 'specs/S-761-unclaimed/SPEC.md');
+    const tableBefore = fs.readFileSync(tablePath, 'utf8');
+    const options = { proof: 'must not persist', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12' };
+    assert.throws(() => closeTask(unclaimedRoot, 'S-761', options), /^Error: S-761 has no in-progress task to close; claim one first$/,
+      'close on a Spec whose only open Task is ready (never claimed) is refused');
+    assert.equal(fs.readFileSync(tablePath, 'utf8'), tableBefore, 'the refused close leaves the table-backed Spec byte-identical');
+
+    writeAt(unclaimedRoot, 'specs/S-762-unclaimed-record/SPEC.md', recordBackedSpec('S-762'));
+    writeAt(unclaimedRoot, 'specs/S-762-unclaimed-record/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-762', slice: 'Unclaimed slice', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-762 Acceptance Criteria'
+    }));
+    const recordPath = path.join(unclaimedRoot, 'specs/S-762-unclaimed-record/tasks/TK-002/TASK.md');
+    const recordBefore = fs.readFileSync(recordPath, 'utf8');
+    assert.throws(() => closeTask(unclaimedRoot, 'S-762', options), /^Error: S-762 has no in-progress task to close; claim one first$/,
+      'close on a record-backed Spec whose only open Task is ready is refused');
+    assert.equal(fs.readFileSync(recordPath, 'utf8'), recordBefore, 'the refused close leaves the ready Task record byte-identical');
+    console.log('ok - close refuses a Spec with no in-progress Task instead of closing an unclaimed ready one');
+  } finally {
+    fs.rmSync(unclaimedRoot, { recursive: true, force: true });
   }
 }
 
@@ -2280,6 +2312,7 @@ function wikiClaimFixture() {
     // therefore no Task record file) ever created for it.
     writeAt(closeRoot, 'specs/S-722-table-only/SPEC.md',
       fixtureSpec().replaceAll('S-001', 'S-722').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    claimWork(closeRoot, 'S-722', { agent: 'fixture', date: todayStr });
     publishFixture(closeRoot);
     closeTask(closeRoot, 'S-722', {
       proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr

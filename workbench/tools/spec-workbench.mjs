@@ -264,8 +264,10 @@ export function closeTask(rootDir, id, options) {
   const date = validDate(options?.date ?? today());
   const spec = findSpec(root, id);
   const slices = executionSlices(spec);
-  const task = slices.find((item) => item.declared === 'in-progress')
-    ?? slices.find((item) => item.declared === 'ready');
+  // S-00M TK-003: `close` names no Task, so it closes only a claimed one;
+  // falling through to the first ready Task closed work nobody claimed.
+  const task = slices.find((item) => item.declared === 'in-progress');
+  if (!task && slices.some((item) => item.declared === 'ready')) throw new Error(`${id} has no in-progress task to close; claim one first`);
   if (!task) throw new Error(`${id} has no open task to close`);
   const recordedGap = gitStateAtClose(root, remainingGap, options?.gitStateReason);
   // Proof text for a record goes on the record; the Spec's append-only
