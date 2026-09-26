@@ -1165,6 +1165,118 @@ try {
     '--activate is a boolean convert-tasks flag and does not swallow the next flag'
   );
 
+  // S-01L TK-002P: to-spec authors a new Spec as `planned` with no Task row
+  // and an empty tracked `tasks/` directory (E-4B). to-tasks then writes the
+  // first Task record(s) exactly as for any record-backed Spec, and
+  // `convert-tasks --activate` is the activation gate: it converts no row,
+  // checks the records it finds and sets only Status to active.
+  write('specs/S-313-to-spec-shape/SPEC.md', emptyTableRecordBackedSpec('S-313')
+    .replace('**Status:** active', '**Status:** planned'));
+  write('specs/S-313-to-spec-shape/tasks/.gitkeep', '');
+  const toSpecShapeRecords = {
+    'TK-0C1': toTasksRecordFixture({ id: 'TK-0C1', specId: 'S-313', slice: 'Reject a negative amount at the CLI', status: 'ready', blockers: 'none' }),
+    'TK-0C2': toTasksRecordFixture({ id: 'TK-0C2', specId: 'S-313', slice: 'Name the malformed amount in the error', status: 'blocked', blockers: 'TK-0C1' })
+  };
+  for (const [taskId, content] of Object.entries(toSpecShapeRecords)) {
+    write(`specs/S-313-to-spec-shape/tasks/${taskId}/TASK.md`, content);
+  }
+  const toSpecShapeBefore = read('specs/S-313-to-spec-shape/SPEC.md');
+  // The intermediate state - a planned Spec already holding its first
+  // records - is tolerated by render and doctor, and next never hands out a
+  // Task of a planned Spec.
+  render(root);
+  assert.deepEqual(doctor(root), [], 'a planned Spec holding its first Task records renders and passes doctor');
+  assert.notEqual(nextWork(root)?.specId, 'S-313', 'next never hands out a Task of a planned Spec');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-313'),
+    /S-313 is planned, not active; .*convert-tasks S-313 --activate/,
+    'without the opt-in a planned record-backed Spec is refused as before'
+  );
+  const recordActivated = convertSpecSlices(root, 'S-313', { activate: true });
+  assert.deepEqual(
+    recordActivated,
+    { specId: 'S-313', activated: true, converted: [], retained: [], tasks: ['TK-0C1', 'TK-0C2'] },
+    'a planned record-backed Spec with its first Task records is activated without converting a row'
+  );
+  assert.equal(
+    read('specs/S-313-to-spec-shape/SPEC.md'),
+    toSpecShapeBefore.replace('**Status:** planned', '**Status:** active'),
+    'record-backed activation rewrites only the Status field'
+  );
+  for (const [taskId, content] of Object.entries(toSpecShapeRecords)) {
+    assert.equal(read(`specs/S-313-to-spec-shape/tasks/${taskId}/TASK.md`), content,
+      `record-backed activation leaves ${taskId}'s record byte-identical`);
+  }
+  assert.equal(showSpec(root, 'S-313').status, 'active', 'the record-backed Spec is active');
+  render(root);
+  assert.deepEqual(doctor(root), [], 'a record-backed Spec activated this way renders and passes doctor');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-313', { activate: true }),
+    /already has specs\/S-313-to-spec-shape\/tasks; conversion runs once/,
+    'an active record-backed Spec keeps the one-shot refusal'
+  );
+  fs.rmSync(path.join(root, 'specs/S-313-to-spec-shape'), { recursive: true });
+
+  // A to-spec-shaped Spec with no Task record yet is refused, writing nothing.
+  write('specs/S-314-no-record/SPEC.md', emptyTableRecordBackedSpec('S-314')
+    .replace('**Status:** active', '**Status:** planned'));
+  write('specs/S-314-no-record/tasks/.gitkeep', '');
+  const noRecordBefore = read('specs/S-314-no-record/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-314', { activate: true }),
+    /S-314 has no Task record under specs\/S-314-no-record\/tasks to activate; .*to-tasks/,
+    'a planned record-backed Spec with no Task record is refused by name'
+  );
+  assert.equal(read('specs/S-314-no-record/SPEC.md'), noRecordBefore,
+    'a refused record-backed activation leaves the Spec planned and byte-identical');
+  assert.deepEqual(fs.readdirSync(path.join(root, 'specs/S-314-no-record/tasks')), ['.gitkeep'],
+    'a refused record-backed activation writes no record');
+  fs.rmSync(path.join(root, 'specs/S-314-no-record'), { recursive: true });
+
+  // A record that fails to parse refuses the activation by naming it.
+  write('specs/S-315-bad-record/SPEC.md', emptyTableRecordBackedSpec('S-315')
+    .replace('**Status:** active', '**Status:** planned'));
+  write('specs/S-315-bad-record/tasks/TK-0C3/TASK.md', toTasksRecordFixture({ id: 'TK-0C3', specId: 'S-315', slice: 'Good slice', status: 'ready', blockers: 'none' }));
+  write('specs/S-315-bad-record/tasks/TK-0C4/TASK.md', toTasksRecordFixture({ id: 'TK-0C4', specId: 'S-315', slice: 'Owner-gated slice', status: 'blocked', blockers: 'OD-1' }));
+  const badRecordBefore = read('specs/S-315-bad-record/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-315', { activate: true }),
+    /S-315-bad-record\/tasks\/TK-0C4\/TASK\.md.*OD-1|TK-0C4.*OD-1/,
+    'an unparseable record refuses the activation and names the record'
+  );
+  assert.equal(read('specs/S-315-bad-record/SPEC.md'), badRecordBefore,
+    'an activation refused over an unparseable record leaves the Spec planned and byte-identical');
+  fs.rmSync(path.join(root, 'specs/S-315-bad-record'), { recursive: true });
+
+  // A record-backed Spec that still holds an unfinished table row keeps
+  // today's refusal: its retained table is completed history only.
+  write('specs/S-316-mixed/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-316')
+    .replace('**Status:** active', '**Status:** planned')
+    .replace('| TK-001 | First slice | ready | none | pending |', '| TK-0C9 | Unfinished row | ready | none | pending |'));
+  write('specs/S-316-mixed/tasks/TK-0C5/TASK.md', toTasksRecordFixture({ id: 'TK-0C5', specId: 'S-316', slice: 'Record slice', status: 'ready', blockers: 'none' }));
+  const mixedBefore = read('specs/S-316-mixed/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-316', { activate: true }),
+    /S-316 is record-backed but its slice table still holds the unfinished row TK-0C9/,
+    'a record-backed Spec with an unfinished table row keeps its refusal under the opt-in'
+  );
+  assert.equal(read('specs/S-316-mixed/SPEC.md'), mixedBefore,
+    'the mixed-shape refusal writes nothing');
+  fs.rmSync(path.join(root, 'specs/S-316-mixed'), { recursive: true });
+
+  // The opt-in never reopens a completed record-backed Spec.
+  write('specs/S-317-complete-records/SPEC.md', completeEmptyTableRecordBackedSpec('S-317'));
+  write('specs/S-317-complete-records/tasks/TK-0C6/TASK.md', toTasksRecordFixture({ id: 'TK-0C6', specId: 'S-317', slice: 'Done slice', status: 'done', blockers: 'none' }));
+  const completeRecordsBefore = read('specs/S-317-complete-records/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-317', { activate: true }),
+    /S-317 is complete/,
+    'the activation opt-in never reopens a completed record-backed Spec'
+  );
+  assert.equal(read('specs/S-317-complete-records/SPEC.md'), completeRecordsBefore,
+    'a refused activation leaves the completed record-backed Spec byte-identical');
+  fs.rmSync(path.join(root, 'specs/S-317-complete-records'), { recursive: true });
+
   assert.equal(read('specs/S-306-table-only/SPEC.md'), tableOnlyBefore,
     'a table-only Spec beside record-backed Specs is never rewritten by them');
   fs.rmSync(path.join(root, 'specs/S-306-table-only'), { recursive: true });
@@ -1250,6 +1362,25 @@ function taskRecordFixture({ id, specId, slice, status, blockers, destination })
     `**Status:** ${status}`,
     `**Blockers:** ${blockers}`,
     `**Destination:** ${destination}`,
+    ''
+  ].join('\n');
+}
+
+// S-01L TK-002P: a Task record in the shape the to-tasks skill writes for a
+// record-backed Spec - title line, the required fields, a Stance and a
+// Planned verification (workbench/skills/to-tasks/SKILL.md step 4).
+function toTasksRecordFixture({ id, specId, slice, status, blockers }) {
+  return [
+    `# ${id} - ${slice}`,
+    '',
+    `**Task ID:** ${id}`,
+    `**Spec ID:** ${specId}`,
+    `**Slice:** ${slice}`,
+    `**Status:** ${status}`,
+    '**Stance:** Builder',
+    `**Blockers:** ${blockers}`,
+    '**Destination:** spec-acceptance: Expected behavior is verified.',
+    '**Planned verification:** A failing test first, then green; full suite.',
     ''
   ].join('\n');
 }
