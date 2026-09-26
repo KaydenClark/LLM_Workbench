@@ -269,6 +269,26 @@ assertIncludesAll(grillMe, [
 assert.doesNotMatch(grillMe, /^Run a `\/grilling` session\.$/m,
   'grill-me must state the composition, not only forward to grilling');
 
+// S-01M: a tracer bullet reaches the documentation and proof seams, not only
+// the code layers, so a code-only slice is revised as a shard before it becomes
+// an assigned Task. Assignment uses the current Task and stance vocabulary and
+// the portable source names no private owner. These pin the source contract;
+// the fresh-context run in S-01M records the behavior.
+const tracerBullet = read('workbench/skills/tracer-bullet/SKILL.md');
+assertIncludesAll(tracerBullet, [
+  'documentation and proof seams',
+  '`Docs checked; no update needed`',
+  'code-only',
+  'before it becomes an assigned Task',
+  'normal stance'
+], 'tracer-bullet complete-path and assignment contract');
+assert.doesNotMatch(tracerBullet, /\bEngineer\b/,
+  'tracer-bullet must assign Tasks, not the retired Engineer role');
+assert.doesNotMatch(tracerBullet, /\bKayden\b/,
+  'the portable tracer-bullet source must name the owner generically');
+assert.ok(tracerBullet.indexOf('code-only') < tracerBullet.indexOf('## Slice smell test'),
+  'revising a code-only shard belongs to scoping and assignment, not only the smell test');
+
 const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
   'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',
