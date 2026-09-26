@@ -42,11 +42,18 @@ validator integration is a later slice after its file slot is released.
 New module `workbench/tools/landmark-wiki.mjs`; new test
 `tools/test-landmark-wiki.mjs`; narrow new usage document
 `workbench/landmark-tracker/LANDMARK-WIKI.md` if needed. Assigned TASK receipt
-only. Runtime installation registration may require traced additional files;
-report precise needed seam to dispatcher before touching shared installer files.
+only. Director inspected lane-H diff and released exactly the untouched
+`RUNTIME_TOOLS` list stanza in `workbench/tools/workbench-layout.mjs`: add only
+`landmark-wiki.mjs` adjacent to `landmark-tracker.mjs` in the worker isolated
+checkout. No feature/import/layout/schema logic changes and no H checkout writes.
+The canonical tool-list test must remain unchanged. Add a public installed-CLI
+smoke test in the assigned new test file using the real install seam/disposable
+room; verify receipt distribution and behavior without a version/release change.
+All other shared-file changes still require explicit release.
 
 Do not mutate `landmark-tracker.mjs`, `test-landmark-tracker.mjs`, `wiki.mjs`,
-`test-wiki.mjs`, manifest, path/layout modules, lifecycle/diagnostics, schema or
+`test-wiki.mjs`, manifest, path/layout logic outside the released tool-list hunk,
+lifecycle/diagnostics, schema or
 root/generic controls. DQC owns first shared runtime slot; active S-00I TK-01U
 owns shared Wiki/lifecycle consumers. Request narrowly necessary file release
 through dispatcher; do not wait for a whole Spec.
@@ -82,3 +89,13 @@ Append named runtime receipts as work proceeds under current TASK conventions.
 | 2 | codex/landmark-article-tk002t | 59439b55c7a28085cbd0eb7ca44e1ddd5d6cdb13 | none | 3 | Red 59439b5: 12 failed absent public module; green working tree: 13 pass 0 fail CLI/API actual bytes and snapshots | LANDMARK-WIKI.md public API CLI detection scope demo; no shared controls edited | Immutable candidate full checks pending; installer RUNTIME_TOOLS seam shared; Wiki wiring assessment lifecycle later | e88af558bc159a876c2124f9950aaf883a553c07baa0eaa3e92c7e84be722f14 |
 | 3 | codex/landmark-article-tk002t | 7d0d1e36db7d19f9c993170a39345c8327d7056a | none | 4 | Correction red 7d0d1e3: custom default ambiguity percent-encoded tests 3 failed; revised green working tree 16 pass 0 fail | LANDMARK-WIKI.md custom types incomplete default percent decoding and current project-type compatibility limits | Superseded candidate full suite stopped after receipt projection drift; revised candidate full checks pending; shared installer and Wiki wiring later | 1b8fe429548c7bccbc716185a79291749b272753fcaa034a68c4fb5f5c5dcb58 |
 | 4 | codex/landmark-article-tk002t | b6da8db87dec3ceb6a296fef65c628d7188b751c | ahead 1 behind 0 | 0 | Full immutable 6688a94 clean: 50 commands 49 pass 1 fail (runtime registration mismatch); new validator16/16 Wiki13/13 Tracker23/23; installed semantic red b6da8db missing module | Public command/API, generic ambiguity, percent decoding and current compatibility limits documented | Await narrowly released RUNTIME_TOOLS registration; full green immutable candidate pending; Wiki integration assessment lifecycle later | 3ae69969177823f14d5361ee418739179bef30e50c5eccf6402b6f8715819cae |
+
+## Narrow Installer Clearance And Proof Correction
+
+At immutable 6688a946fb454cec9b557dd19fcf3230437e1bea, all 50 commands
+completed: 49 passed; the canonical runtime lane assertion failed because the
+new tool was missing from RUNTIME_TOOLS. This is change-caused, not baseline.
+Director grants the disjoint registry-byte lane above, preserving H pending
+features changes. Retain that red receipt and record public installed behavior
+red/green; rerun full checks on a new clean immutable candidate, keeping old
+verification as history rather than substituting it for corrected proof.
