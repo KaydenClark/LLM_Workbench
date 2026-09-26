@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** TK-01Y claimed by claude-lane-J.
-**Next gate:** Close TK-01Y with verification and documentation proof.
+**Latest event:** 2026-09-26 TK-01Y closed with proof: related grilling questions, Specs, ADRs, Tasks and DQCs count by typed room-scoped identity, distributions at DQC, landmark and Workbench scope expose numerator, denominator and evidence, and `node tools/landmark-tracker-demo.mjs` shows each outcome.
+**Next gate:** Lane J closes corrective Tasks TK-02G, TK-02H and TK-02I; TK-01Z and TK-02A stay deferred until S-00I TK-01U is done on integration.
 
 ## Outcome
 
@@ -238,7 +238,7 @@ immediately before saving it. The records in `tasks/` are authoritative:
 | Task | Slice | Status | Blockers or release |
 |---|---|---|---|
 | [TK-01X](tasks/TK-01X/TASK.md) | Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view | done | none |
-| [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | in-progress | none (TK-01X done) |
+| [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | done | none |
 | [TK-01Z](tasks/TK-01Z/TASK.md) | Assess actual Landmark Wiki content so two Specs maintain one readable article | deferred | TK-01Y done and S-00I TK-01U done on integration |
 | [TK-02A](tasks/TK-02A/TASK.md) | Keep live Tracker references and historical proof through record moves | deferred | TK-01X done and S-00I TK-01U done on integration |
 
@@ -284,10 +284,10 @@ identity/relationships, calculation and a readable projection together.
       overlapping landmark relationships and discovery of new landmarks work.
 - [ ] Generated Tracker can be rebuilt from records and displays meaningful
       concepts, expanded lineage and evidence-backed documentation distributions.
-- [ ] Exact eight-step vocabulary, the 30/20/50 example, shared identity
+- [x] Exact eight-step vocabulary, the 30/20/50 example, shared identity
       deduplication, mixed-question contribution and Workbench-wide aggregation
       pass deterministic examples without filtering or flattening away meaning.
-- [ ] Empty, unknown, missing-assessment, invalid-fraction and cyclic dependency
+- [x] Empty, unknown, missing-assessment, invalid-fraction and cyclic dependency
       cases terminate with explicit outcomes; invalid writes preserve prior data.
 - [ ] Completing a linked Task without the expected durable documentation does
       not produce Verified; actual content comparison and applicable gates do.
@@ -365,23 +365,29 @@ The original workflow diagram is preserved byte-for-byte.
 | 2026-09-26 | TK-01X | Correction: TK-01X Receipt run 1 provenance | `close` requires a clean pushed tree, so Receipt run 1 records HEAD d5c0951 (claim 77225a7, red 0a365b0, green 2592f28, docs d5c0951), the verified implementation and documentation candidate: full AGENTS suite 48/48 there, dirty []. The run's Docs cell also lists writes the close itself made - the TK-01X and TK-01Y status and header changes, the Spec slice table, Completion Result and limitation bullets, and the TASKBOARD.md re-render - which exist only in close commit 46df442, not at d5c0951. At 46df442 the full AGENTS suite is also 48/48 (dirty []), fresh-clone doctor has no blocking finding, and `landmark-tracker.mjs rebuild --check` is current. | Receipt run 1 and the Task closed row are unchanged (append-only); this row supersedes their provenance reading only. | none |
 | 2026-09-26 | review | Review verdict: pass at 957034a90deae657a24d379de60061dcd24f7dc3 [6a5558de90bc] #3 | No High/Medium/Low findings on the corrective and re-merge delta: the correction row resolves the receipt-provenance Medium without editing published rows; merge e0c7ef1..957034a matches the branch delivery, RUNTIME_TOOLS keeps host-floor.mjs and landmark-tracker.mjs; Tracker uses default allocateVisibleId width, compatible with planned S-01W. Full AGENTS suite 48/48 at 957034a (dirty []); test-landmark-tracker 13/13, test-workbench-tools 19/19, test-workbench-layout 71/71; doctor no blocking finding; rebuild --check current. | codex exec gpt-5.5, read-only sandbox, separate context from the Lane J dispatcher and worker | 6 |
 | 2026-09-26 | TK-01X | Correction: corrective Task identities re-allocated | The fail verdict at 46df442 split its findings cell on `;` and auto-created three corrective Tasks on this unmerged branch as TK-02D, TK-02E and TK-02F; integration meanwhile allocated TK-02D (S-01L) and TK-02E (S-00V), so the merge of origin/integration 86b121f made `render` refuse a duplicate Task ID. The three records keep their content and their `Answers evidence row` markers unchanged, and were re-allocated by `next-id S-01T --prefix TK` as TK-02G (was TK-02D: the receipt-provenance Medium, answered by the correction row above), TK-02H (was TK-02E) and TK-02I (was TK-02F); the last two record clauses of passing checks, not defects. All three remain `ready` and are closed after TK-01Y. | Three TASK.md records renamed; TASKBOARD.md rendered. | Close TK-02G, TK-02H and TK-02I; future fail findings name one defect per `;`-separated clause. |
+| 2026-09-26 | TK-01Y | Task closed | Claim 726e5cf. Red 65808a7 (tools/test-landmark-tracker.mjs 11/22 pass: aggregate lacks denominator, numerators, unknown, invalid, bySourceType and contributions, relate absent, revise refuses --claim, demo output absent). Merge of the TK-01X branch 5889493. Green 72531f9, docs 06d96fe. node tools/test-landmark-tracker.mjs 22/22, test-workbench-layout 71/71, test-workbench-tools 19/19. Full AGENTS suite TOTAL pass=48 fail=0 at candidate 06d96fe659641187357fe40cfdad5b9112816207 dirty []. Doctor no blocking finding (seven pre-existing attention findings). Self-drift pre (5889493) and post (06d96fe): the same seven pre-existing findings plus detached-head only in the detached pre worktree, no new finding, cleanUpdate false. Guardrail 106.6/113 before (5889493) and after, templates and controls untouched. Demo: node tools/landmark-tracker-demo.mjs, 1.8s, 30/20/50 PASS at Workbench scope and distributions scoped PASS at DQC and landmark scope, shared identity counted once, lineage keeps the mixed DQC one item, navigation cycle marked, dependency-cycle refused with TRACKER.json unchanged, incomplete and invalid outcomes shown, one scoped reconciliation. | Files changed up to pre-close HEAD 06d96fe: workbench/landmark-tracker/README.md (relate, scopes, outcomes table, derived assessments, claims and changed understanding, schema upgrade, dependency-cycle code); workbench/landmark-tracker/TRACKER.json (regenerated empty with the extended shape); workbench/wiki/design-concepts/landmark-tracker.md (availability sentence and history line); TK-01Y TASK.md (Delivered Shape, Remaining Gaps with S-00P wording); SPEC.md slice-table TK-01Y in-progress and claim header. The close commit itself adds the TK-01Y status and Proof, the Spec header, slice-table, evidence row and Receipt writes, and the TASKBOARD.md re-render. No root control, templates/ or visible-ids change. | Claims reach only the changing card's own claims. A conflicting shared assessment is resolved one relate per holder and is invalid in between. Grilling-question constituents are taken as declared. No doctor-level Tracker drift finding and a discarded referenced record becomes unknown only after a rebuild; live reference rewriting remains TK-02A. TK-01Z and TK-02A stay deferred until S-00I TK-01U is done on integration. Owed to S-00P: the TK-01X AGENTS suite line and RUNBOOK paragraph plus the TK-01Y RUNBOOK paragraph, verbatim in TK-01Y Remaining Gaps. |
 
 ## Completion Result
 
 Capability delivery pending; owner Human QA is not satisfied. Of the four
 authored Tasks, TK-01X (the foundation path) is done and lands through its own
-Task PR; TK-01Y, TK-01Z and TK-02A remain, as do corrective Tasks TK-02G,
-TK-02H and TK-02I from the 46df442 fail verdict. Only the ungrouped-DQC
-acceptance line is checked: TK-01X delivers it in full
-(`tools/test-landmark-tracker.mjs` capture, reload, clone, retitle and
-confirm cases). Every other line spans later Tasks.
+Task PR; TK-01Y (distributions) is done on its stacked branch; TK-01Z and
+TK-02A remain, as do corrective Tasks TK-02G, TK-02H and TK-02I from the
+46df442 fail verdict. Three acceptance lines are checked: TK-01X delivers the
+ungrouped-DQC line (`tools/test-landmark-tracker.mjs` capture, reload, clone,
+retitle and confirm cases), and TK-01Y delivers the distribution-examples and
+explicit-outcomes lines (its pure-seam, typed-identity, scoped 30/20/50,
+shared-identity, cycle and invalid-write cases). The changed-understanding
+line is delivered for Tracker claims by TK-01Y but stays open until TK-01Z
+assesses actual Landmark Wiki claims. Every other line spans later Tasks.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Implementation proceeds through TK-01Y, TK-01Z and TK-02A; TK-01X is done.
+- Implementation proceeds through TK-01Z and TK-02A; TK-01X and TK-01Y are done.
 - Owed to S-00P (root controls): Runbook procedure for the Tracker and the
   suite-list line for its test; the exact wording is in
-  [TK-01X Remaining Gaps](tasks/TK-01X/TASK.md#remaining-gaps).
+  [TK-01X Remaining Gaps](tasks/TK-01X/TASK.md#remaining-gaps) and
+  [TK-01Y Remaining Gaps](tasks/TK-01Y/TASK.md#remaining-gaps).
 - Initial content can evolve; no exhaustive catalog approval is required.
 - Pre-existing attention findings remain with their current owners; neither this
   planning change nor structural checks establish a clean Workbench update.
