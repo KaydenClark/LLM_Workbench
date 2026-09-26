@@ -13,7 +13,7 @@ import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative, trackerDeclaration } from './workbench-paths.mjs';
 
 // Exported (not just used locally) so a test can build the exact historical
 // v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
@@ -134,6 +134,16 @@ export function insideWorkTree(project) {
 // paths. `upstream` is null when none is configured, and otherwise
 // `{ name, gone, ahead, behind }`, with null distance when the upstream ref is
 // gone. `options.git` names the Git executable, so a test can make it absent.
+//
+// S-00M TK-003 adds three fields for `close`, leaving the shapes above as
+// they were: `untrackedOther` lists every other untracked, non-ignored file
+// (repository-relative, including files outside the room root), so `dirty`,
+// the three lane lists and `untrackedOther` together are exactly what
+// `git status --porcelain` shows and what the Receipt's Dirty column counts;
+// `remotes` lists the configured remote names; and `pushed` is true only
+// when some `refs/remotes/*` ref contains HEAD, so a commit that reached any
+// remote counts as pushed with or without an upstream, and an unborn HEAD,
+// a room with no remote, or a commit no remote has is not.
 export function readRepositoryState(root, options = {}) {
   const unknown = (reason, detail) => ({ known: false, reason, detail: String(detail ?? '').trim() });
   try {
@@ -156,6 +166,7 @@ export function readRepositoryState(root, options = {}) {
     let upstream = null;
     const dirty = [];
     const untracked = { controls: [], adr: [], specs: [] };
+    const untrackedOther = [];
     const within = (file, lane) => file.startsWith(`${lane}/`);
     const entries = status.stdout.split('\0');
     for (let index = 0; index < entries.length; index += 1) {
@@ -178,14 +189,24 @@ export function readRepositoryState(root, options = {}) {
         const file = entry.slice(2);
         // Lanes are root-relative; porcelain paths are repository-relative.
         const relative = prefix && file.startsWith(prefix) ? file.slice(prefix.length) : (prefix ? null : file);
-        if (relative === null) continue;
-        if (controls.includes(relative)) untracked.controls.push(file);
+        if (relative === null) untrackedOther.push(file);
+        else if (controls.includes(relative)) untracked.controls.push(file);
         else if (within(relative, lanes.adr)) untracked.adr.push(file);
         else if (within(relative, lanes.specs)) untracked.specs.push(file);
+        else untrackedOther.push(file);
       }
     }
-    for (const list of [dirty, untracked.controls, untracked.adr, untracked.specs]) list.sort();
-    return { known: true, head, dirty, untracked, upstream };
+    for (const list of [dirty, untracked.controls, untracked.adr, untracked.specs, untrackedOther]) list.sort();
+    const remoteList = run(['remote']);
+    if (remoteList.error || remoteList.status !== 0) return unknown('git-failed', remoteList.error?.message ?? remoteList.stderr);
+    const remotes = remoteList.stdout.split('\n').filter(Boolean).sort();
+    let pushed = false;
+    if (run(['rev-parse', '--verify', '--quiet', 'HEAD']).status === 0) {
+      const containing = run(['for-each-ref', '--contains', 'HEAD', '--format=%(refname)', 'refs/remotes']);
+      if (containing.error || containing.status !== 0) return unknown('git-failed', containing.error?.message ?? containing.stderr);
+      pushed = containing.stdout.trim() !== '';
+    }
+    return { known: true, head, dirty, untracked, upstream, untrackedOther, remotes, pushed };
   } catch (error) {
     return unknown('git-failed', error?.message ?? error);
   }
@@ -375,6 +396,22 @@ export function validateManifest(project) {
     if (!isSafeRelative(collection)) return fail('invalid-collection', `Manifest collection ${collection} is unsafe.`);
     if (!ordinaryDirectory(project, collection)) return fail('missing-collection', `Manifest collection ${collection} must be an ordinary directory; it may be empty.`);
   }
+  // S-01T TK-01X: the Landmark Tracker block is additive. Absent, nothing here
+  // runs and the report is byte-for-byte what it was; declared, the resolver's
+  // closed shape must hold, the root must not sit inside (or contain) a lane or
+  // collection - its records are tracked, never session state - and every
+  // declared directory must exist as an ordinary directory.
+  let tracker = null;
+  try { tracker = trackerDeclaration(manifest); }
+  catch (error) { return fail('invalid-collection', error.message, { landmarkTracker: manifest.landmarkTracker }); }
+  if (tracker) {
+    const owned = [...Object.values(manifest.lanes), ...Object.values(manifest.collections)];
+    const overlap = owned.find((relative) => relative === tracker.root || tracker.root.startsWith(`${relative}/`) || relative.startsWith(`${tracker.root}/`));
+    if (overlap) return fail('invalid-collection', `Manifest landmarkTracker root ${tracker.root} overlaps ${overlap}; the Tracker is its own root, not a lane or collection.`, { landmarkTracker: manifest.landmarkTracker });
+    for (const relative of [tracker.root, ...Object.values(tracker.collections)]) {
+      if (!ordinaryDirectory(project, relative)) return fail('missing-collection', `Manifest landmarkTracker directory ${relative} must be an ordinary directory; it may be empty.`);
+    }
+  }
   const ignore = path.join(project, lanes.sessions, '.gitignore');
   const ignoreEntry = lstatOrNull(ignore);
   if (!ignoreEntry?.isFile() || ignoreEntry.isSymbolicLink()) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must keep live session records untracked.`);
@@ -419,7 +456,7 @@ export function validateManifest(project) {
   }
   const ignored = verifyNotepadIgnores(project, manifest);
   if (ignored.failure) return ignored.failure;
-  return report('valid', { manifest, ignoreVerification: ignored.verification });
+  return report('valid', { manifest, ignoreVerification: ignored.verification, ...(tracker ? { tracker } : {}) });
 }
 
 // ADR-000H "One Task, one context": the context unit is a declared host fact
@@ -1034,9 +1071,13 @@ export const TOOLS_RECEIPT = '.workbench-tools.json';
 // which the receipt hash comparison reports.
 export const RUNTIME_TOOLS = Object.freeze([
   'adr.mjs',
+  'claim-coordination.mjs',
   'diagnostics.mjs',
+  'host-floor.mjs',
+  'landmark-tracker.mjs',
   'markdown-table.mjs',
   'notepads.mjs',
+  'optional-capabilities.mjs',
   'privacy.mjs',
   'project-evidence.mjs',
   'self-drift.mjs',
@@ -1405,7 +1446,7 @@ export function validate(options, requireGenesis) {
   if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'A root skills/ directory shadows the skills lane; move its contents into the lane or remove it.');
   const skillsIssue = validateGenesisSkills(project, result.manifest);
   if (skillsIssue) return skillsIssue;
-  return report('valid', { manifest: result.manifest, controls });
+  return report('valid', { manifest: result.manifest, controls, ...(result.tracker ? { tracker: result.tracker } : {}) });
 }
 
 // Readiness also needs the skills lane laid down from the release: every

@@ -86,7 +86,9 @@ export function plan(workspace, date = new Date().toISOString().slice(0, 10)) {
   write(planning, 'workbench/sessions/handoffs/greeting-draft.md', before.toString('utf8') + '\n## Reconciled Decision\n\nGreet by name; default to World. Tests use node:test with no dependencies.\n');
   const promoted = JSON.parse(sh(planning, process.execPath, [path.join(planning, 'workbench/tools/sessions.mjs'), 'promote', '--from', note.note, '--revision', '2', '--entries', 'decision-001', '--to', owner, '--expected', createHash('sha256').update(before).digest('hex'), '--content', 'workbench/sessions/handoffs/greeting-draft.md']));
   if (promoted.status !== 'promoted') throw new Error(JSON.stringify(promoted));
-  sh(planning, process.execPath, [tool, 'claim', 'S-001', '--agent', 'fixture-planner']);
+  // S-00V TK-01L: the planning checkpoint is committed on main, so the claim
+  // is local here rather than cut and pushed on a task branch (TK-01N).
+  sh(planning, process.execPath, [tool, 'claim', 'S-001', '--agent', 'fixture-planner', '--local']);
   sh(planning, process.execPath, [tool, 'render']);
   git(planning, 'add', '-A');
   git(planning, 'commit', '-q', '-m', 'Planning checkpoint: S-001/TK-001 claimed by the planning provider');

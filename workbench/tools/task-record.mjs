@@ -24,13 +24,14 @@
 // scans only the top level and now skips a lifecycle-folder entry there
 // instead of reading it as a Task directory.
 //
-// TT-Q10 (the new-identifier form, `T-###` vs `TASK-###`) is open. Fixtures
-// and this reader use the existing `TK-###` form; no new prefix is
-// introduced here.
+// TT-Q10 (the new-identifier form) is settled: Task identifiers keep the
+// existing `TK-###` form (LEXICON and the grilling destination ledger), and
+// this reader introduces no other prefix.
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { parseCapabilityList } from './optional-capabilities.mjs';
 
 export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
 
@@ -58,7 +59,18 @@ export const TASK_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 // hold either reference; S-00I gives `wiki-claim` its behavior.
 const DESTINATION_TYPES = Object.freeze(['spec-acceptance', 'wiki-claim']);
 const DESTINATION_PATTERN = /^(spec-acceptance|wiki-claim):\s*(.+)$/;
-const BLOCKER_ID_PATTERN = /^(?:S|TK)-[0-9A-Za-z]+$/;
+// S-00J TK-01T: a blocker entry is a plain `S-###`/`TK-###` identifier or
+// that identifier with one `:<qualifier>` suffix. The parser accepts any
+// word-shaped qualifier so that an unknown one reaches the resolver and
+// doctor, which name it and fail closed as an unmet blocker, instead of the
+// whole room failing to parse. Which qualifiers mean anything (today only
+// `S-###:delivered`) is the resolver's decision in spec-workbench.mjs, not
+// this reader's.
+//
+// S-00J TK-02J: `owner:<decision>` records a wait on an owner decision. The
+// decision is a lowercase kebab-case slug. The resolver never satisfies it;
+// it clears only when the entry is removed from the record.
+const BLOCKER_ID_PATTERN = /^(?:(?:S|TK)-[0-9A-Za-z]+(?::[A-Za-z][0-9A-Za-z-]*)?|owner:[a-z][a-z0-9]*(?:-[a-z0-9]+)*)$/;
 
 export function parseTaskRecord(content, filePath, root) {
   const label = filePath ? path.relative(root ?? path.dirname(filePath), filePath) : '<in-memory Task record>';
@@ -84,6 +96,20 @@ export function parseTaskRecord(content, filePath, root) {
   if (!TASK_STATUSES.includes(fields.Status)) {
     throw new Error(`${id} has an invalid status "${fields.Status}"; the closed set is ${TASK_STATUSES.join(', ')}`);
   }
+  // S-00V TK-00K: the optional capabilities this Task needs beyond the host
+  // floor, and the ones a session lacked when it routed the Task to blocked
+  // (optional-capabilities.mjs). Both are optional fields, separate from
+  // `Blockers`, which stays a closed list of `S-`/`TK-` ids. A recorded
+  // missing capability must be one the Task names, on a blocked record, so
+  // the record can never claim a block it does not explain.
+  const capabilities = parseCapabilityList(fields.Capabilities, `${id} Capabilities`);
+  const missingCapabilities = parseCapabilityList(fields['Missing capabilities'], `${id} Missing capabilities`);
+  for (const name of missingCapabilities) {
+    if (!capabilities.includes(name)) throw new Error(`${id} records ${name} missing but does not name it in Capabilities`);
+  }
+  if (missingCapabilities.length > 0 && fields.Status !== 'blocked') {
+    throw new Error(`${id} records a missing capability but its Status is ${fields.Status}, not blocked`);
+  }
   return {
     root,
     filePath,
@@ -95,6 +121,8 @@ export function parseTaskRecord(content, filePath, root) {
     status: fields.Status,
     blockers: parseBlockers(fields.Blockers, id),
     destination: parseDestination(fields.Destination, id),
+    capabilities,
+    missingCapabilities,
     // Proof is optional and absent until the Task closes. It lives on the
     // record rather than in a table cell, so a record-backed Spec has one
     // place a reader looks for what a Task proved.
@@ -205,10 +233,12 @@ export function taskStatus(task) {
 
 // The blocking relationship read: which of a Task's declared blocker ids are
 // not yet in the caller-supplied satisfied set. An empty result means the
-// Task is unblocked.
+// Task is unblocked. S-01W TK-002K: ids compare by collision key, so a
+// blocker spelled `TK-000A` is satisfied by a done `TK-00A`; the caller's set
+// keeps its own scope, which is what keeps numeric Task labels Spec-qualified.
 export function unmetBlockers(task, satisfiedIds) {
-  const satisfied = satisfiedIds instanceof Set ? satisfiedIds : new Set(satisfiedIds);
-  return task.blockers.filter((blockerId) => !satisfied.has(blockerId));
+  const satisfied = new Set([...satisfiedIds].map((id) => visibleIdKey(id) ?? id));
+  return task.blockers.filter((blockerId) => !satisfied.has(visibleIdKey(blockerId) ?? blockerId));
 }
 
 // Rewrites the frontmatter fields a lifecycle command owns. An existing field

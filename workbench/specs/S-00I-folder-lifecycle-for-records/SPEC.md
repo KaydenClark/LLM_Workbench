@@ -5,11 +5,11 @@
 **Priority:** 3
 **Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-23
+**Updated:** 2026-09-26
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** Owner clarified on 2026-09-23 that Human QA has been underway since 2026-09-19 and its reviews have failed. The earlier 51-check/source-review PASS is separate proof; no owner approval is recorded.
-**Next gate:** Reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
+**Latest event:** 2026-09-26 Lane H added TK-01U (features capture, deferred until S-00J TK-01S is done on integration) and TK-01V (continuous T0-T6 demonstration, blocked on TK-01U), consuming the S-00J closure-capture transition contract. Human QA has been underway since 2026-09-19 and its reviews have failed; no owner approval is recorded.
+**Next gate:** Lane H releases TK-01U once S-00J TK-01S is done on integration; TK-01V follows TK-01U. Meanwhile reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -136,6 +136,17 @@ decision-080 (WF-8F) answered them, settling that Specs and Tasks are transient
 and the Wiki owns current capability knowledge. The FND note's own register
 still reads `held`; that stale register is untracked working material, not a
 blocker, and nothing in this Spec depends on it.
+
+On 2026-09-26 this Spec consumes the
+[S-00J closure-capture transition contract](../S-00J-spec-qa-gate-at-integration/SPEC.md):
+`complete` (T3) is gated on reviewed delivery, owner approval and main
+verification, not on capture; features capture (T4) follows `complete` and
+precedes retirement (T5) and discard (T6); Task records are not discarded
+before capture. [TK-01U](tasks/TK-01U/TASK.md) delivers the `features`
+collection, retirement eligibility and the capture preconditions and is
+`deferred` until S-00J TK-01S is done on integration, since the runtime cannot
+resolve a cross-Spec Task blocker; [TK-01V](tasks/TK-01V/TASK.md) proves T0
+to T6 in one disposable room and is blocked on TK-01U.
 
 ## Vertical Implementation Slices
 
@@ -281,6 +292,8 @@ exist. The generic `templates/` mirror changes in S-00P TK-005.
 | 2026-09-19 | review | Review verdict: pass at 0c34d05c479f4a434f6b102954f9fd2768549baf [ed5ee32dd378] #2 | none | independent_review; separate Codex context; inherited model not separately identified; code-review mode; corrects prior receipt count: zero review findings | none |
 
 | 2026-09-23 | owner correction | Human QA has been underway since 2026-09-19; the owner reports failed reviews, not a review waiting to start | Direct owner clarification on 2026-09-23; 2026-09-19 S-00I/S-00J approval audit records a failed readiness verdict on its pinned candidates; earlier 51-check and independent source PASS rows prove a different gate | Corrected current header and Taskboard projection; retained earlier evidence unchanged | No owner approval recorded; exact current findings still need per-Spec reconciliation and corrective proof |
+| 2026-09-26 | d16ef63 | Lane H planning: TK-01U (features capture, `deferred`, released by Lane H when S-00J TK-01S is done on integration) and TK-01V (continuous T0-T6 demonstration, `blocked` on TK-01U) authored from the Dispatcher drafts to consume the S-00J closure-capture transition contract; after `git fetch origin`, `next-id` proposed TK-01U then TK-01V in order, clear of S-01U TK-01Q and S-00J TK-01R..TK-01T | Read the contract at 60849d2, both drafts and the Dispatcher report; traced `retireSpec`, `discardRetiredTask`, `wikiContractFiles` and `fidelityTargets` at d16ef63; render and doctor | Planning only; no runtime change, no owner approval, no closure; root-control and `templates/` control wording stays with S-00P |
+| 2026-09-26 | review | Review verdict: pass at a626fc939b2d1bc22bb4a7b554531b2a1ae0ea03 [9ebc2aa41c67] #3 | none; TK-01U/TK-01V consume the S-00J closure-capture contract (capture at T4 after complete, before retirement/discard), source claims spot-checked, write lane bounded, IDs unique; full suite 48/48 on a626fc9, fresh-clone doctor clean | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
 
 ## Completion Result
 

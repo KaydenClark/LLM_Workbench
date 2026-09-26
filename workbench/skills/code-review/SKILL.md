@@ -69,6 +69,11 @@ Run read-only project verification when it materially raises confidence. Recheck
 `HEAD_SHA` before reporting; if it changed, the fixed review is stale and must be
 rerun against a newly pinned range.
 
+A pass belongs to the candidate it reviewed. A new candidate SHA, or a
+changed content digest at integration, needs a fresh review pinned to that
+candidate. A note that an earlier candidate was reviewed is context,
+never a verdict for this one.
+
 ## 4. Report findings first
 
 Use this order:
@@ -77,10 +82,16 @@ Use this order:
 2. `## Verification gaps`
 3. `## Summary`
 
-Findings first, ordered by severity. Each finding names severity, file and line,
-the violated control or spec requirement, user impact, and the smallest safe
-correction. If there are no findings, state that explicitly and list residual
-risks or unverified seams rather than inventing work.
+Findings first, ordered by severity. Each finding names severity, file and line
+with the tree it reads at (`path:line@<sha>`, normally `HEAD_SHA`), the violated
+control or spec requirement, user impact, and the smallest safe correction.
+Label each finding **proven** when you reproduced it with a named command, trace
+or failing input, or **uncertain** when it rests on inference you could not
+reproduce, and say what would settle it. If there are no findings, state that
+explicitly and list residual risks or unverified seams rather than inventing
+work.
 
 This skill is review-only. Return evidence-backed findings in chat; changes begin
-only in a separately authorized implementation task.
+only in a separately authorized implementation task. A passing review, a green
+suite or a recorded `verdict` is not owner Human QA: it neither records the
+owner's approval nor resets a failed Human QA gate.

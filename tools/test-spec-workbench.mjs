@@ -9,6 +9,7 @@ import {
   TASK_STATUSES as SLICE_STATUSES,
   SPEC_LIFECYCLE_FOLDERS,
   TASK_LIFECYCLE_FOLDERS,
+  appendEvidence,
   claimWork,
   convertSpecSlices,
   showSpec,
@@ -39,6 +40,7 @@ import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
 import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
+import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
 
 // `doctor`'s `stale-claim` rule (workbench/tools/spec-workbench.mjs) flags an
 // in-progress claim whose `Updated` date-only stamp is more than one day
@@ -64,6 +66,23 @@ function initGitRoot(dir) {
   execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', 'init']);
 }
 
+// S-00M TK-003: `close` refuses on a dirty tree or a HEAD no remote-tracking
+// ref contains, so a fixture that closes in a real Git work tree must first
+// be clean and pushed, exactly as an agent's own close would be. The bare
+// remote lives inside `.git/`, where it is neither a working-tree file nor
+// left behind when the fixture directory is removed.
+function publishFixture(dir, message = 'publish fixture') {
+  const remotes = execFileSync('git', ['-C', dir, 'remote'], { encoding: 'utf8' }).split('\n');
+  if (!remotes.includes('origin')) {
+    const remote = path.join(dir, '.git', 'fixture-remote.git');
+    execFileSync('git', ['init', '--quiet', '--bare', remote]);
+    execFileSync('git', ['-C', dir, 'remote', 'add', 'origin', remote]);
+  }
+  execFileSync('git', ['-C', dir, 'add', '-A']);
+  execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', message]);
+  execFileSync('git', ['-C', dir, 'push', '--quiet', '-u', 'origin', 'HEAD'], { stdio: 'ignore' });
+}
+
 // Simulate delivery of this exact fixture content before owner approval.
 function integratedFixtureCandidate(root) {
   execFileSync('git', ['-C', root, 'add', '-A']);
@@ -72,6 +91,15 @@ function integratedFixtureCandidate(root) {
     execFileSync('git', ['-C', root, 'branch', '-f', 'integration', 'HEAD']);
   }
   return headSha(root);
+}
+
+// S-00J TK-01S: set a managed fixture manifest's git block, which is where
+// final closure resolves the default branch it verifies delivery against.
+function declareFixtureGit(dir, git) {
+  const manifestFile = path.join(dir, 'workbench/manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  manifest.git = git;
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
 function headSha(dir) {
@@ -101,6 +129,157 @@ assert.deepEqual(
   { command: 'next', id: null, options: { json: true } },
   'option flags must not be consumed as an optional spec ID'
 );
+// S-00V TK-00H: the session-start host floor mode is a boolean flag, so it
+// must not swallow the flag after it as its value.
+assert.deepEqual(
+  parseCliArgs(['doctor', '--host', '--json']),
+  { command: 'doctor', id: null, options: { host: true, json: true } },
+  '--host is a boolean doctor mode'
+);
+
+// ============================================================================
+// S-00M TK-003: `close` refuses a completion claim the repository
+// contradicts - a dirty tree or a HEAD no remote-tracking ref contains -
+// before writing anything, unless `--git-state-reason` records why; a
+// permitted close keeps the observed state and the reason in the Receipt row
+// and the Spec evidence row, where a reviewer reads them.
+// ============================================================================
+{
+  const stateRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-git-state-'));
+  initGitRoot(stateRoot);
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    writeAt(stateRoot, 'BLUEPRINT.md', ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    writeAt(stateRoot, 'TASKBOARD.md', ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    writeAt(stateRoot, 'specs/S-751-git-state/SPEC.md', recordBackedSpec('S-751').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    writeAt(stateRoot, 'specs/S-751-git-state/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-751', slice: 'Git-state slice', status: 'in-progress', blockers: 'none',
+      destination: 'spec-acceptance: S-751 Acceptance Criteria'
+    }));
+    publishFixture(stateRoot);
+    const specPath = path.join(stateRoot, 'specs/S-751-git-state/SPEC.md');
+    const taskPath = path.join(stateRoot, 'specs/S-751-git-state/tasks/TK-002/TASK.md');
+    const closeOptions = { proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr };
+
+    // (1) A dirty tree - one tracked change and one untracked file outside
+    // every lane, on a pushed branch - is refused before any write.
+    writeAt(stateRoot, 'TASKBOARD.md', '# Fixture Taskboard\n\nedited\n');
+    writeAt(stateRoot, 'scratch.txt', 'untracked\n');
+    const specBefore = fs.readFileSync(specPath, 'utf8');
+    const taskBefore = fs.readFileSync(taskPath, 'utf8');
+    assert.throws(
+      () => closeTask(stateRoot, 'S-751', closeOptions),
+      /^Error: close refused: dirty-tree \(2 files: TASKBOARD\.md, scratch\.txt\); commit and push, or rerun with --git-state-reason "<why>" to record the state and reason$/,
+      '(1) close on a dirty, pushed tree is refused, naming dirty-tree and its files'
+    );
+    assert.equal(fs.readFileSync(specPath, 'utf8'), specBefore, '(1) a refused close leaves the Spec byte-identical');
+    assert.equal(fs.readFileSync(taskPath, 'utf8'), taskBefore, '(1) a refused close leaves the Task record byte-identical');
+    assert.equal(readReceiptFromFile(taskPath).length, 0, '(1) a refused close appends no Receipt row');
+
+    // (2) A clean tree whose HEAD no remote-tracking ref contains is refused,
+    // naming unpushed and the upstream distance, or the missing upstream.
+    execFileSync('git', ['-C', stateRoot, 'checkout', '--quiet', '--', 'TASKBOARD.md']);
+    fs.rmSync(path.join(stateRoot, 'scratch.txt'));
+    execFileSync('git', ['-C', stateRoot, 'commit', '--quiet', '--allow-empty', '-m', 'local only']);
+    const branch = execFileSync('git', ['-C', stateRoot, 'rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf8' }).trim();
+    assert.throws(
+      () => closeTask(stateRoot, 'S-751', closeOptions),
+      new RegExp(`^Error: close refused: unpushed \\(ahead 1 behind 0 of origin/${branch}\\); commit and push, or rerun with --git-state-reason "<why>" to record the state and reason$`),
+      '(2) close on a clean branch ahead of its upstream is refused, naming unpushed and the distance'
+    );
+    execFileSync('git', ['-C', stateRoot, 'switch', '--quiet', '-c', 'no-upstream']);
+    assert.throws(() => closeTask(stateRoot, 'S-751', closeOptions), /^Error: close refused: unpushed \(no upstream\);/,
+      '(2) a branch with no upstream at an unpushed commit is refused, saying so');
+    execFileSync('git', ['-C', stateRoot, 'checkout', '--quiet', '--detach']);
+    assert.throws(() => closeTask(stateRoot, 'S-751', closeOptions), /^Error: close refused: unpushed \(detached HEAD, no upstream\);/,
+      '(2) a detached HEAD at an unpushed commit is refused, saying so');
+    execFileSync('git', ['-C', stateRoot, 'switch', '--quiet', branch]);
+    assert.equal(fs.readFileSync(specPath, 'utf8'), specBefore, '(2) a refused close leaves the Spec byte-identical');
+    assert.equal(readReceiptFromFile(taskPath).length, 0, '(2) a refused close appends no Receipt row');
+
+    // (3) With --git-state-reason the same dirty, unpushed close succeeds, and
+    // the observed state and the reason are readable afterward in the
+    // Receipt row (inside its checksum chain) and the Spec evidence row.
+    writeAt(stateRoot, 'scratch.txt', 'untracked | piped\n');
+    const reason = 'owner asked to close before the push | retry later';
+    closeTask(stateRoot, 'S-751', { ...closeOptions, remainingGap: 'TK-003 follow-up', gitStateReason: reason });
+    const recorded = `TK-003 follow-up Git state at close: dirty-tree (1 file: scratch.txt) and unpushed (ahead 1 behind 0 of origin/${branch}); recorded reason: ${reason}`;
+    const receiptRows = readReceiptFromFile(taskPath);
+    assert.equal(receiptRows.length, 1, '(3) a permitted close appends exactly one Receipt row, whose checksum chain still validates');
+    assert.equal(receiptRows[0].remainingGap, recorded, '(3) the Receipt row carries the remaining gap, the observed Git state and the reason');
+    assert.equal(receiptRows[0].dirty, 1, '(3) the Receipt row still reads its Dirty count from live Git facts');
+    const evidenceRow = fs.readFileSync(specPath, 'utf8').split('\n').find((line) => line.includes('| TK-002 | Task closed |'));
+    assert.ok(evidenceRow, '(3) the Spec evidence row is appended');
+    assert.equal(parseMarkdownTableRow(evidenceRow)[5], recorded, '(3) the Spec evidence row carries the same recorded state and reason');
+    assert.match(fs.readFileSync(taskPath, 'utf8'), /\*\*Status:\*\* done/, '(3) the permitted close flips the Task to done');
+
+    // (4) Clean and pushed closes exactly as before; a reason given there is
+    // refused rather than silently dropped; an unknown state (not a
+    // repository) closes exactly as before.
+    writeAt(stateRoot, 'specs/S-752-table/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-752').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    fs.rmSync(path.join(stateRoot, 'scratch.txt'));
+    claimWork(stateRoot, 'S-752', { agent: 'fixture', date: todayStr });
+    publishFixture(stateRoot);
+    const tableSpecPath = path.join(stateRoot, 'specs/S-752-table/SPEC.md');
+    const tableBefore = fs.readFileSync(tableSpecPath, 'utf8');
+    assert.throws(
+      () => closeTask(stateRoot, 'S-752', { ...closeOptions, gitStateReason: 'nothing to waive' }),
+      /^Error: --git-state-reason given but the tree is clean and pushed; nothing to record$/,
+      '(4) a reason on a clean, pushed tree is refused rather than silently dropped'
+    );
+    assert.equal(fs.readFileSync(tableSpecPath, 'utf8'), tableBefore, '(4) the refused reason writes nothing');
+    closeTask(stateRoot, 'S-752', closeOptions);
+    const cleanRow = fs.readFileSync(tableSpecPath, 'utf8').split('\n').find((line) => line.includes('| TK-001 | Task closed |'));
+    assert.equal(parseMarkdownTableRow(cleanRow)[5], 'none', '(4) a clean, pushed close records the remaining gap unchanged');
+
+    const unknownRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-git-unknown-'));
+    try {
+      writeAt(unknownRoot, 'specs/S-753-unknown/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-753'));
+      claimWork(unknownRoot, 'S-753', { agent: 'fixture', date: todayStr });
+      closeTask(unknownRoot, 'S-753', closeOptions);
+      const unknownRow = fs.readFileSync(path.join(unknownRoot, 'specs/S-753-unknown/SPEC.md'), 'utf8').split('\n').find((line) => line.includes('| TK-001 | Task closed |'));
+      assert.equal(parseMarkdownTableRow(unknownRow)[5], 'none', '(4) outside any repository the close is neither refused nor annotated');
+    } finally {
+      fs.rmSync(unknownRoot, { recursive: true, force: true });
+    }
+
+    assert.equal(parseCliArgs(['close', 'S-751', '--git-state-reason', reason]).options.gitStateReason, reason,
+      'the CLI flag --git-state-reason reaches closeTask as gitStateReason');
+    console.log('ok - close refuses a dirty or unpushed tree unless --git-state-reason records the state and reason');
+  } finally {
+    fs.rmSync(stateRoot, { recursive: true, force: true });
+  }
+}
+
+// S-00M TK-003 (dispatcher addition): `close` names no Task, so with no
+// in-progress Task it must not fall through to the first ready one - a Task
+// nobody claimed would be closed as done. It refuses before any write.
+{
+  const unclaimedRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'close-unclaimed-'));
+  try {
+    writeAt(unclaimedRoot, 'specs/S-761-unclaimed/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-761'));
+    const tablePath = path.join(unclaimedRoot, 'specs/S-761-unclaimed/SPEC.md');
+    const tableBefore = fs.readFileSync(tablePath, 'utf8');
+    const options = { proof: 'must not persist', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12' };
+    assert.throws(() => closeTask(unclaimedRoot, 'S-761', options), /^Error: S-761 has no in-progress task to close; claim one first$/,
+      'close on a Spec whose only open Task is ready (never claimed) is refused');
+    assert.equal(fs.readFileSync(tablePath, 'utf8'), tableBefore, 'the refused close leaves the table-backed Spec byte-identical');
+
+    writeAt(unclaimedRoot, 'specs/S-762-unclaimed-record/SPEC.md', recordBackedSpec('S-762'));
+    writeAt(unclaimedRoot, 'specs/S-762-unclaimed-record/tasks/TK-002/TASK.md', taskRecordFixture({
+      id: 'TK-002', specId: 'S-762', slice: 'Unclaimed slice', status: 'ready', blockers: 'none',
+      destination: 'spec-acceptance: S-762 Acceptance Criteria'
+    }));
+    const recordPath = path.join(unclaimedRoot, 'specs/S-762-unclaimed-record/tasks/TK-002/TASK.md');
+    const recordBefore = fs.readFileSync(recordPath, 'utf8');
+    assert.throws(() => closeTask(unclaimedRoot, 'S-762', options), /^Error: S-762 has no in-progress task to close; claim one first$/,
+      'close on a record-backed Spec whose only open Task is ready is refused');
+    assert.equal(fs.readFileSync(recordPath, 'utf8'), recordBefore, 'the refused close leaves the ready Task record byte-identical');
+    console.log('ok - close refuses a Spec with no in-progress Task instead of closing an unclaimed ready one');
+  } finally {
+    fs.rmSync(unclaimedRoot, { recursive: true, force: true });
+  }
+}
 
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-'));
 initGitRoot(root);
@@ -133,6 +312,7 @@ try {
     'a spec must not complete before its task and acceptance gates'
   );
 
+  publishFixture(root);
   const closed = closeTask(root, 'S-001', {
     proof: 'node test | tee proof.log',
     docs: 'Docs checked; no update needed',
@@ -170,7 +350,30 @@ try {
     'complete still refuses a passed-verdict Spec with no recorded owner approval'
   );
   recordOwnerApproval(root, 'S-001', { candidate: integratedFixtureCandidate(root), owner: 'Kayden Clark', result: 'approve' });
-  completeSpec(root, 'S-001', { date: '2026-07-12' });
+  // S-00J TK-01S: final closure also verifies the approved content on the
+  // manifest-declared default branch. This shared lifecycle room predates the
+  // manifest (its Specs live in the legacy `specs/` lane, which a schema-2
+  // manifest cannot declare), so it has no default branch to verify against:
+  // complete refuses and writes nothing. The successful closure, with its
+  // recorded delivery proof, is proven in the managed S-803 room below and in
+  // tools/test-spec-report.mjs. The completed S-001 state the rest of this
+  // lifecycle reads is written here as fixture setup, and its completion row
+  // says so rather than claiming verified delivery.
+  const s001Approved = read('specs/S-001-fixture/SPEC.md');
+  assert.throws(
+    () => completeSpec(root, 'S-001', { date: '2026-07-12' }),
+    /^Error: S-001 cannot complete: the manifest declares no git\.defaultBranch/,
+    'complete refuses a reviewed and approved Spec when no default branch is declared to verify delivery against'
+  );
+  assert.equal(read('specs/S-001-fixture/SPEC.md'), s001Approved, 'the refused complete writes nothing');
+  write('specs/S-001-fixture/SPEC.md', appendEvidence(
+    s001Approved
+      .replace('**Status:** active', '**Status:** complete')
+      .replace(/^\*\*Updated:\*\*.*$/m, '**Updated:** 2026-07-12')
+      .replace(/^\*\*Latest event:\*\*.*$/m, '**Latest event:** Spec completed and removed from the hot board.')
+      .replace(/^\*\*Next gate:\*\*.*$/m, '**Next gate:** none'),
+    '| 2026-07-12 | spec | Spec completed | Fixture setup: completed state written directly; complete refuses in this manifest-less room | Documentation impact recorded above | none |'
+  ));
   render(root);
 
   assert.match(read('BLUEPRINT.md'), /S-001-fixture\/SPEC\.md/);
@@ -624,6 +827,7 @@ try {
     'claiming a Task record leaves the Spec slice table untouched');
   assert.equal(nextWork(root).status, 'in-progress', 'a claimed record resumes before new work is selected');
 
+  publishFixture(root);
   const closedRecord = closeTask(root, 'S-301', {
     proof: 'node test | tee record.log',
     docs: 'Docs checked; no update needed',
@@ -663,6 +867,7 @@ try {
   // than a slice; its active state is derived from the records, and no second
   // Spec status is written anywhere.
   claimWork(root, 'S-301', { agent: 'codex', date: '2026-07-12' });
+  publishFixture(root);
   closeTask(root, 'S-301', {
     proof: 'see $& and $` output', docs: 'Docs checked; no update needed', remainingGap: 'none', date: '2026-07-12'
   });
@@ -702,6 +907,7 @@ try {
     destination: 'spec-acceptance: S-310 Acceptance Criteria'
   })}**Proof:** superseded by the rerun\n`);
   render(root);
+  publishFixture(root);
   closeTask(root, 'S-310', {
     proof: 'see $& and $` output',
     docs: 'Docs checked; no update needed',
@@ -897,6 +1103,68 @@ try {
   fs.rmSync(path.join(root, 'specs/S-305-unconvertible'), { recursive: true });
   fs.rmSync(path.join(root, 'specs/S-304-convert'), { recursive: true });
 
+  // S-01L TK-02D: Tasks are cut when a Spec is activated, so a request that
+  // activates a planned Spec converts it through an explicit `activate`
+  // opt-in. Without it a planned Spec is refused exactly as before, the
+  // refusal names the route, and nothing is written.
+  write('specs/S-311-activate/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-311')
+    .replace('**Status:** active', '**Status:** planned'));
+  const plannedBefore = read('specs/S-311-activate/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-311'),
+    /S-311 is planned, not active; .*convert-tasks S-311 --activate/,
+    'a planned Spec is refused without the opt-in, and the refusal names the activation route'
+  );
+  assert.equal(read('specs/S-311-activate/SPEC.md'), plannedBefore,
+    'a planned Spec refused without the opt-in is byte-identical');
+  assert.equal(fs.existsSync(path.join(root, 'specs/S-311-activate/tasks')), false,
+    'a planned Spec refused without the opt-in gets no tasks directory');
+  const activated = convertSpecSlices(root, 'S-311', { activate: true });
+  assert.deepEqual(activated.converted, ['specs/S-311-activate/tasks/TK-001/TASK.md'],
+    'the opt-in converts the planned Spec it activates');
+  assert.equal(activated.activated, true, 'the result says the Spec was activated');
+  assert.equal(showSpec(root, 'S-311').status, 'active', 'the converted Spec is active');
+  assert.equal(readTaskRecord(path.join(root, 'specs/S-311-activate/tasks/TK-001/TASK.md'), root).status, 'ready');
+  assert.equal(
+    read('specs/S-311-activate/SPEC.md'),
+    removeRowForTest(plannedBefore.replace('**Status:** planned', '**Status:** active'), 'TK-001'),
+    'activation rewrites only the Status field and removes only the converted row'
+  );
+  render(root);
+  assert.deepEqual(doctor(root), [], 'a Spec activated by conversion renders and passes doctor');
+  fs.rmSync(path.join(root, 'specs/S-311-activate'), { recursive: true });
+
+  // An activating conversion whose record cannot be parsed writes nothing:
+  // the Spec stays planned, with no tasks directory.
+  write('specs/S-312-activate-unconvertible/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-312')
+    .replace('**Status:** active', '**Status:** planned')
+    .replace('| TK-001 | First slice | ready | none | pending |', '| TK-001 | First slice | blocked | TT-Q10 | pending |'));
+  const plannedUnconvertibleBefore = read('specs/S-312-activate-unconvertible/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-312', { activate: true }),
+    /S-312\/TK-001 cannot be converted: TK-001 has an invalid blocker id: TT-Q10/,
+    'an activating conversion still fails closed on a record it cannot parse'
+  );
+  assert.equal(read('specs/S-312-activate-unconvertible/SPEC.md'), plannedUnconvertibleBefore,
+    'a refused activating conversion leaves the Spec planned and byte-identical');
+  assert.equal(fs.existsSync(path.join(root, 'specs/S-312-activate-unconvertible/tasks')), false,
+    'a refused activating conversion leaves no tasks directory');
+  fs.rmSync(path.join(root, 'specs/S-312-activate-unconvertible'), { recursive: true });
+
+  // The opt-in activates only a planned Spec: a completed Spec is refused as before.
+  assert.throws(
+    () => convertSpecSlices(root, 'S-001', { activate: true }),
+    /S-001 is complete/,
+    'the activation opt-in never reopens a completed Spec'
+  );
+  assert.equal(read('specs/S-001-fixture/SPEC.md'), completedBefore,
+    'a refused activating conversion leaves the completed Spec byte-identical');
+  assert.deepEqual(
+    parseCliArgs(['convert-tasks', 'S-311', '--activate', '--json']),
+    { command: 'convert-tasks', id: 'S-311', options: { activate: true, json: true } },
+    '--activate is a boolean convert-tasks flag and does not swallow the next flag'
+  );
+
   assert.equal(read('specs/S-306-table-only/SPEC.md'), tableOnlyBefore,
     'a table-only Spec beside record-backed Specs is never rewritten by them');
   fs.rmSync(path.join(root, 'specs/S-306-table-only'), { recursive: true });
@@ -963,6 +1231,13 @@ function sliceTable(content) {
   const start = content.indexOf('## Vertical Implementation Slices');
   const end = content.indexOf('\n## ', start + 1);
   return content.slice(start, end < 0 ? content.length : end);
+}
+
+// The expected Spec text after a converted row leaves the slice table: the
+// same text with that one table line gone, so a byte comparison proves no
+// other field moved.
+function removeRowForTest(content, taskId) {
+  return content.split('\n').filter((line) => !line.startsWith(`| ${taskId} |`)).join('\n');
 }
 
 function taskRecordFixture({ id, specId, slice, status, blockers, destination }) {
@@ -1856,6 +2131,7 @@ function wikiClaimFixture() {
     claimWork(historicalRoot, 'S-602', { agent: 'codex', date: TODAY });
     assert.equal(readHistorical(), beforeAnyCommand, 'claim on the sibling never rewrites the historical Spec');
 
+    publishFixture(historicalRoot);
     closeTask(historicalRoot, 'S-602', {
       proof: 'node test', docs: 'Docs checked; no update needed', remainingGap: 'none', date: TODAY
     });
@@ -2115,8 +2391,12 @@ function wikiClaimFixture() {
     // (e) close on a record-backed Task appends one Receipt row carrying the
     // close's tests, docs and remaining-gap values with live Git facts, and
     // the Spec's evidence row is still appended.
+    // S-00M TK-003: this fixture is deliberately dirty and remote-less so
+    // the Dirty column has a non-zero live value to prove, so the close
+    // records that state and a reason rather than being refused.
     closeTask(closeRoot, 'S-721', {
-      proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr
+      proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr,
+      gitStateReason: 'fixture proves live Receipt Git facts'
     });
     const taskRecordPath = path.join(closeRoot, 'specs/S-721-close-receipt/tasks/TK-002/TASK.md');
     const taskAfterClose = fs.readFileSync(taskRecordPath, 'utf8');
@@ -2124,7 +2404,8 @@ function wikiClaimFixture() {
     assert.equal(rows.length, 1, '(e) close appends exactly one Receipt row to a record-backed Task');
     assert.equal(rows[0].testsRun, 'tools/test-fixture.mjs: pass', "(e) the Receipt row's Tests column carries close's --proof value");
     assert.equal(rows[0].docsTouched, 'Docs checked; no update needed', "(e) the Receipt row's Docs touched column carries close's --docs value");
-    assert.equal(rows[0].remainingGap, 'none', "(e) the Receipt row's Remaining gap column carries close's --remaining-gap value");
+    assert.match(rows[0].remainingGap, /^none Git state at close: dirty-tree \(4 files: [^)]*\) and unpushed \(no remote\); recorded reason: fixture proves live Receipt Git facts$/,
+      "(e) the Receipt row's Remaining gap column carries close's --remaining-gap value, then the recorded Git state and reason");
     assert.equal(rows[0].branch, expectedBranch, '(e) the Receipt row reads its branch from live Git facts, not a caller-supplied value');
     assert.equal(rows[0].headSha, expectedSha, '(e) the Receipt row reads its HEAD SHA from live Git facts, not a caller-supplied value');
     assert.equal(rows[0].dirty, 3, '(e) the Receipt row reads its dirty file count from live Git facts, not a caller-supplied value');
@@ -2140,6 +2421,8 @@ function wikiClaimFixture() {
     // therefore no Task record file) ever created for it.
     writeAt(closeRoot, 'specs/S-722-table-only/SPEC.md',
       fixtureSpec().replaceAll('S-001', 'S-722').replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`));
+    claimWork(closeRoot, 'S-722', { agent: 'fixture', date: todayStr });
+    publishFixture(closeRoot);
     closeTask(closeRoot, 'S-722', {
       proof: 'tools/test-fixture.mjs: pass', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr
     });
@@ -2175,6 +2458,7 @@ function wikiClaimFixture() {
     corrupted = corrupted.replace('tools/test-fixture.mjs: pass', 'tools/test-fixture.mjs: TAMPERED');
     writeAt(closeRoot, 'specs/S-723-failing-append/tasks/TK-002/TASK.md', corrupted);
     const failingSpecPath = path.join(closeRoot, 'specs/S-723-failing-append/SPEC.md');
+    publishFixture(closeRoot);
     const taskBeforeFailure = fs.readFileSync(failingTaskPath, 'utf8');
     const specBeforeFailure = fs.readFileSync(failingSpecPath, 'utf8');
 
@@ -2276,6 +2560,11 @@ function wikiClaimFixture() {
 {
   const gateRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-complete-gate-'));
   initGitRoot(gateRoot);
+  // S-00J TK-01S: a managed room, so the manifest can declare the default
+  // branch that final closure verifies approved delivery against.
+  initLifecycleFixture(gateRoot);
+  const gateBranch = execFileSync('git', ['-C', gateRoot, 'branch', '--show-current'], { encoding: 'utf8' }).trim();
+  declareFixtureGit(gateRoot, { defaultBranch: gateBranch, integrationBranch: gateBranch });
   try {
     function completableSpec(id) {
       return [
@@ -2320,7 +2609,7 @@ function wikiClaimFixture() {
     }
 
     // No verdict at all.
-    writeAt(gateRoot, 'specs/S-800-fixture/SPEC.md', completableSpec('S-800'));
+    writeAt(gateRoot, 'workbench/specs/S-800-fixture/SPEC.md', completableSpec('S-800'));
     assert.throws(
       () => completeSpec(gateRoot, 'S-800', { date: '2026-09-18' }),
       /no review verdict is recorded/i,
@@ -2331,11 +2620,11 @@ function wikiClaimFixture() {
     // a pass, then change the Spec's content (a harmless field edit stands
     // in for any real later edit) so the digest it was recorded against no
     // longer matches.
-    writeAt(gateRoot, 'specs/S-801-fixture/SPEC.md', completableSpec('S-801'));
+    writeAt(gateRoot, 'workbench/specs/S-801-fixture/SPEC.md', completableSpec('S-801'));
     recordReviewVerdict(gateRoot, 'S-801', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
-    const s801Path = path.join(gateRoot, 'specs/S-801-fixture/SPEC.md');
+    const s801Path = path.join(gateRoot, 'workbench/specs/S-801-fixture/SPEC.md');
     fs.writeFileSync(s801Path, fs.readFileSync(s801Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after review).'));
     assert.throws(
       () => completeSpec(gateRoot, 'S-801', { date: '2026-09-18' }),
@@ -2348,10 +2637,10 @@ function wikiClaimFixture() {
     // the report, never recomputed by hand) without going through
     // recordReviewVerdict, so no corrective Task exists to trip the earlier
     // unfinished-slice check first - isolating this one reason.
-    writeAt(gateRoot, 'specs/S-802-fixture/SPEC.md', completableSpec('S-802'));
+    writeAt(gateRoot, 'workbench/specs/S-802-fixture/SPEC.md', completableSpec('S-802'));
     const s802Candidate = headSha(gateRoot);
     const s802Report = assembleSpecReport(gateRoot, 'S-802', { candidate: s802Candidate });
-    const s802Path = path.join(gateRoot, 'specs/S-802-fixture/SPEC.md');
+    const s802Path = path.join(gateRoot, 'workbench/specs/S-802-fixture/SPEC.md');
     const failRow = `| 2026-09-18 | review | Review verdict: fail at ${s802Candidate} [${s802Report.specDigest.slice(0, 12)}] #1 | Some finding | Claude Opus 5 (separate context) | 1 |`;
     fs.writeFileSync(s802Path, fs.readFileSync(s802Path, 'utf8').replace(
       '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
@@ -2367,7 +2656,7 @@ function wikiClaimFixture() {
     // complete also requires a recorded owner Human QA approval bound to the
     // current content, checked after (and composing with) the review-verdict
     // gate above. No verdict at all for the owner-qa row.
-    writeAt(gateRoot, 'specs/S-804-fixture/SPEC.md', completableSpec('S-804'));
+    writeAt(gateRoot, 'workbench/specs/S-804-fixture/SPEC.md', completableSpec('S-804'));
     recordReviewVerdict(gateRoot, 'S-804', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
@@ -2382,12 +2671,12 @@ function wikiClaimFixture() {
     // content (moving the digest) and record a FRESH passed verdict for the
     // new content - so the review gate passes - without a fresh owner
     // approval, isolating the approval-gap check from the review-gap check.
-    writeAt(gateRoot, 'specs/S-805-fixture/SPEC.md', completableSpec('S-805'));
+    writeAt(gateRoot, 'workbench/specs/S-805-fixture/SPEC.md', completableSpec('S-805'));
     recordReviewVerdict(gateRoot, 'S-805', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     recordOwnerApproval(gateRoot, 'S-805', { candidate: integratedFixtureCandidate(gateRoot), owner: 'Kayden Clark', result: 'approve' });
-    const s805Path = path.join(gateRoot, 'specs/S-805-fixture/SPEC.md');
+    const s805Path = path.join(gateRoot, 'workbench/specs/S-805-fixture/SPEC.md');
     fs.writeFileSync(s805Path, fs.readFileSync(s805Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after owner approval).'));
     recordReviewVerdict(gateRoot, 'S-805', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Sonnet 5 (separate context)'
@@ -2403,13 +2692,13 @@ function wikiClaimFixture() {
     // (read back from the report, never recomputed by hand), alongside a
     // passed verdict for the same digest, so only the approval-gap reason is
     // isolated.
-    writeAt(gateRoot, 'specs/S-806-fixture/SPEC.md', completableSpec('S-806'));
+    writeAt(gateRoot, 'workbench/specs/S-806-fixture/SPEC.md', completableSpec('S-806'));
     const s806Candidate = integratedFixtureCandidate(gateRoot);
     recordReviewVerdict(gateRoot, 'S-806', {
       candidate: s806Candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     const s806Report = assembleSpecReport(gateRoot, 'S-806', { candidate: s806Candidate });
-    const s806Path = path.join(gateRoot, 'specs/S-806-fixture/SPEC.md');
+    const s806Path = path.join(gateRoot, 'workbench/specs/S-806-fixture/SPEC.md');
     const findingRow = `| 2026-09-18 | owner-qa | Owner QA: finding at ${s806Candidate} [${s806Report.specDigest.slice(0, 12)}] #1 | Some finding | Kayden Clark | 1 |`;
     fs.writeFileSync(s806Path, fs.readFileSync(s806Path, 'utf8').replace(
       '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
@@ -2425,17 +2714,20 @@ function wikiClaimFixture() {
     // proceed unchanged: the same single "Spec completed" evidence row this
     // room's other completeSpec proof (S-001, above) already appends,
     // nothing else different.
-    writeAt(gateRoot, 'specs/S-803-fixture/SPEC.md', completableSpec('S-803'));
+    writeAt(gateRoot, 'workbench/specs/S-803-fixture/SPEC.md', completableSpec('S-803'));
     recordReviewVerdict(gateRoot, 'S-803', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
-    recordOwnerApproval(gateRoot, 'S-803', { candidate: integratedFixtureCandidate(gateRoot), owner: 'Kayden Clark', result: 'approve' });
-    const s803Before = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
+    const s803Candidate = integratedFixtureCandidate(gateRoot);
+    recordOwnerApproval(gateRoot, 'S-803', { candidate: s803Candidate, owner: 'Kayden Clark', result: 'approve' });
+    // S-00J TK-01S: the owner promoted integration to the default branch.
+    execFileSync('git', ['-C', gateRoot, 'update-ref', `refs/remotes/origin/${gateBranch}`, s803Candidate]);
+    const s803Before = fs.readFileSync(path.join(gateRoot, 'workbench/specs/S-803-fixture/SPEC.md'), 'utf8');
     const s803SliceTableBefore = s803Before.slice(s803Before.indexOf('## Vertical Implementation Slices'), s803Before.indexOf('## Acceptance Criteria'));
     const s803VerdictRowBefore = s803Before.split('\n').find((line) => line.includes('Review verdict: pass'));
     const s803ApprovalRowBefore = s803Before.split('\n').find((line) => line.includes('Owner QA: approve'));
     completeSpec(gateRoot, 'S-803', { date: '2026-09-18' });
-    const s803After = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
+    const s803After = fs.readFileSync(path.join(gateRoot, 'workbench/specs/S-803-fixture/SPEC.md'), 'utf8');
     // Exactly the same shape completeSpec has always produced (proven above
     // with S-001): the header flips to complete, and one "Spec completed"
     // row is appended - nothing else, which is what "byte-identical apart
@@ -2443,7 +2735,9 @@ function wikiClaimFixture() {
     assert.match(s803After, /\*\*Status:\*\* complete$/m);
     assert.match(s803After, /\*\*Latest event:\*\* Spec completed and removed from the hot board\.$/m);
     assert.match(s803After, /\*\*Next gate:\*\* none$/m);
-    assert.match(s803After, /\| 2026-09-18 \| spec \| Spec completed \| Acceptance gates satisfied \| Documentation impact recorded above \| none \|/);
+    const s803Digest12 = s803After.match(/Owner QA: approve at \S+ \[([0-9a-f]{12})\]/)[1];
+    assert.ok(s803After.includes(`| 2026-09-18 | spec | Spec completed | Acceptance gates satisfied; approved delivery verified: origin/${gateBranch} at ${s803Candidate} contains approved candidate ${s803Candidate} [${s803Digest12}] | Documentation impact recorded above | none |`),
+      'the completion row also records the observed default-branch ref/SHA and the approved candidate/digest (S-00J TK-01S)');
     assert.equal(
       s803After.slice(s803After.indexOf('## Vertical Implementation Slices'), s803After.indexOf('## Acceptance Criteria')),
       s803SliceTableBefore,
@@ -4429,6 +4723,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.equal(receipt.created.length, 1);
     const created = receipt.created[0];
     assert.equal(created.filePath, `workbench/specs/retired/S-591-corrective-fixture/tasks/${created.id}/TASK.md`);
+    assert.match(created.id, /^TK-[0-9A-Z]{4,}$/, 'S-01W TK-02B: a corrective Task on a retired Spec follows the shared uppercase width-four artifact policy');
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, created.filePath)));
     assert.ok(!created.filePath.includes('/tasks/retired/'), 'the new corrective Task never lands under tasks/retired/ - that folder holds a reconciled done Task, not a fresh one');
     assert.ok(fs.existsSync(path.join(correctiveRetiredRoot, historicalRoute)), 'the Spec is still retired');
@@ -4465,6 +4760,11 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     claimWork(correctiveRetiredRoot, 'S-591', { agent: 'fixture' });
     assert.equal(nextWork(correctiveRetiredRoot)?.status, 'in-progress');
     assert.equal(fs.readFileSync(path.join(correctiveRetiredRoot, historicalRoute), 'utf8'), retiredBytes, 'claim preserves historical Spec header and evidence');
+    // S-00M TK-003: close refuses a dirty or unpushed tree, so the claim is
+    // committed and "pushed" the way this fixture already simulates its remote.
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'add', '-A']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'commit', '--quiet', '-m', 'claim corrective Task']);
+    execFileSync('git', ['-C', correctiveRetiredRoot, 'update-ref', 'refs/remotes/origin/main', 'HEAD']);
     closeTask(correctiveRetiredRoot, 'S-591', { proof: 'corrective fixture passed', docs: 'Wiki checked', remainingGap: 'none' });
     assert.equal(findSpec(correctiveRetiredRoot, 'S-591').status, 'complete', 'correction never reopens completed Spec');
     assert.equal(findSpec(correctiveRetiredRoot, 'S-591').lifecycleFolder, 'retired');
@@ -4545,6 +4845,7 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.equal(receipt.created.length, 1);
     const created = receipt.created[0];
     assert.match(created.filePath, /^workbench\/specs\/corrective\/tasks\/TK-[0-9A-Za-z]+\/TASK\.md$/);
+    assert.match(created.id, /^TK-[0-9A-Z]{4,}$/, 'S-01W TK-02B: an orphan corrective Task follows the shared uppercase width-four artifact policy');
     assert.ok(fs.existsSync(path.join(orphanRoot, created.filePath)));
     const taskContent = fs.readFileSync(path.join(orphanRoot, created.filePath), 'utf8');
     assert.match(taskContent, /\*\*Destination:\*\* wiki-claim: workbench\/wiki\/design-concepts\/orphan-fixture-capability\.md#Evidence and Sources/);
@@ -4611,8 +4912,769 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'remote-only identity']);
     execFileSync('git', ['-C', root, 'update-ref', 'refs/remotes/origin/parallel', 'HEAD']);
     execFileSync('git', ['-C', root, 'reset', '--hard', '--quiet', base]);
-    assert.equal(nextIdentity(root, undefined, { prefix: 'S' }).id, 'S-00E');
-    assert.equal(nextIdentity(root, 'S-00A', { prefix: 'TK' }).id, 'TK-00E');
+    // S-01W TK-02B: width-three reservations occupy their width-four spellings.
+    assert.equal(nextIdentity(root, undefined, { prefix: 'S' }).id, 'S-000E');
+    assert.equal(nextIdentity(root, 'S-00A', { prefix: 'TK' }).id, 'TK-000E');
     console.log('ok - identity proposals reserve active, retired, corrective, discarded and remote-only IDs');
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
+
+// ---- S-00J TK-01T: reviewed-delivery blocker `S-###:delivered` (begin) ----
+// A dependent that needs only a blocker Spec's reviewed integration delivery
+// (T0 of S-00J's closure-capture transition contract) writes
+// `S-###:delivered`; a plain `S-###` still waits for `complete`/`superseded`.
+// Every room below holds one blocker Spec, S-9E0, whose own Tasks are never
+// selectable, and two record-backed dependents: S-9E1 (priority 0) waits on
+// plain `S-9E0` and S-9E2 (priority 1) on `S-9E0:delivered`. So `next`
+// returns S-9E1 only when the plain edge is met, S-9E2 when only the
+// delivered edge is, and nothing when neither is.
+{
+  const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+
+  function deliveryBlockerSpec({ taskStatus = 'done', accepted = true, status = 'active', description = 'Delivers the fixture capability.' } = {}) {
+    return [
+      '# S-9E0 - Delivered Fixture Capability',
+      '',
+      '**Spec ID:** S-9E0',
+      `**Status:** ${status}`,
+      '**Priority:** 5',
+      '**Owner:** agent',
+      '**Updated:** 2026-09-26',
+      `**Catalog description:** ${description}`,
+      '**Blockers:** none',
+      '**Latest event:** TK-001 closed.',
+      '**Next gate:** Owner Human QA.',
+      '',
+      '## Vertical Implementation Slices',
+      '',
+      '| Task | Slice | Status | Blockers | Proof |',
+      '|---|---|---|---|---|',
+      `| TK-001 | Deliver the capability | ${taskStatus} | none | ${taskStatus === 'done' ? 'landed' : 'pending'} |`,
+      '',
+      '## Acceptance Criteria',
+      '',
+      `- [${accepted ? 'x' : ' '}] The capability is delivered.`,
+      '',
+      '## Append-Only Evidence And Execution Log',
+      '',
+      '| Date | Task | Event | Verification | Docs | Remaining gap |',
+      '|---|---|---|---|---|---|',
+      '| 2026-09-26 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+      '',
+      '## Completion Result',
+      '',
+      // T0 deliberately does not need a Completion Result: that is written
+      // at final closure (T3), after owner Human QA.
+      'Pending.',
+      '',
+      '## Supersession',
+      '',
+      '- Supersedes: none',
+      '- Superseded by: none',
+      ''
+    ].join('\n');
+  }
+
+  function dependentSpec(id, priority) {
+    return emptyTableRecordBackedSpec(id)
+      .replace('# ' + id + ' - Task Lifecycle Fixture', `# ${id} - Dependent Fixture`)
+      .replace('**Priority:** 0', `**Priority:** ${priority}`);
+  }
+
+  // Builds one room. `verdict` is 'pass', 'fail' or null; `contained` false
+  // leaves the declared integration branch at the pre-delivery commit;
+  // `editAfterReview` changes the blocker's reviewed content after the pass
+  // verdict (committed and integrated); `reviewUncommitted` records the pass
+  // against working-tree content the candidate commit never carried.
+  function deliveryRoom({ blocker = {}, verdict = 'pass', contained = true, editAfterReview = false, reviewUncommitted = false, plainBlockers = 'S-9E0', deliveredBlockers = 'S-9E0:delivered', deliveredStatus = 'ready' } = {}) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-delivered-'));
+    initGitRoot(dir);
+    initLifecycleFixture(dir);
+    const branch = execFileSync('git', ['-C', dir, 'branch', '--show-current'], { encoding: 'utf8' }).trim();
+    declareFixtureGit(dir, { defaultBranch: branch, integrationBranch: 'integration' });
+    writeAt(dir, 'workbench/specs/S-9E1-plain-dependent/SPEC.md', dependentSpec('S-9E1', 0));
+    writeAt(dir, 'workbench/specs/S-9E1-plain-dependent/tasks/TK-9E1/TASK.md', taskRecordFixture({
+      id: 'TK-9E1', specId: 'S-9E1', slice: 'Needs final closure', status: 'ready', blockers: plainBlockers,
+      destination: 'spec-acceptance: S-9E1 Acceptance Criteria'
+    }));
+    writeAt(dir, 'workbench/specs/S-9E2-delivered-dependent/SPEC.md', dependentSpec('S-9E2', 1));
+    writeAt(dir, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md', taskRecordFixture({
+      id: 'TK-9E2', specId: 'S-9E2', slice: 'Needs reviewed delivery', status: deliveredStatus, blockers: deliveredBlockers,
+      destination: 'spec-acceptance: S-9E2 Acceptance Criteria'
+    }));
+    execFileSync('git', ['-C', dir, 'add', '-A']);
+    execFileSync('git', ['-C', dir, 'commit', '--quiet', '-m', 'dependents']);
+    const base = headSha(dir);
+    const blockerPath = 'workbench/specs/S-9E0-delivered-fixture/SPEC.md';
+    writeAt(dir, blockerPath, deliveryBlockerSpec(blocker));
+    execFileSync('git', ['-C', dir, 'add', '-A']);
+    execFileSync('git', ['-C', dir, 'commit', '--quiet', '-m', 'deliver S-9E0']);
+    const candidate = headSha(dir);
+    if (reviewUncommitted) {
+      writeAt(dir, blockerPath, deliveryBlockerSpec({ ...blocker, description: 'Delivers the fixture capability (never committed at the candidate).' }));
+    }
+    if (verdict === 'pass') {
+      recordReviewVerdict(dir, 'S-9E0', { candidate, result: 'pass', findings: 'none', reviewer: 'Fixture reviewer (separate context)' });
+    } else if (verdict === 'fail') {
+      // Written directly so no corrective Task changes the blocker's own
+      // Task set: this isolates the verdict result as the one missing fact.
+      const digest12 = assembleSpecReport(dir, 'S-9E0').specDigest.slice(0, 12);
+      const file = path.join(dir, blockerPath);
+      fs.writeFileSync(file, appendEvidence(fs.readFileSync(file, 'utf8'), `| ${TODAY} | review | Review verdict: fail at ${candidate} [${digest12}] #1 | one defect | Fixture reviewer (separate context) | 1 |`));
+    }
+    if (editAfterReview) {
+      const file = path.join(dir, blockerPath);
+      fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('Delivers the fixture capability.', 'Delivers a changed capability after review.'));
+    }
+    execFileSync('git', ['-C', dir, 'add', '-A']);
+    execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', 'record review']);
+    execFileSync('git', ['-C', dir, 'branch', '-f', 'integration', contained ? 'HEAD' : base]);
+    return dir;
+  }
+
+  function specBytes(dir) {
+    const out = {};
+    const walk = (current) => {
+      for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+        const full = path.join(current, entry.name);
+        // CATALOG.md is render's own generated projection, not a record.
+        if (entry.isDirectory()) walk(full);
+        else if (entry.name !== 'CATALOG.md') out[path.relative(dir, full)] = fs.readFileSync(full, 'utf8');
+      }
+    };
+    walk(path.join(dir, 'workbench/specs'));
+    return out;
+  }
+
+  function gitRefs(dir) {
+    return execFileSync('git', ['-C', dir, 'for-each-ref', '--format=%(refname) %(objectname)'], { encoding: 'utf8' });
+  }
+
+  function nextJson(dir) {
+    const result = spawnSync(process.execPath, [specTool, 'next', '--json', '--path', dir], { encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return JSON.parse(result.stdout);
+  }
+
+  function boardRow(dir, specId) {
+    render(dir);
+    return fs.readFileSync(path.join(dir, 'TASKBOARD.md'), 'utf8').split('\n').find((line) => line.startsWith(`| [${specId}]`)) ?? '';
+  }
+
+  // Asserts the delivered edge is unmet in `next --json`, `claim` and
+  // `render`, and that doctor names the unmet selected slice.
+  function assertDeliveredUnmet(dir, label) {
+    assert.equal(nextJson(dir), null, `${label}: next --json hands out neither dependent`);
+    assert.throws(() => claimWork(dir, 'S-9E2', { agent: 'fixture' }), /S-9E2\/TK-9E2 is blocked by S-9E0:delivered \(blocked-slice\)/, `${label}: claim refuses the delivered dependent`);
+    assert.match(boardRow(dir, 'S-9E2'), /TK-9E2: Needs reviewed delivery \(blocked/, `${label}: render shows the delivered dependent blocked`);
+    assert.ok(doctor(dir).some((issue) => issue.code === 'blocked-slice' && issue.taskId === 'TK-9E2'), `${label}: doctor names the unmet delivered edge`);
+  }
+
+  const rooms = [];
+  try {
+    // T0 satisfies the delivered edge; the plain edge on the same Spec stays
+    // unmet because S-9E0 is still `active`. Resolution writes nothing and
+    // fetches nothing: every Spec/Task byte and every Git ref is unchanged
+    // after next, doctor and render.
+    const delivered = deliveryRoom();
+    rooms.push(delivered);
+    const bytesBefore = specBytes(delivered);
+    const refsBefore = gitRefs(delivered);
+    const selected = nextJson(delivered);
+    assert.equal(selected?.specId, 'S-9E2', 'next --json hands out the dependent whose delivered edge T0 satisfies');
+    assert.equal(selected?.taskId, 'TK-9E2');
+    assert.match(boardRow(delivered, 'S-9E2'), /TK-9E2: Needs reviewed delivery \(ready/, 'render shows the delivered dependent ready');
+    assert.match(boardRow(delivered, 'S-9E1'), /TK-9E1: Needs final closure \(blocked/, 'render shows the plain dependent still blocked');
+    const deliveredFindings = doctor(delivered);
+    assert.equal(deliveredFindings.some((issue) => issue.code === 'blocked-slice' && issue.taskId === 'TK-9E2'), false, 'doctor agrees the delivered edge is met');
+    assert.ok(deliveredFindings.some((issue) => issue.code === 'blocked-slice' && issue.taskId === 'TK-9E1'), 'doctor still names the plain edge unmet');
+    assert.throws(() => claimWork(delivered, 'S-9E1', { agent: 'fixture' }), /S-9E1\/TK-9E1 is blocked by S-9E0 \(blocked-slice\)/, 'claim refuses the plain dependent before final closure');
+    assert.deepEqual(specBytes(delivered), bytesBefore, 'resolving the delivered edge writes no Spec or Task byte');
+    assert.equal(gitRefs(delivered), refsBefore, 'resolving the delivered edge moves no Git ref (no fetch, no write)');
+    claimWork(delivered, 'S-9E2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(delivered, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md'), delivered).status, 'in-progress', 'claim takes the delivered dependent');
+
+    // Each missing T0 fact keeps the delivered edge unmet.
+    const missing = [
+      ['no review verdict', { verdict: null }],
+      ['a fail verdict', { verdict: 'fail' }],
+      ['a candidate outside the declared integration branch', { contained: false }],
+      ['a substantive change after review', { editAfterReview: true }],
+      ['a reviewed digest the candidate commit never carried', { reviewUncommitted: true }],
+      ['a Task that is not done', { blocker: { taskStatus: 'blocked' } }],
+      ['an unchecked acceptance line', { blocker: { accepted: false } }]
+    ];
+    for (const [label, options] of missing) {
+      const dir = deliveryRoom(options);
+      rooms.push(dir);
+      assertDeliveredUnmet(dir, label);
+    }
+
+    // A record declared `blocked` whose every blocker is satisfied still
+    // derives `ready`, as it does for a done Task or a complete Spec (the
+    // S-301 fixture above): a satisfied delivered edge is no exception.
+    const declaredBlocked = deliveryRoom({ deliveredStatus: 'blocked' });
+    rooms.push(declaredBlocked);
+    assert.equal(nextJson(declaredBlocked)?.taskId, 'TK-9E2', 'a declared-blocked record whose delivered edge is satisfied is handed out ready');
+    claimWork(declaredBlocked, 'S-9E2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(declaredBlocked, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md'), declaredBlocked).status, 'in-progress', 'claim takes the declared-blocked record once its delivered edge is satisfied');
+
+    // A complete Spec satisfies both forms, with no verdict needed.
+    const complete = deliveryRoom({ verdict: null, blocker: { status: 'complete' } });
+    rooms.push(complete);
+    assert.equal(nextJson(complete)?.taskId, 'TK-9E1', 'a complete blocker satisfies the plain edge');
+    claimWork(complete, 'S-9E2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(complete, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md'), complete).status, 'in-progress', 'a complete blocker satisfies the delivered edge');
+
+    // An unknown qualifier fails closed as an unmet blocker, even when the
+    // Spec it names meets T0, and doctor names it rather than ignoring it.
+    const unknown = deliveryRoom({ deliveredBlockers: 'S-9E0:shipped', plainBlockers: 'TK-001:delivered' });
+    rooms.push(unknown);
+    assert.equal(nextJson(unknown), null, 'an unknown qualifier is never satisfied');
+    const unknownFindings = doctor(unknown).filter((issue) => issue.code === 'unknown-blocker-qualifier');
+    assert.deepEqual(unknownFindings.map((issue) => `${issue.specId}/${issue.taskId}`).sort(), ['S-9E1/TK-9E1', 'S-9E2/TK-9E2'], 'doctor reports each unknown qualifier by Task');
+    assert.match(unknownFindings.find((issue) => issue.taskId === 'TK-9E2').message, /S-9E0:shipped/, 'the finding names the unknown token');
+    console.log('ok - S-00J TK-01T: S-###:delivered is satisfied by reviewed integration delivery (T0) and fails closed otherwise');
+  } finally {
+    for (const dir of rooms) fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+// ---- S-00J TK-01T (end) ----
+// ---- S-00V TK-00K: optional-capability routing (begin) ----
+// Anything beyond the host floor is an optional capability a Task names in
+// its record (`**Capabilities:**`). A session that cannot positively
+// establish one - no injected probe reporting it, no explicit
+// `--capabilities` declaration - treats it as absent: `next` skips the Task
+// and names the capability, `claim` routes it to blocked with the capability
+// recorded on the record (`**Missing capabilities:**`), the Taskboard names
+// it, and `close` refuses to report success for it. Probes are injected;
+// nothing here reads the real host.
+{
+  const capRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'capability-routing-'));
+  initGitRoot(capRoot);
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const capTask = ({ id, specId, slice, status, blockers = 'none', capabilities, missing }) => {
+      const lines = taskRecordFixture({ id, specId, slice, status, blockers, destination: `spec-acceptance: ${specId} Acceptance Criteria` }).trimEnd().split('\n');
+      if (capabilities) lines.push(`**Capabilities:** ${capabilities}`);
+      if (missing) lines.push(`**Missing capabilities:** ${missing}`);
+      return `${lines.join('\n')}\n`;
+    };
+    writeAt(capRoot, 'BLUEPRINT.md', ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    writeAt(capRoot, 'TASKBOARD.md', ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    const specText = (id) => recordBackedSpec(id).replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`);
+    writeAt(capRoot, 'specs/S-761-simulator/SPEC.md', specText('S-761'));
+    writeAt(capRoot, 'specs/S-761-simulator/tasks/TK-002/TASK.md', capTask({ id: 'TK-002', specId: 'S-761', slice: 'Simulator slice', status: 'ready', capabilities: 'simulator' }));
+    writeAt(capRoot, 'specs/S-761-simulator/tasks/TK-003/TASK.md', capTask({ id: 'TK-003', specId: 'S-761', slice: 'Plain slice', status: 'ready' }));
+    writeAt(capRoot, 'specs/S-762-foundry/SPEC.md', specText('S-762').replace('**Priority:** 0', '**Priority:** 1'));
+    writeAt(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md', capTask({ id: 'TK-002', specId: 'S-762', slice: 'Foundry slice', status: 'ready', capabilities: 'foundry' }));
+
+    // (1) The record carries the capability list, parsed and validated.
+    const simTask = readTaskRecord(path.join(capRoot, 'specs/S-761-simulator/tasks/TK-002/TASK.md'), capRoot);
+    assert.deepEqual(simTask.capabilities, ['simulator'], '(1) the Capabilities field is parsed into a list');
+    assert.deepEqual(simTask.missingCapabilities, [], '(1) no capability is recorded missing before any session routes it');
+    const plain = readTaskRecord(path.join(capRoot, 'specs/S-761-simulator/tasks/TK-003/TASK.md'), capRoot);
+    assert.deepEqual(plain.capabilities, [], '(1) a record naming no capability needs none');
+    const badName = capTask({ id: 'TK-009', specId: 'S-761', slice: 'Bad', status: 'ready', capabilities: 'Simulator!' });
+    assert.throws(() => parseTaskRecordForTest(badName), /invalid capability name "Simulator!"/, '(1) an unreadable capability name fails closed');
+    const strayMissing = capTask({ id: 'TK-009', specId: 'S-761', slice: 'Bad', status: 'blocked', capabilities: 'simulator', missing: 'foundry' });
+    assert.throws(() => parseTaskRecordForTest(strayMissing), /records foundry missing but does not name it in Capabilities/, '(1) a missing capability the Task never named fails closed');
+    const readyMissing = capTask({ id: 'TK-009', specId: 'S-761', slice: 'Bad', status: 'ready', capabilities: 'simulator', missing: 'simulator' });
+    assert.throws(() => parseTaskRecordForTest(readyMissing), /records a missing capability but its Status is ready, not blocked/, '(1) a recorded missing capability requires Status blocked');
+
+    // (2) `next` skips a Task whose capability the session cannot establish
+    // and names it; absent-by-probe and no-probe-no-declaration are the same.
+    const absentProbe = { capabilityProbes: { simulator: () => false, foundry: () => { throw new Error('foundry CLI not found'); } } };
+    for (const [label, options] of [['an absent probe', absentProbe], ['no probe and no declaration', {}]]) {
+      const next = nextWork(capRoot, options);
+      assert.equal(next.specId, 'S-761', `(2) ${label}: next still selects doable work`);
+      assert.equal(next.taskId, 'TK-003', `(2) ${label}: next skips the Task needing a capability the session lacks`);
+      assert.deepEqual(next.capabilityBlocked.map(({ specId, taskId, missing, recorded }) => ({ specId, taskId, missing, recorded })), [
+        { specId: 'S-761', taskId: 'TK-002', missing: ['simulator'], recorded: false },
+        { specId: 'S-762', taskId: 'TK-002', missing: ['foundry'], recorded: false }
+      ], `(2) ${label}: next names every capability-blocked Task and its missing capability`);
+    }
+    assert.match(nextWork(capRoot, absentProbe).capabilityBlocked[1].reason, /probe failed: foundry CLI not found/, '(2) a throwing probe is a visible absence, not a crash');
+    const declared = nextWork(capRoot, { capabilities: 'simulator' });
+    assert.equal(declared.taskId, 'TK-002', '(2) an explicit declaration establishes the capability');
+    assert.deepEqual(declared.capabilityBlocked.map((entry) => entry.taskId), ['TK-002'], '(2) only the still-lacking foundry Task stays named');
+    assert.equal(declared.capabilityBlocked[0].specId, 'S-762');
+    assert.equal(nextWork(capRoot, { capabilityProbes: { simulator: () => true, foundry: () => true } }).capabilityBlocked, undefined, '(2) a probe reporting present establishes it, and no capability-blocked list is attached');
+
+    // (3) `claim` routes the lacking Task to blocked with the capability on
+    // the record, then claims the Task the session can do.
+    const claimed = claimWork(capRoot, 'S-761', { agent: 'fixture', date: todayStr, ...absentProbe });
+    const routedSim = readTaskRecord(path.join(capRoot, 'specs/S-761-simulator/tasks/TK-002/TASK.md'), capRoot);
+    assert.equal(routedSim.status, 'blocked', '(3) claim routes the capability-lacking Task to blocked');
+    assert.deepEqual(routedSim.missingCapabilities, ['simulator'], '(3) the record names the missing capability');
+    assert.match(routedSim.content, /^\*\*Missing capabilities:\*\* simulator$/m);
+    assert.equal(readTaskRecord(path.join(capRoot, 'specs/S-761-simulator/tasks/TK-003/TASK.md'), capRoot).status, 'in-progress', '(3) claim then takes the doable Task');
+    assert.deepEqual(claimed.capabilityRouted, [{ taskId: 'TK-002', missing: ['simulator'] }], '(3) the claim result names what it routed');
+    assert.deepEqual(claimed.tasks.find((task) => task.id === 'TK-002').missingCapabilities, ['simulator'], '(3) show output names the missing capability');
+
+    // (4) A recorded capability block stays blocked on the board and in
+    // selection even though its id blockers are satisfied, and is named.
+    render(capRoot);
+    const board = fs.readFileSync(path.join(capRoot, 'TASKBOARD.md'), 'utf8');
+    assert.match(board, /\| \[S-761\]\([^)]*\) \| TK-003: Plain slice \(in-progress\) \| fixture \| TK-002 missing capability simulator \|/, '(4) the Taskboard names the capability-blocked Task beside the active one');
+    assert.ok(!doctor(capRoot).some((issue) => issue.code === 'render-drift'), '(4) the board is a deterministic projection of the records');
+    const afterClaim = nextWork(capRoot);
+    assert.equal(afterClaim.taskId, 'TK-003', '(4) the in-progress Task resumes');
+    assert.deepEqual(afterClaim.capabilityBlocked.find((entry) => entry.specId === 'S-761'), { specId: 'S-761', taskId: 'TK-002', missing: ['simulator'], recorded: true, reason: 'simulator: no probe and no declaration' }, '(4) the recorded block is named in selection output');
+
+    // (5) When the Spec's only ready Task lacks its capability, claim routes
+    // it and refuses: a missing capability never reports success.
+    assert.throws(() => claimWork(capRoot, 'S-762', { agent: 'fixture', date: todayStr, ...absentProbe }),
+      /S-762 has no eligible ready task to claim; routed to blocked for missing optional capabilities: TK-002 \(foundry\)/,
+      '(5) claim refuses when every ready Task lacks a capability, naming it');
+    const routedFoundry = readTaskRecord(path.join(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md'), capRoot);
+    assert.equal(routedFoundry.status, 'blocked');
+    assert.deepEqual(routedFoundry.missingCapabilities, ['foundry']);
+    render(capRoot);
+    assert.match(fs.readFileSync(path.join(capRoot, 'TASKBOARD.md'), 'utf8'), /\| \[S-762\]\([^)]*\) \| TK-002: Foundry slice \(blocked\) \| agent \| TK-002 missing capability foundry \|/, '(5) a Spec whose only Task is capability-blocked shows it blocked, naming the capability');
+
+    // (6) A later session that establishes the capability claims it, and the
+    // claim clears the recorded missing capability.
+    const reclaimed = claimWork(capRoot, 'S-762', { agent: 'fixture', date: todayStr, capabilities: 'foundry' });
+    const cleared = readTaskRecord(path.join(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md'), capRoot);
+    assert.equal(cleared.status, 'in-progress', '(6) a session with the capability claims the routed Task');
+    assert.deepEqual(cleared.missingCapabilities, [], '(6) the claim clears the recorded missing capability');
+    assert.equal(reclaimed.capabilityRouted, undefined);
+
+    // (7) `close` never reports success for a Task whose capability the
+    // closing session cannot establish: it routes the Task to blocked and
+    // refuses; a session that establishes it closes normally.
+    publishFixture(capRoot);
+    const closeOptions = { proof: 'fixture proof', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr };
+    const foundrySpec = path.join(capRoot, 'specs/S-762-foundry/SPEC.md');
+    const specBefore = fs.readFileSync(foundrySpec, 'utf8');
+    assert.throws(() => closeTask(capRoot, 'S-762', { ...closeOptions, ...absentProbe }),
+      /close refused: S-762\/TK-002 needs optional capability foundry, which this session cannot establish \(foundry: probe failed: foundry CLI not found\); routed to blocked/,
+      '(7) close refuses and names the capability');
+    const refusedClose = readTaskRecord(path.join(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md'), capRoot);
+    assert.equal(refusedClose.status, 'blocked', '(7) the refused close routes the Task to blocked');
+    assert.deepEqual(refusedClose.missingCapabilities, ['foundry']);
+    assert.equal(refusedClose.proof, null, '(7) no proof is written for a refused close');
+    assert.equal(readReceiptFromFile(refusedClose.filePath).length, 0, '(7) no Receipt row is appended');
+    assert.equal(fs.readFileSync(foundrySpec, 'utf8'), specBefore, '(7) the Spec gains no evidence row');
+    claimWork(capRoot, 'S-762', { agent: 'fixture', date: todayStr, capabilities: 'foundry' });
+    publishFixture(capRoot, 'reclaim foundry');
+    closeTask(capRoot, 'S-762', { ...closeOptions, capabilities: 'foundry' });
+    assert.equal(readTaskRecord(path.join(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md'), capRoot).status, 'done', '(7) a session with the capability closes normally');
+
+    // (8) The CLI names the capability in `next` output, and says so when
+    // nothing else is eligible.
+    const cli = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cliNext = spawnSync(process.execPath, [cli, 'next', '--json', '--path', capRoot], { encoding: 'utf8' });
+    assert.equal(cliNext.status, 0, cliNext.stderr);
+    const cliJson = JSON.parse(cliNext.stdout);
+    assert.equal(cliJson.taskId, 'TK-003');
+    assert.deepEqual(cliJson.capabilityBlocked.map((entry) => `${entry.specId}/${entry.taskId}:${entry.missing.join(',')}`), ['S-761/TK-002:simulator'], '(8) next --json names the capability-blocked Task');
+    publishFixture(capRoot, 'close foundry');
+    closeTask(capRoot, 'S-761', { ...closeOptions });
+    const onlyBlocked = spawnSync(process.execPath, [cli, 'next', '--path', capRoot], { encoding: 'utf8' });
+    assert.equal(onlyBlocked.status, 0, onlyBlocked.stderr);
+    assert.match(onlyBlocked.stdout, /^No eligible work\.\ncapability-blocked: S-761\/TK-002 needs simulator \(recorded\)/m, '(8) with nothing eligible, next still names the capability-blocked Task');
+    const onlyBlockedJson = JSON.parse(spawnSync(process.execPath, [cli, 'next', '--json', '--path', capRoot], { encoding: 'utf8' }).stdout);
+    assert.equal(onlyBlockedJson.taskId, null, '(8) with nothing eligible, the JSON carries no task');
+    assert.equal(onlyBlockedJson.capabilityBlocked[0].taskId, 'TK-002');
+
+    console.log('ok - a Task naming an optional capability the session cannot establish is skipped by next, routed to blocked by claim and close with the capability recorded, named on the Taskboard, and claimable once a session establishes it');
+  } finally {
+    fs.rmSync(capRoot, { recursive: true, force: true });
+  }
+}
+
+function parseTaskRecordForTest(content) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'capability-record-'));
+  try {
+    const file = path.join(dir, 'TASK.md');
+    fs.writeFileSync(file, content);
+    return readTaskRecord(file, dir);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+// ---- S-00V TK-00K: optional-capability routing (end) ----
+
+// ---- S-01W TK-002K: dual-form Task selectors (start) ----
+// Record-backed Task selectors (`receipt --task`, `gate --task`, `move-task
+// --task`) and the retired explicit lookup accept a widened or case-variant
+// spelling of a stored short ID, act on the one stored record and report its
+// stored IDs and paths; nothing is renamed to the selector's spelling.
+{
+  const dualRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'dual-form-selectors-'));
+  const cli = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+  const run = (...args) => {
+    const result = spawnSync(process.execPath, [cli, ...args, '--path', dualRoot, '--json'], { encoding: 'utf8' });
+    return { ...result, json: result.status === 0 && result.stdout.trim() ? JSON.parse(result.stdout) : null };
+  };
+  const git = (...args) => execFileSync('git', ['-C', dualRoot, ...args], { encoding: 'utf8' });
+  try {
+    initLifecycleFixture(dualRoot);
+    const specDir = 'workbench/specs/S-00Q-dual-form-fixture';
+    writeAt(dualRoot, `${specDir}/SPEC.md`, emptyTableRecordBackedSpec('S-00Q'));
+    writeAt(dualRoot, `${specDir}/tasks/TK-00A/TASK.md`, withReceiptRun(doneTaskRecordFixture({
+      id: 'TK-00A', specId: 'S-00Q', slice: 'Delivered slice', destination: 'spec-acceptance: S-00Q Acceptance Criteria', proof: 'landed'
+    })));
+    writeAt(dualRoot, `${specDir}/tasks/TK-00B/TASK.md`, taskRecordFixture({
+      id: 'TK-00B', specId: 'S-00Q', slice: 'Open slice', status: 'in-progress', blockers: 'TK-000A',
+      destination: 'spec-acceptance: S-00Q Acceptance Criteria'
+    }));
+    execFileSync('git', ['init', '--quiet', dualRoot]);
+    git('config', 'user.email', 'fixture@example.com');
+    git('config', 'user.name', 'Fixture');
+    git('add', '-A');
+    git('commit', '--quiet', '-m', 'dual-form corpus');
+
+    const receipt = run('receipt', 'S-000Q', '--task', 'TK-000b', '--tests', 'fixture tests', '--docs', 'none', '--remaining-gap', 'none');
+    assert.equal(receipt.status, 0, receipt.stderr);
+    assert.equal(receipt.json.specId, 'S-00Q', 'receipt reports the stored Spec ID');
+    assert.equal(receipt.json.taskId, 'TK-00B', 'receipt reports the stored Task ID');
+    assert.equal(readReceiptFromFile(path.join(dualRoot, specDir, 'tasks/TK-00B/TASK.md')).length, 1, 'the receipt row lands on the stored record');
+    git('add', '-A');
+    git('commit', '--quiet', '-m', 'receipt');
+
+    const gated = run('gate', '--spec', 'S-000Q', '--task', 'TK-000A');
+    assert.equal(gated.status, 0, gated.stderr);
+    assert.equal(gated.json.refused, false, `gate resolves widened selectors: ${gated.json.reason}`);
+    assert.equal(gated.json.specId, 'S-00Q');
+    assert.equal(gated.json.taskId, 'TK-00A');
+
+    const moved = run('move-task', 'S-0000Q', '--task', 'TK-000A', '--to', 'retired');
+    assert.equal(moved.status, 0, moved.stderr);
+    assert.equal(moved.json.specId, 'S-00Q');
+    assert.equal(moved.json.taskId, 'TK-00A');
+    assert.equal(moved.json.from, `${specDir}/tasks/TK-00A`);
+    assert.equal(moved.json.to, `${specDir}/tasks/retired/TK-00A`);
+    git('add', '-A');
+    git('commit', '--quiet', '-m', 'retire TK-00A');
+    const again = run('move-task', 'S-00Q', '--task', 'TK-000a', '--to', 'retired');
+    assert.notEqual(again.status, 0);
+    assert.match(again.stderr, /S-00Q\/TK-00A is already retired/, 'a widened selector reaches the retired record and names its stored ID');
+
+    const shown = run('show', 'S-000q');
+    assert.equal(shown.status, 0, shown.stderr);
+    assert.equal(shown.json.id, 'S-00Q');
+    assert.equal(shown.json.path, `${specDir}/SPEC.md`);
+    assert.deepEqual(fs.readdirSync(path.join(dualRoot, specDir, 'tasks')).sort(), ['TK-00B', 'retired'], 'no Task directory takes the selector spelling');
+
+    // Retired explicit lookup: a widened selector reaches a retired Spec.
+    const retiredDir = 'workbench/specs/retired/S-00P-retired-fixture';
+    writeAt(dualRoot, `${retiredDir}/SPEC.md`, completeFixtureSpec('S-00P'));
+    const retired = run('show', 'S-000P');
+    assert.equal(retired.status, 0, retired.stderr);
+    assert.equal(retired.json.id, 'S-00P');
+    assert.equal(retired.json.path, `${retiredDir}/SPEC.md`);
+    assert.match(retired.json.body, /^Retired: /, 'the historical-route banner still marks the retired record');
+
+    console.log('ok - widened and case-variant Spec/Task selectors reach the one stored record through receipt, gate, move-task and the retired explicit lookup, reporting stored IDs and paths without renaming anything');
+  } finally {
+    fs.rmSync(dualRoot, { recursive: true, force: true });
+  }
+}
+// ---- S-01W TK-002K: dual-form Task selectors (end) ----
+// ---- S-00J TK-02J: declared-blocked resolution and owner-decision blockers (begin) ----
+// A Task record's declared `blocked` derives `ready` only when a real
+// blocker has cleared: it names at least one blocker (or a recorded missing
+// capability, S-00V TK-00K) and every named blocker is a known, satisfied ID
+// form. A record declared `blocked` with Blockers `none` stays blocked in
+// `next`, `claim` and `render`, and doctor names it (attention, never
+// blocking). `owner:<decision>` records a wait on an owner decision: it
+// parses, the resolver never satisfies it, doctor treats it as known
+// grammar, and it clears only when the entry is removed from the record.
+// Room: S-9F0 is complete; S-9F1 (priority 0) holds TK-9F1 declared blocked
+// with Blockers none; S-9F2 (priority 1) holds TK-9F2 declared blocked on
+// `TK-001, owner:pick-schema` with TK-001 done; S-9F3 (priority 2) holds
+// TK-9F3 declared blocked on `TK-001, S-9F0`, both satisfied. So `next`
+// hands out S-9F3 only when the first two stay blocked.
+{
+  const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-declared-blocked-'));
+  const recordPath = (specId, slug, taskId) => `workbench/specs/${specId}-${slug}/tasks/${taskId}/TASK.md`;
+  const doneRecord = (specId) => [
+    `# TK-001 - Done predecessor`, '', '**Task ID:** TK-001', `**Spec ID:** ${specId}`, '**Slice:** Done predecessor',
+    '**Status:** done', '**Blockers:** none', `**Destination:** spec-acceptance: ${specId} Acceptance Criteria`, '**Proof:** landed', ''
+  ].join('\n');
+  const record = (taskId, specId, slice, blockers) => taskRecordFixture({
+    id: taskId, specId, slice, status: 'blocked', blockers, destination: `spec-acceptance: ${specId} Acceptance Criteria`
+  });
+  const dependent = (id, priority) => emptyTableRecordBackedSpec(id)
+    .replace('**Priority:** 0', `**Priority:** ${priority}`)
+    .replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`);
+  const nextJson = () => {
+    const result = spawnSync(process.execPath, [specTool, 'next', '--json', '--path', dir], { encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return JSON.parse(result.stdout);
+  };
+  const boardRow = (specId) => {
+    render(dir);
+    return fs.readFileSync(path.join(dir, 'TASKBOARD.md'), 'utf8').split('\n').find((line) => line.startsWith(`| [${specId}]`)) ?? '';
+  };
+  try {
+    initGitRoot(dir);
+    initLifecycleFixture(dir);
+    writeAt(dir, 'workbench/specs/S-9F0-complete-blocker/SPEC.md', completeFixtureSpec('S-9F0'));
+    writeAt(dir, 'workbench/specs/S-9F1-no-blocker/SPEC.md', dependent('S-9F1', 0));
+    writeAt(dir, recordPath('S-9F1', 'no-blocker', 'TK-9F1'), record('TK-9F1', 'S-9F1', 'Declared blocked on nothing', 'none'));
+    writeAt(dir, 'workbench/specs/S-9F2-owner-decision/SPEC.md', dependent('S-9F2', 1));
+    writeAt(dir, recordPath('S-9F2', 'owner-decision', 'TK-001'), doneRecord('S-9F2'));
+    writeAt(dir, recordPath('S-9F2', 'owner-decision', 'TK-9F2'), record('TK-9F2', 'S-9F2', 'Waits on an owner decision', 'TK-001, owner:pick-schema'));
+    writeAt(dir, 'workbench/specs/S-9F3-satisfied-ids/SPEC.md', dependent('S-9F3', 2));
+    writeAt(dir, recordPath('S-9F3', 'satisfied-ids', 'TK-001'), doneRecord('S-9F3'));
+    writeAt(dir, recordPath('S-9F3', 'satisfied-ids', 'TK-9F3'), record('TK-9F3', 'S-9F3', 'Declared blocked on satisfied ids', 'TK-001, S-9F0'));
+
+    // (1) `owner:<decision>` is Task-record grammar: a lowercase kebab-case
+    // decision slug, kept verbatim in the record's blockers.
+    const ownerTask = readTaskRecord(path.join(dir, recordPath('S-9F2', 'owner-decision', 'TK-9F2')), dir);
+    assert.deepEqual(ownerTask.blockers, ['TK-001', 'owner:pick-schema'], '(1) an owner:<decision> blocker parses and is kept verbatim');
+    for (const bad of ['owner:Pick-Schema', 'owner:pick_schema', 'owner:', 'owner:-pick', 'owner:pick-', 'Owner:pick-schema', 'owner:pick--schema']) {
+      assert.throws(() => parseTaskRecordForTest(record('TK-9F9', 'S-9F2', 'Bad owner token', bad)), new RegExp(`TK-9F9 has an invalid blocker id: ${escapeForRegExp(bad)}`), `(1) ${bad} is not owner-decision grammar`);
+    }
+
+    // (2) `next --json` skips the declared-blocked record with no blocker and
+    // the owner-blocked record, and hands out the record whose every blocker
+    // is a satisfied id (Task done in the same Spec, Spec complete).
+    const selected = nextJson();
+    assert.equal(`${selected?.specId}/${selected?.taskId}`, 'S-9F3/TK-9F3', '(2) next hands out only the declared-blocked record whose every blocker is satisfied');
+
+    // (3) `claim` refuses both blocked records and takes the satisfied one.
+    assert.throws(() => claimWork(dir, 'S-9F1', { agent: 'fixture' }), /S-9F1 has no eligible ready task to claim/, '(3) claim refuses a declared-blocked record with no blocker');
+    assert.throws(() => claimWork(dir, 'S-9F2', { agent: 'fixture' }), /S-9F2 has no eligible ready task to claim/, '(3) claim refuses a record waiting on an owner decision');
+
+    // (4) `render` shows both blocked; doctor names only the record with no
+    // resolvable blocker, as attention that blocks nothing, and treats the
+    // owner token as known grammar.
+    assert.match(boardRow('S-9F1'), /TK-9F1: Declared blocked on nothing \(blocked/, '(4) render shows the no-blocker record blocked');
+    assert.match(boardRow('S-9F2'), /TK-9F2: Waits on an owner decision \(blocked/, '(4) render shows the owner-blocked record blocked');
+    assert.match(boardRow('S-9F3'), /TK-9F3: Declared blocked on satisfied ids \(ready/, '(4) render shows the satisfied record ready');
+    const findings = doctor(dir);
+    const unresolvable = findings.filter((issue) => issue.code === 'blocked-without-blocker');
+    assert.deepEqual(unresolvable.map((issue) => `${issue.specId}/${issue.taskId}`), ['S-9F1/TK-9F1'], '(4) doctor names exactly the declared-blocked record with no resolvable blocker');
+    assert.equal(unresolvable[0].severity, 'attention', '(4) the finding is attention');
+    assert.equal(unresolvable[0].blocks, 'none', '(4) the finding blocks nothing');
+    assert.match(unresolvable[0].message, /S-9F1\/TK-9F1/, '(4) the finding message names the Task');
+    assert.equal(findings.some((issue) => issue.code === 'unknown-blocker-qualifier'), false, '(4) doctor treats owner:<decision> as known grammar');
+    assert.equal(findings.some((issue) => issue.code === 'blocked-slice'), false, '(4) a declared-blocked record is sequencing, not a blocked-slice contradiction');
+
+    // (5) Regression (Lane F, S-00V TK-00K relies on it): claim takes the
+    // declared-blocked record whose every blocker is satisfied.
+    claimWork(dir, 'S-9F3', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(dir, recordPath('S-9F3', 'satisfied-ids', 'TK-9F3')), dir).status, 'in-progress', '(5) claim takes a declared-blocked record whose every blocker is satisfied');
+
+    // (6) The owner token clears only when the entry is removed: with TK-001
+    // still done, removing `owner:pick-schema` makes the record claimable.
+    const ownerFile = path.join(dir, recordPath('S-9F2', 'owner-decision', 'TK-9F2'));
+    fs.writeFileSync(ownerFile, fs.readFileSync(ownerFile, 'utf8').replace('**Blockers:** TK-001, owner:pick-schema', '**Blockers:** TK-001'));
+    claimWork(dir, 'S-9F2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(ownerFile, dir).status, 'in-progress', '(6) removing the owner entry lets the satisfied record be claimed');
+    console.log('ok - S-00J TK-02J: a declared-blocked record stays blocked until a real blocker clears, doctor names one with no resolvable blocker, and owner:<decision> waits until removed');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+// ---- S-00J TK-02J (end) ----
+
+// ---- S-00V TK-01L: push-on-claim and fetch-before-select (begin) ----
+// Desired Behavior 4 and the owner's locked PW-6 decision (ADR-000O): claim
+// commits the claim on its task branch and pushes it; next and claim fetch
+// origin, read the integration branch as the base and overlay Task state from
+// every remote tip, so a Task claimed on any tip is taken. Every room below
+// shares one bare origin; each "instance" is its own clone.
+{
+  const gitIn = (dir, ...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const coordinationBase = fs.mkdtempSync(path.join(os.tmpdir(), 'claim-coordination-'));
+  const origin = path.join(coordinationBase, 'origin.git');
+  const clone = (name, branch = 'integration') => {
+    const dir = path.join(coordinationBase, name);
+    execFileSync('git', ['clone', '--quiet', origin, dir], { stdio: 'ignore' });
+    gitIn(dir, 'config', 'user.email', `${name}@example.com`);
+    gitIn(dir, 'config', 'user.name', name);
+    if (branch) gitIn(dir, 'switch', '--quiet', branch);
+    return dir;
+  };
+  const taskFile = (dir, taskId) => path.join(dir, 'workbench/specs/S-801-coordination/tasks', taskId, 'TASK.md');
+  const statusOf = (dir, taskId) => readTaskRecord(taskFile(dir, taskId), dir).status;
+  try {
+    execFileSync('git', ['init', '--quiet', '--bare', '-b', 'main', origin]);
+    const seed = path.join(coordinationBase, 'seed');
+    execFileSync('git', ['init', '--quiet', '-b', 'main', seed]);
+    gitIn(seed, 'config', 'user.email', 'seed@example.com');
+    gitIn(seed, 'config', 'user.name', 'seed');
+    initLifecycleFixture(seed);
+    writeAt(seed, 'workbench/specs/S-801-coordination/SPEC.md', recordBackedSpec('S-801').replace('**Updated:** 2026-07-12', `**Updated:** ${TODAY}`));
+    for (const id of ['TK-002', 'TK-003']) {
+      writeAt(seed, `workbench/specs/S-801-coordination/tasks/${id}/TASK.md`, taskRecordFixture({
+        id, specId: 'S-801', slice: `Coordinated slice ${id}`, status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-801 Acceptance Criteria'
+      }));
+    }
+    render(seed);
+    gitIn(seed, 'add', '-A');
+    gitIn(seed, 'commit', '--quiet', '-m', 'seed room');
+    gitIn(seed, 'remote', 'add', 'origin', origin);
+    gitIn(seed, 'branch', 'integration');
+    gitIn(seed, 'push', '--quiet', 'origin', 'main', 'integration');
+    const integrationTip = gitIn(seed, 'rev-parse', 'integration');
+
+    // B clones before A claims, so only a fetch can tell B about A's claim.
+    const alpha = clone('alpha');
+    const beta = clone('beta');
+
+    // (1) Instance A on the integration branch: claim cuts the task branch
+    // from origin/integration, commits the claim as its first commit, pushes.
+    const claimedA = claimWork(alpha, 'S-801', { agent: 'alpha-lane', date: TODAY });
+    assert.equal(claimedA.coordination?.mode, 'remote', '(1) a room with origin and a declared integration branch coordinates through the remote');
+    assert.equal(claimedA.coordination.branch, 'alpha/s801-tk002', '(1) claim names the task branch from the agent and the Task');
+    assert.equal(claimedA.coordination.created, true, '(1) on the integration branch, claim creates the task branch');
+    assert.equal(gitIn(alpha, 'branch', '--show-current'), 'alpha/s801-tk002', '(1) the claiming instance is left on its task branch');
+    assert.equal(gitIn(alpha, 'status', '--porcelain'), '', '(1) the claim is committed, leaving the tree clean');
+    assert.equal(gitIn(alpha, 'rev-list', '--count', `${integrationTip}..HEAD`), '1', '(1) the claim is the task branch\'s first commit on top of integration');
+    assert.equal(gitIn(alpha, 'log', '-1', '--format=%s'), 'Claim S-801 TK-002');
+    assert.equal(gitIn(alpha, 'ls-remote', 'origin', 'refs/heads/alpha/s801-tk002').split('\t')[0], gitIn(alpha, 'rev-parse', 'HEAD'), '(1) the claim commit is pushed');
+    assert.equal(gitIn(alpha, 'rev-parse', '--abbrev-ref', '@{u}'), 'origin/alpha/s801-tk002', '(1) the task branch tracks its pushed ref');
+    assert.equal(gitIn(alpha, 'ls-remote', 'origin', 'refs/heads/integration').split('\t')[0], integrationTip, '(1) integration receives no direct claim commit');
+    assert.equal(statusOf(alpha, 'TK-002'), 'in-progress');
+    assert.equal(claimedA.coordination.commit, gitIn(alpha, 'rev-parse', 'HEAD'));
+    assert.match(fs.readFileSync(path.join(alpha, 'TASKBOARD.md'), 'utf8'), /TK-002: Coordinated slice TK-002 \(in-progress\)/, '(1) the claim commit carries the re-rendered Taskboard');
+
+    // (2) Instance B, still on its stale integration checkout, runs next: the
+    // fetch reveals A's pushed claim, so B never receives TK-002.
+    assert.equal(statusOf(beta, 'TK-002'), 'ready', '(2) B\'s own tree still says TK-002 is ready');
+    const nextB = nextWork(beta);
+    assert.equal(nextB.taskId, 'TK-003', '(2) a second instance running next after a fetch does not receive the claimed Task');
+    assert.deepEqual(nextB.coordination.remoteClaimed, [{ specId: 'S-801', taskId: 'TK-002', refs: ['origin/alpha/s801-tk002'] }], '(2) next names the Task claimed on a remote tip and where');
+    assert.equal(nextB.coordination.fetched, true);
+    const claimedB = claimWork(beta, 'S-801', { agent: 'beta', date: TODAY });
+    assert.equal(claimedB.coordination.branch, 'beta/s801-tk003', '(2) claim also skips the remotely claimed Task');
+    assert.equal(statusOf(beta, 'TK-002'), 'ready', '(2) B never wrote a claim on TK-002');
+
+    // (3) A third instance sees both claims and gets nothing.
+    const gamma = clone('gamma');
+    assert.equal(nextWork(gamma), null, '(3) with every Task claimed on some remote tip, next has no eligible work');
+    assert.throws(() => claimWork(gamma, 'S-801', { agent: 'gamma', date: TODAY }), /no eligible ready task/, '(3) claim refuses too');
+    assert.equal(gitIn(gamma, 'branch', '--show-current'), 'integration', '(3) a refused claim leaves the instance where it was');
+    assert.equal(gitIn(gamma, 'status', '--porcelain'), '', '(3) a refused claim writes nothing');
+
+    // (4) The owning instance resumes its own claim: its own tip is not a
+    // competing claim.
+    assert.equal(nextWork(alpha).taskId, 'TK-002', '(4) the claiming instance resumes its own in-progress Task');
+
+    // (5) An abandoned branch abandons its claim: once the remote branch is
+    // deleted, a fetch prunes it and the Task is selectable again.
+    gitIn(alpha, 'push', '--quiet', 'origin', '--delete', 'alpha/s801-tk002');
+    assert.equal(nextWork(gamma).taskId, 'TK-002', '(5) a deleted claim branch no longer holds its Task');
+    // (5b) The default branch is not a claim surface either (S-00V TK-002M):
+    // origin/main carrying TK-002 as in-progress is main's own state, never a
+    // competing claim, so the Task stays selectable.
+    const seedTask = path.join(seed, 'workbench/specs/S-801-coordination/tasks/TK-002/TASK.md');
+    fs.writeFileSync(seedTask, fs.readFileSync(seedTask, 'utf8').replace('**Status:** ready', '**Status:** in-progress'));
+    gitIn(seed, 'switch', '--quiet', 'main');
+    gitIn(seed, 'commit', '--quiet', '-am', 'main carries its own task state');
+    gitIn(seed, 'push', '--quiet', 'origin', 'main');
+    const nextOnDefault = nextWork(gamma);
+    assert.equal(nextOnDefault.taskId, 'TK-002', '(5b) a Task in-progress on origin/<defaultBranch> is not taken');
+    assert.equal((nextOnDefault.coordination.remoteClaimed ?? []).some((item) => item.refs.includes('origin/main')), false, '(5b) the default branch is never reported as a claim-bearing tip');
+    console.log('ok - claim pushes the claim as the first commit of a task branch cut from integration, and next and claim in another instance fetch and skip a Task claimed on any remote tip');
+
+    // (6) Claim on an already-cut task branch keeps working: it commits and
+    // pushes the claim on that branch and creates no second branch.
+    const delta = clone('delta');
+    gitIn(delta, 'switch', '--quiet', '-c', 'claude/delta-lane', 'origin/integration');
+    const before = gitIn(delta, 'rev-parse', 'HEAD');
+    const claimedD = claimWork(delta, 'S-801', { agent: 'delta', date: TODAY });
+    assert.equal(claimedD.coordination.created, false, '(6) on a task branch, claim creates no branch');
+    assert.equal(claimedD.coordination.branch, 'claude/delta-lane');
+    assert.equal(gitIn(delta, 'branch', '--show-current'), 'claude/delta-lane', '(6) the instance stays on its own branch');
+    assert.equal(gitIn(delta, 'rev-list', '--count', `${before}..HEAD`), '1', '(6) exactly one claim commit is added');
+    assert.equal(gitIn(delta, 'log', '-1', '--format=%s'), 'Claim S-801 TK-002');
+    assert.equal(gitIn(delta, 'ls-remote', 'origin', 'refs/heads/claude/delta-lane').split('\t')[0], gitIn(delta, 'rev-parse', 'HEAD'), '(6) the existing branch is pushed with the claim');
+    assert.equal(gitIn(delta, 'for-each-ref', '--format=%(refname:short)', 'refs/heads'), 'claude/delta-lane\nintegration\nmain', '(6) no second branch was created');
+    assert.equal(gitIn(delta, 'ls-remote', 'origin', 'refs/heads/integration').split('\t')[0], integrationTip, '(6) a lane cut from origin/integration (and tracking it) never pushes its claim to integration');
+    assert.equal(gitIn(delta, 'rev-parse', '--abbrev-ref', '@{u}'), 'origin/claude/delta-lane', '(6) the lane now tracks its own pushed branch');
+    console.log('ok - claim on an already-cut task branch commits and pushes the claim there without creating a second branch');
+
+    // (7) A detached HEAD is a base state: claim cuts the branch there too.
+    const epsilon = clone('epsilon', null);
+    gitIn(epsilon, 'checkout', '--quiet', '--detach', 'origin/integration');
+    gitIn(epsilon, 'push', '--quiet', 'origin', '--delete', 'claude/delta-lane');
+    const claimedE = claimWork(epsilon, 'S-801', { agent: 'epsilon', date: TODAY });
+    assert.equal(claimedE.coordination.created, true, '(7) on a detached HEAD, claim creates the task branch');
+    assert.equal(gitIn(epsilon, 'branch', '--show-current'), 'epsilon/s801-tk002');
+
+    // (8) A push failure fails the claim visibly and leaves no half-state:
+    // no local branch, no commit, no written record, the same checkout.
+    gitIn(epsilon, 'push', '--quiet', 'origin', '--delete', 'epsilon/s801-tk002');
+    const zeta = clone('zeta');
+    gitIn(zeta, 'remote', 'set-url', '--push', 'origin', path.join(coordinationBase, 'missing.git'));
+    const zetaHead = gitIn(zeta, 'rev-parse', 'HEAD');
+    assert.throws(() => claimWork(zeta, 'S-801', { agent: 'zeta', date: TODAY }), /claim refused: push to origin failed/, '(8) a failed push fails the claim');
+    assert.equal(gitIn(zeta, 'branch', '--show-current'), 'integration', '(8) the instance is back where it started');
+    assert.equal(gitIn(zeta, 'rev-parse', 'HEAD'), zetaHead);
+    assert.equal(gitIn(zeta, 'status', '--porcelain'), '', '(8) nothing written is left behind');
+    assert.equal(gitIn(zeta, 'for-each-ref', '--format=%(refname:short)', 'refs/heads'), 'integration\nmain', '(8) the task branch it cut is removed');
+    assert.equal(statusOf(zeta, 'TK-002'), 'ready');
+    gitIn(zeta, 'switch', '--quiet', '-c', 'claude/zeta-lane');
+    assert.throws(() => claimWork(zeta, 'S-801', { agent: 'zeta', date: TODAY }), /claim refused: push to origin failed/, '(8) a failed push on a task branch fails the claim');
+    assert.equal(gitIn(zeta, 'rev-parse', 'HEAD'), zetaHead, '(8) the claim commit on the task branch is undone');
+    assert.equal(gitIn(zeta, 'status', '--porcelain'), '', '(8) and nothing written is left behind');
+
+    // (9) A fetch failure refuses the claim before anything is written; next
+    // still answers from the last fetched refs and says the fetch failed.
+    const eta = clone('eta');
+    gitIn(eta, 'remote', 'set-url', 'origin', path.join(coordinationBase, 'missing.git'));
+    assert.throws(() => claimWork(eta, 'S-801', { agent: 'eta', date: TODAY }), /claim refused: cannot fetch from origin/);
+    assert.equal(gitIn(eta, 'status', '--porcelain'), '', '(9) a claim that cannot fetch writes nothing');
+    const staleNext = nextWork(eta);
+    assert.equal(staleNext.coordination.fetched, false, '(9) next reports that it could not fetch');
+    assert.ok(staleNext.coordination.fetchError, '(9) and why');
+
+    // (10) Uncommitted changes on a base checkout are refused, not carried
+    // onto the task branch; nothing is written.
+    const theta = clone('theta');
+    fs.appendFileSync(path.join(theta, 'README.md'), 'local edit\n');
+    assert.throws(() => claimWork(theta, 'S-801', { agent: 'theta', date: TODAY }), /claim refused: .*uncommitted changes.*README\.md/);
+    assert.equal(gitIn(theta, 'status', '--porcelain'), 'M README.md', '(10) the refused claim leaves the edit alone and writes nothing else');
+    console.log('ok - claim cuts a branch from a detached HEAD, and a push failure, a fetch failure or uncommitted base changes fail the claim visibly with nothing left half-claimed');
+
+    // (11) Explicit --local keeps today's local behavior in a coordinated
+    // room, and says so.
+    const iota = clone('iota');
+    const localClaim = claimWork(iota, 'S-801', { agent: 'iota', date: TODAY, local: true });
+    assert.deepEqual(localClaim.coordination, { mode: 'local', reason: 'requested with --local' });
+    assert.equal(gitIn(iota, 'branch', '--show-current'), 'integration', '(11) a local claim cuts no branch');
+    assert.notEqual(gitIn(iota, 'status', '--porcelain'), '', '(11) a local claim is written to the tree and left uncommitted');
+    assert.deepEqual(parseCliArgs(['claim', 'S-801', '--local', '--agent', 'x']).options, { local: true, agent: 'x' }, '--local is a boolean flag');
+  } finally {
+    fs.rmSync(coordinationBase, { recursive: true, force: true });
+  }
+}
+
+// No remote: today's local behavior, reported as local.
+{
+  const localRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'claim-no-remote-'));
+  try {
+    execFileSync('git', ['init', '--quiet', '-b', 'main', localRoot]);
+    execFileSync('git', ['-C', localRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', localRoot, 'config', 'user.name', 'Fixture']);
+    initLifecycleFixture(localRoot);
+    writeAt(localRoot, 'workbench/specs/S-802-local/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-802').replace('**Updated:** 2026-07-12', `**Updated:** ${TODAY}`));
+    render(localRoot);
+    execFileSync('git', ['-C', localRoot, 'add', '-A']);
+    execFileSync('git', ['-C', localRoot, 'commit', '--quiet', '-m', 'local room']);
+    const head = headSha(localRoot);
+    const claimed = claimWork(localRoot, 'S-802', { agent: 'solo', date: TODAY });
+    assert.deepEqual(claimed.coordination, { mode: 'local', reason: 'no remote named origin' }, 'a room with no remote claims locally and says so');
+    assert.equal(claimed.tasks[0].status, 'in-progress');
+    assert.equal(headSha(localRoot), head, 'a local claim commits nothing');
+    assert.match(execFileSync('git', ['-C', localRoot, 'status', '--porcelain'], { encoding: 'utf8' }), /S-802-local\/SPEC\.md/, 'the local claim stays in the working tree as it always did');
+    const cli = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cliNext = spawnSync(process.execPath, [cli, 'next', '--json', '--path', localRoot], { encoding: 'utf8' });
+    assert.equal(cliNext.status, 0, cliNext.stderr);
+    assert.equal(JSON.parse(cliNext.stdout).taskId, 'TK-001', 'next output is unchanged without a remote');
+    assert.match(cliNext.stderr, /local selection only \(no remote named origin\)/, 'the CLI says selection was local');
+    console.log('ok - with no remote, claim and next keep today\'s local behavior and say so');
+  } finally {
+    fs.rmSync(localRoot, { recursive: true, force: true });
+  }
+}
+// ---- S-00V TK-01L: push-on-claim and fetch-before-select (end) ----
