@@ -7,13 +7,13 @@
 **Spec ID:** S-00V
 **Status:** active
 **Priority:** 1
-**Owner:** claude-fable-5-1
+**Owner:** claude-lane-F
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
 **Blockers:** none
-**Latest event:** Remaining slices cut into eleven Task records under `tasks/` mapping acceptance boxes 3-8; four are ready (TK-00G catalog review, TK-00H host floor, TK-00I Wiki host-memory audit, TK-00J committed notes stay non-evidence) and seven are blocked on predecessors or collision holds (S-00P, S-00M, S-01V).
-**Next gate:** Claim and carry the ready Tasks TK-00H and TK-00I first, then TK-00G and TK-00J; lift each collision hold in its own commit when the named condition is contained in integration; completion waits on all eight acceptance boxes.
+**Latest event:** TK-01W closed with proof.
+**Next gate:** Close TK-00H (host floor, in progress on its own branch), then carry TK-00I, TK-00J and TK-01L, which are ready; completion waits on all eight acceptance boxes.
 
 > **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7`.
 
@@ -182,7 +182,7 @@ carried here; the record is working context, not evidence.
   skill is needed when the Contract names it or a lane skill composes it as a
   required step. TK-00G applies that rule and reports each disposition, which
   the owner may correct; no owner confirmation gates it. `sitrep` returns
-  through S-01V's room-core sitrep, not this Spec.
+  through the room-core sitrep planned with the generated JSON taskboard Spec from S-00O (ID pending allocation), not this Spec.
 - The reading of "proof is a run that ends clean" in Desired Behavior 7 is
   the agent's interpretation of the owner's one-line answer; the owner
   delegated the PW-7..PW-10 mechanics to the agent, so TK-01N proceeds on it
@@ -202,7 +202,7 @@ table is completed history only. The remaining slices are Task records under
 - [TK-00K](tasks/TK-00K/TASK.md) optional-capability routing, after TK-00H - box 5
 - [TK-01K](tasks/TK-01K/TASK.md) lift the notes ignore rule and add promote-before-end, after TK-00J and the S-00P hold - box 3
 - [TK-01L](tasks/TK-01L/TASK.md) push-on-claim and fetch-before-select with its ADR, after the S-00M hold - box 4
-- [TK-01M](tasks/TK-01M/TASK.md) Taskboard shows remote claims, after TK-01L and S-01V - box 4
+- [TK-01M](tasks/TK-01M/TASK.md) Taskboard shows remote claims, after TK-01L and the generated JSON taskboard Spec from S-00O (ID pending allocation), held as S-00O - box 4
 - [TK-01N](tasks/TK-01N/TASK.md) ends-clean round-trip gate, after TK-00G, TK-01K and TK-01L - box 7
 - [TK-01O](tasks/TK-01O/TASK.md) real cloud session and two-instance demos, after TK-01N - box 8
 - [TK-01P](tasks/TK-01P/TASK.md) controls and templates sweep, after the S-00P hold and the behavior Tasks - Documentation Impact
@@ -323,6 +323,13 @@ Then the full suite named in AGENTS.md on the committed candidate.
 | 2026-09-26 | review | Review verdict: pass at a7e2b6b36943b2bf21e7aca5d071e492a5352140 [dd2b15658b6e] #1 | none; every factual claim in the acceptance-audit row verified at 058f089; full suite 48/48 on a7e2b6b | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
 | 2026-09-26 | — | Remaining slices cut by Lane F dispatcher `claude-lane-F` into eleven Task records TK-00G, TK-00H, TK-00I, TK-00J, TK-00K, TK-01K, TK-01L, TK-01M, TK-01N, TK-01O, TK-01P (ids from `next-id`); every unmet box 3-8 maps to at least one record; collision holds encoded as blockers (S-00P on TK-01K and TK-01P, S-00M on TK-01L, S-01V on TK-01M); catalog-review membership derived from grilling decision-005 instead of an owner confirmation | `show S-00V` parses all eleven records; `render` and `doctor` on the committed candidate; full AGENTS suite on the committed candidate | Spec header, Vertical Implementation Slices, Dependencies And Blockers and Remaining Limitations updated; Task records added; no control changed | Four Tasks ready; seven blocked on predecessors or holds; boxes 3-8 still unmet |
 | 2026-09-26 | review | Review verdict: pass at 8d51f147229e29ac48974fa1caef7c017534c0f3 [fa262e1aea26] #2 | none; eleven Task records parse, every box 3-8 mapped, Spec-id collision holds and derived PW-4 catalog rule judged faithful; full suite 48/48 on 8d51f14 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+| 2026-09-26 | TK-01L | Collision hold lifted: S-00M TK-001 (repository-state reader `readRepositoryState` in `workbench/tools/workbench-layout.mjs`) is contained in integration by merge `9e434b3c61eceada46e76bea099d83e0b8044de7` (PR #159), so `S-00M` is removed from TK-01L Blockers and the record returns to ready | `git merge-base --is-ancestor 9e434b3c61eceada46e76bea099d83e0b8044de7 origin/integration`; S-00M TK-001 row reads done; `show S-00V` lists TK-01L ready | Docs checked; no update needed: only the TK-01L record and this row change | TK-01L still coordinates with S-00M TK-002/TK-003 edits to `close` and diagnostics; rebase often |
+| 2026-09-26 | TK-00G | Task closed | Catalog review at 655ea90: new test 4 in tools/test-skills-lane.mjs red on the committed candidate (unclassified domain-modeling, init, path, tdd, wayfinder), green after the disposition table in workbench/skills/README.md Referenced non-lane skills; tests 1-4 green on the committed tree; mutation (tdd marked required/joined) fails as expected. Dispositions (skill \| reference \| requirement \| disposition): domain-modeling \| grilling SKILL.md \| optional \| optional mention; wayfinder \| grilling SKILL.md, BLUEPRINT.md \| optional \| optional mention; tdd \| tracer-bullet SKILL.md \| optional \| optional mention (red/green lives in AGENTS.md and lane implement/builder); brainstorm \| BLUEPRINT.md \| optional \| optional mention; prototype \| BLUEPRINT.md \| optional \| optional mention; research \| BLUEPRINT.md, README.md \| none \| out of scope (activity, and README's simonw/research repo link); init \| README.md \| none \| out of scope (Claude Code built-in); path \| RUNBOOK.md \| none \| out of scope (path form); lexicon, land, preflight, sitrep, diagnosing-bugs, codebase-design \| none \| none \| out of scope (unreferenced as skills; sitrep owned by S-01V). No skill joins, so skillPolicy.required and the lane are unchanged. Names considered: personal catalog at 8832f07d701bacfb75f04a873e01e15b1afe968e plus skills-pending and skills-archive; template controls checked by hand and reference only lane skills. Guardrail 78/100 before and after. | workbench/skills/README.md gains the Referenced non-lane skills section (rule, test contract, 14-row disposition table); RUNBOOK skills lane wording is recorded in the remaining gap instead of edited (S-00P holds root controls) | Needed control wording for TK-01P (not edited; S-00P rewrites controls): RUNBOOK Skills lane check, append: 'A skill the Contract names or a lane skill composes as a required step ships in the lane. Every other skill reference in a root control or lane SKILL.md has a row in workbench/skills/README.md Referenced non-lane skills, and tools/test-skills-lane.mjs fails on a reference with no row.' S-00V Current Verified State (pre-anchored, left as published) says the root controls name research; that mention is README's link to Simon Willison's research repository, not the skill. The owner may correct any disposition. |
+| 2026-09-26 | TK-01M | Correction: S-01V is not an allocated Spec ID (its reservation existed only on an unpushed Codex branch and S-01U went to PR #161), so every S-01V reference above, including the Task-cut row and the TK-00G close row and Proof, means the generated JSON taskboard Spec from S-00O (ID pending allocation); TK-01M Blockers re-pointed from `S-01V` to `S-00O` as a conservative hold until that Spec is allocated, and live Spec, Task and `workbench/skills/README.md` text updated | `git ls-tree origin/integration workbench/specs/` at d16ef63 shows no S-01V; `show S-00V` lists TK-01M blocked by TK-01L, S-00O | Docs checked: S-00V Spec, TK-00G/TK-00K/TK-01L/TK-01M records and `workbench/skills/README.md` wording only | Re-point TK-01M to the board Spec once allocated |
+| 2026-09-26 | review | Review verdict: fail at 6671f0cd8c0779b1df55c4593256d6f06aa2408a [d4536f36cd1c] #3 | Medium: TK-00G test 4 in tools/test-skills-lane.mjs does not fail on a stale disposition row (a cited file no longer mentioning the skill), contrary to the close proof | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 1 |
+| 2026-09-26 | TK-01W | Task closed | Answers the fail verdict at 6671f0cd8c0779b1df55c4593256d6f06aa2408a (evidence row 17). Red: with the test 4 of 6671f0c and the domain-modeling mention removed from workbench/skills/grilling/SKILL.md while its disposition row stays, test 4 still passed (1/1), so the TK-00G close row's claim that test 4 fails on a stale row was wrong. Green: test 4 now asserts that at least one file a row cites still mentions the skill (a word-prefix match, because rows such as brainstorm record a prose mention the reference detector does not match); the same mutation fails with 'domain-modeling: stale row'; node tools/test-skills-lane.mjs 4/4 on the committed tree; full AGENTS suite on the committed candidate recorded by the dispatcher. | workbench/skills/README.md Referenced non-lane skills test contract names the stale-row failure | none for this finding; TK-00G's remaining gap (RUNBOOK skills lane wording for TK-01P) is unchanged |
+| 2026-09-26 | TK-01W | Provenance: TK-01W was taken to in-progress by editing its record in `8a8341d8`, not by `claim`, because `claim` selects the lowest ready id and on this branch that is TK-00I, which is claimed on its own branch (`claude/s00v-tk00i-wiki-host-memory`); `close S-00V` then closed TK-01W as the only in-progress Task. The second-pass separate-context review at `d3149bea5b3bfc28e4cb638dfe62fe2446fa4620` (Codex CLI `codex exec -s read-only -m gpt-5.5`) returned FAIL with one Medium for this missing disclosure, and passed the stale-row fix itself; this row answers it and no verdict row was recorded for that pass | `git diff ce6b3fd 8a8341d -- workbench/specs/S-00V-portable-workbench/tasks/TK-01W/TASK.md` shows the ready to in-progress edit | Docs checked; no update needed: disclosure only | none |
+| 2026-09-26 | review | Review verdict: pass at 128f619430e0f9e37652bfac8a51707603f47c44 [6cb30e32a157] #4 | none at the final pass; first pass at 6671f0c failed on the stale-row test (answered by corrective TK-01W), second pass at d3149be failed on the TK-01W provenance disclosure (answered by the 128f619 evidence row); full suite 48/48 on 128f619 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
 
 ## Completion Result
 
@@ -332,7 +339,7 @@ Pending.
 
 The planned slices listed here were cut into Task records on 2026-09-26; see
 Vertical Implementation Slices. Known limits carried by those records:
-`needs-review` routing for a capability-blocked Task depends on S-01V adding
+`needs-review` routing for a capability-blocked Task depends on the generated JSON taskboard Spec from S-00O (ID pending allocation) adding
 that status (TK-00K satisfies box 5 with blocked routing until then), and
 control wording that S-00P is rewriting is collected in TK-01P.
 

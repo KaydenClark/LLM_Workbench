@@ -459,6 +459,15 @@ assertIncludesAll(codeReview, [
   'git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --',
   'nearest `AGENTS.md`', 'assigned stable `SPEC.md`', 'Findings first', 'review-only', 'separately authorized'
 ], 'code-review');
+// S-01F TK-00W: a finding says which tree its citation reads at and whether it
+// was reproduced; a pass belongs only to the candidate it reviewed; and no
+// review result stands in for owner Human QA.
+assertIncludesAll(codeReview, [
+  '`path:line@<sha>`', '**proven**', '**uncertain**',
+  'A pass belongs to the candidate it reviewed', 'changed content digest', 'needs a fresh review',
+  'never a verdict for this one',
+  'is not owner Human QA', 'resets a failed Human QA gate'
+], 'code-review finding, fresh-candidate and Human QA contract');
 
 // S-01Q: the Auditor stance reports one classified finding per named claim,
 // each traceable to its pinned evidence, check and limit, and stays inside the
