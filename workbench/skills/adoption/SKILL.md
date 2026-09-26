@@ -24,9 +24,10 @@ v3 support root through `/update-harness`, which runs
      the room's history, remote or owner instead of guessing. The verdict is
      evidence, not authorization.
    - Take the code baseline: run the existing test/build commands green as
-     found, or record the baseline `unavailable` with its reason under
-     `templates/ADOPTION.md`. List every existing steering document and root
-     control before changing any.
+     found, or record it `unavailable` in the owning spec's `**Baseline:**`
+     field with one of the reasons `templates/ADOPTION.md` Phase 0 allows.
+     List every existing steering document and root control before changing
+     any.
    - Record the source remote, ref, and resolved commit of the Workbench
      release you will run in the owning spec before changing the harness.
    - Verify the recovery point: the clean commit you branch from exists on
