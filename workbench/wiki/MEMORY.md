@@ -75,6 +75,7 @@ they are authored.
 - [Code review: check one fixed candidate against both contracts](skill-code-review.md)
 - [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
 - [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
+- [Genesis: start a new room from a founding prompt](skill-genesis.md)
 
 ## Release And Distribution Routing
 
