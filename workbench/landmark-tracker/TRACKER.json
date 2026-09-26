@@ -13,15 +13,23 @@
   ],
   "workbench": {
     "items": 0,
+    "denominator": 0,
     "status": "empty",
     "counted": [],
+    "numerators": null,
+    "distribution": null,
     "unassessed": [],
-    "distribution": null
+    "unknown": [],
+    "invalid": [],
+    "bySourceType": {},
+    "contributions": []
   },
   "landmarks": [],
   "noLandmark": {
     "display": "No landmark",
     "questions": []
   },
+  "items": [],
+  "reconciliation": [],
   "questions": []
 }
