@@ -33,7 +33,9 @@ assert.notEqual(tracked.status, 0, 'checkpoints must not be ignored');
 // count here.
 assert.deepEqual(doctor(root).filter((issue) => issue.blocks === 'all' || issue.blocks === 'selection'), [],
   'doctor must resolve only the manifest-declared spec lane');
-const selected = nextWork(root);
+// S-00V TK-01L: overlay the last fetched remote claims without fetching, so
+// this lane-resolution check never reaches the network.
+const selected = nextWork(root, { fetch: false });
 if (selected) {
   assert.match(selected.path, /^workbench\/specs\/S-[0-9A-Za-z]{3,}-[^/]+\/SPEC\.md$/,
     'active dogfood work must resolve from the manifest-declared spec lane');

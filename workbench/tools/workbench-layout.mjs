@@ -1071,6 +1071,7 @@ export const TOOLS_RECEIPT = '.workbench-tools.json';
 // which the receipt hash comparison reports.
 export const RUNTIME_TOOLS = Object.freeze([
   'adr.mjs',
+  'claim-coordination.mjs',
   'diagnostics.mjs',
   'host-floor.mjs',
   'landmark-tracker.mjs',
