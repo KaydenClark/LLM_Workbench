@@ -302,7 +302,7 @@ answer, without weakening the immutable-candidate requirement from ADR-0037.
 - [x] Review and delivery skills name the assembled Spec as the reviewed
       unit; the independent review requirement is unchanged.
 - [x] The full verification suite passes and `doctor` is clean.
-- [ ] An explicit unresolved durable decision in a live or retired Task body
+- [x] An explicit unresolved durable decision in a live or retired Task body
       remains visible and refuses assembled-Spec readiness and closure until
       reconciled to its durable owner; legacy absence is not affirmative proof.
 - [ ] Final closure requires verification of approved delivered content on the
