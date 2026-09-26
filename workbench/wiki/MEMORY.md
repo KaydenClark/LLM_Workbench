@@ -67,6 +67,7 @@ they are authored.
 - [Auditor: check named claims against pinned evidence](skill-auditor.md)
 - [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
 - [To-spec: turn a settled decision into one bounded Spec](skill-to-spec.md)
+- [Save: persist authorized work and prove where it landed](skill-save.md)
 
 ## Release And Distribution Routing
 
