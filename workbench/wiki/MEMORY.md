@@ -64,6 +64,7 @@ they are authored.
 - [Grill-me: start a saved design inquiry](skill-grill-me.md)
 - [Notepad: preserve one objective's working context](skill-notepad.md)
 - [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
+- [Auditor: check named claims against pinned evidence](skill-auditor.md)
 - [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
 
 ## Release And Distribution Routing
