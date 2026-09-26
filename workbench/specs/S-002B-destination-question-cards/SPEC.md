@@ -62,7 +62,7 @@ Reimplementing delivered capture/read, replacing existing storage, projection ar
 
 ## Vertical Implementation Slices
 
-Record-backed Tasks live under this Spec's tasks directory. The first approved residual is one public Result write/read path; Task identity TK-002S was reserved serially by Tracker. Existing capture behavior is inherited proof, not a new execution Task. Subsequent missing workflow-maintenance behavior is assigned only after bounded current-source verification and shared writer coordination.
+Record-backed Tasks live under this Spec's tasks directory. The first approved residual is one public Result write/read path; Task identity TK-002S was reserved serially by Tracker. Existing capture behavior is inherited proof, not a new execution Task. Planning-only TK-002V names one confirmed-concept inquiry composition path and stays deferred pending exact writer/bundle/version/install clearance. Other planning/build/review maintenance remains separate future slices after bounded current-source verification and shared writer coordination.
 
 ## Acceptance Criteria
 
@@ -92,6 +92,7 @@ Update `workbench/landmark-tracker/README.md` with actual Result operation and l
 |---|---|---|---|---|---|
 | 2026-09-26 | none | Serial identity reservation under explicit owner three-Spec split | Live base b00a2e338436ef7b281b0cc53e74f891af32f18c; next-id proposal saved before next allocation | This minimal scaffold | Dispatcher scope/Tasks and source transfer mapping pending |
 | 2026-09-26 | planning | DQC boundary and Result residual approved by Director under explicit owner three-Spec split | Baseline b00a2e3 Tracker suite 23/23; open PR lookup found unrelated 92/77 only; pre guardrail 78/100; pre self-drift cleanUpdate false, stale S-00Q and historical seed/provenance limits | Narrow successor authored; original completed source evidence preserved | Serial Task ID, worker red/green, composition residual inspection, cross-Spec QA and independent review remain |
+| 2026-09-26 | planning verification | Checked complete DQC packet and claimed worker; composition Task reserved serially after importing exact Tracker TK-002U | 48 planning-suite commands ran across clean 959b043 and e11bc795 claim states: 47 passed, layout reversible manifest probe hit sandbox EPERM; authorized layout rerun passed 71/71. These are per-command planning results, not fixed-candidate full-suite proof. Result worker candidate 912563f passed dispatcher Result 5/5 and public demo; candidate full suite/review outstanding | TK-002V planning only, bundle/version/install and writer gate explicit; projections generated locally | Workflow composition and cross-Spec QA remain open; owner Human QA unchanged |
 
 ## Completion Result
 
