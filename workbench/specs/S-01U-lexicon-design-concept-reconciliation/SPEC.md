@@ -272,6 +272,10 @@ glossary. Completed knowledge follows existing reconciliation/lifecycle rules.
 |---|---|---|---|---|---|
 | 2026-09-26 | none | Owner requests a Spec for updating the stale Lexicon against all new design concepts. Baseline 89d4042fb8931b9d720af75bffea1c28803d72aa in isolated codex/lexicon-design-reconciliation; original checkpoint edit preserved. | Read entry controls, manifest, catalog, Wiki routes and selected concept/Spec/ADR sources. Doctor: zero blockers, seven attention findings. Self-drift pre: cleanUpdate false. Guardrail 78/100. | Authored comprehensive audit contract and minimal first slice; no Lexicon changes. | Planning verification pending; whole concept audit and corrections unexecuted. |
 
+| 2026-09-26 | none | Initial planning checks completed; rebased onto concurrent integration ebb01dc9d44f60dcec151e0d074d060af82a0ad4 as 49cf2fd85437165e0f60e1368441b24aa7e5b35f. | All 48 required commands passed before rebase; initial separate-context scope review found no actionable issue. Reviewed concurrent grill-me/core-count and S-00M/S-00V changes. Final rebased verification follows. | [Planning verification receipt](planning-verification.json) retains source delta, check results and pre/post self-drift summaries. Catalog includes the planned Spec; hot Taskboard correctly has no new active row. | Lexicon unchanged; semantic audit and capability acceptance remain unexecuted. |
+
+| 2026-09-26 | none | Final rebased planning verification completed on the 49cf2fd85437165e0f60e1368441b24aa7e5b35f tree plus planning evidence updates. | All 48 required commands passed; Wiki validation, local links, render and diff checks passed. Post self-drift retains the same seven attention findings and cleanUpdate false. Guardrail remains 78/100; four real-outcome evidence recommendations remain, with no agent-outcome claim. See [receipt](planning-verification.json). | Specification and generated catalog only; no root/template Lexicon repair. | Immutable final integration review follows; all audit/update acceptance and Human QA remain pending. |
+
 ## Completion Result
 
 Specification authored; capability implementation, semantic audit and owner QA

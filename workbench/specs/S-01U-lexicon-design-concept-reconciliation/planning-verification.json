@@ -106,12 +106,12 @@
       ]
     },
     "post": {
-      "receiptSha256": "54abc0050ce0b72ac563bd06fb09dbcda0a88ad6ad48759b8e42ef3d432c9310",
+      "receiptSha256": "d99f7bf22f3bf8e8240289f329c16894cfc5d00fcf2994c6a0d92f3f8827150f",
       "retainedFields": "Summary retains identity, findings, results and limits; full inventory is omitted.",
       "schemaVersion": 1,
       "operation": "workbench-self-drift",
       "phase": "post",
-      "sourceRevision": "89d4042fb8931b9d720af75bffea1c28803d72aa",
+      "sourceRevision": "49cf2fd85437165e0f60e1368441b24aa7e5b35f",
       "dirty": true,
       "workbenchVersion": "v3.2.1",
       "findings": [
@@ -220,5 +220,272 @@
       "Repeated trials with effect and confidence intervals"
     ],
     "limitation": "No outcome improvement is claimed from planning or structural checks."
-  }
+  },
+  "initialSuite": {
+    "scope": "Pre-rebase planning verification; final candidate is verified separately",
+    "commandsExecuted": 48,
+    "passed": 48,
+    "failed": 0
+  },
+  "sourceDelta": {
+    "integrationBase": "ebb01dc9d44f60dcec151e0d074d060af82a0ad4",
+    "rebasedPlanningCommit": "49cf2fd85437165e0f60e1368441b24aa7e5b35f",
+    "observed": "Concurrent integration added grill-me and changed the manifest/core count to 22, activated S-00M and recorded S-00V acceptance audit. The new Spec makes no contrary availability/count claim and preserves current source checks at execution. Its initial observations remain explicitly anchored to their September 26 baseline."
+  },
+  "finalSuite": {
+    "base": "ebb01dc9d44f60dcec151e0d074d060af82a0ad4",
+    "planningCommit": "49cf2fd85437165e0f60e1368441b24aa7e5b35f",
+    "scope": "Rebased planning tree; subsequent changes only append verification evidence and update this receipt",
+    "commands": [
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exitCode": 0,
+        "seconds": 40.26
+      },
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exitCode": 0,
+        "seconds": 0.56
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exitCode": 0,
+        "seconds": 0.13
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exitCode": 0,
+        "seconds": 4.14
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exitCode": 0,
+        "seconds": 1.95
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exitCode": 0,
+        "seconds": 1.38
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exitCode": 0,
+        "seconds": 41.92
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exitCode": 0,
+        "seconds": 0.13
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exitCode": 0,
+        "seconds": 46.38
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exitCode": 0,
+        "seconds": 2.79
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exitCode": 0,
+        "seconds": 20.11
+      },
+      {
+        "command": "node tools/test-workbench-layout.mjs",
+        "exitCode": 0,
+        "seconds": 61.89
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exitCode": 0,
+        "seconds": 10.81
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exitCode": 0,
+        "seconds": 6.73
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exitCode": 0,
+        "seconds": 11.59
+      },
+      {
+        "command": "node tools/test-diagnostics.mjs",
+        "exitCode": 0,
+        "seconds": 38.01
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exitCode": 0,
+        "seconds": 8.69
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exitCode": 0,
+        "seconds": 0.14
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exitCode": 0,
+        "seconds": 8.12
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exitCode": 0,
+        "seconds": 4.97
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exitCode": 0,
+        "seconds": 0.95
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exitCode": 0,
+        "seconds": 17.67
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exitCode": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exitCode": 0,
+        "seconds": 6.2
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exitCode": 0,
+        "seconds": 4.36
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exitCode": 0,
+        "seconds": 7.39
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exitCode": 0,
+        "seconds": 5.93
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exitCode": 0,
+        "seconds": 3.91
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exitCode": 0,
+        "seconds": 0.78
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exitCode": 0,
+        "seconds": 1.07
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exitCode": 0,
+        "seconds": 0.41
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exitCode": 0,
+        "seconds": 0.23
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exitCode": 0,
+        "seconds": 0.43
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exitCode": 0,
+        "seconds": 1.03
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exitCode": 0,
+        "seconds": 1.26
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exitCode": 0,
+        "seconds": 1.0
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exitCode": 0,
+        "seconds": 1.16
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exitCode": 0,
+        "seconds": 1.74
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exitCode": 0,
+        "seconds": 0.77
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exitCode": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exitCode": 0,
+        "seconds": 7.69
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exitCode": 0,
+        "seconds": 0.59
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exitCode": 0,
+        "seconds": 0.23
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exitCode": 0,
+        "seconds": 0.12
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exitCode": 0,
+        "seconds": 33.86
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exitCode": 0,
+        "seconds": 0.67
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exitCode": 0,
+        "seconds": 0.09
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exitCode": 0,
+        "seconds": 0.56
+      }
+    ],
+    "passed": 48,
+    "failed": 0
+  },
+  "additionalChecks": [
+    "Spec Markdown path targets resolve",
+    "Wiki validate passes",
+    "Render is idempotent after catalog addition; planned Spec absent from hot board",
+    "git diff --check passes",
+    "No change to Lexicon, templates, runtime or existing evidence by this planning packet"
+  ]
 }
