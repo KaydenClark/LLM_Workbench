@@ -57,6 +57,7 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 |---|---|---|---|---|
 | TK-01C | Audit to-tasks, deliver the smallest supported source/documentation change and prove the routed article | done | none | Red/green tools/test-skill-catalog.mjs (red 91bb65b, green fde45b8); test-skill-inspection 5/5 and test-delivery-skills 3/3; full AGENTS suite 48/48 at 594dc1a; fresh-context scenario cut an active record-backed Spec into two parsed TASK.md records with title, Stance, Destination, Blockers and Planned verification, left the owner-gated slice uncut, wrote nothing into the planned Spec and did not run convert-tasks, and next --json returned exactly one Task; three runtime gaps confirmed by throwaway probes; wiki validate ok |
 | TK-02D | Let `convert-tasks` convert a planned Spec that the same request activates, behind an explicit `--activate` opt-in | done | none | Red/green tools/test-spec-workbench.mjs (red 68f1b65: a planned Spec is refused without the opt-in, and the refusal names the activation route; green ad05f77); convert-tasks S-### --activate converts a planned Spec, sets only Status active after every record parses, writes nothing on a refusal, is a no-op on an active Spec and refuses a completed one; manual CLI run in a disposable room; full AGENTS suite 48/48 at 7f6731b; wiki validate ok |
+| TK-002P | Let `convert-tasks S-### --activate` activate a planned record-backed Spec in to-spec's shape once to-tasks has written its first Task records | ready | none | pending |
 
 ### TK-01C - Deliver the to-tasks skill destination
 
@@ -69,6 +70,12 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 **Stance:** Builder
 
 Corrective runtime slice for TK-01C runtime gap 3. `convert-tasks` refuses a planned Spec, so a request that activates a Spec and cuts its Tasks has no single safe step. Add an explicit `--activate` opt-in (`{ activate: true }` on `convertSpecSlices`): without it behavior is unchanged and the planned refusal names the route; with it, a planned Spec's records are staged and parsed first and only then is its `**Status:**` set to `active` and the records written, so a refusal writes nothing. Keep resolver, closure, claim/close, `next` and Task-record parsing untouched. Update the to-tasks source and its Wiki article for the activation route. RUNBOOK wording is recorded as a Remaining gap for the S-00P controls lane, not edited here.
+
+### TK-002P - Activate a planned record-backed Spec
+
+**Stance:** Builder
+
+Corrective runtime slice for the gap S-01K TK-002L exposed: to-spec now authors a new Spec as `planned` with no Task row and an empty tracked `tasks/` directory (E-4B), while TK-02D's `convert-tasks S-### --activate` converts only unfinished slice-table rows and refuses a Spec whose `tasks/` already exists, so nothing can activate a to-spec-shaped Spec. to-tasks keeps authoring the records (next-id, record shape); the command is the activation gate: on a planned, record-backed Spec with no unfinished table row, `--activate` parses every live `tasks/<id>/TASK.md`, refuses writing nothing when there is none or one fails to parse, and otherwise sets only `**Status:**` to `active`. TK-02D behavior and every existing refusal stay unchanged; completed and retired Specs are never reopened. Resolver, closure, claim/close, `next` and Task-record parsing untouched. Update the to-tasks source and its Wiki article for the record-backed route; RUNBOOK wording is recorded as a Remaining gap for the S-00P controls lane, not edited here.
 
 ## Acceptance Criteria
 
