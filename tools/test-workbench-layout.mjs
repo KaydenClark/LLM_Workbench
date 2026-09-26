@@ -19,6 +19,13 @@ const tool = path.join(runtime, 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 
+// S-00M TK-002: doctor reports untracked files under the root controls, the
+// ADR collection and the spec lane. These Genesis rooms are never committed, so
+// that one attention finding is correctly present in their clean state, and the
+// clean expectation is that finding and nothing else.
+const UNCOMMITTED_ROOM = ['untracked-controls'];
+const codesOf = (findings) => (findings ?? []).map((item) => item.code);
+
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-layout-'));
 }
@@ -196,7 +203,7 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     assert.match(ignore, /^handoffs\/\*$/m);
     assert.doesNotMatch(ignore, /^checkpoints/m, 'checkpoints must never be ignored');
     render(project);
-    assert.deepEqual(doctor(project, { home: quietHome }), [], 'an operable Genesis fixture must satisfy doctor once rendered');
+    assert.deepEqual(codesOf(doctor(project, { home: quietHome })), UNCOMMITTED_ROOM, 'an operable Genesis fixture must satisfy doctor once rendered');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(quietHome, { recursive: true, force: true });
@@ -591,7 +598,7 @@ test('a room whose managed runtime drifts from its receipt fails the doctor it c
     render(project);
     const clean = roomDoctor();
     assert.equal(clean.status, 0, `${clean.stderr}`);
-    assert.deepEqual(clean.findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(clean.findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     // An appended comment still parses, so the room's doctor runs; only the
     // hash the receipt recorded has changed.
@@ -652,7 +659,7 @@ test('a room names a managed file deleted together with its receipt key', () => 
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     render(project);
-    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     // `sessions.mjs` is the managed tool no doctor import reaches, so this is
     // the deletion that used to be invisible from inside the room.
@@ -697,7 +704,7 @@ test('a room tells a foreign lane file apart from a receipt key it lost', () => 
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     render(project);
-    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     const smuggled = path.join(project, 'workbench', 'tools', 'smuggled.mjs');
     fs.writeFileSync(smuggled, 'export const smuggled = true;\n');
@@ -707,7 +714,7 @@ test('a room tells a foreign lane file apart from a receipt key it lost', () => 
     assert.match(foreign.message, /move it out of/, 'the only repair for a foreign file is removing it from the lane');
     assert.doesNotMatch(foreign.message, /--explicit-update/, 'update cannot adopt a foreign file, so it must not be named here');
     fs.rmSync(smuggled);
-    assert.deepEqual(roomDoctor().findings, [], 'removing the foreign file clears the finding');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'removing the foreign file clears the finding');
 
     // The other half of the same message: a key the receipt lost for a file
     // the lane still holds is repaired by refreshing the receipt.
