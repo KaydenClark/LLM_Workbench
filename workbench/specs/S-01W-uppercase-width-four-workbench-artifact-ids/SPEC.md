@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** Lane I cut TK-002K (dual-form selection) after TK-02B landed in PR #188.
-**Next gate:** A Lane I worker claims and delivers TK-002K. Acceptance line 1 is checked; lines 2-5 remain open.
+**Latest event:** TK-002K claimed by claude-lane-I.
+**Next gate:** Close TK-002K with verification and documentation proof.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 

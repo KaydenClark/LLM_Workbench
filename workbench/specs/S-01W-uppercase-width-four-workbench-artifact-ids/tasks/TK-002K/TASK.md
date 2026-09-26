@@ -3,7 +3,7 @@
 **Task ID:** TK-002K
 **Spec ID:** S-01W
 **Slice:** Resolve short and widened IDs to one stored record
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-01W Desired Behavior 3 and 4 for public Spec and Task selectors.
