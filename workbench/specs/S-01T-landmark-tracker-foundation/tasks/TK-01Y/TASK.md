@@ -3,9 +3,9 @@
 **Task ID:** TK-01Y
 **Spec ID:** S-01T
 **Slice:** Inspect documentation distributions across source types and scopes
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-01X
+**Blockers:** none
 **Destination:** spec-acceptance: Exact eight-step vocabulary, the 30/20/50 example, shared identity deduplication, mixed-question contribution and Workbench-wide aggregation pass deterministic examples without filtering or flattening away meaning; empty, unknown, missing-assessment, invalid-fraction and cyclic dependency cases terminate with explicit outcomes and invalid writes preserve prior data; changed understanding exposes evidence-backed affected claims and preserves earlier proof
 **Planned verification:** Red: at the TK-01X public persistence and projection seam, persisted source-type by scope tables (grilling question, Spec, ADR, Task, DQC at DQC, landmark and Workbench scope) fail for shared-identity deduplication, mixed-DQC contribution, incomplete and invalid outcomes, arithmetic versus navigation cycles and claim revisions. Green: each passes through persist, restart and rebuild; invalid updates leave bytes unchanged. Targeted tests, then the full AGENTS suite; the TK-01X demo extended in under a minute.
 

@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** TK-01X claimed by claude-lane-J.
-**Next gate:** Close TK-01X with verification and documentation proof.
+**Latest event:** 2026-09-26 TK-01X closed with proof: the Tracker root is declared and validated, `landmark-tracker.mjs` captures, revises, links and rebuilds, and `node tools/landmark-tracker-demo.mjs` reproduces 30/20/50; TK-01Y released to ready.
+**Next gate:** Claim and deliver TK-01Y (distributions across source types and scopes), now eligible; TK-01Z and TK-02A stay deferred until S-00I TK-01U is done on integration.
 
 ## Outcome
 
@@ -237,8 +237,8 @@ immediately before saving it. The records in `tasks/` are authoritative:
 
 | Task | Slice | Status | Blockers or release |
 |---|---|---|---|
-| [TK-01X](tasks/TK-01X/TASK.md) | Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view | in-progress (claude-lane-J) | none |
-| [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | blocked | TK-01X |
+| [TK-01X](tasks/TK-01X/TASK.md) | Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view | done | none |
+| [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | ready | none (TK-01X done) |
 | [TK-01Z](tasks/TK-01Z/TASK.md) | Assess actual Landmark Wiki content so two Specs maintain one readable article | deferred | TK-01Y done and S-00I TK-01U done on integration |
 | [TK-02A](tasks/TK-02A/TASK.md) | Keep live Tracker references and historical proof through record moves | deferred | TK-01X done and S-00I TK-01U done on integration |
 
@@ -360,16 +360,19 @@ The original workflow diagram is preserved byte-for-byte.
 | 2026-09-26 | none | Planning verification at 541aac0a1e167f7d93cd72783a48bf740f2e9a64; corrected only the ADR corpus expected-link count afterward. | All 48 required commands executed: 47 passed; ADR count 61 versus actual 62 failed, then all 29 ADR tests passed with the count reconciled. Wiki/ADR validation, render, doctor, exact workflow-map preservation and no-WBID/no-Task checks passed. See [planning verification receipt](planning-verification.json). | Root/generic owners, accepted ADR-000N, readable article, router and historical reconciliation links documented. Initial independent review passed 84eaf20; final immutable candidate review follows. | Seven existing attention findings remain; guardrail 78/100 unchanged with four outcome-evidence recommendations. No runtime, Tasks or Human QA completion claimed. |
 | 2026-09-26 | none | Lane J (Claude Director dispatch, owner instruction to continue the run) rebuilt the planning candidate on integration ec848e5: four Task records TK-01X, TK-01Y, TK-01Z, TK-02A converted from the Codex packet draft at e58655d (input only; PACKET-PLAN.md and dispatch-verification.json not carried), each ID proposed by next-id S-01T --prefix TK immediately before its record was saved; features single-writer (S-00I TK-01U), identity and root-control compatibility pinned. | render; doctor no blocking finding (seven existing attention findings plus the untracked-record notice before commit); show S-01T; full AGENTS suite, fresh-clone doctor and separate-context review are recorded on the committed candidate in the review verdict row. | SPEC header, Non-Goals, Dependencies, Vertical Implementation Slices, Completion Result and Remaining Limitations updated; four TASK.md records; TASKBOARD.md rendered. No root control, runtime, manifest, Wiki or template change. | No runtime yet; TK-01X is next. Runbook and suite-list wording for the Tracker is owed to S-00P once TK-01X lands. |
 | 2026-09-26 | review | Review verdict: pass at 98b8b18c8d60d377e9c3ed289d373406c8982cf8 [3f607c74c281] #1 | No High/Medium/Low findings. Full AGENTS suite 48/48 at the committed candidate (read-only runner, dirty []); fresh-clone doctor no blocking finding; render idempotent in the clone. Reviewer ran show and doctor; did not rerun render or the suite (read-only sandbox). | codex exec gpt-5.5, read-only sandbox, separate context from the Lane J dispatcher | 4 |
+| 2026-09-26 | TK-01X | Task closed | Red 0a365b0 (tools/test-landmark-tracker.mjs 1/12 pass: declaredTracker absent, malformed declarations validate, landmark-tracker.mjs missing; layout Tracker test fails missing-collection; tools test fails RUNTIME_TOOLS lacks landmark-tracker.mjs). Green 2592f28, docs d5c0951. node tools/test-landmark-tracker.mjs 13/13; test-workbench-layout 71/71; test-workbench-tools 19/19. Full AGENTS suite TOTAL pass=48 fail=0 at candidate d5c0951ed03a70ccdc0a1a87660aa3be30a6b8c2 dirty [] (also 48/48 at 2592f28). Doctor no blocking finding (seven pre-existing attention findings). Self-drift pre (a2b6e68) and post: same seven pre-existing findings plus detached-head only in the detached base worktree; no new finding; cleanUpdate false. Guardrail 78/100 before and after, same four outcome-evidence recommendations. Demo: node tools/landmark-tracker-demo.mjs, 0.8s, 30/20/50 PASS. | workbench/landmark-tracker/README.md (new procedure: capture, revise, link, rebuild, concurrency guarantee); workbench/landmark-tracker/TRACKER.json (generated empty); workbench/landmark-tracker/destination-questions/.gitkeep; workbench/landmark-tracker/landmarks/.gitkeep; workbench/manifest.json (landmarkTracker block); workbench/wiki/design-concepts/landmark-tracker.md (availability sentence, route, history); TK-01X TASK.md (Delivered Shape, Remaining Gaps with S-00P wording); SPEC.md slice table and limitation bullet; TASKBOARD.md rendered. No root control or templates/ change. | TK-01Y distributions, TK-01Z Landmark Wiki evidence, TK-02A reference recovery remain; only DQCs are counted items so far. No doctor-level Tracker drift finding (rebuild --check is the seam). New Genesis rooms do not declare the Tracker by default. Revision check is not a lock. Owed to S-00P: AGENTS suite line node tools/test-landmark-tracker.mjs and the RUNBOOK paragraph, verbatim in TK-01X Remaining Gaps. |
 
 ## Completion Result
 
 Capability delivery pending. The documentation/specification packet does not
-satisfy runtime acceptance or owner Human QA. Four Tasks are authored; none is
-delivered yet.
+satisfy runtime acceptance or owner Human QA. Four Tasks are authored; TK-01X
+(the foundation path) is delivered on its branch, and TK-01Y, TK-01Z and TK-02A
+remain. No acceptance box is checked: each spans later Tasks, separate-context
+review or owner Human QA.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Implementation proceeds through TK-01X, TK-01Y, TK-01Z and TK-02A.
+- Implementation proceeds through TK-01Y, TK-01Z and TK-02A; TK-01X is done.
 - Owed to S-00P (root controls): Runbook procedure for the Tracker and the
   suite-list line for its test; the exact wording is in
   [TK-01X Remaining Gaps](tasks/TK-01X/TASK.md#remaining-gaps).
