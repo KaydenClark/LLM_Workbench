@@ -1,0 +1,251 @@
+# S-01W - Uppercase Width-Four Workbench Artifact IDs
+
+**Spec ID:** S-01W
+**Status:** planned
+**Priority:** 1
+**Owner:** claude-lane-I
+**Stance:** Builder
+**Updated:** 2026-09-26
+**Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
+**Blockers:** none
+**Latest event:** Lane I rebuilt the S-00O planning packet on integration 1a6f6e0 and re-allocated this Spec as S-01W (the draft's S-01U was taken by PR #161); no Tasks allocated or runtime changed.
+**Next gate:** Lane I resolves identity touch versus completed-only lifecycle-move semantics, then allocates the first implementation Task with `next-id`.
+
+> **Citation anchors.** pre=`89d4042` post=`89d4042`.
+
+## Outcome
+
+New artifact WBIDs use uppercase `0-9A-Z` suffixes of minimum width four.
+Existing and widened spellings reach one identity, and allocation reserves both.
+Eligible records widen when touched through supported operations, preserving
+former IDs, live references and historical evidence. Completed records remain
+unchanged. This is the WBID capability owner in the v4 delivery sequence governed
+by [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md).
+
+## Why It Matters
+
+The owner selected two separate build Specs and the order WBID -> board ->
+S-00P controls -> S-00O release. The board needs consistent identities before
+its own records and consumers are built. A bulk rename would contradict the
+owner's touch-and-update rule and endanger recoverable historical references.
+Durable source: [destination audit ledger](../../wiki/grilling-destination-audit-ledger.json),
+rows E-6, E-7 and E-8, including their decision/correction lineage.
+
+## Current Verified State
+
+Read these source observations at the pre anchor:
+
+- `workbench/tools/visible-ids.mjs` exports a mixed-case base62 alphabet and
+  defaults artifact allocation to width three. Its collision key already folds
+  case and removes leading zeros, so `S-00Q` and `S-000Q` occupy one key.
+- That module also uses the base62 encoder for random 22-character Workbench
+  connection identities. Changing its codec globally would change another
+  mechanism outside this capability.
+- `workbench/tools/spec-workbench.mjs` exposes read-only `next-id` through
+  `nextIdentity`; several parent/task selectors compare literal IDs. Equivalent
+  collision keys therefore do not yet prove dual-form public lookup.
+- `moveSpecDirectory` and `moveTaskRecord` support lifecycle moves of complete
+  Specs and done Tasks. E-8 prohibits renaming completed records. Those APIs
+  cannot automatically be treated as the eligible next-touch widening trigger.
+- `tools/test-visible-ids.mjs` and `tools/test-visible-id-consumers.mjs` provide
+  allocation, collision, CLI and legacy preservation seams.
+- [ADR-0041](../../docs/adr/0041-visible-base62-workbench-identifiers.md) still
+  describes width/alphabet as unapproved; E-8 now settles those artifact details.
+
+The S-00O draft (unmerged candidate 34dfa2f on 89d4042) allocated this record
+as S-01U, but PR #161 landed a different S-01U first. The Lane I rebuild on
+integration 1a6f6e0 re-ran the supported `next-id` operation, which returned
+S-01W. Retain this identity until supported touch migration applies. This planning record delivers no runtime.
+
+## Desired Behavior
+
+1. New artifact allocations contain only `0-9A-Z`, have minimum suffix width
+   four and grow without truncation or recycling.
+2. Preserve prefixes and identity scopes. TT-Q10 keeps the `TK` Task prefix;
+   its answer does not supersede E-8's later alphabet/width decision.
+3. Allocation treats short/widened and case aliases as occupied identities;
+   ambiguous duplicate records refuse selection rather than choosing a winner.
+4. Public Spec and Task operations accept supported legacy/widened selectors
+   and report the stored canonical identity/path. Historical numerical Task
+   labels retain Spec-qualified scope; letter-bearing Tasks retain whole-room
+   inventory checks.
+5. Eligible touched records widen once through supported move/reference
+   machinery, keep former IDs reachable and preserve immutable evidence.
+   Untouched and completed records are not renamed or re-statused.
+6. Connection IDs, collision safety, reservation inventories, path/link safety,
+   retirement recovery and stored-ID versus filename selectors remain intact.
+
+## Decisions And Contracts
+
+- E-6 establishes this separate capability before board delivery and S-00P's
+  controls rewrite. E-7/E-8 prohibit mass status and ID sweeps. A read-only QA
+  inventory may identify omissions; it does not authorize bulk mutation.
+- This record is planned. No Task IDs or Task records exist yet; each is allocated
+  with `next-id` when cut. Proposed slices below are unallocated.
+- Artifact allocation needs a separate uppercase codec/policy; preserve the
+  exported base62 connection-ID codec unless an independently assigned change
+  expressly requires otherwise.
+- **Implementation proposal, unresolved:** retain former IDs in explicit
+  Spec/Task metadata with parser/serializer round-trip coverage. Exact field
+  shape belongs to the implementation design, not a recovered owner answer.
+- **Director-confirmed boundary:** preserve the completed-record exclusion and
+  design identity-only touch separately from lifecycle moves. Reuse supported
+  reference-preservation machinery where appropriate, without treating retirement
+  as identity normalization. The eligible active-record trigger remains an
+  implementation proposal to resolve before the migration slice.
+- Sol handles normal delivery; Luna handles deterministic checks; Astra handles
+  ambiguous or consequential review. Integration review uses separate context;
+  no additional different-model ceremony is imposed.
+
+## Non-Goals
+
+- JSON board, sitrep, direct-Task home or Landmark Tracker implementation.
+- Bulk renumbering, re-statusing, completed-record renaming or ID recycling.
+- Altering Workbench connection identity format or allocating Tasks here.
+- Version stamping, downstream upgrades or integration-to-main promotion.
+
+## Dependencies And Blockers
+
+S-00O dispatches this capability before the board capability, which then unblocks
+S-00P controls work. Release preparation must distinguish reviewed delivery from
+post-main closure using reconciled live controls. No completion gate is bypassed
+by this proposal. Implementation waits for Director release of named shared lanes
+and Dispatcher allocation of real Tasks through `next-id` on the current
+integration tip immediately before each commit (no Task-ID lease holds).
+The migration slice additionally needs the trigger/metadata proposal resolved.
+
+## Vertical Implementation Slices
+
+These are proposed slices, not allocated Tasks or selectable table rows. No Task
+IDs or Task records are created. An empty `tasks/.gitkeep` preserves the existing
+record-backed parser mode in fresh clones; it is not a Task or an allocation.
+
+### First slice - Public new-ID proposal
+
+**Stance:** Builder
+
+Candidate lane: `workbench/tools/visible-ids.mjs`,
+`tools/test-visible-ids.mjs`, `tools/test-visible-id-consumers.mjs`,
+`workbench/docs/adr/0041-visible-base62-workbench-identifiers.md`.
+Deliver artifact-only uppercase minimum-width-four allocation through existing
+public `next-id --prefix S` and `next-id <spec> --prefix TK`.
+Trace explicit-width callers before changing shared defaults.
+
+Red cases: occupied numeric prefixes yield `S-000A` and `TK-000A`; base36 overflow
+at explicit width one yields `10`, never lowercase; `S-00Q` reserves `S-000Q`;
+duplicate aliases refuse. Disposable-room CLI results are uppercase width four,
+`reserved:false`, with original legacy paths and bytes unchanged. Confirm those
+new assertions fail before implementing. Green implements the smallest allocator
+change and preserves connection-ID checks. The ADR distinguishes delivered
+allocation from remaining lookup/migration work.
+
+### Next slice - Dual-form selection
+
+Depends on the first slice. Candidate lane:
+`workbench/tools/spec-workbench.mjs`, `tools/test-visible-id-consumers.mjs`,
+`tools/test-spec-workbench.mjs`. Trace findSpec, parent next-id checks, task
+selectors, blockers and retired explicit lookup. Red disposable fixtures require
+show/claim/close to accept widened selectors for short stored IDs, preserve
+returned stored paths, and refuse ambiguous records. Preserve numerical Task
+scope. Split off QA/report consumers if tracing exceeds one bounded Task.
+
+### Next slice - Safe touch-and-update
+
+Depends on dual-form selection and a resolved trigger/metadata proposal.
+Candidate lane: `workbench/tools/spec-workbench.mjs`,
+`tools/test-spec-workbench.mjs`. Disposable Git fixtures prove eligible records
+widen once, former IDs survive, live links update and immutable historical
+references remain anchored/countable. Reject completed-record renaming, occupied
+aliases/destinations, dirty trees and unsafe paths without partial mutation.
+Exercise repeat operations, recovery and cold-clone lookup. No live records are
+used as test data.
+
+### Next slice - Artifact consumer coverage
+
+Depends on prior policy/lookup delivery. Inventory actual imports and explicit
+widths, then bound each Task to supported consumers. Known candidate lanes:
+`workbench/tools/adr.mjs`, `workbench/tools/notepads.mjs`,
+`tools/test-adr.mjs`, `tools/test-notepads.mjs`,
+`tools/test-visible-id-consumers.mjs`. Additional paths require Director release.
+Fixture public operations prove new-form allocation and legacy preservation;
+future DQC/landmark integrations consume this contract when their runtime exists.
+
+### Final slice - Assembled capability QA
+
+Depends on delivered slices. Read-only inventory finds missed consumers and
+alias collisions. Reconcile ADR-0041, relevant RUNBOOK procedures, generic
+mirrors and managed receipts through released lanes; do not expand S-00P's
+controls rewrite here. Run full verification and S-00K pre/post semantic drift
+checks. Dispatcher verifies the complete capability; Director separately reviews
+the immutable assembled candidate. Return exact delivered guarantees to the board
+packet and S-00P; owner Human QA and closure follow live controls.
+
+## Acceptance Criteria
+
+- [ ] Public new artifact allocation is uppercase, minimum width four, collision-safe and read-only when proposing an ID.
+- [ ] Legacy/widened public selectors resolve one record; ambiguity refuses and numerical Task scope remains intact.
+- [ ] Eligible touch migration preserves former IDs, live links and immutable history without renaming completed records.
+- [ ] Supported artifact consumers follow the policy and connection identities remain compatible.
+- [ ] ADR/procedures/generic mirrors describe actual delivery; full suite, drift receipts and assembled review are recorded.
+
+## Testing Seams
+
+- `allocateVisibleId` and `visibleIdKey` unit assertions.
+- Disposable-room CLI `next-id`, show, claim and close fixtures.
+- Disposable Git move/reference/recovery fixtures; connection identity checks.
+- ADR/notepad public allocation and stored-ID selectors after caller tracing.
+
+## Verification Procedure
+
+For the first slice, record expected new failures before implementation:
+
+```bash
+node tools/test-visible-ids.mjs
+node tools/test-visible-id-consumers.mjs
+```
+
+After targeted green, verify connection identity preservation and run relevant
+consumer/migration seams as assigned:
+
+```bash
+node tools/test-workbench-identity.mjs
+node tools/test-spec-workbench.mjs
+node tools/test-adr.mjs
+node tools/test-notepads.mjs
+node tools/test-spec-citation-anchors.mjs
+```
+
+Run the complete AGENTS full suite on the implemented candidate. Capture guardrail
+baseline/after-score where harness changes require it, and S-00K read-only
+pre/post receipts alongside RUNBOOK's bounded manual semantic check. Test results
+prove exercised fixtures, not owner QA or complete project behavior. This planning
+pass runs no behavioral tests and makes no green runtime claim.
+
+## Documentation Impact
+
+ADR-0041 owns identity decisions; RUNBOOK owns actual commands/policy; this Spec
+owns requirements/proof. Coordinate generic mirrors, managed receipts and shared
+controls with Director and S-00P. Preserve historical source claims and avoid
+using ignored recovery material as durable evidence.
+
+## Append-Only Evidence And Execution Log
+
+| Date | Task | Event | Verification | Docs | Remaining gap |
+|---|---|---|---|---|---|
+| 2026-09-26 | none allocated | Director-released capability packet authored under S-00O | Source inspection at 89d4042; no runtime tests | This Spec | Task lease release, shared lanes, implementation and assembled verification |
+| 2026-09-26 | none allocated | Lane I (claude-lane-I) rebuilt unmerged S-00O planning candidate 34dfa2f onto integration 1a6f6e0: PR #161 had taken S-01U, so supported `next-id` re-allocated the identity Spec as S-01W and then the board Spec as S-01X; every reference in S-00O, S-01W, S-01X and the direct-Task proposal was renumbered and the stale Task-ID lease wording removed (no lease holds). | `next-id --prefix S` returned S-01W on clean integration 1a6f6e0 and S-01Y with both records present; render and doctor on the committed candidate; full suite and separate-context review recorded on the candidate PR | This Spec, S-01X, S-00O, TASKBOARD.md, CATALOG.md | Touch-versus-lifecycle semantics, first implementation Task and assembled verification |
+
+## Completion Result
+
+Pending. Planning packet only; no runtime delivery, review verdict or owner approval.
+
+## Remaining Limitations Or Follow-Up Specs
+
+- Former-ID field and eligible touch trigger remain implementation proposals.
+- Board and S-00P controls delivery consume this capability in E-6 order.
+- Future artifact types need their own runtime integration; this Spec does not fabricate unavailable consumers.
+
+## Supersession
+
+- Supersedes: none; extends delivered identity compatibility with the newer E-8 policy.
+- Superseded by: none.
