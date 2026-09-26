@@ -5296,7 +5296,6 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-00V TK-00K: optional-capability routing (end) ----
-<<<<<<< HEAD
 
 // ---- S-01W TK-002K: dual-form Task selectors (start) ----
 // Record-backed Task selectors (`receipt --task`, `gate --task`, `move-task
@@ -5375,7 +5374,6 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-01W TK-002K: dual-form Task selectors (end) ----
-=======
 // ---- S-00J TK-02J: declared-blocked resolution and owner-decision blockers (begin) ----
 // A Task record's declared `blocked` derives `ready` only when a real
 // blocker has cleared: it names at least one blocker (or a recorded missing
@@ -5476,4 +5474,3 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-00J TK-02J (end) ----
->>>>>>> origin/integration
