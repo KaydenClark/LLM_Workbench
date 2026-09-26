@@ -4846,3 +4846,225 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     console.log('ok - identity proposals reserve active, retired, corrective, discarded and remote-only IDs');
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
+
+// ---- S-00J TK-01T: reviewed-delivery blocker `S-###:delivered` (begin) ----
+// A dependent that needs only a blocker Spec's reviewed integration delivery
+// (T0 of S-00J's closure-capture transition contract) writes
+// `S-###:delivered`; a plain `S-###` still waits for `complete`/`superseded`.
+// Every room below holds one blocker Spec, S-9E0, whose own Tasks are never
+// selectable, and two record-backed dependents: S-9E1 (priority 0) waits on
+// plain `S-9E0` and S-9E2 (priority 1) on `S-9E0:delivered`. So `next`
+// returns S-9E1 only when the plain edge is met, S-9E2 when only the
+// delivered edge is, and nothing when neither is.
+{
+  const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+
+  function deliveryBlockerSpec({ taskStatus = 'done', accepted = true, status = 'active', description = 'Delivers the fixture capability.' } = {}) {
+    return [
+      '# S-9E0 - Delivered Fixture Capability',
+      '',
+      '**Spec ID:** S-9E0',
+      `**Status:** ${status}`,
+      '**Priority:** 5',
+      '**Owner:** agent',
+      '**Updated:** 2026-09-26',
+      `**Catalog description:** ${description}`,
+      '**Blockers:** none',
+      '**Latest event:** TK-001 closed.',
+      '**Next gate:** Owner Human QA.',
+      '',
+      '## Vertical Implementation Slices',
+      '',
+      '| Task | Slice | Status | Blockers | Proof |',
+      '|---|---|---|---|---|',
+      `| TK-001 | Deliver the capability | ${taskStatus} | none | ${taskStatus === 'done' ? 'landed' : 'pending'} |`,
+      '',
+      '## Acceptance Criteria',
+      '',
+      `- [${accepted ? 'x' : ' '}] The capability is delivered.`,
+      '',
+      '## Append-Only Evidence And Execution Log',
+      '',
+      '| Date | Task | Event | Verification | Docs | Remaining gap |',
+      '|---|---|---|---|---|---|',
+      '| 2026-09-26 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+      '',
+      '## Completion Result',
+      '',
+      // T0 deliberately does not need a Completion Result: that is written
+      // at final closure (T3), after owner Human QA.
+      'Pending.',
+      '',
+      '## Supersession',
+      '',
+      '- Supersedes: none',
+      '- Superseded by: none',
+      ''
+    ].join('\n');
+  }
+
+  function dependentSpec(id, priority) {
+    return emptyTableRecordBackedSpec(id)
+      .replace('# ' + id + ' - Task Lifecycle Fixture', `# ${id} - Dependent Fixture`)
+      .replace('**Priority:** 0', `**Priority:** ${priority}`);
+  }
+
+  // Builds one room. `verdict` is 'pass', 'fail' or null; `contained` false
+  // leaves the declared integration branch at the pre-delivery commit;
+  // `editAfterReview` changes the blocker's reviewed content after the pass
+  // verdict (committed and integrated); `reviewUncommitted` records the pass
+  // against working-tree content the candidate commit never carried.
+  function deliveryRoom({ blocker = {}, verdict = 'pass', contained = true, editAfterReview = false, reviewUncommitted = false, plainBlockers = 'S-9E0', deliveredBlockers = 'S-9E0:delivered', deliveredStatus = 'ready' } = {}) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-delivered-'));
+    initGitRoot(dir);
+    initLifecycleFixture(dir);
+    const branch = execFileSync('git', ['-C', dir, 'branch', '--show-current'], { encoding: 'utf8' }).trim();
+    declareFixtureGit(dir, { defaultBranch: branch, integrationBranch: 'integration' });
+    writeAt(dir, 'workbench/specs/S-9E1-plain-dependent/SPEC.md', dependentSpec('S-9E1', 0));
+    writeAt(dir, 'workbench/specs/S-9E1-plain-dependent/tasks/TK-9E1/TASK.md', taskRecordFixture({
+      id: 'TK-9E1', specId: 'S-9E1', slice: 'Needs final closure', status: 'ready', blockers: plainBlockers,
+      destination: 'spec-acceptance: S-9E1 Acceptance Criteria'
+    }));
+    writeAt(dir, 'workbench/specs/S-9E2-delivered-dependent/SPEC.md', dependentSpec('S-9E2', 1));
+    writeAt(dir, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md', taskRecordFixture({
+      id: 'TK-9E2', specId: 'S-9E2', slice: 'Needs reviewed delivery', status: deliveredStatus, blockers: deliveredBlockers,
+      destination: 'spec-acceptance: S-9E2 Acceptance Criteria'
+    }));
+    execFileSync('git', ['-C', dir, 'add', '-A']);
+    execFileSync('git', ['-C', dir, 'commit', '--quiet', '-m', 'dependents']);
+    const base = headSha(dir);
+    const blockerPath = 'workbench/specs/S-9E0-delivered-fixture/SPEC.md';
+    writeAt(dir, blockerPath, deliveryBlockerSpec(blocker));
+    execFileSync('git', ['-C', dir, 'add', '-A']);
+    execFileSync('git', ['-C', dir, 'commit', '--quiet', '-m', 'deliver S-9E0']);
+    const candidate = headSha(dir);
+    if (reviewUncommitted) {
+      writeAt(dir, blockerPath, deliveryBlockerSpec({ ...blocker, description: 'Delivers the fixture capability (never committed at the candidate).' }));
+    }
+    if (verdict === 'pass') {
+      recordReviewVerdict(dir, 'S-9E0', { candidate, result: 'pass', findings: 'none', reviewer: 'Fixture reviewer (separate context)' });
+    } else if (verdict === 'fail') {
+      // Written directly so no corrective Task changes the blocker's own
+      // Task set: this isolates the verdict result as the one missing fact.
+      const digest12 = assembleSpecReport(dir, 'S-9E0').specDigest.slice(0, 12);
+      const file = path.join(dir, blockerPath);
+      fs.writeFileSync(file, appendEvidence(fs.readFileSync(file, 'utf8'), `| ${TODAY} | review | Review verdict: fail at ${candidate} [${digest12}] #1 | one defect | Fixture reviewer (separate context) | 1 |`));
+    }
+    if (editAfterReview) {
+      const file = path.join(dir, blockerPath);
+      fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('Delivers the fixture capability.', 'Delivers a changed capability after review.'));
+    }
+    execFileSync('git', ['-C', dir, 'add', '-A']);
+    execFileSync('git', ['-C', dir, 'commit', '--quiet', '--allow-empty', '-m', 'record review']);
+    execFileSync('git', ['-C', dir, 'branch', '-f', 'integration', contained ? 'HEAD' : base]);
+    return dir;
+  }
+
+  function specBytes(dir) {
+    const out = {};
+    const walk = (current) => {
+      for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+        const full = path.join(current, entry.name);
+        // CATALOG.md is render's own generated projection, not a record.
+        if (entry.isDirectory()) walk(full);
+        else if (entry.name !== 'CATALOG.md') out[path.relative(dir, full)] = fs.readFileSync(full, 'utf8');
+      }
+    };
+    walk(path.join(dir, 'workbench/specs'));
+    return out;
+  }
+
+  function gitRefs(dir) {
+    return execFileSync('git', ['-C', dir, 'for-each-ref', '--format=%(refname) %(objectname)'], { encoding: 'utf8' });
+  }
+
+  function nextJson(dir) {
+    const result = spawnSync(process.execPath, [specTool, 'next', '--json', '--path', dir], { encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return JSON.parse(result.stdout);
+  }
+
+  function boardRow(dir, specId) {
+    render(dir);
+    return fs.readFileSync(path.join(dir, 'TASKBOARD.md'), 'utf8').split('\n').find((line) => line.startsWith(`| [${specId}]`)) ?? '';
+  }
+
+  // Asserts the delivered edge is unmet in `next --json`, `claim` and
+  // `render`, and that doctor names the unmet selected slice.
+  function assertDeliveredUnmet(dir, label) {
+    assert.equal(nextJson(dir), null, `${label}: next --json hands out neither dependent`);
+    assert.throws(() => claimWork(dir, 'S-9E2', { agent: 'fixture' }), /S-9E2\/TK-9E2 is blocked by S-9E0:delivered \(blocked-slice\)/, `${label}: claim refuses the delivered dependent`);
+    assert.match(boardRow(dir, 'S-9E2'), /TK-9E2: Needs reviewed delivery \(blocked/, `${label}: render shows the delivered dependent blocked`);
+    assert.ok(doctor(dir).some((issue) => issue.code === 'blocked-slice' && issue.taskId === 'TK-9E2'), `${label}: doctor names the unmet delivered edge`);
+  }
+
+  const rooms = [];
+  try {
+    // T0 satisfies the delivered edge; the plain edge on the same Spec stays
+    // unmet because S-9E0 is still `active`. Resolution writes nothing and
+    // fetches nothing: every Spec/Task byte and every Git ref is unchanged
+    // after next, doctor and render.
+    const delivered = deliveryRoom();
+    rooms.push(delivered);
+    const bytesBefore = specBytes(delivered);
+    const refsBefore = gitRefs(delivered);
+    const selected = nextJson(delivered);
+    assert.equal(selected?.specId, 'S-9E2', 'next --json hands out the dependent whose delivered edge T0 satisfies');
+    assert.equal(selected?.taskId, 'TK-9E2');
+    assert.match(boardRow(delivered, 'S-9E2'), /TK-9E2: Needs reviewed delivery \(ready/, 'render shows the delivered dependent ready');
+    assert.match(boardRow(delivered, 'S-9E1'), /TK-9E1: Needs final closure \(blocked/, 'render shows the plain dependent still blocked');
+    const deliveredFindings = doctor(delivered);
+    assert.equal(deliveredFindings.some((issue) => issue.code === 'blocked-slice' && issue.taskId === 'TK-9E2'), false, 'doctor agrees the delivered edge is met');
+    assert.ok(deliveredFindings.some((issue) => issue.code === 'blocked-slice' && issue.taskId === 'TK-9E1'), 'doctor still names the plain edge unmet');
+    assert.throws(() => claimWork(delivered, 'S-9E1', { agent: 'fixture' }), /S-9E1\/TK-9E1 is blocked by S-9E0 \(blocked-slice\)/, 'claim refuses the plain dependent before final closure');
+    assert.deepEqual(specBytes(delivered), bytesBefore, 'resolving the delivered edge writes no Spec or Task byte');
+    assert.equal(gitRefs(delivered), refsBefore, 'resolving the delivered edge moves no Git ref (no fetch, no write)');
+    claimWork(delivered, 'S-9E2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(delivered, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md'), delivered).status, 'in-progress', 'claim takes the delivered dependent');
+
+    // Each missing T0 fact keeps the delivered edge unmet.
+    const missing = [
+      ['no review verdict', { verdict: null }],
+      ['a fail verdict', { verdict: 'fail' }],
+      ['a candidate outside the declared integration branch', { contained: false }],
+      ['a substantive change after review', { editAfterReview: true }],
+      ['a reviewed digest the candidate commit never carried', { reviewUncommitted: true }],
+      ['a Task that is not done', { blocker: { taskStatus: 'blocked' } }],
+      ['an unchecked acceptance line', { blocker: { accepted: false } }]
+    ];
+    for (const [label, options] of missing) {
+      const dir = deliveryRoom(options);
+      rooms.push(dir);
+      assertDeliveredUnmet(dir, label);
+    }
+
+    // A record declared `blocked` whose every blocker is satisfied still
+    // derives `ready`, as it does for a done Task or a complete Spec (the
+    // S-301 fixture above): a satisfied delivered edge is no exception.
+    const declaredBlocked = deliveryRoom({ deliveredStatus: 'blocked' });
+    rooms.push(declaredBlocked);
+    assert.equal(nextJson(declaredBlocked)?.taskId, 'TK-9E2', 'a declared-blocked record whose delivered edge is satisfied is handed out ready');
+    claimWork(declaredBlocked, 'S-9E2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(declaredBlocked, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md'), declaredBlocked).status, 'in-progress', 'claim takes the declared-blocked record once its delivered edge is satisfied');
+
+    // A complete Spec satisfies both forms, with no verdict needed.
+    const complete = deliveryRoom({ verdict: null, blocker: { status: 'complete' } });
+    rooms.push(complete);
+    assert.equal(nextJson(complete)?.taskId, 'TK-9E1', 'a complete blocker satisfies the plain edge');
+    claimWork(complete, 'S-9E2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(complete, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md'), complete).status, 'in-progress', 'a complete blocker satisfies the delivered edge');
+
+    // An unknown qualifier fails closed as an unmet blocker, even when the
+    // Spec it names meets T0, and doctor names it rather than ignoring it.
+    const unknown = deliveryRoom({ deliveredBlockers: 'S-9E0:shipped', plainBlockers: 'TK-001:delivered' });
+    rooms.push(unknown);
+    assert.equal(nextJson(unknown), null, 'an unknown qualifier is never satisfied');
+    const unknownFindings = doctor(unknown).filter((issue) => issue.code === 'unknown-blocker-qualifier');
+    assert.deepEqual(unknownFindings.map((issue) => `${issue.specId}/${issue.taskId}`).sort(), ['S-9E1/TK-9E1', 'S-9E2/TK-9E2'], 'doctor reports each unknown qualifier by Task');
+    assert.match(unknownFindings.find((issue) => issue.taskId === 'TK-9E2').message, /S-9E0:shipped/, 'the finding names the unknown token');
+    console.log('ok - S-00J TK-01T: S-###:delivered is satisfied by reviewed integration delivery (T0) and fails closed otherwise');
+  } finally {
+    for (const dir of rooms) fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+// ---- S-00J TK-01T (end) ----

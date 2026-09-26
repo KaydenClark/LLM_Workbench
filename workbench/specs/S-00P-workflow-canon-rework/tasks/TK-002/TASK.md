@@ -4,7 +4,7 @@
 **Spec ID:** S-00P
 **Slice:** Rewrite `AGENTS.md` to the Task-record workflow using only commands that exist
 **Status:** blocked
-**Blockers:** TK-001, S-00H, S-00I, S-00J
+**Blockers:** TK-001, S-00H, S-00I:delivered, S-00J:delivered
 **Destination:** spec-acceptance: S-00P Acceptance Criteria
 **Planned verification:** Red/green contract regressions in `tools/test-control-fidelity.mjs`, exact command/argument checks against `workbench/tools/spec-workbench.mjs`, and a disposable-room cold-start walkthrough; preserve guardrail and self-drift before/after receipts. These are execution plans, not achieved proof.
 **Stance:** Builder
@@ -28,6 +28,20 @@ not authorize execution. The Dispatcher alone reconciles S-00P's current-facing
 gates and any delivery-versus-closure dependency changes. Until that is done,
 S-00I/S-00J completion requirements remain in force; do not bypass `claim` or
 substitute a green targeted test for those dependencies.
+
+S-00J TK-01T (2026-09-26) converted the S-00I and S-00J edges above to
+`S-00I:delivered` and `S-00J:delivered`, and that conversion supersedes the
+previous paragraph's "Blockers above remain unchanged" for those two edges
+only. The owner promotes integration to main only after version-level Human
+QA that covers the controls this Task writes, so requiring final `complete`
+of S-00I and S-00J here would deadlock (2026-09-26 wave review, finding 4).
+This Task needs their reviewed behavior on integration, which is T0 of the
+S-00J closure-capture transition contract: every Task done, acceptance
+checked, a current PASS verdict whose candidate the declared integration
+branch contains with a matching committed digest. The edges stay visible and
+checkable, and `next`/`claim` resolve them. Fetch integration before relying
+on them, because the resolver reads only the local ref. TK-001 and S-00H
+stay plain.
 
 The current owner-directed planning assignment supersedes the older S-00P
 per-Task separate-review wording: Worker self-check and report -> Dispatcher

@@ -977,6 +977,7 @@ const PINNED_EFFECTS = {
   'stale-claim': ['attention', 'specs', 'none'],
   'complete-on-integration': ['attention', 'specs', 'none'],
   'broken-link': ['attention', 'specs', 'none'],
+  'unknown-blocker-qualifier': ['error', 'specs', 'none'],
   'stale-register': ['attention', 'adr', 'none'],
   'disagreeing-status': ['attention', 'adr', 'none'],
   'retired-not-complete': ['attention', 'specs', 'none'],

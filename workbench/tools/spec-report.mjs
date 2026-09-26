@@ -499,7 +499,9 @@ export function recordOwnerApproval(rootDir, specId, options = {}) {
 // actually carries, never a reviewer's own lane. A branch that does not
 // resolve, or a candidate genuinely not contained in it, both read as `false`
 // here; either way the caller's own refusal names the branch and the SHA.
-function isAncestorOfBranch(root, sha, branch) {
+// S-00J TK-01T: exported unchanged so the `S-###:delivered` resolver checks
+// integration containment with this one reader.
+export function isAncestorOfBranch(root, sha, branch) {
   const result = spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', sha, branch], { encoding: 'utf8' });
   return result.status === 0;
 }

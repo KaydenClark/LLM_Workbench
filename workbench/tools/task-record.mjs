@@ -24,9 +24,9 @@
 // scans only the top level and now skips a lifecycle-folder entry there
 // instead of reading it as a Task directory.
 //
-// TT-Q10 (the new-identifier form, `T-###` vs `TASK-###`) is open. Fixtures
-// and this reader use the existing `TK-###` form; no new prefix is
-// introduced here.
+// TT-Q10 (the new-identifier form) is settled: Task identifiers keep the
+// existing `TK-###` form (LEXICON and the grilling destination ledger), and
+// this reader introduces no other prefix.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -58,7 +58,14 @@ export const TASK_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 // hold either reference; S-00I gives `wiki-claim` its behavior.
 const DESTINATION_TYPES = Object.freeze(['spec-acceptance', 'wiki-claim']);
 const DESTINATION_PATTERN = /^(spec-acceptance|wiki-claim):\s*(.+)$/;
-const BLOCKER_ID_PATTERN = /^(?:S|TK)-[0-9A-Za-z]+$/;
+// S-00J TK-01T: a blocker entry is a plain `S-###`/`TK-###` identifier or
+// that identifier with one `:<qualifier>` suffix. The parser accepts any
+// word-shaped qualifier so that an unknown one reaches the resolver and
+// doctor, which name it and fail closed as an unmet blocker, instead of the
+// whole room failing to parse. Which qualifiers mean anything (today only
+// `S-###:delivered`) is the resolver's decision in spec-workbench.mjs, not
+// this reader's.
+const BLOCKER_ID_PATTERN = /^(?:S|TK)-[0-9A-Za-z]+(?::[A-Za-z][0-9A-Za-z-]*)?$/;
 
 export function parseTaskRecord(content, filePath, root) {
   const label = filePath ? path.relative(root ?? path.dirname(filePath), filePath) : '<in-memory Task record>';

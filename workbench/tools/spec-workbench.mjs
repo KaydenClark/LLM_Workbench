@@ -16,7 +16,7 @@ import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
-import { assembleSpecReport, computeSpecDigest, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
+import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -108,7 +108,7 @@ function refuseBlockedRuntime(rootDir) {
 }
 
 function selectCandidate(specs, { specId, readyOnly = false } = {}) {
-  const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
+  const completed = satisfiedBlockers(specs);
   const candidates = [];
   for (const spec of specs) {
     if ((spec.status !== 'active' && spec.lifecycleFolder !== 'retired') || (specId && spec.id !== specId)) continue;
@@ -226,7 +226,7 @@ export function claimWork(rootDir, id, options) {
     // gets the generic refusal rather than the name of a finding nobody
     // raised. A table row's refusal is unchanged, since a ready row reaching
     // here always has an unmet blocker.
-    const satisfied = satisfiedIds(spec, new Set(specs.filter((item) => ['complete', 'superseded'].includes(item.status)).map((item) => item.id)));
+    const satisfied = satisfiedIds(spec, satisfiedBlockers(specs));
     const blocked = slices.find((item) => item.declared === 'ready' && !blockersSatisfied(item.blockers, satisfied));
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
     throw new Error(`${id} has no eligible ready task to claim`);
@@ -827,7 +827,7 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
   // corrective Tasks alone retain their execution dependency checks.
   for (const spec of retiredSpecs) {
     if (!spec.sliceConflict) {
-      const completed = new Set([...specs, ...retiredSpecs].filter(item => ['complete', 'superseded'].includes(item.status)).map(item => item.id));
+      const completed = satisfiedBlockers([...specs, ...retiredSpecs]);
       const satisfied = satisfiedIds(spec, completed);
       const head = executionSlices(spec).find(slice => ['in-progress', 'ready'].includes(slice.declared));
       if (head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
@@ -868,7 +868,7 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
       }
     }
   }
-  const completed = new Set([...specs, ...retiredSpecs].filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
+  const completed = satisfiedBlockers([...specs, ...retiredSpecs]);
   for (const spec of specs) {
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
@@ -886,6 +886,14 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
     for (const slice of slices) {
       if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { specId: spec.id, taskId: slice.id }));
       if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, taskId: slice.id }));
+      // S-00J TK-01T: an unknown qualifier already fails closed (it never
+      // enters the satisfied set); naming it here is what keeps that from
+      // being a silent wait. A done slice's blockers no longer gate anything.
+      if (slice.declared !== 'done') {
+        for (const token of slice.blockerIds.filter((item) => blockerKind(item) === 'unknown-qualifier')) {
+          issues.push(finding('unknown-blocker-qualifier', `${spec.id}/${slice.id} names blocker ${token}, whose qualifier is not known blocker grammar (a plain S-### or TK-###, or S-###:delivered); it stays unmet until corrected`, { specId: spec.id, taskId: slice.id, blocker: token }));
+        }
+      }
       // A malformed Receipt or an altered earlier row fails closed on read
       // (task-receipt.mjs's own checksum chain); reported here by name so
       // doctor keeps reporting every other spec, slice and scope instead of
@@ -1205,6 +1213,84 @@ function satisfiedIds(spec, completed) {
   return new Set([...completed, ...done]);
 }
 
+// S-00J TK-01T: the one satisfied set every blocker site - `next`, `claim`,
+// `render` and both doctor passes - resolves against, so the four can never
+// disagree about an edge. It holds tokens, not only ids, so the existing
+// plain membership checks (`blockersSatisfied`, `unmetBlockers`) read the
+// new grammar without a second resolver:
+//   - `S-###`: that Spec is `complete` or `superseded` (unchanged meaning;
+//     the dependent needs final closure, T3).
+//   - `S-###:delivered`: that Spec is `complete` or `superseded`, or it has
+//     reached reviewed delivery on integration (T0 of S-00J's
+//     closure-capture transition contract; `reviewedDelivery` below).
+// Any other qualifier is never added, so it fails closed as unmet; doctor
+// names it (`unknown-blocker-qualifier`). T0 is evaluated only for a Spec
+// some slice actually names with `:delivered`, so a room that never uses the
+// token pays nothing for it. Resolution only reads: working-tree records,
+// local Git objects and the local declared integration ref. It never writes,
+// fetches or moves a ref; fetching before relying on it is procedure.
+function satisfiedBlockers(specs) {
+  const satisfied = new Set();
+  for (const spec of specs) {
+    if (!['complete', 'superseded'].includes(spec.status)) continue;
+    satisfied.add(spec.id);
+    satisfied.add(`${spec.id}:delivered`);
+  }
+  const wanted = new Set();
+  for (const spec of specs) {
+    const tokens = [
+      ...spec.rows.filter((row) => row.status !== 'done').flatMap((row) => splitBlockers(row.blockers)),
+      ...spec.records.filter((task) => taskStatus(task) !== 'done').flatMap((task) => task.blockers)
+    ];
+    for (const token of tokens) {
+      if (blockerKind(token) === 'delivered' && !satisfied.has(token)) wanted.add(token);
+    }
+  }
+  for (const token of wanted) {
+    const id = token.slice(0, token.indexOf(':'));
+    const matches = specs.filter((spec) => spec.id === id);
+    if (matches.length === 1 && reviewedDelivery(matches[0])) satisfied.add(token);
+  }
+  return satisfied;
+}
+
+// The blocker grammar: `plain` (`S-###` or `TK-###`), `delivered`
+// (`S-###:delivered`), `unknown-qualifier` (any other `<id>:<qualifier>` the
+// Task-record parser admits so doctor can name it), or `other` (legacy
+// slice-table prose, left exactly as unmet as it always was).
+function blockerKind(token) {
+  if (/^(?:S|TK)-[0-9A-Za-z]+$/.test(token)) return 'plain';
+  if (/^S-[0-9A-Za-z]+:delivered$/.test(token)) return 'delivered';
+  if (/^(?:S|TK)-[0-9A-Za-z]+:[A-Za-z][0-9A-Za-z-]*$/.test(token)) return 'unknown-qualifier';
+  return 'other';
+}
+
+// T0, reviewed delivery, read from the existing S-00J readers rather than a
+// second parser: every Task done and every acceptance line checked
+// (`assembleSpecReport`), the latest verdict bound to the Spec's current
+// content digest is a PASS (`latestVerdict`), its candidate is an ancestor of
+// the manifest-declared integration branch (`isAncestorOfBranch`, the check
+// owner approval already makes), and the Spec/Task content committed at that
+// candidate hashes to the same digest (`computeSpecDigest`). A room with no
+// declared integration branch has nothing to check containment against, so
+// the edge stays unmet. Any read failure is an unmet edge, never a throw
+// through `next`, `render` or doctor.
+function reviewedDelivery(spec) {
+  const integrationBranch = declaredGit(spec.root)?.integrationBranch;
+  if (!integrationBranch) return false;
+  try {
+    const report = assembleSpecReport(spec.root, spec.id);
+    if (report.tasks.some((task) => task.status !== 'done')) return false;
+    if (report.acceptance.some((line) => !line.checked)) return false;
+    const verdict = report.latestVerdict;
+    if (verdict?.result !== 'pass') return false;
+    if (!isAncestorOfBranch(spec.root, verdict.candidate, integrationBranch)) return false;
+    return computeSpecDigest(spec.root, spec, verdict.candidate) === report.specDigest;
+  } catch {
+    return false;
+  }
+}
+
 // A table row's status cell is its status, unchanged. A record's `ready` and
 // `blocked` are resolved against its live blockers instead: a record whose
 // declared blockers are all satisfied is ready without anyone editing a
@@ -1389,7 +1475,7 @@ function renderHotBoard(specs, retired = []) {
   // the owner gate rather than a slice. That derivation is what makes the
   // board show whether an objective is active; the Spec header Status stays
   // the Spec's lifecycle truth and no command writes a second one.
-  const completed = new Set(all.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
+  const completed = satisfiedBlockers(all);
   for (const spec of hot) {
     // A row/record collision already carries its own `row-record-collision`
     // finding from `packetFindings`; the board falls back to the owner-gate
