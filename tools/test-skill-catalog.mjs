@@ -174,6 +174,24 @@ assertIncludesAll(slicingSkill, [
 ], 'to-tasks');
 assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
   'to-tasks must treat TASKBOARD.md as a generated projection');
+// S-01L: a Task record carries its stance and the title line its parser
+// requires; Tasks are cut at activation, never into a planned Spec; approval is
+// asked only when planning authority is missing (ADR-0045); and a slice gated
+// on an unanswered owner decision stays uncut, because a record's Blockers
+// field holds only S-/TK- ids and `next` would hand out a prose-blocked record.
+// These pin the source contract; the fresh-context run in S-01L records the behavior.
+assertIncludesAll(slicingSkill, [
+  '**Stance:**',
+  '# TK-### - <slice>',
+  'Cut Tasks when the Spec is activated',
+  'a planned Spec gets no Tasks',
+  'do not run `convert-tasks` on it',
+  'workbench/docs/adr/0045-skill-composition-within-inherited-scope.md',
+  'Leave a slice that waits on an unanswered owner decision uncut',
+  'record the open decision in the Spec'
+], 'to-tasks record, activation, approval and owner-gate contract');
+assert.doesNotMatch(slicingSkill, /Keep unresolved owner decisions visible as blockers/,
+  'to-tasks must not route an owner decision into a Task Blockers field the runtime cannot hold');
 
 const grilling = read('workbench/skills/grilling/SKILL.md');
 for (const [pattern, label] of [
