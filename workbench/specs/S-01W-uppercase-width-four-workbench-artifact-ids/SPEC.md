@@ -9,7 +9,7 @@
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
 **Latest event:** TK-002K closed with proof.
-**Next gate:** Dispatcher reconciles acceptance line 2 and the Completion Result for delivered TK-002K, then separate-context review; lines 3-5 stay open for later slices.
+**Next gate:** Separate-context review and landing of the TK-002K candidate, then the `widen-id` touch slice. Acceptance lines 1-2 are checked; lines 3-5 remain open.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -199,7 +199,7 @@ packet and S-00P; owner Human QA and closure follow live controls.
 ## Acceptance Criteria
 
 - [x] Public new artifact allocation is uppercase, minimum width four, collision-safe and read-only when proposing an ID.
-- [ ] Legacy/widened public selectors resolve one record; ambiguity refuses and numerical Task scope remains intact.
+- [x] Legacy/widened public selectors resolve one record; ambiguity refuses and numerical Task scope remains intact.
 - [ ] Eligible touch migration preserves former IDs, live links and immutable history without renaming completed records.
 - [ ] Supported artifact consumers follow the policy and connection identities remain compatible.
 - [ ] ADR/procedures/generic mirrors describe actual delivery; full suite, drift receipts and assembled review are recorded.
@@ -257,10 +257,11 @@ using ignored recovery material as durable evidence.
 | 2026-09-26 | review | Review verdict: pass at 884c5bb7fa04646a14f1f2c2c52bff2b3d08fbba [c12803d6f8d2] #2 | No findings. Landing candidate for TK-02B with acceptance line 1 checked and the Completion Result updated before review. Chain: 69ab30d full review PASS; 02202f6 delta review inconclusive (reviewer ran fixtures in the read-only sandbox, which cannot create temp dirs); d3b39d9 delta review FAIL on one stale Next gate sentence; 884c5bb fixes it and passed delta review. Full AGENTS suite 48/48 at d3b39d9 (read-only runner, dirty []); 884c5bb changes only the Next gate header and its projection. | codex exec gpt-5.5, read-only sandbox, separate context from the Lane I dispatcher and its worker | 5 |
 | 2026-09-26 | TK-002K | Lane I cut TK-002K from the dual-form selection slice, its ID proposed by `next-id S-01W --prefix TK` on integration 4de4904 immediately before the record was saved; it carries TK-02B's non-blocking review note on active-plus-retired alias pairs. | render; doctor no blocking finding; show S-01W lists TK-002K ready | This Spec (header, dual-form slice), TK-002K TASK.md, TASKBOARD.md | TK-002K implementation; `widen-id` touch, consumer coverage and assembled QA slices remain unallocated |
 | 2026-09-26 | TK-002K | Task closed | Red at 7d1282f runtime with the new tests: test-visible-id-consumers.mjs 5 of 23 failed (show of a widened selector for a short stored Spec ID answered Unknown spec ID; widened Spec and Task blocker spellings stayed unsatisfied; an active record plus a retired record sharing one collision key returned one of them instead of refusing; claim through a widened numeric Spec selector was unknown; a widened orphan corrective Task selector answered Unknown corrective Task ID); the test-spec-workbench.mjs dual-form block failed at its first widened receipt selector (Unknown spec ID). Green at 5bb6406: test-visible-id-consumers.mjs 23/23; test-spec-workbench.mjs including the dual-form receipt, gate, move-task and retired-show block; test-visible-ids, test-spec-report, test-workbench-identity, test-adr, test-notepads, test-spec-citation-anchors and test-diagnostics pass; full AGENTS suite 48 pass 0 fail on 5bb6406 (read-only runner, dirty []). Guardrail 106.6/113 before (7d1282f) and after (5bb6406); S-00K self-drift pre and post both report the same 7 attention findings and no new one. | ADR-0041 amended: dual-form lookup moves to delivered for the public Spec and Task selectors, the active-plus-retired alias refusal is stated, and the spec-report library pass-through is kept as remaining. RUNBOOK Visible Identifiers does not yet say that selectors accept any spelling sharing the stored record's collision key and that aliased records refuse by name: routed to S-00P with the TK-02B RUNBOOK and LEXICON wording. | Direct library callers of the spec-report.mjs functions (assembleSpecReport, recordReviewVerdict, recordOwnerApproval, createCorrectiveTasks) still echo or record the caller's selector spelling; the CLI entry points resolve it first. The widen-id touch verb, moving ADR and notepad allocation onto the artifact policy, and assembled capability QA remain later S-01W slices (unallocated). RUNBOOK and LEXICON wording routed to S-00P. Separate-context integration review not yet run. |
+| 2026-09-26 | TK-002K | Acceptance line 2 checked and Completion Result updated for TK-002K's delivered dual-form selection, before the landing review; the direct `spec-report.mjs` library pass-through is recorded as a remaining limit. | TK-002K evidence above (red/green, suite 48/48 at 5bb6406) | This Spec (Acceptance, Completion Result, header), TASKBOARD.md | Acceptance lines 3-5 |
 
 ## Completion Result
 
-Pending. TK-02B delivered public uppercase width-four allocation for new Spec and Task IDs (acceptance line 1). Dual-form selection, the `widen-id` touch, consumer coverage and assembled QA remain; no owner approval.
+Pending. TK-02B delivered public uppercase width-four allocation for new Spec and Task IDs (acceptance line 1). TK-002K delivered dual-form selection: every public Spec and Task command resolves short, widened and case-variant selectors to the one stored record, refuses ambiguous aliases (including an active and a retired record sharing one key) and keeps numeric Task labels Spec-scoped (acceptance line 2); direct library callers of `spec-report.mjs` still echo the caller's spelling. The `widen-id` touch, consumer coverage and assembled QA remain; no owner approval.
 
 ## Remaining Limitations Or Follow-Up Specs
 

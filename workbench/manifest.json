@@ -42,6 +42,13 @@
     "notepad-templates": "workbench/sessions/notepads/templates",
     "recovery": "workbench/sessions/recovery"
   },
+  "landmarkTracker": {
+    "root": "workbench/landmark-tracker",
+    "collections": {
+      "destination-questions": "workbench/landmark-tracker/destination-questions",
+      "landmarks": "workbench/landmark-tracker/landmarks"
+    }
+  },
   "wiki": {
     "profile": "project"
   },
