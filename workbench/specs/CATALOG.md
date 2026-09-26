@@ -38,7 +38,7 @@ Derived from stable specs; includes completed history.
 | [S-00W - Concept Grilling And Notepad Composition](S-00W-concept-grilling-and-notepad-composition/SPEC.md) | Preserve the accepted shared concept contract for grilling, notepad and grill-me while each skill has its own delivery Spec. | planned |
 | [S-00X - grilling skill rebuild](S-00X-grilling-skill-rebuild/SPEC.md) | Settle a shared design concept through one consequential question at a time. | active |
 | [S-00Y - notepad skill rebuild](S-00Y-notepad-skill-rebuild/SPEC.md) | Preserve one objective's working context in revision-checked JSON without making it authority. | active |
-| [S-00Z - grill-me skill rebuild](S-00Z-grill-me-skill-rebuild/SPEC.md) | Provide a repository-owned entry point that composes grilling with notepad. | planned |
+| [S-00Z - grill-me skill rebuild](S-00Z-grill-me-skill-rebuild/SPEC.md) | Provide a repository-owned entry point that composes grilling with notepad. | active |
 | [S-010 - Canonical Evaluator Entry Detection](S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
 | [S-011 - Agent Skills Adoption](S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |
 | [S-012 - Reproducible Adoption Provenance](S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
@@ -49,7 +49,7 @@ Derived from stable specs; includes completed history.
 | [S-01B - promote skill rebuild](S-01B-promote-skill-rebuild/SPEC.md) | Move selected supported working claims into their existing durable owners. | planned |
 | [S-01C - carry skill rebuild](S-01C-carry-skill-rebuild/SPEC.md) | Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible. | planned |
 | [S-01D - adoption skill rebuild](S-01D-adoption-skill-rebuild/SPEC.md) | Bring an existing project into the Workbench once while preserving room truth. | planned |
-| [S-01E - checkpoint skill rebuild](S-01E-checkpoint-skill-rebuild/SPEC.md) | Keep the retired checkpoint command as an accurate compatibility route. | planned |
+| [S-01E - checkpoint skill rebuild](S-01E-checkpoint-skill-rebuild/SPEC.md) | Keep the retired checkpoint command as an accurate compatibility route. | active |
 | [S-01F - code-review skill rebuild](S-01F-code-review-skill-rebuild/SPEC.md) | Review an immutable candidate against the repository and capability contracts. | planned |
 | [S-01G - genesis skill rebuild](S-01G-genesis-skill-rebuild/SPEC.md) | Create a new Workbench room from a founding prompt and a recoverable remote boundary. | planned |
 | [S-01H - implement skill rebuild](S-01H-implement-skill-rebuild/SPEC.md) | Deliver one eligible assigned Task through red/green and verified recovery. | planned |
@@ -61,10 +61,11 @@ Derived from stable specs; includes completed history.
 | [S-01N - update-harness skill rebuild](S-01N-update-harness-skill-rebuild/SPEC.md) | Update an adopted room to a verified Workbench version without losing room truth. | planned |
 | [S-01O - save skill rebuild](S-01O-save-skill-rebuild/SPEC.md) | Persist authorized work and prove the recovery boundary actually reached. | planned |
 | [S-01P - builder skill rebuild](S-01P-builder-skill-rebuild/SPEC.md) | Deliver the assigned result with useful verification and truthful documentation. | planned |
-| [S-01Q - auditor skill rebuild](S-01Q-auditor-skill-rebuild/SPEC.md) | Determine whether named claims hold on the assigned target and evidence. | planned |
+| [S-01Q - auditor skill rebuild](S-01Q-auditor-skill-rebuild/SPEC.md) | Determine whether named claims hold on the assigned target and evidence. | active |
 | [S-01R - reviewer skill rebuild](S-01R-reviewer-skill-rebuild/SPEC.md) | Challenge candidate correctness, downstream impact and consequential claims. | planned |
 | [S-01S - reconciler skill rebuild](S-01S-reconciler-skill-rebuild/SPEC.md) | Leave achieved work and its existing truth owners consistent for continuation. | planned |
 | [S-01T - Landmark Tracker Foundation](S-01T-landmark-tracker-foundation/SPEC.md) | Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking. | planned |
+| [S-01U - Lexicon Design-Concept Reconciliation](S-01U-lexicon-design-concept-reconciliation/SPEC.md) | Audit the whole Lexicon against current design concepts and their governing sources, repair supported drift, and expose unresolved conflicts without promoting proposals or claiming undelivered behavior. | planned |
 | [S-020 - Spec-Native Team Coordination](S-020-spec-native-team-coordination/SPEC.md) | Modernize the optional small-team templates so parallel roles coordinate through one owning spec and one durable writer. | complete |
 | [S-021 - Portable Workbench v3](S-021-portable-workbench-v3/SPEC.md) | Make Genesis, Adoption, and upgrades produce a portable `workbench/` support root and safely install a self-contained 12-skill core on brand-new hosts. | complete |
 | [S-022 - LLM Workbench v3.1 Release](S-022-llm-workbench-v3-1-release/SPEC.md) | Historical release packet with current work routed to S-050; unexecuted historical acceptance remains visible as a limitation. | blocked |

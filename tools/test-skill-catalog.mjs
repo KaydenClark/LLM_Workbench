@@ -242,6 +242,33 @@ assertIncludesAll(notepadSkill, [
 assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < notepadSkill.indexOf('## 4.'),
   'rechecking a corrected claim belongs to saving and resuming, before cleanup');
 
+// S-00Z: grill-me is the repository-owned entry that composes grilling with
+// objective-scoped notepad continuity. It is declared in the live core bundle
+// and its source names both composed skills and the pending convention they
+// share, so a fresh start and a paused resume keep a pending readback pending.
+// The archived wrapper stays historical under S-00R (asserted above).
+assert.ok(coreSkills.includes('grill-me'), 'grill-me must be a declared core skill');
+const grillMe = read('workbench/skills/grill-me/SKILL.md');
+assert.match(grillMe, /^name: grill-me$/m, 'grill-me must declare its skill name');
+assert.match(grillMe, /^disable-model-invocation: true$/m,
+  'grill-me stays owner-invoked; grilling already answers the trigger phrases');
+assertIncludesAll(grillMe, [
+  'workbench/skills/grilling/SKILL.md',
+  'workbench/skills/notepad/SKILL.md',
+  'workbench/manifest.json',
+  '--type grilling',
+  '--objective',
+  '--kind source_record',
+  '`current.unresolved`',
+  'only a `decision` entry',
+  'Saving is not acceptance',
+  'pending readback',
+  'separate objective',
+  'does not itself create a Spec'
+], 'grill-me composition contract');
+assert.doesNotMatch(grillMe, /^Run a `\/grilling` session\.$/m,
+  'grill-me must state the composition, not only forward to grilling');
+
 const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
   'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',
@@ -342,6 +369,25 @@ assertIncludesAll(codeReview, [
   'git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --',
   'nearest `AGENTS.md`', 'assigned stable `SPEC.md`', 'Findings first', 'review-only', 'separately authorized'
 ], 'code-review');
+
+// S-01Q: the Auditor stance reports one classified finding per named claim,
+// each traceable to its pinned evidence, check and limit, and stays inside the
+// assigned target. These pin the source contract; the fresh-context run in
+// S-01Q records the behavior. "bounded verdict" stays the LEXICON wrapper.
+const auditorSkill = read('workbench/skills/auditor/SKILL.md');
+assertIncludesAll(auditorSkill, [
+  'bounded verdict',
+  'supported, unsupported or uncertain',
+  'Each finding cites',
+  'the check it ran and its limit',
+  'Stay inside the assigned target and project',
+  'not examined',
+  'silently repair'
+], 'auditor finding and scope contract');
+assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorSkill.indexOf('## Completion / Exit Condition'),
+  'the three result classes belong to the auditor exit report');
+assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
+  'the no-widening boundary belongs to the auditor method, before its obligations');
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and

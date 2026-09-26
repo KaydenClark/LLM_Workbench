@@ -19,6 +19,13 @@ const tool = path.join(runtime, 'workbench-layout.mjs');
 const installer = path.join(root, 'tools', 'workbench-tools.mjs');
 const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 
+// S-00M TK-002: doctor reports untracked files under the root controls, the
+// ADR collection and the spec lane. These Genesis rooms are never committed, so
+// that one attention finding is correctly present in their clean state, and the
+// clean expectation is that finding and nothing else.
+const UNCOMMITTED_ROOM = ['untracked-controls'];
+const codesOf = (findings) => (findings ?? []).map((item) => item.code);
+
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-layout-'));
 }
@@ -196,7 +203,7 @@ test('a fresh Genesis fixture has the seven controls, manifest lanes, first spec
     assert.match(ignore, /^handoffs\/\*$/m);
     assert.doesNotMatch(ignore, /^checkpoints/m, 'checkpoints must never be ignored');
     render(project);
-    assert.deepEqual(doctor(project, { home: quietHome }), [], 'an operable Genesis fixture must satisfy doctor once rendered');
+    assert.deepEqual(codesOf(doctor(project, { home: quietHome })), UNCOMMITTED_ROOM, 'an operable Genesis fixture must satisfy doctor once rendered');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(quietHome, { recursive: true, force: true });
@@ -257,7 +264,10 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     delete manifest.lanes.skills;
-    manifest.skillPolicy = { ...manifest.skillPolicy, normalSetup: 'presence-only', updates: 'explicit-only' };
+    // A room stamped before the lane holds the bundle its release stamped:
+    // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
+    // bundle with. The provider-home shape validates only with a stamped row.
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => name !== 'grill-me'), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
     // holding a room-local skill; migrate must accept both, not refuse them.
@@ -591,7 +601,7 @@ test('a room whose managed runtime drifts from its receipt fails the doctor it c
     render(project);
     const clean = roomDoctor();
     assert.equal(clean.status, 0, `${clean.stderr}`);
-    assert.deepEqual(clean.findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(clean.findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     // An appended comment still parses, so the room's doctor runs; only the
     // hash the receipt recorded has changed.
@@ -652,7 +662,7 @@ test('a room names a managed file deleted together with its receipt key', () => 
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     render(project);
-    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     // `sessions.mjs` is the managed tool no doctor import reaches, so this is
     // the deletion that used to be invisible from inside the room.
@@ -697,7 +707,7 @@ test('a room tells a foreign lane file apart from a receipt key it lost', () => 
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     completeGenesis(project);
     render(project);
-    assert.deepEqual(roomDoctor().findings, [], 'an installed room whose runtime matches its receipt reports nothing');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'an installed room whose runtime matches its receipt reports nothing');
 
     const smuggled = path.join(project, 'workbench', 'tools', 'smuggled.mjs');
     fs.writeFileSync(smuggled, 'export const smuggled = true;\n');
@@ -707,7 +717,7 @@ test('a room tells a foreign lane file apart from a receipt key it lost', () => 
     assert.match(foreign.message, /move it out of/, 'the only repair for a foreign file is removing it from the lane');
     assert.doesNotMatch(foreign.message, /--explicit-update/, 'update cannot adopt a foreign file, so it must not be named here');
     fs.rmSync(smuggled);
-    assert.deepEqual(roomDoctor().findings, [], 'removing the foreign file clears the finding');
+    assert.deepEqual(codesOf(roomDoctor().findings), UNCOMMITTED_ROOM, 'removing the foreign file clears the finding');
 
     // The other half of the same message: a key the receipt lost for a file
     // the lane still holds is repaired by refreshing the receipt.
@@ -904,6 +914,16 @@ test('each listed legacy version validates only at the policy its release declar
     // row must keep exactly as it was released.
     assert.equal(outcome('v3.2.0', [...legacyCoreSkills, 'carry', 'notepad', 'save', 'promote', ...current.slice(-4)]), 'valid');
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
+    // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
+    // live bundle with `grill-me`, so the v3.2.1 row freezes at twenty-one and
+    // a room stamped v3.2.1 validates with either the frozen row or the
+    // current policy the Workbench update writes before restamping.
+    const twentyOne = current.filter((name) => name !== 'grill-me');
+    assert.equal(twentyOne.length, 21);
+    assert.equal(outcome('v3.2.1', twentyOne), 'valid');
+    assert.equal(outcome('v3.2.1', current), 'valid');
+    assert.equal(outcome('v3.2.1', sixteen), 'invalid-skill-policy');
+    assert.equal(outcome('v9.9.9', twentyOne), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, current), 'valid');
     assert.equal(outcome(VERSION, sixteen), 'invalid-skill-policy');
     assert.equal(outcome(VERSION, twelve), 'invalid-skill-policy');
