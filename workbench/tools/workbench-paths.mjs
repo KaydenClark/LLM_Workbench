@@ -132,6 +132,76 @@ export function collectionRelative(root, name) {
   return declared ?? COLLECTIONS[name];
 }
 
+// S-01T TK-01X: the Landmark Tracker root is an additive manifest block,
+// `landmarkTracker`, beside `git` - never an eighth lane and never a change to
+// the exact collection sets above, so a room without the block resolves and
+// validates exactly as before. The block names the root and its two flat JSON
+// collections; the generated projection is always `<root>/TRACKER.json`.
+// The shape is closed: an unknown key or collection is a malformed manifest,
+// and an undeclared room has no Tracker rather than a defaulted one.
+export const TRACKER_COLLECTIONS = Object.freeze(['destination-questions', 'landmarks']);
+export const TRACKER_PROJECTION = 'TRACKER.json';
+
+function invalidTracker(message) {
+  const failure = new Error(`manifest landmarkTracker ${message}`);
+  failure.code = 'invalid-tracker';
+  return failure;
+}
+
+// Validates the declaration's shape without touching the filesystem; returns
+// null when the manifest declares no Tracker.
+export function trackerDeclaration(manifest) {
+  const declared = manifest?.landmarkTracker;
+  if (declared === undefined) return null;
+  if (!declared || typeof declared !== 'object' || Array.isArray(declared)) throw invalidTracker('must be an object with root and collections');
+  const keys = Object.keys(declared).sort();
+  if (JSON.stringify(keys) !== JSON.stringify(['collections', 'root'])) throw invalidTracker(`must declare exactly root and collections; found ${keys.join(', ') || 'nothing'}`);
+  if (!isSafeRelative(declared.root)) throw invalidTracker(`root is unsafe: ${declared.root}`);
+  const collections = declared.collections;
+  if (!collections || typeof collections !== 'object' || Array.isArray(collections)) throw invalidTracker('collections must be an object');
+  const names = Object.keys(collections).sort();
+  if (JSON.stringify(names) !== JSON.stringify([...TRACKER_COLLECTIONS].sort())) throw invalidTracker(`collections must be exactly ${TRACKER_COLLECTIONS.join(', ')}; found ${names.join(', ') || 'nothing'}`);
+  for (const name of TRACKER_COLLECTIONS) {
+    const value = collections[name];
+    if (!isSafeRelative(value)) throw invalidTracker(`collection ${name} is unsafe: ${value}`);
+    if (path.posix.dirname(value) !== declared.root) throw invalidTracker(`collection ${name} must be a flat directory directly under ${declared.root}: ${value}`);
+    if (path.posix.basename(value) === TRACKER_PROJECTION) throw invalidTracker(`collection ${name} cannot take the projection name`);
+  }
+  if (collections['destination-questions'] === collections.landmarks) throw invalidTracker('collections must be distinct directories');
+  return {
+    root: declared.root,
+    projection: `${declared.root}/${TRACKER_PROJECTION}`,
+    collections: Object.fromEntries(TRACKER_COLLECTIONS.map(name => [name, collections[name]]))
+  };
+}
+
+export function declaredTracker(root) {
+  return trackerDeclaration(readManifest(root));
+}
+
+function requireTracker(root) {
+  const declared = declaredTracker(root);
+  if (!declared) {
+    const failure = new Error('this room declares no Landmark Tracker root; add a landmarkTracker block to workbench/manifest.json first');
+    failure.code = 'tracker-undeclared';
+    throw failure;
+  }
+  return declared;
+}
+
+export function trackerRootPath(root) {
+  return path.resolve(path.resolve(root), requireTracker(root).root);
+}
+
+export function trackerCollectionPath(root, name) {
+  if (!TRACKER_COLLECTIONS.includes(name)) throw new Error(`unknown Tracker collection: ${name}`);
+  return path.resolve(path.resolve(root), requireTracker(root).collections[name]);
+}
+
+export function trackerProjectionPath(root) {
+  return path.resolve(path.resolve(root), requireTracker(root).projection);
+}
+
 export function lanePath(root, name) {
   return path.resolve(path.resolve(root), laneRelative(root, name));
 }

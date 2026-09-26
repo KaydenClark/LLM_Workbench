@@ -13,7 +13,7 @@ import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative, trackerDeclaration } from './workbench-paths.mjs';
 
 // Exported (not just used locally) so a test can build the exact historical
 // v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
@@ -396,6 +396,22 @@ export function validateManifest(project) {
     if (!isSafeRelative(collection)) return fail('invalid-collection', `Manifest collection ${collection} is unsafe.`);
     if (!ordinaryDirectory(project, collection)) return fail('missing-collection', `Manifest collection ${collection} must be an ordinary directory; it may be empty.`);
   }
+  // S-01T TK-01X: the Landmark Tracker block is additive. Absent, nothing here
+  // runs and the report is byte-for-byte what it was; declared, the resolver's
+  // closed shape must hold, the root must not sit inside (or contain) a lane or
+  // collection - its records are tracked, never session state - and every
+  // declared directory must exist as an ordinary directory.
+  let tracker = null;
+  try { tracker = trackerDeclaration(manifest); }
+  catch (error) { return fail('invalid-collection', error.message, { landmarkTracker: manifest.landmarkTracker }); }
+  if (tracker) {
+    const owned = [...Object.values(manifest.lanes), ...Object.values(manifest.collections)];
+    const overlap = owned.find((relative) => relative === tracker.root || tracker.root.startsWith(`${relative}/`) || relative.startsWith(`${tracker.root}/`));
+    if (overlap) return fail('invalid-collection', `Manifest landmarkTracker root ${tracker.root} overlaps ${overlap}; the Tracker is its own root, not a lane or collection.`, { landmarkTracker: manifest.landmarkTracker });
+    for (const relative of [tracker.root, ...Object.values(tracker.collections)]) {
+      if (!ordinaryDirectory(project, relative)) return fail('missing-collection', `Manifest landmarkTracker directory ${relative} must be an ordinary directory; it may be empty.`);
+    }
+  }
   const ignore = path.join(project, lanes.sessions, '.gitignore');
   const ignoreEntry = lstatOrNull(ignore);
   if (!ignoreEntry?.isFile() || ignoreEntry.isSymbolicLink()) return fail('sessions-not-ignored', `${lanes.sessions}/.gitignore must keep live session records untracked.`);
@@ -440,7 +456,7 @@ export function validateManifest(project) {
   }
   const ignored = verifyNotepadIgnores(project, manifest);
   if (ignored.failure) return ignored.failure;
-  return report('valid', { manifest, ignoreVerification: ignored.verification });
+  return report('valid', { manifest, ignoreVerification: ignored.verification, ...(tracker ? { tracker } : {}) });
 }
 
 // ADR-000H "One Task, one context": the context unit is a declared host fact
@@ -1056,6 +1072,7 @@ export const TOOLS_RECEIPT = '.workbench-tools.json';
 export const RUNTIME_TOOLS = Object.freeze([
   'adr.mjs',
   'diagnostics.mjs',
+  'landmark-tracker.mjs',
   'markdown-table.mjs',
   'notepads.mjs',
   'privacy.mjs',
@@ -1426,7 +1443,7 @@ export function validate(options, requireGenesis) {
   if (fs.existsSync(path.join(project, 'skills'))) return fail('project-local-skills', 'A root skills/ directory shadows the skills lane; move its contents into the lane or remove it.');
   const skillsIssue = validateGenesisSkills(project, result.manifest);
   if (skillsIssue) return skillsIssue;
-  return report('valid', { manifest: result.manifest, controls });
+  return report('valid', { manifest: result.manifest, controls, ...(result.tracker ? { tracker: result.tracker } : {}) });
 }
 
 // Readiness also needs the skills lane laid down from the release: every

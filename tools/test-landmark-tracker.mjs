@@ -442,3 +442,11 @@ test('the shipped Tracker root is declared, validated and rebuilt current in thi
   assert.equal(JSON.parse(check.stdout).status, 'current');
   assert.ok(fs.existsSync(path.join(root, DECLARATION.root, 'README.md')), 'the procedure ships beside the records');
 });
+
+test('the one-command demo runs the whole path end to end and reproduces 30/20/50', () => {
+  const demo = spawnSync(process.execPath, [path.join(root, 'tools', 'landmark-tracker-demo.mjs')], { encoding: 'utf8' });
+  assert.equal(demo.status, 0, `${demo.stdout}${demo.stderr}`);
+  assert.match(demo.stdout, /landmark: No landmark/);
+  assert.match(demo.stdout, /origin: "How a fixture room keeps its lantern lit"/);
+  assert.match(demo.stdout, /30\/20\/50 example: PASS/);
+});
