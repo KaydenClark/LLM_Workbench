@@ -16,14 +16,30 @@ export function visibleIdKey(value) {
   return parsed ? `${parsed.prefix}-${(parsed.suffix.replace(/^0+/, '') || '0').toUpperCase()}` : null;
 }
 
-export function encodeBase62(value) {
-  if (typeof value !== 'bigint' || value < 0n) throw new Error('Base-62 encoding requires a nonnegative bigint');
+function encodeWith(alphabet, value) {
+  const radix = BigInt(alphabet.length);
   let suffix = '';
   do {
-    suffix = BASE62_ALPHABET[Number(value % 62n)] + suffix;
-    value /= 62n;
+    suffix = alphabet[Number(value % radix)] + suffix;
+    value /= radix;
   } while (value);
   return suffix;
+}
+
+export function encodeBase62(value) {
+  if (typeof value !== 'bigint' || value < 0n) throw new Error('Base-62 encoding requires a nonnegative bigint');
+  return encodeWith(BASE62_ALPHABET, value);
+}
+
+// S-01W (owner decision E-8): new artifact labels use uppercase `0-9A-Z` at a
+// minimum width of four. This is a separate codec so the base62 codec above,
+// which Workbench connection identities use, stays unchanged.
+export const ARTIFACT_ID_ALPHABET = BASE62_ALPHABET.slice(0, 36);
+export const ARTIFACT_ID_MIN_WIDTH = 4;
+
+export function encodeArtifactSuffix(value) {
+  if (typeof value !== 'bigint' || value < 0n) throw new Error('Artifact suffix encoding requires a nonnegative bigint');
+  return encodeWith(ARTIFACT_ID_ALPHABET, value);
 }
 
 export function compareVisibleIds(left, right) {
@@ -35,10 +51,24 @@ export function compareVisibleIds(left, right) {
   return x.length - y.length || (x === y ? 0 : x < y ? -1 : 1);
 }
 
-export function allocateVisibleId(prefix, ids, { width = 3, requireLetter = false } = {}) {
+function validateAllocation(prefix, ids, width) {
   if (!PREFIX.test(prefix)) throw new Error('A type prefix must be 1-16 uppercase letters/digits, starting with a letter');
   if (!Number.isInteger(width) || width < 1 || width > 32) throw new Error('Minimum identifier width must be an integer from 1 through 32');
   if (!Array.isArray(ids) || ids.some(id => typeof id !== 'string')) throw new Error('Occupied identifiers must be an array of strings');
+}
+
+// One writer per artifact inventory. The caller must publish exclusively
+// and surface collisions; this allocator does not provide a distributed lock.
+function firstFree(prefix, occupied, { width, requireLetter, encode }) {
+  for (let ordinal = 1n; ; ordinal++) {
+    const id = `${prefix}-${encode(ordinal).padStart(width, '0')}`;
+    if (requireLetter && !/[A-Za-z]/.test(visibleIdParts(id).suffix)) continue;
+    if (!occupied.has(visibleIdKey(id))) return id;
+  }
+}
+
+export function allocateVisibleId(prefix, ids, { width = 3, requireLetter = false } = {}) {
+  validateAllocation(prefix, ids, width);
   const occupied = new Set();
   for (const id of ids) {
     if (visibleIdParts(id)?.prefix !== prefix) continue;
@@ -46,13 +76,21 @@ export function allocateVisibleId(prefix, ids, { width = 3, requireLetter = fals
     if (occupied.has(key)) throw new Error(`Visible identifier collision: ${id}`);
     occupied.add(key);
   }
-  // One writer per artifact inventory. The caller must publish exclusively
-  // and surface collisions; this allocator does not provide a distributed lock.
-  for (let ordinal = 1n; ; ordinal++) {
-    const id = `${prefix}-${encodeBase62(ordinal).padStart(width, '0')}`;
-    if (requireLetter && !/[A-Za-z]/.test(visibleIdParts(id).suffix)) continue;
-    if (!occupied.has(visibleIdKey(id))) return id;
-  }
+  return firstFree(prefix, occupied, { width, requireLetter, encode: encodeBase62 });
+}
+
+// The one artifact allocation policy (S-01W): uppercase `0-9A-Z`, minimum
+// width four, letter-bearing so a new label never reuses a historical decimal
+// ID, and grown rather than truncated or recycled. `ids` is the reservation
+// inventory - records, references and retired or discarded labels - so every
+// spelling of one identity (`S-00Q`, `S-000Q`, `S-00q`) occupies it once.
+// Duplicate records that alias one identity are refused by the record loaders
+// before an inventory reaches this function; references here never pick a
+// winner. `width` is an explicit minimum for fixtures; callers use the default.
+export function allocateArtifactId(prefix, ids, { width = ARTIFACT_ID_MIN_WIDTH } = {}) {
+  validateAllocation(prefix, ids, width);
+  const occupied = new Set(ids.filter(id => visibleIdParts(id)?.prefix === prefix).map(visibleIdKey));
+  return firstFree(prefix, occupied, { width, requireLetter: true, encode: encodeArtifactSuffix });
 }
 
 // Connection identities namespace independent rooms; visible artifact labels
