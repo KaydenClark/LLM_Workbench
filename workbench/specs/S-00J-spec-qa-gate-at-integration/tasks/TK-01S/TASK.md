@@ -3,7 +3,7 @@
 **Task ID:** TK-01S
 **Spec ID:** S-00J
 **Slice:** Verify approved delivery before final Spec closure
-**Status:** blocked
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-01R
 **Destination:** spec-acceptance: Final closure requires verification of approved delivered content on the declared default branch, while reviewed integration delivery remains possible before owner QA; approvals cover only explicitly named Specs.
