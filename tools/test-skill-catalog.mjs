@@ -192,6 +192,10 @@ assertIncludesAll(slicingSkill, [
 ], 'to-tasks record, activation, approval and owner-gate contract');
 assert.doesNotMatch(slicingSkill, /Keep unresolved owner decisions visible as blockers/,
   'to-tasks must not route an owner decision into a Task Blockers field the runtime cannot hold');
+// S-01L review correction: a new slice always becomes a TASK.md record; a
+// table-only Spec is converted first, so no route may still add a table row.
+assert.doesNotMatch(slicingSkill, /a row in the Spec's own table|Task record or row/,
+  'to-tasks must not offer a legacy table row as a destination for a new slice');
 
 const grilling = read('workbench/skills/grilling/SKILL.md');
 for (const [pattern, label] of [
