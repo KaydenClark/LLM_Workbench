@@ -34,8 +34,11 @@ Do not restart grilling or implement the capability.
    that has not happened.
 6. A new Spec enters Backlog as `planned` with no Task cut (owner answer E-4B):
    leave `Vertical Implementation Slices` with no Task row and write no
-   `tasks/` record. Its Tasks are cut from live Actuality when the Spec is
-   activated (`planned` -> `active`), by `/to-tasks` with the `/tracer-bullet`
+   `TASK.md` record. Create the Spec's empty `tasks/` directory, tracked with a
+   `.gitkeep`, so the runtime reads it as record-backed with no Task yet;
+   without it `doctor` reports the Spec as malformed and `render` stops. Its
+   Tasks are cut from live Actuality when the Spec is activated
+   (`planned` -> `active`), by `/to-tasks` with the `/tracer-bullet`
    discipline, which also sets each Task's stance. You may note the intended
    slice direction in prose. E-4B applies to new Specs only: when you reuse an
    existing Spec, keep the Tasks it already has.
