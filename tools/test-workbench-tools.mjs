@@ -357,6 +357,31 @@ test('v3.1.1 maintenance preserves project truth and historical provenance while
   }
 });
 
+// S-01T TK-01X: the Landmark Tracker runtime propagates like every managed
+// tool - it is in the closed inventory, installed with its receipt hash, and
+// the installed copy runs in a room that declares the Tracker root.
+test('the installed Landmark Tracker runtime captures and rebuilds in a room that declares its root', () => {
+  assert.ok(RUNTIME_TOOLS.includes('landmark-tracker.mjs'), 'landmark-tracker.mjs is a managed runtime tool');
+  const dir = project();
+  try {
+    assert.equal(run(installer, 'install', '--project', dir).status, 0);
+    const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    manifest.landmarkTracker = { root: 'workbench/landmark-tracker', collections: { 'destination-questions': 'workbench/landmark-tracker/destination-questions', landmarks: 'workbench/landmark-tracker/landmarks' } };
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    for (const relative of Object.values(manifest.landmarkTracker.collections)) fs.mkdirSync(path.join(dir, relative), { recursive: true });
+    const installed = path.join(dir, 'workbench', 'tools', 'landmark-tracker.mjs');
+    const captured = spawnSync(process.execPath, [installed, 'capture', '--title', 'Installed fixture concept', '--question', 'Does the installed copy run?', '--reason', 'propagation', '--json'], { cwd: dir, encoding: 'utf8' });
+    assert.equal(captured.status, 0, `${captured.stdout}${captured.stderr}`);
+    assert.equal(JSON.parse(captured.stdout).status, 'captured');
+    const checked = spawnSync(process.execPath, [installed, 'rebuild', '--check', '--json'], { cwd: dir, encoding: 'utf8' });
+    assert.equal(checked.status, 0, checked.stdout);
+    assert.equal(run(installer, 'verify', '--project', dir).report.status, 'valid');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('install refuses an unreceipted collision and a symlinked lane before mutating anything', () => {
   const dir = project();
   const outside = fixture('workbench-tools-outside-');

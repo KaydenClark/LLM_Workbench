@@ -1292,6 +1292,38 @@ test('init declares the integration branch, the Genesis gate fails closed until 
   }
 });
 
+// S-01T TK-01X: the Landmark Tracker root is an additive manifest block, like
+// `git`, never an eighth lane or a change to the exact collection sets. A room
+// without it validates exactly as before; a declared root must be safe, flat
+// and present on disk, and a Genesis-complete room may carry it.
+test('a Genesis room may declare the Landmark Tracker root additively; its directories are required and its shape is closed', () => {
+  const project = fixture();
+  const quietHome = healthySkillHome();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    completeGenesis(project);
+    const before = run('validate', '--project', project, '--genesis');
+    assert.equal(before.report.status, 'valid', before.stdout);
+    assert.equal(Object.hasOwn(before.report, 'tracker'), false, 'an undeclared room reports no Tracker');
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const declaration = { root: 'workbench/landmark-tracker', collections: { 'destination-questions': 'workbench/landmark-tracker/destination-questions', landmarks: 'workbench/landmark-tracker/landmarks' } };
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, landmarkTracker: declaration }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'missing-collection', 'declared Tracker collections must exist');
+    for (const relative of Object.values(declaration.collections)) fs.mkdirSync(path.join(project, relative), { recursive: true });
+    const declared = run('validate', '--project', project, '--genesis');
+    assert.equal(declared.status, 0, declared.stdout);
+    assert.deepEqual(declared.report.tracker, { root: declaration.root, projection: 'workbench/landmark-tracker/TRACKER.json', collections: declaration.collections });
+    render(project);
+    assert.deepEqual(doctor(project, { home: quietHome }).filter((item) => ['all', 'selection'].includes(item.blocks)), [], 'doctor accepts a declared Tracker root');
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, landmarkTracker: { ...declaration, lane: 'workbench/landmark-tracker' } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-collection', 'the declaration shape is closed');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(quietHome, { recursive: true, force: true });
+  }
+});
+
 test('init and migrate default the declaration to origin/HEAD and an existing integration-named branch by its exact case', () => {
   const project = fixture();
   const migrated = fixture();
