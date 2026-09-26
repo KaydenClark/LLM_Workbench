@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** TK-002Q closed with proof.
-**Next gate:** Separate-context review and landing of the TK-002Q candidate, then the assembled QA slice. Acceptance lines 1-4 are checked; line 5 remains open.
+**Latest event:** Lane I cut TK-002R (identity procedures and assembled QA) after TK-002Q landed in PR #209.
+**Next gate:** A Lane I worker claims and delivers TK-002R. Acceptance lines 1-4 are checked; line 5 remains open.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -195,6 +195,8 @@ future DQC/landmark integrations consume this contract when their runtime exists
 
 ### Final slice - Assembled capability QA
 
+Allocated as [TK-002R](tasks/TK-002R/TASK.md).
+
 Depends on delivered slices. Read-only inventory finds missed consumers and
 alias collisions. Reconcile ADR-0041, relevant RUNBOOK procedures, generic
 mirrors and managed receipts through released lanes; do not expand S-00P's
@@ -276,6 +278,7 @@ using ignored recovery material as durable evidence.
 | 2026-09-26 | TK-002Q | Review corrective: the separate-context review found that `occupiedAdrLabels` in `adr.mjs` validated a remote tip's declared `adr` collection more weakly than the local manifest rule (it refused absolute and `..` paths but accepted `.`, `./workbench/docs/adr`, backslashes, whitespace and non-`workbench/` paths), so a tip could redirect the scan or under-reserve labels. The fix reuses `isSafeRelative` from `workbench-paths.mjs`, the rule `collectionRelative` applies locally, and refuses with an `invalid-collection` error naming the ref and value. | Red at 1706d6b (tests committed on the 6fadc03 runtime): test-adr.mjs 5 of 38 failed, one per unsafe declared collection (`.`, `./workbench/docs/adr`, a backslash path, a path with whitespace, `docs/adr`), each with Missing expected exception because `adr new` accepted the tip. The malformed-manifest, blob-tip and missing-tree cases already refused and stay as regression guards; every case checks `newAdr` and the CLI refuse by name, write nothing and leave the tree clean. Green at 280c138: test-adr.mjs 38/38, test-visible-id-consumers.mjs 31/31, test-notepads.mjs 53/53; the full AGENTS suite is run by the read-only runner on the commit that carries this row. | No doc change: ADR-0041 already states that a malformed manifest, an unsafe declared path or an unreadable tip refuses, and the TK-002Q Decisions claim that unsafe paths fail closed is now true as written. | Remaining gaps as in the TK-002Q close row; a fresh separate-context review of the corrected candidate is required. |
 | 2026-09-26 | TK-002Q | Correction to the review-corrective row above: its Docs cell says ADR-0041 already stated that a malformed tip manifest, an unsafe declared collection or an unreadable tip refuses; it did not. ADR-0041's TK-002Q paragraph now states that rule and names `isSafeRelative`. The row above is left as published. | Read-back of ADR-0041 after the edit; no runtime change since 280c138; the full AGENTS suite is run by the read-only runner on the commit that carries this row. | ADR-0041 (TK-002Q delivered paragraph) | As in the review-corrective row above. |
 | 2026-09-26 | review | Review verdict: pass at fc26c7c5a335f9cb35d9e4a5bc0bf871b4d98585 [0fb2f1683e26] #5 | No findings. TK-002Q ADR and notepad allocation onto the artifact policy, with acceptance line 4 checked before review. Prior candidate 6fadc03 failed on weaker remote-tip ADR collection validation; corrected at 280c138 (reuses isSafeRelative) with red tests at 1706d6b. Full AGENTS suite 48/48 at fc26c7c (read-only runner, dirty []). Reviewer read the tests and ran doctor; did not run fixtures (read-only sandbox). | codex exec gpt-5.5, read-only sandbox, separate context from the Lane I dispatcher and its worker | 3 |
+| 2026-09-26 | TK-002R | Lane I cut TK-002R from the assembled QA slice under the Director's option A (S-01W edits only RUNBOOK Visible Identifiers, the LEXICON WBID entry, their templates mirrors and the notepad skill allocate wording); its ID was proposed by `next-id S-01W --prefix TK` on integration b00a2e3 immediately before the record was saved. | render; doctor no blocking finding; show S-01W lists TK-002R ready | This Spec (header, final slice), TK-002R TASK.md, TASKBOARD.md | TK-002R implementation, then assembled-Spec review and owner Human QA |
 
 ## Completion Result
 
