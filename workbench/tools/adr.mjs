@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { finding } from './diagnostics.mjs';
-import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { allocateArtifactId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, findRoot, isMainModule, IGNORED_COLLECTIONS, liveRecordPath, markdownLinkTargets } from './workbench-paths.mjs';
 
 export const STATUSES = Object.freeze(['proposed', 'accepted', 'superseded', 'deprecated', 'rejected']);
@@ -404,14 +404,58 @@ export function writeRegister(root) {
   return { registerPath, historyPath, count: adrs.length };
 }
 
+// S-01W TK-002Q: the ADR reservation inventory the artifact policy
+// allocates against. Local records that alias one identity (`000A` beside
+// `000a`) are refused rather than choosing a winner. Like `next-id`
+// (ADR-000O), every remote-tracking tip is read too, so a label another
+// pushed branch already holds is never proposed again; repeated spellings
+// across tips reserve one identity. A room outside Git has no tips to read.
+export function occupiedAdrLabels(root) {
+  const labels = [];
+  const local = new Map();
+  for (const adr of listAdrs(root)) {
+    const label = `ADR-${adr.number}`;
+    const key = visibleIdKey(label);
+    if (local.has(key)) throw new Error(`Visible identifier collision: ${label} and ${local.get(key)} alias one ADR identity`);
+    local.set(key, label);
+    labels.push(label);
+  }
+  const git = (...args) => spawnSync('git', ['-C', root, ...args], { encoding: 'utf8' });
+  const refs = git('for-each-ref', '--format=%(refname)', 'refs/remotes');
+  if (refs.status !== 0) return labels;
+  const fallback = collectionRelative(root, 'adr');
+  for (const ref of refs.stdout.split('\n').filter(Boolean)) {
+    let collection = fallback;
+    const manifest = git('show', `${ref}:./workbench/manifest.json`);
+    if (manifest.status === 0) {
+      let declared;
+      try { declared = JSON.parse(manifest.stdout).collections?.adr; }
+      catch { throw new Error(`Cannot reserve ADR labels from malformed manifest at ${ref}`); }
+      if (declared !== undefined) {
+        if (typeof declared !== 'string' || path.isAbsolute(declared) || declared.split(/[\\/]/).includes('..')) throw new Error(`Cannot reserve ADR labels from unsafe adr collection at ${ref}`);
+        collection = declared;
+      }
+    }
+    const listing = git('ls-tree', '-r', '-z', '--name-only', ref, '--', `${collection.replace(/\/+$/, '')}/`);
+    if (listing.status !== 0) throw new Error(`Cannot reserve ADR labels from ${ref}: ${listing.stderr.trim()}`);
+    for (const file of listing.stdout.split('\0').filter(Boolean)) {
+      const parts = path.posix.relative(collection.replace(/\\/g, '/'), file).split('/');
+      const name = parts.at(-1);
+      if (parts.length > 2 || (parts.length === 2 && !ADR_LIFECYCLE_FOLDERS.includes(parts[0]))) continue;
+      const match = name.match(ID_PATTERN);
+      if (match) labels.push(`ADR-${match[1]}`);
+    }
+  }
+  return [...new Set(labels)];
+}
+
 export function newAdr(root, options) {
   const title = requireValue(options.title, '--title is required');
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   if (!slug) throw new Error('title must contain letters or digits');
   const directory = collectionPath(root, 'adr');
   assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
-  const occupied = listAdrs(root).map(adr => `ADR-${adr.number}`);
-  const next = allocateVisibleId('ADR', occupied, { width: 4, requireLetter: true }).slice(4);
+  const next = allocateArtifactId('ADR', occupiedAdrLabels(root)).slice(4);
   // S-00I TK-002: a new record is always `proposed`, so it is created inside
   // the `proposed/` lifecycle folder its own status implies - folder is
   // lifecycle, so an unreviewed decision never starts out looking active. It

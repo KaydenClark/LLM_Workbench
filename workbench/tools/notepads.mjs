@@ -21,7 +21,7 @@ import path from 'node:path';
 import { finding } from './diagnostics.mjs';
 import { assertSafeReadPath, assertSafeWritePath, collectionPath, collectionRelative, findRoot, isMainModule, readManifest, writeSafeFile, UNTRACKED_COLLECTIONS } from './workbench-paths.mjs';
 import { scanPrivacy } from './privacy.mjs';
-import { allocateVisibleId, visibleIdKey } from './visible-ids.mjs';
+import { allocateArtifactId, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 
 export const NOTEPAD_SCHEMA_VERSION = 'notepad-1';
 // The interim shape the scoping slice wrote by hand. It reads and migrates;
@@ -395,11 +395,21 @@ export function allocateNote(root, options) {
   try {
     const prefix = requireValue(options.prefix, '--prefix is required');
     const occupied = inventory.notes.map(note => note.id);
+    // S-01W TK-002Q: notepads allocate through the one artifact policy
+    // (uppercase `0-9A-Z`, minimum width four, letter-bearing). Two notes
+    // whose IDs alias one identity are refused rather than choosing a winner.
+    const seen = new Map();
+    for (const noteId of occupied) {
+      if (visibleIdParts(noteId)?.prefix !== prefix) continue;
+      const key = visibleIdKey(noteId);
+      if (seen.has(key)) throw new Error(`Visible identifier collision: ${noteId} and ${seen.get(key)} alias one note identity`);
+      seen.set(key, noteId);
+    }
     const destinationAliases = new Set(inventory.notes.map(note => visibleIdKey(path.basename(note.note, '.json'))).filter(Boolean));
     // A legacy filename may carry a different ID. Reserve that destination
     // spelling too, rather than repeatedly proposing a file we cannot create.
     for (;;) {
-      id = allocateVisibleId(prefix, occupied);
+      id = allocateArtifactId(prefix, occupied);
       const destination = resolveNote(root, id, options.collection ?? defaultCollection(root));
       if (!destinationAliases.has(visibleIdKey(id)) && !fs.existsSync(destination.absolute)) break;
       occupied.push(id);

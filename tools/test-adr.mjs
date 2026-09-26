@@ -151,6 +151,74 @@ test('new allocates an unused letter-bearing label, lands in the folder its stat
   }
 });
 
+// S-01W TK-002Q: ADR labels follow the one artifact policy (uppercase
+// `0-9A-Z`, minimum width four, letter-bearing). The case-folded base62
+// allocator ADRs used before could never emit a lowercase label - every
+// lowercase candidate shares its collision key with an earlier uppercase
+// one - so this is a characterization of the delivered sequence past `000Z`,
+// not a red case: legacy files keep their names and bytes and still reserve
+// their identities.
+test('new continues past 000Z to an uppercase width-four label and leaves legacy files byte-identical', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    const body = adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n');
+    const legacy = [];
+    for (const ordinal of '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') legacy.push(ordinal === 'Q' ? '00Q' : `000${ordinal}`);
+    for (const label of legacy) fs.writeFileSync(path.join(collection, `${label}-legacy.md`), body);
+    const before = new Map(legacy.map((label) => [label, fs.readFileSync(path.join(collection, `${label}-legacy.md`))]));
+    const created = newAdr(dir, { title: 'Past the single letters', date: '2026-09-26' });
+    assert.equal(created.number, '001A', 'the next letter-bearing uppercase label after 000Z; the short 00Q reserves 000Q');
+    assert.match(created.number, /^[0-9A-Z]{4,}$/);
+    for (const [label, bytes] of before) assert.deepEqual(fs.readFileSync(path.join(collection, `${label}-legacy.md`)), bytes, `${label} keeps its name and bytes`);
+    writeRegister(dir);
+    assert.match(fs.readFileSync(path.join(collection, 'HISTORY.md'), 'utf8'), /\[00Q\]\(00Q-legacy\.md\)/, 'the register still lists a short legacy label as written');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// Lane F observed `adr new` proposing a label another pushed branch already
+// held, because ADR allocation read only the local tree. `next-id` reads every
+// remote tip (ADR-000O); ADR allocation now reserves the same way.
+test('new reserves ADR labels held only at a remote tip, in every spelling, without touching the local tree', () => {
+  const dir = gitFixture();
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-adr-remote-'));
+  const git = (...args) => {
+    const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+    assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
+    return result.stdout;
+  };
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    fs.writeFileSync(path.join(collection, '0001-local.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n'));
+    git('checkout', '--quiet', '-b', 'main');
+    gitCommitAll(dir, 'Seed the room');
+    assert.equal(spawnSync('git', ['init', '--quiet', '--bare', remote]).status, 0);
+    git('remote', 'add', 'origin', remote);
+    git('push', '--quiet', 'origin', 'main');
+    git('checkout', '--quiet', '-b', 'claude/other-lane');
+    for (const folder of ['proposed', 'archive']) fs.mkdirSync(path.join(collection, folder), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '000A-held-on-another-branch.md'), adr('proposed'));
+    fs.writeFileSync(path.join(collection, 'archive', '00b-short-lowercase-legacy.md'), adr('deprecated', 'deprecation_reason: fixture\n'));
+    gitCommitAll(dir, 'Another lane adds two ADRs');
+    git('push', '--quiet', 'origin', 'claude/other-lane');
+    git('checkout', '--quiet', 'main');
+    git('branch', '--quiet', '-D', 'claude/other-lane');
+    git('fetch', '--quiet', 'origin');
+    assert.equal(fs.existsSync(path.join(collection, 'proposed', '000A-held-on-another-branch.md')), false, 'the local tree lacks the remote-only record');
+    const created = newAdr(dir, { title: 'Local decision', date: '2026-09-26' });
+    assert.equal(created.number, '000C', 'ADR-000A and the short lowercase ADR-00b at origin/claude/other-lane are occupied');
+    const cli = spawnSync(process.execPath, [adrTool, 'new', '--path', dir, '--title', 'Second local decision'], { cwd: dir, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.equal(JSON.parse(cli.stdout).number, '000D');
+    assert.deepEqual(fs.readdirSync(path.join(collection, 'proposed')).sort(), ['000C-local-decision.md', '000D-second-local-decision.md'], 'nothing from the remote tip is written locally');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(remote, { recursive: true, force: true });
+  }
+});
+
 test('the product corpus validates with a current register and no error findings', () => {
   const findings = validateAdrs(root);
   assert.deepEqual(findings.filter((item) => item.severity === 'error'), []);

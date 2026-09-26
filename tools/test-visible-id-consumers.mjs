@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import * as workbench from '../workbench/tools/spec-workbench.mjs';
 import { newAdr, listAdrs, validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
+import { allocateArtifactId, isWorkbenchId } from '../workbench/tools/visible-ids.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const version = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json'))).workbenchVersion;
@@ -169,6 +170,61 @@ test('next-id proposes uppercase width-four Spec and Task labels in a numeric le
     assert.equal(taskId.status, 0, taskId.stdout || taskId.stderr);
     assert.deepEqual(taskId.json, { status: 'proposed', id: 'TK-000A', reserved: false, specId: 'S-002' });
     assert.deepEqual(snapshot(dir), before, 'a proposal leaves every legacy path and byte unchanged');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+// S-01W TK-002Q: every artifact consumer that allocates visible labels -
+// Specs, Tasks, ADRs and notepads - proposes the one artifact policy's label
+// for its own inventory, and the room's Workbench connection identity keeps
+// its base62 form.
+test('ADR and notepad public allocation follow the artifact policy beside next-id, keeping legacy records and the connection identity', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001', [['TK-001', 'done', 'none']], 'complete');
+    const adrFolder = path.join(dir, 'workbench/docs/adr');
+    const adrBody = '---\ndate: 2026-09-26\ncanonicalized_in:\n  - AGENTS.md\n---\n\n# A decision\n\nProvenance: fixture.\n';
+    for (const label of ['0001', '00A', '000b']) fs.writeFileSync(path.join(adrFolder, `${label}-legacy.md`), adrBody);
+    const notes = path.join(dir, 'workbench/sessions/notepads/work');
+    const notepads = path.join(root, 'workbench/tools/notepads.mjs');
+    const note = (args) => {
+      const result = spawnSync(process.execPath, [notepads, ...args, '--path', dir], { encoding: 'utf8' });
+      return { ...result, json: JSON.parse(result.stdout) };
+    };
+    assert.equal(note(['create', '--note', 'legacy-short', '--id', 'N-001', '--objective', 'identity', '--title', 'Legacy numeric']).json.status, 'created');
+    assert.equal(note(['create', '--note', 'legacy-letter', '--id', 'N-00A', '--objective', 'identity', '--title', 'Legacy letter']).json.status, 'created');
+    const manifestPath = path.join(dir, 'workbench/manifest.json');
+    const workbenchId = JSON.parse(fs.readFileSync(manifestPath, 'utf8')).workbenchId;
+    const records = () => {
+      const files = new Map();
+      for (const folder of [adrFolder, notes, path.join(dir, 'workbench/specs')]) {
+        for (const name of fs.readdirSync(folder, { recursive: true })) {
+          const full = path.join(folder, name);
+          if (fs.statSync(full).isFile()) files.set(path.relative(dir, full), fs.readFileSync(full));
+        }
+      }
+      return files;
+    };
+    const before = records();
+
+    assert.equal(cli(dir, ['next-id', '--prefix', 'S']).json.id, allocateArtifactId('S', ['S-001']));
+    const adr = spawnSync(process.execPath, [path.join(root, 'workbench/tools/adr.mjs'), 'new', '--path', dir, '--title', 'Policy consumer'], { encoding: 'utf8' });
+    assert.equal(adr.status, 0, adr.stderr);
+    const adrLabel = `ADR-${JSON.parse(adr.stdout).number}`;
+    assert.equal(adrLabel, allocateArtifactId('ADR', ['ADR-0001', 'ADR-00A', 'ADR-000b']));
+    assert.equal(adrLabel, 'ADR-000C');
+    const allocated = note(['allocate', '--prefix', 'N', '--objective', 'identity', '--title', 'Policy consumer']);
+    assert.equal(allocated.status, 0, allocated.stdout);
+    assert.equal(allocated.json.id, allocateArtifactId('N', ['N-001', 'N-00A']));
+    assert.equal(allocated.json.id, 'N-000B');
+    for (const label of [adrLabel, allocated.json.id]) assert.match(label, /^[A-Z]+-[0-9A-Z]{4,}$/, `${label} is uppercase and width four`);
+
+    const after = records();
+    assert.ok(before.has('workbench/docs/adr/00A-legacy.md') && before.has('workbench/sessions/notepads/work/legacy-short.json'));
+    for (const [file, bytes] of before) assert.deepEqual(after.get(file), bytes, `${file} keeps its name and bytes`);
+    assert.ok(listAdrs(dir).some(item => item.number === '00A'), 'the short legacy ADR still lists under its written label');
+    assert.equal(fs.existsSync(path.join(notes, 'legacy-letter.json')), true);
+    assert.equal(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).workbenchId, workbenchId, 'allocation leaves the connection identity untouched');
+    assert.ok(isWorkbenchId(workbenchId), 'the connection identity keeps its base62 WB form');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
