@@ -8,50 +8,119 @@
 **Updated:** 2026-09-26
 **Catalog description:** Rebuild and inspect evidence-backed documentation distributions from existing DQC and landmark records.
 **Blockers:** none
-**Latest event:** Identity reserved serially for owner-authorized three-capability split; dispatcher to finish its bounded requirements and Tasks.
+**Latest event:** Scoped successor authored; readable Result omission reproduced at the public formatter seam; first Task allocation and DQC module release pending.
 **Next gate:** Director coordinates existing lane ownership and approves the concrete remaining-behavior slice before worker mutation.
 
 ## Outcome
 
 Rebuild and inspect evidence-backed documentation distributions from existing DQC and landmark records.
 
-## Scope Reservation
+## Scope
 
-Projection, aggregation, readable views, source evidence visibility and assembled Tracker demonstration. Existing TK-01X/TK-01Y behavior remains delivered history; no replacement implementation.
-
-This scaffold reserves an identity, not completion or a second implementation.
-The assigned dispatcher alone authors this Spec after transfer. No Task is allocated.
+Own the generated Tracker view, arithmetic and inspectability. Consume existing
+DQC and landmark sources; never author a competing stage or reset lifecycle.
+DQCs and workflow source maintenance belong to [Destination Question Cards](../S-002B-destination-question-cards/SPEC.md).
+Landmark relationships, article checks and record lifecycle belong to
+[Landmark Records](../S-002A-landmark-records/SPEC.md).
 
 ## Current Verified State
 
-Read at `git show b00a2e338436ef7b281b0cc53e74f891af32f18c:workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md`.
-S-01T TK-01X and TK-01Y are delivered/reviewed. Existing Tracker tests pass
-23/23 and the public demo passes in 1.64 seconds at this baseline. Primary
-local integration is older; it is not the implementation baseline.
+Read at `git show b00a2e338436ef7b281b0cc53e74f891af32f18c:workbench/tools/landmark-tracker.mjs`.
+S-01T TK-01X/TK-01Y already deliver persistent sources, rebuild/show, exact
+step arithmetic, mixed contributions, identity deduplication, explicit outcomes,
+cycles and claim reconciliation. Targeted tests passed 23/23; the actual demo
+passed in 1.64 seconds; rebuild --check reported current.
 
-## Acceptance Transfer Proposal
+`questionCard` retains achieved `result` in JSON, but `formatCard` renders
+Expected result without Result. A direct public `formatTracker` fixture at
+this tree shows Expected fixture knowledge and omits Achieved fixture knowledge.
+The DQC dispatcher owns adding the missing public Result mutation path first.
 
-S-01T acceptance 4 and 5 (view/distributions), projection aspects of 6 and 8, and Tracker portions of 1 and 13.
+## Desired Behavior And Contracts
 
-Original acceptance and append-only proof stay in
+- Rebuild deterministically from source records; show meaningful titles,
+  ungrouped cards, lineage, rationale, evidence and affected claims.
+- Preserve exact ordered steps Idea, Aligning, Confirmed, Mapped, Planned,
+  Journey, Review, Verified. Each distinct related item contributes one unit;
+  mixed items split that unit. Shared identities count once at each aggregate,
+  and mixed DQCs remain one contribution without flattening child counts.
+- Preserve the 30/20/50 example at DQC, landmark and Workbench scopes; keep
+  numerator, denominator, source type, identities and evidence inspectable.
+- Retain explicit empty, incomplete and invalid outcomes. Preserve navigation
+  cycles and refuse arithmetic cycles without publishing a partial projection.
+- Display Expected result and achieved Result separately, including the recorded
+  Result revision. Missing Result remains absent or explicitly unrecorded;
+  never invent it from an answer, Task status or assessment.
+- Preserve actual durable-content/gate assessment semantics when Records supplies
+  that seam. A done Task never becomes Verified automatically. Earlier proof
+  remains readable at its source revision; relations do not imply blanket staleness.
+
+## Source Acceptance Mapping
+
+The original 13 acceptance bullets remain in
 [the foundation source](../S-01T-landmark-tracker-foundation/SPEC.md).
-Transfer remains a proposal until the source owner mapping is reconciled;
-this reservation does not silently close, move or duplicate its unfinished Tasks.
+Primary accountability proposal: Tracker owns 4 and 5, DQC owns 2 and 9,
+Records owns 3, 7, 10, 11 and 12. Shared rows are decomposed by claim: 1 and 13
+apply independently to every successor; 6 assigns source-write safety to DQC
+and arithmetic outcomes to Tracker; 8 assigns source change/evidence to DQC,
+actual article claim assessment to Records and reconciliation visibility to
+Tracker. Existing done Tasks and append-only proof stay in the original owner.
+Final transfer changes its current-facing broad ownership only after Director
+coordinates the active lane-J and successor obligations.
 
-## First Vertical Slice
+## Dependencies And File Writers
 
-First slice must address a reproduced projection gap, not recreate rebuild or distributions already delivered.
+Retain manifest.landmarkTracker, declaredTracker/trackerCollectionPath,
+allocateArtifactId, destination-question@2 with @1 compatibility and landmark@1.
+Membership remains the DQC landmark edge. No generic envelope or schema reset.
+DQC has the first exclusive mutation lease for landmark-tracker.mjs and returns
+a clean seam commit before Tracker changes its formatter. This is a file-level
+serialization point, not a whole-Spec barrier. Independent Tracker tests/planning
+can proceed. Existing S-00I/S-00P control, Wiki and lifecycle writers retain
+those lanes; no root control edit is assigned here without coordinated release.
+
+## Vertical Implementation Slices
+
+First proposed residual: persist achieved Result via the DQC public operation,
+rebuild, and read a clear Expected result / Result distinction via public show.
+Prove the Result revision and restart stability, both one-card and full view,
+without changing source records or arithmetic. One worker owns this Task.
+Task ID allocation awaits the Director's serial global allocation turn.
+
+Further Tasks require a demonstrated remaining acceptance gap. Reuse existing
+23-test arithmetic coverage; do not invent replacement implementation Tasks.
 
 ## Acceptance Criteria
 
-- [ ] The dispatcher authors scoped, demonstrable acceptance preserving every assigned original obligation and completed proof.
-- [ ] Missing behavior is delivered through one-Task workers at existing public seams, with applicable red/green, full verification and demo proof.
-- [ ] Whole-Spec QA and separate-context integration review pass; applicable owner Human QA remains independently recorded.
+- [ ] Public show for one DQC and the whole Tracker displays achieved Result and its revision separately from Expected result, surviving restart and rebuild.
+- [ ] Rebuilding the projection changes no source record and preserves schema compatibility, lineage and previous evidence.
+- [ ] Existing exact eight-step, 30/20/50, shared-identity, mixed-DQC, empty/incomplete/invalid and cycle demonstrations remain passing at the assembled candidate.
+- [ ] Reconciliation visibility consumes source and actual article assessments without inferring Verified from Task status or creating blanket invalidation.
+- [ ] Fresh-clone discoverability, full checks, self-drift receipts and a sub-minute public demo prove this bounded view; the source acceptance transfer has no orphan obligations.
+- [ ] Whole-Spec dispatcher QA and separate-context immutable integration review pass; owner Human QA is independently recorded and never inferred.
+
+## Testing Seams And Verification
+
+Use public capture/revise/rebuild/show and existing exported formatTracker in
+disposable manifest-declared rooms. The worker records failing expected output
+before changing the formatter; then targeted output checks, existing Tracker
+suite/demo and the full AGENTS suite on a committed candidate. Invalid-state and
+source immutability assertions use actual before/after bytes. Capture self-drift
+and guardrail before/after with existing findings left visible.
+
+## Documentation Impact
+
+Update the Tracker README and assigned Task proof for delivered readable
+behavior. Generic controls are exempt from a formatter-only change: public
+schema, commands and shared behavior contract are unchanged. Existing S-00P
+owns root/template procedure reconciliation. Later scope changes must revisit
+this exemption. A clean suite alone is not a clean-update or Human QA claim.
 
 ## Non-Goals
 
-Reimplementing delivered foundation behavior; changing schemas without a proved gap;
-version/release/main promotion; other rooms; taking another lane's shared writer.
+Reimplementing delivered foundation behavior; changing schemas without a proved
+gap; DQC mutation ownership; Wiki content authoring or lifecycle takeover;
+version/release/main promotion; other rooms; one dispatcher owning all delivery.
 
 ## Append-Only Evidence And Execution Log
 
