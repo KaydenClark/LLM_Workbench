@@ -242,6 +242,27 @@ assertIncludesAll(notepadSkill, [
 assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < notepadSkill.indexOf('## 4.'),
   'rechecking a corrected claim belongs to saving and resuming, before cleanup');
 
+// S-01B: promote reads pending meaning the way notepad and grilling record it,
+// selects only the confirmed claim, routes each accepted claim to one owner,
+// keeps its authored draft inside the project but out of Git, and leaves the
+// pending item in the note. These pin the source contract; the fresh-context
+// run in S-01B records the behavior.
+const promoteSkill = read('workbench/skills/promote/SKILL.md');
+assertIncludesAll(promoteSkill, [
+  '`source_record`',
+  '`current.unresolved`',
+  'is pending, not supported',
+  'only a `decision` entry',
+  'exactly one durable owner',
+  'link to it rather than copy it',
+  '`workbench/sessions/recovery/`',
+  'Leave each pending entry and its `current.unresolved` item in place'
+], 'promote pending, single-owner and draft contract');
+assert.ok(promoteSkill.indexOf('is pending, not supported') < promoteSkill.indexOf('\n2. '),
+  'recognizing pending meaning belongs to selection, before routing');
+assert.ok(promoteSkill.indexOf('Leave each pending entry') > promoteSkill.indexOf('\n5. '),
+  'retaining the pending item belongs to the note update after promotion');
+
 const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
   'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',
