@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import test from 'node:test';
 import { validateWiki } from '../workbench/tools/wiki.mjs';
+import { install, verify, RECEIPT_NAME } from './workbench-tools.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(root, 'workbench/tools/landmark-wiki.mjs');
@@ -231,4 +233,30 @@ test('unrelated retirement feature provenance retains its existing Wiki validati
   assert.equal(cli(dir, 'validate', article, '--json').status, 0);
   assert.deepEqual(snapshot(dir), afterArticle);
   assert.equal(afterArticle['workbench/wiki/feature.md'], before['workbench/wiki/feature.md']);
+});
+
+test('managed installation exposes the actual receipt-backed validator CLI and API', async t => {
+  const dir = room(t);
+  fs.copyFileSync(path.join(root, 'workbench/manifest.json'), path.join(dir, 'workbench/manifest.json'));
+  const result = install(dir);
+  assert.equal(result.status, 'installed', JSON.stringify(result));
+  const installed = path.join(dir, 'workbench/tools/landmark-wiki.mjs');
+  assert.ok(fs.existsSync(installed), 'managed installation must include the new public validator');
+  const receipt = JSON.parse(fs.readFileSync(path.join(dir, 'workbench/tools', RECEIPT_NAME), 'utf8'));
+  assert.equal(receipt.files['landmark-wiki.mjs'], createHash('sha256').update(fs.readFileSync(installed)).digest('hex'));
+  assert.equal(verify(dir).status, 'valid');
+  let before = snapshot(dir);
+  const valid = spawnSync(process.execPath, [installed, 'validate', article, '--json'], { cwd: dir, encoding: 'utf8' });
+  assert.equal(valid.status, 0, valid.stderr);
+  assert.deepEqual(JSON.parse(valid.stdout), { status: 'valid', article, findings: [] });
+  assert.deepEqual(snapshot(dir), before);
+  fs.writeFileSync(path.join(dir, article), `${readable}[Origin](../CUSTOM%2D000A.json)\n`);
+  before = snapshot(dir);
+  const refused = spawnSync(process.execPath, [installed, 'validate', article, '--prefix', 'CUSTOM', '--json'], { cwd: dir, encoding: 'utf8' });
+  assert.equal(refused.status, 1, refused.stderr);
+  const report = JSON.parse(refused.stdout);
+  assert.equal(report.findings[0].id, 'CUSTOM-000A');
+  const { validateLandmarkArticle } = await import(pathToFileURL(installed).href);
+  assert.deepEqual(validateLandmarkArticle(dir, article, { extraPrefixes: ['CUSTOM'] }), report);
+  assert.deepEqual(snapshot(dir), before);
 });
