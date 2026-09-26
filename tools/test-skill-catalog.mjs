@@ -180,12 +180,16 @@ assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
 // on an unanswered owner decision stays uncut, because a record's Blockers
 // field holds only S-/TK- ids and `next` would hand out a prose-blocked record.
 // These pin the source contract; the fresh-context run in S-01L records the behavior.
+// S-01L TK-02D: a planned Spec is cut only when the same request activates it,
+// through `convert-tasks S-### --activate` (tools/test-spec-workbench.mjs
+// proves the runtime), replacing the earlier "do not run convert-tasks on it".
 assertIncludesAll(slicingSkill, [
   '**Stance:**',
   '# TK-### - <slice>',
   'Cut Tasks when the Spec is activated',
   'a planned Spec gets no Tasks',
-  'do not run `convert-tasks` on it',
+  'the same request activates it',
+  'convert-tasks S-### --activate',
   'workbench/docs/adr/0045-skill-composition-within-inherited-scope.md',
   'Leave a slice that waits on an unanswered owner decision uncut',
   'record the open decision in the Spec'
