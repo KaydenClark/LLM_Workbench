@@ -310,7 +310,7 @@ answer, without weakening the immutable-candidate requirement from ADR-0037.
 - [x] An explicit unresolved durable decision in a live or retired Task body
       remains visible and refuses assembled-Spec readiness and closure until
       reconciled to its durable owner; legacy absence is not affirmative proof.
-- [ ] Final closure requires verification of approved delivered content on the
+- [x] Final closure requires verification of approved delivered content on the
       declared default branch, while reviewed integration delivery remains
       possible before owner QA; approvals cover only explicitly named Specs.
 - [ ] Corrective delivery preserves S-00U F1/F2/F3/F6 and supplies fresh full-suite,
