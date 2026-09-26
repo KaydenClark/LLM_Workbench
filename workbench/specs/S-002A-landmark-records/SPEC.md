@@ -3,13 +3,13 @@
 **Spec ID:** S-002A
 **Status:** active
 **Priority:** 1
-**Owner:** codex-records-dispatcher
+**Owner:** codex-tk002t
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Maintain evolving landmark relationships and readable durable knowledge with recoverable provenance.
 **Blockers:** none
-**Latest event:** Director authorizes residual Landmark article validation after live runtime and active shared-writer inspection; completed foundation proof retained.
-**Next gate:** Finish serial Task reservation, dispatch one-Task validator worker; shared Wiki/lifecycle wiring waits only for its immediate immutable seam.
+**Latest event:** TK-002T claimed by codex-tk002t.
+**Next gate:** Close TK-002T with verification and documentation proof.
 
 ## Outcome
 

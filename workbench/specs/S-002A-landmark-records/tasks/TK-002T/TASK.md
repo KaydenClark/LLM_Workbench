@@ -3,7 +3,7 @@
 **Task ID:** TK-002T
 **Spec ID:** S-002A
 **Slice:** Validate a readable Landmark article across all bytes
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Explicit Landmark article validation rejects WBIDs in complete bytes, accepts readable valid content, and preserves files/index on every refusal.
@@ -73,3 +73,9 @@ never resets owner Human QA. No integration/main merge by this worker.
 ## Task Receipt
 
 Append named runtime receipts as work proceeds under current TASK conventions.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/landmark-article-tk002t | 04d54b165c06a6a46a5cec53bda3cbe79e0caeec | none | 2 | Entry doctor no blockers; guardrail pre 78/100; self-drift pre cleanUpdate=false | Read exact packet; no source changes yet | Red/green public validator, full candidate checks and demo pending | 73c9f58945e9fbadb52f37e4a22cf5f12f5a95e99e0f06ae602d36fa325b2d68 |
