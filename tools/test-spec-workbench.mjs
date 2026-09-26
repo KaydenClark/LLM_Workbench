@@ -5396,3 +5396,207 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-00J TK-02J (end) ----
+
+// ---- S-00V TK-01L: push-on-claim and fetch-before-select (begin) ----
+// Desired Behavior 4 and the owner's locked PW-6 decision (ADR-000O): claim
+// commits the claim on its task branch and pushes it; next and claim fetch
+// origin, read the integration branch as the base and overlay Task state from
+// every remote tip, so a Task claimed on any tip is taken. Every room below
+// shares one bare origin; each "instance" is its own clone.
+{
+  const gitIn = (dir, ...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const coordinationBase = fs.mkdtempSync(path.join(os.tmpdir(), 'claim-coordination-'));
+  const origin = path.join(coordinationBase, 'origin.git');
+  const clone = (name, branch = 'integration') => {
+    const dir = path.join(coordinationBase, name);
+    execFileSync('git', ['clone', '--quiet', origin, dir], { stdio: 'ignore' });
+    gitIn(dir, 'config', 'user.email', `${name}@example.com`);
+    gitIn(dir, 'config', 'user.name', name);
+    if (branch) gitIn(dir, 'switch', '--quiet', branch);
+    return dir;
+  };
+  const taskFile = (dir, taskId) => path.join(dir, 'workbench/specs/S-801-coordination/tasks', taskId, 'TASK.md');
+  const statusOf = (dir, taskId) => readTaskRecord(taskFile(dir, taskId), dir).status;
+  try {
+    execFileSync('git', ['init', '--quiet', '--bare', '-b', 'main', origin]);
+    const seed = path.join(coordinationBase, 'seed');
+    execFileSync('git', ['init', '--quiet', '-b', 'main', seed]);
+    gitIn(seed, 'config', 'user.email', 'seed@example.com');
+    gitIn(seed, 'config', 'user.name', 'seed');
+    initLifecycleFixture(seed);
+    writeAt(seed, 'workbench/specs/S-801-coordination/SPEC.md', recordBackedSpec('S-801').replace('**Updated:** 2026-07-12', `**Updated:** ${TODAY}`));
+    for (const id of ['TK-002', 'TK-003']) {
+      writeAt(seed, `workbench/specs/S-801-coordination/tasks/${id}/TASK.md`, taskRecordFixture({
+        id, specId: 'S-801', slice: `Coordinated slice ${id}`, status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-801 Acceptance Criteria'
+      }));
+    }
+    render(seed);
+    gitIn(seed, 'add', '-A');
+    gitIn(seed, 'commit', '--quiet', '-m', 'seed room');
+    gitIn(seed, 'remote', 'add', 'origin', origin);
+    gitIn(seed, 'branch', 'integration');
+    gitIn(seed, 'push', '--quiet', 'origin', 'main', 'integration');
+    const integrationTip = gitIn(seed, 'rev-parse', 'integration');
+
+    // B clones before A claims, so only a fetch can tell B about A's claim.
+    const alpha = clone('alpha');
+    const beta = clone('beta');
+
+    // (1) Instance A on the integration branch: claim cuts the task branch
+    // from origin/integration, commits the claim as its first commit, pushes.
+    const claimedA = claimWork(alpha, 'S-801', { agent: 'alpha-lane', date: TODAY });
+    assert.equal(claimedA.coordination?.mode, 'remote', '(1) a room with origin and a declared integration branch coordinates through the remote');
+    assert.equal(claimedA.coordination.branch, 'alpha/s801-tk002', '(1) claim names the task branch from the agent and the Task');
+    assert.equal(claimedA.coordination.created, true, '(1) on the integration branch, claim creates the task branch');
+    assert.equal(gitIn(alpha, 'branch', '--show-current'), 'alpha/s801-tk002', '(1) the claiming instance is left on its task branch');
+    assert.equal(gitIn(alpha, 'status', '--porcelain'), '', '(1) the claim is committed, leaving the tree clean');
+    assert.equal(gitIn(alpha, 'rev-list', '--count', `${integrationTip}..HEAD`), '1', '(1) the claim is the task branch\'s first commit on top of integration');
+    assert.equal(gitIn(alpha, 'log', '-1', '--format=%s'), 'Claim S-801 TK-002');
+    assert.equal(gitIn(alpha, 'ls-remote', 'origin', 'refs/heads/alpha/s801-tk002').split('\t')[0], gitIn(alpha, 'rev-parse', 'HEAD'), '(1) the claim commit is pushed');
+    assert.equal(gitIn(alpha, 'rev-parse', '--abbrev-ref', '@{u}'), 'origin/alpha/s801-tk002', '(1) the task branch tracks its pushed ref');
+    assert.equal(gitIn(alpha, 'ls-remote', 'origin', 'refs/heads/integration').split('\t')[0], integrationTip, '(1) integration receives no direct claim commit');
+    assert.equal(statusOf(alpha, 'TK-002'), 'in-progress');
+    assert.equal(claimedA.coordination.commit, gitIn(alpha, 'rev-parse', 'HEAD'));
+    assert.match(fs.readFileSync(path.join(alpha, 'TASKBOARD.md'), 'utf8'), /TK-002: Coordinated slice TK-002 \(in-progress\)/, '(1) the claim commit carries the re-rendered Taskboard');
+
+    // (2) Instance B, still on its stale integration checkout, runs next: the
+    // fetch reveals A's pushed claim, so B never receives TK-002.
+    assert.equal(statusOf(beta, 'TK-002'), 'ready', '(2) B\'s own tree still says TK-002 is ready');
+    const nextB = nextWork(beta);
+    assert.equal(nextB.taskId, 'TK-003', '(2) a second instance running next after a fetch does not receive the claimed Task');
+    assert.deepEqual(nextB.coordination.remoteClaimed, [{ specId: 'S-801', taskId: 'TK-002', refs: ['origin/alpha/s801-tk002'] }], '(2) next names the Task claimed on a remote tip and where');
+    assert.equal(nextB.coordination.fetched, true);
+    const claimedB = claimWork(beta, 'S-801', { agent: 'beta', date: TODAY });
+    assert.equal(claimedB.coordination.branch, 'beta/s801-tk003', '(2) claim also skips the remotely claimed Task');
+    assert.equal(statusOf(beta, 'TK-002'), 'ready', '(2) B never wrote a claim on TK-002');
+
+    // (3) A third instance sees both claims and gets nothing.
+    const gamma = clone('gamma');
+    assert.equal(nextWork(gamma), null, '(3) with every Task claimed on some remote tip, next has no eligible work');
+    assert.throws(() => claimWork(gamma, 'S-801', { agent: 'gamma', date: TODAY }), /no eligible ready task/, '(3) claim refuses too');
+    assert.equal(gitIn(gamma, 'branch', '--show-current'), 'integration', '(3) a refused claim leaves the instance where it was');
+    assert.equal(gitIn(gamma, 'status', '--porcelain'), '', '(3) a refused claim writes nothing');
+
+    // (4) The owning instance resumes its own claim: its own tip is not a
+    // competing claim.
+    assert.equal(nextWork(alpha).taskId, 'TK-002', '(4) the claiming instance resumes its own in-progress Task');
+
+    // (5) An abandoned branch abandons its claim: once the remote branch is
+    // deleted, a fetch prunes it and the Task is selectable again.
+    gitIn(alpha, 'push', '--quiet', 'origin', '--delete', 'alpha/s801-tk002');
+    assert.equal(nextWork(gamma).taskId, 'TK-002', '(5) a deleted claim branch no longer holds its Task');
+    // (5b) The default branch is not a claim surface either (S-00V TK-002M):
+    // origin/main carrying TK-002 as in-progress is main's own state, never a
+    // competing claim, so the Task stays selectable.
+    const seedTask = path.join(seed, 'workbench/specs/S-801-coordination/tasks/TK-002/TASK.md');
+    fs.writeFileSync(seedTask, fs.readFileSync(seedTask, 'utf8').replace('**Status:** ready', '**Status:** in-progress'));
+    gitIn(seed, 'switch', '--quiet', 'main');
+    gitIn(seed, 'commit', '--quiet', '-am', 'main carries its own task state');
+    gitIn(seed, 'push', '--quiet', 'origin', 'main');
+    const nextOnDefault = nextWork(gamma);
+    assert.equal(nextOnDefault.taskId, 'TK-002', '(5b) a Task in-progress on origin/<defaultBranch> is not taken');
+    assert.equal((nextOnDefault.coordination.remoteClaimed ?? []).some((item) => item.refs.includes('origin/main')), false, '(5b) the default branch is never reported as a claim-bearing tip');
+    console.log('ok - claim pushes the claim as the first commit of a task branch cut from integration, and next and claim in another instance fetch and skip a Task claimed on any remote tip');
+
+    // (6) Claim on an already-cut task branch keeps working: it commits and
+    // pushes the claim on that branch and creates no second branch.
+    const delta = clone('delta');
+    gitIn(delta, 'switch', '--quiet', '-c', 'claude/delta-lane', 'origin/integration');
+    const before = gitIn(delta, 'rev-parse', 'HEAD');
+    const claimedD = claimWork(delta, 'S-801', { agent: 'delta', date: TODAY });
+    assert.equal(claimedD.coordination.created, false, '(6) on a task branch, claim creates no branch');
+    assert.equal(claimedD.coordination.branch, 'claude/delta-lane');
+    assert.equal(gitIn(delta, 'branch', '--show-current'), 'claude/delta-lane', '(6) the instance stays on its own branch');
+    assert.equal(gitIn(delta, 'rev-list', '--count', `${before}..HEAD`), '1', '(6) exactly one claim commit is added');
+    assert.equal(gitIn(delta, 'log', '-1', '--format=%s'), 'Claim S-801 TK-002');
+    assert.equal(gitIn(delta, 'ls-remote', 'origin', 'refs/heads/claude/delta-lane').split('\t')[0], gitIn(delta, 'rev-parse', 'HEAD'), '(6) the existing branch is pushed with the claim');
+    assert.equal(gitIn(delta, 'for-each-ref', '--format=%(refname:short)', 'refs/heads'), 'claude/delta-lane\nintegration\nmain', '(6) no second branch was created');
+    assert.equal(gitIn(delta, 'ls-remote', 'origin', 'refs/heads/integration').split('\t')[0], integrationTip, '(6) a lane cut from origin/integration (and tracking it) never pushes its claim to integration');
+    assert.equal(gitIn(delta, 'rev-parse', '--abbrev-ref', '@{u}'), 'origin/claude/delta-lane', '(6) the lane now tracks its own pushed branch');
+    console.log('ok - claim on an already-cut task branch commits and pushes the claim there without creating a second branch');
+
+    // (7) A detached HEAD is a base state: claim cuts the branch there too.
+    const epsilon = clone('epsilon', null);
+    gitIn(epsilon, 'checkout', '--quiet', '--detach', 'origin/integration');
+    gitIn(epsilon, 'push', '--quiet', 'origin', '--delete', 'claude/delta-lane');
+    const claimedE = claimWork(epsilon, 'S-801', { agent: 'epsilon', date: TODAY });
+    assert.equal(claimedE.coordination.created, true, '(7) on a detached HEAD, claim creates the task branch');
+    assert.equal(gitIn(epsilon, 'branch', '--show-current'), 'epsilon/s801-tk002');
+
+    // (8) A push failure fails the claim visibly and leaves no half-state:
+    // no local branch, no commit, no written record, the same checkout.
+    gitIn(epsilon, 'push', '--quiet', 'origin', '--delete', 'epsilon/s801-tk002');
+    const zeta = clone('zeta');
+    gitIn(zeta, 'remote', 'set-url', '--push', 'origin', path.join(coordinationBase, 'missing.git'));
+    const zetaHead = gitIn(zeta, 'rev-parse', 'HEAD');
+    assert.throws(() => claimWork(zeta, 'S-801', { agent: 'zeta', date: TODAY }), /claim refused: push to origin failed/, '(8) a failed push fails the claim');
+    assert.equal(gitIn(zeta, 'branch', '--show-current'), 'integration', '(8) the instance is back where it started');
+    assert.equal(gitIn(zeta, 'rev-parse', 'HEAD'), zetaHead);
+    assert.equal(gitIn(zeta, 'status', '--porcelain'), '', '(8) nothing written is left behind');
+    assert.equal(gitIn(zeta, 'for-each-ref', '--format=%(refname:short)', 'refs/heads'), 'integration\nmain', '(8) the task branch it cut is removed');
+    assert.equal(statusOf(zeta, 'TK-002'), 'ready');
+    gitIn(zeta, 'switch', '--quiet', '-c', 'claude/zeta-lane');
+    assert.throws(() => claimWork(zeta, 'S-801', { agent: 'zeta', date: TODAY }), /claim refused: push to origin failed/, '(8) a failed push on a task branch fails the claim');
+    assert.equal(gitIn(zeta, 'rev-parse', 'HEAD'), zetaHead, '(8) the claim commit on the task branch is undone');
+    assert.equal(gitIn(zeta, 'status', '--porcelain'), '', '(8) and nothing written is left behind');
+
+    // (9) A fetch failure refuses the claim before anything is written; next
+    // still answers from the last fetched refs and says the fetch failed.
+    const eta = clone('eta');
+    gitIn(eta, 'remote', 'set-url', 'origin', path.join(coordinationBase, 'missing.git'));
+    assert.throws(() => claimWork(eta, 'S-801', { agent: 'eta', date: TODAY }), /claim refused: cannot fetch from origin/);
+    assert.equal(gitIn(eta, 'status', '--porcelain'), '', '(9) a claim that cannot fetch writes nothing');
+    const staleNext = nextWork(eta);
+    assert.equal(staleNext.coordination.fetched, false, '(9) next reports that it could not fetch');
+    assert.ok(staleNext.coordination.fetchError, '(9) and why');
+
+    // (10) Uncommitted changes on a base checkout are refused, not carried
+    // onto the task branch; nothing is written.
+    const theta = clone('theta');
+    fs.appendFileSync(path.join(theta, 'README.md'), 'local edit\n');
+    assert.throws(() => claimWork(theta, 'S-801', { agent: 'theta', date: TODAY }), /claim refused: .*uncommitted changes.*README\.md/);
+    assert.equal(gitIn(theta, 'status', '--porcelain'), 'M README.md', '(10) the refused claim leaves the edit alone and writes nothing else');
+    console.log('ok - claim cuts a branch from a detached HEAD, and a push failure, a fetch failure or uncommitted base changes fail the claim visibly with nothing left half-claimed');
+
+    // (11) Explicit --local keeps today's local behavior in a coordinated
+    // room, and says so.
+    const iota = clone('iota');
+    const localClaim = claimWork(iota, 'S-801', { agent: 'iota', date: TODAY, local: true });
+    assert.deepEqual(localClaim.coordination, { mode: 'local', reason: 'requested with --local' });
+    assert.equal(gitIn(iota, 'branch', '--show-current'), 'integration', '(11) a local claim cuts no branch');
+    assert.notEqual(gitIn(iota, 'status', '--porcelain'), '', '(11) a local claim is written to the tree and left uncommitted');
+    assert.deepEqual(parseCliArgs(['claim', 'S-801', '--local', '--agent', 'x']).options, { local: true, agent: 'x' }, '--local is a boolean flag');
+  } finally {
+    fs.rmSync(coordinationBase, { recursive: true, force: true });
+  }
+}
+
+// No remote: today's local behavior, reported as local.
+{
+  const localRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'claim-no-remote-'));
+  try {
+    execFileSync('git', ['init', '--quiet', '-b', 'main', localRoot]);
+    execFileSync('git', ['-C', localRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', localRoot, 'config', 'user.name', 'Fixture']);
+    initLifecycleFixture(localRoot);
+    writeAt(localRoot, 'workbench/specs/S-802-local/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-802').replace('**Updated:** 2026-07-12', `**Updated:** ${TODAY}`));
+    render(localRoot);
+    execFileSync('git', ['-C', localRoot, 'add', '-A']);
+    execFileSync('git', ['-C', localRoot, 'commit', '--quiet', '-m', 'local room']);
+    const head = headSha(localRoot);
+    const claimed = claimWork(localRoot, 'S-802', { agent: 'solo', date: TODAY });
+    assert.deepEqual(claimed.coordination, { mode: 'local', reason: 'no remote named origin' }, 'a room with no remote claims locally and says so');
+    assert.equal(claimed.tasks[0].status, 'in-progress');
+    assert.equal(headSha(localRoot), head, 'a local claim commits nothing');
+    assert.match(execFileSync('git', ['-C', localRoot, 'status', '--porcelain'], { encoding: 'utf8' }), /S-802-local\/SPEC\.md/, 'the local claim stays in the working tree as it always did');
+    const cli = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cliNext = spawnSync(process.execPath, [cli, 'next', '--json', '--path', localRoot], { encoding: 'utf8' });
+    assert.equal(cliNext.status, 0, cliNext.stderr);
+    assert.equal(JSON.parse(cliNext.stdout).taskId, 'TK-001', 'next output is unchanged without a remote');
+    assert.match(cliNext.stderr, /local selection only \(no remote named origin\)/, 'the CLI says selection was local');
+    console.log('ok - with no remote, claim and next keep today\'s local behavior and say so');
+  } finally {
+    fs.rmSync(localRoot, { recursive: true, force: true });
+  }
+}
+// ---- S-00V TK-01L: push-on-claim and fetch-before-select (end) ----

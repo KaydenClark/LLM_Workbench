@@ -11,6 +11,7 @@ import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { capabilitySession } from './optional-capabilities.mjs';
+import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
 import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
@@ -54,13 +55,27 @@ export const SPEC_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 // so the capability stays visible. A room with no capability-blocked Task
 // gets exactly the candidate or `null` it always got.
 export function nextWork(rootDir, options = {}) {
+  return nextSelection(rootDir, options).result;
+}
+
+// S-00V TK-01L (ADR-000O): `next` fetches origin and skips a Task claimed on
+// any remote tip (claim-coordination.mjs). A coordinated result carries
+// `coordination` naming the base, whether the fetch succeeded and each Task it
+// skipped; an uncoordinated room returns exactly what it always returned, and
+// `coordination` here says why so the CLI can report local selection.
+// `options.fetch === false` overlays the last fetched refs without fetching.
+export function nextSelection(rootDir, options = {}) {
   refuseBlockedRuntime(rootDir);
-  if (discardedReferences(path.resolve(rootDir)).length) return null;
-  const session = capabilitySession(path.resolve(rootDir), options);
-  const { candidate, capabilityBlocked } = selectWork([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)], { session });
-  const result = candidate ?? selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir));
-  if (capabilityBlocked.length === 0) return result;
-  return result ? { ...result, capabilityBlocked } : { specId: null, taskId: null, capabilityBlocked };
+  const root = path.resolve(rootDir);
+  if (discardedReferences(root).length) return { result: null, coordination: null };
+  const context = coordinationContext(root, { specsPrefix: resolveSpecsRoot(root).specsPrefix, local: options.local === true, fetch: options.fetch !== false });
+  const session = capabilitySession(root, options);
+  const { candidate, capabilityBlocked, remoteClaimed } = selectWork([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)], { session, remoteClaims: context.claims });
+  let result = candidate ?? selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir).filter((task) => !context.claims?.has(`${task.specId}/${task.id}`)));
+  if (capabilityBlocked.length > 0) result = result ? { ...result, capabilityBlocked } : { specId: null, taskId: null, capabilityBlocked };
+  const coordination = publicCoordination(context, remoteClaimed);
+  if (result && context.mode === 'remote') result = { ...result, coordination };
+  return { result, coordination };
 }
 
 // S-00I TK-006: a corrective Task created after its owning Spec has been
@@ -128,10 +143,14 @@ function selectCandidate(specs, options = {}) {
 // needing a capability the session cannot establish is skipped; each is
 // reported with `recorded` saying whether its record already carries the
 // block. Without a session nothing capability-related is reported.
-function selectWork(specs, { specId, readyOnly = false, session = null } = {}) {
+// S-00V TK-01L: with `remoteClaims` (a Map of `SPEC/TK` to the remote tips
+// holding a claim), a ready or resumable Task claimed on another tip is taken:
+// it is skipped and reported under `remoteClaimed`.
+function selectWork(specs, { specId, readyOnly = false, session = null, remoteClaims = null } = {}) {
   const completed = satisfiedBlockers(specs);
   const candidates = [];
   const capabilityBlocked = [];
+  const remoteClaimed = [];
   for (const spec of specs) {
     if ((spec.status !== 'active' && spec.lifecycleFolder !== 'retired') || (specId && spec.id !== specId)) continue;
     const satisfied = satisfiedIds(spec, completed);
@@ -145,6 +164,11 @@ function selectWork(specs, { specId, readyOnly = false, session = null } = {}) {
       const resumable = !readyOnly && status === 'in-progress';
       const eligible = status === 'ready' && blockersSatisfied(slice.blockers, satisfied);
       if (!resumable && !eligible) continue;
+      const claimedOn = remoteClaims?.get(`${spec.id}/${slice.id}`);
+      if (claimedOn) {
+        remoteClaimed.push({ specId: spec.id, taskId: slice.id, refs: [...claimedOn].sort() });
+        continue;
+      }
       if (session && slice.capabilities.length > 0) {
         const missing = session.missing(slice.capabilities);
         if (missing.names.length > 0) {
@@ -168,9 +192,10 @@ function selectWork(specs, { specId, readyOnly = false, session = null } = {}) {
   }
   candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
   capabilityBlocked.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
-  if (candidates.length === 0) return { candidate: null, capabilityBlocked };
+  remoteClaimed.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
+  if (candidates.length === 0) return { candidate: null, capabilityBlocked, remoteClaimed };
   const { rank: _rank, ...result } = candidates[0];
-  return { candidate: result, capabilityBlocked };
+  return { candidate: result, capabilityBlocked, remoteClaimed };
 }
 
 // S-00I TK-005: `findSpec` reaches a retired Spec only once the active
@@ -235,16 +260,42 @@ export function occupiedIdentities(rootDir, prefix) {
   return [...new Set(occupied)];
 }
 
+// S-00V TK-01L (ADR-000O): a coordinated room commits the claim on its task
+// branch and pushes it (claim-coordination.mjs `publishClaim`): on the
+// integration branch, the default branch or a detached HEAD the task branch is
+// cut from the fetched integration base; on any other branch the claim is
+// committed and pushed where it stands. A room with no remote, no declared or
+// fetched integration base, or an explicit `--local` claims in the working
+// tree exactly as before. Either way the result's `coordination` says which.
 export function claimWork(rootDir, id, options) {
   refuseBlockedRuntime(rootDir);
   requireValue(options?.agent, '--agent is required');
-  if (discardedReferences(path.resolve(rootDir)).length) throw new Error('discarded-reference: selection is blocked until current references are reconciled');
+  const root = path.resolve(rootDir);
+  if (discardedReferences(root).length) throw new Error('discarded-reference: selection is blocked until current references are reconciled');
+  const { specsPrefix } = resolveSpecsRoot(root);
+  const context = coordinationContext(root, { specsPrefix, local: options?.local === true, requireFetch: true });
+  if (context.mode !== 'remote') return { ...claimInTree(rootDir, id, options, null).result, coordination: publicCoordination(context) };
+  return publishClaim(root, context, {
+    agent: options.agent,
+    branch: options.branch,
+    specsPrefix,
+    apply: (remoteClaims) => claimInTree(rootDir, id, options, remoteClaims),
+    project: () => render(root)
+  });
+}
+
+// The ordinary claim in the working tree: select, route, and write the Task
+// record and Spec header. Returns the shown Spec plus the claimed ids.
+function claimInTree(rootDir, id, options, remoteClaims) {
   // S-00I TK-006: an orphan corrective Task (no owning Spec directory left to
   // claim through) is addressed by its own Task ID directly, never a Spec
   // ID - there is no Spec ID left to name. `TASK.md`'s own id regex closes
   // the vocabulary to `TK-...`, which a Spec ID never matches, so this can
   // never misroute a real Spec ID.
-  if (/^TK-/.test(id)) return claimOrphanCorrectiveTask(path.resolve(rootDir), id, options);
+  if (/^TK-/.test(id)) {
+    const orphan = claimOrphanCorrectiveTask(path.resolve(rootDir), id, options, remoteClaims);
+    return { result: orphan, specId: orphan.specId, taskId: orphan.taskId, remoteClaimed: [] };
+  }
   const date = validDate(options?.date ?? today());
   const specs = [...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)];
   const matches = specs.filter((item) => item.id === id);
@@ -252,7 +303,7 @@ export function claimWork(rootDir, id, options) {
   const spec = matches[0];
   if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
   const session = capabilitySession(path.resolve(rootDir), options);
-  const { candidate, capabilityBlocked } = selectWork(specs, { specId: id, readyOnly: true, session });
+  const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, readyOnly: true, session, remoteClaims });
   const slices = executionSlices(spec);
   // S-00V TK-00K: a ready Task needing an optional capability this session
   // cannot establish is routed to blocked on its own record, naming the
@@ -265,7 +316,7 @@ export function claimWork(rootDir, id, options) {
     writeTaskStatus(slice.record, { Status: 'blocked', 'Missing capabilities': entry.missing.join(', ') });
     routed.push({ taskId: entry.taskId, missing: entry.missing });
   }
-  const withRouting = (result) => (routed.length > 0 ? { ...result, capabilityRouted: routed } : result);
+  const withRouting = (result) => ({ result: routed.length > 0 ? { ...result, capabilityRouted: routed } : result, specId: id, taskId: task.id, remoteClaimed });
   const task = slices.find((item) => item.id === candidate?.taskId);
   if (!task) {
     if (routed.length > 0) {
@@ -280,6 +331,7 @@ export function claimWork(rootDir, id, options) {
     const satisfied = satisfiedIds(spec, satisfiedBlockers(specs));
     const blocked = slices.find((item) => item.declared === 'ready' && !blockersSatisfied(item.blockers, satisfied));
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
+    if (remoteClaimed.length > 0) throw new Error(`${id} has no eligible ready task to claim; claimed on a remote tip: ${remoteClaimed.map((item) => `${item.taskId} (${item.refs.join(', ')})`).join(', ')}`);
     throw new Error(`${id} has no eligible ready task to claim`);
   }
   // A record-backed Spec's state lives on the record; only the Spec header's
@@ -414,10 +466,12 @@ function gitStateAtClose(root, remainingGap, reasonOption) {
 
 // S-00I TK-006: claims an orphan corrective Task by its own Task ID - see
 // `loadCorrectiveTasks` above for why this folder and this reader.
-function claimOrphanCorrectiveTask(root, taskId, options) {
+function claimOrphanCorrectiveTask(root, taskId, options, remoteClaims = null) {
   const task = loadCorrectiveTasks(root).find((item) => item.id === taskId);
   if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
   if (task.status !== 'ready') throw new Error(`${taskId} is ${task.status}, not ready`);
+  const claimedOn = remoteClaims?.get(`${task.specId}/${task.id}`);
+  if (claimedOn) throw new Error(`${taskId} is claimed on a remote tip: ${claimedOn.join(', ')}`);
   atomicWrite(task.filePath, updateTaskFields(task.content, { Status: 'in-progress' }));
   return { taskId, specId: task.specId, status: 'in-progress', orphan: true };
 }
@@ -3027,6 +3081,7 @@ export function parseCliArgs(argv) {
     if (arg === '--json') options.json = true;
     else if (arg === '--host') options.host = true;
     else if (arg === '--activate') options.activate = true;
+    else if (arg === '--local') options.local = true;
     else if (arg.startsWith('--')) options[toCamel(arg.slice(2))] = rest[++optionIndex];
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -3049,7 +3104,8 @@ async function main() {
   const root = options.path ?? process.cwd();
   let result;
   let doctorRun;
-  if (command === 'next') result = nextWork(root, { capabilities: options.capabilities });
+  let coordination = null;
+  if (command === 'next') ({ result, coordination } = nextSelection(root, { capabilities: options.capabilities, local: options.local }));
   else if (command === 'next-id') result = nextIdentity(root, id, options);
   else if (command === 'show') result = showSpec(root, id);
   else if (command === 'claim') result = claimWork(root, id, { ...options, capabilityProbes: undefined });
@@ -3091,7 +3147,7 @@ async function main() {
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
@@ -3099,6 +3155,25 @@ async function main() {
   else if (command === 'report') console.log(formatSpecReport(result));
   else if (command === 'next' && result?.taskId === null) console.log(formatCapabilityBlockedNext(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
+  if (command === 'claim') coordination = result?.coordination ?? null;
+  const note = formatCoordinationNote(command, coordination);
+  if (note) console.error(note);
+}
+
+// S-00V TK-01L: say on stderr, never in the parsed stdout, when selection or a
+// claim stayed local, when the fetch failed, and which Tasks remote tips hold.
+function formatCoordinationNote(command, coordination) {
+  if (!coordination || !['next', 'claim'].includes(command)) return null;
+  if (coordination.mode === 'local') {
+    return command === 'next'
+      ? `${command}: local selection only (${coordination.reason}); claims made by other instances are not visible`
+      : `${command}: claim recorded in this working tree only (${coordination.reason}); it is not committed, pushed or visible to other instances`;
+  }
+  const lines = [];
+  if (coordination.fetched === false) lines.push(`${command}: could not fetch from ${coordination.remote} (${coordination.fetchError}); remote claims are read from the last fetched refs`);
+  for (const item of coordination.remoteClaimed ?? []) lines.push(`${command}: skipped ${item.specId}/${item.taskId}, claimed on ${item.refs.join(', ')}`);
+  if (command === 'claim' && coordination.pushed) lines.push(`claim: committed ${coordination.commit.slice(0, 7)} on ${coordination.branch}${coordination.created ? ' (new task branch)' : ''} and pushed to ${coordination.remote}`);
+  return lines.length > 0 ? lines.join('\n') : null;
 }
 
 if (isMainModule(import.meta.url)) {
