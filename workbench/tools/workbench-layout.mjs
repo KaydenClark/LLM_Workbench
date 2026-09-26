@@ -1056,6 +1056,7 @@ export const TOOLS_RECEIPT = '.workbench-tools.json';
 export const RUNTIME_TOOLS = Object.freeze([
   'adr.mjs',
   'diagnostics.mjs',
+  'host-floor.mjs',
   'markdown-table.mjs',
   'notepads.mjs',
   'privacy.mjs',

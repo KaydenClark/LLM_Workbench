@@ -174,6 +174,28 @@ assertIncludesAll(slicingSkill, [
 ], 'to-tasks');
 assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
   'to-tasks must treat TASKBOARD.md as a generated projection');
+// S-01L: a Task record carries its stance and the title line its parser
+// requires; Tasks are cut at activation, never into a planned Spec; approval is
+// asked only when planning authority is missing (ADR-0045); and a slice gated
+// on an unanswered owner decision stays uncut, because a record's Blockers
+// field holds only S-/TK- ids and `next` would hand out a prose-blocked record.
+// These pin the source contract; the fresh-context run in S-01L records the behavior.
+assertIncludesAll(slicingSkill, [
+  '**Stance:**',
+  '# TK-### - <slice>',
+  'Cut Tasks when the Spec is activated',
+  'a planned Spec gets no Tasks',
+  'do not run `convert-tasks` on it',
+  'workbench/docs/adr/0045-skill-composition-within-inherited-scope.md',
+  'Leave a slice that waits on an unanswered owner decision uncut',
+  'record the open decision in the Spec'
+], 'to-tasks record, activation, approval and owner-gate contract');
+assert.doesNotMatch(slicingSkill, /Keep unresolved owner decisions visible as blockers/,
+  'to-tasks must not route an owner decision into a Task Blockers field the runtime cannot hold');
+// S-01L review correction: a new slice always becomes a TASK.md record; a
+// table-only Spec is converted first, so no route may still add a table row.
+assert.doesNotMatch(slicingSkill, /a row in the Spec's own table|Task record or row/,
+  'to-tasks must not offer a legacy table row as a destination for a new slice');
 
 const grilling = read('workbench/skills/grilling/SKILL.md');
 for (const [pattern, label] of [
@@ -371,6 +393,33 @@ assertIncludesAll(toDocs, [
 ], 'to-docs');
 assert.doesNotMatch(toDocs, /ask (the )?user|interview the user|create a second|issue tracker/i,
   'to-docs must persist settled truth without restarting discovery or adding stores');
+
+// S-01J: to-docs lands each supported claim once. A mixed finding is split so
+// each claim reaches the one owner for its job, and other owners (a Wiki
+// reference article included) link to it instead of copying it. Pending meaning
+// stays in its note the way notepad records it, evidence cites durable owners,
+// transient working history stays out of the Spec, and each changed owner is
+// read back. These pin the source contract; the fresh-context run in S-01J
+// records the behavior. Whitespace is normalized so a rewrap cannot hide a term.
+const toDocsFlat = toDocs.replace(/\s+/g, ' ');
+assertIncludesAll(toDocsFlat, [
+  'Route each claim once',
+  'Split a mixed finding into its claims',
+  'exactly one owner',
+  'link to the owner that holds it rather than copy it',
+  'instead of restating its steps',
+  '`source_record`',
+  '`current.unresolved`',
+  'only a `decision` entry',
+  'never an ignored live path',
+  'permanent Spec history',
+  '`workbench/wiki/MEMORY.md`',
+  'Read each changed owner back'
+], 'to-docs single-owner, pending and read-back contract');
+assert.ok(toDocsFlat.indexOf('Route each claim once') > toDocsFlat.indexOf('`canonicalized_in`'),
+  'the once-per-claim rule applies to every destination in the routing list, so it follows it');
+assert.ok(toDocsFlat.indexOf('Read each changed owner back') > toDocsFlat.indexOf('Route each claim once'),
+  'read-back checks the routed result, after routing');
 
 const toSpec = read('workbench/skills/to-spec/SKILL.md');
 assertIncludesAll(toSpec, [

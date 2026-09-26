@@ -36,7 +36,7 @@ work produces horizontal slices that cannot be verified end to end, and the
 smallest unit that proves anything is a slice through every layer it touches.
 
 Consequences: the terminal verification of this workflow is the two gates in
-[ADR-000F](000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
+[ADR-000F](../000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md),
 not a single stop at the end. The Frontier vocabulary this uses is owned by
 [ADR-000E](000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md),
 and the Task's artifact form by
@@ -61,3 +61,15 @@ destination; each Spec is the PRD-shaped smaller destination. The owner also
 restored Task review before merge into the Spec branch. The current destination
 and full workflow map live in `BLUEPRINT.md`; this proposal remains historical
 evidence until its separate disposition.
+
+Owner correction, 2026-09-24, later the same day: the restored Task review
+before merge into the Spec branch is itself superseded. No Task has a review or
+approval gate; the Worker self-checks and the Dispatcher merges for
+containment. The assembled Spec is checked by its Dispatcher and approved by
+the Director in a separate context before it combines into `integration`. A
+Spec is a local destination such as 1 through 5 of the Blueprint's 100, and a
+Task is one step of about 0.1. Accepted
+[ADR-000F](../000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md)
+now carries the QA gates, the roles, the owner's Human QA cadence and timing,
+and the closure order; this proposal keeps its separate disposition in S-00P
+TK-004.

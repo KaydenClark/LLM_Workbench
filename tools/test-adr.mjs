@@ -280,8 +280,8 @@ test('every accepted-ADR-to-spec reference in the real corpus resolves literally
     totalLinks += countForRecord;
     if (countForRecord > 0) filesWithLink += 1;
   }
-  assert.equal(filesWithLink, 21, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
-  assert.equal(totalLinks, 24, 're-count of total accepted-ADR-to-spec link edges at this candidate');
+  assert.equal(filesWithLink, 22, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
+  assert.equal(totalLinks, 26, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
@@ -418,7 +418,7 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
     if (countForRecord > 0) filesWithLink += 1;
   }
   assert.equal(filesWithLink, 35, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 62, 're-count of total intra-ADR link edges at this candidate');
+  assert.equal(totalLinks, 64, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never

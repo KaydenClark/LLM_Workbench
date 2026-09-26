@@ -54,9 +54,9 @@ Derived from stable specs; includes completed history.
 | [S-01G - genesis skill rebuild](S-01G-genesis-skill-rebuild/SPEC.md) | Create a new Workbench room from a founding prompt and a recoverable remote boundary. | planned |
 | [S-01H - implement skill rebuild](S-01H-implement-skill-rebuild/SPEC.md) | Deliver one eligible assigned Task through red/green and verified recovery. | planned |
 | [S-01I - make-it-so skill rebuild](S-01I-make-it-so-skill-rebuild/SPEC.md) | Compose approved work through the exact endpoint the owner authorized. | active |
-| [S-01J - to-docs skill rebuild](S-01J-to-docs-skill-rebuild/SPEC.md) | Route settled truth into the existing documentation owner. | planned |
+| [S-01J - to-docs skill rebuild](S-01J-to-docs-skill-rebuild/SPEC.md) | Route settled truth into the existing documentation owner. | active |
 | [S-01K - to-spec skill rebuild](S-01K-to-spec-skill-rebuild/SPEC.md) | Turn a settled capability decision into one stable, bounded Spec. | active |
-| [S-01L - to-tasks skill rebuild](S-01L-to-tasks-skill-rebuild/SPEC.md) | Cut one assigned Spec into dependency-aware Task records. | planned |
+| [S-01L - to-tasks skill rebuild](S-01L-to-tasks-skill-rebuild/SPEC.md) | Cut one assigned Spec into dependency-aware Task records. | active |
 | [S-01M - tracer-bullet skill rebuild](S-01M-tracer-bullet-skill-rebuild/SPEC.md) | Find the thinnest demonstrable end-to-end slice of a capability. | planned |
 | [S-01N - update-harness skill rebuild](S-01N-update-harness-skill-rebuild/SPEC.md) | Update an adopted room to a verified Workbench version without losing room truth. | planned |
 | [S-01O - save skill rebuild](S-01O-save-skill-rebuild/SPEC.md) | Persist authorized work and prove the recovery boundary actually reached. | active |
