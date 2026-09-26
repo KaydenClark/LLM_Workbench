@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** 2026-09-26 claude-lane-H closed TK-01S on implementation commit `3ca5e57`: `complete` refuses, writing nothing, unless the approved candidate is contained in the manifest-declared default branch's remote-tracking ref with a matching committed digest, and records the observed ref/SHA and approved candidate/digest in the completion row (full suite 48/48 on `3ea6632`). Human QA remains underway with failed reviews; no owner approval is recorded.
-**Next gate:** Dispatcher whole-Spec QA, then separate-context review of the immutable TK-01S candidate; TK-01T follows serially in the same runtime lane, keeping its TK-01S blocker edge, now done, and the Dispatcher sets it `ready` before `claim`. Do not request that the owner restart Human QA.
+**Latest event:** TK-01T claimed by claude-lane-H.
+**Next gate:** Close TK-01T with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 

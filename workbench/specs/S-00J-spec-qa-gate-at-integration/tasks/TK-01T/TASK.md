@@ -3,7 +3,7 @@
 **Task ID:** TK-01T
 **Spec ID:** S-00J
 **Slice:** Let a dependent consume reviewed integration delivery of a blocker Spec
-**Status:** blocked
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-01S
 **Destination:** spec-acceptance: A dependent can declare that it needs only a blocker Spec's reviewed integration delivery (T0 of the closure-capture transition contract), and the resolver satisfies that blocker from content-bound review and integration containment, while a plain Spec blocker still requires final `complete`.
