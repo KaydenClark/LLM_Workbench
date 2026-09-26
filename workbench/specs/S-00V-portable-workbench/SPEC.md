@@ -12,8 +12,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
 **Blockers:** none
-**Latest event:** TK-00H closed with proof.
-**Next gate:** Claim and carry TK-00I (Wiki host-memory audit), then TK-00J and TK-01L, which are also ready; completion waits on all eight acceptance boxes.
+**Latest event:** TK-00I claimed by claude-lane-F.
+**Next gate:** Close TK-00I with verification and documentation proof.
 
 > **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7`.
 

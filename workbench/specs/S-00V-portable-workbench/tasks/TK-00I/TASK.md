@@ -3,7 +3,7 @@
 **Task ID:** TK-00I
 **Spec ID:** S-00V
 **Slice:** Project knowledge that lived only in host memory is in the Wiki and the Workbench runs without the memory directory
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00V box 6 (knowledge a cloud agent needs that lived only in host memory is in the Wiki, and the Workbench runs without the memory directory)
 **Stance:** Reconciler
