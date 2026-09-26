@@ -1,15 +1,15 @@
 # S-00M - Completion Claims Against Repository State
 
 **Spec ID:** S-00M
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-D
 **Stance:** Builder
-**Updated:** 2026-09-15
+**Updated:** 2026-09-26
 **Catalog description:** Make a completion claim unable to hide uncommitted or unpushed work, by surfacing Git state in `doctor` and refusing `close` unless the Receipt records the state and a reason.
 **Blockers:** none
-**Latest event:** Spec authored at owner acceptance of ADR-000J, which had no delivery owner.
-**Next gate:** Activate this Spec, then `claim S-00M`, which takes TK-001; `claim` takes a Spec ID, selects the first eligible ready slice itself, and refuses a Spec that is still `planned`.
+**Latest event:** TK-001 claimed by claude-lane-D.
+**Next gate:** Close TK-001 with verification and documentation proof.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`6154167f48a4ed2474713d043a9cac18833d6a2a`.
 
@@ -98,7 +98,7 @@ claims nothing further about it. Neither Spec waits on the other.
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Read repository state at a stable seam | ready | none | Red test for a function returning detached/dirty/untracked/upstream state from a fixture repository; green minimal reader; behaves as unknown, never throwing, where Git is absent |
+| TK-001 | Read repository state at a stable seam | in-progress | none | Red test for a function returning detached/dirty/untracked/upstream state from a fixture repository; green minimal reader; behaves as unknown, never throwing, where Git is absent |
 | TK-002 | Register and surface the git-state findings | blocked | TK-001 | Red test asserting `detached-head` and `untracked-controls` are registered `attention`/`none` and appear in `doctor` output for a fixture; green findings; proof that neither changes `doctor`'s exit code or `next`'s selection |
 | TK-003 | Refuse `close` on a dirty or unpushed branch unless the Receipt records it | blocked | TK-001 | Red test for a close on a dirty tree, and a second for an unpushed branch; green refusal naming the finding; a third test proving the close succeeds when the state and reason are recorded, and that the reason text is present in the written record afterward |
 | TK-004 | Document both mechanisms in their control owners | blocked | TK-003 | `AGENTS.md` and `RUNBOOK.md` updated; `tools/test-control-fidelity.mjs` and the full suite pass |
