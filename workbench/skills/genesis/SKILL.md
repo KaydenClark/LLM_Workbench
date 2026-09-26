@@ -13,8 +13,16 @@ inheriting the Template's room state.
    `templates/GENESIS.md` completely. Treat it as the bootstrap procedure;
    this skill is only its conversational entrypoint.
 2. Preserve the founding prompt verbatim, verify the target path is inside the
-   authorized workspace, prepare owner questions from the prompt and verified
-   evidence, and ask only when a missing answer changes architecture, privacy,
+   authorized workspace, and classify the target before writing anything:
+   create it as an empty directory if absent, then run
+   `node tools/workbench-classify.mjs classify --project PATH` from the release
+   checkout. Continue only when the verdict is `genesis`; `adoption` routes to
+   `/adoption`, `upgrade` routes to `/update-harness`, and `unclassifiable`
+   stops with the reported reasons for the owner. `init` accepts any
+   directory without a manifest, so this read-only verdict is the routing
+   check; the fresh-Template `derive` path instead refuses an existing
+   destination itself. Then prepare owner questions from the prompt and
+   verified evidence, and ask only when a missing answer changes architecture, privacy,
    money, credentials, or destructive risk. Preparation does not answer a
    question or create a decision.
 3. Run the Genesis phases in order: prepare questions; record explicitly locked
@@ -32,7 +40,8 @@ inheriting the Template's room state.
    `git.defaultBranch` and `git.integrationBranch` from `--default-branch` and
    `--integration-branch`) and
    `node tools/workbench-tools.mjs install` for the receipt-backed runtime
-   tools, copy and fill the wiki router, create one stable spec under the
+   tools and `node tools/workbench-skills.mjs install --project PATH` for the
+   receipt-backed skills lane and its discovery links, copy and fill the wiki router, create one stable spec under the
    manifest-declared path, and record exact Runbook commands. From then on run
    the project's own `node workbench/tools/spec-workbench.mjs ...` copies. Do
    not copy global core into a project-local skill tree or create a second proof store.
@@ -55,5 +64,8 @@ inheriting the Template's room state.
    require the commit on a prefixed branch and the resolving integration branch
    or its recorded omission reason.
 8. Run the generated project's targeted and full verification, update the
-   owning spec evidence, render its Taskboard, run doctor, and report the remote
-   recovery ref plus the under-one-minute demo.
+   owning spec evidence, render its Taskboard, run doctor, pass the readiness
+   gate `node workbench/tools/workbench-layout.mjs validate --project PATH --genesis`
+   (it fails closed on a missing skills lane, tools receipt, filled control or
+   actionable first spec), and report the remote recovery ref plus the
+   under-one-minute demo.
