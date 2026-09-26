@@ -3,7 +3,7 @@
 **Task ID:** TK-00H
 **Spec ID:** S-00V
 **Slice:** A session-start host floor check reports each floor item and a missing item is an `all` finding
-**Status:** ready
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-00V box 5 (the host floor check reports each floor item, and a Task needing an optional capability the host lacks lands in blocked or needs-review with the capability named)
 **Stance:** Builder
