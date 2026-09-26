@@ -198,6 +198,15 @@ test('every skill the root controls or a lane SKILL.md references ships in the l
     const cited = [...row.reference.matchAll(/`([^`]+)`/g)].map((match) => match[1]);
     assert.ok(row.reference === 'none' || cited.length > 0, `${row.skill}: the reference cell cites the deciding file or says none`);
     for (const file of cited) assert.ok(fs.existsSync(path.join(root, file)), `${row.skill}: cited reference ${file} exists`);
+    // A row is stale once none of the files it cites still mentions the
+    // skill: the disposition would outlive the reading that decided it. Some
+    // rows record a prose mention the reference detector does not match
+    // (BLUEPRINT's "brainstorming"), so the check reads the cited text for the
+    // name as a word prefix rather than consulting the detector alone.
+    if (row.reference !== 'none') {
+      const mention = new RegExp(`(^|[^a-z0-9-])/?${row.skill.replace(/[-]/g, '\\-')}`, 'i');
+      assert.ok(cited.some((file) => mention.test(fs.readFileSync(path.join(root, file), 'utf8'))), `${row.skill}: stale row - no cited file (${cited.join(', ')}) still mentions the skill; update or remove the row`);
+    }
     const inLane = laneSkills.includes(row.skill) && manifest.skillPolicy.required.includes(row.skill);
     if (row.requirement === 'required' || row.disposition === 'joined') {
       assert.equal(row.requirement === 'required' && row.disposition === 'joined', true, `${row.skill}: a required reference is joined, and only a required one`);

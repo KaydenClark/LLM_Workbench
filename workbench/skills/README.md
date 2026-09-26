@@ -149,7 +149,8 @@ outside the lane; the owner may correct any row. `tools/test-skills-lane.mjs`
 scans the root controls and every lane `SKILL.md` for backticked slash
 commands and backticked names followed by "skill", and fails for a target
 outside the lane with no row here, or a `joined` row whose skill is missing
-from the lane or `skillPolicy.required`. Rows with no reference record
+from the lane or `skillPolicy.required`, or a row none of whose cited files
+still mentions the skill (a stale row). Rows with no reference record
 candidates the review checked and found unreferenced.
 
 <!-- referenced-skills:start -->
