@@ -484,6 +484,15 @@ export function completeSpec(rootDir, id, options = {}) {
   const completion = section(spec.content, 'Completion Result').trim();
   if (!completion || /^pending\.?$/i.test(completion)) throw new Error(`${id} has no completion result`);
   if (evidenceRows(spec.content).length === 0) throw new Error(`${id} has no execution evidence`);
+  const report = assembleSpecReport(rootDir, id);
+  // S-00J TK-01R: an unresolved durable Task decision (the report's
+  // `decisionGaps`, also part of its `gaps` that `gate` consumes) refuses
+  // closure before any review or approval check, so otherwise valid review
+  // and owner-approval rows can never bypass it. Only this gap class is
+  // adopted here; complete's other checks stay as they were.
+  if (report.decisionGaps.length > 0) {
+    throw new Error(`${id} cannot complete: open Task decision gaps: ${report.decisionGaps.join('; ')}`);
+  }
   // S-00J TK-004: complete refuses without a passed review verdict bound to
   // the Spec's current content digest (spec-report.mjs), naming exactly
   // what is missing. Shared with `gate` through reviewGapReason so the two
@@ -493,7 +502,6 @@ export function completeSpec(rootDir, id, options = {}) {
   // approval still refuses - the review-verdict message always composes
   // first (`??` short-circuits on the first non-null reason), matching the
   // handoff's "checked after the review-verdict gate" ordering.
-  const report = assembleSpecReport(rootDir, id);
   const gapReason = reviewGapReason(report) ?? approvalGapReason(report);
   if (gapReason) throw new Error(`${id} cannot complete: ${gapReason}`);
   let content = updateFields(spec.content, {
