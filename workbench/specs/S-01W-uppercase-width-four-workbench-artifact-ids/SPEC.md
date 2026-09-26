@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** Lane I cut TK-002R (identity procedures and assembled QA) after TK-002Q landed in PR #209.
-**Next gate:** A Lane I worker claims and delivers TK-002R. Acceptance lines 1-4 are checked; line 5 remains open.
+**Latest event:** TK-002R claimed by claude-lane-I.
+**Next gate:** Close TK-002R with verification and documentation proof.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 

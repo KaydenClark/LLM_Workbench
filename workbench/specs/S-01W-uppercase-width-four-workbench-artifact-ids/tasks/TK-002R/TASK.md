@@ -3,7 +3,7 @@
 **Task ID:** TK-002R
 **Spec ID:** S-01W
 **Slice:** Reconcile identity procedures and run the assembled WBID QA
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-01W acceptance line 5 (ADR, procedures and generic mirrors describe actual delivery; full suite, drift receipts and assembled review are recorded).
