@@ -9,7 +9,7 @@
 **Catalog description:** Turn a settled capability decision into one stable, bounded Spec.
 **Blockers:** none.
 **Latest event:** TK-002L closed with proof.
-**Next gate:** Separate-context review of the TK-002L candidate, then owner Human QA of conversational fidelity on `integration`, then `complete S-01K`.
+**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01K`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -114,7 +114,7 @@ Maintain `workbench/wiki/skill-to-spec.md` and its sole router entry alongside t
 
 ## Completion Result
 
-TK-01B stated one Spec per capability, the `planned` unclaimed entry and `move-spec` path changes in `workbench/skills/to-spec/SKILL.md`, aligned its discovery description and catalog row, and created `workbench/wiki/skill-to-spec.md` with the pinned upstream comparison and one fresh-context scenario; its separate-context review passed. The corrective TK-002L delivered owner answer E-4B in the same source: a new Spec enters Backlog as `planned` with no Task cut, no Task row and an empty tracked `tasks/` directory that keeps the runtime valid, its Tasks are cut by `to-tasks` at activation, and a reused Spec keeps its Tasks. The catalog row and article agree, and a fresh-context planning-then-activation scenario was observed. No command yet activates such a Task-less planned Spec (`convert-tasks --activate` refuses it), which belongs to the `to-tasks` and runtime owners; the Spec template and board lane remain with S-00P and S-01X. A separate-context review of the corrective candidate is pending; owner Human QA remains.
+TK-01B stated one Spec per capability, the `planned` unclaimed entry and `move-spec` path changes in `workbench/skills/to-spec/SKILL.md`, aligned its discovery description and catalog row, and created `workbench/wiki/skill-to-spec.md` with the pinned upstream comparison and one fresh-context scenario; its separate-context review passed. The corrective TK-002L delivered owner answer E-4B in the same source: a new Spec enters Backlog as `planned` with no Task cut, no Task row and an empty tracked `tasks/` directory that keeps the runtime valid, its Tasks are cut by `to-tasks` at activation, and a reused Spec keeps its Tasks. The catalog row and article agree, and a fresh-context planning-then-activation scenario was observed. No command yet activates such a Task-less planned Spec (`convert-tasks --activate` refuses it), which belongs to the `to-tasks` and runtime owners; the Spec template and board lane remain with S-00P and S-01X. A separate-context review of the corrective candidate passed. The Spec is not complete: owner Human QA of conversational fidelity remains.
 
 ## Supersession
 
