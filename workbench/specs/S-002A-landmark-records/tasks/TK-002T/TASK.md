@@ -42,11 +42,18 @@ validator integration is a later slice after its file slot is released.
 New module `workbench/tools/landmark-wiki.mjs`; new test
 `tools/test-landmark-wiki.mjs`; narrow new usage document
 `workbench/landmark-tracker/LANDMARK-WIKI.md` if needed. Assigned TASK receipt
-only. Runtime installation registration may require traced additional files;
-report precise needed seam to dispatcher before touching shared installer files.
+only. Director inspected lane-H diff and released exactly the untouched
+`RUNTIME_TOOLS` list stanza in `workbench/tools/workbench-layout.mjs`: add only
+`landmark-wiki.mjs` adjacent to `landmark-tracker.mjs` in the worker isolated
+checkout. No feature/import/layout/schema logic changes and no H checkout writes.
+The canonical tool-list test must remain unchanged. Add a public installed-CLI
+smoke test in the assigned new test file using the real install seam/disposable
+room; verify receipt distribution and behavior without a version/release change.
+All other shared-file changes still require explicit release.
 
 Do not mutate `landmark-tracker.mjs`, `test-landmark-tracker.mjs`, `wiki.mjs`,
-`test-wiki.mjs`, manifest, path/layout modules, lifecycle/diagnostics, schema or
+`test-wiki.mjs`, manifest, path/layout logic outside the released tool-list hunk,
+lifecycle/diagnostics, schema or
 root/generic controls. DQC owns first shared runtime slot; active S-00I TK-01U
 owns shared Wiki/lifecycle consumers. Request narrowly necessary file release
 through dispatcher; do not wait for a whole Spec.
@@ -73,3 +80,13 @@ never resets owner Human QA. No integration/main merge by this worker.
 ## Task Receipt
 
 Append named runtime receipts as work proceeds under current TASK conventions.
+
+## Narrow Installer Clearance And Proof Correction
+
+At immutable 6688a946fb454cec9b557dd19fcf3230437e1bea, all 50 commands
+completed: 49 passed; the canonical runtime lane assertion failed because the
+new tool was missing from RUNTIME_TOOLS. This is change-caused, not baseline.
+Director grants the disjoint registry-byte lane above, preserving H pending
+features changes. Retain that red receipt and record public installed behavior
+red/green; rerun full checks on a new clean immutable candidate, keeping old
+verification as history rather than substituting it for corrected proof.
