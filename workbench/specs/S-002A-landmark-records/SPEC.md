@@ -38,8 +38,9 @@ No first create/read implementation Task is needed.
 check. The existing article route is distinct from retirement feature owners.
 S-00I TK-01U has active uncommitted shared-consumer changes in a separate
 checkout; do not duplicate its collection/type/provenance capability.
-S-01T TK-01Z and TK-02A remain deferred. Their source obligations are retained
-until the Director/Tracker source writer records this successor transfer.
+S-01T TK-01Z and TK-02A remain deferred. Their source obligations were transferred explicitly by Director/Tracker at
+4e68ca488fa258f7dce0161aeebcd2946e492990; old deferred Tasks retain context
+only, with completed Task bytes and append-only proof unchanged.
 
 ## Desired Behavior
 
@@ -108,8 +109,9 @@ capability completion is not a dependency for consuming a released small seam.
 Inherited completed behavior: original TK-01X/TK-01Y, verified locally 23/23.
 Unfinished source: TK-01Z article validation/assessment and TK-02A lifecycle
 consumers; split into small successors without moving completed Task history.
-Director/Tracker source mapping must mark original pending delivery as routed
-before integration; preserve every original acceptance and append-only receipt.
+Director/Tracker source mapping at 4e68ca488fa258f7dce0161aeebcd2946e492990
+marks old delivery as routed; retain that exact source mapping at assembly,
+preserving every original acceptance and append-only receipt.
 
 ## Non-Goals
 
@@ -189,3 +191,4 @@ self-drift cleanUpdate=false. Passing checks do not prove clean update or QA.
 | 2026-09-26 | TK-002T | Director-approved first residual Task reserved serially; inherited create/read behavior not reimplemented | Existing Tracker 23/23; doctor seven baseline attention; active lane-H dirty consumers inspected; guardrail 78/100; self-drift cleanUpdate false | Scoped successor Spec and Task; original source history preserved | Worker red/green and source transfer reconciliation pending |
 | 2026-09-26 | TK-002T | Packet 04d54b165c06a6a46a5cec53bda3cbe79e0caeec delivered to one-Task Sol worker; fresh-context readback accepted; inherited authorization and Director callbacks carried | Citation checks 3/3; local render/doctor pass with seven existing attention findings; packet clean | Markdown handoff is local context only; authored Spec/Task tracked | Worker red/green/full candidate proof and source transfer pending; no Human QA completion |
 | 2026-09-26 | TK-002T | Early public test review found fixed-prefix default could omit permitted custom notepad identities; Director requires generic default ambiguity/refusal and supported encoded-target proof within same Task | Initial worker red 59439b5 then 13/13 green bd0707e is superseded for final acceptance; corrected immutable candidate pending | Desired Behavior clarifies honest default lexical boundary; no identity/runtime refactor | Installed distribution needs released RUNTIME_TOOLS seam; whole Spec and owner QA remain pending |
+| 2026-09-26 | none | Import exact foundation transfer sources from 4e68ca488fa258f7dce0161aeebcd2946e492990 and saved Tracker TK-002U inventory from bf4ba683; preserve own Records current state | Director reports Luna tracked-tree readback all 13 successor routes; local doctor follows | Foundation/context-only pending Tasks and saved peer packets imported without reauthoring | Corrected TK-002T immutable verification pending; next allocation waits actual saved DQC composition Task |
