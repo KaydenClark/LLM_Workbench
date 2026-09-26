@@ -5135,6 +5135,50 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     assert.deepEqual(unknownFindings.map((issue) => `${issue.specId}/${issue.taskId}`).sort(), ['S-9E1/TK-9E1', 'S-9E2/TK-9E2'], 'doctor reports each unknown qualifier by Task');
     assert.match(unknownFindings.find((issue) => issue.taskId === 'TK-9E2').message, /S-9E0:shipped/, 'the finding names the unknown token');
     console.log('ok - S-00J TK-01T: S-###:delivered is satisfied by reviewed integration delivery (T0) and fails closed otherwise');
+
+    // S-00J TK-002N: integration containment reads the declared integration
+    // branch's remote-tracking ref (`origin/integration`) when it exists and
+    // falls back to the local branch only when it does not. In a shared
+    // repository the local `integration` is held by another checkout and can
+    // lag far behind `origin/integration`; that must not hide reviewed
+    // delivery. Resolution reads local refs only and never fetches.
+    function withOrigin(dir, { originAt, localAt }) {
+      const bare = path.join(dir, '.git', 'fixture-origin.git');
+      execFileSync('git', ['init', '--quiet', '--bare', bare]);
+      execFileSync('git', ['-C', dir, 'remote', 'add', 'origin', bare]);
+      execFileSync('git', ['-C', dir, 'push', '--quiet', 'origin', `${originAt}:refs/heads/integration`], { stdio: 'ignore' });
+      execFileSync('git', ['-C', dir, 'fetch', '--quiet', 'origin'], { stdio: 'ignore' });
+      execFileSync('git', ['-C', dir, 'branch', '-f', 'integration', localAt]);
+    }
+    const revParse = (dir, rev) => execFileSync('git', ['-C', dir, 'rev-parse', rev], { encoding: 'utf8' }).trim();
+
+    // The shared-repository case: the local `integration` lags at the
+    // pre-delivery commit; only `origin/integration` carries the PASS
+    // candidate. The delivered edge resolves through the remote-tracking ref.
+    const lagging = deliveryRoom({ contained: false });
+    rooms.push(lagging);
+    withOrigin(lagging, { originAt: revParse(lagging, 'HEAD'), localAt: revParse(lagging, 'HEAD~2') });
+    assert.equal(spawnSync('git', ['-C', lagging, 'merge-base', '--is-ancestor', 'HEAD~1', 'integration']).status, 1, 'fixture: the local integration branch really lags the candidate');
+    const laggingRefs = gitRefs(lagging);
+    assert.equal(nextJson(lagging)?.taskId, 'TK-9E2', 'a stale local integration branch does not hide reviewed delivery that origin/integration carries');
+    assert.equal(doctor(lagging).some((issue) => issue.code === 'blocked-slice' && issue.taskId === 'TK-9E2'), false, 'doctor agrees the delivered edge is met through origin/integration');
+    assert.equal(gitRefs(lagging), laggingRefs, 'resolving through origin/integration moves no Git ref (no fetch)');
+    claimWork(lagging, 'S-9E2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(lagging, 'workbench/specs/S-9E2-delivered-dependent/tasks/TK-9E2/TASK.md'), lagging).status, 'in-progress', 'claim takes the delivered dependent through origin/integration');
+
+    // Unpushed local delivery: the local `integration` carries the candidate
+    // but the existing remote-tracking ref does not. Not delivered.
+    const unpushed = deliveryRoom();
+    rooms.push(unpushed);
+    withOrigin(unpushed, { originAt: revParse(unpushed, 'HEAD~2'), localAt: revParse(unpushed, 'HEAD') });
+    assertDeliveredUnmet(unpushed, 'a candidate contained only in an unpushed local integration while origin/integration exists');
+
+    // No remote at all: the local branch is still the containment ref.
+    const localOnly = deliveryRoom();
+    rooms.push(localOnly);
+    assert.equal(gitRefs(localOnly).includes('refs/remotes/'), false, 'fixture: the room has no remote-tracking ref');
+    assert.equal(nextJson(localOnly)?.taskId, 'TK-9E2', 'a room with no remote-tracking ref still resolves containment against the local integration branch');
+    console.log('ok - S-00J TK-002N: S-###:delivered containment reads origin/<integration> when it exists (a lagging local branch cannot hide delivery; an unpushed local branch is not delivery) and falls back to the local branch without a remote, never fetching');
   } finally {
     for (const dir of rooms) fs.rmSync(dir, { recursive: true, force: true });
   }
