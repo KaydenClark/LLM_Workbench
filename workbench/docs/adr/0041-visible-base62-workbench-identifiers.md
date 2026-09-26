@@ -108,7 +108,10 @@ alias one identity still refuse allocation rather than choosing a winner.
 `adr.mjs new` now also reserves ADR labels held at every remote-tracking tip,
 reading each tip's declared `adr` collection, top level and lifecycle folders,
 as `next-id` does for Specs and Tasks (ADR-000O), so a label another pushed
-branch already holds is not proposed again. No runtime caller of
+branch already holds is not proposed again. A tip's declared collection must
+pass the same `isSafeRelative` rule the local manifest does; a malformed tip
+manifest, an unsafe declared collection or an unreadable tip refuses
+allocation by name before anything is written. No runtime caller of
 `allocateVisibleId` remains; it stays exported from the managed
 `visible-ids.mjs` for installed rooms or scripts that import it, and its
 unit coverage is unchanged.
