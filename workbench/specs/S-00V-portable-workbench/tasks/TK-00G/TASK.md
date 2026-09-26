@@ -20,8 +20,8 @@ optional mention ("use X when available") is an optional capability under
 Desired Behavior 5, not a lane member.
 
 The tentative list (lexicon, domain-modeling, land, preflight, brainstorm,
-research, sitrep) is input, not the answer. `sitrep` is excluded here: the room-core sitrep planned with the generated
-JSON taskboard Spec from S-00O (ID pending allocation) owns its return. Copy a joining skill from the personal
+research, sitrep) is input, not the answer. `sitrep` is excluded here: the room-core sitrep planned with S-01X (the
+generated JSON taskboard Spec from S-00O) owns its return. Copy a joining skill from the personal
 catalog read-only, recording its source commit in the lane receipt; never edit
 the personal catalog or publish to it. Prefer joining a skill (additive) over
 rewording a lane skill, because the per-skill rebuild Specs S-00X..S-01S own
