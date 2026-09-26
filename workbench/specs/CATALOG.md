@@ -61,7 +61,7 @@ Derived from stable specs; includes completed history.
 | [S-01N - update-harness skill rebuild](S-01N-update-harness-skill-rebuild/SPEC.md) | Update an adopted room to a verified Workbench version without losing room truth. | planned |
 | [S-01O - save skill rebuild](S-01O-save-skill-rebuild/SPEC.md) | Persist authorized work and prove the recovery boundary actually reached. | planned |
 | [S-01P - builder skill rebuild](S-01P-builder-skill-rebuild/SPEC.md) | Deliver the assigned result with useful verification and truthful documentation. | planned |
-| [S-01Q - auditor skill rebuild](S-01Q-auditor-skill-rebuild/SPEC.md) | Determine whether named claims hold on the assigned target and evidence. | planned |
+| [S-01Q - auditor skill rebuild](S-01Q-auditor-skill-rebuild/SPEC.md) | Determine whether named claims hold on the assigned target and evidence. | active |
 | [S-01R - reviewer skill rebuild](S-01R-reviewer-skill-rebuild/SPEC.md) | Challenge candidate correctness, downstream impact and consequential claims. | planned |
 | [S-01S - reconciler skill rebuild](S-01S-reconciler-skill-rebuild/SPEC.md) | Leave achieved work and its existing truth owners consistent for continuation. | planned |
 | [S-01T - Landmark Tracker Foundation](S-01T-landmark-tracker-foundation/SPEC.md) | Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking. | planned |
