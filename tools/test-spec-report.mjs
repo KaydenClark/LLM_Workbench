@@ -57,6 +57,54 @@ function writeIntegrationManifest(root, branch = currentBranch(root)) {
   writeAt(root, 'workbench/manifest.json', JSON.stringify({ git: { defaultBranch: branch, integrationBranch: branch } }, null, 2));
 }
 
+// A managed room: a valid schema-2 manifest is the only place a room can
+// declare git.defaultBranch, so these fixtures initialize the real layout
+// (Specs live in workbench/specs) and then set the manifest's git block.
+function initManagedRoot(dir) {
+  initGitRoot(dir);
+  const workbenchVersion = JSON.parse(fs.readFileSync(path.resolve('workbench/manifest.json'), 'utf8')).workbenchVersion;
+  const init = spawnSync('node', [path.resolve('workbench/tools/workbench-layout.mjs'), 'init', '--project', dir, '--provenance', 'genesis', '--version', workbenchVersion], { encoding: 'utf8' });
+  assert.equal(init.status, 0, init.stdout + init.stderr);
+}
+
+// Replace (or, with `null`, remove) the managed manifest's git block.
+function declareGit(dir, git) {
+  const manifestFile = path.join(dir, 'workbench/manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  if (git === null) delete manifest.git;
+  else manifest.git = git;
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+}
+
+// Simulate the owner's promotion of integration to the default branch by
+// pinning the local remote-tracking ref at `commit`.
+function pinRemoteTracking(root, branch, commit) {
+  execFileSync('git', ['-C', root, 'update-ref', `refs/remotes/origin/${branch}`, commit]);
+}
+
+// A commit on top of `parent` whose tree differs only by `edits`
+// ({ path: content | null }), built with plumbing so the working tree and
+// its uncommitted evidence rows are never touched.
+function commitTreeEdit(root, parent, edits, message) {
+  const indexFile = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'fixture-index-')), 'index');
+  const env = { ...process.env, GIT_INDEX_FILE: indexFile };
+  try {
+    execFileSync('git', ['-C', root, 'read-tree', parent], { env });
+    for (const [relativePath, content] of Object.entries(edits)) {
+      if (content === null) {
+        execFileSync('git', ['-C', root, 'update-index', '--force-remove', relativePath], { env });
+      } else {
+        const blob = execFileSync('git', ['-C', root, 'hash-object', '-w', '--stdin'], { input: content, encoding: 'utf8' }).trim();
+        execFileSync('git', ['-C', root, 'update-index', '--add', '--cacheinfo', `100644,${blob},${relativePath}`], { env });
+      }
+    }
+    const tree = execFileSync('git', ['-C', root, 'write-tree'], { env, encoding: 'utf8' }).trim();
+    return execFileSync('git', ['-C', root, 'commit-tree', tree, '-p', parent, '-m', message], { encoding: 'utf8' }).trim();
+  } finally {
+    fs.rmSync(path.dirname(indexFile), { recursive: true, force: true });
+  }
+}
+
 function writeAt(base, relativePath, content) {
   const target = path.join(base, relativePath);
   fs.mkdirSync(path.dirname(target), { recursive: true });
@@ -235,10 +283,12 @@ function headingShadowSpec(id) {
 // newer local capability content, including retired Task proof.
 {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'approval-content-binding-'));
-  initGitRoot(root);
+  initManagedRoot(root);
   try {
     blueprintAndBoard(root);
-    const specPath = 'specs/S-790-fixture/SPEC.md';
+    const branch = currentBranch(root);
+    declareGit(root, { defaultBranch: branch, integrationBranch: branch });
+    const specPath = 'workbench/specs/S-790-fixture/SPEC.md';
     writeAt(root, specPath, tableSpec({id: 'S-790', taskStatus: 'done', checked: true,
       completion: 'Delivered.', evidenceRow: '| 2026-09-19 | TK-001 | done | tested | docs | none |'}));
     const candidate = commitFixture(root);
@@ -263,6 +313,9 @@ function headingShadowSpec(id) {
     assert.equal(assembleSpecReport(root, 'S-790').latestOwnerApproval, null, 'an inherited mismatched approval is not trusted');
     writeAt(root, specPath, validApproval);
     const approved = assembleSpecReport(root, 'S-790').specDigest;
+    // S-00J TK-01S: final closure also needs the approved content verified
+    // on the declared default branch; pin its remote-tracking ref there.
+    pinRemoteTracking(root, branch, current);
     completeSpec(root, 'S-790');
     const completed = assembleSpecReport(root, 'S-790');
     assert.equal(completed.specDigest, approved, 'administrative completion preserves digest');
@@ -271,14 +324,14 @@ function headingShadowSpec(id) {
     writeAt(root, wikiPath, [
       '---', 'type: guidebook', 'status: active', 'sensitivity: normal',
       'knowledge_role: curated', 'provenance:', '  - fixture review', 'source_paths:',
-      '  - specs/retired/S-790-fixture/SPEC.md', 'last_verified: 2026-09-19', '---',
+      '  - workbench/specs/retired/S-790-fixture/SPEC.md', 'last_verified: 2026-09-19', '---',
       '', '# Fixture capability', '', 'Describes the verified capability and its limits.', ''
     ].join('\n'));
     writeAt(root, 'workbench/wiki/MEMORY.md', '# Wiki\n\n[Capability](guidebooks/s790-capability.md)\n');
     commitFixture(root);
     const retirement = retireSpec(root, 'S-790', {wikiNote: wikiPath});
     assert.equal(retirement.ownerApproval.approvedBy, 'Fixture owner', 'original approval permits retirement after completion');
-    const taskPath = 'specs/retired/S-790-fixture/tasks/retired/TK-0U9/TASK.md';
+    const taskPath = 'workbench/specs/retired/S-790-fixture/tasks/retired/TK-0U9/TASK.md';
     writeAt(root, taskPath, taskRecordFixture({id:'TK-0U9', specId:'S-790', slice:'Retired proof', status:'done', blockers:'none', destination:'spec-acceptance: S-790', proof:'old proof'}));
     const retiredDigest = assembleSpecReport(root, 'S-790').specDigest;
     const retiredCandidate = commitFixture(root);
@@ -2220,12 +2273,14 @@ function doneTaskWithDecisions({ id, specId, rows }) {
 
 {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-decisions-live-'));
-  initGitRoot(root);
+  initManagedRoot(root);
   try {
     blueprintAndBoard(root);
+    const branch = currentBranch(root);
+    declareGit(root, { defaultBranch: branch, integrationBranch: branch });
     const specId = 'S-7D0';
-    const specPath = `specs/${specId}-fixture/SPEC.md`;
-    const taskPath = `specs/${specId}-fixture/tasks/TK-002/TASK.md`;
+    const specPath = `workbench/specs/${specId}-fixture/SPEC.md`;
+    const taskPath = `workbench/specs/${specId}-fixture/tasks/TK-002/TASK.md`;
     writeAt(root, specPath, completeRecordSpec(specId, ['| 2026-09-17 | TK-002 | Task closed | tools/test-fixture.mjs pass | none | none |']));
     const unresolvedRows = [
       ['Keep the fixture ledger in JSON', 'durable', 'unresolved', 'workbench/docs/adr/'],
@@ -2297,14 +2352,15 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     recordReviewVerdict(root, specId, { candidate: reconciledCandidate, result: 'pass', findings: 'none', reviewer: 'separate fixture context' });
     assert.equal(gate(root, { spec: specId, candidate: reconciledCandidate }).refused, false);
     recordOwnerApproval(root, specId, { candidate: reconciledCandidate, owner: 'Fixture owner', result: 'approve' });
+    pinRemoteTracking(root, branch, reconciledCandidate);
     completeSpec(root, specId);
     assert.equal(assembleSpecReport(root, specId).status, 'complete');
 
     // Explicit `None.` and legacy absence: neither gaps.
     for (const [rows, coverage] of [['none', 'none'], [null, 'unknown']]) {
       const otherId = rows === 'none' ? 'S-7D2' : 'S-7D3';
-      writeAt(root, `specs/${otherId}-fixture/SPEC.md`, completeRecordSpec(otherId, ['| 2026-09-17 | TK-002 | Task closed | tools/test-fixture.mjs pass | none | none |']));
-      writeAt(root, `specs/${otherId}-fixture/tasks/TK-002/TASK.md`, doneTaskWithDecisions({ id: 'TK-002', specId: otherId, rows }));
+      writeAt(root, `workbench/specs/${otherId}-fixture/SPEC.md`, completeRecordSpec(otherId, ['| 2026-09-17 | TK-002 | Task closed | tools/test-fixture.mjs pass | none | none |']));
+      writeAt(root, `workbench/specs/${otherId}-fixture/tasks/TK-002/TASK.md`, doneTaskWithDecisions({ id: 'TK-002', specId: otherId, rows }));
       const other = assembleSpecReport(root, otherId);
       assert.equal(other.tasks.find((task) => task.id === 'TK-002').decisions.coverage, coverage);
       assert.deepEqual(other.decisionGaps, [], `coverage ${coverage} is never a gap`);
@@ -2314,8 +2370,8 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     }
     // An unreadable declaration fails closed: it cannot show that no durable
     // choice is pending, so it is a named gap rather than unknown coverage.
-    writeAt(root, 'specs/S-7D4-fixture/SPEC.md', completeRecordSpec('S-7D4', ['| 2026-09-17 | TK-002 | Task closed | tools/test-fixture.mjs pass | none | none |']));
-    writeAt(root, 'specs/S-7D4-fixture/tasks/TK-002/TASK.md', doneTaskWithDecisions({
+    writeAt(root, 'workbench/specs/S-7D4-fixture/SPEC.md', completeRecordSpec('S-7D4', ['| 2026-09-17 | TK-002 | Task closed | tools/test-fixture.mjs pass | none | none |']));
+    writeAt(root, 'workbench/specs/S-7D4-fixture/tasks/TK-002/TASK.md', doneTaskWithDecisions({
       id: 'TK-002', specId: 'S-7D4', rows: [['Share the cache', 'global', 'unresolved', 'workbench/wiki/cache.md']]
     }));
     const malformed = assembleSpecReport(root, 'S-7D4');
@@ -2362,6 +2418,175 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     assert.notEqual(after.specDigest, digestBefore, 'a retired Task\'s Decisions edit changes the digest');
     assert.deepEqual(after.decisionGaps, [], 'reconciling the retired Task\'s durable row with its owner route clears the gap');
     console.log('ok - S-00J TK-01R: a retired Task body gets equivalent decision coverage: named gap, gate and complete refusal without writes, digest-bound reconciliation');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-01S: final closure verifies approved delivery on the declared
+// default branch (closure-capture contract T2 and T3). Reviewed integration
+// delivery (T0) and owner approval (T1) are not enough: `complete` also
+// requires the approved candidate to be an ancestor of the declared default
+// branch's remote-tracking ref, pinned to its observed SHA, and the Spec's
+// committed digest there to equal the approved digest. Every refusal writes
+// nothing; success records the observed ref/SHA and approved candidate/digest
+// in the existing completion evidence row. Resolution reads local refs only:
+// these fixtures pin `refs/remotes/origin/<branch>` directly, never fetch.
+// ============================================================================
+
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-main-closure-'));
+  initManagedRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const integration = currentBranch(root);
+    // The declared default branch is deliberately not `main`: resolution goes
+    // through the manifest, never a literal.
+    declareGit(root, { defaultBranch: 'trunk', integrationBranch: integration });
+    const specId = 'S-7E0';
+    const specPath = `workbench/specs/${specId}-fixture/SPEC.md`;
+    const approvedContent = tableSpec({ id: specId, taskStatus: 'done', checked: true,
+      completion: 'Delivered.', evidenceRow: '| 2026-09-26 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |' });
+    writeAt(root, specPath, approvedContent);
+    const candidate = commitFixture(root);
+    recordReviewVerdict(root, specId, { candidate, result: 'pass', findings: 'none', reviewer: 'separate fixture context' });
+    assert.equal(gate(root, { spec: specId, candidate }).refused, false,
+      'gate permits a complete reviewed candidate before owner QA or default-branch delivery');
+    recordOwnerApproval(root, specId, { candidate, owner: 'Fixture owner', result: 'approve' });
+    const approvedDigest = assembleSpecReport(root, specId).specDigest;
+    assert.equal(gate(root, { spec: specId, candidate }).refused, false,
+      'gate still permits the approved candidate before default-branch delivery');
+
+    const cliPath = path.resolve('workbench/tools/spec-workbench.mjs');
+    function assertRefusal(pattern, message) {
+      const before = fs.readFileSync(path.join(root, specPath), 'utf8');
+      assert.throws(() => completeSpec(root, specId), pattern, message);
+      assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, `${message}: refusal writes nothing`);
+      const cli = spawnSync('node', [cliPath, 'complete', specId, '--path', root], { encoding: 'utf8' });
+      assert.equal(cli.status, 1, `${message}: CLI complete exits 1`);
+      assert.match(cli.stderr, pattern, `${message}: CLI complete names the reason`);
+      assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), before, `${message}: CLI refusal writes nothing`);
+      assert.equal(assembleSpecReport(root, specId).status, 'active');
+    }
+
+    // Complete, reviewed and owner-approved, but nothing proves delivery on
+    // the declared default branch.
+    assertRefusal(/origin\/trunk/, 'an absent default-branch remote-tracking ref refuses closure');
+
+    // A non-default branch carrying the candidate proves nothing.
+    pinRemoteTracking(root, integration, candidate);
+    pinRemoteTracking(root, 'main', candidate);
+    assertRefusal(/origin\/trunk/, 'a non-default branch containing the candidate does not satisfy the declared default branch');
+
+    // The declared ref exists but does not contain the approved candidate.
+    const initial = execFileSync('git', ['-C', root, 'rev-list', '--max-parents=0', 'HEAD'], { encoding: 'utf8' }).trim();
+    pinRemoteTracking(root, 'trunk', initial);
+    assertRefusal(new RegExp(`${candidate}.*not contained in origin/trunk`), 'an approved candidate outside the default branch refuses closure');
+
+    // Containment then substantive reversal on the default branch.
+    const reversal = commitTreeEdit(root, candidate, {
+      [specPath]: approvedContent.replace('Expected behavior is verified.', 'Reverted behavior is verified.')
+    }, 'reverse approved content on trunk');
+    pinRemoteTracking(root, 'trunk', reversal);
+    assertRefusal(new RegExp(`origin/trunk at ${reversal}.*differs from the approved content \\[${approvedDigest.slice(0, 12)}\\]`),
+      'containment followed by a substantive change on the default branch refuses closure');
+
+    // Containment, but the Spec is unreadable on the default branch.
+    const removed = commitTreeEdit(root, candidate, { [specPath]: null }, 'remove approved Spec on trunk');
+    pinRemoteTracking(root, 'trunk', removed);
+    assertRefusal(/unreadable/, 'unreadable committed content on the default branch refuses closure');
+
+    // An undeclared default branch refuses before any other delivery check.
+    declareGit(root, null);
+    assertRefusal(/declares no git\.defaultBranch/, 'an undeclared default branch refuses closure');
+    declareGit(root, { defaultBranch: 'trunk', integrationBranch: integration });
+
+    // Administrative changes, locally and on the default branch, neither
+    // void the approval nor block verified delivery.
+    const administrative = commitTreeEdit(root, candidate, {
+      [specPath]: approvedContent.replace('**Latest event:** Spec activated.', '**Latest event:** Promoted to trunk.')
+    }, 'administrative header change on trunk');
+    pinRemoteTracking(root, 'trunk', administrative);
+    writeAt(root, specPath, fs.readFileSync(path.join(root, specPath), 'utf8')
+      .replace('**Updated:** 2026-09-17', '**Updated:** 2026-09-26')
+      .replace('**Next gate:** Complete TK-001.', '**Next gate:** Complete S-7E0.'));
+    const beforeSuccess = fs.readFileSync(path.join(root, specPath), 'utf8');
+    completeSpec(root, specId, { date: '2026-09-26' });
+    const after = fs.readFileSync(path.join(root, specPath), 'utf8');
+    const completed = assembleSpecReport(root, specId);
+    assert.equal(completed.status, 'complete');
+    assert.equal(completed.specDigest, approvedDigest, 'completion preserves the approved digest');
+    assert.equal(completed.latestOwnerApproval.result, 'approve', 'administrative changes do not force another approval');
+    const closeRow = after.split('\n').find((line) => line.includes('| spec | Spec completed |'));
+    assert.equal(closeRow,
+      `| 2026-09-26 | spec | Spec completed | Acceptance gates satisfied; approved delivery verified: origin/trunk at ${administrative} contains approved candidate ${candidate} [${approvedDigest.slice(0, 12)}] | Documentation impact recorded above | none |`,
+      'the existing completion row records the observed ref/SHA and approved candidate/digest');
+    assert.equal(after.split('\n').filter((line) => /^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)).length,
+      beforeSuccess.split('\n').filter((line) => /^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)).length + 1,
+      'completion appends exactly one row and no second proof store');
+    console.log('ok - S-00J TK-01S: complete refuses without verified approved delivery on the manifest-declared default branch (absent ref, undeclared branch, non-default branch, missing containment, reversal, unreadable content) writing nothing through completeSpec and CLI, and records the pinned ref/SHA and approved candidate/digest on success with a stable digest');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// S-00J TK-01S: an accumulated owner QA scope is the explicitly approved set
+// of per-Spec rows at one inspected integration SHA, never every Spec the
+// candidate reaches.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-approval-scope-'));
+  initManagedRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const branch = currentBranch(root);
+    declareGit(root, { defaultBranch: branch, integrationBranch: branch });
+    const ids = ['S-7F1', 'S-7F2', 'S-7F3'];
+    const specFile = (id) => path.join(root, `workbench/specs/${id}-fixture/SPEC.md`);
+    for (const id of ids) {
+      writeAt(root, `workbench/specs/${id}-fixture/SPEC.md`, tableSpec({ id, taskStatus: 'done', checked: true,
+        completion: 'Delivered.', evidenceRow: '| 2026-09-26 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |' }));
+    }
+    const inspected = commitFixture(root);
+    for (const id of ids) {
+      recordReviewVerdict(root, id, { candidate: inspected, result: 'pass', findings: 'none', reviewer: 'separate fixture context' });
+    }
+    pinRemoteTracking(root, branch, inspected);
+
+    recordOwnerApproval(root, 'S-7F1', { candidate: inspected, owner: 'Fixture owner', result: 'approve' });
+    for (const id of ['S-7F2', 'S-7F3']) {
+      const before = fs.readFileSync(specFile(id), 'utf8');
+      assert.throws(() => completeSpec(root, id), /no owner Human QA approval is recorded/, `approving S-7F1 alone never authorizes ${id}`);
+      assert.equal(fs.readFileSync(specFile(id), 'utf8'), before);
+    }
+    recordOwnerApproval(root, 'S-7F2', { candidate: inspected, owner: 'Fixture owner', result: 'approve' });
+    const s7f3Before = fs.readFileSync(specFile('S-7F3'), 'utf8');
+    assert.throws(() => completeSpec(root, 'S-7F3'), /no owner Human QA approval is recorded/,
+      'an unlisted Spec at the same inspected SHA stays unapproved');
+    assert.equal(fs.readFileSync(specFile('S-7F3'), 'utf8'), s7f3Before);
+
+    // A later B finding prevents B closure.
+    recordOwnerApproval(root, 'S-7F2', { candidate: inspected, owner: 'Fixture owner', result: 'finding', destinationChange: 'Fixture destination moved' });
+    const s7f2Before = fs.readFileSync(specFile('S-7F2'), 'utf8');
+    assert.throws(() => completeSpec(root, 'S-7F2'), /latest owner Human QA for the current content is a finding/);
+    assert.equal(fs.readFileSync(specFile('S-7F2'), 'utf8'), s7f2Before);
+    // So does a later substantive B change, delivered to the default branch.
+    writeAt(root, 'workbench/specs/S-7F2-fixture/SPEC.md', s7f2Before.replace('Expected behavior is verified.', 'Changed behavior is verified.'));
+    const changed = commitFixture(root);
+    pinRemoteTracking(root, branch, changed);
+    const s7f2Changed = fs.readFileSync(specFile('S-7F2'), 'utf8');
+    assert.throws(() => completeSpec(root, 'S-7F2'), /all for earlier content/);
+    assert.equal(fs.readFileSync(specFile('S-7F2'), 'utf8'), s7f2Changed);
+
+    // Unchanged A retains its own approval and closes against the later ref.
+    completeSpec(root, 'S-7F1', { date: '2026-09-26' });
+    assert.equal(assembleSpecReport(root, 'S-7F1').status, 'complete');
+    assert.match(fs.readFileSync(specFile('S-7F1'), 'utf8'),
+      new RegExp(`origin/${branch} at ${changed} contains approved candidate ${inspected}`));
+    const ownerRows = (id) => assembleSpecReport(root, id).ownerApproval.map((entry) => entry.result);
+    assert.deepEqual(ownerRows('S-7F2'), ['approve', 'finding'], 'no approval is synthesized for B');
+    assert.deepEqual(ownerRows('S-7F3'), [], 'no approval is synthesized for unlisted C');
+    console.log('ok - S-00J TK-01S: explicit two-Spec approval scope at one inspected SHA: A never authorizes B or unlisted C, a later B finding or substantive change blocks only B, and unchanged A closes with its own approval');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

@@ -5,6 +5,7 @@ sensitivity: normal
 knowledge_role: canonical
 provenance:
   - S-021 dogfood migration 2026-09-01; S-025 contract adoption 2026-09-04
+  - S-00V TK-00I Agent Operating Knowledge route, 2026-09-26
 source_paths:
   - workbench/wiki
 last_verified: 2026-09-04
@@ -63,6 +64,8 @@ they are authored.
 - [Grilling: arrive at a shared design concept](skill-grilling.md)
 - [Grill-me: start a saved design inquiry](skill-grill-me.md)
 - [Notepad: preserve one objective's working context](skill-notepad.md)
+- [To-docs: route settled truth to the owner that holds it](skill-to-docs.md)
+- [Promote: move settled working claims into their durable owners](skill-promote.md)
 - [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
 - [Auditor: check named claims against pinned evidence](skill-auditor.md)
 - [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
@@ -70,6 +73,7 @@ they are authored.
 - [Save: persist authorized work and prove where it landed](skill-save.md)
 - [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
 - [Code review: check one fixed candidate against both contracts](skill-code-review.md)
+- [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
 
 ## Release And Distribution Routing
 
@@ -106,6 +110,27 @@ That article is this capability's durable owner, reconciled from
 [ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md);
 this route preserves the retired Spec's historical reachability without
 copying its evidence log here.
+
+## Agent Operating Knowledge
+
+How agents are expected to work in this repository, and tool behavior that
+surprises them, promoted from host memory so a fresh clone or a cloud instance
+has it ([S-00V](../specs/S-00V-portable-workbench/SPEC.md) Desired Behavior 6).
+The controls still decide what is authorized; these entries explain and route.
+The provenance of every promoted and excluded memory file is in
+[archive/host-memory-audit-2026-09-26.md](archive/host-memory-audit-2026-09-26.md).
+
+- [Finish authorized work](finish-authorized-work.md): the owner's instruction is the authorization; no manufactured gates
+- [Owner-authored ADRs are accepted](owner-authored-adrs-are-accepted.md): treat their content as settled, surface only tradeoffs
+- [Derive before asking the owner](derive-before-asking-the-owner.md): look the answer up in the grilling ledger first
+- [Design interviews are forward-looking](design-interviews-are-forward-looking.md): build on the described design instead of correcting it with today's state
+- [Recurring results are visual](recurring-results-are-visual.md): render recurring comparable results; group progress by destination
+- [PC test at main readiness](pc-test-at-main-readiness.md): the Windows test is never a blocker before main readiness
+- [Core rhythm](core-rhythm.md): context conservation balanced with context continuity
+- [Suite needs a committed candidate](suite-needs-a-committed-candidate.md): a dirty tree fails about thirty tests through `invalid-source-identity`
+- [Lifecycle tool behaviors](lifecycle-tool-behaviors.md): claim, close, append-only and promote surprises
+- [Parallel lane dispatch](parallel-lane-dispatch.md): worktree lanes, read-only suite runner, one-at-a-time merges
+- [Separate-context review with Codex](separate-context-review-with-codex.md): a working `codex exec` route and its stdin trap
 
 ## Leaving The Wiki
 

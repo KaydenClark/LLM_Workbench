@@ -9,6 +9,7 @@ import {
   TASK_STATUSES as SLICE_STATUSES,
   SPEC_LIFECYCLE_FOLDERS,
   TASK_LIFECYCLE_FOLDERS,
+  appendEvidence,
   claimWork,
   convertSpecSlices,
   showSpec,
@@ -92,6 +93,15 @@ function integratedFixtureCandidate(root) {
   return headSha(root);
 }
 
+// S-00J TK-01S: set a managed fixture manifest's git block, which is where
+// final closure resolves the default branch it verifies delivery against.
+function declareFixtureGit(dir, git) {
+  const manifestFile = path.join(dir, 'workbench/manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  manifest.git = git;
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+}
+
 function headSha(dir) {
   return execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 }
@@ -118,6 +128,13 @@ assert.deepEqual(
   parseCliArgs(['next', '--json']),
   { command: 'next', id: null, options: { json: true } },
   'option flags must not be consumed as an optional spec ID'
+);
+// S-00V TK-00H: the session-start host floor mode is a boolean flag, so it
+// must not swallow the flag after it as its value.
+assert.deepEqual(
+  parseCliArgs(['doctor', '--host', '--json']),
+  { command: 'doctor', id: null, options: { host: true, json: true } },
+  '--host is a boolean doctor mode'
 );
 
 // ============================================================================
@@ -333,7 +350,30 @@ try {
     'complete still refuses a passed-verdict Spec with no recorded owner approval'
   );
   recordOwnerApproval(root, 'S-001', { candidate: integratedFixtureCandidate(root), owner: 'Kayden Clark', result: 'approve' });
-  completeSpec(root, 'S-001', { date: '2026-07-12' });
+  // S-00J TK-01S: final closure also verifies the approved content on the
+  // manifest-declared default branch. This shared lifecycle room predates the
+  // manifest (its Specs live in the legacy `specs/` lane, which a schema-2
+  // manifest cannot declare), so it has no default branch to verify against:
+  // complete refuses and writes nothing. The successful closure, with its
+  // recorded delivery proof, is proven in the managed S-803 room below and in
+  // tools/test-spec-report.mjs. The completed S-001 state the rest of this
+  // lifecycle reads is written here as fixture setup, and its completion row
+  // says so rather than claiming verified delivery.
+  const s001Approved = read('specs/S-001-fixture/SPEC.md');
+  assert.throws(
+    () => completeSpec(root, 'S-001', { date: '2026-07-12' }),
+    /^Error: S-001 cannot complete: the manifest declares no git\.defaultBranch/,
+    'complete refuses a reviewed and approved Spec when no default branch is declared to verify delivery against'
+  );
+  assert.equal(read('specs/S-001-fixture/SPEC.md'), s001Approved, 'the refused complete writes nothing');
+  write('specs/S-001-fixture/SPEC.md', appendEvidence(
+    s001Approved
+      .replace('**Status:** active', '**Status:** complete')
+      .replace(/^\*\*Updated:\*\*.*$/m, '**Updated:** 2026-07-12')
+      .replace(/^\*\*Latest event:\*\*.*$/m, '**Latest event:** Spec completed and removed from the hot board.')
+      .replace(/^\*\*Next gate:\*\*.*$/m, '**Next gate:** none'),
+    '| 2026-07-12 | spec | Spec completed | Fixture setup: completed state written directly; complete refuses in this manifest-less room | Documentation impact recorded above | none |'
+  ));
   render(root);
 
   assert.match(read('BLUEPRINT.md'), /S-001-fixture\/SPEC\.md/);
@@ -2451,6 +2491,11 @@ function wikiClaimFixture() {
 {
   const gateRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-complete-gate-'));
   initGitRoot(gateRoot);
+  // S-00J TK-01S: a managed room, so the manifest can declare the default
+  // branch that final closure verifies approved delivery against.
+  initLifecycleFixture(gateRoot);
+  const gateBranch = execFileSync('git', ['-C', gateRoot, 'branch', '--show-current'], { encoding: 'utf8' }).trim();
+  declareFixtureGit(gateRoot, { defaultBranch: gateBranch, integrationBranch: gateBranch });
   try {
     function completableSpec(id) {
       return [
@@ -2495,7 +2540,7 @@ function wikiClaimFixture() {
     }
 
     // No verdict at all.
-    writeAt(gateRoot, 'specs/S-800-fixture/SPEC.md', completableSpec('S-800'));
+    writeAt(gateRoot, 'workbench/specs/S-800-fixture/SPEC.md', completableSpec('S-800'));
     assert.throws(
       () => completeSpec(gateRoot, 'S-800', { date: '2026-09-18' }),
       /no review verdict is recorded/i,
@@ -2506,11 +2551,11 @@ function wikiClaimFixture() {
     // a pass, then change the Spec's content (a harmless field edit stands
     // in for any real later edit) so the digest it was recorded against no
     // longer matches.
-    writeAt(gateRoot, 'specs/S-801-fixture/SPEC.md', completableSpec('S-801'));
+    writeAt(gateRoot, 'workbench/specs/S-801-fixture/SPEC.md', completableSpec('S-801'));
     recordReviewVerdict(gateRoot, 'S-801', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
-    const s801Path = path.join(gateRoot, 'specs/S-801-fixture/SPEC.md');
+    const s801Path = path.join(gateRoot, 'workbench/specs/S-801-fixture/SPEC.md');
     fs.writeFileSync(s801Path, fs.readFileSync(s801Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after review).'));
     assert.throws(
       () => completeSpec(gateRoot, 'S-801', { date: '2026-09-18' }),
@@ -2523,10 +2568,10 @@ function wikiClaimFixture() {
     // the report, never recomputed by hand) without going through
     // recordReviewVerdict, so no corrective Task exists to trip the earlier
     // unfinished-slice check first - isolating this one reason.
-    writeAt(gateRoot, 'specs/S-802-fixture/SPEC.md', completableSpec('S-802'));
+    writeAt(gateRoot, 'workbench/specs/S-802-fixture/SPEC.md', completableSpec('S-802'));
     const s802Candidate = headSha(gateRoot);
     const s802Report = assembleSpecReport(gateRoot, 'S-802', { candidate: s802Candidate });
-    const s802Path = path.join(gateRoot, 'specs/S-802-fixture/SPEC.md');
+    const s802Path = path.join(gateRoot, 'workbench/specs/S-802-fixture/SPEC.md');
     const failRow = `| 2026-09-18 | review | Review verdict: fail at ${s802Candidate} [${s802Report.specDigest.slice(0, 12)}] #1 | Some finding | Claude Opus 5 (separate context) | 1 |`;
     fs.writeFileSync(s802Path, fs.readFileSync(s802Path, 'utf8').replace(
       '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
@@ -2542,7 +2587,7 @@ function wikiClaimFixture() {
     // complete also requires a recorded owner Human QA approval bound to the
     // current content, checked after (and composing with) the review-verdict
     // gate above. No verdict at all for the owner-qa row.
-    writeAt(gateRoot, 'specs/S-804-fixture/SPEC.md', completableSpec('S-804'));
+    writeAt(gateRoot, 'workbench/specs/S-804-fixture/SPEC.md', completableSpec('S-804'));
     recordReviewVerdict(gateRoot, 'S-804', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
@@ -2557,12 +2602,12 @@ function wikiClaimFixture() {
     // content (moving the digest) and record a FRESH passed verdict for the
     // new content - so the review gate passes - without a fresh owner
     // approval, isolating the approval-gap check from the review-gap check.
-    writeAt(gateRoot, 'specs/S-805-fixture/SPEC.md', completableSpec('S-805'));
+    writeAt(gateRoot, 'workbench/specs/S-805-fixture/SPEC.md', completableSpec('S-805'));
     recordReviewVerdict(gateRoot, 'S-805', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     recordOwnerApproval(gateRoot, 'S-805', { candidate: integratedFixtureCandidate(gateRoot), owner: 'Kayden Clark', result: 'approve' });
-    const s805Path = path.join(gateRoot, 'specs/S-805-fixture/SPEC.md');
+    const s805Path = path.join(gateRoot, 'workbench/specs/S-805-fixture/SPEC.md');
     fs.writeFileSync(s805Path, fs.readFileSync(s805Path, 'utf8').replace('Proves the complete gate.', 'Proves the complete gate (edited after owner approval).'));
     recordReviewVerdict(gateRoot, 'S-805', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Sonnet 5 (separate context)'
@@ -2578,13 +2623,13 @@ function wikiClaimFixture() {
     // (read back from the report, never recomputed by hand), alongside a
     // passed verdict for the same digest, so only the approval-gap reason is
     // isolated.
-    writeAt(gateRoot, 'specs/S-806-fixture/SPEC.md', completableSpec('S-806'));
+    writeAt(gateRoot, 'workbench/specs/S-806-fixture/SPEC.md', completableSpec('S-806'));
     const s806Candidate = integratedFixtureCandidate(gateRoot);
     recordReviewVerdict(gateRoot, 'S-806', {
       candidate: s806Candidate, result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
     const s806Report = assembleSpecReport(gateRoot, 'S-806', { candidate: s806Candidate });
-    const s806Path = path.join(gateRoot, 'specs/S-806-fixture/SPEC.md');
+    const s806Path = path.join(gateRoot, 'workbench/specs/S-806-fixture/SPEC.md');
     const findingRow = `| 2026-09-18 | owner-qa | Owner QA: finding at ${s806Candidate} [${s806Report.specDigest.slice(0, 12)}] #1 | Some finding | Kayden Clark | 1 |`;
     fs.writeFileSync(s806Path, fs.readFileSync(s806Path, 'utf8').replace(
       '| 2026-09-18 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
@@ -2600,17 +2645,20 @@ function wikiClaimFixture() {
     // proceed unchanged: the same single "Spec completed" evidence row this
     // room's other completeSpec proof (S-001, above) already appends,
     // nothing else different.
-    writeAt(gateRoot, 'specs/S-803-fixture/SPEC.md', completableSpec('S-803'));
+    writeAt(gateRoot, 'workbench/specs/S-803-fixture/SPEC.md', completableSpec('S-803'));
     recordReviewVerdict(gateRoot, 'S-803', {
       candidate: headSha(gateRoot), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
-    recordOwnerApproval(gateRoot, 'S-803', { candidate: integratedFixtureCandidate(gateRoot), owner: 'Kayden Clark', result: 'approve' });
-    const s803Before = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
+    const s803Candidate = integratedFixtureCandidate(gateRoot);
+    recordOwnerApproval(gateRoot, 'S-803', { candidate: s803Candidate, owner: 'Kayden Clark', result: 'approve' });
+    // S-00J TK-01S: the owner promoted integration to the default branch.
+    execFileSync('git', ['-C', gateRoot, 'update-ref', `refs/remotes/origin/${gateBranch}`, s803Candidate]);
+    const s803Before = fs.readFileSync(path.join(gateRoot, 'workbench/specs/S-803-fixture/SPEC.md'), 'utf8');
     const s803SliceTableBefore = s803Before.slice(s803Before.indexOf('## Vertical Implementation Slices'), s803Before.indexOf('## Acceptance Criteria'));
     const s803VerdictRowBefore = s803Before.split('\n').find((line) => line.includes('Review verdict: pass'));
     const s803ApprovalRowBefore = s803Before.split('\n').find((line) => line.includes('Owner QA: approve'));
     completeSpec(gateRoot, 'S-803', { date: '2026-09-18' });
-    const s803After = fs.readFileSync(path.join(gateRoot, 'specs/S-803-fixture/SPEC.md'), 'utf8');
+    const s803After = fs.readFileSync(path.join(gateRoot, 'workbench/specs/S-803-fixture/SPEC.md'), 'utf8');
     // Exactly the same shape completeSpec has always produced (proven above
     // with S-001): the header flips to complete, and one "Spec completed"
     // row is appended - nothing else, which is what "byte-identical apart
@@ -2618,7 +2666,9 @@ function wikiClaimFixture() {
     assert.match(s803After, /\*\*Status:\*\* complete$/m);
     assert.match(s803After, /\*\*Latest event:\*\* Spec completed and removed from the hot board\.$/m);
     assert.match(s803After, /\*\*Next gate:\*\* none$/m);
-    assert.match(s803After, /\| 2026-09-18 \| spec \| Spec completed \| Acceptance gates satisfied \| Documentation impact recorded above \| none \|/);
+    const s803Digest12 = s803After.match(/Owner QA: approve at \S+ \[([0-9a-f]{12})\]/)[1];
+    assert.ok(s803After.includes(`| 2026-09-18 | spec | Spec completed | Acceptance gates satisfied; approved delivery verified: origin/${gateBranch} at ${s803Candidate} contains approved candidate ${s803Candidate} [${s803Digest12}] | Documentation impact recorded above | none |`),
+      'the completion row also records the observed default-branch ref/SHA and the approved candidate/digest (S-00J TK-01S)');
     assert.equal(
       s803After.slice(s803After.indexOf('## Vertical Implementation Slices'), s803After.indexOf('## Acceptance Criteria')),
       s803SliceTableBefore,
