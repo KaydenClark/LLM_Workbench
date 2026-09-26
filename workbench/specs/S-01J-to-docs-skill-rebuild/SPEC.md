@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Route settled truth into the existing documentation owner.
 **Blockers:** none.
-**Latest event:** TK-01A claimed by claude-lane-B-w3.
-**Next gate:** Close TK-01A with verification and documentation proof.
+**Latest event:** TK-01A closed with proof.
+**Next gate:** Separate-context review of the TK-01A candidate, then owner Human QA of conversational fidelity on `integration`, then `complete S-01J`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -53,7 +53,7 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01A | Audit to-docs, deliver the smallest supported source/documentation change and prove the routed article | in-progress | none | pending |
+| TK-01A | Audit to-docs, deliver the smallest supported source/documentation change and prove the routed article | done | none | Red/green tools/test-skill-catalog.mjs (red 8a27b49, green e45648e); test-wiki copied-task-state coverage unchanged and green; full AGENTS suite 48/48 at 678eb45; fresh-context scenario split a mixed finding into a Runbook step and a linking Wiki explanation, kept the pending claim in its note; wiki validate ok |
 
 ### TK-01A - Deliver the to-docs skill destination
 
@@ -63,10 +63,10 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 
 ## Acceptance Criteria
 
-- [ ] A supported claim lands once in the Lexicon, Blueprint, Spec, ADR, Wiki or procedure owner appropriate to its job.
-- [ ] It neither restarts discovery nor creates a parallel tracker or permanent transient Spec history.
-- [ ] The named scenario is observed in a fresh or otherwise independent context: A mixed finding updates the operational owner and reference article without copying the same claim wholesale.
-- [ ] `workbench/wiki/skill-to-docs.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
+- [x] A supported claim lands once in the Lexicon, Blueprint, Spec, ADR, Wiki or procedure owner appropriate to its job.
+- [x] It neither restarts discovery nor creates a parallel tracker or permanent transient Spec history.
+- [x] The named scenario is observed in a fresh or otherwise independent context: A mixed finding updates the operational owner and reference article without copying the same claim wholesale.
+- [x] `workbench/wiki/skill-to-docs.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
 - [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
@@ -87,10 +87,14 @@ Maintain `workbench/wiki/skill-to-docs.md` and its sole router entry alongside t
 |---|---|---|---|---|---|
 | 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names to-docs's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-01A and independent delivery proof remain open |
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
+| 2026-09-26 | TK-01A | Audit, then red/green at the catalog seam | Audit at `be918f0`: the source routed truth by job and forbade new stores and a restarted interview, but never said a claim lands once: nothing split a mixed finding, required one owner per claim or linking instead of copying (which `promote` step 2 already relies on and AGENTS Documentation Ownership states), recognized pending `source_record` meaning, forbade citing an ignored live path, kept transient working history out of the Spec, or read the changed owner back; its Wiki bullet omitted durable knowledge and the `MEMORY.md` router. `node tools/test-skill-catalog.mjs` failed red at `8a27b49` (`to-docs single-owner, pending and read-back contract must use Route each claim once`) and passed green at `e45648e`. Runtime side: `tools/test-wiki.mjs` already asserts `copied-task-state` for copied task rows and Spec evidence, so no runtime characterization or change was needed. `test-skill-inspection`, `test-core-composition`, `test-core-skill-installer`, `test-wiki` and `test-skills-lane` green on committed `e45648e` | Source states once-per-claim routing for a mixed finding, link-not-copy, pending recognition, durable-only evidence, no transient Spec history and owner read-back; Wiki bullet names durable knowledge and the router | Routing list, render/doctor finish and no-new-store rule: no defect found; their existing assertions are unchanged and green |
+| 2026-09-26 | TK-01A | Fresh-context scenario: one general-purpose Claude Opus 5.5 subagent given only the to-docs source and a scratch git room (Runbook restore procedure, Wiki backups article routed from MEMORY, Lexicon, ignored note with a finding, a confirmed `decision` and a pending `source_record` in `current.unresolved`); one scripted owner turn | Owner: "The restore investigation is settled. Put what we found into the docs." It stated destinations before editing, then added the confirmed free-space check (commands and 2x threshold) as Runbook restore step 3 with a link to the explanation, and added a Wiki section explaining the temporary extraction and the 1.4x `ENOSPC` failure that links to the Runbook step instead of repeating the threshold or commands. It left the pending three-restore-points idea out of every owner and the Lexicon, did not cite the ignored note, searched tracked docs to confirm each fact appears in one owner only, and reported the missing `wiki.mjs` and `spec-workbench.mjs` commands as not run. Room hashes before/after: only `RUNBOOK.md` and the Wiki article changed; the note and Lexicon bytes are unchanged | None | One run, one model, one scripted owner turn. The room had no Spec, ADR or validator, so those routes were not exercised. The agent appended no note record naming the destinations; the to-docs source does not require it (promote does). Not owner Human QA or a repeated trial |
+| 2026-09-26 | TK-01A | Gates before close | Full AGENTS suite 48/48 on committed candidate `678eb45` (header `candidate: 678eb45668da2fb1c8f408a192704bed589cc2a5 ... dirty: []`); guardrail `--path templates --include-controls` 106.6/113 before (at `be918f0`) and after (at `678eb45`), output identical, remaining recommendation the pre-existing Team coordination item; self-drift pre at `be918f0` and post at `678eb45` both `blocked`, cleanUpdate false, with the same seven pre-existing attention findings (S-00Q stale claim, five stale seeds, manifest provenance); `wiki.mjs validate` ok; `git diff --check` clean; render and doctor no blocking finding. Bounded semantic check: AGENTS Documentation Ownership (mixed finding, each claim once), the RUNBOOK behavior-selection row, the `promote` and `save` sources, and the notepad and promote pending convention agree with the delivered source | Docs checked: AGENTS, RUNBOOK, LEXICON, BLUEPRINT, templates and `workbench/skills/README.md` need no update because their to-docs wording (catalog line, behavior-selection row) stays accurate and none restates the routing rules | Coordination hand-backs this run: zero |
+| 2026-09-26 | TK-01A | Task closed | Red/green tools/test-skill-catalog.mjs (red 8a27b49, green e45648e); test-wiki copied-task-state coverage unchanged and green; full AGENTS suite 48/48 at 678eb45; fresh-context scenario split a mixed finding into a Runbook step and a linking Wiki explanation, kept the pending claim in its note; wiki validate ok | workbench/skills/to-docs/SKILL.md, workbench/wiki/skill-to-docs.md and its workbench/wiki/MEMORY.md entry, tools/test-skill-catalog.mjs; AGENTS, RUNBOOK, LEXICON, BLUEPRINT, templates and skills README checked with no update needed because their to-docs wording stays accurate and none restates the routing rules | Separate-context candidate review; owner Human QA of conversational fidelity; installed personal skill copies not updated; routing list names current owner files and should be rechecked when S-00P publishes its control rewrite and S-00R its lifecycle wording |
 
 ## Completion Result
 
-Pending. Planning only; no to-docs rebuild or behavioral acceptance is claimed.
+TK-01A stated once-per-claim routing for a mixed finding, link-not-copy, pending recognition, durable-only evidence, no transient Spec history and owner read-back in `workbench/skills/to-docs/SKILL.md`. It found no runtime defect; the Wiki validator's existing copied-task-state test covers the runtime side. It authored `workbench/wiki/skill-to-docs.md`, routed from `workbench/wiki/MEMORY.md`, with one fresh-context scenario. The Spec is not complete: the separate-context review and owner Human QA of conversational fidelity remain.
 
 ## Supersession
 
