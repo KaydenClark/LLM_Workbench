@@ -277,7 +277,7 @@ identity/relationships, calculation and a readable projection together.
 
 - [ ] A fresh clone can discover and use the delivered capability from tracked
       controls and declared collections without the author's ignored notes.
-- [ ] An unanswered, ungrouped DQC is valid and visible without a Spec, Task,
+- [x] An unanswered, ungrouped DQC is valid and visible without a Spec, Task,
       landmark or predetermined Wiki destination; confirmation and Expected
       result can be added without destroying origin history.
 - [ ] A later landmark connection and retitling preserve DQC/source identities;
@@ -368,11 +368,13 @@ The original workflow diagram is preserved byte-for-byte.
 
 ## Completion Result
 
-Capability delivery pending. The documentation/specification packet does not
-satisfy runtime acceptance or owner Human QA. Four Tasks are authored; TK-01X
-(the foundation path) is delivered on its branch, and TK-01Y, TK-01Z and TK-02A
-remain. No acceptance box is checked: each spans later Tasks, separate-context
-review or owner Human QA.
+Capability delivery pending; owner Human QA is not satisfied. Of the four
+authored Tasks, TK-01X (the foundation path) is done and lands through its own
+Task PR; TK-01Y, TK-01Z and TK-02A remain, as do corrective Tasks TK-02G,
+TK-02H and TK-02I from the 46df442 fail verdict. Only the ungrouped-DQC
+acceptance line is checked: TK-01X delivers it in full
+(`tools/test-landmark-tracker.mjs` capture, reload, clone, retitle and
+confirm cases). Every other line spans later Tasks.
 
 ## Remaining Limitations Or Follow-Up Specs
 
