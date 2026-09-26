@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** TK-002K closed with proof.
-**Next gate:** Separate-context review and landing of the TK-002K candidate, then the `widen-id` touch slice. Acceptance lines 1-2 are checked; lines 3-5 remain open.
+**Latest event:** Lane I cut TK-002O (explicit `widen-id` touch) after TK-002K landed in PR #202.
+**Next gate:** A Lane I worker claims and delivers TK-002O. Acceptance lines 1-2 are checked; lines 3-5 remain open.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -167,6 +167,8 @@ scope. Split off QA/report consumers if tracing exceeds one bounded Task.
 
 ### Next slice - Safe touch-and-update
 
+Allocated as [TK-002O](tasks/TK-002O/TASK.md).
+
 Depends on dual-form selection and a resolved trigger/metadata proposal.
 Candidate lane: `workbench/tools/spec-workbench.mjs`,
 `tools/test-spec-workbench.mjs`. Disposable Git fixtures prove eligible records
@@ -259,6 +261,7 @@ using ignored recovery material as durable evidence.
 | 2026-09-26 | TK-002K | Task closed | Red at 7d1282f runtime with the new tests: test-visible-id-consumers.mjs 5 of 23 failed (show of a widened selector for a short stored Spec ID answered Unknown spec ID; widened Spec and Task blocker spellings stayed unsatisfied; an active record plus a retired record sharing one collision key returned one of them instead of refusing; claim through a widened numeric Spec selector was unknown; a widened orphan corrective Task selector answered Unknown corrective Task ID); the test-spec-workbench.mjs dual-form block failed at its first widened receipt selector (Unknown spec ID). Green at 5bb6406: test-visible-id-consumers.mjs 23/23; test-spec-workbench.mjs including the dual-form receipt, gate, move-task and retired-show block; test-visible-ids, test-spec-report, test-workbench-identity, test-adr, test-notepads, test-spec-citation-anchors and test-diagnostics pass; full AGENTS suite 48 pass 0 fail on 5bb6406 (read-only runner, dirty []). Guardrail 106.6/113 before (7d1282f) and after (5bb6406); S-00K self-drift pre and post both report the same 7 attention findings and no new one. | ADR-0041 amended: dual-form lookup moves to delivered for the public Spec and Task selectors, the active-plus-retired alias refusal is stated, and the spec-report library pass-through is kept as remaining. RUNBOOK Visible Identifiers does not yet say that selectors accept any spelling sharing the stored record's collision key and that aliased records refuse by name: routed to S-00P with the TK-02B RUNBOOK and LEXICON wording. | Direct library callers of the spec-report.mjs functions (assembleSpecReport, recordReviewVerdict, recordOwnerApproval, createCorrectiveTasks) still echo or record the caller's selector spelling; the CLI entry points resolve it first. The widen-id touch verb, moving ADR and notepad allocation onto the artifact policy, and assembled capability QA remain later S-01W slices (unallocated). RUNBOOK and LEXICON wording routed to S-00P. Separate-context integration review not yet run. |
 | 2026-09-26 | TK-002K | Acceptance line 2 checked and Completion Result updated for TK-002K's delivered dual-form selection, before the landing review; the direct `spec-report.mjs` library pass-through is recorded as a remaining limit. | TK-002K evidence above (red/green, suite 48/48 at 5bb6406) | This Spec (Acceptance, Completion Result, header), TASKBOARD.md | Acceptance lines 3-5 |
 | 2026-09-26 | review | Review verdict: pass at 78843f1c83cbac98dbb43c23fa06e2c4b56d4ef2 [48666a95f2d3] #3 | No findings. TK-002K dual-form selection with acceptance line 2 checked and the Completion Result updated before review. Full AGENTS suite 48/48 at 78843f1 (read-only runner, dirty []). Reviewer read the tests and ran doctor; did not run fixtures (read-only sandbox). | codex exec gpt-5.5, read-only sandbox, separate context from the Lane I dispatcher and its worker | 2 |
+| 2026-09-26 | TK-002O | Lane I cut TK-002O from the safe touch-and-update slice, implementing the Director's explicit `widen-id` decision; its ID was proposed by `next-id S-01W --prefix TK` on integration 52c64db immediately before the record was saved. | render; doctor no blocking finding; show S-01W lists TK-002O ready | This Spec (header, touch slice), TK-002O TASK.md, TASKBOARD.md | TK-002O implementation; consumer coverage and assembled QA slices remain unallocated |
 
 ## Completion Result
 
