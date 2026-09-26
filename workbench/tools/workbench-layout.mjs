@@ -13,7 +13,7 @@ import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 // Exported (not just used locally) so a test can build the exact historical
 // v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
@@ -114,6 +114,76 @@ function gitRead(project, args) {
 
 export function insideWorkTree(project) {
   return gitRead(project, ['rev-parse', '--is-inside-work-tree']) === 'true';
+}
+
+// S-00M TK-001: the repository state a completion claim can hide, read at one
+// seam for `doctor` and `close`. It never throws, because a reader that throws
+// turns a missing tool into a broken command: a host without Git, a directory
+// outside any repository, or lanes the manifest cannot resolve all come back
+// as `{ known: false, reason, detail }` with reason `git-unavailable`,
+// `not-a-repository`, `git-failed` or `lanes-unresolved`. A known state is
+// `{ known: true, head: { detached, branch }, dirty, untracked: { controls,
+// adr, specs }, upstream }`. `dirty` lists tracked changes (staged, modified,
+// deleted, renamed, conflicted) and `untracked` only the untracked files under
+// the root controls, the ADR collection and the spec lane, as repository-root
+// paths. `upstream` is null when none is configured, and otherwise
+// `{ name, gone, ahead, behind }`, with null distance when the upstream ref is
+// gone. `options.git` names the Git executable, so a test can make it absent.
+export function readRepositoryState(root, options = {}) {
+  const unknown = (reason, detail) => ({ known: false, reason, detail: String(detail ?? '').trim() });
+  try {
+    const project = path.resolve(root);
+    const git = options.git ?? 'git';
+    const run = (args) => spawnSync(git, ['-C', project, ...args], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    const probe = run(['rev-parse', '--is-inside-work-tree', '--show-prefix']);
+    if (probe.error) return unknown(probe.error.code === 'ENOENT' ? 'git-unavailable' : 'git-failed', probe.error.message);
+    const [inside, prefix = ''] = probe.stdout.split('\n');
+    if (probe.status !== 0 || inside !== 'true') return unknown('not-a-repository', probe.stderr || `${project} is not inside a Git work tree`);
+    let lanes;
+    try {
+      lanes = { adr: collectionRelative(project, 'adr'), specs: laneRelative(project, 'specs') };
+    } catch (error) {
+      return unknown('lanes-unresolved', error.message);
+    }
+    const status = run(['status', '--porcelain=v2', '--branch', '--untracked-files=all', '-z']);
+    if (status.error || status.status !== 0) return unknown('git-failed', status.error?.message ?? status.stderr);
+    const head = { detached: false, branch: null };
+    let upstream = null;
+    const dirty = [];
+    const untracked = { controls: [], adr: [], specs: [] };
+    const within = (file, lane) => file.startsWith(`${lane}/`);
+    const entries = status.stdout.split('\0');
+    for (let index = 0; index < entries.length; index += 1) {
+      const entry = entries[index];
+      if (entry.startsWith('# branch.head ')) {
+        const name = entry.slice('# branch.head '.length);
+        if (name === '(detached)') head.detached = true;
+        else head.branch = name;
+      } else if (entry.startsWith('# branch.upstream ')) {
+        upstream = { name: entry.slice('# branch.upstream '.length), gone: true, ahead: null, behind: null };
+      } else if (entry.startsWith('# branch.ab ')) {
+        const [, ahead, behind] = entry.match(/^# branch\.ab \+(\d+) -(\d+)$/) ?? [];
+        if (upstream && ahead !== undefined) Object.assign(upstream, { gone: false, ahead: Number(ahead), behind: Number(behind) });
+      } else if (entry.startsWith('1 ') || entry.startsWith('u ')) {
+        dirty.push(entry.split(' ').slice(entry.startsWith('1 ') ? 8 : 10).join(' '));
+      } else if (entry.startsWith('2 ')) {
+        dirty.push(entry.split(' ').slice(9).join(' '));
+        index += 1; // with -z a rename's original path is the next entry
+      } else if (entry.startsWith('? ')) {
+        const file = entry.slice(2);
+        // Lanes are root-relative; porcelain paths are repository-relative.
+        const relative = prefix && file.startsWith(prefix) ? file.slice(prefix.length) : (prefix ? null : file);
+        if (relative === null) continue;
+        if (controls.includes(relative)) untracked.controls.push(file);
+        else if (within(relative, lanes.adr)) untracked.adr.push(file);
+        else if (within(relative, lanes.specs)) untracked.specs.push(file);
+      }
+    }
+    for (const list of [dirty, untracked.controls, untracked.adr, untracked.specs]) list.sort();
+    return { known: true, head, dirty, untracked, upstream };
+  } catch (error) {
+    return unknown('git-failed', error?.message ?? error);
+  }
 }
 
 function remoteNames(project) {

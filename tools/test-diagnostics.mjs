@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { EFFECTS, SCOPES, SEVERITIES, describe, finding, isRegistered, registeredCodes } from '../workbench/tools/diagnostics.mjs';
 import { claimWork, doctor, formatDoctorReport, nextWork, render, DOCTOR_GROUPS } from '../workbench/tools/spec-workbench.mjs';
-import { permissionScopeDrift } from '../workbench/tools/workbench-layout.mjs';
+import { permissionScopeDrift, readRepositoryState } from '../workbench/tools/workbench-layout.mjs';
 import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -1096,5 +1096,131 @@ test('the installed-state findings are emitted from a seam whose scope matches, 
       'doctor still reports both, from the hook whose scope matches them');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// S-00M TK-001: one non-throwing reader of the repository state a completion
+// claim can hide - detached HEAD, dirty tracked files, untracked files under
+// the controls, ADR and spec lanes, and upstream distance. It has no caller
+// yet; TK-002 surfaces it in doctor and TK-003 checks it at close.
+function stateFixture() {
+  const base = fixture();
+  const remote = path.join(base, 'remote.git');
+  const repo = path.join(base, 'repo');
+  const other = path.join(base, 'other');
+  git(base, 'init', '-q', '--bare', '-b', 'main', remote);
+  git(base, 'init', '-q', '-b', 'main', repo);
+  git(repo, 'config', 'user.name', 'Fixture');
+  git(repo, 'config', 'user.email', 'fixture@example.invalid');
+  // The spec lane is declared somewhere other than the default, so a reader
+  // that hardcodes `workbench/specs` classifies the wrong file.
+  write(repo, 'workbench/manifest.json', `${JSON.stringify({ schemaVersion: 2, lanes: { specs: 'workbench/specifications' } }, null, 2)}\n`);
+  write(repo, 'AGENTS.md', '# Agents\n');
+  write(repo, 'gone.txt', 'tracked, then deleted\n');
+  git(repo, 'add', '-A');
+  git(repo, 'commit', '-q', '-m', 'base');
+  git(repo, 'remote', 'add', 'origin', remote);
+  git(repo, 'push', '-q', '-u', 'origin', 'main');
+  // One commit the remote has and the checkout lacks.
+  git(base, 'clone', '-q', remote, other);
+  write(other, 'remote-only.txt', 'pushed elsewhere\n');
+  git(other, 'add', '-A');
+  git(other, 'commit', '-q', '-m', 'remote side');
+  git(other, 'push', '-q', 'origin', 'main');
+  git(repo, 'fetch', '-q', 'origin');
+  // One commit the checkout has and the remote lacks.
+  write(repo, 'local-only.txt', 'not pushed\n');
+  git(repo, 'add', '-A');
+  git(repo, 'commit', '-q', '-m', 'local side');
+  return { base, repo, remote };
+}
+
+test('readRepositoryState reports branch, dirty tracked files, untracked lane files and upstream distance', () => {
+  const { base, repo } = stateFixture();
+  try {
+    write(repo, 'AGENTS.md', '# Agents\n\nmodified\n');
+    write(repo, 'staged.txt', 'staged\n');
+    git(repo, 'add', 'staged.txt');
+    fs.rmSync(path.join(repo, 'gone.txt'));
+    write(repo, 'RUNBOOK.md', '# Runbook\n');
+    write(repo, 'workbench/docs/adr/0001-untracked.md', '# ADR\n');
+    write(repo, 'workbench/specifications/S-001-untracked/SPEC.md', '# Spec\n');
+    write(repo, 'workbench/specs/stray.md', 'not the declared spec lane\n');
+    write(repo, 'nested/AGENTS.md', 'not a root control\n');
+    write(repo, 'notes/outside.md', 'outside every lane\n');
+
+    const state = readRepositoryState(repo);
+    assert.equal(state.known, true, JSON.stringify(state));
+    assert.deepEqual(state.head, { detached: false, branch: 'main' });
+    assert.deepEqual(state.dirty, ['AGENTS.md', 'gone.txt', 'staged.txt']);
+    assert.deepEqual(state.untracked, {
+      controls: ['RUNBOOK.md'],
+      adr: ['workbench/docs/adr/0001-untracked.md'],
+      specs: ['workbench/specifications/S-001-untracked/SPEC.md']
+    });
+    assert.deepEqual(state.upstream, { name: 'origin/main', gone: false, ahead: 1, behind: 1 });
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('readRepositoryState reports a detached HEAD, a branch with no upstream, and a gone upstream explicitly', () => {
+  const { base, repo, remote } = stateFixture();
+  try {
+    git(repo, 'checkout', '-q', '--detach');
+    const detached = readRepositoryState(repo);
+    assert.equal(detached.known, true, JSON.stringify(detached));
+    assert.deepEqual(detached.head, { detached: true, branch: null });
+    assert.equal(detached.upstream, null, 'a detached HEAD tracks no upstream');
+    assert.deepEqual(detached.dirty, []);
+    assert.deepEqual(detached.untracked, { controls: [], adr: [], specs: [] });
+
+    git(repo, 'switch', '-q', '-c', 'feature');
+    const unpublished = readRepositoryState(repo);
+    assert.deepEqual(unpublished.head, { detached: false, branch: 'feature' });
+    assert.equal(unpublished.upstream, null, 'no upstream is reported as null, never as zero distance');
+
+    git(repo, 'push', '-q', '-u', 'origin', 'feature');
+    git(repo, 'push', '-q', 'origin', '--delete', 'feature');
+    git(repo, 'fetch', '-q', '--prune', 'origin');
+    const gone = readRepositoryState(repo);
+    assert.deepEqual(gone.upstream, { name: 'origin/feature', gone: true, ahead: null, behind: null });
+    assert.ok(fs.existsSync(remote));
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('readRepositoryState reports unknown, never throwing, outside a repository or where Git is absent', () => {
+  const outside = fixture();
+  const { base, repo } = stateFixture();
+  const savedPath = process.env.PATH;
+  try {
+    assert.deepEqual(Object.keys(readRepositoryState(outside)).sort(), ['detail', 'known', 'reason']);
+    assert.equal(readRepositoryState(outside).known, false);
+    assert.equal(readRepositoryState(outside).reason, 'not-a-repository');
+    assert.equal(readRepositoryState(path.join(outside, 'missing')).reason, 'not-a-repository');
+    assert.equal(readRepositoryState(undefined).known, false, 'a malformed argument is unknown, not a throw');
+
+    const absent = readRepositoryState(repo, { git: path.join(outside, 'no-such-git') });
+    assert.equal(absent.known, false);
+    assert.equal(absent.reason, 'git-unavailable');
+
+    // The real lookup, with no Git reachable on PATH.
+    process.env.PATH = outside;
+    const noPath = readRepositoryState(repo);
+    process.env.PATH = savedPath;
+    assert.equal(noPath.known, false);
+    assert.equal(noPath.reason, 'git-unavailable');
+
+    // A manifest the lane helpers cannot read is unknown too, not a throw.
+    write(repo, 'workbench/manifest.json', '{ not json');
+    const unreadable = readRepositoryState(repo);
+    assert.equal(unreadable.known, false);
+    assert.equal(unreadable.reason, 'lanes-unresolved');
+  } finally {
+    process.env.PATH = savedPath;
+    fs.rmSync(outside, { recursive: true, force: true });
+    fs.rmSync(base, { recursive: true, force: true });
   }
 });
