@@ -22,22 +22,26 @@ catalog.
 
 ## Route selection
 
-Choose the route before running anything. The migration has two exclusive
-modes, and only one of them touches a user-scoped skill:
+Choose the route from the target's starting point before running anything:
 
-- `--layout-only` migrates the support root and reads skill presence only. It
-  never installs, compares, marks, backs up, or replaces a skill. This is the
-  default route for an already-adopted room and for any host whose discovery
-  root the tool must not touch.
-- `--explicit-update` additionally replaces Workbench-managed skills, and is
-  used only when replacing them is the point of the run.
+- **A v2-root room** (root `specs/`, no `workbench/` support root) takes the
+  one-time `tools/workbench-upgrade.mjs upgrade` route. It has two exclusive
+  mode flags, `--layout-only` and `--explicit-update`, and both do the same
+  work: they lay the core skills lane and its discovery adapters down inside
+  the room from the release checkout. `--layout-only` is the name to use for
+  an already-adopted room; `--explicit-update` is the name every one-time
+  upgrade historically required.
+- **A room already on a v3 support root** takes the maintenance route: the
+  additive layout migration, then explicit receipt-backed updates of the
+  managed runtime tools and core skills. The one-time route refuses such a
+  room with `support-root-exists`.
 
-A same-named user-scoped skill whose ownership must remain untouched is a reason
-to choose `--layout-only`, not a workstation to reconcile first. The
-`skill-path-collision` and `unmanaged-skill` refusals belong to
-`--explicit-update` alone; a `--layout-only` run returns before either is
-reached. Do not propose inventorying, backing up, or replacing an existing user
-skill in order to retry a route you did not need.
+Neither route reads, compares, marks, backs up or replaces a skill in the
+provider home; `--home` only names where a later backup is written. A
+same-named skill in a user-scoped provider root is not a room concern, so do
+not propose inventorying, backing up or replacing one to make either route run.
+Publishing skills to a personal catalog is a separate operation with its own
+authorization.
 
 ## 1. Establish authority and source truth
 
@@ -45,7 +49,9 @@ skill in order to retry a route you did not need.
 2. Verify the target repository root, branch, remote, upstream, worktrees, and
    dirty state.
 3. Verify the canonical Workbench path, branch, remote, dirty state, and current
-   version from its live `README.md` or `BLUEPRINT.md`.
+   version from its `workbench/manifest.json` `workbenchVersion`; this is the
+   verified target version used throughout, and a `README.md` restatement is
+   only a cross-check.
 4. Read the canonical `templates/ADOPTION.md`, the current control templates,
    and the upgrade section in the target `RUNBOOK.md` when it exists.
 
@@ -63,7 +69,7 @@ List every file that steers agents or humans, including root controls,
 `CLAUDE.md`, `.claude/`, roadmaps/gameplans, policy/checklist files, taskboards,
 specs, and harness feedback. Classify each:
 
-- **Port**: project truth that belongs in a current control file or stable spec.
+- **Port**: project truth that belongs in a current control file or spec.
 - **Fold**: live rules that should move into the current `AGENTS.md` contract.
 - **Keep**: project-local design, research, or operations material the harness
   should reference rather than absorb.
@@ -106,44 +112,72 @@ Settle the target's starting point first:
   node tools/workbench-upgrade.mjs upgrade \
     --project [ABSOLUTE_PROJECT_PATH] \
     --home [USER_HOME] \
-    --version v3.2.1 \
+    --version [TARGET_VERSION] \
     --layout-only
   ```
 
-  It requires every core skill to be present in a user-scoped discovery root
-  and reads that presence only; it migrates the legacy lanes once through the
-  Adoption seam, installs the receipt-backed runtime tools, records
+  It refuses a dirty or uncommitted target, migrates the legacy lanes once
+  through the Adoption seam, installs the receipt-backed runtime tools and the
+  receipt-backed core skills lane with its adapters, records
   `provenance.lifecycle: upgrade` with the exact source commit, and writes
   `workbench/sessions/recovery/upgrade-recovery.json` with
-  `skills: "presence-only"`. It works on a host whose discovery root is a
-  foreign Git repository because it never touches one. Only after it completes
+  `skills: "lane-install"`, the pre-migration Git SHA and tracked-path
+  inventory, and both receipts. It never touches a provider-home discovery
+  root. A layout failure reports partial completion with that pre-migration
+  SHA as the recovery point. Only after it completes
   do you reconcile specs through the manifest the route just declared
   (`workbench/manifest.json`). Never rerun Adoption for an already-adopted
   room; a second `adoption` record contradicts its first.
-- **A room already on a v3 support root**: never rerun Adoption. Run the
-  release checkout's `workbench-layout.mjs migrate --project PATH --version VERSION`
-  for additive declared collections. It preserves old note paths and reports
-  its exact layout source. Seeded schema/examples retain adjusted room copies.
-  Inventory and hash the project-owned controls, product code, active specs,
-  completed evidence, and Wiki content before reconciling them through the
-  existing manifest. Update only the intended template sections and managed
-  components. Run the release checkout's `workbench-tools.mjs update
-  --explicit-update` for runtime tools and `workbench-skills.mjs update
-  --explicit-update` for the core skills in `workbench/skills`, retain each
-  receipt and backup, and compare the project-owned inventory afterward. A
-  room stamped before the skills lane existed gets the lane and its
-  `.agents/skills` and `.claude/skills` adapters from `workbench-skills.mjs
-  install` after the layout migration declares it. The manifest's adoption
-  source remains historical; current tool and skill generations belong in
-  their receipts. Exercise rollback from the recorded backup when the
-  upgrade's recovery proof has not already been established.
+- **A room already on a v3 support root**: never rerun Adoption or the
+  one-time route. From the release checkout, in order:
+  1. Record the before state: the target's Git SHA and a hash inventory of
+     every tracked file, classified as project-owned (controls, product code,
+     active specs, completed evidence, Wiki content, room-added skills) or
+     Workbench-managed (the receipted files in the tools and skills lanes).
+     Run `node tools/workbench-tools.mjs verify --project PATH` and
+     `node tools/workbench-skills.mjs verify --project PATH` and keep their
+     findings; drift found here is reported, not silently absorbed.
+  2. Run `workbench-layout.mjs migrate --project PATH --version [TARGET_VERSION]`
+     for additive declared collections. It preserves old note paths and
+     reports its exact layout source. Seeded schema/examples retain adjusted
+     room copies.
+  3. Stamp the manifest `workbenchVersion` with the verified target version;
+     no command writes it for a current-schema room. The manifest's
+     `provenance.source` and lifecycle stay historical; a release mismatch
+     reported as `unverified-provenance` alone is not authority to run
+     `record-source`. Then run
+     `node workbench/tools/workbench-layout.mjs seed-documents --project PATH`
+     from the release checkout to refresh eligible seeded documents; a copy
+     the room changed is retained and reported.
+  4. Reconcile only the intended template sections through the existing
+     manifest, preserving filled project-specific content.
+  5. Run `node tools/workbench-tools.mjs update --project PATH --home HOME
+     --explicit-update` for runtime tools and `node tools/workbench-skills.mjs
+     update --project PATH --home HOME --explicit-update` for the core skills
+     in `workbench/skills`. Retain each receipt and recorded backup. A room
+     stamped before the skills lane existed gets the lane and its
+     `.agents/skills` and `.claude/skills` adapters from `workbench-skills.mjs
+     install` after the layout migration declares it. Room-added skills are
+     never copied, hashed, replaced or removed.
+  6. Verify managed bytes: rerun both `verify` commands; each must report no
+     receipt drift, and every installed managed hash must equal the release
+     checkout's bytes.
+  7. Take the after inventory and account for every changed path: only
+     managed files, the manifest stamp, seeded documents and the intended
+     control sections may differ. Name the rollback: the recorded tool and
+     skill backups restore through each tool's `rollback --project PATH
+     --backup DIR`, and the before Git SHA is the whole-room recovery point;
+     tool and skill backups alone are not whole-room recovery. Exercise a
+     rollback once when the upgrade's recovery proof has not already been
+     established, then reapply the update and verify again.
 
 For the v3 spec-centered Workbench:
 
 - keep `AGENTS.md` small and operational;
 - keep cross-cutting product truth in `BLUEPRINT.md`;
-- create stable `workbench/specs/S-###-slug/SPEC.md` capability packets in the
-  lane the manifest declares;
+- create `workbench/specs/S-###-slug/SPEC.md` capability packets in the lane
+  the manifest declares; lifecycle is folder location, and a record moves only
+  through `move-spec` or `move-task`;
 - make `TASKBOARD.md` a generated hot projection;
 - keep exact commands and recovery in `RUNBOOK.md`;
 - keep `CLAUDE.md` as the thin `@AGENTS.md` bridge;
@@ -181,7 +215,8 @@ history remains reachable, and the target has no competing active queue.
 
 ## 4. Stamp, render, and diagnose
 
-Stamp every copied control with the verified target version. Remove template
+Stamp the manifest `workbenchVersion` and every copied control with the
+verified target version. Remove template
 placeholders and stale version/path/routing language. Run the current lifecycle
 commands from the target root, normally:
 
@@ -195,8 +230,9 @@ Inspect the rendered Blueprint catalog and Taskboard projection. Confirm `next`
 returns the genuinely eligible active slice or `null` for a real dependency or
 owner gate. Do not manipulate status merely to make `next` return work.
 
-Completion criterion: render is deterministic, doctor is green, links resolve,
-spec paths are stable, and selection matches the project's real gate.
+Completion criterion: render is deterministic, doctor reports no blocking
+finding, links resolve, spec paths match their lifecycle folders, and selection
+matches the project's real gate.
 
 ### Workbench self-drift boundary
 
@@ -225,11 +261,13 @@ Run the same full project suite as the baseline, plus harness-specific checks:
 
 - the canonical Workbench evaluator when available, recorded as a diagnostic
   rather than product-outcome proof;
-- canonical tool byte comparison when copied;
+- managed-byte verification: `node tools/workbench-tools.mjs verify --project
+  PATH` and `node tools/workbench-skills.mjs verify --project PATH` from the
+  release checkout report no receipt drift;
 - for an already-v3 room, a before/after byte inventory proving that controls,
-  product code, active work, completed evidence, and Wiki content changed only
-  where the owning upgrade spec intended, plus the managed-tool receipt and
-  backup or an exercised rollback;
+  product code, active work, completed evidence, Wiki content and room-added
+  skills changed only where the owning upgrade spec intended, plus the
+  managed tool and skill receipts and backups or an exercised rollback;
 - placeholder and stale-version search;
 - retired control-name and duplicate-queue search;
 - control-file stamps and mechanical scope alignment;
@@ -251,7 +289,7 @@ Record evaluator score and missing-evidence diagnostics, but do not pad the
 control plane merely to satisfy keyword heuristics. Native behavior proof,
 doctor, and truthful selection state remain the completion gates.
 
-Record the upgrade in a dedicated stable spec. Close it only when its acceptance
+Record the upgrade in a dedicated spec. Close it only when its acceptance
 criteria, proof, documentation impact, and completion result are complete. Then
 render and doctor again so the completed migration leaves the hot board.
 
