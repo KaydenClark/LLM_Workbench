@@ -453,6 +453,14 @@ Spec-branch tooling and the coordinator are described as destination and
 delivered by later Specs derived from the reworked Blueprint. Any Wiki
 design-concept article remains optional owner-directed work.
 
+S-00J TK-01T and TK-02J added public blocker grammar that S-00P's control
+rewrite must describe (TK-002 AGENTS, TK-003 RUNBOOK, TK-004 LEXICON, TK-005
+templates): `S-###:delivered` (satisfied by the blocker Spec's reviewed
+integration delivery; fetch integration before relying on it),
+`owner:<decision>` (an owner-decision blocker the resolver never satisfies;
+it clears only when removed), and the `blocked-without-blocker` and
+`unknown-blocker-qualifier` doctor findings.
+
 ## Supersession
 
 - Supersedes: none.
