@@ -6,10 +6,10 @@ description: Break an assigned Workbench spec into dependency-aware tracer-bulle
 # To Tasks
 
 The assigned `SPEC.md` names the destination. Each approved slice becomes its
-own Task, either a `tasks/<TK-###>/TASK.md` record or, on a Spec that has not
-converted yet, a row in the Spec's own table; the assigned `SPEC.md` is the
-only store either way. `TASKBOARD.md` is a generated projection, not a second
-tracker.
+own `tasks/<TK-###>/TASK.md` record inside the assigned Spec; a Spec that still
+holds only the legacy slice table is converted first (step 4), and its table is
+history, never a place for a new slice. The assigned Spec is the only store.
+`TASKBOARD.md` is a generated projection, not a second tracker.
 
 Confirm the assigned spec resolves through `workbench/manifest.json` before
 changing it. Never recreate a root `specs/` queue or a project-local
@@ -86,7 +86,7 @@ cut into an existing planned Spec stay as they are.
    at a time.
 
 Set the normal stance explicitly in each assigned TASK and its SPEC during
-authorized decomposition; TASK names the Task record or row described above,
-not a second queue. An executing agent investigates within its assignment and
+authorized decomposition; TASK names the Task record described above, not a
+second queue. An executing agent investigates within its assignment and
 never creates its own next task; these planning tools require owner-directed
 planning authority.
