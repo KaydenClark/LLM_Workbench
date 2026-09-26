@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** 2026-09-26 S-00J reached reviewed integration delivery at PR #201 (`2bb0bf1`), but Lane H's probe found `S-00J:delivered` resolving false because containment reads the local `integration` branch, which the owner's checkout holds at `89d4042`; corrective Task TK-002N routes containment through the remote-tracking ref. Human QA remains underway with failed reviews; no owner approval is recorded.
-**Next gate:** TK-002N, then a fresh assembled-Spec review so S-00J is back at T0 and S-00P TK-002 can consume `S-00J:delivered`. Final closure (T3) still needs owner approval and main verification. Do not ask the owner to restart Human QA.
+**Latest event:** TK-002N claimed by claude-lane-H.
+**Next gate:** Close TK-002N with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 

@@ -3,7 +3,7 @@
 **Task ID:** TK-002N
 **Spec ID:** S-00J
 **Slice:** Check integration containment against the remote-tracking integration ref
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Integration containment for owner approval and for `S-###:delivered` is checked against the declared integration branch's remote-tracking ref when it exists, so a stale local branch in another checkout cannot hide reviewed delivery.
