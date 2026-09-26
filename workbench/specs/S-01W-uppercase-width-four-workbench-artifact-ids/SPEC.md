@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
-**Latest event:** TK-02B closed with proof: `next-id` and corrective-Task allocation now share one uppercase width-four artifact policy; full suite green at 1bdc1a8.
-**Next gate:** Land the reviewed TK-02B candidate; then the Dispatcher cuts the dual-form selection slice. Acceptance line 1 is checked for TK-02B's delivered allocation; lines 2-5 remain open until their slices and the assembled capability are verified.
+**Latest event:** Lane I cut TK-002K (dual-form selection) after TK-02B landed in PR #188.
+**Next gate:** A Lane I worker claims and delivers TK-002K. Acceptance line 1 is checked; lines 2-5 remain open.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -155,6 +155,8 @@ allocation from remaining lookup/migration work.
 
 ### Next slice - Dual-form selection
 
+Allocated as [TK-002K](tasks/TK-002K/TASK.md).
+
 Depends on the first slice. Candidate lane:
 `workbench/tools/spec-workbench.mjs`, `tools/test-visible-id-consumers.mjs`,
 `tools/test-spec-workbench.mjs`. Trace findSpec, parent next-id checks, task
@@ -253,6 +255,7 @@ using ignored recovery material as durable evidence.
 | 2026-09-26 | review | Review verdict: pass at 69ab30d037b2da168dca5b56c11cba2e346fd398 [0a2b38ef5cf2] #1 | No blocking findings. Non-blocking: next-id folds an active-plus-retired alias pair as occupied inventory rather than refusing at allocation (doctor diagnoses it; active duplicate records refuse via the loaders); carried into the dual-form selection slice. Dispatcher accepts the worker's reading that spelling duplicates in reference text reserve one ID without refusing while duplicate records refuse, as consistent with Desired Behavior 3. Full AGENTS suite 48/48 at 69ab30d (read-only runner, dirty []). Reviewer ran doctor; did not run fixtures or the suite (read-only sandbox). | codex exec gpt-5.5, read-only sandbox, separate context from the Lane I dispatcher and its worker | 4 |
 | 2026-09-26 | TK-02B | Acceptance line 1 checked and Completion Result updated for TK-02B's delivered allocation, before the landing review of this candidate. | TK-02B evidence above (red/green, suite 48/48 at 69ab30d, review PASS) | This Spec (Acceptance, Completion Result), TASKBOARD.md | Acceptance lines 2-5 |
 | 2026-09-26 | review | Review verdict: pass at 884c5bb7fa04646a14f1f2c2c52bff2b3d08fbba [c12803d6f8d2] #2 | No findings. Landing candidate for TK-02B with acceptance line 1 checked and the Completion Result updated before review. Chain: 69ab30d full review PASS; 02202f6 delta review inconclusive (reviewer ran fixtures in the read-only sandbox, which cannot create temp dirs); d3b39d9 delta review FAIL on one stale Next gate sentence; 884c5bb fixes it and passed delta review. Full AGENTS suite 48/48 at d3b39d9 (read-only runner, dirty []); 884c5bb changes only the Next gate header and its projection. | codex exec gpt-5.5, read-only sandbox, separate context from the Lane I dispatcher and its worker | 5 |
+| 2026-09-26 | TK-002K | Lane I cut TK-002K from the dual-form selection slice, its ID proposed by `next-id S-01W --prefix TK` on integration 4de4904 immediately before the record was saved; it carries TK-02B's non-blocking review note on active-plus-retired alias pairs. | render; doctor no blocking finding; show S-01W lists TK-002K ready | This Spec (header, dual-form slice), TK-002K TASK.md, TASKBOARD.md | TK-002K implementation; `widen-id` touch, consumer coverage and assembled QA slices remain unallocated |
 
 ## Completion Result
 
