@@ -459,6 +459,14 @@ assertIncludesAll(genesis, [
   '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`git.integrationBranch`', 'commit and push',
   'workbench/tools/workbench-layout.mjs init', 'tools/workbench-tools.mjs install'
 ], 'genesis');
+// S-01G TK-00X: `init` accepts any directory without a manifest, so the skill
+// itself must route an existing-code target before writing, through the
+// read-only classifier, and must lay down the skills lane the readiness gate
+// requires (`skill-lane-missing` otherwise).
+assertIncludesAll(genesis, [
+  'node tools/workbench-classify.mjs classify --project', 'verdict is `genesis`', '`adoption`', '`/update-harness`',
+  '`unclassifiable`', 'node tools/workbench-skills.mjs install', 'validate --project PATH --genesis'
+], 'genesis routing and managed-lane contract');
 
 const adoption = read('workbench/skills/adoption/SKILL.md');
 assertIncludesAll(adoption, [
