@@ -40,7 +40,7 @@ In the S-01L scenario, a fresh agent was given a small ledger room and the owner
 
 ## Composition
 
-- [`to-spec`](../skills/to-spec/SKILL.md) scopes a Spec, which enters as planned; `to-tasks` runs later, at activation.
+- [`to-spec`](../skills/to-spec/SKILL.md) scopes a Spec, which enters as planned; `to-tasks` runs later, at activation. As of 2026-09-26, `to-spec` still seeds one tracer-bullet row into the planned Spec so the capability is schedulable. That sits uneasily with E-4B's "no Tasks until activation" for new Specs. The tension is recorded in S-01L's evidence; resolving it belongs to `to-spec`'s owner, not to this skill.
 - [`tracer-bullet`](../skills/tracer-bullet/SKILL.md) supplies the slicing discipline and hands its ordered slices here to write.
 - [`make-it-so`](../skills/make-it-so/SKILL.md) composes `to-tasks` only for authorized delivery slices.
 - Execution then uses `claim` and `close` in the [Runbook](../../RUNBOOK.md), one eligible Task at a time. An executing agent never creates its own next Task.
@@ -51,13 +51,13 @@ The skill was called `to-tickets` until S-00H. It entered the Workbench at [`694
 
 ## Upstream relationship
 
-**Pinned local source:** S-01L's green commit `4e05cfa`. By concept and lineage, `to-tickets` descends from the PRD-to-issues skill in [mattpocock/skills](../../THIRD_PARTY_NOTICES.md), which S-011 imported on 2026-07-14. The 2026-09-10 foundation audit maps it as "to-tickets / prd to issues". What carried over is the idea of dependency-ordered vertical slices with blockers and done criteria. What changed is where slices live: S-011 TK-002 removed the upstream issue-tracker, scratch-folder and ticket-template conventions, and `tools/test-skill-catalog.mjs` still forbids them. Slices live only in the assigned Spec.
+**Pinned local source:** S-01L's green commit `e00c3ea`. By concept and lineage, `to-tickets` descends from the PRD-to-issues skill in [mattpocock/skills](../../THIRD_PARTY_NOTICES.md), which S-011 imported on 2026-07-14. The 2026-09-10 foundation audit maps it as "to-tickets / prd to issues". What carried over is the idea of dependency-ordered vertical slices with blockers and done criteria. What changed is where slices live: S-011 TK-002 removed the upstream issue-tracker, scratch-folder and ticket-template conventions, and `tools/test-skill-catalog.mjs` still forbids them. Slices live only in the assigned Spec.
 
 **Uncertainty:** S-011 kept the untouched upstream snapshot outside this repository, so this article compares by recorded lineage, not by a text diff against a pinned upstream commit. The upstream skill's exact name and revision were not rechecked here.
 
 ## Verified behavior and limits
 
-**Verified 2026-09-26:** the source at `4e05cfa` states the activation rule, the record title and `Stance` field, the conditional approval and the uncut owner-gated slice. `tools/test-skill-catalog.mjs` holds that wording and forbids the old "owner decisions as blockers" line. One fresh-context agent, given only the skill in a disposable room, produced the result in the example above. Every record parsed through `show --json`, `render` and `doctor` stayed clean, and `next --json` returned exactly one Task. Throwaway probes in a copy of that room confirmed the three runtime limits below. The turn record is in the [Spec evidence](../specs/S-01L-to-tasks-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
+**Verified 2026-09-26:** the source at `e00c3ea` states the activation rule, the record title and `Stance` field, the conditional approval and the uncut owner-gated slice. `tools/test-skill-catalog.mjs` holds that wording and forbids the old "owner decisions as blockers" line. One fresh-context agent, given only the skill in a disposable room, produced the result in the example above. Every record parsed through `show --json`, `render` and `doctor` stayed clean, and `next --json` returned exactly one Task. Throwaway probes in a copy of that room confirmed the three runtime limits below. The turn record is in the [Spec evidence](../specs/S-01L-to-tasks-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
 
 **Intended but not built (owned by the lifecycle lane, not this skill):**
 - A Task record cannot express an owner-decision blocker; `Blockers: OD-1` fails to parse.
