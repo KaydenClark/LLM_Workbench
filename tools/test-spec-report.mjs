@@ -335,6 +335,11 @@ function headingShadowSpec(id) {
     writeAt(root, taskPath, taskRecordFixture({id:'TK-0U9', specId:'S-790', slice:'Retired proof', status:'done', blockers:'none', destination:'spec-acceptance: S-790', proof:'old proof'}));
     const retiredDigest = assembleSpecReport(root, 'S-790').specDigest;
     const retiredCandidate = commitFixture(root);
+    // S-00J TK-002N: this room's integration and default branch share one
+    // name, so origin/<branch> pinned above is also the containment ref;
+    // pin it at the new candidate so the refusal below isolates content
+    // binding rather than containment.
+    pinRemoteTracking(root, branch, retiredCandidate);
     writeAt(root, taskPath, fs.readFileSync(path.join(root, taskPath), 'utf8').replace('old proof', 'new proof'));
     assert.notEqual(assembleSpecReport(root, 'S-790').specDigest, retiredDigest, 'retired Task substantive proof is hashed');
     assert.throws(() => recordOwnerApproval(root, 'S-790', {candidate: retiredCandidate, owner:'Fixture owner', result:'approve'}), /candidate content|committed content/i);
@@ -2592,5 +2597,101 @@ function doneTaskWithDecisions({ id, specId, rows }) {
     console.log('ok - S-00J TK-01S: explicit two-Spec approval scope at one inspected SHA: A never authorizes B or unlisted C, a later B finding or substantive change blocks only B, and unchanged A closes with its own approval');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// S-00J TK-002N: owner approval checks integration containment against the
+// declared integration branch's remote-tracking ref (`origin/<branch>`) when
+// it exists, and against the local branch only when it does not. In a shared
+// repository the local `integration` is held by another checkout and can lag
+// far behind `origin/integration`; a lagging local branch must not refuse a
+// candidate the remote integration branch carries, and an unpushed local
+// branch must not approve a candidate the remote does not. The Spec report
+// names the ref containment was resolved against (and the SHA it read), so
+// a stale fetch is visible. Nothing here fetches; the bare origin is only
+// how the fixture gets a real remote-tracking ref.
+{
+  const rooms = [];
+  function approvalRoom({ withRemote, originAt, localAt }) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-integration-ref-'));
+    rooms.push(root);
+    initManagedRoot(root);
+    blueprintAndBoard(root);
+    declareGit(root, { defaultBranch: currentBranch(root), integrationBranch: 'integration' });
+    const base = commitFixture(root);
+    const specId = 'S-7G0';
+    writeAt(root, `workbench/specs/${specId}-fixture/SPEC.md`, tableSpec({ id: specId, taskStatus: 'done', checked: true,
+      completion: 'Delivered.', evidenceRow: '| 2026-09-26 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |' }));
+    const candidate = commitFixture(root);
+    const at = (which) => (which === 'candidate' ? candidate : base);
+    if (withRemote) {
+      const bare = path.join(root, '.git', 'fixture-origin.git');
+      execFileSync('git', ['init', '--quiet', '--bare', bare]);
+      execFileSync('git', ['-C', root, 'remote', 'add', 'origin', bare]);
+      execFileSync('git', ['-C', root, 'push', '--quiet', 'origin', `${at(originAt)}:refs/heads/integration`], { stdio: 'ignore' });
+      execFileSync('git', ['-C', root, 'fetch', '--quiet', 'origin'], { stdio: 'ignore' });
+    }
+    execFileSync('git', ['-C', root, 'branch', '-f', 'integration', at(localAt)]);
+    return { root, specId, candidate, base, specFile: path.join(root, `workbench/specs/${specId}-fixture/SPEC.md`) };
+  }
+  const refs = (root) => execFileSync('git', ['-C', root, 'for-each-ref', '--format=%(refname) %(objectname)'], { encoding: 'utf8' });
+
+  try {
+    // Shared repository: the local integration lags; origin/integration
+    // carries the candidate. Approval resolves through origin/integration.
+    const lagging = approvalRoom({ withRemote: true, originAt: 'candidate', localAt: 'base' });
+    assert.notEqual(spawnSync('git', ['-C', lagging.root, 'merge-base', '--is-ancestor', lagging.candidate, 'integration']).status, 0, 'fixture: the local integration branch really lags the candidate');
+    const laggingRefs = refs(lagging.root);
+    const laggingReport = assembleSpecReport(lagging.root, lagging.specId);
+    assert.deepEqual(laggingReport.integrationContainment, {
+      branch: 'integration', ref: 'origin/integration', source: 'remote-tracking', sha: lagging.candidate, localSha: lagging.base
+    }, 'the report names origin/integration, the SHA it read, and the lagging local branch SHA');
+    assert.match(formatSpecReport(laggingReport),
+      new RegExp(`Integration containment: origin/integration at ${lagging.candidate} \\(remote-tracking ref, local refs only, never fetched; local integration at ${lagging.base}\\)`),
+      'the plain-text report states the containment ref and the stale local branch');
+    const approval = recordOwnerApproval(lagging.root, lagging.specId, { candidate: lagging.candidate, owner: 'Fixture owner', result: 'approve' });
+    assert.equal(approval.remainingGap, 'none', 'a lagging local integration does not refuse a candidate origin/integration carries');
+    assert.equal(approval.integrationContainment.ref, 'origin/integration', 'the approval result names the ref it checked');
+    assert.equal(refs(lagging.root), laggingRefs, 'approval moves no Git ref (no fetch)');
+    const cliReport = spawnSync('node', [path.resolve('workbench/tools/spec-workbench.mjs'), 'report', lagging.specId, '--path', lagging.root], { encoding: 'utf8' });
+    assert.match(cliReport.stdout, /Integration containment: origin\/integration at /, 'the report CLI plain form states the containment ref');
+
+    // Unpushed local delivery while origin/integration exists: refused,
+    // naming origin/integration, writing nothing.
+    const unpushed = approvalRoom({ withRemote: true, originAt: 'base', localAt: 'candidate' });
+    const unpushedBefore = fs.readFileSync(unpushed.specFile, 'utf8');
+    assert.throws(
+      () => recordOwnerApproval(unpushed.root, unpushed.specId, { candidate: unpushed.candidate, owner: 'Fixture owner', result: 'approve' }),
+      (error) => /is not contained in the declared integration branch 'integration'/.test(error.message)
+        && error.message.includes(`checked origin/integration at ${unpushed.base}`)
+        && error.message.includes(unpushed.candidate),
+      'a candidate only an unpushed local integration carries is refused, naming origin/integration and the SHA it read'
+    );
+    assert.equal(fs.readFileSync(unpushed.specFile, 'utf8'), unpushedBefore, 'the refusal writes nothing');
+
+    // No remote: the local branch is the containment ref, as before.
+    const localLagging = approvalRoom({ withRemote: false, localAt: 'base' });
+    const localReport = assembleSpecReport(localLagging.root, localLagging.specId);
+    assert.deepEqual(localReport.integrationContainment, {
+      branch: 'integration', ref: 'integration', source: 'local', sha: localLagging.base, localSha: localLagging.base
+    }, 'with no remote-tracking ref the report names the local branch');
+    assert.match(formatSpecReport(localReport), new RegExp(`Integration containment: integration at ${localLagging.base} \\(local branch; no origin/integration remote-tracking ref\\)`));
+    assert.throws(
+      () => recordOwnerApproval(localLagging.root, localLagging.specId, { candidate: localLagging.candidate, owner: 'Fixture owner', result: 'approve' }),
+      (error) => error.message.includes(`checked integration at ${localLagging.base}`),
+      'with no remote the refusal names the local branch it checked'
+    );
+    const localContained = approvalRoom({ withRemote: false, localAt: 'candidate' });
+    assert.equal(recordOwnerApproval(localContained.root, localContained.specId, { candidate: localContained.candidate, owner: 'Fixture owner', result: 'approve' }).remainingGap, 'none',
+      'with no remote a candidate the local integration carries is approved, as before');
+
+    // Undeclared: the report says so rather than naming any ref.
+    declareGit(localContained.root, null);
+    const undeclaredReport = assembleSpecReport(localContained.root, localContained.specId);
+    assert.deepEqual(undeclaredReport.integrationContainment, { branch: null, ref: null, source: 'undeclared', sha: null, localSha: null });
+    assert.match(formatSpecReport(undeclaredReport), /Integration containment: no integration branch declared; containment unchecked/);
+    console.log('ok - S-00J TK-002N: owner approval checks containment against origin/<integration> when it exists (a lagging local branch cannot refuse, an unpushed local branch cannot approve), falls back to the local branch without a remote, never fetches, and the Spec report names the ref and SHA it resolved');
+  } finally {
+    for (const root of rooms) fs.rmSync(root, { recursive: true, force: true });
   }
 }
