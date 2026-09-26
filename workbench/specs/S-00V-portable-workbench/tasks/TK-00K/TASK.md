@@ -3,7 +3,7 @@
 **Task ID:** TK-00K
 **Spec ID:** S-00V
 **Slice:** A Task naming an optional capability the host lacks is routed to blocked with the capability named
-**Status:** blocked
+**Status:** in-progress
 **Blockers:** TK-00H
 **Destination:** spec-acceptance: S-00V box 5 (the host floor check reports each floor item, and a Task needing an optional capability the host lacks lands in blocked or needs-review with the capability named)
 **Stance:** Builder
