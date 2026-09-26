@@ -273,7 +273,8 @@ assert.doesNotMatch(grillMe, /^Run a `\/grilling` session\.$/m,
 // durable owners rather than ignored live paths, and keeps unresolved notes
 // local: finishing work is not reconciliation. These pin the source contract;
 // the fresh-context run in S-01O records the behavior.
-const saveSkill = read('workbench/skills/save/SKILL.md');
+// Whitespace is normalized so a rewrap of the prose cannot hide or fake a term.
+const saveSkill = read('workbench/skills/save/SKILL.md').replace(/\s+/g, ' ');
 assertIncludesAll(saveSkill, [
   'remote containment',
   'git merge-base --is-ancestor',
@@ -285,7 +286,7 @@ assertIncludesAll(saveSkill, [
   'Local bytes alone never prove remote or cross-device recovery',
   'publication permission'
 ], 'save recovery-boundary contract');
-assert.ok(saveSkill.indexOf('git merge-base --is-ancestor') < saveSkill.indexOf('\n5. '),
+assert.ok(saveSkill.indexOf('git merge-base --is-ancestor') < saveSkill.indexOf(' 5. Keep local context'),
   'remote containment is proved in the Git step, before optional session transport');
 assert.doesNotMatch(saveSkill, /Verify the remote branch resolves to the intended commit/,
   'tip equality is not containment: a remote that advanced past the commit still contains it');
