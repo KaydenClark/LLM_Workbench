@@ -5485,6 +5485,17 @@ function parseTaskRecordForTest(content) {
     // deleted, a fetch prunes it and the Task is selectable again.
     gitIn(alpha, 'push', '--quiet', 'origin', '--delete', 'alpha/s801-tk002');
     assert.equal(nextWork(gamma).taskId, 'TK-002', '(5) a deleted claim branch no longer holds its Task');
+    // (5b) The default branch is not a claim surface either (S-00V TK-002M):
+    // origin/main carrying TK-002 as in-progress is main's own state, never a
+    // competing claim, so the Task stays selectable.
+    const seedTask = path.join(seed, 'workbench/specs/S-801-coordination/tasks/TK-002/TASK.md');
+    fs.writeFileSync(seedTask, fs.readFileSync(seedTask, 'utf8').replace('**Status:** ready', '**Status:** in-progress'));
+    gitIn(seed, 'switch', '--quiet', 'main');
+    gitIn(seed, 'commit', '--quiet', '-am', 'main carries its own task state');
+    gitIn(seed, 'push', '--quiet', 'origin', 'main');
+    const nextOnDefault = nextWork(gamma);
+    assert.equal(nextOnDefault.taskId, 'TK-002', '(5b) a Task in-progress on origin/<defaultBranch> is not taken');
+    assert.equal((nextOnDefault.coordination.remoteClaimed ?? []).some((item) => item.refs.includes('origin/main')), false, '(5b) the default branch is never reported as a claim-bearing tip');
     console.log('ok - claim pushes the claim as the first commit of a task branch cut from integration, and next and claim in another instance fetch and skip a Task claimed on any remote tip');
 
     // (6) Claim on an already-cut task branch keeps working: it commits and
