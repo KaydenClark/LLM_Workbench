@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: Turn an already-settled conversation into one stable Workbench capability spec without restarting the interview.
+description: Turn an already-settled conversation into Workbench capability specs, one Spec per capability, without restarting the interview.
 ---
 
 # To Spec

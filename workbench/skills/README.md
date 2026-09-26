@@ -17,7 +17,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `implement` | Drive one eligible task through red/green, review, and remote recovery. |
 | `make-it-so` | Compose approved work through the exact endpoint the owner authorized. |
 | `to-docs` | Route settled truth into its existing documentation owner. |
-| `to-spec` | Create or update one stable capability specification. |
+| `to-spec` | Create or update one Spec per settled capability, entered at `planned`. |
 | `to-tasks` | Decompose a capability into dependency-aware implementation slices. |
 | `tracer-bullet` | Cut a capability into vertically testable slices. |
 | `update-harness` | Reconcile an adopted project with the current Workbench contract. |
