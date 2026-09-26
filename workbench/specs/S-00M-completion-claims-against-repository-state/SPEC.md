@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Make a completion claim unable to hide uncommitted or unpushed work, by surfacing Git state in `doctor` and refusing `close` unless the Receipt records the state and a reason.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Complete TK-002.
+**Latest event:** TK-003 claimed by claude-lane-D.
+**Next gate:** Close TK-003 with verification and documentation proof.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`6154167f48a4ed2474713d043a9cac18833d6a2a`.
 
@@ -100,7 +100,7 @@ claims nothing further about it. Neither Spec waits on the other.
 |---|---|---|---|---|
 | TK-001 | Read repository state at a stable seam | done | none | Red at d6545ca+tests: node --test --test-name-pattern=readRepositoryState tools/test-diagnostics.mjs failed with SyntaxError: workbench-layout.mjs does not provide an export named readRepositoryState. Green at 97bb945: same command, 3/3 pass (branch/dirty/untracked-lane/upstream ahead 1 behind 1 against a manifest-declared spec lane; detached HEAD, no upstream as null, gone upstream; unknown for non-repo, missing dir, undefined root, absent Git via options.git and via empty PATH, unreadable manifest). node tools/test-diagnostics.mjs 27/27. Full AGENTS.md suite at 97bb945: pass=48 fail=0. |
 | TK-002 | Register and surface the git-state findings | ready | none | Red test asserting `detached-head` and `untracked-controls` are registered `attention`/`none` and appear in `doctor` output for a fixture; green findings; proof that neither changes `doctor`'s exit code or `next`'s selection |
-| TK-003 | Refuse `close` on a dirty or unpushed branch unless the Receipt records it | ready | none | Red test for a close on a dirty tree, and a second for an unpushed branch; green refusal naming the finding; a third test proving the close succeeds when the state and reason are recorded, and that the reason text is present in the written record afterward |
+| TK-003 | Refuse `close` on a dirty or unpushed branch unless the Receipt records it | in-progress | none | Red test for a close on a dirty tree, and a second for an unpushed branch; green refusal naming the finding; a third test proving the close succeeds when the state and reason are recorded, and that the reason text is present in the written record afterward |
 | TK-004 | Document both mechanisms in their control owners | blocked | TK-003 | `AGENTS.md` and `RUNBOOK.md` updated; `tools/test-control-fidelity.mjs` and the full suite pass |
 
 ### TK-001 - Read repository state at a stable seam
