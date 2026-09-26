@@ -9,7 +9,7 @@
 **Catalog description:** Allocate uppercase width-four artifact identifiers, resolve legacy aliases and preserve identities through bounded touch-and-update migration.
 **Blockers:** none
 **Latest event:** TK-02B closed with proof: `next-id` and corrective-Task allocation now share one uppercase width-four artifact policy; full suite green at 1bdc1a8.
-**Next gate:** Separate-context integration review and landing of the TK-02B candidate; then the Dispatcher cuts the dual-form selection slice. No acceptance box is checked until the assembled capability is verified.
+**Next gate:** Land the reviewed TK-02B candidate; then the Dispatcher cuts the dual-form selection slice. Acceptance line 1 is checked for TK-02B's delivered allocation; lines 2-5 remain open until their slices and the assembled capability are verified.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
