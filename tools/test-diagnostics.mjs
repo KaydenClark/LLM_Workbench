@@ -994,7 +994,11 @@ const PINNED_EFFECTS = {
   'skill-adapter-broken': ['attention', 'skills', 'none'],
   'skill-duplicate-discovery': ['attention', 'skills', 'none'],
   'stale-seed': ['attention', 'feedback', 'none'],
-  'unverified-provenance': ['attention', 'manifest', 'none']
+  'unverified-provenance': ['attention', 'manifest', 'none'],
+  // S-00V TK-00H: a missing host floor item blocks everything, but it is only
+  // ever emitted by the session-start `doctor --host` invocation, never by
+  // plain doctor, next or claim.
+  'host-floor-unmet': ['error', 'host', 'all']
 };
 
 test('the registered effect of every blocking code is pinned, and no attention code blocks', () => {
@@ -1402,4 +1406,131 @@ test('readRepositoryState reports unknown, never throwing, outside a repository 
     fs.rmSync(outside, { recursive: true, force: true });
     fs.rmSync(base, { recursive: true, force: true });
   }
+});
+
+// S-00V TK-00H: the session-start host floor check. Every probe is injected, so
+// no test here reads the real Node or Python version, runs git or gh, or
+// touches the network; plain doctor must never call a probe at all.
+const hostFloorModule = await import('../workbench/tools/host-floor.mjs').catch((error) => ({ loadError: error }));
+const specWorkbenchModule = await import('../workbench/tools/spec-workbench.mjs');
+
+function healthyProbes(overrides = {}) {
+  return {
+    node: () => 'v18.0.0',
+    python: () => 'Python 3.9.0',
+    git: () => 'git version 2.39.3',
+    gh: () => ({ version: 'gh version 2.40.0', authenticated: true, repository: 'Fixture/room', push: true }),
+    network: () => ({ reachable: true, detail: 'https://github.com answered HTTP 200' }),
+    ...overrides
+  };
+}
+
+function hostFloorApi() {
+  assert.equal(hostFloorModule.loadError, undefined, `workbench/tools/host-floor.mjs must load: ${hostFloorModule.loadError?.message}`);
+  assert.equal(typeof specWorkbenchModule.doctorCommand, 'function', 'spec-workbench exports doctorCommand, the CLI doctor seam');
+  return { ...hostFloorModule, doctorCommand: specWorkbenchModule.doctorCommand };
+}
+
+test('the host floor check reports every floor item with pass and its observed value', () => {
+  const { checkHostFloor, formatHostFloor, HOST_FLOOR } = hostFloorApi();
+  assert.deepEqual(HOST_FLOOR.map((item) => item.item), ['node', 'python', 'git', 'gh', 'network']);
+  assert.ok(SCOPES.includes('host'), 'host is a registered scope');
+  const floor = checkHostFloor(root, { probes: healthyProbes() });
+  assert.deepEqual(floor.findings, [], 'a host at the floor raises nothing');
+  assert.deepEqual(floor.items.map((item) => [item.item, item.pass]), [['node', true], ['python', true], ['git', true], ['gh', true], ['network', true]]);
+  const observed = Object.fromEntries(floor.items.map((item) => [item.item, item.observed]));
+  assert.equal(observed.node, 'v18.0.0');
+  assert.equal(observed.python, 'Python 3.9.0');
+  assert.equal(observed.git, 'git version 2.39.3');
+  assert.match(observed.gh, /gh version 2\.40\.0/);
+  assert.match(observed.gh, /authenticated/);
+  assert.match(observed.gh, /push to Fixture\/room/);
+  assert.match(observed.network, /HTTP 200/);
+  const text = formatHostFloor(floor.items);
+  for (const item of floor.items) assert.match(text, new RegExp(`pass ${item.item}: `), `${item.item} appears in the report with its result`);
+});
+
+test('each missing floor item in turn raises the registered all finding, and doctor fails only in the --host invocation', () => {
+  const { checkHostFloor, formatHostFloor, doctorCommand } = hostFloorApi();
+  const cases = {
+    node: { node: () => 'v17.9.1' },
+    python: { python: () => 'Python 3.8.18' },
+    git: { git: () => null },
+    gh: { gh: () => ({ version: 'gh version 2.40.0', authenticated: false, repository: 'Fixture/room', push: null }) },
+    network: { network: () => ({ reachable: false, detail: 'getaddrinfo ENOTFOUND github.com' }) }
+  };
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    for (const [item, override] of Object.entries(cases)) {
+      const probes = healthyProbes(override);
+      const floor = checkHostFloor(dir, { probes });
+      assert.deepEqual(floor.findings.map((entry) => [entry.code, entry.severity, entry.scope, entry.blocks, entry.item]), [['host-floor-unmet', 'error', 'host', 'all', item]], `${item} missing`);
+      assert.equal(floor.items.find((entry) => entry.item === item).pass, false);
+      assert.match(formatHostFloor(floor.items), new RegExp(`fail ${item}: `), `${item} is reported as failed`);
+      const hosted = doctorCommand(dir, { host: true, probes });
+      assert.equal(hosted.exitCode, 1, `doctor --host exits non-zero when ${item} is missing`);
+      // The fixture also carries unrelated attention findings (S-00M's
+      // untracked-controls, for one); only the host findings are pinned here.
+      assert.deepEqual(hosted.findings.filter((entry) => entry.scope === 'host').map((entry) => entry.code), ['host-floor-unmet']);
+      assert.deepEqual(hosted.json.floor.map((entry) => entry.item), ['node', 'python', 'git', 'gh', 'network'], 'the JSON report carries every floor item');
+      assert.match(hosted.text, new RegExp(`fail ${item}: `));
+      assert.match(hosted.text, /host-floor-unmet \[blocks all, error\]/);
+      const plain = doctorCommand(dir, { probes });
+      assert.equal(plain.exitCode, 0, `plain doctor is untouched by a missing ${item}`);
+      assert.ok(Array.isArray(plain.json), 'plain doctor JSON stays the bare finding array');
+      assert.equal(plain.json.some((entry) => entry.scope === 'host'), false, 'plain doctor raises no host finding');
+    }
+    assert.equal(doctorCommand(dir, { host: true, probes: healthyProbes() }).exitCode, 0, 'a host at the floor passes doctor --host');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the floor thresholds are Node 18, Python 3.9, and gh push rights to a GitHub remote', () => {
+  const { checkHostFloor } = hostFloorApi();
+  const result = (overrides, item) => checkHostFloor(root, { probes: healthyProbes(overrides) }).items.find((entry) => entry.item === item);
+  assert.equal(result({ node: () => 'v18.0.0' }, 'node').pass, true);
+  assert.equal(result({ node: () => 'v22.11.0' }, 'node').pass, true);
+  assert.equal(result({ node: () => 'v17.9.1' }, 'node').pass, false);
+  assert.equal(result({ python: () => 'Python 3.9.0' }, 'python').pass, true);
+  assert.equal(result({ python: () => 'Python 3.12.4' }, 'python').pass, true);
+  assert.equal(result({ python: () => 'Python 3.8.18' }, 'python').pass, false);
+  assert.equal(result({ python: () => 'Python 2.7.18' }, 'python').pass, false);
+  assert.equal(result({ python: () => null }, 'python').observed, 'not found');
+  const gh = (fact) => result({ gh: () => ({ version: 'gh version 2.40.0', authenticated: true, repository: 'Fixture/room', push: true, ...fact }) }, 'gh');
+  assert.equal(gh({ push: false }).pass, false, 'authenticated without push rights is below the floor');
+  assert.match(gh({ push: false }).observed, /no push rights to Fixture\/room/);
+  assert.equal(gh({ repository: null, push: null }).pass, false, 'a room with no GitHub remote cannot prove push rights');
+  assert.match(gh({ repository: null, push: null }).observed, /no GitHub remote/);
+  assert.equal(gh({ version: null, authenticated: false, repository: null, push: null }).observed, 'not found');
+});
+
+test('plain doctor never calls a host probe, and a failing probe is a visible fail, never a crash', () => {
+  const { checkHostFloor, doctorCommand } = hostFloorApi();
+  const exploding = Object.fromEntries(['node', 'python', 'git', 'gh', 'network'].map((item) => [item, () => { throw new Error(`${item} probe was called`); }]));
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    const plain = doctorCommand(dir, { probes: exploding });
+    assert.equal(plain.exitCode, 0, 'plain doctor stays offline and deterministic');
+    assert.equal(plain.floor, null);
+    assert.deepEqual(doctor(dir, { probes: exploding }), []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  const floor = checkHostFloor(root, { probes: healthyProbes({ network: () => { throw new Error('offline fixture'); } }) });
+  const network = floor.items.find((entry) => entry.item === 'network');
+  assert.equal(network.pass, false);
+  assert.match(network.observed, /probe failed: offline fixture/);
+  assert.deepEqual(floor.findings.map((entry) => entry.item), ['network']);
+});
+
+test('every code the host floor module emits is registered', () => {
+  const source = fs.readFileSync(path.join(root, 'workbench', 'tools', 'host-floor.mjs'), 'utf8');
+  const emitted = [...source.matchAll(/finding\(\s*'([a-z-]+)'/g)].map((match) => match[1]);
+  assert.ok(emitted.length > 0, 'the host floor module emits its finding through the registry');
+  for (const code of emitted) assert.ok(isRegistered(code), `${code} emitted by host-floor must be registered`);
 });
