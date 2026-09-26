@@ -5296,6 +5296,84 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-00V TK-00K: optional-capability routing (end) ----
+
+// ---- S-01W TK-002K: dual-form Task selectors (start) ----
+// Record-backed Task selectors (`receipt --task`, `gate --task`, `move-task
+// --task`) and the retired explicit lookup accept a widened or case-variant
+// spelling of a stored short ID, act on the one stored record and report its
+// stored IDs and paths; nothing is renamed to the selector's spelling.
+{
+  const dualRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'dual-form-selectors-'));
+  const cli = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+  const run = (...args) => {
+    const result = spawnSync(process.execPath, [cli, ...args, '--path', dualRoot, '--json'], { encoding: 'utf8' });
+    return { ...result, json: result.status === 0 && result.stdout.trim() ? JSON.parse(result.stdout) : null };
+  };
+  const git = (...args) => execFileSync('git', ['-C', dualRoot, ...args], { encoding: 'utf8' });
+  try {
+    initLifecycleFixture(dualRoot);
+    const specDir = 'workbench/specs/S-00Q-dual-form-fixture';
+    writeAt(dualRoot, `${specDir}/SPEC.md`, emptyTableRecordBackedSpec('S-00Q'));
+    writeAt(dualRoot, `${specDir}/tasks/TK-00A/TASK.md`, withReceiptRun(doneTaskRecordFixture({
+      id: 'TK-00A', specId: 'S-00Q', slice: 'Delivered slice', destination: 'spec-acceptance: S-00Q Acceptance Criteria', proof: 'landed'
+    })));
+    writeAt(dualRoot, `${specDir}/tasks/TK-00B/TASK.md`, taskRecordFixture({
+      id: 'TK-00B', specId: 'S-00Q', slice: 'Open slice', status: 'in-progress', blockers: 'TK-000A',
+      destination: 'spec-acceptance: S-00Q Acceptance Criteria'
+    }));
+    execFileSync('git', ['init', '--quiet', dualRoot]);
+    git('config', 'user.email', 'fixture@example.com');
+    git('config', 'user.name', 'Fixture');
+    git('add', '-A');
+    git('commit', '--quiet', '-m', 'dual-form corpus');
+
+    const receipt = run('receipt', 'S-000Q', '--task', 'TK-000b', '--tests', 'fixture tests', '--docs', 'none', '--remaining-gap', 'none');
+    assert.equal(receipt.status, 0, receipt.stderr);
+    assert.equal(receipt.json.specId, 'S-00Q', 'receipt reports the stored Spec ID');
+    assert.equal(receipt.json.taskId, 'TK-00B', 'receipt reports the stored Task ID');
+    assert.equal(readReceiptFromFile(path.join(dualRoot, specDir, 'tasks/TK-00B/TASK.md')).length, 1, 'the receipt row lands on the stored record');
+    git('add', '-A');
+    git('commit', '--quiet', '-m', 'receipt');
+
+    const gated = run('gate', '--spec', 'S-000Q', '--task', 'TK-000A');
+    assert.equal(gated.status, 0, gated.stderr);
+    assert.equal(gated.json.refused, false, `gate resolves widened selectors: ${gated.json.reason}`);
+    assert.equal(gated.json.specId, 'S-00Q');
+    assert.equal(gated.json.taskId, 'TK-00A');
+
+    const moved = run('move-task', 'S-0000Q', '--task', 'TK-000A', '--to', 'retired');
+    assert.equal(moved.status, 0, moved.stderr);
+    assert.equal(moved.json.specId, 'S-00Q');
+    assert.equal(moved.json.taskId, 'TK-00A');
+    assert.equal(moved.json.from, `${specDir}/tasks/TK-00A`);
+    assert.equal(moved.json.to, `${specDir}/tasks/retired/TK-00A`);
+    git('add', '-A');
+    git('commit', '--quiet', '-m', 'retire TK-00A');
+    const again = run('move-task', 'S-00Q', '--task', 'TK-000a', '--to', 'retired');
+    assert.notEqual(again.status, 0);
+    assert.match(again.stderr, /S-00Q\/TK-00A is already retired/, 'a widened selector reaches the retired record and names its stored ID');
+
+    const shown = run('show', 'S-000q');
+    assert.equal(shown.status, 0, shown.stderr);
+    assert.equal(shown.json.id, 'S-00Q');
+    assert.equal(shown.json.path, `${specDir}/SPEC.md`);
+    assert.deepEqual(fs.readdirSync(path.join(dualRoot, specDir, 'tasks')).sort(), ['TK-00B', 'retired'], 'no Task directory takes the selector spelling');
+
+    // Retired explicit lookup: a widened selector reaches a retired Spec.
+    const retiredDir = 'workbench/specs/retired/S-00P-retired-fixture';
+    writeAt(dualRoot, `${retiredDir}/SPEC.md`, completeFixtureSpec('S-00P'));
+    const retired = run('show', 'S-000P');
+    assert.equal(retired.status, 0, retired.stderr);
+    assert.equal(retired.json.id, 'S-00P');
+    assert.equal(retired.json.path, `${retiredDir}/SPEC.md`);
+    assert.match(retired.json.body, /^Retired: /, 'the historical-route banner still marks the retired record');
+
+    console.log('ok - widened and case-variant Spec/Task selectors reach the one stored record through receipt, gate, move-task and the retired explicit lookup, reporting stored IDs and paths without renaming anything');
+  } finally {
+    fs.rmSync(dualRoot, { recursive: true, force: true });
+  }
+}
+// ---- S-01W TK-002K: dual-form Task selectors (end) ----
 // ---- S-00J TK-02J: declared-blocked resolution and owner-decision blockers (begin) ----
 // A Task record's declared `blocked` derives `ready` only when a real
 // blocker has cleared: it names at least one blocker (or a recorded missing

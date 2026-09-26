@@ -220,6 +220,7 @@ export function nextIdentity(rootDir, specId, options = {}) {
   const specs = loadSpecs(rootDir);
   const prefix = options.prefix;
   if (!['S', 'TK'].includes(prefix)) throw new Error('--prefix must be S or TK');
+  if (prefix === 'TK') specId = resolveSpecId(rootDir, specId);
   if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec ID');
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
   const occupied = occupiedIdentities(rootDir, prefix);
@@ -296,6 +297,7 @@ function claimInTree(rootDir, id, options, remoteClaims) {
     const orphan = claimOrphanCorrectiveTask(path.resolve(rootDir), id, options, remoteClaims);
     return { result: orphan, specId: orphan.specId, taskId: orphan.taskId, remoteClaimed: [] };
   }
+  id = resolveSpecId(rootDir, id);
   const date = validDate(options?.date ?? today());
   const specs = [...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)];
   const matches = specs.filter((item) => item.id === id);
@@ -363,6 +365,7 @@ export function closeTask(rootDir, id, options) {
   // (mirrors `claimWork` above); its evidence lands on the Wiki note its
   // `wiki-claim` destination names, never a `SPEC.md` that does not exist.
   if (/^TK-/.test(id)) return closeOrphanCorrectiveTask(root, id, options);
+  id = resolveSpecId(root, id);
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
@@ -466,8 +469,10 @@ function gitStateAtClose(root, remainingGap, reasonOption) {
 
 // S-00I TK-006: claims an orphan corrective Task by its own Task ID - see
 // `loadCorrectiveTasks` above for why this folder and this reader.
-function claimOrphanCorrectiveTask(root, taskId, options, remoteClaims = null) {
-  const task = loadCorrectiveTasks(root).find((item) => item.id === taskId);
+function claimOrphanCorrectiveTask(root, selector, options, remoteClaims = null) {
+  const corrective = loadCorrectiveTasks(root);
+  const taskId = resolveStoredId('corrective Task', selector, corrective.map((item) => ({ id: item.id })));
+  const task = corrective.find((item) => item.id === taskId);
   if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
   if (task.status !== 'ready') throw new Error(`${taskId} is ${task.status}, not ready`);
   const claimedOn = remoteClaims?.get(`${task.specId}/${task.id}`);
@@ -483,12 +488,14 @@ function claimOrphanCorrectiveTask(root, taskId, options, remoteClaims = null) {
 // Wiki capability record its finding is against, and that note's own
 // `provenance` list - the Wiki schema's own attribution field - is where
 // this append-only close is recorded instead.
-function closeOrphanCorrectiveTask(root, taskId, options) {
+function closeOrphanCorrectiveTask(root, selector, options) {
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
-  const task = loadCorrectiveTasks(root).find((item) => item.id === taskId);
+  const corrective = loadCorrectiveTasks(root);
+  const taskId = resolveStoredId('corrective Task', selector, corrective.map((item) => ({ id: item.id })));
+  const task = corrective.find((item) => item.id === taskId);
   if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
   if (!['ready', 'in-progress'].includes(task.status)) throw new Error(`${taskId} has no open task to close`);
   if (task.destination.type !== 'wiki-claim') {
@@ -541,11 +548,13 @@ function appendProvenanceRow(content, text) {
 // rather than silently appending to a Task no run is open on.
 export function receiptTask(rootDir, id, options) {
   const root = path.resolve(rootDir);
-  const taskId = requireValue(options?.task, '--task is required');
+  let taskId = requireValue(options?.task, '--task is required');
   const testsRun = requireValue(options?.tests, '--tests is required');
   const docsTouched = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
+  id = resolveSpecId(root, id);
   const spec = findSpec(root, id);
+  taskId = resolveTaskId(spec, taskId);
   const task = slicesOf(spec).find((item) => item.id === taskId);
   if (!task || task.source !== 'record') {
     throw new Error(`${id}/${taskId} has no Task record; the receipt verb appends only to a standalone record`);
@@ -582,6 +591,7 @@ export function receiptTask(rootDir, id, options) {
 // reopens a completed, retired or other non-planned Spec.
 export function convertSpecSlices(rootDir, id, options = {}) {
   const root = path.resolve(rootDir);
+  id = resolveSpecId(root, id);
   const spec = findSpec(root, id);
   const activating = options.activate === true && spec.status === 'planned';
   if (spec.status !== 'active' && !activating) {
@@ -646,6 +656,7 @@ export function convertSpecSlices(rootDir, id, options = {}) {
 
 export function completeSpec(rootDir, id, options = {}) {
   const date = validDate(options.date ?? today());
+  id = resolveSpecId(rootDir, id);
   const spec = findSpec(rootDir, id);
   if (!['active', 'needs-review'].includes(spec.status)) throw new Error(`${id} is ${spec.status}, not completable`);
   // Both sources are checked, not only the one selection reads: a Spec cannot
@@ -813,8 +824,8 @@ const TASK_PR_EXEMPTION = 'S-00O exemption 2 (WF-7 deferred): every Task lands a
 // is `null` when the manifest declares none.
 export function gate(rootDir, options = {}) {
   const root = path.resolve(rootDir);
-  const specId = requireValue(options.spec, 'gate requires --spec S-###');
-  const taskId = options.task ?? null;
+  const specId = resolveSpecId(root, requireValue(options.spec, 'gate requires --spec S-###'));
+  const taskId = options.task ? resolveTaskId(findSpec(root, specId), options.task) : null;
   const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
 
   if (taskId) {
@@ -1746,9 +1757,57 @@ function isHot(spec) {
   return ['active', 'blocked', 'needs-review'].includes(spec.status);
 }
 
+// S-01W TK-002K: a blocker names an identity, so any supported spelling of a
+// satisfied ID satisfies it. `completed` keeps its scope (completed Specs plus
+// this Spec's own done slices), so numeric Task labels stay Spec-qualified.
 function blockersSatisfied(value, completed) {
   if (!value || value === 'none') return true;
-  return value.split(',').map((item) => item.trim()).filter(Boolean).every((id) => completed.has(id));
+  const keys = new Set([...completed].map((id) => visibleIdKey(id) ?? id));
+  return value.split(',').map((item) => item.trim()).filter(Boolean).every((id) => keys.has(visibleIdKey(id) ?? id));
+}
+
+// S-01W TK-002K: the one selector resolution every public Spec and Task
+// operation uses. A selector names a stored record when their collision keys
+// match (`visibleIdKey`: suffix case folded, leading zeros removed), so
+// `S-00Q`, `S-000Q` and `S-00q` all reach stored `S-00Q`. The caller then
+// continues with the stored ID, which is why output, errors and evidence name
+// the stored identity and path and nothing is renamed to the selector's
+// spelling. Two different stored spellings behind one key - an active and a
+// retired record included, which `next-id` still folds as one occupied
+// identity and `doctor` reports as `duplicate-id` - refuse by name rather than
+// choosing a winner. The same stored ID seen twice is left to the existing
+// exact-ID checks (the active-first route below, the row/record collision). A
+// selector naming nothing comes back unchanged so each command keeps its own
+// unknown-ID refusal.
+function resolveStoredId(kind, selector, candidates) {
+  if (typeof selector !== 'string') return selector;
+  const key = visibleIdKey(selector);
+  const stored = new Map();
+  for (const item of candidates) {
+    if (key ? visibleIdKey(item.id) !== key : item.id !== selector) continue;
+    stored.set(item.id, [...(stored.get(item.id) ?? []), item.where].filter(Boolean));
+  }
+  if (stored.size > 1) {
+    const named = [...stored].map(([id, where]) => (where.length ? `${id} (${where.join(', ')})` : id)).join(' and ');
+    throw new Error(`Duplicate ${kind} ID: ${selector} matches ${named}; selection refuses rather than choosing one`);
+  }
+  return stored.size === 1 ? [...stored.keys()][0] : selector;
+}
+
+// Spec selectors resolve across the active roster and the retired route, so a
+// retired alias can neither shadow nor be shadowed by a live record.
+export function resolveSpecId(rootDir, selector) {
+  const root = path.resolve(rootDir);
+  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  return resolveStoredId('spec', selector, specs.map((spec) => ({ id: spec.id, where: spec.relativePath })));
+}
+
+// Task selectors stay Spec-qualified: a historical numeric label such as
+// `TK-001` recurs across Specs, so a Task resolves only among its own Spec's
+// rows, records and retired records.
+export function resolveTaskId(spec, selector) {
+  const tasks = [...spec.rows, ...(spec.records ?? []), ...(spec.retiredRecords ?? [])];
+  return resolveStoredId(`task (${spec.id})`, selector, tasks.map((task) => ({ id: task.id, where: task.filePath ? path.relative(task.root ?? '', task.filePath).split(path.sep).join('/') : null })));
 }
 
 // The active roster is tried first, unchanged; a retired Spec is reachable
@@ -1756,7 +1815,8 @@ function blockersSatisfied(value, completed) {
 // never shadow a live one. `show` is this function's only caller, which is
 // how S-00I TK-003 satisfies "show finds a retired Spec by an explicit
 // historical route" without changing what `next`, `claim` or `render` see.
-export function findSpec(rootDir, id) {
+export function findSpec(rootDir, selector) {
+  const id = resolveSpecId(rootDir, selector);
   const matches = loadSpecs(rootDir).filter((spec) => spec.id === id);
   if (matches.length > 1) throw new Error(`Duplicate spec ID: ${id}`);
   if (matches.length === 1) return matches[0];
@@ -1890,6 +1950,7 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   if (!SPEC_LIFECYCLE_FOLDERS.includes(folder)) {
     throw new Error(`move-spec refuses folder "${folder}"; the closed set is ${SPEC_LIFECYCLE_FOLDERS.join(', ')}`);
   }
+  specId = resolveSpecId(root, specId);
   const specs = loadSpecs(root);
   const matches = specs.filter((item) => item.id === specId);
   if (matches.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
@@ -2006,7 +2067,9 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   if (!TASK_LIFECYCLE_FOLDERS.includes(folder)) {
     throw new Error(`move-task refuses folder "${folder}"; the closed set is ${TASK_LIFECYCLE_FOLDERS.join(', ')}`);
   }
+  specId = resolveSpecId(root, specId);
   const spec = findSpec(root, specId);
+  taskId = resolveTaskId(spec, taskId);
   const activeTask = (spec.records ?? []).find((task) => task.id === taskId);
   if (!activeTask) {
     const alreadyRetired = (spec.retiredRecords ?? []).some((task) => task.id === taskId);
@@ -2201,6 +2264,7 @@ function retiredSpecWikiOwnerStatus(root, historicalRoute) {
 export function retireSpec(rootDir, specId, options = {}) {
   const root = path.resolve(rootDir);
   const wikiNoteGiven = requireValue(options.wikiNote, 'retire-spec requires --wiki <note path>');
+  specId = resolveSpecId(root, specId);
 
   const activeMatches = loadSpecs(root).filter((item) => item.id === specId);
   if (activeMatches.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
@@ -2606,6 +2670,7 @@ function discardedReferences(root) {
 // write.
 export function discardRetiredSpec(rootDir, specId) {
   const root = path.resolve(rootDir);
+  specId = resolveSpecId(root, specId);
   const retired = loadRetiredSpecs(root).filter((item) => item.id === specId);
   if (retired.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
   if (retired.length === 0) {
@@ -2692,7 +2757,9 @@ export function discardRetiredSpec(rootDir, specId) {
 // retired a Task into `tasks/retired/`.
 export function discardRetiredTask(rootDir, specId, taskId) {
   const root = path.resolve(rootDir);
+  specId = resolveSpecId(root, specId);
   const spec = findSpec(root, specId);
+  taskId = resolveTaskId(spec, taskId);
   const retiredTask = (spec.retiredRecords ?? []).find((task) => task.id === taskId);
   if (!retiredTask) {
     const active = (spec.records ?? []).some((task) => task.id === taskId);
@@ -3113,8 +3180,8 @@ async function main() {
   else if (command === 'receipt') result = receiptTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined, activate: options.activate === true });
-  else if (command === 'report') result = assembleSpecReport(root, id, { candidate: options.candidate });
-  else if (command === 'verdict') result = recordReviewVerdict(root, id, { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest });
+  else if (command === 'report') result = assembleSpecReport(root, resolveSpecId(root, id), { candidate: options.candidate });
+  else if (command === 'verdict') result = recordReviewVerdict(root, resolveSpecId(root, id), { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest });
   else if (command === 'approve') {
     // S-00J TK-005: the CLI verb only ever names `approve`; whether it
     // records an approval or a finding is inferred from what the caller
@@ -3125,7 +3192,7 @@ async function main() {
     // wants to say so plainly - recordOwnerApproval itself always requires
     // one of the two literal values.
     const inferredResult = options.result ?? ((options.finding || options.destinationChange) ? 'finding' : 'approve');
-    result = recordOwnerApproval(root, id, {
+    result = recordOwnerApproval(root, resolveSpecId(root, id), {
       candidate: options.candidate,
       owner: options.owner,
       result: inferredResult,
