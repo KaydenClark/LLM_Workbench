@@ -6203,7 +6203,7 @@
       "aliases": [
         "original-foundation-audit Q02"
       ],
-      "notes": "decision-037 requires promoting the ownership sentence in the FND-Q02A form because as first worded it contradicted LEXICON.md (board owning state). Later E-1 (2026-09-22, workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-003) redirected the board to a six-lane TASKBOARD.json Agile board; that later answer governs board shape.",
+      "notes": "decision-037 requires promoting the ownership sentence in the FND-Q02A form because as first worded it contradicted LEXICON.md (board owning state). Later E-1 (2026-09-22, workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-003) redirected the board to a six-lane TASKBOARD.json Agile board; that later answer governs board shape. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-021",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#correction-005",
@@ -6945,7 +6945,7 @@
         "TT-Q1"
       ],
       "aliases": [],
-      "notes": "The 2026-09-19 refinement replaces decision-023's Journey/Path wording.",
+      "notes": "The 2026-09-19 refinement replaces decision-023's Journey/Path wording. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-023",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037",
@@ -9725,7 +9725,7 @@
         "PW-8"
       ],
       "aliases": [],
-      "notes": "Question wording is reconstructed from decision-086; the WF note has no question object for WF-8H. decision-086 left two README conflicts unsettled; the design-concepts README result carries their reconciliation. The 2026-09-23 gap triage called it a v4.x addition; the owner corrected that to v4 scope.",
+      "notes": "Question wording is reconstructed from decision-086; the WF note has no question object for WF-8H. decision-086 left two README conflicts unsettled; the design-concepts README result carries their reconciliation. The 2026-09-23 gap triage called it a v4.x addition; the owner corrected that to v4 scope. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-086",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:13",

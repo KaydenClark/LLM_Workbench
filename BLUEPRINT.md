@@ -78,6 +78,42 @@ history. `SPEC.md` and `TASK.md` are transient working artifacts that carry
 scope, state and evidence while their work is under way, and a later reader
 depends on the durable owners rather than on them.
 
+The [Landmark Tracker](workbench/wiki/design-concepts/landmark-tracker.md)
+connects evolving understanding to durable explanations. Destination Question
+Cards (DQCs) synthesize related grilling questions and preserve unresolved
+matters, changes, expected results and evidence. Landmarks bring those concepts
+together around important features or framework pillars; their importance earns
+a place in the Blueprint. They can overlap, begin before a Spec and remain
+useful after several Specs finish. Further landmarks emerge from DQCs, so an
+exhaustive inventory is never a prerequisite to building the foundation.
+
+DQCs and landmarks maintain the current account before a Spec, Task or Wiki
+article exists. Grilling notepads retain useful discussion history, corrections
+and handoff context. Tracker generates a compact view of the related records
+and their documentation progress; Taskboard monitors implementation. Existing
+sources and owners keep their jobs. A DQC may remain ungrouped, with no
+landmark, until the developing concept suggests one. The Wiki explains confirmed
+durable understanding in readable Markdown without WBIDs; several Specs can
+contribute to one article. These records add no instruction authority.
+
+Documentation progresses through Idea, Aligning, Confirmed, Mapped, Planned,
+Journey, Review and Verified. Related items can contribute mixed fractions
+across those steps. Each distinct item contributes one unit total in the first
+version, and a shared item counts once per aggregate. A completed Task alone
+does not prove that the expected understanding reached its durable destination.
+Workflow activity maintains the source records with reasons and evidence;
+Tracker reflects the distribution instead of resetting cards or assigning a
+single overall stage. An answered question states its Expected result and the
+durable home when known; Result names achieved delivery. Unanswered questions
+need neither fabricated answers nor predetermined documentation destinations.
+
+The starting concept map spans the portable room and its workflow; shared
+understanding and its Tracker; implementation visibility; ownership, artifacts,
+knowledge and navigation; agent behavior; continuity; verification and feedback;
+and room creation, updates, relationships and boundaries. The linked readable
+model preserves the initial landmark titles as an evolving map. General release
+behavior belongs to the workflow; a version rollout is delivery work.
+
 A manifest resolves the support collections, the managed local runtime and the
 managed core skills. Core skills compose reusable behavior within the caller's
 scope. The upstream-owned core ships inside every room in its skills lane,
@@ -87,7 +123,9 @@ publication target that no room depends on
 ([skills lane](workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md),
 [Core ownership](workbench/docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md)).
 
-Local JSON notepads hold unfinished reasoning, source references and corrections.
+Local JSON notepads preserve working-session reasoning, source references and corrections.
+DQCs and landmarks carry the current evolving concept account; grilling notes
+increasingly provide historical and handoff context.
 Supported settled claims move into their durable owners before cleanup. Optional
 private transport can carry selected live context across devices with explicit
 acknowledgment and conflict preservation; ordinary local work remains independent.

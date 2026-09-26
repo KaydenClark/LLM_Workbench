@@ -40,6 +40,13 @@ In the S-00Y scenario, an unrelated code investigation had been interrupted. Its
 
 The [accepted S-00W design](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md) keeps storage mechanics in `notepad`. [Grilling](skill-grilling.md) owns the interview and composes this primitive when the session needs saved context. [Grill-me](skill-grill-me.md) is the planned entry that composes both by default; its delivery belongs to S-00Z. The composing skill owns the question map and statuses. The notepad keeps pending, corrected and confirmed meaning readable, so an interrupted interview resumes at the pending confirmation rather than at the next question.
 
+The approved [Landmark Tracker model](design-concepts/landmark-tracker.md) adds
+a current concept account in DQCs and landmark records before delivery artifacts
+exist. As that capability is delivered, grilling notepads become more historical
+and handoff-like, preserving useful origins, corrections and continuation. This
+does not retire the general notepad primitive or claim that Tracker storage is
+already available.
+
 ## Verified behavior and limits
 
 **Verified 2026-09-24:** the runtime behaviors above are covered by `tools/test-notepads.mjs`. That includes a characterization of the pending → correction → decision sequence, which passed without any runtime change. `tools/test-skill-catalog.mjs` holds the source wording for the pending convention and the corrected-resume recheck. One fresh-context agent, given only the skill source, followed both in the three-turn scenario above. The turn-by-turn record is in the [Spec evidence](../specs/S-00Y-notepad-skill-rebuild/SPEC.md#append-only-evidence-and-execution-log).
@@ -60,3 +67,6 @@ The [accepted S-00W design](../specs/S-00W-concept-grilling-and-notepad-composit
 - 2026-09-23: Created as the individual skill article; current continuity behavior separated from the planned grilling composition.
 - 2026-09-24: Source links reconciled to the managed skills lane; S-00Y owns this skill's future delivery. No behavior change claimed.
 - 2026-09-24: S-00Y TK-00P stated the pending-versus-confirmed convention and the corrected-resume recheck in the source, and recorded one fresh-context scenario.
+
+- 2026-09-26: Clarified the owner-confirmed relationship between grilling notes
+  and planned DQC/landmark understanding; existing runtime claims unchanged.

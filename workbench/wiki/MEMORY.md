@@ -29,6 +29,14 @@ note (`AGENTS.md` -> State Resolution). The wiki is a map, not a Governance
 Plane: it routes to Canon, Grounding, and verified Actuality and authorizes
 nothing.
 
+## Landmark Tracker
+
+[Landmark Tracker](design-concepts/landmark-tracker.md) explains the approved
+relationship between DQCs, landmarks, documentation progress, grilling notes
+and readable knowledge, including the evolving starting inventory.
+[Landmark Tracker Foundation](../specs/S-01T-landmark-tracker-foundation/SPEC.md)
+owns delivery and distinguishes the accepted design from available runtime.
+
 ## Notepad Foundation Routing
 
 For accepted objective continuity and JSON direction, follow

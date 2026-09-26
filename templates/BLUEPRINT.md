@@ -18,7 +18,7 @@
 
 ## Integrated System Design
 
-[Explain how the major parts cooperate to deliver those outcomes. Link active architectural decisions inline only when they materially explain or constrain the destination.]
+[Explain how the major parts cooperate to deliver those outcomes. Link active architectural decisions inline only when they materially explain or constrain the destination. Describe important feature/framework landmarks and how DQCs preserve evolving understanding, Tracker shows documentation progress, Taskboard shows implementation, and the Wiki explains durable knowledge. Let the landmark inventory evolve as concepts emerge.]
 
 ## Cross-Cutting Qualities And Constraints
 
