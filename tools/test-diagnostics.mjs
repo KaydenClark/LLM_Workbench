@@ -1471,13 +1471,16 @@ test('each missing floor item in turn raises the registered all finding, and doc
       assert.match(formatHostFloor(floor.items), new RegExp(`fail ${item}: `), `${item} is reported as failed`);
       const hosted = doctorCommand(dir, { host: true, probes });
       assert.equal(hosted.exitCode, 1, `doctor --host exits non-zero when ${item} is missing`);
-      assert.deepEqual(hosted.findings.map((entry) => entry.code), ['host-floor-unmet']);
+      // The fixture also carries unrelated attention findings (S-00M's
+      // untracked-controls, for one); only the host findings are pinned here.
+      assert.deepEqual(hosted.findings.filter((entry) => entry.scope === 'host').map((entry) => entry.code), ['host-floor-unmet']);
       assert.deepEqual(hosted.json.floor.map((entry) => entry.item), ['node', 'python', 'git', 'gh', 'network'], 'the JSON report carries every floor item');
       assert.match(hosted.text, new RegExp(`fail ${item}: `));
       assert.match(hosted.text, /host-floor-unmet \[blocks all, error\]/);
       const plain = doctorCommand(dir, { probes });
       assert.equal(plain.exitCode, 0, `plain doctor is untouched by a missing ${item}`);
-      assert.deepEqual(plain.json, [], 'plain doctor JSON stays the bare finding array');
+      assert.ok(Array.isArray(plain.json), 'plain doctor JSON stays the bare finding array');
+      assert.equal(plain.json.some((entry) => entry.scope === 'host'), false, 'plain doctor raises no host finding');
     }
     assert.equal(doctorCommand(dir, { host: true, probes: healthyProbes() }).exitCode, 0, 'a host at the floor passes doctor --host');
   } finally {
