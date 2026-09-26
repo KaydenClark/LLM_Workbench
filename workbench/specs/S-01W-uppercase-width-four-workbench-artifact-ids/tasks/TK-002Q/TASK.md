@@ -3,7 +3,7 @@
 **Task ID:** TK-002Q
 **Spec ID:** S-01W
 **Slice:** Move ADR and notepad allocation onto the artifact ID policy
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-01W acceptance line 4 (supported artifact consumers follow the policy and connection identities remain compatible).
