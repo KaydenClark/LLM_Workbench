@@ -85,6 +85,12 @@ doctor, extended demo command, README update and Remaining Gaps.
 - **Claims.** `--claim KEY=TEXT`, `--claim-evidence KEY=REF` and `--affects
   KEY=ASSESSMENT`; evidence is kept per revision, `--affects` requires changed
   understanding in the same revision, and only named claims become `affected`.
+- **Identity (addendum after close).** On the dispatcher's instruction after
+  S-01W TK-02B landed, capture and add-landmark allocate through
+  `allocateArtifactId` (width four, letter-bearing: `DQC-000A`, `LMK-000A`),
+  superseding the Spec's original `allocateVisibleId` identity pin; `--id`
+  still preserves existing identities such as a foundation-era `DQC-001`.
+  Red b19ec97; the green commit and proof are in the Spec's addendum row.
 - **Demo.** `node tools/landmark-tracker-demo.mjs` gains steps 7-12 (scoped
   30/20/50, shared identity, lineage, navigation and dependency cycles,
   incomplete and invalid outcomes, reconciliation).

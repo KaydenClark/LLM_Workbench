@@ -42,7 +42,10 @@ revision it was read at (`ID` alone records an unknown revision). The card is
 stored with an empty landmark relation, no answer, no Expected result, no
 Result and no assessment. Its captured title, question and sources are kept
 as `origin` and never change. The identity is allocated through the shared
-visible-identity allocator; `--id DQC-...` preserves an existing identity and
+artifact allocation policy (`allocateArtifactId`: uppercase `0-9A-Z`, width
+four, letter-bearing, so the first card is `DQC-000A` and the first landmark
+`LMK-000A`); `--id DQC-...` preserves an existing identity, such as a
+foundation-era `DQC-001`, and
 is refused if it is already held.
 
 Capture a landmark the same way when an important feature or framework pillar
@@ -59,8 +62,8 @@ node workbench/tools/landmark-tracker.mjs add-landmark \
 Every revision names the revision you read and a reason:
 
 ```bash
-node workbench/tools/landmark-tracker.mjs show DQC-001 --json   # read revision N
-node workbench/tools/landmark-tracker.mjs revise DQC-001 --expect-revision N \
+node workbench/tools/landmark-tracker.mjs show DQC-000A --json   # read revision N
+node workbench/tools/landmark-tracker.mjs revise DQC-000A --expect-revision N \
   --title "A clearer name" \
   --answer "The owner's answer" \
   --confirm "Who confirmed what scope" \
@@ -82,7 +85,7 @@ Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified. Fractions sum
 to one and always carry a basis and at least one piece of evidence:
 
 ```bash
-node workbench/tools/landmark-tracker.mjs revise DQC-001 --expect-revision N \
+node workbench/tools/landmark-tracker.mjs revise DQC-000A --expect-revision N \
   --assess Journey=0.6,Review=0.4 \
   --basis "How the fractions were judged" --evidence "<artifact>@<revision>" \
   --reason "Why the assessment changed"
@@ -96,8 +99,8 @@ A DQC's own assessment can instead be derived from its related items (see
 `--evidence`, because the evidence is the related items' own. A derived card
 contributes the mean of its related items' fractions, is `derived-incomplete`
 while any of them is unassessed or unknown, and is refused with
-`dependency-cycle` - naming the chain, for example `DQC-001 -> DQC-004 ->
-DQC-001` - if it would depend on itself through other derived cards.
+`dependency-cycle` - naming the chain, for example `DQC-000A -> DQC-000D ->
+DQC-000A` - if it would depend on itself through other derived cards.
 
 ### Claims and changed understanding
 
@@ -105,7 +108,7 @@ Name the specific statements a card's documentation must carry, and the
 evidence for each:
 
 ```bash
-node workbench/tools/landmark-tracker.mjs revise DQC-001 --expect-revision N \
+node workbench/tools/landmark-tracker.mjs revise DQC-000A --expect-revision N \
   --claim "C1=The statement" --claim-evidence "C1=<artifact>@<revision>" \
   --reason "Why these claims"
 ```
@@ -115,7 +118,7 @@ replaced. When understanding changes, the same revision that changes it names
 each claim it affects and assesses why:
 
 ```bash
-node workbench/tools/landmark-tracker.mjs revise DQC-001 --expect-revision N \
+node workbench/tools/landmark-tracker.mjs revise DQC-000A --expect-revision N \
   --answer "The corrected answer" \
   --affects "C1=Why C1 no longer holds as stated" --reason "Why it changed"
 ```
@@ -134,7 +137,7 @@ alone never makes a target stale.
 Connect a DQC to zero, one or several landmarks, at any time:
 
 ```bash
-node workbench/tools/landmark-tracker.mjs link DQC-001 --landmark LMK-001 \
+node workbench/tools/landmark-tracker.mjs link DQC-000A --landmark LMK-000A \
   --expect-revision N --reason "Why this concept belongs to that landmark"
 ```
 
@@ -147,7 +150,7 @@ questions, Specs, ADRs, Tasks and other DQCs - by type and room-scoped
 identity:
 
 ```bash
-node workbench/tools/landmark-tracker.mjs relate DQC-001 --item spec:S-01T@<revision> \
+node workbench/tools/landmark-tracker.mjs relate DQC-000A --item spec:S-01T@<revision> \
   --expect-revision N --reason "Why it is related" \
   [--assess Planned=1 --basis "..." --evidence "<artifact>@<revision>"]
 ```

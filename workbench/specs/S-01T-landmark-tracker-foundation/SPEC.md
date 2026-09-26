@@ -255,10 +255,13 @@ because the runtime resolves only this Spec's Task IDs and whole Spec IDs.
   article type, so the draft's structured bridge between the two contracts is
   unnecessary and neither is weakened. Requirement 16's collection, schema and
   retirement compatibility is delivered by consuming TK-01U.
-- **Identity.** DQCs and landmarks allocate WBIDs through the existing
-  `allocateVisibleId` seam, unique within their type prefix and the Workbench;
-  `visible-ids.mjs` changes only for a proved gap. S-00O carries no pending
-  DQC or landmark identity change that this would race.
+- **Identity.** DQCs and landmarks allocate WBIDs through the shared artifact
+  allocation policy `allocateArtifactId` (S-01W TK-02B: uppercase, width four,
+  letter-bearing), unique within their type prefix and the Workbench; this
+  supersedes the original `allocateVisibleId` pin (TK-01Y addendum), and
+  existing identities such as a foundation-era `DQC-001` are preserved, never
+  reallocated. `visible-ids.mjs` changes only for a proved gap. S-00O carries
+  no pending DQC or landmark identity change that this would race.
 - **Shared files.** TK-01X and S-00I TK-01U both edit `workbench/manifest.json`,
   `workbench-paths.mjs` and `workbench-layout.mjs` under different keys; the
   second to land rebases. TK-02A serializes its `spec-workbench.mjs` lane

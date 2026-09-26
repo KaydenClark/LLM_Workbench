@@ -31,7 +31,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { assertSafeReadPath, assertSafeWritePath, collectionRelative, declaredTracker, findRoot, isMainModule, laneRelative, writeSafeFile, TRACKER_COLLECTIONS } from './workbench-paths.mjs';
-import { allocateVisibleId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
+import { allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { scanPrivacy } from './privacy.mjs';
 
 // The exact ordered documentation-progress vocabulary. These describe concept
@@ -904,7 +904,9 @@ function allocate(inventory, prefix, requested) {
     if (other) refuse('identity-collision', `${requested} is already held by ${other}; retitle or revise that record instead of recapturing it.`, { other });
     return requested;
   }
-  return allocateVisibleId(prefix, [...inventory.keys.values()].map(relative => path.basename(relative, '.json')));
+  // DQCs and landmarks are artifacts: the shared S-01W policy (uppercase,
+  // width four, letter-bearing) with its default width.
+  return allocateArtifactId(prefix, [...inventory.keys.values()].map(relative => path.basename(relative, '.json')));
 }
 
 function requireRevision(options, record) {
