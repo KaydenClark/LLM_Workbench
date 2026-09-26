@@ -129,6 +129,13 @@ assert.deepEqual(
   { command: 'next', id: null, options: { json: true } },
   'option flags must not be consumed as an optional spec ID'
 );
+// S-00V TK-00H: the session-start host floor mode is a boolean flag, so it
+// must not swallow the flag after it as its value.
+assert.deepEqual(
+  parseCliArgs(['doctor', '--host', '--json']),
+  { command: 'doctor', id: null, options: { host: true, json: true } },
+  '--host is a boolean doctor mode'
+);
 
 // ============================================================================
 // S-00M TK-003: `close` refuses a completion claim the repository

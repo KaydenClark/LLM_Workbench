@@ -1,15 +1,15 @@
 # S-01T - Landmark Tracker Foundation
 
 **Spec ID:** S-01T
-**Status:** planned
+**Status:** active
 **Priority:** 1
-**Owner:** codex
+**Owner:** claude-lane-J
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** Owner-confirmed design promoted into documentation and this capability Spec; no Tasks or runtime implementation authored.
-**Next gate:** Owner-directed Task decomposition or implementation assignment; current request stops at documentation and specification.
+**Latest event:** 2026-09-26 Lane J authored TK-01X (foundation, ready), TK-01Y (distributions, blocked on TK-01X), TK-01Z (Landmark Wiki evidence, deferred) and TK-02A (reference recovery, deferred) from the Codex packet draft, allocated by `next-id` on integration, and pinned features/identity compatibility with S-00I.
+**Next gate:** Claim and deliver TK-01X with red/green TDD and a one-command demo; Lane J releases TK-01Z and TK-02A once their named cross-Spec conditions hold.
 
 ## Outcome
 
@@ -197,7 +197,9 @@ must be evidenced in this owner, not turned into a repeat of settled grilling.
 
 ## Non-Goals
 
-- Runtime implementation, Task creation or allocation in this planning change.
+- Runtime implementation, Task creation or allocation in the original planning
+  change (the 2026-09-26 owner instruction to continue the dispatch run later
+  authorized Task decomposition and delivery; see Vertical Implementation Slices).
 - Replacing the ledger, Taskboard, Contract, source artifacts or Wiki.
 - One landmark per Spec, one DQC per utterance, or a finalized inventory gate.
 - A hosted service, database, paid dependency, new agent authority or scheduler.
@@ -220,22 +222,56 @@ must be evidenced in this owner, not turned into a repeat of settled grilling.
 - This Spec carries the Tracker's need for feature-article collection/schema
   compatibility identified by WF-8H; reconcile with existing owners before
   implementing shared consumers, without discarding their unfinished work.
-- No owner design blocker. Tasks and implementation remain unassigned by the
-  explicit specification-only endpoint, not an unanswered design question.
+- No owner design blocker. On 2026-09-26 the owner's instruction to continue
+  the dispatch run authorized Task decomposition and delivery; the earlier
+  specification-only endpoint is superseded, and its planning evidence stands.
 
 ## Vertical Implementation Slices
 
-No Task rows, Task IDs or Task files are created: the owner explicitly requested
-Specs only. Task decomposition is deferred to a later authorized endpoint. An empty
-`tasks/.gitkeep` preserves the existing record-backed parser mode in fresh
-clones; it is not a Task record or an allocation.
+The original planning change created no Tasks. On 2026-09-26 the owner told
+the Claude Director to continue the dispatch run; that instruction authorized
+decomposition. Lane J converted the Codex dispatcher's four unallocated packet
+drafts (candidate `e58655d`, input only, not carried) into Task records,
+allocating each ID with `next-id S-01T --prefix TK` on integration `ec848e5`
+immediately before saving it. The records in `tasks/` are authoritative:
 
-The confirmed first delivery scenario is recorded as acceptance context, not
-an executable Task: capture one ungrouped DQC with source lineage, preserve it,
-connect it to a landmark when one emerges, and generate evidence-backed progress.
-It must exercise record persistence, identity/relationships, calculation and a
-readable projection together. Subsequent decomposition must preserve that
-vertical behavior rather than treating isolated layers as completed capability.
+| Task | Slice | Status | Blockers or release |
+|---|---|---|---|
+| [TK-01X](tasks/TK-01X/TASK.md) | Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view | ready | none |
+| [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | blocked | TK-01X |
+| [TK-01Z](tasks/TK-01Z/TASK.md) | Assess actual Landmark Wiki content so two Specs maintain one readable article | deferred | TK-01Y done and S-00I TK-01U done on integration |
+| [TK-02A](tasks/TK-02A/TASK.md) | Keep live Tracker references and historical proof through record moves | deferred | TK-01X done and S-00I TK-01U done on integration |
+
+Cross-Spec conditions are expressed as `deferred` plus a Release section,
+because the runtime resolves only this Spec's Task IDs and whole Spec IDs.
+
+### Compatibility pins (2026-09-26)
+
+- **Features single writer.** [S-00I TK-01U](../S-00I-folder-lifecycle-for-records/tasks/TK-01U/TASK.md)
+  writes the Wiki `features` collection, its schema and type, and its manifest
+  and path consumers; this Spec consumes them and never writes them. Feature
+  articles keep the Spec-ID-bearing retirement `source_paths` provenance.
+  Requirement 16's no-WBID rule governs Landmark Wiki pages, a different
+  article type, so the draft's structured bridge between the two contracts is
+  unnecessary and neither is weakened. Requirement 16's collection, schema and
+  retirement compatibility is delivered by consuming TK-01U.
+- **Identity.** DQCs and landmarks allocate WBIDs through the existing
+  `allocateVisibleId` seam, unique within their type prefix and the Workbench;
+  `visible-ids.mjs` changes only for a proved gap. S-00O carries no pending
+  DQC or landmark identity change that this would race.
+- **Shared files.** TK-01X and S-00I TK-01U both edit `workbench/manifest.json`,
+  `workbench-paths.mjs` and `workbench-layout.mjs` under different keys; the
+  second to land rebases. TK-02A serializes its `spec-workbench.mjs` lane
+  behind S-00J TK-01S/TK-01T and S-00I TK-01U.
+- **Root controls.** `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md`, `BLUEPRINT.md`
+  and `templates/` root controls stay with S-00P during its rewrite. Tracker
+  procedure lives in `workbench/landmark-tracker/README.md`; Runbook and suite
+  wording the Tasks need is listed under Remaining Gaps below for S-00P.
+
+The confirmed first delivery scenario (capture one ungrouped DQC with source
+lineage, preserve it, connect it to a landmark when one emerges, and generate
+evidence-backed progress) is TK-01X. It exercises persistence,
+identity/relationships, calculation and a readable projection together.
 
 ## Acceptance Criteria
 
@@ -322,15 +358,20 @@ The original workflow diagram is preserved byte-for-byte.
 |---|---|---|---|---|---|
 | 2026-09-26 | none | Owner invokes to-docs and to-spec; no Tasks. Planning baseline at 147ad3fec3f6df1bcf9a002e7ecf7e78d726bc3c in isolated codex/landmark-tracker-foundation. | Doctor: zero blockers, seven attention findings. Self-drift pre: same seven findings, cleanUpdate false. Guardrail baseline 78/100; four outcome-evidence recommendations. | Prior confirmed design and correction lineage synthesized above; unrelated checkpoint edit preserved in original checkout. | Verification of authored planning candidate pending; capability not implemented. |
 | 2026-09-26 | none | Planning verification at 541aac0a1e167f7d93cd72783a48bf740f2e9a64; corrected only the ADR corpus expected-link count afterward. | All 48 required commands executed: 47 passed; ADR count 61 versus actual 62 failed, then all 29 ADR tests passed with the count reconciled. Wiki/ADR validation, render, doctor, exact workflow-map preservation and no-WBID/no-Task checks passed. See [planning verification receipt](planning-verification.json). | Root/generic owners, accepted ADR-000N, readable article, router and historical reconciliation links documented. Initial independent review passed 84eaf20; final immutable candidate review follows. | Seven existing attention findings remain; guardrail 78/100 unchanged with four outcome-evidence recommendations. No runtime, Tasks or Human QA completion claimed. |
+| 2026-09-26 | none | Lane J (Claude Director dispatch, owner instruction to continue the run) rebuilt the planning candidate on integration ec848e5: four Task records TK-01X, TK-01Y, TK-01Z, TK-02A converted from the Codex packet draft at e58655d (input only; PACKET-PLAN.md and dispatch-verification.json not carried), each ID proposed by next-id S-01T --prefix TK immediately before its record was saved; features single-writer (S-00I TK-01U), identity and root-control compatibility pinned. | render; doctor no blocking finding (seven existing attention findings plus the untracked-record notice before commit); show S-01T; full AGENTS suite, fresh-clone doctor and separate-context review are recorded on the committed candidate in the review verdict row. | SPEC header, Non-Goals, Dependencies, Vertical Implementation Slices, Completion Result and Remaining Limitations updated; four TASK.md records; TASKBOARD.md rendered. No root control, runtime, manifest, Wiki or template change. | No runtime yet; TK-01X is next. Runbook and suite-list wording for the Tracker is owed to S-00P once TK-01X lands. |
+| 2026-09-26 | review | Review verdict: pass at 98b8b18c8d60d377e9c3ed289d373406c8982cf8 [3f607c74c281] #1 | No High/Medium/Low findings. Full AGENTS suite 48/48 at the committed candidate (read-only runner, dirty []); fresh-clone doctor no blocking finding; render idempotent in the clone. Reviewer ran show and doctor; did not rerun render or the suite (read-only sandbox). | codex exec gpt-5.5, read-only sandbox, separate context from the Lane J dispatcher | 4 |
 
 ## Completion Result
 
 Capability delivery pending. The documentation/specification packet does not
-satisfy runtime acceptance or owner Human QA, and no Tasks have been authored.
+satisfy runtime acceptance or owner Human QA. Four Tasks are authored; none is
+delivered yet.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Implementation and detailed Task decomposition are outside this request.
+- Implementation proceeds through TK-01X, TK-01Y, TK-01Z and TK-02A.
+- Owed to S-00P (root controls): Runbook procedure for the Tracker and the
+  suite-list line for its test, supplied as wording when TK-01X lands.
 - Initial content can evolve; no exhaustive catalog approval is required.
 - Pre-existing attention findings remain with their current owners; neither this
   planning change nor structural checks establish a clean Workbench update.

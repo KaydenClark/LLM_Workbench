@@ -18,7 +18,7 @@ needs-review when the work is otherwise done, naming the capability so the
 owner's sitrep surfaces it. Reuse the floor Task's probe seam.
 
 Two record-contract facts shape the design: `Blockers` accepts only `S-`/`TK-`
-ids, and `needs-review` is not a Task status at integration today; the generated JSON taskboard Spec from S-00O (ID pending allocation) plans to add it. Name the
+ids, and `needs-review` is not a Task status at integration today; S-01X (the generated JSON taskboard Spec from S-00O) plans to add it. Name the
 capability without breaking the parser (for example a separate field), and
 satisfy the box with blocked routing if needs-review has not landed; record the
 needs-review half in the gap. `workbench/tools/task-record.mjs` is shared with

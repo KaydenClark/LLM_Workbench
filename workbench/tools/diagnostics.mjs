@@ -8,7 +8,7 @@
 // is a tool change with a test.
 
 export const SEVERITIES = Object.freeze(['error', 'attention']);
-export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls', 'skills', 'git']);
+export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls', 'skills', 'git', 'host']);
 export const EFFECTS = Object.freeze(['all', 'selection', 'selected-slice', 'none']);
 
 const registry = Object.freeze({
@@ -171,7 +171,13 @@ const registry = Object.freeze({
   // to the feedback lane because that is the whole covered set today; widening
   // the set to another lane is a registry change with its own test.
   'stale-seed': entry('attention', 'feedback', 'none', 'a seeded lane document records a release other than the manifest workbenchVersion'),
-  'unverified-provenance': entry('attention', 'manifest', 'none', 'the manifest records no verifiable source identity, or one that disagrees with its own workbenchVersion')
+  'unverified-provenance': entry('attention', 'manifest', 'none', 'the manifest records no verifiable source identity, or one that disagrees with its own workbenchVersion'),
+  // S-00V TK-00H: the host floor (Node 18+, Python 3.9+, git, gh authenticated
+  // with push rights to the room's remote, network to GitHub). Registered
+  // `all` because a session below the floor cannot finish any Task; emitted
+  // only by the session-start `doctor --host` invocation (host-floor.mjs),
+  // never by plain doctor, next or claim, which stay offline.
+  'host-floor-unmet': entry('error', 'host', 'all', 'a host floor item is missing; install or authenticate it (Node 18+, Python 3.9+, git, gh with push rights to the room remote, network to GitHub) before session work')
 });
 
 function entry(severity, scope, blocks, summary) {

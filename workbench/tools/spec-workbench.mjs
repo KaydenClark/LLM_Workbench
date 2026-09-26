@@ -9,6 +9,7 @@ import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
+import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
@@ -775,6 +776,26 @@ export function doctor(rootDir, options = {}) {
   issues.push(...skillFindings(root));
   issues.push(...gitFindings(root, specs));
   return issues;
+}
+
+// The CLI doctor seam. Plain doctor is `doctor()` above and never probes the
+// host. `--host` is the session-start invocation (S-00V TK-00H): it adds the
+// host floor report and its `host-floor-unmet` findings, so a missing floor
+// item fails this invocation only. Its JSON is `{ floor, findings }`; plain
+// doctor's JSON stays the bare finding array. `options.probes` injects the
+// host probes for tests.
+export function doctorCommand(rootDir, options = {}) {
+  const root = path.resolve(rootDir);
+  const floor = options.host ? checkHostFloor(root, { probes: options.probes }) : null;
+  const findings = [...doctor(root, options), ...(floor?.findings ?? [])];
+  const report = formatDoctorReport(findings);
+  return {
+    findings,
+    floor,
+    exitCode: blocksSelection(findings) ? 1 : 0,
+    json: floor ? { floor: floor.items, findings } : findings,
+    text: floor ? `${formatHostFloor(floor.items)}\n${report}` : report
+  };
 }
 
 // Validate proposed spec bytes without touching files or inspecting the host.
@@ -2769,6 +2790,7 @@ export function parseCliArgs(argv) {
   for (let optionIndex = 0; optionIndex < rest.length; optionIndex += 1) {
     const arg = rest[optionIndex];
     if (arg === '--json') options.json = true;
+    else if (arg === '--host') options.host = true;
     else if (arg.startsWith('--')) options[toCamel(arg.slice(2))] = rest[++optionIndex];
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -2783,6 +2805,7 @@ async function main() {
   const { command, id, options } = parseCliArgs(process.argv.slice(2));
   const root = options.path ?? process.cwd();
   let result;
+  let doctorRun;
   if (command === 'next') result = nextWork(root);
   else if (command === 'next-id') result = nextIdentity(root, id, options);
   else if (command === 'show') result = showSpec(root, id);
@@ -2821,14 +2844,15 @@ async function main() {
   else if (command === 'discard') result = options.task ? discardRetiredTask(root, id, options.task) : discardRetiredSpec(root, id);
   else if (command === 'render') result = render(root);
   else if (command === 'doctor') {
-    result = doctor(root, options);
-    if (blocksSelection(result)) process.exitCode = 1;
+    doctorRun = doctorCommand(root, options);
+    result = doctorRun.json;
+    process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###]; doctor [--host])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
-  else if (command === 'doctor') console.log(formatDoctorReport(result));
+  else if (command === 'doctor') console.log(doctorRun.text);
   else if (command === 'report') console.log(formatSpecReport(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
 }
