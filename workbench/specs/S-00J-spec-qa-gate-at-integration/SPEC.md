@@ -3,13 +3,13 @@
 **Spec ID:** S-00J
 **Status:** active
 **Priority:** 3
-**Owner:** DISPATCHER
+**Owner:** claude-lane-H
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** 2026-09-26 Lane H renumbered the Codex wave packets to TK-01R/TK-01S (TK-00G/TK-00H went to S-00V and TK-01Q to S-01U first), wrote the closure-capture transition contract from the owner's WF-8E/WF-8H/WF-8F and SCR answers, released TK-01R and added TK-01T for the reviewed-delivery blocker. Human QA remains underway with failed reviews; no owner approval is recorded.
-**Next gate:** Execute TK-01R, then TK-01S, then TK-01T serially in one runtime lane; Dispatcher whole-Spec QA precedes separate-context review of each immutable candidate. Do not request that the owner restart Human QA.
+**Latest event:** TK-01R claimed by claude-lane-H.
+**Next gate:** Close TK-01R with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 

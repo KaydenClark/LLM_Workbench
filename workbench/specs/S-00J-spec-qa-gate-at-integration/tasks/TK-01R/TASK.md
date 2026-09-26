@@ -3,7 +3,7 @@
 **Task ID:** TK-01R
 **Spec ID:** S-00J
 **Slice:** Expose unresolved durable Task decisions in Spec QA
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-00J assembled-Spec QA detects unresolved durable Task decisions and refuses readiness and closure until their escalation is reconciled.
