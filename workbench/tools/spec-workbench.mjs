@@ -609,6 +609,28 @@ export function convertSpecSlices(rootDir, id, options = {}) {
   }
   const specDir = path.dirname(spec.filePath);
   const tasksDir = path.join(specDir, 'tasks');
+  // S-01L TK-002P: a planned record-backed Spec - to-spec's shape, a `tasks/`
+  // directory and no unfinished table row (`loadSpecs` already refuses a
+  // record-backed Spec that still holds one) - has no row to convert. to-tasks
+  // writes its first records; `--activate` is then only the activation gate.
+  // Every live record was parsed by `loadSpecs` (an unparseable one refuses
+  // before this point, naming the Task), and `slicesOf` refuses a row/record
+  // collision, so this checks that at least one record exists and changes
+  // nothing but Status.
+  if (activating && spec.recordBacked) {
+    const tasks = slicesOf(spec).map((slice) => slice.id);
+    if (tasks.length === 0) {
+      throw new Error(`${id} has no Task record under ${path.relative(root, tasksDir).split(path.sep).join('/')} to activate; write its first TASK.md record(s) with to-tasks, then run convert-tasks ${id} --activate`);
+    }
+    atomicWrite(spec.filePath, updateFields(spec.content, { Status: 'active' }));
+    return {
+      specId: id,
+      activated: true,
+      converted: [],
+      retained: spec.rows.filter((row) => row.status === 'done').map((row) => row.id),
+      tasks
+    };
+  }
   if (fs.existsSync(tasksDir)) {
     throw new Error(`${id} already has ${path.relative(root, tasksDir).split(path.sep).join('/')}; conversion runs once and refuses to run again`);
   }
@@ -1466,22 +1488,24 @@ function blockerKind(token) {
 // second parser: every Task done and every acceptance line checked
 // (`assembleSpecReport`), the latest verdict bound to the Spec's current
 // content digest is a PASS (`latestVerdict`), its candidate is an ancestor of
-// the manifest-declared integration branch (`isAncestorOfBranch`, the check
-// owner approval already makes), and the Spec/Task content committed at that
-// candidate hashes to the same digest (`computeSpecDigest`). A room with no
+// the manifest-declared integration branch as resolved by
+// `resolveIntegrationContainmentRef` (`origin/<branch>` when it exists, else
+// the local branch; S-00J TK-002N), the check owner approval also makes,
+// and the Spec/Task content committed at that candidate hashes to the same
+// digest (`computeSpecDigest`). A room with no
 // declared integration branch has nothing to check containment against, so
 // the edge stays unmet. Any read failure is an unmet edge, never a throw
 // through `next`, `render` or doctor.
 function reviewedDelivery(spec) {
-  const integrationBranch = declaredGit(spec.root)?.integrationBranch;
-  if (!integrationBranch) return false;
+  const containment = resolveIntegrationContainmentRef(spec.root);
+  if (!containment.ref) return false;
   try {
     const report = assembleSpecReport(spec.root, spec.id);
     if (report.tasks.some((task) => task.status !== 'done')) return false;
     if (report.acceptance.some((line) => !line.checked)) return false;
     const verdict = report.latestVerdict;
     if (verdict?.result !== 'pass') return false;
-    if (!isAncestorOfBranch(spec.root, verdict.candidate, integrationBranch)) return false;
+    if (!isAncestorOfBranch(spec.root, verdict.candidate, containment.ref)) return false;
     return computeSpecDigest(spec.root, spec, verdict.candidate) === report.specDigest;
   } catch {
     return false;
@@ -2834,9 +2858,45 @@ function stageDiscard(root) {
 function resolveDefaultBranchRemoteRef(root) {
   const defaultBranch = declaredGit(root)?.defaultBranch ?? null;
   if (!defaultBranch) return { defaultBranch: null, remoteRef: null };
-  const remoteRef = `origin/${defaultBranch}`;
-  const hasRemoteRef = spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/remotes/${remoteRef}`]).status === 0;
-  return { defaultBranch, remoteRef: hasRemoteRef ? remoteRef : null };
+  return { defaultBranch, remoteRef: resolveRemoteTrackingRef(root, defaultBranch) };
+}
+
+// `origin/<branch>` when that remote-tracking ref exists locally, else
+// `null`. Reads local refs only; never fetches.
+function resolveRemoteTrackingRef(root, branch) {
+  const remoteRef = `origin/${branch}`;
+  return spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/remotes/${remoteRef}`]).status === 0 ? remoteRef : null;
+}
+
+function resolveCommit(root, ref) {
+  const result = spawnSync('git', ['-C', root, 'rev-parse', '--verify', '--quiet', `${ref}^{commit}`], { encoding: 'utf8' });
+  return result.status === 0 ? result.stdout.trim() || null : null;
+}
+
+// S-00J TK-002N: the one ref integration containment is checked against -
+// the declared integration branch's remote-tracking ref (`origin/<branch>`,
+// the same resolution TK-01S's default-branch delivery check uses) when it
+// exists, otherwise the local branch. In a shared repository the local
+// `integration` branch is held by another checkout and can lag far behind
+// `origin/integration`; reading the remote-tracking ref keeps that stale
+// local ref from hiding reviewed delivery, and keeps an unpushed local
+// branch from counting as delivery. A room with no remote keeps using its
+// local branch. Local refs only; nothing is fetched, so a stale fetch is
+// named by `sha` (and `localSha`) for the caller to show. `source` is
+// `remote-tracking`, `local`, or `undeclared` (no `git.integrationBranch`,
+// `ref` null: nothing to check against).
+export function resolveIntegrationContainmentRef(root) {
+  const branch = declaredGit(root)?.integrationBranch ?? null;
+  if (!branch) return { branch: null, ref: null, source: 'undeclared', sha: null, localSha: null };
+  const remoteRef = resolveRemoteTrackingRef(root, branch);
+  const ref = remoteRef ?? branch;
+  return {
+    branch,
+    ref,
+    source: remoteRef ? 'remote-tracking' : 'local',
+    sha: resolveCommit(root, ref),
+    localSha: resolveCommit(root, `refs/heads/${branch}`)
+  };
 }
 
 // The tracked, append-only discards register this lane defines: a Spec or

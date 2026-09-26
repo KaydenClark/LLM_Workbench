@@ -194,6 +194,19 @@ assertIncludesAll(slicingSkill, [
   'Leave a slice that waits on an unanswered owner decision uncut',
   'record the open decision in the Spec'
 ], 'to-tasks record, activation, approval and owner-gate contract');
+// S-01L TK-002P: to-spec leaves a new planned Spec record-backed with an empty
+// tracked `tasks/` directory and no Task row, so its activation route is:
+// write the first record(s) with next-id, then `convert-tasks S-### --activate`
+// once, which converts no row and sets only Status (tools/test-spec-workbench.mjs
+// proves the runtime). This replaces "has no activation command yet".
+assertIncludesAll(slicingSkill, [
+  'planned record-backed Spec',
+  'write its first `TASK.md` record(s)',
+  'then run the command once',
+  'converts no row'
+], 'to-tasks record-backed activation route');
+assert.doesNotMatch(slicingSkill, /has no\s+activation command yet/,
+  'to-tasks must not say a planned record-backed Spec has no activation command');
 assert.doesNotMatch(slicingSkill, /Keep unresolved owner decisions visible as blockers/,
   'to-tasks must not route an owner decision into a Task Blockers field the runtime cannot hold');
 // S-01L review correction: a new slice always becomes a TASK.md record; a
