@@ -131,7 +131,10 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
 // Completion Result, Decisions prose, and a Task body's `## Decisions` section
 // (S-00J TK-01R: substantive, never excluded) - is left untouched, so a real
 // change there still moves the digest.
-function computeSpecDigest(root, spec, candidate = null) {
+// S-00J TK-01S: exported unchanged so `completeSpec` verifies the Spec's
+// committed content on the default branch with this one digest rule; it
+// adds no second normalization.
+export function computeSpecDigest(root, spec, candidate = null) {
   const specDir = path.dirname(spec.filePath);
   // Each entry is hashed as its name, then its byte length, then its own
   // content, each on its own line: the length prefix is what keeps one
