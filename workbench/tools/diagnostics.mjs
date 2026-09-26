@@ -71,6 +71,12 @@ const registry = Object.freeze({
   // it as unmet, so the finding only makes that wait visible; it blocks
   // nothing room-wide, and the slice it gates stays unselectable.
   'unknown-blocker-qualifier': entry('error', 'specs', 'none', 'a Task blocker names a qualifier outside the known blocker grammar; it stays unmet until corrected'),
+  // S-00J TK-02J: a Task record declared `blocked` names no resolvable
+  // blocker (no blocker at all, or only tokens outside the known grammar,
+  // and no recorded missing capability). The resolver keeps it blocked
+  // rather than handing it out, so this only makes the wait visible: the
+  // author either records the real blocker or corrects the Status.
+  'blocked-without-blocker': entry('attention', 'specs', 'none', 'a Task record declared blocked names no resolvable blocker; it stays blocked until one is recorded or its Status is corrected'),
   // S-00I TK-003: a Spec's lifecycle folder is retired, but its own header
   // Status still disagrees (folder says done with it; the header does not
   // say complete) - the Spec analogue of `disagreeing-status`, visible and
