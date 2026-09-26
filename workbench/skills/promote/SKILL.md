@@ -18,15 +18,23 @@ passing mention. Read the Contract, manifest and assigned owner first.
    withdrawn and superseded status; promote only the supported current claim
    under existing authorization. If ordering is unclear, preserve the source
    and report the ambiguity rather than choose a convenient interpretation.
-2. Use `to-docs` to choose the existing durable owner. Requirements and proof
-   belong to the assigned spec, operating rules to their owning control,
+   Read pending meaning the way `notepad` records it: a `source_record` whose
+   readback is still listed in `current.unresolved` is pending, not supported,
+   however settled it sounds, and only a `decision` entry records a confirmed
+   owner answer. A mixed note promotes its confirmed claims and leaves the rest.
+2. Use `to-docs` to choose exactly one durable owner for each accepted claim;
+   when another owner needs it, link to it rather than copy it. Requirements
+   and proof belong to the assigned spec, operating rules to their owning control,
    durable knowledge to the manifest Wiki. Decision rationale belongs in
    `workbench/docs/adr/`, with active accepted decision claims as architectural Canon and
    `canonicalized_in` naming operational owners. Create a needed owner only through its authorized normal workflow.
    File type and location do not assign a Governance Plane or grant scope.
 3. Author a separate, ignored Markdown draft inside the project containing
-   the complete proposed owner bytes. Distill the supported result faithfully;
-   never copy the notepad wholesale or cite an ignored note as durable proof.
+   the complete proposed owner bytes, for example under
+   `workbench/sessions/recovery/`; the command refuses a draft outside the
+   project, and a tracked path would dirty the tree. The draft is disposable
+   authored text, not a note or evidence. Distill the supported result
+   faithfully; never copy the notepad wholesale or cite an ignored note as durable proof.
    Preserve existing unrelated owner content, source anchors and append-only
    evidence. Read the destination bytes and compute their SHA-256.
 4. Use the project's installed public seam, with the source revision just read:
@@ -46,8 +54,10 @@ per note and owner is required; revision/hash checks are not concurrent locks.
 
 5. Record the result in the proper owner and update the note append-only,
    naming the durable destination. Keep unresolved work and correction or
-   transfer dependencies. Use the `notepad` trim/delete public seam only once
-   that material is reconciled and no retained context still needs it. Existing
+   transfer dependencies.
+   Leave each pending entry and its `current.unresolved` item in place:
+   promotion does not confirm it. Use the `notepad` trim/delete public seam
+   only once that material is reconciled and no retained context still needs it. Existing
    frozen checkpoints remain unchanged; no routine archive or copy is created.
 6. Compose `save` for the achieved changes under the same scope. Pass the
    already-promoted result so save does not promote it again. Report the

@@ -70,7 +70,11 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
   const ownerApproval = parseOwnerApprovals(evidence);
   const latestOwnerApproval = latestOwnerApprovalFor(ownerApproval, specDigest, root, spec);
 
-  const gaps = collectGaps({ tasks, acceptance, completionResult, evidence });
+  // S-00J TK-01R: an unresolved durable Task decision is a named gap, kept
+  // separately as `decisionGaps` too so `completeSpec` can refuse exactly it
+  // without adopting every other report gap as a new closure rule.
+  const decisionGaps = collectDecisionGaps(tasks);
+  const gaps = [...collectGaps({ tasks, acceptance, completionResult, evidence }), ...decisionGaps];
 
   return {
     id: spec.id,
@@ -94,6 +98,8 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
     ownerApproval,
     latestOwnerApproval,
     completionResult,
+    decisionCoverage: decisionCoverageOf(tasks),
+    decisionGaps,
     gaps,
     complete: gaps.length === 0
   };
@@ -122,8 +128,9 @@ export function assembleSpecReport(rootDir, specId, options = {}) {
 // Candidate approval computes this same digest from Git blobs and refuses a
 // mismatch before writing. Everything else - the Task's own Status/Blockers/Proof/Planned
 // verification, a table-backed Spec's slice table, Acceptance Criteria, the
-// Completion Result, Decisions prose - is left untouched, so a real change
-// there still moves the digest.
+// Completion Result, Decisions prose, and a Task body's `## Decisions` section
+// (S-00J TK-01R: substantive, never excluded) - is left untouched, so a real
+// change there still moves the digest.
 function computeSpecDigest(root, spec, candidate = null) {
   const specDir = path.dirname(spec.filePath);
   // Each entry is hashed as its name, then its byte length, then its own
@@ -933,7 +940,8 @@ function retiredTaskEntry(task) {
     proof: task.proof ?? null,
     source: 'retired-record',
     history: true,
-    plannedVerification: task.plannedVerification ?? null
+    plannedVerification: task.plannedVerification ?? null,
+    decisions: taskDecisions(task.content)
   };
   if (task.filePath && fs.existsSync(task.filePath)) {
     const rows = readReceiptFromFile(task.filePath);
@@ -953,7 +961,10 @@ function taskEntry(slice) {
     status: slice.declared,
     blockers: slice.blockers,
     proof: slice.proof ?? null,
-    source: slice.source
+    source: slice.source,
+    // S-00J TK-01R: a table-row Task has no body, so its decision coverage
+    // is unknown; a record's is read from its own `## Decisions` section.
+    decisions: slice.source === 'record' ? taskDecisions(slice.record.content) : unknownDecisions()
   };
   if (slice.source === 'record') {
     task.plannedVerification = slice.record.plannedVerification ?? null;
@@ -977,7 +988,8 @@ function historyTaskEntry(row) {
     blockers: row.blockers,
     proof: row.proof ?? null,
     source: 'row',
-    history: true
+    history: true,
+    decisions: unknownDecisions()
   };
 }
 
@@ -1026,6 +1038,92 @@ function collectGaps({ tasks, acceptance, completionResult, evidence }) {
     if (!named) gaps.push(`Evidence log names no row for done Task ${id}`);
   }
   return gaps;
+}
+
+// S-00J TK-01R: the minimum `## Decisions` Task-body interface Lane H
+// disposed for this Task (TK-01R "Released Lane And Disposed Interface"),
+// read from the Task record's own content with this module's line-anchored
+// `section` resolver - no new shared parser. Coverage is one of:
+//   - `unknown`: no `## Decisions` heading (a legacy Task, or a retained
+//     table row with no body at all). Informational only: neither a gap nor
+//     a verified reconciliation.
+//   - `none`: the section is exactly the line `None.`.
+//   - `declared`: a `| Choice | Scope | Disposition | Durable owner |` table.
+//   - `malformed`: anything else under the heading, or a table whose header
+//     or cells fall outside the interface. Fails closed as a gap, because an
+//     unreadable declaration cannot show that no durable choice is pending.
+// Each problem is a string naming what is wrong; `collectDecisionGaps` turns
+// problems and pending durable rows into the report's named gaps.
+const DECISION_HEADER = ['choice', 'scope', 'disposition', 'durable owner'];
+const DECISION_SCOPES = ['task-local', 'durable'];
+const DECISION_DISPOSITIONS = ['unresolved', 'reconciled'];
+const NO_OWNER = /^(?:|-|none|n\/a|tbd)$/i;
+
+function unknownDecisions() {
+  return { coverage: 'unknown', rows: [], problems: [] };
+}
+
+function taskDecisions(content) {
+  if (typeof content !== 'string' || !/^## Decisions[ \t]*$/m.test(content)) return unknownDecisions();
+  const body = section(content, 'Decisions');
+  if (body === 'None.') return { coverage: 'none', rows: [], problems: [] };
+  const lines = body.split('\n').map((line) => line.trim()).filter(Boolean);
+  const problems = [];
+  if (lines.length === 0) return { coverage: 'malformed', rows: [], problems: ['the section is empty; write `None.` or the decision table'] };
+  if (lines.some((line) => !line.startsWith('|'))) {
+    return { coverage: 'malformed', rows: [], problems: ['the section holds text other than `None.` or the decision table'] };
+  }
+  const header = parseMarkdownTableRow(lines[0]).map((cell) => cell.toLowerCase());
+  if (header.length !== DECISION_HEADER.length || header.some((cell, index) => cell !== DECISION_HEADER[index])) {
+    return { coverage: 'malformed', rows: [], problems: ['the table header is not `| Choice | Scope | Disposition | Durable owner |`'] };
+  }
+  const dataLines = lines.slice(1).filter((line) => !/^\|[\s:|-]*\|$/.test(line));
+  if (dataLines.length === 0) problems.push('the table declares no decision; write `None.` instead');
+  const rows = [];
+  for (const line of dataLines) {
+    const cells = parseMarkdownTableRow(line);
+    if (cells.length !== DECISION_HEADER.length) {
+      problems.push(`the row "${line}" has ${cells.length} cells, not ${DECISION_HEADER.length}`);
+      continue;
+    }
+    const [choice, scope, disposition, durableOwner] = cells;
+    rows.push({ choice, scope, disposition, durableOwner });
+    if (!choice) problems.push(`a decision row names no choice`);
+    if (!DECISION_SCOPES.includes(scope)) problems.push(`decision "${choice}" has Scope "${scope}", not ${DECISION_SCOPES.join(' or ')}`);
+    if (!DECISION_DISPOSITIONS.includes(disposition)) problems.push(`decision "${choice}" has Disposition "${disposition}", not ${DECISION_DISPOSITIONS.join(' or ')}`);
+  }
+  return { coverage: problems.length > 0 ? 'malformed' : 'declared', rows, problems };
+}
+
+// A `durable` + `unresolved` row, and a `reconciled` row naming no durable
+// owner route, stay named gaps; `durable` + `reconciled` with an owner route
+// clears (its route stays on the row for the reviewer). `task-local` rows
+// never gap. Structural clearance is not approval: it neither proves the
+// claimed reconciliation is supported nor settles TT-Q12's evidence
+// threshold, which review still judges.
+function collectDecisionGaps(tasks) {
+  const gaps = [];
+  for (const task of tasks) {
+    const decisions = task.decisions;
+    if (!decisions) continue;
+    for (const problem of decisions.problems) gaps.push(`Task ${task.id} decision section is malformed: ${problem}`);
+    for (const row of decisions.rows) {
+      if (row.scope !== 'durable') continue;
+      const hasOwner = !NO_OWNER.test(row.durableOwner);
+      if (row.disposition === 'unresolved') {
+        gaps.push(`Task ${task.id} durable decision "${row.choice}" is unresolved; escalate it to its durable owner (${hasOwner ? row.durableOwner : 'no durable owner named'}) and mark it reconciled`);
+      } else if (row.disposition === 'reconciled' && !hasOwner) {
+        gaps.push(`Task ${task.id} durable decision "${row.choice}" is marked reconciled but names no durable owner route`);
+      }
+    }
+  }
+  return gaps;
+}
+
+function decisionCoverageOf(tasks) {
+  const coverage = { declared: [], none: [], unknown: [], malformed: [] };
+  for (const task of tasks) coverage[task.decisions?.coverage ?? 'unknown'].push(task.id);
+  return coverage;
 }
 
 // Named exactly as asked (`sha`, whatever length the caller gave, verbatim),
@@ -1100,6 +1198,9 @@ export function formatSpecReport(report) {
     const runs = task.receipt ? `, runs ${task.receipt.runCount}` : '';
     const history = task.history ? ' [history]' : '';
     lines.push(`  ${task.id} ${task.status} (source: ${task.source}${runs})${history}`);
+  }
+  if (report.decisionCoverage.unknown.length > 0) {
+    lines.push(`Decision coverage unknown: ${report.decisionCoverage.unknown.join(', ')} (no ## Decisions section; informational, not a gap)`);
   }
   lines.push(`Gaps (${report.gaps.length}):`);
   for (const gap of report.gaps) lines.push(`  - ${gap}`);

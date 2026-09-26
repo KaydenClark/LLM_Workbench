@@ -242,6 +242,26 @@ assertIncludesAll(notepadSkill, [
 assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < notepadSkill.indexOf('## 4.'),
   'rechecking a corrected claim belongs to saving and resuming, before cleanup');
 
+// S-01B: promote reads pending meaning the way notepad and grilling record it,
+// selects only the confirmed claim, routes each accepted claim to one owner,
+// keeps its authored draft inside the project but out of Git, and leaves the
+// pending item in the note. These pin the source contract; the fresh-context
+// run in S-01B records the behavior.
+const promoteSkill = read('workbench/skills/promote/SKILL.md');
+assertIncludesAll(promoteSkill, [
+  '`source_record`',
+  '`current.unresolved`',
+  'is pending, not supported',
+  'only a `decision` entry',
+  'exactly one durable owner',
+  'link to it rather than copy it',
+  '`workbench/sessions/recovery/`',
+  'Leave each pending entry and its `current.unresolved` item in place'
+], 'promote pending, single-owner and draft contract');
+assert.ok(promoteSkill.indexOf('is pending, not supported') < promoteSkill.indexOf('\n2. '),
+  'recognizing pending meaning belongs to selection, before routing');
+assert.ok(promoteSkill.indexOf('Leave each pending entry') > promoteSkill.indexOf('\n5. '),
+  'retaining the pending item belongs to the note update after promotion');
 // S-00Z: grill-me is the repository-owned entry that composes grilling with
 // objective-scoped notepad continuity. It is declared in the live core bundle
 // and its source names both composed skills and the pending convention they
@@ -268,6 +288,53 @@ assertIncludesAll(grillMe, [
 ], 'grill-me composition contract');
 assert.doesNotMatch(grillMe, /^Run a `\/grilling` session\.$/m,
   'grill-me must state the composition, not only forward to grilling');
+// S-01O: save proves the recovery boundary it claims. A finished Task names
+// the exact commit and the freshly fetched remote ref that contains it, cites
+// durable owners rather than ignored live paths, and keeps unresolved notes
+// local: finishing work is not reconciliation. These pin the source contract;
+// the fresh-context run in S-01O records the behavior.
+// Whitespace is normalized so a rewrap of the prose cannot hide or fake a term.
+const saveSkill = read('workbench/skills/save/SKILL.md').replace(/\s+/g, ' ');
+assertIncludesAll(saveSkill, [
+  'remote containment',
+  'git merge-base --is-ancestor',
+  'freshly fetched',
+  'exact full commit SHA',
+  'never an ignored live path',
+  'Finishing a Task is not reconciliation',
+  'pending recovery, never confirmation',
+  'Local bytes alone never prove remote or cross-device recovery',
+  'publication permission'
+], 'save recovery-boundary contract');
+assert.ok(saveSkill.indexOf('git merge-base --is-ancestor') < saveSkill.indexOf(' 5. Keep local context'),
+  'remote containment is proved in the Git step, before optional session transport');
+assert.doesNotMatch(saveSkill, /Verify the remote branch resolves to the intended commit/,
+  'tip equality is not containment: a remote that advanced past the commit still contains it');
+
+// S-01A: the handoff source and its bundled Markdown shape must agree. The
+// shape (byte-equal to templates/HANDOFF.md, see test-core-composition) has no
+// heading of its own for the destination, corrections, access limits,
+// inherited authorization or blockers the source requires, so the source maps
+// every obligation onto a heading the shape actually has, and every heading is
+// mapped. An untracked live note is a dead pointer outside its own checkout.
+// These pin the source contract; the S-01A fresh-context run records behavior.
+const handoffSkill = read('workbench/skills/handoff/SKILL.md');
+const handoffShape = read('workbench/skills/handoff/assets/HANDOFF.md');
+const handoffShapeSections = [...handoffShape.matchAll(/^## (.+)$/gm)].map((match) => match[1]).sort();
+const handoffMappedSections = [...handoffSkill.matchAll(/^ {3}- `([^`]+)`:/gm)].map((match) => match[1]).sort();
+assert.ok(handoffShapeSections.length > 0, 'the bundled handoff shape must declare its sections');
+assert.deepEqual(handoffMappedSections, handoffShapeSections,
+  'the handoff source must place its obligations on exactly the sections its bundled shape has');
+assertIncludesAll(handoffSkill, [
+  'named destination',
+  'inherited authorization',
+  'the claim it corrects',
+  'access limit',
+  'exactly one next executable action',
+  'exists only in this checkout',
+  'When the handoff draws on a notepad',
+  'authorizes authorship, not implementation, promotion, sending it to others or creating a new task'
+], 'handoff source and shape contract');
 
 const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
@@ -277,6 +344,12 @@ assertIncludesAll(makeItSo, [
 ], 'make-it-so');
 assert.doesNotMatch(makeItSo, /every pending approval|universal execution authorization/i,
   'composition must never replace the narrower user endpoint');
+// S-01I: the catalog row is the discovery summary, so it must carry the same
+// endpoint bound as the source rather than promising execution.
+const makeItSoRow = catalogRegion[1].split('\n').find((line) => line.startsWith('| `make-it-so` |'));
+assert.match(makeItSoRow, /endpoint/, 'the make-it-so catalog row must name the authorized endpoint');
+assert.doesNotMatch(makeItSoRow, /\bexecute\b/i,
+  'the make-it-so catalog row must not promise execution the request did not authorize');
 
 const checkpoint = read('workbench/skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
@@ -337,6 +410,23 @@ assertIncludesAll(toSpec, [
 for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for-agent']) {
   assert.ok(!toSpec.includes(forbidden), `to-spec must not retain ${forbidden}`);
 }
+// S-01K: one Spec owns one capability. A settled conversation that spans
+// several capabilities (for example a per-skill rebuild) yields one Spec per
+// capability rather than one bundled delivery owner. A new Spec is authored at
+// `planned` and is never claimed or activated by the specifying agent, so the
+// record carries no implementation claim. Paths move only through
+// `move-spec` (AGENTS lifecycle, ADR-000I); the retired stable-path rule is gone.
+assertIncludesAll(toSpec, [
+  'one Spec per capability',
+  'never bundle',
+  'status `planned`',
+  'do not `claim`',
+  '`move-spec`'
+], 'to-spec one-capability and planned-entry contract');
+assert.doesNotMatch(toSpec, /into one\s+stable capability record/,
+  'to-spec must not fold a multi-capability conversation into one record');
+assert.doesNotMatch(toSpec, /Existing stable paths never change/,
+  'to-spec must not restate the retired stable-path rule');
 
 const genesis = read('workbench/skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
@@ -396,6 +486,34 @@ assertIncludesAll(codeReview, [
   'git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --',
   'nearest `AGENTS.md`', 'assigned stable `SPEC.md`', 'Findings first', 'review-only', 'separately authorized'
 ], 'code-review');
+// S-01F TK-00W: a finding says which tree its citation reads at and whether it
+// was reproduced; a pass belongs only to the candidate it reviewed; and no
+// review result stands in for owner Human QA.
+assertIncludesAll(codeReview, [
+  '`path:line@<sha>`', '**proven**', '**uncertain**',
+  'A pass belongs to the candidate it reviewed', 'changed content digest', 'needs a fresh review',
+  'never a verdict for this one',
+  'is not owner Human QA', 'resets a failed Human QA gate'
+], 'code-review finding, fresh-candidate and Human QA contract');
+
+// S-01Q: the Auditor stance reports one classified finding per named claim,
+// each traceable to its pinned evidence, check and limit, and stays inside the
+// assigned target. These pin the source contract; the fresh-context run in
+// S-01Q records the behavior. "bounded verdict" stays the LEXICON wrapper.
+const auditorSkill = read('workbench/skills/auditor/SKILL.md');
+assertIncludesAll(auditorSkill, [
+  'bounded verdict',
+  'supported, unsupported or uncertain',
+  'Each finding cites',
+  'the check it ran and its limit',
+  'Stay inside the assigned target and project',
+  'not examined',
+  'silently repair'
+], 'auditor finding and scope contract');
+assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorSkill.indexOf('## Completion / Exit Condition'),
+  'the three result classes belong to the auditor exit report');
+assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
+  'the no-widening boundary belongs to the auditor method, before its obligations');
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and

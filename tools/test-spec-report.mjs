@@ -1466,10 +1466,10 @@ function headingShadowSpec(id) {
       candidate: headSha(root), result: 'pass', findings: 'none', reviewer: 'Claude Opus 5 (separate context)'
     });
 
-    // S-00J TK-005: a passed review verdict alone is not enough - gate still
-    // refuses a Spec candidate whose current content carries no recorded
-    // owner Human QA approval, checked after (and composing with) the
-    // review-verdict gate above.
+    // S-00J TK-005 as repaired by S-00U F2: a passed review verdict is what
+    // the premerge Spec-candidate gate requires - it proceeds before any
+    // owner Human QA approval, because integration is the owner's Human QA
+    // surface. Only `complete` still refuses without a recorded approval.
     const noApprovalGate = gate(root, { spec: 'S-740', candidate: headSha(root) });
     assert.equal(noApprovalGate.refused, false, 'reviewed Spec may reach integration before Human QA');
     assert.equal(noApprovalGate.reason, null);
@@ -2169,6 +2169,199 @@ function headingShadowSpec(id) {
     );
 
     console.log('ok - two same-day owner-qa rows on unchanged content with different owners get distinct Event cells via an incrementing ordinal, an exact repeat is refused naming the existing row, and the corrective-Task anchor keeps using the row\'s own evidence-log position');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+// ============================================================================
+// S-00J TK-01R: an unresolved durable Task decision is a named Spec QA gap.
+// A Task body may carry a `## Decisions` section: the single line `None.`, or
+// a `| Choice | Scope | Disposition | Durable owner |` table. A `durable` +
+// `unresolved` row, or a `reconciled` row naming no durable owner, is a gap
+// the report names (Task and choice), `gate` refuses and `complete` refuses
+// even with otherwise valid review and owner-approval rows - writing nothing.
+// `task-local` rows never gap; a Task with no section is legacy, reported as
+// unknown decision coverage and neither a gap nor a verified reconciliation.
+// The section is substantive Task content, so it stays inside the digest.
+// ============================================================================
+function decisionsSection(rows) {
+  if (rows === null) return [];
+  if (rows === 'none') return ['## Decisions', '', 'None.', ''];
+  return [
+    '## Decisions',
+    '',
+    '| Choice | Scope | Disposition | Durable owner |',
+    '|---|---|---|---|',
+    ...rows.map((cells) => `| ${cells.join(' | ')} |`),
+    ''
+  ];
+}
+
+function completeRecordSpec(id, extraEvidence = []) {
+  return recordBackedSpec(id)
+    .replace('- [ ] Expected behavior is verified.', '- [x] Expected behavior is verified.')
+    .replace('\nPending.\n', '\nDelivered.\n')
+    .replace(
+      '| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |',
+      ['| 2026-09-17 | TK-001 | Task closed | tools/test-fixture.mjs pass | none | none |', ...extraEvidence].join('\n')
+    );
+}
+
+function doneTaskWithDecisions({ id, specId, rows }) {
+  return [
+    taskRecordFixture({
+      id, specId, slice: 'Decision-bearing slice', status: 'done', blockers: 'none',
+      destination: `spec-acceptance: ${specId}`, proof: 'tools/test-fixture.mjs pass'
+    }),
+    ...decisionsSection(rows)
+  ].join('\n');
+}
+
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-decisions-live-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specId = 'S-7D0';
+    const specPath = `specs/${specId}-fixture/SPEC.md`;
+    const taskPath = `specs/${specId}-fixture/tasks/TK-002/TASK.md`;
+    writeAt(root, specPath, completeRecordSpec(specId, ['| 2026-09-17 | TK-002 | Task closed | tools/test-fixture.mjs pass | none | none |']));
+    const unresolvedRows = [
+      ['Keep the fixture ledger in JSON', 'durable', 'unresolved', 'workbench/docs/adr/'],
+      ['Name the helper decisionsOf', 'task-local', 'unresolved', '']
+    ];
+    writeAt(root, taskPath, doneTaskWithDecisions({ id: 'TK-002', specId, rows: unresolvedRows }));
+    const candidate = commitFixture(root);
+
+    // Otherwise valid bound review and owner approval on the current content.
+    recordReviewVerdict(root, specId, { candidate, result: 'pass', findings: 'none', reviewer: 'separate fixture context' });
+    recordOwnerApproval(root, specId, { candidate, owner: 'Fixture owner', result: 'approve' });
+
+    const report = assembleSpecReport(root, specId, { candidate });
+    assert.equal(report.complete, false, 'an explicit unescalated durable choice keeps the assembled Spec incomplete');
+    const decisionGaps = report.gaps.filter((gap) => /decision/i.test(gap));
+    assert.equal(decisionGaps.length, 1, `exactly the durable unresolved row gaps; task-local never gaps: ${JSON.stringify(report.gaps)}`);
+    assert.match(decisionGaps[0], /TK-002/, 'the gap names its Task');
+    assert.match(decisionGaps[0], /Keep the fixture ledger in JSON/, 'the gap names the choice');
+    assert.match(decisionGaps[0], /unresolved/, 'the gap names the remaining escalation');
+    assert.deepEqual(report.decisionGaps, decisionGaps, 'decisionGaps is the decision subset of gaps');
+    const tk002 = report.tasks.find((task) => task.id === 'TK-002');
+    assert.equal(tk002.decisions.coverage, 'declared');
+    assert.equal(tk002.decisions.rows.length, 2);
+    assert.deepEqual(tk002.decisions.rows[0], {
+      choice: 'Keep the fixture ledger in JSON', scope: 'durable', disposition: 'unresolved', durableOwner: 'workbench/docs/adr/'
+    });
+    const tk001 = report.tasks.find((task) => task.id === 'TK-001');
+    assert.equal(tk001.decisions.coverage, 'unknown', 'a retained table row has no body: coverage unknown');
+    assert.deepEqual(report.decisionCoverage.unknown, ['TK-001'], 'legacy coverage is reported informationally');
+    assert.match(formatSpecReport(report), /Keep the fixture ledger in JSON/, 'the plain-text report shows the decision gap');
+    assert.match(formatSpecReport(report), /Decision coverage unknown: TK-001/, 'the plain-text report states unknown coverage');
+
+    // Reporting is not a mutating operation; gate and complete refuse and write nothing.
+    const specBefore = fs.readFileSync(path.join(root, specPath), 'utf8');
+    const taskBefore = fs.readFileSync(path.join(root, taskPath), 'utf8');
+    const gated = gate(root, { spec: specId, candidate });
+    assert.equal(gated.refused, true, 'the Spec-candidate gate refuses the unresolved durable decision');
+    assert.match(gated.reason, /Keep the fixture ledger in JSON/);
+    assert.throws(() => completeSpec(root, specId), /TK-002.*Keep the fixture ledger in JSON/s,
+      'complete cannot bypass the decision gap with otherwise valid review and approval rows');
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), specBefore, 'report, gate and refused complete write nothing to the Spec');
+    assert.equal(fs.readFileSync(path.join(root, taskPath), 'utf8'), taskBefore, 'report, gate and refused complete write nothing to the Task');
+    assert.equal(assembleSpecReport(root, specId).status, 'active');
+
+    // A `reconciled` row without a durable owner route stays a gap.
+    const unrouted = [['Keep the fixture ledger in JSON', 'durable', 'reconciled', ''], unresolvedRows[1]];
+    writeAt(root, taskPath, doneTaskWithDecisions({ id: 'TK-002', specId, rows: unrouted }));
+    const unroutedReport = assembleSpecReport(root, specId);
+    assert.equal(unroutedReport.decisionGaps.length, 1, 'reconciled without an owner route is still a gap');
+    assert.match(unroutedReport.decisionGaps[0], /TK-002.*Keep the fixture ledger in JSON.*durable owner/s);
+
+    // Substantive Decisions edits move the digest; reconciliation clears the
+    // gap while retaining the source row and its durable-owner route.
+    const unresolvedDigest = report.specDigest;
+    const reconciled = [['Keep the fixture ledger in JSON', 'durable', 'reconciled', 'workbench/docs/adr/0099-fixture.md'], unresolvedRows[1]];
+    writeAt(root, taskPath, doneTaskWithDecisions({ id: 'TK-002', specId, rows: reconciled }));
+    const reconciledReport = assembleSpecReport(root, specId);
+    assert.notEqual(reconciledReport.specDigest, unresolvedDigest, 'a substantive Decisions edit changes the content digest');
+    assert.notEqual(unroutedReport.specDigest, unresolvedDigest);
+    assert.deepEqual(reconciledReport.decisionGaps, [], 'a reconciled durable row with an owner route clears the gap');
+    assert.equal(reconciledReport.complete, true);
+    assert.equal(reconciledReport.tasks.find((task) => task.id === 'TK-002').decisions.rows[0].durableOwner,
+      'workbench/docs/adr/0099-fixture.md', 'the cleared row keeps its durable-owner route');
+    assert.equal(reconciledReport.latestVerdict, null, 'the earlier verdict bound the unresolved content and no longer applies');
+    assert.throws(() => completeSpec(root, specId), /reviewed again/, 'reconciliation alone proves no review or approval');
+
+    // A fresh review and approval of the reconciled content lets closure proceed.
+    const reconciledCandidate = commitFixture(root);
+    recordReviewVerdict(root, specId, { candidate: reconciledCandidate, result: 'pass', findings: 'none', reviewer: 'separate fixture context' });
+    assert.equal(gate(root, { spec: specId, candidate: reconciledCandidate }).refused, false);
+    recordOwnerApproval(root, specId, { candidate: reconciledCandidate, owner: 'Fixture owner', result: 'approve' });
+    completeSpec(root, specId);
+    assert.equal(assembleSpecReport(root, specId).status, 'complete');
+
+    // Explicit `None.` and legacy absence: neither gaps.
+    for (const [rows, coverage] of [['none', 'none'], [null, 'unknown']]) {
+      const otherId = rows === 'none' ? 'S-7D2' : 'S-7D3';
+      writeAt(root, `specs/${otherId}-fixture/SPEC.md`, completeRecordSpec(otherId, ['| 2026-09-17 | TK-002 | Task closed | tools/test-fixture.mjs pass | none | none |']));
+      writeAt(root, `specs/${otherId}-fixture/tasks/TK-002/TASK.md`, doneTaskWithDecisions({ id: 'TK-002', specId: otherId, rows }));
+      const other = assembleSpecReport(root, otherId);
+      assert.equal(other.tasks.find((task) => task.id === 'TK-002').decisions.coverage, coverage);
+      assert.deepEqual(other.decisionGaps, [], `coverage ${coverage} is never a gap`);
+      assert.equal(other.complete, true, `coverage ${coverage} leaves an otherwise complete Spec complete`);
+      assert.equal(other.decisionCoverage.unknown.includes('TK-002'), coverage === 'unknown',
+        'only an absent section is unknown coverage, never a verified reconciliation');
+    }
+    // An unreadable declaration fails closed: it cannot show that no durable
+    // choice is pending, so it is a named gap rather than unknown coverage.
+    writeAt(root, 'specs/S-7D4-fixture/SPEC.md', completeRecordSpec('S-7D4', ['| 2026-09-17 | TK-002 | Task closed | tools/test-fixture.mjs pass | none | none |']));
+    writeAt(root, 'specs/S-7D4-fixture/tasks/TK-002/TASK.md', doneTaskWithDecisions({
+      id: 'TK-002', specId: 'S-7D4', rows: [['Share the cache', 'global', 'unresolved', 'workbench/wiki/cache.md']]
+    }));
+    const malformed = assembleSpecReport(root, 'S-7D4');
+    assert.equal(malformed.tasks.find((task) => task.id === 'TK-002').decisions.coverage, 'malformed');
+    assert.equal(malformed.decisionGaps.length, 1);
+    assert.match(malformed.decisionGaps[0], /TK-002 decision section is malformed: .*Share the cache.*Scope "global"/);
+    console.log('ok - S-00J TK-01R: a live Task\'s unresolved durable decision is a named gap that gate and complete refuse without writing, reconciliation with an owner route clears it, None. and legacy absence never gap, and Decisions edits move the digest');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
+
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-report-decisions-retired-'));
+  initGitRoot(root);
+  try {
+    blueprintAndBoard(root);
+    const specId = 'S-7D1';
+    const specPath = `specs/${specId}-fixture/SPEC.md`;
+    const taskPath = `specs/${specId}-fixture/tasks/retired/TK-003/TASK.md`;
+    writeAt(root, specPath, completeRecordSpec(specId, ['| 2026-09-17 | TK-003 | Task closed | tools/test-fixture.mjs pass | none | none |']));
+    writeAt(root, taskPath, doneTaskWithDecisions({
+      id: 'TK-003', specId, rows: [['Retire the fixture adapter', 'durable', 'unresolved', 'workbench/wiki/fixture.md']]
+    }));
+    const candidate = commitFixture(root);
+    recordReviewVerdict(root, specId, { candidate, result: 'pass', findings: 'none', reviewer: 'separate fixture context' });
+    recordOwnerApproval(root, specId, { candidate, owner: 'Fixture owner', result: 'approve' });
+
+    const report = assembleSpecReport(root, specId, { candidate });
+    const retired = report.tasks.find((task) => task.id === 'TK-003');
+    assert.equal(retired.source, 'retired-record');
+    assert.equal(retired.decisions.coverage, 'declared', 'a retired Task body receives the same decision coverage');
+    assert.equal(report.complete, false);
+    assert.equal(report.decisionGaps.length, 1);
+    assert.match(report.decisionGaps[0], /TK-003.*Retire the fixture adapter/s);
+    const specBefore = fs.readFileSync(path.join(root, specPath), 'utf8');
+    assert.equal(gate(root, { spec: specId, candidate }).refused, true, 'gate refuses a retired Task\'s unresolved durable decision');
+    assert.throws(() => completeSpec(root, specId), /TK-003.*Retire the fixture adapter/s);
+    assert.equal(fs.readFileSync(path.join(root, specPath), 'utf8'), specBefore, 'refusal writes nothing');
+
+    const digestBefore = report.specDigest;
+    writeAt(root, taskPath, fs.readFileSync(path.join(root, taskPath), 'utf8').replace('| unresolved |', '| reconciled |'));
+    const after = assembleSpecReport(root, specId);
+    assert.notEqual(after.specDigest, digestBefore, 'a retired Task\'s Decisions edit changes the digest');
+    assert.deepEqual(after.decisionGaps, [], 'reconciling the retired Task\'s durable row with its owner route clears the gap');
+    console.log('ok - S-00J TK-01R: a retired Task body gets equivalent decision coverage: named gap, gate and complete refusal without writes, digest-bound reconciliation');
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
