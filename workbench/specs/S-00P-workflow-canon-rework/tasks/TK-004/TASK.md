@@ -73,7 +73,9 @@ Do not normalize a diagram or treat a flattened prose summary as exact recovery.
    candidate before integration. Roles are responsibilities, not branch names.
    Do not reinstate an independent approval ceremony for each Task, or replace
    AGENTS' pre-integration gate with a post-integration Director check for a
-   direct Blueprint Task. Direct-Task policy still needing a decision stays open.
+   direct Blueprint Task. The recovered direct-Task role chain remains accepted
+   direction; reconciliation of its destination route with the operative
+   pre-integration gate remains open, without reopening the owner answer.
 4. Human QA occurs when the owner chooses a useful milestone, accumulated work,
    exhaustion of Specs, a valued Spec or an important Director escalation.
    Version completion is not its sole trigger; observation is not approval.
