@@ -3,7 +3,7 @@
 **Spec ID:** S-002B
 **Status:** active
 **Priority:** 1
-**Owner:** codex-dqc-result
+**Owner:** DQC dispatcher
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving concept understanding, source lineage, Expected result and achieved Result through public safe record operations.
@@ -66,10 +66,10 @@ Record-backed Tasks live under this Spec's tasks directory. The first approved r
 
 ## Acceptance Criteria
 
-- [ ] Unanswered/ungrouped concept capture and source identity persist across fresh-process/clone reads with no delivery or Wiki prerequisite; existing inherited proof is reproduced during whole-Spec QA.
-- [ ] Public revision-safe Result write preserves Expected result, origin, identity and history and reloads through JSON and readable show; achieved Result never substitutes for stage/approval evidence.
-- [ ] Invalid/stale Result writes preserve every record and projection byte; common path/privacy/identity protections and legacy schema reads remain intact.
-- [ ] Changed concept understanding preserves recorded evidence/reasons/revisions and identifies specific affected claims without blanket invalidation.
+- [x] Unanswered/ungrouped concept capture and source identity persist across fresh-process/clone reads with no delivery or Wiki prerequisite; existing inherited proof is reproduced during whole-Spec QA.
+- [x] Public revision-safe Result write preserves Expected result, origin, identity and history and reloads through JSON and readable show; achieved Result never substitutes for stage/approval evidence.
+- [x] Invalid/stale Result writes preserve every record and projection byte; common path/privacy/identity protections and legacy schema reads remain intact.
+- [x] Changed concept understanding preserves recorded evidence/reasons/revisions and identifies specific affected claims without blanket invalidation.
 - [ ] Workflow composition demonstrably maintains current DQC understanding within caller authority, keeps grilling independent and retains useful notepad correction/handoff sources; any unimplemented remainder stays visibly open.
 - [ ] A tracked fresh-room cross-Spec scenario captures an ungrouped DQC, links an emerging landmark and produces an evidence-backed view; each peer may consume an immutable seam before this whole Spec completes.
 - [ ] Whole-Spec QA, required checks, pre/post self-drift and guardrails with honest limits and an under-one-minute public demo are recorded at an immutable candidate; separate-context Director review precedes integration. Owner Human QA remains owner-led and is not inferred from tests.
@@ -97,7 +97,7 @@ Update `workbench/landmark-tracker/README.md` with actual Result operation and l
 
 ## Completion Result
 
-Pending. Existing DQC behavior is inherited verified delivery; the public Result gap and workflow-maintenance/cross-Spec proof obligations remain open. Owner Human QA has no approval from this Spec.
+Partial delivery: TK-002S achieved Result is closed with fixed-runtime proof at 912563f and separate receipt/closure provenance. Existing DQC capture/revision/affected-claim behavior was reproduced. TK-002V is planning-only/deferred; other workflow maintenance and assembled cross-Spec proof/review remain open. Owner Human QA has no approval from this Spec.
 
 ## Remaining Limitations Or Follow-Up Specs
 
