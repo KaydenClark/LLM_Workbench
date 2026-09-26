@@ -5,11 +5,11 @@
 **Priority:** 1
 **Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-23
+**Updated:** 2026-09-26
 **Catalog description:** Rewrite `BLUEPRINT.md` now to describe every rung of the governing workflow and the full recursive Spec/Task loop, then rewrite AGENTS, RUNBOOK, LEXICON and the `templates/` mirror once S-00H, S-00I and S-00J make the commands they describe real, and reconcile ADR-000F, ADR-000G and ADR-000I.
-**Blockers:** TK-002 onward wait on S-00I and S-00J reaching `complete`. S-00H is complete and retired; TK-001 is done and landed.
-**Latest event:** TK-001 closed with proof.
-**Next gate:** After the active S-00I/S-00J Human QA findings are reconciled, corrected results pass review and owner QA, and both Specs complete, claim TK-002 for the AGENTS rewrite.
+**Blockers:** TK-002 onward wait on S-00I and S-00J; S-00J TK-01T will let TK-002 consume their reviewed integration delivery (`S-###:delivered`) instead of final `complete`. S-00H is complete and retired; TK-001 is done and landed.
+**Latest event:** 2026-09-26 Lane H landed the Codex wave's expanded TK-002..TK-005 packets reworded to consume S-00J's closure-capture transition contract (`complete` after main verification; features capture after `complete`, before cleanup). The pending SCR candidate still needs a fresh reconciled candidate.
+**Next gate:** S-00J TK-01R/TK-01S/TK-01T and S-00I's feature-capture and continuous-demo Tasks reach reviewed integration delivery; TK-01T converts TK-002's blockers; then TK-002 (AGENTS), TK-003/TK-004, TK-005. A reconciled SCR candidate lands separately. No claim or closure is authorized by this planning packet.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`f84b4691be7cd3abf7cdf719942ca6efaec0c617`.
 
@@ -90,14 +90,79 @@ At the pre anchor:
    or superseded, never `proposed`, and no active record contradicts a locked
    WF answer.
 
+## September 26 Delivery Reconciliation
+
+The current owner assignment establishes Director -> Dispatcher -> Worker
+execution for this delivery. It supersedes the September 24 per-Task approval
+wording below: Worker self-checks and reports; Dispatcher performs whole-Spec
+QA; a separate Director context reviews the immutable assembled-Spec candidate.
+Neither the Dispatcher nor a Task implementer supplies that Director approval.
+The original evidence rows remain historical. Task packets preserve the
+existing IDs and blockers; authoring a packet does not claim its execution.
+
+Human QA timing is chosen by the owner at useful milestones, after enough
+accumulated work, after exhausting Specs, for a valued Spec, or on an important
+Director escalation. Version completion is not its only permitted trigger.
+Observation or monitoring is not recorded approval. Owner-only promotion to
+`main` remains unchanged. Closure order is S-00J's
+[closure-capture transition contract](../S-00J-spec-qa-gate-at-integration/SPEC.md): reviewed delivery on integration,
+owner approval, verification on `main`, then `complete`; features Wiki capture
+follows `complete` at the closure point (not a precondition of it) and precedes
+every transient-record cleanup. Current completion and retirement commands still implement the older
+per-Spec approval mechanism; describe that gap explicitly until S-00J/S-00I
+supply the corrected behavior. Do not invent commands or mark the gap delivered.
+
+The pending SCR candidate `e318f144247d4288d2364f8103c78069d64aa919`
+contains useful role/diagram changes but is not integrated or approved here.
+Its version-only Human QA wording and closure ordering must be reconciled,
+with a new immutable candidate and fresh Director review. Preserve source
+arrow/brace notation and corrections; label prose interpretation separately.
+Do not accept unresolved ADRs or infer answers from the candidate's changes.
+
+### Delivery prerequisites (repair planned in S-00J TK-01T)
+
+The current resolver satisfies an S-ID blocker only for a `complete` or
+`superseded` Spec; it cannot express reviewed integration delivery separately
+from final closure. This is verified at
+`git show 89d4042fb8931b9d720af75bffea1c28803d72aa:workbench/tools/spec-workbench.mjs`
+(`satisfiedIds` and `completeSpec`). Removing I/J from TK-002 today would
+bypass that gate. Keep all existing blocker fields. S-00J TK-01T adds the
+content-bound `S-###:delivered` blocker (T0 of the contract) and converts
+TK-002's S-00I/S-00J blockers to it in that same reviewed change; S-00O's
+release blockers stay plain and keep requiring final `complete`.
+
+Proposed sequence: S-00J supplies bound reviewed-delivery/closure semantics;
+S-00I composes main verification, features capture and recovery with them;
+S-00P rewrites controls against those verified commands; S-00O performs its
+expanded release and real Template-upgrade proof. A prerequisite receipt must
+identify the immutable candidate, relevant delivered capability/proof, separate
+Director verdict and integration containment. An open or failed Human QA finding
+must stay visible and must block any capability whose actual delivery it
+invalidates. It must not be erased by a passing source review.
+
+Recommend an explicit delivery prerequisite distinct from a completion
+prerequisite, with missing/stale/uncontained/failed proof refusing selection
+and claim. S-00J owns the exact supported representation and stable-seam tests;
+this paragraph selects no new schema or CLI. Preserve existing completion
+blocker behavior, owner approval and main-verification closure gates. S-00O
+owns release scope/readiness and any change to its bootstrap exemptions.
+
+Execution order remains TK-002 -> TK-003 and TK-004 -> TK-005. TK-002 needs
+both the supported prerequisite repair and Director release of controls/test
+paths. TK-004 additionally needs disposition of unresolved ADR decisions.
+Shared projections, ledger, Wiki routers, manifest and IDs remain with the
+Director or their released lane. This Dispatcher is the sole writer of this
+Spec; Workers return one Task's proof at a time.
+
 ## Decisions And Contracts
 
 The design this Spec promotes is the set of 19 locked WF answers in the WF
 grilling note at revision 57, read with correction-023 and carried into the
 Workbench by [S-00O](../S-00O-workbench-v4-0-0-release/SPEC.md). The note is
 untracked working material named as origin, not durable evidence; this Spec
-and the owners it rewrites become the durable record. The answers, as they
-bind this Spec:
+and the owners it rewrites become the durable record. The original answers below are preserved with their source lineage. Apply the
+September 26 Delivery Reconciliation above wherever review timing, roles or
+closure order supersedes this earlier wording:
 
 - **WF-1, WF-6, correction-023.** The Blueprint owns the product-level
   destination and user journey, like counting to 100. Each Spec is the
@@ -304,11 +369,17 @@ validation for the register; `tools/evaluate-workbench.mjs` with
 
 ## Verification Procedure
 
+For this planning packet, verify Task parsing, unchanged blocker enforcement,
+source lineage and the full required suite; no runtime red/green result is
+claimed. Implementation Tasks must supply their planned red/green proof.
+
 Run the targeted test for the touched seam, then the full verification suite
 named in `AGENTS.md`, then `node workbench/tools/spec-workbench.mjs doctor`.
 Capture the guardrail baseline before TK-002 and record the after-score,
-remaining recommendations and outcome limitation after TK-005. Each Task
-lands as its own reviewed PR into `integration` under S-00O exemption 2.
+remaining recommendations and outcome limitation after TK-005. The current S-00O exemption remains a documented compatibility constraint
+until its owner reconciles it. Workers hand back without a separate Task
+approval ceremony; no integration merge occurs before the Director reviews
+the assembled immutable candidate.
 
 ## Documentation Impact
 
@@ -330,6 +401,9 @@ workflow. No other owner changes.
 | 2026-09-24 | owner workflow correction | Owner confirmed the original brace-and-arrow workflow as the desired framework and corrected the earlier no-per-Task-review answer; Genesis is setup followed by grilling, not the workflow entry | Direct owner statement and readback confirmation; Blueprint destination map updated in the same candidate | Current WF-8 contract and Blueprint map reconciled; historical evidence retained | Remaining skill-by-skill Align and delivery details are still being grilled; TK-002 gate remains unchanged |
 | 2026-09-24 | independent review of `482dc6b` | Separate-context review found that phase-two acceptance omitted Task review and the map assertion could miss its removal | 48/48 AGENTS suite passed on clean `482dc6b`; reviewer reported P2 and P3, both corrected in the next candidate; the map test fails if `Review Task` is removed and passes when restored | Acceptance and test aligned with the owner correction | Fresh review and full-suite proof on the corrected candidate remain |
 | 2026-09-24 | corrected workflow map `cb8ff78` | Owner-approved arrow-and-brace destination map, Task-review acceptance and focused regression checked together | 48/48 AGENTS suite passed on clean `cb8ff78`; separate-context full-branch review found no actionable issue; guardrail 78/100 before and after, with no criteria change; post self-drift returned `cleanUpdate: false` with seven existing attention findings and no new touched-owner contradiction | Blueprint, proposed ADR correction and this Spec aligned; generic template kept generic by design | No agent-outcome improvement claimed: repeated real trials, controls/prior/candidate comparison, recent outcome evidence and uncertainty remain missing; S-00Q stale claim and historical identity findings remain outside this correction |
+
+| 2026-09-26 | Dispatcher planning | Expanded existing TK-002–005 execution packets under the current Director -> Dispatcher -> Worker assignment; preserved every blocker and Task identity. Proposed explicit delivery prerequisites separately from closure; no runtime or shared control mutation | Base 89d4042; immutable SCR review at e318f144247d4288d2364f8103c78069d64aa919 found timing, closure, direct-Task routing, notation-test and composition gaps; targeted candidate Blueprint/ADR/ledger tests pass but are not delivery approval. Planning-suite results are returned with the immutable candidate to Director | This Spec records current assignment and supersession; Workers author individual packets. Shared projections remain Director-owned | TK-002 still blocked; Director must coordinate J/I/O mechanism and release shared lanes, refresh projections, and review the resulting immutable candidate; no owner approval or main promotion inferred |
+| 2026-09-26 | Lane H planning | Codex wave packets TK-002..TK-005 carried onto current integration and reworded so closure consumes S-00J's closure-capture transition contract: `complete` follows main verification; features capture follows `complete` and precedes transient cleanup. Delivery-prerequisite repair named as S-00J TK-01T; no blocker removed | Read WF-8E/WF-8H/WF-8F in the ledger and the SCR grilling decisions 009/011/012; render and doctor in the assembled tree | Planning only; Status and Blockers fields of TK-002..TK-005 unchanged; no control, template or runtime change |
 
 ## Completion Result
 
