@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Maintain evolving landmark relationships and readable durable knowledge with recoverable provenance.
 **Blockers:** none
-**Latest event:** Director authorizes residual Landmark article validation after live runtime and active shared-writer inspection; completed foundation proof retained.
-**Next gate:** Finish serial Task reservation, dispatch one-Task validator worker; shared Wiki/lifecycle wiring waits only for its immediate immutable seam.
+**Latest event:** Sol worker 01a0e00d-19b8-7281-b429-ad48f6031bff received TK-002T packet 04d54b1 and passed fresh-context readback; implementation underway in isolated a908 worktree.
+**Next gate:** Review immutable TK-002T candidate and named red/green proof; subsequent shared Wiki/lifecycle wiring consumes its immediate released file seam.
 
 ## Outcome
 
@@ -179,5 +179,5 @@ self-drift cleanUpdate=false. Passing checks do not prove clean update or QA.
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-26 | none | Serial identity reservation under explicit owner three-Spec split | Live base b00a2e338436ef7b281b0cc53e74f891af32f18c; next-id proposal saved before next allocation | This minimal scaffold | Dispatcher scope/Tasks and source transfer mapping pending |
-
 | 2026-09-26 | TK-002T | Director-approved first residual Task reserved serially; inherited create/read behavior not reimplemented | Existing Tracker 23/23; doctor seven baseline attention; active lane-H dirty consumers inspected; guardrail 78/100; self-drift cleanUpdate false | Scoped successor Spec and Task; original source history preserved | Worker red/green and source transfer reconciliation pending |
+| 2026-09-26 | TK-002T | Packet 04d54b165c06a6a46a5cec53bda3cbe79e0caeec delivered to one-Task Sol worker; fresh-context readback accepted; inherited authorization and Director callbacks carried | Citation checks 3/3; local render/doctor pass with seven existing attention findings; packet clean | Markdown handoff is local context only; authored Spec/Task tracked | Worker red/green/full candidate proof and source transfer pending; no Human QA completion |
