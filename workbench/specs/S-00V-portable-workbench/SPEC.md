@@ -9,11 +9,11 @@
 **Priority:** 1
 **Owner:** claude-fable-5-1
 **Stance:** Builder
-**Updated:** 2026-09-23
+**Updated:** 2026-09-26
 **Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Acceptance audit at `058f0898e551f95a935c4ae9d61d4a18dc92ea00`: two of eight boxes met (TK-001); six unmet and their slices uncut, so completion is not due.
+**Next gate:** Cut the next slice from Remaining Limitations (catalog review, then notes may travel) as TK-002 and claim it; completion waits on all eight acceptance boxes.
 
 > **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7`.
 
@@ -294,6 +294,8 @@ Then the full suite named in AGENTS.md on the committed candidate.
 | 2026-09-23 | TK-001 | Guardrail audit after the change: 78/100, unchanged from the 78/100 baseline; remaining recommendations are the pre-existing ones the audit lists (none names the skills lane); outcome limitation: a static score and a green suite say nothing about agent reliability, and no repeated controlled trial was run | `node tools/audit-guardrails.mjs` before and after | None | Unchanged |
 | 2026-09-23 | TK-001 | Task closed | tools/test-skills-lane.mjs red on the pre-lane candidate, green after; full 47-command AGENTS suite green on the committed candidate; adr validate ok; render and doctor clean | RUNBOOK skills lane and personal catalog sections, LEXICON rows, README, BLUEPRINT, templates (GENESIS, ADOPTION, RUNBOOK, LEXICON, .claude/settings.json), workbench/skills/README.md, update-harness skill, ADR-000M accepted and ADR-0017 archived | Owner Mac personal catalog still on the v3.2.0 bundle until published from the lane; remaining S-00V slices uncut |
 | 2026-09-23 | TK-001 | Second separate-context review at `380a52ce16e3f8dd7c737a783e66b8f147898d55` PASS for the integration gate, with one Medium: `migrate` refused a pre-lane room whose `workbench/skills` directory already existed; fixed in the following commit (placeholder-path guard, layout test keeps the empty lane and a room-local skill in place) | Reviewer reproduced every earlier correction; `tools/test-workbench-layout.mjs`, `tools/test-skills-lane.mjs`, adoption and upgrade tests green after the fix; full suite 47/47 at 380a52c | None | Rows appended after the close row from here on; the three rows above the close row were inserted out of order and stay as published |
+| 2026-09-26 | — | Acceptance audit against integration `058f0898e551f95a935c4ae9d61d4a18dc92ea00` (Lane E dispatcher `claude-lane-E`): boxes 1-2 met by TK-001; boxes 3-8 unmet, so the Spec stays active and the stale Next gate "Confirm acceptance criteria and completion result" is replaced | Read at that commit: box 3, `workbench/sessions/.gitignore` lines 4, 9 and 12 still ignore `handoffs/*` and `notepads/*` and AGENTS.md line 418 still says live notes and handoffs stay untracked; box 4, `claimWork` in `workbench/tools/spec-workbench.mjs` makes no git call (no branch, push or fetch) and `tools/test-workbench-round-trip.mjs` line 166 claims locally then commits and pushes by hand; box 5, no host floor check or finding exists in `workbench/tools` or `tools`; box 6, no Wiki article audits host-memory knowledge; box 7, the round trip does not claim by pushing or assert an ends-clean instance; box 8, no cloud or two-instance demo artifact is recorded | Docs checked; no update needed: this row and the header are the only change, and no behavior changed | Six boxes need the six uncut slices listed under Remaining Limitations; no owner gate is named for completion |
+| 2026-09-26 | review | Review verdict: pass at a7e2b6b36943b2bf21e7aca5d071e492a5352140 [dd2b15658b6e] #1 | none; every factual claim in the acceptance-audit row verified at 058f089; full suite 48/48 on a7e2b6b | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
 
 ## Completion Result
 
