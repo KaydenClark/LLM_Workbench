@@ -276,6 +276,8 @@ glossary. Completed knowledge follows existing reconciliation/lifecycle rules.
 
 | 2026-09-26 | none | Final rebased planning verification completed on the 49cf2fd85437165e0f60e1368441b24aa7e5b35f tree plus planning evidence updates. | All 48 required commands passed; Wiki validation, local links, render and diff checks passed. Post self-drift retains the same seven attention findings and cleanUpdate false. Guardrail remains 78/100; four real-outcome evidence recommendations remain, with no agent-outcome claim. See [receipt](planning-verification.json). | Specification and generated catalog only; no root/template Lexicon repair. | Immutable final integration review follows; all audit/update acceptance and Human QA remain pending. |
 
+| 2026-09-26 | none | Correct the prior rebase identity: actual parent of 49cf2fd85437165e0f60e1368441b24aa7e5b35f is be918f0c59158b121e41e97a64dfff3da97f2e53, not the earlier observed ebb01dc. Shared remote-tracking state advanced before rebase. | Verified immutable Git parent and three-file planning diff. S-00M reader and S-00V Task decomposition are inherited integration changes. The final 48-command suite already ran on this actual rebased tree; test results stand. | Corrected current receipt identity; earlier evidence remains with this explicit correction. | Final local review pending. Automatic approval review rejected GitHub push for lack of explicit external-publication authorization; branch remains local. |
+
 ## Completion Result
 
 Specification authored; capability implementation, semantic audit and owner QA

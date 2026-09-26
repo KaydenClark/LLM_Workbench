@@ -228,12 +228,14 @@
     "failed": 0
   },
   "sourceDelta": {
-    "integrationBase": "ebb01dc9d44f60dcec151e0d074d060af82a0ad4",
+    "integrationBase": "be918f0c59158b121e41e97a64dfff3da97f2e53",
     "rebasedPlanningCommit": "49cf2fd85437165e0f60e1368441b24aa7e5b35f",
-    "observed": "Concurrent integration added grill-me and changed the manifest/core count to 22, activated S-00M and recorded S-00V acceptance audit. The new Spec makes no contrary availability/count claim and preserves current source checks at execution. Its initial observations remain explicitly anchored to their September 26 baseline."
+    "observed": "Concurrent integration added grill-me and changed the manifest/core count to 22, activated S-00M and recorded S-00V acceptance audit. The new Spec makes no contrary availability/count claim and preserves current source checks at execution. Its initial observations remain explicitly anchored to their September 26 baseline.",
+    "observedRemoteBeforeRebase": "ebb01dc9d44f60dcec151e0d074d060af82a0ad4",
+    "additionalConcurrentChanges": "S-00M repository-state reader and S-00V Task decomposition landed before rebase. They are inherited integration work, not part of this planning diff. Final 48-command suite ran with these changes present."
   },
   "finalSuite": {
-    "base": "ebb01dc9d44f60dcec151e0d074d060af82a0ad4",
+    "base": "be918f0c59158b121e41e97a64dfff3da97f2e53",
     "planningCommit": "49cf2fd85437165e0f60e1368441b24aa7e5b35f",
     "scope": "Rebased planning tree; subsequent changes only append verification evidence and update this receipt",
     "commands": [
@@ -487,5 +489,13 @@
     "Render is idempotent after catalog addition; planned Spec absent from hot board",
     "git diff --check passes",
     "No change to Lexicon, templates, runtime or existing evidence by this planning packet"
+  ],
+  "corrections": [
+    {
+      "field": "sourceDelta.integrationBase and finalSuite.base",
+      "previous": "ebb01dc9d44f60dcec151e0d074d060af82a0ad4",
+      "corrected": "be918f0c59158b121e41e97a64dfff3da97f2e53",
+      "reason": "Shared origin/integration advanced between remote observation and rebase; immutable parent of planning commit 49cf2fd establishes actual base. Tested planning commit unchanged."
+    }
   ]
 }
