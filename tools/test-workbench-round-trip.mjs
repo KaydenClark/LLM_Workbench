@@ -171,7 +171,11 @@ try {
   const promoted = JSON.parse(node(first, path.join(first, 'workbench/tools/sessions.mjs'), 'promote', '--from', note.note, '--revision', '2', '--entries', 'decision-001', '--to', owner, '--expected', createHash('sha256').update(beforeOwner).digest('hex'), '--content', 'workbench/sessions/handoffs/greeting-draft.md'));
   assert.equal(promoted.status, 'promoted');
   assert.equal(promoted.destination.sha256, createHash('sha256').update(authored).digest('hex'));
-  node(first, tool(first), 'claim', 'S-001', '--agent', 'planner');
+  // S-00V TK-01L: this room coordinates through origin, where claim would cut
+  // and push a task branch. This proof resumes a checkpoint committed on main,
+  // so the planner claims locally (said so on stderr); converting the round
+  // trip to claim by pushing is TK-01N's ends-clean gate.
+  node(first, tool(first), 'claim', 'S-001', '--agent', 'planner', '--local');
   node(first, tool(first), 'render');
   git(first, 'add', '-A');
   const tracked = git(first, 'ls-files');

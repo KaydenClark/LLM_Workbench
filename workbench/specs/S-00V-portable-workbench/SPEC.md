@@ -149,7 +149,10 @@ carried here; the record is working context, not evidence.
   Task that lifts the ignore rule records that narrowing in an ADR.
 - Claim-on-branch with fetch-all is hard to reverse and a real trade-off
   against direct integration commits; the Task that builds it records the
-  decision in an ADR.
+  decision in an ADR. TK-01L recorded it as
+  [ADR-000O](../../docs/adr/000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md),
+  which restates the owner's PW-6 lock and separates the agent's
+  implementation choices from it.
 - The manifest `skillPolicy` shape (required list, discovery roots,
   presence-only setup, explicit-only updates) is reshaped by TK-001; whether
   the seventh lane needs manifest schema 3 with a migration is TK-001's
