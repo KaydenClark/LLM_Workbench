@@ -63,6 +63,7 @@ they are authored.
 - [Grilling: arrive at a shared design concept](skill-grilling.md)
 - [Grill-me: start a saved design inquiry](skill-grill-me.md)
 - [Notepad: preserve one objective's working context](skill-notepad.md)
+- [To-docs: route settled truth to the owner that holds it](skill-to-docs.md)
 
 ## Release And Distribution Routing
 
