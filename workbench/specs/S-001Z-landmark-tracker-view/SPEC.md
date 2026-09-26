@@ -1,15 +1,15 @@
 # S-001Z - Landmark Tracker
 
 **Spec ID:** S-001Z
-**Status:** planned
+**Status:** active
 **Priority:** 1
 **Owner:** Tracker dispatcher
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Rebuild and inspect evidence-backed documentation distributions from existing DQC and landmark records.
 **Blockers:** none
-**Latest event:** Scoped successor authored; readable Result omission reproduced at the public formatter seam; first Task allocation and DQC module release pending.
-**Next gate:** Director coordinates existing lane ownership and approves the concrete remaining-behavior slice before worker mutation.
+**Latest event:** Scoped successor authored; readable assessment evidence omission reproduced through persisted public operations; TK-002U assigned after Director approval.
+**Next gate:** TK-002U worker may prove red in its own test lane; runtime mutation waits the DQC Result seam release.
 
 ## Outcome
 
@@ -31,10 +31,11 @@ step arithmetic, mixed contributions, identity deduplication, explicit outcomes,
 cycles and claim reconciliation. Targeted tests passed 23/23; the actual demo
 passed in 1.64 seconds; rebuild --check reported current.
 
-`questionCard` retains achieved `result` in JSON, but `formatCard` renders
-Expected result without Result. A direct public `formatTracker` fixture at
-this tree shows Expected fixture knowledge and omits Achieved fixture knowledge.
-The DQC dispatcher owns adding the missing public Result mutation path first.
+Actual captureQuestion -> reviseRecord -> showTracker operations preserve
+assessment evidence fixture-article@immutable-revision in JSON, while
+formatTracker omits it. Existing readable show prints fractions and basis but
+not assessment evidence/revisions. JSON already contains these facts. The
+DQC Task exclusively owns Result mutation and readable Result output.
 
 ## Desired Behavior And Contracts
 
@@ -48,9 +49,12 @@ The DQC dispatcher owns adding the missing public Result mutation path first.
   numerator, denominator, source type, identities and evidence inspectable.
 - Retain explicit empty, incomplete and invalid outcomes. Preserve navigation
   cycles and refuse arithmetic cycles without publishing a partial projection.
-- Display Expected result and achieved Result separately, including the recorded
-  Result revision. Missing Result remains absent or explicitly unrecorded;
-  never invent it from an answer, Task status or assessment.
+- Offer human-readable inspection of each counted item's existing fractions,
+  basis, supporting evidence, assessment revision, holder and item revision.
+  Preserve default compactness with an explicit detail option if useful; do not
+  invent evidence, resolved status or fractions for unassessed/unknown items.
+- Consume DQC-owned Expected result/Result output unchanged. It never
+  manufactures completion or a Verified assessment.
 - Preserve actual durable-content/gate assessment semantics when Records supplies
   that seam. A done Task never becomes Verified automatically. Earlier proof
   remains readable at its source revision; relations do not imply blanket staleness.
@@ -81,18 +85,17 @@ those lanes; no root control edit is assigned here without coordinated release.
 
 ## Vertical Implementation Slices
 
-First proposed residual: persist achieved Result via the DQC public operation,
-rebuild, and read a clear Expected result / Result distinction via public show.
-Prove the Result revision and restart stability, both one-card and full view,
-without changing source records or arithmetic. One worker owns this Task.
-Task ID allocation awaits the Director's serial global allocation turn.
+[TK-002U](tasks/TK-002U/TASK.md) exposes supporting assessment evidence and
+revisions through the readable public view. It uses persisted actual records,
+existing projection fields, and its own test lane. Red test/inspection may
+proceed concurrently; runtime writes wait only for the DQC module lease.
 
 Further Tasks require a demonstrated remaining acceptance gap. Reuse existing
 23-test arithmetic coverage; do not invent replacement implementation Tasks.
 
 ## Acceptance Criteria
 
-- [ ] Public show for one DQC and the whole Tracker displays achieved Result and its revision separately from Expected result, surviving restart and rebuild.
+- [ ] Human-readable public show for one DQC and the whole Tracker exposes existing own/related assessment evidence, basis and revisions on demand, surviving restart and rebuild without changing default compact output.
 - [ ] Rebuilding the projection changes no source record and preserves schema compatibility, lineage and previous evidence.
 - [ ] Existing exact eight-step, 30/20/50, shared-identity, mixed-DQC, empty/incomplete/invalid and cycle demonstrations remain passing at the assembled candidate.
 - [ ] Reconciliation visibility consumes source and actual article assessments without inferring Verified from Task status or creating blanket invalidation.
@@ -127,3 +130,5 @@ version/release/main promotion; other rooms; one dispatcher owning all delivery.
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-26 | none | Serial identity reservation under explicit owner three-Spec split | Live base b00a2e338436ef7b281b0cc53e74f891af32f18c; next-id proposal saved before next allocation | This minimal scaffold | Dispatcher scope/Tasks and source transfer mapping pending |
+
+| 2026-09-26 | TK-002U | Director approved distinct readable evidence slice after Result display remained with DQC TK-002S | Persisted public fixture at 52ca38c preserves evidence in JSON and omits it in readable formatTracker; parseArgs rejects show --expand | Scoped Tracker requirement and worker packet; central IDs S/T preserved | Red/green worker and DQC runtime lease release pending |
