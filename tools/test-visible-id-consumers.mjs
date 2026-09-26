@@ -218,3 +218,137 @@ for (const collision of ['spec', 'task']) {
     } finally { fs.rmSync(dir, { recursive: true, force: true }); }
   });
 }
+
+// S-01W TK-002K: every supported spelling of one identity - short `S-00Q`,
+// widened `S-000Q` and a case variant sharing the collision key - reaches the
+// one stored record through the public Spec and Task selectors. Output names
+// the stored ID and path, nothing is renamed, and a key that two stored
+// records share refuses by name instead of choosing a winner.
+function relative(dir, file) { return path.relative(dir, file).split(path.sep).join('/'); }
+function retiredSpec(dir, id, slug = 'retired') {
+  const active = spec(dir, id, [['TK-001', 'done', 'none']], 'complete', slug);
+  const destination = path.join(dir, 'workbench/specs/retired', path.basename(path.dirname(active)), 'SPEC.md');
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.renameSync(active, destination);
+  fs.rmdirSync(path.dirname(active));
+  return destination;
+}
+
+test('widened, short and case-variant Spec selectors show, claim and close the one stored record', () => {
+  const dir = room();
+  try {
+    const stored = spec(dir, 'S-00Q', [['TK-00A', 'ready', 'none'], ['TK-00B', 'ready', 'TK-000A']]);
+    workbench.render(dir);
+    const names = () => [...snapshot(dir).keys()].sort();
+    const paths = names();
+    const before = snapshot(dir);
+    for (const selector of ['S-00Q', 'S-000Q', 'S-00q', 'S-0000q']) {
+      const shown = cli(dir, ['show', selector]);
+      assert.equal(shown.status, 0, `show ${selector}: ${shown.stderr}`);
+      assert.equal(shown.json.id, 'S-00Q', `show ${selector} reports the stored ID`);
+      assert.equal(shown.json.path, relative(dir, stored), `show ${selector} reports the stored path`);
+    }
+    assert.deepEqual(snapshot(dir), before, 'show changes no record bytes or paths');
+    const proposed = cli(dir, ['next-id', 'S-000Q', '--prefix', 'TK']);
+    assert.equal(proposed.status, 0, proposed.stderr);
+    assert.equal(proposed.json.specId, 'S-00Q', 'a widened parent selector proposes under the stored Spec ID');
+    const claimed = cli(dir, ['claim', 'S-000Q', '--agent', 'test']);
+    assert.equal(claimed.status, 0, claimed.stderr);
+    assert.equal(claimed.json.id, 'S-00Q');
+    assert.equal(claimed.json.path, relative(dir, stored));
+    assert.equal(claimed.json.tasks.find(task => task.status === 'in-progress').id, 'TK-00A');
+    const closed = cli(dir, ['close', 'S-00q', '--proof', 'Verified public seam', '--docs', 'Docs checked', '--remaining-gap', 'TK-00B']);
+    assert.equal(closed.status, 0, closed.stderr);
+    assert.equal(closed.json.id, 'S-00Q');
+    assert.equal(closed.json.path, relative(dir, stored));
+    assert.equal(closed.json.tasks.find(task => task.id === 'TK-00A').status, 'done');
+    const content = fs.readFileSync(stored, 'utf8');
+    assert.match(content, /\*\*Spec ID:\*\* S-00Q\n/, 'the stored identity is not rewritten to the selector spelling');
+    assert.match(content, /\| \d{4}-\d{2}-\d{2} \| TK-00A \| Task closed \|/, 'evidence names the stored Task ID');
+    const next = cli(dir, ['next']);
+    assert.equal(next.status, 0, next.stderr);
+    assert.equal(next.json?.taskId, 'TK-00B', 'a widened blocker spelling (TK-000A) is satisfied by the stored done Task TK-00A');
+    assert.deepEqual(names(), paths, 'no record path was renamed or added');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a widened Spec blocker spelling is satisfied by the completed stored Spec', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-00P', [['TK-001', 'done', 'none']], 'complete', 'done');
+    spec(dir, 'S-00R', [['TK-00A', 'ready', 'S-000P']], 'active', 'waiting');
+    const next = cli(dir, ['next']);
+    assert.equal(next.status, 0, next.stderr);
+    assert.equal(next.json?.specId, 'S-00R');
+    assert.equal(next.json?.taskId, 'TK-00A');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('two active records sharing one collision key refuse show, claim and close by name', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-00Q', [['TK-001', 'ready', 'none']], 'active', 'short');
+    spec(dir, 'S-000Q', [['TK-001', 'ready', 'none']], 'active', 'widened');
+    const before = snapshot(dir);
+    for (const args of [['show', 'S-000Q'], ['claim', 'S-00Q', '--agent', 'test'], ['close', 'S-00q', '--proof', 'p', '--docs', 'd', '--remaining-gap', 'g']]) {
+      const result = cli(dir, args);
+      assert.notEqual(result.status, 0, `${args[0]} must refuse`);
+      assert.match(result.stderr, /duplicate spec ID/i);
+      assert.match(result.stderr, /S-00Q/);
+      assert.match(result.stderr, /S-000Q/);
+    }
+    assert.deepEqual(snapshot(dir), before);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('an active record and a retired record sharing one key refuse selection by name while allocation folds them as occupied', () => {
+  const dir = room();
+  try {
+    const active = spec(dir, 'S-00Q', [['TK-00A', 'ready', 'none']], 'active', 'short');
+    const retired = retiredSpec(dir, 'S-000Q', 'widened');
+    const before = snapshot(dir);
+    for (const args of [['show', 'S-00Q'], ['show', 'S-000Q'], ['claim', 'S-000Q', '--agent', 'test'], ['close', 'S-00Q', '--proof', 'p', '--docs', 'd', '--remaining-gap', 'g'], ['next-id', 'S-00Q', '--prefix', 'TK']]) {
+      const result = cli(dir, args);
+      assert.notEqual(result.status, 0, `${args.join(' ')} must refuse rather than choose the active or retired record`);
+      assert.match(result.stderr, /duplicate spec ID/i);
+      assert.ok(result.stderr.includes(relative(dir, active)) && result.stderr.includes(relative(dir, retired)), `${args[0]} names both stored records: ${result.stderr}`);
+    }
+    const proposal = cli(dir, ['next-id', '--prefix', 'S']);
+    assert.equal(proposal.status, 0, proposal.stderr);
+    assert.notEqual(proposal.json.id, 'S-000Q', 'allocation keeps treating the shared key as occupied');
+    assert.ok(workbench.doctor(dir).some(issue => issue.code === 'duplicate-id'), 'doctor still diagnoses the pair');
+    assert.deepEqual(snapshot(dir), before);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('numeric historical Task labels keep Spec-qualified scope under widened selectors and blockers', () => {
+  const dir = room();
+  try {
+    spec(dir, 'S-001', [['TK-001', 'done', 'none']], 'complete', 'first');
+    const second = spec(dir, 'S-002', [['TK-001', 'ready', 'none'], ['TK-002', 'ready', 'TK-0001']], 'active', 'second');
+    let next = cli(dir, ['next']);
+    assert.equal(next.json?.specId, 'S-002');
+    assert.equal(next.json?.taskId, 'TK-001', "S-001's done TK-001 does not satisfy S-002's TK-0001 blocker");
+    assert.equal(cli(dir, ['claim', 'S-0002', '--agent', 'test']).status, 0);
+    const closed = cli(dir, ['close', 'S-0002', '--proof', 'Verified', '--docs', 'Docs checked', '--remaining-gap', 'TK-002']);
+    assert.equal(closed.status, 0, closed.stderr);
+    assert.equal(closed.json.path, relative(dir, second));
+    next = cli(dir, ['next']);
+    assert.equal(next.json?.specId, 'S-002');
+    assert.equal(next.json?.taskId, 'TK-002', "S-002's own done TK-001 satisfies its TK-0001 blocker");
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('an orphan corrective Task claims by a widened spelling of its stored ID', () => {
+  const dir = room();
+  try {
+    const record = path.join(dir, 'workbench/specs/corrective/tasks/TK-00X/TASK.md');
+    fs.mkdirSync(path.dirname(record), { recursive: true });
+    fs.writeFileSync(record, '# TK-00X - Corrective fixture\n\n**Task ID:** TK-00X\n**Spec ID:** S-00D\n**Slice:** Corrective fixture\n**Status:** ready\n**Blockers:** none\n**Destination:** wiki-claim: workbench/wiki/fixture.md#Claim\n');
+    const claimed = cli(dir, ['claim', 'TK-000x', '--agent', 'test']);
+    assert.equal(claimed.status, 0, claimed.stderr);
+    assert.equal(claimed.json.taskId, 'TK-00X', 'the claim reports the stored Task ID');
+    assert.match(fs.readFileSync(record, 'utf8'), /\*\*Task ID:\*\* TK-00X\n[\s\S]*\*\*Status:\*\* in-progress/);
+    assert.ok(fs.existsSync(record), 'the record keeps its stored path');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
