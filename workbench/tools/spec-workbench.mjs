@@ -607,7 +607,7 @@ export function convertSpecSlices(rootDir, id, options = {}) {
   // record-backed Spec that still holds one) - has no row to convert. to-tasks
   // writes its first records; `--activate` is then only the activation gate.
   // Every live record was parsed by `loadSpecs` (an unparseable one refuses
-  // before this point, naming its file), and `slicesOf` refuses a row/record
+  // before this point, naming the Task), and `slicesOf` refuses a row/record
   // collision, so this checks that at least one record exists and changes
   // nothing but Status.
   if (activating && spec.recordBacked) {
