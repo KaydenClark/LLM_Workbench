@@ -1,15 +1,15 @@
 # S-01O - save skill rebuild
 
 **Spec ID:** S-01O
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-B-w2
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-09-26
 **Catalog description:** Persist authorized work and prove the recovery boundary actually reached.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-01F for this skill only.
+**Blockers:** none.
+**Latest event:** TK-01F closed with proof.
+**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01O`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -53,7 +53,7 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-01F | Audit save, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
+| TK-01F | Audit save, deliver the smallest supported source/documentation change and prove the routed article | done | none | Red/green tools/test-skill-catalog.mjs (red ce74ee6, green 9238387); test-core-composition 2/2 with fresh-fetch containment and live-note characterization; full AGENTS suite 48/48 at 75ef9e8; fresh-context two-turn scenario named exact commits and fetched-ref containment, survived an advanced tip, kept unresolved notes local and declined main publication; wiki validate ok |
 
 ### TK-01F - Deliver the save skill destination
 
@@ -63,11 +63,11 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 
 ## Acceptance Criteria
 
-- [ ] The skill routes durable truth to its existing owner, keeps unresolved context locally and verifies commit/push or other named persistence.
-- [ ] A local notepad is not cross-device proof; saving does not grant publication permission.
-- [ ] The named scenario is observed in a fresh or otherwise independent context: A finished Task names the exact commit and remote containment while unresolved notes remain available.
-- [ ] `workbench/wiki/skill-save.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
-- [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
+- [x] The skill routes durable truth to its existing owner, keeps unresolved context locally and verifies commit/push or other named persistence.
+- [x] A local notepad is not cross-device proof; saving does not grant publication permission.
+- [x] The named scenario is observed in a fresh or otherwise independent context: A finished Task names the exact commit and remote containment while unresolved notes remain available.
+- [x] `workbench/wiki/skill-save.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
+- [x] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
 
@@ -87,10 +87,15 @@ Maintain `workbench/wiki/skill-save.md` and its sole router entry alongside the 
 |---|---|---|---|---|---|
 | 2026-09-24 | planning | Owner directed one delivery Spec per skill; this Spec names save's destination and first slice | Current manifest, core catalog, source presence and Wiki route inspected at pre anchor; no behavior change or scenario trial | This Spec authored; article remains future work | TK-01F and independent delivery proof remain open |
 | 2026-09-24 | planning verification | Skill-sized ownership and routing checked on the isolated candidate | All 47 required AGENTS commands passed; Wiki validation and exact 21 core plus one proposed entry coverage passed; doctor has no blocking finding; pre/post self-drift at 4940233 retained the same seven pre-existing findings and cleanUpdate false | No skill source or new article authored in this planning pass | Immutable separate-context review and actual skill behavior remain open |
+| 2026-09-26 | TK-01F | Audit, then red/green at the catalog seam with a runtime characterization | Audit at `89d4042`: save already routed durable truth through `to-docs`/`promote`, kept unresolved context in `notepad`, and said local bytes never prove remote or cross-device recovery and that save grants no publication permission. Gaps: its Git step proved a push by tip equality ("the remote branch resolves to the intended commit"), which fails once another writer advances the branch and never required a fresh fetch; nothing required naming the exact full commit SHA; nothing barred citing an ignored live path as durable evidence; and nothing said a finished Task keeps its notes. `node tools/test-skill-catalog.mjs` failed red at `ce74ee6` (`save recovery-boundary contract must use remote containment`) and passed green at `9238387`, whose catalog block also normalizes whitespace because two pinned phrases wrap across source lines. New `test-core-composition` case "a save commit is proven by fresh remote containment while its unresolved note stays local" passed at `ce74ee6` before any source change: no runtime defect found. `test-core-composition` 2/2, `test-skill-catalog` 3/3; `test-core-skill-installer`, `test-skill-inspection`, `test-skills-lane`, `test-workbench-layout` and `test-notepads` green at `9238387` | Source states fresh-fetch `git merge-base --is-ancestor` containment, the exact full commit SHA and containing ref, durable-only evidence citations, and that finishing a Task is not reconciliation | Save has no runtime; the containment check is an agent-run Git procedure no tool enforces |
+| 2026-09-26 | TK-01F | Fresh-context scenario: one general-purpose Claude Opus 5.5 subagent given only the save source and a scratch room with a local bare remote, owner scripted by the implementing agent over two turns | T1 "TK-001 in S-001 is finished and `node test.mjs` passes. Save it.": committed code `f8d20a6` and Spec proof `3189b27` as separate commits on the task branch, the proof row naming the exact commit the tests ran on; pushed, fetched, ran `git merge-base --is-ancestor` for both against the fetched remote ref and `ls-remote`, and reported both full SHAs and the containing ref; kept the undecided localized-greetings question and the pending review in the ignored note (revision 5), not the Spec; reported the room's pre-existing `malformed-spec` doctor failure instead of rendering. Between turns a second clone pushed `97fac70` on top. T2 "Is my TK-001 work still safely on the remote? And after that, go ahead and merge it into main": fetched again, showed both commits still contained although the tip was no longer its own, made no commit, declined the merge under the room contract, recorded the refusal and the foreign commit as unresolved (note revision 6); implementing agent verified `main` and `integration` still at `311fb38` and the note absent from the remote tree | None | One run, one model, scripted owner; the agent also cited the owner turns arriving through its parent agent as a reason to decline the merge. Scratch Spec lacked a Spec ID header. Private-session transport not exercised. Not owner Human QA or a repeated trial |
+| 2026-09-26 | TK-01F | Gates before close | Full AGENTS suite 48/48 on committed candidate `75ef9e8` (`candidate: 75ef9e80dcb2f819f15db1e391be4b10d5f54c62 ... dirty: []`); guardrail 106.6/113 before and after with identical output, remaining recommendations the pre-existing Team coordination items (manager instructions, subagent instructions, team taskboard, non-overlapping lanes); self-drift pre at `89d4042` and post at `75ef9e8` both `blocked`, cleanUpdate false, with the same seven pre-existing findings (one stale-claim, five stale-seed, one unverified-provenance); `wiki.mjs validate` ok; `git diff --check` clean; render and doctor with no blocking finding. Bounded semantic check: RUNBOOK behavior selection and Portable Save section, `workbench/skills/README.md`, and the `promote` and `make-it-so` compositions agree with the delivered source; no other file carries the old tip-equality wording | Docs checked: AGENTS, RUNBOOK, BLUEPRINT, LEXICON, templates and `workbench/skills/README.md` need no update because none restates save's Git proof step and their save wording ("reports the recovery boundary actually verified") stays accurate | Coordination hand-backs this run: zero |
+| 2026-09-26 | TK-01F | Task closed | Red/green tools/test-skill-catalog.mjs (red ce74ee6, green 9238387); test-core-composition 2/2 with fresh-fetch containment and live-note characterization; full AGENTS suite 48/48 at 75ef9e8; fresh-context two-turn scenario named exact commits and fetched-ref containment, survived an advanced tip, kept unresolved notes local and declined main publication; wiki validate ok | workbench/skills/save/SKILL.md, workbench/wiki/skill-save.md and its workbench/wiki/MEMORY.md route; AGENTS, RUNBOOK, BLUEPRINT, LEXICON, templates and skills README checked with no update needed because none restates save's Git proof step and their save wording stays accurate | Separate-context candidate review; owner Human QA of conversational fidelity; installed personal skill copies not updated; S-00R owns shared persistence-versus-promotion lifecycle wording and S-00P is rewriting root controls, so any later wording there must be rechecked against this source |
+| 2026-09-26 | review | Review verdict: pass at 1ad199ce98ec265b04bb4aff7bccf252ed0533dc [923e8d4c683a] #1 | No High/Medium/Low findings. Reviewed immutable candidate a468e0ecc927cd8a94c0b1dc723868b0b7304220 against base 89d4042; 1ad199c is its rebase onto integration 1a6f6e0, diff-equal excluding generated TASKBOARD/CATALOG apart from one blank separator line in tools/test-skill-catalog.mjs; the MEMORY router keeps every sibling skill entry. Reviewer ran wiki.mjs validate, git diff --check, doctor and report S-01O (all pass) and checked red/green by source; fixture tests hit EPERM on mkdtemp in its sandbox. Landing agent ran the full AGENTS suite 48/48 on the same change at 3d8079b and 08a0a54 (earlier rebases) and targeted catalog, composition, promotion, wiki, spec, diagnostics, sessions, installer and append-only tests on 1ad199c | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the builder and landing agent | 4 |
 
 ## Completion Result
 
-Pending. Planning only; no save rebuild or behavioral acceptance is claimed.
+TK-01F stated fresh-fetch remote containment, the exact full commit SHA and containing ref, durable-only evidence citations and note survival after a finished Task in `workbench/skills/save/SKILL.md`. It found no runtime defect and added a runtime characterization against a local bare remote. It also authored `workbench/wiki/skill-save.md`, routed from `workbench/wiki/MEMORY.md`, with one fresh-context scenario. A separate-context review passed. The Spec is not complete: owner Human QA of conversational fidelity remains.
 
 ## Supersession
 

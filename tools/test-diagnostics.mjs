@@ -8,8 +8,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { EFFECTS, SCOPES, SEVERITIES, describe, finding, isRegistered, registeredCodes } from '../workbench/tools/diagnostics.mjs';
-import { claimWork, doctor, formatDoctorReport, nextWork, render, DOCTOR_GROUPS } from '../workbench/tools/spec-workbench.mjs';
-import { permissionScopeDrift } from '../workbench/tools/workbench-layout.mjs';
+import { claimWork, doctor as doctorAll, formatDoctorReport, nextWork, render, DOCTOR_GROUPS } from '../workbench/tools/spec-workbench.mjs';
+import { permissionScopeDrift, readRepositoryState } from '../workbench/tools/workbench-layout.mjs';
 import { appendReceiptRowToContent } from '../workbench/tools/task-receipt.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -83,9 +83,27 @@ function project(version = VERSION) {
   return dir;
 }
 
-function cliDoctor(dir, home = quietHome) {
+// S-00M TK-002: doctor reports untracked files under the root controls, the
+// ADR collection and the spec lane as `untracked-controls` (attention, blocks
+// nothing). These fixtures never commit their controls or specs, so that
+// finding is correctly present in nearly every one. The tests of other findings
+// set aside exactly that code and nothing else - a detached HEAD still shows -
+// and the S-00M tests read the unfiltered report through `doctorAll` and
+// `cliDoctorAll`.
+const withoutUntrackedControls = (findings) => findings && findings.filter((item) => item.code !== 'untracked-controls');
+
+function doctor(dir, options) {
+  return withoutUntrackedControls(doctorAll(dir, options));
+}
+
+function cliDoctorAll(dir, home = quietHome) {
   const result = spawnSync(process.execPath, [specTool, 'doctor', '--json', '--home', home], { cwd: dir, encoding: 'utf8' });
   return { status: result.status, findings: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
+}
+
+function cliDoctor(dir, home = quietHome) {
+  const result = cliDoctorAll(dir, home);
+  return { ...result, findings: withoutUntrackedControls(result.findings) };
 }
 
 function assertRegistryRemediation(describeEntry, codes) {
@@ -638,6 +656,110 @@ test('the declared integration branch is checked by doctor as a git-scope error 
   }
 });
 
+// S-00M TK-002: doctor surfaces the repository state TK-001's reader sees and
+// no other finding observes. ADR-000J registers both findings `attention`
+// with blocking effect `none`, so the proof is behavioral as well as
+// registered: the same fixture with and without the conditions has the same
+// doctor exit code and the same `next --json` selection.
+function cliNext(dir) {
+  const result = spawnSync(process.execPath, [specTool, 'next', '--json'], { cwd: dir, encoding: 'utf8' });
+  return { status: result.status, stdout: result.stdout, stderr: result.stderr };
+}
+
+test('a detached HEAD and untracked control, ADR and spec-lane files are git-scope attention findings that change neither doctor nor next', () => {
+  for (const code of ['detached-head', 'untracked-controls']) {
+    assert.deepEqual([describe(code).severity, describe(code).scope, describe(code).blocks], ['attention', 'git', 'none'], code);
+    assert.ok(describe(code).summary.length > 0, `${code} carries a summary`);
+  }
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '-m', 'room on main');
+    assert.deepEqual(doctorAll(dir, { home: quietHome }), [], 'a clean attached checkout carries no git-state finding');
+    const cleanDoctor = cliDoctorAll(dir);
+    const cleanNext = cliNext(dir);
+    assert.equal(cleanDoctor.status, 0, cleanDoctor.stderr);
+    assert.equal(cleanNext.status, 0, cleanNext.stderr);
+
+    git(dir, 'checkout', '-q', '--detach');
+    // Untracked files the other validators do not parse, so only the git
+    // state differs: a root control, a non-record file in the ADR folder and
+    // a non-SPEC file in the spec lane.
+    write(dir, 'RUNBOOK.md', '# Runbook\n');
+    write(dir, 'workbench/docs/adr/draft-notes.txt', 'draft\n');
+    write(dir, 'workbench/specs/S-001-first/notes.md', 'notes\n');
+
+    const findings = doctorAll(dir, { home: quietHome });
+    assert.deepEqual(findings.map((item) => [item.code, item.severity, item.scope, item.blocks]),
+      [['detached-head', 'attention', 'git', 'none'], ['untracked-controls', 'attention', 'git', 'none']]);
+    const detached = findings.find((item) => item.code === 'detached-head');
+    assert.match(detached.message, /HEAD is detached/);
+    assert.match(detached.message, /inspection state/, 'the message says detached is not a blocker');
+    const untracked = findings.find((item) => item.code === 'untracked-controls');
+    assert.deepEqual(untracked.files, ['RUNBOOK.md', 'workbench/docs/adr/draft-notes.txt', 'workbench/specs/S-001-first/notes.md']);
+    for (const file of untracked.files) assert.ok(untracked.message.includes(file), `the message names ${file}`);
+
+    const dirtyDoctor = cliDoctorAll(dir);
+    assert.equal(dirtyDoctor.status, cleanDoctor.status, 'neither finding changes the doctor exit code');
+    assert.deepEqual(dirtyDoctor.findings.map((item) => item.code), ['detached-head', 'untracked-controls'], 'the CLI reports both');
+    const dirtyNext = cliNext(dir);
+    assert.equal(dirtyNext.status, cleanNext.status);
+    assert.equal(dirtyNext.stdout, cleanNext.stdout, 'neither finding changes next\'s selection');
+    const plain = spawnSync(process.execPath, [specTool, 'doctor', '--home', quietHome], { cwd: dir, encoding: 'utf8' });
+    assert.equal(plain.status, 0, plain.stderr);
+    assert.match(plain.stdout, /detached-head/);
+    assert.match(plain.stdout, /untracked-controls/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('untracked-controls names a long list by its first files and a count', () => {
+  const dir = project();
+  try {
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '-m', 'room on main');
+    const names = Array.from({ length: 14 }, (_, index) => `workbench/specs/S-001-first/note-${String(index).padStart(2, '0')}.md`);
+    for (const name of names) write(dir, name, 'note\n');
+    const [untracked] = doctorAll(dir, { home: quietHome }).filter((item) => item.code === 'untracked-controls');
+    assert.ok(untracked, 'the long list is still reported');
+    assert.deepEqual(untracked.files, names, 'the finding carries every file');
+    assert.ok(untracked.message.includes(names[0]) && !untracked.message.includes(names[13]), 'the message caps the list it prints');
+    assert.match(untracked.message, /and 4 more/, 'the message counts what it did not print');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('an unknown repository state yields no git-state finding, never throws and never changes the doctor exit code', () => {
+  const dir = fixture();
+  const empty = fixture();
+  try {
+    const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', VERSION], { encoding: 'utf8' });
+    assert.equal(init.status, 0, init.stdout);
+    write(dir, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
+    write(dir, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
+    write(dir, 'RUNBOOK.md', '# Runbook\n');
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    // Not a repository: integration-branch-missing already says so.
+    const codes = doctorAll(dir, { home: quietHome }).map((item) => item.code);
+    assert.ok(codes.includes('integration-branch-missing'), codes.join(','));
+    for (const code of ['detached-head', 'untracked-controls']) assert.ok(!codes.includes(code), `${code} must not be guessed outside a repository`);
+    const baseline = cliDoctorAll(dir);
+    // Git absent from PATH entirely: doctor still runs and reports no git state.
+    const noGit = spawnSync(process.execPath, [specTool, 'doctor', '--json', '--home', quietHome], { cwd: dir, encoding: 'utf8', env: { ...process.env, PATH: empty } });
+    assert.equal(noGit.status, baseline.status, noGit.stderr);
+    const noGitCodes = JSON.parse(noGit.stdout).map((item) => item.code);
+    for (const code of ['detached-head', 'untracked-controls']) assert.ok(!noGitCodes.includes(code), `${code} must not be guessed without Git`);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(empty, { recursive: true, force: true });
+  }
+});
+
 // Review of S-00H TK-003 (9bd14e1, PASS with three Low findings) found the
 // bare `catch {}` this replaced would have swallowed any exception thrown
 // while resolving `gitFindings`'s own candidate, not only the row/record
@@ -846,6 +968,11 @@ const PINNED_EFFECTS = {
   'promotion-recovery-required': ['error', 'sessions', 'none'],
   'integration-branch-undeclared': ['error', 'git', 'none'],
   'integration-branch-missing': ['error', 'git', 'none'],
+  // S-00M TK-002 (ADR-000J): repository state a completion claim can hide is
+  // visible in every doctor run and never blocks; detached is an inspection
+  // state, and untracked lane files are the close check's business (TK-003).
+  'detached-head': ['attention', 'git', 'none'],
+  'untracked-controls': ['attention', 'git', 'none'],
   'permission-scope-drift': ['error', 'controls', 'none'],
   'stale-claim': ['attention', 'specs', 'none'],
   'complete-on-integration': ['attention', 'specs', 'none'],
@@ -940,7 +1067,9 @@ test('doctor renders the same findings as grouped text and byte-unchanged --json
     write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001', { tasks: '| TK-001 | Blocked slice | ready | S-999 | pending |', extra: '[missing](../../missing.md)' }));
     render(dir);
     write(dir, 'workbench/specs/S-009-duplicate/SPEC.md', spec('S-001'));
-    const findings = doctor(dir, { home: quietHome });
+    // The byte comparison below is against the whole report, so this reads it
+    // unfiltered, untracked-controls included.
+    const findings = doctorAll(dir, { home: quietHome });
     assert.ok(findings.some((item) => item.blocks === 'selection'), 'the fixture must carry a blocking finding');
     assert.ok(findings.some((item) => item.blocks === 'none'), 'the fixture must carry a non-blocking finding');
 
@@ -1096,5 +1225,181 @@ test('the installed-state findings are emitted from a seam whose scope matches, 
       'doctor still reports both, from the hook whose scope matches them');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// S-00M TK-001: one non-throwing reader of the repository state a completion
+// claim can hide - detached HEAD, dirty tracked files, untracked files under
+// the controls, ADR and spec lanes, and upstream distance. It has no caller
+// yet; TK-002 surfaces it in doctor and TK-003 checks it at close.
+function stateFixture() {
+  const base = fixture();
+  const remote = path.join(base, 'remote.git');
+  const repo = path.join(base, 'repo');
+  const other = path.join(base, 'other');
+  git(base, 'init', '-q', '--bare', '-b', 'main', remote);
+  git(base, 'init', '-q', '-b', 'main', repo);
+  git(repo, 'config', 'user.name', 'Fixture');
+  git(repo, 'config', 'user.email', 'fixture@example.invalid');
+  // The spec lane is declared somewhere other than the default, so a reader
+  // that hardcodes `workbench/specs` classifies the wrong file.
+  write(repo, 'workbench/manifest.json', `${JSON.stringify({ schemaVersion: 2, lanes: { specs: 'workbench/specifications' } }, null, 2)}\n`);
+  write(repo, 'AGENTS.md', '# Agents\n');
+  write(repo, 'gone.txt', 'tracked, then deleted\n');
+  git(repo, 'add', '-A');
+  git(repo, 'commit', '-q', '-m', 'base');
+  git(repo, 'remote', 'add', 'origin', remote);
+  git(repo, 'push', '-q', '-u', 'origin', 'main');
+  // One commit the remote has and the checkout lacks.
+  git(base, 'clone', '-q', remote, other);
+  write(other, 'remote-only.txt', 'pushed elsewhere\n');
+  git(other, 'add', '-A');
+  git(other, 'commit', '-q', '-m', 'remote side');
+  git(other, 'push', '-q', 'origin', 'main');
+  git(repo, 'fetch', '-q', 'origin');
+  // One commit the checkout has and the remote lacks.
+  write(repo, 'local-only.txt', 'not pushed\n');
+  git(repo, 'add', '-A');
+  git(repo, 'commit', '-q', '-m', 'local side');
+  return { base, repo, remote };
+}
+
+test('readRepositoryState reports branch, dirty tracked files, untracked lane files and upstream distance', () => {
+  const { base, repo } = stateFixture();
+  try {
+    write(repo, 'AGENTS.md', '# Agents\n\nmodified\n');
+    write(repo, 'staged.txt', 'staged\n');
+    git(repo, 'add', 'staged.txt');
+    fs.rmSync(path.join(repo, 'gone.txt'));
+    write(repo, 'RUNBOOK.md', '# Runbook\n');
+    write(repo, 'workbench/docs/adr/0001-untracked.md', '# ADR\n');
+    write(repo, 'workbench/specifications/S-001-untracked/SPEC.md', '# Spec\n');
+    write(repo, 'workbench/specs/stray.md', 'not the declared spec lane\n');
+    write(repo, 'nested/AGENTS.md', 'not a root control\n');
+    write(repo, 'notes/outside.md', 'outside every lane\n');
+
+    const state = readRepositoryState(repo);
+    assert.equal(state.known, true, JSON.stringify(state));
+    assert.deepEqual(state.head, { detached: false, branch: 'main' });
+    assert.deepEqual(state.dirty, ['AGENTS.md', 'gone.txt', 'staged.txt']);
+    assert.deepEqual(state.untracked, {
+      controls: ['RUNBOOK.md'],
+      adr: ['workbench/docs/adr/0001-untracked.md'],
+      specs: ['workbench/specifications/S-001-untracked/SPEC.md']
+    });
+    assert.deepEqual(state.upstream, { name: 'origin/main', gone: false, ahead: 1, behind: 1 });
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('readRepositoryState reports a detached HEAD, a branch with no upstream, and a gone upstream explicitly', () => {
+  const { base, repo, remote } = stateFixture();
+  try {
+    git(repo, 'checkout', '-q', '--detach');
+    const detached = readRepositoryState(repo);
+    assert.equal(detached.known, true, JSON.stringify(detached));
+    assert.deepEqual(detached.head, { detached: true, branch: null });
+    assert.equal(detached.upstream, null, 'a detached HEAD tracks no upstream');
+    assert.deepEqual(detached.dirty, []);
+    assert.deepEqual(detached.untracked, { controls: [], adr: [], specs: [] });
+
+    git(repo, 'switch', '-q', '-c', 'feature');
+    const unpublished = readRepositoryState(repo);
+    assert.deepEqual(unpublished.head, { detached: false, branch: 'feature' });
+    assert.equal(unpublished.upstream, null, 'no upstream is reported as null, never as zero distance');
+
+    git(repo, 'push', '-q', '-u', 'origin', 'feature');
+    git(repo, 'push', '-q', 'origin', '--delete', 'feature');
+    git(repo, 'fetch', '-q', '--prune', 'origin');
+    const gone = readRepositoryState(repo);
+    assert.deepEqual(gone.upstream, { name: 'origin/feature', gone: true, ahead: null, behind: null });
+    assert.ok(fs.existsSync(remote));
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+// S-00M TK-003: `close` refuses on exactly the state the Receipt's own Dirty
+// column counts (every `git status --porcelain` line, so untracked files
+// outside the three lanes too) and on a HEAD no remote-tracking ref contains.
+// These fields are additive; TK-001's shapes above are unchanged.
+test('readRepositoryState reports every other untracked file, the configured remotes, and whether any remote-tracking ref contains HEAD', () => {
+  const { base, repo, remote } = stateFixture();
+  try {
+    write(repo, 'RUNBOOK.md', '# Runbook\n');
+    write(repo, 'notes/outside.md', 'outside every lane\n');
+    write(repo, 'nested/AGENTS.md', 'not a root control\n');
+    const ahead = readRepositoryState(repo);
+    assert.equal(ahead.known, true, JSON.stringify(ahead));
+    assert.deepEqual(ahead.untrackedOther, ['nested/AGENTS.md', 'notes/outside.md'],
+      'untracked files outside the controls, ADR and spec lanes are listed, lane files are not repeated');
+    assert.deepEqual(ahead.untracked, { controls: ['RUNBOOK.md'], adr: [], specs: [] });
+    assert.deepEqual(ahead.remotes, ['origin']);
+    assert.equal(ahead.pushed, false, 'a local commit ahead of its upstream is not pushed');
+
+    git(repo, 'pull', '-q', '--rebase', 'origin', 'main');
+    git(repo, 'push', '-q', 'origin', 'main');
+    assert.equal(readRepositoryState(repo).pushed, true, 'HEAD contained in origin/main is pushed');
+
+    // A new branch with no upstream at a commit a remote already has is
+    // pushed: the commit is recoverable, which is what the refusal protects.
+    git(repo, 'switch', '-q', '-c', 'topic');
+    const topic = readRepositoryState(repo);
+    assert.equal(topic.upstream, null);
+    assert.equal(topic.pushed, true, 'a commit another remote-tracking ref contains is pushed, upstream or not');
+    git(repo, 'commit', '-q', '--allow-empty', '-m', 'topic only');
+    assert.equal(readRepositoryState(repo).pushed, false, 'a commit no remote-tracking ref contains is unpushed');
+
+    git(repo, 'checkout', '-q', '--detach');
+    assert.equal(readRepositoryState(repo).pushed, false, 'a detached HEAD at an unpushed commit is unpushed');
+
+    git(repo, 'remote', 'remove', 'origin');
+    const noRemote = readRepositoryState(repo);
+    assert.deepEqual(noRemote.remotes, []);
+    assert.equal(noRemote.pushed, false, 'a room with no remote has nothing pushed');
+    assert.ok(fs.existsSync(remote));
+
+    const unborn = path.join(base, 'unborn');
+    git(base, 'init', '-q', '-b', 'main', unborn);
+    const empty = readRepositoryState(unborn);
+    assert.equal(empty.known, true, JSON.stringify(empty));
+    assert.equal(empty.pushed, false, 'a HEAD with no commit yet is unpushed, not a throw');
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test('readRepositoryState reports unknown, never throwing, outside a repository or where Git is absent', () => {
+  const outside = fixture();
+  const { base, repo } = stateFixture();
+  const savedPath = process.env.PATH;
+  try {
+    assert.deepEqual(Object.keys(readRepositoryState(outside)).sort(), ['detail', 'known', 'reason']);
+    assert.equal(readRepositoryState(outside).known, false);
+    assert.equal(readRepositoryState(outside).reason, 'not-a-repository');
+    assert.equal(readRepositoryState(path.join(outside, 'missing')).reason, 'not-a-repository');
+    assert.equal(readRepositoryState(undefined).known, false, 'a malformed argument is unknown, not a throw');
+
+    const absent = readRepositoryState(repo, { git: path.join(outside, 'no-such-git') });
+    assert.equal(absent.known, false);
+    assert.equal(absent.reason, 'git-unavailable');
+
+    // The real lookup, with no Git reachable on PATH.
+    process.env.PATH = outside;
+    const noPath = readRepositoryState(repo);
+    process.env.PATH = savedPath;
+    assert.equal(noPath.known, false);
+    assert.equal(noPath.reason, 'git-unavailable');
+
+    // A manifest the lane helpers cannot read is unknown too, not a throw.
+    write(repo, 'workbench/manifest.json', '{ not json');
+    const unreadable = readRepositoryState(repo);
+    assert.equal(unreadable.known, false);
+    assert.equal(unreadable.reason, 'lanes-unresolved');
+  } finally {
+    process.env.PATH = savedPath;
+    fs.rmSync(outside, { recursive: true, force: true });
+    fs.rmSync(base, { recursive: true, force: true });
   }
 });

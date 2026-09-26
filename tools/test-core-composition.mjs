@@ -81,3 +81,58 @@ test('fresh core composes local save and selected promotion using only installed
 
   } finally { fs.rmSync(base, { recursive: true, force: true }); }
 });
+
+// S-01O: the recovery proof the save skill names. A pushed save commit is
+// proven by containment in the freshly fetched remote ref, which still holds
+// after another writer advances the branch tip; an unpushed commit is not
+// contained. The unresolved note stays local, untracked and readable.
+test('a save commit is proven by fresh remote containment while its unresolved note stays local', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-save-containment-'));
+  const remote = path.join(base, 'remote.git'), project = path.join(base, 'room'), other = path.join(base, 'other');
+  const git = (cwd, args, expected = 0) => {
+    const result = spawnSync('git', ['-c', 'user.name=Save Test', '-c', 'user.email=save@example.invalid', '-c', 'commit.gpgsign=false', ...args], { cwd, encoding: 'utf8' });
+    assert.equal(result.status, expected, `git ${args.join(' ')}: ${result.stdout}${result.stderr}`);
+    return result.stdout.trim();
+  };
+  try {
+    fs.mkdirSync(project);
+    git(base, ['init', '-q', '--bare', remote]);
+    run(root, 'workbench/tools/workbench-layout.mjs', ['init', '--project', project, '--provenance', 'genesis', '--version', version]);
+    run(root, 'tools/workbench-tools.mjs', ['install', '--project', project]);
+    git(project, ['init', '-q', '-b', 'task']);
+    git(project, ['remote', 'add', 'origin', remote]);
+    git(project, ['add', '-A']);
+    git(project, ['commit', '-q', '-m', 'Room baseline']);
+    const notes = (args, status) => run(project, 'workbench/tools/notepads.mjs', args, status);
+    const note = notes(['create', '--note', 'save-proof', '--objective', 'save-proof', '--title', 'Save proof']).note;
+    notes(['append', '--note', note, '--revision', '1', '--kind', 'blocker', '--topic', 'delivery', '--content', 'Integration review is still pending.']);
+    notes(['current', '--note', note, '--revision', '2', '--unresolved', 'integration review pending', '--next-action', 'Request the separate-context review.']);
+    fs.writeFileSync(path.join(project, 'RUNBOOK.md'), '# Runbook\n\nSaved procedure.\n');
+    git(project, ['add', 'RUNBOOK.md']);
+    git(project, ['commit', '-q', '-m', 'Save the procedure']);
+    const saved = git(project, ['rev-parse', 'HEAD']);
+    git(project, ['push', '-q', 'origin', 'task']);
+
+    git(base, ['clone', '-q', '-b', 'task', remote, other]);
+    fs.writeFileSync(path.join(other, 'LATER.md'), 'Another writer.\n');
+    git(other, ['add', 'LATER.md']);
+    git(other, ['commit', '-q', '-m', 'Advance the shared branch']);
+    git(other, ['push', '-q', 'origin', 'task']);
+
+    fs.writeFileSync(path.join(project, 'LOCAL.md'), 'Not pushed.\n');
+    git(project, ['add', 'LOCAL.md']);
+    git(project, ['commit', '-q', '-m', 'Unpushed local work']);
+    const unpushed = git(project, ['rev-parse', 'HEAD']);
+
+    git(project, ['fetch', '-q', 'origin']);
+    assert.notEqual(git(project, ['rev-parse', 'origin/task']), saved, 'tip equality fails once another writer advances the branch');
+    git(project, ['merge-base', '--is-ancestor', saved, 'origin/task']);
+    git(project, ['merge-base', '--is-ancestor', unpushed, 'origin/task'], 1);
+
+    assert.equal(spawnSync('git', ['check-ignore', '-q', note], { cwd: project }).status, 0, 'the live note is ignored');
+    assert.equal(git(project, ['ls-tree', '-r', '--name-only', 'origin/task']).split('\n').includes(note), false, 'the note never reaches the remote');
+    const resumed = notes(['read', '--note', note, '--topic', 'delivery']);
+    assert.deepEqual(resumed.current.unresolved, ['integration review pending'], 'unresolved context remains available after the save');
+    assert.deepEqual(resumed.entries.map(entry => entry.id), ['blocker-001']);
+  } finally { fs.rmSync(base, { recursive: true, force: true }); }
+});

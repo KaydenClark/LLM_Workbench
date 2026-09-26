@@ -58,12 +58,23 @@ or planned source. They are curated context, not instruction authority.
 [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
 preserves the accepted shared concept of grilling, grill-me and notepad; each linked page names its individual
 delivery Spec. Other core skill articles belong to their individual Specs as
+The individual pages below explain core skills and link to their executable or
+planned source. They are curated context, not
+instruction authority. [S-00W](../specs/S-00W-concept-grilling-and-notepad-composition/SPEC.md)
+preserves the accepted shared concept for grilling, notepad and grill-me; each
+linked page names its individual delivery Spec. Other core skill articles belong to their individual Specs as
 they are authored.
 
 - [Grilling: arrive at a shared design concept](skill-grilling.md)
 - [Grill-me: start a saved design inquiry](skill-grill-me.md)
 - [Notepad: preserve one objective's working context](skill-notepad.md)
 - [Promote: move settled working claims into their durable owners](skill-promote.md)
+- [Checkpoint: route a retired request to current continuity](skill-checkpoint.md)
+- [Auditor: check named claims against pinned evidence](skill-auditor.md)
+- [Make-it-so: carry approved work to the endpoint the owner named](skill-make-it-so.md)
+- [To-spec: turn a settled decision into one bounded Spec](skill-to-spec.md)
+- [Save: persist authorized work and prove where it landed](skill-save.md)
+- [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
 
 ## Release And Distribution Routing
 

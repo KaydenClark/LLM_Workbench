@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 21-skill bundle (seventeen workflow skills and four stances),
+is a closed 22-skill bundle (eighteen workflow skills and four stances),
 counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
@@ -15,9 +15,9 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `genesis` | Create a new greenfield Workbench project from a founding prompt. |
 | `grilling` | Run the question-at-a-time decision interview. |
 | `implement` | Drive one eligible task through red/green, review, and remote recovery. |
-| `make-it-so` | Promote settled decisions and execute their approved tasks. |
+| `make-it-so` | Compose approved work through the exact endpoint the owner authorized. |
 | `to-docs` | Route settled truth into its existing documentation owner. |
-| `to-spec` | Create or update one stable capability specification. |
+| `to-spec` | Create or update one Spec per settled capability, entered at `planned`. |
 | `to-tasks` | Decompose a capability into dependency-aware implementation slices. |
 | `tracer-bullet` | Cut a capability into vertically testable slices. |
 | `update-harness` | Reconcile an adopted project with the current Workbench contract. |
@@ -25,6 +25,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `save` | Persist authorized work and verify its actual local or remote recovery boundary. |
 | `promote` | Reconcile selected supported claims directly into their existing durable owners. |
 | `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |
+| `grill-me` | Start a saved design inquiry: compose grilling with objective-scoped notepad continuity, keeping pending answers pending. |
 | `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `builder` | Deliver the assigned result with useful verification and truthful documentation. |
 | `auditor` | Determine whether named claims hold on the assigned target and evidence. |

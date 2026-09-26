@@ -13,7 +13,7 @@ import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, declaredGit, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 // Exported (not just used locally) so a test can build the exact historical
 // v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
@@ -35,7 +35,12 @@ const initialV32CoreSkills = [...legacyCoreSkills, 'carry', 'notepad', 'save', '
 // `skillPolicy.required` actually held; `validateManifest` below still needs
 // to recognize that historical shape exactly as released.
 const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' ? 'to-tasks' : name));
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
+// v3.2.1 stamped the twenty-one-skill bundle with `handoff`; it is frozen
+// below. S-00Z grows the live bundle with `grill-me`, the repository-owned
+// entry composing grilling with notepad, ahead of the stances so every
+// `slice(-4)` stance read stays exact.
+const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -114,6 +119,97 @@ function gitRead(project, args) {
 
 export function insideWorkTree(project) {
   return gitRead(project, ['rev-parse', '--is-inside-work-tree']) === 'true';
+}
+
+// S-00M TK-001: the repository state a completion claim can hide, read at one
+// seam for `doctor` and `close`. It never throws, because a reader that throws
+// turns a missing tool into a broken command: a host without Git, a directory
+// outside any repository, or lanes the manifest cannot resolve all come back
+// as `{ known: false, reason, detail }` with reason `git-unavailable`,
+// `not-a-repository`, `git-failed` or `lanes-unresolved`. A known state is
+// `{ known: true, head: { detached, branch }, dirty, untracked: { controls,
+// adr, specs }, upstream }`. `dirty` lists tracked changes (staged, modified,
+// deleted, renamed, conflicted) and `untracked` only the untracked files under
+// the root controls, the ADR collection and the spec lane, as repository-root
+// paths. `upstream` is null when none is configured, and otherwise
+// `{ name, gone, ahead, behind }`, with null distance when the upstream ref is
+// gone. `options.git` names the Git executable, so a test can make it absent.
+//
+// S-00M TK-003 adds three fields for `close`, leaving the shapes above as
+// they were: `untrackedOther` lists every other untracked, non-ignored file
+// (repository-relative, including files outside the room root), so `dirty`,
+// the three lane lists and `untrackedOther` together are exactly what
+// `git status --porcelain` shows and what the Receipt's Dirty column counts;
+// `remotes` lists the configured remote names; and `pushed` is true only
+// when some `refs/remotes/*` ref contains HEAD, so a commit that reached any
+// remote counts as pushed with or without an upstream, and an unborn HEAD,
+// a room with no remote, or a commit no remote has is not.
+export function readRepositoryState(root, options = {}) {
+  const unknown = (reason, detail) => ({ known: false, reason, detail: String(detail ?? '').trim() });
+  try {
+    const project = path.resolve(root);
+    const git = options.git ?? 'git';
+    const run = (args) => spawnSync(git, ['-C', project, ...args], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    const probe = run(['rev-parse', '--is-inside-work-tree', '--show-prefix']);
+    if (probe.error) return unknown(probe.error.code === 'ENOENT' ? 'git-unavailable' : 'git-failed', probe.error.message);
+    const [inside, prefix = ''] = probe.stdout.split('\n');
+    if (probe.status !== 0 || inside !== 'true') return unknown('not-a-repository', probe.stderr || `${project} is not inside a Git work tree`);
+    let lanes;
+    try {
+      lanes = { adr: collectionRelative(project, 'adr'), specs: laneRelative(project, 'specs') };
+    } catch (error) {
+      return unknown('lanes-unresolved', error.message);
+    }
+    const status = run(['status', '--porcelain=v2', '--branch', '--untracked-files=all', '-z']);
+    if (status.error || status.status !== 0) return unknown('git-failed', status.error?.message ?? status.stderr);
+    const head = { detached: false, branch: null };
+    let upstream = null;
+    const dirty = [];
+    const untracked = { controls: [], adr: [], specs: [] };
+    const untrackedOther = [];
+    const within = (file, lane) => file.startsWith(`${lane}/`);
+    const entries = status.stdout.split('\0');
+    for (let index = 0; index < entries.length; index += 1) {
+      const entry = entries[index];
+      if (entry.startsWith('# branch.head ')) {
+        const name = entry.slice('# branch.head '.length);
+        if (name === '(detached)') head.detached = true;
+        else head.branch = name;
+      } else if (entry.startsWith('# branch.upstream ')) {
+        upstream = { name: entry.slice('# branch.upstream '.length), gone: true, ahead: null, behind: null };
+      } else if (entry.startsWith('# branch.ab ')) {
+        const [, ahead, behind] = entry.match(/^# branch\.ab \+(\d+) -(\d+)$/) ?? [];
+        if (upstream && ahead !== undefined) Object.assign(upstream, { gone: false, ahead: Number(ahead), behind: Number(behind) });
+      } else if (entry.startsWith('1 ') || entry.startsWith('u ')) {
+        dirty.push(entry.split(' ').slice(entry.startsWith('1 ') ? 8 : 10).join(' '));
+      } else if (entry.startsWith('2 ')) {
+        dirty.push(entry.split(' ').slice(9).join(' '));
+        index += 1; // with -z a rename's original path is the next entry
+      } else if (entry.startsWith('? ')) {
+        const file = entry.slice(2);
+        // Lanes are root-relative; porcelain paths are repository-relative.
+        const relative = prefix && file.startsWith(prefix) ? file.slice(prefix.length) : (prefix ? null : file);
+        if (relative === null) untrackedOther.push(file);
+        else if (controls.includes(relative)) untracked.controls.push(file);
+        else if (within(relative, lanes.adr)) untracked.adr.push(file);
+        else if (within(relative, lanes.specs)) untracked.specs.push(file);
+        else untrackedOther.push(file);
+      }
+    }
+    for (const list of [dirty, untracked.controls, untracked.adr, untracked.specs, untrackedOther]) list.sort();
+    const remoteList = run(['remote']);
+    if (remoteList.error || remoteList.status !== 0) return unknown('git-failed', remoteList.error?.message ?? remoteList.stderr);
+    const remotes = remoteList.stdout.split('\n').filter(Boolean).sort();
+    let pushed = false;
+    if (run(['rev-parse', '--verify', '--quiet', 'HEAD']).status === 0) {
+      const containing = run(['for-each-ref', '--contains', 'HEAD', '--format=%(refname)', 'refs/remotes']);
+      if (containing.error || containing.status !== 0) return unknown('git-failed', containing.error?.message ?? containing.stderr);
+      pushed = containing.stdout.trim() !== '';
+    }
+    return { known: true, head, dirty, untracked, upstream, untrackedOther, remotes, pushed };
+  } catch (error) {
+    return unknown('git-failed', error?.message ?? error);
+  }
 }
 
 function remoteNames(project) {
@@ -333,8 +429,10 @@ export function validateManifest(project) {
   // release stamped and the lane shape is what the Workbench update writes
   // when it lays the lane into such a room before restamping it. v3.2.1 is
   // frozen for the same reason: rooms stamped v3.2.1 declared the
-  // provider-home policy before the skills lane existed.
-  const supportedLegacy = { 'v3.0.0': legacyCoreSkills, 'v3.1.0': legacyCoreSkills, 'v3.1.1': stanceRequired, 'v3.1.2': stanceRequired, 'v3.1.3': carryRequired, 'v3.1.4': notepadCoreSkills, 'v3.2.0': initialV32CoreSkills, 'v3.2.1': coreSkills };
+  // provider-home policy before the skills lane existed, and its
+  // twenty-one-skill row stays exact now that `grill-me` grows the live
+  // bundle (S-00Z).
+  const supportedLegacy = { 'v3.0.0': legacyCoreSkills, 'v3.1.0': legacyCoreSkills, 'v3.1.1': stanceRequired, 'v3.1.2': stanceRequired, 'v3.1.3': carryRequired, 'v3.1.4': notepadCoreSkills, 'v3.2.0': initialV32CoreSkills, 'v3.2.1': handoffCoreSkills };
   const legacyRequired = supportedLegacy[manifest.workbenchVersion];
   const accepted = [skillPolicy, ...(legacyRequired ? [{ ...skillPolicy, required: legacyRequired }, { ...providerHomeSkillPolicy, required: legacyRequired }] : [])].map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {

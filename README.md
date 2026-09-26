@@ -83,7 +83,7 @@ docs look like. Copy from `templates/`, not from the root.
 
 ## Supporting Files
 
-- `workbench/skills/` - the closed 21-skill core bundle, shipped inside every
+- `workbench/skills/` - the closed 22-skill core bundle, shipped inside every
   room as the manifest's `skills` lane. The tracked `.agents/skills` (Codex)
   and `.claude/skills` (Claude Code) links resolve into it, so a fresh clone
   discovers the skills with no provider home or personal catalog. Genesis and
