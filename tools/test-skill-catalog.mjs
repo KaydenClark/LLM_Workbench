@@ -242,6 +242,33 @@ assertIncludesAll(notepadSkill, [
 assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < notepadSkill.indexOf('## 4.'),
   'rechecking a corrected claim belongs to saving and resuming, before cleanup');
 
+// S-00Z: grill-me is the repository-owned entry that composes grilling with
+// objective-scoped notepad continuity. It is declared in the live core bundle
+// and its source names both composed skills and the pending convention they
+// share, so a fresh start and a paused resume keep a pending readback pending.
+// The archived wrapper stays historical under S-00R (asserted above).
+assert.ok(coreSkills.includes('grill-me'), 'grill-me must be a declared core skill');
+const grillMe = read('workbench/skills/grill-me/SKILL.md');
+assert.match(grillMe, /^name: grill-me$/m, 'grill-me must declare its skill name');
+assert.match(grillMe, /^disable-model-invocation: true$/m,
+  'grill-me stays owner-invoked; grilling already answers the trigger phrases');
+assertIncludesAll(grillMe, [
+  'workbench/skills/grilling/SKILL.md',
+  'workbench/skills/notepad/SKILL.md',
+  'workbench/manifest.json',
+  '--type grilling',
+  '--objective',
+  '--kind source_record',
+  '`current.unresolved`',
+  'only a `decision` entry',
+  'Saving is not acceptance',
+  'pending readback',
+  'separate objective',
+  'does not itself create a Spec'
+], 'grill-me composition contract');
+assert.doesNotMatch(grillMe, /^Run a `\/grilling` session\.$/m,
+  'grill-me must state the composition, not only forward to grilling');
+
 const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
   'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',

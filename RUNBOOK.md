@@ -104,7 +104,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 
 | User intent | Behavior and endpoint |
 |---|---|
-| Decide or stress-test an idea | `grilling` with `notepad`; save answers/corrections before continuing |
+| Decide or stress-test an idea | `grill-me`, the entry composing `grilling` with `notepad`; save answers/corrections before continuing |
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
 | Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
@@ -300,7 +300,7 @@ The core skills ship inside every room at the manifest-declared `skills` lane,
 for Codex, `.claude/skills` for Claude Code) are tracked relative links into
 that lane, so a fresh clone discovers the skills with no provider home and no
 personal catalog. This repository's lane is the authoring source for
-the 21 core skills listed in `workbench/skills/README.md`; every other room
+the 22 core skills listed in `workbench/skills/README.md`; every other room
 receives receipt-backed copies from the release checkout:
 
 ```bash

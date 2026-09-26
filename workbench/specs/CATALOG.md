@@ -38,7 +38,7 @@ Derived from stable specs; includes completed history.
 | [S-00W - Concept Grilling And Notepad Composition](S-00W-concept-grilling-and-notepad-composition/SPEC.md) | Preserve the accepted shared concept contract for grilling, notepad and grill-me while each skill has its own delivery Spec. | planned |
 | [S-00X - grilling skill rebuild](S-00X-grilling-skill-rebuild/SPEC.md) | Settle a shared design concept through one consequential question at a time. | active |
 | [S-00Y - notepad skill rebuild](S-00Y-notepad-skill-rebuild/SPEC.md) | Preserve one objective's working context in revision-checked JSON without making it authority. | active |
-| [S-00Z - grill-me skill rebuild](S-00Z-grill-me-skill-rebuild/SPEC.md) | Provide a repository-owned entry point that composes grilling with notepad. | planned |
+| [S-00Z - grill-me skill rebuild](S-00Z-grill-me-skill-rebuild/SPEC.md) | Provide a repository-owned entry point that composes grilling with notepad. | active |
 | [S-010 - Canonical Evaluator Entry Detection](S-010-canonical-evaluator-entry/SPEC.md) | Ensure the evaluator runs when a checkout is invoked through a canonicalized path. | complete |
 | [S-011 - Agent Skills Adoption](S-011-agent-skills-adoption/SPEC.md) | Curated, Workbench-vocabulary agent skills (grill, to-spec, to-tickets, implement, review) shipped as part of the harness. | superseded |
 | [S-012 - Reproducible Adoption Provenance](S-012-adoption-provenance-proof/SPEC.md) | Preserve enough adoption provenance for an independent fresh-clone verification. | complete |
