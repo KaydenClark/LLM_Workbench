@@ -462,6 +462,24 @@ assertIncludesAll(adoption, [
   'workbench-adoption.mjs', 'migrate', 'manifest-declared', 'project-local `skills/`', '`git.integrationBranch`'
 ], 'adoption');
 
+// S-01D: the first adoption inventories the room's route, code, controls,
+// provenance and recovery before the migration installs the managed layout,
+// and the migration lays the core skills into the room's own lane from the
+// release rather than from a provider home. These pin the source order; the
+// fresh-context run in S-01D records the behavior.
+const adoptionMigrate = adoption.indexOf('workbench-adoption.mjs migrate');
+for (const inventory of ['workbench-classify.mjs classify', 'baseline', 'source remote, ref, and resolved commit', 'recovery point']) {
+  const at = adoption.indexOf(inventory);
+  assert.ok(at !== -1 && at < adoptionMigrate,
+    `adoption must inventory ${inventory} before the migration installs the managed layout`);
+}
+assert.match(adoption, /core skills into the room's own\s+`workbench\/skills` lane/,
+  'adoption must say the migration lays the core skills into the room lane');
+assert.doesNotMatch(adoption, /core bundle in the intended disposable or user-scoped home|missing core skill/,
+  'adoption must not send the agent to a provider home the migration no longer reads');
+assert.doesNotMatch(adoption, /checkpoint owned work/,
+  'adoption must not route dirty state through the retired checkpoint copy');
+
 const implement = read('workbench/skills/implement/SKILL.md');
 assertIncludesAll(implement, [
   'assigned stable `SPEC.md`', 'one eligible task', 'node workbench/tools/spec-workbench.mjs next --json',
