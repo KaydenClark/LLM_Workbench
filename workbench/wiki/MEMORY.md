@@ -72,6 +72,7 @@ they are authored.
 - [Save: persist authorized work and prove where it landed](skill-save.md)
 - [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
 - [Code review: check one fixed candidate against both contracts](skill-code-review.md)
+- [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
 
 ## Release And Distribution Routing
 
