@@ -3,7 +3,7 @@
 **Task ID:** TK-02J
 **Spec ID:** S-00J
 **Slice:** Keep a declared-blocked Task blocked until a real blocker clears, and record owner-decision blockers
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A Task record declared `blocked` with no resolvable blocker stays blocked with a doctor finding, a record declared `blocked` whose blockers are all satisfied still derives ready, and an `owner:<decision>` blocker is recorded and never satisfied automatically.

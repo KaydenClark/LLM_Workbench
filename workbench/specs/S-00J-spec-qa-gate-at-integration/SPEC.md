@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Make a separate context review the assembled Spec against its Task results, route a failed review into corrective Tasks under the still-open Spec, keep `integration` as the owner's Human QA surface, and refuse to close a Spec without a passed review and recorded owner approval.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** 2026-09-26 Lane H QA'd TK-01T (`S-###:delivered` blockers resolved from reviewed integration delivery; S-00P TK-002 now consumes `S-00I:delivered, S-00J:delivered`) and split its unapplied scope addition into TK-02J (declared-blocked resolution and `owner:<decision>` blockers). Human QA remains underway with failed reviews; no owner approval is recorded.
-**Next gate:** TK-02J (declared-blocked resolution and `owner:<decision>` blockers, split from TK-01T, which closed without them), then Dispatcher whole-Spec QA and separate-context review of the assembled S-00J candidate for reviewed integration delivery (T0), which S-00P TK-002 consumes through `S-00J:delivered`. Human QA remains underway with failed reviews; do not ask the owner to restart it.
+**Latest event:** TK-02J claimed by claude-lane-H.
+**Next gate:** Close TK-02J with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
