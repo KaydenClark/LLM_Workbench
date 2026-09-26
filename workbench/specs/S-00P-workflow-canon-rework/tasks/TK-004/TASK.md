@@ -43,7 +43,7 @@ supply lineage only; the Task must remain executable from committed owners.
 
 Required decision sources:
 
-- `workbench/docs/adr/proposed/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md`: assembled-Spec boundary, Human QA and unresolved failure return language.
+- `workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md`: assembled-Spec boundary, Human QA and unresolved failure return language. Accepted on 2026-09-26 by the SCR reconciliation (owner-approved 2026-09-24); this Task keeps it consistent rather than re-accepting it, and its direct-Task route stays destination design until reconciled with the operative gate.
 - `workbench/docs/adr/proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md`: Blueprint/Spec altitude conflict, sequence and September 24 correction.
 - `workbench/docs/adr/proposed/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md`: opposite retention rules, historical stable-path and held deletion claims.
 - `workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md`: required Packet members and preservation of accepted body.
