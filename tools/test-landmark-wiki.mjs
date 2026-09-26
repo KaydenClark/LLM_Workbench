@@ -71,6 +71,28 @@ test('human-readable CLI output identifies refusals and absolute in-root paths w
   assert.deepEqual(snapshot(dir), before);
 });
 
+test('explicit custom namespaces cover metadata and links without inventory reads or writes', async t => {
+  const dir = room(t);
+  fs.writeFileSync(path.join(dir, article), `---\nsource_paths: [CUSTOM-00a]\n---\n${readable}[More](../ROOM2-000B.md)\n`);
+  const before = snapshot(dir);
+  const result = cli(dir, 'validate', article, '--prefix', 'CUSTOM', '--prefix', 'ROOM2', '--json');
+  assert.equal(result.status, 1);
+  assert.equal(result.report.status, 'invalid');
+  assert.deepEqual(result.report.findings.map(hit => hit.id), ['CUSTOM-00a', 'ROOM2-000B']);
+  const { validateLandmarkArticle } = await import('../workbench/tools/landmark-wiki.mjs');
+  assert.deepEqual(validateLandmarkArticle(dir, article, { extraPrefixes: ['CUSTOM', 'ROOM2'] }), result.report);
+  for (const prefix of ['', 'custom', 'X-Y', '1ABC', 'ABCDEFGHIJKLMNOPQ', 'A B']) {
+    const refused = cli(dir, 'validate', article, '--prefix', prefix, '--json');
+    assert.equal(refused.report.error.code, 'invalid-invocation');
+    assert.throws(() => validateLandmarkArticle(dir, article, { extraPrefixes: [prefix] }), error => error.code === 'invalid-invocation');
+  }
+  for (const extraPrefixes of [null, 'CUSTOM', [42]]) assert.throws(() => validateLandmarkArticle(dir, article, { extraPrefixes }), error => error.code === 'invalid-invocation');
+  fs.writeFileSync(path.join(dir, article), `${readable}S-curve and HTTP-API.\n`);
+  assert.deepEqual(cli(dir, 'validate', article, '--json').report.findings.map(hit => hit.id), ['S-curve']);
+  fs.writeFileSync(path.join(dir, article), Buffer.from(before[article], 'base64'));
+  assert.deepEqual(snapshot(dir), before);
+});
+
 for (const [area, text, id] of [
   ['metadata', '---\nsource_paths: [S-001]\n---\n', 'S-001'],
   ['prose', 'Built through TK-002T.\n', 'TK-002T'],
