@@ -16,10 +16,17 @@ changing it. Never recreate a root `specs/` queue or a project-local
 skill-discovery tree.
 
 Cut Tasks when the Spec is activated (`planned` -> `active`), from live
-Actuality at the real start of the work; a planned Spec gets no Tasks. If the
-assigned Spec is still `planned`, report that its decomposition waits for
-activation, write no Task, and do not run `convert-tasks` on it. Tasks already
-cut into an existing planned Spec stay as they are.
+Actuality at the real start of the work; a planned Spec gets no Tasks unless
+the same request activates it. If the assigned Spec is still `planned` and the
+request does not activate it, report that its decomposition waits for
+activation and write no Task. When the same request activates it, run
+`node workbench/tools/spec-workbench.mjs convert-tasks S-### --activate` once:
+it turns the Spec's unfinished slice-table rows into `TASK.md` records and sets
+its `**Status:**` to `active` in one step, and writes nothing if any record
+fails to parse. It changes no other header field, so update `Latest event` and
+`Next gate` yourself. A planned Spec with no unfinished table row has no
+activation command yet; report that instead of editing its status by hand.
+Tasks already cut into an existing planned Spec stay as they are.
 
 ## Process
 
@@ -70,7 +77,8 @@ cut into an existing planned Spec stay as they are.
      ```
    - If the assigned Spec still holds only the legacy slice table with no
      `tasks/` directory, run `node workbench/tools/spec-workbench.mjs
-     convert-tasks S-###` once to move its unfinished rows into `TASK.md`
+     convert-tasks S-###` once (with `--activate` when the same request
+     activates a planned Spec) to move its unfinished rows into `TASK.md`
      records before adding further slices; it preserves done rows and
      append-only evidence untouched and refuses a second run.
    Leave a slice that waits on an unanswered owner decision uncut: a record's
