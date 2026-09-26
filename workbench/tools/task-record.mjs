@@ -222,10 +222,12 @@ export function taskStatus(task) {
 
 // The blocking relationship read: which of a Task's declared blocker ids are
 // not yet in the caller-supplied satisfied set. An empty result means the
-// Task is unblocked.
+// Task is unblocked. S-01W TK-002K: ids compare by collision key, so a
+// blocker spelled `TK-000A` is satisfied by a done `TK-00A`; the caller's set
+// keeps its own scope, which is what keeps numeric Task labels Spec-qualified.
 export function unmetBlockers(task, satisfiedIds) {
-  const satisfied = satisfiedIds instanceof Set ? satisfiedIds : new Set(satisfiedIds);
-  return task.blockers.filter((blockerId) => !satisfied.has(blockerId));
+  const satisfied = new Set([...satisfiedIds].map((id) => visibleIdKey(id) ?? id));
+  return task.blockers.filter((blockerId) => !satisfied.has(visibleIdKey(blockerId) ?? blockerId));
 }
 
 // Rewrites the frontmatter fields a lifecycle command owns. An existing field
