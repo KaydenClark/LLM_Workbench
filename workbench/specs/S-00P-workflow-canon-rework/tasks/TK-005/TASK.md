@@ -53,7 +53,8 @@ source for actual generation, Task parsing and CLI behavior. These runtime
 paths are not this slice's edit lane. No root control, SPEC, ADR, register,
 manifest, ID reservation, ledger, Wiki router, catalog or projection edit belongs
 to this Worker. `templates/CLAUDE.md` remains the exact `@AGENTS.md` adapter.
-Any additional path needs Dispatcher release; no new IDs are needed here.
+Any additional shared path needs Director release, coordinated through Dispatcher;
+no new IDs are needed here.
 
 ## Generic Mirror Rules
 
