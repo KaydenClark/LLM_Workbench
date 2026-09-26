@@ -299,6 +299,33 @@ assertIncludesAll(toDocs, [
 assert.doesNotMatch(toDocs, /ask (the )?user|interview the user|create a second|issue tracker/i,
   'to-docs must persist settled truth without restarting discovery or adding stores');
 
+// S-01J: to-docs lands each supported claim once. A mixed finding is split so
+// each claim reaches the one owner for its job, and other owners (a Wiki
+// reference article included) link to it instead of copying it. Pending meaning
+// stays in its note the way notepad records it, evidence cites durable owners,
+// transient working history stays out of the Spec, and each changed owner is
+// read back. These pin the source contract; the fresh-context run in S-01J
+// records the behavior. Whitespace is normalized so a rewrap cannot hide a term.
+const toDocsFlat = toDocs.replace(/\s+/g, ' ');
+assertIncludesAll(toDocsFlat, [
+  'Route each claim once',
+  'Split a mixed finding into its claims',
+  'exactly one owner',
+  'link to the owner that holds it rather than copy it',
+  'instead of restating its steps',
+  '`source_record`',
+  '`current.unresolved`',
+  'only a `decision` entry',
+  'never an ignored live path',
+  'permanent Spec history',
+  '`workbench/wiki/MEMORY.md`',
+  'Read each changed owner back'
+], 'to-docs single-owner, pending and read-back contract');
+assert.ok(toDocsFlat.indexOf('Route each claim once') > toDocsFlat.indexOf('`canonicalized_in`'),
+  'the once-per-claim rule applies to every destination in the routing list, so it follows it');
+assert.ok(toDocsFlat.indexOf('Read each changed owner back') > toDocsFlat.indexOf('Route each claim once'),
+  'read-back checks the routed result, after routing');
+
 const toSpec = read('workbench/skills/to-spec/SKILL.md');
 assertIncludesAll(toSpec, [
   'already-settled conversation',
