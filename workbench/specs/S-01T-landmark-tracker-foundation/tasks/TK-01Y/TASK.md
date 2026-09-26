@@ -3,7 +3,7 @@
 **Task ID:** TK-01Y
 **Spec ID:** S-01T
 **Slice:** Inspect documentation distributions across source types and scopes
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Exact eight-step vocabulary, the 30/20/50 example, shared identity deduplication, mixed-question contribution and Workbench-wide aggregation pass deterministic examples without filtering or flattening away meaning; empty, unknown, missing-assessment, invalid-fraction and cyclic dependency cases terminate with explicit outcomes and invalid writes preserve prior data; changed understanding exposes evidence-backed affected claims and preserves earlier proof

@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** 2026-09-26 TK-01X closed with proof: the Tracker root is declared and validated, `landmark-tracker.mjs` captures, revises, links and rebuilds, and `node tools/landmark-tracker-demo.mjs` reproduces 30/20/50; TK-01Y released to ready.
-**Next gate:** Claim and deliver TK-01Y (distributions across source types and scopes), now eligible; TK-01Z and TK-02A stay deferred until S-00I TK-01U is done on integration.
+**Latest event:** TK-01Y claimed by claude-lane-J.
+**Next gate:** Close TK-01Y with verification and documentation proof.
 
 ## Outcome
 
@@ -238,7 +238,7 @@ immediately before saving it. The records in `tasks/` are authoritative:
 | Task | Slice | Status | Blockers or release |
 |---|---|---|---|
 | [TK-01X](tasks/TK-01X/TASK.md) | Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view | done | none |
-| [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | ready | none (TK-01X done) |
+| [TK-01Y](tasks/TK-01Y/TASK.md) | Inspect documentation distributions across source types and scopes | in-progress | none (TK-01X done) |
 | [TK-01Z](tasks/TK-01Z/TASK.md) | Assess actual Landmark Wiki content so two Specs maintain one readable article | deferred | TK-01Y done and S-00I TK-01U done on integration |
 | [TK-02A](tasks/TK-02A/TASK.md) | Keep live Tracker references and historical proof through record moves | deferred | TK-01X done and S-00I TK-01U done on integration |
 
