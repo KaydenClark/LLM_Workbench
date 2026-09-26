@@ -46,7 +46,7 @@ Derived from stable specs; includes completed history.
 | [S-014 - Workbench Release Candidate](S-014-workbench-release-candidate/SPEC.md) | Historical release packet with current work routed to S-00O; unexecuted historical acceptance remains visible as a limitation. | blocked |
 | [S-015 - Portable v3 Release Audit Recovery](S-015-portable-v3-release-audit-recovery/SPEC.md) | Make generated v3 controls and Genesis validation enforce one operable manifest-declared spec lane before release. | complete |
 | [S-01A - handoff skill rebuild](S-01A-handoff-skill-rebuild/SPEC.md) | Transfer one objective to a named destination in readable Markdown. | planned |
-| [S-01B - promote skill rebuild](S-01B-promote-skill-rebuild/SPEC.md) | Move selected supported working claims into their existing durable owners. | planned |
+| [S-01B - promote skill rebuild](S-01B-promote-skill-rebuild/SPEC.md) | Move selected supported working claims into their existing durable owners. | active |
 | [S-01C - carry skill rebuild](S-01C-carry-skill-rebuild/SPEC.md) | Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible. | planned |
 | [S-01D - adoption skill rebuild](S-01D-adoption-skill-rebuild/SPEC.md) | Bring an existing project into the Workbench once while preserving room truth. | planned |
 | [S-01E - checkpoint skill rebuild](S-01E-checkpoint-skill-rebuild/SPEC.md) | Keep the retired checkpoint command as an accurate compatibility route. | planned |

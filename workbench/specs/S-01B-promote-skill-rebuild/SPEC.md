@@ -1,15 +1,15 @@
 # S-01B - promote skill rebuild
 
 **Spec ID:** S-01B
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-B-w1
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-09-26
 **Catalog description:** Move selected supported working claims into their existing durable owners.
-**Blockers:** none for planning; implementation is not assigned.
-**Latest event:** Per-skill destination extracted from the oversized Skills Wiki packet and current core inventory.
-**Next gate:** Review this skill's existing behavior, then activate TK-00S for this skill only.
+**Blockers:** none.
+**Latest event:** TK-00S claimed by claude-lane-B-w1.
+**Next gate:** Close TK-00S with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -53,7 +53,7 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 
 | Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-00S | Audit promote, deliver the smallest supported source/documentation change and prove the routed article | ready | none | pending |
+| TK-00S | Audit promote, deliver the smallest supported source/documentation change and prove the routed article | in-progress | none | pending |
 
 ### TK-00S - Deliver the promote skill destination
 
