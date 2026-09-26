@@ -1103,6 +1103,68 @@ try {
   fs.rmSync(path.join(root, 'specs/S-305-unconvertible'), { recursive: true });
   fs.rmSync(path.join(root, 'specs/S-304-convert'), { recursive: true });
 
+  // S-01L TK-02D: Tasks are cut when a Spec is activated, so a request that
+  // activates a planned Spec converts it through an explicit `activate`
+  // opt-in. Without it a planned Spec is refused exactly as before, the
+  // refusal names the route, and nothing is written.
+  write('specs/S-311-activate/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-311')
+    .replace('**Status:** active', '**Status:** planned'));
+  const plannedBefore = read('specs/S-311-activate/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-311'),
+    /S-311 is planned, not active; .*convert-tasks S-311 --activate/,
+    'a planned Spec is refused without the opt-in, and the refusal names the activation route'
+  );
+  assert.equal(read('specs/S-311-activate/SPEC.md'), plannedBefore,
+    'a planned Spec refused without the opt-in is byte-identical');
+  assert.equal(fs.existsSync(path.join(root, 'specs/S-311-activate/tasks')), false,
+    'a planned Spec refused without the opt-in gets no tasks directory');
+  const activated = convertSpecSlices(root, 'S-311', { activate: true });
+  assert.deepEqual(activated.converted, ['specs/S-311-activate/tasks/TK-001/TASK.md'],
+    'the opt-in converts the planned Spec it activates');
+  assert.equal(activated.activated, true, 'the result says the Spec was activated');
+  assert.equal(showSpec(root, 'S-311').status, 'active', 'the converted Spec is active');
+  assert.equal(readTaskRecord(path.join(root, 'specs/S-311-activate/tasks/TK-001/TASK.md'), root).status, 'ready');
+  assert.equal(
+    read('specs/S-311-activate/SPEC.md'),
+    removeRowForTest(plannedBefore.replace('**Status:** planned', '**Status:** active'), 'TK-001'),
+    'activation rewrites only the Status field and removes only the converted row'
+  );
+  render(root);
+  assert.deepEqual(doctor(root), [], 'a Spec activated by conversion renders and passes doctor');
+  fs.rmSync(path.join(root, 'specs/S-311-activate'), { recursive: true });
+
+  // An activating conversion whose record cannot be parsed writes nothing:
+  // the Spec stays planned, with no tasks directory.
+  write('specs/S-312-activate-unconvertible/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-312')
+    .replace('**Status:** active', '**Status:** planned')
+    .replace('| TK-001 | First slice | ready | none | pending |', '| TK-001 | First slice | blocked | TT-Q10 | pending |'));
+  const plannedUnconvertibleBefore = read('specs/S-312-activate-unconvertible/SPEC.md');
+  assert.throws(
+    () => convertSpecSlices(root, 'S-312', { activate: true }),
+    /S-312\/TK-001 cannot be converted: TK-001 has an invalid blocker id: TT-Q10/,
+    'an activating conversion still fails closed on a record it cannot parse'
+  );
+  assert.equal(read('specs/S-312-activate-unconvertible/SPEC.md'), plannedUnconvertibleBefore,
+    'a refused activating conversion leaves the Spec planned and byte-identical');
+  assert.equal(fs.existsSync(path.join(root, 'specs/S-312-activate-unconvertible/tasks')), false,
+    'a refused activating conversion leaves no tasks directory');
+  fs.rmSync(path.join(root, 'specs/S-312-activate-unconvertible'), { recursive: true });
+
+  // The opt-in activates only a planned Spec: a completed Spec is refused as before.
+  assert.throws(
+    () => convertSpecSlices(root, 'S-001', { activate: true }),
+    /S-001 is complete/,
+    'the activation opt-in never reopens a completed Spec'
+  );
+  assert.equal(read('specs/S-001-fixture/SPEC.md'), completedBefore,
+    'a refused activating conversion leaves the completed Spec byte-identical');
+  assert.deepEqual(
+    parseCliArgs(['convert-tasks', 'S-311', '--activate', '--json']),
+    { command: 'convert-tasks', id: 'S-311', options: { activate: true, json: true } },
+    '--activate is a boolean convert-tasks flag and does not swallow the next flag'
+  );
+
   assert.equal(read('specs/S-306-table-only/SPEC.md'), tableOnlyBefore,
     'a table-only Spec beside record-backed Specs is never rewritten by them');
   fs.rmSync(path.join(root, 'specs/S-306-table-only'), { recursive: true });
@@ -1169,6 +1231,13 @@ function sliceTable(content) {
   const start = content.indexOf('## Vertical Implementation Slices');
   const end = content.indexOf('\n## ', start + 1);
   return content.slice(start, end < 0 ? content.length : end);
+}
+
+// The expected Spec text after a converted row leaves the slice table: the
+// same text with that one table line gone, so a byte comparison proves no
+// other field moved.
+function removeRowForTest(content, taskId) {
+  return content.split('\n').filter((line) => !line.startsWith(`| ${taskId} |`)).join('\n');
 }
 
 function taskRecordFixture({ id, specId, slice, status, blockers, destination }) {
