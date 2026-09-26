@@ -47,6 +47,36 @@ test('public promotion reconciles selected material into an owner and returns ve
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('a mixed note promotes its confirmed decision while the pending answer stays unselected and unresolved in the note', () => {
+  // S-01B characterization: a decision entry sits beside a pending
+  // source_record that current.unresolved still lists. Selecting the decision
+  // must not carry the pending entry as context, and the source note keeps the
+  // pending entry and its unresolved item byte for byte.
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'direct-promotion-mixed-'));
+  try {
+    const init = spawnSync(process.execPath, [path.join(root, 'workbench/tools/workbench-layout.mjs'), 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
+    assert.equal(init.status, 0, init.stdout);
+    const note = createNote(dir, { note: 'mixed', objective: 'mixed-decisions', title: 'Mixed decisions', unresolved: ['Q2 retention window: readback pending owner confirmation'] });
+    assert.equal(note.status, 'created');
+    assert.equal(appendEntry(dir, { note: note.note, revision: 1, kind: 'decision', topic: 'naming', 'question-id': 'Q1', content: 'Reports use the room name as their title.' }).status, 'appended');
+    assert.equal(appendEntry(dir, { note: note.note, revision: 2, kind: 'source_record', topic: 'retention', 'question-id': 'Q2', content: 'Keep them for a while, maybe a month.', interpretation: 'Reports are retained for 30 days.' }).status, 'appended');
+    fs.writeFileSync(path.join(dir, 'RUNBOOK.md'), '# Runbook\n\n## Reports\n\nExisting procedure.\n');
+    const draft = 'workbench/sessions/recovery/promote-runbook-naming.md';
+    fs.writeFileSync(path.join(dir, draft), '# Runbook\n\n## Reports\n\nExisting procedure. Reports use the room name as their title.\n');
+    const source = fs.readFileSync(path.join(dir, note.note));
+    const result = sessions.promote(dir, { from: note.note, revision: 3, entries: 'decision-001', to: 'RUNBOOK.md', expected: hash(fs.readFileSync(path.join(dir, 'RUNBOOK.md'))), content: draft });
+    assert.equal(result.status, 'promoted', JSON.stringify(result));
+    assert.deepEqual(result.source.selected, ['decision-001']);
+    assert.deepEqual(result.source.context, [], 'the pending source_record is not carried as context of the confirmed decision');
+    assert.equal(result.sourceRetained, true);
+    assert.deepEqual(fs.readFileSync(path.join(dir, 'RUNBOOK.md')), fs.readFileSync(path.join(dir, draft)));
+    assert.deepEqual(fs.readFileSync(path.join(dir, note.note)), source, 'promotion leaves the source note byte for byte');
+    const retained = JSON.parse(source);
+    assert.deepEqual(retained.current.unresolved, ['Q2 retention window: readback pending owner confirmation']);
+    assert.ok(retained.entries.some(entry => entry.id === 'source_record-001' && entry.kind === 'source_record' && entry.question_id === 'Q2'));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 for (const failure of ['stale-revision', 'stale-destination', 'missing-entry', 'invalid-content', 'private-content', 'live-citation', 'path-escape', 'linked-destination', 'hardlinked-destination', 'linked-draft']) {
   test(`promotion refuses ${failure} and preserves source, destination and draft`, () => {
     const { dir, options } = fixture();
