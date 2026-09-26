@@ -1320,6 +1320,56 @@ test('readRepositoryState reports a detached HEAD, a branch with no upstream, an
   }
 });
 
+// S-00M TK-003: `close` refuses on exactly the state the Receipt's own Dirty
+// column counts (every `git status --porcelain` line, so untracked files
+// outside the three lanes too) and on a HEAD no remote-tracking ref contains.
+// These fields are additive; TK-001's shapes above are unchanged.
+test('readRepositoryState reports every other untracked file, the configured remotes, and whether any remote-tracking ref contains HEAD', () => {
+  const { base, repo, remote } = stateFixture();
+  try {
+    write(repo, 'RUNBOOK.md', '# Runbook\n');
+    write(repo, 'notes/outside.md', 'outside every lane\n');
+    write(repo, 'nested/AGENTS.md', 'not a root control\n');
+    const ahead = readRepositoryState(repo);
+    assert.equal(ahead.known, true, JSON.stringify(ahead));
+    assert.deepEqual(ahead.untrackedOther, ['nested/AGENTS.md', 'notes/outside.md'],
+      'untracked files outside the controls, ADR and spec lanes are listed, lane files are not repeated');
+    assert.deepEqual(ahead.untracked, { controls: ['RUNBOOK.md'], adr: [], specs: [] });
+    assert.deepEqual(ahead.remotes, ['origin']);
+    assert.equal(ahead.pushed, false, 'a local commit ahead of its upstream is not pushed');
+
+    git(repo, 'pull', '-q', '--rebase', 'origin', 'main');
+    git(repo, 'push', '-q', 'origin', 'main');
+    assert.equal(readRepositoryState(repo).pushed, true, 'HEAD contained in origin/main is pushed');
+
+    // A new branch with no upstream at a commit a remote already has is
+    // pushed: the commit is recoverable, which is what the refusal protects.
+    git(repo, 'switch', '-q', '-c', 'topic');
+    const topic = readRepositoryState(repo);
+    assert.equal(topic.upstream, null);
+    assert.equal(topic.pushed, true, 'a commit another remote-tracking ref contains is pushed, upstream or not');
+    git(repo, 'commit', '-q', '--allow-empty', '-m', 'topic only');
+    assert.equal(readRepositoryState(repo).pushed, false, 'a commit no remote-tracking ref contains is unpushed');
+
+    git(repo, 'checkout', '-q', '--detach');
+    assert.equal(readRepositoryState(repo).pushed, false, 'a detached HEAD at an unpushed commit is unpushed');
+
+    git(repo, 'remote', 'remove', 'origin');
+    const noRemote = readRepositoryState(repo);
+    assert.deepEqual(noRemote.remotes, []);
+    assert.equal(noRemote.pushed, false, 'a room with no remote has nothing pushed');
+    assert.ok(fs.existsSync(remote));
+
+    const unborn = path.join(base, 'unborn');
+    git(base, 'init', '-q', '-b', 'main', unborn);
+    const empty = readRepositoryState(unborn);
+    assert.equal(empty.known, true, JSON.stringify(empty));
+    assert.equal(empty.pushed, false, 'a HEAD with no commit yet is unpushed, not a throw');
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
 test('readRepositoryState reports unknown, never throwing, outside a repository or where Git is absent', () => {
   const outside = fixture();
   const { base, repo } = stateFixture();

@@ -291,6 +291,31 @@ assert.ok(saveSkill.indexOf('git merge-base --is-ancestor') < saveSkill.indexOf(
 assert.doesNotMatch(saveSkill, /Verify the remote branch resolves to the intended commit/,
   'tip equality is not containment: a remote that advanced past the commit still contains it');
 
+// S-01A: the handoff source and its bundled Markdown shape must agree. The
+// shape (byte-equal to templates/HANDOFF.md, see test-core-composition) has no
+// heading of its own for the destination, corrections, access limits,
+// inherited authorization or blockers the source requires, so the source maps
+// every obligation onto a heading the shape actually has, and every heading is
+// mapped. An untracked live note is a dead pointer outside its own checkout.
+// These pin the source contract; the S-01A fresh-context run records behavior.
+const handoffSkill = read('workbench/skills/handoff/SKILL.md');
+const handoffShape = read('workbench/skills/handoff/assets/HANDOFF.md');
+const handoffShapeSections = [...handoffShape.matchAll(/^## (.+)$/gm)].map((match) => match[1]).sort();
+const handoffMappedSections = [...handoffSkill.matchAll(/^ {3}- `([^`]+)`:/gm)].map((match) => match[1]).sort();
+assert.ok(handoffShapeSections.length > 0, 'the bundled handoff shape must declare its sections');
+assert.deepEqual(handoffMappedSections, handoffShapeSections,
+  'the handoff source must place its obligations on exactly the sections its bundled shape has');
+assertIncludesAll(handoffSkill, [
+  'named destination',
+  'inherited authorization',
+  'the claim it corrects',
+  'access limit',
+  'exactly one next executable action',
+  'exists only in this checkout',
+  'When the handoff draws on a notepad',
+  'authorizes authorship, not implementation, promotion, sending it to others or creating a new task'
+], 'handoff source and shape contract');
+
 const makeItSo = read('workbench/skills/make-it-so/SKILL.md');
 assertIncludesAll(makeItSo, [
   'notepad', '`promote`', '`to-docs`', '`to-spec`', '`to-tasks`',
