@@ -13,7 +13,7 @@
 **Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
 **Blockers:** none
 **Latest event:** TK-00J closed with proof.
-**Next gate:** Complete TK-00K.
+**Next gate:** Claim and carry TK-00K (capability routing), then TK-01L (push-on-claim); TK-01K waits on S-00P, TK-01M on TK-01L and S-01X; completion waits on all eight acceptance boxes.
 
 > **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7`.
 

@@ -25,6 +25,15 @@ rebuild Specs (S-00Y, S-01A, S-01O, S-01B) are live. Land skill wording only
 where the owning rebuild is not in flight; otherwise record the needed wording
 in S-00V's gap and report it to the Director.
 
+Found by TK-00J: lifting `.gitignore` alone is not enough. The manifest
+ignore check `verifyNotepadIgnores` in `workbench/tools/workbench-layout.mjs`
+(its published and leaked checks over notepads and recovery) makes `doctor`
+report a blocking `invalid-manifest` for the whole room while a notepad is
+tracked; committed handoffs already pass. Lift that check for notepads, keep
+`sessions/recovery/` ignored, and update its pinned test. TK-00J's Spec-citation
+test untracks its fixture notepad for this reason; tighten it once the check
+lifts.
+
 ## Done Criteria
 
 - A committed note or handoff passes privacy checks, is refused as evidence,
