@@ -1090,7 +1090,7 @@ node workbench/tools/spec-workbench.mjs next-id S-### --prefix TK --json
 node workbench/tools/adr.mjs new --title "Decision title"
 node workbench/tools/notepads.mjs allocate --prefix N --objective OBJECTIVE_KEY --title "TITLE"
 node workbench/tools/spec-workbench.mjs widen-id S-###
-node workbench/tools/spec-workbench.mjs widen-id TK-### [--spec S-###]
+node workbench/tools/spec-workbench.mjs widen-id TK-### --spec S-###
 ```
 
 `next-id` is a read-only proposal, not a reservation or permission to create work.
