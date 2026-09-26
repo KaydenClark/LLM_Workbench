@@ -141,8 +141,11 @@ Settle the target's starting point first:
      for additive declared collections. It preserves old note paths and
      reports its exact layout source. Seeded schema/examples retain adjusted
      room copies.
-  3. Stamp the manifest `workbenchVersion` with the verified target version;
-     no command writes it for a current-schema room. The manifest's
+  3. Stamp the manifest `workbenchVersion` with the verified target version
+     and set its `skillPolicy` to the one in the release checkout's manifest;
+     no command writes either for a current-schema room, and a stamped
+     manifest validates only with the target release's policy. Confirm with
+     `node workbench/tools/workbench-layout.mjs validate --project PATH`. The manifest's
      `provenance.source` and lifecycle stay historical; a release mismatch
      reported as `unverified-provenance` alone is not authority to run
      `record-source`. Then run
