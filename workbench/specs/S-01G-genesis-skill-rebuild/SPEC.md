@@ -9,7 +9,7 @@
 **Catalog description:** Create a new Workbench room from a founding prompt and a recoverable remote boundary.
 **Blockers:** none.
 **Latest event:** TK-00X closed with proof.
-**Next gate:** Separate-context review of the TK-00X candidate, then owner Human QA of conversational fidelity on `integration`, then `complete S-01G`.
+**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01G`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -67,7 +67,7 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 - [x] An existing project routes to adoption; template room state is not inherited as the new project's own state.
 - [x] The named scenario is observed in a fresh or otherwise independent context: A clean target is generated and verified while an existing-code target is refused or rerouted.
 - [x] `workbench/wiki/skill-genesis.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
-- [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
+- [x] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
 
@@ -95,7 +95,7 @@ Maintain `workbench/wiki/skill-genesis.md` and its sole router entry alongside t
 
 ## Completion Result
 
-TK-00X audited `workbench/skills/genesis/SKILL.md` and found two gaps against the accepted behavior. Following only the commands the skill listed left the skills lane empty, so the readiness gate refused the room with `skill-lane-missing`. And nothing mechanical routed an existing-code target: `init --provenance genesis` accepts one that the classifier reports as `adoption`. A red catalog test pinned the contract and the green change made the skill classify the target before writing and continue only on `genesis`, install the receipt-backed skills lane, and name the `validate --genesis` readiness gate. The tool-level refusal in `init` is recorded as a remaining gap, not changed. `workbench/wiki/skill-genesis.md` and its router entry were authored. One fresh-context scenario built, verified and pushed a clean room from a founding prompt without inheriting Template state, and refused an existing-code folder, routing it to `/adoption` with the folder unchanged. A separate-context review is pending; owner Human QA remains.
+TK-00X audited `workbench/skills/genesis/SKILL.md` and found two gaps against the accepted behavior. Following only the commands the skill listed left the skills lane empty, so the readiness gate refused the room with `skill-lane-missing`. And nothing mechanical routed an existing-code target: `init --provenance genesis` accepts one that the classifier reports as `adoption`. A red catalog test pinned the contract and the green change made the skill classify the target before writing and continue only on `genesis`, install the receipt-backed skills lane, and name the `validate --genesis` readiness gate. The tool-level refusal in `init` is recorded as a remaining gap, not changed. `workbench/wiki/skill-genesis.md` and its router entry were authored. One fresh-context scenario built, verified and pushed a clean room from a founding prompt without inheriting Template state, and refused an existing-code folder, routing it to `/adoption` with the folder unchanged. A separate-context review of the TK-00X candidate passed. The Spec is not complete: owner Human QA of conversational fidelity remains.
 
 ## Supersession
 
