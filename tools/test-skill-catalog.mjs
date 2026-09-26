@@ -316,6 +316,23 @@ assertIncludesAll(toSpec, [
 for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for-agent']) {
   assert.ok(!toSpec.includes(forbidden), `to-spec must not retain ${forbidden}`);
 }
+// S-01K: one Spec owns one capability. A settled conversation that spans
+// several capabilities (for example a per-skill rebuild) yields one Spec per
+// capability rather than one bundled delivery owner. A new Spec is authored at
+// `planned` and is never claimed or activated by the specifying agent, so the
+// record carries no implementation claim. Paths move only through
+// `move-spec` (AGENTS lifecycle, ADR-000I); the retired stable-path rule is gone.
+assertIncludesAll(toSpec, [
+  'one Spec per capability',
+  'never bundle',
+  'status `planned`',
+  'do not `claim`',
+  '`move-spec`'
+], 'to-spec one-capability and planned-entry contract');
+assert.doesNotMatch(toSpec, /into one\s+stable capability record/,
+  'to-spec must not fold a multi-capability conversation into one record');
+assert.doesNotMatch(toSpec, /Existing stable paths never change/,
+  'to-spec must not restate the retired stable-path rule');
 
 const genesis = read('workbench/skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
