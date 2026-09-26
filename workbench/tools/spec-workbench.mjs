@@ -15,7 +15,7 @@ import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
-import { assembleSpecReport, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
+import { assembleSpecReport, computeSpecDigest, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -545,15 +545,63 @@ export function completeSpec(rootDir, id, options = {}) {
   // handoff's "checked after the review-verdict gate" ordering.
   const gapReason = reviewGapReason(report) ?? approvalGapReason(report);
   if (gapReason) throw new Error(`${id} cannot complete: ${gapReason}`);
+  // S-00J TK-01S (closure-capture contract T2/T3): reviewed integration
+  // delivery and owner approval are not final closure. The approved content
+  // must also be verified on the declared default branch, checked last and
+  // before any write, so every refusal leaves the Spec unchanged.
+  const delivery = approvedDeliveryProof(path.resolve(rootDir), spec, report);
   let content = updateFields(spec.content, {
     Status: 'complete',
     Updated: date,
     'Latest event': 'Spec completed and removed from the hot board.',
     'Next gate': 'none'
   });
-  content = appendEvidence(content, `| ${escapeCell(date)} | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |`);
+  const deliveryProof = `approved delivery verified: ${delivery.remoteRef} at ${delivery.observedSha} contains approved candidate ${delivery.candidate} [${delivery.digest12}]`;
+  content = appendEvidence(content, `| ${escapeCell(date)} | spec | Spec completed | ${escapeCell(`Acceptance gates satisfied; ${deliveryProof}`)} | Documentation impact recorded above | none |`);
   atomicWrite(spec.filePath, content);
   return showSpec(rootDir, id);
+}
+
+// S-00J TK-01S: verify that the owner-approved content is delivered on the
+// declared default branch. Reuses `resolveDefaultBranchRemoteRef` (the
+// manifest's `git.defaultBranch`, checked against its `origin/<branch>`
+// remote-tracking ref), `git merge-base --is-ancestor` and
+// `computeSpecDigest`. It reads local refs only and never fetches: the
+// procedure refreshes the remote-tracking ref first, and this check proves
+// only the pinned local observation. The ref is resolved once to its SHA so
+// the ancestry and content checks read the same commit. It refuses an absent
+// declaration or ref, an approved candidate the ref does not contain, and
+// committed content there that is unreadable or substantively differs from
+// the approved digest (containment followed by a reversal). The approved
+// digest is `report.specDigest`, which `report.latestOwnerApproval` already
+// matched; administrative fields stay excluded by the digest itself.
+function approvedDeliveryProof(root, spec, report) {
+  const id = spec.id;
+  const approval = report.latestOwnerApproval;
+  const digest12 = report.specDigest.slice(0, 12);
+  const { defaultBranch, remoteRef } = resolveDefaultBranchRemoteRef(root);
+  if (!defaultBranch) {
+    throw new Error(`${id} cannot complete: the manifest declares no git.defaultBranch, so approved delivery on the default branch cannot be verified`);
+  }
+  if (!remoteRef) {
+    throw new Error(`${id} cannot complete: no origin/${defaultBranch} remote-tracking ref exists to verify approved delivery; after the owner promotes integration to ${defaultBranch}, refresh it (git fetch origin ${defaultBranch}) and retry`);
+  }
+  const observed = spawnSync('git', ['-C', root, 'rev-parse', '--verify', '--quiet', `${remoteRef}^{commit}`], { encoding: 'utf8' });
+  const observedSha = observed.status === 0 ? observed.stdout.trim() : '';
+  if (!observedSha) throw new Error(`${id} cannot complete: ${remoteRef} does not resolve to a commit`);
+  if (spawnSync('git', ['-C', root, 'merge-base', '--is-ancestor', approval.candidate, observedSha]).status !== 0) {
+    throw new Error(`${id} cannot complete: approved candidate ${approval.candidate} is not contained in ${remoteRef} at ${observedSha}; the owner promotes integration to ${defaultBranch}, then refresh ${remoteRef} and retry`);
+  }
+  let deliveredDigest;
+  try {
+    deliveredDigest = computeSpecDigest(root, spec, observedSha);
+  } catch (error) {
+    throw new Error(`${id} cannot complete: approved content is unreadable on ${remoteRef} at ${observedSha}: ${error.message}`);
+  }
+  if (deliveredDigest !== report.specDigest) {
+    throw new Error(`${id} cannot complete: ${remoteRef} at ${observedSha} contains approved candidate ${approval.candidate}, but its committed ${id} content [${deliveredDigest.slice(0, 12)}] differs from the approved content [${digest12}]; a later change on ${defaultBranch} altered or reversed it`);
+  }
+  return { defaultBranch, remoteRef, observedSha, candidate: approval.candidate, digest12 };
 }
 
 // S-00J TK-004: the one place "no passed verdict on the current content" is
