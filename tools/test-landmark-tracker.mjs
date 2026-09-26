@@ -26,6 +26,7 @@ import test from 'node:test';
 import { COLLECTIONS, LANES, SIX_LANES } from '../workbench/tools/workbench-paths.mjs';
 import * as paths from '../workbench/tools/workbench-paths.mjs';
 import { SESSIONS_IGNORE, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { allocateArtifactId } from '../workbench/tools/visible-ids.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rootManifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8'));
@@ -903,5 +904,20 @@ test('a foundation (schema 1) record still loads and upgrades on its next write'
     const upgraded = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(upgraded.schema, 'landmark-tracker/destination-question@2');
     assert.deepEqual(upgraded.origin, legacy.origin, 'the origin survives the upgrade');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('DQC and landmark identities come from the shared artifact allocation policy, and legacy identities stay held', () => {
+  const dir = room();
+  try {
+    const first = capture(dir).id;
+    assert.equal(first, allocateArtifactId('DQC', []), 'a DQC is an artifact: uppercase, width four, letter-bearing');
+    assert.match(first, /^DQC-(?=[0-9A-Z]*[A-Z])[0-9A-Z]{4,}$/);
+    const landmark = ok(cli(dir, 'add-landmark', '--title', 'Fixture lighting', '--summary', 'Light', '--reason', 'fixture'), 'captured').id;
+    assert.equal(landmark, allocateArtifactId('LMK', []));
+    const legacy = ok(cli(dir, 'capture', '--id', 'DQC-001', '--title', 'Fixture foundation-era concept', '--question', 'What did the foundation allocate?', '--reason', 'a TK-01X identity is preserved'), 'captured').id;
+    assert.equal(legacy, 'DQC-001', 'an existing identity is preserved, never reallocated');
+    const next = dqc(dir, 'Fixture next concept');
+    assert.equal(next, allocateArtifactId('DQC', [first, legacy]));
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
