@@ -68,3 +68,109 @@ test('expanded exported formatter exposes saved own and related evidence with pr
     checkEvidence(formatTracker(showTracker(dir).tracker, { expand: true }), card.id);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('public expanded show exposes evidence for a DQC, landmark and whole Tracker', () => {
+  const { dir, card } = fixture();
+  try {
+    const landmark = write(dir, 'add-landmark', '--title', 'Fixture pillar', '--summary', 'Fixture scope', '--importance', 'Fixture navigation', '--reason', 'Fixture grouping');
+    write(dir, 'link', card.id, '--landmark', landmark.id, '--expect-revision', '3', '--reason', 'Fixture link');
+    for (const selection of [[], [card.id], [landmark.id]]) {
+      checkEvidence(cli(dir, 'show', ...selection, '--expand'), card.id);
+    }
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+function sourceBytes(dir) {
+  return Object.fromEntries(Object.values(declaration.collections).flatMap(relative =>
+    fs.readdirSync(path.join(dir, relative)).map(name => [
+      `${relative}/${name}`, fs.readFileSync(path.join(dir, relative, name), 'utf8')
+    ])
+  ));
+}
+
+test('expansion survives restart and rebuild without changing compact output, JSON or source bytes', () => {
+  const { dir, card } = fixture();
+  const clone = fs.mkdtempSync(path.join(os.tmpdir(), 'tracker-readable-clone-'));
+  try {
+    const sources = sourceBytes(dir);
+    const projection = fs.readFileSync(path.join(dir, declaration.root, 'TRACKER.json'), 'utf8');
+    for (const selection of [[], [card.id]]) {
+      const compact = cli(dir, 'show', ...selection);
+      assert.ok(!compact.includes('fixture-article@immutable-revision'));
+      assert.ok(!compact.includes('fixture-related-proof@r7'));
+      const json = cli(dir, 'show', ...selection, '--json');
+      assert.equal(cli(dir, 'show', ...selection, '--expand', '--json'), json);
+      const expanded = cli(dir, 'show', ...selection, '--expand');
+      checkEvidence(expanded, card.id);
+      fs.cpSync(dir, clone, { recursive: true });
+      cli(clone, 'rebuild');
+      assert.equal(cli(clone, 'show', ...selection, '--expand'), expanded);
+      cli(dir, 'rebuild');
+      assert.equal(cli(dir, 'show', ...selection), compact);
+      assert.equal(cli(dir, 'show', ...selection, '--expand'), expanded);
+      assert.equal(cli(dir, 'show', ...selection, '--json'), json);
+    }
+    assert.equal(formatTracker(showTracker(dir).tracker, { expand: false }), formatTracker(showTracker(dir).tracker));
+    assert.deepEqual(sourceBytes(dir), sources);
+    assert.deepEqual(sourceBytes(clone), sources);
+    assert.equal(fs.readFileSync(path.join(dir, declaration.root, 'TRACKER.json'), 'utf8'), projection);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.rmSync(clone, { recursive: true, force: true });
+  }
+});
+
+test('unknown and unassessed items remain explicit without invented fractions or evidence', () => {
+  const { dir, card } = fixture();
+  try {
+    write(dir, 'relate', card.id, '--expect-revision', '3', '--item', 'grilling-question:FX-NONE', '--reason', 'No judgment yet');
+    write(dir, 'relate', card.id, '--expect-revision', '4', '--item', 'spec:S-999@r9', '--reason', 'Unavailable fixture Spec');
+    const output = cli(dir, 'show', card.id, '--expand');
+    assert.match(output, /grilling-question:FX-NONE \[unassessed\]/);
+    assert.match(output, /spec:S-999 \[unknown\]/);
+    const entries = showTracker(dir, card.id).view.distribution.contributions;
+    for (const state of ['unassessed', 'unknown']) {
+      const entry = entries.find(item => item.state === state);
+      assert.equal(entry.contributions, null);
+      assert.equal(entry.revision, null);
+      assert.deepEqual(entry.evidence, []);
+      const detail = output.slice(output.indexOf(`${entry.key} [${state}]`)).split('\n');
+      assert.match(detail[0], /fractions: none recorded/);
+      assert.match(detail[1], /basis: none recorded; evidence: none recorded/);
+      assert.match(detail[2], /assessment revision: unknown/);
+    }
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a related mixed DQC contributes once and expansion terminates for navigation cycles', () => {
+  const { dir, card } = fixture();
+  try {
+    const child = write(dir, 'capture', '--title', 'Fixture child', '--question', 'What supports the child?', '--reason', 'Fixture child');
+    write(dir, 'revise', child.id, '--expect-revision', '1', '--assess', 'Journey=0.5,Review=0.5', '--basis', 'Child fixture judgment', '--evidence', 'fixture-child-proof@r2', '--reason', 'Child assessment');
+    write(dir, 'relate', card.id, '--expect-revision', '3', '--item', `dqc:${child.id}@2`, '--reason', 'Child navigation');
+    write(dir, 'relate', child.id, '--expect-revision', '2', '--item', `dqc:${card.id}@4`, '--reason', 'Navigation cycle');
+    const shown = showTracker(dir, card.id);
+    const output = cli(dir, 'show', card.id, '--expand');
+    assert.ok(output.includes('fixture-child-proof@r2'));
+    assert.ok(output.includes(`holder: ${child.id}`));
+    assert.equal(shown.view.distribution.denominator, 3);
+    assert.equal(shown.view.distribution.contributions.filter(item => item.id === child.id).length, 1);
+    assert.equal(output.split(`contribution dqc:${child.id} `).length - 1, 1);
+    assert.deepEqual(write(dir, 'show', card.id).view, shown.view);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('expanded whole Tracker deduplicates shared related identities in its aggregate', () => {
+  const { dir, card } = fixture();
+  try {
+    const other = write(dir, 'capture', '--title', 'Fixture peer', '--question', 'What supports the peer?', '--reason', 'Fixture peer');
+    write(dir, 'relate', other.id, '--expect-revision', '1', '--item', 'grilling-question:FX-REL@r7', '--assess', 'Verified=1', '--basis', 'Shared fixture judgment', '--evidence', 'fixture-related-proof@r7', '--reason', 'Shared fixture evidence');
+    const shown = showTracker(dir).tracker;
+    const output = cli(dir, 'show', '--expand');
+    const workbenchDetail = output.split('\nNo landmark:')[0];
+    assert.equal(workbenchDetail.split('contribution grilling-question:FX-REL ').length - 1, 1);
+    assert.equal(shown.workbench.denominator, 3);
+    assert.equal(shown.workbench.contributions.filter(item => item.id === 'FX-REL').length, 1);
+    assert.ok(output.includes(card.id));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
