@@ -451,6 +451,13 @@ assert.match(reconcileSection, /manifest `workbenchVersion`[^.]*verified target 
   'update-harness v3 route must stamp the manifest version');
 assert.match(reconcileSection, /`provenance\.source`[^.]*historical/,
   'update-harness v3 route keeps the historical source record (S-00N UP-021) while stamping the version');
+// A dry run of a v3.2.0 room against the S-01N candidate: after the stamp,
+// validation accepts only the target release's skill policy, and neither
+// migrate nor any update command rewrites the room's older required list.
+assert.match(reconcileSection, /`skillPolicy`[^.]*release checkout/,
+  'update-harness v3 route must bring the manifest skill policy to the target release with the stamp');
+assert.match(reconcileSection, /workbench-layout\.mjs validate --project/,
+  'update-harness v3 route must validate the stamped manifest');
 assert.match(reconcileSection, /workbench-layout\.mjs seed-documents --project/,
   'update-harness v3 route must refresh eligible seeded documents after the stamp');
 assert.doesNotMatch(updateHarness, /\bv\d+\.\d+\.\d+\b/,
