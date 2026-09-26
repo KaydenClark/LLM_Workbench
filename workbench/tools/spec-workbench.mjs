@@ -10,6 +10,7 @@ import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
+import { capabilitySession } from './optional-capabilities.mjs';
 import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
@@ -44,12 +45,22 @@ const HOT_END = '<!-- hot-specs:end -->';
 // tool change.
 export const SPEC_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 
-export function nextWork(rootDir) {
+// S-00V TK-00K: `options.capabilities` (the CLI's `--capabilities a,b`) and
+// `options.capabilityProbes` (tests) say which optional capabilities this
+// session establishes (optional-capabilities.mjs). A Task needing one the
+// session cannot establish is never selected; it is named instead under
+// `capabilityBlocked`, attached to the candidate, or - when nothing else is
+// eligible - returned as `{ specId: null, taskId: null, capabilityBlocked }`
+// so the capability stays visible. A room with no capability-blocked Task
+// gets exactly the candidate or `null` it always got.
+export function nextWork(rootDir, options = {}) {
   refuseBlockedRuntime(rootDir);
   if (discardedReferences(path.resolve(rootDir)).length) return null;
-  const candidate = selectCandidate([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)]);
-  if (candidate) return candidate;
-  return selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir));
+  const session = capabilitySession(path.resolve(rootDir), options);
+  const { candidate, capabilityBlocked } = selectWork([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)], { session });
+  const result = candidate ?? selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir));
+  if (capabilityBlocked.length === 0) return result;
+  return result ? { ...result, capabilityBlocked } : { specId: null, taskId: null, capabilityBlocked };
 }
 
 // S-00I TK-006: a corrective Task created after its owning Spec has been
@@ -107,17 +118,40 @@ function refuseBlockedRuntime(rootDir) {
   throw error;
 }
 
-function selectCandidate(specs, { specId, readyOnly = false } = {}) {
+function selectCandidate(specs, options = {}) {
+  return selectWork(specs, options).candidate;
+}
+
+// Selection plus the capability-blocked Tasks it passed over (S-00V TK-00K).
+// With a `session`, a Task recorded as capability-blocked stays blocked while
+// the session still lacks a recorded capability, and a ready or resumable Task
+// needing a capability the session cannot establish is skipped; each is
+// reported with `recorded` saying whether its record already carries the
+// block. Without a session nothing capability-related is reported.
+function selectWork(specs, { specId, readyOnly = false, session = null } = {}) {
   const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
   const candidates = [];
+  const capabilityBlocked = [];
   for (const spec of specs) {
     if ((spec.status !== 'active' && spec.lifecycleFolder !== 'retired') || (specId && spec.id !== specId)) continue;
     const satisfied = satisfiedIds(spec, completed);
     for (const slice of executionSlices(spec)) {
-      const status = effectiveStatus(slice, satisfied);
+      const status = effectiveStatus(slice, satisfied, session);
+      if (session && status === 'blocked' && slice.missingCapabilities.length > 0) {
+        const missing = session.missing(slice.missingCapabilities);
+        if (missing.names.length > 0) capabilityBlocked.push({ specId: spec.id, taskId: slice.id, missing: missing.names, recorded: true, reason: missing.reason });
+        continue;
+      }
       const resumable = !readyOnly && status === 'in-progress';
       const eligible = status === 'ready' && blockersSatisfied(slice.blockers, satisfied);
       if (!resumable && !eligible) continue;
+      if (session && slice.capabilities.length > 0) {
+        const missing = session.missing(slice.capabilities);
+        if (missing.names.length > 0) {
+          capabilityBlocked.push({ specId: spec.id, taskId: slice.id, missing: missing.names, recorded: false, reason: missing.reason });
+          continue;
+        }
+      }
       candidates.push({
         specId: spec.id,
         title: spec.title,
@@ -133,9 +167,10 @@ function selectCandidate(specs, { specId, readyOnly = false } = {}) {
     }
   }
   candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
-  if (candidates.length === 0) return null;
+  capabilityBlocked.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
+  if (candidates.length === 0) return { candidate: null, capabilityBlocked };
   const { rank: _rank, ...result } = candidates[0];
-  return result;
+  return { candidate: result, capabilityBlocked };
 }
 
 // S-00I TK-005: `findSpec` reaches a retired Spec only once the active
@@ -216,10 +251,26 @@ export function claimWork(rootDir, id, options) {
   if (matches.length !== 1) throw new Error(matches.length ? `Duplicate spec ID: ${id}` : `Unknown spec ID: ${id}`);
   const spec = matches[0];
   if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
-  const candidate = selectCandidate(specs, { specId: id, readyOnly: true });
+  const session = capabilitySession(path.resolve(rootDir), options);
+  const { candidate, capabilityBlocked } = selectWork(specs, { specId: id, readyOnly: true, session });
   const slices = executionSlices(spec);
+  // S-00V TK-00K: a ready Task needing an optional capability this session
+  // cannot establish is routed to blocked on its own record, naming the
+  // capability, rather than skipped silently; the claim then takes the next
+  // Task the session can do, or refuses naming what it routed.
+  const routed = [];
+  for (const entry of capabilityBlocked) {
+    if (entry.recorded) continue;
+    const slice = slices.find((item) => item.id === entry.taskId);
+    writeTaskStatus(slice.record, { Status: 'blocked', 'Missing capabilities': entry.missing.join(', ') });
+    routed.push({ taskId: entry.taskId, missing: entry.missing });
+  }
+  const withRouting = (result) => (routed.length > 0 ? { ...result, capabilityRouted: routed } : result);
   const task = slices.find((item) => item.id === candidate?.taskId);
   if (!task) {
+    if (routed.length > 0) {
+      throw new Error(`${id} has no eligible ready task to claim; routed to blocked for missing optional capabilities: ${routed.map((item) => `${item.taskId} (${item.missing.join(', ')})`).join(', ')}`);
+    }
     // `blocked-slice` names the one shape doctor also reports: a slice that
     // declares itself ready while its blockers are unmet. A slice that
     // declares itself blocked is ordinary sequencing on both sources, so it
@@ -235,8 +286,9 @@ export function claimWork(rootDir, id, options) {
   // owner and event fields move. The record is written first so a failure
   // while updating the header cannot leave the Spec announcing a claim that
   // the record never took.
-  if (task.source === 'record') writeTaskStatus(task.record, { Status: 'in-progress' });
-  if (spec.lifecycleFolder === 'retired') return showSpec(rootDir, id);
+  // A capability block this session now satisfies is cleared as it is claimed.
+  if (task.source === 'record') writeTaskStatus(task.record, task.missingCapabilities.length > 0 ? { Status: 'in-progress', 'Missing capabilities': 'none' } : { Status: 'in-progress' });
+  if (spec.lifecycleFolder === 'retired') return withRouting(showSpec(rootDir, id));
   const content = task.source === 'record'
     ? spec.content
     : updateTaskRow(spec.content, task.id, (cells) => {
@@ -250,7 +302,7 @@ export function claimWork(rootDir, id, options) {
     'Next gate': `Close ${task.id} with verification and documentation proof.`
   });
   atomicWrite(spec.filePath, updated);
-  return showSpec(rootDir, id);
+  return withRouting(showSpec(rootDir, id));
 }
 
 export function closeTask(rootDir, id, options) {
@@ -270,6 +322,17 @@ export function closeTask(rootDir, id, options) {
   const task = slices.find((item) => item.declared === 'in-progress');
   if (!task && slices.some((item) => item.declared === 'ready')) throw new Error(`${id} has no in-progress task to close; claim one first`);
   if (!task) throw new Error(`${id} has no open task to close`);
+  // S-00V TK-00K: a missing optional capability never lets a Task report
+  // success. A closing session that cannot establish every capability the
+  // Task names routes it to blocked, naming them, and refuses before any
+  // Receipt, Proof or evidence row is written.
+  if (task.source === 'record' && task.capabilities.length > 0) {
+    const missing = capabilitySession(root, options).missing(task.capabilities);
+    if (missing.names.length > 0) {
+      writeTaskStatus(task.record, { Status: 'blocked', 'Missing capabilities': missing.names.join(', ') });
+      throw new Error(`close refused: ${id}/${task.id} needs optional capability ${missing.names.join(', ')}, which this session cannot establish (${missing.reason}); routed to blocked`);
+    }
+  }
   const recordedGap = gitStateAtClose(root, remainingGap, options?.gitStateReason);
   // Proof text for a record goes on the record; the Spec's append-only
   // evidence row below is appended either way, because the Spec still owns
@@ -1135,6 +1198,8 @@ export function slicesOf(spec) {
       blockerIds: splitBlockers(row.blockers),
       blockers: row.blockers,
       proof: row.proof,
+      capabilities: [],
+      missingCapabilities: [],
       source: 'table'
     }));
   }
@@ -1145,6 +1210,8 @@ export function slicesOf(spec) {
     blockerIds: task.blockers,
     blockers: task.blockers.length > 0 ? task.blockers.join(', ') : 'none',
     proof: task.proof,
+    capabilities: task.capabilities,
+    missingCapabilities: task.missingCapabilities,
     source: 'record',
     record: task
   }));
@@ -1188,9 +1255,17 @@ function satisfiedIds(spec, completed) {
 // status cell, and one whose blockers are unmet is blocked even if its cell
 // says ready. This is a derivation of the record's own two authored fields,
 // not a second status written anywhere.
-function effectiveStatus(slice, satisfied) {
+//
+// S-00V TK-00K: a record blocked for a missing optional capability is not an
+// id block, so satisfied id blockers do not turn it ready. It stays blocked
+// unless a `session` establishes every recorded missing capability; with no
+// session (render, doctor) it is blocked, so the board is a deterministic
+// projection of the records.
+function effectiveStatus(slice, satisfied, session = null) {
   if (slice.source !== 'record') return slice.declared;
   if (slice.declared !== 'ready' && slice.declared !== 'blocked') return slice.declared;
+  if (slice.declared === 'blocked' && slice.missingCapabilities.length > 0
+    && (!session || session.missing(slice.missingCapabilities).names.length > 0)) return 'blocked';
   return unmetBlockers(slice.record, satisfied).length === 0 ? 'ready' : 'blocked';
 }
 
@@ -1228,7 +1303,12 @@ function removeSliceRows(content, ids) {
 }
 
 function publicSlice(slice) {
-  return { id: slice.id, slice: slice.slice, status: slice.declared, blockers: slice.blockers, proof: slice.proof ?? null };
+  const result = { id: slice.id, slice: slice.slice, status: slice.declared, blockers: slice.blockers, proof: slice.proof ?? null };
+  // S-00V TK-00K: present only on a record that names capabilities, so every
+  // other Task's `show` output is unchanged.
+  if (slice.capabilities.length > 0) result.capabilities = slice.capabilities;
+  if (slice.missingCapabilities.length > 0) result.missingCapabilities = slice.missingCapabilities;
+  return result;
 }
 
 // S-00I TK-004: a retired Task record, shaped like `publicSlice` above but
@@ -1397,7 +1477,13 @@ function renderHotBoard(specs, retired = []) {
       const signal = task ? receiptSignal(task) : null;
       slice = task ? `${task.id}: ${task.slice} (${task.status}${signal ? `; ${signal}` : ''})` : 'Acceptance / owner gate';
     }
-    const blocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
+    const baseBlocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
+    // S-00V TK-00K: every capability-blocked Task on the Spec is named in the
+    // Blocker cell, beside whichever Task the row shows, so the owner's sitrep
+    // finds it. A Spec with none renders exactly as before.
+    const capabilityNotes = slices.filter((item) => item.missingCapabilities.length > 0).map((item) => `${item.id} missing capability ${item.missingCapabilities.join(', ')}`);
+    const blocker = capabilityNotes.length === 0 ? baseBlocker
+      : [...(baseBlocker && baseBlocker !== 'none' ? [baseBlocker] : []), ...capabilityNotes].join('; ');
     const event = spec.lifecycleFolder === 'retired' ? `Corrective work against retired ${spec.id}; historical completion preserved.` : spec.latestEvent;
     const nextGate = spec.lifecycleFolder === 'retired' ? `Close ${task.id} with verification and documentation proof.` : spec.nextGate;
     lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(event)} | ${escapeCell(nextGate)} |`);
@@ -2774,6 +2860,13 @@ export function parseCliArgs(argv) {
   return { command, id, options };
 }
 
+// S-00V TK-00K: `next` with nothing eligible but capability-blocked Tasks
+// still says "No eligible work." and then names each one, so the capability
+// is never hidden behind an empty answer.
+function formatCapabilityBlockedNext(result) {
+  return ['No eligible work.', ...result.capabilityBlocked.map((entry) => `capability-blocked: ${entry.specId}/${entry.taskId} needs ${entry.missing.join(', ')} (${entry.recorded ? 'recorded' : 'not yet recorded'}) - ${entry.reason}`)].join('\n');
+}
+
 function toCamel(value) {
   return value.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 }
@@ -2783,11 +2876,11 @@ async function main() {
   const root = options.path ?? process.cwd();
   let result;
   let doctorRun;
-  if (command === 'next') result = nextWork(root);
+  if (command === 'next') result = nextWork(root, { capabilities: options.capabilities });
   else if (command === 'next-id') result = nextIdentity(root, id, options);
   else if (command === 'show') result = showSpec(root, id);
-  else if (command === 'claim') result = claimWork(root, id, options);
-  else if (command === 'close') result = closeTask(root, id, options);
+  else if (command === 'claim') result = claimWork(root, id, { ...options, capabilityProbes: undefined });
+  else if (command === 'close') result = closeTask(root, id, { ...options, capabilityProbes: undefined });
   else if (command === 'receipt') result = receiptTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
   else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
@@ -2825,12 +2918,13 @@ async function main() {
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###]; doctor [--host])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
   else if (command === 'doctor') console.log(doctorRun.text);
   else if (command === 'report') console.log(formatSpecReport(result));
+  else if (command === 'next' && result?.taskId === null) console.log(formatCapabilityBlockedNext(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
 }
 

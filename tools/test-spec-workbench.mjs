@@ -4803,3 +4803,160 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     console.log('ok - identity proposals reserve active, retired, corrective, discarded and remote-only IDs');
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
+
+// ---- S-00V TK-00K: optional-capability routing (begin) ----
+// Anything beyond the host floor is an optional capability a Task names in
+// its record (`**Capabilities:**`). A session that cannot positively
+// establish one - no injected probe reporting it, no explicit
+// `--capabilities` declaration - treats it as absent: `next` skips the Task
+// and names the capability, `claim` routes it to blocked with the capability
+// recorded on the record (`**Missing capabilities:**`), the Taskboard names
+// it, and `close` refuses to report success for it. Probes are injected;
+// nothing here reads the real host.
+{
+  const capRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'capability-routing-'));
+  initGitRoot(capRoot);
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const capTask = ({ id, specId, slice, status, blockers = 'none', capabilities, missing }) => {
+      const lines = taskRecordFixture({ id, specId, slice, status, blockers, destination: `spec-acceptance: ${specId} Acceptance Criteria` }).trimEnd().split('\n');
+      if (capabilities) lines.push(`**Capabilities:** ${capabilities}`);
+      if (missing) lines.push(`**Missing capabilities:** ${missing}`);
+      return `${lines.join('\n')}\n`;
+    };
+    writeAt(capRoot, 'BLUEPRINT.md', ['# Fixture Blueprint', '', '<!-- spec-catalog:start -->', '<!-- spec-catalog:end -->'].join('\n'));
+    writeAt(capRoot, 'TASKBOARD.md', ['# Fixture Taskboard', '', '<!-- hot-specs:start -->', '<!-- hot-specs:end -->'].join('\n'));
+    const specText = (id) => recordBackedSpec(id).replace('**Updated:** 2026-07-12', `**Updated:** ${todayStr}`);
+    writeAt(capRoot, 'specs/S-761-simulator/SPEC.md', specText('S-761'));
+    writeAt(capRoot, 'specs/S-761-simulator/tasks/TK-002/TASK.md', capTask({ id: 'TK-002', specId: 'S-761', slice: 'Simulator slice', status: 'ready', capabilities: 'simulator' }));
+    writeAt(capRoot, 'specs/S-761-simulator/tasks/TK-003/TASK.md', capTask({ id: 'TK-003', specId: 'S-761', slice: 'Plain slice', status: 'ready' }));
+    writeAt(capRoot, 'specs/S-762-foundry/SPEC.md', specText('S-762').replace('**Priority:** 0', '**Priority:** 1'));
+    writeAt(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md', capTask({ id: 'TK-002', specId: 'S-762', slice: 'Foundry slice', status: 'ready', capabilities: 'foundry' }));
+
+    // (1) The record carries the capability list, parsed and validated.
+    const simTask = readTaskRecord(path.join(capRoot, 'specs/S-761-simulator/tasks/TK-002/TASK.md'), capRoot);
+    assert.deepEqual(simTask.capabilities, ['simulator'], '(1) the Capabilities field is parsed into a list');
+    assert.deepEqual(simTask.missingCapabilities, [], '(1) no capability is recorded missing before any session routes it');
+    const plain = readTaskRecord(path.join(capRoot, 'specs/S-761-simulator/tasks/TK-003/TASK.md'), capRoot);
+    assert.deepEqual(plain.capabilities, [], '(1) a record naming no capability needs none');
+    const badName = capTask({ id: 'TK-009', specId: 'S-761', slice: 'Bad', status: 'ready', capabilities: 'Simulator!' });
+    assert.throws(() => parseTaskRecordForTest(badName), /invalid capability name "Simulator!"/, '(1) an unreadable capability name fails closed');
+    const strayMissing = capTask({ id: 'TK-009', specId: 'S-761', slice: 'Bad', status: 'blocked', capabilities: 'simulator', missing: 'foundry' });
+    assert.throws(() => parseTaskRecordForTest(strayMissing), /records foundry missing but does not name it in Capabilities/, '(1) a missing capability the Task never named fails closed');
+    const readyMissing = capTask({ id: 'TK-009', specId: 'S-761', slice: 'Bad', status: 'ready', capabilities: 'simulator', missing: 'simulator' });
+    assert.throws(() => parseTaskRecordForTest(readyMissing), /records a missing capability but its Status is ready, not blocked/, '(1) a recorded missing capability requires Status blocked');
+
+    // (2) `next` skips a Task whose capability the session cannot establish
+    // and names it; absent-by-probe and no-probe-no-declaration are the same.
+    const absentProbe = { capabilityProbes: { simulator: () => false, foundry: () => { throw new Error('foundry CLI not found'); } } };
+    for (const [label, options] of [['an absent probe', absentProbe], ['no probe and no declaration', {}]]) {
+      const next = nextWork(capRoot, options);
+      assert.equal(next.specId, 'S-761', `(2) ${label}: next still selects doable work`);
+      assert.equal(next.taskId, 'TK-003', `(2) ${label}: next skips the Task needing a capability the session lacks`);
+      assert.deepEqual(next.capabilityBlocked.map(({ specId, taskId, missing, recorded }) => ({ specId, taskId, missing, recorded })), [
+        { specId: 'S-761', taskId: 'TK-002', missing: ['simulator'], recorded: false },
+        { specId: 'S-762', taskId: 'TK-002', missing: ['foundry'], recorded: false }
+      ], `(2) ${label}: next names every capability-blocked Task and its missing capability`);
+    }
+    assert.match(nextWork(capRoot, absentProbe).capabilityBlocked[1].reason, /probe failed: foundry CLI not found/, '(2) a throwing probe is a visible absence, not a crash');
+    const declared = nextWork(capRoot, { capabilities: 'simulator' });
+    assert.equal(declared.taskId, 'TK-002', '(2) an explicit declaration establishes the capability');
+    assert.deepEqual(declared.capabilityBlocked.map((entry) => entry.taskId), ['TK-002'], '(2) only the still-lacking foundry Task stays named');
+    assert.equal(declared.capabilityBlocked[0].specId, 'S-762');
+    assert.equal(nextWork(capRoot, { capabilityProbes: { simulator: () => true, foundry: () => true } }).capabilityBlocked, undefined, '(2) a probe reporting present establishes it, and no capability-blocked list is attached');
+
+    // (3) `claim` routes the lacking Task to blocked with the capability on
+    // the record, then claims the Task the session can do.
+    const claimed = claimWork(capRoot, 'S-761', { agent: 'fixture', date: todayStr, ...absentProbe });
+    const routedSim = readTaskRecord(path.join(capRoot, 'specs/S-761-simulator/tasks/TK-002/TASK.md'), capRoot);
+    assert.equal(routedSim.status, 'blocked', '(3) claim routes the capability-lacking Task to blocked');
+    assert.deepEqual(routedSim.missingCapabilities, ['simulator'], '(3) the record names the missing capability');
+    assert.match(routedSim.content, /^\*\*Missing capabilities:\*\* simulator$/m);
+    assert.equal(readTaskRecord(path.join(capRoot, 'specs/S-761-simulator/tasks/TK-003/TASK.md'), capRoot).status, 'in-progress', '(3) claim then takes the doable Task');
+    assert.deepEqual(claimed.capabilityRouted, [{ taskId: 'TK-002', missing: ['simulator'] }], '(3) the claim result names what it routed');
+    assert.deepEqual(claimed.tasks.find((task) => task.id === 'TK-002').missingCapabilities, ['simulator'], '(3) show output names the missing capability');
+
+    // (4) A recorded capability block stays blocked on the board and in
+    // selection even though its id blockers are satisfied, and is named.
+    render(capRoot);
+    const board = fs.readFileSync(path.join(capRoot, 'TASKBOARD.md'), 'utf8');
+    assert.match(board, /\| \[S-761\]\([^)]*\) \| TK-003: Plain slice \(in-progress\) \| fixture \| TK-002 missing capability simulator \|/, '(4) the Taskboard names the capability-blocked Task beside the active one');
+    assert.ok(!doctor(capRoot).some((issue) => issue.code === 'render-drift'), '(4) the board is a deterministic projection of the records');
+    const afterClaim = nextWork(capRoot);
+    assert.equal(afterClaim.taskId, 'TK-003', '(4) the in-progress Task resumes');
+    assert.deepEqual(afterClaim.capabilityBlocked.find((entry) => entry.specId === 'S-761'), { specId: 'S-761', taskId: 'TK-002', missing: ['simulator'], recorded: true, reason: 'simulator: no probe and no declaration' }, '(4) the recorded block is named in selection output');
+
+    // (5) When the Spec's only ready Task lacks its capability, claim routes
+    // it and refuses: a missing capability never reports success.
+    assert.throws(() => claimWork(capRoot, 'S-762', { agent: 'fixture', date: todayStr, ...absentProbe }),
+      /S-762 has no eligible ready task to claim; routed to blocked for missing optional capabilities: TK-002 \(foundry\)/,
+      '(5) claim refuses when every ready Task lacks a capability, naming it');
+    const routedFoundry = readTaskRecord(path.join(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md'), capRoot);
+    assert.equal(routedFoundry.status, 'blocked');
+    assert.deepEqual(routedFoundry.missingCapabilities, ['foundry']);
+    render(capRoot);
+    assert.match(fs.readFileSync(path.join(capRoot, 'TASKBOARD.md'), 'utf8'), /\| \[S-762\]\([^)]*\) \| TK-002: Foundry slice \(blocked\) \| agent \| TK-002 missing capability foundry \|/, '(5) a Spec whose only Task is capability-blocked shows it blocked, naming the capability');
+
+    // (6) A later session that establishes the capability claims it, and the
+    // claim clears the recorded missing capability.
+    const reclaimed = claimWork(capRoot, 'S-762', { agent: 'fixture', date: todayStr, capabilities: 'foundry' });
+    const cleared = readTaskRecord(path.join(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md'), capRoot);
+    assert.equal(cleared.status, 'in-progress', '(6) a session with the capability claims the routed Task');
+    assert.deepEqual(cleared.missingCapabilities, [], '(6) the claim clears the recorded missing capability');
+    assert.equal(reclaimed.capabilityRouted, undefined);
+
+    // (7) `close` never reports success for a Task whose capability the
+    // closing session cannot establish: it routes the Task to blocked and
+    // refuses; a session that establishes it closes normally.
+    publishFixture(capRoot);
+    const closeOptions = { proof: 'fixture proof', docs: 'Docs checked; no update needed', remainingGap: 'none', date: todayStr };
+    const foundrySpec = path.join(capRoot, 'specs/S-762-foundry/SPEC.md');
+    const specBefore = fs.readFileSync(foundrySpec, 'utf8');
+    assert.throws(() => closeTask(capRoot, 'S-762', { ...closeOptions, ...absentProbe }),
+      /close refused: S-762\/TK-002 needs optional capability foundry, which this session cannot establish \(foundry: probe failed: foundry CLI not found\); routed to blocked/,
+      '(7) close refuses and names the capability');
+    const refusedClose = readTaskRecord(path.join(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md'), capRoot);
+    assert.equal(refusedClose.status, 'blocked', '(7) the refused close routes the Task to blocked');
+    assert.deepEqual(refusedClose.missingCapabilities, ['foundry']);
+    assert.equal(refusedClose.proof, null, '(7) no proof is written for a refused close');
+    assert.equal(readReceiptFromFile(refusedClose.filePath).length, 0, '(7) no Receipt row is appended');
+    assert.equal(fs.readFileSync(foundrySpec, 'utf8'), specBefore, '(7) the Spec gains no evidence row');
+    claimWork(capRoot, 'S-762', { agent: 'fixture', date: todayStr, capabilities: 'foundry' });
+    publishFixture(capRoot, 'reclaim foundry');
+    closeTask(capRoot, 'S-762', { ...closeOptions, capabilities: 'foundry' });
+    assert.equal(readTaskRecord(path.join(capRoot, 'specs/S-762-foundry/tasks/TK-002/TASK.md'), capRoot).status, 'done', '(7) a session with the capability closes normally');
+
+    // (8) The CLI names the capability in `next` output, and says so when
+    // nothing else is eligible.
+    const cli = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cliNext = spawnSync(process.execPath, [cli, 'next', '--json', '--path', capRoot], { encoding: 'utf8' });
+    assert.equal(cliNext.status, 0, cliNext.stderr);
+    const cliJson = JSON.parse(cliNext.stdout);
+    assert.equal(cliJson.taskId, 'TK-003');
+    assert.deepEqual(cliJson.capabilityBlocked.map((entry) => `${entry.specId}/${entry.taskId}:${entry.missing.join(',')}`), ['S-761/TK-002:simulator'], '(8) next --json names the capability-blocked Task');
+    publishFixture(capRoot, 'close foundry');
+    closeTask(capRoot, 'S-761', { ...closeOptions });
+    const onlyBlocked = spawnSync(process.execPath, [cli, 'next', '--path', capRoot], { encoding: 'utf8' });
+    assert.equal(onlyBlocked.status, 0, onlyBlocked.stderr);
+    assert.match(onlyBlocked.stdout, /^No eligible work\.\ncapability-blocked: S-761\/TK-002 needs simulator \(recorded\)/m, '(8) with nothing eligible, next still names the capability-blocked Task');
+    const onlyBlockedJson = JSON.parse(spawnSync(process.execPath, [cli, 'next', '--json', '--path', capRoot], { encoding: 'utf8' }).stdout);
+    assert.equal(onlyBlockedJson.taskId, null, '(8) with nothing eligible, the JSON carries no task');
+    assert.equal(onlyBlockedJson.capabilityBlocked[0].taskId, 'TK-002');
+
+    console.log('ok - a Task naming an optional capability the session cannot establish is skipped by next, routed to blocked by claim and close with the capability recorded, named on the Taskboard, and claimable once a session establishes it');
+  } finally {
+    fs.rmSync(capRoot, { recursive: true, force: true });
+  }
+}
+
+function parseTaskRecordForTest(content) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'capability-record-'));
+  try {
+    const file = path.join(dir, 'TASK.md');
+    fs.writeFileSync(file, content);
+    return readTaskRecord(file, dir);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+// ---- S-00V TK-00K: optional-capability routing (end) ----

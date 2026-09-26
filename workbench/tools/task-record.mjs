@@ -31,6 +31,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
+import { parseCapabilityList } from './optional-capabilities.mjs';
 
 export const TASK_STATUSES = Object.freeze(['ready', 'in-progress', 'blocked', 'done', 'deferred']);
 
@@ -84,6 +85,20 @@ export function parseTaskRecord(content, filePath, root) {
   if (!TASK_STATUSES.includes(fields.Status)) {
     throw new Error(`${id} has an invalid status "${fields.Status}"; the closed set is ${TASK_STATUSES.join(', ')}`);
   }
+  // S-00V TK-00K: the optional capabilities this Task needs beyond the host
+  // floor, and the ones a session lacked when it routed the Task to blocked
+  // (optional-capabilities.mjs). Both are optional fields, separate from
+  // `Blockers`, which stays a closed list of `S-`/`TK-` ids. A recorded
+  // missing capability must be one the Task names, on a blocked record, so
+  // the record can never claim a block it does not explain.
+  const capabilities = parseCapabilityList(fields.Capabilities, `${id} Capabilities`);
+  const missingCapabilities = parseCapabilityList(fields['Missing capabilities'], `${id} Missing capabilities`);
+  for (const name of missingCapabilities) {
+    if (!capabilities.includes(name)) throw new Error(`${id} records ${name} missing but does not name it in Capabilities`);
+  }
+  if (missingCapabilities.length > 0 && fields.Status !== 'blocked') {
+    throw new Error(`${id} records a missing capability but its Status is ${fields.Status}, not blocked`);
+  }
   return {
     root,
     filePath,
@@ -95,6 +110,8 @@ export function parseTaskRecord(content, filePath, root) {
     status: fields.Status,
     blockers: parseBlockers(fields.Blockers, id),
     destination: parseDestination(fields.Destination, id),
+    capabilities,
+    missingCapabilities,
     // Proof is optional and absent until the Task closes. It lives on the
     // record rather than in a table cell, so a record-backed Spec has one
     // place a reader looks for what a Task proved.
