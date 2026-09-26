@@ -302,6 +302,12 @@ assertIncludesAll(makeItSo, [
 ], 'make-it-so');
 assert.doesNotMatch(makeItSo, /every pending approval|universal execution authorization/i,
   'composition must never replace the narrower user endpoint');
+// S-01I: the catalog row is the discovery summary, so it must carry the same
+// endpoint bound as the source rather than promising execution.
+const makeItSoRow = catalogRegion[1].split('\n').find((line) => line.startsWith('| `make-it-so` |'));
+assert.match(makeItSoRow, /endpoint/, 'the make-it-so catalog row must name the authorized endpoint');
+assert.doesNotMatch(makeItSoRow, /\bexecute\b/i,
+  'the make-it-so catalog row must not promise execution the request did not authorize');
 
 const checkpoint = read('workbench/skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, readRepositoryState, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -813,12 +813,39 @@ function skillFindings(root) {
   return inspectSkills(readManifest(root), root);
 }
 
-// The declared integration branch is the review gate's merge target. Its
-// absence is an error every doctor run shows and none blocks: a room can
-// create the branch in one command, and selection must not wait on it.
 function gitFindings(root, specs) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];
+  return [...integrationBranchFindings(root, specs), ...repositoryStateFindings(root)];
+}
+
+// S-00M TK-002: what TK-001's reader sees and no other finding observes. Both
+// codes are registered `attention`/`none`, so they change neither doctor's
+// exit code nor next's selection. An unknown state (no Git, not a repository,
+// unresolvable lanes) reports nothing here: `integration-branch-missing`
+// already names the not-a-repository case, and guessing Git state is worse
+// than stating none.
+const UNTRACKED_NAMED = 10;
+function repositoryStateFindings(root) {
+  const state = readRepositoryState(root);
+  if (!state.known) return [];
+  const findings = [];
+  if (state.head.detached) {
+    findings.push(finding('detached-head', 'HEAD is detached; this is an inspection state, not a blocker, but switch to a branch before committing work you intend to deliver'));
+  }
+  const files = [...state.untracked.controls, ...state.untracked.adr, ...state.untracked.specs];
+  if (files.length > 0) {
+    const named = files.slice(0, UNTRACKED_NAMED).join(', ');
+    const more = files.length > UNTRACKED_NAMED ? ` and ${files.length - UNTRACKED_NAMED} more` : '';
+    findings.push(finding('untracked-controls', `${files.length} untracked file(s) under the root controls, the ADR collection or the spec lane: ${named}${more}; commit or remove them before claiming the work done`, { files }));
+  }
+  return findings;
+}
+
+// The declared integration branch is the review gate's merge target. Its
+// absence is an error every doctor run shows and none blocks: a room can
+// create the branch in one command, and selection must not wait on it.
+function integrationBranchFindings(root, specs) {
   const declared = declaredGit(root);
   if (!declared) return [finding('integration-branch-undeclared', 'workbench/manifest.json declares no git.integrationBranch; declare the branch the independent review gate merges into')];
   if (!insideWorkTree(root)) {
