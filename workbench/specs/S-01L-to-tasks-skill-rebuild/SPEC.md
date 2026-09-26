@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Cut one assigned Spec into dependency-aware Task records.
 **Blockers:** none.
-**Latest event:** TK-02D closed with proof.
-**Next gate:** Owner Human QA on `integration`, then `complete S-01L`.
+**Latest event:** TK-002P claimed by claude-lane-G-worker.
+**Next gate:** Close TK-002P with verification and documentation proof.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -57,7 +57,7 @@ No other skill rebuild is a blanket prerequisite. Check current controls and the
 |---|---|---|---|---|
 | TK-01C | Audit to-tasks, deliver the smallest supported source/documentation change and prove the routed article | done | none | Red/green tools/test-skill-catalog.mjs (red 91bb65b, green fde45b8); test-skill-inspection 5/5 and test-delivery-skills 3/3; full AGENTS suite 48/48 at 594dc1a; fresh-context scenario cut an active record-backed Spec into two parsed TASK.md records with title, Stance, Destination, Blockers and Planned verification, left the owner-gated slice uncut, wrote nothing into the planned Spec and did not run convert-tasks, and next --json returned exactly one Task; three runtime gaps confirmed by throwaway probes; wiki validate ok |
 | TK-02D | Let `convert-tasks` convert a planned Spec that the same request activates, behind an explicit `--activate` opt-in | done | none | Red/green tools/test-spec-workbench.mjs (red 68f1b65: a planned Spec is refused without the opt-in, and the refusal names the activation route; green ad05f77); convert-tasks S-### --activate converts a planned Spec, sets only Status active after every record parses, writes nothing on a refusal, is a no-op on an active Spec and refuses a completed one; manual CLI run in a disposable room; full AGENTS suite 48/48 at 7f6731b; wiki validate ok |
-| TK-002P | Let `convert-tasks S-### --activate` activate a planned record-backed Spec in to-spec's shape once to-tasks has written its first Task records | ready | none | pending |
+| TK-002P | Let `convert-tasks S-### --activate` activate a planned record-backed Spec in to-spec's shape once to-tasks has written its first Task records | in-progress | none | pending |
 
 ### TK-01C - Deliver the to-tasks skill destination
 
