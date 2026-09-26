@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-opus-5-5
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-09-26
 **Catalog description:** Preserve one objective's working context in revision-checked JSON without making it authority.
 **Blockers:** none.
 **Latest event:** TK-00P closed with proof.
-**Next gate:** Separate-context review of the TK-00P candidate, then owner Human QA of conversational fidelity on `integration`, then `complete S-00Y`.
+**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-00Y`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -67,7 +67,7 @@ Inspect the current source, its callers/composition and relevant tests. Demonstr
 - [x] Privacy scanning, correction links, revision checks, local collection routing and dependency-preserving cleanup continue to hold.
 - [x] The named scenario is observed in a fresh or otherwise independent context: A resume from a corrected entry returns the original and correction, then rechecks live state before relying on either.
 - [x] `workbench/wiki/skill-notepad.md` accurately distinguishes verified current behavior from remaining intended behavior, links the current source and governing owners, and is reachable from `workbench/wiki/MEMORY.md`.
-- [ ] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
+- [x] Relevant targeted tests/scenarios, Wiki validation, the required full suite, Workbench self-drift pre/post receipts and separate-context review are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
 
@@ -91,10 +91,11 @@ Maintain `workbench/wiki/skill-notepad.md` and its sole router entry alongside t
 | 2026-09-24 | TK-00P | Fresh-context scenario: one general-purpose Claude Opus 5.5 subagent given only the notepad source and a scratch room, owner scripted by the implementing agent over three turns | T1 "pick the retry investigation back up": read the current view, then all entries, receiving `finding-001` (limit 3 in config) and its `correction-001` (limit 5 hard-coded). Before acting it opened the live code, which set neither (environment variable with fallback 4), appended `correction-002` linked to `correction-001`, then made the planned change, verified it, updated the current view and read it back. T2 "what did I decide about the welcome email?": found a pending `source_record` with a corrected readback and no `decision`; answered that nothing was decided, gave the corrected readback and waited, with no writes. T3 "Yes, that's right": appended `decision-001` with question ID 1, cleared `current.unresolved`, read back at revision 6 | None | One run, one model, scripted owner. The agent read all entries rather than one topic (both routes carry corrections). Not owner Human QA or a repeated trial |
 | 2026-09-24 | TK-00P | Gates before close | Full AGENTS suite 48/48 on committed candidate `32bff51`; guardrail 78/100 before and after, remaining recommendations the four pre-existing Outcome-evidence items; self-drift pre and post both `blocked` with the same seven pre-existing attention findings; `wiki.mjs validate` ok; `git diff --check` clean. Bounded semantic check: the RUNBOOK notepad section (kinds, resume, correction retrieval), the RUNBOOK behavior route, and the grilling and grill-me articles agree with the delivered source; the grilling source already states the same pending convention | Docs checked: RUNBOOK, BLUEPRINT, LEXICON, templates and `workbench/skills/README.md` need no update because none restates the pending convention or the resume read, and their notepad wording stays accurate | Coordination hand-backs this run: zero |
 | 2026-09-24 | TK-00P | Task closed | Red/green tools/test-skill-catalog.mjs (red 59ed5f1, green 8b00ddd); test-notepads 51/51 with pending/correction/decision characterization; full AGENTS suite 48/48 at 32bff51; fresh-context three-turn scenario matched the corrected-resume recheck and pending-versus-confirmed contract; wiki validate ok | workbench/skills/notepad/SKILL.md and workbench/wiki/skill-notepad.md; RUNBOOK, BLUEPRINT, LEXICON, templates and skills README checked with no update needed because none restates the pending convention or resume read and their notepad wording stays accurate | Separate-context candidate review; owner Human QA of conversational fidelity; installed personal skill copies not updated; S-00W shared-journey check after S-00Z |
+| 2026-09-26 | TK-00P review | Separate-context review of immutable candidate `926ba63392c540978a2daa41af93d1b1914ded18` against base `02e9823`: PASS, no High/Medium/Low findings | Codex CLI `codex exec -s read-only -m gpt-5.5`; reviewer ran `wiki.mjs validate` and `git diff --check` (both pass) and checked by source review that the diff is one skill wide with no runtime, schema or migration change, that every command in the notepad source exists in the runtime CLI, and that the pending convention matches grilling's `source_record` + `current.unresolved` + `decision` pattern. Landing agent reran `test-notepads`, `test-skill-catalog`, `test-skill-inspection` and `test-core-skill-installer` green on the committed candidate | None | Reviewer could not run fixture tests in its sandbox (`EPERM` on `mkdtemp`). Owner Human QA remains |
 
 ## Completion Result
 
-TK-00P stated the pending-versus-confirmed convention and the corrected-resume recheck in `workbench/skills/notepad/SKILL.md`. It found no runtime defect and added a runtime characterization. It also reconciled `workbench/wiki/skill-notepad.md` with one fresh-context scenario. The Spec is not complete: the separate-context review and owner Human QA of conversational fidelity remain.
+TK-00P stated the pending-versus-confirmed convention and the corrected-resume recheck in `workbench/skills/notepad/SKILL.md`. It found no runtime defect and added a runtime characterization. It also reconciled `workbench/wiki/skill-notepad.md` with one fresh-context scenario. A separate-context review passed. The Spec is not complete: owner Human QA of conversational fidelity remains.
 
 ## Supersession
 
