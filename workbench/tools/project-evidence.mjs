@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createNote } from './notepads.mjs';
 import { scanPrivacy } from './privacy.mjs';
-import { assertSafeReadPath, collectionRelative, isMainModule, manifestPath, readManifest } from './workbench-paths.mjs';
+import { assertSafeReadPath, collectionRelative, isMainModule, liveRecordPath, manifestPath, readManifest } from './workbench-paths.mjs';
 
 export const REQUEST_SCHEMA_VERSION = 'project-evidence-request-1';
 export const EVIDENCE_SCHEMA_VERSION = 'project-evidence-1';
@@ -110,6 +110,13 @@ function relativeSource(value) {
 
 function sourceRecord(root, item) {
   const relative = relativeSource(item.source);
+  // S-00V TK-00J: a notepad or handoff is working context even when it is
+  // committed for a continuation; it is never project evidence.
+  if (liveRecordPath(root, relative)) {
+    const failure = new Error(`evidence source ${relative} is a live session record; cite the durable owner it was promoted into`);
+    failure.code = 'non-durable-source';
+    throw failure;
+  }
   const absolute = path.resolve(root, relative);
   try { assertSafeReadPath(root, absolute); } catch (error) {
     const failure = new Error(error.message);

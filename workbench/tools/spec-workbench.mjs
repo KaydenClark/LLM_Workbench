@@ -10,7 +10,7 @@ import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
+import { assertSafeWritePath, writeSafeFile, collectionPath, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
@@ -456,11 +456,22 @@ export function receiptTask(rootDir, id, options) {
 // false destination for all of them, so an unsupplied id names the Spec's
 // Acceptance Criteria section, which is true of every slice, and the caller
 // supplies the specific line where it knows it.
+//
+// `activate` (S-01L TK-02D) is the explicit opt-in for a request that
+// activates a planned Spec and cuts its Tasks in the same step: Tasks are cut
+// at activation, and activation has no other command. It changes only the
+// `**Status:**` field, and only after every record has parsed, so a refusal
+// still writes nothing. On an already-active Spec it is a no-op; it never
+// reopens a completed, retired or other non-planned Spec.
 export function convertSpecSlices(rootDir, id, options = {}) {
   const root = path.resolve(rootDir);
   const spec = findSpec(root, id);
-  if (spec.status !== 'active') {
-    throw new Error(`${id} is ${spec.status}, not active; only an active Spec is converted and a completed Spec's historical table is never rewritten`);
+  const activating = options.activate === true && spec.status === 'planned';
+  if (spec.status !== 'active' && !activating) {
+    const route = spec.status === 'planned'
+      ? `; when the same request activates it, run convert-tasks ${id} --activate`
+      : '';
+    throw new Error(`${id} is ${spec.status}, not active; only an active Spec is converted and a completed Spec's historical table is never rewritten${route}`);
   }
   const specDir = path.dirname(spec.filePath);
   const tasksDir = path.join(specDir, 'tasks');
@@ -506,9 +517,11 @@ export function convertSpecSlices(rootDir, id, options = {}) {
     converted.push(path.relative(root, filePath).split(path.sep).join('/'));
   }
   const convertedIds = new Set(staged.map((item) => item.row.id));
-  atomicWrite(spec.filePath, removeSliceRows(spec.content, convertedIds));
+  const specContent = activating ? updateFields(spec.content, { Status: 'active' }) : spec.content;
+  atomicWrite(spec.filePath, removeSliceRows(specContent, convertedIds));
   return {
     specId: id,
+    activated: activating,
     converted,
     retained: spec.rows.filter((row) => row.status === 'done').map((row) => row.id)
   };
@@ -920,6 +933,31 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
     for (const link of localLinks(spec.content)) {
       const target = path.resolve(path.dirname(spec.filePath), link);
       if (!target.startsWith(spec.root + path.sep) || !fs.existsSync(target)) issues.push(finding('broken-link', `${spec.id} links to missing ${link}`, { specId: spec.id }));
+    }
+    issues.push(...liveRecordCitations(spec));
+  }
+  return issues;
+}
+
+// S-00V TK-00J: a notepad or handoff may be committed temporarily so a
+// continuation travels with the branch, but committing one is transport,
+// never evidence. A Spec or active Task record that links a live record -
+// committed or not - is citing working context that will be promoted and
+// removed, so it is reported with the ADR validator's registered code rather
+// than left to surface later as a `broken-link` once the record is gone.
+function liveRecordCitations(spec) {
+  const sources = [{ filePath: spec.filePath, content: spec.content }];
+  for (const record of spec.records ?? []) {
+    if (record.filePath && fs.existsSync(record.filePath)) sources.push({ filePath: record.filePath, content: fs.readFileSync(record.filePath, 'utf8') });
+  }
+  const issues = [];
+  const seen = new Set();
+  for (const source of sources) {
+    for (const link of markdownLinkTargets(source.content)) {
+      const target = liveRecordPath(spec.root, path.resolve(path.dirname(source.filePath), link));
+      if (!target || seen.has(target)) continue;
+      seen.add(target);
+      issues.push(finding('untracked-provenance', `${spec.id} cites live record ${target}; a notepad or handoff is working context even when committed, so cite the durable owner it was promoted into`, { specId: spec.id, target }));
     }
   }
   return issues;
@@ -2791,6 +2829,7 @@ export function parseCliArgs(argv) {
     const arg = rest[optionIndex];
     if (arg === '--json') options.json = true;
     else if (arg === '--host') options.host = true;
+    else if (arg === '--activate') options.activate = true;
     else if (arg.startsWith('--')) options[toCamel(arg.slice(2))] = rest[++optionIndex];
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -2813,7 +2852,7 @@ async function main() {
   else if (command === 'close') result = closeTask(root, id, options);
   else if (command === 'receipt') result = receiptTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
-  else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
+  else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined, activate: options.activate === true });
   else if (command === 'report') result = assembleSpecReport(root, id, { candidate: options.candidate });
   else if (command === 'verdict') result = recordReviewVerdict(root, id, { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest });
   else if (command === 'approve') {

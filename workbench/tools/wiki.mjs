@@ -5,8 +5,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { finding } from './diagnostics.mjs';
-import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
-import { insertFrontmatterKeys, parseFrontmatter } from './adr.mjs';
+import { collectionRelative, findRoot, isMainModule, lanePath, laneRelative, liveRecordPath, markdownLinkTargets, readManifest, writeSafeFile, WIKI_PROFILES } from './workbench-paths.mjs';
+import { insertFrontmatterKeys, localLinks, parseFrontmatter } from './adr.mjs';
 import { scanPrivacy } from './privacy.mjs';
 import { versionStamp, wikiContractFiles } from './workbench-layout.mjs';
 
@@ -146,6 +146,20 @@ export function validateWiki(root, options = {}) {
       if (path.isAbsolute(source) || /^[A-Za-z]:[\\/]/.test(source) || source.split('/').includes('..')) {
         findings.push(finding('invalid-note', `${relative} source path ${source} must be repository-relative`, { note: relative }));
       }
+    }
+    // S-00V TK-00J: a live record is working context even when committed, so
+    // neither a source path nor a body link may name one as provenance.
+    const liveTargets = new Set();
+    for (const source of sources) {
+      const live = typeof source === 'string' ? liveRecordPath(root, source) : null;
+      if (live) liveTargets.add(live);
+    }
+    for (const link of markdownLinkTargets(content)) {
+      const live = liveRecordPath(root, path.resolve(path.dirname(file), link));
+      if (live) liveTargets.add(live);
+    }
+    for (const target of liveTargets) {
+      findings.push(finding('untracked-provenance', `${relative} cites live record ${target}; a notepad or handoff is working context even when committed, so cite the durable owner it was promoted into`, { note: relative, target }));
     }
     if (LIVE_STATE_MARKERS.some((marker) => marker.test(content))) {
       findings.push(finding('copied-task-state', `${relative} copies live task state; link to the owner instead`, { note: relative }));
