@@ -50,7 +50,7 @@ Derived from stable specs; includes completed history.
 | [S-01C - carry skill rebuild](S-01C-carry-skill-rebuild/SPEC.md) | Carry assigned work to its authorized endpoint and make genuine owner hand-backs visible. | planned |
 | [S-01D - adoption skill rebuild](S-01D-adoption-skill-rebuild/SPEC.md) | Bring an existing project into the Workbench once while preserving room truth. | planned |
 | [S-01E - checkpoint skill rebuild](S-01E-checkpoint-skill-rebuild/SPEC.md) | Keep the retired checkpoint command as an accurate compatibility route. | active |
-| [S-01F - code-review skill rebuild](S-01F-code-review-skill-rebuild/SPEC.md) | Review an immutable candidate against the repository and capability contracts. | planned |
+| [S-01F - code-review skill rebuild](S-01F-code-review-skill-rebuild/SPEC.md) | Review an immutable candidate against the repository and capability contracts. | active |
 | [S-01G - genesis skill rebuild](S-01G-genesis-skill-rebuild/SPEC.md) | Create a new Workbench room from a founding prompt and a recoverable remote boundary. | planned |
 | [S-01H - implement skill rebuild](S-01H-implement-skill-rebuild/SPEC.md) | Deliver one eligible assigned Task through red/green and verified recovery. | planned |
 | [S-01I - make-it-so skill rebuild](S-01I-make-it-so-skill-rebuild/SPEC.md) | Compose approved work through the exact endpoint the owner authorized. | active |
