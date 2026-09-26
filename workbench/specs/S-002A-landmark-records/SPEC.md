@@ -52,6 +52,13 @@ until the Director/Tracker source writer records this successor transfer.
 3. An explicitly designated Landmark article can be validated through a public
    read-only command/API against all its bytes. WBIDs in metadata, body, hidden
    comments, URLs and link targets are rejected with a useful named finding.
+   Default validation must not report valid for arbitrary custom-type tokens
+   accepted by the live identity grammar: unknown shaped tokens produce an
+   explicit ambiguous/incomplete result, or conservative refusal. Namespace
+   options may classify ambiguity but are not required to prevent false validity.
+   Supported encoded URL/link targets addressing identities are checked with
+   a documented decoding boundary. Ordinary lookalike prose ambiguity stays
+   visible; no semantic identity inference is promised.
    Valid readable articles pass. Missing/unsafe/non-article paths fail visibly;
    every refusal preserves bytes and index. Unrelated Wiki articles, including
    retirement feature owners with Spec-ID source paths, keep their own rules.
@@ -181,3 +188,4 @@ self-drift cleanUpdate=false. Passing checks do not prove clean update or QA.
 | 2026-09-26 | none | Serial identity reservation under explicit owner three-Spec split | Live base b00a2e338436ef7b281b0cc53e74f891af32f18c; next-id proposal saved before next allocation | This minimal scaffold | Dispatcher scope/Tasks and source transfer mapping pending |
 | 2026-09-26 | TK-002T | Director-approved first residual Task reserved serially; inherited create/read behavior not reimplemented | Existing Tracker 23/23; doctor seven baseline attention; active lane-H dirty consumers inspected; guardrail 78/100; self-drift cleanUpdate false | Scoped successor Spec and Task; original source history preserved | Worker red/green and source transfer reconciliation pending |
 | 2026-09-26 | TK-002T | Packet 04d54b165c06a6a46a5cec53bda3cbe79e0caeec delivered to one-Task Sol worker; fresh-context readback accepted; inherited authorization and Director callbacks carried | Citation checks 3/3; local render/doctor pass with seven existing attention findings; packet clean | Markdown handoff is local context only; authored Spec/Task tracked | Worker red/green/full candidate proof and source transfer pending; no Human QA completion |
+| 2026-09-26 | TK-002T | Early public test review found fixed-prefix default could omit permitted custom notepad identities; Director requires generic default ambiguity/refusal and supported encoded-target proof within same Task | Initial worker red 59439b5 then 13/13 green bd0707e is superseded for final acceptance; corrected immutable candidate pending | Desired Behavior clarifies honest default lexical boundary; no identity/runtime refactor | Installed distribution needs released RUNTIME_TOOLS seam; whole Spec and owner QA remain pending |
