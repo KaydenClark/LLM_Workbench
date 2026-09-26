@@ -18,8 +18,11 @@ const VERSION = JSON.parse(fs.readFileSync(path.join(sourceProduct, 'workbench',
 const DATE = '2026-09-04';
 const transcript = [];
 // A scrubbed environment: no Foundry, deployment, or host lane variables reach
-// any child process, and PATH is the only inherited value.
-const env = { PATH: process.env.PATH, HOME: os.tmpdir(), LANG: 'C', LC_ALL: 'C' };
+// any child process, and PATH is the only inherited value. HOME is a fresh
+// empty directory of its own rather than the shared system temp directory,
+// which can hold anything another process left there.
+const home = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-round-trip-home-'));
+const env = { PATH: process.env.PATH, HOME: home, LANG: 'C', LC_ALL: 'C' };
 const FOUNDRY_SIGNS = /Foundry|\.foundry|Job Order|Captain|CAS\/Journal|GPT_OS/;
 
 function run(cwd, command, args, expectStatus = 0) {
@@ -58,6 +61,11 @@ function withTemplateBody(name, templatesRoot, header) {
   return `${header}\n\n## Template source (swept for retired vocabulary)\n\n${templateBody}`;
 }
 
+// S-00V TK-00I: host memory (a provider's per-project auto-memory under
+// HOME, such as `.claude/projects/*/memory`, or a `.codex` home) is a
+// per-machine convenience the Workbench never depends on. The run starts with
+// a HOME that holds nothing at all and must leave no provider memory behind.
+assert.equal(fs.readdirSync(env.HOME).length, 0, 'the scrubbed HOME starts empty, so no host memory directory exists for any step to read');
 const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-round-trip-'));
 const product = path.join(workspace, 'candidate');
 const remote = path.join(workspace, 'origin.git');
@@ -163,7 +171,11 @@ try {
   const promoted = JSON.parse(node(first, path.join(first, 'workbench/tools/sessions.mjs'), 'promote', '--from', note.note, '--revision', '2', '--entries', 'decision-001', '--to', owner, '--expected', createHash('sha256').update(beforeOwner).digest('hex'), '--content', 'workbench/sessions/handoffs/greeting-draft.md'));
   assert.equal(promoted.status, 'promoted');
   assert.equal(promoted.destination.sha256, createHash('sha256').update(authored).digest('hex'));
-  node(first, tool(first), 'claim', 'S-001', '--agent', 'planner');
+  // S-00V TK-01L: this room coordinates through origin, where claim would cut
+  // and push a task branch. This proof resumes a checkpoint committed on main,
+  // so the planner claims locally (said so on stderr); converting the round
+  // trip to claim by pushing is TK-01N's ends-clean gate.
+  node(first, tool(first), 'claim', 'S-001', '--agent', 'planner', '--local');
   node(first, tool(first), 'render');
   git(first, 'add', '-A');
   const tracked = git(first, 'ls-files');
@@ -204,12 +216,17 @@ try {
   run(second, process.execPath, ['--test', 'tests/hello.test.mjs']);
   assert.equal(run(second, process.execPath, ['src/hello.mjs', 'World']).trim(), 'Hello, World!');
 
-  // ---- Close, render, doctor, push, read back ----------------------------
+  // ---- Commit and push, close, render, doctor, push, read back -----------
+  // S-00M TK-003: close refuses a dirty or unpushed tree, so the slice is
+  // committed and pushed before its completion is claimed.
+  git(second, 'add', '-A');
+  git(second, 'commit', '-q', '-m', 'S-001/TK-001: greet by name');
+  git(second, 'push', '-q', 'origin', 'main');
   node(second, tool(second), 'close', 'S-001', '--proof', 'node --test tests/hello.test.mjs red then green; node src/hello.mjs World prints Hello, World!', '--docs', 'README.md usage retained; RUNBOOK.md commands executed', '--remaining-gap', 'none');
   node(second, tool(second), 'render');
   node(second, tool(second), 'doctor');
   git(second, 'add', '-A');
-  git(second, 'commit', '-q', '-m', 'S-001/TK-001: greet by name');
+  git(second, 'commit', '-q', '-m', 'Close S-001/TK-001 with proof');
   git(second, 'push', '-q', 'origin', 'main');
   const finalSha = git(second, 'rev-parse', 'HEAD');
   assert.equal(git(second, 'ls-remote', 'origin', 'main').split('\t')[0], finalSha, 'the proof is remotely recoverable');
@@ -221,7 +238,11 @@ try {
   assert.doesNotMatch(clonePaths, FOUNDRY_SIGNS, 'no Foundry path exists in the resumed repository');
   assert.doesNotMatch(transcript.join('\n'), FOUNDRY_SIGNS, 'no Foundry mechanism was named or required');
   assert.doesNotMatch(transcript.join('\n'), /\/Users\/|\/home\//, 'no private home path leaked into the transcript');
+  for (const memory of ['.claude', '.codex']) {
+    assert.equal(fs.existsSync(path.join(env.HOME, memory)), false, `the round trip neither read nor created host memory under HOME/${memory}`);
+  }
   console.log(`ok - mechanical round trip: planning ${planningSha.slice(0, 7)} interrupted, resumed from a clean clone, proof ${finalSha.slice(0, 7)} read back with Foundry absent`);
 } finally {
   fs.rmSync(workspace, { recursive: true, force: true });
+  fs.rmSync(home, { recursive: true, force: true });
 }

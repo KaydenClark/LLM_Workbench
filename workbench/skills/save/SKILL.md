@@ -23,12 +23,17 @@ operation, never its file type or storage location.
    `canonicalized_in` names their operational owners.
 3. Check the actual changes and run their owning verification. Append named
    proof and remaining limitations to the assigned spec without rewriting
-   earlier evidence. If spec state changed, render its Taskboard. Do not
+   earlier evidence. Cite durable owners and the exact commit the checks ran
+   on, never an ignored live path such as a note, handoff or recovery file, as
+   durable evidence. If spec state changed, render its Taskboard. Do not
    classify a generated view as a second authoring source.
 4. Follow the project's Git policy for authorized tracked changes: inspect
    the diff, stage only the named files, commit on the allowed task branch,
-   and push when that recovery boundary is authorized. Verify the remote
-   branch resolves to the intended commit. A failed or unavailable push is
+   and push when that recovery boundary is authorized. Then prove remote
+   containment: fetch, and check `git merge-base --is-ancestor <commit>
+   <remote>/<branch>` against the freshly fetched ref, not a stale tracking
+   ref, the local branch or tip equality. Name the exact full commit SHA and
+   the remote ref that contains it. A failed or unavailable push or fetch is
    pending recovery, never confirmation. A save does not waive independent
    integration review, merge a pending review, or authorize main publication.
 5. Keep local context independent of optional private-session transport.
@@ -37,8 +42,11 @@ operation, never its file type or storage location.
    bytes alone never prove remote or cross-device recovery. Transport does
    not move unpushed code or running processes.
 
-If nothing changed, say so. On completion name the owners and actual local or
-remote recovery points, the checks run, any pending boundary and next action.
+If nothing changed, say so. On completion name the owners, the exact commit
+and the remote ref proven to contain it (or the local-only recovery point and
+why), the checks run, the unresolved notes kept locally, any pending boundary
+and next action. Finishing a Task is not reconciliation: its notes stay
+available until their unresolved context reaches a durable owner.
 Do not make an ordinary local save wait for optional network access. Never
 copy raw working context into a tracked checkpoint. Preserve existing frozen
 checkpoints and unresolved/correction/handoff dependencies; cleanup composes

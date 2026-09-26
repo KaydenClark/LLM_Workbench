@@ -174,6 +174,32 @@ assertIncludesAll(slicingSkill, [
 ], 'to-tasks');
 assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
   'to-tasks must treat TASKBOARD.md as a generated projection');
+// S-01L: a Task record carries its stance and the title line its parser
+// requires; Tasks are cut at activation, never into a planned Spec; approval is
+// asked only when planning authority is missing (ADR-0045); and a slice gated
+// on an unanswered owner decision stays uncut, because a record's Blockers
+// field holds only S-/TK- ids and `next` would hand out a prose-blocked record.
+// These pin the source contract; the fresh-context run in S-01L records the behavior.
+// S-01L TK-02D: a planned Spec is cut only when the same request activates it,
+// through `convert-tasks S-### --activate` (tools/test-spec-workbench.mjs
+// proves the runtime), replacing the earlier "do not run convert-tasks on it".
+assertIncludesAll(slicingSkill, [
+  '**Stance:**',
+  '# TK-### - <slice>',
+  'Cut Tasks when the Spec is activated',
+  'a planned Spec gets no Tasks',
+  'the same request activates it',
+  'convert-tasks S-### --activate',
+  'workbench/docs/adr/0045-skill-composition-within-inherited-scope.md',
+  'Leave a slice that waits on an unanswered owner decision uncut',
+  'record the open decision in the Spec'
+], 'to-tasks record, activation, approval and owner-gate contract');
+assert.doesNotMatch(slicingSkill, /Keep unresolved owner decisions visible as blockers/,
+  'to-tasks must not route an owner decision into a Task Blockers field the runtime cannot hold');
+// S-01L review correction: a new slice always becomes a TASK.md record; a
+// table-only Spec is converted first, so no route may still add a table row.
+assert.doesNotMatch(slicingSkill, /a row in the Spec's own table|Task record or row/,
+  'to-tasks must not offer a legacy table row as a destination for a new slice');
 
 const grilling = read('workbench/skills/grilling/SKILL.md');
 for (const [pattern, label] of [
@@ -242,6 +268,26 @@ assertIncludesAll(notepadSkill, [
 assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < notepadSkill.indexOf('## 4.'),
   'rechecking a corrected claim belongs to saving and resuming, before cleanup');
 
+// S-01B: promote reads pending meaning the way notepad and grilling record it,
+// selects only the confirmed claim, routes each accepted claim to one owner,
+// keeps its authored draft inside the project but out of Git, and leaves the
+// pending item in the note. These pin the source contract; the fresh-context
+// run in S-01B records the behavior.
+const promoteSkill = read('workbench/skills/promote/SKILL.md');
+assertIncludesAll(promoteSkill, [
+  '`source_record`',
+  '`current.unresolved`',
+  'is pending, not supported',
+  'only a `decision` entry',
+  'exactly one durable owner',
+  'link to it rather than copy it',
+  '`workbench/sessions/recovery/`',
+  'Leave each pending entry and its `current.unresolved` item in place'
+], 'promote pending, single-owner and draft contract');
+assert.ok(promoteSkill.indexOf('is pending, not supported') < promoteSkill.indexOf('\n2. '),
+  'recognizing pending meaning belongs to selection, before routing');
+assert.ok(promoteSkill.indexOf('Leave each pending entry') > promoteSkill.indexOf('\n5. '),
+  'retaining the pending item belongs to the note update after promotion');
 // S-00Z: grill-me is the repository-owned entry that composes grilling with
 // objective-scoped notepad continuity. It is declared in the live core bundle
 // and its source names both composed skills and the pending convention they
@@ -268,6 +314,53 @@ assertIncludesAll(grillMe, [
 ], 'grill-me composition contract');
 assert.doesNotMatch(grillMe, /^Run a `\/grilling` session\.$/m,
   'grill-me must state the composition, not only forward to grilling');
+// S-01O: save proves the recovery boundary it claims. A finished Task names
+// the exact commit and the freshly fetched remote ref that contains it, cites
+// durable owners rather than ignored live paths, and keeps unresolved notes
+// local: finishing work is not reconciliation. These pin the source contract;
+// the fresh-context run in S-01O records the behavior.
+// Whitespace is normalized so a rewrap of the prose cannot hide or fake a term.
+const saveSkill = read('workbench/skills/save/SKILL.md').replace(/\s+/g, ' ');
+assertIncludesAll(saveSkill, [
+  'remote containment',
+  'git merge-base --is-ancestor',
+  'freshly fetched',
+  'exact full commit SHA',
+  'never an ignored live path',
+  'Finishing a Task is not reconciliation',
+  'pending recovery, never confirmation',
+  'Local bytes alone never prove remote or cross-device recovery',
+  'publication permission'
+], 'save recovery-boundary contract');
+assert.ok(saveSkill.indexOf('git merge-base --is-ancestor') < saveSkill.indexOf(' 5. Keep local context'),
+  'remote containment is proved in the Git step, before optional session transport');
+assert.doesNotMatch(saveSkill, /Verify the remote branch resolves to the intended commit/,
+  'tip equality is not containment: a remote that advanced past the commit still contains it');
+
+// S-01A: the handoff source and its bundled Markdown shape must agree. The
+// shape (byte-equal to templates/HANDOFF.md, see test-core-composition) has no
+// heading of its own for the destination, corrections, access limits,
+// inherited authorization or blockers the source requires, so the source maps
+// every obligation onto a heading the shape actually has, and every heading is
+// mapped. An untracked live note is a dead pointer outside its own checkout.
+// These pin the source contract; the S-01A fresh-context run records behavior.
+const handoffSkill = read('workbench/skills/handoff/SKILL.md');
+const handoffShape = read('workbench/skills/handoff/assets/HANDOFF.md');
+const handoffShapeSections = [...handoffShape.matchAll(/^## (.+)$/gm)].map((match) => match[1]).sort();
+const handoffMappedSections = [...handoffSkill.matchAll(/^ {3}- `([^`]+)`:/gm)].map((match) => match[1]).sort();
+assert.ok(handoffShapeSections.length > 0, 'the bundled handoff shape must declare its sections');
+assert.deepEqual(handoffMappedSections, handoffShapeSections,
+  'the handoff source must place its obligations on exactly the sections its bundled shape has');
+assertIncludesAll(handoffSkill, [
+  'named destination',
+  'inherited authorization',
+  'the claim it corrects',
+  'access limit',
+  'exactly one next executable action',
+  'exists only in this checkout',
+  'When the handoff draws on a notepad',
+  'authorizes authorship, not implementation, promotion, sending it to others or creating a new task'
+], 'handoff source and shape contract');
 
 // S-01M: a tracer bullet reaches the documentation and proof seams, not only
 // the code layers, so a code-only slice is revised as a shard before it becomes
@@ -297,6 +390,12 @@ assertIncludesAll(makeItSo, [
 ], 'make-it-so');
 assert.doesNotMatch(makeItSo, /every pending approval|universal execution authorization/i,
   'composition must never replace the narrower user endpoint');
+// S-01I: the catalog row is the discovery summary, so it must carry the same
+// endpoint bound as the source rather than promising execution.
+const makeItSoRow = catalogRegion[1].split('\n').find((line) => line.startsWith('| `make-it-so` |'));
+assert.match(makeItSoRow, /endpoint/, 'the make-it-so catalog row must name the authorized endpoint');
+assert.doesNotMatch(makeItSoRow, /\bexecute\b/i,
+  'the make-it-so catalog row must not promise execution the request did not authorize');
 
 const checkpoint = read('workbench/skills/checkpoint/SKILL.md');
 assertIncludesAll(checkpoint, ['notepad', 'resume', '`/make-it-so`', 'node workbench/tools/sessions.mjs checkpoint', 'workbench/sessions/checkpoints', 'privacy'], 'checkpoint');
@@ -319,6 +418,33 @@ assertIncludesAll(toDocs, [
 assert.doesNotMatch(toDocs, /ask (the )?user|interview the user|create a second|issue tracker/i,
   'to-docs must persist settled truth without restarting discovery or adding stores');
 
+// S-01J: to-docs lands each supported claim once. A mixed finding is split so
+// each claim reaches the one owner for its job, and other owners (a Wiki
+// reference article included) link to it instead of copying it. Pending meaning
+// stays in its note the way notepad records it, evidence cites durable owners,
+// transient working history stays out of the Spec, and each changed owner is
+// read back. These pin the source contract; the fresh-context run in S-01J
+// records the behavior. Whitespace is normalized so a rewrap cannot hide a term.
+const toDocsFlat = toDocs.replace(/\s+/g, ' ');
+assertIncludesAll(toDocsFlat, [
+  'Route each claim once',
+  'Split a mixed finding into its claims',
+  'exactly one owner',
+  'link to the owner that holds it rather than copy it',
+  'instead of restating its steps',
+  '`source_record`',
+  '`current.unresolved`',
+  'only a `decision` entry',
+  'never an ignored live path',
+  'permanent Spec history',
+  '`workbench/wiki/MEMORY.md`',
+  'Read each changed owner back'
+], 'to-docs single-owner, pending and read-back contract');
+assert.ok(toDocsFlat.indexOf('Route each claim once') > toDocsFlat.indexOf('`canonicalized_in`'),
+  'the once-per-claim rule applies to every destination in the routing list, so it follows it');
+assert.ok(toDocsFlat.indexOf('Read each changed owner back') > toDocsFlat.indexOf('Route each claim once'),
+  'read-back checks the routed result, after routing');
+
 const toSpec = read('workbench/skills/to-spec/SKILL.md');
 assertIncludesAll(toSpec, [
   'already-settled conversation',
@@ -330,18 +456,93 @@ assertIncludesAll(toSpec, [
 for (const forbidden of ['issue tracker', 'setup-matt-pocock-skills', 'ready-for-agent']) {
   assert.ok(!toSpec.includes(forbidden), `to-spec must not retain ${forbidden}`);
 }
+// S-01K: one Spec owns one capability. A settled conversation that spans
+// several capabilities (for example a per-skill rebuild) yields one Spec per
+// capability rather than one bundled delivery owner. A new Spec is authored at
+// `planned` and is never claimed or activated by the specifying agent, so the
+// record carries no implementation claim. Paths move only through
+// `move-spec` (AGENTS lifecycle, ADR-000I); the retired stable-path rule is gone.
+assertIncludesAll(toSpec, [
+  'one Spec per capability',
+  'never bundle',
+  'status `planned`',
+  'do not `claim`',
+  '`move-spec`'
+], 'to-spec one-capability and planned-entry contract');
+assert.doesNotMatch(toSpec, /into one\s+stable capability record/,
+  'to-spec must not fold a multi-capability conversation into one record');
+assert.doesNotMatch(toSpec, /Existing stable paths never change/,
+  'to-spec must not restate the retired stable-path rule');
+// S-01K TK-002L, owner answer E-4B: `planned` is the Backlog separator. A new
+// Spec enters Backlog as `planned` with no Task cut; its Tasks are cut from
+// live Actuality when it is activated, by to-tasks with the tracer-bullet
+// discipline. The correction limits this to new Specs: a reused Spec keeps
+// the Tasks it already has.
+// The portable source states the rule without citing this repository's
+// ledger ID, which a target room cannot resolve.
+assertIncludesAll(toSpec, [
+  'no Task cut',
+  'no Task row',
+  '(`planned` -> `active`)',
+  '`/to-tasks`',
+  'keep the Tasks it already has'
+], 'to-spec planned-without-Tasks contract');
+// The runtime refuses a Spec with neither a slice row nor a `tasks/`
+// directory (`malformed-spec`, and `next`/`render`/`show` fail for the whole
+// room), so the Task-less Spec is written record-backed with an empty,
+// tracked `tasks/` directory.
+assertIncludesAll(toSpec, [
+  'empty `tasks/` directory',
+  '`.gitkeep`',
+  'malformed'
+], 'to-spec runtime-valid Task-less Spec');
+assert.doesNotMatch(toSpec, /E-4B/,
+  'to-spec is portable and must not cite a Workbench-local owner-answer ID');
+assert.doesNotMatch(toSpec, /Seed `Vertical Implementation Slices`/,
+  'to-spec must not seed a Task row into a new planned Spec');
+assert.doesNotMatch(toSpec, /each TASK during authorized planning/,
+  'to-spec cuts no Task, so it must not set a stance on one');
+const toSpecRow = catalogRegion[1].split('\n').find((line) => line.startsWith('| `to-spec` |'));
+assert.match(toSpecRow, /no Task cut/,
+  'the to-spec catalog row must carry the planned-without-Tasks entry');
 
 const genesis = read('workbench/skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
   '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`git.integrationBranch`', 'commit and push',
   'workbench/tools/workbench-layout.mjs init', 'tools/workbench-tools.mjs install'
 ], 'genesis');
+// S-01G TK-00X: `init` accepts any directory without a manifest, so the skill
+// itself must route an existing-code target before writing, through the
+// read-only classifier, and must lay down the skills lane the readiness gate
+// requires (`skill-lane-missing` otherwise).
+assertIncludesAll(genesis, [
+  'node tools/workbench-classify.mjs classify --project', 'verdict is `genesis`', '`adoption`', '`/update-harness`',
+  '`unclassifiable`', 'node tools/workbench-skills.mjs install', 'validate --project PATH --genesis'
+], 'genesis routing and managed-lane contract');
 
 const adoption = read('workbench/skills/adoption/SKILL.md');
 assertIncludesAll(adoption, [
   '`templates/ADOPTION.md`', 'one-time', 'existing project', '`/update-harness`', 'private remote', 'commit and push',
   'workbench-adoption.mjs', 'migrate', 'manifest-declared', 'project-local `skills/`', '`git.integrationBranch`'
 ], 'adoption');
+
+// S-01D: the first adoption inventories the room's route, code, controls,
+// provenance and recovery before the migration installs the managed layout,
+// and the migration lays the core skills into the room's own lane from the
+// release rather than from a provider home. These pin the source order; the
+// fresh-context run in S-01D records the behavior.
+const adoptionMigrate = adoption.indexOf('workbench-adoption.mjs migrate');
+for (const inventory of ['workbench-classify.mjs classify', 'baseline', 'source remote, ref, and resolved commit', 'recovery point']) {
+  const at = adoption.indexOf(inventory);
+  assert.ok(at !== -1 && at < adoptionMigrate,
+    `adoption must inventory ${inventory} before the migration installs the managed layout`);
+}
+assert.match(adoption, /core skills into the room's own\s+`workbench\/skills` lane/,
+  'adoption must say the migration lays the core skills into the room lane');
+assert.doesNotMatch(adoption, /core bundle in the intended disposable or user-scoped home|missing core skill/,
+  'adoption must not send the agent to a provider home the migration no longer reads');
+assert.doesNotMatch(adoption, /checkpoint owned work/,
+  'adoption must not route dirty state through the retired checkpoint copy');
 
 const implement = read('workbench/skills/implement/SKILL.md');
 assertIncludesAll(implement, [
@@ -389,6 +590,34 @@ assertIncludesAll(codeReview, [
   'git diff --no-ext-diff --no-textconv "$BASE_SHA" "$HEAD_SHA" --',
   'nearest `AGENTS.md`', 'assigned stable `SPEC.md`', 'Findings first', 'review-only', 'separately authorized'
 ], 'code-review');
+// S-01F TK-00W: a finding says which tree its citation reads at and whether it
+// was reproduced; a pass belongs only to the candidate it reviewed; and no
+// review result stands in for owner Human QA.
+assertIncludesAll(codeReview, [
+  '`path:line@<sha>`', '**proven**', '**uncertain**',
+  'A pass belongs to the candidate it reviewed', 'changed content digest', 'needs a fresh review',
+  'never a verdict for this one',
+  'is not owner Human QA', 'resets a failed Human QA gate'
+], 'code-review finding, fresh-candidate and Human QA contract');
+
+// S-01Q: the Auditor stance reports one classified finding per named claim,
+// each traceable to its pinned evidence, check and limit, and stays inside the
+// assigned target. These pin the source contract; the fresh-context run in
+// S-01Q records the behavior. "bounded verdict" stays the LEXICON wrapper.
+const auditorSkill = read('workbench/skills/auditor/SKILL.md');
+assertIncludesAll(auditorSkill, [
+  'bounded verdict',
+  'supported, unsupported or uncertain',
+  'Each finding cites',
+  'the check it ran and its limit',
+  'Stay inside the assigned target and project',
+  'not examined',
+  'silently repair'
+], 'auditor finding and scope contract');
+assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorSkill.indexOf('## Completion / Exit Condition'),
+  'the three result classes belong to the auditor exit report');
+assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
+  'the no-widening boundary belongs to the auditor method, before its obligations');
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and

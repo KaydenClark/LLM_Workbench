@@ -8,7 +8,7 @@
 // is a tool change with a test.
 
 export const SEVERITIES = Object.freeze(['error', 'attention']);
-export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls', 'skills', 'git']);
+export const SCOPES = Object.freeze(['manifest', 'specs', 'adr', 'wiki', 'sessions', 'feedback', 'tools', 'controls', 'skills', 'git', 'host']);
 export const EFFECTS = Object.freeze(['all', 'selection', 'selected-slice', 'none']);
 
 const registry = Object.freeze({
@@ -66,6 +66,17 @@ const registry = Object.freeze({
   'stale-claim': entry('attention', 'specs', 'none', 'an in-progress claim is older than one working day; verify activity before reclaiming'),
   'complete-on-integration': entry('attention', 'specs', 'none', 'the spec next would select is already complete or superseded at the declared integration ref; the checkout is behind it'),
   'broken-link': entry('attention', 'specs', 'none', 'a spec links to a missing local target'),
+  // S-00J TK-01T: a blocker entry carries a qualifier outside the known
+  // grammar (`S-###:delivered` is the only one). The resolver already treats
+  // it as unmet, so the finding only makes that wait visible; it blocks
+  // nothing room-wide, and the slice it gates stays unselectable.
+  'unknown-blocker-qualifier': entry('error', 'specs', 'none', 'a Task blocker names a qualifier outside the known blocker grammar; it stays unmet until corrected'),
+  // S-00J TK-02J: a Task record declared `blocked` names no resolvable
+  // blocker (no blocker at all, or only tokens outside the known grammar,
+  // and no recorded missing capability). The resolver keeps it blocked
+  // rather than handing it out, so this only makes the wait visible: the
+  // author either records the real blocker or corrects the Status.
+  'blocked-without-blocker': entry('attention', 'specs', 'none', 'a Task record declared blocked names no resolvable blocker; it stays blocked until one is recorded or its Status is corrected'),
   // S-00I TK-003: a Spec's lifecycle folder is retired, but its own header
   // Status still disagrees (folder says done with it; the header does not
   // say complete) - the Spec analogue of `disagreeing-status`, visible and
@@ -109,7 +120,12 @@ const registry = Object.freeze({
   // record - visible, never silently reinterpreted, and never blocking.
   'disagreeing-status': entry('attention', 'adr', 'none', "an ADR's leftover status frontmatter disagrees with its lifecycle folder"),
   'invalid-adr': entry('error', 'adr', 'none', 'an ADR is missing required frontmatter or names an unknown canonicalization target'),
-  'untracked-provenance': entry('error', 'adr', 'none', 'a durable reference targets an untracked session path'),
+  // Shared since S-00V TK-00J: the ADR validator, the Spec packet checks and
+  // the wiki validator emit it. A live session record may be committed
+  // temporarily for a continuation, so the code's name predates that; what it
+  // reports is a durable citation of working context, tracked or not. Its
+  // `scope` stays the lane it was registered for, as with `invalid-note`.
+  'untracked-provenance': entry('error', 'adr', 'none', 'a durable reference targets a live session record, committed or not'),
   // notepads: refusals the runtime returns to its caller. None of them blocks,
   // because a live note is local working context that no selection depends on;
   // each is a fail-closed answer to one write or read, not a project state.
@@ -136,6 +152,11 @@ const registry = Object.freeze({
   // visible in every doctor run and blocks only the Genesis readiness gate
   'integration-branch-undeclared': entry('error', 'git', 'none', 'the manifest declares no git.integrationBranch; declare the branch the independent review gate merges into'),
   'integration-branch-missing': entry('error', 'git', 'none', 'the declared integration branch resolves neither as a local head nor on a remote'),
+  // S-00M TK-002 (ADR-000J): the repository state a completion claim can
+  // hide. Both are visible in every doctor run and block nothing: detached is
+  // a legitimate inspection state, and the false claim is refused at `close`.
+  'detached-head': entry('attention', 'git', 'none', 'HEAD is detached; an inspection state that blocks nothing, but switch to a branch before committing work you intend to deliver'),
+  'untracked-controls': entry('attention', 'git', 'none', 'untracked files sit under the root controls, the ADR collection or the spec lane; commit or remove them before claiming the work done'),
   'unfilled-control': entry('error', 'controls', 'all', 'a root control is empty, a stub, or carries template placeholders'),
   'unsafe-control': entry('error', 'controls', 'all', 'a root control is not an ordinary file'),
   'version-mismatch': entry('error', 'controls', 'all', 'a control version stamp disagrees with the manifest'),
@@ -166,7 +187,13 @@ const registry = Object.freeze({
   // to the feedback lane because that is the whole covered set today; widening
   // the set to another lane is a registry change with its own test.
   'stale-seed': entry('attention', 'feedback', 'none', 'a seeded lane document records a release other than the manifest workbenchVersion'),
-  'unverified-provenance': entry('attention', 'manifest', 'none', 'the manifest records no verifiable source identity, or one that disagrees with its own workbenchVersion')
+  'unverified-provenance': entry('attention', 'manifest', 'none', 'the manifest records no verifiable source identity, or one that disagrees with its own workbenchVersion'),
+  // S-00V TK-00H: the host floor (Node 18+, Python 3.9+, git, gh authenticated
+  // with push rights to the room's remote, network to GitHub). Registered
+  // `all` because a session below the floor cannot finish any Task; emitted
+  // only by the session-start `doctor --host` invocation (host-floor.mjs),
+  // never by plain doctor, next or claim, which stay offline.
+  'host-floor-unmet': entry('error', 'host', 'all', 'a host floor item is missing; install or authenticate it (Node 18+, Python 3.9+, git, gh with push rights to the room remote, network to GitHub) before session work')
 });
 
 function entry(severity, scope, blocks, summary) {
