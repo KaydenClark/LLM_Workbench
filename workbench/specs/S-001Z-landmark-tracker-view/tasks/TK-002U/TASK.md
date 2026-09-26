@@ -3,7 +3,7 @@
 **Task ID:** TK-002U
 **Spec ID:** S-001Z
 **Slice:** Inspect assessment evidence through the readable Tracker view
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Human-readable public show for one DQC and the whole Tracker exposes existing own/related assessment evidence, basis and revisions on demand, surviving restart and rebuild without changing default compact output.

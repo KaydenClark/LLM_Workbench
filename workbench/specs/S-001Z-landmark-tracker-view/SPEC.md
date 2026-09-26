@@ -3,13 +3,13 @@
 **Spec ID:** S-001Z
 **Status:** active
 **Priority:** 1
-**Owner:** Tracker dispatcher
+**Owner:** codex-tracker-evidence-worker
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Rebuild and inspect evidence-backed documentation distributions from existing DQC and landmark records.
 **Blockers:** none
-**Latest event:** Scoped successor authored; readable assessment evidence omission reproduced through persisted public operations; TK-002U assigned after Director approval.
-**Next gate:** TK-002U worker may prove red in its own test lane; runtime mutation waits the DQC Result seam release.
+**Latest event:** TK-002U claimed by codex-tracker-evidence-worker.
+**Next gate:** Close TK-002U with verification and documentation proof.
 
 ## Outcome
 
