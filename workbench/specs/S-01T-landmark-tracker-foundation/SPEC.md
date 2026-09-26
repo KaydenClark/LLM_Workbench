@@ -8,8 +8,8 @@
 **Updated:** 2026-09-26
 **Catalog description:** Preserve evolving understanding in DQCs and landmarks and generate evidence-backed documentation progress alongside implementation tracking.
 **Blockers:** none
-**Latest event:** Owner-confirmed design promoted into documentation and this capability Spec; no Tasks or runtime implementation authored.
-**Next gate:** Owner-directed Task decomposition or implementation assignment; current request stops at documentation and specification.
+**Latest event:** September 26 delivery assignment supersedes the earlier specification-only endpoint. Four Worker-authored delivery packets are staged in PACKET-PLAN.md; no Task labels allocated or runtime implemented.
+**Next gate:** Director releases coordinated Task allocation and the bounded shared foundation lane described in [packet plan](PACKET-PLAN.md); Dispatcher then publishes executable Task records and assigns one Task per Worker context.
 
 ## Outcome
 
@@ -56,9 +56,13 @@ Read the following observations at that immutable tree using `git show`:
 - No Landmark Tracker capability owner was found through the catalog and
   selected controls. The read-only next-ID proposal returned this Spec identity.
 
-This planning candidate adds accepted definitions, direction, an ADR and a
-readable design article. It creates no Tracker records, runtime, manifest
-collection, Task, new command or release. Actuality remains as described above.
+The original planning delivery added accepted definitions, direction, an ADR
+and a readable design article, without Tracker records, runtime, collections,
+Tasks, commands or a release. At dispatch baseline
+`89d4042fb8931b9d720af75bffea1c28803d72aa`, those runtime gaps remain.
+The September 26 delivery assignment now authorizes decomposition and
+implementation. The linked packet plan is authored work preparation, not
+runtime proof or an executable Task inventory.
 
 ## Desired Behavior
 
@@ -189,6 +193,7 @@ notepad path for recovery:
 | Q11/Q17 and approved review | Clear concept names, compact projection and expandable evidence; no mandatory per-utterance card or implicit Frontier redefinition. |
 | Foundation-first confirmation | Ungrouped DQC -> later landmark connection -> generated documentation progress is the first useful delivery path. |
 | September 26 promotion request | Document and specify now; no Tasks yet and no runtime implementation in this planning change. |
+| September 26 subsequent delivery assignment | Director -> Dispatcher -> Worker delivery now authorizes missing Task authorship and implementation. Worker self-check/report, Dispatcher whole-Spec QA, separate Director immutable assembled-Spec review; owner Human QA and main promotion retain their existing authority. The earlier planning endpoint above remains historical. |
 
 Implementation latitude includes concrete field names, commands, JSON shape,
 assessment mechanisms and UX presentation, constrained by the above acceptance.
@@ -197,7 +202,7 @@ must be evidenced in this owner, not turned into a repeat of settled grilling.
 
 ## Non-Goals
 
-- Runtime implementation, Task creation or allocation in this planning change.
+- Treating the original documentation/specification delivery as runtime proof.
 - Replacing the ledger, Taskboard, Contract, source artifacts or Wiki.
 - One landmark per Spec, one DQC per utterance, or a finalized inventory gate.
 - A hosted service, database, paid dependency, new agent authority or scheduler.
@@ -220,22 +225,28 @@ must be evidenced in this owner, not turned into a repeat of settled grilling.
 - This Spec carries the Tracker's need for feature-article collection/schema
   compatibility identified by WF-8H; reconcile with existing owners before
   implementing shared consumers, without discarding their unfinished work.
-- No owner design blocker. Tasks and implementation remain unassigned by the
-  explicit specification-only endpoint, not an unanswered design question.
+- No owner design blocker is identified in the accepted Tracker design. The
+  current assignment authorizes delivery, but shared mutation and globally
+  coordinated Task allocation await the Director's lane release. Preserve
+  recovered identity/board work with S-00O, feature schema/lifecycle with S-00I,
+  and composition with S-00P; do not decide their unresolved contracts here.
 
 ## Vertical Implementation Slices
 
-No Task rows, Task IDs or Task files are created: the owner explicitly requested
-Specs only. Task decomposition is deferred to a later authorized endpoint. An empty
-`tasks/.gitkeep` preserves the existing record-backed parser mode in fresh
-clones; it is not a Task record or an allocation.
+The current delivery assignment authorizes the Worker-authored packets in
+[PACKET-PLAN.md](PACKET-PLAN.md). No global Task labels are consumed while
+another dispatcher's allocation lease is active. The Director owns generated
+projections; this preparation does not render or alter shared Taskboard/catalog
+state. `tasks/.gitkeep` continues to preserve record-backed parser mode.
 
-The confirmed first delivery scenario is recorded as acceptance context, not
-an executable Task: capture one ungrouped DQC with source lineage, preserve it,
-connect it to a landmark when one emerges, and generate evidence-backed progress.
-It must exercise record persistence, identity/relationships, calculation and a
-readable projection together. Subsequent decomposition must preserve that
-vertical behavior rather than treating isolated layers as completed capability.
+Publish each packet as `tasks/<allocated-id>/TASK.md` after coordinated allocation,
+then render and doctor through the released writer before proposing another ID.
+The ordered path is: one vertical persisted ungrouped DQC -> later landmark
+association -> generated evidence view; cross-source distribution robustness;
+actual Wiki/workflow delivery; live-reference and historical recovery integration.
+Each packet names its acceptance destination, dependencies, intended paths,
+red/green checks, demo and remaining limits. Packet names are planning labels,
+not invented Task IDs or claimable records.
 
 ## Acceptance Criteria
 
@@ -323,14 +334,19 @@ The original workflow diagram is preserved byte-for-byte.
 | 2026-09-26 | none | Owner invokes to-docs and to-spec; no Tasks. Planning baseline at 147ad3fec3f6df1bcf9a002e7ecf7e78d726bc3c in isolated codex/landmark-tracker-foundation. | Doctor: zero blockers, seven attention findings. Self-drift pre: same seven findings, cleanUpdate false. Guardrail baseline 78/100; four outcome-evidence recommendations. | Prior confirmed design and correction lineage synthesized above; unrelated checkpoint edit preserved in original checkout. | Verification of authored planning candidate pending; capability not implemented. |
 | 2026-09-26 | none | Planning verification at 541aac0a1e167f7d93cd72783a48bf740f2e9a64; corrected only the ADR corpus expected-link count afterward. | All 48 required commands executed: 47 passed; ADR count 61 versus actual 62 failed, then all 29 ADR tests passed with the count reconciled. Wiki/ADR validation, render, doctor, exact workflow-map preservation and no-WBID/no-Task checks passed. See [planning verification receipt](planning-verification.json). | Root/generic owners, accepted ADR-000N, readable article, router and historical reconciliation links documented. Initial independent review passed 84eaf20; final immutable candidate review follows. | Seven existing attention findings remain; guardrail 78/100 unchanged with four outcome-evidence recommendations. No runtime, Tasks or Human QA completion claimed. |
 
+| 2026-09-26 | dispatcher preparation | Current Director -> Dispatcher -> Worker assignment authorizes decomposition and implementation; four Sol Worker-authored packets staged in PACKET-PLAN.md. No Task labels consumed while allocation and shared lanes remain coordinated by Director. Baseline `89d4042fb8931b9d720af75bffea1c28803d72aa`. | All 48 AGENTS commands passed on the packet-preparation working tree; final receipt/evidence added afterward without runtime/control/test changes. [Dispatch verification](dispatch-verification.json) records exact commands, pre/post drift and limits. | Corrected current specification-only endpoint in this Spec; original planning evidence retained. No generic mirror needed for assigned-room Task preparation. Shared controls, manifest and generated projections unchanged. | No runtime red/green or demo, executable Tasks, Director integration review or owner QA supplied. Guardrail 78/100 unchanged; seven self-drift findings remain, cleanUpdate false, and Director projection refresh is pending. |
+
 ## Completion Result
 
-Capability delivery pending. The documentation/specification packet does not
-satisfy runtime acceptance or owner Human QA, and no Tasks have been authored.
+Capability delivery pending. Worker-authored packets prepare the now-authorized
+implementation; no executable Task records or runtime have been delivered.
+Neither this decomposition nor the earlier documentation/specification packet
+satisfies runtime acceptance, Director integration review or owner Human QA.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Implementation and detailed Task decomposition are outside this request.
+- Shared lane release and coordinated Task allocation precede implementation;
+  current packet preparation does not satisfy runtime acceptance.
 - Initial content can evolve; no exhaustive catalog approval is required.
 - Pre-existing attention findings remain with their current owners; neither this
   planning change nor structural checks establish a clean Workbench update.
