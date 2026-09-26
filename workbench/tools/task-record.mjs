@@ -66,7 +66,11 @@ const DESTINATION_PATTERN = /^(spec-acceptance|wiki-claim):\s*(.+)$/;
 // whole room failing to parse. Which qualifiers mean anything (today only
 // `S-###:delivered`) is the resolver's decision in spec-workbench.mjs, not
 // this reader's.
-const BLOCKER_ID_PATTERN = /^(?:S|TK)-[0-9A-Za-z]+(?::[A-Za-z][0-9A-Za-z-]*)?$/;
+//
+// S-00J TK-02J: `owner:<decision>` records a wait on an owner decision. The
+// decision is a lowercase kebab-case slug. The resolver never satisfies it;
+// it clears only when the entry is removed from the record.
+const BLOCKER_ID_PATTERN = /^(?:(?:S|TK)-[0-9A-Za-z]+(?::[A-Za-z][0-9A-Za-z-]*)?|owner:[a-z][a-z0-9]*(?:-[a-z0-9]+)*)$/;
 
 export function parseTaskRecord(content, filePath, root) {
   const label = filePath ? path.relative(root ?? path.dirname(filePath), filePath) : '<in-memory Task record>';

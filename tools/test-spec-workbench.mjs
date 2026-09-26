@@ -5296,6 +5296,7 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-00V TK-00K: optional-capability routing (end) ----
+<<<<<<< HEAD
 
 // ---- S-01W TK-002K: dual-form Task selectors (start) ----
 // Record-backed Task selectors (`receipt --task`, `gate --task`, `move-task
@@ -5374,3 +5375,105 @@ function parseTaskRecordForTest(content) {
   }
 }
 // ---- S-01W TK-002K: dual-form Task selectors (end) ----
+=======
+// ---- S-00J TK-02J: declared-blocked resolution and owner-decision blockers (begin) ----
+// A Task record's declared `blocked` derives `ready` only when a real
+// blocker has cleared: it names at least one blocker (or a recorded missing
+// capability, S-00V TK-00K) and every named blocker is a known, satisfied ID
+// form. A record declared `blocked` with Blockers `none` stays blocked in
+// `next`, `claim` and `render`, and doctor names it (attention, never
+// blocking). `owner:<decision>` records a wait on an owner decision: it
+// parses, the resolver never satisfies it, doctor treats it as known
+// grammar, and it clears only when the entry is removed from the record.
+// Room: S-9F0 is complete; S-9F1 (priority 0) holds TK-9F1 declared blocked
+// with Blockers none; S-9F2 (priority 1) holds TK-9F2 declared blocked on
+// `TK-001, owner:pick-schema` with TK-001 done; S-9F3 (priority 2) holds
+// TK-9F3 declared blocked on `TK-001, S-9F0`, both satisfied. So `next`
+// hands out S-9F3 only when the first two stay blocked.
+{
+  const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-workbench-declared-blocked-'));
+  const recordPath = (specId, slug, taskId) => `workbench/specs/${specId}-${slug}/tasks/${taskId}/TASK.md`;
+  const doneRecord = (specId) => [
+    `# TK-001 - Done predecessor`, '', '**Task ID:** TK-001', `**Spec ID:** ${specId}`, '**Slice:** Done predecessor',
+    '**Status:** done', '**Blockers:** none', `**Destination:** spec-acceptance: ${specId} Acceptance Criteria`, '**Proof:** landed', ''
+  ].join('\n');
+  const record = (taskId, specId, slice, blockers) => taskRecordFixture({
+    id: taskId, specId, slice, status: 'blocked', blockers, destination: `spec-acceptance: ${specId} Acceptance Criteria`
+  });
+  const dependent = (id, priority) => emptyTableRecordBackedSpec(id)
+    .replace('**Priority:** 0', `**Priority:** ${priority}`)
+    .replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`);
+  const nextJson = () => {
+    const result = spawnSync(process.execPath, [specTool, 'next', '--json', '--path', dir], { encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return JSON.parse(result.stdout);
+  };
+  const boardRow = (specId) => {
+    render(dir);
+    return fs.readFileSync(path.join(dir, 'TASKBOARD.md'), 'utf8').split('\n').find((line) => line.startsWith(`| [${specId}]`)) ?? '';
+  };
+  try {
+    initGitRoot(dir);
+    initLifecycleFixture(dir);
+    writeAt(dir, 'workbench/specs/S-9F0-complete-blocker/SPEC.md', completeFixtureSpec('S-9F0'));
+    writeAt(dir, 'workbench/specs/S-9F1-no-blocker/SPEC.md', dependent('S-9F1', 0));
+    writeAt(dir, recordPath('S-9F1', 'no-blocker', 'TK-9F1'), record('TK-9F1', 'S-9F1', 'Declared blocked on nothing', 'none'));
+    writeAt(dir, 'workbench/specs/S-9F2-owner-decision/SPEC.md', dependent('S-9F2', 1));
+    writeAt(dir, recordPath('S-9F2', 'owner-decision', 'TK-001'), doneRecord('S-9F2'));
+    writeAt(dir, recordPath('S-9F2', 'owner-decision', 'TK-9F2'), record('TK-9F2', 'S-9F2', 'Waits on an owner decision', 'TK-001, owner:pick-schema'));
+    writeAt(dir, 'workbench/specs/S-9F3-satisfied-ids/SPEC.md', dependent('S-9F3', 2));
+    writeAt(dir, recordPath('S-9F3', 'satisfied-ids', 'TK-001'), doneRecord('S-9F3'));
+    writeAt(dir, recordPath('S-9F3', 'satisfied-ids', 'TK-9F3'), record('TK-9F3', 'S-9F3', 'Declared blocked on satisfied ids', 'TK-001, S-9F0'));
+
+    // (1) `owner:<decision>` is Task-record grammar: a lowercase kebab-case
+    // decision slug, kept verbatim in the record's blockers.
+    const ownerTask = readTaskRecord(path.join(dir, recordPath('S-9F2', 'owner-decision', 'TK-9F2')), dir);
+    assert.deepEqual(ownerTask.blockers, ['TK-001', 'owner:pick-schema'], '(1) an owner:<decision> blocker parses and is kept verbatim');
+    for (const bad of ['owner:Pick-Schema', 'owner:pick_schema', 'owner:', 'owner:-pick', 'owner:pick-', 'Owner:pick-schema', 'owner:pick--schema']) {
+      assert.throws(() => parseTaskRecordForTest(record('TK-9F9', 'S-9F2', 'Bad owner token', bad)), new RegExp(`TK-9F9 has an invalid blocker id: ${escapeForRegExp(bad)}`), `(1) ${bad} is not owner-decision grammar`);
+    }
+
+    // (2) `next --json` skips the declared-blocked record with no blocker and
+    // the owner-blocked record, and hands out the record whose every blocker
+    // is a satisfied id (Task done in the same Spec, Spec complete).
+    const selected = nextJson();
+    assert.equal(`${selected?.specId}/${selected?.taskId}`, 'S-9F3/TK-9F3', '(2) next hands out only the declared-blocked record whose every blocker is satisfied');
+
+    // (3) `claim` refuses both blocked records and takes the satisfied one.
+    assert.throws(() => claimWork(dir, 'S-9F1', { agent: 'fixture' }), /S-9F1 has no eligible ready task to claim/, '(3) claim refuses a declared-blocked record with no blocker');
+    assert.throws(() => claimWork(dir, 'S-9F2', { agent: 'fixture' }), /S-9F2 has no eligible ready task to claim/, '(3) claim refuses a record waiting on an owner decision');
+
+    // (4) `render` shows both blocked; doctor names only the record with no
+    // resolvable blocker, as attention that blocks nothing, and treats the
+    // owner token as known grammar.
+    assert.match(boardRow('S-9F1'), /TK-9F1: Declared blocked on nothing \(blocked/, '(4) render shows the no-blocker record blocked');
+    assert.match(boardRow('S-9F2'), /TK-9F2: Waits on an owner decision \(blocked/, '(4) render shows the owner-blocked record blocked');
+    assert.match(boardRow('S-9F3'), /TK-9F3: Declared blocked on satisfied ids \(ready/, '(4) render shows the satisfied record ready');
+    const findings = doctor(dir);
+    const unresolvable = findings.filter((issue) => issue.code === 'blocked-without-blocker');
+    assert.deepEqual(unresolvable.map((issue) => `${issue.specId}/${issue.taskId}`), ['S-9F1/TK-9F1'], '(4) doctor names exactly the declared-blocked record with no resolvable blocker');
+    assert.equal(unresolvable[0].severity, 'attention', '(4) the finding is attention');
+    assert.equal(unresolvable[0].blocks, 'none', '(4) the finding blocks nothing');
+    assert.match(unresolvable[0].message, /S-9F1\/TK-9F1/, '(4) the finding message names the Task');
+    assert.equal(findings.some((issue) => issue.code === 'unknown-blocker-qualifier'), false, '(4) doctor treats owner:<decision> as known grammar');
+    assert.equal(findings.some((issue) => issue.code === 'blocked-slice'), false, '(4) a declared-blocked record is sequencing, not a blocked-slice contradiction');
+
+    // (5) Regression (Lane F, S-00V TK-00K relies on it): claim takes the
+    // declared-blocked record whose every blocker is satisfied.
+    claimWork(dir, 'S-9F3', { agent: 'fixture' });
+    assert.equal(readTaskRecord(path.join(dir, recordPath('S-9F3', 'satisfied-ids', 'TK-9F3')), dir).status, 'in-progress', '(5) claim takes a declared-blocked record whose every blocker is satisfied');
+
+    // (6) The owner token clears only when the entry is removed: with TK-001
+    // still done, removing `owner:pick-schema` makes the record claimable.
+    const ownerFile = path.join(dir, recordPath('S-9F2', 'owner-decision', 'TK-9F2'));
+    fs.writeFileSync(ownerFile, fs.readFileSync(ownerFile, 'utf8').replace('**Blockers:** TK-001, owner:pick-schema', '**Blockers:** TK-001'));
+    claimWork(dir, 'S-9F2', { agent: 'fixture' });
+    assert.equal(readTaskRecord(ownerFile, dir).status, 'in-progress', '(6) removing the owner entry lets the satisfied record be claimed');
+    console.log('ok - S-00J TK-02J: a declared-blocked record stays blocked until a real blocker clears, doctor names one with no resolvable blocker, and owner:<decision> waits until removed');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+// ---- S-00J TK-02J (end) ----
+>>>>>>> origin/integration

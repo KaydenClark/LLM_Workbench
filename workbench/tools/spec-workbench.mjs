@@ -978,8 +978,13 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
       // being a silent wait. A done slice's blockers no longer gate anything.
       if (slice.declared !== 'done') {
         for (const token of slice.blockerIds.filter((item) => blockerKind(item) === 'unknown-qualifier')) {
-          issues.push(finding('unknown-blocker-qualifier', `${spec.id}/${slice.id} names blocker ${token}, whose qualifier is not known blocker grammar (a plain S-### or TK-###, or S-###:delivered); it stays unmet until corrected`, { specId: spec.id, taskId: slice.id, blocker: token }));
+          issues.push(finding('unknown-blocker-qualifier', `${spec.id}/${slice.id} names blocker ${token}, whose qualifier is not known blocker grammar (a plain S-### or TK-###, S-###:delivered, or owner:<decision>); it stays unmet until corrected`, { specId: spec.id, taskId: slice.id, blocker: token }));
         }
+      }
+      // S-00J TK-02J: the resolver keeps such a record blocked instead of
+      // handing it out; naming it keeps that from being a silent wait.
+      if (slice.source === 'record' && slice.declared === 'blocked' && !namesResolvableBlocker(slice)) {
+        issues.push(finding('blocked-without-blocker', `${spec.id}/${slice.id} is declared blocked but names no resolvable blocker (Blockers: ${slice.blockers}); it stays blocked until a real blocker is recorded or its Status is corrected`, { specId: spec.id, taskId: slice.id }));
       }
       // A malformed Receipt or an altered earlier row fails closed on read
       // (task-receipt.mjs's own checksum chain); reported here by name so
@@ -1371,12 +1376,15 @@ function satisfiedBlockers(specs) {
 }
 
 // The blocker grammar: `plain` (`S-###` or `TK-###`), `delivered`
-// (`S-###:delivered`), `unknown-qualifier` (any other `<id>:<qualifier>` the
-// Task-record parser admits so doctor can name it), or `other` (legacy
-// slice-table prose, left exactly as unmet as it always was).
+// (`S-###:delivered`), `owner` (`owner:<decision>`, S-00J TK-02J: known
+// grammar that no resolver ever satisfies; it clears only when removed),
+// `unknown-qualifier` (any other `<id>:<qualifier>` the Task-record parser
+// admits so doctor can name it), or `other` (legacy slice-table prose, left
+// exactly as unmet as it always was).
 function blockerKind(token) {
   if (/^(?:S|TK)-[0-9A-Za-z]+$/.test(token)) return 'plain';
   if (/^S-[0-9A-Za-z]+:delivered$/.test(token)) return 'delivered';
+  if (/^owner:[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(token)) return 'owner';
   if (/^(?:S|TK)-[0-9A-Za-z]+:[A-Za-z][0-9A-Za-z-]*$/.test(token)) return 'unknown-qualifier';
   return 'other';
 }
@@ -1419,12 +1427,29 @@ function reviewedDelivery(spec) {
 // unless a `session` establishes every recorded missing capability; with no
 // session (render, doctor) it is blocked, so the board is a deterministic
 // projection of the records.
+//
+// S-00J TK-02J: a declared `blocked` derives `ready` only when a real
+// blocker has cleared - the record names at least one (an id blocker or a
+// recorded missing capability) and every id blocker is a satisfied known id
+// form. A record declared `blocked` on nothing stays blocked (doctor names
+// it, `blocked-without-blocker`); an `owner:<decision>` or unknown token is
+// never in the satisfied set, so it stays blocked as an unmet blocker.
 function effectiveStatus(slice, satisfied, session = null) {
   if (slice.source !== 'record') return slice.declared;
   if (slice.declared !== 'ready' && slice.declared !== 'blocked') return slice.declared;
   if (slice.declared === 'blocked' && slice.missingCapabilities.length > 0
     && (!session || session.missing(slice.missingCapabilities).names.length > 0)) return 'blocked';
+  if (slice.declared === 'blocked' && !namesResolvableBlocker(slice)) return 'blocked';
   return unmetBlockers(slice.record, satisfied).length === 0 ? 'ready' : 'blocked';
+}
+
+// Whether a record's declared `blocked` rests on something that can clear:
+// a recorded missing capability, or at least one blocker in the known
+// grammar (`plain`, `delivered` or `owner`). Blockers `none`, or only
+// unknown qualifiers, leave nothing that could ever resolve.
+function namesResolvableBlocker(slice) {
+  if (slice.missingCapabilities.length > 0) return true;
+  return slice.blockerIds.some((token) => ['plain', 'delivered', 'owner'].includes(blockerKind(token)));
 }
 
 function splitBlockers(value) {
