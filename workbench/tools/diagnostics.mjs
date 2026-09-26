@@ -66,6 +66,11 @@ const registry = Object.freeze({
   'stale-claim': entry('attention', 'specs', 'none', 'an in-progress claim is older than one working day; verify activity before reclaiming'),
   'complete-on-integration': entry('attention', 'specs', 'none', 'the spec next would select is already complete or superseded at the declared integration ref; the checkout is behind it'),
   'broken-link': entry('attention', 'specs', 'none', 'a spec links to a missing local target'),
+  // S-00J TK-01T: a blocker entry carries a qualifier outside the known
+  // grammar (`S-###:delivered` is the only one). The resolver already treats
+  // it as unmet, so the finding only makes that wait visible; it blocks
+  // nothing room-wide, and the slice it gates stays unselectable.
+  'unknown-blocker-qualifier': entry('error', 'specs', 'none', 'a Task blocker names a qualifier outside the known blocker grammar; it stays unmet until corrected'),
   // S-00I TK-003: a Spec's lifecycle folder is retired, but its own header
   // Status still disagrees (folder says done with it; the header does not
   // say complete) - the Spec analogue of `disagreeing-status`, visible and
