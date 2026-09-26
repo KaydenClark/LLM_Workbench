@@ -75,9 +75,14 @@ export function coordinationContext(root, { specsPrefix, local = false, fetch = 
   const own = new Set();
   if (state.head.branch) own.add(`refs/remotes/${COORDINATION_REMOTE}/${state.head.branch}`);
   if (state.upstream?.name) own.add(`refs/remotes/${state.upstream.name}`);
+  // Neither shared branch is a claim surface: the integration branch is the
+  // base itself, and the default branch carries its own (older) Task state,
+  // which is never a competing claim (S-00V TK-002M).
+  const shared = new Set([baseRef]);
+  if (declared.defaultBranch) shared.add(`refs/remotes/${COORDINATION_REMOTE}/${declared.defaultBranch}`);
   const listed = gitOk(root, ['for-each-ref', '--format=%(refname)%00%(symref)', `refs/remotes/${COORDINATION_REMOTE}`], 'cannot list remote refs');
   const tips = listed.split('\n').filter(Boolean).map((line) => line.split('\0'))
-    .filter(([ref, symref]) => !symref && ref !== baseRef && !own.has(ref)).map(([ref]) => ref);
+    .filter(([ref, symref]) => !symref && !shared.has(ref) && !own.has(ref)).map(([ref]) => ref);
   const statuses = readTaskStatusesAt(root, [baseRef, ...tips], specsPrefix);
   const baseStatuses = statuses.get(baseRef) ?? new Map();
   const claims = new Map();
