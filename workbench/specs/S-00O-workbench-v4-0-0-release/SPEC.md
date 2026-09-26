@@ -3,13 +3,13 @@
 **Spec ID:** S-00O
 **Status:** blocked
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** DISPATCHER
 **Stance:** Builder
-**Updated:** 2026-09-16
-**Catalog description:** Carry the settled WF workflow into the Workbench as v4.0.0: record the two bootstrap exemptions the rollout runs under, stamp the version only after the four build Specs complete, pass the Workbench Template upgrade gate and prove one full WF-11 cycle on another workbench.
-**Blockers:** S-00P must reach `complete`; S-00P itself waits on S-00H, S-00I and S-00J.
-**Latest event:** Spec authored 2026-09-16 from the owner's rollout decision (directive-018) in the WF grilling note at revision 57; no implementation started.
-**Next gate:** S-00P reaches `complete`; then set Status to `active` and `claim S-00O` takes TK-001.
+**Updated:** 2026-09-26
+**Catalog description:** Reconcile the v4 build scope and delivery proof: WBID, JSON Taskboard, workflow controls, direct Blueprint Tasks and feature capture, followed by the preserved Template upgrade gate and full WF-11 project cycle.
+**Blockers:** Release execution remains blocked on the expanded build scope and delivery-versus-closure reconciliation. S-01W/S-01X are owned by Lane I and deliver identity then board; direct-Task ownership remains a proposal. No version bump or downstream update is authorized by the current planning assignment.
+**Latest event:** Lane I rebuilt the 2026-09-26 planning candidate on integration 1a6f6e0, renumbering its identity and board Specs to S-01W and S-01X. No release Task is claimed or completed.
+**Next gate:** Lane I delivers S-01W then S-01X; release Tasks TK-002..TK-005 stay blocked until S-00P is complete. Retain blocked release state until those dependencies are established.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 
@@ -25,8 +25,12 @@ retirement of completed Specs and Tasks.
 This Spec is the orchestration record for that release, on the pattern of
 S-050. It owns the two bootstrap exemptions the rollout runs under, the version
 bump, the Template Upgrade Release Gate and the WF-11 acceptance cycle. The
-capabilities themselves are owned by four build Specs: S-00P (Canon rework),
-S-00H (Task artifact), S-00I (retirement lifecycle) and S-00J (Spec QA gate).
+original capabilities are owned by S-00P (Canon rework), S-00H (Task artifact),
+S-00I (retirement lifecycle) and S-00J (Spec QA gate). The accepted E-6 extension
+adds separate WBID and JSON Taskboard build Specs before S-00P's remaining
+controls work. Direct Blueprint Tasks and feature capture must also have named
+delivery owners and proof before readiness; their ownership proposals below do
+not silently assign another Spec.
 
 ## Why It Matters
 
@@ -72,10 +76,11 @@ At the pre anchor:
 
 ## Desired Behavior
 
-1. Every build session can read from this Spec which five Specs make up
-   v4.0.0, in what order they unblock, and under which two exemptions they run.
-2. The version is stamped `v4.0.0` only after S-00P, S-00H, S-00I and S-00J
-   are `complete`, the required proof is green, and the bounded Workbench
+1. Every build session can read the expanded v4.0.0 capability map, its
+   delivery order, unresolved ownership and the scoped bootstrap exemptions.
+2. The version is stamped `v4.0.0` only after the expanded build scope is
+   delivered with required proof, the delivery-versus-closure mechanism is
+   reconciled by its assigned owners, and the bounded Workbench
    self-drift check in `RUNBOOK.md` finds no current-facing artifact still
    presenting the rollout as pending.
 3. The Template Upgrade Release Gate in `AGENTS.md` and `RUNBOOK.md` is
@@ -95,6 +100,55 @@ At the pre anchor:
 
 ## Decisions And Contracts
 
+### Current release planning reconciliation — 2026-09-26
+
+Source comparison is pinned to `89d4042fb8931b9d720af75bffea1c28803d72aa`:
+the [destination ledger](../../wiki/grilling-destination-audit-ledger.json)
+entries E-6, E-7, E-8, E-9 and TT-Q10, and the retired
+[Task Artifact Spec](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md)
+including its 2026-09-17 TT-Q10 evidence. The Current Verified State above is
+explicitly the older pre-anchor snapshot, not a claim about today's runtime.
+
+- E-6's final order is **WBID -> JSON Taskboard -> S-00P TK-002..TK-005 ->
+  S-00O release**. Its earlier WBID-last/full-repadding proposal is superseded.
+  Both missing capability packets stay separate from S-00P and the concept
+  documentation Tracker in S-01T.
+- E-8 requires uppercase width-four new visible artifact IDs, dual-form lookup
+  and touch-and-update with former IDs retained. E-7 forbids mass re-statusing;
+  completed records are not renamed. TT-Q10 already settled the `TK` prefix;
+  it does not freeze the later allocation width/alphabet.
+- E-9 places small direct Blueprint Tasks at `workbench/tasks/TK-XXXX/TASK.md`,
+  using the shared TK inventory and folder lifecycle. Work exceeding one
+  context becomes a Spec. The dedicated artifact-model owner is proposed,
+  not allocated or accepted by this planning record.
+- The current assignment uses Director -> Dispatcher -> Worker. Worker
+  self-checks and reports; Dispatcher performs whole-Spec QA; a separate
+  Director reviews the immutable assembled candidate before integration.
+  Direct Blueprint Tasks retain that full chain. This assignment supersedes
+  the old model-allocation guidance and per-Task approval wording for this run.
+- Reviewed integration delivery and final closure are distinct. The recovered
+  SCR closure direction requires verification on main and feature capture;
+  Human QA remains owner-led at useful review points. Neither the runtime's
+  existing `complete` gate nor a passing source review supplies owner approval.
+  S-00J/I/P must reconcile the mechanics; release planning must not create a
+  cycle by requiring final closure before implementing closure's prerequisites.
+
+This planning assignment permits no version bump, downstream update, main
+promotion, unresolved ADR acceptance or integration merge. Existing release
+Tasks below describe the later release execution, not current permission.
+The draft allocated S-01U then S-01V; because PR #161 took S-01U first, the
+Lane I rebuild on integration 1a6f6e0 re-allocated them as S-01W then S-01X
+through the current supported allocator. Their existing IDs
+remain until supported touch migration applies; implementation order is still
+WBID before board. Task IDs come from `next-id` on the current integration tip, and
+shared `spec-workbench.mjs` lanes serialize with S-00I/S-00J. The planned Specs contain
+unallocated slice proposals, not selectable Tasks.
+
+The [direct Blueprint Task ownership proposal](direct-blueprint-task-proposal.md)
+defines the missing artifact capability separately from S-00I lifecycle,
+S-00J QA and S-00P controls. Director disposition is required before assigning
+its successor owner; no new owner is silently manufactured here.
+
 ### Bootstrap exemptions
 
 Both exemptions are recorded from directive-018 in the WF grilling note at
@@ -108,8 +162,10 @@ every Spec needed to establish the full workflow. On 2026-09-16 the owner
 accepted that the rollout itself runs through these five Specs worked through
 the existing `next`, `claim` and `close` system, not through the full
 Spec-per-capability route the reworked Blueprint will describe. The scope of
-WF-12 is unchanged: every one of the five Specs must be `complete` before this
-release is called done. Only the delivery route is exempted.
+WF-12 is unchanged: the complete workflow destination must be delivered before
+this release is called done. E-6 expands the original five-Spec delivery list;
+the current reconciliation above distinguishes delivery from post-main closure.
+Only the delivery route is exempted.
 
 **Exemption 2 - WF-7 is deferred.** The locked WF-7 answer nests branches by
 altitude: a Spec branch from `integration`, a Task branch from its Spec branch,
@@ -133,24 +189,28 @@ Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
 
 | Unit | Owner | Blocks on | Endpoint |
 |---|---|---|---|
-| Blueprint rewrite against every rung and the full recursive loop | [S-00P](../S-00P-workflow-canon-rework/SPEC.md) TK-001 | nothing; ready now | Reworked `BLUEPRINT.md` |
-| Standalone `TASK.md`, Task vocabulary, Packet, Receipt, Taskboard projection | [S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) | TT-Q10 for TK-003 and TK-004 only | S-00H `complete` |
-| Retirement lifecycle by folder, reconciliation into durable owners, verified discard | [S-00I](../S-00I-folder-lifecycle-for-records/SPEC.md) | S-00H | S-00I `complete` |
-| Assembled-Spec review, corrective-Task return path, Human QA approval before closure | [S-00J](../S-00J-spec-qa-gate-at-integration/SPEC.md) | S-00H | S-00J `complete` |
-| AGENTS, RUNBOOK, LEXICON and `templates/` rewrite; ADR-000F, ADR-000G and ADR-000I reconciled | S-00P TK-002 onward | S-00H, S-00I, S-00J | S-00P `complete` |
-| v4.0.0 stamp, Template gate, WF-11 cycle, release receipt | This Spec | S-00P | Readiness verdict |
+| Blueprint rewrite against every rung and the full recursive loop | [S-00P](../S-00P-workflow-canon-rework/SPEC.md) TK-001 | Done; subsequent workflow corrections remain with S-00P | Reworked `BLUEPRINT.md` |
+| Standalone `TASK.md`, Task vocabulary, Packet, Receipt, original Markdown projection | [S-00H](../retired/S-00H-task-artifact-and-terminology-migration/SPEC.md) | Complete and retired; TT-Q10 settled | Preserved completed evidence |
+| Uppercase width-four visible IDs, dual-form lookup, touch-and-update | [Uppercase Width-Four Workbench Artifact IDs — S-01W](../S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md) | First new build capability (E-6/E-8) | Reviewed implementation and preservation proof |
+| Generated six-lane `TASKBOARD.json`, shared lane derivation and consumers | [Generated JSON Taskboard — S-01X](../S-01X-generated-json-taskboard/SPEC.md) | S-01W delivery; direct-Task seam coordinated | Reproducible JSON board and consumer proof |
+| Retirement lifecycle by folder, reconciliation into durable owners, verified discard | [S-00I](../S-00I-folder-lifecycle-for-records/SPEC.md) | S-00H delivered; coordinate QA/capture work | Reviewed delivery plus separately tracked main/capture closure |
+| Assembled-Spec review, corrective-Task return path, owner QA and closure binding | [S-00J](../S-00J-spec-qa-gate-at-integration/SPEC.md) | S-00H delivered; coordinate lifecycle/ownership | Reviewed delivery plus separately tracked owner QA/closure |
+| Direct Blueprint Task home, reader, lifecycle and role chain | Artifact-model capability proposed; Director disposition needed | WBID; coordinated S-00G/J/I/P and board seams | Small direct Task demonstrated without parent Spec |
+| Feature capture before transient-record cleanup | S-00I proposal, coordinated with S-00J and S-00G | Feature schema/owner and main-verification proof | Continuous capture, retirement, discard and recovery proof |
+| AGENTS, RUNBOOK, LEXICON and `templates/` rewrite; ADR-000F, ADR-000G and ADR-000I reconciled | S-00P TK-002 onward | WBID then board; delivered S-00H/I/J mechanics; ownership coordination | Reviewed integration delivery; closure tracked separately |
+| v4.0.0 stamp, Template gate, WF-11 cycle, release receipt | This Spec | Expanded map, S-00P and resolved closure mechanics | Readiness verdict, then separately authorized publication |
 
-Never more than two build lanes run at once. The two lanes open now are S-00P
-TK-001 and S-00H TK-001, with S-00H TK-008 following in the same lane. The
-lane limit is operational guidance the tool does not enforce: `claim` will
-hand out a third slice if asked, so the dispatcher holds the limit.
+The original two-build-lane guidance referred to the September 16 rollout.
+The current Director assignment coordinates isolated lanes and a single writer
+per shared surface. Packet drafting is independent; implementation follows the
+dependency order and explicit Director lane releases.
 
-### Preserved open items
+### Preserved answers and open items
 
 - **TT-Q10**, the form of a new Task identifier, was answered by the owner on
   2026-09-17: no change, newly allocated identifiers keep `TK-###` with `TK`
   read as the Task prefix (S-00H evidence row of that date). S-00H TK-003 and
-  TK-004 are no longer gated on it.
+  TK-004 are no longer gated on it. E-8 later changes width/alphabet, not `TK`.
 - **correction-019**: the owner objected to the shorthand that had been used
   for the WF-1 answer. The allocation itself is locked (the Blueprint owns the
   product-level destination; each Spec is the PRD-shaped smaller destination
@@ -162,18 +222,20 @@ hand out a third slice if asked, so the dispatcher holds the limit.
 
 ### Operational guidance, not design
 
-Model allocation recorded with directive-018: the planning session, the
+Historical model allocation recorded with directive-018: the planning session, the
 controls rewrite and every integration-gate review use Fable; build sessions
 use Sonnet for Tasks with a named seam and a clear red test, and Opus for
 shared-logic Tasks that change `next`, `claim`, `doctor` or the Spec QA gate;
 the reviewer never uses the builder's model. This guides who is dispatched and
-decides nothing about the product.
+decides nothing about the product. For this assignment the Director instead
+specifies Sol for ordinary implementation, Luna for small deterministic checks
+and Astra for ambiguous contracts or consequential reviews.
 
 ## Non-Goals
 
-- Implementing any capability here. Every tool, record and control change
-  belongs to S-00P, S-00H, S-00I or S-00J.
-- Answering TT-Q10 or confirming correction-019's wording.
+- Implementing capability runtime in this release Spec. Those changes belong
+  to the named capability owners, including the two E-6 additions.
+- Reopening settled TT-Q10 or confirming correction-019's wording.
 - Spec-branch tooling or the WF-10 coordinator.
 - Reopening any locked WF question.
 - Merging `integration` into `main` in either repository, or rolling the
@@ -183,28 +245,33 @@ decides nothing about the product.
 
 ## Dependencies And Blockers
 
-Blocked on S-00P reaching `complete`, which is itself blocked on S-00H, S-00I
-and S-00J. Ticket edges below govern selection once this Spec is `active`. The
+Release execution is blocked on the expanded capability map and coordinated
+delivery-versus-closure repair in S-00P/I/J. Do not use their administrative
+`complete` state as a substitute for verified delivered behavior, or bypass the
+existing runtime gate. The legacy Task edges below remain conservative until
+that shared mechanism is reconciled; this planning pass claims no release Task. The
 WF-11 cycle needs a target workbench the owner names before TK-004 is claimed;
 the Template updated by TK-003 is the default candidate unless the owner names
 another.
 
 ## Vertical Implementation Slices
 
-| Ticket | Slice | Status | Blockers | Proof |
+| Task | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Verify the four build Specs are complete and run the bounded self-drift check | ready | S-00P | Red: `next --json` still returns a rollout slice, or a current-facing control, projection or Spec presents rollout work as pending; green: the RUNBOOK manual self-drift check records no current-facing drift and `doctor` has no blocking finding |
+| TK-001 | Verify expanded build delivery and run the bounded self-drift check | ready | S-00P | Red: required capability delivery proof is missing, or current-facing records misstate remaining work; green: the expanded capability map has reviewed integration proof and the RUNBOOK self-drift check is recorded without bypassing unresolved closure mechanics |
 | TK-002 | Stamp v4.0.0 and validate the stamp | blocked | TK-001 | Red: a stamp check fails while the manifest says v4.0.0 and a control stamp, template stamp or managed runtime receipt still says v3.2.1; green: every stamp names v4.0.0 and the full suite passes |
 | TK-003 | Pass the Template Upgrade Release Gate against Workbench_Template | blocked | TK-002 | Red: `tools/workbench-tools.mjs verify --project TEMPLATE_ROOT` from the pinned v4.0.0 source reports a version or managed-hash mismatch before the update; green: matching versions and exact managed bytes, Template full suite, separate-context review, merge into its integration branch, remote containment and fresh-clone rerun recorded |
 | TK-004 | Run one full WF-11 cycle on another workbench | blocked | TK-003 | Red: the cycle stalls at any rung; green: create or update, grilling, contract and Specs, Tasks created and executed through `next` and `claim`, Spec verified and on that workbench's integration branch for owner review, with pass or fail evidence per rung |
 | TK-005 | Reconcile the release receipt and readiness verdict | blocked | TK-004 | Red: the receipt would claim readiness while any acceptance box is unchecked or an exemption lacks its named successor; green: receipt names source and Template SHAs, PRs, review verdicts, the self-drift result and what readiness does not authorize |
 
-### TK-001 - Verify the four build Specs are complete and run the bounded self-drift check
+### TK-001 - Verify expanded build delivery and run the bounded self-drift check
 
 **Stance:** Builder
 
-Confirm S-00P, S-00H, S-00I and S-00J are `complete` at the declared
-integration branch, not only in a local checkout. Run `render` and `doctor`,
+Confirm every capability in the expanded map has named implementation proof
+and reviewed immutable content contained in the declared integration branch.
+Resolve ownership and delivery-versus-closure prerequisites first; do not
+invent approvals, mark Specs complete or bypass existing runtime gates. Run `render` and `doctor`,
 then perform the bounded manual Workbench self-drift check in `RUNBOOK.md`:
 inventory controls, projections, manifest, Specs and `CATALOG.md`, active ADRs
 and register, Wiki router, procedures, templates, managed tool and skill
@@ -213,7 +280,8 @@ event, gate, version and path against its durable owner. Red looks like a
 control or projection that still presents the rollout as pending or names a
 retired route; green is a recorded check with no current-facing drift. Record
 the 48 pre-anchor attention findings' state without treating them as scope.
-S-00P closes through the gate S-00J installs, so its completion needs a
+The existing closure mechanism is separately tracked: S-00P closes through
+the gate S-00J installs, so under that mechanism its completion needs a
 recorded assembled-Spec verdict and an owner Human QA approval naming the
 `integration` SHA; confirm both exist rather than only the `complete` status.
 The same holds for S-00J itself and for any build Spec that closes after
@@ -278,13 +346,14 @@ verdict on the receipt candidate and an owner Human QA approval naming the
 ## Acceptance Criteria
 
 - [ ] Both bootstrap exemptions are recorded here with directive-018 as source, scoped to this rollout, and each names the condition that ends it.
-- [ ] S-00P, S-00H, S-00I and S-00J are `complete` at the declared integration branch, and every build Spec that closed after S-00J TK-005 landed, S-00P and S-00J included, carries the review verdict and owner approval S-00J requires.
+- [ ] The expanded capability map has named delivery owners and proof; WBID precedes JSON Taskboard, which precedes S-00P's remaining control rewrites and release execution. Direct Blueprint Tasks and feature capture are accounted for.
+- [ ] Required capability implementations pass review and are contained in the declared integration branch; delivery-versus-closure mechanics are reconciled without manufacturing Human QA approval or waiving post-main capture/closure obligations.
 - [ ] This Spec's own closure carries a recorded assembled-Spec verdict and an owner Human QA approval naming the `integration` SHA.
 - [ ] The bounded Workbench self-drift check is recorded with no current-facing drift.
 - [ ] Every version stamp names `v4.0.0` and the full suite passes on the committed candidate.
 - [ ] Workbench_Template is upgraded to v4.0.0 through the public route with matching versions, exact managed bytes, its full suite, separate-context review, integration merge, remote containment and a fresh-clone rerun recorded.
 - [ ] One full WF-11 cycle on another workbench is recorded rung by rung with the Spec verified and on that workbench's integration branch for owner review.
-- [ ] TT-Q10 remains open unless the owner answered it, and no artifact in the release promotes the correction-019 shorthand.
+- [ ] TT-Q10 remains recorded as settled (`TK` is the Task prefix), E-8's later width/alphabet requirements retain their separate lineage, and no artifact in the release promotes the correction-019 shorthand.
 - [ ] The release receipt distinguishes readiness from publication and names what it does not authorize.
 
 ## Testing Seams
@@ -329,15 +398,21 @@ workflow is owned by S-00P, not here.
 | 2026-09-18 | spec | S-00J TK-006 landed (PR #136, integration 31c8c0e); release-surface facts for the v4.0.0 stamp: the bundled core skills `code-review`, `reviewer`, `carry` and `implement` name the assembled Spec as the reviewed unit at integration and the Task PR as the exemption-2 form, stated generically with no room-specific Spec id; all six S-00J Tasks are done and its completion waits on the retired-folder assertion in S-00I TK-006, a separate-context verdict and the owner's approval | Separate-context reviews PASS on 451fd79 and the corrective 85157e2; suite 44/44 | Recorded here for the version bump and the self-drift check; no control changed | The installed skill copies in the owner's home roots are stale for five skills (to-tasks and the four above) and doctor does not flag it |
 | 2026-09-18 | spec | S-00I TK-006 landed (PR #138, integration 49ec744); release-surface facts for the v4.0.0 stamp: `spec-workbench.mjs` gained `discardRetiredSpec`, `discardRetiredTask` and the `discard S-### [--task TK-###]` verb (`git rm` of a retired record, never `archive`), refusing by name before any write for a record on the active roster or outside `retired/`, a dirty tree, a retiring commit not verified contained on the declared default branch, a live reference a complete scan still finds, or (for a Spec) a missing or inactive Wiki durable owner; a successful discard appends one row to the new tracked, append-only `workbench/specs/DISCARDS.md` register (date, kind, record ID, historical path, retiring commit, discard parent commit, recovery command) and the recovery command is exercised by the test; a discarded Spec's gap routes to a corrective Task at `workbench/specs/corrective/tasks/<TK-id>/TASK.md` with `Destination: wiki-claim: <note>#<heading>`, selectable and closable, closing it appends to the note's `provenance:`; `doctor` gains the blocking `discarded-reference` finding (error, specs, selection); `tools/check-append-only.py` now enumerates a Spec's `retired/` lifecycle folder, satisfying S-00J's third acceptance line (its retired-folder assertion is pinned at tools/test-spec-workbench.mjs:4309-4386 at e024f59) | Red at the pre anchor bd74139 in tools/test-check-append-only.py (an in-place rewrite inside a retired Spec's evidence log went undetected) and tools/test-spec-workbench.mjs (failed to load on the missing `discardRetiredSpec` export); green at e024f59 with the 44-command suite (`dirty: []`, 44/44) reproduced by a separate-context Opus reviewer on a detached worktree, `git merge-tree --write-tree dc28c32 e024f59` clean, and a separate-context review verdict PASS on gates 1-11 with no blockers | Recorded here for the version bump and the self-drift check; RUNBOOK gained the `discard` line and its describing sentence in this state PR | Discard excludes the durable Wiki owner note from its own pre-discard scan, so `doctor` reports `discarded-reference` immediately after a real discard until the note is corrected; `createOrphanCorrectiveTasks` has no duplicate-Task guard; discarding a Spec's last Task removes the emptied `tasks/`, flipping the record-backed check silently (fixture-only, no room holds a retired Task); `resolveMovingCommit` takes the first add for a path, an ordering bypass if a path is removed and re-added; S-00I completion and S-00J's third acceptance line remain for the completion pass |
 
+| 2026-09-26 | spec | Assigned Dispatcher reconciled current release scope and TT-Q10; workers authored separate planned S-01W WBID and S-01X generated JSON Taskboard packets and a direct Blueprint Task successor proposal. Director released serial Spec allocation; Task IDs remain leased elsewhere. Release execution remains blocked. | Source comparison at 89d4042; supported next-id proposed S-01W then S-01X after write/render/doctor; render 97 Specs and doctor no blockers with seven existing attention findings. Citation-anchor checks 3/3 and append-only regression cases pass. Runtime red/green not performed; full candidate suite recorded separately by Dispatcher. Guardrail pre 78/100; self-drift pre cleanUpdate false due stale S-00Q claim, with six historical provenance/seed limitations. | S-00O planning, S-01W, S-01X and linked direct-Task proposal; shared projections regenerated locally for verification but reserved to Director integration composition. Generic mirror exempt: this is room-specific release/capability planning, with no harness runtime/control change. | Initial Task allocation, shared implementation lanes, direct-Task owner disposition, S-00P/J/I dependency reconciliation, implementation proof and all release gates remain open. |
+| 2026-09-26 | spec | Lane I (claude-lane-I) rebuilt unmerged S-00O planning candidate 34dfa2f onto integration 1a6f6e0: PR #161 had taken S-01U, so supported `next-id` re-allocated the identity Spec as S-01W and then the board Spec as S-01X; every reference in S-00O, S-01W, S-01X and the direct-Task proposal was renumbered and the stale Task-ID lease wording removed (no lease holds). | `next-id --prefix S` returned S-01W on clean integration 1a6f6e0 and S-01Y with both records present; render then doctor (no blocking finding) on the committed candidate and in a fresh clone of the pushed branch; the full suite, separate-context review and verdict are recorded by the landing PR's own evidence, not claimed here | This Spec, S-01W, S-01X, TASKBOARD.md, CATALOG.md | Identity then board delivery; release execution after S-00P completes |
+
 ## Completion Result
 
-Pending.
+Release pending. The September 26 planning increment provides S-01W/S-01X
+capability owners and the linked direct-Task ownership proposal. Their runtime
+acceptance remains open; this is not a version stamp or readiness verdict.
 
 ## Remaining Limitations Or Follow-Up Specs
 
 Spec-branch tooling (ending exemption 2) and the WF-10 coordinator are
 described by the reworked Blueprint and delivered by later Specs derived from
-it. TT-Q10 is answered by the owner, not by any Spec here.
+it. TT-Q10 was answered by the owner on 2026-09-17; the E-8 allocator work
+remains a separate delivery gap.
 
 ## Supersession
 
