@@ -9,7 +9,7 @@
 **Catalog description:** Preserve evolving concept understanding, source lineage, Expected result and achieved Result through public safe record operations.
 **Blockers:** none
 **Latest event:** Director approved narrow Result write/read residual; inherited DQC behavior verified at current remote integration.
-**Next gate:** Author serially reserved Result Task and dispatch one Sol worker; dispatcher performs whole-Spec QA and reports immutable candidate to Director.
+**Next gate:** Dispatch one Sol worker for TK-002S; dispatcher performs whole-Spec QA and reports immutable candidate to Director.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
 
@@ -62,7 +62,7 @@ Reimplementing delivered capture/read, replacing existing storage, projection ar
 
 ## Vertical Implementation Slices
 
-Record-backed Tasks live under this Spec's tasks directory. The first approved residual is one public Result write/read path; serial Task identity is coordinated with Tracker. Existing capture behavior is inherited proof, not a new execution Task. Subsequent missing workflow-maintenance behavior is assigned only after bounded current-source verification and shared writer coordination.
+Record-backed Tasks live under this Spec's tasks directory. The first approved residual is one public Result write/read path; Task identity TK-002S was reserved serially by Tracker. Existing capture behavior is inherited proof, not a new execution Task. Subsequent missing workflow-maintenance behavior is assigned only after bounded current-source verification and shared writer coordination.
 
 ## Acceptance Criteria
 
