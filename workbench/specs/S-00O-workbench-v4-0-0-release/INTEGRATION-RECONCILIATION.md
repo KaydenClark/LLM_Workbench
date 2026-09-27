@@ -242,3 +242,33 @@ the obsolete wording; the existing source-map/QA checks remain. Wiki validation
 caught missing required article sections, which were added. Control fidelity,
 Blueprint and ledger checks subsequently passed. Final full-suite, post-drift,
 immutable-review and remote-containment results are appended below when run.
+
+### Verified candidate
+
+At `b010449977348922159ef984ffe4d66a02f66e7c`, all **48 commands** in
+that commit's AGENTS full-suite block passed. The runner verified an empty
+tracked/untracked Git status before and after, with the same HEAD throughout.
+A separate-context reviewer approved that full candidate against
+`b00a2e338436ef7b281b0cc53e74f891af32f18c`, independently running ADR
+(38/38), Blueprint, ledger (5/5), diff whitespace and doctor checks.
+
+The earlier mixed diagnostic run is superseded: concurrent template edits
+invalidated source-identity fixtures; it also exposed the template placeholder
+vocabulary and real ADR corpus count expectations. The clean run restored
+the template's literal example and verifies the new corpus at 37 linked ADR
+files / 66 edges without weakening literal-link validation.
+
+Post self-drift on the clean candidate retains the same seven baseline findings:
+one stale S-00Q claim, five historical seed limitations and one historical
+adoption-provenance limitation. `cleanUpdate` remains false. Guardrail stays
+78/100 with the same four outcome-evidence recommendations. Bounded semantic
+inspection checked current role routes, separate Spec ownership, zero Tasks
+in the five new Specs, all thirteen S-01T acceptance transfers, imported Task
+source fidelity, candidate-only delivery notices, and preservation of failed
+Human QA and rollout gates. It does not claim exhaustive revalidation of every
+historical ledger assessment.
+
+The following evidence-only commit places this receipt and the newly added
+Spec rows in their owning evidence sections. Integration containment is
+recorded by the landing PR after its final immutable candidate is reviewed;
+this dated pre-merge receipt itself does not assert remote containment.

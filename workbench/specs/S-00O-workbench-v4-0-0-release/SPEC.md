@@ -433,6 +433,10 @@ workflow is owned by S-00P, not here.
 | 2026-09-26 | review | Review verdict: pass at aa4f0aa66b203e3d0a69751213f2f433db404148 [33efbfb68d3b] #1 | none. Earlier builds 6eac6cb, 78b94e5 and a6a511c failed review on evidence wording (S-00V draft-ID references since repointed by Lane F PR #173, an unverifiable PR claim, an untimed lease claim, and a phantom next-id reservation); each was corrected and aa4f0aa passed a delta review against the fully reviewed a6a511c. Full AGENTS suite 48/48 at aa4f0aa (read-only runner, dirty []); fresh-clone doctor no blocking finding with render idempotent. Reviewer ran doctor; did not rerun render or the suite (read-only sandbox). | codex exec gpt-5.5, read-only sandbox, separate context from the Lane I dispatcher | 4 |
 | 2026-09-26 | TK-003 | Lane I recorded five update-tool gaps from Lane C's S-01N update-harness scenario (candidate 2bf181f) as TK-003 prerequisites or known limits: no version/skill-policy stamp command, partial tools rollback dropping the earlier backup entry, no first-install skills rollback, an unrepairable stale-seed for an unseeded document, and pre-update tools verify stopping at tools-receipt-missing. | Read the S-01N evidence row at 2bf181f; no tool run by Lane I | This Spec (TK-003 section) | Each gap needs an owning delivery or a named known limit in the release receipt before TK-003 runs |
 
+| 2026-09-27 | none | Owner-confirmed integration reconciliation and minimum role groundwork | ROLE-1..4 confirmed; source inventory and scope dispositions in INTEGRATION-RECONCILIATION.md; new capability Specs contain no Tasks | Controls, generic mirrors, role model, capability owners and tracked progress | Runtime delivery, open owner choices, bootstrap exception, baseline self-drift and Human QA remain explicit; no clean-update or release-readiness claim |
+
+| 2026-09-27 | none | Verify role groundwork and decision reconciliation candidate b010449977348922159ef984ffe4d66a02f66e7c | All 48 AGENTS commands passed with clean unchanged HEAD; independent full-candidate review PASS; post self-drift retains seven baseline findings and guardrail78 | INTEGRATION-RECONCILIATION.md records method, source pins and limitations; evidence rows placed under Evidence Log | No runtime delivery, exhaustive historical assessment, clean-update or Human QA approval claim; final evidence candidate review and landing PR establish integration delivery |
+
 ## Completion Result
 
 Release pending. The September 26 planning increment provides S-01W/S-01X
@@ -450,5 +454,3 @@ remains a separate delivery gap.
 
 - Supersedes: none.
 - Superseded by: none.
-
-| 2026-09-27 | none | Owner-confirmed integration reconciliation and minimum role groundwork | ROLE-1..4 confirmed; source inventory and scope dispositions in INTEGRATION-RECONCILIATION.md; new capability Specs contain no Tasks | Controls, generic mirrors, role model, capability owners and tracked progress | Runtime delivery, open owner choices, bootstrap exception, baseline self-drift and Human QA remain explicit; no clean-update or release-readiness claim |
