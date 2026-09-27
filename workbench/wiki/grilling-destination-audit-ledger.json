@@ -6957,7 +6957,7 @@
         "TT-Q1"
       ],
       "aliases": [],
-      "notes": "The 2026-09-19 refinement replaces decision-023's Journey/Path wording. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design.",
+      "notes": "The 2026-09-19 refinement replaces decision-023's Journey/Path wording. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-023",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037",
@@ -8984,7 +8984,7 @@
         "workbench-workflow-2026-09-10 Q1",
         "workbench-foundation-rework-2026-09-11 WF-1"
       ],
-      "notes": "Original wording: 'Does BLUEPRINT.md remain the single PRD-shaped destination artifact, rather than adding a separate PRD?' The owner objected to the shorthand 'no separate PRD' (correction-019); the replacement wording proposed there was withdrawn by correction-022 and must not be presented again. The allocation itself is settled. Supersedes the ADR-000G assumption that the Blueprint owns the future-facing PRD function.",
+      "notes": "Original wording: 'Does BLUEPRINT.md remain the single PRD-shaped destination artifact, rather than adding a separate PRD?' The owner objected to the shorthand 'no separate PRD' (correction-019); the replacement wording proposed there was withdrawn by correction-022 and must not be presented again. The allocation itself is settled. Supersedes the ADR-000G assumption that the Blueprint owns the future-facing PRD function. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[0]",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",
@@ -9030,7 +9030,7 @@
         "workbench-workflow-2026-09-10 Q2",
         "workbench-foundation-rework-2026-09-11 WF-2"
       ],
-      "notes": "Original wording: 'What starts an Explore phase, and what is the minimum exit artifact or decision?' Explore was renamed Align. proposal-011 (agent Suggestions A/B, including a drafted Blueprint delta as exit artifact) was not adopted; the answer comes from decision-067. The source note treats Lexicon promotion of Align as follow-on promotion work, not an open choice.",
+      "notes": "Original wording: 'What starts an Explore phase, and what is the minimum exit artifact or decision?' Explore was renamed Align. proposal-011 (agent Suggestions A/B, including a drafted Blueprint delta as exit artifact) was not adopted; the answer comes from decision-067. The source note treats Lexicon promotion of Align as follow-on promotion work, not an open choice. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[1]",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",

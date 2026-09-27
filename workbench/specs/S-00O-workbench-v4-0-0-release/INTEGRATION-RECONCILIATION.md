@@ -1,8 +1,11 @@
 # V4 integration decision and progress reconciliation
 
-**Owner:** [Workbench v4.0.0 Release — S-00O](SPEC.md)  
-**Inspection date:** 2026-09-27  
-**Base:** `b00a2e338436ef7b281b0cc53e74f891af32f18c` (`integration` and freshly fetched `origin/integration`)  
+**Owner:** [Workbench v4.0.0 Release — S-00O](SPEC.md)
+
+**Inspection date:** 2026-09-27
+
+**Base:** `b00a2e338436ef7b281b0cc53e74f891af32f18c` (`integration` and freshly fetched `origin/integration`)
+
 **Scope:** tracked decision/control/spec/task owners, local and fetched Git refs,
 registered worktree dirty-path inventory, and the primary checkout's known
 JSON continuity collections. Other machines and unsaved conversations were not
@@ -48,6 +51,13 @@ The ledger contains the durable answers and distinguishes their status. Its
 2026-09-24 progress assessment remains explicitly historical; current Task/Spec
 state must be read from the named owners and their generated projection. This
 receipt does not rebrand that older progress tally as a current audit.
+
+The additional FND-Q17b check found Map/Fog/Frontier definitions missing from
+both Lexicons despite their confirmed ledger answer and the unmerged
+`cc53fadc314952972b6a3bc335dfcdff17407355` draft. The definitions are now
+reconciled alongside WF-2 Align and WF-1 Spec destination wording. Proposed
+ADR-000E retains its original history and explicitly routes the refined model
+and board decisions to their current owners; its acceptance remains unchanged.
 
 ## Recovered active lane records
 

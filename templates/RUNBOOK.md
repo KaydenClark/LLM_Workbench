@@ -868,7 +868,7 @@ To upgrade:
 1. Check the clean LLM Workbench release checkout's releases/changelog for what changed since
    `v[HARNESS_VERSION]`.
 2. Re-copy only the changed template sections; keep this project's filled-in
-   specifics. Never let bracketed placeholders leak back into filled docs.
+   specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
 3. Update managed runtime tools only with that checkout's
    `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`
    and the managed core skills only with

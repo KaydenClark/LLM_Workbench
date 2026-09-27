@@ -57,3 +57,14 @@ separate-context full-branch review found no actionable issue. The audit still
 recommends repeated real outcome trials, controls/prior/candidate comparison,
 recent outcome evidence and uncertainty estimates. This documentation and
 contract check does not establish improved agent outcomes.
+
+## 2026-09-27 v4 role groundwork
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** at `b00a2e338436ef7b281b0cc53e74f891af32f18c` and
+**78/100 after** at `950cf1bd988da8ee622fd3cbe4fb7a031c19ed16`, with
+unchanged criteria (static20, drift25, discipline25, outcome evidence8).
+Repeated real outcome trials, controls/prior/candidate comparison, recent
+outcome evidence and uncertainty estimates remain missing. These documentation
+and planning changes establish no improvement in agent outcomes. Final
+verification is recorded in S-00O's integration reconciliation receipt.

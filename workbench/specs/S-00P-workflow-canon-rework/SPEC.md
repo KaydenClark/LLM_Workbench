@@ -467,3 +467,5 @@ it clears only when removed), and the `blocked-without-blocker` and
 - Superseded by: none.
 
 | 2026-09-27 | none | Minimum role/stance definitions reconciled under explicit owner direction | ROLE-1..4 scope Director to project/integration, Dispatcher to one Spec/branch, Worker to Task; Spec Planner and Spec Manager are separate stances; Reviewer/Auditor remain stances | Root controls and generic mirrors; individual new Specs own behavioral delivery | Existing TK-002..TK-005 remain assigned to their wider runtime-dependent work; this bounded definition/procedure change does not close them or end the rollout exception |
+
+| 2026-09-27 | none | Recover accepted vocabulary from unmerged source and existing ledger | FND-Q17b confirms Map/Fog/Frontier; WF-2 confirms Align; WF-1 assigns the PRD-shaped destination to Spec. cc53fadc retained as source, not wholesale restored. | Root/template Lexicon and proposed ADR-000E current-reconciliation section | Wider runtime-dependent workflow and ADR acceptance remain with existing Tasks; no implementation closure claimed |
