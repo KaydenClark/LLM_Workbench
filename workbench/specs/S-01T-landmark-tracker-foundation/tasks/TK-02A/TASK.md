@@ -9,14 +9,17 @@
 **Destination:** spec-acceptance: Live and historical references survive supported movement/retirement; discarded tracked source proof can be recovered from the named commit
 **Planned verification:** Red: in a disposable committed room, `move-spec` and `move-task` leave a DQC or landmark JSON reference to the moved record dangling; discard of a record a live Tracker reference depends on succeeds. Green: supported moves and retirement rewrite live JSON references while immutable commit/path citations stay interpreted at their original tree; discard with a genuine live Tracker dependency is refused by name; an approved fixture discard recovers exact source bytes from the named commit; ignored notes are never claimed recoverable through Git. Targeted tests, then the full AGENTS suite; a demo of the public move and recovery path in under a minute.
 
-## Release
+## Assignment Transfer — 2026-09-26
 
-Lane J releases this Task by setting Status `ready` once TK-01X is done and
-[S-00I TK-01U](../../../S-00I-folder-lifecycle-for-records/tasks/TK-01U/TASK.md)
-is done on integration. `workbench/tools/spec-workbench.mjs` and
-`tools/test-spec-workbench.mjs` are serialized behind S-00J TK-01S/TK-01T and
-S-00I TK-01U, which write the same files; the runtime cannot resolve that
-cross-Spec order, so the Task is `deferred` with no Blockers entry.
+Landmark Records — S-002A owns live JSON reference rewriting, refusal and recovery, consuming immediate shared lifecycle seams.
+
+See [foundation Delivery Transfer](../../SPEC.md#delivery-transfer--2026-09-26)
+and its linked successor owners. This deferred record preserves the original
+unfinished packet; it is no longer assigned for execution and must not be
+released as a duplicate Task. No completion proof is invented. Successors
+slice the retained requirements into bounded Tasks, preserving actual shared-file
+leases rather than a blanket whole-Spec barrier. The runtime has no transferred
+Task status, so deferred remains the truthful non-executable representation.
 
 ## Scope Note
 

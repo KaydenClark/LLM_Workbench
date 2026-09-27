@@ -185,6 +185,24 @@ per-Task review ceremony WF-8B rejected; it applies because the merge target
 is `integration`, and it is what makes exemption 2 safe. The Template Upgrade
 Release Gate runs before any tag. Owner-only `main` promotion is unchanged.
 
+### Integration decision and progress reconciliation
+
+The [integration reconciliation receipt](INTEGRATION-RECONCILIATION.md) records
+the 2026-09-27 source inventory, current decision owners, off-integration work
+and unresolved gates. It distinguishes publishing decisions and existing
+progress from approving or merging unfinished implementation. This receipt is
+part of this release owner, not a second task queue.
+
+Minimum role and stance capability owners are
+[Director Role — S-002C](../S-002C-director-role/SPEC.md),
+[Dispatcher Role — S-002D](../S-002D-dispatcher-role/SPEC.md),
+[Worker Role — S-002E](../S-002E-worker-role/SPEC.md),
+[Spec Planner Stance — S-002F](../S-002F-spec-planner-stance/SPEC.md), and
+[Spec Manager Stance — S-002G](../S-002G-spec-manager-stance/SPEC.md).
+Reviewer and Auditor keep S-01R and S-01Q. Their task planning waits for flight
+launch; the current release bootstrap exception is retained until its named
+implementation gate is satisfied. Planning does not authorize a version bump.
+
 ### Assigned capability map
 
 | Unit | Owner | Blocks on | Endpoint |
@@ -216,9 +234,10 @@ dependency order and explicit Director lane releases.
   product-level destination; each Spec is the PRD-shaped smaller destination
   derived from it), and no Spec or Blueprint in this release promotes the
   objected shorthand as a slogan.
-- **WF-10**: a coordinator for parallel pickup is the intended model and is
-  future Blueprint scope. The reworked Blueprint may describe it; no Spec is
-  created for it in this release.
+- **WF-10**: coordination was initially Blueprint-only scope. The owner
+  confirmed minimum role/stance specification on 2026-09-27 (ROLE-1..4),
+  superseding that planning exclusion. The separate capability owners below
+  specify it without launching flights or claiming implementation.
 
 ### Operational guidance, not design
 
@@ -431,3 +450,5 @@ remains a separate delivery gap.
 
 - Supersedes: none.
 - Superseded by: none.
+
+| 2026-09-27 | none | Owner-confirmed integration reconciliation and minimum role groundwork | ROLE-1..4 confirmed; source inventory and scope dispositions in INTEGRATION-RECONCILIATION.md; new capability Specs contain no Tasks | Controls, generic mirrors, role model, capability owners and tracked progress | Runtime delivery, open owner choices, bootstrap exception, baseline self-drift and Human QA remain explicit; no clean-update or release-readiness claim |

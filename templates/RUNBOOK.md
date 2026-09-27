@@ -51,6 +51,28 @@ it does not redefine acceptance. After interruption, the Runbook supplies the
 recovery procedure while the Spec, source and saved context supply what to
 recover. Execution and recovery therefore remain separate jobs.
 
+### Role And Stance Coordination
+
+Roles scope assignments; stances supply their job. Follow the Lexicon before
+assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
+(one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
+parallel groups from current Actuality; planning Workers may assist. Assign
+Spec Manager to dispatch and monitor execution. Keep one writer for shared
+Spec/projection state and route cross-Spec dependencies to the Director.
+
+Use Reviewer or Auditor stance for the named verification job. Apply the
+existing independent-review eligibility rules to the actual agent/context;
+changing stance does not clear prior involvement. Normally Workers hand back
+merge requests to the Dispatcher branch and the Dispatcher presents the
+assembled candidate for review and merge into integration. Inspect the current
+release owner for any bootstrap exception before selecting a target.
+
+Reconcile accepted decisions, current progress, off-integration candidate
+references and remaining gates into their existing tracked owners through
+reviewed changes. Distinguish a documented decision, an unmerged candidate and
+a delivered capability. Create no Tasks for a newly planned Spec until launch;
+preserve already-authored Tasks and their evidence.
+
 ### Behavior Selection
 
 After resolving the requested scope, compose the smallest behavior already
@@ -846,7 +868,7 @@ To upgrade:
 1. Check the clean LLM Workbench release checkout's releases/changelog for what changed since
    `v[HARNESS_VERSION]`.
 2. Re-copy only the changed template sections; keep this project's filled-in
-   specifics. Never let `[BRACKETED]` placeholders leak back into filled docs.
+   specifics. Never let bracketed placeholders leak back into filled docs.
 3. Update managed runtime tools only with that checkout's
    `node tools/workbench-tools.mjs update --project PATH --home HOME --explicit-update`
    and the managed core skills only with

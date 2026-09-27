@@ -35,6 +35,13 @@ The prior Skills Wiki packet grouped the whole core inventory into one completio
 
 ## Decisions And Contracts
 
+- ROLE-3 confirms this is a stance, not a separate role. A Dispatcher may use
+  it within its Spec scope; its job does not widen role authority or erase
+  prior involvement for independent-review eligibility. The
+  [role model](../../wiki/design-concepts/roles-and-stances.md) owns composition
+  explanation. Existing Tasks and proof are preserved; no duplicate capability
+  or new Task is created by the 2026-09-27 reconciliation.
+
 - This Spec owns reviewer alone. Shared controls, manifest, catalog and the sole Wiki router are edited only as required by this skill's proven change; neighboring skill specs retain their own source and article ownership.
 - A Wiki article is curated context, not instruction authority or proof of behavior. Current source and tests establish Actuality; accepted controls and this assigned Spec establish the target.
 - The oversized unmerged Skills Wiki packet is planning evidence, not a live S-00V owner. S-00V now names Portable Workbench. For the shared grilling/notepad/grill-me journey, S-00W remains the design source while the individual skill Specs own delivery.

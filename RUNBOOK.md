@@ -97,6 +97,32 @@ it does not redefine acceptance. After interruption, the Runbook supplies the
 recovery procedure while the Spec, source and saved context supply what to
 recover. Execution and recovery therefore remain separate jobs.
 
+### Role And Stance Coordination
+
+[Role model and capability owners](workbench/wiki/design-concepts/roles-and-stances.md).
+The current Task-PR bootstrap exception remains in
+[Workbench v4.0.0 Release](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md#bootstrap-exemptions).
+
+Roles scope assignments; stances supply their job. Follow the Lexicon before
+assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
+(one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
+parallel groups from current Actuality; planning Workers may assist. Assign
+Spec Manager to dispatch and monitor execution. Keep one writer for shared
+Spec/projection state and route cross-Spec dependencies to the Director.
+
+Use Reviewer or Auditor stance for the named verification job. Apply the
+existing independent-review eligibility rules to the actual agent/context;
+changing stance does not clear prior involvement. Normally Workers hand back
+merge requests to the Dispatcher branch and the Dispatcher presents the
+assembled candidate for review and merge into integration. Inspect the current
+release owner for any bootstrap exception before selecting a target.
+
+Reconcile accepted decisions, current progress, off-integration candidate
+references and remaining gates into their existing tracked owners through
+reviewed changes. Distinguish a documented decision, an unmerged candidate and
+a delivered capability. Create no Tasks for a newly planned Spec until launch;
+preserve already-authored Tasks and their evidence.
+
 ### Behavior Selection
 
 After resolving the requested scope, compose the smallest behavior already
@@ -671,7 +697,7 @@ escalates with evidence rather than guessing. A readable manifest reports its
 `schemaVersion`, `workbenchVersion`, and recorded `provenance.lifecycle` as
 evidence; the recorded lifecycle is never the verdict, and whether an installed
 room actually needs migrating is `workbench-layout.mjs validate`'s answer. An
-unfilled `[BRACKETED]` control and a version banner that never resolved are
+unfilled bracketed control and a version banner that never resolved are
 reported as evidence and listed among the reasons, under both the harness-shaped
 verdict and the `adoption` one a straight `cp -R templates/.` produces, so a
 copy of the templates is offered as a reading rather than mistaken for a room.
@@ -706,7 +732,7 @@ The command refuses an existing support root or any legacy collision before
 mutation. Unreconciled root controls refuse once as `unreconciled-controls`,
 naming every failing control in `error.controls` with its own reason
 (`missing-control` for an absent, linked, or non-file control;
-`bracketed-control` for one still carrying a `[BRACKETED]` placeholder), and
+`bracketed-control` for one still carrying a bracketed placeholder), and
 carrying the four-step reconcile-before-migrate order and the warning that a
 template copied over an existing control overwrites the project-specific
 privacy, boundary, and verification rules it already holds

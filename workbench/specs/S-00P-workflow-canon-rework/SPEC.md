@@ -19,9 +19,9 @@ Canon describes the workflow the owner settled, in two phases. First, now:
 `BLUEPRINT.md` describes every rung (Idea -> Align through grilling ->
 confirmed design concept -> Blueprint -> recursive Spec/Task delivery) and the
 full recursive loop, including the intended nested branch topology, Task
-review before Spec-branch merge, assembled-Spec QA, corrective Tasks, owner
+self-check and hand-back before Spec-branch merge, assembled-Spec QA, corrective Tasks, owner
 Human QA on `integration`, reconciliation and
-retirement, and the coordinator as future scope. Last, after S-00H, S-00I and
+retirement, and the coordinator as a separately specified minimum capability. Last, after S-00H, S-00I and
 S-00J land: `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` and the generic
 `templates/` mirror describe the same workflow using only commands and records
 that exist, and ADR-000F, ADR-000G and ADR-000I are accepted, amended or
@@ -348,7 +348,7 @@ criterion weakened.
 **Stance:** Builder
 
 Replace the ticket lifecycle procedures with the Task lifecycle, add Task
-review before Spec-branch merge, assembled-Spec QA, corrective-Task creation,
+self-check and hand-back before Spec-branch merge, assembled-Spec QA, corrective-Task creation,
 Human QA approval and closure, reconciliation, retirement and discard
 procedures using the exact
 commands S-00H, S-00I and S-00J shipped, and reconcile the Template Upgrade
@@ -465,3 +465,5 @@ it clears only when removed), and the `blocked-without-blocker` and
 
 - Supersedes: none.
 - Superseded by: none.
+
+| 2026-09-27 | none | Minimum role/stance definitions reconciled under explicit owner direction | ROLE-1..4 scope Director to project/integration, Dispatcher to one Spec/branch, Worker to Task; Spec Planner and Spec Manager are separate stances; Reviewer/Auditor remain stances | Root controls and generic mirrors; individual new Specs own behavioral delivery | Existing TK-002..TK-005 remain assigned to their wider runtime-dependent work; this bounded definition/procedure change does not close them or end the rollout exception |
