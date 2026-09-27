@@ -50,3 +50,28 @@ results on immutable clean candidate, source immutability evidence, docs touched
 self-drift/guardrail limits and remaining gaps. Worker may append its own receipt;
 Dispatcher reconciles Spec/Taskboard and performs whole-Spec QA. Stop after this
 one Task and candidate report; no self-selected follow-on or integration merge.
+
+## Worker Receipt - 2026-09-26 (red checkpoint)
+
+- Packet: `bf4ba683153d4b344f6439373a1a11fe27443139`; isolated worker branch
+  `codex/tracker-evidence-tk002u`. No shared primary/dispatcher mutation.
+- First red: `7bd0b8dd68dd868acfe328c67ea537d60ed4c66b`,
+  `node tools/test-tracker-readable-evidence.mjs`: 0/1 passed, failing
+  `readable own assessment evidence is missing` after public fixture writes
+  succeeded. Existing JSON contribution rows already hold that evidence.
+- Extended red: `05600a6` adds eight public checks for evidence/provenance,
+  selected DQC/landmark/whole view, restart/rebuild and byte preservation,
+  unknown/unassessed items, mixed DQC navigation cycles, shared identity,
+  derived/invalid and empty outcomes. CLI refuses `show --expand` at this tree.
+- Proposed detail option: boolean `show --expand`, matching the packet's
+  on-demand expansion and keeping compact output unchanged. Rendering will
+  consume existing aggregate contribution rows without recursive lineage walks.
+- Existing verification at the red checkpoint: Tracker suite 23/23; public
+  foundation demo 1.87 seconds. Guardrail baseline 78/100; missing repeated
+  real outcome evidence remains a limitation. Read-only self-drift pre receipt
+  reports existing stale S-00Q claim plus historical seed/provenance limits;
+  no clean-update or Human QA claim.
+- Shared runtime/README lease remains with DQC TK-002S. Need its exact clean
+  Result seam commit and explicit module/README release before importing/editing.
+  Callback was rejected by automatic review; worker reported in its own chat
+  for dispatcher inspection and did not retry or use an alternate outbound route.

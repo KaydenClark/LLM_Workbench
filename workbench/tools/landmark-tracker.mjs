@@ -978,7 +978,7 @@ function parseAssessment(raw) {
   return Object.fromEntries(STEPS.filter(step => Object.hasOwn(contributions, step)).map(step => [step, contributions[step]]));
 }
 
-const QUESTION_REVISIONS = ['title', 'question', 'answer', 'confirm', 'expected-change', 'expected-home', 'source', 'uncertainty', 'resolve-uncertainty', 'correction', 'assess', 'basis', 'evidence', 'claim', 'claim-evidence', 'affects'];
+const QUESTION_REVISIONS = ['title', 'question', 'answer', 'confirm', 'expected-change', 'expected-home', 'result', 'source', 'uncertainty', 'resolve-uncertainty', 'correction', 'assess', 'basis', 'evidence', 'claim', 'claim-evidence', 'affects'];
 
 // A schema 1 record gains empty related and claims lists on its next write;
 // the upgrade is recorded, and nothing it held is changed.
@@ -1034,6 +1034,10 @@ function reviseQuestion(record, options, revision) {
       revision
     };
     changes.push({ field: 'expectedResult', from: record.expectedResult, to: next.expectedResult });
+  }
+  if (options.result !== undefined) {
+    next.result = { summary: options.result, revision };
+    changes.push({ field: 'result', from: record.result, to: next.result });
   }
   for (const source of parseSources(options.source)) {
     const existing = next.sources.find(item => item.id === source.id);
@@ -1252,34 +1256,58 @@ export function formatDistribution(aggregate) {
   return `${parts.join(', ')} ${over}`;
 }
 
-function formatCard(card) {
+function formatContributions(aggregate) {
+  const lines = [];
+  for (const entry of aggregate.contributions) {
+    const fractions = entry.contributions
+      ? Object.entries(entry.contributions).map(([step, fraction]) => `${step} ${fraction}`).join(', ')
+      : 'none recorded';
+    lines.push(`  contribution ${entry.key} [${entry.state}]: fractions: ${fractions}`);
+    lines.push(`    basis: ${entry.basis ?? 'none recorded'}; evidence: ${entry.evidence.join(', ') || 'none recorded'}`);
+    lines.push(`    assessment revision: ${entry.revision ?? 'unknown'}; holder: ${entry.holder ?? 'unknown'}; item revision: ${entry.itemRevision ?? 'unknown'}`);
+    if (entry.derivedFrom?.length) lines.push(`    derived from: ${entry.derivedFrom.join(', ')}`);
+    if (entry.codes?.length) lines.push(`    codes: ${entry.codes.join(', ')}`);
+  }
+  return lines;
+}
+
+function formatCard(card, { expand = false } = {}) {
   const lines = [`${card.id}  ${card.title}  (revision ${card.revision})`];
   lines.push(`  landmark: ${card.landmarkDisplay}`);
   lines.push(`  origin: "${card.origin.title}" from ${card.origin.sources.map(source => source.revision ? `${source.id}@${source.revision}` : source.id).join(', ') || 'no recorded source'}`);
   lines.push(`  answer: ${card.answered ? card.answer : 'unanswered'}`);
   if (card.expectedResult) lines.push(`  expected result: ${card.expectedResult.change}${card.expectedResult.home ? ` -> ${card.expectedResult.home}` : ''}`);
+  if (card.result) lines.push(`  result: ${card.result.summary} (revision ${card.result.revision})`);
   lines.push(`  assessment: ${card.assessment.state === 'assessed' ? `${Object.entries(card.assessment.contributions).map(([step, fraction]) => `${step} ${fraction}`).join(', ')} (basis: ${card.assessment.basis})` : card.assessment.state === 'derived' ? `derived from related items (basis: ${card.assessment.basis})` : 'unassessed'}`);
   for (const entry of card.related ?? []) lines.push(`  related ${entry.key}${entry.revision ? `@${entry.revision}` : ''} [${entry.resolution}, ${entry.state}]: ${entry.reason}`);
   if (card.relatedBy?.length) lines.push(`  related by: ${card.relatedBy.join(', ')}`);
   if (card.distribution) lines.push(`  scope: ${formatDistribution(card.distribution)}`);
+  if (expand && card.distribution) lines.push(...formatContributions(card.distribution));
   for (const claim of card.claims ?? []) lines.push(`  claim ${claim.key} [${claim.status}]: ${claim.text}`);
   for (const entry of card.history) lines.push(`  r${entry.revision} ${entry.changes.map(change => change.field).join(', ')}: ${entry.reason}`);
   return lines.join('\n');
 }
 
-export function formatTracker(projection) {
+export function formatTracker(projection, { expand = false } = {}) {
   const lines = [`Workbench: ${formatDistribution(projection.workbench)}`];
-  for (const landmark of projection.landmarks) lines.push(`${landmark.id}  ${landmark.title}: ${formatDistribution(landmark.aggregate)}; questions ${landmark.questions.join(', ') || 'none'}`);
+  if (expand) lines.push(...formatContributions(projection.workbench));
+  for (const landmark of projection.landmarks) {
+    lines.push(`${landmark.id}  ${landmark.title}: ${formatDistribution(landmark.aggregate)}; questions ${landmark.questions.join(', ') || 'none'}`);
+    if (expand) lines.push(...formatContributions(landmark.aggregate));
+  }
   lines.push(`${projection.noLandmark.display}: ${projection.noLandmark.questions.join(', ') || 'none'}`);
-  for (const card of projection.questions) lines.push(formatCard(card));
+  for (const card of projection.questions) lines.push(formatCard(card, { expand }));
   for (const need of projection.reconciliation ?? []) lines.push(`reconciliation: ${need.dqc}#${need.claim} affected at r${need.revision}: ${need.assessment}`);
   return lines.join('\n');
 }
 
-function formatResult(command, result) {
+function formatResult(command, result, options = {}) {
   if (command === 'show') {
-    if (result.tracker) return formatTracker(result.tracker);
-    return result.kind === QUESTIONS ? formatCard(result.view) : `${result.view.id}  ${result.view.title}: ${formatDistribution(result.view.aggregate)}`;
+    if (result.tracker) return formatTracker(result.tracker, options);
+    if (result.kind === QUESTIONS) return formatCard(result.view, options);
+    const lines = [`${result.view.id}  ${result.view.title}: ${formatDistribution(result.view.aggregate)}`];
+    if (options.expand) lines.push(...formatContributions(result.view.aggregate));
+    return lines.join('\n');
   }
   if (command === 'rebuild') return `${result.status} ${result.projection}`;
   if (command === 'relate') return `${result.status} ${result.item.display} [${result.resolution}] to ${result.id} (revision ${result.revision}) in ${result.record}`;
@@ -1297,7 +1325,7 @@ const OPTIONS = Object.freeze({
   link: { positional: true, flags: ['landmark', 'expect-revision', 'reason'], required: ['landmark', 'expect-revision'] },
   relate: { positional: true, flags: ['item', 'expect-revision', 'reason', 'assess', 'basis', 'evidence'], required: ['item', 'expect-revision'] },
   rebuild: { positional: false, flags: [], booleans: ['check'] },
-  show: { positional: 'optional', flags: [] }
+  show: { positional: 'optional', flags: [], booleans: ['expand'] }
 });
 
 export const USAGE = 'Usage: landmark-tracker.mjs capture|add-landmark|revise ID|link ID|relate ID|rebuild|show [ID] [options] [--json] [--path DIR] (see workbench/landmark-tracker/README.md)';
@@ -1353,7 +1381,7 @@ if (isMainModule(import.meta.url)) {
     const root = findRoot(parsed.options.path ?? process.cwd());
     const { path: _path, json: _json, ...options } = parsed.options;
     const result = runCommand(root, command, parsed.id, options);
-    process.stdout.write(json ? `${JSON.stringify(result)}\n` : `${formatResult(command, result)}\n`);
+    process.stdout.write(json ? `${JSON.stringify(result)}\n` : `${formatResult(command, result, options)}\n`);
   } catch (error) {
     const known = error instanceof TrackerRefusal;
     const failure = { status: 'blocked', error: { code: known ? error.code : 'tracker-failure', message: error.message, ...(known ? error.details : {}) } };

@@ -80,6 +80,30 @@ time; corrections stay in that history. Expected result (the intended durable
 change and its home) is distinct from Result (achieved delivery). A landmark
 revises its `--title`, `--summary` and `--importance` the same way.
 
+Record achieved delivery independently after reading the current revision:
+
+```bash
+node workbench/tools/landmark-tracker.mjs revise DQC-000A --expect-revision N \
+  --result "What was actually delivered and checked" --reason "Why this records achieved delivery"
+node workbench/tools/landmark-tracker.mjs show DQC-000A
+```
+
+The public API accepts the same `result` summary in `reviseRecord`. A non-empty
+summary is stored as `result: {summary, revision}` at the recording revision;
+each later Result revision preserves the previous value in before/after history.
+JSON and readable `show` expose it separately from Expected result, including
+after restart or rebuild. Recording Result alone leaves Expected result,
+confirmation and assessment unchanged; it never establishes Verified or an
+owner approval. Empty, invalid, private, stale and landmark Result writes are
+refused without changing source or projection bytes. Revision checks remain
+stale-read checks; keep one writer per record.
+
+Run a disposable-room public demonstration in under one minute:
+
+```bash
+node tools/dqc-result-demo.mjs
+```
+
 Assess documentation progress with fractions over the exact vocabulary Idea,
 Aligning, Confirmed, Mapped, Planned, Journey, Review, Verified. Fractions sum
 to one and always carry a basis and at least one piece of evidence:
@@ -184,7 +208,26 @@ check that it is current, with:
 node workbench/tools/landmark-tracker.mjs rebuild
 node workbench/tools/landmark-tracker.mjs rebuild --check   # refuses projection-drift
 node workbench/tools/landmark-tracker.mjs show              # readable view
+node workbench/tools/landmark-tracker.mjs show --expand     # assessment evidence and revisions
+node workbench/tools/landmark-tracker.mjs show DQC-000A --expand
 ```
+
+`show --expand` retains the readable view and adds each scope's distinct
+contribution identities, state, fractions, basis, supporting evidence,
+assessment revision, holder and item revision. It also works with a landmark
+identity. The default view stays compact; `--json` returns the same data with
+or without `--expand`. Expansion reads existing assessment rows and writes
+no source record or projection.
+
+Missing fractions, basis or evidence are shown as `none recorded`; missing
+revisions and holders as `unknown`. Derived contributions name their inputs,
+whose rows carry their own evidence. Invalid contributions retain their codes
+and have no displayed fractions. Expansion does not walk lineage recursively,
+so shared identities still count once per scope and navigation cycles terminate.
+
+A disposable-room check is `node tools/test-tracker-readable-evidence.mjs`
+from the Workbench source checkout. It exercises expanded DQC, landmark and
+whole views, source-byte preservation, fresh-process reads and clone/rebuild.
 
 The projection is derived from the records and the room's resolvable
 identities and is byte-for-byte deterministic, so a fresh clone rebuilds the
