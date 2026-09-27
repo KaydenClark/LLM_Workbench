@@ -567,9 +567,9 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
     totalLinks += countForRecord;
     if (countForRecord > 0) filesWithLink += 1;
   }
-  // S-00V TK-01L: ADR-000O adds one file and one link (to ADR-0039).
-  assert.equal(filesWithLink, 36, 're-count of ADR files carrying an intra-ADR link at this candidate');
-  assert.equal(totalLinks, 65, 're-count of total intra-ADR link edges at this candidate');
+  // ADR-000P adds one file and one link (to ADR-0036) to the prior 36/65 corpus.
+  assert.equal(filesWithLink, 37, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  assert.equal(totalLinks, 66, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never

@@ -78,7 +78,19 @@ project evidence. Resolve supported decisions within scope. If no confident
 next action can be established, record the blocker in the existing work owner
 and stop; do not create a next task for yourself or manufacture a queue item.
 
-Normal stance is set in the assigned SPEC and its TASK,
+A role defines the assigned scope of responsibility: Director covers the
+project and integration, Dispatcher one Spec and its branch, Worker one Task.
+A stance defines the job within that scope. Coordination assignments name the
+applicable stance; Spec Planner plans small parallel vertical slices at flight
+launch and may dispatch Workers to help write Tasks, while Spec Manager
+dispatches and monitors execution within the Spec. Reviewer and Auditor are
+stances a Dispatcher may use for verification. Prior involvement still controls
+independent-review eligibility; changing stance never makes a participant
+independent. Director coordinates cross-Spec dependencies and shared writers.
+The role and stance operating capabilities have separate delivery owners; their
+definitions do not imply a new scheduler or a shipped agent entry.
+
+For Task execution, normal stance is set in the assigned SPEC and its TASK,
 not selected or recorded by the arriving agent. Builder, Auditor, Reviewer and
 Reconciler are portable behavior skills. A stance never grants, removes, or
 transfers authority; loading it never spawns an agent. Each defines Purpose,
@@ -216,6 +228,16 @@ Evidence rows read at the commit each row names and are never re-anchored.
   code-level failures.
 
 ## Git Rules
+
+For coordinated Spec delivery, the normal route is a Worker Task-branch merge
+request into the Dispatcher Spec branch, then an independently reviewed Spec
+merge request into integration under Director coordination. A Task merge is
+containment; its Worker supplies self-check and proof. A release-specific
+bootstrap exception may name a different route and its gate explicitly; read
+that owner rather than silently applying the intended route to unsupported
+current tooling. Accepted decisions and current progress are reconciled into
+tracked owners on integration through reviewed changes; local notes and
+unmerged branches must not be their only discovery route.
 
 - Branch per spec/task from `[DEFAULT_BRANCH]`; never commit to protected
   branches.

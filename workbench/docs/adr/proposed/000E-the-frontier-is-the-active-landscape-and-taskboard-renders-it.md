@@ -16,6 +16,19 @@ Taskboard remains the implementation view. This does not activate this proposal
 or redefine the technical ready-Task sense of Frontier; the new model does not
 depend on that ambiguous name.
 
+The accepted FND-Q17b refinement uses Map as a low-resolution index around a
+Spec destination, Fog as work not yet expressible as a precise question, and
+Frontier as the open, unblocked, unclaimed Tasks. Those definitions now live
+in the Lexicon and its generic mirror. The original Journey/Path language
+below is historical, not an alternative current definition.
+
+E-1/E-3/E-11 select a generated six-lane JSON board whose card state is derived
+from Spec/Task records and whose Complete cards remain through capture/cleanup.
+[Generated JSON Taskboard — S-01X](../../../specs/S-01X-generated-json-taskboard/SPEC.md)
+owns that delivery. The original sole-view and immediate-removal claims below
+are not instructions. This bounded reconciliation does not accept the entire
+proposal or infer completion of the board runtime.
+
 ## Original proposal
 
 The **Frontier** is a concept, not a file: the active landscape where many

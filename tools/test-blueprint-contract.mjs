@@ -103,8 +103,8 @@ const workflow = [
   ['loop: merging a Task is containment, not QA', /containment, not QA/i],
   ['loop: a missed Task is not reopened; its TASK.md stays, its card returns to In progress and a new Task fixes it', /not reopened[\s\S]{0,200}?TASK\.md[\s\S]{0,200}?In progress[\s\S]{0,200}?new Task/i],
   ['scale: a Spec is a local destination such as 1 through 5 and a Task is about 0.1', /1 through 5[\s\S]{0,300}?0\.1/i],
-  ['roles: Director, Dispatcher and Worker are defined by responsibility, not branch', /Director, Dispatcher and Worker are roles defined by responsibility, not by branch/i],
-  ['roles: the owner is the human above the Director', /owner is the human above them, not the Director/i],
+  ['roles: role defines scope and stance defines the job', /A role defines that scope; a stance defines the job within it/i],
+  ['roles: the owner is the human above the Director', /owner remains the human above the Director/i],
   ['roles: the Director approves the assembled Spec in a separate context before integration', /Director then approves the immutable assembled candidate in a separate context before it combines into integration/i],
   ['board: Needs review waits for Director approval and Complete waits for closure', /Needs review[\s\S]{0,120}?Director's approval[\s\S]{0,120}?Complete[\s\S]{0,120}?closure/i],
   ['Human QA: the version cadence is the default, and the owner chooses when to QA', /Director's approval of the version's Specs[\s\S]{0,400}?described default, not the only permitted time[\s\S]{0,40}?owner chooses when to QA/i],
@@ -127,7 +127,7 @@ const workflow = [
   ['loop: failed Human QA returns to Align at the appropriate scope', /Human QA[\s\S]{0,300}?Align|Align[\s\S]{0,300}?Human QA/i],
   ['topology: a Task branch is cut from its Spec branch', /Spec branch/i],
   ['owners: SPEC and TASK records are transient working artifacts', /transient/i],
-  ['scope: a coordinator is the intended parallel-work model', /coordinator/i]
+  ['scope: Director coordinates the whole project and integration', /Director coordinates the whole project and integration/i]
 ];
 // Superseded by the 2026-09-24 SCR answers: per-Task review in the prose and
 // the 100/20/5 scale. The verbatim source map still says "Review Task"; the
@@ -135,6 +135,7 @@ const workflow = [
 assert.doesNotMatch(blueprint, /Each completed Task receives review|reaching 20|reaching 5\b/, 'BLUEPRINT.md prose must not restore per-Task review or the superseded scale');
 // Human QA is not version-only and closure never precedes main verification.
 assert.doesNotMatch(blueprint, /Human QA (?:only|is only|comes only) after|closed Spec is reconciled into its durable owners/i, 'BLUEPRINT.md must not make Human QA version-only or close a Spec before main verification');
+assert.doesNotMatch(blueprint, /roles defined by responsibility, not by branch/i, 'the superseded SCR-4A wording must not contradict ROLE-3 scope');
 const unstated = workflow.filter(([, pattern]) => !pattern.test(blueprint)).map(([claim]) => claim);
 assert.deepEqual(unstated, [], 'BLUEPRINT.md must let a reader state every rung, altitude and loop stage');
 console.log('ok - destination Blueprint shape, governing workflow rungs and loop stages, and lossless claim-disposition inventory; semantic fidelity needs independent review');
