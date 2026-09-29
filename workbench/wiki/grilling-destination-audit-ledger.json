@@ -79,8 +79,8 @@
       "implemented-and-completed": 107,
       "specced": 7,
       "specced-and-tasked": 10,
-      "in-progress": 52,
-      "not-started": 33,
+      "in-progress": 53,
+      "not-started": 32,
       "no-build-obligation": 50
     }
   },
@@ -10729,19 +10729,19 @@
       "reason": "Inference: the owner's settled vocabulary (decision-024, correction-009) says Canon classifies accepted claims in context rather than by file, so a routed Blueprint's accepted claims still bind where they apply.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
+          "artifact": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
           "action": "update",
-          "effect": "States the three-carrier Contract with the Blueprint as a routed artifact."
+          "effect": "Accepted three-carrier Contract and Blueprint routing; the separate binding-force question remains open."
         },
         {
-          "artifact": "AGENTS.md Authority Order (+ templates/AGENTS.md)",
+          "artifact": "AGENTS.md Authority Order",
           "action": "update",
-          "effect": "Blueprint listed as a routed artifact, not a Contract carrier."
+          "effect": "Root control now routes Blueprint as destination; generic template mirror remains later implementation work."
         },
         {
-          "artifact": "LEXICON.md Workbench Contract row (+ templates/LEXICON.md)",
+          "artifact": "LEXICON.md Workbench Contract row",
           "action": "update",
-          "effect": "Contract = three carriers + assigned Spec."
+          "effect": "Root definition now names three carriers plus assigned Spec; generic template mirror remains later implementation work."
         }
       ],
       "related": [
@@ -10750,7 +10750,7 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation.",
+      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation. 2026-09-29: ADR-000C acceptance and root control wording resolve the carrier/routing part, but do not answer the separate binding-force question. Keep status partially-answered.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027",
@@ -10758,10 +10758,10 @@
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)"
       ],
       "progress": {
-        "status": "not-started",
-        "sub_label": "ADR-000C still proposed",
-        "evidence": "Answered part only. ADR-000C (workbench/docs/adr/proposed/000C, lines 10-18) states the three-carrier Contract but is not accepted, and no Spec carries the control update: S-00G SPEC.md:212-214 leaves AGENTS.md and BLUEPRINT.md to 'ADR acceptance, which is a separate step from this Spec'. AGENTS.md:22 still ranks BLUEPRINT.md as procedural Canon; LEXICON.md:204 still says seven root controls.",
-        "gap": "Accept ADR-000C; update AGENTS.md Authority Order and the LEXICON.md Workbench Contract row plus templates mirrors. The open part (what binds Blueprint claims) still needs an owner decision."
+        "status": "in-progress",
+        "sub_label": "ADR-000C accepted; binding-force question open",
+        "evidence": "ADR-000C is active in the acceptance candidate. AGENTS.md and LEXICON.md carry the three-carrier definition and Blueprint route; S-00G records the implementation window. This candidate awaits integration review and delivery.",
+        "gap": "The owner has not confirmed the separate ACC-3 question about what binds accepted Blueprint claims when routed; template mirrors remain assigned implementation work."
       }
     },
     {

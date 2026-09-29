@@ -65,7 +65,7 @@ Q20 supplies nine directional relations, stored once: owns, inherits, refines, r
 
 ## Ordered packet drafts (descriptive labels, no allocated IDs)
 
-**Delivery status:** A's supported Spec reconciliation is applied in SPEC.md; verification and proof are recorded separately. B/C's initial five-case comparison matrix and ADR migration table are delivered here. Full schema/disposition proposals, owner decisions, ADR acceptance, migration and the cold-room demonstration remain unexecuted. These labels are not allocated Task IDs.
+**Delivery status at plan drafting:** A's supported Spec reconciliation was applied in SPEC.md; B/C's initial five-case comparison matrix and ADR migration table were delivered here. ADR acceptance and lifecycle moves have since completed on 2026-09-29 (see SPEC.md); full schema/disposition work and the cold-room demonstration remain unexecuted. These labels are not allocated Task IDs.
 
 First-return delivery is this PACKET-PLAN content, including the concrete comparison matrix and migration table below. The q24b-proposal.md and adr-acceptance-proposal.md names are later intended output paths, not files created or complete in this return.
 

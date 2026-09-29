@@ -101,7 +101,7 @@ FND-Q21 fixes 28 responsibilities: 21 single-owner rows, six scoped rows and Rep
 
 Current Lexicon coverage has since added Evolving concept understanding. Reconcile that later capability against exhaustive coverage and the locked 28-row recovery before final map population; do not silently expand the approved inventory. The map must represent OWNERSHIP.json and TASKBOARD.json as artifact types. Relations follow locked FND-Q20.
 
-ADR, root-control, runtime, test, manifest, template and Wiki edits belong to a later assigned implementation lane; this planning candidate makes none of them. Task-record conversion also needs a faithful path for planned Specs with ADR/question blockers: `convert-tasks S-00G` refuses a planned Spec, and the Task parser accepts only S/TK blocker IDs, so the four legacy slices and the pending A/B/C packet drafts stay in this Spec and PACKET-PLAN.md without invented IDs. Activating the Spec only to satisfy the converter is not a faithful path.
+This accepted-decision change updates ADRs, root controls and Wiki routes; runtime, manifest, template and test implementation remains in later S-00G slices. Task-record conversion also needs a faithful path for this planned Spec with its remaining blockers: `convert-tasks S-00G` refuses a planned Spec, and the Task parser accepts only S/TK blocker IDs, so the four legacy slices and the pending A/B/C packet drafts stay in this Spec and PACKET-PLAN.md without invented IDs. Activating the Spec only to satisfy the converter is not a faithful path.
 
 ### Owner choices, as tradeoffs
 
@@ -199,7 +199,7 @@ surface and must learn the eighth file everywhere TK-002's sweep finds it under
 
 **Stance:** Builder
 
-Do not start implementation until the proposed ADRs are accepted. FND-Q24B is answered: an undeclared difference is a conflict until intent is declared (owner, 2026-09-29), so the comparator reports such a row as a conflict and restores nothing; the field shape that carries this without a status-shaped field is settled here under the Q23 guards. Q21A-D, Q23 and Q24 are settled requirements recovered through the tracked ledger; implement them without reopening their answered questions. Test that queries return routes rather than claim text, accepted rows carry neither lifecycle nor status-shaped fields, and instance identifiers are rejected even within values.
+ADR-000B/C/D are accepted. Start TK-004 only after its predecessor slices and faithful Task conversion are ready. FND-Q24B is answered: an undeclared difference is a conflict until intent is declared (owner, 2026-09-29), so the comparator reports such a row as a conflict and restores nothing; the field shape that carries this without a status-shaped field is settled here under the Q23 guards. Q21A-D, Q23 and Q24 are settled requirements recovered through the tracked ledger; implement them without reopening their answered questions. Test that queries return routes rather than claim text, accepted rows carry neither lifecycle nor status-shaped fields, and instance identifiers are rejected even within values.
 
 ## Acceptance Criteria
 
@@ -256,6 +256,8 @@ ownership route move. `RUNBOOK.md` gains the query procedure at that point.
 | 2026-09-29 | spec | Owner confirmed Q1 and ACC-1/2/4/5 and authorized ADR acceptance; the three decisions now lead S-00G implementation | Confirmed grilling readbacks; active ADR-000B/C/D and archived ADR-0013/0033; `adr.mjs validate` passed | Acceptance gate resolved. Map/Taskboard JSON and route query remain implementation gaps; this Spec stays planned pending faithful Task conversion |
 
 | 2026-09-29 | b69068a20cad278fa7a10590aae163f0268b40a6 | First committed acceptance candidate passed 47/48 full-suite commands; the Blueprint contract check found a stale ADR-0033 owner route in the historical claim inventory | Full AGENTS command list on b69068a; repaired only the inventory owner path to archive/ while preserving its source text; targeted Blueprint contract check then passed | The failed run is not a green candidate; full suite must rerun after this route correction. Guardrail audit stayed 78/100 with unchanged criteria and no agent-outcome evidence. |
+
+| 2026-09-29 | ddd2a7b67da4700533f8e4dec8857289db755616 | Full suite passed 48/48 on the committed acceptance candidate, but separate-context review returned FAIL on current-facing drift | Full AGENTS command list; reviewer checked immutable diff against parent ef2b1296 and found stale proposed-ADR wording in two S-00G live sections, ACC-3 progress, and packet-plan delivery status | Repaired those four places in the next candidate while preserving ACC-3 as partially answered; a new immutable review and exact-SHA verification are required before integration. |
 
 ## Completion Result
 
