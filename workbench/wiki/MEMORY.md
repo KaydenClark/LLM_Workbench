@@ -62,6 +62,7 @@ linked page names its individual delivery Spec. Other core skill articles belong
 they are authored.
 
 - [Grilling: arrive at a shared design concept](skill-grilling.md)
+- [Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md) ([S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md))
 - [Grill-me: start a saved design inquiry](skill-grill-me.md)
 - [Notepad: preserve one objective's working context](skill-notepad.md)
 - [To-docs: route settled truth to the owner that holds it](skill-to-docs.md)
