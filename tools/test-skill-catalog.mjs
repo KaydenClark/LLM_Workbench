@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skillsRoot = path.join(root, 'workbench', 'skills');
 const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-2026-09-01');
-import { coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
+import { coreSkills as runtimeCoreSkills, roleSkills } from '../workbench/tools/workbench-layout.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
@@ -82,13 +82,19 @@ assert.match(catalog, /\.claude\/skills/,
 // to it - `README.md` and `BLUEPRINT.md` both went stale when the bundle grew
 // and an independent review, not a test, caught them. Derive the numbers so a
 // future bundle change fails here instead of shipping a wrong count.
+// S-002C: role entries (`roleSkills`) are counted apart from the workflow
+// skills and the four stances, because a role scopes work and is neither a
+// workflow step nor a portable stance; the catalog sentence names all three
+// categories, and the workflow word is what remains after both are removed.
 const bundleSize = coreSkills.length;
 const stanceCount = 4;
+const roleCount = roleSkills.length;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
-const workflowWord = words[bundleSize - stanceCount];
+const workflowWord = words[bundleSize - stanceCount - roleCount];
+const roleWord = words[roleCount];
 for (const [relative, expected] of [
-  ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`]],
+  ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`, `${roleWord} role skill`]],
   ['README.md', [`closed ${bundleSize}-skill core bundle`]],
   ['RUNBOOK.md', [`the ${bundleSize} core skills`]],
   ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
@@ -611,6 +617,54 @@ assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorS
   'the three result classes belong to the auditor exit report');
 assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
   'the no-widening boundary belongs to the auditor method, before its obligations');
+
+// S-002C TK-002X: the Director is a role, not a stance - it scopes the whole
+// project and its integration branch - but it ships in the same four-section
+// shape with the same authority sentences, so the existing skill contract
+// holds without a new shape. These pin the source contract: the role never
+// executes a Task, never approves a candidate it built, keeps one durable
+// writer per shared artifact across Specs, and leaves owner Human QA and
+// main promotion to the owner. The fresh-context scenario in S-002C records
+// the behavior. Portable wording only: the bundle installs into every room.
+const directorSkill = read('workbench/skills/director/SKILL.md');
+assert.match(directorSkill, /^name: director$/m, 'director frontmatter name');
+assert.match(directorSkill, /^description: Adopt the assigned Director role for one project and its integration branch within existing authority\.$/m,
+  'director description takes the stance form');
+const directorSections = ['## Purpose', '## Method / Posture', '## Obligations', '## Completion / Exit Condition']
+  .map((heading) => directorSkill.indexOf(heading));
+assert.ok(directorSections.every((index) => index >= 0), 'director must carry the four stance sections');
+assert.deepEqual(directorSections, [...directorSections].sort((a, b) => a - b),
+  'director sections must follow Purpose, Method / Posture, Obligations, Completion / Exit Condition');
+assertIncludesAll(directorSkill, [
+  'never grants, removes, or transfers authority',
+  'Loading this skill never spawns an agent'
+], 'director authority sentences');
+assertIncludesAll(directorSkill, [
+  'never executes a Task',
+  'never approves a candidate it built',
+  'Neither a Dispatcher nor an implementing Worker supplies independent approval of its own candidate',
+  'never merges integration into main',
+  'never merges a PR whose review has not passed',
+  'remain owner acts',
+  'reported, not performed'
+], 'director boundaries');
+assertIncludesAll(directorSkill, [
+  'one Spec and its branch to each Dispatcher',
+  'single durable writer',
+  'cross-Spec',
+  'separate-context review',
+  'new candidate',
+  'options, a recommendation and its cost',
+  'never re-ask',
+  'permission refusal',
+  'workbench/manifest.json',
+  'workbench/docs/adr'
+], 'director coordination obligations');
+assert.ok(directorSkill.indexOf('single durable writer') > directorSkill.indexOf('## Obligations')
+  && directorSkill.indexOf('single durable writer') < directorSkill.indexOf('## Completion / Exit Condition'),
+  'the shared-writer rule belongs to the director obligations');
+assert.doesNotMatch(directorSkill, /\/Users\/|GPT_OS|\bgpt-|\bopus\b|\bsonnet\b|\bcodex\b|\bclaude\b|scheduler|\b(?:two|three|four|five|six)\s+Dispatchers/i,
+  'director must stay portable: no private path, provider, model, scheduler or Dispatcher count');
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and

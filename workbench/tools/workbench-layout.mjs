@@ -40,7 +40,11 @@ const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' 
 // entry composing grilling with notepad, ahead of the stances so every
 // `slice(-4)` stance read stays exact.
 const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...stanceSkills];
+// S-002C grows the live bundle with the `director` role entry. Roles scope
+// work and are not portable stances, so they sit between the workflow skills
+// and `stanceSkills`, keeping every `slice(-4)` stance read exact.
+export const roleSkills = ['director'];
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...roleSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
