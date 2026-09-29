@@ -62,7 +62,6 @@ linked page names its individual delivery Spec. Other core skill articles belong
 they are authored.
 
 - [Grilling: arrive at a shared design concept](skill-grilling.md)
-- [Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md) ([S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md))
 - [Grill-me: start a saved design inquiry](skill-grill-me.md)
 - [Notepad: preserve one objective's working context](skill-notepad.md)
 - [To-docs: route settled truth to the owner that holds it](skill-to-docs.md)
@@ -77,6 +76,14 @@ they are authored.
 - [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
 - [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
 - [Genesis: start a new room from a founding prompt](skill-genesis.md)
+
+## Planned And Optional Skill References
+
+[Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md)
+explains the optional personal method and the proposed Workbench adaptation.
+[Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
+keeps its required-room versus optional-extension distribution choice open.
+This route does not claim that every room can discover the skill today.
 
 ## Release And Distribution Routing
 
