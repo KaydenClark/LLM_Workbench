@@ -119,6 +119,8 @@ copying its evidence log here.
 
 [Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
 
+[Spec Planner](skill-spec-planner.md) cuts one assigned Spec into small parallel Tasks at flight launch and hands the plan to Spec Manager.
+
 ## Agent Operating Knowledge
 
 How agents are expected to work in this repository, and tool behavior that
