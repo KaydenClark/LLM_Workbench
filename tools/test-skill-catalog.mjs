@@ -84,11 +84,17 @@ assert.match(catalog, /\.claude\/skills/,
 // future bundle change fails here instead of shipping a wrong count.
 const bundleSize = coreSkills.length;
 const stanceCount = 4;
+// S-002F: the coordination stances (Spec Planner now; Director, Dispatcher and
+// Spec Manager as their lanes land) are counted apart from the eighteen
+// workflow skills and the four portable stances, so each lane adds only its
+// own name to this list and the derived words stay mergeable across lanes.
+const coordinationSkills = coreSkills.filter((name) => ['director', 'dispatcher', 'spec-planner', 'spec-manager'].includes(name));
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
-const workflowWord = words[bundleSize - stanceCount];
+const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
 for (const [relative, expected] of [
-  ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`]],
+  ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
+    ...(coordinationSkills.length ? [`${words[coordinationSkills.length]} coordination`] : [])]],
   ['README.md', [`closed ${bundleSize}-skill core bundle`]],
   ['RUNBOOK.md', [`the ${bundleSize} core skills`]],
   ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
@@ -611,6 +617,50 @@ assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorS
   'the three result classes belong to the auditor exit report');
 assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
   'the no-widening boundary belongs to the auditor method, before its obligations');
+
+// S-002F TK-003D: the Spec Planner stance is the coordination entry a
+// Dispatcher adopts at flight launch. It composes with the assigned Dispatcher
+// role, plans only the one assigned Spec from live Actuality, cuts
+// complete-path slices with one named writer per shared file, keeps a
+// proposed Task distinct from an executable assignment, allocates ids with
+// `next-id` and activates once with `convert-tasks --activate`, hands the plan
+// to Spec Manager and escalates cross-Spec dependencies to the Director.
+// These pin the source contract; the fresh-context run in S-002F TK-003F
+// records the behavior.
+assert.ok(coreSkills.includes('spec-planner'), 'spec-planner must be a declared core skill');
+assert.ok(coordinationSkills.includes('spec-planner'), 'spec-planner is counted as a coordination stance');
+const specPlanner = read('workbench/skills/spec-planner/SKILL.md');
+assert.match(specPlanner, /^name: spec-planner$/m, 'spec-planner must declare its skill name');
+for (const section of ['Purpose', 'Method / Posture', 'Obligations', 'Completion / Exit Condition']) {
+  assert.ok(specPlanner.includes(`## ${section}`), `spec-planner: ${section}`);
+}
+assert.match(specPlanner, /never grants, removes, or transfers authority/);
+assert.match(specPlanner, /never spawns/);
+assert.match(specPlanner, /assigned SPEC and TASK/);
+assert.match(specPlanner, /composed with an already assigned Dispatcher role/,
+  'spec-planner composes with the Dispatcher role rather than replacing it');
+assert.match(specPlanner, /Never enumerate execution Tasks when merely authoring a planned Spec/,
+  'spec-planner plans at flight launch, never into a planned Spec');
+assert.match(specPlanner, /complete-path/, 'spec-planner cuts complete-path vertical slices');
+assert.match(specPlanner, /one named writer per shared file/, 'spec-planner names one writer per shared file');
+assert.match(specPlanner, /which groups may run concurrently/, 'spec-planner exposes concurrency within the Spec');
+assert.match(specPlanner, /a proposed Task distinct from an executable assignment/,
+  'spec-planner keeps a Worker draft distinct from an executable assignment');
+assert.match(specPlanner, /single Spec writer/, 'the Dispatcher reconciles Worker drafts as the single Spec writer');
+assert.match(specPlanner, /never approves its own candidate/);
+assert.match(specPlanner, /node workbench\/tools\/spec-workbench\.mjs next-id S-### --prefix TK/,
+  'spec-planner allocates ids with next-id, never by hand');
+assert.match(specPlanner, /convert-tasks S-### --activate/, 'spec-planner activates once with convert-tasks --activate');
+assert.match(specPlanner, /Spec Manager/, 'spec-planner hands the plan to Spec Manager');
+assert.match(specPlanner, /workbench\/specs\/S-002G-spec-manager-stance\/SPEC\.md/);
+assert.match(specPlanner, /workbench\/specs\/S-002D-dispatcher-role\/SPEC\.md/);
+assert.match(specPlanner, /to the Director/, 'spec-planner escalates cross-Spec dependencies to the Director');
+assert.match(specPlanner, /workbench\/manifest\.json/);
+assert.ok(specPlanner.indexOf('Never enumerate execution Tasks') < specPlanner.indexOf('## Obligations'),
+  'the no-Tasks-into-a-planned-Spec rule belongs to the planning method');
+assert.ok(specPlanner.indexOf('Spec Manager') > specPlanner.indexOf('## Completion / Exit Condition')
+  || specPlanner.lastIndexOf('Spec Manager') > specPlanner.indexOf('## Completion / Exit Condition'),
+  'the hand-off to Spec Manager belongs to the exit condition');
 
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and
