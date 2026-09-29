@@ -1,17 +1,17 @@
 # S-002C - Director Role
 
 **Spec ID:** S-002C
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-C
 **Stance:** Builder
-**Updated:** 2026-09-27
+**Updated:** 2026-09-29
 **Catalog description:** Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results.
-**Blockers:** none for specification; implementation awaits flight launch and assignment.
-**Latest event:** Owner confirmed the minimum role/stance buildout; this Spec records one capability without cutting Tasks.
-**Next gate:** At flight launch, inspect live Actuality and plan small Tasks within this Spec.
+**Blockers:** none
+**Latest event:** Flight launched 2026-09-29 under the owner's instruction to complete the Director and Dispatcher role and stance Specs; TK-002X (skill entry with bundle proof) and TK-002Y (routed article and fresh-context scenario) cut from current Actuality and the Spec activated.
+**Next gate:** Claim and deliver TK-002X, then TK-002Y; assembled suite, self-drift and guardrail receipts, separate-context review, verdict, gate and PR into integration.
 
-> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
+> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`1450e7a834872b370be8d7013499058b57a0c7d7`.
 
 ## Outcome
 
@@ -51,7 +51,12 @@ Coordinate shared controls, discovery and branch procedure with [Workflow Canon 
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At flight launch/Spec activation, use current Actuality to plan small complete-path slices and safe parallel groups. The empty tasks directory keeps this planned capability record-backed.
+Cut at flight launch on 2026-09-29 from Actuality at the post anchor: the manifest `skillPolicy.required` holds twenty-two skills ending in the four stances, `workbench/tools/workbench-layout.mjs` exports the same `coreSkills`, `tools/test-skill-catalog.mjs` derives every documented bundle count from that export, and no `director` entry or article exists. Two complete-path slices, executed in order because the second documents and exercises the text the first delivers:
+
+- [TK-002X](tasks/TK-002X/TASK.md): the `workbench/skills/director/SKILL.md` entry in the four-section stance shape, registered in the layout export (`roleSkills` beside `stanceSkills`), the manifest, the catalog table and bundle sentence, with the count-literal and frozen-row tests made role-aware through red/green.
+- [TK-002Y](tasks/TK-002Y/TASK.md): `workbench/wiki/skill-director.md` routed from the "Roles And Stances" section of the Wiki router, plus the fresh-context coordination scenario from Testing Seams run in a disposable fixture room and handed back for this evidence log.
+
+Shared files (manifest, catalog README, router, tests) have one writer per slice and the Dispatcher remains the single writer of this Spec, its Task records and the rendered projections. Sibling role and stance Specs land after this one and extend the same `roleSkills` array, bundle sentence and router section.
 
 ## Acceptance Criteria
 
@@ -82,3 +87,4 @@ Maintain the role or stance definition in LEXICON.md, the operating contract in 
 | Date | Task | Event | Evidence | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-27 | none | Planning only | Owner confirmed ROLE-1 through ROLE-4; no Task allocated or implementation claimed | This Spec and linked role model | Flight launch, Task planning, implementation and behavioral verification remain |
+| 2026-09-29 | planning | Flight launch: Tasks cut and Spec activated | Owner instruction in chat: "I want the director and dispatcher roles and stances. That is how large this run should be. Complete those groupings of specs." Director assigned S-002C to Lane C (landing first of S-002C, S-002D, S-002F, S-002G). Actuality inspected at `1450e7a8`: manifest and layout export agree on twenty-two skills; catalog test derives counts from the export; no director entry or article. IDs from `next-id` on the tree: TK-002X, TK-002Y. `convert-tasks S-002C --activate` flipped Status only; header, post anchor and slices section written in the same commit. Read-only self-drift pre receipt at `1450e7a8`: cleanUpdate false with the eight pre-existing attention findings (two stale-claim, five stale-seed, one unverified-provenance); guardrail baseline templates 106.6/113 (Team coordination missing) | This Spec and the two Task records | Implementation, scenario, assembled proof and separate-context review remain |
