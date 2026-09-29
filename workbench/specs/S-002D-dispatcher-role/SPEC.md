@@ -8,8 +8,8 @@
 **Updated:** 2026-09-29
 **Catalog description:** Coordinate planning, parallel Task delivery and assembled verification within one assigned Spec and its branch.
 **Blockers:** none
-**Latest event:** TK-003A claimed by claude-lane-D.
-**Next gate:** Close TK-003A with verification and documentation proof.
+**Latest event:** TK-003B claimed by claude-lane-D.
+**Next gate:** Close TK-003B with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`1450e7a834872b370be8d7013499058b57a0c7d7`.
 
