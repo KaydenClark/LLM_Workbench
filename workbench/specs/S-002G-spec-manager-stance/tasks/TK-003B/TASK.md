@@ -1,0 +1,61 @@
+# TK-003B - Route the spec-manager Wiki article from the Roles And Stances router
+
+**Task ID:** TK-003B
+**Spec ID:** S-002G
+**Slice:** Route the spec-manager Wiki article from the Roles And Stances router
+**Status:** ready
+**Stance:** Builder
+**Blockers:** none
+**Destination:** spec-acceptance: S-002G acceptance line 6 (a fresh agent discovers the individual Wiki article and identifies scope, inputs, outputs, hand-back and escalation) and Documentation Impact (one individual article routed through MEMORY.md; cross-capability explanation stays in roles-and-stances.md)
+**Planned verification:** `node workbench/tools/wiki.mjs validate` reports ok with the new article; `node tools/test-wiki.mjs` green; `node workbench/tools/spec-workbench.mjs doctor` reports no `room-brain-unrouted` finding; a read of `workbench/wiki/MEMORY.md` "Roles And Stances" reaches the article in one hop and the article reaches the skill source, the Spec, LEXICON stance terms, ADR-0036, ADR-000P and the role model in one hop each.
+
+## Outcome
+
+A fresh agent following `workbench/wiki/MEMORY.md` -> "Roles And Stances"
+reaches `workbench/wiki/skill-spec-manager.md` and learns, in plain language,
+what the Spec Manager stance is for, its inputs (the Spec Planner result, live
+Task states, dependencies, branch scope, Worker hand-backs), its outputs (the
+assembled immutable candidate, evidence and remaining gaps reported to the
+Director), when it is done, how it composes with the Dispatcher role and the
+Reviewer and Auditor stances, and its verified behavior and limits.
+
+## Required Behavior
+
+- `workbench/wiki/skill-spec-manager.md` follows the shape of
+  `workbench/wiki/skill-auditor.md`: frontmatter `type: memory`, `status:
+  active`, `sensitivity: normal`, `knowledge_role: curated`, `provenance`,
+  `source_paths` (repository-relative), `last_verified`; sections for the
+  one-paragraph use statement with Inputs/Output/Done when, "How it works",
+  "Composition", "Verified behavior and limits", "Sources" and "History".
+- It cites the LEXICON Spec Manager definition rather than restating a new
+  one, ADR-0036 (stance changes method, not authority) and ADR-000P (roles
+  scope work, stances define the job), and the role model article for the
+  cross-capability picture. It does not copy live Task state or the Spec's
+  progress.
+- Cross-links: link only to files that exist on `origin/integration` at
+  landing time. Refer to a sibling capability that has not landed by its Spec
+  path. Because S-002G lands last, the Dispatcher adds the final cross-links
+  among the four skills and four articles at rebase; the article leaves a
+  clearly named "Composition" list where those links belong.
+- `workbench/wiki/MEMORY.md` "Roles And Stances" gains one router line for
+  the article (single writer: the Dispatcher lane merges this line).
+- "Verified behavior and limits" is reconciled by the Dispatcher after
+  [TK-003C](../TK-003C/TASK.md) records the fresh-context scenario; the draft
+  states what the source at its green commit says and names the scenario as
+  the Spec evidence it will cite, claiming no owner approval and no
+  agent-outcome improvement.
+
+## Boundaries
+
+- One article and one router line. No edits to `templates/wiki` (the
+  auditor article precedent landed without a template mirror because the
+  router section is project-specific), no root-control edits, no edits to
+  the sibling articles' files (they may not exist yet).
+- The Wiki explains and routes; it grants no authority and proves no claim.
+
+## Done Criteria And Closing Proof
+
+- Wiki validation and test-wiki green; doctor shows no unrouted room-brain
+  finding; the link hops above are checked and listed in the proof.
+- Docs status names the article and router line; remaining gap names the
+  cross-links to be added at landing and the verified-behavior reconciliation.
