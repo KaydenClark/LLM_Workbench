@@ -40,7 +40,8 @@
     "checkpoints": "workbench/sessions/checkpoints",
     "notepads": "workbench/sessions/notepads",
     "notepad-templates": "workbench/sessions/notepads/templates",
-    "recovery": "workbench/sessions/recovery"
+    "recovery": "workbench/sessions/recovery",
+    "features": "workbench/wiki/features"
   },
   "wiki": {
     "profile": "project"

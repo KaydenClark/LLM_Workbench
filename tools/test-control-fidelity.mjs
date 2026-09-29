@@ -184,7 +184,7 @@ test('optional permission and wiki files are compared when present and reported 
   const templates = fixtureTemplates();
   const project = fixtureRoom(templates);
   let report = reportFidelity({ project, templates, manifestRelease: VERSION, checkoutVersion: VERSION });
-  for (const name of ['.claude/settings.json', 'workbench/wiki/SCHEMA.md', 'workbench/wiki/AGENTS.md', 'workbench/wiki/design-concepts/README.md', 'workbench/wiki/MEMORY.md']) {
+  for (const name of ['.claude/settings.json', 'workbench/wiki/SCHEMA.md', 'workbench/wiki/AGENTS.md', 'workbench/wiki/design-concepts/README.md', 'workbench/wiki/features/README.md', 'workbench/wiki/MEMORY.md']) {
     const entry = control(report, name);
     assert.equal(entry.status, 'absent', `${name} is optional`);
     assert.equal(entry.optional, true);

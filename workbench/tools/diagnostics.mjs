@@ -101,6 +101,13 @@ const registry = Object.freeze({
   // because a reference naming a record Git no longer has at that path is a
   // stronger, room-wide fact than one Spec's own broken link.
   'discarded-reference': entry('error', 'specs', 'selection', "a live reference names a path this room's own discards register says was discarded"),
+  // S-00I TK-01U (S-00J closure-capture contract T4): a Spec completed with
+  // recorded main verification is captured into a features article at its
+  // closure point. Capture is not a gate on `complete`, so a missing or failed
+  // capture leaves the Spec complete and uncaptured - visible here and never
+  // blocking. Specs completed before the contract carry no main-verification
+  // row and are not reported.
+  'uncaptured-complete': entry('attention', 'specs', 'none', 'a Spec completed with main-verified closure has no captured features article; write it in the features collection before retirement or any record discard'),
   'stale-register': entry('attention', 'adr', 'none', 'the derived ADR register is stale; run adr register'),
   // S-00I TK-002: lifecycle now comes from folder location (top level, or
   // ADR_LIFECYCLE_FOLDERS `proposed`/`archive`), not frontmatter `status`. A

@@ -31,8 +31,17 @@ export const COLLECTIONS = Object.freeze({
   checkpoints: 'workbench/sessions/checkpoints',
   notepads: 'workbench/sessions/notepads',
   'notepad-templates': 'workbench/sessions/notepads/templates',
-  recovery: 'workbench/sessions/recovery'
+  recovery: 'workbench/sessions/recovery',
+  // S-00I TK-01U: the additive Wiki collection a completed Spec is captured
+  // into at its closure point (S-00J closure-capture contract T4). It is a
+  // collection inside the wiki lane, never an eighth lane, and it is appended
+  // last so a room that adds it keeps every earlier key in place.
+  features: 'workbench/wiki/features'
 });
+// Every room stamped before the features collection declares one of the
+// pre-feature shapes derived from this set; `validateManifest` keeps reading
+// them and `migrate` appends the collection additively.
+export const PRE_FEATURE_COLLECTIONS = Object.freeze(Object.fromEntries(Object.entries(COLLECTIONS).filter(([name]) => name !== 'features')));
 // Live records stay untracked. The templates subcollection is explicitly
 // excluded from live-note operations and remains tracked in project Git.
 export const UNTRACKED_COLLECTIONS = Object.freeze(['grilling', 'handoffs', 'notepads']);

@@ -41,6 +41,9 @@ import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord,
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
 import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
+// S-00I TK-01U: features capture reads the Wiki validator and note frontmatter.
+import { validateWiki } from '../workbench/tools/wiki.mjs';
+import { parseFrontmatter } from '../workbench/tools/adr.mjs';
 
 // `doctor`'s `stale-claim` rule (workbench/tools/spec-workbench.mjs) flags an
 // in-progress claim whose `Updated` date-only stamp is more than one day
@@ -4519,6 +4522,16 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
     execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'remove the stray reference']);
     execFileSync('git', ['-C', taskDiscardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
 
+    // S-00I TK-01U: Task discard waits for the parent Spec's features capture
+    // (closure-capture contract T4 before T6); its own refusal is proven in
+    // the TK-01U block below. Capture S-592 here so the gates this block
+    // proves are reached exactly as before.
+    writeAt(taskDiscardRoot, 'workbench/wiki/features/task-discard-fixture-capability.md', featureOwnerArticle('workbench/specs/retired/S-592-task-discard-fixture/SPEC.md'));
+    writeAt(taskDiscardRoot, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\n- [capability](features/task-discard-fixture-capability.md)\n');
+    execFileSync('git', ['-C', taskDiscardRoot, 'add', '-A']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'commit', '--quiet', '-m', 'capture S-592 into a features article']);
+    execFileSync('git', ['-C', taskDiscardRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+
     fs.writeFileSync(path.join(taskDiscardRoot, 'scratch.txt'), 'dirty\n');
     assert.throws(() => discardRetiredTask(taskDiscardRoot, 'S-592', 'TK-001'), /discard refuses a dirty working tree/, 'refuses a dirty working tree');
     fs.rmSync(path.join(taskDiscardRoot, 'scratch.txt'));
@@ -4591,6 +4604,238 @@ function retirementGuidebookNote(historicalRoute, overrides = {}) {
   assert.deepEqual(parseCliArgs(['discard', 'S-500']), { command: 'discard', id: 'S-500', options: {} });
   assert.deepEqual(parseCliArgs(['discard', 'S-500', '--task', 'TK-002']), { command: 'discard', id: 'S-500', options: { task: 'TK-002' } });
   console.log('ok - discard parses a bare Spec ID or a Spec ID with --task like every other lifecycle command');
+}
+
+// ============================================================================
+// S-00I TK-01U: features capture (S-00J closure-capture contract T4) and its
+// T5/T6 preconditions. A completed Spec is captured into a readable features
+// article - what the capability does, why it matters, its limits and its
+// named evidence - in the additive `features` Wiki collection. Retirement
+// admits that article as the Spec's durable owner beside the legacy
+// design-concept and guidebook owners, refusing every missing gate by name
+// with the fixture tree and index unchanged; Task discard waits for it; and
+// doctor names a Spec completed under the contract that has none. Red at
+// e0c7ef1: retireSpec refuses a valid feature owner at its design-concept /
+// guidebook allowlist, discard --task removes a retired Task of an
+// uncaptured Spec, and doctor is silent about it.
+// ============================================================================
+function featureOwnerArticle(historicalRoute, overrides = {}) {
+  const {
+    type = 'feature',
+    knowledgeRole = 'curated',
+    sourcePaths = [historicalRoute, 'workbench/manifest.json'],
+    limits = '## Limits\n\nFixture-only: it proves eligibility in a disposable room and retires no production record.\n',
+    evidence = '## Evidence and Sources\n\n- `workbench/manifest.json` declares the features collection this article lives in.\n'
+  } = overrides;
+  return [
+    '---',
+    `type: ${type}`,
+    'status: active',
+    'sensitivity: normal',
+    `knowledge_role: ${knowledgeRole}`,
+    'provenance:',
+    '  - features capture at the closure point, 2026-09-26',
+    'source_paths:',
+    ...sourcePaths.map((entry) => `  - ${entry}`),
+    'last_verified: 2026-09-26',
+    '---',
+    '',
+    '# Feature Fixture Capability',
+    '',
+    'A disposable room retires a completed Spec into this readable article.',
+    '',
+    '## What It Does',
+    '',
+    'Retirement accepts a validated, routed features article as the Spec\'s durable owner.',
+    '',
+    '## Why It Matters',
+    '',
+    'A cold reader learns what was delivered without opening transient Task records.',
+    '',
+    limits,
+    evidence
+  ].join('\n');
+}
+
+function gitSnapshot(dir) {
+  return {
+    head: headSha(dir),
+    index: execFileSync('git', ['-C', dir, 'ls-files', '--stage'], { encoding: 'utf8' }),
+    status: execFileSync('git', ['-C', dir, 'status', '--porcelain', '--untracked-files=all'], { encoding: 'utf8' })
+  };
+}
+
+function commitAll(dir, message) {
+  execFileSync('git', ['-C', dir, 'add', '-A']);
+  execFileSync('git', ['-C', dir, 'commit', '--quiet', '-m', message]);
+}
+
+{
+  const featureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-retire-feature-'));
+  try {
+    initLifecycleFixture(featureRoot);
+    fs.writeFileSync(path.join(featureRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+    writeAt(featureRoot, 'workbench/specs/S-610-feature-fixture/SPEC.md', retirementReadySpec('S-610', ['TK-001']));
+    writeAt(featureRoot, 'workbench/specs/S-610-feature-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-610', slice: 'Feature fixture slice', destination: 'spec-acceptance: S-610 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/feature-fixture' }));
+    writeAt(featureRoot, 'workbench/specs/S-611-active-feature-fixture/SPEC.md', fixtureSpec().replaceAll('S-001', 'S-611'));
+    execFileSync('git', ['init', '--quiet', featureRoot]);
+    execFileSync('git', ['-C', featureRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', featureRoot, 'config', 'user.name', 'Fixture']);
+    commitAll(featureRoot, 'initial corpus');
+    execFileSync('git', ['-C', featureRoot, 'branch', 'integration']);
+
+    const historicalRoute = 'workbench/specs/retired/S-610-feature-fixture/SPEC.md';
+    const featureNote = 'workbench/wiki/features/feature-fixture-capability.md';
+    const variants = {
+      'workbench/wiki/features/wrong-type.md': featureOwnerArticle(historicalRoute, { type: 'project' }),
+      'workbench/wiki/features/legacy-type-in-features.md': featureOwnerArticle(historicalRoute, { type: 'guidebook' }),
+      'workbench/wiki/guidebooks/misplaced-feature.md': featureOwnerArticle(historicalRoute),
+      'workbench/wiki/features/wrong-role.md': featureOwnerArticle(historicalRoute, { knowledgeRole: 'derived' }),
+      'workbench/wiki/features/no-route.md': featureOwnerArticle(historicalRoute, { sourcePaths: ['workbench/manifest.json'] }),
+      'workbench/wiki/features/no-limits.md': featureOwnerArticle(historicalRoute, { limits: '' }),
+      'workbench/wiki/features/pasted-state.md': featureOwnerArticle(historicalRoute, {
+        evidence: '## Evidence and Sources\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n| 2026-09-18 | TK-001 | Task closed | fixture proof | fixture docs | none |\n'
+      }),
+      'workbench/wiki/features/unrouted-feature.md': featureOwnerArticle(historicalRoute),
+      [featureNote]: featureOwnerArticle(historicalRoute)
+    };
+    for (const [relative, content] of Object.entries(variants)) writeAt(featureRoot, relative, content);
+    const routed = Object.keys(variants).filter((relative) => relative !== 'workbench/wiki/features/unrouted-feature.md')
+      .map((relative) => `- [${path.basename(relative, '.md')}](${relative.replace('workbench/wiki/', '')})`);
+    writeAt(featureRoot, 'workbench/wiki/MEMORY.md', `# Fixture Room Brain\n\n${routed.join('\n')}\n`);
+    commitAll(featureRoot, 'author feature owner candidates');
+
+    const refusals = [
+      ['S-611', featureNote, /S-611 is active, not complete/, 'a Spec that is not complete (T3 absent)'],
+      ['S-610', 'workbench/wiki/features/missing.md', /found no Wiki note at workbench\/wiki\/features\/missing\.md/, 'a missing article'],
+      ['S-610', 'workbench/wiki/features/wrong-type.md', /must declare type design-concept or guidebook, or type feature in workbench\/wiki\/features/, 'an invalid type'],
+      ['S-610', 'workbench/wiki/features/legacy-type-in-features.md', /fails Wiki validation.*must declare type feature/s, 'a legacy type placed in the features collection'],
+      ['S-610', 'workbench/wiki/guidebooks/misplaced-feature.md', /type feature must live in the features collection workbench\/wiki\/features/, 'an invalid path'],
+      ['S-610', 'workbench/wiki/features/wrong-role.md', /must declare knowledge_role canonical or curated/, 'an invalid role'],
+      ['S-610', 'workbench/wiki/features/no-route.md', /source_paths must name S-610's historical route/, 'no historical route'],
+      ['S-610', 'workbench/wiki/features/no-limits.md', /fails Wiki validation.*Limits section/s, 'a malformed article'],
+      ['S-610', 'workbench/wiki/features/pasted-state.md', /copied-task-state/, 'copied delivery state'],
+      ['S-610', 'workbench/wiki/features/unrouted-feature.md', /is not linked from workbench\/wiki\/MEMORY\.md/, 'a missing MEMORY.md route'],
+      ['S-610', featureNote, /S-610 cannot retire: no owner Human QA approval is recorded/, 'an absent owner approval gate']
+    ];
+    for (const [specId, wikiNote, pattern, label] of refusals) {
+      const before = gitSnapshot(featureRoot);
+      assert.throws(() => retireSpec(featureRoot, specId, { wikiNote }), pattern, `retireSpec refuses ${label} by name`);
+      assert.deepEqual(gitSnapshot(featureRoot), before, `the ${label} refusal leaves the fixture tree and index unchanged`);
+    }
+    console.log('ok - retireSpec refuses a feature owner for a Spec that is not complete, a missing article, an invalid type, role or path, no historical route, a malformed or copied article, a missing MEMORY.md route and an absent owner approval, each by name with the tree and index unchanged');
+
+    recordOwnerApproval(featureRoot, 'S-610', { candidate: integratedFixtureCandidate(featureRoot), owner: 'Kayden Clark', result: 'approve' });
+    commitAll(featureRoot, 'record owner Human QA approval');
+    const receipt = retireSpec(featureRoot, 'S-610', { wikiNote: featureNote });
+    assert.equal(receipt.wikiNote, featureNote, 'the receipt names the feature owner');
+    assert.equal(receipt.ownerType, 'feature', 'the receipt names the owner kind');
+    assert.equal(receipt.route, historicalRoute, 'the receipt names the historical route');
+    assert.ok(fs.existsSync(path.join(featureRoot, historicalRoute)), 'the Spec retired into retired/');
+    const ownerFindings = validateWiki(featureRoot).filter((item) => item.note === featureNote && item.severity === 'error');
+    assert.deepEqual(ownerFindings, [], 'the feature note still validates after retirement');
+    assert.match(fs.readFileSync(path.join(featureRoot, 'workbench/wiki/MEMORY.md'), 'utf8'), /\(features\/feature-fixture-capability\.md\)/, 'the router still routes the feature note after retirement');
+    const article = fs.readFileSync(path.join(featureRoot, featureNote), 'utf8');
+    for (const source of parseFrontmatter(article).data.source_paths) {
+      assert.ok(fs.existsSync(path.join(featureRoot, source)), `the article's named evidence ${source} exists in the fixture`);
+    }
+    for (const section of ['What It Does', 'Why It Matters', 'Limits', 'Evidence and Sources']) assert.match(article, new RegExp(`^## ${section}$`, 'm'));
+    assert.match(fs.readFileSync(path.join(featureRoot, historicalRoute), 'utf8'), new RegExp(`Spec retired to .*\\| ${featureNote.replaceAll('/', '\\/').replaceAll('.', '\\.')} \\|`), 'the evidence row names the feature owner');
+    console.log('ok - retireSpec accepts a validated, routed features article on a complete, approved Spec and its receipt names the owner and the historical route');
+  } finally {
+    fs.rmSync(featureRoot, { recursive: true, force: true });
+  }
+}
+
+{
+  const captureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'task-discard-capture-'));
+  const captureRemote = fs.mkdtempSync(path.join(os.tmpdir(), 'task-discard-capture-remote-'));
+  try {
+    initLifecycleFixture(captureRoot);
+    fs.writeFileSync(path.join(captureRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+    writeAt(captureRoot, 'workbench/specs/S-612-capture-fixture/SPEC.md', emptyTableRecordBackedSpec('S-612'));
+    writeAt(captureRoot, 'workbench/specs/S-612-capture-fixture/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-612', slice: 'Capture fixture slice', destination: 'spec-acceptance: S-612 Acceptance Criteria', proof: 'landed' }), { branch: 'claude/capture-fixture' }));
+    execFileSync('git', ['init', '--quiet', captureRoot]);
+    execFileSync('git', ['-C', captureRoot, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', captureRoot, 'config', 'user.name', 'Fixture']);
+    commitAll(captureRoot, 'initial corpus');
+    moveTaskRecord(captureRoot, 'S-612', 'TK-001', 'retired');
+    commitAll(captureRoot, 'retire TK-001');
+    execFileSync('git', ['init', '--quiet', '--bare', captureRemote]);
+    execFileSync('git', ['-C', captureRoot, 'remote', 'add', 'origin', captureRemote]);
+    execFileSync('git', ['-C', captureRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    const taskRoute = 'workbench/specs/S-612-capture-fixture/tasks/retired/TK-001/TASK.md';
+    const specRoute = 'workbench/specs/retired/S-612-capture-fixture/SPEC.md';
+
+    let before = gitSnapshot(captureRoot);
+    assert.throws(() => discardRetiredTask(captureRoot, 'S-612', 'TK-001'), /S-612\/TK-001 cannot discard: its parent Spec S-612 has no captured features article/,
+      'Task discard refuses before the parent Spec is captured');
+    assert.deepEqual(gitSnapshot(captureRoot), before, 'the refusal writes nothing');
+    assert.ok(fs.existsSync(path.join(captureRoot, taskRoute)), 'the retired Task record stays');
+
+    // A legacy owner is still a retirement owner, but it is not a features
+    // capture: Task records wait for T4 specifically.
+    writeAt(captureRoot, 'workbench/wiki/guidebooks/capture-fixture-guide.md', retirementGuidebookNote(specRoute));
+    writeAt(captureRoot, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\n- [guide](guidebooks/capture-fixture-guide.md)\n');
+    commitAll(captureRoot, 'legacy owner only');
+    execFileSync('git', ['-C', captureRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    before = gitSnapshot(captureRoot);
+    assert.throws(() => discardRetiredTask(captureRoot, 'S-612', 'TK-001'), /has no captured features article/, 'a legacy guidebook owner is not a features capture');
+    assert.deepEqual(gitSnapshot(captureRoot), before);
+
+    // An unrouted features article is not captured either: the same owner
+    // predicate retirement uses applies.
+    writeAt(captureRoot, 'workbench/wiki/features/capture-fixture-capability.md', featureOwnerArticle(specRoute));
+    commitAll(captureRoot, 'unrouted feature article');
+    execFileSync('git', ['-C', captureRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    before = gitSnapshot(captureRoot);
+    assert.throws(() => discardRetiredTask(captureRoot, 'S-612', 'TK-001'), /has no captured features article/, 'an unrouted article is not captured');
+    assert.deepEqual(gitSnapshot(captureRoot), before);
+
+    writeAt(captureRoot, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\n- [guide](guidebooks/capture-fixture-guide.md)\n- [capability](features/capture-fixture-capability.md)\n');
+    commitAll(captureRoot, 'route the features article');
+    execFileSync('git', ['-C', captureRoot, 'push', '--quiet', 'origin', 'HEAD:refs/heads/main']);
+    const receipt = discardRetiredTask(captureRoot, 'S-612', 'TK-001');
+    assert.equal(receipt.historicalRoute, taskRoute);
+    assert.ok(!fs.existsSync(path.join(captureRoot, taskRoute)), 'discard proceeds once the parent Spec is captured');
+    console.log('ok - discard --task refuses by name, writing nothing, until the parent Spec has a captured features article; a legacy owner or an unrouted article is not a capture');
+  } finally {
+    fs.rmSync(captureRoot, { recursive: true, force: true });
+    fs.rmSync(captureRemote, { recursive: true, force: true });
+  }
+}
+
+{
+  const visibleRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-uncaptured-complete-'));
+  try {
+    initLifecycleFixture(visibleRoot);
+    fs.writeFileSync(path.join(visibleRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+    const contractRow = `| 2026-09-26 | spec | Spec completed | Acceptance gates satisfied; approved delivery verified: origin/main at ${'c'.repeat(40)} contains approved candidate ${'d'.repeat(40)} [${'e'.repeat(12)}] | Documentation impact recorded above | none |`;
+    const withRow = (id, row) => retirementReadySpec(id, ['TK-001']).replace('\n\n## Completion Result', `\n${row}\n\n## Completion Result`);
+    writeAt(visibleRoot, 'workbench/specs/S-613-contract-complete/SPEC.md', withRow('S-613', contractRow));
+    writeAt(visibleRoot, 'workbench/specs/S-613-contract-complete/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-613', slice: 'Contract slice', destination: 'spec-acceptance: S-613 Acceptance Criteria', proof: 'landed' })));
+    writeAt(visibleRoot, 'workbench/specs/S-614-pre-contract-complete/SPEC.md', withRow('S-614', '| 2026-09-18 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |'));
+    writeAt(visibleRoot, 'workbench/specs/S-614-pre-contract-complete/tasks/TK-001/TASK.md',
+      withReceiptRun(doneTaskRecordFixture({ id: 'TK-001', specId: 'S-614', slice: 'Pre-contract slice', destination: 'spec-acceptance: S-614 Acceptance Criteria', proof: 'landed' })));
+    render(visibleRoot);
+
+    const uncaptured = () => doctor(visibleRoot, { today: TODAY }).filter((item) => item.code === 'uncaptured-complete');
+    const findings = uncaptured();
+    assert.deepEqual(findings.map((item) => [item.specId, item.severity, item.blocks]), [['S-613', 'attention', 'none']],
+      'doctor names the contract-completed Spec with no captured features article, and only that one');
+    assert.match(findings[0].message, /S-613 is complete .* no captured features article/);
+    assert.equal(findSpec(visibleRoot, 'S-613').status, 'complete', 'a missing capture never reverts complete');
+
+    writeAt(visibleRoot, 'workbench/wiki/features/contract-complete-capability.md', featureOwnerArticle('workbench/specs/retired/S-613-contract-complete/SPEC.md', { sourcePaths: ['workbench/specs/retired/S-613-contract-complete/SPEC.md'] }));
+    writeAt(visibleRoot, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\n- [capability](features/contract-complete-capability.md)\n');
+    assert.deepEqual(uncaptured(), [], 'capturing the article clears the finding');
+    console.log('ok - doctor reports a Spec completed under the closure-capture contract with no captured features article as attention, stays silent for a pre-contract complete Spec, and the Spec stays complete');
+  } finally {
+    fs.rmSync(visibleRoot, { recursive: true, force: true });
+  }
 }
 
 // ============================================================================

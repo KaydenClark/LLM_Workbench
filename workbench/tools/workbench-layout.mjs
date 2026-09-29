@@ -13,7 +13,7 @@ import { finding } from './diagnostics.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
 import { allocateWorkbenchId, isWorkbenchId } from './visible-ids.mjs';
 import { templatePlaceholders } from './template-placeholders.mjs';
-import { COLLECTIONS, LANES, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
+import { COLLECTIONS, LANES, PRE_FEATURE_COLLECTIONS, SIX_LANES, SCHEMA_VERSION, IGNORED_COLLECTIONS, WIKI_PROFILES, collectionRelative, declaredGit, laneRelative, assertSafeReadPath, assertSafeWritePath, writeSafeFile, isBranchName, isMainModule, isSafeRelative } from './workbench-paths.mjs';
 
 // Exported (not just used locally) so a test can build the exact historical
 // v3.0.0-v3.2.0 fixture rows from this frozen array directly, rather than
@@ -79,7 +79,10 @@ const generatedRegions = {
   'TASKBOARD.md': ['<!-- hot-specs:start -->', '<!-- hot-specs:end -->']
 };
 const templateVocabulary = new Set(templatePlaceholders);
-export const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md'];
+// S-00I TK-01U: the features collection README joins the contract so a new
+// room is seeded with the collection's job and article shape, exactly as the
+// design-concepts README already is.
+export const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md'];
 // Seeded lane documents are the third class of installed state, beside runtime
 // tools and installed skills: the harness copies them out of the release to be
 // read and, unlike a runtime tool, sometimes locally adjusted. Their generation
@@ -94,8 +97,15 @@ export const seededLaneDocuments = [
     lane: 'sessions', name: `notepads/templates/${name}`, template: `sessions/notepads/templates/${name}`
   }))
 ];
-const notepadCollections = Object.fromEntries(Object.entries(collections).filter(([name]) => name !== 'recovery'));
+// The preserved collection shapes derive from the pre-feature set, never the
+// live one, so appending `features` cannot redefine what an older room held.
+const notepadCollections = Object.fromEntries(Object.entries(PRE_FEATURE_COLLECTIONS).filter(([name]) => name !== 'recovery'));
 const legacyCollections = Object.fromEntries(Object.entries(notepadCollections).filter(([name]) => !['notepads', 'notepad-templates'].includes(name)));
+// S-00I TK-01U: every pre-feature shape stays valid exactly as stamped, and
+// each may carry the additive `features` collection appended at its declared
+// path. The live `collections` is the first of those appended shapes.
+const allowedCollectionShapes = [PRE_FEATURE_COLLECTIONS, notepadCollections, legacyCollections]
+  .flatMap((shape) => [shape, { ...shape, features: collections.features }]);
 
 
 function lstatOrNull(target) {
@@ -385,8 +395,8 @@ export function validateManifest(project) {
   if (![lanes, SIX_LANES].some((shape) => JSON.stringify(manifest.lanes) === JSON.stringify(shape))) {
     return fail('invalid-lane', 'Manifest lanes must exactly match the seven support lanes, or the six lanes declared before the skills lane.', { lanes: manifest.lanes });
   }
-  if (![collections, notepadCollections, legacyCollections].some(shape => JSON.stringify(manifest.collections) === JSON.stringify(shape))) {
-    return fail('invalid-collection', 'Manifest collections must match the current layout or the preserved v3.1 collection set.', { collections: manifest.collections });
+  if (!allowedCollectionShapes.some(shape => JSON.stringify(manifest.collections) === JSON.stringify(shape))) {
+    return fail('invalid-collection', `Manifest collections must match the current layout or a preserved earlier collection set; the additive features collection, when declared, is ${collections.features}.`, { collections: manifest.collections });
   }
   for (const lane of Object.values(manifest.lanes)) {
     if (!isSafeRelative(lane)) return fail('invalid-lane', `Manifest lane ${lane} is unsafe.`);
@@ -614,7 +624,7 @@ function sourceIdentity(options) {
   return resolved;
 }
 
-export function seedWiki(project, options) {
+export function seedWiki(project, options, files = wikiContractFiles) {
   for (const relative of Object.values(collections).filter(value => value.startsWith(`${lanes.wiki}/`))) {
     fs.mkdirSync(path.join(project, relative), { recursive: true });
   }
@@ -626,7 +636,7 @@ export function seedWiki(project, options) {
     '[PROJECT_NAME]': options['--name'] ?? path.basename(project)
   };
   const written = [];
-  for (const relative of wikiContractFiles) {
+  for (const relative of files) {
     const destination = path.join(project, lanes.wiki, relative);
     if (lstatOrNull(destination)) continue;
     fs.mkdirSync(path.dirname(destination), { recursive: true });
@@ -853,6 +863,21 @@ function identifyUnlocked(project) {
   return report('identified', { workbenchId });
 }
 
+// S-00I TK-01U: create the additive features collection as an ordinary
+// directory, never through a link, and seed only its README (when absent) from
+// the release templates. A refusal is returned before anything is written.
+function addFeaturesCollection(project, manifest) {
+  const relative = collections.features;
+  try { assertSafeWritePath(project, path.join(project, relative, '.gitkeep')); }
+  catch (error) { return fail('lane-collision', error.message); }
+  const entry = lstatOrNull(path.join(project, relative));
+  if (entry && (entry.isSymbolicLink() || !entry.isDirectory())) return fail('lane-collision', `${relative} must be an ordinary directory.`);
+  fs.mkdirSync(path.join(project, relative), { recursive: true });
+  const seeded = seedWiki(project, { '--version': manifest.workbenchVersion }, ['features/README.md']);
+  if (!fs.readdirSync(path.join(project, relative)).length) fs.writeFileSync(path.join(project, relative, '.gitkeep'), '');
+  return { seeded };
+}
+
 function validateManifestShape(manifest) {
   if (!/^v\d+\.\d+\.\d+$/.test(manifest.workbenchVersion ?? '')) return fail('invalid-version', 'Workbench version must use vMAJOR.MINOR.PATCH.');
   if (!['genesis', 'adoption', 'upgrade'].includes(manifest.provenance.lifecycle)) return fail('invalid-provenance', 'Provenance must be genesis, adoption, or upgrade.');
@@ -894,6 +919,17 @@ function migrateUnlocked(options) {
       writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
       return report('migrated', { manifestPath, manifest: updated, moved: [], added: ['lanes.skills'], next: 'run workbench-skills.mjs install --project PATH from the release checkout' });
     }
+    // S-00I TK-01U: a room stamped with the current pre-feature collection
+    // set gains the features collection additively: the directory is created
+    // (seeded with its README when the release templates are beside this
+    // tool) and the declaration is appended; nothing else changes.
+    if (JSON.stringify(manifest.collections) === JSON.stringify(PRE_FEATURE_COLLECTIONS)) {
+      const added = addFeaturesCollection(project, manifest);
+      if (added.status) return added;
+      const updated = { ...manifest, collections };
+      writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
+      return report('migrated', { manifestPath, manifest: updated, moved: [], added: ['collections.features'], seeded: added.seeded });
+    }
     if (JSON.stringify(manifest.collections) === JSON.stringify(collections)) {
       try { assertSafeReadPath(project, path.join(project, SEED_RECORD)); }
       catch (error) { return fail('lane-collision', error.message); }
@@ -919,6 +955,8 @@ function migrateUnlocked(options) {
     const seedFailure = preflightSeedDocuments(project);
     if (seedFailure) return seedFailure;
     for (const name of ['notepads', 'notepad-templates', 'recovery']) fs.mkdirSync(path.join(project, collections[name]), { recursive: true });
+    const addedFeatures = addFeaturesCollection(project, manifest);
+    if (addedFeatures.status) return addedFeatures;
     writeSessionsIgnore(project);
     const updated = { ...manifest, workbenchId: manifest.workbenchId ?? allocateWorkbenchId(), collections, provenance: { ...manifest.provenance, layout: { source } } };
     writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
