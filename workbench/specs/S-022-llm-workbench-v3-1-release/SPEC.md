@@ -94,7 +94,7 @@ refreshed checkout and remote evidence.
 - v3.0.0 is documented as an unreleased internal candidate; v3.1.0 is the
   first public v3 release. No v3.0 promotion PR is opened.
 - Exactly seven root controls remain; the Workbench Contract is a claim set,
-  not a file ([ADR-0033](../../docs/adr/0033-workbench-contract-is-a-claim-set.md)).
+  not a file ([ADR-0033](../../docs/adr/archive/0033-workbench-contract-is-a-claim-set.md)).
 - Ownership routing: Lexicon owns meanings, AGENTS owns authority and
   behavior, Blueprint owns cross-cutting architecture, the selected spec owns
   bounded capability requirements, Runbook owns procedures, Taskboard is

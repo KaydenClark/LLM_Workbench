@@ -34,13 +34,13 @@
       "REC-04"
     ],
     "status_tally": {
-      "locked": 193,
+      "locked": 198,
       "superseded": 26,
       "deferred": 2,
       "withdrawn": 6,
       "answered-in-chat": 10,
       "not-a-question": 1,
-      "open": 14,
+      "open": 9,
       "partially-answered": 3
     }
   },
@@ -66,7 +66,7 @@
   "progress_assessment": {
     "commit": "6ae38b9dfc10144dff5481910c29f46ba09b1f8c",
     "date": "2026-09-24",
-    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments.",
+    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments. The 2026-09-29 FND-Q24B reading likewise names its own integration baseline. The 2026-09-29 ACC-1/2/4/5 row readings name the unmerged acceptance candidate and do not claim integration containment; their locked answers are separate from delivery progress.",
     "statuses": {
       "implemented-and-completed": "Every Result artifact exists at the pinned commit and says what the Answer says; any owning Spec or Task is complete.",
       "specced": "A Spec carries this answer, but no Task is cut for this part.",
@@ -77,11 +77,11 @@
     },
     "tally": {
       "implemented-and-completed": 107,
-      "specced": 6,
+      "specced": 7,
       "specced-and-tasked": 10,
-      "in-progress": 48,
-      "not-started": 33,
-      "no-build-obligation": 55
+      "in-progress": 53,
+      "not-started": 32,
+      "no-build-obligation": 50
     }
   },
   "families": [
@@ -7878,15 +7878,15 @@
       "counted": true,
       "topic": "Classifying project-vs-upstream row differences",
       "question": "If absence from the template does not classify a differing row, what does - and where is that classification authored (in OWNERSHIP.json, without a status-shaped field)?",
-      "status": "open",
-      "answer": "Open - no owner answer. On 2026-09-22 he ruled it stays live under S-00G as an ownership-origin question, not parked and not part of the Portable Workbench Spec.",
-      "answered": "",
-      "reason": "PW-2 (2026-09-22): \"OWNERSHIP.json is still being built, so FND-Q24B still needs an answer; it simply belongs to a different Spec.\"",
+      "status": "locked",
+      "answer": "A legacy room row that differs from upstream and carries no authored intent is a conflict until intent is declared. The owner chose S-00G's Option A: \"conflict - Every undeclared difference is a conflict until intent is declared. Safest, but the first upgrade of every legacy room stops on each such row.\" The companion placement question (whether a divergence disposition and any authorizing ADR citation live in the map or in the decision/report that owns the disposition) was not covered by this answer; S-00G's recommendation to keep it outside the map stays a recommendation. The field shape that carries the verdict without a status-shaped field is settled within S-00G at implementation under the Q23 guards. On 2026-09-22 he had ruled the question stays live under S-00G as an ownership-origin question.",
+      "answered": "2026-09-29, Director run in-chat answer",
+      "reason": "Owner: safest against a silent authority reroute; the cost of stopping legacy upgrades on each undeclared row is accepted.",
       "result": [
         {
-          "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md (TK-004)",
-          "action": "none",
-          "effect": "Owns the answer, decided within S-00G with an agent proposal first."
+          "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md (Dependencies And Blockers tradeoff 1, TK-004)",
+          "action": "update",
+          "effect": "Records the decision and has TK-004's comparator treat an undeclared difference as a conflict; the field shape and the disposition placement are settled within S-00G at implementation."
         }
       ],
       "related": [
@@ -7897,19 +7897,20 @@
       "aliases": [
         "blocked-obligations-review FND-Q24B"
       ],
-      "notes": "The 2026-09-22 revisit worded it: what field shape in OWNERSHIP.json classifies a project-vs-upstream row difference without a status-shaped field? Asked 2026-09-15 with proposal-026 (two authored facts: upstream strength, project intent; conflict computed) and an unanswered sub-fork (is an undeclared difference a conflict or a reportable finding?). The owner paused, then on 2026-09-15 said not to resume it automatically (directive-012). Handed off 2026-09-22 for a deep-dive.",
+      "notes": "The 2026-09-22 revisit worded it: what field shape in OWNERSHIP.json classifies a project-vs-upstream row difference without a status-shaped field? Asked 2026-09-15 with proposal-026 (two authored facts: upstream strength, project intent; conflict computed) and an unanswered sub-fork (is an undeclared difference a conflict or a reportable finding?). The owner paused, then on 2026-09-15 said not to resume it automatically (directive-012). Handed off 2026-09-22 for a deep-dive. 2026-09-29: the Director asked the owner in chat to choose among S-00G's three recorded options for the undeclared-difference sub-fork (A conflict, B reportable finding, C defer); he selected A. The 2026-09-15 proposal-026 shape (two authored facts, conflict computed) is not thereby accepted as schema; only the undeclared-difference policy is decided.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-026",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#current.questions (FND-Q24B)",
         "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-002",
         "workbench/sessions/handoffs/fnd-q24b-divergence-disposition-shape-2026-09-22.md",
-        "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md"
+        "workbench/sessions/handoffs/destination-audit-gap-triage-2026-09-23.md",
+        "Owner in-chat answer to the Director tradeoff question, 2026-09-29 (Claude Director session 'Role model and reconciliation report'); recorded the same day in S-00G SPEC.md evidence"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer.",
-        "gap": ""
+        "status": "specced",
+        "sub_label": "S-00G planned; TK-004 blocked on ADR-000B/C/D",
+        "evidence": "At integration 1450e7a8 (2026-09-29) S-00G SPEC.md carries the decision in Dependencies And Blockers tradeoff 1 and a dated evidence row; S-00G has no Task records, no OWNERSHIP.json exists and no comparator implements the verdict.",
+        "gap": "TK-004 must implement the conflict verdict for undeclared differences with a field shape that passes the Q23 guards, after ADR-000B/C/D acceptance; the disposition placement stays a recommendation until then."
       }
     },
     {
@@ -10631,20 +10632,20 @@
       "counted": true,
       "topic": "Timing of ADR-000B/C/D acceptance",
       "question": "Does ADR-000B/C/D acceptance land before or after the v4 PC handoff?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "status": "locked",
+      "answer": "Reconcile ADR-000B/C/D to the locked answers, then accept them now without another owner reread. A confirmed grilling Question / Answer / Why / Impact readback locks the ADR; to-docs authors it before Specs and Tasks.",
+      "answered": "2026-09-29 owner-confirmed grilling readback; explicit promotion authorization in the same chat",
+      "reason": "The owner confirmed the readbacks and chose Option A; the earlier board-track and PC-handoff timing readings were agent interpretations.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
-          "action": "none",
-          "effect": "Once decided: moved out of proposed/ at the chosen time."
+          "artifact": "workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md, workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md, workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+          "action": "update",
+          "effect": "Reconciled decisions are active; ADR-0013/0033 are superseded in archive."
         },
         {
           "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
-          "action": "none",
-          "effect": "Its Next gate records the chosen acceptance timing for 000B/C/D."
+          "action": "update",
+          "effect": "Acceptance gate cleared; map implementation remains."
         }
       ],
       "related": [
@@ -10655,17 +10656,20 @@
         "CAND-N"
       ],
       "aliases": [],
-      "notes": "Owner's only related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23). This is a conditional view on accepting his own ADRs plus a wish to talk; it does not answer the timing. A gap-triage reading of 'now' is interpretation, and whether 000B/C/D count as ADRs he just created is not established.",
+      "notes": "Owner's only related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23). This is a conditional view on accepting his own ADRs plus a wish to talk; it does not answer the timing. A gap-triage reading of 'now' is interpretation, and whether 000B/C/D count as ADRs he just created is not established. 2026-09-29: asked in chat to choose among S-00G's recorded options for ADR-000B/C/D acceptance (A reconcile then accept now; B reconcile now, accept with the migration; C accept as written), the owner directed a fresh grilling instead of choosing (\"/handoff grilling this again I guess if you cant find the answers\"). The Director found no owner answer in this ledger or any local notepad and wrote the local handoff workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md (untracked; not durable evidence). Status stays open. 2026-09-29: owner-confirmed readback supersedes the earlier open reading. The accepted decision and current delivery limit are in the linked ADRs and S-00G.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-1, current.next_action)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
-        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
+        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
+        "workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md",
+        "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+        "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer. ADR-000B/C/D remain in workbench/docs/adr/proposed/ and S-00G SPEC.md:12 still gates on their acceptance.",
-        "gap": ""
+        "status": "in-progress",
+        "sub_label": "accepted 2026-09-29",
+        "evidence": "Three ADRs active, two predecessors archived, S-00G acceptance gate cleared.",
+        "gap": "Map and JSON Taskboard implementation remain assigned work. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
@@ -10674,25 +10678,20 @@
       "counted": true,
       "topic": "Seven-vs-eight root file window",
       "question": "Is a window where accepted Canon says eight root files while AGENTS/LEXICON/BLUEPRINT say seven acceptable, or must acceptance and S-00G migration land together?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "status": "locked",
+      "answer": "The accepted eight-file destination may lead the current seven-file implementation. ADR-000B names TASKBOARD.json; AGENTS and LEXICON distinguish accepted destination from installed files.",
+      "answered": "2026-09-29 owner-confirmed grilling readback; explicit promotion authorization in the same chat",
+      "reason": "ADRs are accepted before Specs and Tasks by design; AGENTS State Resolution treats newer Canon as an implementation gap.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md",
-          "action": "none",
-          "effect": "Once decided: accepted with its file list naming TASKBOARD.json (per E-1)."
+          "artifact": "workbench/docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md",
+          "action": "update",
+          "effect": "Names OWNERSHIP.json and TASKBOARD.json in the eight-file destination."
         },
         {
-          "artifact": "workbench/docs/adr/0013-seven-file-workbench-contract.md",
-          "action": "none",
-          "effect": "Archived as superseded when 000B is accepted."
-        },
-        {
-          "artifact": "AGENTS.md, LEXICON.md, BLUEPRINT.md (+ templates)",
-          "action": "none",
-          "effect": "Root-file count changes with or after acceptance, per the answer."
+          "artifact": "AGENTS.md, LEXICON.md",
+          "action": "update",
+          "effect": "Distinguish accepted architecture from current runtime and route implementation to S-00G and board work."
         }
       ],
       "related": [
@@ -10702,17 +10701,20 @@
         "FND-Q23A"
       ],
       "aliases": [],
-      "notes": "Since E-1 (2026-09-22), ACC-2 also covers TASKBOARD.md -> TASKBOARD.json in 000B's list. Owner's related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23); reading 'land in one change so no window opens' from them is interpretation.",
+      "notes": "Since E-1 (2026-09-22), ACC-2 also covers TASKBOARD.md -> TASKBOARD.json in 000B's list. Owner's related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23); reading 'land in one change so no window opens' from them is interpretation. 2026-09-29: asked in chat to choose among S-00G's recorded options for ADR-000B/C/D acceptance (A reconcile then accept now; B reconcile now, accept with the migration; C accept as written), the owner directed a fresh grilling instead of choosing (\"/handoff grilling this again I guess if you cant find the answers\"). The Director found no owner answer in this ledger or any local notepad and wrote the local handoff workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md (untracked; not durable evidence). Status stays open. 2026-09-29: owner-confirmed readback supersedes the earlier open reading. The accepted decision and current delivery limit are in the linked ADRs and S-00G.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-2, current.next_action)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
-        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
+        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
+        "workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md",
+        "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+        "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer. ADR-000B is still proposed and ADR-0013 (seven files) is still active in workbench/docs/adr/.",
-        "gap": ""
+        "status": "in-progress",
+        "sub_label": "accepted 2026-09-29",
+        "evidence": "Accepted ADR and controls now state the destination and gap.",
+        "gap": "The two JSON files and affected runtime/template consumers remain unimplemented. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
@@ -10727,19 +10729,19 @@
       "reason": "Inference: the owner's settled vocabulary (decision-024, correction-009) says Canon classifies accepted claims in context rather than by file, so a routed Blueprint's accepted claims still bind where they apply.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
+          "artifact": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
           "action": "update",
-          "effect": "States the three-carrier Contract with the Blueprint as a routed artifact."
+          "effect": "Accepted three-carrier Contract and Blueprint routing; the separate binding-force question remains open."
         },
         {
-          "artifact": "AGENTS.md Authority Order (+ templates/AGENTS.md)",
+          "artifact": "AGENTS.md Authority Order",
           "action": "update",
-          "effect": "Blueprint listed as a routed artifact, not a Contract carrier."
+          "effect": "Root control now routes Blueprint as destination; generic template mirror remains later implementation work."
         },
         {
-          "artifact": "LEXICON.md Workbench Contract row (+ templates/LEXICON.md)",
+          "artifact": "LEXICON.md Workbench Contract row",
           "action": "update",
-          "effect": "Contract = three carriers + assigned Spec."
+          "effect": "Root definition now names three carriers plus assigned Spec; generic template mirror remains later implementation work."
         }
       ],
       "related": [
@@ -10748,7 +10750,7 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation.",
+      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation. 2026-09-29: ADR-000C acceptance and root control wording resolve the carrier/routing part, but do not answer the separate binding-force question. Keep status partially-answered.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027",
@@ -10756,10 +10758,10 @@
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)"
       ],
       "progress": {
-        "status": "not-started",
-        "sub_label": "ADR-000C still proposed",
-        "evidence": "Answered part only. ADR-000C (workbench/docs/adr/proposed/000C, lines 10-18) states the three-carrier Contract but is not accepted, and no Spec carries the control update: S-00G SPEC.md:212-214 leaves AGENTS.md and BLUEPRINT.md to 'ADR acceptance, which is a separate step from this Spec'. AGENTS.md:22 still ranks BLUEPRINT.md as procedural Canon; LEXICON.md:204 still says seven root controls.",
-        "gap": "Accept ADR-000C; update AGENTS.md Authority Order and the LEXICON.md Workbench Contract row plus templates mirrors. The open part (what binds Blueprint claims) still needs an owner decision."
+        "status": "in-progress",
+        "sub_label": "ADR-000C accepted; binding-force question open",
+        "evidence": "ADR-000C is active. AGENTS.md and LEXICON.md carry the three-carrier definition and Blueprint route; S-00G records the implementation window. Integration containment is verified from Git, not by this ledger.",
+        "gap": "The owner has not confirmed the separate ACC-3 question about what binds accepted Blueprint claims when routed; template mirrors remain assigned implementation work."
       }
     },
     {
@@ -10768,20 +10770,20 @@
       "counted": true,
       "topic": "Routes-not-claims guardrail violation",
       "question": "What would a first violation of 000D's routes-not-claims guardrail look like, and what catches it?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "status": "locked",
+      "answer": "A map row or query result carrying claim text, an instance identifier, or a status-shaped field violates routes-not-claims. S-00G TK-004 checks query output and schema rejection.",
+      "answered": "2026-09-29 owner-confirmed grilling readback; explicit promotion authorization in the same chat",
+      "reason": "FND-Q23 locked accepted type rows, no instance IDs, no status fields, and route-only results.",
       "result": [
         {
-          "artifact": "workbench/docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
-          "action": "none",
-          "effect": "Once decided: names the violation shape and its check."
+          "artifact": "workbench/docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md",
+          "action": "update",
+          "effect": "Names the violation shape and future check."
         },
         {
-          "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md TK-004",
-          "action": "none",
-          "effect": "Red test proving an ownership query returns routes, never claim text."
+          "artifact": "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+          "action": "update",
+          "effect": "TK-004 specifies the red query-output and schema checks."
         }
       ],
       "related": [
@@ -10790,42 +10792,44 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "Gap triage calls it agent-answerable from decision-024/027 (Canon classifies claims in context; planes are lenses), with owner confirmation; no answer is recorded.",
+      "notes": "Gap triage calls it agent-answerable from decision-024/027 (Canon classifies claims in context; planes are lenses), with owner confirmation; no answer is recorded. 2026-09-29: owner-confirmed readback supersedes the earlier open reading. The accepted decision and current delivery limit are in the linked ADRs and S-00G.",
       "source_refs": [
-        "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-4)"
+        "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-4)",
+        "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+        "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer. ADR-000D is proposed and S-00G TK-004 is blocked.",
-        "gap": ""
+        "status": "in-progress",
+        "sub_label": "accepted 2026-09-29",
+        "evidence": "ADR-000D and S-00G TK-004 name the check.",
+        "gap": "The test, schema and query runtime have not been implemented. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
       "id": "ACC-5",
       "family": "ACC",
       "counted": true,
-      "topic": "Repointing links in completed Specs",
-      "question": "May links to archived ADR-0013/0033 be repointed inside completed Specs S-024 and S-022?",
-      "status": "open",
-      "answer": "Open - no owner answer.",
-      "answered": "",
-      "reason": "Not recorded.",
+      "topic": "Wiki-first navigation for completed and historical capabilities",
+      "question": "After ADR-0013/0033 are archived, where should navigation for S-024 and historical S-022 lead?",
+      "status": "locked",
+      "answer": "Navigate from completed or historical capability links to the Wiki feature article first; the article links archived ADRs as sources. Keep the archive. S-024 already has an article; create one for S-022 while stating that its historical release packet is blocked, not completed.",
+      "answered": "2026-09-29 owner-confirmed grilling readback; explicit promotion authorization in the same chat",
+      "reason": "The Wiki carries the explanation and sources; agents should use it before digging through archives. The live S-022 Spec explicitly preserves unfinished acceptance.",
       "result": [
         {
-          "artifact": "workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md:69 and workbench/specs/S-022-llm-workbench-v3-1-release/SPEC.md:97",
-          "action": "none",
-          "effect": "Links to ADR-0033 repointed or left, per the answer, once 0033 is archived."
+          "artifact": "workbench/wiki/design-concepts/spec-S-024-governance-core-and-diagnostics.md",
+          "action": "update",
+          "effect": "Routes to active ADR-000C and archived ADR-0033 as sources."
         },
         {
-          "artifact": "LEXICON.md Workbench Contract row",
-          "action": "none",
-          "effect": "Its ADR-0033 link repointed on archive."
+          "artifact": "workbench/wiki/design-concepts/spec-S-022-llm-workbench-v3-1-release.md",
+          "action": "create",
+          "effect": "Historical article routes to current release owners and archived Contract source without claiming S-022 complete."
         },
         {
-          "artifact": "workbench/docs/adr/REGISTER.md",
-          "action": "none",
-          "effect": "Shows 0013/0033 archived after 000B/C acceptance."
+          "artifact": "workbench/wiki/MEMORY.md, LEXICON.md",
+          "action": "update",
+          "effect": "Wiki-first feature navigation; archived ADRs retained."
         }
       ],
       "related": [
@@ -10834,17 +10838,19 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "The question applies once ADR-0013 and ADR-0033 are archived after 000B/C acceptance. Owner's related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23). The gap-triage reading 'agents repoint links' is interpretation.",
+      "notes": "The question applies once ADR-0013 and ADR-0033 are archived after 000B/C acceptance. Owner's related words: \"For ADR acceptances, I guess we need to talk about those, but if I just created them, then they should be correct\" (2026-09-23). The gap-triage reading 'agents repoint links' is interpretation. 2026-09-29: owner-confirmed readback supersedes the earlier open reading. The accepted decision and current delivery limit are in the linked ADRs and S-00G. The original question proposed rewriting ADR links inside completed Specs. The owner corrected the destination to Wiki feature articles; S-022 is historical and blocked, so the new article states that limit.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json (questions ACC-5)",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#source_record-001",
-        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md"
+        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md",
+        "workbench/specs/S-00G-ownership-map-root-control/SPEC.md",
+        "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "no-build-obligation",
-        "sub_label": "needs decision",
-        "evidence": "Decision status open; no owner answer. Premise not triggered: ADR-0013 and ADR-0033 are still active in workbench/docs/adr/ (REGISTER.md).",
-        "gap": ""
+        "status": "in-progress",
+        "sub_label": "accepted 2026-09-29",
+        "evidence": "S-022 and S-024 articles and Wiki route authored; archived ADRs preserved.",
+        "gap": "S-022 remains a blocked historical release packet. Verify integration containment from Git."
       }
     },
     {
