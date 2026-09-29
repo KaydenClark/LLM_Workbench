@@ -74,6 +74,8 @@ they are authored.
 - [Handoff: pass one objective to a named recipient](skill-handoff.md) ([S-01A](../specs/S-01A-handoff-skill-rebuild/SPEC.md))
 - [Code review: check one fixed candidate against both contracts](skill-code-review.md)
 - [To-tasks: cut an activated Spec into executable Tasks](skill-to-tasks.md)
+- [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
+- [Genesis: start a new room from a founding prompt](skill-genesis.md)
 
 ## Release And Distribution Routing
 
@@ -88,6 +90,8 @@ copying task state here.
 Every unique grilling question put to the owner, with its answer, reason and
 intended result, is recorded in
 [grilling-destination-audit-ledger.json](grilling-destination-audit-ledger.json).
+Its progress assessment is historical and pinned; use the linked Specs and current
+Taskboard for delivery state. The [v4 reconciliation receipt](../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md) identifies recovered sources, branch-only work and remaining gaps.
 That JSON file is the ledger itself, not a projection: readable views are
 rendered from it and never edited by hand. It is the destination the v4
 Workbench is audited against; look a question up by its `id`, or audit one
@@ -110,6 +114,10 @@ That article is this capability's durable owner, reconciled from
 [ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md);
 this route preserves the retired Spec's historical reachability without
 copying its evidence log here.
+
+## Roles And Stances
+
+[Roles and stances](design-concepts/roles-and-stances.md) explains scope versus job and routes to each separately owned capability.
 
 ## Agent Operating Knowledge
 

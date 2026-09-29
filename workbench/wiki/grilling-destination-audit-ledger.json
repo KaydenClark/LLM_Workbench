@@ -9,7 +9,7 @@
   ],
   "counting": {
     "destination_audit_rows": 254,
-    "unique_question_ids": 251,
+    "unique_question_ids": 255,
     "reassessed_ids": [
       "CAND-N",
       "FND-Q20",
@@ -34,14 +34,14 @@
       "REC-04"
     ],
     "status_tally": {
-      "locked": 190,
-      "superseded": 25,
-      "open": 14,
-      "answered-in-chat": 10,
-      "withdrawn": 6,
-      "partially-answered": 3,
+      "locked": 193,
+      "superseded": 26,
       "deferred": 2,
-      "not-a-question": 1
+      "withdrawn": 6,
+      "answered-in-chat": 10,
+      "not-a-question": 1,
+      "open": 14,
+      "partially-answered": 3
     }
   },
   "field_guide": {
@@ -66,7 +66,7 @@
   "progress_assessment": {
     "commit": "6ae38b9dfc10144dff5481910c29f46ba09b1f8c",
     "date": "2026-09-24",
-    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle.",
+    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments.",
     "statuses": {
       "implemented-and-completed": "Every Result artifact exists at the pinned commit and says what the Answer says; any owning Spec or Task is complete.",
       "specced": "A Spec carries this answer, but no Task is cut for this part.",
@@ -80,8 +80,8 @@
       "specced": 6,
       "specced-and-tasked": 10,
       "in-progress": 48,
-      "not-started": 30,
-      "no-build-obligation": 54
+      "not-started": 33,
+      "no-build-obligation": 55
     }
   },
   "families": [
@@ -174,6 +174,12 @@
       "name": "Recovered pre-notepad questions",
       "dates": "2026-09-07",
       "record": "recovered from transcript by the 2026-09-23 completeness audit"
+    },
+    {
+      "id": "ROLE",
+      "name": "Minimum role and stance buildout",
+      "dates": "2026-09-26 to 2026-09-27",
+      "record": "Owner-confirmed v4-role-groundwork inquiry; operational owners linked in each result"
     }
   ],
   "questions": [
@@ -6951,7 +6957,7 @@
         "TT-Q1"
       ],
       "aliases": [],
-      "notes": "The 2026-09-19 refinement replaces decision-023's Journey/Path wording. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design.",
+      "notes": "The 2026-09-19 refinement replaces decision-023's Journey/Path wording. Later reconciliation (2026-09-26): Landmark Tracker Foundation S-01T and accepted ADR-000N preserve the additive documentation/alignment Tracker beside implementation Taskboard, the ordinary Wiki-delivery boundary and explicit future collection support. This row retains its historical answer and pinned progress; the later durable owners govern the new design. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-023",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-037",
@@ -8978,7 +8984,7 @@
         "workbench-workflow-2026-09-10 Q1",
         "workbench-foundation-rework-2026-09-11 WF-1"
       ],
-      "notes": "Original wording: 'Does BLUEPRINT.md remain the single PRD-shaped destination artifact, rather than adding a separate PRD?' The owner objected to the shorthand 'no separate PRD' (correction-019); the replacement wording proposed there was withdrawn by correction-022 and must not be presented again. The allocation itself is settled. Supersedes the ADR-000G assumption that the Blueprint owns the future-facing PRD function.",
+      "notes": "Original wording: 'Does BLUEPRINT.md remain the single PRD-shaped destination artifact, rather than adding a separate PRD?' The owner objected to the shorthand 'no separate PRD' (correction-019); the replacement wording proposed there was withdrawn by correction-022 and must not be presented again. The allocation itself is settled. Supersedes the ADR-000G assumption that the Blueprint owns the future-facing PRD function. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[0]",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",
@@ -9024,7 +9030,7 @@
         "workbench-workflow-2026-09-10 Q2",
         "workbench-foundation-rework-2026-09-11 WF-2"
       ],
-      "notes": "Original wording: 'What starts an Explore phase, and what is the minimum exit artifact or decision?' Explore was renamed Align. proposal-011 (agent Suggestions A/B, including a drafted Blueprint delta as exit artifact) was not adopted; the answer comes from decision-067. The source note treats Lexicon promotion of Align as follow-on promotion work, not an open choice.",
+      "notes": "Original wording: 'What starts an Explore phase, and what is the minimum exit artifact or decision?' Explore was renamed Align. proposal-011 (agent Suggestions A/B, including a drafted Blueprint delta as exit artifact) was not adopted; the answer comes from decision-067. The source note treats Lexicon promotion of Align as follow-on promotion work, not an open choice. 2026-09-27 integration reconciliation adds the accepted Lexicon definitions and generic mirror. Historical progress below is unchanged; S-00P records the bounded vocabulary delivery and remaining runtime/ADR obligations.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#current.questions[1]",
         "workbench/sessions/notepads/grilling/wf-workbench-workflow-2026-09-15.json#decision-067",
@@ -11540,7 +11546,7 @@
         "E-2"
       ],
       "aliases": [],
-      "notes": "Refines TT-Q4 (Director with Dispatcher as alias) and E-2 (Director as whoever directs; the owner now). Verifier is not a term: the Dispatcher may dispatch its whole-Spec QA and owns the result.",
+      "notes": "Refines TT-Q4 (Director with Dispatcher as alias) and E-2 (Director as whoever directs; the owner now). Verifier is not a term: the Dispatcher may dispatch its whole-Spec QA and owns the result. ROLE-1 through ROLE-3 refine the roles with separate stance jobs and explicit current work scopes.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-004",
         "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#correction-007"
@@ -11558,7 +11564,7 @@
       "counted": true,
       "topic": "Roles are not branches",
       "question": "Are Director, Dispatcher and Worker defined by their responsibilities independent of branch placement, with branches as work topology rather than role definitions?",
-      "status": "locked",
+      "status": "superseded",
       "answer": "Yes. Roles are defined by responsibility and approval boundary, not by Git branch placement. Branches attach to the work being accumulated; Director does not mean integration and Dispatcher does not mean Spec branch.",
       "answered": "2026-09-24, SCR note decision-005; readback confirmed decision-012",
       "reason": "Owner: 'we dont have responsibilities or roles tied to branches, branches are tied to work.'",
@@ -11570,18 +11576,19 @@
         }
       ],
       "related": [
-        "WF-7"
+        "WF-7",
+        "ROLE-3"
       ],
       "aliases": [],
-      "notes": "None.",
+      "notes": "Historical 2026-09-24 answer preserved. ROLE-3 explicitly relates role scope to project/integration, Spec/branch and Task; branch possession still grants no authority.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/separate-context-review-boundary-2026-09-24.json#decision-005"
       ],
       "progress": {
-        "status": "not-started",
-        "sub_label": "S-00P TK-002 blocked",
-        "evidence": "At 6ae38b9 BLUEPRINT.md still carried the restored 'Review Task' map step, 'Each completed Task receives review before its branch joins the Spec branch' and the 100/20/5 scale; LEXICON.md made Dispatcher an alias of Director; ADR-000F was proposed.",
-        "gap": "Promoted by the 2026-09-26 SCR reconciliation (owner-approved 2026-09-24) into BLUEPRINT.md, LEXICON.md, templates/LEXICON.md, accepted ADR-000F and S-00P; AGENTS.md, RUNBOOK.md and templates controls await S-00P TK-002, TK-003 and TK-005 (blocked on S-00I/S-00J)."
+        "status": "no-build-obligation",
+        "sub_label": "superseded by ROLE-3",
+        "evidence": "Owner confirmed ROLE-3 on 2026-09-27; original answer remains historical.",
+        "gap": ""
       }
     },
     {
@@ -11994,6 +12001,157 @@
         "sub_label": null,
         "evidence": "S-049 SPEC.md:136-139 (Decisions And Contracts) and :169-171 (Dependencies And Blockers) record that the owner confirmed rooms outside the repository ran v3.1.2, so the freeze prevents a live break; S-049 complete.",
         "gap": ""
+      }
+    },
+    {
+      "id": "ROLE-1",
+      "family": "ROLE",
+      "counted": true,
+      "topic": "Role and stance separation",
+      "question": "How do Dispatcher, Spec Planner and Spec Manager relate?",
+      "status": "locked",
+      "answer": "Dispatcher is a role. Spec Planner and Spec Manager are distinct stances. Each of the three has its own Spec. A Dispatcher already has dispatch responsibility; a stance supplies the job-specific method and obligations.",
+      "answered": "2026-09-27 owner explicitly confirmed the readback",
+      "reason": "Minimum buildout for parallel Spec and Task rollout with shared decisions and progress reachable on integration.",
+      "result": [
+        {
+          "artifact": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md",
+          "action": "update",
+          "effect": "Define role scopes and stance jobs, route the separate capability owners and preserve the reviewed integration boundary."
+        },
+        {
+          "artifact": "workbench/specs/S-002C-director-role/SPEC.md; workbench/specs/S-002D-dispatcher-role/SPEC.md; workbench/specs/S-002E-worker-role/SPEC.md; workbench/specs/S-002F-spec-planner-stance/SPEC.md; workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+          "action": "create",
+          "effect": "One planned capability per role or stance; no new Task cut."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "v4-role-groundwork R1"
+      ],
+      "notes": "Current accepted decision. The progress block below is the historical baseline reading, not current implementation status; follow the linked Specs.",
+      "source_refs": [
+        "Owner-confirmed v4-role-groundwork R1, 2026-09-27"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
+        "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
+      }
+    },
+    {
+      "id": "ROLE-2",
+      "family": "ROLE",
+      "counted": true,
+      "topic": "Parallel work within one Spec",
+      "question": "What defines a Dispatcher lane for the current minimum buildout?",
+      "status": "locked",
+      "answer": "Each Dispatcher works within one Spec. Using Spec Planner it creates small Tasks and groups them into parallel vertical slices, and may dispatch Workers to help write Tasks. Using Spec Manager it dispatches and monitors execution Workers. Director coordinates work across Specs.",
+      "answered": "2026-09-27 owner explicitly confirmed the readback",
+      "reason": "Minimum buildout for parallel Spec and Task rollout with shared decisions and progress reachable on integration.",
+      "result": [
+        {
+          "artifact": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md",
+          "action": "update",
+          "effect": "Define role scopes and stance jobs, route the separate capability owners and preserve the reviewed integration boundary."
+        },
+        {
+          "artifact": "workbench/specs/S-002C-director-role/SPEC.md; workbench/specs/S-002D-dispatcher-role/SPEC.md; workbench/specs/S-002E-worker-role/SPEC.md; workbench/specs/S-002F-spec-planner-stance/SPEC.md; workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+          "action": "create",
+          "effect": "One planned capability per role or stance; no new Task cut."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "v4-role-groundwork R2"
+      ],
+      "notes": "Current accepted decision. The progress block below is the historical baseline reading, not current implementation status; follow the linked Specs.",
+      "source_refs": [
+        "Owner-confirmed v4-role-groundwork R2, 2026-09-27"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
+        "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
+      }
+    },
+    {
+      "id": "ROLE-3",
+      "family": "ROLE",
+      "counted": true,
+      "topic": "Scope and job",
+      "question": "How do roles, stances and branches fit together?",
+      "status": "locked",
+      "answer": "Role defines scope; stance defines the job within that scope. Director covers the whole project and integration, Dispatcher its assigned Spec and branch, Worker its assigned Task. Reviewer and Auditor are stances usable by Dispatcher, not additional roles. Branches express the scope of accumulated work.",
+      "answered": "2026-09-27 owner explicitly confirmed the readback",
+      "reason": "Minimum buildout for parallel Spec and Task rollout with shared decisions and progress reachable on integration.",
+      "result": [
+        {
+          "artifact": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md",
+          "action": "update",
+          "effect": "Define role scopes and stance jobs, route the separate capability owners and preserve the reviewed integration boundary."
+        },
+        {
+          "artifact": "workbench/specs/S-002C-director-role/SPEC.md; workbench/specs/S-002D-dispatcher-role/SPEC.md; workbench/specs/S-002E-worker-role/SPEC.md; workbench/specs/S-002F-spec-planner-stance/SPEC.md; workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+          "action": "create",
+          "effect": "One planned capability per role or stance; no new Task cut."
+        }
+      ],
+      "related": [
+        "SCR-4",
+        "SCR-4A"
+      ],
+      "aliases": [
+        "v4-role-groundwork R3"
+      ],
+      "notes": "Current accepted decision. The progress block below is the historical baseline reading, not current implementation status; follow the linked Specs.",
+      "source_refs": [
+        "Owner-confirmed v4-role-groundwork R3, 2026-09-27"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
+        "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
+      }
+    },
+    {
+      "id": "ROLE-4",
+      "family": "ROLE",
+      "counted": true,
+      "topic": "Integration-first continuity",
+      "question": "What is being documented, specified and reconciled onto integration now?",
+      "status": "locked",
+      "answer": "Recover accepted v4 decisions and progress into their existing tracked owners so fresh agents can continue from integration. Separately specify Director, Dispatcher, Worker, Spec Planner and Spec Manager; reuse Reviewer/Auditor owners. Normal Task-branch merge requests target the Spec branch, then the independently reviewed Spec targets integration. Preserve the current release exception, owner Human QA and main boundary. Keep buildout minimal and defer new execution Tasks until flight launch; use GPT_OS roles as examples, not copied authority.",
+      "answered": "2026-09-27 owner explicitly confirmed the readback",
+      "reason": "Minimum buildout for parallel Spec and Task rollout with shared decisions and progress reachable on integration.",
+      "result": [
+        {
+          "artifact": "LEXICON.md; AGENTS.md; BLUEPRINT.md; RUNBOOK.md; workbench/wiki/design-concepts/roles-and-stances.md",
+          "action": "update",
+          "effect": "Define role scopes and stance jobs, route the separate capability owners and preserve the reviewed integration boundary."
+        },
+        {
+          "artifact": "workbench/specs/S-002C-director-role/SPEC.md; workbench/specs/S-002D-dispatcher-role/SPEC.md; workbench/specs/S-002E-worker-role/SPEC.md; workbench/specs/S-002F-spec-planner-stance/SPEC.md; workbench/specs/S-002G-spec-manager-stance/SPEC.md",
+          "action": "create",
+          "effect": "One planned capability per role or stance; no new Task cut."
+        }
+      ],
+      "related": [],
+      "aliases": [
+        "v4-role-groundwork R4"
+      ],
+      "notes": "Current accepted decision. The progress block below is the historical baseline reading, not current implementation status; follow the linked Specs.",
+      "source_refs": [
+        "Owner-confirmed v4-role-groundwork R4, 2026-09-27"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
+        "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
       }
     }
   ]

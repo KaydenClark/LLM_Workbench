@@ -270,7 +270,9 @@ transient records discarded, with Git preserving recoverable history. A later
 gap against that same destination is a corrective Task that updates the
 reconciled record instead of reviving a closed Spec.
 
-Branch topology follows the work, never the role. A Spec branch is cut from the
+Branch topology expresses the scope of coordinated work: the Director covers
+the project and integration, each Dispatcher its assigned Spec branch, and each
+Worker its Task branch. A Spec branch is cut from the
 integration branch, each Task branch is cut from its Spec branch and worked in
 its own worktree, and proven Task results accumulate in the Spec branch until
 the assembled Spec is approved. No role works from main. As destination design
@@ -287,17 +289,29 @@ implicates, and the design-concept and delivery loop runs again from there. A
 defect is not by itself evidence that the shared design concept was wrong, and
 the loop is chosen at the scope the diagnosis supports.
 
-Parallel work is directed rather than improvised, and the coordinator is a
-chain of roles. Director, Dispatcher and Worker are roles defined by
-responsibility, not by branch, and the owner is the human above them, not the
-Director. The owner tells the Director to start a version; the Director starts
-a Dispatcher for each Spec, coordinates between them, approves each assembled
-Spec and escalates blockers to the owner. A Dispatcher plans its Spec, sends
-Workers to as many non-conflicting Tasks as can run in parallel, reads their
-reports, picks the next step and keeps a single durable writer for shared
-state. A Worker carries out one Task and hands back. That is the intended model
-beyond consistent single-Task execution, and no ordinary assignment depends on
-it.
+Parallel work is directed through scoped roles. The owner remains the human
+above the Director. The Director coordinates the whole project and integration,
+starts Dispatchers for assigned Specs, resolves cross-Spec dependencies and
+shared writers, and oversees independent review of assembled candidates. Each
+Dispatcher stays within its Spec and branch while Workers perform individual
+Tasks. A role defines that scope; a stance defines the job within it.
+
+A Dispatcher using Spec Planner inspects live Actuality at flight launch, cuts
+small Tasks and groups compatible work into parallel vertical slices. It may
+send Workers to help author Tasks. Using Spec Manager, it dispatches execution
+Workers, monitors results, coordinates containment and owns assembled-Spec
+verification. Reviewer and Auditor are stances it can use; neither changes its
+scope or makes it independent of work it carried. The normal delivery path is
+Task merge requests into the Spec branch, followed by an independently reviewed
+Spec merge request into integration. Release-specific bootstrap exceptions are
+explicit in their release owner, not silently confused with this destination.
+
+New Specs capture capability destinations without pre-cut Tasks. Task planning
+belongs to flight launch and activation against current Actuality. Accepted
+decisions and progress reach their tracked owners on integration as work
+proceeds, so a fresh agent can reconstruct the project without another chat,
+private cache or unmerged branch. No ordinary single-Task assignment requires
+a coordination system.
 
 The Workbench Template exercises the same update contract as a real installed
 room. Whole-product readiness examines the combined system before owner-controlled

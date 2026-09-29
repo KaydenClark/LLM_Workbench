@@ -16,10 +16,26 @@ changing it. Never recreate a root `specs/` queue or a project-local
 skill-discovery tree.
 
 Cut Tasks when the Spec is activated (`planned` -> `active`), from live
-Actuality at the real start of the work; a planned Spec gets no Tasks. If the
-assigned Spec is still `planned`, report that its decomposition waits for
-activation, write no Task, and do not run `convert-tasks` on it. Tasks already
-cut into an existing planned Spec stay as they are.
+Actuality at the real start of the work; a planned Spec gets no Tasks unless
+the same request activates it. If the assigned Spec is still `planned` and the
+request does not activate it, report that its decomposition waits for
+activation and write no Task. When the same request activates it, activate it
+with `node workbench/tools/spec-workbench.mjs convert-tasks S-### --activate`,
+run once, and never edit its `**Status:**` by hand:
+
+- A planned Spec that still holds unfinished slice-table rows: the command
+  turns those rows into `TASK.md` records and sets its `**Status:**` to
+  `active` in one step, writing nothing if any record fails to parse.
+- A planned record-backed Spec (it already has a `tasks/` directory; `to-spec`
+  leaves a new Spec that way, with no Task row and an empty tracked `tasks/`):
+  write its first `TASK.md` record(s) as in step 4, requesting each label with
+  `next-id`, then run the command once. It converts no row: it refuses,
+  writing nothing, when the Spec has no record or a record fails to parse, and
+  otherwise sets only its `**Status:**` to `active`.
+
+Either way the command changes no other header field, so update
+`Latest event` and `Next gate` yourself. Tasks already cut into an existing
+planned Spec stay as they are.
 
 ## Process
 
@@ -53,7 +69,9 @@ cut into an existing planned Spec stay as they are.
      reconciled claim>` for a corrective Task after retirement). Add
      `Planned verification` naming the check the Task expects to run. Add no
      table rows; a record-backed Spec's retained
-     `Vertical Implementation Slices` table is completed history only. A
+     `Vertical Implementation Slices` table is completed history only. When
+     that Spec is still `planned` and the same request activates it, run
+     `convert-tasks S-### --activate` once after writing the records. A
      record looks like this:
 
      ```markdown
@@ -70,7 +88,8 @@ cut into an existing planned Spec stay as they are.
      ```
    - If the assigned Spec still holds only the legacy slice table with no
      `tasks/` directory, run `node workbench/tools/spec-workbench.mjs
-     convert-tasks S-###` once to move its unfinished rows into `TASK.md`
+     convert-tasks S-###` once (with `--activate` when the same request
+     activates a planned Spec) to move its unfinished rows into `TASK.md`
      records before adding further slices; it preserves done rows and
      append-only evidence untouched and refuses a second run.
    Leave a slice that waits on an unanswered owner decision uncut: a record's

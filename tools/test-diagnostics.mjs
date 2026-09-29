@@ -977,6 +977,10 @@ const PINNED_EFFECTS = {
   'stale-claim': ['attention', 'specs', 'none'],
   'complete-on-integration': ['attention', 'specs', 'none'],
   'broken-link': ['attention', 'specs', 'none'],
+  'unknown-blocker-qualifier': ['error', 'specs', 'none'],
+  // S-00J TK-02J: a Task record declared `blocked` with no resolvable
+  // blocker stays blocked; the finding keeps that visible and blocks nothing.
+  'blocked-without-blocker': ['attention', 'specs', 'none'],
   'stale-register': ['attention', 'adr', 'none'],
   'disagreeing-status': ['attention', 'adr', 'none'],
   'retired-not-complete': ['attention', 'specs', 'none'],

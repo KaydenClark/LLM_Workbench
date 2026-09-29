@@ -27,15 +27,21 @@ Do not restart grilling or implement the capability.
    decisions/contracts, non-goals, dependencies, acceptance, test seams,
    documentation impact, and append-only evidence structure.
 5. Author a new Spec at status `planned` with no owner claim, and set the
-   normal stance in the SPEC and each TASK during authorized planning, usually
-   Builder for implementation; do not make arriving agents select or record
-   their own stance. Specifying is not starting: do not `claim`, activate or
-   implement the Spec, and record no implementation or verification evidence
-   for work that has not happened.
-6. Seed `Vertical Implementation Slices` only with the smallest vertical tracer
-   bullet needed to make the capability schedulable, cut with the
-   `/tracer-bullet` discipline so it pierces every layer of the stack. Use
-   `/to-tasks` later for detailed decomposition.
+   normal stance in the SPEC during authorized planning, usually Builder for
+   implementation; do not make arriving agents select or record their own
+   stance. Specifying is not starting: do not `claim`, activate or implement
+   the Spec, and record no implementation or verification evidence for work
+   that has not happened.
+6. A new Spec enters Backlog as `planned` with no Task cut:
+   leave `Vertical Implementation Slices` with no Task row and write no
+   `TASK.md` record. Create the Spec's empty `tasks/` directory, tracked with a
+   `.gitkeep`, so the runtime reads it as record-backed with no Task yet;
+   without it `doctor` reports the Spec as malformed and `render` stops. Its
+   Tasks are cut from live Actuality when the Spec is activated
+   (`planned` -> `active`), by `/to-tasks` with the `/tracer-bullet`
+   discipline, which also sets each Task's stance. You may note the intended
+   slice direction in prose. This applies to new Specs only: when you reuse an
+   existing Spec, keep the Tasks it already has.
 7. Preserve project vocabulary from `LEXICON.md` and cross-cutting boundaries
    from `BLUEPRINT.md`. A spec owns one capability; it replaces neither.
 8. Run `node workbench/tools/spec-workbench.mjs render` and

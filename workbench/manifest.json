@@ -43,6 +43,13 @@
     "recovery": "workbench/sessions/recovery",
     "features": "workbench/wiki/features"
   },
+  "landmarkTracker": {
+    "root": "workbench/landmark-tracker",
+    "collections": {
+      "destination-questions": "workbench/landmark-tracker/destination-questions",
+      "landmarks": "workbench/landmark-tracker/landmarks"
+    }
+  },
   "wiki": {
     "profile": "project"
   },

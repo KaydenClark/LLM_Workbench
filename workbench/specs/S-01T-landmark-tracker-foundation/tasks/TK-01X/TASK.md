@@ -3,11 +3,12 @@
 **Task ID:** TK-01X
 **Spec ID:** S-01T
 **Slice:** Capture an ungrouped DQC, keep it through a later landmark, and rebuild its view
-**Status:** ready
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: An unanswered, ungrouped DQC is valid and visible without a Spec, Task, landmark or predetermined Wiki destination; confirmation and Expected result can be added without destroying origin history; a later landmark connection and retitling preserve DQC and source identities; the generated Tracker is rebuilt from records
 **Planned verification:** Red: in a disposable room, a manifest declaring the Tracker root fails path resolution and layout validation, and the public capture, revise, link and rebuild seams are absent. Green: the declared root resolves and validates while an undeclared seven-lane room is unchanged; an unanswered ungrouped DQC persists, survives a fresh-process reload and a clone, is retitled and confirmed with Expected result without losing origin, source lineage or correction history, later links to a landmark, and `TRACKER.json` rebuilds deterministically with an explicit no-landmark display and the exact two-item 30/20/50 distribution; every invalid write leaves prior source and projection bytes unchanged. Targeted tests, then the full AGENTS suite; a one-command demo in under a minute.
+**Proof:** Red 0a365b0 (tools/test-landmark-tracker.mjs 1/12 pass: declaredTracker absent, malformed declarations validate, landmark-tracker.mjs missing; layout Tracker test fails missing-collection; tools test fails RUNTIME_TOOLS lacks landmark-tracker.mjs). Green 2592f28, docs d5c0951. node tools/test-landmark-tracker.mjs 13/13; test-workbench-layout 71/71; test-workbench-tools 19/19. Full AGENTS suite TOTAL pass=48 fail=0 at candidate d5c0951ed03a70ccdc0a1a87660aa3be30a6b8c2 dirty [] (also 48/48 at 2592f28). Doctor no blocking finding (seven pre-existing attention findings). Self-drift pre (a2b6e68) and post: same seven pre-existing findings plus detached-head only in the detached base worktree; no new finding; cleanUpdate false. Guardrail 78/100 before and after, same four outcome-evidence recommendations. Demo: node tools/landmark-tracker-demo.mjs, 0.8s, 30/20/50 PASS.
 
 ## Outcome
 
@@ -117,7 +118,69 @@ README procedure, and Remaining Gaps (Runbook wording for S-00P, suite-list
 line if not directly editable, anything deferred). Close with
 `node workbench/tools/spec-workbench.mjs close S-01T ...` after commit and push.
 
+## Delivered Shape (implementation choices within the Task's latitude)
+
+- **Discovery.** An additive top-level `landmarkTracker` manifest block
+  (`root` plus exactly the `destination-questions` and `landmarks`
+  collections, each flat directly under the root; projection fixed at
+  `<root>/TRACKER.json`), beside `git`. `collections` and `lanes` are
+  untouched, so S-00I TK-01U's `collections.features` key cannot collide and
+  an undeclared room validates byte-for-byte as before. Resolver:
+  `declaredTracker`, `trackerDeclaration`, `trackerRootPath`,
+  `trackerCollectionPath`, `trackerProjectionPath` in `workbench-paths.mjs`
+  (undeclared -> `tracker-undeclared`, malformed -> `invalid-tracker`).
+  Validator: `validateManifest` reuses the registered `invalid-collection`
+  (shape, lane/collection overlap) and `missing-collection` (absent or linked
+  directory) codes and reports `tracker` only when declared.
+- **Identity.** `DQC-` and `LMK-` prefixes through `allocateVisibleId`
+  (default width 3; neither prefix occurs anywhere in the repository);
+  `visible-ids.mjs` unchanged.
+- **Runtime.** `workbench/tools/landmark-tracker.mjs` (in `RUNTIME_TOOLS`):
+  `capture`, `add-landmark`, `revise ID --expect-revision N`,
+  `link ID --landmark LMK-... --expect-revision N`, `rebuild [--check]`,
+  `show [ID]`, each with `--json` and `--path`. Procedure:
+  [README](../../../../landmark-tracker/README.md).
+- **Demo.** `node tools/landmark-tracker-demo.mjs` (release-side, like
+  `tools/team-coordination-demo.mjs`).
+
 ## Remaining Gaps
 
-- Distributions, Documentation and Recovery Tasks remain.
-- A doctor-level Tracker drift check is not in this slice unless trivial.
+- Distributions (TK-01Y), Landmark Wiki evidence (TK-01Z) and reference
+  recovery (TK-02A) remain. Other source types (grilling questions, Specs,
+  ADRs, Tasks) are not yet counted items; only DQCs are.
+- No doctor-level Tracker drift finding: `rebuild --check` is the seam
+  (refuses `projection-drift`), and this repository's test asserts the shipped
+  projection is current. Wiring it into `doctor` needs a registered code.
+- New Genesis rooms do not declare the Tracker root by default (`init` and
+  `COLLECTIONS` are unchanged); declaring it for new rooms is a Genesis and
+  template decision, not made here.
+- `--expect-revision` is a stale-read check, not a lock (stated in the README);
+  concurrent writers are not isolated.
+- Owed to S-00P (root controls, not edited here):
+  - AGENTS full-suite line, after `node tools/test-notepads.mjs`:
+    `node tools/test-landmark-tracker.mjs`
+  - RUNBOOK, section "Landmark Tracker: accepted design and available
+    operations": replace "No Tracker runtime is implemented by this
+    documentation change." and "These paths are a delivery contract, not
+    evidence of installed collections or commands." with this paragraph:
+    "The foundation runtime is `workbench/tools/landmark-tracker.mjs`, and its
+    record procedure lives in `workbench/landmark-tracker/README.md`. A room
+    declares the Tracker with the manifest's additive `landmarkTracker` block
+    (the root and its flat `destination-questions` and `landmarks`
+    collections); without it every Tracker command refuses with
+    `tracker-undeclared`. Capture a DQC with `capture --title ... --question
+    ... [--source ID@REV] --reason ...`, add a landmark with `add-landmark`,
+    change either with `revise ID --expect-revision N --reason ...`, connect a
+    DQC with `link ID --landmark LMK-... --expect-revision N --reason ...`, and
+    regenerate `TRACKER.json` with `rebuild`; every write also rebuilds it and
+    `rebuild --check` refuses projection drift. `--expect-revision` refuses a
+    stale read but is not a lock: keep one writer per record. Never hand-edit
+    `TRACKER.json`."
+  - AGENTS "When the Landmark Tracker capability is available ..." stays
+    accurate while S-01T is incomplete; revisit when S-01T completes.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s01t-tk01x-dqc-foundation | d5c0951ed03a70ccdc0a1a87660aa3be30a6b8c2 | ahead 0 behind 0 | 0 | Red 0a365b0 (tools/test-landmark-tracker.mjs 1/12 pass: declaredTracker absent, malformed declarations validate, landmark-tracker.mjs missing; layout Tracker test fails missing-collection; tools test fails RUNTIME_TOOLS lacks landmark-tracker.mjs). Green 2592f28, docs d5c0951. node tools/test-landmark-tracker.mjs 13/13; test-workbench-layout 71/71; test-workbench-tools 19/19. Full AGENTS suite TOTAL pass=48 fail=0 at candidate d5c0951ed03a70ccdc0a1a87660aa3be30a6b8c2 dirty [] (also 48/48 at 2592f28). Doctor no blocking finding (seven pre-existing attention findings). Self-drift pre (a2b6e68) and post: same seven pre-existing findings plus detached-head only in the detached base worktree; no new finding; cleanUpdate false. Guardrail 78/100 before and after, same four outcome-evidence recommendations. Demo: node tools/landmark-tracker-demo.mjs, 0.8s, 30/20/50 PASS. | workbench/landmark-tracker/README.md (new procedure: capture, revise, link, rebuild, concurrency guarantee); workbench/landmark-tracker/TRACKER.json (generated empty); workbench/landmark-tracker/destination-questions/.gitkeep; workbench/landmark-tracker/landmarks/.gitkeep; workbench/manifest.json (landmarkTracker block); workbench/wiki/design-concepts/landmark-tracker.md (availability sentence, route, history); TK-01X TASK.md (Delivered Shape, Remaining Gaps with S-00P wording); SPEC.md slice table and limitation bullet; TASKBOARD.md rendered. No root control or templates/ change. | TK-01Y distributions, TK-01Z Landmark Wiki evidence, TK-02A reference recovery remain; only DQCs are counted items so far. No doctor-level Tracker drift finding (rebuild --check is the seam). New Genesis rooms do not declare the Tracker by default. Revision check is not a lock. Owed to S-00P: AGENTS suite line node tools/test-landmark-tracker.mjs and the RUNBOOK paragraph, verbatim in TK-01X Remaining Gaps. | a23631badb86de47e2a7d3550f43dfa46f593680841259042da9582ac21681a4 |

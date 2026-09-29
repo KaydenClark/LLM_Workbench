@@ -10,13 +10,15 @@ import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table
 import { parseSpecPacket } from './spec-packet.mjs';
 import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, readManifest } from './workbench-paths.mjs';
+import { capabilitySession } from './optional-capabilities.mjs';
+import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
+import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
-import { allocateVisibleId, compareVisibleIds, visibleIdKey } from './visible-ids.mjs';
-import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
+import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
+import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields } from './task-record.mjs';
 import { appendReceiptRow, readReceiptFromFile } from './task-receipt.mjs';
-import { assembleSpecReport, computeSpecDigest, formatSpecReport, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
+import { assembleSpecReport, computeSpecDigest, formatSpecReport, isAncestorOfBranch, recordOwnerApproval, recordReviewVerdict } from './spec-report.mjs';
 
 // One closed status vocabulary for an execution slice, owned by the record
 // reader and re-exported here so the lifecycle commands and the record share
@@ -44,12 +46,36 @@ const HOT_END = '<!-- hot-specs:end -->';
 // tool change.
 export const SPEC_LIFECYCLE_FOLDERS = Object.freeze(['retired']);
 
-export function nextWork(rootDir) {
+// S-00V TK-00K: `options.capabilities` (the CLI's `--capabilities a,b`) and
+// `options.capabilityProbes` (tests) say which optional capabilities this
+// session establishes (optional-capabilities.mjs). A Task needing one the
+// session cannot establish is never selected; it is named instead under
+// `capabilityBlocked`, attached to the candidate, or - when nothing else is
+// eligible - returned as `{ specId: null, taskId: null, capabilityBlocked }`
+// so the capability stays visible. A room with no capability-blocked Task
+// gets exactly the candidate or `null` it always got.
+export function nextWork(rootDir, options = {}) {
+  return nextSelection(rootDir, options).result;
+}
+
+// S-00V TK-01L (ADR-000O): `next` fetches origin and skips a Task claimed on
+// any remote tip (claim-coordination.mjs). A coordinated result carries
+// `coordination` naming the base, whether the fetch succeeded and each Task it
+// skipped; an uncoordinated room returns exactly what it always returned, and
+// `coordination` here says why so the CLI can report local selection.
+// `options.fetch === false` overlays the last fetched refs without fetching.
+export function nextSelection(rootDir, options = {}) {
   refuseBlockedRuntime(rootDir);
-  if (discardedReferences(path.resolve(rootDir)).length) return null;
-  const candidate = selectCandidate([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)]);
-  if (candidate) return candidate;
-  return selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir));
+  const root = path.resolve(rootDir);
+  if (discardedReferences(root).length) return { result: null, coordination: null };
+  const context = coordinationContext(root, { specsPrefix: resolveSpecsRoot(root).specsPrefix, local: options.local === true, fetch: options.fetch !== false });
+  const session = capabilitySession(root, options);
+  const { candidate, capabilityBlocked, remoteClaimed } = selectWork([...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)], { session, remoteClaims: context.claims });
+  let result = candidate ?? selectOrphanCorrectiveCandidate(loadCorrectiveTasks(rootDir).filter((task) => !context.claims?.has(`${task.specId}/${task.id}`)));
+  if (capabilityBlocked.length > 0) result = result ? { ...result, capabilityBlocked } : { specId: null, taskId: null, capabilityBlocked };
+  const coordination = publicCoordination(context, remoteClaimed);
+  if (result && context.mode === 'remote') result = { ...result, coordination };
+  return { result, coordination };
 }
 
 // S-00I TK-006: a corrective Task created after its owning Spec has been
@@ -107,17 +133,49 @@ function refuseBlockedRuntime(rootDir) {
   throw error;
 }
 
-function selectCandidate(specs, { specId, readyOnly = false } = {}) {
-  const completed = new Set(specs.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
+function selectCandidate(specs, options = {}) {
+  return selectWork(specs, options).candidate;
+}
+
+// Selection plus the capability-blocked Tasks it passed over (S-00V TK-00K).
+// With a `session`, a Task recorded as capability-blocked stays blocked while
+// the session still lacks a recorded capability, and a ready or resumable Task
+// needing a capability the session cannot establish is skipped; each is
+// reported with `recorded` saying whether its record already carries the
+// block. Without a session nothing capability-related is reported.
+// S-00V TK-01L: with `remoteClaims` (a Map of `SPEC/TK` to the remote tips
+// holding a claim), a ready or resumable Task claimed on another tip is taken:
+// it is skipped and reported under `remoteClaimed`.
+function selectWork(specs, { specId, readyOnly = false, session = null, remoteClaims = null } = {}) {
+  const completed = satisfiedBlockers(specs);
   const candidates = [];
+  const capabilityBlocked = [];
+  const remoteClaimed = [];
   for (const spec of specs) {
     if ((spec.status !== 'active' && spec.lifecycleFolder !== 'retired') || (specId && spec.id !== specId)) continue;
     const satisfied = satisfiedIds(spec, completed);
     for (const slice of executionSlices(spec)) {
-      const status = effectiveStatus(slice, satisfied);
+      const status = effectiveStatus(slice, satisfied, session);
+      if (session && status === 'blocked' && slice.missingCapabilities.length > 0) {
+        const missing = session.missing(slice.missingCapabilities);
+        if (missing.names.length > 0) capabilityBlocked.push({ specId: spec.id, taskId: slice.id, missing: missing.names, recorded: true, reason: missing.reason });
+        continue;
+      }
       const resumable = !readyOnly && status === 'in-progress';
       const eligible = status === 'ready' && blockersSatisfied(slice.blockers, satisfied);
       if (!resumable && !eligible) continue;
+      const claimedOn = remoteClaims?.get(`${spec.id}/${slice.id}`);
+      if (claimedOn) {
+        remoteClaimed.push({ specId: spec.id, taskId: slice.id, refs: [...claimedOn].sort() });
+        continue;
+      }
+      if (session && slice.capabilities.length > 0) {
+        const missing = session.missing(slice.capabilities);
+        if (missing.names.length > 0) {
+          capabilityBlocked.push({ specId: spec.id, taskId: slice.id, missing: missing.names, recorded: false, reason: missing.reason });
+          continue;
+        }
+      }
       candidates.push({
         specId: spec.id,
         title: spec.title,
@@ -133,9 +191,11 @@ function selectCandidate(specs, { specId, readyOnly = false } = {}) {
     }
   }
   candidates.sort((a, b) => a.rank - b.rank || a.priority - b.priority || compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
-  if (candidates.length === 0) return null;
+  capabilityBlocked.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
+  remoteClaimed.sort((a, b) => compareVisibleIds(a.specId, b.specId) || compareVisibleIds(a.taskId, b.taskId));
+  if (candidates.length === 0) return { candidate: null, capabilityBlocked, remoteClaimed };
   const { rank: _rank, ...result } = candidates[0];
-  return result;
+  return { candidate: result, capabilityBlocked, remoteClaimed };
 }
 
 // S-00I TK-005: `findSpec` reaches a retired Spec only once the active
@@ -160,13 +220,14 @@ export function nextIdentity(rootDir, specId, options = {}) {
   const specs = loadSpecs(rootDir);
   const prefix = options.prefix;
   if (!['S', 'TK'].includes(prefix)) throw new Error('--prefix must be S or TK');
+  if (prefix === 'TK') specId = resolveSpecId(rootDir, specId);
   if (prefix === 'TK' && !specs.some(spec => spec.id === specId)) throw new Error('Task identity proposals require an existing assigned spec ID');
   if (prefix === 'S' && specId) throw new Error('A spec identity proposal takes no existing spec ID');
   const occupied = occupiedIdentities(rootDir, prefix);
-  // Letter-bearing new durable labels do not reuse removed historical decimal
-  // IDs. Numeric tasks also retain their old spec-qualified interpretation.
-  const reservations = [...new Map(occupied.map(id => [visibleIdKey(id), id])).values()];
-  const id = allocateVisibleId(prefix, reservations, { requireLetter: true });
+  // The shared artifact policy is letter-bearing, so new durable labels do not
+  // reuse removed historical decimal IDs; numeric tasks also retain their old
+  // spec-qualified interpretation.
+  const id = allocateArtifactId(prefix, occupied);
   return { status: 'proposed', id, reserved: false, ...(specId ? { specId } : {}) };
 }
 
@@ -177,14 +238,7 @@ export function occupiedIdentities(rootDir, prefix) {
   const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
   const occupied = prefix === 'S' ? specs.map(spec => spec.id)
     : [...specs.flatMap(spec => [...spec.rows, ...spec.records, ...(spec.retiredRecords ?? [])].map(item => item.id)), ...loadCorrectiveTasks(root).map(task => task.id)];
-  const register = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
-  if (fs.existsSync(register)) {
-    for (const line of fs.readFileSync(register, 'utf8').split('\n')) {
-      if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
-      const label = parseMarkdownTableRow(line)[2] ?? '';
-      occupied.push(...(label.match(new RegExp(`${prefix}-[0-9A-Za-z]{3,}`, 'g')) ?? []));
-    }
-  }
+  occupied.push(...discardedLabels(root, prefix));
   const refs = spawnSync('git', ['-C', root, 'for-each-ref', '--format=%(refname)', 'refs/remotes'], { encoding: 'utf8' });
   if (refs.status === 0) for (const ref of refs.stdout.trim().split('\n').filter(Boolean)) {
     const manifestResult = spawnSync('git', ['-C', root, 'show', `${ref}:workbench/manifest.json`], { encoding: 'utf8' });
@@ -200,43 +254,102 @@ export function occupiedIdentities(rootDir, prefix) {
   return [...new Set(occupied)];
 }
 
+// Labels the discard register (`DISCARDS.md`) still holds: a discarded record's
+// identity stays reserved even though its record is gone.
+function discardedLabels(root, prefix) {
+  const register = path.join(resolveSpecsRoot(root).specsRoot, 'DISCARDS.md');
+  if (!fs.existsSync(register)) return [];
+  const labels = [];
+  for (const line of fs.readFileSync(register, 'utf8').split('\n')) {
+    if (!/^\|\s*\d{4}-\d{2}-\d{2}\s*\|/.test(line)) continue;
+    const label = parseMarkdownTableRow(line)[2] ?? '';
+    labels.push(...(label.match(new RegExp(`${prefix}-[0-9A-Za-z]{3,}`, 'g')) ?? []));
+  }
+  return labels;
+}
+
+// S-00V TK-01L (ADR-000O): a coordinated room commits the claim on its task
+// branch and pushes it (claim-coordination.mjs `publishClaim`): on the
+// integration branch, the default branch or a detached HEAD the task branch is
+// cut from the fetched integration base; on any other branch the claim is
+// committed and pushed where it stands. A room with no remote, no declared or
+// fetched integration base, or an explicit `--local` claims in the working
+// tree exactly as before. Either way the result's `coordination` says which.
 export function claimWork(rootDir, id, options) {
   refuseBlockedRuntime(rootDir);
   requireValue(options?.agent, '--agent is required');
-  if (discardedReferences(path.resolve(rootDir)).length) throw new Error('discarded-reference: selection is blocked until current references are reconciled');
+  const root = path.resolve(rootDir);
+  if (discardedReferences(root).length) throw new Error('discarded-reference: selection is blocked until current references are reconciled');
+  const { specsPrefix } = resolveSpecsRoot(root);
+  const context = coordinationContext(root, { specsPrefix, local: options?.local === true, requireFetch: true });
+  if (context.mode !== 'remote') return { ...claimInTree(rootDir, id, options, null).result, coordination: publicCoordination(context) };
+  return publishClaim(root, context, {
+    agent: options.agent,
+    branch: options.branch,
+    specsPrefix,
+    apply: (remoteClaims) => claimInTree(rootDir, id, options, remoteClaims),
+    project: () => render(root)
+  });
+}
+
+// The ordinary claim in the working tree: select, route, and write the Task
+// record and Spec header. Returns the shown Spec plus the claimed ids.
+function claimInTree(rootDir, id, options, remoteClaims) {
   // S-00I TK-006: an orphan corrective Task (no owning Spec directory left to
   // claim through) is addressed by its own Task ID directly, never a Spec
   // ID - there is no Spec ID left to name. `TASK.md`'s own id regex closes
   // the vocabulary to `TK-...`, which a Spec ID never matches, so this can
   // never misroute a real Spec ID.
-  if (/^TK-/.test(id)) return claimOrphanCorrectiveTask(path.resolve(rootDir), id, options);
+  if (/^TK-/.test(id)) {
+    const orphan = claimOrphanCorrectiveTask(path.resolve(rootDir), id, options, remoteClaims);
+    return { result: orphan, specId: orphan.specId, taskId: orphan.taskId, remoteClaimed: [] };
+  }
+  id = resolveSpecId(rootDir, id);
   const date = validDate(options?.date ?? today());
   const specs = [...loadSpecs(rootDir), ...loadRetiredSpecs(rootDir)];
   const matches = specs.filter((item) => item.id === id);
   if (matches.length !== 1) throw new Error(matches.length ? `Duplicate spec ID: ${id}` : `Unknown spec ID: ${id}`);
   const spec = matches[0];
   if (spec.status !== 'active' && spec.lifecycleFolder !== 'retired') throw new Error(`${id} is ${spec.status}, not active`);
-  const candidate = selectCandidate(specs, { specId: id, readyOnly: true });
+  const session = capabilitySession(path.resolve(rootDir), options);
+  const { candidate, capabilityBlocked, remoteClaimed } = selectWork(specs, { specId: id, readyOnly: true, session, remoteClaims });
   const slices = executionSlices(spec);
+  // S-00V TK-00K: a ready Task needing an optional capability this session
+  // cannot establish is routed to blocked on its own record, naming the
+  // capability, rather than skipped silently; the claim then takes the next
+  // Task the session can do, or refuses naming what it routed.
+  const routed = [];
+  for (const entry of capabilityBlocked) {
+    if (entry.recorded) continue;
+    const slice = slices.find((item) => item.id === entry.taskId);
+    writeTaskStatus(slice.record, { Status: 'blocked', 'Missing capabilities': entry.missing.join(', ') });
+    routed.push({ taskId: entry.taskId, missing: entry.missing });
+  }
+  const withRouting = (result) => ({ result: routed.length > 0 ? { ...result, capabilityRouted: routed } : result, specId: id, taskId: task.id, remoteClaimed });
   const task = slices.find((item) => item.id === candidate?.taskId);
   if (!task) {
+    if (routed.length > 0) {
+      throw new Error(`${id} has no eligible ready task to claim; routed to blocked for missing optional capabilities: ${routed.map((item) => `${item.taskId} (${item.missing.join(', ')})`).join(', ')}`);
+    }
     // `blocked-slice` names the one shape doctor also reports: a slice that
     // declares itself ready while its blockers are unmet. A slice that
     // declares itself blocked is ordinary sequencing on both sources, so it
     // gets the generic refusal rather than the name of a finding nobody
     // raised. A table row's refusal is unchanged, since a ready row reaching
     // here always has an unmet blocker.
-    const satisfied = satisfiedIds(spec, new Set(specs.filter((item) => ['complete', 'superseded'].includes(item.status)).map((item) => item.id)));
+    const satisfied = satisfiedIds(spec, satisfiedBlockers(specs));
     const blocked = slices.find((item) => item.declared === 'ready' && !blockersSatisfied(item.blockers, satisfied));
     if (blocked) throw new Error(`${id}/${blocked.id} is blocked by ${blocked.blockers} (blocked-slice); claim refuses a slice whose declared dependency is unmet`);
+    if (remoteClaimed.length > 0) throw new Error(`${id} has no eligible ready task to claim; claimed on a remote tip: ${remoteClaimed.map((item) => `${item.taskId} (${item.refs.join(', ')})`).join(', ')}`);
     throw new Error(`${id} has no eligible ready task to claim`);
   }
   // A record-backed Spec's state lives on the record; only the Spec header's
   // owner and event fields move. The record is written first so a failure
   // while updating the header cannot leave the Spec announcing a claim that
   // the record never took.
-  if (task.source === 'record') writeTaskStatus(task.record, { Status: 'in-progress' });
-  if (spec.lifecycleFolder === 'retired') return showSpec(rootDir, id);
+  // A capability block this session now satisfies is cleared as it is claimed.
+  if (task.source === 'record') writeTaskStatus(task.record, task.missingCapabilities.length > 0 ? { Status: 'in-progress', 'Missing capabilities': 'none' } : { Status: 'in-progress' });
+  if (spec.lifecycleFolder === 'retired') return withRouting(showSpec(rootDir, id));
   const content = task.source === 'record'
     ? spec.content
     : updateTaskRow(spec.content, task.id, (cells) => {
@@ -250,7 +363,7 @@ export function claimWork(rootDir, id, options) {
     'Next gate': `Close ${task.id} with verification and documentation proof.`
   });
   atomicWrite(spec.filePath, updated);
-  return showSpec(rootDir, id);
+  return withRouting(showSpec(rootDir, id));
 }
 
 export function closeTask(rootDir, id, options) {
@@ -259,6 +372,7 @@ export function closeTask(rootDir, id, options) {
   // (mirrors `claimWork` above); its evidence lands on the Wiki note its
   // `wiki-claim` destination names, never a `SPEC.md` that does not exist.
   if (/^TK-/.test(id)) return closeOrphanCorrectiveTask(root, id, options);
+  id = resolveSpecId(root, id);
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
@@ -270,6 +384,17 @@ export function closeTask(rootDir, id, options) {
   const task = slices.find((item) => item.declared === 'in-progress');
   if (!task && slices.some((item) => item.declared === 'ready')) throw new Error(`${id} has no in-progress task to close; claim one first`);
   if (!task) throw new Error(`${id} has no open task to close`);
+  // S-00V TK-00K: a missing optional capability never lets a Task report
+  // success. A closing session that cannot establish every capability the
+  // Task names routes it to blocked, naming them, and refuses before any
+  // Receipt, Proof or evidence row is written.
+  if (task.source === 'record' && task.capabilities.length > 0) {
+    const missing = capabilitySession(root, options).missing(task.capabilities);
+    if (missing.names.length > 0) {
+      writeTaskStatus(task.record, { Status: 'blocked', 'Missing capabilities': missing.names.join(', ') });
+      throw new Error(`close refused: ${id}/${task.id} needs optional capability ${missing.names.join(', ')}, which this session cannot establish (${missing.reason}); routed to blocked`);
+    }
+  }
   const recordedGap = gitStateAtClose(root, remainingGap, options?.gitStateReason);
   // Proof text for a record goes on the record; the Spec's append-only
   // evidence row below is appended either way, because the Spec still owns
@@ -351,10 +476,14 @@ function gitStateAtClose(root, remainingGap, reasonOption) {
 
 // S-00I TK-006: claims an orphan corrective Task by its own Task ID - see
 // `loadCorrectiveTasks` above for why this folder and this reader.
-function claimOrphanCorrectiveTask(root, taskId, options) {
-  const task = loadCorrectiveTasks(root).find((item) => item.id === taskId);
+function claimOrphanCorrectiveTask(root, selector, options, remoteClaims = null) {
+  const corrective = loadCorrectiveTasks(root);
+  const taskId = resolveStoredId('corrective Task', selector, corrective.map((item) => ({ id: item.id })));
+  const task = corrective.find((item) => item.id === taskId);
   if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
   if (task.status !== 'ready') throw new Error(`${taskId} is ${task.status}, not ready`);
+  const claimedOn = remoteClaims?.get(`${task.specId}/${task.id}`);
+  if (claimedOn) throw new Error(`${taskId} is claimed on a remote tip: ${claimedOn.join(', ')}`);
   atomicWrite(task.filePath, updateTaskFields(task.content, { Status: 'in-progress' }));
   return { taskId, specId: task.specId, status: 'in-progress', orphan: true };
 }
@@ -366,12 +495,14 @@ function claimOrphanCorrectiveTask(root, taskId, options) {
 // Wiki capability record its finding is against, and that note's own
 // `provenance` list - the Wiki schema's own attribution field - is where
 // this append-only close is recorded instead.
-function closeOrphanCorrectiveTask(root, taskId, options) {
+function closeOrphanCorrectiveTask(root, selector, options) {
   const proof = requireValue(options?.proof, '--proof is required');
   const docs = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
   const date = validDate(options?.date ?? today());
-  const task = loadCorrectiveTasks(root).find((item) => item.id === taskId);
+  const corrective = loadCorrectiveTasks(root);
+  const taskId = resolveStoredId('corrective Task', selector, corrective.map((item) => ({ id: item.id })));
+  const task = corrective.find((item) => item.id === taskId);
   if (!task) throw new Error(`Unknown corrective Task ID: ${taskId}`);
   if (!['ready', 'in-progress'].includes(task.status)) throw new Error(`${taskId} has no open task to close`);
   if (task.destination.type !== 'wiki-claim') {
@@ -424,11 +555,13 @@ function appendProvenanceRow(content, text) {
 // rather than silently appending to a Task no run is open on.
 export function receiptTask(rootDir, id, options) {
   const root = path.resolve(rootDir);
-  const taskId = requireValue(options?.task, '--task is required');
+  let taskId = requireValue(options?.task, '--task is required');
   const testsRun = requireValue(options?.tests, '--tests is required');
   const docsTouched = requireValue(options?.docs, '--docs is required');
   const remainingGap = requireValue(options?.remainingGap, '--remaining-gap is required');
+  id = resolveSpecId(root, id);
   const spec = findSpec(root, id);
+  taskId = resolveTaskId(spec, taskId);
   const task = slicesOf(spec).find((item) => item.id === taskId);
   if (!task || task.source !== 'record') {
     throw new Error(`${id}/${taskId} has no Task record; the receipt verb appends only to a standalone record`);
@@ -456,14 +589,48 @@ export function receiptTask(rootDir, id, options) {
 // false destination for all of them, so an unsupplied id names the Spec's
 // Acceptance Criteria section, which is true of every slice, and the caller
 // supplies the specific line where it knows it.
+//
+// `activate` (S-01L TK-02D) is the explicit opt-in for a request that
+// activates a planned Spec and cuts its Tasks in the same step: Tasks are cut
+// at activation, and activation has no other command. It changes only the
+// `**Status:**` field, and only after every record has parsed, so a refusal
+// still writes nothing. On an already-active Spec it is a no-op; it never
+// reopens a completed, retired or other non-planned Spec.
 export function convertSpecSlices(rootDir, id, options = {}) {
   const root = path.resolve(rootDir);
+  id = resolveSpecId(root, id);
   const spec = findSpec(root, id);
-  if (spec.status !== 'active') {
-    throw new Error(`${id} is ${spec.status}, not active; only an active Spec is converted and a completed Spec's historical table is never rewritten`);
+  const activating = options.activate === true && spec.status === 'planned';
+  if (spec.status !== 'active' && !activating) {
+    const route = spec.status === 'planned'
+      ? `; when the same request activates it, run convert-tasks ${id} --activate`
+      : '';
+    throw new Error(`${id} is ${spec.status}, not active; only an active Spec is converted and a completed Spec's historical table is never rewritten${route}`);
   }
   const specDir = path.dirname(spec.filePath);
   const tasksDir = path.join(specDir, 'tasks');
+  // S-01L TK-002P: a planned record-backed Spec - to-spec's shape, a `tasks/`
+  // directory and no unfinished table row (`loadSpecs` already refuses a
+  // record-backed Spec that still holds one) - has no row to convert. to-tasks
+  // writes its first records; `--activate` is then only the activation gate.
+  // Every live record was parsed by `loadSpecs` (an unparseable one refuses
+  // before this point, naming the Task), and `slicesOf` refuses a row/record
+  // collision, so this checks that at least one record exists and changes
+  // nothing but Status.
+  if (activating && spec.recordBacked) {
+    const tasks = slicesOf(spec).map((slice) => slice.id);
+    if (tasks.length === 0) {
+      throw new Error(`${id} has no Task record under ${path.relative(root, tasksDir).split(path.sep).join('/')} to activate; write its first TASK.md record(s) with to-tasks, then run convert-tasks ${id} --activate`);
+    }
+    atomicWrite(spec.filePath, updateFields(spec.content, { Status: 'active' }));
+    return {
+      specId: id,
+      activated: true,
+      converted: [],
+      retained: spec.rows.filter((row) => row.status === 'done').map((row) => row.id),
+      tasks
+    };
+  }
   if (fs.existsSync(tasksDir)) {
     throw new Error(`${id} already has ${path.relative(root, tasksDir).split(path.sep).join('/')}; conversion runs once and refuses to run again`);
   }
@@ -506,9 +673,11 @@ export function convertSpecSlices(rootDir, id, options = {}) {
     converted.push(path.relative(root, filePath).split(path.sep).join('/'));
   }
   const convertedIds = new Set(staged.map((item) => item.row.id));
-  atomicWrite(spec.filePath, removeSliceRows(spec.content, convertedIds));
+  const specContent = activating ? updateFields(spec.content, { Status: 'active' }) : spec.content;
+  atomicWrite(spec.filePath, removeSliceRows(specContent, convertedIds));
   return {
     specId: id,
+    activated: activating,
     converted,
     retained: spec.rows.filter((row) => row.status === 'done').map((row) => row.id)
   };
@@ -516,6 +685,7 @@ export function convertSpecSlices(rootDir, id, options = {}) {
 
 export function completeSpec(rootDir, id, options = {}) {
   const date = validDate(options.date ?? today());
+  id = resolveSpecId(rootDir, id);
   const spec = findSpec(rootDir, id);
   if (!['active', 'needs-review'].includes(spec.status)) throw new Error(`${id} is ${spec.status}, not completable`);
   // Both sources are checked, not only the one selection reads: a Spec cannot
@@ -683,8 +853,8 @@ const TASK_PR_EXEMPTION = 'S-00O exemption 2 (WF-7 deferred): every Task lands a
 // is `null` when the manifest declares none.
 export function gate(rootDir, options = {}) {
   const root = path.resolve(rootDir);
-  const specId = requireValue(options.spec, 'gate requires --spec S-###');
-  const taskId = options.task ?? null;
+  const specId = resolveSpecId(root, requireValue(options.spec, 'gate requires --spec S-###'));
+  const taskId = options.task ? resolveTaskId(findSpec(root, specId), options.task) : null;
   const integrationBranch = declaredGit(root)?.integrationBranch ?? null;
 
   if (taskId) {
@@ -828,7 +998,7 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
   // corrective Tasks alone retain their execution dependency checks.
   for (const spec of retiredSpecs) {
     if (!spec.sliceConflict) {
-      const completed = new Set([...specs, ...retiredSpecs].filter(item => ['complete', 'superseded'].includes(item.status)).map(item => item.id));
+      const completed = satisfiedBlockers([...specs, ...retiredSpecs]);
       const satisfied = satisfiedIds(spec, completed);
       const head = executionSlices(spec).find(slice => ['in-progress', 'ready'].includes(slice.declared));
       if (head?.declared === 'ready' && !blockersSatisfied(head.blockers, satisfied)) {
@@ -869,7 +1039,7 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
       }
     }
   }
-  const completed = new Set([...specs, ...retiredSpecs].filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
+  const completed = satisfiedBlockers([...specs, ...retiredSpecs]);
   for (const spec of specs) {
     if (!SPEC_STATUSES.has(spec.status)) issues.push(finding('invalid-state', `${spec.id} has invalid status ${spec.status}`, { specId: spec.id }));
     if (!spec.relativePath.startsWith(`${spec.specsPrefix}/${spec.id}-`)) issues.push(finding('unstable-path', `${spec.id} path must start ${spec.specsPrefix}/${spec.id}-`, { specId: spec.id }));
@@ -887,6 +1057,19 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
     for (const slice of slices) {
       if (!TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', `${spec.id}/${slice.id} has invalid status ${slice.declared}`, { specId: spec.id, taskId: slice.id }));
       if (slice.declared === 'done' && (!slice.proof || /^pending$/i.test(slice.proof))) issues.push(finding('missing-evidence', `${spec.id}/${slice.id} is done without proof`, { specId: spec.id, taskId: slice.id }));
+      // S-00J TK-01T: an unknown qualifier already fails closed (it never
+      // enters the satisfied set); naming it here is what keeps that from
+      // being a silent wait. A done slice's blockers no longer gate anything.
+      if (slice.declared !== 'done') {
+        for (const token of slice.blockerIds.filter((item) => blockerKind(item) === 'unknown-qualifier')) {
+          issues.push(finding('unknown-blocker-qualifier', `${spec.id}/${slice.id} names blocker ${token}, whose qualifier is not known blocker grammar (a plain S-### or TK-###, S-###:delivered, or owner:<decision>); it stays unmet until corrected`, { specId: spec.id, taskId: slice.id, blocker: token }));
+        }
+      }
+      // S-00J TK-02J: the resolver keeps such a record blocked instead of
+      // handing it out; naming it keeps that from being a silent wait.
+      if (slice.source === 'record' && slice.declared === 'blocked' && !namesResolvableBlocker(slice)) {
+        issues.push(finding('blocked-without-blocker', `${spec.id}/${slice.id} is declared blocked but names no resolvable blocker (Blockers: ${slice.blockers}); it stays blocked until a real blocker is recorded or its Status is corrected`, { specId: spec.id, taskId: slice.id }));
+      }
       // A malformed Receipt or an altered earlier row fails closed on read
       // (task-receipt.mjs's own checksum chain); reported here by name so
       // doctor keeps reporting every other spec, slice and scope instead of
@@ -921,6 +1104,31 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
     for (const link of localLinks(spec.content)) {
       const target = path.resolve(path.dirname(spec.filePath), link);
       if (!target.startsWith(spec.root + path.sep) || !fs.existsSync(target)) issues.push(finding('broken-link', `${spec.id} links to missing ${link}`, { specId: spec.id }));
+    }
+    issues.push(...liveRecordCitations(spec));
+  }
+  return issues;
+}
+
+// S-00V TK-00J: a notepad or handoff may be committed temporarily so a
+// continuation travels with the branch, but committing one is transport,
+// never evidence. A Spec or active Task record that links a live record -
+// committed or not - is citing working context that will be promoted and
+// removed, so it is reported with the ADR validator's registered code rather
+// than left to surface later as a `broken-link` once the record is gone.
+function liveRecordCitations(spec) {
+  const sources = [{ filePath: spec.filePath, content: spec.content }];
+  for (const record of spec.records ?? []) {
+    if (record.filePath && fs.existsSync(record.filePath)) sources.push({ filePath: record.filePath, content: fs.readFileSync(record.filePath, 'utf8') });
+  }
+  const issues = [];
+  const seen = new Set();
+  for (const source of sources) {
+    for (const link of markdownLinkTargets(source.content)) {
+      const target = liveRecordPath(spec.root, path.resolve(path.dirname(source.filePath), link));
+      if (!target || seen.has(target)) continue;
+      seen.add(target);
+      issues.push(finding('untracked-provenance', `${spec.id} cites live record ${target}; a notepad or handoff is working context even when committed, so cite the durable owner it was promoted into`, { specId: spec.id, target }));
     }
   }
   return issues;
@@ -1064,6 +1272,7 @@ export function loadSpecs(rootDir, options = {}) {
     const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
     const content = options.contentOverrides?.get(filePath) ?? fs.readFileSync(filePath, 'utf8');
     const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked };
+    spec.formerId = specFormerId(content, spec.id);
     assertOneSliceTruth(spec);
     return spec;
   });
@@ -1072,6 +1281,16 @@ export function loadSpecs(rootDir, options = {}) {
     if (collision) throw new Error(collision.message);
   }
   return specs;
+}
+
+// S-01W TK-002O: a Spec's `**Former ID:**` header field, read through the
+// same rule a Task record uses (`parseFormerId` in task-record.mjs). The Spec
+// packet parser keeps the last of a repeated field, so a repeat is refused
+// here rather than silently choosing one former spelling.
+function specFormerId(content, id) {
+  const values = [...content.matchAll(/^\*\*Former ID:\*\*\s*(.+)$/gm)].map((match) => match[1]);
+  if (values.length > 1) throw new Error(`${id} has a duplicated field "Former ID"; a record carries at most one former spelling`);
+  return parseFormerId(values[0], id);
 }
 
 // S-00I TK-003: the explicit historical route. `loadSpecs` above deliberately
@@ -1103,6 +1322,7 @@ export function loadRetiredSpecs(rootDir) {
       const recordBacked = fs.existsSync(path.join(specDir, 'tasks'));
       const content = fs.readFileSync(filePath, 'utf8');
       const spec = { ...parseSpecPacket(content, filePath, root, { recordBacked }), specsPrefix, records, retiredRecords, recordBacked, lifecycleFolder: folder };
+      spec.formerId = specFormerId(content, spec.id);
       assertOneSliceTruth(spec);
       specs.push(spec);
     }
@@ -1159,6 +1379,8 @@ export function slicesOf(spec) {
       blockerIds: splitBlockers(row.blockers),
       blockers: row.blockers,
       proof: row.proof,
+      capabilities: [],
+      missingCapabilities: [],
       source: 'table'
     }));
   }
@@ -1169,6 +1391,8 @@ export function slicesOf(spec) {
     blockerIds: task.blockers,
     blockers: task.blockers.length > 0 ? task.blockers.join(', ') : 'none',
     proof: task.proof,
+    capabilities: task.capabilities,
+    missingCapabilities: task.missingCapabilities,
     source: 'record',
     record: task
   }));
@@ -1206,16 +1430,124 @@ function satisfiedIds(spec, completed) {
   return new Set([...completed, ...done]);
 }
 
+// S-00J TK-01T: the one satisfied set every blocker site - `next`, `claim`,
+// `render` and both doctor passes - resolves against, so the four can never
+// disagree about an edge. It holds tokens, not only ids, so the existing
+// plain membership checks (`blockersSatisfied`, `unmetBlockers`) read the
+// new grammar without a second resolver:
+//   - `S-###`: that Spec is `complete` or `superseded` (unchanged meaning;
+//     the dependent needs final closure, T3).
+//   - `S-###:delivered`: that Spec is `complete` or `superseded`, or it has
+//     reached reviewed delivery on integration (T0 of S-00J's
+//     closure-capture transition contract; `reviewedDelivery` below).
+// Any other qualifier is never added, so it fails closed as unmet; doctor
+// names it (`unknown-blocker-qualifier`). T0 is evaluated only for a Spec
+// some slice actually names with `:delivered`, so a room that never uses the
+// token pays nothing for it. Resolution only reads: working-tree records,
+// local Git objects and the local declared integration ref. It never writes,
+// fetches or moves a ref; fetching before relying on it is procedure.
+function satisfiedBlockers(specs) {
+  const satisfied = new Set();
+  for (const spec of specs) {
+    if (!['complete', 'superseded'].includes(spec.status)) continue;
+    satisfied.add(spec.id);
+    satisfied.add(`${spec.id}:delivered`);
+  }
+  const wanted = new Set();
+  for (const spec of specs) {
+    const tokens = [
+      ...spec.rows.filter((row) => row.status !== 'done').flatMap((row) => splitBlockers(row.blockers)),
+      ...spec.records.filter((task) => taskStatus(task) !== 'done').flatMap((task) => task.blockers)
+    ];
+    for (const token of tokens) {
+      if (blockerKind(token) === 'delivered' && !satisfied.has(token)) wanted.add(token);
+    }
+  }
+  for (const token of wanted) {
+    const id = token.slice(0, token.indexOf(':'));
+    const matches = specs.filter((spec) => spec.id === id);
+    if (matches.length === 1 && reviewedDelivery(matches[0])) satisfied.add(token);
+  }
+  return satisfied;
+}
+
+// The blocker grammar: `plain` (`S-###` or `TK-###`), `delivered`
+// (`S-###:delivered`), `owner` (`owner:<decision>`, S-00J TK-02J: known
+// grammar that no resolver ever satisfies; it clears only when removed),
+// `unknown-qualifier` (any other `<id>:<qualifier>` the Task-record parser
+// admits so doctor can name it), or `other` (legacy slice-table prose, left
+// exactly as unmet as it always was).
+function blockerKind(token) {
+  if (/^(?:S|TK)-[0-9A-Za-z]+$/.test(token)) return 'plain';
+  if (/^S-[0-9A-Za-z]+:delivered$/.test(token)) return 'delivered';
+  if (/^owner:[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(token)) return 'owner';
+  if (/^(?:S|TK)-[0-9A-Za-z]+:[A-Za-z][0-9A-Za-z-]*$/.test(token)) return 'unknown-qualifier';
+  return 'other';
+}
+
+// T0, reviewed delivery, read from the existing S-00J readers rather than a
+// second parser: every Task done and every acceptance line checked
+// (`assembleSpecReport`), the latest verdict bound to the Spec's current
+// content digest is a PASS (`latestVerdict`), its candidate is an ancestor of
+// the manifest-declared integration branch as resolved by
+// `resolveIntegrationContainmentRef` (`origin/<branch>` when it exists, else
+// the local branch; S-00J TK-002N), the check owner approval also makes,
+// and the Spec/Task content committed at that candidate hashes to the same
+// digest (`computeSpecDigest`). A room with no
+// declared integration branch has nothing to check containment against, so
+// the edge stays unmet. Any read failure is an unmet edge, never a throw
+// through `next`, `render` or doctor.
+function reviewedDelivery(spec) {
+  const containment = resolveIntegrationContainmentRef(spec.root);
+  if (!containment.ref) return false;
+  try {
+    const report = assembleSpecReport(spec.root, spec.id);
+    if (report.tasks.some((task) => task.status !== 'done')) return false;
+    if (report.acceptance.some((line) => !line.checked)) return false;
+    const verdict = report.latestVerdict;
+    if (verdict?.result !== 'pass') return false;
+    if (!isAncestorOfBranch(spec.root, verdict.candidate, containment.ref)) return false;
+    return computeSpecDigest(spec.root, spec, verdict.candidate) === report.specDigest;
+  } catch {
+    return false;
+  }
+}
+
 // A table row's status cell is its status, unchanged. A record's `ready` and
 // `blocked` are resolved against its live blockers instead: a record whose
 // declared blockers are all satisfied is ready without anyone editing a
 // status cell, and one whose blockers are unmet is blocked even if its cell
 // says ready. This is a derivation of the record's own two authored fields,
 // not a second status written anywhere.
-function effectiveStatus(slice, satisfied) {
+//
+// S-00V TK-00K: a record blocked for a missing optional capability is not an
+// id block, so satisfied id blockers do not turn it ready. It stays blocked
+// unless a `session` establishes every recorded missing capability; with no
+// session (render, doctor) it is blocked, so the board is a deterministic
+// projection of the records.
+//
+// S-00J TK-02J: a declared `blocked` derives `ready` only when a real
+// blocker has cleared - the record names at least one (an id blocker or a
+// recorded missing capability) and every id blocker is a satisfied known id
+// form. A record declared `blocked` on nothing stays blocked (doctor names
+// it, `blocked-without-blocker`); an `owner:<decision>` or unknown token is
+// never in the satisfied set, so it stays blocked as an unmet blocker.
+function effectiveStatus(slice, satisfied, session = null) {
   if (slice.source !== 'record') return slice.declared;
   if (slice.declared !== 'ready' && slice.declared !== 'blocked') return slice.declared;
+  if (slice.declared === 'blocked' && slice.missingCapabilities.length > 0
+    && (!session || session.missing(slice.missingCapabilities).names.length > 0)) return 'blocked';
+  if (slice.declared === 'blocked' && !namesResolvableBlocker(slice)) return 'blocked';
   return unmetBlockers(slice.record, satisfied).length === 0 ? 'ready' : 'blocked';
+}
+
+// Whether a record's declared `blocked` rests on something that can clear:
+// a recorded missing capability, or at least one blocker in the known
+// grammar (`plain`, `delivered` or `owner`). Blockers `none`, or only
+// unknown qualifiers, leave nothing that could ever resolve.
+function namesResolvableBlocker(slice) {
+  if (slice.missingCapabilities.length > 0) return true;
+  return slice.blockerIds.some((token) => ['plain', 'delivered', 'owner'].includes(blockerKind(token)));
 }
 
 function splitBlockers(value) {
@@ -1252,7 +1584,13 @@ function removeSliceRows(content, ids) {
 }
 
 function publicSlice(slice) {
-  return { id: slice.id, slice: slice.slice, status: slice.declared, blockers: slice.blockers, proof: slice.proof ?? null };
+  const result = { id: slice.id, slice: slice.slice, status: slice.declared, blockers: slice.blockers, proof: slice.proof ?? null };
+  // S-00V TK-00K: present only on a record that names capabilities, so every
+  // other Task's `show` output is unchanged.
+  if (slice.capabilities.length > 0) result.capabilities = slice.capabilities;
+  if (slice.missingCapabilities.length > 0) result.missingCapabilities = slice.missingCapabilities;
+  if (slice.record?.formerId) result.formerId = slice.record.formerId;
+  return result;
 }
 
 // S-00I TK-004: a retired Task record, shaped like `publicSlice` above but
@@ -1263,6 +1601,7 @@ function publicSlice(slice) {
 function publicRetiredTask(task) {
   return {
     id: task.id,
+    ...(task.formerId ? { formerId: task.formerId } : {}),
     slice: task.slice,
     status: taskStatus(task),
     blockers: task.blockers.length > 0 ? task.blockers.join(', ') : 'none',
@@ -1390,7 +1729,7 @@ function renderHotBoard(specs, retired = []) {
   // the owner gate rather than a slice. That derivation is what makes the
   // board show whether an objective is active; the Spec header Status stays
   // the Spec's lifecycle truth and no command writes a second one.
-  const completed = new Set(all.filter((spec) => ['complete', 'superseded'].includes(spec.status)).map((spec) => spec.id));
+  const completed = satisfiedBlockers(all);
   for (const spec of hot) {
     // A row/record collision already carries its own `row-record-collision`
     // finding from `packetFindings`; the board falls back to the owner-gate
@@ -1421,7 +1760,13 @@ function renderHotBoard(specs, retired = []) {
       const signal = task ? receiptSignal(task) : null;
       slice = task ? `${task.id}: ${task.slice} (${task.status}${signal ? `; ${signal}` : ''})` : 'Acceptance / owner gate';
     }
-    const blocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
+    const baseBlocker = task?.blockers && task.blockers !== 'none' ? task.blockers : spec.blockers;
+    // S-00V TK-00K: every capability-blocked Task on the Spec is named in the
+    // Blocker cell, beside whichever Task the row shows, so the owner's sitrep
+    // finds it. A Spec with none renders exactly as before.
+    const capabilityNotes = slices.filter((item) => item.missingCapabilities.length > 0).map((item) => `${item.id} missing capability ${item.missingCapabilities.join(', ')}`);
+    const blocker = capabilityNotes.length === 0 ? baseBlocker
+      : [...(baseBlocker && baseBlocker !== 'none' ? [baseBlocker] : []), ...capabilityNotes].join('; ');
     const event = spec.lifecycleFolder === 'retired' ? `Corrective work against retired ${spec.id}; historical completion preserved.` : spec.latestEvent;
     const nextGate = spec.lifecycleFolder === 'retired' ? `Close ${task.id} with verification and documentation proof.` : spec.nextGate;
     lines.push(`| [${spec.id}](${spec.relativePath}) | ${escapeCell(slice)} | ${escapeCell(spec.owner)} | ${escapeCell(blocker)} | ${escapeCell(event)} | ${escapeCell(nextGate)} |`);
@@ -1458,9 +1803,57 @@ function isHot(spec) {
   return ['active', 'blocked', 'needs-review'].includes(spec.status);
 }
 
+// S-01W TK-002K: a blocker names an identity, so any supported spelling of a
+// satisfied ID satisfies it. `completed` keeps its scope (completed Specs plus
+// this Spec's own done slices), so numeric Task labels stay Spec-qualified.
 function blockersSatisfied(value, completed) {
   if (!value || value === 'none') return true;
-  return value.split(',').map((item) => item.trim()).filter(Boolean).every((id) => completed.has(id));
+  const keys = new Set([...completed].map((id) => visibleIdKey(id) ?? id));
+  return value.split(',').map((item) => item.trim()).filter(Boolean).every((id) => keys.has(visibleIdKey(id) ?? id));
+}
+
+// S-01W TK-002K: the one selector resolution every public Spec and Task
+// operation uses. A selector names a stored record when their collision keys
+// match (`visibleIdKey`: suffix case folded, leading zeros removed), so
+// `S-00Q`, `S-000Q` and `S-00q` all reach stored `S-00Q`. The caller then
+// continues with the stored ID, which is why output, errors and evidence name
+// the stored identity and path and nothing is renamed to the selector's
+// spelling. Two different stored spellings behind one key - an active and a
+// retired record included, which `next-id` still folds as one occupied
+// identity and `doctor` reports as `duplicate-id` - refuse by name rather than
+// choosing a winner. The same stored ID seen twice is left to the existing
+// exact-ID checks (the active-first route below, the row/record collision). A
+// selector naming nothing comes back unchanged so each command keeps its own
+// unknown-ID refusal.
+function resolveStoredId(kind, selector, candidates) {
+  if (typeof selector !== 'string') return selector;
+  const key = visibleIdKey(selector);
+  const stored = new Map();
+  for (const item of candidates) {
+    if (key ? visibleIdKey(item.id) !== key : item.id !== selector) continue;
+    stored.set(item.id, [...(stored.get(item.id) ?? []), item.where].filter(Boolean));
+  }
+  if (stored.size > 1) {
+    const named = [...stored].map(([id, where]) => (where.length ? `${id} (${where.join(', ')})` : id)).join(' and ');
+    throw new Error(`Duplicate ${kind} ID: ${selector} matches ${named}; selection refuses rather than choosing one`);
+  }
+  return stored.size === 1 ? [...stored.keys()][0] : selector;
+}
+
+// Spec selectors resolve across the active roster and the retired route, so a
+// retired alias can neither shadow nor be shadowed by a live record.
+export function resolveSpecId(rootDir, selector) {
+  const root = path.resolve(rootDir);
+  const specs = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  return resolveStoredId('spec', selector, specs.map((spec) => ({ id: spec.id, where: spec.relativePath })));
+}
+
+// Task selectors stay Spec-qualified: a historical numeric label such as
+// `TK-001` recurs across Specs, so a Task resolves only among its own Spec's
+// rows, records and retired records.
+export function resolveTaskId(spec, selector) {
+  const tasks = [...spec.rows, ...(spec.records ?? []), ...(spec.retiredRecords ?? [])];
+  return resolveStoredId(`task (${spec.id})`, selector, tasks.map((task) => ({ id: task.id, where: task.filePath ? path.relative(task.root ?? '', task.filePath).split(path.sep).join('/') : null })));
 }
 
 // The active roster is tried first, unchanged; a retired Spec is reachable
@@ -1468,7 +1861,8 @@ function blockersSatisfied(value, completed) {
 // never shadow a live one. `show` is this function's only caller, which is
 // how S-00I TK-003 satisfies "show finds a retired Spec by an explicit
 // historical route" without changing what `next`, `claim` or `render` see.
-export function findSpec(rootDir, id) {
+export function findSpec(rootDir, selector) {
+  const id = resolveSpecId(rootDir, selector);
   const matches = loadSpecs(rootDir).filter((spec) => spec.id === id);
   if (matches.length > 1) throw new Error(`Duplicate spec ID: ${id}`);
   if (matches.length === 1) return matches[0];
@@ -1553,7 +1947,21 @@ function collectDirectoryFiles(dir) {
 // `rewriteAdrLinks` can only do that when the unmoved target is in the map,
 // mapped to itself.
 function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals) {
-  const original = fs.readFileSync(filePath, 'utf8');
+  const finalContent = planReferenceRewrite(root, filePath, fs.readFileSync(filePath, 'utf8'), oldDir, newDir, locations, totals);
+  if (finalContent !== null) {
+    assertSafeWritePath(root, filePath);
+    writeSafeFile(root, filePath, finalContent);
+  }
+}
+
+// The pure half of `rewriteReferenceFile`: computes the rewritten bytes for
+// `original` (read from wherever the caller holds it) as the file that will
+// live at `filePath`, records the counts in `totals` under that path, and
+// returns the new content, or null when no live match changed. `widen-id`
+// (S-01W TK-002O) plans every rewrite with this before it touches the tree, so
+// a refusal can never leave a partial mutation; the lifecycle moves keep
+// calling `rewriteReferenceFile` exactly as before.
+function planReferenceRewrite(root, filePath, original, oldDir, newDir, locations, totals) {
   const { prefix, evidence, suffix } = splitEvidenceSection(original);
   const canonicalized = rewriteCanonicalizedIn(prefix, root, locations);
   const rewrittenPrefix = rewriteAdrLinks(canonicalized.content, oldDir, newDir, locations);
@@ -1562,12 +1970,9 @@ function rewriteReferenceFile(root, filePath, oldDir, newDir, locations, totals)
   const relative = path.relative(root, filePath).split(path.sep).join('/');
   if (skippedInEvidence > 0) totals.historicalReferencesLeft[relative] = (totals.historicalReferencesLeft[relative] ?? 0) + skippedInEvidence;
   const rewritten = rewrittenPrefix.count + rewrittenSuffix.count + canonicalized.count;
-  if (rewritten > 0) {
-    const finalContent = rewrittenPrefix.content + evidence + rewrittenSuffix.content;
-    assertSafeWritePath(root, filePath);
-    writeSafeFile(root, filePath, finalContent);
-    totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
-  }
+  if (rewritten === 0) return null;
+  totals.referencesRewritten[relative] = (totals.referencesRewritten[relative] ?? 0) + rewritten;
+  return rewrittenPrefix.content + evidence + rewrittenSuffix.content;
 }
 
 // S-00I TK-003: moves a completed Spec's whole directory (Task records and
@@ -1602,6 +2007,7 @@ export function moveSpecDirectory(rootDir, specId, folder) {
   if (!SPEC_LIFECYCLE_FOLDERS.includes(folder)) {
     throw new Error(`move-spec refuses folder "${folder}"; the closed set is ${SPEC_LIFECYCLE_FOLDERS.join(', ')}`);
   }
+  specId = resolveSpecId(root, specId);
   const specs = loadSpecs(root);
   const matches = specs.filter((item) => item.id === specId);
   if (matches.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
@@ -1718,7 +2124,9 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
   if (!TASK_LIFECYCLE_FOLDERS.includes(folder)) {
     throw new Error(`move-task refuses folder "${folder}"; the closed set is ${TASK_LIFECYCLE_FOLDERS.join(', ')}`);
   }
+  specId = resolveSpecId(root, specId);
   const spec = findSpec(root, specId);
+  taskId = resolveTaskId(spec, taskId);
   const activeTask = (spec.records ?? []).find((task) => task.id === taskId);
   if (!activeTask) {
     const alreadyRetired = (spec.retiredRecords ?? []).some((task) => task.id === taskId);
@@ -1817,6 +2225,246 @@ export function moveTaskRecord(rootDir, specId, taskId, folder) {
     referencesRewritten: totals.referencesRewritten,
     historicalReferencesLeft: totals.historicalReferencesLeft
   };
+}
+
+// S-01W TK-002O: the explicit identity-only touch. `widen-id S-###|TK-###`
+// widens one eligible record to the uppercase width-four spelling of its own
+// collision key (`widenedIdentity`: `S-00Q` -> `S-000Q`, `TK-00a` ->
+// `TK-000A`, numeric `TK-001` -> `TK-0001`), the spelling `allocateArtifactId`
+// would give that identity. It renames the record's directory, rewrites its
+// ID field and title, records the previous spelling in one `**Former ID:**`
+// field directly under the ID field (`parseFormerId` in task-record.mjs), and
+// repairs every live link with the lifecycle moves' own reference machinery
+// (`collectSpecReferenceFiles`, `planReferenceRewrite`, the old-path ->
+// new-path `locations` map, the frozen Append-Only Evidence section left
+// byte-identical and its link matches counted as historical). Widening a Spec
+// also points its open (not done) Task records' `**Spec ID:**` at the widened
+// parent; done and retired records keep their bytes.
+//
+// It never changes status and never touches a completed, reviewed or retired
+// record: a Spec must be planned, active or blocked, a Task must be an
+// active-roster record that is not done, under such a Spec. A record already
+// at its widened spelling is a no-op (checked before the clean-tree
+// precondition, so a repeat run on the staged result stays a no-op). Every
+// other refusal - a dirty tree, an occupied destination path, an identity
+// alias held by another record or a discarded label, a symlinked, hard-linked
+// or unstable record path, a slice-table row, an ambiguous numeric Task label
+// without `--spec` - is decided before anything is written, from a complete
+// in-memory plan, so a refusal leaves no partial mutation.
+//
+// Like `move-spec` and `move-task`, the result is staged with `git add -A`
+// and never committed: the dirty-tree refusal guarantees the stage holds only
+// this change, HEAD remains the recovery point (`git reset --hard HEAD`), and
+// the agent commits it as one reviewable candidate. The projections are
+// re-rendered so the Taskboard and catalog name the widened ID.
+const WIDENABLE_SPEC_STATUSES = Object.freeze(['planned', 'active', 'blocked']);
+
+export function widenedIdentity(id) {
+  const key = visibleIdKey(id);
+  if (!key) throw new Error(`${id} is not a visible identifier`);
+  const separator = key.indexOf('-');
+  return `${key.slice(0, separator)}-${key.slice(separator + 1).padStart(ARTIFACT_ID_MIN_WIDTH, '0')}`;
+}
+
+export function widenId(rootDir, selector, options = {}) {
+  const root = path.resolve(rootDir);
+  const parts = visibleIdParts(selector);
+  if (!parts || !['S', 'TK'].includes(parts.prefix)) throw new Error('Usage: widen-id S-###|TK-### [--spec S-###]');
+  if (parts.prefix === 'S') {
+    if (options.spec) throw new Error('widen-id S-### takes no --spec');
+    return widenSpecIdentity(root, selector);
+  }
+  return widenTaskIdentity(root, selector, options.spec);
+}
+
+function widenSpecIdentity(root, selector) {
+  const id = resolveSpecId(root, selector);
+  const spec = loadSpecs(root).find((item) => item.id === id);
+  if (!spec) {
+    if (loadRetiredSpecs(root).some((item) => item.id === id)) throw new Error(`${id} is retired; widen-id never renames a retired record`);
+    throw new Error(`Unknown spec ID: ${id}`);
+  }
+  if (!WIDENABLE_SPEC_STATUSES.includes(spec.status)) {
+    throw new Error(`${id} is ${spec.status}; widen-id widens only a ${WIDENABLE_SPEC_STATUSES.join(', ')} Spec and never renames a completed or reviewed record`);
+  }
+  const widened = widenedIdentity(id);
+  if (widened === id) return { status: 'unchanged', kind: 'spec', id, formerId: spec.formerId, path: spec.relativePath };
+  if (spec.formerId) throw new Error(`${id} already records Former ID ${spec.formerId}; an identity widens once`);
+  requireCleanWidenTree(root);
+  refuseDiscardedAlias(root, 'S', id);
+  const { specsRoot, specsPrefix } = resolveSpecsRoot(root);
+  const oldDir = path.dirname(spec.filePath);
+  const base = path.basename(oldDir);
+  if (path.dirname(oldDir) !== specsRoot || !base.startsWith(`${id}-`)) {
+    throw new Error(`${spec.relativePath} is not at ${specsPrefix}/${id}-...; widen-id refuses an unstable record path`);
+  }
+  const newDir = path.join(specsRoot, `${widened}${base.slice(id.length)}`);
+  const edits = new Map([[spec.filePath, (content) => widenRecordHeader(content, 'Spec ID', id, widened)]]);
+  for (const task of spec.records) {
+    if (taskStatus(task) === 'done' || task.specId === widened || visibleIdKey(task.specId) !== visibleIdKey(id)) continue;
+    edits.set(task.filePath, (content) => replaceIdField(content, 'Spec ID', task.specId, widened));
+  }
+  const newSpecFile = path.join(newDir, 'SPEC.md');
+  const planned = applyIdentityWiden(root, oldDir, newDir, edits, (writes) => {
+    const content = writes.get(newSpecFile);
+    const packet = parseSpecPacket(content, newSpecFile, root, { recordBacked: spec.recordBacked });
+    if (packet.id !== widened || specFormerId(content, packet.id) !== id) throw new Error(`widen-id could not write a readable ${widened} record`);
+    for (const [file, text] of writes) if (path.basename(file) === 'TASK.md') parseTaskRecord(text, file, root);
+  });
+  return { status: 'widened', kind: 'spec', id: widened, formerId: id, ...planned };
+}
+
+function widenTaskIdentity(root, selector, specSelector) {
+  const all = [...loadSpecs(root), ...loadRetiredSpecs(root)];
+  const key = visibleIdKey(selector);
+  const numeric = /^TK-\d+$/.test(selector);
+  let scope = all;
+  if (specSelector) {
+    const specId = resolveSpecId(root, specSelector);
+    scope = all.filter((spec) => spec.id === specId);
+    if (scope.length === 0) throw new Error(`Unknown spec ID: ${specId}`);
+  }
+  const holders = (specs) => specs.flatMap((spec) => [
+    ...spec.rows.map((item) => ({ spec, item, source: 'slice-table row' })),
+    ...(spec.records ?? []).map((item) => ({ spec, item, source: spec.lifecycleFolder ? 'record under a retired Spec' : 'record' })),
+    ...(spec.retiredRecords ?? []).map((item) => ({ spec, item, source: 'retired record' }))
+  ]).filter((entry) => visibleIdKey(entry.item.id) === key);
+  const describeHolders = (entries) => entries.map((entry) => `${entry.spec.id}/${entry.item.id} (${entry.source})`).join(' and ');
+  const matches = holders(scope);
+  if (matches.length === 0) throw new Error(`Unknown Task ID: ${specSelector ? `${scope[0].id}/` : ''}${selector}`);
+  const owners = [...new Set(matches.map((entry) => entry.spec.id))];
+  if (owners.length > 1) {
+    if (numeric) throw new Error(`${selector} names Tasks in ${owners.join(' and ')}; numeric Task labels are Spec-scoped, so pass --spec S-###`);
+    throw new Error(`widen-id refuses ${selector}: the identity is held by ${describeHolders(matches)}; an occupied alias is never widened over`);
+  }
+  if (matches.length > 1) throw new Error(`Duplicate task ID: ${selector} matches ${describeHolders(matches)}; widen-id refuses rather than choosing one`);
+  const { spec, item: task, source } = matches[0];
+  if (spec.lifecycleFolder || source === 'retired record') throw new Error(`${spec.id}/${task.id} is retired; widen-id never renames a retired record`);
+  if (source === 'slice-table row') throw new Error(`${spec.id}/${task.id} is a slice-table row, not a Task record; widen-id widens record-backed Tasks only`);
+  if (taskStatus(task) === 'done') throw new Error(`${spec.id}/${task.id} is done; widen-id never renames a completed record`);
+  if (!WIDENABLE_SPEC_STATUSES.includes(spec.status)) {
+    throw new Error(`${spec.id} is ${spec.status}; widen-id widens a Task only under a ${WIDENABLE_SPEC_STATUSES.join(', ')} Spec`);
+  }
+  const widened = widenedIdentity(task.id);
+  if (widened === task.id) return { status: 'unchanged', kind: 'task', id: task.id, specId: spec.id, formerId: task.formerId, path: task.relativePath };
+  if (task.formerId) throw new Error(`${spec.id}/${task.id} already records Former ID ${task.formerId}; an identity widens once`);
+  requireCleanWidenTree(root);
+  if (!numeric) {
+    // Letter-bearing Task labels are whole-room identities (ADR-0041), so any
+    // other holder anywhere - a record under a retired Spec, a retired record,
+    // an orphan corrective Task, a discarded label - occupies the alias.
+    const others = [
+      ...holders(all).filter((entry) => entry.item !== task),
+      ...loadCorrectiveTasks(root).filter((item) => visibleIdKey(item.id) === key).map((item) => ({ spec: { id: item.specId }, item, source: 'corrective record' }))
+    ];
+    if (others.length > 0) throw new Error(`widen-id refuses ${spec.id}/${task.id}: ${widened} is an occupied alias held by ${describeHolders(others)}`);
+    refuseDiscardedAlias(root, 'TK', task.id);
+  }
+  const tasksDir = path.join(path.dirname(spec.filePath), 'tasks');
+  const oldDir = path.dirname(task.filePath);
+  if (path.dirname(oldDir) !== tasksDir) throw new Error(`${task.relativePath} is not at the top level of tasks/; widen-id refuses an unstable record path`);
+  const newDir = path.join(tasksDir, widened);
+  const newTaskFile = path.join(newDir, 'TASK.md');
+  const edits = new Map([[task.filePath, (content) => widenRecordHeader(content, 'Task ID', task.id, widened)]]);
+  const planned = applyIdentityWiden(root, oldDir, newDir, edits, (writes) => {
+    const record = parseTaskRecord(writes.get(newTaskFile), newTaskFile, root);
+    if (record.id !== widened || record.formerId !== task.id) throw new Error(`widen-id could not write a readable ${widened} record`);
+  });
+  return { status: 'widened', kind: 'task', id: widened, formerId: task.id, specId: spec.id, ...planned };
+}
+
+function requireCleanWidenTree(root) {
+  const gitStatus = spawnSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' });
+  if (gitStatus.status !== 0) throw new Error('widen-id requires a Git working tree so the change is recoverable; none was found');
+  if (gitStatus.stdout.trim() !== '') throw new Error('widen-id refuses a dirty working tree; commit or stash first so the candidate shows only this identity change');
+}
+
+function refuseDiscardedAlias(root, prefix, id) {
+  const label = discardedLabels(root, prefix).find((item) => visibleIdKey(item) === visibleIdKey(id));
+  if (label) throw new Error(`widen-id refuses ${id}: its identity is also the discarded label ${label} in DISCARDS.md, an occupied alias`);
+}
+
+// Replaces the record's own ID field with the widened spelling followed by
+// the one `**Former ID:**` line, and the matching `# ID - Title` heading.
+function widenRecordHeader(content, field, oldId, newId) {
+  const idLine = new RegExp(`^\\*\\*${field}:\\*\\*[ \\t]*${escapeRegExp(oldId)}[ \\t]*$`, 'm');
+  const title = new RegExp(`^# ${escapeRegExp(oldId)} - `, 'm');
+  if (!idLine.test(content) || !title.test(content)) throw new Error(`${oldId} has no ${field} field and matching title for widen-id to rewrite`);
+  return content.replace(idLine, () => `**${field}:** ${newId}\n**Former ID:** ${oldId}`).replace(title, () => `# ${newId} - `);
+}
+
+function replaceIdField(content, field, from, to) {
+  return content.replace(new RegExp(`^\\*\\*${field}:\\*\\*[ \\t]*${escapeRegExp(from)}[ \\t]*$`, 'm'), () => `**${field}:** ${to}`);
+}
+
+// Plans every write in memory, validates it, and only then mutates: `git mv`
+// of the record directory, the planned writes, the ADR register, the
+// projections, and one `git add -A`.
+function applyIdentityWiden(root, oldDir, newDir, edits, validate) {
+  for (const file of edits.keys()) assertSafeWritePath(root, file);
+  refuseOccupiedDestination(root, oldDir, newDir);
+  const movingFiles = collectDirectoryFiles(oldDir);
+  const unmoved = collectSpecReferenceFiles(root, oldDir);
+  const locations = new Map(unmoved.map((file) => [file, file]));
+  for (const file of movingFiles) locations.set(file, path.join(newDir, path.relative(oldDir, file)));
+  const totals = { referencesRewritten: {}, historicalReferencesLeft: {} };
+  const writes = new Map();
+  for (const oldFile of movingFiles) {
+    const newFile = locations.get(oldFile);
+    let content = fs.readFileSync(oldFile, 'utf8');
+    let changed = false;
+    if (newFile.endsWith('.md')) {
+      const rewritten = planReferenceRewrite(root, newFile, content, path.dirname(oldFile), path.dirname(newFile), locations, totals);
+      if (rewritten !== null) { content = rewritten; changed = true; }
+    }
+    if (edits.has(oldFile)) { content = edits.get(oldFile)(content); changed = true; }
+    if (changed) { assertSafeWritePath(root, oldFile); writes.set(newFile, content); }
+  }
+  if ([...edits.keys()].some((file) => !writes.has(locations.get(file)))) throw new Error('widen-id refuses a record that is not an ordinary file inside its own directory');
+  for (const file of unmoved) {
+    const rewritten = planReferenceRewrite(root, file, fs.readFileSync(file, 'utf8'), path.dirname(file), path.dirname(file), locations, totals);
+    if (rewritten !== null) { assertSafeWritePath(root, file); writes.set(file, rewritten); }
+  }
+  validate(writes);
+  const projections = ['BLUEPRINT.md', 'TASKBOARD.md'].every((name) => fs.existsSync(path.join(root, name)));
+  try {
+    moveRecordDirectory(root, oldDir, newDir);
+    for (const [file, content] of writes) writeSafeFile(root, file, content);
+    if (fs.existsSync(collectionPath(root, 'adr'))) writeRegister(root);
+    if (projections) render(root);
+    spawnSync('git', ['-C', root, 'add', '-A']);
+  } catch (error) {
+    throw new Error(`widen-id failed after it began writing: ${error.message}; the tree was clean at HEAD before it started, so \`git reset --hard HEAD\` restores it`);
+  }
+  return {
+    from: path.relative(root, oldDir).split(path.sep).join('/'),
+    to: path.relative(root, newDir).split(path.sep).join('/'),
+    committed: false,
+    referencesRewritten: totals.referencesRewritten,
+    historicalReferencesLeft: totals.historicalReferencesLeft
+  };
+}
+
+// An existing destination refuses, except the source itself seen through a
+// case-insensitive filesystem (`S-000q-x` -> `S-000Q-x`).
+function refuseOccupiedDestination(root, from, to) {
+  let target;
+  try { target = fs.lstatSync(to); } catch (error) { if (error.code === 'ENOENT') return; throw error; }
+  const source = fs.lstatSync(from);
+  if (target.ino === source.ino && target.dev === source.dev) return;
+  throw new Error(`widen-id destination already exists: ${path.relative(root, to).split(path.sep).join('/')}`);
+}
+
+// A case-only rename goes through a temporary name so it also lands on a
+// case-insensitive filesystem.
+function moveRecordDirectory(root, from, to) {
+  const relative = (value) => path.relative(root, value);
+  const temporary = `${to}.widen-id-${process.pid}`;
+  const steps = from.toLowerCase() === to.toLowerCase() ? [[from, temporary], [temporary, to]] : [[from, to]];
+  for (const [source, destination] of steps) {
+    const moved = spawnSync('git', ['-C', root, 'mv', relative(source), relative(destination)], { encoding: 'utf8' });
+    if (moved.status !== 0) throw new Error(`git mv ${relative(source)} failed: ${(moved.stderr || moved.stdout || '').trim()}`);
+  }
 }
 
 // Finds a retired Spec's own durable Wiki owner by the one fact that names
@@ -2021,6 +2669,7 @@ function uncapturedCompleteFindings(root, specs) {
 export function retireSpec(rootDir, specId, options = {}) {
   const root = path.resolve(rootDir);
   const wikiNoteGiven = requireValue(options.wikiNote, 'retire-spec requires --wiki <note path>');
+  specId = resolveSpecId(root, specId);
 
   const activeMatches = loadSpecs(root).filter((item) => item.id === specId);
   if (activeMatches.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
@@ -2291,9 +2940,45 @@ function stageDiscard(root) {
 function resolveDefaultBranchRemoteRef(root) {
   const defaultBranch = declaredGit(root)?.defaultBranch ?? null;
   if (!defaultBranch) return { defaultBranch: null, remoteRef: null };
-  const remoteRef = `origin/${defaultBranch}`;
-  const hasRemoteRef = spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/remotes/${remoteRef}`]).status === 0;
-  return { defaultBranch, remoteRef: hasRemoteRef ? remoteRef : null };
+  return { defaultBranch, remoteRef: resolveRemoteTrackingRef(root, defaultBranch) };
+}
+
+// `origin/<branch>` when that remote-tracking ref exists locally, else
+// `null`. Reads local refs only; never fetches.
+function resolveRemoteTrackingRef(root, branch) {
+  const remoteRef = `origin/${branch}`;
+  return spawnSync('git', ['-C', root, 'show-ref', '--verify', '--quiet', `refs/remotes/${remoteRef}`]).status === 0 ? remoteRef : null;
+}
+
+function resolveCommit(root, ref) {
+  const result = spawnSync('git', ['-C', root, 'rev-parse', '--verify', '--quiet', `${ref}^{commit}`], { encoding: 'utf8' });
+  return result.status === 0 ? result.stdout.trim() || null : null;
+}
+
+// S-00J TK-002N: the one ref integration containment is checked against -
+// the declared integration branch's remote-tracking ref (`origin/<branch>`,
+// the same resolution TK-01S's default-branch delivery check uses) when it
+// exists, otherwise the local branch. In a shared repository the local
+// `integration` branch is held by another checkout and can lag far behind
+// `origin/integration`; reading the remote-tracking ref keeps that stale
+// local ref from hiding reviewed delivery, and keeps an unpushed local
+// branch from counting as delivery. A room with no remote keeps using its
+// local branch. Local refs only; nothing is fetched, so a stale fetch is
+// named by `sha` (and `localSha`) for the caller to show. `source` is
+// `remote-tracking`, `local`, or `undeclared` (no `git.integrationBranch`,
+// `ref` null: nothing to check against).
+export function resolveIntegrationContainmentRef(root) {
+  const branch = declaredGit(root)?.integrationBranch ?? null;
+  if (!branch) return { branch: null, ref: null, source: 'undeclared', sha: null, localSha: null };
+  const remoteRef = resolveRemoteTrackingRef(root, branch);
+  const ref = remoteRef ?? branch;
+  return {
+    branch,
+    ref,
+    source: remoteRef ? 'remote-tracking' : 'local',
+    sha: resolveCommit(root, ref),
+    localSha: resolveCommit(root, `refs/heads/${branch}`)
+  };
 }
 
 // The tracked, append-only discards register this lane defines: a Spec or
@@ -2399,6 +3084,7 @@ function discardedReferences(root) {
 // write.
 export function discardRetiredSpec(rootDir, specId) {
   const root = path.resolve(rootDir);
+  specId = resolveSpecId(root, specId);
   const retired = loadRetiredSpecs(root).filter((item) => item.id === specId);
   if (retired.length > 1) throw new Error(`Duplicate spec ID: ${specId}`);
   if (retired.length === 0) {
@@ -2487,7 +3173,9 @@ export function discardRetiredSpec(rootDir, specId) {
 // retired a Task into `tasks/retired/`.
 export function discardRetiredTask(rootDir, specId, taskId) {
   const root = path.resolve(rootDir);
+  specId = resolveSpecId(root, specId);
   const spec = findSpec(root, specId);
+  taskId = resolveTaskId(spec, taskId);
   const retiredTask = (spec.retiredRecords ?? []).find((task) => task.id === taskId);
   if (!retiredTask) {
     const active = (spec.records ?? []).some((task) => task.id === taskId);
@@ -2688,6 +3376,8 @@ export function referencesToPath(rootDir, targetPath, options = {}) {
 function publicSpec(spec) {
   return {
     id: spec.id,
+    // S-01W TK-002O: present only on a record `widen-id` widened.
+    ...(spec.formerId ? { formerId: spec.formerId } : {}),
     title: spec.title,
     status: spec.status,
     priority: spec.priority,
@@ -2882,10 +3572,19 @@ export function parseCliArgs(argv) {
     const arg = rest[optionIndex];
     if (arg === '--json') options.json = true;
     else if (arg === '--host') options.host = true;
+    else if (arg === '--activate') options.activate = true;
+    else if (arg === '--local') options.local = true;
     else if (arg.startsWith('--')) options[toCamel(arg.slice(2))] = rest[++optionIndex];
     else throw new Error(`Unknown argument: ${arg}`);
   }
   return { command, id, options };
+}
+
+// S-00V TK-00K: `next` with nothing eligible but capability-blocked Tasks
+// still says "No eligible work." and then names each one, so the capability
+// is never hidden behind an empty answer.
+function formatCapabilityBlockedNext(result) {
+  return ['No eligible work.', ...result.capabilityBlocked.map((entry) => `capability-blocked: ${entry.specId}/${entry.taskId} needs ${entry.missing.join(', ')} (${entry.recorded ? 'recorded' : 'not yet recorded'}) - ${entry.reason}`)].join('\n');
 }
 
 function toCamel(value) {
@@ -2897,16 +3596,17 @@ async function main() {
   const root = options.path ?? process.cwd();
   let result;
   let doctorRun;
-  if (command === 'next') result = nextWork(root);
+  let coordination = null;
+  if (command === 'next') ({ result, coordination } = nextSelection(root, { capabilities: options.capabilities, local: options.local }));
   else if (command === 'next-id') result = nextIdentity(root, id, options);
   else if (command === 'show') result = showSpec(root, id);
-  else if (command === 'claim') result = claimWork(root, id, options);
-  else if (command === 'close') result = closeTask(root, id, options);
+  else if (command === 'claim') result = claimWork(root, id, { ...options, capabilityProbes: undefined });
+  else if (command === 'close') result = closeTask(root, id, { ...options, capabilityProbes: undefined });
   else if (command === 'receipt') result = receiptTask(root, id, options);
   else if (command === 'complete') result = completeSpec(root, id, options);
-  else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined });
-  else if (command === 'report') result = assembleSpecReport(root, id, { candidate: options.candidate });
-  else if (command === 'verdict') result = recordReviewVerdict(root, id, { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest });
+  else if (command === 'convert-tasks') result = convertSpecSlices(root, id, { destinations: options.destinations ? JSON.parse(options.destinations) : undefined, activate: options.activate === true });
+  else if (command === 'report') result = assembleSpecReport(root, resolveSpecId(root, id), { candidate: options.candidate });
+  else if (command === 'verdict') result = recordReviewVerdict(root, resolveSpecId(root, id), { candidate: options.candidate, result: options.result, findings: options.findings, reviewer: options.reviewer, digest: options.digest });
   else if (command === 'approve') {
     // S-00J TK-005: the CLI verb only ever names `approve`; whether it
     // records an approval or a finding is inferred from what the caller
@@ -2917,7 +3617,7 @@ async function main() {
     // wants to say so plainly - recordOwnerApproval itself always requires
     // one of the two literal values.
     const inferredResult = options.result ?? ((options.finding || options.destinationChange) ? 'finding' : 'approve');
-    result = recordOwnerApproval(root, id, {
+    result = recordOwnerApproval(root, resolveSpecId(root, id), {
       candidate: options.candidate,
       owner: options.owner,
       result: inferredResult,
@@ -2931,6 +3631,7 @@ async function main() {
   }
   else if (command === 'move-spec') result = moveSpecDirectory(root, id, options.to);
   else if (command === 'move-task') result = moveTaskRecord(root, id, options.task, options.to);
+  else if (command === 'widen-id') result = widenId(root, id, { spec: options.spec });
   else if (command === 'retire-spec') result = retireSpec(root, id, { wikiNote: options.wiki });
   else if (command === 'discard') result = options.task ? discardRetiredTask(root, id, options.task) : discardRetiredSpec(root, id);
   else if (command === 'render') result = render(root);
@@ -2939,13 +3640,33 @@ async function main() {
     result = doctorRun.json;
     process.exitCode = doctorRun.exitCode;
   } else {
-    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|retire-spec|discard|render|doctor [S-###] [options] (discard S-### [--task TK-###]; doctor [--host])');
+    throw new Error('Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|gate|approve|move-spec|move-task|widen-id|retire-spec|discard|render|doctor [S-###] [options] (widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])');
   }
   if (options.json) console.log(JSON.stringify(result, null, 2));
   else if (command === 'show') console.log(result.body);
   else if (command === 'doctor') console.log(doctorRun.text);
   else if (command === 'report') console.log(formatSpecReport(result));
+  else if (command === 'next' && result?.taskId === null) console.log(formatCapabilityBlockedNext(result));
   else console.log(result === null ? 'No eligible work.' : JSON.stringify(result, null, 2));
+  if (command === 'claim') coordination = result?.coordination ?? null;
+  const note = formatCoordinationNote(command, coordination);
+  if (note) console.error(note);
+}
+
+// S-00V TK-01L: say on stderr, never in the parsed stdout, when selection or a
+// claim stayed local, when the fetch failed, and which Tasks remote tips hold.
+function formatCoordinationNote(command, coordination) {
+  if (!coordination || !['next', 'claim'].includes(command)) return null;
+  if (coordination.mode === 'local') {
+    return command === 'next'
+      ? `${command}: local selection only (${coordination.reason}); claims made by other instances are not visible`
+      : `${command}: claim recorded in this working tree only (${coordination.reason}); it is not committed, pushed or visible to other instances`;
+  }
+  const lines = [];
+  if (coordination.fetched === false) lines.push(`${command}: could not fetch from ${coordination.remote} (${coordination.fetchError}); remote claims are read from the last fetched refs`);
+  for (const item of coordination.remoteClaimed ?? []) lines.push(`${command}: skipped ${item.specId}/${item.taskId}, claimed on ${item.refs.join(', ')}`);
+  if (command === 'claim' && coordination.pushed) lines.push(`claim: committed ${coordination.commit.slice(0, 7)} on ${coordination.branch}${coordination.created ? ' (new task branch)' : ''} and pushed to ${coordination.remote}`);
+  return lines.length > 0 ? lines.join('\n') : null;
 }
 
 if (isMainModule(import.meta.url)) {

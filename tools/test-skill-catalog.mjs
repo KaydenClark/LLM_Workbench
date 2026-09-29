@@ -180,16 +180,33 @@ assert.match(slicingSkill, /`TASKBOARD\.md` is a generated\s+projection/,
 // on an unanswered owner decision stays uncut, because a record's Blockers
 // field holds only S-/TK- ids and `next` would hand out a prose-blocked record.
 // These pin the source contract; the fresh-context run in S-01L records the behavior.
+// S-01L TK-02D: a planned Spec is cut only when the same request activates it,
+// through `convert-tasks S-### --activate` (tools/test-spec-workbench.mjs
+// proves the runtime), replacing the earlier "do not run convert-tasks on it".
 assertIncludesAll(slicingSkill, [
   '**Stance:**',
   '# TK-### - <slice>',
   'Cut Tasks when the Spec is activated',
   'a planned Spec gets no Tasks',
-  'do not run `convert-tasks` on it',
+  'the same request activates it',
+  'convert-tasks S-### --activate',
   'workbench/docs/adr/0045-skill-composition-within-inherited-scope.md',
   'Leave a slice that waits on an unanswered owner decision uncut',
   'record the open decision in the Spec'
 ], 'to-tasks record, activation, approval and owner-gate contract');
+// S-01L TK-002P: to-spec leaves a new planned Spec record-backed with an empty
+// tracked `tasks/` directory and no Task row, so its activation route is:
+// write the first record(s) with next-id, then `convert-tasks S-### --activate`
+// once, which converts no row and sets only Status (tools/test-spec-workbench.mjs
+// proves the runtime). This replaces "has no activation command yet".
+assertIncludesAll(slicingSkill, [
+  'planned record-backed Spec',
+  'write its first `TASK.md` record(s)',
+  'then run the command once',
+  'converts no row'
+], 'to-tasks record-backed activation route');
+assert.doesNotMatch(slicingSkill, /has no\s+activation command yet/,
+  'to-tasks must not say a planned record-backed Spec has no activation command');
 assert.doesNotMatch(slicingSkill, /Keep unresolved owner decisions visible as blockers/,
   'to-tasks must not route an owner decision into a Task Blockers field the runtime cannot hold');
 // S-01L review correction: a new slice always becomes a TASK.md record; a
@@ -449,18 +466,76 @@ assert.doesNotMatch(toSpec, /into one\s+stable capability record/,
   'to-spec must not fold a multi-capability conversation into one record');
 assert.doesNotMatch(toSpec, /Existing stable paths never change/,
   'to-spec must not restate the retired stable-path rule');
+// S-01K TK-002L, owner answer E-4B: `planned` is the Backlog separator. A new
+// Spec enters Backlog as `planned` with no Task cut; its Tasks are cut from
+// live Actuality when it is activated, by to-tasks with the tracer-bullet
+// discipline. The correction limits this to new Specs: a reused Spec keeps
+// the Tasks it already has.
+// The portable source states the rule without citing this repository's
+// ledger ID, which a target room cannot resolve.
+assertIncludesAll(toSpec, [
+  'no Task cut',
+  'no Task row',
+  '(`planned` -> `active`)',
+  '`/to-tasks`',
+  'keep the Tasks it already has'
+], 'to-spec planned-without-Tasks contract');
+// The runtime refuses a Spec with neither a slice row nor a `tasks/`
+// directory (`malformed-spec`, and `next`/`render`/`show` fail for the whole
+// room), so the Task-less Spec is written record-backed with an empty,
+// tracked `tasks/` directory.
+assertIncludesAll(toSpec, [
+  'empty `tasks/` directory',
+  '`.gitkeep`',
+  'malformed'
+], 'to-spec runtime-valid Task-less Spec');
+assert.doesNotMatch(toSpec, /E-4B/,
+  'to-spec is portable and must not cite a Workbench-local owner-answer ID');
+assert.doesNotMatch(toSpec, /Seed `Vertical Implementation Slices`/,
+  'to-spec must not seed a Task row into a new planned Spec');
+assert.doesNotMatch(toSpec, /each TASK during authorized planning/,
+  'to-spec cuts no Task, so it must not set a stance on one');
+const toSpecRow = catalogRegion[1].split('\n').find((line) => line.startsWith('| `to-spec` |'));
+assert.match(toSpecRow, /no Task cut/,
+  'the to-spec catalog row must carry the planned-without-Tasks entry');
 
 const genesis = read('workbench/skills/genesis/SKILL.md');
 assertIncludesAll(genesis, [
   '`templates/GENESIS.md`', 'greenfield', 'founding prompt', 'private remote', '`git.integrationBranch`', 'commit and push',
   'workbench/tools/workbench-layout.mjs init', 'tools/workbench-tools.mjs install'
 ], 'genesis');
+// S-01G TK-00X: `init` accepts any directory without a manifest, so the skill
+// itself must route an existing-code target before writing, through the
+// read-only classifier, and must lay down the skills lane the readiness gate
+// requires (`skill-lane-missing` otherwise).
+assertIncludesAll(genesis, [
+  'node tools/workbench-classify.mjs classify --project', 'verdict is `genesis`', '`adoption`', '`/update-harness`',
+  '`unclassifiable`', 'node tools/workbench-skills.mjs install', 'validate --project PATH --genesis'
+], 'genesis routing and managed-lane contract');
 
 const adoption = read('workbench/skills/adoption/SKILL.md');
 assertIncludesAll(adoption, [
   '`templates/ADOPTION.md`', 'one-time', 'existing project', '`/update-harness`', 'private remote', 'commit and push',
   'workbench-adoption.mjs', 'migrate', 'manifest-declared', 'project-local `skills/`', '`git.integrationBranch`'
 ], 'adoption');
+
+// S-01D: the first adoption inventories the room's route, code, controls,
+// provenance and recovery before the migration installs the managed layout,
+// and the migration lays the core skills into the room's own lane from the
+// release rather than from a provider home. These pin the source order; the
+// fresh-context run in S-01D records the behavior.
+const adoptionMigrate = adoption.indexOf('workbench-adoption.mjs migrate');
+for (const inventory of ['workbench-classify.mjs classify', 'baseline', 'source remote, ref, and resolved commit', 'recovery point']) {
+  const at = adoption.indexOf(inventory);
+  assert.ok(at !== -1 && at < adoptionMigrate,
+    `adoption must inventory ${inventory} before the migration installs the managed layout`);
+}
+assert.match(adoption, /core skills into the room's own\s+`workbench\/skills` lane/,
+  'adoption must say the migration lays the core skills into the room lane');
+assert.doesNotMatch(adoption, /core bundle in the intended disposable or user-scoped home|missing core skill/,
+  'adoption must not send the agent to a provider home the migration no longer reads');
+assert.doesNotMatch(adoption, /checkpoint owned work/,
+  'adoption must not route dirty state through the retired checkpoint copy');
 
 const implement = read('workbench/skills/implement/SKILL.md');
 assertIncludesAll(implement, [
