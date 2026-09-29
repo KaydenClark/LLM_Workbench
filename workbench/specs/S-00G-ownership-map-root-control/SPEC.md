@@ -255,6 +255,8 @@ ownership route move. `RUNBOOK.md` gains the query procedure at that point.
 
 | 2026-09-29 | spec | Owner confirmed Q1 and ACC-1/2/4/5 and authorized ADR acceptance; the three decisions now lead S-00G implementation | Confirmed grilling readbacks; active ADR-000B/C/D and archived ADR-0013/0033; `adr.mjs validate` passed | Acceptance gate resolved. Map/Taskboard JSON and route query remain implementation gaps; this Spec stays planned pending faithful Task conversion |
 
+| 2026-09-29 | b69068a20cad278fa7a10590aae163f0268b40a6 | First committed acceptance candidate passed 47/48 full-suite commands; the Blueprint contract check found a stale ADR-0033 owner route in the historical claim inventory | Full AGENTS command list on b69068a; repaired only the inventory owner path to archive/ while preserving its source text; targeted Blueprint contract check then passed | The failed run is not a green candidate; full suite must rerun after this route correction. Guardrail audit stayed 78/100 with unchanged criteria and no agent-outcome evidence. |
+
 ## Completion Result
 
 ADR acceptance and the related documentation decisions are reconciled.
