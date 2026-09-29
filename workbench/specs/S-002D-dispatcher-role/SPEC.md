@@ -1,17 +1,17 @@
 # S-002D - Dispatcher Role
 
 **Spec ID:** S-002D
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-D
 **Stance:** Builder
-**Updated:** 2026-09-27
+**Updated:** 2026-09-29
 **Catalog description:** Coordinate planning, parallel Task delivery and assembled verification within one assigned Spec and its branch.
-**Blockers:** none for specification; implementation awaits flight launch and assignment.
-**Latest event:** Owner confirmed the minimum role/stance buildout; this Spec records one capability without cutting Tasks.
-**Next gate:** At flight launch, inspect live Actuality and plan small Tasks within this Spec.
+**Blockers:** none
+**Latest event:** Flight launch 2026-09-29: Lane D cut TK-003A (operating entry with catalog, installer and layout proof) and TK-003B (routed Wiki article and fresh-context scenario) from live Actuality at 1450e7a8 and activated the Spec; no implementation is claimed yet.
+**Next gate:** Claim TK-003A and TK-003B, dispatch Workers on disjoint file lanes, then assemble and verify the Spec candidate.
 
-> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
+> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`1450e7a834872b370be8d7013499058b57a0c7d7`.
 
 ## Outcome
 
@@ -51,7 +51,10 @@ Coordinate shared controls, discovery and branch procedure with [Workflow Canon 
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At flight launch/Spec activation, use current Actuality to plan small complete-path slices and safe parallel groups. The empty tasks directory keeps this planned capability record-backed.
+Two record-backed Tasks, cut at flight launch on 2026-09-29 from live Actuality and grouped as one safe parallel pair because their file sets are disjoint. The Dispatcher (Lane D) is the single writer of this Spec, its TASK records and the rendered projections; Workers hand back exact SHAs and proof.
+
+- [TK-003A](tasks/TK-003A/TASK.md): the operating entry `workbench/skills/dispatcher/SKILL.md` with its manifest, layout, catalog, installer and count consumers, red/green at the existing catalog and layout test seams.
+- [TK-003B](tasks/TK-003B/TASK.md): the routed article `workbench/wiki/skill-dispatcher.md`, its MEMORY.md route, and the fresh-context scenario from Testing Seams recorded with its limits.
 
 ## Acceptance Criteria
 
@@ -82,3 +85,4 @@ Maintain the role or stance definition in LEXICON.md, the operating contract in 
 | Date | Task | Event | Evidence | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-27 | none | Planning only | Owner confirmed ROLE-1 through ROLE-4; no Task allocated or implementation claimed | This Spec and linked role model | Flight launch, Task planning, implementation and behavioral verification remain |
+| 2026-09-29 | planning | Flight launch: Tasks cut and Spec activated | TK-003A and TK-003B written from live Actuality at 1450e7a8 (this Spec, LEXICON role and stance rows, AGENTS Assigned Work And Stances and Git Rules, RUNBOOK Role And Stance Coordination, ADR-000P, roles-and-stances.md, ledger ROLE-1 to ROLE-4, the skill contract in workbench/skills/auditor/SKILL.md and tools/test-skill-catalog.mjs, tools/test-workbench-layout.mjs, tools/test-skills-lane.mjs); `convert-tasks S-002D --activate` flipped Status; self-drift pre receipt and guardrail baseline captured at 1450e7a8 outside the repository | This Spec and its two TASK records | Implementation, scenario proof, separate-context review and integration delivery remain |
