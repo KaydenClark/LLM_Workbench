@@ -40,7 +40,12 @@ const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' 
 // entry composing grilling with notepad, ahead of the stances so every
 // `slice(-4)` stance read stays exact.
 const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...stanceSkills];
+// Role and coordination-stance entries sit between the workflow skills and
+// the four portable stances; each is a required core entry delivered by its
+// own Spec. S-002D adds `dispatcher`. Exported so the tests derive the frozen
+// v3.2.1 row by excluding this group rather than by naming each entry.
+export const coordinationSkills = ['dispatcher'];
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
