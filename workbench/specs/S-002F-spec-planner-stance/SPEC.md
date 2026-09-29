@@ -1,17 +1,17 @@
 # S-002F - Spec Planner Stance
 
 **Spec ID:** S-002F
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-F
 **Stance:** Builder
-**Updated:** 2026-09-27
+**Updated:** 2026-09-29
 **Catalog description:** Plan small Tasks and parallel vertical slices for one Spec from current Actuality when its flight launches.
-**Blockers:** none for specification; implementation awaits flight launch and assignment.
-**Latest event:** Owner confirmed the minimum role/stance buildout; this Spec records one capability without cutting Tasks.
-**Next gate:** At flight launch, inspect live Actuality and plan small Tasks within this Spec.
+**Blockers:** none.
+**Latest event:** Flight launched 2026-09-29 under the Director run; Spec Planner cut TK-002X, TK-002Y and TK-002Z from live Actuality at `1450e7a8`.
+**Next gate:** Claim and deliver TK-002X and TK-002Y in parallel, then TK-002Z; assembled suite, separate-context review and reviewed merge into `integration`.
 
-> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
+> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`1450e7a834872b370be8d7013499058b57a0c7d7`.
 
 ## Outcome
 
@@ -51,7 +51,7 @@ Coordinate shared controls, discovery and branch procedure with [Workflow Canon 
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At flight launch/Spec activation, use current Actuality to plan small complete-path slices and safe parallel groups. The empty tasks directory keeps this planned capability record-backed.
+Record-backed: each slice is a `tasks/<TK-####>/TASK.md`, cut at flight launch on 2026-09-29 from Actuality at the post anchor. Group 1 runs concurrently: [TK-002X](tasks/TK-002X/TASK.md) ships the `spec-planner` core entry with its bundle proof (writer of the skill source, layout bundle, manifest, catalog, count wording and catalog test) and [TK-002Y](tasks/TK-002Y/TASK.md) routes the individual Wiki article (writer of the article and the `MEMORY.md` router line). Group 2, [TK-002Z](tasks/TK-002Z/TASK.md), waits on both: it runs the Testing Seams scenario with a fresh-context agent in a fixture room outside the repository and assembles the Spec proof. The Dispatcher is the single writer of this Spec, its Task records and the projections; cross-lane shared files (`workbench/manifest.json`, `workbench/skills/README.md`, `workbench/wiki/MEMORY.md`, the count-bearing tests) are reconciled by this lane at rebase per the Director's landing order S-002C, S-002D, S-002F, S-002G.
 
 ## Acceptance Criteria
 
@@ -82,3 +82,4 @@ Maintain the role or stance definition in LEXICON.md, the operating contract in 
 | Date | Task | Event | Evidence | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-27 | none | Planning only | Owner confirmed ROLE-1 through ROLE-4; no Task allocated or implementation claimed | This Spec and linked role model | Flight launch, Task planning, implementation and behavioral verification remain |
+| 2026-09-29 | planning | Flight launch: Spec Planner cut TK-002X, TK-002Y, TK-002Z | Live Actuality inspected at `1450e7a8`: LEXICON Spec Planner/Dispatcher/Worker rows, AGENTS Assigned Work And Stances and Git Rules, RUNBOOK Role And Stance Coordination, ADR-000P, ADR-0036, the role model article, ledger ROLE-1 to ROLE-4, the skill contract (`workbench/skills/auditor/SKILL.md`, `workbench/skills/README.md`, `tools/test-skill-catalog.mjs`, `tools/test-delivery-skills.mjs`, `tools/test-core-skill-installer.mjs`, `tools/test-skills-lane.mjs`, `workbench/tools/workbench-layout.mjs`) and the 2026-09-26 Director roster as evidence of the job. IDs from `next-id`; `convert-tasks S-002F --activate` run once; self-drift pre receipt at `1450e7a8` (`cleanUpdate` false, eight pre-existing findings: two stale-claim, five stale-seed, one unverified-provenance) and guardrail baseline templates 106.6/113 (only Team coordination missing) kept in the lane scratchpad | This Spec header, slices section and three Task records | Delivery of all three Tasks, assembled suite, scenario proof, separate-context review and reviewed merge remain |
