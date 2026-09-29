@@ -266,6 +266,8 @@ ownership route move. `RUNBOOK.md` gains the query procedure at that point.
 
 | 2026-09-29 | 7d3095167322b2466da27f521ffbb1840e5408d5 | Full combined-branch review found one stale TK-001 sentence inherited from the Q24B lane | Separate-context reviewer checked the full candidate against origin/integration at 1450e7a8 and found that TK-001 called Q24B unresolved, although its conflict policy is decided. The 48-command run on this SHA was interrupted after 11 passing commands; no full-suite pass is claimed for it. | TK-001 now distinguishes the locked conflict policy from field shape and disposition placement still to be settled during implementation. The ledger no longer asserts a delivery state that would go stale after integration. Fresh exact-SHA review and verification remain required. |
 
+| 2026-09-29 | 1cec360553b60a60c97471c51eb87f68cb4c290c | Corrected combined acceptance candidate passed independent review and full verification | Separate-context reviewer returned PASS with no actionable finding on the full clean diff against origin/integration at 1450e7a8; all 48 AGENTS commands passed on this exact clean SHA, including ADR, Wiki, ledger, append-only, template evaluation and doctor checks. The ledger now keeps integration containment as a Git fact rather than a transient status claim. | ADR acceptance and Wiki-first navigation are ready for integration delivery. S-00G map and JSON Taskboard implementation, ACC-3 binding-force question, and the eight baseline self-drift attention findings remain separate open work; this row does not claim release proof or agent-outcome improvement. |
+
 ## Completion Result
 
 ADR acceptance and the related documentation decisions are reconciled.
