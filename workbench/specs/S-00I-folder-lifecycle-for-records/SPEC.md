@@ -3,13 +3,13 @@
 **Spec ID:** S-00I
 **Status:** active
 **Priority:** 3
-**Owner:** DISPATCHER
+**Owner:** claude-lane-H
 **Stance:** Builder
 **Updated:** 2026-09-26
 **Catalog description:** Express ADR, Spec and Task lifecycle by folder location, reconcile completed Specs and Tasks into readable durable owners before retiring them, and discard retired records only through a verified gate; permanent `archive` is never cleared.
 **Blockers:** none; S-00H is `complete` (integration `49c671e`).
-**Latest event:** 2026-09-26 Lane H added TK-01U (features capture, deferred until S-00J TK-01S is done on integration) and TK-01V (continuous T0-T6 demonstration, blocked on TK-01U), consuming the S-00J closure-capture transition contract. Human QA has been underway since 2026-09-19 and its reviews have failed; no owner approval is recorded.
-**Next gate:** Lane H releases TK-01U once S-00J TK-01S is done on integration; TK-01V follows TK-01U. Meanwhile reconcile the ongoing Human QA findings against this Spec, carry attributable corrections or a return to Align, and inspect a fresh result. Do not request that the owner start Human QA again.
+**Latest event:** TK-01U claimed by claude-lane-H.
+**Next gate:** Close TK-01U with verification and documentation proof.
 
 > **Citation anchors.** pre=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb` post=`e3c5c8f343ec36d411bb6b9ea656e0f53c7406cb`.
 

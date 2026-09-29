@@ -3,7 +3,7 @@
 **Task ID:** TK-01U
 **Spec ID:** S-00I
 **Slice:** Capture a completed Spec as a discoverable features article that retirement accepts
-**Status:** deferred
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-00I closed-Spec durable reconciliation and retirement, extended by step T4 (features capture) and the T5/T6 capture preconditions of the S-00J closure-capture transition contract
@@ -15,9 +15,10 @@ Lane H releases this Task by setting Status `ready` once S-00J TK-01S is done
 on integration. It is `deferred` with no Blockers line entry because the
 runtime cannot resolve a cross-Spec Task blocker, and the `S-00J:delivered`
 token does not exist until S-00J TK-01T lands. Until then nothing here may be
-claimed. Lane H also serializes this Task's `workbench/tools/spec-workbench.mjs`
-and `tools/test-spec-workbench.mjs` lane behind S-00J TK-01S and TK-01T, which
-write the same files.
+claimed. Lane H released it on 2026-09-26 after S-00J TK-01S
+landed (e0c7ef1) and runs it concurrently with S-00J TK-01T, which edits
+the blocker resolver while this Task edits retirement, discard and doctor
+code; the two are reconciled at landing.
 
 ## Outcome
 
