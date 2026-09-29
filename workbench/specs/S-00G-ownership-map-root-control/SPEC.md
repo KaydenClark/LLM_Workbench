@@ -261,6 +261,8 @@ ownership route move. `RUNBOOK.md` gains the query procedure at that point.
 
 | 2026-09-29 | 4bf0fabf4fe8fdcc21c3a9a4bd74280f6981f0a1 | Separate-context review of the first status-corrected candidate returned FAIL on one residual TK-004 contradiction | Reviewer compared the full diff from ef2b1296; TK-004 said Q24B field shape was settled, while the header and Dependencies left it for implementation. The 48-command run on this SHA was interrupted after that finding; no full-suite pass is claimed for it. | Rephrased TK-004 as an obligation to settle field shape within this Spec during implementation; new immutable review and full-suite proof required. |
 
+| 2026-09-29 | 5cf9fdfe172ebec62940959da517c30394896a6b | Reconciled ADR acceptance and Wiki-first documentation candidate passed separate-context review and the full verification suite | Read-only reviewer returned PASS on the full diff from ef2b1296 with no actionable finding; all 48 AGENTS commands passed on this clean committed SHA; ADR and Wiki validators, render, doctor and append-only checks are included. Clean-parent self-drift pre and this candidate post each report the same eight baseline findings and `cleanUpdate:false`; guardrail audit is 78/100 before and after with unchanged criteria | Acceptance decision and documentation proof are established for this candidate. Map and JSON Taskboard implementation remain S-00G/board work; self-drift baseline findings and outcome evidence remain outside this promotion. Integration containment must be checked after delivery. |
+
 ## Completion Result
 
 ADR acceptance and the related documentation decisions are reconciled.
