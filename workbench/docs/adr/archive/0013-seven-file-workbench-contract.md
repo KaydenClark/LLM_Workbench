@@ -1,5 +1,6 @@
 ---
 date: 2026-09-04
+superseded_by: 000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md
 ported_from: GPT_OS ADR-0013 (accepted 2026-09-03)
 canonicalized_in:
   - BLUEPRINT.md
