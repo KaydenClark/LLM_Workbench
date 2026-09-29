@@ -8,8 +8,8 @@
 **Updated:** 2026-09-29
 **Catalog description:** Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results.
 **Blockers:** none
-**Latest event:** Flight launched 2026-09-29 under the owner's instruction to complete the Director and Dispatcher role and stance Specs; TK-002X (skill entry with bundle proof) and TK-002Y (routed article and fresh-context scenario) cut from current Actuality and the Spec activated.
-**Next gate:** Claim and deliver TK-002X, then TK-002Y; assembled suite, self-drift and guardrail receipts, separate-context review, verdict, gate and PR into integration.
+**Latest event:** TK-002X claimed by claude-lane-C.
+**Next gate:** Close TK-002X with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`1450e7a834872b370be8d7013499058b57a0c7d7`.
 

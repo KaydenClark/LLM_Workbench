@@ -3,7 +3,7 @@
 **Task ID:** TK-002X
 **Spec ID:** S-002C
 **Slice:** Ship the director core skill entry with catalog, manifest, layout and test proof
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002C Acceptance Criteria, boxes 1 to 5 (the operating contract the entry states) and box 7 (source, templates, discovery and managed installation agree)
