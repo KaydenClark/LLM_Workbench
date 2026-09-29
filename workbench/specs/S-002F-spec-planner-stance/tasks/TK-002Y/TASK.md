@@ -3,7 +3,7 @@
 **Task ID:** TK-002Y
 **Spec ID:** S-002F
 **Slice:** Route the spec-planner article from the Wiki router
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A fresh agent from integration can discover the operating entry and its individual Wiki article, identify scope, inputs, outputs, hand-back and escalation, and perform the scenario below without private notes.
