@@ -77,6 +77,14 @@ they are authored.
 - [Adoption: bring an existing project into the Workbench once](skill-adoption.md)
 - [Genesis: start a new room from a founding prompt](skill-genesis.md)
 
+## Planned And Optional Skill References
+
+[Domain Modeling: sharpen the Workbench's language as decisions form](skill-domain-modeling.md)
+explains the optional personal method and the proposed Workbench adaptation.
+[Domain Modeling Skill for the Workbench - S-002H](../specs/S-002H-domain-modeling-skill/SPEC.md)
+keeps its required-room versus optional-extension distribution choice open.
+This route does not claim that every room can discover the skill today.
+
 ## Release And Distribution Routing
 
 The reconciled release scope and complete historical inventory live in
