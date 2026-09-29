@@ -1,17 +1,17 @@
 # S-002G - Spec Manager Stance
 
 **Spec ID:** S-002G
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-lane-G
 **Stance:** Builder
-**Updated:** 2026-09-27
+**Updated:** 2026-09-29
 **Catalog description:** Dispatch and monitor planned Task work in parallel within one Spec, preserving proof and coordinated hand-back.
-**Blockers:** none for specification; implementation awaits flight launch and assignment.
-**Latest event:** Owner confirmed the minimum role/stance buildout; this Spec records one capability without cutting Tasks.
-**Next gate:** At flight launch, inspect live Actuality and plan small Tasks within this Spec.
+**Blockers:** none
+**Latest event:** Flight launched 2026-09-29 under the owner's Director-run instruction; Spec Planner cut TK-003A (source entry and bundle proof), TK-003B (routed Wiki article) and TK-003C (fresh-context scenario and assembled proof) from live Actuality at 1450e7a8.
+**Next gate:** Close TK-003A and TK-003B with named proof, then TK-003C with the observed scenario and assembled proof; separate-context review before integration.
 
-> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`b00a2e338436ef7b281b0cc53e74f891af32f18c`.
+> **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`1450e7a834872b370be8d7013499058b57a0c7d7`.
 
 ## Outcome
 
@@ -51,7 +51,7 @@ Coordinate shared controls, discovery and branch procedure with [Workflow Canon 
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At flight launch/Spec activation, use current Actuality to plan small complete-path slices and safe parallel groups. The empty tasks directory keeps this planned capability record-backed.
+Cut at flight launch 2026-09-29 from live Actuality: [TK-003A](tasks/TK-003A/TASK.md) ships the source entry with bundle, catalog and installer proof; [TK-003B](tasks/TK-003B/TASK.md) routes the individual Wiki article (independent of TK-003A; parallel group 1); [TK-003C](tasks/TK-003C/TASK.md) observes the fresh-context scenario and assembles the Spec proof (after TK-003A). Shared files (manifest, layout tool, catalog README, count-bearing control sentences, tests, `MEMORY.md`) have one writer, the Dispatcher lane; Workers hand back exact SHAs and proof.
 
 ## Acceptance Criteria
 
@@ -82,3 +82,4 @@ Maintain the role or stance definition in LEXICON.md, the operating contract in 
 | Date | Task | Event | Evidence | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-27 | none | Planning only | Owner confirmed ROLE-1 through ROLE-4; no Task allocated or implementation claimed | This Spec and linked role model | Flight launch, Task planning, implementation and behavioral verification remain |
+| 2026-09-29 | planning | Flight launch: Tasks cut and Spec activated | Owner instruction in chat 2026-09-29 ("I want the director and dispatcher roles and stances... Complete those groupings of specs.") assigned through the Director; live Actuality inspected at `1450e7a8`: no `spec-manager` entry in `workbench/skills`, `coreSkills` and `skillPolicy.required` at 22, `tools/test-skill-catalog.mjs` holds five documents to the bundle count with a `words` array ending at eighteen, `tools/test-workbench-layout.mjs` freezes the v3.2.1 row by filtering `grill-me`; TK-003A, TK-003B, TK-003C written with `next-id` and `convert-tasks S-002G --activate`; self-drift pre receipt at `1450e7a8` cleanUpdate false with 8 pre-existing attention findings (2 stale-claim, 5 stale-seed, 1 unverified-provenance); guardrail baseline templates 106.6/113 | This Spec header, slices and Task records | Implementation, scenario, assembled proof and separate-context review remain |
