@@ -4872,6 +4872,7 @@ function commitAll(dir, message) {
 
 {
   const featureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-retire-feature-'));
+  const featureOutside = fs.mkdtempSync(path.join(os.tmpdir(), 'spec-retire-feature-outside-'));
   try {
     initLifecycleFixture(featureRoot);
     fs.writeFileSync(path.join(featureRoot, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
@@ -4901,7 +4902,24 @@ function commitAll(dir, message) {
       [featureNote]: featureOwnerArticle(historicalRoute)
     };
     for (const [relative, content] of Object.entries(variants)) writeAt(featureRoot, relative, content);
-    const routed = Object.keys(variants).filter((relative) => relative !== 'workbench/wiki/features/unrouted-feature.md')
+    // Review corrective (High, separate-context review of 10bdf5b): a
+    // committed symlink under the Wiki lane can point at a valid-looking
+    // article outside it. `validateWiki` skips links while `statSync` follows
+    // them, so the owner predicate must refuse a linked note - of any admitted
+    // type - before it reads anything, or an article outside the Wiki lane
+    // could pass as the Spec's durable owner.
+    const linkedOwners = {
+      'workbench/wiki/features/linked-feature.md': featureOwnerArticle(historicalRoute),
+      'workbench/wiki/design-concepts/linked-concept.md': featureOwnerArticle(historicalRoute, { type: 'design-concept' }),
+      'workbench/wiki/guidebooks/linked-guidebook.md': featureOwnerArticle(historicalRoute, { type: 'guidebook' })
+    };
+    for (const [relative, content] of Object.entries(linkedOwners)) {
+      const target = path.join(featureOutside, path.basename(relative));
+      fs.writeFileSync(target, content);
+      fs.mkdirSync(path.dirname(path.join(featureRoot, relative)), { recursive: true });
+      fs.symlinkSync(target, path.join(featureRoot, relative));
+    }
+    const routed = [...Object.keys(variants), ...Object.keys(linkedOwners)].filter((relative) => relative !== 'workbench/wiki/features/unrouted-feature.md')
       .map((relative) => `- [${path.basename(relative, '.md')}](${relative.replace('workbench/wiki/', '')})`);
     writeAt(featureRoot, 'workbench/wiki/MEMORY.md', `# Fixture Room Brain\n\n${routed.join('\n')}\n`);
     commitAll(featureRoot, 'author feature owner candidates');
@@ -4917,6 +4935,9 @@ function commitAll(dir, message) {
       ['S-610', 'workbench/wiki/features/no-limits.md', /fails Wiki validation.*Limits section/s, 'a malformed article'],
       ['S-610', 'workbench/wiki/features/pasted-state.md', /copied-task-state/, 'copied delivery state'],
       ['S-610', 'workbench/wiki/features/unrouted-feature.md', /is not linked from workbench\/wiki\/MEMORY\.md/, 'a missing MEMORY.md route'],
+      ['S-610', 'workbench/wiki/features/linked-feature.md', /linked-feature\.md is a symbolic link/, 'a symlinked feature owner'],
+      ['S-610', 'workbench/wiki/design-concepts/linked-concept.md', /linked-concept\.md is a symbolic link/, 'a symlinked design-concept owner'],
+      ['S-610', 'workbench/wiki/guidebooks/linked-guidebook.md', /linked-guidebook\.md is a symbolic link/, 'a symlinked guidebook owner'],
       ['S-610', featureNote, /S-610 cannot retire: no owner Human QA approval is recorded/, 'an absent owner approval gate']
     ];
     for (const [specId, wikiNote, pattern, label] of refusals) {
@@ -4924,7 +4945,7 @@ function commitAll(dir, message) {
       assert.throws(() => retireSpec(featureRoot, specId, { wikiNote }), pattern, `retireSpec refuses ${label} by name`);
       assert.deepEqual(gitSnapshot(featureRoot), before, `the ${label} refusal leaves the fixture tree and index unchanged`);
     }
-    console.log('ok - retireSpec refuses a feature owner for a Spec that is not complete, a missing article, an invalid type, role or path, no historical route, a malformed or copied article, a missing MEMORY.md route and an absent owner approval, each by name with the tree and index unchanged');
+    console.log('ok - retireSpec refuses a feature owner for a Spec that is not complete, a missing article, an invalid type, role or path, no historical route, a malformed or copied article, a missing MEMORY.md route, a symlinked feature, design-concept or guidebook note and an absent owner approval, each by name with the tree and index unchanged');
 
     recordOwnerApproval(featureRoot, 'S-610', { candidate: integratedFixtureCandidate(featureRoot), owner: 'Kayden Clark', result: 'approve' });
     commitAll(featureRoot, 'record owner Human QA approval');
@@ -4945,6 +4966,7 @@ function commitAll(dir, message) {
     console.log('ok - retireSpec accepts a validated, routed features article on a complete, approved Spec and its receipt names the owner and the historical route');
   } finally {
     fs.rmSync(featureRoot, { recursive: true, force: true });
+    fs.rmSync(featureOutside, { recursive: true, force: true });
   }
 }
 
