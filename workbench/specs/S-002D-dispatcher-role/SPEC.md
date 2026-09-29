@@ -8,8 +8,8 @@
 **Updated:** 2026-09-29
 **Catalog description:** Coordinate planning, parallel Task delivery and assembled verification within one assigned Spec and its branch.
 **Blockers:** none
-**Latest event:** Flight launch 2026-09-29: Lane D cut TK-002X (operating entry with catalog, installer and layout proof) and TK-002Y (routed Wiki article and fresh-context scenario) from live Actuality at 1450e7a8 and activated the Spec; no implementation is claimed yet.
-**Next gate:** Claim TK-002X and TK-002Y, dispatch Workers on disjoint file lanes, then assemble and verify the Spec candidate.
+**Latest event:** TK-002X claimed by claude-lane-D.
+**Next gate:** Close TK-002X with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`1450e7a834872b370be8d7013499058b57a0c7d7`.
 

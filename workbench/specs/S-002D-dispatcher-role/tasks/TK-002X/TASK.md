@@ -3,7 +3,7 @@
 **Task ID:** TK-002X
 **Spec ID:** S-002D
 **Slice:** Deliver the dispatcher operating entry with catalog, installer and layout proof
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002D boxes 1-5 and 7 (the dispatcher operating entry at workbench/skills/dispatcher/SKILL.md, discoverable through the existing skills lane and adapters, with source, templates, discovery and managed installation agreeing)
