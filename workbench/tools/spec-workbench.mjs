@@ -12,7 +12,7 @@ import { blocksSelection, describe, finding } from './diagnostics.mjs';
 import { checkHostFloor, formatHostFloor } from './host-floor.mjs';
 import { capabilitySession } from './optional-capabilities.mjs';
 import { coordinationContext, publicCoordination, publishClaim } from './claim-coordination.mjs';
-import { assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
+import { assertSafeReadPath, assertSafeWritePath, writeSafeFile, collectionPath, collectionRelative, declaredGit, lanePath, liveRecordPath, markdownLinkTargets, readManifest } from './workbench-paths.mjs';
 import { parseFrontmatter, rewriteAdrLinks, rewriteCanonicalizedIn, splitEvidenceSection, validateAdrs, writeRegister } from './adr.mjs';
 import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
@@ -2518,7 +2518,16 @@ function retiredSpecWikiOwnerStatus(root, historicalRoute) {
 function durableOwnerRefusal(root, specId, historicalRoute, noteAbsolute, { featureOnly = false } = {}) {
   const wikiRoot = lanePath(root, 'wiki');
   const noteRelative = path.relative(root, noteAbsolute).split(path.sep).join('/');
-  if (!fs.existsSync(noteAbsolute) || !fs.statSync(noteAbsolute).isFile()) {
+  // Review corrective (High, separate-context review of 10bdf5b): the note
+  // and every ancestor must be ordinary paths inside the repository before
+  // anything is read. `validateWiki` skips symlinks when it walks, so a
+  // linked note would otherwise be read here (statSync follows links) yet
+  // never validated, letting an article outside the Wiki lane own a Spec.
+  try { assertSafeReadPath(root, noteAbsolute); }
+  catch (error) { return `${error.message}; a linked note cannot be ${specId}'s durable owner`; }
+  let entry = null;
+  try { entry = fs.lstatSync(noteAbsolute); } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (!entry?.isFile()) {
     return `retire-spec found no Wiki note at ${noteRelative}; ${specId}'s surviving claims name no durable owner`;
   }
   const content = fs.readFileSync(noteAbsolute, 'utf8');
