@@ -3,7 +3,7 @@
 **Task ID:** TK-002Y
 **Spec ID:** S-002D
 **Slice:** Route the dispatcher Wiki article and record the fresh-context Dispatcher scenario
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** wiki-claim: workbench/wiki/skill-dispatcher.md routed from the Roles And Stances section of workbench/wiki/MEMORY.md, carrying the observed fresh-context scenario and its limits (S-002D box 6)
