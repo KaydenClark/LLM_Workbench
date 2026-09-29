@@ -8,8 +8,8 @@
 **Updated:** 2026-09-29
 **Catalog description:** Plan small Tasks and parallel vertical slices for one Spec from current Actuality when its flight launches.
 **Blockers:** none.
-**Latest event:** Flight launched 2026-09-29 under the Director run; Spec Planner cut TK-002X, TK-002Y and TK-002Z from live Actuality at `1450e7a8`.
-**Next gate:** Claim and deliver TK-002X and TK-002Y in parallel, then TK-002Z; assembled suite, separate-context review and reviewed merge into `integration`.
+**Latest event:** TK-002X claimed by claude-lane-F.
+**Next gate:** Close TK-002X with verification and documentation proof.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`1450e7a834872b370be8d7013499058b57a0c7d7`.
 

@@ -3,7 +3,7 @@
 **Task ID:** TK-002X
 **Spec ID:** S-002F
 **Slice:** Ship the spec-planner core entry with its bundle proof
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Source behavior, templates, discovery and managed installation agree; named verification and remaining limitations are recorded without claiming owner approval.
