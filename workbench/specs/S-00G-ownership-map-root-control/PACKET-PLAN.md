@@ -1,12 +1,18 @@
 # S-00G packet drafts and reconciliation text
 
+**Current disposition (2026-09-29):** ADR-000B/C/D are accepted and active;
+ADR-0013/0033 are archived. ACC-1/2/4/5 are locked. The proposal wording and
+drafting-session checks below describe the pre-acceptance planning snapshot,
+not current gates. Follow [SPEC.md](SPEC.md) for current work state. No map or
+JSON Taskboard behavior was delivered by acceptance.
+
 Spec-local planning companion to [SPEC.md](SPEC.md); not a task store, an executable queue or an accepted schema. Provenance: drafted in Codex candidate `3c8be95a7d1f06f5a2ce0b149d84685a8dbdb598` (base `89d4042fb8931b9d720af75bffea1c28803d72aa`, never merged), then rebuilt onto `integration` at `ec848e58626d1dbc33d3601c60178c47447c1014`, where the ledger, the three proposed ADRs and `tools/control-fidelity.mjs` are byte-identical to the base. SPEC.md is the single durable writer for this capability's state; this file holds the proposal material it links. The drafting-session history section below is provenance, not a standing assignment.
 
 ## Source authority and findings
 
-Durable recovery source: `git show 89d4042fb8931b9d720af75bffea1c28803d72aa:workbench/wiki/grilling-destination-audit-ledger.json`, question IDs FND-Q20, Q21, Q21A-D, Q22, Q22A, Q23, Q23A, Q24 and Q24B. The ledger is evidence of answers; ADR acceptance remains a separate owner action. `result.effect` phrasing such as “Accepted” on Q21A is desired disposition, not proof ADR-000D moved out of proposed/.
+Durable recovery source: `git show 89d4042fb8931b9d720af75bffea1c28803d72aa:workbench/wiki/grilling-destination-audit-ledger.json`, question IDs FND-Q20, Q21, Q21A-D, Q22, Q22A, Q23, Q23A, Q24 and Q24B. At that source commit, the ledger evidenced answers but did not itself prove ADR acceptance. `result.effect` phrasing such as “Accepted” on Q21A was desired disposition at the time, not proof ADR-000D had moved out of proposed/. The current ADR lifecycle is recorded in SPEC.md and the ADR register.
 
-FND-Q21 is settled through subquestions; Q23 and Q24 are locked. Only Q24B remained an unanswered question in this cluster when this plan was rebuilt; on 2026-09-29 the owner answered its undeclared-difference sub-fork in chat (conflict; SPEC.md tradeoff 1), leaving the field shape to implementation. ADR-000B/C/D are still proposed. Never replace those gates with “none,” count a proposal as acceptance, or ask the owner to repeat the settled answers.
+FND-Q21 is settled through subquestions; Q23 and Q24 are locked. Only Q24B remained an unanswered question in this cluster when this plan was rebuilt; on 2026-09-29 the owner answered its undeclared-difference sub-fork in chat (conflict; SPEC.md tradeoff 1), leaving the field shape to implementation. At plan rebuild ADR-000B/C/D were still proposed; they are now accepted. Do not ask the owner to repeat the settled answers or count acceptance as map delivery.
 
 Recovered details were checked against the exact source entries named by the ledger in the ignored `workbench/sessions/notepads/grilling/` collection of the owner's checkout: `workbench-foundation-rework-2026-09-11.json` (proposal-017/022/024, decisions 061–063); `fnd-foundation-ownership-2026-09-15.json` (proposal-026, finding-033, decision-066); `blocked-obligations-review-2026-09-21.json` (decisions 018/019/025/026). Those ignored paths are recovery references, not durable citations for a committed result.
 

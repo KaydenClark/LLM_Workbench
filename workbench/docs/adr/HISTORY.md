@@ -11,9 +11,9 @@
 | [0003](0003-full-crud-with-artifact-conditions.md) | All six planes support full CRUD with conditions | accepted | 2026-09-04 | AGENTS.md |
 | [0005](0005-machine-enforcement-requires-running-consumers.md) | Machine enforcement requires running policy consumers | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [000A](000A-active-adr-decisions-and-destination-blueprints.md) | Active ADR decisions and destination Blueprints | accepted | 2026-09-09 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
-| [000B](proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md) | The Workbench root surface is eight files and Contract membership is separate from root placement | proposed | 2026-09-12 | AGENTS.md, LEXICON.md, BLUEPRINT.md |
-| [000C](proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md) | The Workbench Contract is the obligation claim set carried by three root controls and the assigned spec | proposed | 2026-09-12 | AGENTS.md, LEXICON.md |
-| [000D](proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md) | The ownership map is an exhaustive type-level framework answered by structured query | proposed | 2026-09-12 | LEXICON.md, AGENTS.md |
+| [000B](000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md) | The Workbench root surface is eight files and Contract membership is separate from root placement | accepted | 2026-09-12 | AGENTS.md, LEXICON.md, BLUEPRINT.md |
+| [000C](000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md) | The Workbench Contract is the obligation claim set carried by three root controls and the assigned spec | accepted | 2026-09-12 | AGENTS.md, LEXICON.md, RUNBOOK.md |
+| [000D](000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md) | The ownership map is an exhaustive type-level framework answered by structured query | accepted | 2026-09-12 | LEXICON.md, AGENTS.md |
 | [000E](proposed/000E-the-frontier-is-the-active-landscape-and-taskboard-renders-it.md) | The Frontier is the active landscape and TASKBOARD renders it | proposed | 2026-09-12 | LEXICON.md, BLUEPRINT.md |
 | [000F](000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md) | Work passes two QA gates: spec branch to integration and integration to main | accepted | 2026-09-12 | BLUEPRINT.md, LEXICON.md, AGENTS.md, RUNBOOK.md |
 | [000G](proposed/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md) | Blueprint, Spec and Task are three altitudes of one delivery chain | proposed | 2026-09-12 | BLUEPRINT.md, AGENTS.md, LEXICON.md |
@@ -25,7 +25,7 @@
 | [000N](000N-landmark-tracker-connects-evolving-understanding-to-durable-knowledge.md) | Landmark Tracker connects evolving understanding to durable knowledge | accepted | 2026-09-26 | BLUEPRINT.md, LEXICON.md, AGENTS.md, RUNBOOK.md, workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md |
 | [000O](000O-claims-are-pushed-on-the-task-branch-and-read-from-every-remote-tip.md) | Claims are pushed on the task branch and read from every remote tip | accepted | 2026-09-26 | workbench/specs/S-00V-portable-workbench/SPEC.md |
 | [000P](000P-roles-scope-work-and-stances-define-the-job.md) | Roles scope work and stances define the job | accepted | 2026-09-27 | AGENTS.md, LEXICON.md, BLUEPRINT.md, RUNBOOK.md |
-| [0013](0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | accepted | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
+| [0013](archive/0013-seven-file-workbench-contract.md) | The portable Workbench has seven root files | superseded | 2026-09-04 | BLUEPRINT.md, LEXICON.md |
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](archive/0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | superseded | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0018](0018-the-wiki-is-the-knowledge-base.md) | The wiki is the knowledge base and holds collections | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
@@ -39,7 +39,7 @@
 | [0030](0030-every-workbench-declares-a-design-concepts-collection.md) | Every Workbench declares a design-concepts collection of owner-directed articles | accepted | 2026-09-04 | LEXICON.md, AGENTS.md |
 | [0031](0031-runtime-tools-are-workbench-managed-in-the-tools-lane.md) | Portable runtime tools are Workbench-managed in the tools lane; root tools stay application-owned | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0032](0032-manifest-schema-2-declares-lanes-and-collections.md) | Manifest schema 2 declares six lanes and every machine-used collection | accepted | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
-| [0033](0033-workbench-contract-is-a-claim-set.md) | The Workbench Contract is a claim set carried by the seven controls and the assigned spec | accepted | 2026-09-04 | LEXICON.md, BLUEPRINT.md |
+| [0033](archive/0033-workbench-contract-is-a-claim-set.md) | The Workbench Contract is a claim set carried by the seven controls and the assigned spec | superseded | 2026-09-04 | LEXICON.md, BLUEPRINT.md |
 | [0034](0034-required-steps-must-enable-delivery.md) | Required steps must enable direct delivery | accepted | 2026-09-04 | AGENTS.md, BLUEPRINT.md |
 | [0035](0035-reduced-entry-and-assigned-autonomy.md) | Reduced entry and autonomy within assigned work | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md, LEXICON.md |
 | [0036](0036-stances-change-method-not-authority.md) | Assigned portable stances change method, not authority | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |

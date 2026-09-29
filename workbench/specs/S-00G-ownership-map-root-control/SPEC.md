@@ -7,9 +7,9 @@
 **Stance:** Builder
 **Updated:** 2026-09-29
 **Catalog description:** Deliver the Ownership map as the eighth root file and Core routing artifact, with queryable responsibility routes and coordinated root-surface consumers.
-**Blockers:** ADR-000B, ADR-000C and ADR-000D remain in `proposed/`. FND-Q24B no longer blocks: the owner answered its undeclared-difference question on 2026-09-29 (Option A, conflict), and the field shape carrying that verdict is settled within this Spec at implementation. Implementation is blocked on ADR acceptance; planning and proposal preparation are not.
-**Latest event:** Owner answered FND-Q24B in chat on 2026-09-29 during the Director run: Option A, a legacy room row that differs from upstream with no authored intent is a conflict until intent is declared (recorded in tradeoff 1 below and in the tracked ledger). Asked the ADR-000B/C/D acceptance tradeoff in the same chat, the owner directed a fresh grilling instead of choosing; the Director wrote the local, untracked grilling handoff `workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md`. No schema implemented, no ADR moved and no Task record created or claimed.
-**Next gate:** The ADR-000B/C/D acceptance route and timing (tradeoff 2), to be settled through the owner-directed grilling whose local handoff is `workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md` (ledger ACC-1 and ACC-2 stay open until then), then faithful Task conversion of the four legacy slices once the converter supports a planned Spec with ADR/question blockers.
+**Blockers:** ADR-000B/C/D acceptance is resolved. The Spec remains planned: the four legacy slices cannot be converted faithfully while the converter refuses a planned Spec with ADR/question blockers. FND-Q24B's undeclared-difference policy is decided (conflict); its field shape and disposition placement remain implementation decisions within the locked guards.
+**Latest event:** On 2026-09-29 the owner confirmed Q1 and ACC-1/2/4/5, then explicitly authorized their promotion and the ADR acceptance change. ADR-000B/C/D are active; ADR-0013/0033 are archived. ACC-5 routes completed capability navigation through Wiki feature articles; S-022 is a historical blocked packet and its new article must preserve that limit. No map schema or Task was implemented.
+**Next gate:** Faithful conversion of the four legacy slices once the converter supports this planned Spec without inventing Task state, then S-00G implementation and verification. ADR acceptance is no longer a gate.
 
 > **Citation anchors.** pre=`c0ac60a179235ef22fa6ea81aec74735087e06e5` post=`c0ac60a179235ef22fa6ea81aec74735087e06e5`.
 
@@ -68,13 +68,13 @@ malformed map without inventing authority the map does not carry.
 ## Decisions And Contracts
 
 - Placement, root-surface count, and the separation of root placement from Core
-  and Contract membership: [ADR-000B](../../docs/adr/proposed/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md).
-- Contract membership and the three carriers: [ADR-000C](../../docs/adr/proposed/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md).
-- Exhaustive-by-query and the routes-not-claims guardrail: [ADR-000D](../../docs/adr/proposed/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md).
+  and Contract membership: [ADR-000B](../../docs/adr/000B-the-workbench-root-surface-is-eight-files-and-contract-membership-is-separate-from-root-placement.md).
+- Contract membership and the three carriers: [ADR-000C](../../docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md).
+- Exhaustive-by-query and the routes-not-claims guardrail: [ADR-000D](../../docs/adr/000D-the-ownership-map-is-an-exhaustive-type-level-framework-answered-by-structured-query.md).
 
-All three remain in `workbench/docs/adr/proposed/`. Map implementation remains
-gated on their acceptance. Planning and proposal preparation may proceed without
-treating those proposals as accepted or implementing the unanswered schema.
+All three are active accepted decisions. Their eight-file destination and
+three-carrier Contract lead implementation; `OWNERSHIP.json`, `TASKBOARD.json`
+and query behavior remain assigned delivery gaps, not present runtime claims.
 
 The spec-local [packet plan](PACKET-PLAN.md) carries the recovered 28-row
 allocation, four-tier decision rule, five concrete Q24B comparison examples, the
@@ -87,7 +87,7 @@ the ledger, the three ADRs and `tools/control-fidelity.mjs` are byte-identical a
 ## Non-Goals
 
 - Implementing FND-Q24B's field shape or disposition vocabulary during recovery/proposal work. The undeclared-difference policy was chosen by the owner on 2026-09-29 and is recorded here, not implemented.
-- Accepting ADR-000B/C/D by inference from settled answers or from the ledger's desired-result wording.
+- Treating ADR acceptance as proof that the ownership map, JSON Taskboard or query runtime has shipped.
 - Duplicating routed claim text or live Spec/Task/ADR instances in the map; adding row lifecycle or status-shaped fields.
 - Retiring or rewriting historical Spec, Task or ADR evidence.
 
@@ -95,7 +95,7 @@ the ledger, the three ADRs and `tools/control-fidelity.mjs` are byte-identical a
 
 The tracked [destination ledger](../../wiki/grilling-destination-audit-ledger.json), read at `89d4042fb8931b9d720af75bffea1c28803d72aa`, records FND-Q21 as settled through Q21A-D and FND-Q23/Q24 as locked. These are recovered decisions, not open questions to ask again. Earlier evidence rows preserve the prior unresolved discrepancy as history.
 
-Implementation remains gated on acceptance of ADR-000B/C/D. FND-Q24B belongs to this Spec as an ownership-origin-model question (PW-2 relabeled it from the retired "portability" framing and ruled it independent of S-00V): what authored facts classify project/upstream differences without a status-shaped field, and whether an undeclared difference is conflict or a reportable finding. The ledger routes its answer to this Spec "with an agent proposal first"; the proposal below was prepared for owner disposition, and on 2026-09-29 the owner disposed of its sub-fork in chat: an undeclared difference is a conflict (tradeoff 1, Option A). Proposal-026 is still only a proposal. Its two-authored-facts/computed-verdict shape and its ADR-citation tension with the no-instance guard are not accepted by that answer; they are compared against the five examples in the packet plan and settled within this Spec at implementation.
+ADR-000B/C/D acceptance is resolved. Implementation remains planned. FND-Q24B belongs to this Spec as an ownership-origin-model question (PW-2 relabeled it from the retired "portability" framing and ruled it independent of S-00V): what authored facts classify project/upstream differences without a status-shaped field, and whether an undeclared difference is conflict or a reportable finding. The ledger routes its answer to this Spec "with an agent proposal first"; the proposal below was prepared for owner disposition, and on 2026-09-29 the owner disposed of its sub-fork in chat: an undeclared difference is a conflict (tradeoff 1, Option A). Proposal-026 is still only a proposal. Its two-authored-facts/computed-verdict shape and its ADR-citation tension with the no-instance guard are not accepted by that answer; they are compared against the five examples in the packet plan and settled within this Spec at implementation.
 
 FND-Q21 fixes 28 responsibilities: 21 single-owner rows, six scoped rows and Representation/monitoring. Q21B distinguishes source-state authors from the Taskboard's representation role. Q21C places execution decisions in Task body, not Receipt; durable choices remain gaps until escalated. Q23 permits accepted rows only, with no instance identifiers, no status-shaped fields and routes-only query results. Q24 fixes two origins and three classifications, meaningful primary/supporting relationships and deliberate divergence with explicit disposition; row absence and artifact type alone do not classify or prove compatibility.
 
@@ -135,48 +135,27 @@ no-instance-identifier and no-status-shaped-field guards (Q23) hold
 unweakened; cost: a reader cannot see the disposition from the map alone and
 the comparator joins to another owner.
 
-**2. ADR-000B/C/D — acceptance route and timing.** The decisions these records
-state come from owner-approved foundation answers (000B: FND-Q22, FND-Q23A;
-000C: FND-Q22; 000D: FND-Q21A, FND-Q22A, per each record's Provenance line),
-while their text was agent-drafted (authoring commit `c37e847` and amending
-commit `099b1bb` both carry an agent co-author trailer and state that acceptance
-stays the owner's) and still disagrees with later locked answers: 000D presents
-FND-Q21/Q23/Q24 as open, 000B lists `TASKBOARD.md` where the E-1 direction is
-`TASKBOARD.json`, and 000C's "load all three at ordinary entry" is broader than
-the current smallest-route entry.
-The ledger records the owner's 2026-09-23 view that ADRs he created "should be
-correct" and leaves open whether that covers these three (ACC-1) and whether a
-seven-versus-eight window is acceptable (ACC-2).
-
-- *Option A, reconcile then accept now*: refresh the three texts to the locked
-  answers and accept them ahead of implementation. Cost: accepted Canon says
-  eight root files and three Contract carriers while AGENTS, LEXICON, BLUEPRINT,
-  RUNBOOK and the templates still say seven until this Spec and S-00P land their
-  migrations — a visible inconsistency window.
-- *Option B, reconcile now, accept with the migration* (recommended). Refresh
-  the texts now as proposals; accept them in the same change that lands the
-  first queryable map slice and the control wording. Cost: implementation stays
-  blocked behind one larger coordinated change; no window opens.
-- *Option C, accept as written*. Cost: accepts text that contradicts locked
-  answers, which then needs immediate correction rows; not recommended.
-
-Asked to choose among these on 2026-09-29, the owner directed a fresh grilling
-instead ("/handoff grilling this again I guess if you cant find the answers").
-The Director found no owner answer in the tracked ledger (ACC-1 and ACC-2) or
-any local notepad and wrote the untracked local handoff
-`workbench/sessions/handoffs/grilling-adr-000bcd-acceptance-2026-09-29.md`; it is a route
-to the answer, not evidence of one. This tradeoff stays open.
-
-Neither choice re-asks FND-Q21C, Q23 or Q24, which are settled.
+**2. ADR-000B/C/D — acceptance route and timing. Decided 2026-09-29.**
+The owner chose Option A: agents reconcile the three texts to locked answers
+without another owner reread, then accept them now. A confirmed grilling
+Question / Answer / Why / Impact readback locks the ADR; `to-docs` writes it
+before Specs and Tasks. ADR-000B names `TASKBOARD.json`; ADR-000C names
+AGENTS, RUNBOOK and LEXICON with the assigned Spec; ADR-000D records settled
+FND-Q21/Q23/Q24 and ACC-4's routes-not-claims violation and TK-004 check.
+The seven-versus-eight implementation window is accepted and explicitly
+tracked here. ADR-0013/0033 are archived as superseded. ACC-5 routes agents
+to Wiki feature articles first, with archives retained as sources; S-022's
+historical packet is not completed and its article says so. These decisions
+do not implement the map, JSON Taskboard or query.
 
 ## Vertical Implementation Slices
 
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
-| TK-001 | Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader | blocked | ADR-000B, ADR-000C, ADR-000D proposed | Red test for a missing/malformed map; green minimal reader; full suite |
+| TK-001 | Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader | blocked | Spec planned; Task conversion unavailable | Red test for a missing/malformed map; green minimal reader; full suite |
 | TK-002 | Sweep and teach every live root-surface consumer about the eighth file | blocked | TK-001 | Red repo-wide sweep proving every hardcoded root-surface count/list is found; green update of every one found; `doctor` clean |
 | TK-003 | Ship a copy-ready `templates/OWNERSHIP.json` and update every template consumer | blocked | TK-002 | Template render and adoption tests pass; `evaluate-workbench --path templates` unchanged or improved |
-| TK-004 | Implement the structured query surface and move the schema out of `LEXICON.md` | blocked | TK-003; ADR-000B/C/D acceptance remains inherited (FND-Q24B answered 2026-09-29) | Red test proving a query returns routes and never claim text; green query; Lexicon routes onward |
+| TK-004 | Implement the structured query surface and move the schema out of `LEXICON.md` | blocked | TK-003; Spec planned (FND-Q24B policy answered 2026-09-29) | Red query-output test proving routes, never claim text, plus schema rejection of instance IDs and status-shaped fields; green query; Lexicon routes onward |
 
 ### TK-001 - Add `OWNERSHIP.json` at root with a validated schema and a failing-first reader
 
@@ -253,13 +232,12 @@ named in `AGENTS.md`, then
 
 ## Documentation Impact
 
-`AGENTS.md` and `BLUEPRINT.md` carry the ADR-000B and ADR-000C claims at ADR
-acceptance, which is a separate step from this Spec. `LEXICON.md` loses the
-schema and gains a route only once TK-004 populates and makes the map
-queryable, per ADR-000D — not at acceptance alone, since TK-001-TK-003 leave
-the map an empty, unqueryable container and a question routed there before
-TK-004 would have nowhere to land. `RUNBOOK.md` gains the query procedure at
-the same point.
+The acceptance change reconciles AGENTS, RUNBOOK and LEXICON to the
+three-carrier Contract and accepted eight-file destination. The current
+Markdown Taskboard, templates and enumerating consumers remain implementation
+gaps owned by S-00G and the board work. `LEXICON.md` retains the Artifact
+Ownership Schema until TK-004 makes the map queryable; only then does the
+ownership route move. `RUNBOOK.md` gains the query procedure at that point.
 
 ## Append-Only Evidence And Execution Log
 
@@ -275,42 +253,33 @@ the same point.
 | 2026-09-26 | review | Review verdict: pass at d21890ea11a5b4c1d9aa3282206c7e21987010d6 [92ac540ba6b0] #1 | No High/Medium/Low findings. Full AGENTS suite 48/48 at the committed candidate (read-only runner, dirty []); fresh-clone doctor no blocking finding; self-drift pre/post unchanged (seven baseline findings). Reviewer confirmed ledger status (Q21A-D/Q23/Q24 settled, Q24B open) and that ADR-000B/C/D acceptance timing is a real owner tradeoff; its sandbox could not create temp dirs for two fixture tests, which passed in the suite. | codex exec gpt-5.5, read-only sandbox, separate context from the Lane J dispatcher and worker | 4 |
 | 2026-09-29 | none | Owner answered FND-Q24B: asked in chat, during the Claude Director run, how the ownership map should treat a legacy room row that differs from upstream with no authored intent, the owner selected Option A, conflict ("Every undeclared difference is a conflict until intent is declared. Safest, but the first upgrade of every legacy room stops on each such row."). Asked the ADR-000B/C/D acceptance tradeoff in the same chat, he directed a fresh grilling instead of choosing among the options | Owner's verbatim in-chat selection relayed by the Director to this lane; tradeoff 1, the header, Non-Goals, TK-004 and Completion Result updated in this Spec; ledger FND-Q24B moved open to locked with the answer, reason and a 2026-09-29 progress reading, ACC-1 and ACC-2 given a dated note and kept open; `test-grilling-ledger` 5/5; `render` and `doctor` run on the committed candidate and reported with its SHA, since a row cannot name its own commit. The Director's grilling handoff for ADR-000B/C/D lives in the untracked `workbench/sessions/handoffs/` collection and is cited as a local route only | Tradeoff 1 decided; the companion disposition-placement recommendation is unchanged because the answer did not reach it; proposal-026's field shape is not accepted. Tradeoff 2 stays open, routed to the grilling. No Task claimed, no ADR moved, no schema written; S-00G stays planned. `LEXICON.md`'s Ownership origin model row still calls FND-Q24B open and is listed under Remaining Limitations for its owner |
 
+| 2026-09-29 | spec | Owner confirmed Q1 and ACC-1/2/4/5 and authorized ADR acceptance; the three decisions now lead S-00G implementation | Confirmed grilling readbacks; active ADR-000B/C/D and archived ADR-0013/0033; `adr.mjs validate` passed | Acceptance gate resolved. Map/Taskboard JSON and route query remain implementation gaps; this Spec stays planned pending faithful Task conversion |
+
 ## Completion Result
 
-Not started. Planning is prepared for owner disposition: settled answers
-recovered, the 28-row allocation, five Q24B comparison examples and the
-ADR-000B/C/D migration table are in [PACKET-PLAN.md](PACKET-PLAN.md). Of the two
-owner choices written as tradeoffs above, tradeoff 1 (FND-Q24B) was decided on
-2026-09-29 and tradeoff 2 (ADR-000B/C/D acceptance) is routed to a fresh
-grilling. Map implementation has not started; the ADR gate remains open and the
-Q24B field shape is settled at implementation.
+ADR acceptance and the related documentation decisions are reconciled.
+Map implementation has not started. The Spec remains planned until its four
+legacy slices can be converted faithfully; the next delivery gate is the
+conversion and then implementation, not another ADR acceptance decision.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-No Ownership map or structured JSON comparison is implemented. Q21A-D/Q23/Q24
-are settled and Q24B's undeclared-difference policy is decided (conflict);
-Q24B's field shape and disposition placement are settled at implementation, and
-ADR-000B/C/D acceptance remains the open gate. The 28-row
-allocation and the newer Evolving concept understanding responsibility in the
-Lexicon's Artifact Ownership Schema need explicit coverage reconciliation before
-map population. The current fidelity consumer compares Markdown lines, so a
-row-keyed JSON comparator needs its own implementation slice after schema
-settlement. The converter cannot yet faithfully convert a planned Spec whose
-slices carry ADR/question blockers.
+No Ownership map or structured JSON comparison is implemented. The accepted
+eight-file root destination and three-carrier Contract therefore lead actual
+files, templates and consumers. Q21A-D/Q23/Q24 are settled and Q24B's
+undeclared-difference policy is conflict; its field shape and disposition
+placement remain implementation decisions. The 28-row allocation and the
+newer Evolving concept understanding responsibility need explicit coverage
+reconciliation before map population. The current fidelity consumer compares
+Markdown lines, so a row-keyed JSON comparator needs its own implementation
+slice. The converter cannot yet faithfully convert this planned Spec's legacy
+slices; no Task is claimed or marked complete to hide that limitation.
 
-Wording this Spec needs in controls it does not own (S-00P owns them; listed,
-not edited): `LEXICON.md`'s Workbench Contract row still says seven root
-controls, and its Root controls row and `RUNBOOK.md`'s genesis/adoption/
-fidelity passages still count seven; `AGENTS.md`'s Authority Order and
-`BLUEPRINT.md` still rank the Blueprint as procedural Canon rather than a routed
-artifact whose accepted claims bind where they apply (ACC-3); `RUNBOOK.md`
-ordinary entry still routes ownership questions to the Lexicon schema, which is
-correct until TK-004; `LEXICON.md`'s Ownership origin model row still says "the
-open FND-Q24B question belongs to it" and should say the question was answered
-on 2026-09-29 and belongs to this Spec. ADR-000D's stale presentation of FND-Q21/Q23/Q24 as open
-is repaired by the ADR refresh in owner choice 2, not by this candidate.
-Existing historical evidence and ignored source notes retain origin and
-corrections but do not substitute for durable answer routing or owner acceptance.
+The Lexicon's existing ownership schema remains the usable route until TK-004.
+Templates and runtime consumers still describe seven root files and are
+assigned to the implementation slices; acceptance does not certify them.
+Historical evidence rows below remain records of what was believed and
+verified at their dates.
 
 ## Supersession
 
