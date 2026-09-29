@@ -40,7 +40,10 @@ const currentCoreSkills = legacyCoreSkills.map((name) => (name === 'to-tickets' 
 // entry composing grilling with notepad, ahead of the stances so every
 // `slice(-4)` stance read stays exact.
 const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', ...stanceSkills];
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...stanceSkills];
+// S-002F grows the live bundle with `spec-planner`, the coordination stance a
+// Dispatcher adopts at flight launch, ahead of the four portable stances so
+// every `slice(-4)` stance read stays exact.
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'spec-planner', ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

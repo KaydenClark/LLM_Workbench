@@ -918,7 +918,9 @@ test('each listed legacy version validates only at the policy its release declar
     // live bundle with `grill-me`, so the v3.2.1 row freezes at twenty-one and
     // a room stamped v3.2.1 validates with either the frozen row or the
     // current policy the Workbench update writes before restamping.
-    const twentyOne = current.filter((name) => name !== 'grill-me');
+    // S-002F grew it again with `spec-planner`; the v3.2.1 row still freezes
+    // at twenty-one.
+    const twentyOne = current.filter((name) => !['grill-me', 'spec-planner'].includes(name));
     assert.equal(twentyOne.length, 21);
     assert.equal(outcome('v3.2.1', twentyOne), 'valid');
     assert.equal(outcome('v3.2.1', current), 'valid');
