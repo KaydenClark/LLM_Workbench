@@ -10669,7 +10669,7 @@
         "status": "in-progress",
         "sub_label": "accepted 2026-09-29",
         "evidence": "Three ADRs active, two predecessors archived, S-00G acceptance gate cleared.",
-        "gap": "Map and JSON Taskboard implementation remain assigned work. Candidate awaits integration review and delivery."
+        "gap": "Map and JSON Taskboard implementation remain assigned work. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
@@ -10714,7 +10714,7 @@
         "status": "in-progress",
         "sub_label": "accepted 2026-09-29",
         "evidence": "Accepted ADR and controls now state the destination and gap.",
-        "gap": "The two JSON files and affected runtime/template consumers remain unimplemented. Candidate awaits integration review and delivery."
+        "gap": "The two JSON files and affected runtime/template consumers remain unimplemented. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
@@ -10760,7 +10760,7 @@
       "progress": {
         "status": "in-progress",
         "sub_label": "ADR-000C accepted; binding-force question open",
-        "evidence": "ADR-000C is active in the acceptance candidate. AGENTS.md and LEXICON.md carry the three-carrier definition and Blueprint route; S-00G records the implementation window. This candidate awaits integration review and delivery.",
+        "evidence": "ADR-000C is active. AGENTS.md and LEXICON.md carry the three-carrier definition and Blueprint route; S-00G records the implementation window. Integration containment is verified from Git, not by this ledger.",
         "gap": "The owner has not confirmed the separate ACC-3 question about what binds accepted Blueprint claims when routed; template mirrors remain assigned implementation work."
       }
     },
@@ -10802,7 +10802,7 @@
         "status": "in-progress",
         "sub_label": "accepted 2026-09-29",
         "evidence": "ADR-000D and S-00G TK-004 name the check.",
-        "gap": "The test, schema and query runtime have not been implemented. Candidate awaits integration review and delivery."
+        "gap": "The test, schema and query runtime have not been implemented. Integration containment is verified from Git, not by this ledger."
       }
     },
     {
@@ -10849,8 +10849,8 @@
       "progress": {
         "status": "in-progress",
         "sub_label": "accepted 2026-09-29",
-        "evidence": "S-022 and S-024 articles and Wiki route present in the candidate; archived ADRs preserved.",
-        "gap": "Wiki article and navigation candidate awaits integration review and delivery."
+        "evidence": "S-022 and S-024 articles and Wiki route authored; archived ADRs preserved.",
+        "gap": "S-022 remains a blocked historical release packet. Verify integration containment from Git."
       }
     },
     {
