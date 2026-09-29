@@ -612,6 +612,26 @@ assert.ok(auditorSkill.indexOf('supported, unsupported or uncertain') > auditorS
 assert.ok(auditorSkill.indexOf('Stay inside the assigned target and project') < auditorSkill.indexOf('## Obligations'),
   'the no-widening boundary belongs to the auditor method, before its obligations');
 
+// S-002D: the Dispatcher role entry is Spec-bound - one assigned Spec and its
+// branch, one durable writer for shared Spec state, Workers returning proof to
+// that writer, Task-branch merge requests into the Spec branch and never
+// approving its own candidate - obeys the shared skill contract and imports no
+// GPT_OS policy. It joins the live bundle as a coordination entry immediately
+// before the four portable stances, which stay the last four. The adjacency
+// reads the runtime order, not the sorted copy above.
+const dispatcherSkill = read('workbench/skills/dispatcher/SKILL.md');
+assertIncludesAll(dispatcherSkill, [
+  '## Purpose', '## Method / Posture', '## Obligations', '## Completion / Exit Condition',
+  'never grants, removes, or transfers authority', 'never spawns an agent',
+  'one assigned Spec', 'one durable writer', 'never approves its own',
+  'Task-branch merge request into the Spec branch', 'Director'
+], 'dispatcher role contract');
+assert.doesNotMatch(dispatcherSkill, /GPT_OS/, 'the dispatcher entry imports no GPT_OS policy');
+assert.equal(runtimeCoreSkills.indexOf('dispatcher'), runtimeCoreSkills.indexOf('builder') - 1,
+  'dispatcher sits immediately before builder in the live bundle');
+assert.deepEqual(runtimeCoreSkills.slice(-4), ['builder', 'auditor', 'reviewer', 'reconciler'],
+  'the four portable stances stay the last four of the live bundle');
+
 // S-00J TK-006: the reviewed unit at integration is the assembled Spec bound
 // to a content digest - obtained with `report S-### --candidate <sha>` and
 // recorded with `verdict` - while a Task PR under the room's Task-PR
