@@ -66,7 +66,7 @@
   "progress_assessment": {
     "commit": "6ae38b9dfc10144dff5481910c29f46ba09b1f8c",
     "date": "2026-09-24",
-    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments. The 2026-09-29 FND-Q24B reading likewise names its own integration baseline. The 2026-09-29 ACC-1/2/4/5 row readings name the unmerged acceptance candidate and do not claim integration containment; their locked answers are separate from delivery progress.",
+    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments. The 2026-09-29 FND-Q24B reading likewise names its own integration baseline. The 2026-09-29 ACC-1/2/4 row readings preserve their implementation gaps; ACC-5 navigation was delivered at integration merge 83ccb20c (PR #211), while the historical S-022 release packet remains blocked. These later readings do not recertify the 2026-09-24 baseline; the tally counts the current per-row readings, including these named later assessments.",
     "statuses": {
       "implemented-and-completed": "Every Result artifact exists at the pinned commit and says what the Answer says; any owning Spec or Task is complete.",
       "specced": "A Spec carries this answer, but no Task is cut for this part.",
@@ -76,10 +76,10 @@
       "no-build-obligation": "Open, withdrawn, superseded, deferred past v4, not a question, or no artifact change."
     },
     "tally": {
-      "implemented-and-completed": 107,
+      "implemented-and-completed": 108,
       "specced": 7,
       "specced-and-tasked": 10,
-      "in-progress": 53,
+      "in-progress": 52,
       "not-started": 32,
       "no-build-obligation": 50
     }
@@ -10847,10 +10847,10 @@
         "workbench/docs/adr/REGISTER.md"
       ],
       "progress": {
-        "status": "in-progress",
-        "sub_label": "accepted 2026-09-29",
-        "evidence": "S-022 and S-024 articles and Wiki route authored; archived ADRs preserved.",
-        "gap": "S-022 remains a blocked historical release packet. Verify integration containment from Git."
+        "status": "implemented-and-completed",
+        "sub_label": "Wiki navigation delivered 2026-09-29",
+        "evidence": "At integration merge 83ccb20c (PR #211), S-022 and S-024 feature articles and the Wiki-first route are present; archived ADRs remain linked as sources.",
+        "gap": "S-022 remains a blocked historical release packet; its release status is separate from this completed navigation result."
       }
     },
     {
