@@ -3,9 +3,9 @@
 **Task ID:** TK-003W
 **Spec ID:** S-002H
 **Slice:** Observe domain-modeling scenarios in fresh contexts, red on pending source and green on the candidate
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-003V
+**Blockers:** none
 **Destination:** spec-acceptance: S-002H acceptance lines 1-5 observed at the Testing Seams scenario seam, plus the short upstream-naming demo transcript the Verification Procedure names
 **Planned verification:** Each scenario runs in a disposable fixture room outside the repository with a fresh-context agent given only the skill text, the room path and scripted owner turns. Red: the preserved pending source under the same scripts, with the observed Canon writes or root creation recorded. Green: the candidate under the same scripts, asserting observed turns and the fixture file diff, not exact prose.
 

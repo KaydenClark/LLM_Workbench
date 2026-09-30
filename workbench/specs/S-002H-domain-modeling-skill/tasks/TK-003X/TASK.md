@@ -3,9 +3,9 @@
 **Task ID:** TK-003X
 **Spec ID:** S-002H
 **Slice:** Reconcile the Domain Modeling Wiki article and router with the staged candidate
-**Status:** blocked
+**Status:** ready
 **Stance:** Builder
-**Blockers:** TK-003V
+**Blockers:** none
 **Destination:** spec-acceptance: S-002H acceptance line 7 (article and sole router separate upstream method, Workbench adaptation, verified current state, intended behavior and limits) and Documentation Impact
 **Planned verification:** `node workbench/tools/wiki.mjs validate` ok; `node tools/test-wiki.mjs` green; doctor reports no `room-brain-unrouted`; a read of the router reaches the article in one hop and the article reaches the candidate, the Spec and the pending source in one hop each.
 
