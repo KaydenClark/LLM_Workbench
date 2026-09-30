@@ -68,6 +68,12 @@ not list this room's articles; do not edit them.
 
 ## Scenario Contract
 
+Attempt 1 (2026-09-30): the Dispatcher ran the scenario itself, one agent
+level below it, so the Worker did not nest a second agent (the S-002D
+scenario 2 precedent), and handed the Worker the prompt, fixture build
+script, hand-back and room check to write the article from. The Spec
+evidence log records the run.
+
 The Spec's Testing Seams: two Dispatchers advance different Specs; one needs
 a shared artifact changed. The Director assigns its writer, permits the
 independent work, routes candidate review, and records the dependency and

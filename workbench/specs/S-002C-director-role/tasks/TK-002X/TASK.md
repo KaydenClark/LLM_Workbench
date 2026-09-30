@@ -65,6 +65,11 @@ portable stances), including the LEXICON Core skill bundle row and
 `workbench/wiki/skill-genesis.md`. The catalog test pins director first and
 dispatcher second; the frozen v3.2.1 filters exclude the whole group.
 
+Attempt 3 (2026-09-30, after close): the Spec's fresh-context scenario found
+that telling the Director to record in the owning Spec conflicts with that
+Spec's single writer. The entry now routes Spec records through their writer
+(pinned in the catalog test); the Spec evidence log holds attempt 3's proof.
+
 `workbench/skills/director/SKILL.md`:
 
 - Frontmatter `name: director` and a one-line `description` of the form the
