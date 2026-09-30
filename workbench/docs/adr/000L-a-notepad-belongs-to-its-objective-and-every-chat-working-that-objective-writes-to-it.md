@@ -23,12 +23,13 @@ Writes stay **one writer at a time**: writes to one note must not overlap,
 exactly as [ADR-0040](0040-json-notepads-preserve-objective-continuity.md) and
 the `notepad` skill already have them. That rule bounds overlapping *writes*;
 it does not limit which chat may own or resume the note. The runtime's
-`--revision` check is a check, not a lock: it catches the sequential case,
-where the note moved while an agent was working, and refuses that write as
-`stale-revision`. A refusal says only that the note moved and must be reread;
-it does not establish who moved it, since the same refusal follows an omitted
-revision or a context reusing a revision older than its own last write. The
-check does **not** make overlapping writers safe, and this record must not be
+`--revision` check is a check, not a lock: it refuses a missing or mismatched
+supplied revision as `stale-revision`, naming the current revision. A refusal
+establishes neither that the note changed nor who wrote it: an omitted revision
+is refused even on an unchanged fresh note, and a context can reuse a revision
+older than its own last write. Read the current note and supply that revision
+before writing. This catches a sequential change while an agent was working,
+but the check does **not** make overlapping writers safe, and this record must not be
 read as saying it does. Two contexts that read the same revision at the same
 moment both pass the check, and the loss is silent: `loadForWrite` validates
 the revision before building the update, while `writeSafeFile` publishes with
@@ -104,7 +105,9 @@ Owner direction in the FND-Q23 deep-dive chat on 2026-09-15, on observing that
 a second chat's appends to a live grilling note confused agents on other
 models that read the skill's "one writer per note" as one chat per note, while
 agents that read the objective-scoped intent appended correctly. The grilling
-destination ledger records TT-Q9 as answered with this direction. Proposed on
+destination ledger records the objective-ownership part of TT-Q9 as answered
+with this direction; its remaining Spec and Task relationships beyond the Packet
+rule remain open. Proposed on
 PR #92, where separate-context review corrected the first draft's claim that
 the revision check serializes writers; the later review findings are resolved
 in the text above. The historical 2026-09-11 foundation question report still

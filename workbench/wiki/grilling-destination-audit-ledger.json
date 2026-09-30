@@ -38,10 +38,10 @@
       "superseded": 26,
       "deferred": 2,
       "withdrawn": 6,
-      "answered-in-chat": 11,
+      "answered-in-chat": 10,
       "not-a-question": 1,
       "open": 9,
-      "partially-answered": 2
+      "partially-answered": 3
     }
   },
   "field_guide": {
@@ -76,10 +76,10 @@
       "no-build-obligation": "Open, withdrawn, superseded, deferred past v4, not a question, or no artifact change."
     },
     "tally": {
-      "implemented-and-completed": 109,
+      "implemented-and-completed": 108,
       "specced": 7,
       "specced-and-tasked": 10,
-      "in-progress": 51,
+      "in-progress": 52,
       "not-started": 35,
       "no-build-obligation": 50
     }
@@ -8768,7 +8768,7 @@
       "counted": true,
       "topic": "Chat, notepad and handoff continuity",
       "question": "What continuity relationship should hold among a chat, JSON Notepad, Markdown Scoped handoff, Spec, and Ticket (now Task)?",
-      "status": "answered-in-chat",
+      "status": "partially-answered",
       "answer": "A handoff is Markdown for a new Chat or agent; a notepad is the JSON working record; a notepad belongs to its objective, not to the Chat, model or host that created it (ADR-000L).",
       "answered": "2026-09-09 01:48 and 23:03 UTC chats (triage v2); ADR-000L direction owner-directed 2026-09-15 (TT note finding-032)",
       "reason": "The owner saw agents on some models read 'one writer per note' as one Chat per note while others appended across Chats; tying the note to its objective lets any context resume it.",
@@ -8802,16 +8802,16 @@
         "task-ticket-chat-workflow-clarification-2026-09-10 Q9",
         "workbench-foundation-rework-2026-09-11 TT-Q9"
       ],
-      "notes": "The TT note register records it as open; the answer recovered here settles it. The Spec and Task parts of the relationship are not stated beyond the Packet row (handoff and notepad join a Task's packet only when they exist). 2026-09-30: ADR-000L accepted from PR #92's reviewed draft, with that PR's open review findings resolved (unreachable-note capture, purpose-distinct creation, template mirrors, writer-neutral stale-revision). The concurrent-write loss the review reproduced stays an open runtime gap with no owning Spec.",
+      "notes": "The recovered answer settles notepad objective ownership and note/handoff formats. The Spec and Task parts of the relationship remain unstated beyond the Packet row (handoff and notepad join a Task packet only when they exist). 2026-09-30: ADR-000L accepted with unreachable-note capture, purpose-distinct creation and template mirrors delivered. Later independent review corrected the refusal description and the whole-question completion claim. The concurrent-write loss stays an open runtime gap with no owning Spec.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-032",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:31"
       ],
       "progress": {
-        "status": "implemented-and-completed",
-        "sub_label": "ADR-000L accepted 2026-09-30",
-        "evidence": "Read against integration 2780fe66 plus the ADR-000L candidate: ADR-000L in the active roster; AGENTS.md and templates/AGENTS.md Session Records, LEXICON.md and templates/LEXICON.md Notepad rows, and workbench/skills/notepad/SKILL.md carry objective ownership, one writer at a time.",
-        "gap": ""
+        "status": "in-progress",
+        "sub_label": "Objective ownership implemented; Spec and Task relationships open",
+        "evidence": "Integration 983af08d603c852b36ae69f31823815614cd6a60 contains accepted ADR-000L, root/template objective-ownership clauses and the notepad skill. This correction preserves those decisions and qualifies stale-revision as absent-or-mismatched input. The question notes still identify missing Spec and Task relationships beyond the Packet rule.",
+        "gap": "The Spec and Task continuity relationships beyond the Packet rule remain unstated. Preserve this open remainder pending a source-backed answer; this correction selects no runtime implementation."
       }
     },
     {
