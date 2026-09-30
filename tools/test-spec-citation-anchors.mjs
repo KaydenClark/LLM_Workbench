@@ -242,3 +242,27 @@ test('new alphanumeric and grown spec IDs remain in citation-anchor coverage', (
     assert.deepEqual(anchoredSpecs(folder), ['S-00A-new', 'S-036-rule', 'S-1000-grown']);
   } finally { fs.rmSync(folder, { recursive: true, force: true }); }
 });
+
+// PR77 exact-head review reproducers: reject unresolved shorthand, bind an
+// inline base only to its own path, and cover every repository file type.
+test('a shorthand without a scoped path remains a visible unresolved citation', () => {
+  const citations = liveCitations('## Current Verified State\n\nSee `:12`.');
+  assert.equal(citations.length, 1);
+  assert.equal(citations[0].cited, null);
+});
+
+test('a new path does not inherit the previous path inline base', () => {
+  const citations = liveCitations('## Current Verified State\n\n`git show 1234567:tools/a.mjs`, then `tools/b.mjs` base `:12`.');
+  assert.equal(citations.length, 1);
+  assert.equal(citations[0].cited, 'tools/b.mjs');
+  assert.equal(citations[0].lineBase, null);
+});
+
+test('citations cover shell, CommonJS, YAML and extensionless paths', () => {
+  for (const cited of ['script.sh', 'config.cjs', '.github/workflows/check.yml', 'LICENSE']) {
+    const citations = liveCitations('## Desired Behavior\n\n`' + cited + ':20`');
+    assert.equal(citations.length, 1, cited);
+    assert.equal(citations[0].cited, cited);
+    assert.equal(citations[0].from, 20);
+  }
+});
