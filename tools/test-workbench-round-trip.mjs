@@ -201,9 +201,10 @@ try {
   assert.equal(receipt.source.release, VERSION, 'the resumer runs the exact receipt-backed candidate tools');
   node(second, tool(second), 'doctor');
   const next = JSON.parse(node(second, tool(second), 'next', '--json'));
-  assert.equal(next.specId, 'S-001');
-  assert.equal(next.taskId, 'TK-001');
-  assert.equal(next.status, 'in-progress', 'the claimed slice resumes without the original chat');
+  assert.equal(next, null, 'ordinary next offers no already claimed Task');
+  const recovered = JSON.parse(node(second, tool(second), 'show', 'S-001', '--json'));
+  assert.equal(recovered.tasks[0].id, 'TK-001');
+  assert.equal(recovered.tasks[0].status, 'in-progress', 'explicit source/show recovers the claim without the original chat');
   assert.match(node(second, tool(second), 'show', 'S-001'), /Greet by name; default to World|Greet by name from the command line/);
 
   // ---- Red/green slice ----------------------------------------------------

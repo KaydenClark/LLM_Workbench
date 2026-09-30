@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawnSync, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
@@ -40,6 +40,28 @@ function task(root, parent, { id, title = 'A readable slice', status = 'ready', 
 function command(root, ...args) {
   return spawnSync(process.execPath, [tool, ...args, '--path', root, '--json'], { encoding: 'utf8' });
 }
+function fixtureGit(root, ...args) {
+  return execFileSync('git', ['-C', root, '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+}
+function initializeGitRoom(root) {
+  fixtureGit(root, 'init', '--quiet', '-b', 'codex/fixture');
+  fixtureGit(root, 'add', '.');
+  fixtureGit(root, 'commit', '--quiet', '-m', 'Fixture source');
+  fixtureGit(root, 'branch', 'integration');
+}
+function gitSnapshot(root) {
+  return { sources: sourceSnapshot(root), refs: fixtureGit(root, 'show-ref'), status: fixtureGit(root, 'status', '--porcelain') };
+}
+function assertSourceDiagnostic(root, taskId) {
+  const result = command(root, 'doctor');
+  assert.equal(result.status, 1, 'invalid-state retains the registered selection effect');
+  assert.equal(result.stderr, '', 'expected malformed source must be reported through JSON');
+  const findings = JSON.parse(result.stdout);
+  assert.ok(findings.some(item => item.code === 'invalid-state' && item.taskId === taskId && item.severity === 'error' && item.blocks === 'selection'));
+  assert.ok(findings.some(item => item.code === 'blocked-slice' && item.taskId === 'TK-00AB'));
+  assert.ok(findings.some(item => item.code === 'missing-evidence' && item.taskId === 'TK-00AC'));
+  return findings;
+}
 function preview(root) {
   const result = command(root, 'render', '--format', 'json');
   assert.equal(result.status, 0, result.stdout + result.stderr);
@@ -51,6 +73,29 @@ function withRoom(callback) {
   const root = room();
   try { callback(root); } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
+
+function sourceSnapshot(root) {
+  const files = {};
+  function visit(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === '.git') continue;
+      const file = path.join(dir, entry.name);
+      if (entry.isDirectory()) visit(file);
+      else if (entry.isFile()) files[path.relative(root, file)] = fs.readFileSync(file).toString('base64');
+    }
+  }
+  visit(root); return files;
+}
+function selected(root, ...options) {
+  const result = command(root, 'next', ...options);
+  assert.equal(result.status, 0, result.stderr); return JSON.parse(result.stdout);
+}
+function dependencyFindings(root) {
+  assert.equal(command(root, 'render').status, 0);
+  const result = command(root, 'doctor');
+  return JSON.parse(result.stdout).filter(item => item.code === 'blocked-slice');
+}
+
 function sample(root) {
   const a = spec(root, { id: 'S-000A', title: 'Plan a future capability', status: 'planned' });
   task(root, a, { id: 'TK-000A', title: 'Preserved pre-cut work', status: 'deferred' });
@@ -71,11 +116,223 @@ function sample(root) {
 if (process.argv.includes('--demo')) {
   withRoom(root => {
     sample(root);
+    const available = spec(root, { id: 'S-000H', title: 'Offer an eligible To-do', priority: 1 });
+    task(root, available, { id: 'TK-000H', title: 'Demonstrate ordinary dispatch' });
     const board = preview(root);
     for (const lane of lanes) console.log(`${lane}: ${Object.entries(board.lanes[lane]).map(([id, card]) => `${card.title} (${id})`).join('; ')}`);
+    const next = selected(root, '--local');
+    assert.equal(next.taskId, 'TK-000H');
+    console.log(`ordinary next: ${next.slice} (${next.specId}/${next.taskId}); in-progress and dependency-waiting To-do remain visible and unoffered`);
+    const waits = dependencyFindings(root);
+    assert.ok(waits.some(item => item.taskId === 'TK-000C'));
+    console.log(`doctor dependency waits: ${waits.map(item => `${item.specId}/${item.taskId}`).join(', ')}`);
     console.log('Source-only fixture; default Markdown retained; no owner approval or canonical switch.');
   });
 } else {
+
+  test('ordinary next offers To-do rather than in-progress work without writing source or preview', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', priority: 0 });
+    task(root, a, { id: 'TK-00AA', status: 'in-progress' });
+    const b = spec(root, { id: 'S-00AB', priority: 2 });
+    task(root, b, { id: 'TK-00AB', title: 'Eligible To-do work' });
+    const board = preview(root), before = sourceSnapshot(root);
+    const next = selected(root, '--local');
+    assert.equal(next.taskId, 'TK-00AB'); assert.equal(next.status, 'ready');
+    assert.ok(board.lanes.toDo[next.taskId]); assert.ok(board.lanes.inProgress['TK-00AA']);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('ordinary next and scoped claim use projected Task priority, title and WBID order', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', title: 'Alpha parent', priority: 2 });
+    task(root, a, { id: 'TK-00AA', title: 'Zebra work' });
+    task(root, a, { id: 'TK-00AD', title: 'Alpha work' });
+    const b = spec(root, { id: 'S-00AB', title: 'Zebra parent', priority: 3 });
+    task(root, b, { id: 'TK-00AC', title: 'Urgent work', extra: '**Priority:** 1' });
+    const board = preview(root), tasks = Object.keys(board.lanes.toDo).filter(id => id.startsWith('TK-'));
+    assert.deepEqual(tasks, ['TK-00AC', 'TK-00AD', 'TK-00AA']);
+    assert.equal(selected(root, '--local').taskId, tasks[0]);
+    const claimed = command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local');
+    assert.equal(claimed.status, 0, claimed.stderr); 
+    assert.match(fs.readFileSync(path.join(root, a.dir, 'tasks/TK-00AD/TASK.md'), 'utf8'), /Status:\*\* in-progress/);
+    assert.match(fs.readFileSync(path.join(root, a.dir, 'tasks/TK-00AA/TASK.md'), 'utf8'), /Status:\*\* ready/);
+  }));
+
+  test('every dependency-waiting To-do stays visible, unoffered and named by doctor; refused scoped claim writes nothing', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    task(root, a, { id: 'TK-00AA', status: 'in-progress' });
+    task(root, a, { id: 'TK-00AB', blockers: 'S-00ZZ' });
+    task(root, a, { id: 'TK-00AC', blockers: 'owner:choose-input' });
+    const b = spec(root, { id: 'S-00AB' }); task(root, b, { id: 'TK-00AD' });
+    const board = preview(root);
+    assert.ok(board.lanes.toDo['TK-00AB']); assert.ok(board.lanes.toDo['TK-00AC']);
+    assert.equal(selected(root, '--local').taskId, 'TK-00AD');
+    assert.deepEqual(dependencyFindings(root).map(item => item.taskId).sort(), ['TK-00AB', 'TK-00AC']);
+    const before = sourceSnapshot(root), refused = command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local');
+    assert.equal(refused.status, 1); assert.match(refused.stderr, /blocked by.*blocked-slice/);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('cleared source dependency derives To-do consistently without changing the authored blocked status', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    task(root, a, { id: 'TK-00AA', status: 'done', extra: '**Proof:** Fixture dependency delivered' });
+    const file = task(root, a, { id: 'TK-00AB', status: 'blocked', blockers: 'TK-00AA' });
+    const before = fs.readFileSync(path.join(root, file), 'utf8');
+    const derived = preview(root).lanes.toDo['TK-00AB'];
+    assert.ok(derived); assert.match(derived.nextAction, /Claim the slice/, 'a cleared dependency has a To-do continuation action');
+    assert.equal(selected(root, '--local').taskId, 'TK-00AB');
+    assert.deepEqual(dependencyFindings(root), []);
+    assert.equal(fs.readFileSync(path.join(root, file), 'utf8'), before);
+    assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 0);
+    assert.match(fs.readFileSync(path.join(root, file), 'utf8'), /Status:\*\* in-progress/);
+  }));
+
+  test('source-qualified selection and scoped claims preserve duplicate numeric labels while flat preview still refuses without writes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', priority: 2 }); const af = task(root, a, { id: 'TK-001', title: 'Zebra' });
+    preview(root); const output = fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8');
+    const b = spec(root, { id: 'S-00AB', priority: 1 }); const bf = task(root, b, { id: 'TK-001', title: 'Alpha' });
+    const before = sourceSnapshot(root), refusal = command(root, 'render', '--format', 'json');
+    assert.equal(refusal.status, 1); assert.match(refusal.stderr, /taskboard-collision/); assert.deepEqual(sourceSnapshot(root), before);
+    assert.equal(selected(root, '--local').specId, b.id);
+    assert.equal(fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8'), output);
+    assert.equal(command(root, 'claim', 'S-ab', '--agent', 'fixture', '--local').status, 0);
+    assert.match(fs.readFileSync(path.join(root, af), 'utf8'), /Status:\*\* ready/);
+    assert.match(fs.readFileSync(path.join(root, bf), 'utf8'), /Status:\*\* in-progress/);
+  }));
+
+  test('capability gates overlay shared eligibility, remain visible, and route only through an authorized claim', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    const file = task(root, a, { id: 'TK-00AA', title: 'Alpha simulator', extra: '**Capabilities:** simulator' });
+    task(root, a, { id: 'TK-00AB', title: 'Zebra available' });
+    assert.ok(preview(root).lanes.toDo['TK-00AA']);
+    const before = sourceSnapshot(root), next = selected(root, '--local');
+    assert.equal(next.taskId, 'TK-00AB'); assert.equal(next.capabilityBlocked[0].taskId, 'TK-00AA');
+    assert.deepEqual(sourceSnapshot(root), before);
+    assert.equal(selected(root, '--local', '--capabilities', 'simulator').taskId, 'TK-00AA');
+    assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 0);
+    assert.match(fs.readFileSync(path.join(root, file), 'utf8'), /Status:\*\* blocked/);
+    assert.match(fs.readFileSync(path.join(root, file), 'utf8'), /Missing capabilities:\*\* simulator/);
+    assert.ok(preview(root).lanes.blocked['TK-00AA']);
+    assert.equal(selected(root, '--local', '--capabilities', 'simulator').taskId, 'TK-00AA');
+  }));
+
+  test('no To-do work returns no ordinary offer and an unclaimed refusal preserves all bytes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' }); task(root, a, { id: 'TK-00AA', status: 'in-progress' }); preview(root);
+    const before = sourceSnapshot(root); assert.equal(selected(root, '--local'), null);
+    assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 1);
+    assert.deepEqual(sourceSnapshot(root), before);
+  }));
+
+  test('equal source priority and title use WBID order across preview, next and scoped claim', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    task(root, a, { id: 'TK-00AC', title: 'Same title' });
+    task(root, a, { id: 'TK-00AB', title: 'Same title' });
+    const board = preview(root);
+    assert.deepEqual(Object.keys(board.lanes.toDo).filter(id => id.startsWith('TK-')), ['TK-00AB', 'TK-00AC']);
+    assert.equal(selected(root, '--local').taskId, 'TK-00AB');
+    assert.equal(command(root, 'claim', 'S-aa', '--agent', 'fixture', '--local').status, 0);
+    assert.match(fs.readFileSync(path.join(root, a.dir, 'tasks/TK-00AB/TASK.md'), 'utf8'), /Status:\*\* in-progress/);
+  }));
+
+  test('invalid source priority is named by doctor and refuses preview, next and claim without writes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' }); const file = task(root, a, { id: 'TK-00AA' }); preview(root);
+    put(root, file, fs.readFileSync(path.join(root, file), 'utf8') + '**Priority:** invalid\n');
+    assert.equal(command(root, 'render').status, 0);
+    const before = sourceSnapshot(root), findings = JSON.parse(command(root, 'doctor').stdout);
+    assert.ok(findings.some(item => item.taskId === 'TK-00AA' && /invalid priority/.test(item.message)));
+    for (const args of [['render','--format','json'], ['next','--local'], ['claim','S-aa','--agent','fixture','--local']]) {
+      const result = command(root, ...args); assert.equal(result.status, 1); assert.match(result.stderr, /invalid priority/);
+      assert.deepEqual(sourceSnapshot(root), before);
+    }
+  }));
+
+  for (const status of ['ready', 'in-progress']) for (const priority of ['invalid', '-1', '1.5', 'Infinity']) {
+    test(`Git-backed doctor retains invalid-state and other findings for ${status} Priority ${priority}, with no writes`, () => withRoom(root => {
+      const a = spec(root, { id: 'S-00AA' });
+      task(root, a, { id: 'TK-00AA', status, extra: `**Priority:** ${priority}` });
+      task(root, a, { id: 'TK-00AB', blockers: 'S-00AZ' });
+      task(root, a, { id: 'TK-00AC', status: 'done' });
+      put(root, 'TASKBOARD.preview.json', 'existing output must survive\n');
+      assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+      const before = gitSnapshot(root);
+      assertSourceDiagnostic(root, 'TK-00AA');
+      for (const args of [['next','--local'], ['claim','S-aa','--agent','fixture','--local'], ['render','--format','json']]) {
+        const result = command(root, ...args); assert.equal(result.status, 1); assert.match(result.stderr, /invalid priority/);
+      }
+      assert.deepEqual(gitSnapshot(root), before);
+    }));
+  }
+
+  test('Git-backed doctor retains invalid legacy table status and unrelated findings while selection and preview refuse without writes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA', table: '| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00AA | Invalid table state | typo | none | pending |' });
+    const b = spec(root, { id: 'S-00AB' });
+    task(root, b, { id: 'TK-00AB', blockers: 'S-00AZ' }); task(root, b, { id: 'TK-00AC', status: 'done' });
+    put(root, 'TASKBOARD.preview.json', 'existing output must survive\n');
+    assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+    const before = gitSnapshot(root); assertSourceDiagnostic(root, 'TK-00AA');
+    for (const args of [['next','--local'], ['claim','S-aa','--agent','fixture','--local'], ['render','--format','json']]) {
+      const result = command(root, ...args); assert.equal(result.status, 1); assert.match(result.stderr, /invalid status typo/);
+    }
+    assert.deepEqual(gitSnapshot(root), before);
+  }));
+
+  for (const malformed of ['priority', 'table-status']) test(`non-active ${malformed} remains diagnosed without hiding a valid integration candidate`, () => withRoom(root => {
+    const table = malformed === 'table-status' ? '| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00AA | Invalid table state | typo | none | pending |' : '';
+    const a = spec(root, { id: 'S-00AA', status: 'blocked', table });
+    if (!table) task(root, a, { id: 'TK-00AA', extra: '**Priority:** invalid' });
+    const b = spec(root, { id: 'S-00AB', status: 'complete' });
+    const file = task(root, b, { id: 'TK-00AB', status: 'done', extra: '**Proof:** Fixture complete' });
+    assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+    put(root, b.file, fs.readFileSync(path.join(root,b.file),'utf8').replace('**Status:** complete', '**Status:** active'));
+    put(root, file, fs.readFileSync(path.join(root,file),'utf8').replace('**Status:** done', '**Status:** ready'));
+    assert.equal(command(root, 'render').status, 0);
+    const before = gitSnapshot(root), result = command(root, 'doctor'); assert.equal(result.status, 1); assert.equal(result.stderr, '');
+    const findings = JSON.parse(result.stdout);
+    assert.ok(findings.some(item => item.code === 'invalid-state' && item.specId === a.id));
+    assert.ok(findings.some(item => item.code === 'complete-on-integration' && item.specId === b.id && item.ref === 'integration'));
+    assert.equal(selected(root, '--local').taskId, 'TK-00AB');
+    assert.deepEqual(gitSnapshot(root), before);
+  }));
+
+  test('doctor propagates unexpected shared-calculation faults rather than treating them as malformed source', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' }); task(root, a, { id: 'TK-00AA' });
+    assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+    const before = gitSnapshot(root);
+    const program = `import assert from 'node:assert/strict'; import {doctor} from ${JSON.stringify(new URL('../workbench/tools/spec-workbench.mjs', import.meta.url).href)};
+      const sentinel = new Error('unexpected calculation fault'); sentinel.code = 'FIXTURE_UNEXPECTED';
+      const original = String.prototype.matchAll;
+      String.prototype.matchAll = function(...args) { if (new Error().stack.includes('taskboardTaskEntry')) throw sentinel; return original.apply(this,args); };
+      try { assert.throws(() => doctor(${JSON.stringify(root)}), error => error === sentinel); } finally { String.prototype.matchAll = original; }`;
+    const result = spawnSync(process.execPath, ['--input-type=module','-e',program], {encoding:'utf8'});
+    assert.equal(result.status, 0, result.stdout+result.stderr); assert.deepEqual(gitSnapshot(root), before);
+  }));
+
+  test('competing remote claims exclude offers and claims without changing visible source lanes or integration', () => withRoom(root => {
+    const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'taskboard-remote-'));
+    const origin = path.join(scratch, 'origin.git');
+    const git = (dir, ...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+    try {
+      const a = spec(root, { id: 'S-00AA' }); task(root, a, { id: 'TK-00AA', title: 'Alpha' }); task(root, a, { id: 'TK-00AB', title: 'Beta' });
+      assert.equal(command(root, 'render').status, 0);
+      execFileSync('git', ['init', '--quiet', '--bare', '-b', 'main', origin]);
+      git(root, 'init', '--quiet', '-b', 'integration'); git(root, 'config', 'user.email', 'fixture@example.com'); git(root, 'config', 'user.name', 'Fixture');
+      const manifest = JSON.parse(fs.readFileSync(path.join(root, 'workbench/manifest.json'), 'utf8'));
+      for (const folder of [...Object.values(manifest.lanes), ...Object.values(manifest.collections), manifest.landmarkTracker.root, ...Object.values(manifest.landmarkTracker.collections)]) put(root, folder+'/.gitkeep', '');
+      git(root, 'add', '.'); git(root, 'commit', '--quiet', '-m', 'Fixture room'); git(root, 'branch', 'main'); git(root, 'remote', 'add', 'origin', origin); git(root, 'push', '--quiet', 'origin', 'integration', 'main');
+      const base = git(root, 'rev-parse', 'HEAD');
+      const clones = ['alpha','beta','gamma'].map(name => {
+        const dir = path.join(scratch, name); execFileSync('git', ['clone', '--quiet', '--branch', 'integration', origin, dir], { stdio: 'ignore' });
+        git(dir, 'config', 'user.email', 'fixture@example.com'); git(dir, 'config', 'user.name', 'Fixture'); return dir;
+      });
+      const firstClaim = command(clones[0], 'claim', 'S-aa', '--agent', 'alpha'); assert.equal(firstClaim.status, 0, firstClaim.stderr);
+      const board = preview(clones[1]), next = selected(clones[1]);
+      assert.ok(board.lanes.toDo['TK-00AA']); assert.equal(next.taskId, 'TK-00AB'); assert.equal(next.coordination.remoteClaimed[0].taskId, 'TK-00AA');
+      assert.equal(command(clones[1], 'claim', 'S-aa', '--agent', 'beta').status, 0);
+      assert.equal(selected(clones[2]), null);
+      const before = sourceSnapshot(clones[2]); assert.equal(command(clones[2], 'claim', 'S-aa', '--agent', 'gamma').status, 1);
+      assert.deepEqual(sourceSnapshot(clones[2]), before);
+      assert.equal(git(root, 'ls-remote', 'origin', 'refs/heads/integration').split(/\s/)[0], base);
+    } finally { fs.rmSync(scratch, {recursive:true,force:true}); }
+  }));
   test('public JSON preview has six lanes, both card grains, resolving sources, dependency visibility and derived cleanup', () => withRoom(root => {
     sample(root);
     const markdown = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
@@ -156,6 +413,11 @@ if (process.argv.includes('--demo')) {
     const result = command(root, 'render', '--format', 'json'); assert.notEqual(result.status, 0); assert.match(result.stderr, /collision|Duplicate task ID/i);
     assert.ok(result.stderr.includes('TK-000Z') && result.stderr.includes('TK-00z'));
     assert.equal(fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8'), output);
+    const sourceBefore = sourceSnapshot(root);
+    for (const args of [['next','--local'], ['claim','S-b','--agent','fixture','--local']]) {
+      const refusal = command(root, ...args); assert.equal(refusal.status, 1); assert.match(refusal.stderr, /Duplicate task ID/i);
+      assert.deepEqual(sourceSnapshot(root), sourceBefore);
+    }
   }));
 
   test('malformed source, parent mismatch, invalid metadata and unsupported format refuse before any write', () => withRoom(root => {
