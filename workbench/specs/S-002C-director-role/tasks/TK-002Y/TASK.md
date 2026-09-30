@@ -5,7 +5,7 @@
 **Slice:** Route the director Wiki article and record the fresh-context coordination scenario
 **Status:** ready
 **Stance:** Builder
-**Blockers:** TK-002X
+**Blockers:** none
 **Destination:** spec-acceptance: S-002C Acceptance Criteria, box 6 (a fresh agent discovers the entry and its article and performs the scenario without private notes) and the scenario named under Testing Seams
 **Planned verification:** `node workbench/tools/wiki.mjs validate` and `node tools/test-wiki.mjs` green with the new article routed from the "Roles And Stances" section of `workbench/wiki/MEMORY.md`; one fresh-context agent given only the delivered `workbench/skills/director/SKILL.md` text, a disposable fixture room outside the repository pinned at a named commit, and scripted Dispatcher reports (two Specs advancing in parallel, one shared artifact both need, one out-of-scope request) is observed to name the single writer, permit the other lane's independent work, route the candidate review to a separate context, record the dependency and result in the fixture's tracked owners, and report the out-of-scope request instead of performing it; the observation and its limits are handed back for the Spec evidence.
 

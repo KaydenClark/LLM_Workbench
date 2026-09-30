@@ -3,11 +3,12 @@
 **Task ID:** TK-002X
 **Spec ID:** S-002C
 **Slice:** Ship the director core skill entry with catalog, manifest, layout and test proof
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002C Acceptance Criteria, boxes 1 to 5 (the operating contract the entry states) and box 7 (source, templates, discovery and managed installation agree)
 **Planned verification:** Red: `node tools/test-skill-catalog.mjs` fails at a new director contract assertion before `workbench/skills/director/SKILL.md` exists, and again at the bundle-size derivation once `coreSkills` grows to twenty-three (the count-word table stops at eighteen and `tools/test-workbench-layout.mjs` asserts the frozen v3.2.1 row by filtering only `grill-me`). Green: catalog, layout, installer, skills-lane, cross-provider, core-composition, upgrade and adoption tests pass on the committed candidate; `.agents/skills/director` and `.claude/skills/director` resolve through the tracked lane links in a scrubbed clone; `doctor` has no blocking finding; the full AGENTS suite is green on the committed SHA.
+**Proof:** Red a6ca3f74 (attempt 2): the final tools/test-skill-catalog.mjs alone at the pre-change Spec branch exits 1 with 'director is counted as a coordination entry' (C-tk002x-a2-red.txt); attempt 1 c952d7b2 recorded no red. Green cdf9c53b (attempt 2 on attempt 1's c952d7b2): test-skill-catalog, test-workbench-layout, test-core-skill-installer, test-skills-lane, test-delivery-skills, test-cross-provider-fixture, test-control-fidelity, test-controls-vocabulary-sweep and test-skill-inspection pass; doctor no blocking finding; Worker suite 48/48 at cdf9c53b (C-tk002x-a2-cdf9c53.log, dirty [])
 
 ## Outcome
 
@@ -210,3 +211,9 @@ Source-grounded predictions at `1450e7a8`, not observed results.
   literal changes here.
 - Installed personal copies of the bundle are not updated by a source change;
   the release owner stamps the grown bundle.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s-002c-director-role | ec1c1bec61cd6989b7bef17852ce3258ef04251c | ahead 0 behind 0 | 0 | Red a6ca3f74 (attempt 2): the final tools/test-skill-catalog.mjs alone at the pre-change Spec branch exits 1 with 'director is counted as a coordination entry' (C-tk002x-a2-red.txt); attempt 1 c952d7b2 recorded no red. Green cdf9c53b (attempt 2 on attempt 1's c952d7b2): test-skill-catalog, test-workbench-layout, test-core-skill-installer, test-skills-lane, test-delivery-skills, test-cross-provider-fixture, test-control-fidelity, test-controls-vocabulary-sweep and test-skill-inspection pass; doctor no blocking finding; Worker suite 48/48 at cdf9c53b (C-tk002x-a2-cdf9c53.log, dirty []) | workbench/skills/director/SKILL.md; workbench/skills/README.md row and 25-skill bundle sentence; manifest skillPolicy.required; workbench-layout coordinationSkills led by director; pinned counts in README.md, RUNBOOK.md, LEXICON.md Core skill bundle row, templates/GENESIS.md and workbench/wiki/skill-genesis.md | Root-control wording beyond the pinned counts routed to S-00P; the final cross-link pass among the role and stance entries belongs to S-002G; installed personal copies are not updated by a source change | 1a1e758d9a933c72ad277987559f889210ec55a3cd916970f2029b6e3d37a16e |
