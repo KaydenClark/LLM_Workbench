@@ -3,11 +3,12 @@
 **Task ID:** TK-003A
 **Spec ID:** S-002D
 **Slice:** Deliver the dispatcher operating entry with catalog, installer and layout proof
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002D boxes 1-5 and 7 (the dispatcher operating entry at workbench/skills/dispatcher/SKILL.md, discoverable through the existing skills lane and adapters, with source, templates, discovery and managed installation agreeing)
 **Planned verification:** Red: at the pre-change tree a new `tools/test-skill-catalog.mjs` block asserting the dispatcher entry's contract sections, authority sentence, no-spawn sentence, one-assigned-Spec scope, single durable writer, never-approves-its-own rule and Task-branch-to-Spec-branch route fails because `workbench/skills/dispatcher/SKILL.md` does not exist, and the bundle-size assertions fail once the entry is added without its consumers. Green: `tools/test-skill-catalog.mjs`, `tools/test-workbench-layout.mjs`, `tools/test-core-skill-installer.mjs`, `tools/test-skills-lane.mjs`, `tools/test-delivery-skills.mjs` and `tools/test-cross-provider-fixture.mjs` pass on the committed candidate, then the full AGENTS suite passes on that SHA.
+**Proof:** Red b700712e (Worker fc0422ae): tools/test-skill-catalog.mjs S-002D block failed at 14c92156 with ENOENT on workbench/skills/dispatcher/SKILL.md. Green c2098e83 (Worker 3cf9880b): test-skill-catalog, test-workbench-layout, test-core-skill-installer, test-skills-lane, test-delivery-skills, test-cross-provider-fixture, test-control-fidelity and test-controls-vocabulary-sweep pass; Worker suite 48/48 at 3cf9880b (D-tk002x-3cf9880.log, dirty []); assembled suite 48/48 at c5beb7f2 (D-s-002d-c5beb7f.log, dirty [])
 
 ## Outcome
 
@@ -78,3 +79,9 @@ are directory links into the lane and need no per-skill entry.
 - Root-control wording beyond the pinned counts (RUNBOOK role procedure,
   LEXICON bundle definition prose, templates mirrors) is routed to
   [S-00P](../../../S-00P-workflow-canon-rework/SPEC.md).
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s-002d-dispatcher-role-renumbered | 46d106bfd6a86487c963be941922a0046d86f595 | ahead 0 behind 0 | 0 | Red b700712e (Worker fc0422ae): tools/test-skill-catalog.mjs S-002D block failed at 14c92156 with ENOENT on workbench/skills/dispatcher/SKILL.md. Green c2098e83 (Worker 3cf9880b): test-skill-catalog, test-workbench-layout, test-core-skill-installer, test-skills-lane, test-delivery-skills, test-cross-provider-fixture, test-control-fidelity and test-controls-vocabulary-sweep pass; Worker suite 48/48 at 3cf9880b (D-tk002x-3cf9880.log, dirty []); assembled suite 48/48 at c5beb7f2 (D-s-002d-c5beb7f.log, dirty []) | workbench/skills/dispatcher/SKILL.md, workbench/skills/README.md row and bundle sentence, manifest skillPolicy.required, workbench-layout coordinationSkills, pinned counts in README.md, RUNBOOK.md, LEXICON.md Core skill bundle row, templates/GENESIS.md and workbench/wiki/skill-genesis.md | Root-control role procedure wording beyond the pinned counts routed to S-00P; Worker branch claude/s-002d-tk-002x-entry is patch-contained but not an ancestor, so cleanup needs a separate decision | 9f4419560531cef590e5c7fa1bfd1b321f50c282dd7a9429783d7c533b161c8f |
