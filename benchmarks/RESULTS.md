@@ -68,3 +68,15 @@ Repeated real outcome trials, controls/prior/candidate comparison, recent
 outcome evidence and uncertainty estimates remain missing. These documentation
 and planning changes establish no improvement in agent outcomes. Final
 verification is recorded in S-00O's integration reconciliation receipt.
+
+## 2026-09-29 ADR-000B/C/D acceptance documentation
+
+Guardrail audit using `node tools/audit-guardrails.mjs --path .` measured
+**78/100 before** on clean S-00G parent `ef2b129692ba051b65214331b67b44a8542f27a3`
+and **78/100 after** on the ADR acceptance candidate tree. Criteria were
+unchanged: static contract 20/20, drift resistance 25/25, benchmark discipline
+25/25, outcome evidence 8/30. Remaining recommendations are repeated real
+outcome trials, controls/prior/candidate comparison, recent real outcome
+evidence, and uncertainty estimates. This documentation change adds no agent
+outcome evidence and makes no reliability claim. The S-00G evidence log names
+the verified candidate commit and checks after save.
