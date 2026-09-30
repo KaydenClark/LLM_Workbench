@@ -777,14 +777,13 @@ test('gitFindings only skips its candidate lookup for an active row/record colli
   const source = fs.readFileSync(specTool, 'utf8');
   assert.doesNotMatch(
     source,
-    /selectCandidate\(specs\);\s*\n\s*\} catch/,
+    /selectCandidate\([^)]*\);\s*\n\s*\} catch/,
     'no bare catch may wrap the gitFindings candidate lookup again; a narrow, named guard replaced it'
   );
-  assert.match(
-    source,
-    /hasActiveSliceConflict[\s\S]{0,80}status === 'active'[\s\S]{0,20}sliceConflict/,
-    'the guard must name the active-status condition explicitly rather than catching every exception'
-  );
+  // The old global-boolean source shape is obsolete. Active/non-active
+  // collision cases below retain diagnostics; test-taskboard-json adds a
+  // valid completed peer to prove that per-Spec filtering preserves lookup.
+  // Its unexpected-fault sentinel also verifies that exceptions propagate.
 
   const dir = project();
   try {

@@ -1262,10 +1262,13 @@ function integrationBranchFindings(root, specs, sourceFindings = []) {
   // that source, so skip only its known conflict/invalid-state conditions.
   // Non-active records are outside this selector and never suppress its lookup;
   // unexpected calculation exceptions still propagate instead of disappearing.
-  const hasActiveSliceConflict = specs.some((item) => item.status === 'active' && item.sliceConflict);
-  const hasActiveInvalidState = specs.some((item) => item.status === 'active'
-    && sourceFindings.some((issue) => issue.code === 'invalid-state' && issue.specId === item.id));
-  const selected = hasActiveSliceConflict || hasActiveInvalidState ? null : selectCandidate(specs);
+  const diagnosticSpecs = specs.filter((item) => {
+    const hasActiveSliceConflict = item.status === 'active' && item.sliceConflict;
+    const hasActiveInvalidState = item.status === 'active'
+      && sourceFindings.some((issue) => issue.code === 'invalid-state' && issue.specId === item.id);
+    return !hasActiveSliceConflict && !hasActiveInvalidState;
+  });
+  const selected = selectCandidate(diagnosticSpecs);
   const spec = selected && specs.find((item) => item.id === selected.specId);
   for (const { ref, name } of spec ? refs : []) {
     const status = readAtRef(root, ref, spec.relativePath)?.match(/^\*\*Status:\*\*\s*(\S+)/m)?.[1];

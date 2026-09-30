@@ -293,6 +293,41 @@ if (process.argv.includes('--demo')) {
     assert.deepEqual(gitSnapshot(root), before);
   }));
 
+  for (const malformed of ['priority', 'table-status', 'slice-conflict']) test(`active ${malformed} does not suppress another Spec's integration diagnostic`, () => withRoom(root => {
+    const table = malformed !== 'priority' ? `| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00AA | Invalid table state | ${malformed === 'slice-conflict' ? 'ready' : 'typo'} | none | pending |` : '';
+    const a = spec(root, { id: 'S-00AA', priority: 0, table });
+    if (!table || malformed === 'slice-conflict') task(root, a, { id: 'TK-00AA', extra: '**Priority:** invalid' });
+    const b = spec(root, { id: 'S-00AB', status: 'complete' });
+    const file = task(root, b, { id: 'TK-00AB', status: 'done', extra: '**Proof:** Fixture complete' });
+    assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
+    put(root, b.file, fs.readFileSync(path.join(root,b.file),'utf8').replace('**Status:** complete', '**Status:** active'));
+    put(root, file, fs.readFileSync(path.join(root,file),'utf8').replace('**Status:** done', '**Status:** ready'));
+    const before = gitSnapshot(root), result = command(root, 'doctor');
+    assert.equal(result.status, 1); assert.equal(result.stderr, '');
+    const findings = JSON.parse(result.stdout);
+    assert.ok(findings.some(item => item.code === (malformed === 'slice-conflict' ? 'row-record-collision' : 'invalid-state') && item.specId === a.id));
+    assert.ok(findings.some(item => item.code === 'complete-on-integration' && item.specId === b.id && item.ref === 'integration'));
+    for (const args of [['next','--local'], ['claim',a.id,'--agent','fixture','--local'], ['render','--format','json']]) assert.equal(command(root,...args).status,1);
+    assert.deepEqual(gitSnapshot(root), before);
+  }));
+
+  test('a Task declaring a different existing Spec refuses preview, next and claim without writes', () => withRoom(root => {
+    const a = spec(root, { id: 'S-00AA' });
+    const b = spec(root, { id: 'S-00BB' });
+    task(root, a, { id: 'TK-00AA', specId: b.id });
+    put(root,'TASKBOARD.preview.json','preserve prior output\n'); initializeGitRoom(root);
+    const before = gitSnapshot(root);
+    for (const args of [['render','--format','json'], ['next','--local'], ['claim',a.id,'--agent','fixture','--local']]) {
+      const result=command(root,...args);
+      assert.equal(result.status,1, `${args[0]} must refuse the declared parent mismatch`);
+      assert.match(result.stderr,/names S-00BB, expected parent S-00AA/);
+      assert.deepEqual(gitSnapshot(root), before);
+    }
+    const diagnostic=command(root,'doctor'); assert.equal(diagnostic.status,1); assert.equal(diagnostic.stderr,'');
+    assert.ok(JSON.parse(diagnostic.stdout).some(item=>item.code==='invalid-state' && item.taskId==='TK-00AA'));
+    assert.deepEqual(gitSnapshot(root),before);
+  }));
+
   test('doctor propagates unexpected shared-calculation faults rather than treating them as malformed source', () => withRoom(root => {
     const a = spec(root, { id: 'S-00AA' }); task(root, a, { id: 'TK-00AA' });
     assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);

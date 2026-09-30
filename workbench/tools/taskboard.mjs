@@ -11,6 +11,10 @@ export function taskboardTaskEntry(spec, task, { resolvedStatus = task.status, d
   const lane = TASK_LANES[task.status === 'ready' ? 'ready' : resolvedStatus];
   if (!lane) throw taskboardSourceError(`${task.id} has invalid status ${task.status}`);
   const fields = sourceFields(task.content, false);
+  const declaredParent = fields['Spec ID'] ?? task.specId;
+  if (declaredParent !== undefined && visibleIdKey(declaredParent) !== visibleIdKey(spec.id)) {
+    throw taskboardSourceError(`${task.id} names ${declaredParent}, expected parent ${spec.id}`);
+  }
   const priority = fields.Priority === undefined ? spec.priority : Number(fields.Priority);
   if (!Number.isInteger(priority) || priority < 0) throw taskboardSourceError(`${task.id} has invalid priority`);
   return {
