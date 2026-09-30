@@ -88,3 +88,38 @@ unexpected I/O after mutation starts.
 The two intentionally conservative scanner findings in S-002C/TK-002Y remain
 visible; this correction introduces no masking or allowlist. Publication is limited to a checkpoint on existing draft PR226;
 integration still requires the independent review gate.
+
+## Encoded Parenthesis Refinement — 2026-09-30
+
+Separate-context review of exact `4bf0ab84f7bf9a84fa72ec51f63d55a5d8652e0c`
+failed on one P2 at `workbench/tools/adr.mjs:569–572`. The reviewed tree was
+`e2cc77ebd78ce6826e5be395622dd45d2c5d2395`; the S-00I digest was
+`9c82323193483685694eb77c303873ce9cb8c136405e560aa09f300f1fcc7d80`.
+Receipt #6 preserves this FAIL under existing TK-003L. Earlier receipts and
+bounded passes retain their historical meaning; this candidate is not approved.
+
+`encodeURIComponent` leaves parentheses raw. Recomputing a valid directory
+route ending in `parentheses%29/#proof` therefore introduced a Markdown closing
+delimiter and a broken scanner target. Opening-only `%28` corruption can evade
+the scanner, so a clean scan alone is insufficient proof.
+
+The durable fixture now seeds valid encoded directory components `%29`, `%28`
+and balanced `%28a%29`. Managed and legacy incoming links and outgoing nested
+links explicitly assert the encoded bytes, relative route, slash and fragment
+for both Spec and Task moves. All six incoming encoding cases reproduce red
+against a clean checkout of exact 4bf using the fixture's `--source` route;
+opening/balanced cases are checked separately with their assertion ordered first.
+At code checkpoint `81d6f39586c1c7952474644a7805762cbc55b171`, the focused
+fixture passes both moves, including existing immutable-history and pre-move
+hard-link/symbolic-link refusal proofs.
+
+The correction escapes only the parenthesis bytes in recomputed lifecycle
+directory components. ADR migration and identity widening continue using the
+same default file route. No directory-map expansion, parser/scanner policy,
+approval binding, Task closeout or acceptance completion is included.
+
+The final frozen checkpoint must pass all 48 AGENTS commands and three RUNBOOK
+extras before an ordinary guarded fast-forward to existing draft PR226.
+The exact SHA, tree, S-00I digest and immutable full-suite result are bound in
+the publication verification artifact. Fresh independent safety and assembled
+review are still required after publication; owner Human QA remains unapproved.
