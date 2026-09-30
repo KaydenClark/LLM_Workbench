@@ -73,6 +73,25 @@ test('human-readable CLI output identifies refusals and absolute in-root paths w
   assert.deepEqual(snapshot(dir), before);
 });
 
+test('success and refusals preserve a real staged Git index and working tree', t => {
+  const dir = room(t);
+  for (const args of [['init', '--quiet', '--template=', dir], ['-C', dir, 'add', '.']]) {
+    const result = spawnSync('git', args, { encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+  }
+  assert.ok(fs.existsSync(path.join(dir, '.git/index')));
+  for (const content of [readable, `${readable}<!-- N-000A -->\n`, `${readable}[Origin](../CUSTOM%2D000A.json)\n`]) {
+    fs.writeFileSync(path.join(dir, article), content);
+    const before = snapshot(dir);
+    const result = cli(dir, 'validate', article, '--json');
+    assert.equal(result.report.status, content === readable ? 'valid' : content.includes('N-000A') ? 'invalid' : 'incomplete');
+    assert.deepEqual(snapshot(dir), before);
+  }
+  const before = snapshot(dir);
+  assert.equal(cli(dir, 'validate', '../outside.md', '--json').report.error.code, 'unsafe-article');
+  assert.deepEqual(snapshot(dir), before);
+});
+
 test('explicit custom namespaces cover metadata and links without inventory reads or writes', async t => {
   const dir = room(t);
   fs.writeFileSync(path.join(dir, article), `---\nsource_paths: [CUSTOM-00a]\n---\n${readable}[More](../ROOM2-000B.md)\n`);
