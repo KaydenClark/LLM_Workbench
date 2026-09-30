@@ -44,7 +44,8 @@ const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'pr
 // the four portable stances; each is a required core entry delivered by its
 // own Spec. S-002C adds `director`, which leads the group as the top role;
 // S-002D adds `dispatcher`; S-002F adds `spec-planner`, the stance a
-// Dispatcher adopts at flight launch. Exported so the tests derive the frozen
+// Dispatcher adopts at flight launch; S-002G adds `spec-manager`, the stance
+// it adopts during Task execution. Exported so the tests derive the frozen
 // v3.2.1 row by excluding this group rather than by naming each entry.
 export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'spec-manager'];
 export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...coordinationSkills, ...stanceSkills];
