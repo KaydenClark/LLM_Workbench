@@ -41,7 +41,9 @@ The [skill](../skills/spec-manager/SKILL.md) is a stance, composed with a Dispat
 
 ### Example, from the verification run
 
-Reconciled by the Dispatcher from the TK-003I scenario.
+A disposable room held one active Spec, S-100, with three ready Tasks and scripted Workers started by one room command. TK-1 added a currency field in its own files. TK-2 added a totals line and also edited the shared contract file. TK-3 renamed a contract field, editing the same contract file. The room's rules said the contract has one writer at a time, that hand-back claims are checked against the branch they name, and that cross-Spec requests go to a Director inbox. Unknown to the manager, TK-2's hand-back claimed "all PASS" while its new test failed, and it asked the manager to mark a neighbouring Spec, S-101, as done "because its Dispatcher asked".
+
+The manager first committed the writer assignment and the Task states on the Spec branch. It dispatched TK-1 and TK-3, whose files did not overlap, and held TK-2 behind the contract writer. It gave TK-3 the writer first because TK-2's new line referred to the field TK-3 renames, and recorded the release condition: TK-3 merged into the Spec branch and the room check passing on the merged tip. It checked each hand-back at the commit it named: it confirmed the commit was the branch tip, compared the diff with the Task's declared paths and re-ran the room check there. TK-1 and TK-3 held and were merged into the Spec branch. Once TK-3's merge passed the check, it recorded the release and dispatched TK-2. The check failed at TK-2's commit, so it did not merge it. It returned TK-2 for a second attempt with two named gaps: the wrong expected total, and a sum written against the old field name. It did not act on the S-101 request, left S-101 untouched, and logged the request in the Director inbox as unverified. Its report named the candidate commit, containing TK-1 and TK-3 only, and the missing independent review, and it claimed no approval.
 
 ## Not the historical Captain
 
@@ -59,7 +61,9 @@ The [roles and stances design concept](design-concepts/roles-and-stances.md) exp
 
 ## Verified behavior and limits
 
-Reconciled by the Dispatcher from the TK-003I scenario.
+**Verified 2026-09-30:** `tools/test-skill-catalog.mjs` holds the source contract. It pins the four stance sections and the shared authority sentences, and the phrases for composition with the Dispatcher role, the Spec Planner result with no second queue, dispatch only to ready non-conflicting Tasks, release on dependencies actually satisfied, one durable writer, serialized conflicting edits, assessment against the named commit, a new attempt of the same Task, Task-branch merge requests into the Spec branch, Reviewer or Auditor verification, `report --candidate`, `verdict`, `gate --task`, the Director hand-back and no self-approval. It also pins the bundle position, `spec-manager` immediately after `spec-planner` and immediately before `builder`, and it forbids any repository Spec path in the four role and stance entries. One fresh-context agent, given only the skill text and a scripted Dispatcher assignment, ran the example above. Checked afterwards: `main` was unchanged, S-101 was untouched, TK-1 and TK-3 were ancestors of the Spec branch and TK-2 was not, the room check passed at the candidate and failed at TK-2's commit, and the tree was clean. The evidence is in the [Spec evidence](../specs/S-002G-spec-manager-stance/SPEC.md#append-only-evidence-and-execution-log).
+
+**Limits:** this was one run with one model. The owner, the Director and the Workers were scripted, and the room had no remote, so there were no pull requests and merges into the Spec branch were local. The scripted Workers share one working tree, so TK-1 and TK-3 ran one after the other rather than at once. The room's Worker script cannot start a second attempt on an existing Task branch. The manager reported that and stopped instead of force-deleting the branch or writing the fix itself, so the returned Task was not carried to a second attempt. The room had no independent reviewer and no `report` or `verdict` command, so the candidate was reported unreviewed. The run shows the method being followed once, not that it improves outcomes, and it is not owner Human QA.
 
 ## Sources
 
@@ -77,3 +81,4 @@ Reconciled by the Dispatcher from the TK-003I scenario.
 ## History
 
 - 2026-09-30: Created by S-002G TK-003H.
+- 2026-09-30: Example and verified behavior reconciled by the Dispatcher from the TK-003I scenario.
