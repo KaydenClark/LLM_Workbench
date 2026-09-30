@@ -3,7 +3,7 @@
 **Task ID:** TK-003I
 **Spec ID:** S-002G
 **Slice:** Observe the Spec Manager scenario in a fresh context and assemble the Spec proof
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-003G
 **Destination:** spec-acceptance: S-002G acceptance lines 1-5 observed in the named Testing Seams scenario, line 6 (performed without private notes) and line 7 (named verification and remaining limitations recorded without claiming owner approval); Verification Procedure (self-drift pre/post, semantic inspection, under-one-minute demonstration, immutable-candidate independent review, owner Human QA kept separate)
