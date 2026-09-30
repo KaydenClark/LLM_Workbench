@@ -7,7 +7,7 @@
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-00I safe lifecycle references and verified-main discard
-**Planned verification:** Tests-first red at bd218db, focused test-spec-workbench and strongest negative probes, followed by parent-coordinated immutable aggregate verification and fresh assembled review
+**Planned verification:** Preserve earlier bd218db red/green proof; reproduce Spec and Task directory-link reds at exact f7361483, verify the focused directory-link regression and full 51-command frozen checkpoint, then obtain fresh independent safety and assembled review
 
 **Proof:** Red on bd218db: installed-skill move link stale. Additional red on 394f8e6: hard-linked incoming reference leaves a staged rename before refusal. Green at 2254cb0: manifest and legacy skills move/scan/discard/diagnostics, six-lane compatibility, unsupported-lane refusal, linked/hard-linked no-write preflight and unchanged unrelated hard-linked skills pass. Bounded independent review PASS at 2254cb0. Parent notice-route repair removes exactly 22 newly exposed README findings; original 22 unrelated findings remain. Final aggregate, assembled review and delivery pending.
 
@@ -28,10 +28,11 @@ remains the governing existing contract; S-00U approval code is unchanged.
 
 ## Limits
 
-No real record retirement/discard, owner approval, main promotion, remote
-push/merge, unrelated route edits, extra corrective IDs or approval-row copying.
-Local immutable commits are allowed for source-identity proof. Full aggregate
-verification and separate-context review remain coordinated by the parent.
+No real record retirement/discard, owner approval, main promotion, integration
+merge, unrelated route edits, extra corrective IDs or approval-row copying.
+Local immutable commits are allowed for source-identity proof. Checkpoint
+publication stays on existing draft PR226; final aggregate verification and
+separate-context review remain coordinated gates.
 
 ## Scoped Current Routing Repair — 2026-09-30
 
@@ -48,3 +49,16 @@ in S-002C/TK-002Y intended for insertion into Wiki MEMORY. Their relative
 links are correct at that destination; the examples are left unchanged and
 the scanner's conservative findings remain visible. No global clean-scan or
 new parser policy is claimed.
+
+## Directory Target Refinement — 2026-09-30
+
+Independent assembled fail receipt #5 at exact f7361483 and digest
+566a88c34996 names one directory-link defect within this existing Task. It
+does not allocate another corrective record or withdraw earlier limited proof.
+The durable regression is red separately for Spec and Task moves at that base.
+Focused green at 48ce1da covers moved roots/nested directories, outgoing unmoved
+directories, URI/fragment/slash correctness, immutable history and pre-move
+linked-directory/directory-only hard-link refusal. See the owning
+[verification](../../DIRECTORY-LINK-VERIFICATION.md) for exact identities,
+commands, safety boundaries and remaining gates. This Task remains in progress;
+final code has no self-awarded independent PASS or owner approval.
