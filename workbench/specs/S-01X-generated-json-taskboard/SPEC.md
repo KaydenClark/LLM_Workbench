@@ -1,15 +1,15 @@
 # S-01X - Generated JSON Taskboard
 
 **Spec ID:** S-01X
-**Status:** planned
+**Status:** active
 **Priority:** 1
-**Owner:** claude-lane-I
+**Owner:** codex-servitor-json-preview
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-09-30
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W identity delivery precedes board implementation.
-**Latest event:** Lane I rebuilt the S-00O planning packet on integration 1a6f6e0 and re-allocated this Spec as S-01X (the draft's S-01V identity was renumbered with S-01W); no Tasks allocated or runtime changed.
-**Next gate:** After S-01W's first delivery, Lane I cuts the first bounded board Task with `next-id` and publishes the board contract for S-00V's Taskboard consumer.
+**Latest event:** TK-003O claimed by codex-servitor-json-preview.
+**Next gate:** Close TK-003O with verification and documentation proof.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -247,6 +247,7 @@ occurs during this planning authoring.
 | 2026-09-26 | none | Director released supported bootstrap S-01V (draft ID, now S-01X) after S-01U (draft ID, now S-01W) render/doctor; Worker authored planned record with empty record-backed tasks directory. | Source baseline 89d4042 clean detached; read-only doctor passed with seven attention findings. Ledger E rows and latest decision-023 origin checked. Authored record render/show/doctor pending. | Accepted generated/reproducible correction and earlier persistent-marker lineage preserved; no Task IDs allocated. | Runtime, delivery Tasks, review, Human QA and release proof remain pending. |
 | 2026-09-26 | none | Planned S-01X self-check after authoring, no runtime changes. | Public render succeeded (97 Specs); show S-01V (draft ID, now S-01X) resolved this record; doctor passed with zero blockers and the same seven attention findings. | Source-linked planning owner and empty tasks/.gitkeep checked; Dispatcher owns combined projections and candidate proof. | Implementation and full candidate verification remain pending. |
 | 2026-09-26 | none | Lane I (claude-lane-I) rebuilt unmerged S-00O planning candidate 34dfa2f onto integration 1a6f6e0: PR #161 had taken S-01U, so supported `next-id` re-allocated the identity Spec as S-01W and then the board Spec as S-01X; every reference in S-00O, S-01W, S-01X and the direct-Task proposal was renumbered and the stale Task-ID lease wording removed (no lease holds). | `next-id --prefix S` returned S-01W on clean integration 1a6f6e0 and, with both records present, the next free Spec ID after S-01X; render then doctor (no blocking finding) on the committed candidate and in a fresh clone of the pushed branch; the full suite, separate-context review and verdict are recorded by the landing PR's own evidence, not claimed here | This Spec, S-01W, S-00O, TASKBOARD.md, CATALOG.md | S-01W first delivery, then the first board Task and the S-00V consumer contract. S-00V's pre-existing mentions of the never-allocated draft ID S-01V (SPEC and TK-00G/TK-00K/TK-01L/TK-01M) are Lane F-owned; TK-01M assigns the re-point to the S-00V dispatcher, whose in-flight branch replaces them with S-00O pending this allocation and will re-point to S-01X |
+| 2026-09-30 | TK-003O | First opt-in JSON Task activated | Explicit parent release from integration 2c47d96239dd48f17969e4d5fa8f668850c2ecfe; S-01W first identity/consumer delivery is in integration, while claimed TK-002R QA remains separate; native next-id and convert-tasks --activate | Fixed preview boundary render --format json; default Markdown and all later criteria remain open | JSON implementation, required checks and independent exact-candidate review pending; no root switch, identity or QA takeover |
 
 ## Completion Result
 
