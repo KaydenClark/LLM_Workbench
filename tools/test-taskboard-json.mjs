@@ -172,6 +172,59 @@ if (process.argv.includes('--demo')) {
     assert.equal(fs.readFileSync(output, 'utf8'), before);
   }));
 
+  for (const [variant, addition] of [
+    ['body field after a section', '\n## Evidence\n\n**Status:** complete\n'],
+    ['normalized field name in the header', '**Status :** complete\n']
+  ]) test(`duplicate Spec ${variant} refuses before replacing the existing preview`, () => withRoom(root => {
+    const a = spec(root, { id: 'S-000A' }); task(root, a, { id: 'TK-000A', status: 'done' });
+    assert.ok(preview(root).lanes.inProgress['S-000A']);
+    const output = path.join(root, 'TASKBOARD.preview.json'); const before = fs.readFileSync(output, 'utf8');
+    const source = fs.readFileSync(path.join(root, a.file), 'utf8');
+    put(root, a.file, variant.startsWith('body') ? source + addition : source.replace('## Vertical Implementation Slices', addition + '\n## Vertical Implementation Slices'));
+    const result = command(root, 'render', '--format', 'json');
+    assert.notEqual(result.status, 0, 'ambiguous normalized source must refuse rather than manufacture Complete');
+    assert.match(result.stderr, /duplicat.*Status/i);
+    assert.equal(fs.readFileSync(output, 'utf8'), before);
+    assert.equal(command(root, 'render').status, 0, 'the existing Markdown parser behavior remains unchanged');
+    assert.equal(fs.readFileSync(output, 'utf8'), before, 'default rendering never replaces the JSON preview');
+  }));
+
+  test('preview duplicate guard matches whole-document key trimming and case-sensitive source extraction', () => withRoom(root => {
+    const a = spec(root, { id: 'S-000A' }); task(root, a, { id: 'TK-000A', status: 'done' }); preview(root);
+    const output = path.join(root, 'TASKBOARD.preview.json'); const before = fs.readFileSync(output, 'utf8');
+    const source = fs.readFileSync(path.join(root, a.file), 'utf8');
+    const variants = [
+      ['leading key space', source + '\n** Status:** complete\n'],
+      ['key tabs', source + '\n**\tStatus\t:** complete\n'],
+      ['Unicode trim', source + '\n**\u00a0Status\u00a0:** complete\n'],
+      ['CRLF body', source.replaceAll('\n', '\r\n') + '\r\n## Evidence\r\n**Status :** complete\r\n'],
+      ['other field', source + '\n## Evidence\n** Priority :** 1\n'],
+      ['unknown repeated field', source.replace('## Vertical Implementation Slices', '**Context:** one\n\n## Vertical Implementation Slices') + '\n** Context :** two\n']
+    ];
+    for (const [variant, malformed] of variants) {
+      put(root, a.file, malformed);
+      const result = command(root, 'render', '--format', 'json');
+      assert.notEqual(result.status, 0, variant); assert.match(result.stderr, /duplicat/i, variant);
+      assert.equal(fs.readFileSync(output, 'utf8'), before, variant);
+    }
+    // Key case is preserved by both actual readers; lowercase is a distinct
+    // field, not an alternate spelling of the required Status field.
+    put(root, a.file, source + '\n## Evidence\n**status:** complete\n');
+    assert.ok(preview(root).lanes.inProgress['S-000A']);
+  }));
+
+  test('single normalized metadata fields follow source whitespace and whole-document semantics', () => withRoom(root => {
+    const a = spec(root, { id: 'S-000A' }); const file = task(root, a, { id: 'TK-000A' });
+    const source = fs.readFileSync(path.join(root, file), 'utf8');
+    put(root, file, source + '\n## Evidence\n** Assignee :**\n\tfixture-worker  \n**\tApprover\t:** fixture-reviewer\n** Priority :** 1\n**\u00a0Next action\u00a0:** Run the normalized demo\n**Due date :** 2026-10-01\n**assignee:** ignored lowercase field\n');
+    const card = preview(root).lanes.toDo['TK-000A'];
+    assert.equal(card.assignee, 'fixture-worker'); assert.equal(card.approver, 'fixture-reviewer');
+    assert.equal(card.priority, 1); assert.equal(card.nextAction, 'Run the normalized demo'); assert.equal(card.dueDate, '2026-10-01');
+    const bytes = fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8');
+    put(root, file, fs.readFileSync(path.join(root, file), 'utf8').replaceAll('\n', '\r\n'));
+    preview(root); assert.equal(fs.readFileSync(path.join(root, 'TASKBOARD.preview.json'), 'utf8'), bytes);
+  }));
+
   test('linked outputs and linked source directories refuse without touching their targets', () => withRoom(root => {
     const a = spec(root, { id: 'S-000A' }); task(root, a, { id: 'TK-000A' });
     const target = path.join(root, 'sentinel.json'); fs.writeFileSync(target, 'sentinel\n');
