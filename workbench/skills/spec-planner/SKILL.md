@@ -12,11 +12,10 @@ current Actuality when its flight launches, and hand the executable plan to
 Spec Manager.
 
 Adopt only the stance already set in the assigned SPEC and TASK. It is
-composed with an already assigned Dispatcher role
-(`workbench/specs/S-002D-dispatcher-role/SPEC.md`): the role supplies the scope
-(one Spec and its branch) and the dispatch responsibility; this stance supplies
-the planning method and obligations. A stance
-never grants, removes, or transfers authority: the owner request, Workbench
+composed with an already assigned Dispatcher role (the `dispatcher` skill):
+the role supplies the scope (one Spec and its branch) and the dispatch
+responsibility; this stance supplies the planning method and obligations. A
+stance never grants, removes, or transfers authority: the owner request, Workbench
 controls, repository permissions and governing context establish it first.
 Loading this skill never spawns an agent. Changing stance alone creates no
 handoff; continuation uses the existing Workbench owners when execution crosses
@@ -84,7 +83,6 @@ shared file and the open gates; the evidence log carries the launch row naming
 the Actuality inspected and the identifiers allocated; and
 `node workbench/tools/spec-workbench.mjs render` and
 `node workbench/tools/spec-workbench.mjs doctor` accept the result. Hand the
-plan and its open gates to the Dispatcher's Spec Manager stance
-(`workbench/specs/S-002G-spec-manager-stance/SPEC.md`) for dispatch and
-monitoring. Planning delivers no Task, closes no gap and claims no owner
-approval.
+plan and its open gates to the Dispatcher's Spec Manager stance (the
+`spec-manager` skill) for dispatch and monitoring. Planning delivers no Task,
+closes no gap and claims no owner approval.

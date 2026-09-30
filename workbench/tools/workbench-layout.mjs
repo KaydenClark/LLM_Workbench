@@ -46,7 +46,7 @@ const handoffCoreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'pr
 // S-002D adds `dispatcher`; S-002F adds `spec-planner`, the stance a
 // Dispatcher adopts at flight launch. Exported so the tests derive the frozen
 // v3.2.1 row by excluding this group rather than by naming each entry.
-export const coordinationSkills = ['director', 'dispatcher', 'spec-planner'];
+export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'spec-manager'];
 export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
