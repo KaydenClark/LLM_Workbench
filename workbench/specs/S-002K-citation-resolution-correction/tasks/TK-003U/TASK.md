@@ -3,7 +3,7 @@
 **Task ID:** TK-003U
 **Spec ID:** S-002K
 **Slice:** Correct the confirmed shipped-list label loss, digit-leading basename omission and dotted non-path scope overwrite; restore truthful S045 post-anchor provenance without reopening its completed history.
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002K Acceptance Criteria

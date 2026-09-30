@@ -3,13 +3,13 @@
 **Spec ID:** S-002K
 **Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** codex-servitor-pr-resolution
 **Stance:** Builder
 **Updated:** 2026-09-30
 **Catalog description:** Correct three independently reproduced citation-checker defects without reopening completed S-045.
 **Blockers:** none
-**Latest event:** User-authorized bounded follow-up captured from independent late review of PR77.
-**Next gate:** Activate one bounded corrective Task, reproduce durable reds, then verify an immutable repair candidate.
+**Latest event:** TK-003U claimed by codex-servitor-pr-resolution.
+**Next gate:** Close TK-003U with verification and documentation proof.
 
 ## Outcome
 
