@@ -1,5 +1,4 @@
 ---
-status: proposed
 date: 2026-09-15
 canonicalized_in:
   - AGENTS.md
@@ -19,7 +18,7 @@ This record decides **ownership only**. It does not decide concurrency, and it
 selects no change to how writes are guarded.
 
 Writes stay **sequential and non-overlapping**, exactly as
-[ADR-0040](0040-json-notepads-preserve-objective-continuity.md) and the current
+[ADR-0040](../0040-json-notepads-preserve-objective-continuity.md) and the current
 `notepad` skill already have them. The runtime's `--revision` check is a check,
 not a lock: it catches the sequential case, where the note moved while an agent
 was working, and refuses that write as `stale-revision`. It does **not** make
@@ -46,7 +45,7 @@ grilling record beside a work note, stays correct.
 Reuse binds only where a context can actually reach the record. Live notes are
 local and untracked, so a context on another machine has no path to the file
 unless the optional private transport
-([ADR-0051](0051-optional-private-git-transport-for-session-continuity.md)) is
+([ADR-0051](../0051-optional-private-git-transport-for-session-continuity.md)) is
 configured for it, and that transport keeps one active writer per note and
 preserves competing revisions. Where the record is unreachable, the Markdown
 handoff carries continuation and the objective's note stays local; a chat must
@@ -55,18 +54,18 @@ not invent a duplicate note to stand in for one it cannot read.
 Considered and rejected: one note per chat. It fragments one objective's
 context across several files, so a resuming agent must discover and merge them,
 and it makes the Markdown handoff the only cross-chat channel, which
-[ADR-0043](0043-workbench-continuity-through-maintained-owners.md) already
+[ADR-0043](../0043-workbench-continuity-through-maintained-owners.md) already
 rules is not the owner of continuity.
 
 Considered and rejected: a lock or lease held by the writing chat. Mandatory
 coordination machinery breaks standalone operation
-([ADR-0043](0043-workbench-continuity-through-maintained-owners.md)). This
+([ADR-0043](../0043-workbench-continuity-through-maintained-owners.md)). This
 rejects a *mandatory* lease as the ownership mechanism; it does not judge a
 future compare-and-swap fix for the write-safety gap named above, which remains
 open for its own spec.
 
 Consequences: this narrows the "concurrent writers" alternative that
-[ADR-0040](0040-json-notepads-preserve-objective-continuity.md) left
+[ADR-0040](../0040-json-notepads-preserve-objective-continuity.md) left
 unselected, taking its objective-scoped *ownership* and explicitly leaving
 simultaneous writing unselected; ADR-0040 stays accepted and unchanged. No tool
 change is required by this record, and none is claimed to make overlapping
