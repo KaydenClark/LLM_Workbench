@@ -9,7 +9,7 @@
 **Catalog description:** Make active domain modeling precise and usable through the Workbench's Lexicon, Spec, ADR, Wiki, and authority boundaries.
 **Blockers:** none
 **Latest event:** TK-003X closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Next gate:** Separate-context review of the assembled candidate and reviewed integration delivery; the release owner's publication gate and owner Human QA stay open.
 
 > **Citation anchors.** pre=`2780fe66754abf69b2ab6dea23337a7be0f6d801` post=`2780fe66754abf69b2ab6dea23337a7be0f6d801`.
 
@@ -116,11 +116,13 @@ This planning pass creates the [individual article](../../wiki/skill-domain-mode
 
 ## Completion Result
 
-Pending. Planning and Wiki creation do not establish delivered skill behavior.
+Not complete. The staged, unreleased candidate source, its scoped test, the fresh-context scenario observations and the reconciled Wiki article are delivered on this branch (TK-003V, TK-003W, TK-003X). The skill is not published: no room can discover it until the release owner's fresh bundle identity lands the file slots in Dependencies And Blockers, which also leaves acceptance line 6 open. No owner Human QA approval is claimed.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Upstream main may move; pin its exact revision before implementation or claiming parity with a later revision.
+- The candidate was adapted from upstream `mattpocock/skills` at `d81f3a183412e71a5b1e84ca21bc1a35eea03a60`; parity with any later revision needs a fresh comparison.
+- Scenario proof is one run per scenario per source with one model, scripted owner turns and rooms, and the skill handed to the agent rather than discovered. In a Workbench room the pending source also kept the write boundary and ADR filter, so the scenario-seam red was observed only for the downstream trace, Lexicon routing precision and an unsupported ADR basis.
+- `tools/test-domain-modeling-candidate.mjs` is standalone until publication adds it to the AGENTS suite list.
 - Current personal installation is outside repository delivery and was inspected read-only; its runtime behavior was not exercised.
 
 ## Supersession
