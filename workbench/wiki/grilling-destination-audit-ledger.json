@@ -9,7 +9,7 @@
   ],
   "counting": {
     "destination_audit_rows": 254,
-    "unique_question_ids": 255,
+    "unique_question_ids": 258,
     "reassessed_ids": [
       "CAND-N",
       "FND-Q20",
@@ -34,14 +34,14 @@
       "REC-04"
     ],
     "status_tally": {
-      "locked": 198,
+      "locked": 201,
       "superseded": 26,
       "deferred": 2,
       "withdrawn": 6,
-      "answered-in-chat": 10,
+      "answered-in-chat": 11,
       "not-a-question": 1,
       "open": 9,
-      "partially-answered": 3
+      "partially-answered": 2
     }
   },
   "field_guide": {
@@ -66,7 +66,7 @@
   "progress_assessment": {
     "commit": "6ae38b9dfc10144dff5481910c29f46ba09b1f8c",
     "date": "2026-09-24",
-    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments. The 2026-09-29 FND-Q24B reading likewise names its own integration baseline. The 2026-09-29 ACC-1/2/4 row readings preserve their implementation gaps; ACC-5 navigation was delivered at integration merge 83ccb20c (PR #211), while the historical S-022 release packet remains blocked. These later readings do not recertify the 2026-09-24 baseline; the tally counts the current per-row readings, including these named later assessments.",
+    "method": "Each question's Result items were checked against the tree at this integration commit: the named artifact and section must exist and say what the Answer says (with any named templates/ mirror matching), and owning Spec and Task state was read from the Spec records and Task files, not the Taskboard projection. The 2026-09-23 destination-audit verdicts were used only as pointers, never copied. Superseded questions carry no obligation of their own and name their successor, so no question is counted twice. Evidence citations read at this commit; 'unverified:' marks a reading the assessor could not settle. This is a historical assessment, not a live delivery dashboard. Later ROLE decisions are recorded with explicitly named baseline observations; current implementation state is owned by the linked Specs and generated Taskboard. The 2026-09-27 reconciliation does not re-certify the older row assessments. The 2026-09-29 FND-Q24B reading likewise names its own integration baseline. The 2026-09-29 ACC-1/2/4 row readings preserve their implementation gaps; ACC-5 navigation was delivered at integration merge 83ccb20c (PR #211), while the historical S-022 release packet remains blocked. These later readings do not recertify the 2026-09-24 baseline; the tally counts the current per-row readings, including these named later assessments. The 2026-09-30 readings of TT-Q9, ACC-3 and the GX family name integration 2780fe66 as their baseline.",
     "statuses": {
       "implemented-and-completed": "Every Result artifact exists at the pinned commit and says what the Answer says; any owning Spec or Task is complete.",
       "specced": "A Spec carries this answer, but no Task is cut for this part.",
@@ -76,11 +76,11 @@
       "no-build-obligation": "Open, withdrawn, superseded, deferred past v4, not a question, or no artifact change."
     },
     "tally": {
-      "implemented-and-completed": 108,
+      "implemented-and-completed": 109,
       "specced": 7,
       "specced-and-tasked": 10,
-      "in-progress": 52,
-      "not-started": 32,
+      "in-progress": 51,
+      "not-started": 35,
       "no-build-obligation": 50
     }
   },
@@ -180,6 +180,12 @@
       "name": "Minimum role and stance buildout",
       "dates": "2026-09-26 to 2026-09-27",
       "record": "Owner-confirmed v4-role-groundwork inquiry; operational owners linked in each result"
+    },
+    {
+      "id": "GX",
+      "name": "Grilling exit and DQC workflow",
+      "dates": "2026-09-29",
+      "record": "Owner-confirmed v4 grilling-exit inquiry (three locked questions); no Canon, Tracker or skill source changed by the inquiry"
     }
   ],
   "questions": [
@@ -7857,13 +7863,14 @@
         "Ownership origin model (formerly \"portability model\")",
         "blocked-obligations-review FND-Q24 (2026-09-22 revisit)"
       ],
-      "notes": "The owner rejected the proposal-019 definition of core (11 classes x 27 responsibilities) and demoted the presence and type tests from deciders to facts. His success criterion moved to the Portable Workbench term and gained \"cleaning up after itself\" (PW decision-001). The divergence disposition needs its own closed set; ADR-000K dispositions do not fit. The field shape is FND-Q24B.",
+      "notes": "The owner rejected the proposal-019 definition of core (11 classes x 27 responsibilities) and demoted the presence and type tests from deciders to facts. His success criterion moved to the Portable Workbench term and gained \"cleaning up after itself\" (PW decision-001). The divergence disposition needs its own closed set; ADR-000K dispositions do not fit. The field shape is FND-Q24B. 2026-09-26 owner vocabulary for the map, offered as usable rather than locked: Producer:Product (or Maker:User) for Upstream:Downstream; Workbench:Project; LLM_Workbench:Workbench.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#decision-066",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#proposal-019",
         "workbench/sessions/notepads/grilling/fnd-foundation-ownership-2026-09-15.json#finding-033",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-010",
-        "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001"
+        "workbench/sessions/notepads/grilling/portable-workbench-cloud-deployable-2026-09-22.json#decision-001",
+        "workbench/sessions/notepads/work/audit-ledger-reconciliation-2026-09-26.json#source_record-001"
       ],
       "progress": {
         "status": "in-progress",
@@ -8767,9 +8774,9 @@
       "reason": "The owner saw agents on some models read 'one writer per note' as one Chat per note while others appended across Chats; tying the note to its objective lets any context resume it.",
       "result": [
         {
-          "artifact": "ADR-000L 'notepad belongs to its objective' (proposed on PR #92)",
+          "artifact": "workbench/docs/adr/000L-a-notepad-belongs-to-its-objective-and-every-chat-working-that-objective-writes-to-it.md",
           "action": "create",
-          "effect": "A notepad belongs to its objective; writers are serialized, not exclusive."
+          "effect": "A notepad belongs to its objective; every context that can reach it resumes it, one writer at a time; ownership is decided, concurrency is not."
         },
         {
           "artifact": "AGENTS.md (Session Records) and templates/AGENTS.md",
@@ -8784,7 +8791,7 @@
         {
           "artifact": "workbench/skills/notepad/SKILL.md",
           "action": "update",
-          "effect": "Reword 'one writer per note' to one writer at a time."
+          "effect": "Keep the check-not-a-lock warning; say the writer rule bounds overlapping writes, not chat ownership; writer-neutral stale-revision; purpose-distinct creation rule."
         }
       ],
       "related": [
@@ -8795,16 +8802,16 @@
         "task-ticket-chat-workflow-clarification-2026-09-10 Q9",
         "workbench-foundation-rework-2026-09-11 TT-Q9"
       ],
-      "notes": "The TT note register records it as open; the answer recovered here settles it. The Spec and Task parts of the relationship are not stated beyond the Packet row (handoff and notepad join a Task's packet only when they exist).",
+      "notes": "The TT note register records it as open; the answer recovered here settles it. The Spec and Task parts of the relationship are not stated beyond the Packet row (handoff and notepad join a Task's packet only when they exist). 2026-09-30: ADR-000L accepted from PR #92's reviewed draft, with that PR's open review findings resolved (unreachable-note capture, purpose-distinct creation, template mirrors, writer-neutral stale-revision). The concurrent-write loss the review reproduced stays an open runtime gap with no owning Spec.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/tt-task-ticket-chat-terms-2026-09-15.json#finding-032",
         "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md:31"
       ],
       "progress": {
-        "status": "in-progress",
-        "sub_label": "AGENTS part done; ADR-000L absent",
-        "evidence": "AGENTS.md:396-399 notepads JSON, handoffs Markdown for a new chat; LEXICON.md:175 Notepad is objective-scoped. No ADR-000L in workbench/docs/adr/ or proposed/; workbench/skills/notepad/SKILL.md:57,87 still say 'one writer per note'. No Spec carries it.",
-        "gap": "ADR-000L (notepad belongs to its objective) not in repo; notepad skill wording not changed to one writer at a time; no owning Spec/Task."
+        "status": "implemented-and-completed",
+        "sub_label": "ADR-000L accepted 2026-09-30",
+        "evidence": "Read against integration 2780fe66 plus the ADR-000L candidate: ADR-000L in the active roster; AGENTS.md and templates/AGENTS.md Session Records, LEXICON.md and templates/LEXICON.md Notepad rows, and workbench/skills/notepad/SKILL.md carry objective ownership, one writer at a time.",
+        "gap": ""
       }
     },
     {
@@ -10723,10 +10730,10 @@
       "counted": true,
       "topic": "Blueprint outside the Contract",
       "question": "With BLUEPRINT.md outside the Contract (000C), what keeps its claims from reading as non-binding?",
-      "status": "partially-answered",
-      "answer": "Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent.",
-      "answered": "2026-09-23 01:24 UTC chat (triage v2); recorded as blocked-obligations-review decision-027",
-      "reason": "Inference: the owner's settled vocabulary (decision-024, correction-009) says Canon classifies accepted claims in context rather than by file, so a routed Blueprint's accepted claims still bind where they apply.",
+      "status": "answered-in-chat",
+      "answer": "Contract = AGENTS.md, RUNBOOK.md and LEXICON.md, read on every run, plus the assigned Spec; the Blueprint is a routed artifact the Contract directs agents to by intent. The Contract and the other routing artifacts make the Blueprint's claims binding: the Blueprint describes how the project should work with the Workbench, and the Workbench proves those claims by running the project.",
+      "answered": "2026-09-23 01:24 UTC chat (triage v2); recorded as blocked-obligations-review decision-027; binding-force part answered 2026-09-26 in the Director audit-ledger reconciliation chat",
+      "reason": "Owner, 2026-09-26: the routing artifacts carry the binding force, and running the project is the proof. This replaces the earlier inference from decision-024 and correction-009.",
       "result": [
         {
           "artifact": "workbench/docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md",
@@ -10750,18 +10757,19 @@
         "FND-Q23"
       ],
       "aliases": [],
-      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation. 2026-09-29: ADR-000C acceptance and root control wording resolve the carrier/routing part, but do not answer the separate binding-force question. Keep status partially-answered.",
+      "notes": "Answered part: the Blueprint's place (a routed artifact outside the three-carrier Contract). Open part: what makes its accepted claims binding; the reason given is an inference from decision-024 and correction-009, and the gap triage proposed agent wording for owner confirmation. 2026-09-29: ADR-000C acceptance and root control wording resolve the carrier/routing part, but do not answer the separate binding-force question. Keep status partially-answered. 2026-09-30: the owner's 2026-09-26 clarification, recorded verbatim in the local audit-ledger reconciliation note, answers the binding-force part; status moves to answered-in-chat. ADR-000C and the Authority Order do not yet say that the routing artifacts carry the Blueprint's binding force or that running the project proves it.",
       "source_refs": [
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-020",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#decision-027",
         "workbench/sessions/notepads/grilling/blocked-obligations-review-2026-09-21.json#correction-009",
-        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)"
+        "workbench/sessions/recovery/destination-audit-2026-09-23/TRIAGE-v2-owner-answers-recovered.md (ACC-3 row)",
+        "workbench/sessions/notepads/work/audit-ledger-reconciliation-2026-09-26.json#source_record-001"
       ],
       "progress": {
         "status": "in-progress",
         "sub_label": "ADR-000C accepted; binding-force question open",
         "evidence": "ADR-000C is active. AGENTS.md and LEXICON.md carry the three-carrier definition and Blueprint route; S-00G records the implementation window. Integration containment is verified from Git, not by this ledger.",
-        "gap": "The owner has not confirmed the separate ACC-3 question about what binds accepted Blueprint claims when routed; template mirrors remain assigned implementation work."
+        "gap": "State in ADR-000C (or its operational owners) that the Contract and routing artifacts bind the Blueprint's accepted claims and that proof is running the project; mirror in templates."
       }
     },
     {
@@ -12158,6 +12166,111 @@
         "sub_label": null,
         "evidence": "At baseline b00a2e338436ef7b281b0cc53e74f891af32f18c, no dedicated Director, Dispatcher, Worker, Spec Planner or Spec Manager operating entry existed; current capability owners above record subsequent planning.",
         "gap": "Role/stance capability implementation and scenario proof remain; planning does not deliver those behaviors."
+      }
+    },
+    {
+      "id": "GX-3",
+      "family": "GX",
+      "counted": true,
+      "topic": "Skill names and grilling endpoint",
+      "question": "What are the names and boundaries of the DQC and grilling-completion skills?",
+      "status": "locked",
+      "answer": "/to-dqc is the grilling-completion skill: it inspects every locked grilling answer and groups it into a suitable existing DQC, or creates a separate one when it evolves independently, preserving source question identity and corrections. /dqc is the reusable primitive for card operations and evidence-backed assessment, called by /to-dqc and by the mapping, planning, implementation, review and verification skills once those are updated.",
+      "answered": "2026-09-29, owner confirmed the readback (inquiry closed with names settled)",
+      "reason": "Names settled so grilling has a defined exit into the Tracker.",
+      "result": [
+        {
+          "artifact": "workbench/skills/to-dqc/SKILL.md; workbench/skills/dqc/SKILL.md",
+          "action": "create",
+          "effect": "The grilling-completion skill and the card primitive, by these names."
+        }
+      ],
+      "related": [
+        "GX-1",
+        "GX-2"
+      ],
+      "aliases": [
+        "v4-grilling-exit-workflow Q3"
+      ],
+      "notes": "The step meanings conflict with S-01T, LEXICON.md and workbench/tools/landmark-tracker.mjs, which say the steps describe documentation progress, never Task status or implementation effort; reconcile before Canon changes. The DQC and Landmark group (S-001Z, S-002A, S-002B) belongs to the owner's Codex lane. The inquiry itself authorized no Canon, Tracker or skill change.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/v4-grilling-exit-workflow-2026-09-29.json#decision-003"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At integration 2780fe66: no /to-dqc or /dqc skill in workbench/skills; S-01T and LEXICON.md keep the documentation-only step reading.",
+        "gap": "Owning Spec not yet named; the Codex DQC lane or a new Spec carries the skills and the step reconciliation."
+      }
+    },
+    {
+      "id": "GX-2",
+      "family": "GX",
+      "counted": true,
+      "topic": "DQC primitive versus calling skills",
+      "question": "What responsibility belongs in the new DQC skill versus the calling workflow skills?",
+      "status": "locked",
+      "answer": "One focused DQC primitive owns shared card mechanics: find, create or group the right DQC, preserve locked-question lineage and corrections, link ADRs, Specs, Tasks and other artifacts, and record evidence-backed progress assessments. The existing workflow skills decide when to call it and what their own step proves, and are updated to compose it. No dedicated DQC review skill. Domain-modeling stays available but is not required in this flow.",
+      "answered": "2026-09-29, owner confirmed the readback (inquiry closed with names settled)",
+      "reason": "Card mechanics live once; each workflow skill keeps ownership of what its own step proves.",
+      "result": [
+        {
+          "artifact": "workbench/skills (new DQC primitive; mapping, planning, implementation, review and verification skills)",
+          "action": "create",
+          "effect": "A reusable card primitive that the workflow skills compose."
+        }
+      ],
+      "related": [
+        "GX-1",
+        "GX-3"
+      ],
+      "aliases": [
+        "v4-grilling-exit-workflow Q2"
+      ],
+      "notes": "The step meanings conflict with S-01T, LEXICON.md and workbench/tools/landmark-tracker.mjs, which say the steps describe documentation progress, never Task status or implementation effort; reconcile before Canon changes. The DQC and Landmark group (S-001Z, S-002A, S-002B) belongs to the owner's Codex lane. The inquiry itself authorized no Canon, Tracker or skill change.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/v4-grilling-exit-workflow-2026-09-29.json#decision-002"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At integration 2780fe66: no /to-dqc or /dqc skill in workbench/skills; S-01T and LEXICON.md keep the documentation-only step reading.",
+        "gap": "Owning Spec not yet named; the Codex DQC lane or a new Spec carries the skills and the step reconciliation."
+      }
+    },
+    {
+      "id": "GX-1",
+      "family": "GX",
+      "counted": true,
+      "topic": "What makes a concept Confirmed",
+      "question": "What evidence makes a concept Confirmed after Align?",
+      "status": "locked",
+      "answer": "Aligned is a locked grilling answer with no Tracker card yet. At session completion each locked answer is added to an existing DQC, or to a new DQC where it evolves independently, which makes it Confirmed. Mapped uses selective ADRs from DQCs where warranted, then Specs as small destinations. Planned means ready Tasks. Journey means implementation. Review is distinct code and QA review with TDD proof. Verified compares delivered work against the DQC's expected understanding and result. Existing workflow skills maintain DQCs at each step, preferably through one focused DQC primitive; there is no DQC-specific review skill.",
+      "answered": "2026-09-29, owner confirmed the readback (inquiry closed with names settled)",
+      "reason": "The owner wants every locked answer to reach a card so progress toward each concept can be seen, with each workflow step leaving evidence on that card.",
+      "result": [
+        {
+          "artifact": "LEXICON.md (Align, DQC, Landmark Tracker rows); workbench/specs/S-01T-landmark-tracker-foundation/SPEC.md; workbench/landmark-tracker/README.md",
+          "action": "update",
+          "effect": "Define Aligned, Confirmed and the later steps as answered, reconciling the documentation-only step reading."
+        }
+      ],
+      "related": [
+        "GX-2",
+        "GX-3"
+      ],
+      "aliases": [
+        "v4-grilling-exit-workflow Q1"
+      ],
+      "notes": "The step meanings conflict with S-01T, LEXICON.md and workbench/tools/landmark-tracker.mjs, which say the steps describe documentation progress, never Task status or implementation effort; reconcile before Canon changes. The DQC and Landmark group (S-001Z, S-002A, S-002B) belongs to the owner's Codex lane. The inquiry itself authorized no Canon, Tracker or skill change.",
+      "source_refs": [
+        "workbench/sessions/notepads/grilling/v4-grilling-exit-workflow-2026-09-29.json#decision-001"
+      ],
+      "progress": {
+        "status": "not-started",
+        "sub_label": null,
+        "evidence": "At integration 2780fe66: no /to-dqc or /dqc skill in workbench/skills; S-01T and LEXICON.md keep the documentation-only step reading.",
+        "gap": "Owning Spec not yet named; the Codex DQC lane or a new Spec carries the skills and the step reconciliation."
       }
     }
   ]
