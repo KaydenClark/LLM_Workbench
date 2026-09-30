@@ -80,10 +80,11 @@ then separately refuses an identity in actual hidden-comment bytes with its
 location. Snapshot assertions check that validation writes nothing. Fixtures
 are removed afterward; no manual article setup is needed.
 
-This source-checkout command is available now. Installed-room distribution
-requires adding `landmark-wiki.mjs` to `RUNTIME_TOOLS` in
-`workbench/tools/workbench-layout.mjs` and testing the managed-tools receipt;
-that shared installer seam is outside this Task's file lane. No root or generic
-control mirror changes are needed for this isolated API addition.
+Managed installation includes this command through `RUNTIME_TOOLS` in
+`workbench/tools/workbench-layout.mjs`. The installed CLI/API test checks its
+receipt hash, successful validation and encoded custom-identity refusal in a
+disposable room. No root or generic control mirror changes are needed for this
+isolated API addition; ordinary rooms receive the command through the existing
+managed-tools install or explicit update route.
 
 Delivery owner: [Landmark Records](../specs/S-002A-landmark-records/SPEC.md).
