@@ -61,6 +61,10 @@ source-qualified shared lane/eligibility, ordinary To-do-only dispatch and
 dependency visibility. The opt-in preview and default Markdown remain separate
 render boundaries. Source needs-review/review mode, minimal Backlog validation
 and the later rollout remain unfinished; no whole-Spec criterion is checked.
+PR229 exact ac0d5669c8dd8e661153e472844e9d130e756082 independently failed with
+one P2: malformed Task priority or legacy table status aborts Git-backed
+doctor JSON. TK-003R owns that diagnostic correction; the final reviewer
+otherwise passed full51, focused23, demo and append-only history.
 
 
 ## Desired Behavior
@@ -142,8 +146,10 @@ version stamping, installed Template proof and whole-workflow readiness.
 
 ## Vertical Implementation Slices
 
-TK-003O owns the first proposal below. The later proposals are not executable
-Tasks; records are cut only from live Actuality after lane release.
+TK-003O owns the first proposal below; TK-003Q delivered the bounded stage-2A
+implementation checkpoint and TK-003R corrects its independent diagnostic P2.
+The remaining proposals are not executable Tasks; records are cut only from
+live Actuality after lane release.
 
 1. **First vertical slice: public JSON render fixture.** Add a bounded fixture
    around the existing public render command that writes schema-v1 JSON from
@@ -235,7 +241,7 @@ commands still resolve their imports. This is packaging, not the root switch.
 public command in a disposable room. The focused suite also checks source
 regeneration, edited-output restoration, invalid-source no-write refusal,
 symlink/hardlink output refusal and default Markdown/CATALOG byte parity.
-All acceptance boxes stay open: shared selection, Task review vocabulary,
+All acceptance boxes stay open: Task review vocabulary,
 minimal Backlog readers, required-QA presentation, direct/orphan Task coverage,
 sitrep, installed JSON consumer/root switch and assembled review remain later
 delivery. The preview does not claim those gates from structural green tests.
@@ -290,6 +296,7 @@ occurs during this planning authoring.
 | 2026-09-30 | TK-003Q | First aggregate regression receipts retained | Immutable fc50c1c5dbe7ae4f4976d6980ddee4f326696e53: 46/48 AGENTS commands passed; spec-workbench stopped at converted-room legacy ID-order assertion and diagnostics retained a later-ready dependency silence assertion. Public 23/23 and installed round-trip passed | Matching source/show conversion and per-Task doctor assertions reconciled to authoritative Task-title ordering and visible To-do dependency waits; runtime unchanged | Corrected immutable aggregate checks and independent exact-head Task review pending; no approval or acceptance claim |
 | 2026-09-30 | TK-003Q | Task closed | Exact implementation b06f3e47cbfa42ad690832097555e58f1cd1ef39: all51 local required commands PASS (48 AGENTS plus3 RUNBOOK), 23 public preview/next/claim/doctor regression groups PASS and under-minute demo. Red43e15bd698f22f359919106746db23031d1d46c4 had six expected behavior failures with runtime unchanged. Source-qualified To-do-only eligibility, Task priority/title/WBID order, visible dependency waits, cleared continuation action, capability and competing-claim gates, scoped numeric IDs and canonical no-write collision refusal verified. Installed cold source/show recovery, actual append-only history CLEAN; earlier fc50 46/48 receipts retained. Prior Tasks/FAIL1/S00I bound proof preserved; guardrails78/100 four recommendations and seven prior drift findings remain, no clean-update or owner-QA claim. | S01X stage2A verified state and owning Task boundary updated; matching installed diagnostics/round-trip expectations reconciled. RUNBOOK, templates and root Markdown contract untouched. | Fresh independent exact-head Task review required before integration. Source needs-review/review mode, minimal Backlog validation, complete stage2 child/review gates, direct/orphan home, sitrep and canonical root/template rollout remain later work. All nine Spec criteria and owner Human QA remain open; S01W QA ownership separate. |
 | 2026-09-30 | review | Review verdict: fail at ac0d5669c8dd8e661153e472844e9d130e756082 [2fb42aaa3bd5] #2 | P2: At exact ac0d5669c8dd8e661153e472844e9d130e756082, doctor --json in a normal Git room with resolvable integration loses all registered findings and emits plain stderr when the informational integration selector encounters malformed Task Priority or invalid legacy table Task status (typo). The new shared entry validation escapes integrationBranchFindings through selectCandidate. Preserve invalid-state and unrelated findings with narrow expected-source validation handling while keeping unexpected errors visible and next/claim/preview rejection gates unchanged. Independent reviewer full51, focused23, demo and append-only checks otherwise passed and producer external immutable reproduction corroborates the priority outage. Retired-owner corrective dependency visibility is an existing base limitation outside this correction. | Independent PR229 exact-head reviewer in a separate context (final report relayed by source coordinator); model and mode identity unrecorded | 1 |
+| 2026-09-30 | TK-003R | Diagnostic correction implemented; immutable checks pending | Test-only ab89847906716037dad84e89b495eb53d946502b retained nine expected Git-backed JSON failures with runtime unchanged from failed ac0d; focused35 now pass, including malformed priority/status, unrelated findings, inactive isolation and unexpected fault propagation | Reuse named active invalid-state findings for informational integration selection; expected source errors carry a narrow code, while unrelated calculation faults propagate. Default Markdown and selection rejection gates retained | Full51 immutable proof and fresh independent exact-head review pending; both FAIL rows preserved, all nine whole-Spec criteria and owner QA open |
 
 ## Completion Result
 
@@ -299,8 +306,12 @@ normalized-field P2. TK-003P closed the bounded correction with immutable
 local proof at 82bd5b3; separate exact195 Task review passed and PR228 is
 contained at integration 2780fe6. TK-003Q closed bounded stage 2A with all51
 required local checks and 23 public regression groups passing at exact
-b06f3e47cbfa42ad690832097555e58f1cd1ef39. Final closeout checkpoint validation
-and fresh independent exact-head Task review remain pending.
+b06f3e47cbfa42ad690832097555e58f1cd1ef39. Final checkpoint ac0d566 passed local
+full51, but independent PR229 review failed with the Git-backed doctor
+diagnostic exception P2. TK-003R now preserves registered invalid-state and
+unrelated findings for malformed priority and legacy status; focused35 public
+checks pass after a durable nine-failure red, while immutable full51 and fresh
+independent exact-head correction review remain pending.
 Whole-capability acceptance, assembled independent review and owner Human QA
 remain pending; no Spec completion is claimed.
 

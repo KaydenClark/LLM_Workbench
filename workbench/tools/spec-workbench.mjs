@@ -1012,7 +1012,7 @@ export function doctor(rootDir, options = {}) {
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs, retired), issues);
   issues.push(...collectionFindings(root));
   issues.push(...skillFindings(root));
-  issues.push(...gitFindings(root, specs));
+  issues.push(...gitFindings(root, specs, issues));
   return issues;
 }
 
@@ -1156,6 +1156,7 @@ function packetFindings(specs, options = {}, retiredSpecs = [], root = null) {
       let entry;
       try { entry = taskboardEntryForSlice(spec, slice, satisfied); }
       catch (error) {
+        if (error.code !== 'taskboard-source') throw error;
         if (TASK_STATUSES.includes(slice.declared)) issues.push(finding('invalid-state', error.message, { specId: spec.id, taskId: slice.id }));
         continue;
       }
@@ -1210,10 +1211,10 @@ function skillFindings(root) {
   return inspectSkills(readManifest(root), root);
 }
 
-function gitFindings(root, specs) {
+function gitFindings(root, specs, sourceFindings = []) {
   const manifest = readManifest(root);
   if (!manifest || manifest.schemaVersion !== 2) return [];
-  return [...integrationBranchFindings(root, specs), ...repositoryStateFindings(root)];
+  return [...integrationBranchFindings(root, specs, sourceFindings), ...repositoryStateFindings(root)];
 }
 
 // S-00M TK-002: what TK-001's reader sees and no other finding observes. Both
@@ -1242,7 +1243,7 @@ function repositoryStateFindings(root) {
 // The declared integration branch is the review gate's merge target. Its
 // absence is an error every doctor run shows and none blocks: a room can
 // create the branch in one command, and selection must not wait on it.
-function integrationBranchFindings(root, specs) {
+function integrationBranchFindings(root, specs, sourceFindings = []) {
   const declared = declaredGit(root);
   if (!declared) return [finding('integration-branch-undeclared', 'workbench/manifest.json declares no git.integrationBranch; declare the branch the independent review gate merges into')];
   if (!insideWorkTree(root)) {
@@ -1256,16 +1257,15 @@ function integrationBranchFindings(root, specs) {
   // dispatch is already finished there. It still dispatches: a checkout may be
   // pinned deliberately, so the finding informs and never blocks.
   //
-  // A room with an unresolved row/record collision on an active Spec already
-  // carries that finding from `packetFindings`; `selectCandidate` refuses to
-  // resolve a candidate through it (via `slicesOf`, which throws only for
-  // that one reason), and this informational check simply has nothing to
-  // report rather than taking the whole doctor run down with it. The guard
-  // names that exact condition instead of catching every exception
-  // `selectCandidate` could ever raise, so an unrelated bug here still
-  // surfaces instead of being read as "no candidate".
+  // Expected malformed active source is already a registered diagnostic from
+  // packetFindings. Informational integration selection cannot resolve through
+  // that source, so skip only its known conflict/invalid-state conditions.
+  // Non-active records are outside this selector and never suppress its lookup;
+  // unexpected calculation exceptions still propagate instead of disappearing.
   const hasActiveSliceConflict = specs.some((item) => item.status === 'active' && item.sliceConflict);
-  const selected = hasActiveSliceConflict ? null : selectCandidate(specs);
+  const hasActiveInvalidState = specs.some((item) => item.status === 'active'
+    && sourceFindings.some((issue) => issue.code === 'invalid-state' && issue.specId === item.id));
+  const selected = hasActiveSliceConflict || hasActiveInvalidState ? null : selectCandidate(specs);
   const spec = selected && specs.find((item) => item.id === selected.specId);
   for (const { ref, name } of spec ? refs : []) {
     const status = readAtRef(root, ref, spec.relativePath)?.match(/^\*\*Status:\*\*\s*(\S+)/m)?.[1];

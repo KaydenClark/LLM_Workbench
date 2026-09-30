@@ -9,16 +9,24 @@ const TASK_LANES = Object.freeze({ ready: 'toDo', 'in-progress': 'inProgress', b
 // calculation never reads output, allocates identities or writes lifecycle state.
 export function taskboardTaskEntry(spec, task, { resolvedStatus = task.status, dependenciesMet = true } = {}) {
   const lane = TASK_LANES[task.status === 'ready' ? 'ready' : resolvedStatus];
-  if (!lane) throw new Error(`taskboard-source: ${task.id} has invalid status ${task.status}`);
+  if (!lane) throw taskboardSourceError(`${task.id} has invalid status ${task.status}`);
   const fields = sourceFields(task.content, false);
   const priority = fields.Priority === undefined ? spec.priority : Number(fields.Priority);
-  if (!Number.isInteger(priority) || priority < 0) throw new Error(`taskboard-source: ${task.id} has invalid priority`);
+  if (!Number.isInteger(priority) || priority < 0) throw taskboardSourceError(`${task.id} has invalid priority`);
   return {
     key: `${visibleIdKey(spec.id)}/${visibleIdKey(task.id)}`,
     specId: spec.id, id: task.id, title: task.slice, priority,
     lane, status: resolvedStatus, dependenciesMet,
     eligible: lane === 'toDo' && resolvedStatus === 'ready' && dependenciesMet
   };
+}
+
+// Only expected malformed source carries this code; consumers must not treat
+// an unrelated calculation exception as a source diagnostic.
+function taskboardSourceError(message) {
+  const error = new Error(`taskboard-source: ${message}`);
+  error.code = 'taskboard-source';
+  return error;
 }
 
 export function compareTaskboardEntries(a, b) {
