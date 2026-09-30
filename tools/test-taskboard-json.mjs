@@ -293,10 +293,10 @@ if (process.argv.includes('--demo')) {
     assert.deepEqual(gitSnapshot(root), before);
   }));
 
-  for (const malformed of ['priority', 'table-status']) test(`active ${malformed} does not suppress another Spec's integration diagnostic`, () => withRoom(root => {
-    const table = malformed === 'table-status' ? '| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00AA | Invalid table state | typo | none | pending |' : '';
+  for (const malformed of ['priority', 'table-status', 'slice-conflict']) test(`active ${malformed} does not suppress another Spec's integration diagnostic`, () => withRoom(root => {
+    const table = malformed !== 'priority' ? `| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n| TK-00AA | Invalid table state | ${malformed === 'slice-conflict' ? 'ready' : 'typo'} | none | pending |` : '';
     const a = spec(root, { id: 'S-00AA', priority: 0, table });
-    if (!table) task(root, a, { id: 'TK-00AA', extra: '**Priority:** invalid' });
+    if (!table || malformed === 'slice-conflict') task(root, a, { id: 'TK-00AA', extra: '**Priority:** invalid' });
     const b = spec(root, { id: 'S-00AB', status: 'complete' });
     const file = task(root, b, { id: 'TK-00AB', status: 'done', extra: '**Proof:** Fixture complete' });
     assert.equal(command(root, 'render').status, 0); initializeGitRoom(root);
@@ -305,7 +305,7 @@ if (process.argv.includes('--demo')) {
     const before = gitSnapshot(root), result = command(root, 'doctor');
     assert.equal(result.status, 1); assert.equal(result.stderr, '');
     const findings = JSON.parse(result.stdout);
-    assert.ok(findings.some(item => item.code === 'invalid-state' && item.specId === a.id));
+    assert.ok(findings.some(item => item.code === (malformed === 'slice-conflict' ? 'row-record-collision' : 'invalid-state') && item.specId === a.id));
     assert.ok(findings.some(item => item.code === 'complete-on-integration' && item.specId === b.id && item.ref === 'integration'));
     for (const args of [['next','--local'], ['claim',a.id,'--agent','fixture','--local'], ['render','--format','json']]) assert.equal(command(root,...args).status,1);
     assert.deepEqual(gitSnapshot(root), before);
