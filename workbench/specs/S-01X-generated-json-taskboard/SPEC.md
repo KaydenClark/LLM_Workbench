@@ -8,8 +8,8 @@
 **Updated:** 2026-09-30
 **Catalog description:** Replace the Markdown Spec summary with a generated six-lane implementation board, shared lane selection and title-first room-core sitrep.
 **Blockers:** S-01W first identity/consumer delivery is contained in integration; its claimed assembled QA remains separate. Direct-Task coverage awaits its source-home contract.
-**Latest event:** TK-003O claimed by codex-servitor-json-preview.
-**Next gate:** Close TK-003O with verification and documentation proof.
+**Latest event:** TK-003O closed with proof.
+**Next gate:** Obtain separate exact-head review of TK-003O before integration; later shared selection and whole-Spec delivery remain unallocated.
 
 > **Citation anchors.** pre=`89d4042` post=`89d4042`.
 
@@ -271,10 +271,12 @@ occurs during this planning authoring.
 | 2026-09-30 | TK-003O | First opt-in JSON Task activated | Explicit parent release from integration 2c47d96239dd48f17969e4d5fa8f668850c2ecfe; S-01W first identity/consumer delivery is in integration, while claimed TK-002R QA remains separate; native next-id and convert-tasks --activate | Fixed preview boundary render --format json; default Markdown and all later criteria remain open | JSON implementation, required checks and independent exact-candidate review pending; no root switch, identity or QA takeover |
 
 | 2026-09-30 | TK-003O | Public preview behavior implemented; first-slice checkpoint | Corrected test-only ec18730a69d57db26bec32f7bec77201eabf10d7 produced nine expected failures with runtime unchanged; node tools/test-taskboard-json.mjs now passes nine groups and --demo shows six lanes in under one minute; full immutable-candidate checks pending | RUNBOOK render procedure, Task boundary and Spec implementation status; no template rewrite during opt-in migration | All whole-Spec criteria and owner QA remain open; independent exact-head Task review pending |
+| 2026-09-30 | TK-003O | Task closed | Exact implementation e7bd9789c15e59c8bfa4c8c84aa04e165626f67d: all 51 required local commands PASS (48 AGENTS plus three RUNBOOK); nine public JSON regression groups PASS; node tools/test-taskboard-json.mjs --demo under one minute. Red ec18730a69d57db26bec32f7bec77201eabf10d7 had nine expected preview failures with runtime unchanged. Self-drift pre/post retained seven existing findings (inspection pre also detached); guardrails unchanged 78/100 with four recommendations; no clean-update or owner QA claim. | RUNBOOK render procedure, S01X source boundary and TK003O implementation/proof; templates unchanged for temporary opt-in preview. | Independent exact-head Task PR review pending; whole-Spec criteria remain unchecked. Shared selection/review vocabulary, flat legacy-ID reconciliation before root switch, direct/orphan Task coverage, sitrep and canonical root/template rollout remain later slices. S01W claimed QA remains separate. |
 
 ## Completion Result
 
-Planning capability owner authored; TK-003O's opt-in preview is in progress.
+Planning capability owner authored; TK-003O's scoped preview is closed with
+implementation proof, awaiting independent Task delivery review.
 Whole-capability acceptance, independent delivery review and owner Human QA
 remain pending; no Spec completion is claimed.
 

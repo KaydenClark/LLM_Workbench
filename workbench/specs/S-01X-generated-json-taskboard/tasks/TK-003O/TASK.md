@@ -3,11 +3,12 @@
 **Task ID:** TK-003O
 **Spec ID:** S-01X
 **Slice:** Render a reproducible six-lane JSON preview through the public command
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-01X criteria 1 and 2, first opt-in render fixture only; canonical root switch and assembled capability remain later slices.
 **Planned verification:** Red public render --format json cannot emit schema-v1 six-lane TASKBOARD.preview.json. Green public fixtures verify Spec/Task grains, WBID collision/alias refusal, readable resolving sources, priority order, child gates, live/retired cleanup derivation, deterministic source regeneration and edited-output restoration, invalid-source and linked-output no-write controls. Default render bytes remain unchanged. Run focused suite, full48 AGENTS plus3 RUNBOOK checks on immutable checkpoint, then native close evidence/final metadata validation and separate exact-head Task PR review.
+**Proof:** Exact implementation e7bd9789c15e59c8bfa4c8c84aa04e165626f67d: all 51 required local commands PASS (48 AGENTS plus three RUNBOOK); nine public JSON regression groups PASS; node tools/test-taskboard-json.mjs --demo under one minute. Red ec18730a69d57db26bec32f7bec77201eabf10d7 had nine expected preview failures with runtime unchanged. Self-drift pre/post retained seven existing findings (inspection pre also detached); guardrails unchanged 78/100 with four recommendations; no clean-update or owner QA claim.
 
 ## Boundary And Remaining Delivery
 
@@ -20,3 +21,9 @@ Flat card keys must be unambiguous WBIDs. A legacy numeric Task label remains Sp
 ## Focused Verification
 
 At test-only commit `ec18730a69d57db26bec32f7bec77201eabf10d7`, the corrected manifest-aware fixture produced nine expected public-preview failures while runtime bytes matched the claim checkpoint. Earlier fixture setup failures were corrected before counting behavior evidence. The implementation passes all nine regression groups and the six-lane command demo. The fixture verifies source regeneration, output repair, default Markdown/CATALOG byte parity, flat collision and native alias rejection, unfinished-child gates, metadata and unsafe-path refusal. Full required checks and independent exact-head review remain pending at this checkpoint.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s01x-tk003o-json-preview | e7bd9789c15e59c8bfa4c8c84aa04e165626f67d | ahead 0 behind 0 | 0 | Exact implementation e7bd9789c15e59c8bfa4c8c84aa04e165626f67d: all 51 required local commands PASS (48 AGENTS plus three RUNBOOK); nine public JSON regression groups PASS; node tools/test-taskboard-json.mjs --demo under one minute. Red ec18730a69d57db26bec32f7bec77201eabf10d7 had nine expected preview failures with runtime unchanged. Self-drift pre/post retained seven existing findings (inspection pre also detached); guardrails unchanged 78/100 with four recommendations; no clean-update or owner QA claim. | RUNBOOK render procedure, S01X source boundary and TK003O implementation/proof; templates unchanged for temporary opt-in preview. | Independent exact-head Task PR review pending; whole-Spec criteria remain unchecked. Shared selection/review vocabulary, flat legacy-ID reconciliation before root switch, direct/orphan Task coverage, sitrep and canonical root/template rollout remain later slices. S01W claimed QA remains separate. | 86849ca368182e5db1d6a7b0f23244e0a6fbb5c181365f9ace328c0d32a9ed1e |
