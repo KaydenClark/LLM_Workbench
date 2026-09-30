@@ -223,7 +223,9 @@ A label immediately before a citation then names its tree and wins - "shipped"
 reads at `post`, "base" at the anchor that introduced the path. Unlabelled, a
 citation reads at `pre` in the sections written before the change (Outcome, Why
 It Matters, Current Verified State, Desired Behavior, Documentation Impact) and
-at `post` in the rest. Evidence rows read at the commit each row names and are
+at `post` in the rest. The shorthand `` `:N` `` reads against the nearest
+path already in scope; a shorthand without a scoped path is invalid.
+Evidence rows read at the commit each row names and are
 never re-anchored.
 
 ## Safety And Change Control

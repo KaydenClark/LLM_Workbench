@@ -57,8 +57,8 @@ after PR #63 merged, so following one lands on what it names.
   above stay visible` when nothing blocks selection. Both are anchored to the
   base commit on purpose: this ticket moves them, so a line number in the
   shipped tree would name the replacement rather than the condition described.
-  In the shipped tree the row render is `spec-workbench.mjs:537` and the `ok`
-  line `:539`.
+  In the shipped tree the row render is shipped `spec-workbench.mjs:537` and the `ok`
+  line is shipped `:539`.
 - Findings are printed in production order, with no grouping and no count.
 
 **Correction to the upstream evidence.** UP-019's smallest bounded next action

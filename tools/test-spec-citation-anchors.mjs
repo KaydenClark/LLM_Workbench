@@ -35,12 +35,13 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SPECS = path.join(root, 'workbench', 'specs');
 const FIRST_ANCHORED = 36;
 
-const FULL = /([A-Za-z0-9_./-]+\.(?:mjs|md|py|json)):(\d+)(?:-(\d+))?/g;
+const FULL = /(?<![\w/.-])([A-Za-z_.][A-Za-z0-9_./-]*):(\d+)(?:-(\d+))?/g;
 const SHORT = /`:(\d+)(?:-(\d+))?`/g;
 // A path put in scope for a following shorthand: backticked, or written bare
 // with a directory separator, which these specs do inside table cells
 // ("tools/test-diagnostics.mjs ... at `:477`").
-const PATH_ONLY = /`([A-Za-z0-9_./-]+\.(?:mjs|md|py|json))`|(?<![`/\w.-])([A-Za-z0-9_-]+\/[A-Za-z0-9_./-]*\.(?:mjs|md|py|json))(?![`\w])/g;
+const PATH_ONLY = /`([A-Za-z_.][A-Za-z0-9_./-]*)`|(?<![`/\w.-])([A-Za-z_.][A-Za-z0-9_./-]*\/[A-Za-z0-9_./-]+)(?![`\w])/g;
+const KNOWN_PATHS = new Set(execFileSync('git', ['ls-tree', '-r', '--name-only', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim().split('\n'));
 const GIT_SHOW = /git show\s+[0-9a-f]{7,40}:[A-Za-z0-9_./-]+/g;
 const ANCHOR = /\*\*Citation anchors\.\*\*\s*pre=`([0-9a-f]{7,40})`\s*post=`([0-9a-f]{7,40})`/;
 // Pre-change sections describe the tree the work started from. Documentation
@@ -106,19 +107,36 @@ function scanParagraph(text, section) {
   });
 
   const marks = [...anchors];
-  for (const m of para.matchAll(FULL)) marks.push({ at: m.index, kind: 'full', cited: m[1], from: Number(m[2]), to: Number(m[3] ?? m[2]) });
+  for (const m of para.matchAll(FULL)) {
+    // Git trees supply extensionless paths; punctuation alone must not turn
+    // an evidence token such as commitSHA:45 into a file citation.
+    const cited = m[1];
+    if (cited.includes('/') || cited.includes('.') || KNOWN_PATHS.has(cited)) {
+      marks.push({ at: m.index, kind: 'full', cited, from: Number(m[2]), to: Number(m[3] ?? m[2]) });
+    }
+  }
   for (const m of para.matchAll(SHORT)) marks.push({ at: m.index, kind: 'short', from: Number(m[1]), to: Number(m[2] ?? m[1]) });
   // A path named without a line number still puts that path in scope for the
   // shorthand that follows it.
-  for (const m of para.matchAll(PATH_ONLY)) marks.push({ at: m.index, kind: 'path', cited: m[1] ?? m[2] });
+  for (const m of para.matchAll(PATH_ONLY)) {
+    const cited = m[1] ?? m[2];
+    if (cited.includes('/') || cited.includes('.') || KNOWN_PATHS.has(cited)) {
+      marks.push({ at: m.index, kind: 'path', cited });
+    }
+  }
   marks.sort((a, b) => a.at - b.at);
 
   for (const mark of marks) {
     if (mark.kind === 'anchor') { lastPath = mark.cited; lineBase = mark.sha; continue; }
-    if (mark.kind === 'path') { lastPath = mark.cited; continue; }
-    if (mark.kind === 'full') lastPath = mark.cited;
+    if (mark.kind === 'path') {
+      if (lastPath !== mark.cited) lineBase = null;
+      lastPath = mark.cited; continue;
+    }
+    if (mark.kind === 'full') {
+      if (lastPath !== mark.cited) lineBase = null;
+      lastPath = mark.cited;
+    }
     const cited = mark.cited ?? lastPath;
-    if (!cited) continue;                              // shorthand with no path in scope
     const lookback = para.slice(Math.max(0, mark.at - 40), mark.at).toLowerCase();
     const shipped = /shipped[^:]*$/.test(lookback);
     const based = /\bbase\b[^:]*$/.test(lookback);
@@ -218,6 +236,7 @@ test('every declared anchor still resolves the citations it covers', () => {
         : c.based ? (c.lineBase ?? pre)
         : (PRE_SECTIONS.has(c.section) ? pre : post);
       const where = `${spec} [${c.section}]${c.shorthand ? ' (shorthand)' : ''} ${c.cited}:${c.from}`;
+      if (!c.cited) { failures.push(`${where} has no scoped path`); continue; }
       const file = resolvePath(treeFiles(sha, trees), c.cited);
       if (!file) { failures.push(`${where} names no unique path at ${sha}`); continue; }
       const lines = fileLines(sha, file, blobs);

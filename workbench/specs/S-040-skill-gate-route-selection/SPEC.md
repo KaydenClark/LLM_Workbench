@@ -57,12 +57,13 @@ line is given alongside each base anchor rather than a single global offset.
   refuses with `explicit-update-required` and names **both** routes: "Skill
   replacement requires `--explicit-update`; the support-root-only route requires
   `--layout-only`."
-- The two refusals an operator actually reaches on a host with a shared skill
-  named **neither** route, at base lines 127 and 128 (shipped `:132`, `:133`):
+- The two refusals in `tools/workbench-upgrade.mjs` that an operator actually
+  reaches on a host with a shared skill named **neither** route, at base lines 127 and 128 (shipped `:132`, `:133`):
   - `skill-path-collision`: "`${target}` is not an ordinary directory."
   - `unmanaged-skill`: "`${target}` is not marked as a Workbench-managed skill
     and will not be replaced."
-- Both sit *after* the `if (layoutOnly) { ... return ... }` early exit at base
+- Both sit *after* the `if (layoutOnly) { ... return ... }` early exit in
+  `tools/workbench-upgrade.mjs` at base
   `:112-116` (shipped `:117-121`), so a `--layout-only` run returns before
   reaching either. Its own gate (`missing-user-skills`, base `:114`, shipped
   `:119`) checks presence only, via `missingUserSkills` (base and shipped

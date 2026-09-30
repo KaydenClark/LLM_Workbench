@@ -64,11 +64,11 @@ what it names.
   (`git show 09bfff7:tools/workbench-tools.mjs` lines 24-36, eleven `.mjs`
   files; the third repair moved the list itself into the installed lane, so
   the shipped tree carries it at `workbench/tools/workbench-layout.mjs:532-544`
-  and re-exports it from `tools/workbench-tools.mjs:28`), so it is never
+  and re-exports it from shipped `tools/workbench-tools.mjs:28`), so it is never
   installed into a room and is reachable only from a release checkout.
 - `tools-receipt-missing` is emitted from an installed tool, but only by
   `validateGenesisRuntime` (`git show 09bfff7:workbench/tools/workbench-layout.mjs`
-  lines 513-535; `workbench/tools/workbench-layout.mjs:548-570` in the shipped
+  lines 513-535; shipped `workbench/tools/workbench-layout.mjs:548-570` in the shipped
   tree), which runs on the `validate --genesis` readiness path. That function
   checks the receipt's presence, readability, and `source.release`; it computes
   no hash. `doctor` calls neither.
@@ -87,7 +87,7 @@ what it names.
 - `git show 09bfff7:RUNBOOK.md` line 588 lists both codes in the effect table's
   `all` row (table `586-592`), so the published contract asserts blocking
   behavior that cannot occur. The row is unchanged in content and the prose
-  this branch inserts above it moves the table to `RUNBOOK.md:652-658` in the
+  this branch inserts above it moves the table to shipped `RUNBOOK.md:652-658` in the
   shipped tree, re-read at this branch's final commit.
 
 Gap: no installed emitter for the hash check, and a drift result that withholds
