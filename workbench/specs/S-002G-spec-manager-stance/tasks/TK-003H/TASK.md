@@ -3,11 +3,12 @@
 **Task ID:** TK-003H
 **Spec ID:** S-002G
 **Slice:** Route the spec-manager Wiki article from the Roles And Stances router
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-002G acceptance line 6 (a fresh agent discovers the individual Wiki article and identifies scope, inputs, outputs, hand-back and escalation) and Documentation Impact (one individual article routed through MEMORY.md; cross-capability explanation stays in roles-and-stances.md)
 **Planned verification:** `node workbench/tools/wiki.mjs validate` reports ok with the new article; `node tools/test-wiki.mjs` green; `node workbench/tools/spec-workbench.mjs doctor` reports no `room-brain-unrouted` finding; a read of `workbench/wiki/MEMORY.md` "Roles And Stances" reaches the article in one hop and the article reaches the skill source, the Spec, LEXICON stance terms, ADR-0036, ADR-000P and the role model in one hop each.
+**Proof:** TK-003H attempt 1 at d19d8f48 (36882c01 article and router line, d19d8f48 link-only cross-link pass): node workbench/tools/wiki.mjs validate ok, node tools/test-wiki.mjs 13/13, doctor no blocking finding and no room-brain-unrouted (G-tk003h-*.txt, first lines dirty []); relative-link check over the four role and stance articles resolved 66 targets with only ../skills/spec-manager/SKILL.md missing on the Task branch. Dispatcher review read the full diff (sibling articles changed link-only plus History lines and the corrected Spec-path limit) and, after merging both Tasks as 41582c22 and 32972110, re-ran wiki validate (ok) and the relative-link check over all four articles with test -e from workbench/wiki/: no missing target. Router hop MEMORY.md Roles And Stances -> skill-spec-manager.md, and one hop each to the skill source, the Spec, LEXICON stance terms, ADR-0036, ADR-000P and the role model; test-wiki 0 at 09b35bfb
 
 ## Outcome
 
@@ -63,3 +64,9 @@ Reviewer and Auditor stances, and its verified behavior and limits.
   finding; the link hops above are checked and listed in the proof.
 - Docs status names the article and router line; remaining gap names the
   cross-links to be added at landing and the verified-behavior reconciliation.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s-002g-spec-manager-stance-r3 | 492c9a899bacb077aaa77cae4987c3ba2eccf947 | ahead 0 behind 0 | 0 | TK-003H attempt 1 at d19d8f48 (36882c01 article and router line, d19d8f48 link-only cross-link pass): node workbench/tools/wiki.mjs validate ok, node tools/test-wiki.mjs 13/13, doctor no blocking finding and no room-brain-unrouted (G-tk003h-*.txt, first lines dirty []); relative-link check over the four role and stance articles resolved 66 targets with only ../skills/spec-manager/SKILL.md missing on the Task branch. Dispatcher review read the full diff (sibling articles changed link-only plus History lines and the corrected Spec-path limit) and, after merging both Tasks as 41582c22 and 32972110, re-ran wiki validate (ok) and the relative-link check over all four articles with test -e from workbench/wiki/: no missing target. Router hop MEMORY.md Roles And Stances -> skill-spec-manager.md, and one hop each to the skill source, the Spec, LEXICON stance terms, ADR-0036, ADR-000P and the role model; test-wiki 0 at 09b35bfb | workbench/wiki/skill-spec-manager.md (new) and its workbench/wiki/MEMORY.md Roles And Stances router line; link-only cross-links in workbench/wiki/skill-director.md, skill-dispatcher.md and skill-spec-planner.md with History lines; skill-spec-planner.md Spec-path limit and bundle position updated to current truth (Dispatcher assembly commit 09b35bfb); templates/wiki carries no per-skill rows so no template mirror | Article example and Verified behavior and limits are reconciled from the TK-003I scenario by the Dispatcher | 9a167c6459e9051581e73b504954ee6621505b90090a69af5b7400c36d5b872b |
