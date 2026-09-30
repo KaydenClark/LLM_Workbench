@@ -28,6 +28,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const specDir = path.join(root, 'workbench', 'specs', 'S-002H-domain-modeling-skill');
 const candidateDir = path.join(specDir, 'candidate', 'domain-modeling');
 const candidate = path.join(candidateDir, 'SKILL.md');
+const unreleasedMarker = path.join(specDir, 'candidate', 'UNRELEASED.md');
 const pendingDir = path.join(root, 'skills-pending', 'domain-modeling');
 // sha256 over sorted "name\0bytes\0" of skills-pending/domain-modeling at
 // integration 2780fe66 (git tree 028a0e44).
@@ -50,7 +51,8 @@ function section(text, heading) {
   const start = text.indexOf(`\n## ${heading}\n`);
   assert.ok(start >= 0, `candidate needs a "## ${heading}" section`);
   const next = text.indexOf('\n## ', start + 4);
-  return text.slice(start, next < 0 ? text.length : next);
+  // Collapse line wrapping so a phrase split across lines still matches.
+  return text.slice(start, next < 0 ? text.length : next).replace(/\s+/g, ' ');
 }
 function contains(text, patterns, label) {
   for (const pattern of patterns) assert.match(text, pattern, `${label}: ${pattern}`);
@@ -62,12 +64,15 @@ test('the staged candidate declares itself as the unreleased domain-modeling ski
   assert.equal(meta.name, 'domain-modeling');
   assert.ok(meta.description && meta.description.length > 40, 'a one-line discovery description');
   assert.doesNotMatch(meta.description, /GLOSSARY|CONTEXT\.md/, 'description names no upstream glossary root');
-  contains(section(text, 'Status'), [
-    /unreleased/i,
+  // The skill text stays publishable verbatim, so it names no room-specific
+  // Spec path; the sibling marker carries the unreleased status instead.
+  assert.doesNotMatch(text, /S-002H|workbench\/specs\//, 'skill text names no Spec path');
+  contains(read(unreleasedMarker), [
+    /\*\*unreleased\*\*/i,
     /required room skill/i,
     /S-002H/,
-    /not (?:yet )?(?:installed|discoverable)/i
-  ], 'status');
+    /not installed or discoverable in any room/i
+  ], 'unreleased marker');
 });
 
 test('the active moves challenge, split, probe an edge case and trace downstream consequences', () => {
@@ -100,7 +105,7 @@ test('a behavior claim is checked against source and classified without either s
 test('settled meaning routes to existing Workbench owners, never a new glossary root', () => {
   const text = read(candidate);
   const routing = section(text, 'Where settled meaning goes');
-  contains(routing, [/LEXICON\.md/, /Spec/, /Wiki/, /ADR/, /manifest/i, /adr\.mjs new/], 'routing');
+  contains(routing, [/LEXICON\.md/, /SPEC\.md/, /Wiki/, /ADR/, /manifest/i, /adr\.mjs new/], 'routing');
   assert.match(routing, /(?:no|never|do not)[^.]*(?:GLOSSARY|CONTEXT)/i, 'refuses upstream glossary roots');
   assert.doesNotMatch(text, /create (?:a |the )?(?:root )?`?(?:GLOSSARY|CONTEXT)(?:-MAP)?\.md`? (?:lazily|when)/i,
     'no instruction to create an upstream glossary file');
