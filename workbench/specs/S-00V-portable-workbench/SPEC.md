@@ -9,11 +9,11 @@
 **Priority:** 1
 **Owner:** claude-lane-F
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-09-30
 **Catalog description:** Make every Workbench room a fully packaged, deployable agent harness: a fresh agent, or ten at once in the cloud, clones the Git remote alone, finds its skills there, claims work visibly, does it, pushes it, and cleans up after itself.
 **Blockers:** none
-**Latest event:** TK-002M closed with proof.
-**Next gate:** Complete TK-01K once the S-00P hold clears (S-00P TK-002 contained); TK-01M also waits on S-01X, and TK-01N, TK-01O and TK-01P follow in order; completion waits on all eight acceptance boxes.
+**Latest event:** TK-003J assigned locally for the optional installer Git-sentinel regression; no remote claim or completion is asserted.
+**Next gate:** Review and fully verify the local TK-003J candidate without claiming delivery; complete TK-01K once the S-00P hold clears (S-00P TK-002 contained); TK-01M also waits on S-01X, and TK-01N, TK-01O and TK-01P follow in order; completion waits on all eight acceptance boxes.
 
 > **Citation anchors.** pre=`8dbd619da7e920edb5e819802aff9119f8cb1662` post=`39eaa4881b88a2fe7a4a4fe63c111dd6c34966f7`.
 
@@ -209,6 +209,7 @@ table is completed history only. The remaining slices are Task records under
 - [TK-01N](tasks/TK-01N/TASK.md) ends-clean round-trip gate, after TK-00G, TK-01K and TK-01L - box 7
 - [TK-01O](tasks/TK-01O/TASK.md) real cloud session and two-instance demos, after TK-01N - box 8
 - [TK-01P](tasks/TK-01P/TASK.md) controls and templates sweep, after the S-00P hold and the behavior Tasks - Documentation Impact
+- [TK-003J](tasks/TK-003J/TASK.md) bounded local cloud-setup regression: distinguish empty Git sentinels while preserving real and malformed repository safety
 
 A cross-Spec Task cannot be named in `Blockers` (the vocabulary takes `S-`/`TK-`
 ids and satisfies a Spec id only on completion), so the S-00P and S-00M holds
@@ -360,6 +361,8 @@ Then the full suite named in AGENTS.md on the committed candidate.
 | 2026-09-26 | review | Review verdict: fail at 90680eb683ec48dbbcbea06b282bafa094e9c9d5 [3ebe7fc3c6f8] #11 | Medium: workbench/tools/claim-coordination.mjs excludes origin/<integration> but not origin/<defaultBranch> from the remote-claim overlay, so default-branch state can be read as a competing claim | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 1 |
 | 2026-09-26 | TK-002M | Task closed | Answers the fail verdict at 90680eb683ec48dbbcbea06b282bafa094e9c9d5: workbench/tools/claim-coordination.mjs excluded origin/<integration> but not origin/<defaultBranch> from the remote-claim overlay. Red: new case (5b) in the TK-01L block of tools/test-spec-workbench.mjs (origin/main carries TK-002 in-progress while integration has it ready) failed on the committed test-only tree: next returned null because origin/main was read as a claim. Green: the overlay now excludes both shared branches (the integration base and the manifest default branch); tools/test-spec-workbench.mjs passes. Provenance: TK-002M was set to in-progress by editing its record, not by claim, because the corrective Task was created on this branch after TK-01L closed and claim would now cut and push a new branch; close then took TK-002M as the only in-progress Task. | Code comment in workbench/tools/claim-coordination.mjs; no control, template or Wiki change | none for this finding; TK-01L's remaining gap is unchanged |
 | 2026-09-26 | review | Review verdict: pass at 92d590f8d09fc59ee2bd12d7fb96f5ddf5be2be4 [bdeb4d894356] #12 | none at the second pass; first pass at 90680eb failed on the default branch being read as a claim surface (answered by corrective TK-002M); full suite 48/48 on 92d590f | Codex CLI codex exec -s read-only -m gpt-5.5, separate context | 3 |
+
+| 2026-09-30 | TK-003J | Vespar Director coordination assigned bounded local maintenance during owner-authorized cloud portability setup; Task remains in-progress on an isolated branch based on 2f5b13b0a20d6a278310cf1b709d1fcd31274a11, without commit, remote claim, push or PR | Red: focused new installer regressions produced two expected sentinel failures and one malformed-metadata pass. Green on the uncommitted local candidate: four focused cases pass, including valid linked-worktree ownership and malformed metadata inside a real outer repository. Affected suites all exit 0 with process-only init.defaultBranch=main: composition 2/2, installer 29 passed plus 2 platform skips, layout 72/72, adoption all 4 reported scenario groups, diagnostics 36/36; syntax and diff checks pass. Guardrail remains 78/100. Self-drift remains blocked by pre-existing S-00Q stale claim; the local untracked Task adds an explicit pending-commit finding, with historical seed/provenance limits unchanged. | Installer comments, this Spec, TK-003J and generated Taskboard; no public command or template contract changes, no second installer source exists | Immutable candidate, full suite, separate-context review and any authorized delivery remain pending; no release, configured-provider reliability or clean-update claim |
 
 ## Completion Result
 

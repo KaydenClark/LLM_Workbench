@@ -33,6 +33,107 @@ function maintain(home, command, ...args) {
   return { ...result, report: JSON.parse(result.stdout) };
 }
 
+test('empty ancestor Git sentinels remain untouched through install update and rollback', () => {
+  const container = fixtureHome();
+  const marker = path.join(container, '.git');
+  try {
+    fs.mkdirSync(marker);
+    fs.chmodSync(marker, 0o555);
+    const markerMode = fs.statSync(marker).mode;
+    const home = path.join(container, 'home');
+    fs.mkdirSync(home);
+    const installed = install(home);
+    assert.equal(installed.report.status, 'complete', installed.stdout);
+    assert.deepEqual(installed.report.gitOwnedRoots, []);
+    assert.equal(installed.report.installed.length, coreSkills.length * 2);
+    const repeated = install(home);
+    assert.equal(repeated.report.status, 'complete', repeated.stdout);
+    assert.equal(repeated.report.installed.length, 0);
+    assert.equal(repeated.report.skipped.length, coreSkills.length * 2);
+    const file = path.join(home, '.agents/skills/genesis/SKILL.md');
+    fs.writeFileSync(file, '# Prior managed implementation\n');
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'updated', updated.stdout);
+    const restored = maintain(home, 'rollback', '--backup', updated.report.backup);
+    assert.equal(restored.report.status, 'rolled-back', restored.stdout);
+    assert.equal(fs.readFileSync(file, 'utf8'), '# Prior managed implementation\n');
+    assert.deepEqual(fs.readdirSync(marker), []);
+    assert.equal(fs.statSync(marker).mode, markerMode);
+  } finally {
+    if (fs.existsSync(marker)) fs.chmodSync(marker, 0o755);
+    fs.rmSync(container, { recursive: true, force: true });
+  }
+});
+
+test('an empty nested Git marker does not hide its real repository owner', () => {
+  const repository = fixtureHome();
+  try {
+    assert.equal(spawnSync('git', ['init', '-q', repository]).status, 0);
+    const home = path.join(repository, 'home');
+    const marker = path.join(home, '.git');
+    fs.mkdirSync(marker, { recursive: true });
+    const installed = install(home);
+    assert.equal(installed.report.status, 'complete', installed.stdout);
+    assert.deepEqual(installed.report.gitOwnedRoots, [fs.realpathSync(repository)]);
+    assert.deepEqual(fs.readdirSync(marker), []);
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.status, 'blocked', updated.stdout);
+    assert.equal(updated.report.error.code, 'foreign-git-root');
+    assert.equal(fs.readdirSync(home).some(name => name.startsWith('.workbench-core-backup-')), false);
+  } finally { fs.rmSync(repository, { recursive: true, force: true }); }
+});
+
+test('malformed Git metadata stays fail-closed before any skill installation', () => {
+  for (const outerRepository of [false, true]) {
+  for (const kind of ['gitfile', 'directory', 'linked-directory']) {
+    const container = fixtureHome();
+    try {
+      if (outerRepository) assert.equal(spawnSync('git', ['init', '-q', container]).status, 0);
+      const boundary = path.join(container, 'broken');
+      const home = path.join(boundary, 'home');
+      fs.mkdirSync(home, { recursive: true });
+      const marker = path.join(boundary, '.git');
+      if (kind === 'gitfile') fs.writeFileSync(marker, 'gitdir: missing-worktree-metadata\n');
+      else if (kind === 'directory') {
+        fs.mkdirSync(marker);
+        fs.writeFileSync(path.join(marker, 'HEAD'), 'ref: refs/heads/main\n');
+      } else {
+        const target = path.join(container, 'empty-metadata');
+        fs.mkdirSync(target);
+        fs.symlinkSync(target, marker, 'dir');
+      }
+      const installed = install(home);
+      assert.equal(installed.report.status, 'blocked', `${kind}: ${installed.stdout}`);
+      assert.equal(fs.existsSync(path.join(home, '.agents')), false, kind);
+      assert.equal(fs.existsSync(path.join(home, '.claude')), false, kind);
+      if (kind === 'gitfile') assert.equal(fs.readFileSync(marker, 'utf8'), 'gitdir: missing-worktree-metadata\n');
+      else if (kind === 'directory') assert.equal(fs.readFileSync(path.join(marker, 'HEAD'), 'utf8'), 'ref: refs/heads/main\n');
+      else assert.equal(fs.lstatSync(marker).isSymbolicLink(), true);
+    } finally { fs.rmSync(container, { recursive: true, force: true }); }
+  }
+  }
+});
+
+test('a valid linked worktree remains a Git-owned provider home', () => {
+  const container = fixtureHome();
+  try {
+    const repository = path.join(container, 'repository');
+    const home = path.join(container, 'worktree');
+    assert.equal(spawnSync('git', ['init', '-q', repository]).status, 0);
+    assert.equal(spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', 'commit', '--allow-empty', '-qm', 'fixture'], { cwd: repository }).status, 0);
+    assert.equal(spawnSync('git', ['worktree', 'add', '--detach', '-q', home, 'HEAD'], { cwd: repository }).status, 0);
+    const marker = fs.readFileSync(path.join(home, '.git'));
+    const installed = install(home);
+    assert.equal(installed.report.status, 'complete', installed.stdout);
+    assert.deepEqual(installed.report.gitOwnedRoots, [fs.realpathSync(home)]);
+    assert.deepEqual(fs.readFileSync(path.join(home, '.git')), marker);
+    assert.equal(spawnSync('git', ['status', '--porcelain'], { cwd: home, encoding: 'utf8' }).stdout, '');
+    const updated = maintain(home, 'update', '--explicit-update');
+    assert.equal(updated.report.error.code, 'foreign-git-root', updated.stdout);
+    assert.equal(fs.readdirSync(home).some(name => name.startsWith('.workbench-core-backup-')), false);
+  } finally { fs.rmSync(container, { recursive: true, force: true }); }
+});
+
 test('explicit update preserves changed core bytes in a backup and rollback restores both content and adapter topology', () => {
   const home = fixtureHome();
   try {
