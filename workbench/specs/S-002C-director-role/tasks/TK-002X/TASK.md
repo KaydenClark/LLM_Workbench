@@ -53,6 +53,17 @@ repository prerequisite from them.
 
 ## Required Behavior
 
+Reconciled 2026-09-30 (attempt 2): S-002D and S-002F landed the shared-file
+convention first, so this Task conforms to it instead of the `roleSkills`
+design below, which stays as the flight-launch plan. `director` leads the
+exported `coordinationSkills` group (`['director', 'dispatcher',
+'spec-planner']`), sits first of that group before `builder` in
+`skillPolicy.required` and in the skills README table, and every pinned
+count reads 25 (eighteen workflow skills, three coordination skills and four
+portable stances), including the LEXICON Core skill bundle row and
+`workbench/wiki/skill-genesis.md`. The catalog test pins director first and
+dispatcher second; the frozen v3.2.1 filters exclude the whole group.
+
 `workbench/skills/director/SKILL.md`:
 
 - Frontmatter `name: director` and a one-line `description` of the form the
