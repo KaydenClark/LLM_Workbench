@@ -5,9 +5,10 @@
 **Slice:** Demonstrate the continuous closure-capture lifecycle in one disposable Git room
 **Status:** in-progress
 **Stance:** Builder
-**Blockers:** TK-01U
+**Blockers:** none
 **Destination:** spec-acceptance: S-00I closed-Spec durable reconciliation, retirement and verified-main discard, proven across steps T0 to T6 of the S-00J closure-capture transition contract without rewriting prior completed proof
 **Planned verification:** Red: a new continuous fixture in `tools/test-spec-workbench.mjs` fails at the first transition its committed dependencies do not yet support (or, if every producer is present, an adversarial omission fails its assertion). Green: one disposable room passes T0 reviewed delivery, T1 fixture owner approval, T2 fixture main verification, T3 `complete`, T4 features capture, T5 retirement and T6 discard with whole-directory recovery, each consuming the previous step's persisted output through honest fixture Git commits, merges, pushes and fetches, with named no-write refusals at each gate and preserved S-00T regressions.
+**Proof:** Earlier close evidence remains limited as corrected below. After TK-003L/TK-003M implementation, the strengthened continuous T0-T6 room passes in 8.94 seconds with its one original simulated approval, both Task/Spec merge-restoration no-write refusals, normal non-FF imports and whole-directory recovery. Final immutable aggregate and assembled review remain open; this is not a new done or delivery claim.
 
 ## Outcome
 
@@ -37,7 +38,7 @@ main promotion, release evidence, or permission to dispose of real records.
 
 ## Prerequisites And Serialization
 
-- Blocked on [TK-01U](../TK-01U/TASK.md), which supplies the `features`
+- [TK-01U](../TK-01U/TASK.md) is done and supplies the `features`
   collection, article type and schema, Wiki route, template and retirement
   and Task-discard eligibility. Never relabel a feature article as an
   existing type to pass.
@@ -166,6 +167,7 @@ clone for recovery; do not claim crash safety or atomic disposal.
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/cloud-v4-portability | 2f5b13b0a20d6a278310cf1b709d1fcd31274a11 | ahead 0 behind 0 | 4 | 2026-09-30 cloud baseline: node tools/test-spec-workbench.mjs passes with process init.defaultBranch=main in 26s; continuous candidate fails in 12s at T5/F3 after unchanged digest retirement loses original owner approval | TK-01V bounded runtime gap; no closure, no T6 proof, no real owner approval | spec-report approval validation resolves current retired path inside pre-retirement candidate; separate authorized runtime corrective required before TK-01V can finish | 2f08b7abe25827598e5bd075a8f55a8188d776fe7f65851325c24f56b17f63ca |
+| 2 | codex/cloud-lifecycle-demo-closeout | a929fb7e8a79b0d0205c8e7bbc5ef47516e2b346 | ahead 0 behind 0 | 0 | Exact remote a929fb7e8a79b0d0205c8e7bbc5ef47516e2b346 independently passed all 51 commands in saved cloud, with no code/safety blocker. Continuous T0-T6 and whole-directory recovery took 10.00s there (7.21s local), one simulated approval retained through retirement and fresh clone; changed substance/incarnation/unrelated/merge-history negatives refused; six additional resolver probes passed. Exact-SHA separate-context review PASS. | TK-01V continuous candidate and S-00U TK-003K corrective preserve red findings and proof; all fixture approvals remain simulated | Final docs-only closeout and integration delivery pending; assembled S-00I Spec review/delivery remains separate; no owner QA, Spec closure, main promotion, or release claim | 1557afff7659d416ec610ffebbed2d5f19fcc885b7a1f0f3314f733b96405097 |
 
 ## Continuous Candidate — 2026-09-30
 
@@ -181,4 +183,48 @@ Named no-write gates include changed substance, source/destination new
 incarnations (including merge resurrection), newer sibling proof, active
 owner links and missing capture. Main delivery is simulated only inside
 disposable rooms. No real owner approval, main promotion or record disposal
-is asserted. Full combined verification and exact-head review remain pending.
+is asserted. At that pre-publication checkpoint, full combined verification and exact-head
+review remained pending.
+
+## Remote Verification And Task Closeout — 2026-09-30
+
+Exact remote candidate `a929fb7e8a79b0d0205c8e7bbc5ef47516e2b346`
+passed all 51 documented commands and independent code/safety review in a
+separate saved-cloud checkout. The continuous demonstration completed in
+10.00 seconds there and preserved one simulated approval through fresh-clone
+recovery; six additional resolver probes passed. Local identical-tree
+`b374d03` also passed all 51 commands and exact-source review.
+
+The repository close command marked TK-01V done from a clean, remote-contained
+checkout. Final documentation review and integration containment are pending.
+S-00I still needs its assembled-Spec review/delivery gate; neither this Task
+closeout nor simulated fixture approval closes S-00I or supplies real owner
+Human QA, main promotion or release approval.
+
+## Assembled Review Correction — 2026-09-30
+
+The prior closeout and receipts are preserved as historical evidence. The
+assembled review of bd218db reproduced a new discard-specific gap in this
+continuous room after T0-T5, with its original single simulated approval:
+a merge restores the retired record after first-parent deletion and discard
+succeeds although that merge is absent from main. Earlier merge-incarnation
+negatives tested approval binding, not this T6 discard path. The current done
+claim is withdrawn pending TK-003M and the strengthened continuous proof.
+TK-003L and TK-003M are the existing assigned corrective records; this does
+not reopen S-00U or authorize real record disposal or owner approval.
+
+## Corrected Implementation Proof — 2026-09-30
+
+The strengthened continuous fixture now passes on the code-identical
+1b6854c/e53f1e3 implementation after TK-003L then TK-003M. Both Task and Spec
+refuse merge-created and retained-side-parent restoration absent from main,
+with files, index, HEAD and refs unchanged. New proof introduced only by a
+merge is also refused. Ordinary non-fast-forward imports preserve the real
+retirement identity and recover the complete directory.
+
+The durable fixture reaches post-discard correction in 8.94 seconds with
+one original simulated approval. The independent original continuous
+reviewer probe also passes, in 8.18 seconds. Earlier evidence, Receipt rows
+and their checksums remain unchanged. Final aggregate verification and fresh
+assembled review precede Task closeout and integration delivery; neither
+this proof nor the bounded L review supplies owner QA or main promotion.

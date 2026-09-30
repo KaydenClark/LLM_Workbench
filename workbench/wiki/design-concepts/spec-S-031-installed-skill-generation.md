@@ -10,7 +10,7 @@ source_paths:
   - tools/skill-marker.mjs
   - workbench/tools/skill-inspection.mjs
   - workbench/tools/workbench-layout.mjs
-  - skills/README.md
+  - workbench/skills/README.md
   - templates/feedback/REPORT_FORMAT.md
   - tools/test-skill-inspection.mjs
   - tools/test-core-skill-installer.mjs
@@ -57,7 +57,7 @@ the discovery roots.
 - [tools/skill-marker.mjs](../../../tools/skill-marker.mjs) — current owning source or verification seam.
 - [workbench/tools/skill-inspection.mjs](../../../workbench/tools/skill-inspection.mjs) — current owning source or verification seam.
 - [workbench/tools/workbench-layout.mjs](../../../workbench/tools/workbench-layout.mjs) — current owning source or verification seam.
-- [skills/README.md](../../../skills/README.md) — current owning source or verification seam.
+- [workbench/skills/README.md](../../skills/README.md) — current owning source or verification seam.
 - [templates/feedback/REPORT_FORMAT.md](../../../templates/feedback/REPORT_FORMAT.md) — current owning source or verification seam.
 - [tools/test-skill-inspection.mjs](../../../tools/test-skill-inspection.mjs) — current owning source or verification seam.
 - [tools/test-core-skill-installer.mjs](../../../tools/test-core-skill-installer.mjs) — current owning source or verification seam.
@@ -65,3 +65,4 @@ the discovery roots.
 ## History
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

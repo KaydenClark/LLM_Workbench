@@ -5117,6 +5117,154 @@ function commitAll(dir, message) {
 }
 
 // ============================================================================
+// S-00I TK-003L: installed skills and legacy root skills are live reference
+// consumers at the same public move/scan/discard/doctor seams. Historical
+// evidence remains byte-identical and counted rather than silently rewritten.
+{
+  const room = fs.mkdtempSync(path.join(os.tmpdir(), 'lifecycle-skill-references-'));
+  const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'lifecycle-skill-remote-'));
+  try {
+    initLifecycleFixture(room);
+    const git = (...args) => execFileSync('git', ['-C', room, ...args], { encoding: 'utf8', stdio: 'pipe' }).trim();
+    const activeDir = 'workbench/specs/S-615-skill-reference';
+    const retiredDir = 'workbench/specs/retired/S-615-skill-reference';
+    const specRoute = `${retiredDir}/SPEC.md`;
+    const taskRoute = `${retiredDir}/tasks/retired/TK-001/TASK.md`;
+    const declaredSkills = JSON.parse(fs.readFileSync(path.join(room, 'workbench/manifest.json'), 'utf8')).lanes.skills;
+    const skills = [`${declaredSkills}/lifecycle-reference/SKILL.md`, 'skills/legacy-reference/SKILL.md'];
+    const relative = (file, target) => path.posix.relative(path.posix.dirname(file), target);
+    const bodies = new Map();
+    writeAt(room, 'AGENTS.md', '# Fixture agents\n');
+    writeAt(room, `${activeDir}/SPEC.md`, retirementReadySpec('S-615', ['TK-001']));
+    writeAt(room, `${activeDir}/tasks/TK-001/TASK.md`, doneTaskRecordFixture({ id: 'TK-001', specId: 'S-615', slice: 'Skill reference fixture', destination: 'spec-acceptance: S-615 Acceptance Criteria', proof: 'Fixture-only proof' }));
+    writeAt(room, 'workbench/wiki/features/skill-reference.md', featureOwnerArticle(specRoute));
+    writeAt(room, 'workbench/wiki/MEMORY.md', '# Memory\n\n[Capability](features/skill-reference.md)\n');
+    for (const file of skills) {
+      const specLink = relative(file, `${activeDir}/SPEC.md`);
+      const taskLink = relative(file, `${activeDir}/tasks/TK-001/TASK.md`);
+      const historical = `## Append-Only Evidence And Execution Log\n\n| Date | Claim |\n|---|---|\n| 2026-09-30 | [Spec](${specLink}) and [Task](${taskLink}) |\n\n`;
+      bodies.set(file, historical);
+      writeAt(room, file, `# Lifecycle navigation\n\nRead [Spec](${specLink}) and [Task](${taskLink}).\n\n${historical}## Current limits\n\nFixture only.\n`);
+    }
+    initGitRoot(room);
+    commitAll(room, 'seed live skills references and immutable historical evidence');
+    // Six-lane manifests remain valid; legacy root skills are still live.
+    const manifestFile = path.join(room, 'workbench/manifest.json');
+    const manifestBytes = fs.readFileSync(manifestFile, 'utf8');
+    const oldManifest = JSON.parse(manifestBytes);
+    delete oldManifest.lanes.skills;
+    fs.writeFileSync(manifestFile, `${JSON.stringify(oldManifest, null, 2)}\n`);
+    assert.ok(referencesToPath(room, activeDir).some(item => item.file === skills[1]), 'a pre-skills six-lane room still scans root skills');
+    const unsupportedManifest = JSON.parse(manifestBytes);
+    unsupportedManifest.lanes.skills = 'workbench/custom-skills';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(unsupportedManifest, null, 2)}\n`);
+    const unsupportedBefore = gitSnapshot(room);
+    assert.throws(() => scanReferences(room), /Manifest lanes must exactly match/, 'nondefault skills lanes are unsupported by the existing manifest contract');
+    assert.deepEqual(gitSnapshot(room), unsupportedBefore, 'an unsupported skills path refuses without mutation');
+    fs.writeFileSync(manifestFile, manifestBytes);
+
+    // A linked skill cannot silently disappear from a complete scan. The
+    // target stays untouched, and both move entry points preflight before mv.
+    const linkedSkill = `${declaredSkills}/linked-navigation.md`;
+    fs.symlinkSync('lifecycle-reference/SKILL.md', path.join(room, linkedSkill));
+    commitAll(room, 'plant an unsafe linked skills reference');
+    const linkedBefore = gitSnapshot(room);
+    const linkedTargetBytes = fs.readFileSync(path.join(room, skills[0]), 'utf8');
+    for (const operation of [() => scanReferences(room), () => referencesToPath(room, activeDir),
+      () => moveTaskRecord(room, 'S-615', 'TK-001', 'retired'), () => moveSpecDirectory(room, 'S-615', 'retired')]) {
+      assert.throws(operation, /symbolic link|ordinary path/, 'linked skills locations fail closed before any write');
+      assert.deepEqual(gitSnapshot(room), linkedBefore, 'unsafe skills refusal preserves files, index and HEAD');
+      assert.equal(fs.readFileSync(path.join(room, skills[0]), 'utf8'), linkedTargetBytes, 'linked target remains readable');
+    }
+    git('rm', linkedSkill);
+    commitAll(room, 'remove unsafe link before supported move');
+    const outsideAlias = path.join(remote, 'skill-alias.md');
+    fs.linkSync(path.join(room, skills[0]), outsideAlias);
+    const hardlinkBefore = { git: gitSnapshot(room), refs: git('for-each-ref', '--format=%(refname) %(objectname)'), bytes: git('diff', 'HEAD') };
+    const hardlinkBytes = fs.readFileSync(outsideAlias, 'utf8');
+    for (const operation of [() => moveTaskRecord(room, 'S-615', 'TK-001', 'retired'), () => moveSpecDirectory(room, 'S-615', 'retired')]) {
+      assert.throws(operation, /Unsafe write destination/, 'a hard-linked incoming reference refuses before the move');
+      assert.deepEqual({ git: gitSnapshot(room), refs: git('for-each-ref', '--format=%(refname) %(objectname)'), bytes: git('diff', 'HEAD') }, hardlinkBefore, 'hard-link refusal preserves the whole tracked tree, index, HEAD and refs');
+      assert.equal(fs.readFileSync(outsideAlias, 'utf8'), hardlinkBytes, 'the linked target bytes remain unchanged');
+      assert.ok(fs.existsSync(path.join(room, `${activeDir}/tasks/TK-001/TASK.md`)) && !fs.existsSync(path.join(room, retiredDir)), 'neither record moved on refusal');
+    }
+    fs.unlinkSync(outsideAlias);
+    // An unrelated hard-linked skill needs no write and must remain usable.
+    const untouchedSkill = `${declaredSkills}/unrelated.md`;
+    writeAt(room, untouchedSkill, '# Unrelated skill\n\nNo lifecycle references.\n');
+    fs.linkSync(path.join(room, untouchedSkill), outsideAlias);
+    commitAll(room, 'retain an unrelated hard-linked skill without rewriting it');
+    const taskMove = moveTaskRecord(room, 'S-615', 'TK-001', 'retired');
+    for (const file of skills) {
+      assert.ok(fs.readFileSync(path.join(room, file), 'utf8').includes(`[Task](${relative(file, `${activeDir}/tasks/retired/TK-001/TASK.md`)})`), `${file}: Task move rewrites the live skills reference`);
+      assert.equal(taskMove.historicalReferencesLeft[file], 1, `${file}: Task history is counted`);
+    }
+    commitAll(room, 'retire the Task through the move command');
+    const specMove = moveSpecDirectory(room, 'S-615', 'retired');
+    for (const file of skills) {
+      const content = fs.readFileSync(path.join(room, file), 'utf8');
+      assert.ok(content.includes(`[Spec](${relative(file, specRoute)})`) && content.includes(`[Task](${relative(file, taskRoute)})`), `${file}: Spec move rewrites both live links`);
+      assert.ok(content.includes(bodies.get(file)), `${file}: append-only evidence stays byte-identical`);
+      assert.ok(specMove.historicalReferencesLeft[file] >= 1, `${file}: Spec history is counted`);
+    }
+    assert.equal(fs.readFileSync(outsideAlias, 'utf8'), '# Unrelated skill\n\nNo lifecycle references.\n', 'moves leave an unrelated hard-linked skill untouched');
+    fs.unlinkSync(outsideAlias);
+    assert.deepEqual(scanReferences(room), [], 'all live skills links resolve; preserved history is excluded');
+    commitAll(room, 'retire the Spec through the move command');
+    const skill = skills[0];
+    const original = fs.readFileSync(path.join(room, skill), 'utf8');
+    writeAt(room, skill, original.replace('Fixture only.', '[Broken](missing-target.md)'));
+    const beforeScan = gitSnapshot(room);
+    assert.ok(scanReferences(room).some(item => item.file === skill && item.target === 'missing-target.md'), 'scan names the broken installed-skill link');
+    assert.deepEqual(gitSnapshot(room), beforeScan, 'reference scan changes no Git state');
+    assert.equal(fs.readFileSync(path.join(room, skill), 'utf8'), original.replace('Fixture only.', '[Broken](missing-target.md)'));
+    writeAt(room, skill, original);
+    execFileSync('git', ['init', '--quiet', '--bare', remote]);
+    git('remote', 'add', 'origin', remote);
+    const publish = () => { git('push', '--quiet', 'origin', 'HEAD:refs/heads/main'); git('fetch', '--quiet', 'origin'); };
+    publish();
+    const assertRefusal = (operation, target) => {
+      const before = { git: gitSnapshot(room), refs: git('for-each-ref', '--format=%(refname) %(objectname)'), diff: git('diff', 'HEAD') };
+      const found = referencesToPath(room, target);
+      assert.ok(found.some(item => item.file === skill), 'complete scan includes the installed skill dependency');
+      assert.throws(operation, /complete reference scan/, 'live skills dependency refuses disposal');
+      assert.deepEqual({ git: gitSnapshot(room), refs: git('for-each-ref', '--format=%(refname) %(objectname)'), diff: git('diff', 'HEAD') }, before, 'refusal changes no bytes, index, HEAD or refs');
+    };
+    assertRefusal(() => discardRetiredTask(room, 'S-615', 'TK-001'), path.posix.dirname(taskRoute));
+    for (const file of skills) {
+      const content = fs.readFileSync(path.join(room, file), 'utf8');
+      writeAt(room, file, content.replace(` and [Task](${relative(file, taskRoute)})`, ''));
+    }
+    commitAll(room, 'reconcile current skills Task dependencies');
+    discardRetiredTask(room, 'S-615', 'TK-001');
+    commitAll(room, 'discard fixture Task with no current dependency');
+    const assertDiscardedDiagnostic = target => {
+      const clean = fs.readFileSync(path.join(room, skill), 'utf8');
+      writeAt(room, skill, `${clean}\n[Reintroduced live dependency](${relative(skill, target)})\n`);
+      const before = gitSnapshot(room);
+      assert.ok(doctor(room, { today: TODAY }).some(item => item.code === 'discarded-reference' && item.file === skill && item.blocks === 'selection'), 'doctor blocks a live installed-skill dependency on the discarded record');
+      assert.deepEqual(gitSnapshot(room), before, 'diagnostics change no Git state');
+      writeAt(room, skill, clean);
+    };
+    assertDiscardedDiagnostic(taskRoute);
+    publish();
+    assertRefusal(() => discardRetiredSpec(room, 'S-615'), retiredDir);
+    for (const file of skills) {
+      const content = fs.readFileSync(path.join(room, file), 'utf8');
+      writeAt(room, file, content.replace(`Read [Spec](${relative(file, specRoute)}).`, 'Current references reconciled.'));
+    }
+    commitAll(room, 'reconcile current skills Spec dependencies');
+    discardRetiredSpec(room, 'S-615');
+    commitAll(room, 'discard fixture Spec with no current dependency');
+    assertDiscardedDiagnostic(specRoute);
+    assert.deepEqual(scanReferences(room), [], 'successful Task/Spec disposal preserves historical skill evidence without live broken links');
+    console.log('ok - S-00I TK-003L manifest skills and legacy skills share move, scan, discard and diagnostics coverage');
+  } finally {
+    fs.rmSync(room, { recursive: true, force: true });
+    fs.rmSync(remote, { recursive: true, force: true });
+  }
+}
+
 // S-00I TK-01V: one continuous closure-capture room. Every identity below is
 // produced by an ordinary commit, merge, push and fetch against a local bare
 // remote. Never use integratedFixtureCandidate, update-ref, branch -f, a
@@ -5480,6 +5628,44 @@ function commitAll(dir, message) {
       ['Task', `${movedTaskDir}/TASK.md`, probe => discardRetiredTask(probe, specId, taskId)],
       ['Spec', historicalRoute, probe => discardRetiredSpec(probe, specId)]
     ]) {
+      // TK-003M: use this same T0-T5 room and its single original simulated
+      // approval. Both parents may lack the record, or a retained side copy
+      // may restore it after deletion on the first-parent ancestry.
+      for (const retainedBySide of [false, true]) {
+        discardProbe(`F4 ${kind} merge-${retainedBySide ? 'restored' : 'created'} incarnation`, (probe, probeGit) => {
+          const start = probeGit('rev-parse', 'HEAD');
+          const content = fs.readFileSync(path.join(probe, file), 'utf8');
+          probeGit('switch', '--quiet', '-c', 'discard-side', start);
+          if (!retainedBySide) probeGit('rm', file);
+          writeAt(probe, 'discard-side.txt', 'Independent side history.\n');
+          commitAll(probe, 'prepare side parent for discard incarnation probe');
+          probeGit('switch', '--quiet', '-c', 'discard-main', start);
+          probeGit('rm', file);
+          writeAt(probe, 'discard-main.txt', 'Independent first-parent history.\n');
+          commitAll(probe, 'delete retired record on first-parent ancestry');
+          probeGit('merge', '--quiet', '--no-ff', '--no-commit', 'discard-side');
+          writeAt(probe, file, content);
+          commitAll(probe, 'restore retired record in a merge absent from main');
+          assert.equal(probeGit('ls-tree', 'HEAD^1', '--', file), '');
+          assert.equal(probeGit('ls-tree', 'HEAD^2', '--', file) !== '', retainedBySide);
+          assert.equal(spawnSync('git', ['-C', probe, 'merge-base', '--is-ancestor', 'HEAD', 'origin/main']).status, 1);
+          assert.equal(assembleSpecReport(probe, specId).ownerApproval.length, 1, 'no second or copied approval repairs the probe');
+        }, discard, /not verified contained in origin\/main/);
+      }
+      // A merge can also introduce new sibling proof while keeping the
+      // record itself unchanged. The whole-directory gate must see it.
+      discardProbe(`F4 ${kind} merge-created directory proof`, (probe, probeGit) => {
+        const start = probeGit('rev-parse', 'HEAD');
+        probeGit('switch', '--quiet', '-c', 'proof-side', start);
+        writeAt(probe, 'proof-side.txt', 'Independent side history.\n');
+        commitAll(probe, 'prepare side history for merge-created proof');
+        probeGit('switch', '--quiet', '-c', 'proof-main', start);
+        writeAt(probe, 'proof-main.txt', 'Independent first-parent history.\n');
+        commitAll(probe, 'prepare first-parent history for merge-created proof');
+        probeGit('merge', '--quiet', '--no-ff', '--no-commit', 'proof-side');
+        writeAt(probe, `${path.posix.dirname(file)}/merge-only-proof.txt`, 'Unpublished proof created by merge resolution.\n');
+        commitAll(probe, 'create new sibling proof in the merge');
+      }, discard, /current directory content is not verified contained in origin\/main/);
       discardProbe(`F4 ${kind} latest incarnation`, (probe, probeGit) => {
         const content = fs.readFileSync(path.join(probe, file), 'utf8');
         probeGit('rm', file);
@@ -5491,6 +5677,27 @@ function commitAll(dir, message) {
         writeAt(probe, `${path.posix.dirname(file)}/unpublished-proof.txt`, 'This new proof is not contained on main.\n');
         commitAll(probe, `add unpublished sibling proof to ${kind}`);
       }, discard, /current directory content is not verified contained in origin\/main/);
+      // An ordinary non-FF import of a never-before-present record is not
+      // resurrection. Its actual introduction and complete directory are
+      // already on main, even though this local import merge is not.
+      const imported = freshClone(`discard-normal-import-${kind}`);
+      const importedGit = (...args) => execFileSync('git', ['-C', imported, ...args], { encoding: 'utf8', stdio: 'pipe' }).trim();
+      importedGit('config', 'user.email', 'fixture@example.com');
+      importedGit('config', 'user.name', 'Fixture');
+      importedGit('switch', '--quiet', '-c', 'normal-import', base);
+      writeAt(imported, 'normal-import.txt', 'Ordinary independent work before capability import.\n');
+      commitAll(imported, 'prepare an ordinary capability import');
+      importedGit('merge', '--quiet', '--no-ff', 'origin/integration', '-m', 'import the already-main-contained retired capability');
+      assert.equal(importedGit('ls-tree', 'HEAD^1', '--', file), '');
+      assert.notEqual(importedGit('ls-tree', 'HEAD^2', '--', file), '');
+      assert.equal(spawnSync('git', ['-C', imported, 'merge-base', '--is-ancestor', 'HEAD', 'origin/main']).status, 1);
+      assert.equal(assembleSpecReport(imported, specId).ownerApproval.length, 1);
+      const directory = path.posix.dirname(file);
+      const expected = directoryBytes(path.join(imported, directory));
+      const importedReceipt = discard(imported);
+      assert.equal(importedReceipt.retiringCommit, retirementCommit, 'ordinary non-FF delivery preserves the actual retirement identity');
+      importedGit('checkout', importedReceipt.recoveryCommit, '--', directory);
+      assert.deepEqual(directoryBytes(path.join(imported, directory)), expected, 'whole-directory recovery survives a normal non-FF import');
     }
     discardProbe('F5 durable owner operational link', probe => {
       const file = path.join(probe, featurePath);

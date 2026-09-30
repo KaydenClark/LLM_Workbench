@@ -8,8 +8,8 @@ provenance:
 source_paths:
   - workbench/specs/S-046-json-notepad-foundation/SPEC.md
   - workbench/tools/notepads.mjs
-  - skills/notepad/SKILL.md
-  - skills/handoff/SKILL.md
+  - workbench/skills/notepad/SKILL.md
+  - workbench/skills/handoff/SKILL.md
   - tools/test-notepads.mjs
 parent: none
 authorized_by: owner
@@ -34,10 +34,11 @@ The source record was read at `bc370fe742d5ddb8348bf361fccea31205f6cee7` and the
 
 - [workbench/specs/S-046-json-notepad-foundation/SPEC.md](../../../workbench/specs/S-046-json-notepad-foundation/SPEC.md)
 - [workbench/tools/notepads.mjs](../../../workbench/tools/notepads.mjs)
-- [skills/notepad/SKILL.md](../../../skills/notepad/SKILL.md)
-- [skills/handoff/SKILL.md](../../../skills/handoff/SKILL.md)
+- [workbench/skills/notepad/SKILL.md](../../skills/notepad/SKILL.md)
+- [workbench/skills/handoff/SKILL.md](../../skills/handoff/SKILL.md)
 - [tools/test-notepads.mjs](../../../tools/test-notepads.mjs)
 
 ## History
 
 - 2026-09-19: Reconciled into one article on owner direction; source records and proof remain intact pending their lifecycle gates.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.

@@ -9,7 +9,7 @@ source_paths:
   - workbench/specs/S-041-recorded-baseline-availability/SPEC.md
   - workbench/tools/spec-packet.mjs
   - templates/ADOPTION.md
-  - skills/update-harness/SKILL.md
+  - workbench/skills/update-harness/SKILL.md
   - tools/test-spec-workbench.mjs
   - AGENTS.md
 parent: none
@@ -37,10 +37,11 @@ host limits are identified as such rather than promoted to fresh measurements.
 
 - [workbench/tools/spec-packet.mjs](../../tools/spec-packet.mjs)
 - [templates/ADOPTION.md](../../../templates/ADOPTION.md)
-- [skills/update-harness/SKILL.md](../../../skills/update-harness/SKILL.md)
+- [workbench/skills/update-harness/SKILL.md](../../skills/update-harness/SKILL.md)
 - [tools/test-spec-workbench.mjs](../../../tools/test-spec-workbench.mjs)
 - [AGENTS.md](../../../AGENTS.md)
 
 ## History
 
 - 2026-09-19: Created on explicit owner direction for one Wiki article per legacy Spec. Preserved useful knowledge, correction lineage and proof limitations; no source record retired or discarded.
+- 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.
