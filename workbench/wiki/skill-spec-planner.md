@@ -14,7 +14,7 @@ source_paths:
   - workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md
   - workbench/docs/adr/0036-stances-change-method-not-authority.md
   - workbench/wiki/design-concepts/roles-and-stances.md
-last_verified: 2026-09-29
+last_verified: 2026-09-30
 ---
 
 # Spec Planner: cut one Spec into small parallel Tasks at flight launch
@@ -38,7 +38,9 @@ The mechanics follow `to-tasks`. Every new ID comes from `spec-workbench.mjs nex
 
 ### Example, from the verification run
 
-Reconciled by the Dispatcher from the TK-003F scenario.
+A disposable room held a small CLI ledger app, one planned Spec S-001 (export the ledger to CSV, share one formatter, reject negative amounts, keep one test entry point) with an open owner decision about the timestamp format, a planned sibling S-002 for a dashboard, and two Worker drafts. Draft A proposed two Tasks that both edited the formatter and said they could run at once. Draft B proposed one in-scope Task and one dashboard Task "because the demo is Friday".
+
+The planner read the Spec, S-002, the source and the single test file before cutting anything, ran the test entry point and two CLI probes (a negative amount was accepted; `export` was parsed as an amount), and noticed from the source that the ledger lived only in process memory. It cut three Tasks with IDs from `next-id` and activated the Spec once. Because every slice writes the one test file, and two of them also write the CLI or the formatter, it ran the groups in series and gave each shared file an ordered writer table rather than letting draft A's two Tasks race. It kept draft B's dashboard Task out of S-001, since S-002 owns it and S-001 lists a dashboard as a Non-Goal, and surfaced it to the Director without acting on the Friday pressure. It left the timestamp slice uncut behind its open owner decision. It also found a second open decision, whether entries should persist between CLI runs, recorded it in the Spec with options and a recommendation, and did not cut a persistence slice. Its hand-off told Spec Manager the dispatch order, what each Worker may write, the open gates and that the IDs were proposals held only on the Spec branch until the plan reached integration.
 
 ## Not the historical Planner role
 
@@ -47,13 +49,15 @@ The GPT_OS Planner informed this model as an example of Task preparation, in the
 ## Composition
 
 - Composes [`to-tasks`](../skills/to-tasks/SKILL.md) for the Task record shape and the `next-id`, `convert-tasks --activate`, `render` and `doctor` mechanics, and [`tracer-bullet`](../skills/tracer-bullet/SKILL.md) for the slice discipline.
-- Operates inside the Dispatcher role ([S-002D](../specs/S-002D-dispatcher-role/SPEC.md)), which supplies the Spec scope and the dispatch responsibility the stance plans for.
+- Operates inside the Dispatcher role ([entry](../skills/dispatcher/SKILL.md), [article](skill-dispatcher.md), [S-002D](../specs/S-002D-dispatcher-role/SPEC.md)), which supplies the Spec scope and the dispatch responsibility the stance plans for.
 - Hands its plan to the Spec Manager stance ([S-002G](../specs/S-002G-spec-manager-stance/SPEC.md)); the same Dispatcher changes stance, and no authority moves with it.
 - Differs from the Reviewer and [Auditor](skill-auditor.md) stances, which verify a candidate or a claim rather than plan work. A Dispatcher may use those for a named verification job, and changing stance never makes it independent of work it planned or dispatched.
 
 ## Verified behavior and limits
 
-Reconciled by the Dispatcher after TK-003D and TK-003F.
+**Verified 2026-09-30:** `tools/test-skill-catalog.mjs` holds the source contract: the four stance sections and the shared authority sentences, composition with the Dispatcher role, no Tasks for a merely planned Spec, complete-path slices, one named writer per shared file, concurrency groups, proposed versus executable Tasks, `next-id`, `convert-tasks --activate`, the Spec Manager hand-off and the Director escalation. It also pins the bundle position: `spec-planner` follows `dispatcher` in the coordination group, immediately before `builder`. One fresh-context agent, given only the skill text, the room's `AGENTS.md` and a scripted Dispatcher assignment, produced the plan in the example above. The fixture room's `doctor` reported no blocking finding afterwards, and the app source, the drafts and S-002 were unchanged. The evidence is in the [Spec evidence](../specs/S-002F-spec-planner-stance/SPEC.md#append-only-evidence-and-execution-log).
+
+**Limits:** that was one run with one model. The owner, the Director and both Worker drafts were scripted, and no Worker ran. The room had no remote, so `next-id` reservations and claims were local only. The run shows the method being followed once, not that it improves outcomes, and it is not owner Human QA. The skill names the Dispatcher role, the Spec Manager stance, ADR-000P and the role model by paths in this repository, and the agent reported that those paths were missing from the fixture room. An installed room will have the same gap until those references name entries that ship in every room.
 
 ## Sources
 
@@ -68,4 +72,5 @@ Reconciled by the Dispatcher after TK-003D and TK-003F.
 
 ## History
 
-- 2026-09-29: Created by S-002F TK-003E; scenario evidence reconciled by TK-003F.
+- 2026-09-29: Created by S-002F TK-003E.
+- 2026-09-30: Example and verified behavior reconciled from the TK-003F scenario; linked the landed Dispatcher entry.
